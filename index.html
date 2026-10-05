@@ -1,152 +1,677 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Ease My Life — pick what to do today, without deciding</title>
-  <!-- Canonical prevents www/non-www and query-string variants being indexed
-       separately. Absolute URL required. -->
-  <link rel="canonical" href="https://easemylife.app/" />
-
-  <link rel="manifest" href="manifest.webmanifest" />
-  <!-- Matches --bg in each mode so the OS chrome blends with the app shell. -->
-  <meta name="theme-color" content="#fafbfc" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#16181c" media="(prefers-color-scheme: dark)" />
-  <meta name="description" content="Pick what to do today, without deciding. Your pickers choose for you, on your schedule and entirely on your device." />
-
-  <!-- Social previews. IMPORTANT: og:url and og:image MUST be absolute URLs —
-       scrapers do not resolve relative paths. Replace the placeholder origin
-       below with the real domain before sharing any link, or previews will be
-       blank everywhere. (See "Before sharing the link" in the handoff checklist.) -->
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Ease My Life" />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:title" content="Ease My Life" />
-  <meta property="og:description" content="Pick what to do today, without deciding. Your pickers choose for you, on your schedule and entirely on your device." />
-  <meta property="og:url" content="https://easemylife.app/" />
-  <meta property="og:image" content="https://easemylife.app/assets/og-image.png" />
-  <meta property="og:image:type" content="image/png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Ease My Life — pick what to do today, without deciding." />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Ease My Life" />
-  <meta name="twitter:description" content="Pick what to do today, without deciding. Your pickers choose for you, on your schedule and entirely on your device." />
-  <meta name="twitter:image" content="https://easemylife.app/assets/og-image.png" />
-  <meta name="twitter:image:alt" content="Ease My Life — pick what to do today, without deciding." />
-  <!-- SVG first (modern browsers prefer it and it scales to any tab density),
-       then PNG fallbacks, then favicon.ico at the root for the implicit request
-       browsers make regardless of these tags. -->
-  <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
-  <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png" />
-  <link rel="icon" href="assets/favicon-16.png" sizes="16x16" type="image/png" />
-  <link rel="icon" href="favicon.ico" sizes="48x48 32x32 16x16" />
-  <link rel="icon" href="assets/icon-192.png" sizes="192x192" type="image/png" />
-  <!-- iOS ignores the manifest for installation: it needs these. -->
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="Ease My Life" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="mobile-web-app-capable" content="yes" />
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Ease My Life",
-    "url": "https://easemylife.app/",
-    "description": "Pick what to do today, without deciding. Ease My Life builds a short daily list for you from your own pickers, on your own schedule, entirely on your device.",
-    "applicationCategory": "ProductivityApplication",
-    "operatingSystem": "Any (modern web browser)",
-    "browserRequirements": "Requires JavaScript and a modern browser",
-    "isAccessibleForFree": true,
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "featureList": [
-      "Installable as a progressive web app",
-      "No account required",
-      "All data stored on your own device",
-      "Weighted, random, and self-adjusting item pickers",
-      "Daily, weekly, monthly, and yearly schedules",
-      "Reminders and day-off conditionals"
-    ]
-  }
-  </script>
-
-
-  <!-- Boot splash: equation resolving into the easing checkmark. Pure CSS so it
-       paints immediately. Babel is gone in the Vite build, so this now only
-       covers the module fetch + storage init — keep it short or drop it. -->
-  <style>
-    #boot-splash{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:opacity .42s ease}
-    #boot-splash.bl-hide{opacity:0;pointer-events:none}
-    #boot-splash .bl{display:flex;align-items:center;gap:9px;font-family:var(--font-mono);font-size:clamp(24px,6vw,34px);font-weight:500;color:var(--text);font-variant-numeric:tabular-nums;padding:0 20px}
-    #boot-splash .tk{white-space:nowrap}
-    #boot-splash .op,#boot-splash .eq{color:var(--muted)}
-    #boot-splash sup{font-size:.62em;color:var(--text)}
-    #boot-splash .chk{width:1.15em;height:1.15em;display:inline-flex}
-    #boot-splash .chk svg{width:100%;height:100%}
-    #boot-splash .chk path{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-    /* Pure-CSS looping stagger, compositor-driven so it stays smooth while the
-       module graph loads. Each token is offset by --i, and the offset persists
-       across loops (animation-delay only shifts the first iteration). */
-    #boot-splash .tk{opacity:0;animation:bootTok 3.4s ease-in-out infinite;animation-delay:calc(var(--i) * .12s)}
-    #boot-splash .chk{animation:bootTok 3.4s ease-in-out infinite,bootPop 3.4s ease-in-out infinite;animation-delay:calc(var(--i) * .12s)}
-    @keyframes bootTok{0%{opacity:0;transform:translateX(-7px)}7%{opacity:1;transform:none}82%{opacity:1;transform:none}90%{opacity:0}100%{opacity:0}}
-    @keyframes bootPop{0%,4%{transform:scale(.5)}10%{transform:scale(1.16)}16%,82%{transform:scale(1)}}
-    @media (prefers-reduced-motion:reduce){#boot-splash .tk,#boot-splash .chk{animation:none;opacity:1;transform:none}}
-  </style>
-</head>
-<body>
-  <div id="boot-splash" role="status" aria-label="Loading">
-    <div class="bl"><span class="tk op" style="--i:0">(</span><span class="tk" style="--i:1">7</span><span class="tk op" style="--i:2">×</span><span class="tk" style="--i:3">3</span><span class="tk op" style="--i:4">)</span><span class="tk op" style="--i:5">−</span><span class="tk" style="--i:6">√9</span><span class="tk op" style="--i:7">+</span><span class="tk" style="--i:8">2<sup>2</sup></span><span class="tk eq" style="--i:9">=</span><span class="tk chk" style="--i:10"><svg viewBox="0 0 26 26"><path d="M5 13 l5 5 l11 -12"/></svg></span></div>
-  </div>
-  <!-- Dismiss logic lives in its own file (not inline) so the page has no
-       inline <script> — keeps the Content-Security-Policy's script-src
-       locked to 'self' with no hash/'unsafe-inline' needed (see
-       public/_headers). -->
-  <script src="/boot-splash.js"></script>
-  <noscript>
-    <div style="max-width:38rem;margin:12vh auto;padding:0 1.5rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1c2230">
-      <h1 style="font-size:1.6rem;letter-spacing:-0.02em">Ease My Life</h1>
-      <p><strong>Pick what to do today, without deciding.</strong> Ease My Life builds a short
-      daily list for you. You set up pickers &mdash; a group of items like chores, meals, or
-      things you keep meaning to read &mdash; and the app chooses from them on the schedule you
-      choose, so you open it to a handful of decisions already made.</p>
-      <p>Pickers can choose at random, by weight, or adjust themselves over time so neglected
-      items surface more often and recently-done ones rest. Add reminders for the things that
-      genuinely repeat, and day-off conditionals for when life gets in the way.</p>
-      <p>No account, no cloud, no nagging: everything is stored on your own device, and the app
-      can be installed to your home screen and used offline.</p>
-      <p><strong>JavaScript is required to use the app.</strong> Please enable it and reload
-      this page.</p>
-    </div>
-  </noscript>
-  <div id="root"></div>
 
 
 
-    <!-- Netlify Forms detection stub. Netlify finds forms by parsing the BUILT
-       HTML at deploy time — it never runs the app, so the React form in
-       tab-settings.jsx is invisible to it. This static copy is what registers
-       the form and its fields; the app then POSTs to '/' with a matching
-       form-name. Keep the name and every field name in sync with the keys in
-       ContactSupportCard's send(), or submissions are rejected. hidden keeps it
-       out of the page; Netlify still parses it. -->
-  <form name="support" netlify netlify-honeypot="bot-field" hidden>
-    <label for="support-subject">Subject</label>
-    <input type="text" name="subject" id="support-subject" />
-    <label for="support-message">Message</label>
-    <textarea name="message" id="support-message"></textarea>
-    <label for="support-version">App version</label>
-    <input type="text" name="version" id="support-version" />
-    <label for="support-browser">Browser</label>
-    <input type="text" name="browser" id="support-browser" />
-    <label for="support-bot-field">Leave this field blank</label>
-    <input type="text" name="bot-field" id="support-bot-field" />
-  </form>
+<!doctype html><!-- What: Document Type Declaration. Why: Browsers render the page in standards mode only with a doctype. How: This declares HTML5. -->
 
 
 
-  <script type="module" src="/src/main.jsx"></script>
-</body>
+<html lang='en'><!-- What: Root Html Element. Why: Screen readers and translation tools need the page's language. How: This marks the document as English. -->
+
+
+	<head><!-- What: Document Head Element. Why: The page's metadata, links, and boot styles load before the body paints. How: This holds them in the sections below. -->
+
+
+		<!-- #region Document -->
+
+		<meta charset='utf-8' />                                                                   <!-- What: Character Set Meta. Why: The browser has to decode the page as UTF-8 before it reads anything else. How: This sits first in the head, inside the first 1024 bytes the spec requires. -->
+		<meta name='viewport' content='width=device-width, initial-scale=1, viewport-fit=cover' /> <!-- What: Viewport Meta. Why: Phones should lay the app out at device width, edge to edge under any notch. How: viewport-fit=cover lets the safe-area insets the tab bar reads take effect. -->
+		<title>Ease My Life: pick what to do today, without deciding</title>                       <!-- What: Page Title Element. Why: The tab, bookmarks, and search results name the page by its title. How: This pairs the app's name with its one-line promise. -->
+
+		<!-- #endregion Document -->
+
+
+		<!-- #region Search -->
+
+		<link href='https://easemylife.app/' rel='canonical' />                                                                                                   <!-- What: Canonical Link. Why: www, non-www, and query-string variants of the page should be indexed as one. How: This names the one absolute URL search engines should index. --><!-- The URL has to be absolute. -->
+		<meta name='description' content='Pick what to do today, without deciding. Your pickers choose for you, on your schedule and entirely on your device.' /> <!-- What: Description Meta. Why: Search results show a short summary under the title. How: This gives the app's one-line pitch. -->
+
+		<!-- #endregion Search -->
+
+
+		<!-- #region Web App -->
+
+		<link href='manifest.webmanifest' rel='manifest' />                                 <!-- What: Manifest Link. Why: Browsers install the app as a PWA from its manifest. How: This points at the hand-written public/manifest.webmanifest. -->
+		<meta name='theme-color' content='#fafbfc' media='(prefers-color-scheme: light)' /> <!-- What: Light Theme Color Meta. Why: The browser and OS chrome around the app should match its light page color. How: This applies only in the light color scheme. --><!-- Matches --bac-pag-col in each mode so the OS chrome blends with the app shell. -->
+		<meta name='theme-color' content='#16181c' media='(prefers-color-scheme: dark)' />  <!-- What: Dark Theme Color Meta. Why: The browser and OS chrome around the app should match its dark page color. How: This applies only in the dark color scheme. --><!-- Matches --bac-pag-col in each mode so the OS chrome blends with the app shell. -->
+
+		<!-- #endregion Web App -->
+
+
+		<!-- #region Icons -->
+
+		<!--
+			index.html = Icons Section
+
+			@summary
+			SVG comes first, since modern browsers prefer it and it scales to any
+			tab density, then the PNG fallbacks, then the root favicon.ico, which
+			browsers also request on their own regardless of these tags. The order
+			is the browser's order of preference, so it stays as written rather
+			than alphabetical.
+
+			@author z4nta0 <https://github.com/z4nta0>
+
+		-->
+
+
+
+		<link href='assets/icon.svg' rel='icon' type='image/svg+xml' />                 <!-- What: Svg Icon Link. Why: Modern browsers prefer a vector favicon that stays sharp at any tab density. How: This lists the SVG first. -->
+		<link href='assets/favicon-32.png' rel='icon' sizes='32x32' type='image/png' /> <!-- What: Large Png Icon Link. Why: A browser without SVG favicons needs a raster fallback. How: This offers the 32px PNG. -->
+		<link href='assets/favicon-16.png' rel='icon' sizes='16x16' type='image/png' /> <!-- What: Small Png Icon Link. Why: Small tab icons look crisper drawn at their own size. How: This offers the 16px PNG. -->
+		<link href='favicon.ico' rel='icon' sizes='48x48 32x32 16x16' />                <!-- What: Ico Icon Link. Why: Older browsers read only a .ico favicon. How: This points at the root favicon.ico, which also answers the request browsers make for it on their own. -->
+		<link href='assets/icon-192.png' rel='icon' sizes='192x192' type='image/png' /> <!-- What: Large Png App Icon Link. Why: Some browsers pick a large icon for shortcuts and tab previews. How: This offers the 192px PNG. -->
+
+		<!-- #endregion Icons -->
+
+
+		<!-- #region Home Screen -->
+
+		<!--
+			index.html = Home Screen Section
+
+			@summary
+			iOS ignores the manifest when a page is added to the home screen, so
+			it reads the icon, title, and standalone behavior from these tags
+			instead.
+
+			@author z4nta0 <https://github.com/z4nta0>
+
+		-->
+
+
+
+		<meta name='apple-mobile-web-app-capable'          content='yes' />          <!-- What: Apple Web App Capable Meta. Why: iOS should open the saved app full screen instead of in Safari. How: This marks the page as capable of running standalone. -->
+		<meta name='apple-mobile-web-app-status-bar-style' content='default' />      <!-- What: Apple Status Bar Style Meta. Why: The installed app's status bar should match the system's own. How: This keeps the default style. -->
+		<meta name='apple-mobile-web-app-title'            content='Ease My Life' /> <!-- What: Apple Web App Title Meta. Why: The home screen label should be the app's full name. How: This sets the name iOS shows under its icon. -->
+		<link href='assets/apple-touch-icon.png' rel='apple-touch-icon' />           <!-- What: Apple Touch Icon Link. Why: iOS draws the home screen icon from this link, not the manifest. How: This points at the 180px touch icon. -->
+		<meta name='mobile-web-app-capable' content='yes' />                         <!-- What: Mobile Web App Capable Meta. Why: Other mobile browsers read the unprefixed form of the standalone flag. How: This marks the page as capable of running standalone. -->
+
+		<!-- #endregion Home Screen -->
+
+
+		<!-- #region Open Graph -->
+
+		<meta property='og:description'  content='Pick what to do today, without deciding. Your pickers choose for you, on your schedule and entirely on your device.' /> <!-- What: Open Graph Description Meta. Why: A shared link's preview shows a short summary. How: This gives the app's one-line pitch. -->
+		<meta property='og:image'        content='https://easemylife.app/assets/og-image.png' />             <!-- What: Open Graph Image Meta. Why: A shared link's preview shows a large image. How: This points at the 1200 by 630 preview image. --><!-- og:url and og:image must be absolute URLs, since social scrapers do not resolve relative paths. -->
+		<meta property='og:image:alt'    content='Ease My Life: pick what to do today, without deciding.' /> <!-- What: Open Graph Image Alt Meta. Why: The preview image needs a text alternative. How: This describes it with the app's name and promise. -->
+		<meta property='og:image:height' content='630' />                                                    <!-- What: Open Graph Image Height Meta. Why: A scraper can lay the preview out before fetching the image. How: This gives its height in pixels. -->
+		<meta property='og:image:type'   content='image/png' />                                              <!-- What: Open Graph Image Type Meta. Why: A scraper can check the image format before fetching it. How: This names the PNG type. -->
+		<meta property='og:image:width'  content='1200' />                                                   <!-- What: Open Graph Image Width Meta. Why: A scraper can lay the preview out before fetching the image. How: This gives its width in pixels. -->
+		<meta property='og:locale'       content='en_US' />                                                  <!-- What: Open Graph Locale Meta. Why: Previews should know the page's language. How: This names US English. -->
+		<meta property='og:site_name'    content='Ease My Life' />                                           <!-- What: Open Graph Site Name Meta. Why: A preview names the site the link belongs to. How: This gives the app's name. -->
+		<meta property='og:title'        content='Ease My Life' />                                           <!-- What: Open Graph Title Meta. Why: A preview leads with a title. How: This gives the app's name. -->
+		<meta property='og:type'         content='website' />                                                <!-- What: Open Graph Type Meta. Why: Scrapers lay a preview out by the kind of page it is. How: This marks the page as a website. -->
+		<meta property='og:url'          content='https://easemylife.app/' />                                <!-- What: Open Graph Url Meta. Why: Every share of the page should resolve to one address. How: This gives the canonical URL. --><!-- og:url and og:image must be absolute URLs, since social scrapers do not resolve relative paths. -->
+
+		<!-- #endregion Open Graph -->
+
+
+		<!-- #region Twitter Card -->
+
+		<meta name='twitter:card'        content='summary_large_image' />                                                                                                 <!-- What: Twitter Card Meta. Why: X picks a preview layout from the card type. How: This asks for the large-image summary card. -->
+		<meta name='twitter:description' content='Pick what to do today, without deciding. Your pickers choose for you, on your schedule and entirely on your device.' /> <!-- What: Twitter Description Meta. Why: The card shows a short summary. How: This gives the app's one-line pitch. -->
+		<meta name='twitter:image'       content='https://easemylife.app/assets/og-image.png' />                                                                          <!-- What: Twitter Image Meta. Why: The large-image card needs its image. How: This reuses the Open Graph preview image. --><!-- twitter:image must be an absolute URL, since social scrapers do not resolve relative paths. -->
+		<meta name='twitter:image:alt'   content='Ease My Life: pick what to do today, without deciding.' />                                                              <!-- What: Twitter Image Alt Meta. Why: The card image needs a text alternative. How: This describes it with the app's name and promise. -->
+		<meta name='twitter:title'       content='Ease My Life' /> <!-- What: Twitter Title Meta. Why: The card leads with a title. How: This gives the app's name. -->
+
+		<!-- #endregion Twitter Card -->
+
+
+		<!-- #region Structured Data -->
+
+		<script type='application/ld+json'>
+
+			{
+				"@context": "https://schema.org",
+				"@type": "WebApplication",
+				"name": "Ease My Life",
+				"url": "https://easemylife.app/",
+				"description": "Pick what to do today, without deciding. Ease My Life builds a short daily list for you from your own pickers, on your own schedule, entirely on your device.",
+				"applicationCategory": "ProductivityApplication",
+				"operatingSystem": "Any (modern web browser)",
+				"browserRequirements": "Requires JavaScript and a modern browser",
+				"isAccessibleForFree": true,
+				"offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+				"featureList": [
+					"Installable as a progressive web app",
+					"No account required",
+					"All data stored on your own device",
+					"Weighted, random, and self-adjusting item pickers",
+					"Daily, weekly, monthly, and yearly schedules",
+					"Reminders and day-off conditionals"
+				]
+			}
+
+		</script><!-- What: Structured Data Script. Why: Search engines read the app's name, purpose, price, and features as structured data. How: This describes the page as a free schema.org WebApplication in JSON-LD, which the build minifies. -->
+
+		<!-- #endregion Structured Data -->
+
+
+		<!-- #region Boot Splash Styles -->
+
+		<!--
+			index.html = Boot Splash Styles Section
+
+			@summary
+			The boot splash shows an equation resolving into the easing checkmark
+			while the app's module loads and its storage starts. It's pure CSS in
+			the head so it paints before any script runs, and public/boot-splash.js
+			only fades it out once the app mounts. That script mirrors the loop,
+			stagger, and fade timings below, so a retime here needs the same change
+			there.
+
+			@author z4nta0 <https://github.com/z4nta0>
+
+		-->
+
+
+
+		<style>/* What: Boot Splash Style Element. Why: The splash has to paint before the app's own stylesheet and scripts are ready. How: This inlines the splash's rules in the head, which the build minifies. */
+
+
+			/* #region booSplDiv */
+
+			.booSplDiv { /* What: Boot Splash Div. Why: The splash covers the whole page until the app is ready to show. How: This centers the equation on the page color over everything else, fading out when dismissed. */
+
+
+				align-items     : center;
+				background      : var( --bac-pag-col );              /* Background Page Color = oklch( 0.985 0.003 240 ) */
+				display         : flex;
+				inset           : 0;
+				justify-content : center;
+				position        : fixed;
+				transition      : opacity .42s var( --mot-sta-eas ); /* Motion Standard Easing = ease */ /* What: Splash Fade. Why: The dismissal should fade rather than snap. How: boot-splash.js removes the splash just after this fade ends, so the two durations stay in step. */
+				z-index         : 23;                                /* What: Splash Stack Level. Why: The splash has to cover every layer the app can raise while it boots, the highest being the info tip at 22. How: This sits one level above it. */
+
+
+			}
+			.booSplDiv[data-splash-hide-active] { /* What: Hiding Boot Splash Div. Why: Once the app has booted and the equation has finished, the splash fades away and stops taking clicks. How: boot-splash.js sets this attribute to start the fade. */
+
+
+				opacity        : 0;
+				pointer-events : none;
+
+
+			}
+			@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Boot Splash Div. Why: Someone who asked for less motion shouldn't see the splash fade. How: This applies only when the reduced-motion preference is set. */
+
+
+				.booSplDiv { /* What: Still Boot Splash Div. Why: The splash should simply disappear. How: This turns the fade off, which boot-splash.js doesn't wait on. */
+
+
+					transition : none;
+
+
+				}
+
+
+			}
+			@media ( scripting : none ) { /* What: No Script Boot Splash Div. Why: Without JavaScript the splash's dismiss script never runs, so it would cover the page and its no-JavaScript explanation forever. How: This applies only when scripting is unavailable. */
+
+
+				.booSplDiv { /* What: Hidden Boot Splash Div. Why: The noscript card should show instead. How: This takes the splash out of the page. */
+
+
+					display : none;
+
+
+				}
+
+
+			}
+
+
+			/* #region splEquDiv */
+
+			.splEquDiv { /* What: Splash Equation Div. Why: The equation's tokens read as one line of large mono type. How: This lays the tokens out in a row, sized with the viewport between two font size steps. */
+
+
+				align-items          : center;
+				color                : var( --tex-mai-col );                                     /* Text Main Color = oklch( 0.17 0.012 250 ) */
+				display              : flex;
+				font-family          : var( --fon-fam-sec );                                     /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+				font-size            : clamp( var( --fon-siz-p03 ), 6vw, var( --fon-siz-p04 ) ); /* Font Size Base Plus 3 ~= 25.572px, Font Size Base Plus 4 ~= 33.876px */
+				font-variant-numeric : tabular-nums;
+				font-weight          : 500;
+				gap                  : var( --spa-hor-m02 );                                     /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+				padding              : 0 var( --spa-hor-p01 );                                   /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+
+
+			}
+
+
+			/* #region equTokSpa */
+
+			.equTokSpa { /* What: Equation Token Span. Why: Each token appears one after another, then the whole equation fades and replays. How: This plays the shared token loop, delayed by the token's own index. */
+
+
+				animation       : equTokSpaLoopFade 3.4s ease-in-out infinite; /* What: Token Loop. Why: The equation assembles, holds, and fades on one loop. How: boot-splash.js waits on this loop's timing before it lets the splash fade. */
+				animation-delay : calc( var( --equ-tok-ind ) * .12s );         /* Equation Token Index, set on each token */ /* What: Token Stagger. Why: The tokens should appear one after another. How: Each token's index times the stagger offsets it, and the offset persists across loops since a delay only shifts the first iteration. */
+				opacity         : 0;
+				white-space     : nowrap;
+
+
+			}
+			.equTokSpa--operator,
+			.equTokSpa--equals { /* What: Operator And Equals Equation Token Spans. Why: The operators and equals sign read quieter than the numbers. How: This sets them in the muted text color. */
+
+
+				color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+			}
+			.equTokSpa--check { /* What: Check Equation Token Span. Why: The checkmark that ends the equation pops in as it lands. How: This sizes a square box for the check and adds the pop to the token loop, both on the same stagger. */
+
+
+				animation       : equTokSpaLoopFade 3.4s ease-in-out infinite, equTokSpaCheckPop 3.4s ease-in-out infinite;
+				animation-delay : calc( var( --equ-tok-ind ) * .12s ); /* Equation Token Index, set on each token */
+				display         : inline-flex;
+				height          : 1.15em;
+				width           : 1.15em;
+
+
+			}
+			@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Equation Token Span. Why: Someone who asked for less motion shouldn't see the equation animate. How: This applies only when the reduced-motion preference is set. */
+
+
+				.equTokSpa,
+				.equTokSpa--check { /* What: Still Equation Token Span. Why: The finished equation should simply show. How: This turns the loop off and holds every token fully visible in place. */
+
+
+					animation : none;
+					opacity   : 1;
+					transform : none;
+
+
+				}
+
+
+			}
+			@keyframes equTokSpaLoopFade { /* What: Equation Token Span Loop Fade. Why: Each token slides in, holds while the equation reads, then fades before the replay. How: This fades and slides the token in early in the loop and fades it out near the end. */
+
+
+				0% {
+
+
+					opacity   : 0;
+					transform : translateX( -7px );
+
+
+				}
+
+				7% {
+
+
+					opacity   : 1;
+					transform : none;
+
+
+				}
+
+				82% {
+
+
+					opacity   : 1;
+					transform : none;
+
+
+				}
+
+				90% {
+
+
+					opacity : 0;
+
+
+				}
+
+				100% {
+
+
+					opacity : 0;
+
+
+				}
+
+
+			}
+			@keyframes equTokSpaCheckPop { /* What: Equation Token Span Check Pop. Why: The checkmark should land with a small bounce. How: This scales it up past full size and back as it appears. */
+
+
+				0%,
+				4% {
+
+
+					transform : scale( .5 );
+
+
+				}
+
+				10% {
+
+
+					transform : scale( 1.16 );
+
+
+				}
+
+				16%,
+				82% {
+
+
+					transform : scale( 1 );
+
+
+				}
+
+
+			}
+
+			.tokExpSup { /* What: Token Exponent Superscript. Why: The squared exponent should read as small raised text in the main color. How: This shrinks it relative to its token. */
+
+
+				color     : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+				font-size : .62em;
+
+
+			}
+
+
+			/* #region cheMarSvg */
+
+			.cheMarSvg { /* What: Check Mark Svg. Why: The check fills its token's square. How: This sizes the svg to the full box. */
+
+
+				height : 100%;
+				width  : 100%;
+
+
+			}
+
+			.cheMarPat { /* What: Check Mark Path. Why: The check is a rounded accent stroke with no fill. How: This strokes the path in the accent color with round caps and joins. */
+
+
+				fill            : none;
+				stroke          : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+				stroke-linecap  : round;
+				stroke-linejoin : round;
+				stroke-width    : 3;
+
+
+			}
+
+			/* #endregion cheMarSvg */
+
+			/* #endregion equTokSpa */
+
+			/* #endregion splEquDiv */
+
+			/* #endregion booSplDiv */
+
+
+		</style>
+
+		<!-- #endregion Boot Splash Styles -->
+
+
+		<!-- #region Noscript Styles -->
+
+		<style>/* What: Noscript Style Element. Why: The no-JavaScript fallback card needs its own styles, and the app's stylesheet still loads without JavaScript. How: This inlines the card's rules in the head, which the build minifies. */
+
+
+			/* #region nosCarDiv */
+
+			.nosCarDiv { /* What: Noscript Card Div. Why: Without JavaScript the app can't run, so the page explains itself in a readable centered column. How: This caps the column to a comfortable line length plus its side padding, sets it down the screen, and uses the app's own type. */
+
+
+				color       : var( --tex-mai-col );                                                           /* Text Main Color = oklch( 0.17 0.012 250 ) */
+				font-family : var( --fon-fam-mai );                                                           /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+				line-height : var( --ver-rhy-p01 );                                                           /* Vertical Rhythm Base Plus 1 ~= 1.755 */
+				margin      : 12vh auto;                                                                      /* What: Screen Relative Margin. Why: The card should sit a little way down the screen whatever its height. How: This sets the top and bottom margin as a share of the viewport height. */
+				max-width   : calc( var( --cdn-pow-012 ) * var( --fon-siz-p01 ) + var( --spa-hor-bas ) * 2 ); /* Core-Design-Number to the Power of 12 ~= 29.207, Font Size Base Plus 1 ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
+				padding     : 0 var( --spa-hor-bas );                                                         /* Spacing Horizontal Base ~= 14.572px */
+
+
+			}
+
+			.nosTitHea { /* What: Noscript Title Heading. Why: The fallback page leads with the app's name. How: This sets it large and slightly tightened. */
+
+
+				font-size      : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
+				letter-spacing : -0.02em;
+
+
+			}
+
+			/* #endregion nosCarDiv */
+
+
+		</style>
+
+		<!-- #endregion Noscript Styles -->
+
+
+	</head>
+
+
+
+	<body><!-- What: Document Body Element. Why: This holds the boot splash, the no-JavaScript fallback, the app's mount point, and the form detection stub. How: Everything but the splash and the stub stays empty until the app mounts. -->
+
+
+		<div
+			class='booSplDiv'
+
+			data-element-name-hook='booSplDiv'
+
+			aria-label='Loading'
+			role='status'
+		><!-- What: Boot Splash Div Element. Why: The page shows an animated equation while the app loads, instead of a blank screen. How: This covers the page until boot-splash.js fades it out, announcing itself as a loading status. Its data-element-name-hook is read by boot-splash.js. -->
+
+
+			<div class='splEquDiv'><!-- What: Splash Equation Div Element. Why: The equation's tokens line up as one row. How: This wraps every token below. -->
+
+
+				<span
+					class=' equTokSpa   equTokSpa--operator '
+
+					style='--equ-tok-ind : 0'
+				>(</span><!-- What: Open Parenthesis Token Span Element. Why: This is the equation's first token. How: This animates first in the stagger. -->
+
+				<span
+					class='equTokSpa'
+
+					style='--equ-tok-ind : 1'
+				>7</span><!-- What: Seven Token Span Element. Why: This is the equation's first number. How: This animates second in the stagger. -->
+
+				<span
+					class=' equTokSpa   equTokSpa--operator '
+
+					style='--equ-tok-ind : 2'
+				>×</span><!-- What: Times Token Span Element. Why: This multiplies the first two numbers. How: This animates third in the stagger. -->
+
+				<span
+					class='equTokSpa'
+
+					style='--equ-tok-ind : 3'
+				>3</span><!-- What: Three Token Span Element. Why: This is the multiplication's second number. How: This animates fourth in the stagger. -->
+
+				<span
+					class=' equTokSpa   equTokSpa--operator '
+
+					style='--equ-tok-ind : 4'
+				>)</span><!-- What: Close Parenthesis Token Span Element. Why: This closes the product. How: This animates fifth in the stagger. -->
+
+				<span
+					class=' equTokSpa   equTokSpa--operator '
+
+					style='--equ-tok-ind : 5'
+				>−</span><!-- What: Minus Token Span Element. Why: This subtracts the square root that follows. How: This animates sixth in the stagger. -->
+
+				<span
+					class='equTokSpa'
+
+					style='--equ-tok-ind : 6'
+				>√9</span><!-- What: Square Root Token Span Element. Why: This is the root of nine. How: This animates seventh in the stagger. -->
+
+				<span
+					class=' equTokSpa   equTokSpa--operator '
+
+					style='--equ-tok-ind : 7'
+				>+</span><!-- What: Plus Token Span Element. Why: This adds the square that follows. How: This animates eighth in the stagger. -->
+
+				<span
+					class='equTokSpa'
+
+					style='--equ-tok-ind : 8'
+				>2<sup class='tokExpSup'>2</sup></span><!-- What: Two Squared Token Span Element. Why: This is the equation's last term. How: This animates ninth in the stagger, with its exponent raised. -->
+
+				<span
+					class=' equTokSpa   equTokSpa--equals '
+
+					style='--equ-tok-ind : 9'
+				>=</span><!-- What: Equals Token Span Element. Why: This leads into the answer. How: This animates tenth in the stagger. -->
+
+
+				<span
+					class=' equTokSpa   equTokSpa--check '
+
+					style='--equ-tok-ind : 10'
+				><!-- What: Check Token Span Element. Why: The equation resolves into the easing checkmark instead of a number. How: This animates last in the stagger and pops in as it lands. -->
+
+
+					<svg
+						class='cheMarSvg'
+
+						viewBox='0 0 26 26'
+					><!-- What: Check Mark Svg Element. Why: This draws the checkmark. How: This scales the path's own 26-unit box to its token. -->
+
+
+						<path
+							class='cheMarPat'
+
+							d='M5 13 l5 5 l11 -12'
+						/><!-- What: Check Mark Path Element. Why: This is the checkmark's stroke. How: This draws a short down stroke and a long up stroke. -->
+
+
+					</svg>
+
+
+				</span>
+
+
+			</div>
+
+
+		</div>
+
+
+
+		<script src='/boot-splash.js'>/* What: Boot Splash Script Element. Why: The splash needs a script to fade it out once the app mounts. How: This loads public/boot-splash.js as its own file, before the app's module. */ /* Kept out of the page as its own file, rather than inline, so the Content-Security-Policy's script-src stays locked to 'self' with no hash or 'unsafe-inline' needed (see public/_headers). */</script>
+
+
+
+		<noscript><!-- What: No Script Element. Why: Without JavaScript the app can't run, so the page should still say what it is. How: This shows a short description and a request to enable JavaScript only when scripts are off. -->
+
+
+			<div class='nosCarDiv'><!-- What: Noscript Card Div Element. Why: The fallback text reads as one centered column. How: This wraps the title and the paragraphs below. -->
+
+
+				<h1 class='nosTitHea'>Ease My Life</h1><!-- What: Noscript Title Heading Element. Why: The fallback page leads with the app's name. How: This renders it as the page heading. -->
+
+				<p><strong>Pick what to do today, without deciding.</strong> Ease My Life builds a short
+				daily list for you. You set up pickers (groups of items like chores, meals, or
+				things you keep meaning to read), and the app chooses from them on the schedule you
+				choose, so you open it to a handful of decisions already made.</p><!-- What: Noscript Pitch Paragraph Element. Why: The fallback should explain what the app does. How: This leads with the app's promise in bold. -->
+
+				<p>Pickers can choose at random, by weight, or adjust themselves over time so neglected
+				items surface more often and recently-done ones rest. Add reminders for the things that
+				genuinely repeat, and day-off conditionals for when life gets in the way.</p><!-- What: Noscript Features Paragraph Element. Why: The fallback should show what pickers can do. How: This describes the picking modes, reminders, and conditionals. -->
+
+				<p>No account, no cloud, no nagging: everything is stored on your own device, and the app
+				can be installed to your home screen and used offline.</p><!-- What: Noscript Privacy Paragraph Element. Why: The fallback should say where data lives. How: This notes there's no account and everything stays on the device. -->
+
+				<p><strong>JavaScript is required to use the app.</strong> Please enable it and reload
+				this page.</p><!-- What: Noscript Request Paragraph Element. Why: The reader should know how to get the app working. How: This asks them to enable JavaScript and reload. -->
+
+
+			</div>
+
+
+		</noscript>
+
+
+
+		<div id='appMouDiv'></div><!-- What: App Mount Div Element. Why: The app needs one element to mount into. How: main.jsx renders AppRooCom into this id. -->
+
+		<form
+			name='support'
+			netlify
+			netlify-honeypot='bot-field'
+
+			hidden
+		><!-- What: Support Form Element. Why: Netlify registers a site's forms by parsing the built HTML, and the app's own support form only exists once React runs. How: This static, hidden copy carries the form and field names Netlify needs. --><!-- Netlify finds forms by parsing the built HTML at deploy time, never running the app, so the React form in tabs/settings/contact-support.jsx is invisible to it. This copy registers the form and its fields, and the app then POSTs to '/' with a matching form-name. Keep the name and every field name in sync with ConSupCom's submit logic, or submissions are rejected. hidden keeps it off the page, and Netlify still parses it. -->
+
+
+			<label for='supSubInp'>Subject</label><!-- What: Subject Label Element. Why: The subject field needs a label for Netlify's form record. How: This labels supSubInp. -->
+
+			<input
+				id='supSubInp'
+
+				name='subject'
+
+				type='text'
+			/><!-- What: Subject Input Element. Why: Netlify registers the subject field by its name. How: This declares the subject text field. -->
+
+			<label for='supMesTex'>Message</label><!-- What: Message Label Element. Why: The message field needs a label for Netlify's form record. How: This labels supMesTex. -->
+
+			<textarea
+				id='supMesTex'
+
+				name='message'
+			></textarea><!-- What: Message Textarea Element. Why: Netlify registers the message field by its name. How: This declares the message text area. -->
+
+			<label for='supVerInp'>App version</label><!-- What: Version Label Element. Why: The version field needs a label for Netlify's form record. How: This labels supVerInp. -->
+
+			<input
+				id='supVerInp'
+
+				name='version'
+
+				type='text'
+			/><!-- What: Version Input Element. Why: Netlify registers the version field by its name. How: This declares the app version text field. -->
+
+			<label for='supBroInp'>Browser</label><!-- What: Browser Label Element. Why: The browser field needs a label for Netlify's form record. How: This labels supBroInp. -->
+
+			<input
+				id='supBroInp'
+
+				name='browser'
+
+				type='text'
+			/><!-- What: Browser Input Element. Why: Netlify registers the browser field by its name. How: This declares the browser text field. -->
+
+			<label for='supBotInp'>Leave this field blank</label><!-- What: Bot Label Element. Why: The honeypot field needs a label for Netlify's form record. How: This labels supBotInp. -->
+
+			<input
+				id='supBotInp'
+
+				name='bot-field'
+
+				type='text'
+			/><!-- What: Bot Input Element. Why: Netlify drops any submission that fills its honeypot field. How: This declares the bot-field honeypot named in the form's netlify-honeypot attribute. -->
+
+
+		</form>
+
+		<script
+			src='/src/main.jsx'
+			type='module'
+		>/* What: App Module Script Element. Why: This loads the app itself. How: Vite replaces it with the built, hashed bundle at build time. */</script>
+
+
+	</body>
+
+
 </html>
+
+

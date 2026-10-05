@@ -1,0 +1,1478 @@
+
+
+
+/**
+ * picker-controls.module.css = Picker Controls Module
+ *
+ * @summary
+ * Styles for PicConCom, the Controls body of each picker card on the Data
+ * tab: the Picker Details group (name field and group pills, with the inline
+ * new-group input), the How it picks mode radio, the When it runs group
+ * (conditional rail, daily generator, cadence selects, days, and holidays),
+ * the Item Controls group with its ease settings, and the Delete, Cancel,
+ * and Save footer with its delete confirm. Each group runs edge to edge
+ * inside the body's padding as full-bleed rows divided by hairlines. A
+ * chosen group pill keys off its own aria-checked, a switch off its own
+ * aria-checked or aria-pressed, the chosen mode off
+ * data-option-select-active, and the attached conditional's pill off
+ * data-pill-select-active.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region ediBodDiv */
+
+.ediBodDiv { /* What: Editor Body Div. Why: The controls read as a recessed panel under the card's Controls toggle. How: This shades it, pads it, and stacks its groups flush in a column. */
+
+
+	background     : var( --bac-wel-col );                            /* Background Well Color = oklch( 0.96 0.004 240 ) */
+	border-bottom  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display        : flex;
+	flex-direction : column;
+	gap            : 0;
+	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );       /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
+
+
+}
+
+
+/* #region conGroDiv */
+
+.conGroDiv,
+.conGroFie { /* What: Controls Group Div And Fieldset. Why: Each group of controls stacks its pieces. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */
+
+
+}
+.conGroDiv--basics { /* What: Basics Controls Group Div. Why: The details rows run edge to edge under their heading. How: This pulls the group past the body's padding, flush, closed by a hairline. */
+
+
+	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	gap           : 0;
+	margin        : 0 calc( var( --spa-hor-bas ) * -1 );             /* Spacing Horizontal Base ~= 14.572px */
+	padding       : 0;
+
+
+}
+.conGroFie--picks { /* What: Picks Controls Group Fieldset. Why: The mode radio runs edge to edge under its heading, and the details group above already closes with a hairline, so no line of its own is needed. How: This pulls the fieldset past the body's padding, flush and borderless. */
+
+
+	border    : 0;
+	gap       : 0;
+	margin    : 0 calc( var( --spa-hor-bas ) * -1 ); /* Spacing Horizontal Base ~= 14.572px */
+	min-width : 0;
+	padding   : 0;
+
+
+}
+.conGroDiv--sched,
+.conGroDiv--items { /* What: Schedule And Item Groups. Why: The setting rows run edge to edge between hairlines. How: This pulls each group past the body's padding, flush, with a hairline above and below. */
+
+
+	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-top    : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	gap           : 0;
+	margin        : 0 calc( var( --spa-hor-bas ) * -1 );             /* Spacing Horizontal Base ~= 14.572px */
+	padding       : 0;
+
+
+}
+.conGroDiv--foot { /* What: Footer Controls Group Div. Why: The footer runs edge to edge below a hairline, with its buttons inset. How: This pulls it past the body's padding and pads it on every side but the bottom. */
+
+
+	border-top     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	margin         : 0 calc( var( --spa-hor-bas ) * -1 );             /* Spacing Horizontal Base ~= 14.572px */
+	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );       /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
+	padding-bottom : 0;
+
+
+}
+
+
+/* #region conSubDiv */
+
+.conSubDiv,
+.conSubLeg { /* What: Controls Subhead Div And Legend. Why: Each group is named in quiet mono type. How: This sets it small, uppercase, and muted. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.05em;
+	text-transform : uppercase;
+
+
+}
+.conGroDiv--basics .conSubDiv { /* What: Picker Details Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it base horizontal spacing at the sides and extra small 1 vertical spacing below. */
+
+
+	padding : 0 var( --spa-hor-bas ) var( --spa-ver-m02 ); /* Spacing Horizontal Base ~= 14.572px, Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+.conGroFie--picks .conSubLeg { /* What: How It Picks Subhead. Why: The group's heading sits inset over its full-bleed rows, centered between the hairline above and the first row's border below. How: This pads it base vertical spacing above and below and base horizontal spacing at the sides. */
+
+
+	padding : var( --spa-ver-bas ) var( --spa-hor-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
+
+
+}
+.conGroDiv--sched .conSubDiv,
+.conGroDiv--items .conSubDiv { /* What: Schedule And Item Subhead. Why: The group's heading sits inset over its full-bleed rows, centered between the hairline above and the first row's border below. How: This pads it base vertical spacing above and below and base horizontal spacing at the sides. */
+
+
+	padding : var( --spa-ver-bas ) var( --spa-hor-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
+
+
+}
+.conSubDiv + .schLinDiv { /* What: First Setting Row. Why: The first row under a heading needs a divider above it. How: This draws a hairline on top of the row right after a subhead. */
+
+
+	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+
+
+}
+
+/* #endregion conSubDiv */
+
+
+
+/* #region basRowDiv */
+
+.basRowDiv { /* What: Basics Row Div. Why: The name and group each sit in a labeled row. How: This lines the label and its control up in a padded row under a hairline. */
+
+
+	align-items : center;
+	border-top  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display     : flex;
+	gap         : var( --spa-hor-bas );                            /* Spacing Horizontal Base ~= 14.572px */
+	padding     : var( --spa-ver-m01 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
+
+
+}
+.basRowDiv--group { /* What: Group Basics Row Div. Why: The group pills can wrap onto several lines, so the label stays at the top. How: This aligns the row to its start. */
+
+
+	align-items : flex-start;
+
+
+}
+
+.basLabSpa { /* What: Basics Label Span. Why: Each row is named in a fixed-width muted column. How: This sets a fixed rhythm-step column nudged down to line up with the pills. */
+
+
+	color       : var( --tex-mut-col );                    /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	flex        : 0 0 calc( var( --ver-rhy-p04 ) * 1rem ); /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	font-size   : var( --fon-siz-p01 );                    /* Font Size Base Plus 1 ~= 14.572px */
+	padding-top : var( --spa-ver-m03 );                    /* Spacing Vertical Base Minus 3 ~= 6.268px */
+
+
+}
+.basRowDiv:not( .basRowDiv--group ) .basLabSpa { /* What: Name Label. Why: The name row is centered, so its label needs no nudge. How: This drops the top padding. */
+
+
+	padding-top : 0;
+
+
+}
+
+.basNamInp { /* What: Basics Name Input. Why: The picker is renamed in place in a field that takes the row's width. How: This draws a rounded outlined field that borders in the accent on focus. */
+
+
+	background    : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border        : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	flex          : 1;
+	font-family   : inherit;
+	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	min-width     : 0;
+	outline       : none;
+	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+
+
+}
+.basNamInp:focus { /* What: Focused Picker Name Input. Why: The focused field should stand out. How: This borders it in the accent color. */
+
+
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.basNamInp::placeholder { /* What: Picker Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+
+
+	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Picker Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.basNamInp { /* What: Still Basics Name Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+/* #region groPilDiv */
+
+.groPilDiv { /* What: Group Pill Div. Why: The groups wrap as pills beside their label, taking the row's remaining width. How: This lays them out in a wrapping row that can shrink. */
+
+
+	align-items    : center;
+	display        : flex;
+	flex           : 1;
+	flex-wrap      : wrap;
+	gap            : var( --spa-ver-m02 ) var( --spa-hor-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+	min-width      : 0;
+	padding-bottom : var( --spa-ver-m05 );                      /* Spacing Vertical Base Minus 5 ~= 3.571px */
+
+
+}
+@container app ( max-width : 640px ) { /* What: Narrow Group Row. Why: On a narrow app the group pills scroll sideways instead of wrapping. How: This applies only when the app is 640px wide or less. */
+
+
+	.groPilDiv { /* What: Scrolling Group Pill Div. Why: The pills stay on one line and scroll, with their edges faded as a cue. How: This stops wrapping, hides the scrollbar, and masks each end. */
+
+
+		--fad-edg-off : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the rail. How: --fad-lef-off and --fad-rig-off start from it. */
+		--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+		--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+
+		-webkit-mask-image : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
+		flex-wrap          : nowrap;
+		mask-image         : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
+		overflow-x         : auto;
+		overflow-y         : hidden;
+		padding-bottom     : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+		scrollbar-width    : none;
+
+
+	}
+
+	.groPilDiv::-webkit-scrollbar { /* What: Group Pills Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+		display : none;
+
+
+	}
+	.groPilDiv[data-scroll-start-active] { /* What: Group Pills At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+		--fad-lef-off : 0px;
+
+
+	}
+	.groPilDiv[data-scroll-end-active] { /* What: Group Pills At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+		--fad-rig-off : 0px;
+
+
+	}
+
+
+}
+
+
+/* #region groPilBut */
+
+.groPilBut { /* What: Group Pill Button. Why: Each group is a pill that moves this picker into it. How: This draws an outlined pill that fades between colors. */
+
+
+	align-items    : center;
+	background     : transparent;
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : 999px;
+	color          : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor         : pointer;
+	display        : inline-flex;
+	flex-shrink    : 0;
+	font-size      : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight    : 500;
+	gap            : var( --spa-hor-m03 );                            /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	height         : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	letter-spacing : -0.01em;
+	padding        : 0 var( --spa-hor-bas );                          /* Spacing Horizontal Base ~= 14.572px */
+	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+
+
+}
+.groPilBut:hover { /* What: Hovered Group Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
+
+
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color        : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.groPilBut[aria-checked='true'] { /* What: Chosen Group Pill. Why: The picker's current group should stand out. How: This fills it in the soft accent, keying off the aria-checked the pill already sets. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Group Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.groPilBut { /* What: Still Group Pill Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+.groPilBut--new { /* What: New Group Pill Button. Why: Adding a group reads as a dashed placeholder pill. How: This dashes the border and tightens the icon gap. */
+
+
+	border-style : dashed;
+	color        : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	gap          : var( --spa-hor-m04 ); /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+
+
+}
+.groPilBut--new:hover { /* What: Hovered New Group Pill. Why: The pill should respond to the pointer. How: This turns it the accent color. */
+
+
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.groPilBut--new.groPilBut--returning { /* What: Returning New Group Pill. Why: After the inline input closes, the pill pops back in, mirroring how it left. How: This plays a springy scale-in while the returning class is set. */
+
+
+	animation : groPilButReturnPopIn var( --dur-ani-p01 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Returning New Group Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.groPilBut--new.groPilBut--returning { /* What: Still Returning New Group Pill Button. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes groPilButReturnPopIn { /* What: New Group Pill Return Keyframes. Why: The pill springs back in from smaller. How: This fades it in while scaling it up to full size. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : scale( 0.7 );
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : scale( 1 );
+
+
+	}
+
+
+}
+
+/* #endregion groPilBut */
+
+
+
+/* #region groNewSpa */
+
+.groNewSpa { /* What: Group New Span. Why: The inline input and its two buttons read as one control that fades in. How: This lines them up in an inline row. */
+
+
+	align-items : center;
+	animation   : groNewSpaOpenFadeIn var( --dur-ani-bas ) var( --mot-dec-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	display     : inline-flex;
+	gap         : var( --spa-hor-m03 );                                               /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+
+
+}
+@container app ( max-width : 640px ) { /* What: Narrow Group Row. Why: On a narrow app the group pills scroll sideways instead of wrapping. How: This applies only when the app is 640px wide or less. */
+
+
+	.groNewSpa { /* What: Unshrinking Group New Span. Why: In the scrolling rail the control keeps its size. How: This stops it shrinking. */
+
+
+		flex-shrink : 0;
+
+
+	}
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion New Group Control. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.groNewSpa { /* What: Still Group New Span. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes groNewSpaOpenFadeIn { /* What: New Group Control Keyframes. Why: The control fades in as it replaces the pill. How: This runs its opacity up from zero. */
+
+
+	from {
+
+
+		opacity : 0;
+
+
+	}
+
+	to {
+
+
+		opacity : 1;
+
+
+	}
+
+
+}
+
+.groNewInp { /* What: Group New Input. Why: The new group's name is typed into a pill-shaped field that grows open. How: This draws an accent-outlined pill that widens from the plus pill's size. */
+
+
+	animation     : groNewInpOpenGrow var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+	background    : var( --bac-sur-col );                                             /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border        : var( --bor-wid-bas ) solid var( --acc-mai-col );                  /* Border Width Base ~= 1.160px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius : 999px;
+	color         : var( --tex-mai-col );                                             /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family   : inherit;
+	font-size     : var( --fon-siz-p01 );                                             /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p03 ) * 1rem );                              /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	outline       : none;
+	padding       : 0 var( --spa-hor-m01 );                                           /* Spacing Horizontal Base Minus 1 = 11px */
+	width         : calc( var( --ver-rhy-p08 ) * 1rem );                              /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion New Group Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.groNewInp { /* What: Still Group New Input. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes groNewInpOpenGrow { /* What: New Group Input Keyframes. Why: The field grows out of the pill it replaces. How: This widens it from the plus pill's size while fading it in. */
+
+
+	from {
+
+
+		opacity : var( --cdn-pow-004-rec );            /* Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
+		width   : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */ /* What: Layout Grow. Why: The OK and Cancel buttons beside the field have to move along as it opens, and a scaleX would also squash its pill ends and text. How: This widens the field's own box from the plus pill's size. */
+
+
+	}
+
+	to {
+
+
+		opacity : 1;
+		width   : calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 8 ~= 138.199px */ /* What: Layout Grow. Why: The OK and Cancel buttons beside the field have to move along as it opens, and a scaleX would also squash its pill ends and text. How: This widens the field's own box from the plus pill's size. */
+
+
+	}
+
+
+}
+
+.groOkaBut,
+.groCanBut { /* What: Group Okay And Cancel Buttons. Why: Confirm and cancel sit beside the field as small round buttons that pop in just after it. How: This draws outlined circles that scale in after a short delay and fade between colors. */
+
+
+	align-items     : center;
+	animation       : buttonOpenPopIn var( --dur-ani-bas ) var( --mot-dec-eas ) backwards;                            /* Duration Animation Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Backwards Fill. Why: A both fill would hold the end frame's full opacity after the pop, hiding the disabled confirm's dimming. How: backwards keeps the buttons hidden through the delay, then hands opacity back to their own rules once the pop ends. */
+	animation-delay : var( --dur-ani-m01 );                                                                           /* Duration Animation Base Minus 1 ~= 119.2ms */
+	background      : var( --bac-sur-col );                                                                           /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border          : var( --bor-wid-bas ) solid var( --bor-mai-col );                                                /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : 50%;
+	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor          : pointer;
+	display         : inline-flex;
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	justify-content : center;
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+.groOkaBut:not( :disabled ):hover { /* What: Hovered Confirm Button. Why: A live confirm should respond to the pointer. How: This tints it in the accent. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.groOkaBut:disabled { /* What: Disabled Confirm Button. Why: A blank or colliding name can't be confirmed and should look it. How: This dims it and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : var( --cdn-pow-003-rec ); /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
+
+
+}
+.groCanBut:hover { /* What: Hovered Cancel Button. Why: Cancel should read as backing out. How: This tints it in the danger color. */
+
+
+	border-color : var( --err-mai-col ); /* Error Main Color = oklch( 0.55 0.17 25 ) */
+	color        : var( --err-mai-col ); /* Error Main Color = oklch( 0.55 0.17 25 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion New Group Buttons. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.groOkaBut,
+	.groCanBut { /* What: Still Group Okay And Cancel Buttons. Why: The change should happen at once. How: This turns their animation and transition off. */
+
+
+		animation  : none;
+		transition : none;
+
+
+	}
+
+
+}
+@keyframes buttonOpenPopIn { /* What: New Group Button Keyframes. Why: The buttons pop in beside the field. How: This fades them in while scaling them up to full size. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : scale( 0.5 );
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : scale( 1 );
+
+
+	}
+
+
+}
+
+/* #endregion groNewSpa */
+
+/* #endregion groPilDiv */
+
+/* #endregion basRowDiv */
+
+
+
+/* #region modRadDiv */
+
+.modRadDiv { /* What: Mode Radio Div. Why: The pick modes stack edge to edge between hairlines. How: This stacks them in a column. */
+
+
+	border-bottom  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-top     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display        : flex;
+	flex-direction : column;
+	margin         : 0;
+
+
+}
+
+
+/* #region modOptLab */
+
+.modOptLab { /* What: Mode Option Label. Why: Each pick mode is a full-width option whose details open under it. How: This lays the dot and text out in a padded row divided from the next, and sets the pace ColDisCom's option details open at. */
+
+
+	--col-inn-del : var( --dur-tra-m03 );              /* Duration Transition Base Minus 3 ~= 67.9ms */
+	--col-inn-dur : var( --dur-tra-p06 );              /* Duration Transition Base Plus 6 ~= 853.0ms */
+	--col-inn-eas : var( --mot-dec-eas );              /* Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	--col-inn-off : calc( var( --spa-ver-m02 ) * -1 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+	--col-row-dur : var( --dur-tra-p06 );              /* Duration Transition Base Plus 6 ~= 853.0ms */
+
+	align-items   : flex-start;
+	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col );      /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	cursor        : pointer;
+	display       : flex;
+	gap           : var( --spa-hor-m01 );                                 /* Spacing Horizontal Base Minus 1 = 11px */
+	padding       : var( --spa-ver-m01 ) var( --spa-hor-bas );            /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
+	position      : relative;
+	transition    : background var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+
+
+}
+.modOptLab:last-child { /* What: Last Mode Option. Why: The radio's own edge closes the list. How: This drops the last option's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+.modOptLab:hover { /* What: Hovered Mode Option. Why: The option should respond to the pointer. How: This shades it. */
+
+
+	background : var( --bac-wel-col ); /* Background Well Color = oklch( 0.96 0.004 240 ) */
+
+
+}
+.modOptLab:has( input:focus-visible ) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus, though the radio itself is hidden. How: This outlines the option while its input has visible focus. */
+
+
+	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col ); /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset : calc( var( --bor-wid-lar ) * -1 );               /* Border Width Large ~= 2.035px */
+
+
+}
+.modOptLab[data-option-select-active] { /* What: Selected Mode Option. Why: The picker's mode should stand out. How: This fills it in the soft accent, keying off data-option-select-active. */
+
+
+	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+
+
+}
+.modOptLab[data-option-select-active]:hover { /* What: Hovered Selected Mode Option. Why: The selection shouldn't fade on hover. How: This keeps the soft accent. */
+
+
+	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+
+
+}
+.modOptLab[data-option-select-active]::before { /* What: Selected Mode Option Bar. Why: A bar on the edge marks the chosen mode. How: This draws a thin accent strip down the option's left side. */
+
+
+	background : var( --acc-mai-col );                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	bottom     : 0;
+	content    : '';
+	left       : 0;
+	position   : absolute;
+	top        : 0;
+	width      : calc( var( --ver-rhy-m07 ) * 1rem ); /* Vertical Rhythm Base Minus 7 ~= 2.035px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Mode Option. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.modOptLab { /* What: Still Mode Option Label. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.modOptInp { /* What: Mode Option Input. Why: The native radio keeps keyboard and screen reader behavior while the dot draws the state. How: This hides it without removing it. */
+
+
+	height         : 0;
+	opacity        : 0;
+	pointer-events : none;
+	position       : absolute;
+	width          : 0;
+
+
+}
+
+.modDotSpa { /* What: Mode Dot Span. Why: A drawn dot shows which option is chosen. How: This draws an outlined circle that fills when selected. */
+
+
+	border        : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : 50%;
+	flex          : 0 0 auto;
+	height        : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+	margin-top    : var( --spa-ver-m09 );                            /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	position      : relative;
+	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width         : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+
+
+}
+.modOptLab[data-option-select-active] .modDotSpa { /* What: Selected Mode Option Dot. Why: The chosen option's dot rings in the accent. How: This borders it in the accent. */
+
+
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.modOptLab[data-option-select-active] .modDotSpa::after { /* What: Selected Mode Option Dot Fill. Why: The chosen option's dot is filled. How: This draws an accent disc inside the ring. */
+
+
+	background    : var( --acc-mai-col );                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius : 50%;
+	content       : '';
+	inset         : var( --spa-ver-m06 ) var( --spa-hor-m06 ); /* Spacing Vertical Base Minus 6 ~= 2.696px, Spacing Horizontal Base Minus 6 ~= 2.696px */
+	position      : absolute;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Mode Option Dot. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.modDotSpa { /* What: Still Mode Dot Span. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+/* #region modTexSpa */
+
+.modTexSpa { /* What: Mode Text Span. Why: The mode's name sits over its hints. How: This stacks them in a column that can shrink. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m06 ); /* Spacing Vertical Base Minus 6 ~= 2.696px */
+	min-width      : 0;
+
+
+}
+
+.modNamSpa { /* What: Mode Name Span. Why: The mode's name leads the option. How: This sets it in medium weight. */
+
+
+	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight    : 500;
+	letter-spacing : -0.005em;
+
+
+}
+
+.modHinSpa { /* What: Mode Hint Span. Why: Each mode explains itself under its name. How: This sets small muted text on its own line. */
+
+
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display     : block;
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
+	text-wrap   : pretty;
+
+
+}
+.modHinSpa + .modHinSpa { /* What: Following Mode Option Hint. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
+
+
+	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+
+/* #endregion modTexSpa */
+
+/* #endregion modOptLab */
+
+/* #endregion modRadDiv */
+
+
+
+/* #region schLinDiv */
+
+.schLinDiv { /* What: Schedule Line Div. Why: Each setting is a full-width row, its label left and its control right, wrapping when narrow. How: This spreads them across a padded row divided from the next. */
+
+
+	align-items     : center;
+	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	box-sizing      : border-box;
+	display         : flex;
+	flex-wrap       : wrap;
+	gap             : var( --spa-ver-m01 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );             /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	padding         : var( --spa-ver-m03 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base ~= 14.572px */
+
+
+}
+.conGroDiv--sched .schLinDiv:last-child,
+.conGroDiv--items:not( :has( .easConDiv ) ) .schLinDiv:last-child { /* What: Last Setting Row. Why: The group's own bottom border already closes it, unless the ease settings follow in Item Controls. How: This drops the last row's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+
+
+/* #region schLabSpa */
+
+.schLabSpa { /* What: Schedule Label Span. Why: A setting's name sits over its live explanation, taking the row's spare width. How: This stacks them in a column that grows from zero but never narrows past a rhythm step. */
+
+
+	display        : flex;
+	flex           : 1 1 0;
+	flex-direction : column;
+	gap            : var( --spa-ver-m09 );                /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	min-width      : calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+
+
+}
+
+
+/* #region schNamSpa */
+
+.schNamSpa { /* What: Schedule Name Span. Why: Each setting leads with its name. How: This sets it in muted body text. */
+
+
+	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+
+
+}
+
+.schNamSpa--help { /* What: Help Schedule Name Span. Why: The cadence setting's name carries an inline help tip. How: This lines them up in an inline row. */
+
+
+	align-items : center;
+	display     : inline-flex;
+	gap         : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+
+
+}
+
+.cadHelSpa { /* What: Cadence Help Span. Why: A small question mark explains the cadence setting on hover or tap. How: This draws a small outlined circle with a help cursor that tints on hover. */
+
+
+	align-items     : center;
+	border          : var( --bor-wid-bas ) solid var( --tex-mut-col ); /* Border Width Base ~= 1.160px, Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border-radius   : 50%;
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor          : help;
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	font-size       : var( --fon-siz-bas );                            /* Font Size Base = 11px */
+	font-weight     : 700;
+	height          : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+	justify-content : center;
+	line-height     : var( --ver-rhy-m01 );                            /* Vertical Rhythm Base Minus 1 = 1 */
+	transition      : border-color var( --dur-tra-p01 ) var( --mot-sta-eas ), color var( --dur-tra-p01 ) var( --mot-sta-eas ), background var( --dur-tra-p01 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+
+
+}
+.cadHelSpa:hover { /* What: Hovered Help Tip. Why: The tip should respond to the pointer. How: This tints it in the accent. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Help Tip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.cadHelSpa { /* What: Still Cadence Help Span. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion schNamSpa */
+
+
+
+.schSubSpa { /* What: Schedule Sub Span. Why: The line under a setting explains its current value. How: This sets it small and muted. */
+
+
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
+
+
+}
+
+.schSubSpa--fade { /* What: Fading Schedule Sub Span. Why: An explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
+
+
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fading Setting Explanation. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.schSubSpa--fade { /* What: Still Fading Schedule Sub Span. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #endregion schLabSpa */
+
+
+
+/* #region togSwiBut */
+
+.togSwiBut { /* What: Toggle Switch Button. Why: Each schedule and item setting turns on or off with a switch. How: This draws a pill track whose knob slides across, fading its color. */
+
+
+	background    : var( --bor-mai-col );                /* Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : 999px;
+	cursor        : pointer;
+	height        : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	position      : relative;
+	transition    : background var( --dur-tra-bas );     /* Duration Transition Base ~= 157.8ms */
+	width         : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+.togSwiBut[aria-checked='true'],
+.togSwiBut[aria-pressed='true'] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-checked or aria-pressed the switch already sets. */
+
+
+	background : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Setting Switch. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.togSwiBut { /* What: Still Toggle Switch Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.swiKnoIta { /* What: Switch Knob Italic. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
+
+
+	background    : var( --bac-pag-col );                                               /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border-radius : 50%;
+	box-shadow    : var( --ele-sma-sha );                                               /* Elevation Small Shadow, about 0 1.2px 2px */
+	height        : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
+	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	position      : absolute;
+	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	transition    : transform var( --dur-tra-bas );                                     /* Duration Transition Base ~= 157.8ms */
+	width         : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
+
+
+}
+.togSwiBut[aria-checked='true'] .swiKnoIta,
+.togSwiBut[aria-pressed='true'] .swiKnoIta { /* What: On Setting Switch Knob. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
+
+
+	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) ); /* Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 1 ~= 19.304px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Setting Switch Knob. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.swiKnoIta { /* What: Still Switch Knob Italic. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion togSwiBut */
+
+
+
+/* #region conRowDiv */
+
+.conRowDiv { /* What: Conditional Row Div. Why: The conditional pills sit in their own padded row under the Attach switch. How: This pads the row and divides it from the next. */
+
+
+	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col );                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	padding       : var( --spa-ver-m02 ) var( --spa-hor-bas ) var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base ~= 14.572px, Spacing Vertical Base Minus 1 = 11px */
+
+
+}
+
+
+/* #region conRaiDiv */
+
+.conRaiDiv { /* What: Conditional Rail Div. Why: The rail scrolls sideways when its pills outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row with its scrollbar hidden and a gradient mask on each end. */
+
+
+	--fad-edg-off : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the rail. How: --fad-lef-off and --fad-rig-off start from it. */
+	--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+
+	-webkit-mask-image : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
+	display            : flex;
+	gap                : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	mask-image         : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
+	overflow-x         : auto;
+	padding-bottom     : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	scrollbar-width    : none;
+
+
+}
+.conRaiDiv::-webkit-scrollbar { /* What: Conditional Rail Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+.conRaiDiv[data-scroll-start-active] { /* What: Conditional Rail At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+	--fad-lef-off : 0px;
+
+
+}
+.conRaiDiv[data-scroll-end-active] { /* What: Conditional Rail At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+	--fad-rig-off : 0px;
+
+
+}
+
+
+/* #region conPilBut */
+
+.conPilBut { /* What: Conditional Pill Button. Why: Each conditional is a card-like pill that attaches it to this picker. How: This draws a bordered card with the name over the mode, fading between states. */
+
+
+	background      : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-med );                            /* Radius Border Medium = 11px */
+	cursor          : pointer;
+	display         : flex;
+	flex-direction  : column;
+	flex-shrink     : 0;
+	gap             : var( --spa-ver-m06 );                            /* Spacing Vertical Base Minus 6 ~= 2.696px */
+	justify-content : center;
+	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );             /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	min-width       : calc( var( --ver-rhy-p08 ) * 1rem );             /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+	padding         : var( --spa-ver-m02 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base ~= 14.572px */
+	text-align      : left;
+	transition      : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), box-shadow var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+
+
+}
+.conPilBut:hover { /* What: Hovered Conditional Pill. Why: The pill should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+.conPilBut[data-pill-select-active] { /* What: Attached Conditional Pill. Why: The attached conditional should stand out. How: This fills it in the soft accent with an inset accent ring, keying off data-pill-select-active. */
+
+
+	background   : var( --acc-tin-col );                                  /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col );                                  /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	box-shadow   : 0 0 0 var( --bor-wid-bas ) var( --acc-mai-col ) inset; /* Border Width Base ~= 1.160px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Conditional Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.conPilBut { /* What: Still Conditional Pill Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.conNamSpa { /* What: Conditional Name Span. Why: The conditional's name leads its pill. How: This sets it in medium weight body color. */
+
+
+	color       : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight : 500;
+
+
+}
+
+.conModSpa { /* What: Conditional Mode Span. Why: Each pill names its conditional's mode as quiet metadata. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion conPilBut */
+
+/* #endregion conRaiDiv */
+
+
+
+.conEmpPar { /* What: Conditional Empty Paragraph. Why: With no conditionals yet, the row says where to make one. How: This sets a small muted note. */
+
+
+	color       : var( --tex-mut-col );   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas );   /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas );   /* Vertical Rhythm Base ~= 1.325 */
+	margin      : var( --spa-ver-m07 ) 0; /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	text-wrap   : pretty;
+
+
+}
+
+/* #endregion conRowDiv */
+
+
+
+/* #region cadConDiv */
+
+.cadConDiv { /* What: Cadence Controls Div. Why: The cadence and its anchor selects sit together and wrap on narrow widths, starting flush left. How: This lines them up in a wrapping row. */
+
+
+	align-items     : center;
+	display         : flex;
+	flex-wrap       : wrap;
+	gap             : var( --spa-ver-m03 ) var( --spa-hor-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+	justify-content : flex-start;
+
+
+}
+
+.cadOptSel { /* What: Cadence Option Select. Why: The cadence selects look like the app's other fields, sized to their content. How: This draws a compact bordered field with a border fade on focus. */
+
+
+	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	cursor        : pointer;
+	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	margin-top    : 0;
+	max-width     : none;
+	outline       : none;
+	padding       : var( --spa-ver-m01 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width         : auto;
+
+
+}
+.cadOptSel::placeholder { /* What: Cadence Select Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
+
+
+	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+.cadOptSel:focus { /* What: Focused Cadence Select. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
+
+
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Cadence Select. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.cadOptSel { /* What: Still Cadence Option Select. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion cadConDiv */
+
+/* #endregion schLinDiv */
+
+
+
+.offNotDiv { /* What: Off Note Div. Why: A picker left out of the daily generator says it only runs on demand, where its schedule rows would be. How: This sets a small italic muted note sized like a row, with its text vertically centered. */
+
+
+	align-content : center;
+	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	box-sizing    : border-box;
+	color         : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size     : var( --fon-siz-bas );                            /* Font Size Base = 11px */
+	font-style    : italic;
+	min-height    : calc( var( --ver-rhy-p05 ) * 1rem );             /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	padding       : var( --spa-ver-m03 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base ~= 14.572px */
+
+
+}
+.offNotDiv:last-child { /* What: Last On-Demand Note. Why: The group's own bottom border already closes it. How: This drops the note's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+
+
+
+/* #region easConDiv */
+
+.easConDiv { /* What: Ease Config Div. Why: The ease picker's Fill or Refill row sits flush in the Item Controls group. How: This clears its box chrome so its row runs full-bleed. */
+
+
+	background    : none;
+	border        : 0;
+	border-radius : 0;
+	display       : block;
+	margin        : 0;
+	padding       : 0;
+
+
+}
+
+
+/* #region ediRowDiv */
+
+.ediRowDiv { /* What: Editor Row Div. Why: Fill or Refill reads like the other setting rows. How: This spreads the label and button across a padded row divided from the next. */
+
+
+	align-items     : center;
+	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display         : flex;
+	gap             : var( --spa-hor-m01 );                            /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );             /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	padding         : var( --spa-ver-m03 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base ~= 14.572px */
+
+
+}
+.ediRowDiv:last-child { /* What: Last Ease Setting Row. Why: The group's own bottom border already closes it. How: This drops the row's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+
+
+/* #region ediLabDiv */
+
+.ediLabDiv { /* What: Editor Label Div. Why: The setting's name sits over its charge summary. How: This stacks them in a tight column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m09 ); /* Spacing Vertical Base Minus 9 ~= 1.160px */
+
+
+}
+
+.ediNamSpa { /* What: Editor Name Span. Why: The row leads with its setting's name. How: This sets it at the row's label size. */
+
+
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+
+
+}
+
+.ediSubSpa { /* What: Editor Sub Span. Why: The line under the name summarizes the charge. How: This sets it small and muted. */
+
+
+	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-bas ); /* Font Size Base = 11px */
+
+
+}
+
+/* #endregion ediLabDiv */
+
+/* #endregion ediRowDiv */
+
+/* #endregion easConDiv */
+
+
+
+/* #region delConDiv */
+
+.delConDiv { /* What: Delete Confirm Div. Why: Delete morphs the footer into a confirm, message left and buttons right, swapping in. How: This spreads them across a full-width row and plays the shared footer swap. */
+
+
+	align-items     : center;
+	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	display         : flex;
+	flex-direction  : row;
+	gap             : var( --spa-hor-bas );                                                      /* Spacing Horizontal Base ~= 14.572px */
+	justify-content : space-between;
+	width           : 100%;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Delete Confirm Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.delConDiv { /* What: Still Delete Confirm Div. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.delMesDiv { /* What: Delete Message Div. Why: The message says what deleting takes with it and takes the row's spare width. How: This sets body text that can shrink. */
+
+
+	color     : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	flex      : 1 1 auto;
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	min-width : 0;
+	text-wrap : pretty;
+
+
+}
+
+.delActDiv { /* What: Delete Actions Div. Why: Cancel and Delete pair up at the row's end. How: This lines them up in a fixed-size row pushed right. */
+
+
+	display         : flex;
+	flex            : 0 0 auto;
+	gap             : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	justify-content : flex-end;
+
+
+}
+
+/* #endregion delConDiv */
+
+
+
+/* #region fooRowDiv */
+
+.fooRowDiv { /* What: Footer Row Div. Why: Delete sits left while Cancel and Save sit right, swapping in when the confirm closes. How: This spreads them across a full-width row and plays the shared footer swap. */
+
+
+	align-items     : center;
+	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	display         : flex;
+	justify-content : space-between;
+	width           : 100%;
+
+
+}
+.fooRowDiv--new { /* What: New Footer Row Div. Why: A draft picker has no Delete, so its buttons sit right. How: This pushes the row's contents to its end. */
+
+
+	justify-content : flex-end;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Footer Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.fooRowDiv { /* What: Still Footer Row Div. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.fooRigDiv { /* What: Footer Right Div. Why: Cancel and Save pair up on the right. How: This lays them out in a fixed-size row pushed right. */
+
+
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	margin-left : auto;
+
+
+}
+
+/* #endregion fooRowDiv */
+
+/* #endregion conGroDiv */
+
+/* #endregion ediBodDiv */
+
+

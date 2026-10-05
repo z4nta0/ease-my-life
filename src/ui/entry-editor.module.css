@@ -1,0 +1,456 @@
+
+
+
+/**
+ * entry-editor.module.css = Entry Editor Module
+ *
+ * @summary
+ * Styles for EntEdiCom, the item editor opened on Today, in the Data tab's
+ * item rows, and in the Pickers tab's item and new-item rows: a column of
+ * full-bleed setting rows (labels left, controls right) above either the
+ * Delete/Cancel/Save footer or the delete confirm that replaces it. Where the
+ * editor sits changes a few values, so it reads them from custom properties
+ * its parent sets, falling back to the standalone card: Today's wrapper drops
+ * the card's top padding and the rows' top border, a Data or Pickers row
+ * strips the card chrome entirely, and a new-item row also drops the rows'
+ * top margin, right-aligns the footer, and hides Delete. Each reads an
+ * --ent-* custom property. The Active switch keys off its own aria-pressed.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region entEdiDiv */
+
+.entEdiDiv { /* What: Entry Editor Div. Why: The editor opens as a recessed card of settings, except where its context strips or trims the card. How: This draws the card from custom properties its parent may set, falling back to the standalone card, and fades it in. */
+
+
+	animation     : global( editorOpenFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas );  /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background    : var( --ent-edi-bac, var( --bac-sun-col ) );                            /* Entry Editor Background, set by its parent, falling back to Background Sunken Color = oklch( 0.969 0.004 240 ) */ /* What: Card Background. Why: A Data or Pickers row strips the card's tint. How: Its parent sets this to none. */
+	border        : var( --ent-edi-bor, var( --bor-wid-sma ) solid var( --bor-mai-col ) ); /* Entry Editor Border, set by its parent, falling back to Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */ /* What: Card Border. Why: A Data or Pickers row strips the card's border. How: Its parent sets this to 0. */
+	border-radius : var( --ent-edi-rad, var( --rad-bor-med ) );                            /* Entry Editor Radius, set by its parent, falling back to Radius Border Medium = 11px */ /* What: Card Radius. Why: A Data or Pickers row strips the card's rounding. How: Its parent sets this to 0. */
+	margin        : var( --ent-edi-mar, 0 0 var( --spa-ver-m05 ) );                        /* Entry Editor Margin, set by its parent, falling back to Spacing Vertical Base Minus 5 ~= 3.571px */ /* What: Card Margin. Why: A Data or Pickers row sits the editor flush, and the top stays 0 everywhere, since a negative one would be clipped by the overflow of the collapse the editor opens in. How: Its parent sets this to 0, falling back to a small gap below. */
+	padding       : var( --ent-edi-pad, var( --spa-ver-bas ) var( --spa-hor-bas ) );       /* Entry Editor Padding, set by its parent, falling back to Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */ /* What: Card Padding. Why: Today's card drops the top padding, and a Data or Pickers row drops it all. How: Their parents set this, falling back to base vertical spacing above and below and base horizontal spacing at the sides. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Entry Editor Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.entEdiDiv { /* What: Still Entry Editor Div. Why: The editor should simply appear. How: This turns its fade off and pins it fully shown. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+
+/* #region ediLisDiv */
+
+.ediLisDiv { /* What: Editor List Div. Why: The rows run edge to edge under a hairline, apart from where the editor's context already draws one. How: This stacks them in a column pulled base horizontal spacing past each side, since every context insets the editor's content by that much, reading its top border and top margin from the parent. */
+
+
+	border-top     : var( --ent-lis-bor, var( --bor-wid-sma ) solid var( --bor-mai-col ) );          /* Entry List Border, set by its parent, falling back to Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */ /* What: Rows Top Border. Why: Today's card and a new-item row already draw a divider above the rows. How: Their parents set this to 0, falling back to a hairline. */
+	display        : flex;
+	flex-direction : column;
+	margin         : var( --ent-lis-mar, var( --spa-ver-m07 ) ) calc( var( --spa-hor-bas ) * -1 ) 0; /* Entry List Margin, set by its parent, falling back to Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base ~= 14.572px */ /* What: Rows Margin. Why: A new-item row's name row already provides the gap above. How: Its parent sets the top margin to 0, falling back to a small vertical spacing step. */
+
+
+}
+
+
+/* #region ediRowDiv */
+
+.ediRowDiv { /* What: Editor Row Div. Why: Each setting is one full-bleed row, name on the left and control on the right. How: This spreads them across a padded row closed by a hairline. */
+
+
+	align-items     : center;
+	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display         : flex;
+	gap             : var( --spa-hor-m01 );                            /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );             /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	padding         : var( --spa-ver-m03 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base ~= 14.572px */
+
+
+}
+
+
+/* #region ediLabDiv */
+
+.ediLabDiv { /* What: Editor Label Div. Why: Each setting's name sits over its live explanation. How: This stacks them in a tight column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m09 ); /* Spacing Vertical Base Minus 9 ~= 1.160px */
+
+
+}
+
+
+/* #region namRowSpa */
+
+.namRowSpa { /* What: Name Row Span. Why: A setting that needs a warning shows its help icon beside its name. How: This lines them up in an inline row. */
+
+
+	align-items : center;
+	display     : inline-flex;
+	gap         : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+
+
+}
+
+.ediNamSpa { /* What: Editor Name Span. Why: Each setting row leads with its name. How: This sets it at body size. */
+
+
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+
+
+}
+
+.helIcoSpa { /* What: Help Icon Span. Why: A small circled question mark marks a setting with a warning tip. How: This draws a muted outlined circle that tints on hover. */
+
+
+	align-items     : center;
+	border          : var( --bor-wid-bas ) solid var( --tex-mut-col ); /* Border Width Base ~= 1.160px, Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border-radius   : 50%;
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor          : help;
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	font-size       : var( --fon-siz-bas );                            /* Font Size Base = 11px */
+	font-weight     : 700;
+	height          : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+	justify-content : center;
+	line-height     : var( --ver-rhy-m01 );                            /* Vertical Rhythm Base Minus 1 = 1 */
+	transition      : border-color var( --dur-tra-p01 ) var( --mot-sta-eas ), color var( --dur-tra-p01 ) var( --mot-sta-eas ), background var( --dur-tra-p01 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+
+
+}
+.helIcoSpa:hover { /* What: Hovered Help Icon Span. Why: The icon should respond to the pointer. How: This tints it in the accent color. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Help Icon Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.helIcoSpa { /* What: Still Help Icon Span. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion namRowSpa */
+
+
+.ediSubSpa { /* What: Editor Sub Span. Why: The line under a setting explains its current value. How: This sets it small and muted. */
+
+
+	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-bas ); /* Font Size Base = 11px */
+
+
+}
+.ediNamSpa--fade,
+.ediSubSpa--fade { /* What: Fading Editor Name And Sub Spans. Why: A label or explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
+
+
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fading Editor Spans. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ediNamSpa--fade,
+	.ediSubSpa--fade { /* What: Still Fading Editor Spans. Why: The change should happen at once. How: This turns their animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #endregion ediLabDiv */
+
+
+
+/* #region ediConDiv */
+
+.ediConDiv { /* What: Editor Control Div. Why: A setting's field and unit stay together at their natural size. How: This lines them up in a row that never grows or shrinks. */
+
+
+	align-items : center;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+
+
+}
+
+.easUniSpa { /* What: Ease Unit Span. Why: The unit after a number reads quieter than the number. How: This sets it small and muted, centered on the field. */
+
+
+	align-self : center;
+	color      : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size  : var( --fon-siz-bas ); /* Font Size Base = 11px */
+
+
+}
+
+/* #endregion ediConDiv */
+
+
+/* #region weiSteDiv */
+
+.weiSteDiv { /* What: Weight Stepper Div. Why: A weighted item's weight steps up and down in a compact pill. How: This draws a rounded outlined pill around the two buttons and the value. */
+
+
+	align-items   : center;
+	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : 999px;
+	display       : inline-flex;
+
+
+}
+
+.weiSteBut { /* What: Weight Step Button. Why: Each end of the pill is a small step button. How: This sizes a square hit area with a muted glyph. */
+
+
+	align-items     : center;
+	color           : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display         : inline-flex;
+	font-size       : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
+	height          : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	justify-content : center;
+	width           : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+
+
+}
+.weiSteBut:hover:not( :disabled ) { /* What: Hovered Weight Step Button. Why: A live step button should respond to the pointer. How: This darkens its glyph. */
+
+
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.weiSteBut:disabled { /* What: Disabled Weight Step Button. Why: A step past the weight's limit is unavailable and should look it. How: This dims the button and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : var( --cdn-pow-004-rec ); /* Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
+
+
+}
+
+.weiValSpa { /* What: Weight Value Span. Why: The current weight reads between the step buttons. How: This sets it in small muted tabular mono type. */
+
+
+	color                : var( --tex-mut-col );   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family          : var( --fon-fam-sec );   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-bas );   /* Font Size Base = 11px */
+	font-variant-numeric : tabular-nums;
+	padding              : 0 var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+
+
+}
+
+/* #endregion weiSteDiv */
+
+
+.weiNonSpa { /* What: Weight None Span. Why: A random item has no weight to set, and says so in place of a control. How: This sets the note small and muted. */
+
+
+	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+
+
+}
+
+
+/* #region togSwiBut */
+
+.togSwiBut { /* What: Toggle Switch Button. Why: An item turns active or inactive with a switch. How: This draws a pill track whose knob slides across, fading its color. */
+
+
+	background    : var( --bor-mai-col );                /* Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : 999px;
+	height        : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	position      : relative;
+	transition    : background var( --dur-tra-bas );     /* Duration Transition Base ~= 157.8ms */
+	width         : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+.togSwiBut[aria-pressed='true'] { /* What: On Toggle Switch Button. Why: An active item reads in the accent color. How: This fills the track, keying off the aria-pressed the switch already sets. */
+
+
+	background : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Toggle Switch Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.togSwiBut { /* What: Still Toggle Switch Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.swiKnoIta { /* What: Switch Knob Italic. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
+
+
+	background    : var( --bac-pag-col );                                               /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border-radius : 50%;
+	box-shadow    : var( --ele-sma-sha );                                               /* Elevation Small Shadow, about 0 1.2px 2px */
+	height        : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
+	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	position      : absolute;
+	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	transition    : transform var( --dur-tra-bas );                                     /* Duration Transition Base ~= 157.8ms */
+	width         : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
+
+
+}
+.togSwiBut[aria-pressed='true'] .swiKnoIta { /* What: On Switch Knob Italic. Why: An active switch has its knob on the right. How: This slides the knob across. */
+
+
+	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) ); /* Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 1 ~= 19.304px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Switch Knob Italic. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.swiKnoIta { /* What: Still Switch Knob Italic. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion togSwiBut */
+
+/* #endregion ediRowDiv */
+
+/* #endregion ediLisDiv */
+
+
+
+/* #region ediFooDiv */
+
+.ediFooDiv { /* What: Editor Footer Div. Why: Delete sits apart on the left while Cancel and Save pair up on the right, below a divider that doubles against the last row's, except in a new-item row, which has nothing to delete. How: This spreads the row out, slides it in each time it mounts, and reads its alignment and Delete visibility from the parent. */
+
+
+	--but-dan-dis : var( --ent-del-dis ); /* Entry Delete Display, set by its parent */ /* What: Delete Visibility. Why: A brand-new item is discarded with Cancel, so its Delete is redundant. How: A new-item row sets --ent-del-dis to none, which ButBasCom's danger variant reads, and anywhere else this stays unset. */
+
+	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	border-top      : var( --bor-wid-sma ) solid var( --bor-mai-col );                           /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display         : flex;
+	gap             : var( --spa-hor-m02 );                                                      /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	justify-content : var( --ent-foo-jus, space-between );                                       /* Entry Footer Justify, set by its parent, falling back to space-between */ /* What: Footer Alignment. Why: Without Delete, Cancel and Save sit alone on the right. How: A new-item row sets this to flex-end, falling back to space-between. */
+	margin          : 0 calc( var( --spa-hor-bas ) * -1 );                                       /* Spacing Horizontal Base ~= 14.572px */
+	padding         : var( --spa-ver-bas ) var( --spa-hor-bas ) 0;                               /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
+
+
+}
+.ediFooDiv--confirm { /* What: Confirm Editor Footer Div. Why: Asking before a delete replaces the footer in place, its question and actions on one center line. How: This centers the row's children and keeps them spread apart. */
+
+
+	align-items     : center;
+	justify-content : space-between;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Editor Footer Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ediFooDiv { /* What: Still Editor Footer Div. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.delMesSpa { /* What: Delete Message Span. Why: The question reads as plain body text that wraps cleanly on narrow screens. How: This sets it in the text color with balanced wrapping. */
+
+
+	color     : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	text-wrap : pretty;
+
+
+}
+
+.delActDiv { /* What: Delete Actions Div. Why: The confirm's Cancel and Delete stay together at their natural size. How: This lays them out in a row that never grows or shrinks. */
+
+
+	display : flex;
+	flex    : 0 0 auto;
+	gap     : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+
+
+}
+
+.delTipSpa { /* What: Delete Tip Span. Why: A delete blocked by the two-item minimum is wrapped in its tip's span, which must sit like the button it replaces so the footer doesn't shift. How: This makes the tip's trigger an inline flex box. */
+
+
+	display : inline-flex;
+
+
+}
+
+.fooRigDiv { /* What: Footer Right Div. Why: Cancel and Save pair up on the right, even when there's no Delete. How: This lays them out in a fixed-size row pushed right. */
+
+
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	margin-left : auto;
+
+
+}
+
+/* #endregion ediFooDiv */
+
+/* #endregion entEdiDiv */
+
+

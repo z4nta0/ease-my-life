@@ -1,0 +1,369 @@
+
+
+
+/**
+ * contact-support.module.css = Contact Support Module
+ *
+ * @summary
+ * Styles for the Settings About section's "Having problems?" row and the
+ * support form it opens: the row's name, description, and sent note beside
+ * its button, then the form's labeled subject and message fields, the two
+ * read-only diagnostic values, the off-screen honeypot, and the footer that
+ * holds the validation note, the offline fallback, and the actions.
+ *
+ * The row and the text fields share their look with the rest of the Settings
+ * tab and the app's other forms, so their declarations are copied here from
+ * those shared classes until the design-system pass merges them.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region setRowDiv */
+
+.setRowDiv { /* What: Settings Row Div. Why: "Having problems?" should read like every other Settings row, its text on the left and its button on the right. How: This spreads the two apart in a bordered flex row and keeps the button from shrinking or wrapping. */
+
+
+	--but-bas-fle : 0 0 auto; /* What: Button Base Flex. Why: The row's button should keep its full size beside long text. How: The shared button reads this and stops shrinking. */
+	--but-bas-whi : nowrap;   /* What: Button Base White Space. Why: The button's label shouldn't break onto two lines in the row. How: The shared button reads this and keeps its label on one line. */
+
+	align-items     : center;
+	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display         : flex;
+	gap             : var( --spa-hor-bas );                            /* Spacing Horizontal Base ~= 14.572px */
+	justify-content : space-between;
+	padding         : var( --spa-ver-bas ) 0;                          /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+.setRowDiv:first-child { /* What: First Contact Trigger Row. Why: The top row shouldn't add extra space under its card's edge. How: This trims its top padding. */
+
+
+	padding-top : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+
+
+}
+.setRowDiv:last-child { /* What: Last Contact Trigger Row. Why: The bottom row needs no divider or extra space above its card's edge. How: This drops its border and trims its bottom padding. */
+
+
+	border-bottom  : 0;
+	padding-bottom : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+
+
+}
+
+
+/* #region setInfDiv */
+
+.setInfDiv { /* What: Settings Info Div. Why: The row's name, description, and sent note stack together and take the space the button leaves. How: This stacks them in a growing column that may shrink below its content's width. */
+
+
+	display        : flex;
+	flex           : 1 1 auto;
+	flex-direction : column;
+	gap            : var( --spa-ver-m06 ); /* Spacing Vertical Base Minus 6 ~= 2.696px */
+	min-width      : 0;
+
+
+}
+
+.setNamSpa { /* What: Settings Name Span. Why: The row's name leads it like every other Settings row. How: This sets it in bold body text. */
+
+
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight : 600;
+
+
+}
+
+.setSubSpa { /* What: Settings Sub Span. Why: The explanation should read as quieter supporting text. How: This sets it small and muted with balanced wrapping. */
+
+
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
+	text-wrap   : pretty;
+
+
+}
+
+.setMesSpa { /* What: Settings Message Span. Why: A successful send should confirm itself with a small, noticeable pop. How: This sets the note in small accent text and pops it in each time it remounts. */
+
+
+	animation  : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	color      : var( --acc-mai-col );                                                         /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	font-size  : var( --fon-siz-bas );                                                         /* Font Size Base = 11px */
+	margin-top : var( --spa-ver-m07 );                                                         /* Spacing Vertical Base Minus 7 ~= 2.035px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sent Note. Why: Someone who asked for less motion shouldn't see the note pop. How: This applies only when the reduced-motion preference is set. */
+
+
+	.setMesSpa { /* What: Still Settings Message Span. Why: The note should simply appear. How: This turns the pop off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #endregion setInfDiv */
+
+/* #endregion setRowDiv */
+
+
+
+/* #region supForDiv */
+
+.supForDiv { /* What: Support Form Div. Why: The form's fields, diagnostics, and footer read top to bottom with even spacing. How: This stacks them in a column with a fixed gap. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+
+
+/* #region supFieLab */
+
+.supFieLab,
+.supFieDiv { /* What: Support Field Label And Div. Why: Each field's label sits directly above its input. How: This stacks the label and the input in a tight column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+
+
+}
+
+.supLabSpa,
+.supLabLab { /* What: Support Label Span And Label. Why: Field and diagnostic labels read as small captions rather than body text. How: This sets them in small, spaced, muted mono capitals. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.05em;
+	text-transform : uppercase;
+
+
+}
+
+.supSubInp,
+.supMesTex { /* What: Support Message Textarea. Why: The subject and message fields should look like the app's other form fields. How: This gives them the shared field border, radius, padding, and type, with a border fade on focus. */
+
+
+	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	margin-top    : var( --spa-ver-m07 );                            /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );             /* Vertical Rhythm Base Plus 11 ~= 321.273px */
+	outline       : none;
+	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width         : 100%;
+
+
+}
+.supSubInp::placeholder,
+.supMesTex::placeholder { /* What: Support Text Field Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
+
+
+	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+.supSubInp:focus,
+.supMesTex:focus { /* What: Focused Support Text Field. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
+
+
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Support Text Field. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.supSubInp,
+	.supMesTex { /* What: Still Support Message Textarea. Why: The focus border should simply switch. How: This turns the border fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.supMesTex { /* What: Support Message Textarea. Why: A message can run several lines, so its field needs room and should grow only downward. How: This sets a minimum height, a relaxed line height, and vertical-only resizing. */
+
+
+	height      : auto;                                      /* What: Automatic Height. Why: The message box also takes the subject field's single-line rule above, whose fixed height would squash it. How: This lets it size from its minimum height and its own content instead. */
+	line-height : var( --ver-rhy-bas );                      /* Vertical Rhythm Base ~= 1.325 */
+	min-height  : calc( var( --ver-rhy-p07 ) * 1rem );       /* Vertical Rhythm Base Plus 7 ~= 104.323px */
+	padding     : var( --spa-ver-m01 ) var( --spa-hor-m01 ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
+	resize      : vertical;
+
+
+}
+
+/* #endregion supFieLab */
+
+
+
+/* #region supDiaDiv */
+
+.supDiaDiv { /* What: Support Diagnostics Div. Why: The app version and browser sit side by side, wrapping on a narrow screen. How: This lays the two fields out in a wrapping row. */
+
+
+	display   : flex;
+	flex-wrap : wrap;
+	gap       : var( --spa-ver-p02 ) var( --spa-hor-p02 ); /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 2 ~= 25.572px */
+
+
+}
+
+
+/* #region diaFieDiv */
+
+.diaFieDiv { /* What: Diagnostic Field Div. Why: Each diagnostic's label sits above its value. How: This stacks them in a tight column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+
+
+}
+
+.diaValSpa { /* What: Diagnostic Value Span. Why: A read-only value should look informational rather than like something to type into. How: This sets it as plain body text. */
+
+
+	color     : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+
+
+}
+
+/* #endregion diaFieDiv */
+
+/* #endregion supDiaDiv */
+
+
+
+.supHonPar { /* What: Support Honeypot Paragraph. Why: Bots should find and fill this field while people never see it, and some bots skip display:none fields. How: This moves the field off-screen into a 1px box instead of hiding it. */
+
+
+	height   : 1px;
+	left     : -9999px;
+	overflow : hidden;
+	position : absolute;
+	width    : 1px;
+
+
+}
+
+
+
+/* #region supFooDiv */
+
+.supFooDiv { /* What: Support Footer Div. Why: The actions sit on the right, with any note pushed to the left, below a divider. How: This lays them out in a wrapping, right-aligned row under a hairline border. */
+
+
+	align-items     : center;
+	border-top      : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display         : flex;
+	flex-wrap       : wrap;
+	gap             : var( --spa-ver-m01 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : flex-end;
+	padding-top     : var( --spa-ver-bas );                            /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+
+.supValSpa { /* What: Support Validation Span. Why: An empty-field send attempt should explain itself right beside the buttons. How: This sets the note in small red text, pushes it left, and pops it in. */
+
+
+	animation    : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	color        : var( --err-dar-col );                                                         /* Error Dark Color = oklch( 0.5 0.18 25 ) */
+	font-size    : var( --fon-siz-bas );                                                         /* Font Size Base = 11px */
+	margin-right : auto;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Support Validation Note. Why: Someone who asked for less motion shouldn't see the note pop. How: This applies only when the reduced-motion preference is set. */
+
+
+	.supValSpa { /* What: Still Support Validation Span. Why: The note should simply appear. How: This turns the pop off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+
+/* #region supFalSpa */
+
+.supFalSpa { /* What: Support Fallback Span. Why: A send that didn't go through lost nothing, so its note reads as advice rather than an error. How: This sets it in small warm text, pushes it left, and pops it in. */
+
+
+	animation    : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	color        : var( --war-dar-col );                                                         /* Warning Dark Color = oklch( 0.45 0.13 50 ) */
+	font-size    : var( --fon-siz-bas );                                                         /* Font Size Base = 11px */
+	line-height  : var( --ver-rhy-bas );                                                         /* Vertical Rhythm Base ~= 1.325 */
+	margin-right : auto;
+	max-width    : var( --tex-wid-sma );                                                         /* Text Width Small Maximum ~= 22.047em */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Support Fallback Note. Why: Someone who asked for less motion shouldn't see the note pop. How: This applies only when the reduced-motion preference is set. */
+
+
+	.supFalSpa { /* What: Still Support Fallback Span. Why: The note should simply appear. How: This turns the pop off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.falAdrSpa { /* What: Fallback Address Span. Why: The support address should stand out as something to copy, and a long one must still fit. How: This sets it in mono text that may break anywhere. */
+
+
+	color         : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family   : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size     : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	overflow-wrap : anywhere;
+
+
+}
+
+/* #endregion supFalSpa */
+
+/* #endregion supFooDiv */
+
+/* #endregion supForDiv */
+
+

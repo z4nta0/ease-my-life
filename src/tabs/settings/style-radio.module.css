@@ -1,0 +1,377 @@
+
+
+
+/**
+ * style-radio.module.css = Style Radio Module
+ *
+ * @summary
+ * Styles for StyRadCom, the radio list behind Appearance's Picker animation
+ * and Completion celebration pickers. It reuses the look of the Data tab's
+ * picker-mode selector: full-bleed rows split by dividers, each with a dot,
+ * a name, and an optional Preview button, where the selected row gets an
+ * accent tint and left bar and slowly reveals its hint. The hint is one short
+ * line, so a height glide would read as janky; it rides a stronger, slower
+ * fade instead.
+ *
+ * The rows' declarations are copied from the Data tab's own mode radio rules
+ * (modRadDiv and modOptLab), resolved for the unpadded Appearance card this
+ * list always sits in, until the design-system pass merges them.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region styRadFie */
+
+.styRadFie { /* What: Style Radio Fieldset. Why: The radio list needs a real fieldset and legend for assistive tech without any visible fieldset chrome. How: This strips the browser's own fieldset border, margin, and padding. */
+
+
+	border    : 0;
+	margin    : 0;
+	min-width : 0;
+	padding   : 0;
+
+
+}
+
+.styRadLeg { /* What: Style Radio Legend. Why: The group's name must exist for screen readers while the section heading above already shows it. How: This clips the legend to a 1px box off the layout, keeping it in the accessibility tree. */
+
+
+	border      : 0;
+	clip-path   : inset( 50% );
+	height      : 1px;
+	margin      : calc( var( --spa-ver-m09 ) * -1 ) -1px; /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	overflow    : hidden;
+	padding     : 0;
+	position    : absolute;
+	white-space : nowrap;
+	width       : 1px;
+
+
+}
+
+
+
+/* #region modRadDiv */
+
+.modRadDiv { /* What: Mode Radio Div. Why: The options stack edge to edge inside their unpadded card, with a closing line that pairs with the preview stage below. How: This stacks the rows in a column with a bottom border. */
+
+
+	border-bottom  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display        : flex;
+	flex-direction : column;
+
+
+}
+
+
+/* #region modOptLab */
+
+.modOptLab { /* What: Mode Option Label. Why: Each option is one clickable full-width row, divided from the next. How: This lays out the dot, text, and Preview button in a padded row with a bottom divider and a background fade. */
+
+
+	align-items   : flex-start;
+	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col );      /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	cursor        : pointer;
+	display       : flex;
+	gap           : var( --spa-hor-m01 );                                 /* Spacing Horizontal Base Minus 1 = 11px */
+	padding       : var( --spa-ver-m01 ) var( --spa-hor-bas );            /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
+	position      : relative;
+	transition    : background var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+
+
+}
+.modOptLab:last-child { /* What: Last Style Radio Row. Why: The list's own bottom border already closes the last row. How: This drops the last row's divider. */
+
+
+	border-bottom : 0;
+
+
+}
+.modOptLab:hover { /* What: Hovered Style Radio Row. Why: A row should respond to the pointer. How: This darkens its background slightly. */
+
+
+	background : var( --bac-wel-col ); /* Background Well Color = oklch( 0.96 0.004 240 ) */
+
+
+}
+.modOptLab:has( .modOptInp:focus-visible ) { /* What: Focused Style Radio Row. Why: The native radio is hidden, so a keyboard user needs to see focus on the whole row. How: This draws the accent outline inside the row while its radio has keyboard focus. */
+
+
+	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col ); /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset : calc( var( --bor-wid-lar ) * -1 );               /* Border Width Large ~= 2.035px */
+
+
+}
+.modOptLab[data-option-select-active] { /* What: Selected Style Radio Row. Why: The chosen option should stand out. How: This tints the row with the accent color. */
+
+
+	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+
+
+}
+.modOptLab[data-option-select-active]:hover { /* What: Hovered Selected Style Radio Row. Why: Hover shouldn't dim the selected row's tint. How: This keeps the accent tint. */
+
+
+	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+
+
+}
+.modOptLab[data-option-select-active]::before { /* What: Selected Style Radio Bar. Why: A bar on the left edge marks the selected row at a glance. How: This draws a thin accent bar down the row's left edge. */
+
+
+	background : var( --acc-mai-col );                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	bottom     : 0;
+	content    : '';
+	left       : 0;
+	position   : absolute;
+	top        : 0;
+	width      : calc( var( --ver-rhy-m07 ) * 1rem ); /* Vertical Rhythm Base Minus 7 ~= 2.035px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Style Radio Row. Why: Someone who asked for less motion shouldn't see the row's background fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.modOptLab { /* What: Still Mode Option Label. Why: The background should simply switch. How: This turns the background fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.modOptInp { /* What: Mode Option Input. Why: The native radio backs the row's state, but the dot draws it instead. How: This hides the radio while keeping it focusable and in the form. */
+
+
+	height         : 0;
+	opacity        : 0;
+	pointer-events : none;
+	position       : absolute;
+	width          : 0;
+
+
+}
+
+.modDotSpa { /* What: Mode Dot Span. Why: The selected state shows as a filled dot, not the native radio. How: This draws a small bordered circle with a border fade. */
+
+
+	border        : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : 50%;
+	flex          : 0 0 auto;
+	height        : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+	margin-top    : var( --spa-ver-m09 );                            /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	position      : relative;
+	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width         : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+
+
+}
+.modOptLab[data-option-select-active] .modDotSpa { /* What: Selected Style Radio Dot. Why: The selected row's dot should read as on. How: This colors its border with the accent. */
+
+
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.modOptLab[data-option-select-active] .modDotSpa::after { /* What: Selected Style Radio Dot Fill. Why: A filled center marks the dot as chosen. How: This draws an accent disc inside the ring. */
+
+
+	background    : var( --acc-mai-col );                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius : 50%;
+	content       : '';
+	inset         : var( --spa-ver-m06 ) var( --spa-hor-m06 ); /* Spacing Vertical Base Minus 6 ~= 2.696px, Spacing Horizontal Base Minus 6 ~= 2.696px */
+	position      : absolute;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Style Radio Dot. Why: Someone who asked for less motion shouldn't see the dot's border fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.modDotSpa { /* What: Still Mode Dot Span. Why: The border should simply switch. How: This turns the border fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region modTexSpa */
+
+.modTexSpa { /* What: Mode Text Span. Why: The option's name and its hint stack together. How: This stacks them in a tight column that may shrink below its content's width. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m06 ); /* Spacing Vertical Base Minus 6 ~= 2.696px */
+	min-width      : 0;
+
+
+}
+
+.modNamSpa { /* What: Mode Name Span. Why: The option's name leads the row. How: This sets it in medium-weight body text. */
+
+
+	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight    : 500;
+	letter-spacing : -0.005em;
+
+
+}
+
+
+
+/* #region colDisDiv */
+
+.colDisDiv { /* What: Collapse Disclosure Div. Why: The hint opens under the selected row without unmounting. How: This eases a grid row between zero and its content's height over a slow glide. */
+
+
+	display            : grid;
+	grid-template-rows : 0fr;
+	transition         : grid-template-rows var( --dur-tra-p06 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */ /* What: Layout Grow And Collapse. Why: The rows below have to move as the hint opens and closes, which a transform can't make them do. How: This eases the grid row between zero and the hint's own height. */
+
+
+}
+.colDisDiv[data-collapse-open-active] { /* What: Open Style Radio Hint Collapse. Why: The selected row's hint should show. How: This opens the grid row to its content's height. */
+
+
+	grid-template-rows : 1fr;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Style Radio Hint Collapse. Why: Someone who asked for less motion shouldn't see the hint glide open. How: This applies only when the reduced-motion preference is set. */
+
+
+	.colDisDiv { /* What: Still Collapse Disclosure Div. Why: The hint should simply open and close. How: This turns the glide off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+/* #region colInnDiv */
+
+.colInnDiv { /* What: Collapse Inner Div. Why: The one-line hint should arrive on a strong, slow fade rather than the height glide. How: This clips the content and fades and lifts it in, slightly delayed. */
+
+
+	min-height : 0;
+	opacity    : 0;
+	overflow   : hidden;
+	transform  : translateY( calc( var( --spa-ver-m02 ) * -1 ) );                                                                                                  /* Spacing Vertical Base Minus 2 ~= 8.304px */
+	transition : opacity var( --dur-tra-p06 ) var( --mot-sta-eas ) var( --dur-tra-m03 ), transform var( --dur-tra-p06 ) var( --mot-dec-eas ) var( --dur-tra-m03 ); /* Duration Transition Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease, Duration Transition Base Minus 3 ~= 67.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+
+
+}
+.colDisDiv[data-collapse-open-active] > .colInnDiv { /* What: Open Style Radio Hint Content. Why: The open hint should settle fully visible. How: This fades it in and drops its lift. */
+
+
+	opacity   : 1;
+	transform : none;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Style Radio Hint Content. Why: Someone who asked for less motion shouldn't see the hint fade and lift. How: This applies only when the reduced-motion preference is set. */
+
+
+	.colInnDiv { /* What: Still Collapse Inner Div. Why: The hint should simply appear. How: This turns the fade and lift off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.modHinSpa { /* What: Mode Hint Span. Why: The hint reads as quiet supporting text under the name. How: This sets it small and muted with balanced wrapping. */
+
+
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display     : block;
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
+	text-wrap   : pretty;
+
+
+}
+
+/* #endregion colInnDiv */
+
+/* #endregion colDisDiv */
+
+/* #endregion modTexSpa */
+
+
+
+.styPreBut { /* What: Style Preview Button. Why: Each row can play a live preview of its style without selecting it. How: This draws a small outlined accent button pushed to the row's right edge. */
+
+
+	align-self     : center;
+	background     : transparent;
+	border         : var( --bor-wid-sma ) solid var( --acc-mai-col );                                                         /* Border Width Small ~= 0.499px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius  : var( --rad-bor-sma );                                                                                    /* Radius Border Small ~= 8.304px */
+	color          : var( --acc-mai-col );                                                                                    /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	cursor         : pointer;
+	flex           : 0 0 auto;
+	font-family    : var( --fon-fam-sec );                                                                                    /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                                                                                    /* Font Size Base = 11px */
+	height         : calc( var( --ver-rhy-p02 ) * 1rem );                                                                     /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	letter-spacing : 0.03em;
+	margin-left    : auto;
+	padding        : 0 var( --spa-hor-m01 );                                                                                  /* Spacing Horizontal Base Minus 1 = 11px */
+	transition     : background var( --dur-tra-p01 ) var( --mot-sta-eas ), opacity var( --dur-tra-p01 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+
+
+}
+.styPreBut:hover { /* What: Hovered Style Preview Button. Why: The button should respond to the pointer. How: This fills it with the accent tint. */
+
+
+	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+
+
+}
+.styPreBut:disabled { /* What: Disabled Style Preview Button. Why: A preview that can't play right now should look unavailable. How: This dims it and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : var( --cdn-pow-003-rec ); /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Style Preview Button. Why: Someone who asked for less motion shouldn't see the button fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.styPreBut { /* What: Still Style Preview Button. Why: Its fill and dimming should simply switch. How: This turns the fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion modOptLab */
+
+/* #endregion modRadDiv */
+
+/* #endregion styRadFie */
+
+

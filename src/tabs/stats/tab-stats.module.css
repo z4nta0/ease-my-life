@@ -1,0 +1,2537 @@
+
+
+
+/**
+ * tab-stats.module.css = Stats Tab Module
+ *
+ * @summary
+ * Styles for TabStaCom, the Stats tab: its header and scope filters (the
+ * Group and Type pill rails, the Show tab strip, and the Range pills), then
+ * the body that fades in under them, holding the single-picker identity
+ * block, the headline stat cards, the stacked breakdown bars, the heatmap
+ * with its year pager and tapped-day detail, the rank and breakdown lists
+ * with their metric pills and unit toggles, the reminder and conditional
+ * logs, and the range pagNavDiv. Selected filters key off aria-selected,
+ * data-tab-select-active, and data-pill-select-active, a selected heat cell
+ * off data-cell-select-active, a unit toggle off data-link-select-active,
+ * and list rows off data-row-vacation-active, data-row-deleted-active, and
+ * data-row-done-active, with dimmed values off data-value-dim-active.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region tabPagDiv */
+
+.tabPagDiv { /* What: Tab Page Div. Why: The header and body stack as the tab's page, with extra room below while a tour runs. How: This stacks them in a spaced column and reads the body's tour padding. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-p02 );    /* Spacing Vertical Base Plus 2 ~= 25.572px */
+	padding-bottom : var( --tab-tou-pad, 0 ); /* Tab Tour Padding ~= 242.522px, set on the body while a tour runs */ /* What: Tour Padding. Why: A tour needs room to scroll a bottom target clear of the tab bar. How: The body sets --tab-tou-pad while a tour runs, falling back to none. */
+
+
+}
+
+
+/* #region pagHeaHea */
+
+.pagHeaHea { /* What: Page Header Header. Why: The kicker row, lead, and intro read as one header. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
+
+
+}
+
+
+/* #region kicRowDiv */
+
+.kicRowDiv { /* What: Kicker Row Div. Why: The page kicker and the help toggle sit on one line at opposite ends. How: This spreads them across a centered row. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	min-width       : 0;
+
+
+}
+
+.pagKicDiv,
+.pagKicSpa { /* What: Page Kicker Div And Span. Why: A small eyebrow label orients the reader above a heading or a section toggle. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	font-weight    : 500;
+	letter-spacing : 0.08em;
+	line-height    : var( --ver-rhy-p01 ); /* Vertical Rhythm Base Plus 1 ~= 1.755 */
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion kicRowDiv */
+
+
+
+/* #region heaLeaDiv */
+
+.heaLeaDiv { /* What: Header Lead Div. Why: The brand mark and title sit side by side. How: This lines them up in a centered row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : var( --spa-hor-bas ); /* Spacing Horizontal Base ~= 14.572px */
+
+
+}
+@container app ( max-width : 640px ) { /* What: Narrow Header Lead. Why: On a narrow screen the mark and title sit closer. How: This applies only when the app is 640px wide or less. */
+
+
+	.heaLeaDiv { /* What: Tighter Header Lead. Why: The row has less room. How: This tightens its gap. */
+
+
+		gap : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+	}
+
+
+}
+
+
+/* #region braMarBut */
+
+.braMarBut { /* What: Brand Mark Button. Why: The logo beside the title is also a button back to Today. How: This strips the button chrome and sizes the mark as a square that lifts on hover. */
+
+
+	-webkit-appearance : none;
+	align-self         : center;
+	appearance         : none;
+	aspect-ratio       : auto;
+	background         : none;
+	border             : 0;
+	border-radius      : var( --rad-bor-med );                                /* Radius Border Medium = 11px */
+	color              : var( --acc-mai-col );                                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	cursor             : pointer;
+	display            : block;
+	flex               : 0 0 auto;
+	font               : inherit;
+	height             : calc( var( --ver-rhy-p06 ) * 1rem );                 /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	padding            : 0;
+	text-decoration    : none;
+	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+	width              : calc( var( --ver-rhy-p06 ) * 1rem );                 /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+
+
+}
+.braMarBut:hover { /* What: Hovered Brand Mark. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
+
+
+	transform : translateY( -1px );
+
+
+}
+@container app ( max-width : 640px ) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the app is 640px wide or less. */
+
+
+	.braMarBut { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark one rhythm step, to p05. */
+
+
+		height : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+		width  : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+
+
+	}
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Brand Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.braMarBut { /* What: Still Brand Mark. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.braMarSvg { /* What: Brand Mark Svg. Why: The logo fills its button. How: This sizes the svg to the full box as a block. */
+
+
+	display : block;
+	height  : 100%;
+	width   : 100%;
+
+
+}
+
+/* #endregion braMarBut */
+
+
+
+/* #region heaTitDiv */
+
+.heaTitDiv { /* What: Header Title Div. Why: The title sits beside the brand mark, centered against it. How: This stacks the title in a column that takes the remaining width. */
+
+
+	display         : flex;
+	flex            : 1 1 auto;
+	flex-direction  : column;
+	gap             : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
+	justify-content : center;
+	min-width       : 0;
+
+
+}
+
+
+/* #region pagTitHea */
+
+.pagTitHea { /* What: Page Title Heading. Why: The page's main heading leads the tab. How: This sets it large and tight. */
+
+
+	font-size      : var( --fon-siz-p04 ); /* Font Size Base Plus 4 ~= 33.876px */
+	font-weight    : 500;
+	letter-spacing : -0.025em;
+	line-height    : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+	margin         : 0;
+
+
+}
+@container app ( max-width : 560px ) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
+
+
+	.pagTitHea { /* What: Smaller Section Title. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
+
+
+		font-size : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
+
+
+	}
+
+
+}
+
+.titAccSpa { /* What: Title Accent Span. Why: The heading's key word reads in the accent color. How: This colors the span. */
+
+
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+
+/* #endregion pagTitHea */
+
+/* #endregion heaTitDiv */
+
+/* #endregion heaLeaDiv */
+
+
+
+/* #region pagSubPar */
+
+.pagSubPar { /* What: Page Sub Paragraph. Why: The intro explains the page under its title, linking to other tabs inline, set a little below the title row. How: This sets it muted with a capped line length and a large vertical spacing top margin. */
+
+
+	color     : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	margin    : var( --spa-ver-p01 ) 0 0; /* Spacing Vertical Base Plus 1 ~= 19.304px */
+	max-width : var( --tex-wid-bas );     /* Text Width Base Maximum ~= 29.207em */
+
+
+}
+
+.subLinBut { /* What: Sub Link Button. Why: The intro links to other tabs inline. How: This strips the button chrome down to underlined accent text. */
+
+
+	background            : none;
+	border                : 0;
+	color                 : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	cursor                : pointer;
+	font                  : inherit;
+	padding               : 0;
+	text-decoration       : underline;
+	text-underline-offset : 2px;
+
+
+}
+.subLinBut:hover { /* What: Hovered Intro Link. Why: The link should respond to the pointer. How: This thickens its underline. */
+
+
+	text-decoration-thickness : 2px;
+
+
+}
+
+/* #endregion pagSubPar */
+
+/* #endregion pagHeaHea */
+
+
+
+/* #region pagBodDiv */
+
+.pagBodDiv { /* What: Page Body Div. Why: The filters and the body below them move as one unit, so a tour can reserve room above them without moving the header. How: This stacks them in a spaced column that can shrink. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-p02 ); /* Spacing Vertical Base Plus 2 ~= 25.572px */
+	min-width      : 0;
+
+
+}
+
+
+/* #region pagFilDiv */
+
+.pagFilDiv { /* What: Page Filters Div. Why: The Group, Type, Show, and Range rows form one filter block. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+
+
+/* #region filRowDiv */
+
+.filRowDiv { /* What: Filter Row Div. Why: Each filter's label sits above its rail. How: This stacks them in a stretched column. */
+
+
+	align-items    : stretch;
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+
+
+}
+
+.filLabSpa { /* What: Filter Label Span. Why: Each rail is labeled in quiet mono type. How: This sets it small, uppercase, and muted, without shrinking. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	flex-shrink    : 0;
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.06em;
+	text-transform : uppercase;
+
+
+}
+
+
+/* #region filRaiDiv */
+
+.filRaiDiv { /* What: Filter Rail Div. Why: The rail scrolls sideways when its pills outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row that takes the row's width, with its scrollbar hidden and a gradient mask on each end. */
+
+
+	--fad-edg-off : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the rail. How: --fad-lef-off and --fad-rig-off start from it. */
+	--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+
+	-webkit-mask-image : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
+	display            : flex;
+	flex               : 1 1 auto;
+	gap                : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	mask-image         : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
+	min-width          : 0;
+	overflow-x         : auto;
+	padding-bottom     : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	scrollbar-width    : none;
+
+
+}
+.filRaiDiv::-webkit-scrollbar { /* What: Pill Rail Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+.filRaiDiv[data-scroll-start-active] { /* What: Pill Rail At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+	--fad-lef-off : 0px;
+
+
+}
+.filRaiDiv[data-scroll-end-active] { /* What: Pill Rail At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+	--fad-rig-off : 0px;
+
+
+}
+
+
+/* #region filPilBut */
+
+.filPilBut { /* What: Filter Pill Button. Why: Each group or type is a pill that scopes the stats. How: This draws an outlined pill that fades between colors. */
+
+
+	align-items    : center;
+	background     : transparent;
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : 999px;
+	color          : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor         : pointer;
+	display        : inline-flex;
+	flex-shrink    : 0;
+	font-size      : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight    : 500;
+	gap            : var( --spa-hor-m03 );                            /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	height         : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	letter-spacing : -0.01em;
+	padding        : 0 var( --spa-hor-bas );                          /* Spacing Horizontal Base ~= 14.572px */
+	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+
+
+}
+.filPilBut:hover { /* What: Hovered Filter Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
+
+
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color        : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.filPilBut[aria-selected='true'] { /* What: Selected Filter Pill. Why: The active filter should stand out. How: This fills it in the soft accent, keying off the aria-selected the pill already sets. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Filter Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.filPilBut { /* What: Still Filter Pill. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.filCouSpa { /* What: Filter Count Span. Why: Each pill shows how many pickers it covers. How: This sets the number in a small tinted mono capsule. */
+
+
+	align-items          : center;
+	background           : var( --bor-fil-col );                /* Border Fill Color = oklch( 0.93 0.005 240 ) */
+	border-radius        : 999px;
+	color                : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display              : inline-flex;
+	font-family          : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-bas );                /* Font Size Base = 11px */
+	font-variant-numeric : tabular-nums;
+	height               : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	justify-content      : center;
+	min-width            : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	padding              : 0 var( --spa-hor-m03 );              /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	text-align           : center;
+
+
+}
+.filPilBut[aria-selected='true'] .filCouSpa { /* What: Selected Pill Count. Why: The count follows its pill's accent. How: This tints the capsule in the accent color. */
+
+
+	background : oklch( from var( --acc-mai-col ) l c h / 0.16 ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color      : var( --acc-mai-col );                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+
+/* #endregion filPilBut */
+
+/* #endregion filRaiDiv */
+
+
+
+/* #region scoTabDiv */
+
+.scoTabDiv { /* What: Scope Tab Div. Why: The rail scrolls sideways when its tabs outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row that takes the row's width, with its scrollbar hidden and a gradient mask on each end. */
+
+
+	--fad-edg-off : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the rail. How: --fad-lef-off and --fad-rig-off start from it. */
+	--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 33.876px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 33.876px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+
+	-webkit-mask-image : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 33.876px, Fade Right Offset ~= 33.876px */
+	display            : flex;
+	flex               : 1 1 auto;
+	gap                : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	mask-image         : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 33.876px, Fade Right Offset ~= 33.876px */
+	min-width          : 0;
+	overflow-x         : auto;
+	scroll-snap-type   : x mandatory;
+	scrollbar-width    : none;
+
+
+}
+.scoTabDiv::-webkit-scrollbar { /* What: Show Tab Strip Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+.scoTabDiv[data-scroll-start-active] { /* What: Show Tab Strip At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+	--fad-lef-off : 0px;
+
+
+}
+.scoTabDiv[data-scroll-end-active] { /* What: Show Tab Strip At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+	--fad-rig-off : 0px;
+
+
+}
+@supports ( -moz-appearance : none ) { /* What: Firefox Show Tab Strip. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
+
+
+	.scoTabDiv { /* What: Padded Show Tab Strip. Why: The bottom border needs a pixel of room. How: This adds extra small 8 vertical spacing (about 1px) of bottom padding. */
+
+
+		padding-bottom : var( --spa-ver-m09 ); /* Spacing Vertical Base Minus 9 ~= 1.160px */
+
+
+	}
+
+
+}
+
+
+/* #region scoTabBut */
+
+.scoTabBut { /* What: Scope Tab Button. Why: Everything and each picker in scope is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode. */
+
+
+	animation         : global( tabGroupSlideIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global tabGroupSlideIn Keyframes. Why: The tabGroupSlideIn keyframes are shared with the Pickers and Data tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background        : var( --bac-sur-col );                                                     /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border            : var( --bor-wid-sma ) solid var( --bor-mai-col );                          /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius     : var( --rad-bor-med );                                                     /* Radius Border Medium = 11px */
+	display           : flex;
+	flex-direction    : column;
+	flex-shrink       : 0;
+	gap               : var( --spa-ver-m09 );                                                     /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	min-width         : calc( var( --ver-rhy-p08 ) * 1rem );                                      /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+	padding           : var( --spa-ver-m01 ) var( --spa-hor-bas );                                /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
+	scroll-snap-align : start;
+	text-align        : left;
+	transition        : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 );       /* Duration Transition Base Minus 1 ~= 119.2ms */
+
+
+}
+.scoTabBut:hover { /* What: Hovered Show Tab. Why: The tab should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+.scoTabBut[data-tab-select-active] { /* What: Selected Show Tab. Why: The scope showing below should stand out in the strip. How: This fills the tab in the soft accent, keying off data-tab-select-active. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Show Tab. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.scoTabBut { /* What: Still Show Tab. Why: The change should happen at once. How: This turns its animation and transition off. */
+
+
+		animation  : none;
+		transition : none;
+
+
+	}
+
+
+}
+
+.scoNamSpa { /* What: Scope Name Span. Why: The scope's name leads its tab. How: This sets it in medium weight. */
+
+
+	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+
+
+}
+.scoTabBut[data-tab-select-active] .scoNamSpa { /* What: Selected Show Tab Name. Why: The selected tab's name reads in the accent color. How: This colors it. */
+
+
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+
+.scoModSpa { /* What: Scope Mode Span. Why: Each tab names its scope's kind as quiet metadata. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion scoTabBut */
+
+/* #endregion scoTabDiv */
+
+
+/* #region ranPilDiv */
+
+.ranPilDiv { /* What: Range Pills Div. Why: The range pills wrap on a wide app and scroll sideways with faded edges on a narrow one. How: This lays them out in a wrapping flex row, with its scrollbar hidden and its edges masked. */
+
+
+	--fad-edg-off : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the row. How: --fad-lef-off and --fad-rig-off start from it. */
+	--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Left Offset. Why: The left edge fades until the row reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Right Offset. Why: The right edge fades until the row reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+
+	-webkit-mask-image : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
+	display            : flex;
+	flex-wrap          : wrap;
+	gap                : var( --spa-ver-m03 ) var( --spa-hor-m03 );                                                                                         /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+	mask-image         : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
+	min-width          : 0;
+	overflow-x         : auto;
+	padding-bottom     : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	scrollbar-width    : none;
+
+
+}
+.ranPilDiv::-webkit-scrollbar { /* What: Range Pills Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+.ranPilDiv[data-scroll-start-active] { /* What: Range Pills At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+	--fad-lef-off : 0px;
+
+
+}
+.ranPilDiv[data-scroll-end-active] { /* What: Range Pills At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+	--fad-rig-off : 0px;
+
+
+}
+@container app ( max-width : 640px ) { /* What: Narrow Range Pills. Why: On a narrow app the pills match the scrolling rows above them. How: This applies only when the app matches ( max-width : 640px ). */
+
+
+	.ranPilDiv { /* What: Scrolling Range Pills. Why: The pills should stay on one side-scrolling line. How: This stops them wrapping. */
+
+
+		flex-wrap : nowrap;
+
+
+	}
+
+
+}
+
+.ranPilBut { /* What: Range Pill Button. Why: Each range is a pill that sets the period every stat covers. How: This draws an outlined pill that never shrinks or wraps and fades between colors. */
+
+
+	background     : transparent;
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : 999px;
+	color          : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor         : pointer;
+	flex-shrink    : 0;
+	font-size      : var( --fon-siz-p01 );                                                                           /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight    : 500;
+	height         : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	letter-spacing : -0.01em;
+	padding        : 0 var( --spa-hor-bas );                                                                         /* Spacing Horizontal Base ~= 14.572px */
+	transition     : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	white-space    : nowrap;
+
+
+}
+.ranPilBut:hover { /* What: Hovered Range Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
+
+
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color        : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.ranPilBut[data-pill-select-active] { /* What: Selected Range Pill. Why: The active range should stand out. How: This fills it in the soft accent, keying off data-pill-select-active. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Range Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ranPilBut { /* What: Still Range Pill. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion ranPilDiv */
+
+/* #endregion filRowDiv */
+
+/* #endregion pagFilDiv */
+
+
+
+/* #region staBodDiv */
+
+.staBodDiv { /* What: Stats Body Div. Why: The cards fade in under the filters, spaced as one column. How: This lays them out in a full-width grid with a row gap and plays the shared tab fade each time it remounts. */
+
+
+	animation             : global( tabOpenFadeIn ) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */ /* What: Global tabOpenFadeIn Keyframes. Why: The tabOpenFadeIn keyframes are shared with the Pickers tab and the picker form, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	display               : grid;
+	gap                   : var( --spa-ver-p02 ) var( --spa-hor-p02 );                              /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 2 ~= 25.572px */
+	grid-auto-rows        : auto;
+	grid-template-columns : minmax( 0, 1fr );
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Stats Body. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.staBodDiv { /* What: Still Stats Body. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+
+/* #region picIdeDiv */
+
+.picIdeDiv { /* What: Picker Identity Div. Why: A single picker's stats open with its kicker, name, mode pill, and hints, like the Pickers page header. How: This stacks them tightly and hands the mode pill its spacing, keeping it sized to its content. */
+
+
+	--pil-tag-ali : flex-start;           /* What: Pill Tag Align. Why: The column would otherwise stretch the pill to full width. How: PilTagCom reads this for its own align-self. */
+	--pil-top-mar : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */ /* What: Pill Top Margin. Why: The pill sits a little below the name. How: PilTagCom reads this for its own top margin. */
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+
+
+}
+
+.picTitHea { /* What: Picker Title Heading. Why: The picker's name heads its stats. How: This sets it large and tight. */
+
+
+	font-size      : var( --fon-siz-p03 );     /* Font Size Base Plus 3 ~= 25.572px */
+	font-weight    : 500;
+	letter-spacing : -0.025em;
+	margin         : var( --spa-ver-m03 ) 0 0; /* Spacing Vertical Base Minus 3 ~= 6.268px */
+
+
+}
+
+.picHinPar { /* What: Picker Hint Paragraph. Why: The picker's mode explains itself under its name. How: This sets muted body text with a capped line length, spaced below what precedes it. */
+
+
+	color     : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-p01 );     /* Font Size Base Plus 1 ~= 14.572px */
+	margin    : var( --spa-ver-m02 ) 0 0; /* Spacing Vertical Base Minus 2 ~= 8.304px */
+	max-width : var( --tex-wid-bas );     /* Text Width Base Maximum ~= 29.207em */
+	text-wrap : pretty;
+
+
+}
+
+/* #endregion picIdeDiv */
+
+
+
+/* #region staRowDiv */
+
+.staRowDiv { /* What: Stat Row Div. Why: The headline numbers sit side by side as a row of cards. How: This lays them out in a four-column grid. */
+
+
+	display               : grid;
+	gap                   : var( --spa-ver-m01 ) var( --spa-hor-m01 ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
+	grid-template-columns : repeat( 4, 1fr );
+
+
+}
+.staRowDiv--two { /* What: Two Stat Row Div. Why: The most and least picked lists share one row. How: This drops the grid to two columns. */
+
+
+	grid-template-columns : repeat( 2, 1fr );
+
+
+}
+@container app ( max-width : 640px ) { /* What: Narrow Stat Card Row. Why: A narrow app has room for fewer columns. How: This applies only when the app matches ( max-width : 640px ). */
+
+
+	.staRowDiv { /* What: Two Column Stat Card Row. Why: Four cards would be too cramped. How: This drops the grid to two columns. */
+
+
+		grid-template-columns : repeat( 2, 1fr );
+
+
+	}
+
+	.staRowDiv--two { /* What: Stacked Two Card Row. Why: The two lists need the full width. How: This stacks them in one column. */
+
+
+		grid-template-columns : 1fr;
+
+
+	}
+
+
+}
+
+
+/* #region staCarDiv */
+
+.staRowDiv > .staCarDiv { /* What: Stat Card. Why: A headline number needs a tighter card than the default, with room for its corner icon. How: This trims the card's padding and positions it for the icon, scoped to the row so it wins over the card's own padding. */
+
+
+	padding  : var( --spa-ver-bas ) var( --spa-hor-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
+	position : relative;
+
+
+}
+
+.staIcoSvg { /* What: Stat Icon Svg. Why: Each headline card carries a small icon in its corner. How: This pins it to the top right in the warm color. */
+
+
+	color    : var( --acc-sec-col ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
+	position : absolute;
+	right    : var( --spa-hor-bas ); /* Spacing Horizontal Base ~= 14.572px */
+	top      : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+
+.staNumDiv { /* What: Stat Number Div. Why: The headline number is the card's point. How: This sets it large in tight tabular mono. */
+
+
+	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
+	font-variant-numeric : tabular-nums;
+	font-weight          : 400;
+	letter-spacing       : -0.03em;
+	line-height          : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+
+
+}
+
+.staLabDiv { /* What: Stat Label Div. Why: The number names what it counts below it. How: This sets small uppercase muted mono type. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.03em;
+	margin-top     : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion staCarDiv */
+
+/* #endregion staRowDiv */
+
+
+
+/* #region breBloDiv */
+
+.breBloDiv { /* What: Breakdown Block Div. Why: A breakdown shows its proportion bar over its legend. How: This stacks them with a gap under the kicker. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
+	margin-top     : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */
+
+
+}
+
+
+/* #region breBarDiv */
+
+.breBarDiv { /* What: Breakdown Bar Div. Why: The segments read as one rounded proportion bar. How: This lays them out in a clipped pill at the small rhythm step on a faint track. */
+
+
+	background    : var( --bor-fil-col );                /* Border Fill Color = oklch( 0.93 0.005 240 ) */
+	border-radius : 999px;
+	display       : flex;
+	height        : calc( var( --ver-rhy-m01 ) * 1rem ); /* Vertical Rhythm Base Minus 1 = 11px */
+	overflow      : hidden;
+
+
+}
+
+.barSegSpa { /* What: Bar Segment Span. Why: Each segment's width is its share, and should ease when it changes. How: This fills the bar's height and eases its width. */
+
+
+	height     : 100%;
+	transition : width var( --dur-tra-p02 ) var( --mot-dec-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Layout Width Glide. Why: Each segment's neighbors have to give up or take the space it changes by, which a transform can't make them do. How: This eases the segment's own width so the bar's other shares shift along with it. */
+
+
+}
+.barSegSpa + .barSegSpa { /* What: Following Breakdown Segment. Why: Neighboring segments need a hairline between them. How: This draws a surface-colored line on its left. */
+
+
+	box-shadow : calc( var( --bor-wid-bas ) * -1 ) 0 0 var( --bac-sur-col ); /* Border Width Base ~= 1.160px, Background Surface Color = oklch( 0.975 0.004 240 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Breakdown Segment. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.barSegSpa { /* What: Still Breakdown Segment. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion breBarDiv */
+
+
+
+/* #region breLegUno */
+
+.breLegUno { /* What: Breakdown Legend Unordered. Why: The legend lists each segment under the bar. How: This stacks its rows. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 0;
+
+
+}
+
+.legIteIte { /* What: Legend Item Item. Why: Each row pairs a swatch and label with the count and share, divided from the next. How: This lines them up in a row under a hairline. */
+
+
+	align-items   : center;
+	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display       : flex;
+	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	gap           : var( --spa-hor-m01 );                            /* Spacing Horizontal Base Minus 1 = 11px */
+	padding       : var( --spa-ver-m02 ) 0;                          /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+.legIteIte:last-child { /* What: Last Legend Row. Why: The last row needs no divider. How: This drops its border. */
+
+
+	border-bottom : 0;
+
+
+}
+
+.legDotSpa { /* What: Legend Dot Span. Why: Each row shows its segment's color. How: This draws a small rounded square that never shrinks. */
+
+
+	border-radius : var( --rad-bor-xsm );                /* Radius Border Extra Small ~= 3.571px */
+	flex-shrink   : 0;
+	height        : calc( var( --ver-rhy-m01 ) * 1rem ); /* Vertical Rhythm Base Minus 1 = 11px */
+	width         : calc( var( --ver-rhy-m01 ) * 1rem ); /* Vertical Rhythm Base Minus 1 = 11px */
+
+
+}
+
+.legLabSpa { /* What: Legend Label Span. Why: The segment's name reads in body color. How: This colors it. */
+
+
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+
+.legValSpa { /* What: Legend Value Span. Why: The count sits at the row's right. How: This pushes it right in tabular mono. */
+
+
+	color                : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-variant-numeric : tabular-nums;
+	margin-left          : auto;
+
+
+}
+
+.legPerSpa { /* What: Legend Percent Span. Why: The share follows the count in a fixed column. How: This sets it at a fixed rhythm-step width, right-aligned in small muted mono. */
+
+
+	color                : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family          : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-bas );                /* Font Size Base = 11px */
+	font-variant-numeric : tabular-nums;
+	text-align           : right;
+	width                : calc( var( --ver-rhy-p04 ) * 1rem ); /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+
+
+}
+
+/* #endregion breLegUno */
+
+/* #endregion breBloDiv */
+
+
+
+/* #region hetHeaDiv */
+
+.hetHeaDiv { /* What: Heat Header Div. Why: The kicker and the level legend share the card's top row. How: This spreads them across a centered row. */
+
+
+	align-items     : center;
+	display         : flex;
+	justify-content : space-between;
+	margin-bottom   : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+
+
+/* #region hetLegDiv */
+
+.hetLegDiv { /* What: Heat Legend Div. Why: A row of sample cells explains the tint levels. How: This lines them up in small uppercase muted mono. */
+
+
+	align-items    : center;
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display        : flex;
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m04 ); /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+.hetLegDiv .hetCelIta { /* What: Legend Heat Cell. Why: The sample cells are fixed-size swatches. How: This sizes them at the base rhythm step without stretching. */
+
+
+	aspect-ratio : auto;
+	flex         : 0 0 auto;
+	height       : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
+	width        : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
+
+
+}
+
+/* #endregion hetLegDiv */
+
+/* #endregion hetHeaDiv */
+
+
+
+/* #region yeaNavDiv */
+
+.yeaNavDiv { /* What: Year Navigation Div. Why: All time spanning several years pages through them. How: This centers the year between its arrows. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : var( --spa-hor-p01 ); /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+	justify-content : center;
+	margin-bottom   : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+
+.hetYeaSpa { /* What: Heat Year Span. Why: The showing year reads between its arrows. How: This sets it in bold tabular mono at a fixed width. */
+
+
+	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-variant-numeric : tabular-nums;
+	font-weight          : 600;
+	min-width            : 4ch;
+	text-align           : center;
+
+
+}
+
+.yeaArrBut { /* What: Year Arrow Button. Why: Each arrow is a small square button that tints on hover. How: This draws an outlined square at the p03 rhythm step with its glyph centered, fading between states. */
+
+
+	align-items     : center;
+	background      : transparent;
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	cursor          : pointer;
+	display         : flex;
+	font-size       : var( --fon-siz-p02 );                            /* Font Size Base Plus 2 ~= 19.304px */
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	justify-content : center;
+	line-height     : var( --ver-rhy-m01 );                            /* Vertical Rhythm Base Minus 1 = 1 */
+	transition      : background var( --dur-tra-m01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), opacity var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+.yeaArrBut:hover:not( :disabled ) { /* What: Hovered Year Arrow. Why: A live arrow should respond to the pointer. How: This tints it with the accent. */
+
+
+	background   : oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-009-rec ) ); /* Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
+	border-color : oklch( from var( --acc-mai-col ) l c h / 0.5 );                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.yeaArrBut:disabled { /* What: Disabled Year Arrow. Why: An arrow with nowhere to go should look it. How: This fades it and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : var( --cdn-pow-004-rec ); /* Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Year Arrow. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.yeaArrBut { /* What: Still Year Arrow. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion yeaNavDiv */
+
+
+
+/* #region hetGriDiv */
+
+.hetGriDiv { /* What: Heat Grid Div. Why: The days fill a grid of squares. How: This lays them out in as many rhythm-step-minimum columns as fit. */
+
+
+	display               : grid;
+	gap                   : var( --spa-ver-m05 ) var( --spa-hor-m05 );                               /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
+	grid-template-columns : repeat( auto-fill, minmax( calc( var( --ver-rhy-p03 ) * 1rem ), 1fr ) ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+.hetGriDiv--next { /* What: Next Heat Grid Div. Why: Paging forward should read as moving right. How: This slides the grid in from the right. */
+
+
+	animation : hetGriDivNextFadeIn var( --dur-ani-p02 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+
+
+}
+.hetGriDiv--prev { /* What: Previous Heat Grid Div. Why: Paging back should read as moving left. How: This slides the grid in from the left. */
+
+
+	animation : hetGriDivPrevFadeIn var( --dur-ani-p02 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Heatmap. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.hetGriDiv--next,
+	.hetGriDiv--prev { /* What: Still Heatmap. Why: The new year should simply appear. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes hetGriDivNextFadeIn { /* What: Heat Grid Div Next Fade In Keyframes. Why: The next year enters from the right. How: This fades the grid in while sliding it 16px left into place. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateX( var( --spa-hor-bas ) ); /* Spacing Horizontal Base ~= 14.572px */
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes hetGriDivPrevFadeIn { /* What: Heat Grid Div Previous Fade In Keyframes. Why: The previous year enters from the left. How: This fades the grid in while sliding it 16px right into place. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateX( calc( var( --spa-hor-bas ) * -1 ) ); /* Spacing Horizontal Base ~= 14.572px */
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+.hetCelIta,
+.hetCelBut { /* What: Heat Cell Italic And Button. Why: Each day is a small square tinted by how much got done. How: This draws a rounded square on the faint track color. */
+
+
+	aspect-ratio  : 1;
+	background    : var( --bor-fil-col ); /* Border Fill Color = oklch( 0.93 0.005 240 ) */
+	border-radius : var( --rad-bor-xsm ); /* Radius Border Extra Small ~= 3.571px */
+	display       : block;
+
+
+}
+.hetCelBut { /* What: Heat Cell Button. Why: Each day in the grid is tappable, so its button chrome goes. How: This strips the native look, fills its column, and readies an outline and a hover grow. */
+
+
+	-webkit-appearance : none;
+	appearance         : none;
+	border             : none;
+	cursor             : pointer;
+	margin             : 0;
+	outline            : var( --bor-wid-lar ) solid transparent;                                                                       /* Border Width Large ~= 2.035px */
+	outline-offset     : var( --bor-wid-lar );                                                                                         /* Border Width Large ~= 2.035px */
+	padding            : 0;
+	transition         : outline-color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-m02 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms */
+	width              : 100%;
+
+
+}
+.hetCelBut:hover { /* What: Hovered Heat Cell. Why: The cell should respond to the pointer. How: This grows it slightly. */
+
+
+	transform : scale( 1.08 );
+
+
+}
+.hetCelBut[data-cell-select-active] { /* What: Selected Heat Cell. Why: The tapped day should stand out. How: This outlines it in body color, keying off data-cell-select-active. */
+
+
+	outline-color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Heat Cell. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.hetCelBut { /* What: Still Heat Cell. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+.hetCelIta--level0,
+.hetCelBut--level0 { /* What: Level 0 Heat Cell Italic And Button. Why: A day with nothing done stays on the faint track color. How: This sets that color. */
+
+
+	background : var( --bor-fil-col ); /* Border Fill Color = oklch( 0.93 0.005 240 ) */
+
+
+}
+.hetCelIta--level1,
+.hetCelBut--level1 { /* What: Level 1 Heat Cell Italic And Button. Why: A little done reads as a pale accent. How: This lightens and desaturates the accent. */
+
+
+	background : var( --hea-lev-sma ); /* Heat Level Small = oklch( 0.8 0.04 250 ) */
+
+
+}
+.hetCelIta--level2,
+.hetCelBut--level2 { /* What: Level 2 Heat Cell Italic And Button. Why: Some done reads a step stronger. How: This lightens the accent less. */
+
+
+	background : var( --hea-lev-med ); /* Heat Level Medium = oklch( 0.68 0.08 250 ) */
+
+
+}
+.hetCelIta--level3,
+.hetCelBut--level3 { /* What: Level 3 Heat Cell Italic And Button. Why: Most done reads nearly full strength. How: This lightens the accent slightly. */
+
+
+	background : var( --hea-lev-lar ); /* Heat Level Large = oklch( 0.58 0.11 250 ) */
+
+
+}
+.hetCelIta--level4,
+.hetCelBut--level4 { /* What: Level 4 Heat Cell Italic And Button. Why: A full day reads in the accent itself. How: This sets the accent. */
+
+
+	background : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+
+/* #endregion hetGriDiv */
+
+.tapHinPar { /* What: Tap Hint Paragraph. Why: Under the grid, a quiet hint says a day can be tapped. How: This sets small faded uppercase mono. */
+
+
+	color          : oklch( from var( --tex-mut-col ) l c h / var( --cdn-pow-001-rec ) ); /* Text Muted Color = oklch( 0.5 0.012 250 ), Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+	font-family    : var( --fon-fam-sec );                                                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                                                /* Font Size Base = 11px */
+	letter-spacing : 0.04em;
+	margin         : var( --spa-ver-bas ) 0 0;                                            /* Spacing Vertical Base ~= 14.572px */
+	text-transform : uppercase;
+
+
+}
+
+
+
+/* #region hetDetDiv */
+
+.hetDetDiv { /* What: Heat Detail Div. Why: A tapped day lists what was picked under the grid. How: This sets it off with a hairline above. */
+
+
+	border-top  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	margin-top  : var( --spa-ver-bas );                            /* Spacing Vertical Base ~= 14.572px */
+	padding-top : var( --spa-ver-bas );                            /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+
+
+/* #region detHeaDiv */
+
+.detHeaDiv { /* What: Detail Header Div. Why: The date and its count share one line. How: This spreads them across a baseline row. */
+
+
+	align-items     : baseline;
+	display         : flex;
+	gap             : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	margin-bottom   : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+
+.detDatSpa { /* What: Detail Date Span. Why: The date leads the detail. How: This sets it bold. */
+
+
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight : 600;
+
+
+}
+
+.detCouSpa { /* What: Detail Count Span. Why: The count reads as quiet metadata. How: This sets small muted tabular mono. */
+
+
+	color                : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	font-variant-numeric : tabular-nums;
+
+
+}
+
+/* #endregion detHeaDiv */
+
+
+
+/* #region detLisUno */
+
+.detLisUno { /* What: Detail List Unordered. Why: The day's items stack as rows. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+
+
+}
+
+.detIteIte { /* What: Detail Item Item. Why: Each item pairs its name with its done mark, divided from the next. How: This spreads them across a baseline row under a faint hairline. */
+
+
+	align-items     : baseline;
+	border-bottom   : var( --bor-wid-sma ) solid oklch( from var( --bor-mai-col ) l c h / var( --cdn-pow-002-rec ) ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ), Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
+	display         : flex;
+	font-size       : var( --fon-siz-p01 );                                                                           /* Font Size Base Plus 1 ~= 14.572px */
+	gap             : var( --spa-hor-m01 );                                                                           /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	padding         : var( --spa-ver-m03 ) 0;                                                                         /* Spacing Vertical Base Minus 3 ~= 6.268px */
+
+
+}
+.detIteIte:last-child { /* What: Last Day Detail Row. Why: The last row needs no divider. How: This drops its border. */
+
+
+	border-bottom : 0;
+
+
+}
+
+.detNamSpa { /* What: Detail Name Span. Why: An item not done reads muted. How: This mutes it. */
+
+
+	color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+.detIteIte[data-row-done-active] .detNamSpa { /* What: Done Day Detail Name. Why: A done item reads in body color. How: This darkens it, keying off data-row-done-active. */
+
+
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+
+.detMarSpa { /* What: Detail Mark Span. Why: Each item ends in a check or a dash. How: This sets it in faded mono. */
+
+
+	color       : oklch( from var( --tex-mut-col ) l c h / var( --cdn-pow-002-rec ) ); /* Text Muted Color = oklch( 0.5 0.012 250 ), Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
+	font-family : var( --fon-fam-sec );                                                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size   : var( --fon-siz-p01 );                                                /* Font Size Base Plus 1 ~= 14.572px */
+
+
+}
+.detIteIte[data-row-done-active] .detMarSpa { /* What: Done Day Detail Mark. Why: A done item's check reads in the accent. How: This colors it, keying off data-row-done-active. */
+
+
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+
+/* #endregion detLisUno */
+
+.detEmpPar { /* What: Detail Empty Paragraph. Why: A day with nothing says so quietly. How: This sets small muted text. */
+
+
+	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	margin    : 0;
+
+
+}
+
+/* #endregion hetDetDiv */
+
+
+
+/* #region remHeaDiv */
+
+.remHeaDiv { /* What: Reminder Header Div. Why: A summary card's kicker and its headline stats share the top, wrapping when long. How: This spreads them across a wrapping baseline row. */
+
+
+	align-items     : baseline;
+	display         : flex;
+	flex-wrap       : wrap;
+	gap             : var( --spa-ver-bas ) var( --spa-hor-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
+	justify-content : space-between;
+	margin-bottom   : var( --spa-ver-m01 );                      /* Spacing Vertical Base Minus 1 = 11px */
+
+
+}
+
+
+/* #region remNumDiv */
+
+.remNumDiv { /* What: Reminder Numbers Div. Why: The headline stats sit side by side. How: This lines them up in a spaced row. */
+
+
+	display : flex;
+	gap     : var( --spa-hor-p01 ); /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+
+
+}
+.conSumDiv .remHeaDiv .remNumDiv { /* What: Conditional Summary Stats. Why: The Conditionals card's stats would fit beside its title but should break like the Reminders card's for consistency. How: This forces them onto their own line. */
+
+
+	flex-basis : 100%;
+
+
+}
+
+.remStaSpa { /* What: Reminder Stat Span. Why: Each stat is a number with a label. How: This sets the label small and muted. */
+
+
+	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+
+
+}
+.staNumStr { /* What: Stat Number Strong. Why: The number leads its label. How: This sets it large, bold, and tabular in body color. */
+
+
+	color                : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-p02 ); /* Font Size Base Plus 2 ~= 19.304px */
+	font-variant-numeric : tabular-nums;
+	font-weight          : 600;
+	margin-right         : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+
+
+}
+
+/* #endregion remNumDiv */
+
+/* #endregion remHeaDiv */
+
+
+
+/* #region sumLisUno */
+
+.sumLisUno { /* What: Summary List Unordered. Why: Each conditional's triggers stack as ruled rows. How: This clears the list styling and stacks the rows. */
+
+
+	display        : flex;
+	flex-direction : column;
+	list-style     : none;
+	margin         : var( --spa-ver-m05 ) 0 0; /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	padding        : 0;
+
+
+}
+.sumIteIte { /* What: Summary Item Item. Why: Each conditional pairs its name with its mode and numbers, divided from the one above. How: This spreads them across a centered row over a hairline. */
+
+
+	align-items     : center;
+	border-top      : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display         : flex;
+	gap             : var( --spa-hor-m01 );                            /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	padding         : var( --spa-ver-m02 ) 0;                          /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+.sumIteIte:first-child { /* What: First Conditional Summary Row. Why: The first row needs no divider. How: This drops its border. */
+
+
+	border-top : 0;
+
+
+}
+
+.sumNamSpa { /* What: Summary Name Span. Why: The name and its tag share the row's left. How: This lines them up in a centered row that can shrink. */
+
+
+	align-items : center;
+	display     : flex;
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	gap         : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	min-width   : 0;
+
+
+}
+
+
+/* #region sumMetSpa */
+
+.sumMetSpa { /* What: Summary Meta Span. Why: The mode pill, fraction, and rate sit together at the row's end. How: This lines them up on a baseline row that never shrinks. */
+
+
+	align-items : baseline;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+}
+
+.sumMetSpa .logTypSpa { /* What: Conditional Summary Mode Pill. Why: Every mode pill should be the same size. How: This fixes it at a rhythm step with its label centered. */
+
+
+	text-align : center;
+	width      : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+
+
+}
+
+.sumFraSpa { /* What: Summary Fraction Span. Why: A wider fraction would shift this row's pill out of line with its siblings. How: This fixes it at a rhythm step, right-aligned in small muted tabular mono. */
+
+
+	color                : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family          : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-bas );                /* Font Size Base = 11px */
+	font-variant-numeric : tabular-nums;
+	text-align           : right;
+	width                : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+
+
+}
+
+.sumRatSpa { /* What: Summary Rate Span. Why: The fire rate is the row's main number. How: This sets it bold in the accent, right-aligned at a minimum width. */
+
+
+	color                : var( --acc-mai-col );                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	font-family          : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
+	font-variant-numeric : tabular-nums;
+	font-weight          : 600;
+	min-width            : calc( var( --ver-rhy-p04 ) * 1rem ); /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	text-align           : right;
+
+
+}
+
+/* #endregion sumMetSpa */
+
+/* #endregion sumLisUno */
+
+
+
+/* #region ranHeaDiv */
+
+.ranHeaDiv { /* What: Rank Header Div. Why: A breakdown's kicker and its sort toggle share the top row. How: This spreads them across a centered row. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+
+
+}
+
+.ranHeaDiv .pagKicDiv { /* What: List Header Kicker. Why: A long title should wrap rather than squeeze the sort toggle. How: This lets the kicker shrink. */
+
+
+	min-width : 0;
+
+
+}
+
+.ranSorBut { /* What: Rank Sort Button. Why: The list's sort direction flips from a small pill beside its title. How: This draws an outlined mono pill that never shrinks or wraps and fades between colors. */
+
+
+	align-items    : center;
+	background     : transparent;
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );               /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : 999px;
+	color          : var( --tex-mut-col );                                          /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor         : pointer;
+	display        : inline-flex;
+	flex           : 0 0 auto;
+	font-family    : var( --fon-fam-sec );                                          /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                                          /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m04 );                                          /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	height         : calc( var( --ver-rhy-p02 ) * 1rem );                           /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	letter-spacing : 0.04em;
+	padding        : 0 var( --spa-hor-m01 );                                        /* Spacing Horizontal Base Minus 1 = 11px */
+	text-transform : uppercase;
+	transition     : border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	white-space    : nowrap;
+
+
+}
+.ranSorBut:hover { /* What: Hovered Sort Toggle. Why: The toggle should respond to the pointer. How: This darkens its border and text. */
+
+
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color        : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sort Toggle. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ranSorBut { /* What: Still Sort Toggle. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion ranHeaDiv */
+
+
+
+/* #region breMetDiv */
+
+.breMetDiv { /* What: Breakdown Metrics Div. Why: The breakdown's metrics sit in one side-scrolling row with faded edges. How: This lays them out in an unwrapped scrolling flex row, with its scrollbar hidden and its edges masked. */
+
+
+	--fad-edg-off : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the row. How: --fad-lef-off and --fad-rig-off start from it. */
+	--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Left Offset. Why: The left edge fades until the row reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Right Offset. Why: The right edge fades until the row reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+
+	-webkit-mask-image : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
+	display            : flex;
+	flex-wrap          : nowrap;
+	gap                : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	margin             : var( --spa-ver-m01 ) 0 var( --spa-ver-m05 );                                                                                       /* Spacing Vertical Base Minus 1 = 11px, Spacing Vertical Base Minus 5 ~= 3.571px */
+	mask-image         : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
+	min-width          : 0;
+	overflow-x         : auto;
+	padding-bottom     : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	scrollbar-width    : none;
+
+
+}
+.breMetDiv::-webkit-scrollbar { /* What: Metric Pills Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+.breMetDiv[data-scroll-start-active] { /* What: Metric Pills At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+	--fad-lef-off : 0px;
+
+
+}
+.breMetDiv[data-scroll-end-active] { /* What: Metric Pills At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+	--fad-rig-off : 0px;
+
+
+}
+
+.breMetBut { /* What: Breakdown Metric Button. Why: Each metric is a pill that switches the list below. How: This draws a small outlined pill that never shrinks and fades between colors. */
+
+
+	background     : transparent;
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : 999px;
+	color          : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor         : pointer;
+	flex           : 0 0 auto;
+	font-size      : var( --fon-siz-bas );                                                                           /* Font Size Base = 11px */
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+	padding        : var( --spa-ver-m04 ) var( --spa-hor-m01 );                                                      /* Spacing Vertical Base Minus 4 ~= 4.731px, Spacing Horizontal Base Minus 1 = 11px */
+	transition     : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+
+
+}
+.breMetBut:hover { /* What: Hovered Metric Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
+
+
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color        : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.breMetBut[data-pill-select-active] { /* What: Selected Metric Pill. Why: The showing metric should stand out. How: This fills it in the soft accent, keying off data-pill-select-active. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Metric Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.breMetBut { /* What: Still Metric Pill. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion breMetDiv */
+
+
+
+.ranNotPar { /* What: Rank Note Paragraph. Why: A note explains what the showing metric counts. How: This sets small muted text under the pills. */
+
+
+	color       : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas );     /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas );     /* Vertical Rhythm Base ~= 1.325 */
+	margin      : var( --spa-ver-m01 ) 0 0; /* Spacing Vertical Base Minus 1 = 11px */
+	text-wrap   : pretty;
+
+
+}
+
+.notLinBut { /* What: Note Link Button. Why: A note switches the metric's unit with inline links. How: This strips the button chrome down to dotted underlined text that fades between colors. */
+
+
+	background            : none;
+	border                : 0;
+	color                 : var( --tex-mut-col );       /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor                : pointer;
+	font                  : inherit;
+	padding               : 0;
+	text-decoration       : underline;
+	text-decoration-style : dotted;
+	text-underline-offset : 2px;
+	transition            : color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+
+
+}
+.notLinBut:hover { /* What: Hovered Unit Toggle. Why: The link should respond to the pointer. How: This darkens it. */
+
+
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.notLinBut[data-link-select-active] { /* What: Selected Unit Toggle. Why: The showing unit should stand out. How: This sets it bold in the accent with a solid underline, keying off data-link-select-active. */
+
+
+	color                 : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	font-weight           : 600;
+	text-decoration-style : solid;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Unit Toggle. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.notLinBut { /* What: Still Unit Toggle. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.ranLisUno--fade,
+.remLogUno--fade { /* What: Fade Rank List Unordered And Fade Reminder Log Unordered. Why: A list that changes with its metric or sort should fade and rise in. How: This plays the shared fade alongside a short rise each time the keyed list remounts. */
+
+
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ), listSwitchRise var( --dur-ani-p02 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every live explanation line, so they stay in the global sheet, while listSwitchRise is this file's own. How: global() keeps CSS modules from renaming the shared reference to a scoped name that doesn't exist. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Refreshing List. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ranLisUno--fade,
+	.remLogUno--fade { /* What: Still Refreshing List. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes listSwitchRise { /* What: List Switch Rise Keyframes. Why: The refreshed list settles up into place. How: This moves it up 5px. */
+
+
+	from {
+
+
+		transform : translateY( var( --spa-ver-m04 ) ); /* Spacing Vertical Base Minus 4 ~= 4.731px */
+
+
+	}
+
+	to {
+
+
+		transform : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region ranLisUno */
+
+.ranLisUno { /* What: Rank List Unordered. Why: A list of items stacks as ruled rows. How: This stacks them with a little room above. */
+
+
+	display        : flex;
+	flex-direction : column;
+	margin-top     : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+.ranLisUno--freq { /* What: Frequency Rank List Unordered. Why: A list under a unit note needs more room above. How: This spaces it base vertical spacing down. */
+
+
+	margin-top : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+.ranLisUno--breakdown { /* What: Breakdown Rank List Unordered. Why: A breakdown list sits under its note and pills. How: This spaces it base vertical spacing down. */
+
+
+	margin-top : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+.ranIteIte { /* What: Rank Item Item. Why: Each item pairs its name with its value, divided from the next. How: This spreads them across a baseline row under a hairline. */
+
+
+	align-items     : baseline;
+	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display         : flex;
+	font-size       : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	gap             : var( --spa-hor-m01 );                            /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	padding         : var( --spa-ver-bas ) 0;                          /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+.ranIteIte:last-child { /* What: Last Rank Row. Why: The last row needs no divider. How: This drops its border. */
+
+
+	border-bottom : 0;
+
+
+}
+.ranLisUno--breakdown .ranIteIte,
+.ranLisUno--freq .ranIteIte { /* What: Breakdown Rank Row. Why: A breakdown row's tags and pills should center against its name block. How: This centers the row. */
+
+
+	align-items : center;
+
+
+}
+
+.ranNumSpa { /* What: Rank Number Span. Why: Each item's count reads as quiet metadata. How: This sets small muted tabular mono. */
+
+
+	color                : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	font-variant-numeric : tabular-nums;
+
+
+}
+.ranLisUno--cold .ranNumSpa { /* What: Cold Rank Count. Why: The coldest items' counts read fainter still. How: This fades the muted color. */
+
+
+	color : oklch( from var( --tex-mut-col ) l c h / var( --cdn-pow-001-rec ) ); /* Text Muted Color = oklch( 0.5 0.012 250 ), Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+
+.ranLisUno--breakdown .ranNamSpa,
+.ranLisUno--freq .ranNamSpa { /* What: Breakdown Item Name. Why: A breakdown row stacks its name line over its meta. How: This stacks them in a shrinkable column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m06 ); /* Spacing Vertical Base Minus 6 ~= 2.696px */
+	min-width      : 0;
+
+
+}
+.ranLisUno--breakdown .ranIteIte[data-row-vacation-active] .ranNamSpa,
+.ranLisUno--freq .ranIteIte[data-row-vacation-active] .ranNamSpa { /* What: Inactive Item Name. Why: An inactive item reads muted. How: This mutes its name, keying off data-row-vacation-active. */
+
+
+	color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+.ranLisUno--breakdown .namRowSpa { /* What: Item Name Line. Why: The name and its tag share a line. How: This lines them up on a baseline row that can shrink. */
+
+
+	align-items : baseline;
+	display     : flex;
+	gap         : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	min-width   : 0;
+
+
+}
+.ranLisUno--breakdown .ranIteIte[data-row-deleted-active] .namTexSpa,
+.ranLisUno--freq .ranIteIte[data-row-deleted-active] .namTexSpa { /* What: Deleted Item Name. Why: A deleted item's history remains but should read as historical. How: This mutes and strikes its name, keying off data-row-deleted-active. */
+
+
+	color                 : var( --tex-mut-col );                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	text-decoration       : line-through;
+	text-decoration-color : oklch( from var( --tex-mut-col ) l c h / 0.5 ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+
+.ranMetSpa { /* What: Rank Meta Span. Why: A target or suffix reads as quiet mono under the name. How: This sets small faded mono. */
+
+
+	color          : oklch( from var( --tex-mut-col ) l c h / 0.85 ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                            /* Font Size Base = 11px */
+	letter-spacing : 0.02em;
+
+
+}
+
+.ranTagSpa { /* What: Rank Tag Span. Why: A status like inactive reads as a small outlined chip. How: This draws a small uppercase mono pill that never shrinks. */
+
+
+	align-items    : center;
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : 999px;
+	color          : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display        : inline-flex;
+	flex           : 0 0 auto;
+	font-family    : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                            /* Font Size Base = 11px */
+	height         : calc( var( --ver-rhy-p01 ) * 1rem );             /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	letter-spacing : 0.04em;
+	padding        : 0 var( --spa-hor-m03 );                          /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	text-transform : uppercase;
+
+
+}
+.ranTagSpa--was { /* What: Was Rank Tag Span. Why: An item that returned but hasn't been picked since reads in the accent rather than muted. How: This tints the chip in the accent. */
+
+
+	background   : var( --acc-tin-col );                                                /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-003-rec ) ); /* Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
+	color        : var( --acc-mai-col );                                                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.ranTagSpa--deleted { /* What: Deleted Rank Tag Span. Why: A deleted item's tag warns in a warm danger tint. How: This tints the chip red. */
+
+
+	background   : oklch( from var( --err-mai-col ) l c h / var( --cdn-pow-009-rec ) ); /* Error Main Color = oklch( 0.55 0.17 25 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
+	border-color : oklch( from var( --err-mai-col ) l c h / var( --cdn-pow-003-rec ) ); /* Error Main Color = oklch( 0.55 0.17 25 ), Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
+	color        : var( --err-mai-col );                                                /* Error Main Color = oklch( 0.55 0.17 25 ) */
+
+
+}
+
+.ranValSpa { /* What: Rank Value Span. Why: The share and fraction sit together at the row's end. How: This lines them up on a baseline row that never shrinks. */
+
+
+	align-items : baseline;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+}
+
+.breValSpa { /* What: Breakdown Value Span. Why: The status tag sits with the value on the right, rather than crowding the name. How: This lines them up in a centered row that never shrinks. */
+
+
+	align-items : center;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+}
+.breValSpa .ranFraSpa { /* What: Item Breakdown Fraction. Why: A wider fraction would shift this row's share out of line with its siblings. How: This fixes it at a rhythm step. */
+
+
+	width : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+
+
+}
+.breValSpa .metNumSpa { /* What: Item Breakdown Number. Why: Every row's number should line up. How: This fixes it at a rhythm step. */
+
+
+	width : calc( var( --ver-rhy-p04 ) * 1rem ); /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+
+
+}
+
+.ranPerSpa { /* What: Rank Percent Span. Why: The share reads as the row's main number. How: This sets tabular mono right-aligned at a minimum width. */
+
+
+	color                : var( --tex-mai-col );                /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family          : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
+	font-variant-numeric : tabular-nums;
+	min-width            : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	text-align           : right;
+
+
+}
+
+.ranFraSpa { /* What: Rank Fraction Span. Why: The raw count reads as quieter detail beside the share. How: This sets small muted tabular mono right-aligned at a minimum width. */
+
+
+	color                : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family          : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-bas );                /* Font Size Base = 11px */
+	font-variant-numeric : tabular-nums;
+	min-width            : calc( var( --ver-rhy-p04 ) * 1rem ); /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	text-align           : right;
+
+
+}
+
+.metNumSpa { /* What: Metric Number Span. Why: A count metric shows one number per row. How: This sets tabular mono right-aligned, never shrinking. */
+
+
+	color                : var( --tex-mai-col );                /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	flex                 : 0 0 auto;
+	font-family          : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
+	font-variant-numeric : tabular-nums;
+	min-width            : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	text-align           : right;
+
+
+}
+
+.freValSpa { /* What: Frequency Value Span. Why: A frequency or last-picked value reads as mono at the row's end. How: This sets tabular mono that never shrinks or wraps. */
+
+
+	color                : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	flex                 : 0 0 auto;
+	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-variant-numeric : tabular-nums;
+	white-space          : nowrap;
+
+
+}
+.freValSpa[data-value-dim-active] { /* What: Placeholder Unit Value. Why: A placeholder like Not Picked should read fainter than a real value. How: This fades it, keying off data-value-dim-active. */
+
+
+	color : oklch( from var( --tex-mut-col ) l c h / var( --cdn-pow-001-rec ) ); /* Text Muted Color = oklch( 0.5 0.012 250 ), Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+.freValSpa--freq { /* What: Frequency Frequency Value Span. Why: Values like every 12.5 weeks and Picked once differ in width, which would shift the tag before them. How: This fixes it at a rhythm step, right-aligned. */
+
+
+	text-align : right;
+	width      : calc( var( --ver-rhy-p07 ) * 1rem ); /* Vertical Rhythm Base Plus 7 ~= 104.323px */
+
+
+}
+.freValSpa--last { /* What: Last Frequency Value Span. Why: Values like 12 days and Yesterday differ in width, which would shift the tag before them, and the longest needs a smaller size to fit beside its tag. How: This sets it at the base font size, fixed at a rhythm step, right-aligned. */
+
+
+	font-size  : var( --fon-siz-bas );                /* Font Size Base = 11px */
+	text-align : right;
+	width      : calc( var( --ver-rhy-p07 ) * 1rem ); /* Vertical Rhythm Base Plus 7 ~= 104.323px */
+
+
+}
+.freValSpa--interval { /* What: Interval Frequency Value Span. Why: Values like every 100 days would shift the pill before them. How: This fixes it at a rhythm step, right-aligned. */
+
+
+	text-align : right;
+	width      : calc( var( --ver-rhy-p07 ) * 1rem ); /* Vertical Rhythm Base Plus 7 ~= 104.323px */
+
+
+}
+.freValSpa--fired { /* What: Fired Frequency Value Span. Why: A date like Aug 23 would shift the pill before it. How: This fixes it at a rhythm step, right-aligned. */
+
+
+	text-align : right;
+	width      : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+
+
+}
+
+
+/* #region conValSpa */
+
+.conValSpa { /* What: Conditional Value Span. Why: The mode pill sits with the row's value on the right. How: This lines them up in a centered row that never shrinks. */
+
+
+	align-items : center;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+}
+
+.conValSpa .logTypSpa { /* What: Conditional Breakdown Mode Pill. Why: Every row's pill should be the same size. How: This fixes it at a rhythm step with its label centered. */
+
+
+	flex       : 0 0 auto;
+	text-align : center;
+	width      : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+
+
+}
+.conValSpa .ranFraSpa { /* What: Conditional Breakdown Fraction. Why: A wider fraction would shift this row's pill out of line. How: This fixes it at a rhythm step. */
+
+
+	width : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+
+
+}
+.conValSpa .metNumSpa { /* What: Conditional Breakdown Number. Why: Every row's number should line up. How: This fixes it at a rhythm step. */
+
+
+	width : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+
+/* #endregion conValSpa */
+
+/* #endregion ranLisUno */
+
+
+
+/* #region remLogUno */
+
+.remLogUno { /* What: Reminder Log Unordered. Why: Completed or broken-down reminders stack as ruled rows. How: This clears the list styling. */
+
+
+	list-style : none;
+	margin     : 0;
+	padding    : 0;
+
+
+}
+.logIteIte { /* What: Log Item Item. Why: Each reminder pairs its name with its type and date, divided from the next. How: This spreads them across a centered row under a hairline. */
+
+
+	align-items     : center;
+	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display         : flex;
+	gap             : var( --spa-hor-m01 );                            /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	padding         : var( --spa-ver-bas ) 0;                          /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+.logIteIte:last-child { /* What: Last Reminder Log Row. Why: The last row needs no divider. How: This drops its border. */
+
+
+	border-bottom : 0;
+
+
+}
+
+.logNamSpa { /* What: Log Name Span. Why: The reminder's name leads its row and wraps rather than truncating. How: This sets it slightly heavy and lets it shrink. */
+
+
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight : 450;
+	min-width   : 0;
+
+
+}
+
+
+/* #region logMetSpa */
+
+.logMetSpa { /* What: Log Meta Span. Why: The type pill and the date sit together at the row's end. How: This lines them up in a centered row that never shrinks. */
+
+
+	align-items : center;
+	display     : inline-flex;
+	flex        : 0 0 auto;
+	gap         : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+}
+
+.logMetSpa .logTypSpa { /* What: Reminder Log Type Pill. Why: One-time and recurring pills should be the same size. How: This fixes it at a rhythm step with its label centered. */
+
+
+	text-align : center;
+	width      : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+
+
+}
+
+.logWheSpa { /* What: Log When Span. Why: A one-digit day is narrower than a two-digit one, which would shift the pill before it. How: This fixes it at a rhythm step, right-aligned in small muted mono on one line. */
+
+
+	color          : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                /* Font Size Base = 11px */
+	letter-spacing : 0.02em;
+	text-align     : right;
+	white-space    : nowrap;
+	width          : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+
+
+}
+
+/* #endregion logMetSpa */
+
+
+
+.logTypSpa { /* What: Log Type Span. Why: A reminder's kind or a conditional's mode reads as a small outlined chip. How: This draws a small uppercase mono pill. */
+
+
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : 999px;
+	color          : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                            /* Font Size Base = 11px */
+	letter-spacing : 0.05em;
+	padding        : var( --spa-ver-m07 ) var( --spa-hor-m03 );       /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+	text-transform : uppercase;
+
+
+}
+.logTypSpa--recurring { /* What: Recurring Log Type Span. Why: A recurring reminder reads in the accent. How: This tints the chip in the accent. */
+
+
+	background   : oklch( from var( --acc-tin-col ) l c h / 0.5 );                      /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-003-rec ) ); /* Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
+	color        : var( --acc-mai-col );                                                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+
+/* #endregion remLogUno */
+
+
+
+/* #region pagNavDiv */
+
+.pagNavDiv { /* What: Pager Navigation Div. Why: A long list pages through its rows from a control at its foot. How: This pushes the range and arrows right over a hairline. */
+
+
+	align-items     : center;
+	border-top      : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display         : flex;
+	gap             : var( --spa-hor-bas );                            /* Spacing Horizontal Base ~= 14.572px */
+	justify-content : flex-end;
+	margin-top      : var( --spa-ver-bas );                            /* Spacing Vertical Base ~= 14.572px */
+	padding-top     : var( --spa-ver-bas );                            /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+
+.pagRanSpa { /* What: Pager Range Span. Why: The showing rows read as quiet metadata. How: This sets small muted tabular mono. */
+
+
+	color                : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	font-variant-numeric : tabular-nums;
+	letter-spacing       : 0.02em;
+
+
+}
+.pagJoiSpa { /* What: Pager Joiner Span. Why: The joining word reads quieter than the numbers. How: This fades it. */
+
+
+	opacity : var( --cdn-pow-002-rec ); /* Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
+
+
+}
+
+
+/* #region pagArrDiv */
+
+.pagArrDiv { /* What: Pager Arrows Div. Why: The previous and next arrows sit together. How: This lines them up in a row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+
+
+}
+
+.pagArrBut { /* What: Pager Arrow Button. Why: Each arrow is a small square button that tints on hover. How: This draws an outlined square at the p02 rhythm step with its glyph centered, fading between states. */
+
+
+	align-items     : center;
+	background      : transparent;
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	cursor          : pointer;
+	display         : flex;
+	font-size       : var( --fon-siz-p02 );                            /* Font Size Base Plus 2 ~= 19.304px */
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	justify-content : center;
+	line-height     : var( --ver-rhy-m01 );                            /* Vertical Rhythm Base Minus 1 = 1 */
+	transition      : background var( --dur-tra-m01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), opacity var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+
+
+}
+.pagArrBut:hover:not( :disabled ) { /* What: Hovered Pager Arrow. Why: A live arrow should respond to the pointer. How: This tints it with the accent. */
+
+
+	background   : oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-009-rec ) ); /* Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
+	border-color : oklch( from var( --acc-mai-col ) l c h / 0.5 );                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.pagArrBut:disabled { /* What: Disabled Pager Arrow. Why: An arrow with nowhere to go should look it. How: This fades it and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : var( --cdn-pow-004-rec ); /* Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pager Arrow. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.pagArrBut { /* What: Still Pager Arrow. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion pagArrDiv */
+
+/* #endregion pagNavDiv */
+
+.staEmpDiv { /* What: Stat Empty Div. Why: A card with nothing to show says so quietly. How: This sets small muted text with a little padding. */
+
+
+	color     : var( --tex-mut-col );                      /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-p01 );                      /* Font Size Base Plus 1 ~= 14.572px */
+	padding   : var( --spa-ver-bas ) var( --spa-hor-m07 ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Minus 7 ~= 2.035px */
+
+
+}
+
+.logEmpDiv { /* What: Log Empty Div. Why: A log with nothing in range says so quietly. How: This sets small muted text with a little padding. */
+
+
+	color     : var( --tex-mut-col );   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-p01 );   /* Font Size Base Plus 1 ~= 14.572px */
+	padding   : var( --spa-ver-m03 ) 0; /* Spacing Vertical Base Minus 3 ~= 6.268px */
+
+
+}
+
+.pieHelSpa { /* What: Pie Help Span. Why: A small circled "?" beside an N/A value explains it without competing with it. How: This draws a small muted round badge that brightens on hover. */
+
+
+	align-items     : center;
+	border          : var( --bor-wid-bas ) solid var( --tex-mut-col ); /* Border Width Base ~= 1.160px, Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border-radius   : 50%;
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor          : help;
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	font-size       : var( --fon-siz-bas );                            /* Font Size Base = 11px */
+	font-weight     : 700;
+	height          : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+	justify-content : center;
+	line-height     : var( --ver-rhy-m01 );                            /* Vertical Rhythm Base Minus 1 = 1 */
+	transition      : border-color var( --dur-tra-p01 ) var( --mot-sta-eas ), color var( --dur-tra-p01 ) var( --mot-sta-eas ), background var( --dur-tra-p01 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+
+
+}
+.pieHelSpa:hover { /* What: Hovered Help Bubble. Why: The bubble should respond to the pointer. How: This tints it with the accent color. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Help Bubble. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.pieHelSpa { /* What: Still Help Bubble. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion staBodDiv */
+
+/* #endregion pagBodDiv */
+
+/* #endregion tabPagDiv */
+
+

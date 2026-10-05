@@ -1,0 +1,143 @@
+
+
+
+/**
+ * button.module.css = Button Module
+ *
+ * @summary
+ * Styles for ButBasCom, the app's shared pill button: the base shape, the
+ * pressed and disabled states, the small size, and the primary, ghost,
+ * danger, and secondary kinds. A parent that needs a button to fit its row
+ * differently sets the --but-* custom properties on itself (flex sizing, text
+ * wrapping, tabular figures, or hiding a danger button) instead of styling
+ * the button from outside.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+.butBasBut { /* What: Button Base Button. Why: Every action button in the app shares one pill shape. How: This lays out the icon and label in a rounded pill, reading its fit from --but-* properties a parent may set, each falling back to a button's normal behavior. */
+
+
+	align-items          : center;
+	border-radius        : 999px;
+	display              : var( --but-bas-dis, inline-flex );                                                           /* Button Base Display, set by its parent, falling back to inline-flex */ /* What: Button Display. Why: A button that only belongs at some widths, like Today's footer Edit Mode button, is hidden by its caller. How: A caller sets --but-bas-dis on the button, falling back to the normal inline flex. */
+	flex                 : var( --but-bas-fle, 0 1 auto );                                                              /* Button Base Flex, set by its parent, falling back to 0 1 auto */ /* What: Button Flex. Why: Some rows need their buttons to keep their size instead of shrinking. How: A parent sets --but-bas-fle, falling back to the normal flex sizing. */
+	font-size            : var( --fon-siz-p01 );                                                                        /* Font Size Base Plus 1 ~= 14.572px */
+	font-variant-numeric : var( --but-bas-fig, inherit );                                                               /* Button Base Figures, set by its parent, falling back to inherit */ /* What: Button Figures. Why: A button whose label counts up should keep its width steady as digits change. How: A parent sets --but-bas-fig to tabular figures, otherwise the button inherits as usual. */
+	font-weight          : 500;
+	gap                  : var( --spa-hor-m03 );                                                                        /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	height               : calc( var( --ver-rhy-p03 ) * 1rem );                                                         /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	letter-spacing       : -0.005em;
+	padding              : 0 var( --spa-hor-bas );                                                                      /* Spacing Horizontal Base ~= 14.572px */
+	transition           : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ), transform var( --dur-tra-m02 ); /* Duration Transition Base Minus 1 ~= 119.2ms, Duration Transition Base Minus 2 ~= 89.9ms */
+	white-space          : var( --but-bas-whi, inherit );                                                               /* Button Base White Space, set by its parent, falling back to inherit */ /* What: Button Wrapping. Why: A button in a tight row shouldn't wrap its label. How: A parent sets --but-bas-whi to nowrap, otherwise the button inherits as usual. */
+
+
+}
+.butBasBut:active { /* What: Pressed Button. Why: A press should feel physical. How: This nudges the button down half a pixel. */
+
+
+	transform : translateY( 0.5px );
+
+
+}
+.butBasBut:disabled { /* What: Disabled Button. Why: An unavailable action should look it. How: This dims the button and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : 0.5;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Button. Why: Someone who asked for less motion shouldn't see the button's colors fade or its press nudge glide. How: This applies only when the reduced-motion preference is set. */
+
+
+	.butBasBut { /* What: Still Button Base Button. Why: A press and a hover should simply switch the button's look. How: This turns the transition off, so colors switch and the press nudge lands instantly. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+.butBasBut--sm { /* What: Small Button Base Button. Why: Compact rows need a shorter button. How: This drops the height one rhythm step and shrinks the padding and gap. */
+
+
+	border-radius : 999px;
+	font-size     : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
+	gap           : var( --spa-hor-m04 );                /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	height        : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	padding       : 0 var( --spa-hor-m01 );              /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+}
+.butBasBut--primary { /* What: Primary Button Base Button. Why: The main action in a view should stand out. How: This fills the button with the text color and uses the background color for its label. */
+
+
+	background : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	color      : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+
+
+}
+.butBasBut--primary:hover { /* What: Hovered Primary Button. Why: The main action should respond to the pointer. How: This lightens its fill slightly. */
+
+
+	background : oklch( from var( --tex-mai-col ) calc( l + 0.06 ) c h ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.butBasBut--ghost { /* What: Ghost Button Base Button. Why: Secondary actions shouldn't compete with the content. How: This leaves the button unfilled with a muted label. */
+
+
+	color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+.butBasBut--ghost:hover { /* What: Hovered Ghost Button. Why: A quiet button still needs to respond to the pointer. How: This gives it a surface fill and the full text color. */
+
+
+	background : var( --bac-sur-col ); /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	color      : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.butBasBut--danger { /* What: Danger Button Base Button. Why: A destructive action should read as one before it's clicked. How: This outlines the button in red, and a parent can hide it through --but-dan-dis. */
+
+
+	background : transparent;
+	border     : var( --bor-wid-sma ) solid currentColor; /* Border Width Small ~= 0.499px */
+	color      : var( --err-dar-col );                    /* Error Dark Color = oklch( 0.5 0.18 25 ) */
+	display    : var( --but-dan-dis, inline-flex );       /* Button Danger Display, set by its parent, falling back to inline-flex */ /* What: Danger Button Display. Why: A brand-new item's editor is discarded with Cancel, so its footer Delete button is redundant there. How: That form's footer sets --but-dan-dis to none, falling back to the button's normal inline-flex. */
+
+
+}
+.butBasBut--danger:hover { /* What: Hovered Danger Button. Why: The destructive action should respond to the pointer. How: This gives it a faint red fill. */
+
+
+	background : var( --err-tin-col ); /* Error Tint Color = oklch( 0.955 0.02 25 ) */
+
+
+}
+.butBasBut--secondary { /* What: Secondary Button Base Button. Why: Some actions need a clear but outlined button. How: This gives it a surface fill, a hairline border, and the full text color. */
+
+
+	background : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	color      : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.butBasBut--secondary:hover { /* What: Hovered Secondary Button. Why: An outlined button should respond to the pointer. How: This darkens its border to the muted color. */
+
+
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+
+

@@ -1,0 +1,60 @@
+
+
+
+/**
+ * fill-button.module.css = Fill Button Module
+ *
+ * @summary
+ * Styles for FilButCom's one-shot icon spin: clicking a Fill or Refill lever
+ * turns its refresh icon once, as purely decorative feedback, unless reduced
+ * motion is requested.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+.refIcoSvg--spinning { /* What: Spinning Refresh Icon Svg. Why: A click on the lever should visibly register even when the fill itself shows no immediate change. How: FilButCom hands ButBasCom this class for its icon while its spin state is on, which turns the icon once. */
+
+
+	animation : refIcoSvgClickSpin var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Spinning Refresh Icon Svg. Why: Someone who asked for less motion shouldn't see the icon turn. How: This applies only when the reduced-motion preference is set. */
+
+
+	.refIcoSvg--spinning { /* What: Still Refresh Icon Svg. Why: The icon should stay put. How: This shortens the spin to an instant, so the button's own animationend handler still fires and clears the spin state. */
+
+
+		animation-duration : .01ms;
+
+
+	}
+
+
+}
+@keyframes refIcoSvgClickSpin { /* What: Refresh Icon Svg Click Spin. Why: One full turn reads as a refresh. How: This rotates the icon a full circle. */
+
+
+	from {
+
+
+		transform : rotate( 0 );
+
+
+	}
+
+	to {
+
+
+		transform : rotate( 360deg );
+
+
+	}
+
+
+}
+
+

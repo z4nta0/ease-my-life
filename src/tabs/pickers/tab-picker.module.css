@@ -1,0 +1,703 @@
+
+
+
+/**
+ * tab-picker.module.css = Tab Picker Module
+ *
+ * @summary
+ * Styles for the Pickers tab's own frame: its root and header (kicker row,
+ * brand mark, title, and intro), the Group, Type, and Show filter rows with
+ * their scrolling pill rails and picker tab strip, and the fading wrapper
+ * around whichever picker or form is showing. Most of these classes are shared
+ * with the other tabs, so their rules are copies of the global ones, resolved
+ * where this tab's own overrides used to win. A selected pill keys off its own
+ * aria-selected, a selected picker tab off data-tab-select-active, and the
+ * disabled Add tab off the aria-disabled its info tip sets. The rails' edge
+ * fades follow edge-fade.js's data-scroll-start-active and
+ * data-scroll-end-active, and the root reads --tab-tou-pad, which the
+ * body sets while a tour runs.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region tabPagDiv */
+
+.tabPagDiv { /* What: Tab Page Div. Why: The header and body stack as the tab's page, with extra room below while a tour runs. How: This stacks them in a column and reads the body's tour padding. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-p02 );    /* Spacing Vertical Base Plus 2 ~= 25.572px */
+	padding-bottom : var( --tab-tou-pad, 0 ); /* Tab Tour Padding ~= 242.522px, set on the body while a tour runs */
+
+
+}
+
+
+/* #region pagHeaHea */
+
+.pagHeaHea { /* What: Page Header Header. Why: The kicker row, lead, and intro read as one header. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
+
+
+}
+
+
+/* #region kicRowDiv */
+
+.kicRowDiv { /* What: Kicker Row Div. Why: The page kicker and the help toggle sit on one line at opposite ends. How: This spreads them across a centered row. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	min-width       : 0;
+
+
+}
+
+.pagKicDiv { /* What: Page Kicker Div. Why: A small eyebrow label orients the reader above the page's heading. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	font-weight    : 500;
+	letter-spacing : 0.08em;
+	line-height    : var( --ver-rhy-p01 ); /* Vertical Rhythm Base Plus 1 ~= 1.755 */
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion kicRowDiv */
+
+
+
+/* #region heaLeaDiv */
+
+.heaLeaDiv { /* What: Header Lead Div. Why: The brand mark and title sit side by side. How: This lines them up in a centered row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : var( --spa-hor-bas ); /* Spacing Horizontal Base ~= 14.572px */
+
+
+}
+@container app ( max-width : 640px ) { /* What: Narrow Header Lead. Why: On a narrow screen the mark and title sit closer. How: This applies only when the app is 640px wide or less. */
+
+
+	.heaLeaDiv { /* What: Tighter Header Lead Div. Why: The row has less room. How: This tightens its gap. */
+
+
+		gap : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+	}
+
+
+}
+
+
+/* #region braMarBut */
+
+.braMarBut { /* What: Brand Mark Button. Why: The logo beside the title is also a button back to Today. How: This strips the button chrome and sizes the mark as a square that lifts on hover. */
+
+
+	-webkit-appearance : none;
+	align-self         : center;
+	appearance         : none;
+	aspect-ratio       : auto;
+	background         : none;
+	border             : 0;
+	border-radius      : var( --rad-bor-med );                                /* Radius Border Medium = 11px */
+	color              : var( --acc-mai-col );                                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	cursor             : pointer;
+	display            : block;
+	flex               : 0 0 auto;
+	font               : inherit;
+	height             : calc( var( --ver-rhy-p06 ) * 1rem );                 /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	padding            : 0;
+	text-decoration    : none;
+	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+	width              : calc( var( --ver-rhy-p06 ) * 1rem );                 /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+
+
+}
+.braMarBut:hover { /* What: Hovered Brand Mark. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
+
+
+	transform : translateY( -1px );
+
+
+}
+@container app ( max-width : 640px ) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the app is 640px wide or less. */
+
+
+	.braMarBut { /* What: Smaller Brand Mark Button. Why: The title needs the room. How: This shrinks the mark one rhythm step, to p05. */
+
+
+		height : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+		width  : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+
+
+	}
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Brand Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.braMarBut { /* What: Still Brand Mark Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.braMarSvg { /* What: Brand Mark Svg. Why: The logo fills its button. How: This sizes the svg to the full box as a block. */
+
+
+	display : block;
+	height  : 100%;
+	width   : 100%;
+
+
+}
+
+/* #endregion braMarBut */
+
+
+
+/* #region heaTitDiv */
+
+.heaTitDiv { /* What: Header Title Div. Why: The title sits beside the brand mark, centered against it. How: This stacks the title in a column that takes the remaining width. */
+
+
+	display         : flex;
+	flex            : 1 1 auto;
+	flex-direction  : column;
+	gap             : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
+	justify-content : center;
+	min-width       : 0;
+
+
+}
+
+
+/* #region pagTitHea */
+
+.pagTitHea { /* What: Page Title Heading. Why: The page's main heading leads the tab. How: This sets it large and tight. */
+
+
+	font-size      : var( --fon-siz-p04 ); /* Font Size Base Plus 4 ~= 33.876px */
+	font-weight    : 500;
+	letter-spacing : -0.025em;
+	line-height    : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+	margin         : 0;
+
+
+}
+@container app ( max-width : 560px ) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
+
+
+	.pagTitHea { /* What: Smaller Page Title Heading. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
+
+
+		font-size : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
+
+
+	}
+
+
+}
+
+.titAccSpa { /* What: Title Accent Span. Why: The heading's first word reads in the accent color. How: This colors the span. */
+
+
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+
+/* #endregion pagTitHea */
+
+/* #endregion heaTitDiv */
+
+/* #endregion heaLeaDiv */
+
+
+
+/* #region pagSubPar */
+
+.pagSubPar { /* What: Page Sub Paragraph. Why: The intro explains the page under its title, linking to other tabs inline. How: This sets it muted, capped in line length. */
+
+
+	color     : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	margin    : var( --spa-ver-p01 ) 0 0; /* Spacing Vertical Base Plus 1 ~= 19.304px */
+	max-width : var( --tex-wid-bas );     /* Text Width Base Maximum ~= 29.207em */
+
+
+}
+
+.subLinBut { /* What: Sub Link Button. Why: The intro links to other tabs inline. How: This strips the button chrome down to underlined accent text. */
+
+
+	background            : none;
+	border                : 0;
+	color                 : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	cursor                : pointer;
+	font                  : inherit;
+	padding               : 0;
+	text-decoration       : underline;
+	text-underline-offset : 2px;
+
+
+}
+.subLinBut:hover { /* What: Hovered Intro Link. Why: The link should respond to the pointer. How: This thickens its underline. */
+
+
+	text-decoration-thickness : 2px;
+
+
+}
+
+/* #endregion pagSubPar */
+
+/* #endregion pagHeaHea */
+
+
+
+/* #region pagBodDiv */
+
+.pagBodDiv { /* What: Page Body Div. Why: The filters and the showing picker stack below the header. How: This stacks them in a column that can shrink. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-p02 ); /* Spacing Vertical Base Plus 2 ~= 25.572px */
+	min-width      : 0;
+
+
+}
+
+
+/* #region pagFilDiv */
+
+.pagFilDiv { /* What: Page Filters Div. Why: The Group, Type, and Show rows form one filter block. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+
+
+/* #region filRowDiv */
+
+.filRowDiv { /* What: Filter Row Div. Why: Each filter's label sits above its rail. How: This stacks them in a stretched column. */
+
+
+	align-items    : stretch;
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+
+
+}
+
+.filLabSpa { /* What: Filter Label Span. Why: Each rail is labeled in quiet mono type. How: This sets it small, uppercase, and muted, without shrinking. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	flex-shrink    : 0;
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.06em;
+	text-transform : uppercase;
+
+
+}
+
+
+
+/* #region filRaiDiv */
+
+.filRaiDiv { /* What: Filter Rail Div. Why: The rail scrolls sideways when its pills outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row with its scrollbar hidden and a gradient mask on each end. */
+
+
+	--fad-edg-off : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the rail. How: --fad-lef-off and --fad-rig-off start from it. */
+	--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+
+	-webkit-mask-image : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
+	display            : flex;
+	gap                : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	mask-image         : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
+	overflow-x         : auto;
+	padding-bottom     : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	scrollbar-width    : none;
+
+
+}
+.filRaiDiv::-webkit-scrollbar { /* What: Pill Rail Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+.filRaiDiv[data-scroll-start-active] { /* What: Pill Rail At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+	--fad-lef-off : 0px;
+
+
+}
+.filRaiDiv[data-scroll-end-active] { /* What: Pill Rail At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+	--fad-rig-off : 0px;
+
+
+}
+
+
+/* #region filPilBut */
+
+.filPilBut { /* What: Filter Pill Button. Why: Each group or type is a pill that filters the pickers. How: This draws an outlined pill that fades between colors. */
+
+
+	align-items    : center;
+	background     : transparent;
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : 999px;
+	color          : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor         : pointer;
+	display        : inline-flex;
+	flex-shrink    : 0;
+	font-size      : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight    : 500;
+	gap            : var( --spa-hor-m03 );                            /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	height         : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	letter-spacing : -0.01em;
+	padding        : 0 var( --spa-hor-bas );                          /* Spacing Horizontal Base ~= 14.572px */
+	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+
+
+}
+.filPilBut:hover { /* What: Hovered Filter Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
+
+
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color        : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.filPilBut[aria-selected='true'] { /* What: Selected Filter Pill. Why: The active filter should stand out. How: This fills it in the soft accent, keying off the aria-selected the pill already sets. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Filter Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.filPilBut { /* What: Still Filter Pill Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.filCouSpa { /* What: Filter Count Span. Why: Each pill shows how many pickers it holds. How: This sets the number in a small tinted mono capsule. */
+
+
+	align-items          : center;
+	background           : var( --bor-fil-col );                /* Border Fill Color = oklch( 0.93 0.005 240 ) */
+	border-radius        : 999px;
+	color                : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display              : inline-flex;
+	font-family          : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-bas );                /* Font Size Base = 11px */
+	font-variant-numeric : tabular-nums;
+	height               : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	justify-content      : center;
+	min-width            : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	padding              : 0 var( --spa-hor-m03 );              /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	text-align           : center;
+
+
+}
+.filPilBut[aria-selected='true'] .filCouSpa { /* What: Selected Pill Count. Why: The count follows its pill's accent. How: This tints the capsule in the accent color. */
+
+
+	background : oklch( from var( --acc-mai-col ) l c h / 0.16 ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color      : var( --acc-mai-col );                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+
+/* #endregion filPilBut */
+
+/* #endregion filRaiDiv */
+
+
+
+/* #region picTabDiv */
+
+.picTabDiv { /* What: Picker Tab Div. Why: The rail scrolls sideways when its pills outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row with its scrollbar hidden and a gradient mask on each end. */
+
+
+	--fad-edg-off : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the rail. How: --fad-lef-off and --fad-rig-off start from it. */
+	--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 33.876px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 33.876px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+
+	-webkit-mask-image : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 33.876px, Fade Right Offset ~= 33.876px */
+	display            : flex;
+	gap                : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	mask-image         : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 33.876px, Fade Right Offset ~= 33.876px */
+	overflow-x         : auto;
+	scroll-snap-type   : x mandatory;
+	scrollbar-width    : none;
+
+
+}
+.picTabDiv::-webkit-scrollbar { /* What: Picker Tab Strip Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+.picTabDiv[data-scroll-start-active] { /* What: Picker Tab Strip At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+	--fad-lef-off : 0px;
+
+
+}
+.picTabDiv[data-scroll-end-active] { /* What: Picker Tab Strip At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+	--fad-rig-off : 0px;
+
+
+}
+@supports ( -moz-appearance : none ) { /* What: Firefox Picker Tab Strip. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
+
+
+	.picTabDiv { /* What: Padded Picker Tab Div. Why: The bottom border needs a pixel of room. How: This adds extra small 8 vertical spacing (about 1px) of bottom padding. */
+
+
+		padding-bottom : var( --spa-ver-m09 ); /* Spacing Vertical Base Minus 9 ~= 1.160px */
+
+
+	}
+
+
+}
+
+
+/* #region picTabBut */
+
+.picTabBut,
+.picAddBut,
+.picAddSpa { /* What: Picker Tab Button And Add Button And Span. Why: Each picker is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode. */
+
+
+	animation         : global( tabGroupSlideIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global Entrance Keyframes. Why: The tabGroupSlideIn keyframes are shared with the Stats and Data scope tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background        : var( --bac-sur-col );                                                     /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border            : var( --bor-wid-sma ) solid var( --bor-mai-col );                          /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius     : var( --rad-bor-med );                                                     /* Radius Border Medium = 11px */
+	display           : flex;
+	flex-direction    : column;
+	flex-shrink       : 0;
+	gap               : var( --spa-ver-m09 );                                                     /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	min-width         : calc( var( --ver-rhy-p08 ) * 1rem );                                      /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+	padding           : var( --spa-ver-m01 ) var( --spa-hor-bas );                                /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
+	scroll-snap-align : start;
+	text-align        : left;
+	transition        : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 );       /* Duration Transition Base Minus 1 ~= 119.2ms */
+
+
+}
+.picTabBut:hover { /* What: Hovered Picker Tab. Why: The tab should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+.picTabBut[data-tab-select-active] { /* What: Selected Picker Tab. Why: The picker showing below should stand out in the strip. How: This fills the tab in the soft accent. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Picker Tab. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.picTabBut,
+	.picAddBut,
+	.picAddSpa { /* What: Still Picker Tab Button And Add Button And Span. Why: The change should happen at once. How: This turns its animation and transition off. */
+
+
+		animation  : none;
+		transition : none;
+
+
+	}
+
+
+}
+.picAddBut,
+.picAddSpa { /* What: Picker Add Button And Span. Why: Adding a picker reads as a dashed placeholder tab. How: This lays the icon and label out in a centered row with a dashed border. */
+
+
+	align-items     : center;
+	background      : transparent;
+	border-style    : dashed;
+	color           : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor          : pointer;
+	flex-direction  : row;
+	gap             : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	justify-content : center;
+
+
+}
+.picAddBut:hover,
+.picAddSpa:hover { /* What: Hovered Add Picker Tab. Why: The tab should respond to the pointer. How: This turns it the accent color. */
+
+
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.picAddBut[data-tab-select-active],
+.picAddSpa[data-tab-select-active] { /* What: Selected Add Picker Tab. Why: While the create form is open, its tab reads as selected. How: This solidifies the border and fills it in the soft accent. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-style : solid;
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.picAddSpa[aria-disabled='true'] { /* What: Disabled Add Picker Tab. Why: While the tutorials run, adding a picker is unavailable and should look it. How: This dims the tab and drops the pointer cursor, keying off the aria-disabled its info tip sets, but keeps pointer events, since the tip needs hover and taps to show why. */
+
+
+	cursor  : default;
+	opacity : 0.5;
+
+
+}
+
+.addIcoSpa { /* What: Add Icon Span. Why: The plus icon sits inline beside the label. How: This makes it an inline flex box. */
+
+
+	display : inline-flex;
+
+
+}
+
+.tabNamSpa { /* What: Tab Name Span. Why: The picker's name leads its tab. How: This sets it in medium weight. */
+
+
+	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+
+
+}
+.picTabBut[data-tab-select-active] .tabNamSpa { /* What: Selected Picker Tab Name. Why: The selected tab's name reads in the accent color. How: This colors it. */
+
+
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.picAddBut .tabNamSpa,
+.picAddSpa .tabNamSpa { /* What: Add Tab Label. Why: The add label reads smaller and follows the tab's own color. How: This shrinks it and inherits the color. */
+
+
+	color     : inherit;
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+
+
+}
+
+.tabModSpa { /* What: Tab Mode Span. Why: Each tab names its picker's mode as quiet metadata. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion picTabBut */
+
+/* #endregion picTabDiv */
+
+/* #endregion filRowDiv */
+
+/* #endregion pagFilDiv */
+
+
+
+.picFadDiv { /* What: Picker Fade Div. Why: The picker or form below the filters fades in each time it changes. How: This plays the shared fade each time the keyed wrapper remounts. */
+
+
+	animation : global( tabOpenFadeIn ) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The tabOpenFadeIn keyframes are shared with the other tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tab Fade. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.picFadDiv { /* What: Still Picker Fade Div. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #endregion pagBodDiv */
+
+/* #endregion tabPagDiv */
+
+

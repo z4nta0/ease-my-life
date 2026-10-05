@@ -1,0 +1,75 @@
+
+
+
+/**
+ * button.module.css = Help Button Module
+ *
+ * @summary
+ * Styles for HelButCom, the small circled "i" in each tab's header that turns
+ * help mode on and off. It stays muted until engaged, like the other rarely
+ * used help triggers, so it doesn't compete with real controls, and it fills
+ * with the accent color while help mode is on. It sits above help mode's own
+ * dim layer, so it stays bright and clickable as the way back out.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+.helTogBut { /* What: Help Toggle Button. Why: The help toggle should be quiet but always reachable, even over help mode's own dim layer. How: This draws a small muted circled glyph raised above the dim layer, brightening on hover. */
+
+
+	align-items     : center;
+	background      : none;
+	border          : var( --bor-wid-bas ) solid var( --tex-mut-col ); /* Border Width Base ~= 1.160px, Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border-radius   : 50%;
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor          : pointer;
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	font-size       : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight     : 700;
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	justify-content : center;
+	line-height     : var( --ver-rhy-m01 );                            /* Vertical Rhythm Base Minus 1 = 1 */
+	position        : relative;
+	transition      : border-color var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	z-index         : 20;                                              /* What: Above The Help Dim. Why: Help mode's dim layer sits at 19, and the toggle must stay undimmed while it's the way out. How: 20 lifts the button just above it. */
+
+
+}
+.helTogBut:hover { /* What: Hovered Help Toggle Button. Why: The toggle should respond to the pointer. How: This tints it with the accent color. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.helTogBut[aria-pressed='true'] { /* What: Active Help Toggle Button. Why: While help mode is on, the toggle should read as switched on. How: This fills it with the accent color, keyed off the button's own pressed state. */
+
+
+	background   : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --tex-acc-col ); /* Text Accent Color = oklch( 1 0 0 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Help Toggle Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.helTogBut { /* What: Still Help Toggle Button. Why: The colors should simply switch. How: This turns the color fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+

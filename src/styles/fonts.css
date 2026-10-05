@@ -1,0 +1,73 @@
+
+
+
+/**
+ * fonts.css = Fonts
+ *
+ * @summary
+ * The app's four self-hosted variable fonts, one @font-face per family. Each
+ * declares its file's full weight range rather than a single weight, so the
+ * browser draws any weight in between (including the in-between weights like
+ * 450 that the modules use) from the font itself instead of synthesizing it.
+ * The files live in src/assets/fonts/ and are pulled in through url(), so
+ * Vite fingerprints them and the service worker precaches the hashed names.
+ * Every range matches its file's own wght axis, read from the font's fvar
+ * table; Shantell Sans also carries bounce, informality, and spacing axes the
+ * app leaves at their defaults. The --fon-fam-* tokens in styles.css name
+ * these families.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+@font-face { /* What: Geist Font Face. Why: Geist is the main font for body text and most of the interface. How: This loads its variable file across its full 100 to 900 weight range, showing fallback text until it arrives. */
+
+
+	font-display : swap;
+	font-family  : 'Geist';
+	font-style   : normal;
+	font-weight  : 100 900;
+	src          : url( '../assets/fonts/Geist-VariableFont_wght.woff2' ) format( 'woff2' );
+
+
+}
+
+@font-face { /* What: Geist Mono Font Face. Why: Geist Mono is the secondary font for numbers, captions, and chips. How: This loads its variable file across its full 100 to 900 weight range, showing fallback text until it arrives. */
+
+
+	font-display : swap;
+	font-family  : 'Geist Mono';
+	font-style   : normal;
+	font-weight  : 100 900;
+	src          : url( '../assets/fonts/GeistMono-VariableFont_wght.woff2' ) format( 'woff2' );
+
+
+}
+
+@font-face { /* What: Quicksand Font Face. Why: Quicksand is the second brand face, completing the wordmark. How: This loads its variable file across its full 300 to 700 weight range, showing fallback text until it arrives. */
+
+
+	font-display : swap;
+	font-family  : 'Quicksand';
+	font-style   : normal;
+	font-weight  : 300 700;
+	src          : url( '../assets/fonts/Quicksand-VariableFont_wght.woff2' ) format( 'woff2' );
+
+
+}
+
+@font-face { /* What: Shantell Sans Font Face. Why: Shantell Sans is the main brand face, setting the wordmark's lead word. How: This loads its variable file across its full 300 to 800 weight range, showing fallback text until it arrives. */
+
+
+	font-display : swap;
+	font-family  : 'Shantell Sans';
+	font-style   : normal;
+	font-weight  : 300 800;
+	src          : url( '../assets/fonts/ShantellSans-VariableFont_BNCE,INFM,SPAC,wght.woff2' ) format( 'woff2' );
+
+
+}
+
+

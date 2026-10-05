@@ -1,0 +1,114 @@
+
+
+
+/**
+ * number-stepper.module.css = Number Stepper Module
+ *
+ * @summary
+ * Styles for NumSteCom: the pill-shaped container, its round minus and plus
+ * buttons, and the borderless text input between them, which drops the
+ * field's own chrome so the number reads as plain text.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region numSteDiv */
+
+.numSteDiv { /* What: Number Stepper Div. Why: The minus button, the number, and the plus button read as one control. How: This lays the three out in a row inside one rounded pill. */
+
+
+	align-items   : center;
+	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : 999px;
+	display       : inline-flex;
+	gap           : var( --spa-hor-m05 );                            /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+	padding       : var( --spa-ver-m06 ) var( --spa-hor-m06 );       /* Spacing Vertical Base Minus 6 ~= 2.696px, Spacing Horizontal Base Minus 6 ~= 2.696px */
+
+
+}
+
+.numSteBut { /* What: Number Step Button. Why: The minus and plus buttons need to read as quiet, round, tappable controls. How: This centers the glyph in a small round button with no border of its own. */
+
+
+	align-items     : center;
+	background      : none;
+	border          : none;
+	border-radius   : 999px;
+	color           : var( --tex-mut-col );                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor          : pointer;
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	font-family     : var( --fon-fam-sec );                                        /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size       : var( --fon-siz-p01 );                                        /* Font Size Base Plus 1 ~= 14.572px */
+	height          : calc( var( --ver-rhy-p01 ) * 1rem );                         /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	justify-content : center;
+	line-height     : var( --ver-rhy-m01 );                                        /* Vertical Rhythm Base Minus 1 = 1 */
+	transition      : color var( --dur-tra-m01 ), background var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width           : calc( var( --ver-rhy-p01 ) * 1rem );                         /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+
+
+}
+.numSteBut:hover:not( :disabled ) { /* What: Hovered Number Step Button. Why: An enabled button should respond to the pointer. How: This tints it with the accent color. */
+
+
+	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	color      : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.numSteBut:disabled { /* What: Disabled Number Step Button. Why: A button at its limit should look unavailable. How: This dims it and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : var( --cdn-pow-004-rec ); /* Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Number Step Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.numSteBut { /* What: Still Number Step Button. Why: The hover colors should simply switch. How: This turns the color fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.numSteInp { /* What: Number Stepper Input. Why: The number can also be typed directly, so it's a real input styled to look like plain text. How: This removes the input's own chrome and centers the number in the stepper's mono type. */
+
+
+	-moz-appearance : textfield;                           /* What: Firefox Appearance. Why: Firefox only honors its own prefixed property for dropping a field's native styling. How: This resets the input to a plain text field in Firefox, the same as the standard appearance line below. */
+	appearance      : textfield;
+	background      : transparent;
+	border          : 0;
+	color           : var( --tex-mai-col );                /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family     : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size       : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight     : 600;
+	outline         : none;
+	padding         : 0;
+	text-align      : center;
+	width           : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+.numSteInp:focus { /* What: Focused Number Stepper Input. Why: Typing needs a visible field to type into. How: This gives the input a surface background and rounded corners while focused. */
+
+
+	background    : var( --bac-sur-col ); /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border-radius : var( --rad-bor-xsm ); /* Radius Border Extra Small ~= 3.571px */
+
+
+}
+
+/* #endregion numSteDiv */
+
+

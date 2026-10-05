@@ -1,0 +1,97 @@
+
+
+
+/**
+ * sort-select.module.css = Sort Select Module
+ *
+ * @summary
+ * Styles for SorSelCom's labeled sort control: the small uppercase label and
+ * the select beside it, which uses the same field styling as the app's form
+ * inputs. Inside a Data tab section the row also takes that section's row
+ * padding and draws the hairline above the first item, through the
+ * --sor-row-bor and --sor-row-pad properties the section sets.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region sorRowDiv */
+
+.sorRowDiv { /* What: Sort Row Div. Why: The label and its select read as one labeled control. How: This lays them side by side, taking any section padding and divider line a parent sets through the --sor-row-bor and --sor-row-pad properties. */
+
+
+	align-items   : center;
+	border-bottom : var( --sor-row-bor, none ); /* Sort Row Border, set by its parent */ /* What: Sort Row Border. Why: Inside a section the first item right below the sort row needs a hairline above it, like the rows around it. How: A section sets --sor-row-bor to draw that line along the row's bottom edge, falling back to none. */
+	display       : flex;
+	gap           : var( --spa-hor-m02 );       /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	padding       : var( --sor-row-pad, 0 );    /* Sort Row Padding, set by its parent */ /* What: Sort Row Padding. Why: Inside a section the row lines up with the "+ Add" row and the item rows around it. How: A section sets --sor-row-pad to match their padding, falling back to none. */
+
+
+}
+
+.sorLabLab { /* What: Sort Label Label. Why: The select needs a visible label that stays quiet beside it. How: This sets it in small uppercase mono type in the muted color. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.06em;
+	text-transform : uppercase;
+
+
+}
+
+.sorDroSel { /* What: Sort Dropdown Select. Why: The select should look like the app's other form fields. How: This gives it the shared field styling (the form input look it previously got from .np-input) plus a pointer cursor. */
+
+
+	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	cursor        : pointer;
+	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	margin-top    : var( --spa-ver-m07 );                            /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );             /* Vertical Rhythm Base Plus 11 ~= 321.273px */
+	outline       : none;
+	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width         : 100%;
+
+
+}
+.sorDroSel::placeholder { /* What: Sort Select Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
+
+
+	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+.sorDroSel:focus { /* What: Focused Sort Select. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
+
+
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sort Select. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.sorDroSel { /* What: Still Sort Dropdown Select. Why: The focus border should simply switch. How: This turns the border fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion sorRowDiv */
+
+

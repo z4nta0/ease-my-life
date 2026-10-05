@@ -1,0 +1,1272 @@
+
+
+
+/**
+ * tab-settings.module.css = Settings Tab Module
+ *
+ * @summary
+ * Styles for TabSetCom, the Settings tab: its header, the section rail
+ * (a sticky column on wide screens, a sticky scrolling pill bar with edge
+ * fades on narrow ones), and every section's rows, from the Appearance
+ * subsections and switches to the storage panel's chips, the import and
+ * reset confirms, and the About block. The selected rail button keys off
+ * data-rail-select-active, a switch off its own aria-pressed, the manual
+ * run-time row off data-row-disabled-active, result messages off
+ * data-message-ok-active, data-message-error-active, and
+ * data-message-warn-active, and the storage chips off data-chip-ok-active
+ * and data-chip-warn-active. Each data row hands the segmented control and
+ * the button their no-shrink, no-wrap sizing through custom properties.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region tabPagDiv */
+
+.tabPagDiv { /* What: Tab Page Div. Why: The page leaves extra room below while a tour runs. How: This reads the body's tour padding. */
+
+
+	padding-bottom : var( --tab-tou-pad, 0 ); /* Tab Tour Padding ~= 242.522px, set on the body while a tour runs */ /* What: Tour Padding. Why: A tour needs room to scroll a bottom target clear of the tab bar. How: The body sets --tab-tou-pad while a tour runs, falling back to none. */
+
+
+}
+
+
+/* #region pagHeaHea */
+
+.pagHeaHea { /* What: Page Header Header. Why: The kicker row, lead, and intro read as one header. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
+
+
+}
+
+
+/* #region kicRowDiv */
+
+.kicRowDiv { /* What: Kicker Row Div. Why: The page kicker and the help toggle sit on one line at opposite ends. How: This spreads them across a centered row. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	min-width       : 0;
+
+
+}
+
+.pagKicDiv,
+.raiKicDiv,
+.secKicSpa { /* What: Page Kicker Div, Rail Kicker Div, And Section Kicker Span. Why: A small eyebrow label orients the reader above a heading or a section toggle. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	font-weight    : 500;
+	letter-spacing : 0.08em;
+	line-height    : var( --ver-rhy-p01 ); /* Vertical Rhythm Base Plus 1 ~= 1.755 */
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion kicRowDiv */
+
+
+
+/* #region heaLeaDiv */
+
+.heaLeaDiv { /* What: Header Lead Div. Why: The brand mark and title sit side by side. How: This lines them up in a centered row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : var( --spa-hor-bas ); /* Spacing Horizontal Base ~= 14.572px */
+
+
+}
+@container app ( max-width : 640px ) { /* What: Narrow Header Lead. Why: On a narrow screen the mark and title sit closer. How: This applies only when the app is 640px wide or less. */
+
+
+	.heaLeaDiv { /* What: Tighter Header Lead Div. Why: The row has less room. How: This tightens its gap. */
+
+
+		gap : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+	}
+
+
+}
+
+
+/* #region braMarBut */
+
+.braMarBut { /* What: Brand Mark Button. Why: The logo beside the title is also a button back to Today. How: This strips the button chrome and sizes the mark as a square that lifts on hover. */
+
+
+	-webkit-appearance : none;
+	align-self         : center;
+	appearance         : none;
+	aspect-ratio       : auto;
+	background         : none;
+	border             : 0;
+	border-radius      : var( --rad-bor-med );                                /* Radius Border Medium = 11px */
+	color              : var( --acc-mai-col );                                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	cursor             : pointer;
+	display            : block;
+	flex               : 0 0 auto;
+	font               : inherit;
+	height             : calc( var( --ver-rhy-p06 ) * 1rem );                 /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	padding            : 0;
+	text-decoration    : none;
+	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+	width              : calc( var( --ver-rhy-p06 ) * 1rem );                 /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+
+
+}
+.braMarBut:hover { /* What: Hovered Brand Mark. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
+
+
+	transform : translateY( -1px );
+
+
+}
+@container app ( max-width : 640px ) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the app is 640px wide or less. */
+
+
+	.braMarBut { /* What: Smaller Brand Mark Button. Why: The title needs the room. How: This shrinks the mark one rhythm step, to p05. */
+
+
+		height : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+		width  : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+
+
+	}
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Brand Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.braMarBut { /* What: Still Brand Mark Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.braMarSvg { /* What: Brand Mark Svg. Why: The logo fills its button. How: This sizes the svg to the full box as a block. */
+
+
+	display : block;
+	height  : 100%;
+	width   : 100%;
+
+
+}
+
+/* #endregion braMarBut */
+
+
+
+/* #region heaTitDiv */
+
+.heaTitDiv { /* What: Header Title Div. Why: The title sits beside the brand mark, centered against it. How: This stacks the title in a column that takes the remaining width. */
+
+
+	display         : flex;
+	flex            : 1 1 auto;
+	flex-direction  : column;
+	gap             : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
+	justify-content : center;
+	min-width       : 0;
+
+
+}
+
+
+/* #region pagTitHea */
+
+.pagTitHea { /* What: Page Title Heading. Why: The page's main heading leads the tab. How: This sets it large and tight. */
+
+
+	font-size      : var( --fon-siz-p04 ); /* Font Size Base Plus 4 ~= 33.876px */
+	font-weight    : 500;
+	letter-spacing : -0.025em;
+	line-height    : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+	margin         : 0;
+
+
+}
+@container app ( max-width : 560px ) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
+
+
+	.pagTitHea { /* What: Smaller Page Title Heading. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
+
+
+		font-size : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
+
+
+	}
+
+
+}
+
+.titAccSpa { /* What: Title Accent Span. Why: The heading's key word reads in the accent color. How: This colors the span. */
+
+
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+
+/* #endregion pagTitHea */
+
+/* #endregion heaTitDiv */
+
+/* #endregion heaLeaDiv */
+
+
+
+/* #region pagSubPar */
+
+.pagSubPar { /* What: Page Sub Paragraph. Why: The intro explains the page under its title, linking to other tabs inline. How: This sets it muted, capped in line length. */
+
+
+	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	margin    : 0;
+	max-width : var( --tex-wid-bas ); /* Text Width Base Maximum ~= 29.207em */
+
+
+}
+
+.subLinBut { /* What: Sub Link Button. Why: The intro links to other tabs inline. How: This strips the button chrome down to underlined accent text. */
+
+
+	background            : none;
+	border                : 0;
+	color                 : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	cursor                : pointer;
+	font                  : inherit;
+	padding               : 0;
+	text-decoration       : underline;
+	text-underline-offset : 2px;
+
+
+}
+.subLinBut:hover { /* What: Hovered Intro Link. Why: The link should respond to the pointer. How: This thickens its underline. */
+
+
+	text-decoration-thickness : 2px;
+
+
+}
+
+/* #endregion pagSubPar */
+
+/* #endregion pagHeaHea */
+
+
+
+/* #region setGriDiv */
+
+.setGriDiv { /* What: Settings Grid Div. Why: The section rail and the sections sit side by side. How: This lays them out in a two-column grid. */
+
+
+	align-items           : start;
+	display               : grid;
+	gap                   : var( --spa-ver-p03 ) var( --spa-hor-p03 ); /* Spacing Vertical Base Plus 3 ~= 33.876px, Spacing Horizontal Base Plus 3 ~= 33.876px */
+	grid-template-columns : calc( var( --ver-rhy-p09 ) * 1rem ) 1fr;   /* Vertical Rhythm Base Plus 9 ~= 183.074px */
+	margin-top            : var( --spa-ver-p02 );                      /* Spacing Vertical Base Plus 2 ~= 25.572px */
+
+
+}
+@container app ( max-width : 760px ) { /* What: Narrow Settings Layout. Why: On a narrow app the rail sits above the sections. How: This applies only when the app matches ( max-width : 760px ). */
+
+
+	.setGriDiv { /* What: Stacked Settings Grid Div. Why: The rail becomes a bar above the sections. How: This drops to one column with a smaller gap. */
+
+
+		gap                   : var( --spa-ver-bas ) var( --spa-hor-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
+		grid-template-columns : 1fr;
+
+
+	}
+
+
+}
+
+
+/* #region setRaiAsi */
+
+.setRaiAsi { /* What: Settings Rail Aside. Why: The section links stay in reach while the sections scroll. How: This sticks the rail near the top and lets it scroll on its own with its scrollbar hidden. */
+
+
+	align-self      : start;
+	max-height      : calc( 100vh - var( --spa-ver-bas ) * 2 ); /* Spacing Vertical Base ~= 14.572px */
+	overflow-y      : auto;
+	position        : sticky;
+	scrollbar-width : none;
+	top             : var( --spa-ver-bas );                     /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+.setRaiAsi::-webkit-scrollbar { /* What: Section Rail Scrollbar. Why: WebKit ignores scrollbar-width. How: This hides its scrollbar. */
+
+
+	display : none;
+
+
+}
+@container app ( max-width : 760px ) { /* What: Narrow Section Rail. Why: On a narrow app the rail becomes a sticky pill bar above the sections. How: This applies only when the app matches ( max-width : 760px ). */
+
+
+	.setRaiAsi { /* What: Pill Settings Rail Aside. Why: The bar stays pinned over the sections without clipping its own edge fades. How: This sticks it to the top on an opaque background, with overflow visible and min-width 0 so it neither turns into a second scroll container nor stretches past its grid track. */
+
+
+		background : var( --bac-pag-col );                      /* Background Page Color = oklch( 0.985 0.003 240 ) */
+		max-height : none;
+		min-width  : 0;
+		overflow   : visible;
+		padding    : var( --spa-ver-bas ) var( --spa-hor-p01 ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
+		position   : sticky;
+		top        : 0;
+		z-index    : 11;                                        /* What: Pill Rail Stack Level. Why: The sticky rail has to stay over the sections scrolling beneath it. How: 11 matches Today's sticky pill row and stays below the tab bars at 15. */
+
+
+	}
+
+	.setRaiAsi::before,
+	.setRaiAsi::after { /* What: Pill Bar Edge Fades. Why: Pills cut off at an edge should fade out rather than stop hard. How: This pins a narrow overlay to each side of the rail, which never scrolls itself. */
+
+
+		bottom         : 0;
+		content        : '';
+		pointer-events : none;
+		position       : absolute;
+		top            : 0;
+		width          : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+		z-index        : 1;                                   /* What: Edge Fade Stack Level. Why: The fades have to sit over the pills they fade. How: This raises them one level above the pills. */
+
+
+	}
+
+	.setRaiAsi::before { /* What: Left Edge Fade. Why: The fade belongs where the pills are cut off, inside the rail's padding. How: This insets it by the rail's side padding and fades from the background to transparent. */
+
+
+		background : linear-gradient( to right, var( --bac-pag-col ), transparent ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+		left       : var( --spa-hor-p01 );                                           /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+
+
+	}
+
+	.setRaiAsi::after { /* What: Right Edge Fade. Why: The fade belongs where the pills are cut off, inside the rail's padding. How: This insets it by the rail's side padding and fades from the background to transparent. */
+
+
+		background : linear-gradient( to left, var( --bac-pag-col ), transparent ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+		right      : var( --spa-hor-p01 );                                          /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+
+
+	}
+
+	.setRaiAsi[data-scroll-start-active]::before { /* What: Hidden Left Edge Fade. Why: Nothing is cut off once the row is scrolled to its start. How: This hides the left fade, keying off data-scroll-start-active. */
+
+
+		opacity : 0;
+
+
+	}
+
+	.setRaiAsi[data-scroll-end-active]::after { /* What: Hidden Right Edge Fade. Why: Nothing is cut off once the row is scrolled to its end. How: This hides the right fade, keying off data-scroll-end-active. */
+
+
+		opacity : 0;
+
+
+	}
+
+
+}
+
+.raiKicDiv { /* What: Rail Kicker Div. Why: The rail's heading lines up with its buttons. How: This insets it like a button. */
+
+
+	padding : 0 var( --spa-hor-m01 ) var( --spa-ver-m05 ); /* Spacing Horizontal Base Minus 1 = 11px, Spacing Vertical Base Minus 5 ~= 3.571px */
+
+
+}
+@container app ( max-width : 760px ) { /* What: Narrow Rail Kicker. Why: The pill row has no room for a heading. How: This applies only when the app matches ( max-width : 760px ). */
+
+
+	.raiKicDiv { /* What: Hidden Rail Kicker Div. Why: The pill row has no room for a heading. How: This hides it. */
+
+
+		display : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region raiScrDiv */
+
+@container app ( max-width : 760px ) { /* What: Narrow Rail Scroller. Why: On a narrow app the pill row scrolls sideways inside the sticky rail. How: This applies only when the app matches ( max-width : 760px ). */
+
+
+	.raiScrDiv { /* What: Scrolling Rail Scroll Div. Why: The pills scroll inside this wrapper rather than the rail itself, so the rail's fades and background stay pinned. How: This scrolls horizontally with its scrollbar hidden. */
+
+
+		overflow-x      : auto;
+		overflow-y      : hidden;
+		scrollbar-width : none;
+
+
+	}
+
+	.raiScrDiv::-webkit-scrollbar { /* What: Rail Scroller Scrollbar. Why: WebKit ignores scrollbar-width. How: This hides its scrollbar. */
+
+
+		display : none;
+
+
+	}
+
+
+}
+
+
+/* #region raiLisUno */
+
+.raiLisUno { /* What: Rail List Unordered. Why: The section buttons stack in a tight column. How: This stacks them with a hairline-sized gap. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+
+
+}
+@container app ( max-width : 760px ) { /* What: Narrow Rail List. Why: On a narrow app the buttons run across in one scrolling row. How: This applies only when the app matches ( max-width : 760px ). */
+
+
+	.raiLisUno { /* What: Pill Row Rail List Unordered. Why: The pills sit in one line as wide as they need, so the wrapper can scroll them. How: This lays them out in an unwrapped row sized to its content. */
+
+
+		flex-direction : row;
+		flex-wrap      : nowrap;
+		gap            : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+		width          : max-content;
+
+
+	}
+
+
+}
+
+
+/* #region raiSecBut */
+
+.raiSecBut { /* What: Rail Section Button. Why: Each section is a rail button that jumps to it. How: This lays its name out in a full-width rounded row that fades between colors. */
+
+
+	align-items     : center;
+	border-radius   : var( --rad-bor-sma );                                        /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display         : flex;
+	font-size       : var( --fon-siz-p01 );                                        /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight     : 500;
+	gap             : var( --spa-hor-m01 );                                        /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	letter-spacing  : -0.005em;
+	min-height      : calc( var( --ver-rhy-p03 ) * 1rem );                         /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	padding         : var( --spa-ver-m03 ) var( --spa-hor-m01 );                   /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 1 = 11px */
+	text-align      : left;
+	transition      : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width           : 100%;
+
+
+}
+.raiSecBut:hover { /* What: Hovered Rail Button. Why: The button should respond to the pointer. How: This darkens its text. */
+
+
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.raiSecBut[data-rail-select-active] { /* What: Selected Rail Button. Why: The section in view should stand out. How: This fills it in the soft accent, keying off data-rail-select-active. */
+
+
+	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	color      : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@container app ( max-width : 760px ) { /* What: Narrow Rail Button. Why: On a narrow app the rail is a row of pills. How: This applies only when the app matches ( max-width : 760px ). */
+
+
+	.raiSecBut { /* What: Pill Rail Section Button. Why: In the narrow pill row each section is an outlined pill. How: This turns the button into a compact bordered pill that never shrinks or wraps. */
+
+
+		background    : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+		border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+		border-radius : 999px;
+		flex-shrink   : 0;
+		padding       : var( --spa-ver-m03 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 1 = 11px */
+		white-space   : nowrap;
+		width         : auto;
+
+
+	}
+
+	.raiSecBut[data-rail-select-active] { /* What: Selected Rail Pill. Why: The pill in view should stand out. How: This borders it in the accent over the soft accent fill. */
+
+
+		background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+		border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+	}
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Rail Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.raiSecBut { /* What: Still Rail Section Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.raiNamSpa { /* What: Rail Name Span. Why: A long section name should wrap evenly. How: This balances its line breaks. */
+
+
+	text-wrap : pretty;
+
+
+}
+
+/* #endregion raiSecBut */
+
+/* #endregion raiLisUno */
+
+/* #endregion raiScrDiv */
+
+/* #endregion setRaiAsi */
+
+
+
+/* #region setSecDiv */
+
+.setSecDiv { /* What: Settings Sections Div. Why: The sections stack in the right-hand column. How: This stacks them in a spaced column that can shrink. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-p03 ); /* Spacing Vertical Base Plus 3 ~= 33.876px */
+	min-width      : 0;
+
+
+}
+
+
+/* #region setSecSec */
+
+.setSecSec { /* What: Settings Section Section. Why: Each section stacks its heading, intro, and rows, and a rail jump should stop short of the top. How: This stacks them in a spaced column with a scroll margin. */
+
+
+	display           : flex;
+	flex-direction    : column;
+	gap               : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */
+	scroll-margin-top : var( --spa-ver-p03 ); /* Spacing Vertical Base Plus 3 ~= 33.876px */
+
+
+}
+
+.secHeaDiv { /* What: Section Header Div. Why: Each section opens with its kicker over a dividing line, matching the Data tab. How: This lines the kicker up in a row above a hairline. */
+
+
+	align-items    : center;
+	border-bottom  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display        : flex;
+	gap            : var( --spa-hor-m01 );                            /* Spacing Horizontal Base Minus 1 = 11px */
+	padding-bottom : var( --spa-ver-m01 );                            /* Spacing Vertical Base Minus 1 = 11px */
+
+
+}
+
+.secSubPar { /* What: Section Sub Paragraph. Why: Each section and subsection explains itself in muted copy. How: This sets it muted at the large font size with no margin. */
+
+
+	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	margin    : 0;
+
+
+}
+.secSubPar--motion { /* What: Motion Section Sub Paragraph. Why: The note that animations won't play reads as an advisory. How: This colors it in a warm tone darkened to stay readable. */
+
+
+	color : var( --war-dar-col ); /* Warning Dark Color = oklch( 0.45 0.13 50 ) */
+
+
+}
+
+
+/* #region setSubDiv */
+
+.setSubDiv { /* What: Settings Subsection Div. Why: Each Appearance topic stacks its heading, copy, and control. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+
+.subHeaDiv { /* What: Subsection Header Div. Why: Each Appearance topic names itself in a small label. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.05em;
+	text-transform : uppercase;
+
+
+}
+
+.styCarDiv { /* What: Style Card Div. Why: The animation lists bleed edge to edge in an unpadded card. How: This clips them to the card's rounded corners. */
+
+
+	overflow : hidden;
+
+
+}
+
+/* #endregion setSubDiv */
+
+
+
+/* #region setRowDiv */
+
+.setRowDiv { /* What: Settings Row Div. Why: Each setting puts its text on the left and its control on the right, divided from the next row. How: This spreads them across a centered row under a hairline, and hands the segmented control and buttons their no-shrink, no-wrap sizing. */
+
+
+	--but-bas-fle : 0 0 auto; /* What: Button Base Flex. Why: A row's button should keep its size. How: ButBasCom reads this for its own flex. */
+	--but-bas-whi : nowrap;   /* What: Button Base White Space. Why: A row's button label should stay on one line. How: ButBasCom reads this for its own white-space. */
+	--seg-con-fle : 0 0 auto; /* What: Segment Control Flex. Why: The placement control should keep its size. How: SegConCom reads this for its own flex. */
+	--seg-wra-fle : nowrap;   /* What: Segment Wrap Flex. Why: The placement control's pills should never wrap. How: SegConCom reads this for its own flex-wrap. */
+
+	align-items     : center;
+	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display         : flex;
+	gap             : var( --spa-hor-bas );                            /* Spacing Horizontal Base ~= 14.572px */
+	justify-content : space-between;
+	padding         : var( --spa-ver-bas ) 0;                          /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+.setRowDiv:first-child { /* What: First Settings Row. Why: The top row shouldn't add extra space under its section's heading. How: This trims its top padding. */
+
+
+	padding-top : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+
+
+}
+.setRowDiv:last-child { /* What: Last Settings Row. Why: The bottom row needs no divider. How: This drops its border and trims its bottom padding. */
+
+
+	border-bottom  : 0;
+	padding-bottom : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+
+
+}
+.setRowDiv--sub { /* What: Sub Settings Row Div. Why: The run time sits under its toggle as a dependent row that dims while unused. How: This drops the top border, adds top room, and fades its opacity. */
+
+
+	border-top  : 0;
+	padding-top : var( --spa-ver-bas );                              /* Spacing Vertical Base ~= 14.572px */
+	transition  : opacity var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+
+
+}
+.setRowDiv--sub[data-row-disabled-active] { /* What: Disabled Run Time Row. Why: The run time does nothing while the generator runs manually. How: This dims the row, keying off data-row-disabled-active. */
+
+
+	opacity : var( --cdn-pow-003-rec ); /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Run Time Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.setRowDiv--sub { /* What: Still Sub Settings Row Div. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+@container app ( max-width : 500px ) { /* What: Narrow Stacking Settings Row. Why: A row with a wide control squeezes its text into a narrow column on a phone. How: This applies only when the app is 500px wide or less. */
+
+
+	.setRowDiv--stack { /* What: Stacked Settings Row Div. Why: The text should get the row's full width, with the control underneath. How: This stacks the text above the control, keeping the control at its natural width on the left. */
+
+
+		align-items    : flex-start;
+		flex-direction : column;
+
+
+	}
+
+
+}
+
+
+/* #region setInfDiv */
+
+.setInfDiv { /* What: Settings Info Div. Why: The row's name, description, and any facts or message stack together and take the space the control leaves. How: This stacks them in a tight column that grows but can shrink. */
+
+
+	display        : flex;
+	flex           : 1 1 auto;
+	flex-direction : column;
+	gap            : var( --spa-ver-m06 ); /* Spacing Vertical Base Minus 6 ~= 2.696px */
+	min-width      : 0;
+
+
+}
+
+.setNamSpa { /* What: Settings Name Span. Why: The row's name leads it. How: This sets it in bold body text. */
+
+
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight : 600;
+
+
+}
+.setRowDiv--danger .setNamSpa { /* What: Danger Row Name. Why: A destructive row names itself in red. How: This colors it. */
+
+
+	color : var( --err-dar-col ); /* Error Dark Color = oklch( 0.5 0.18 25 ) */
+
+
+}
+
+.setSubSpa { /* What: Settings Sub Span. Why: The explanation should read as quieter supporting text. How: This sets it small and muted with balanced line breaks. */
+
+
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
+	text-wrap   : pretty;
+
+
+}
+.setRowDiv--ios .setSubSpa { /* What: Install Note Description. Why: An install note reads as prose, not a one-line description. How: This caps its line length at 60ch. */
+
+
+	max-width : var( --tex-wid-sma ); /* Text Width Small Maximum ~= 22.047em */
+
+
+}
+.setRowDiv--ios .setSubSpa + .setSubSpa { /* What: Following Install Note Description. Why: The steps and the warning are two notes, not a name and description, so they need room between them. How: This spaces the second one extra small 1 vertical spacing down. */
+
+
+	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+
+.setSubSpa--fade { /* What: Fading Settings Sub Span. Why: A description that changes with its setting should fade in the new wording. How: This plays the shared fade each time the keyed element remounts. */
+
+
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Live Description. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.setSubSpa--fade { /* What: Still Fading Settings Sub Span. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.setSubSpa--layout { /* What: Layout Settings Sub Span. Why: The placement description must leave the segmented control room on one line. How: This caps it at a rhythm step. */
+
+
+	max-width : calc( var( --ver-rhy-p09 ) * 1rem ); /* Vertical Rhythm Base Plus 9 ~= 183.074px */
+
+
+}
+@container app ( max-width : 500px ) { /* What: Narrow Stacked Layout Description. Why: Once its row stacks, the description no longer shares its line with the control. How: This applies only when the app is 500px wide or less. */
+
+
+	.setRowDiv--stack .setSubSpa--layout { /* What: Full Width Layout Description. Why: The stacked description can use the row's full width. How: This lifts the 190px cap. */
+
+
+		max-width : none;
+
+
+	}
+
+
+}
+
+
+/* #region stoFacSpa */
+
+.stoFacSpa { /* What: Storage Facts Span. Why: The protected, size, fallback, and installed facts read as a row of small chips. How: This wraps them in a spaced row under the description. */
+
+
+	display    : flex;
+	flex-wrap  : wrap;
+	gap        : var( --spa-ver-m03 ) var( --spa-hor-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+	margin-top : var( --spa-ver-m02 );                      /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+
+.stoChiSpa { /* What: Storage Chip Span. Why: Each fact is a small neutral chip. How: This draws a bordered mono pill that never wraps. */
+
+
+	align-items    : center;
+	background     : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : 999px;
+	color          : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display        : inline-flex;
+	font-family    : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                            /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m05 );                            /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+	height         : calc( var( --ver-rhy-p01 ) * 1rem );             /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	letter-spacing : 0.01em;
+	padding        : 0 var( --spa-hor-m02 );                          /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	white-space    : nowrap;
+
+
+}
+.stoChiSpa[data-chip-ok-active] { /* What: Good Storage Chip. Why: A reassuring fact reads green. How: This tints it green, keying off data-chip-ok-active. */
+
+
+	background   : oklch( from var( --suc-mai-col ) l c h / var( --cdn-pow-009-rec ) ); /* Success Main Color = oklch( 0.5 0.11 155 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
+	border-color : oklch( from var( --suc-mai-col ) l c h / var( --cdn-pow-004-rec ) ); /* Success Main Color = oklch( 0.5 0.11 155 ), Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
+	color        : var( --suc-dar-col );                                                /* Success Dark Color = oklch( 0.42 0.1 155 ) */
+
+
+}
+.stoChiSpa[data-chip-warn-active] { /* What: Warning Storage Chip. Why: A fact worth acting on reads warm. How: This tints it in a warm color darkened to stay readable at 11px, keying off data-chip-warn-active. */
+
+
+	background   : oklch( from var( --acc-sec-col ) l c h / var( --cdn-pow-009-rec ) ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
+	border-color : oklch( from var( --acc-sec-col ) l c h / var( --cdn-pow-003-rec ) ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ), Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
+	color        : var( --war-dar-col );                                                /* Warning Dark Color = oklch( 0.45 0.13 50 ) */
+
+
+}
+
+/* #endregion stoFacSpa */
+
+
+.setMesSpa { /* What: Settings Message Span. Why: An action's result pops in under its row's description. How: This sets small text that plays a springy pop. */
+
+
+	animation  : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the contact form's messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name. */
+	font-size  : var( --fon-siz-bas );                                                         /* Font Size Base = 11px */
+	margin-top : var( --spa-ver-m07 );                                                         /* Spacing Vertical Base Minus 7 ~= 2.035px */
+
+
+}
+.setMesSpa[data-message-ok-active] { /* What: Good Result Message. Why: A success reads in the accent. How: This colors it, keying off data-message-ok-active. */
+
+
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.setMesSpa[data-message-error-active] { /* What: Failed Result Message. Why: A failure reads red. How: This colors it, keying off data-message-error-active. */
+
+
+	color : var( --err-dar-col ); /* Error Dark Color = oklch( 0.5 0.18 25 ) */
+
+
+}
+.setMesSpa[data-message-warn-active] { /* What: Pending Result Message. Why: A pending destructive import reads warm, like the reminder advisories, rather than as an error. How: This colors it warm with a capped line length, keying off data-message-warn-active. */
+
+
+	color       : var( --war-dar-col ); /* Warning Dark Color = oklch( 0.45 0.13 50 ) */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
+	max-width   : var( --tex-wid-sma ); /* Text Width Small Maximum ~= 22.047em */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Result Message. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.setMesSpa { /* What: Still Settings Message Span. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #endregion setInfDiv */
+
+
+
+/* #region togSwiBut */
+
+.togSwiBut { /* What: Toggle Switch Button. Why: Each on or off setting uses a switch that keeps its size at the row's end. How: This draws a pill track that fades its color and never shrinks. */
+
+
+	background    : var( --bor-mai-col );                /* Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : 999px;
+	flex          : 0 0 auto;
+	height        : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	position      : relative;
+	transition    : background var( --dur-tra-bas );     /* Duration Transition Base ~= 157.8ms */
+	width         : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+.togSwiBut[aria-pressed='true'] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-pressed the switch already sets. */
+
+
+	background : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Setting Switch. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.togSwiBut { /* What: Still Toggle Switch Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.swiKnoIta { /* What: Switch Knob Italic. Why: The knob slides across to show the setting's state. How: This draws a shadowed disc at the track's left that slides on change. */
+
+
+	background    : var( --bac-pag-col );                                               /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border-radius : 50%;
+	box-shadow    : var( --ele-sma-sha );                                               /* Elevation Small Shadow, about 0 1.2px 2px */
+	height        : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
+	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	position      : absolute;
+	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	transition    : transform var( --dur-tra-bas );                                     /* Duration Transition Base ~= 157.8ms */
+	width         : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
+
+
+}
+.togSwiBut[aria-pressed='true'] .swiKnoIta { /* What: On Switch Knob. Why: An enabled switch has its knob at the right. How: This slides it by the track width minus the track height, which leaves the same inset on the right as on the left. */
+
+
+	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) ); /* Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 1 ~= 19.304px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Switch Knob. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.swiKnoIta { /* What: Still Switch Knob Italic. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion togSwiBut */
+
+
+.runTimInp { /* What: Run Time Input. Why: The run time is typed into a fixed-width field at the row's end. How: This draws a rounded field at a fixed rhythm-step width with tabular digits that borders in the accent on focus. */
+
+
+	background           : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border               : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius        : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color                : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	flex                 : 0 0 calc( var( --ver-rhy-p08 ) * 1rem );         /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+	font-family          : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size            : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	font-variant-numeric : tabular-nums;
+	height               : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	margin-top           : var( --spa-ver-m07 );                            /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	outline              : none;
+	padding              : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
+	transition           : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width                : calc( var( --ver-rhy-p08 ) * 1rem );             /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+
+
+}
+.runTimInp::placeholder { /* What: Run Time Input Placeholder. Why: A hint should read quieter than real input. How: This sets it muted and faded. */
+
+
+	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+.runTimInp:focus { /* What: Focused Run Time Input. Why: The focused field should stand out. How: This borders it in the accent color. */
+
+
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.setRowDiv--sub[data-row-disabled-active] .runTimInp { /* What: Disabled Run Time Input. Why: The run time does nothing while the generator runs manually. How: This stops it from taking the pointer. */
+
+
+	pointer-events : none;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Run Time Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.runTimInp { /* What: Still Run Time Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.resConDiv { /* What: Reset Confirm Div. Why: A destructive action's Cancel and confirm buttons swap in for its single button. How: This lines them up in a row that keeps its size and plays the shared footer swap-in. */
+
+
+	animation : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	display   : flex;
+	flex      : 0 0 auto;
+	gap       : var( --spa-hor-m02 );                                                      /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+
+
+}
+.resConDiv--leaving { /* What: Leaving Reset Confirm Div. Why: A cancelled confirm swaps back out before it unmounts. How: This plays the shared footer swap-out. */
+
+
+	animation : global( footerSwapFadeOut ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with every editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Confirm Pair. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.resConDiv,
+	.resConDiv--leaving { /* What: Still Reset Confirm Divs. Why: The pair should swap at once, and JS already skips the leave delay. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.disTipSpa { /* What: Disabled Tip Span. Why: A blocked action's tip trigger should size like the button it wraps. How: This makes it an unshrinking inline flex box. */
+
+
+	display : inline-flex;
+	flex    : 0 0 auto;
+
+
+}
+
+.stoActDiv { /* What: Storage Actions Div. Why: The Install and Protect buttons stack beside the storage info. How: This stacks them in a stretched column that never shrinks. */
+
+
+	align-items    : stretch;
+	display        : flex;
+	flex-direction : column;
+	flex-shrink    : 0;
+	gap            : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+
+.docOpeBut { /* What: Document Open Button. Why: Each legal row opens its document with a small secondary button at the row's end. How: This draws a small outlined pill that never shrinks or wraps and nudges down when pressed. */
+
+
+	align-items    : center;
+	background     : var( --bac-sur-col );                                                                        /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );                                             /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : 999px;
+	color          : var( --tex-mai-col );                                                                        /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	display        : inline-flex;
+	flex           : 0 0 auto;
+	font-size      : var( --fon-siz-p01 );                                                                        /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight    : 500;
+	gap            : var( --spa-hor-m04 );                                                                        /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	height         : calc( var( --ver-rhy-p02 ) * 1rem );                                                         /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	letter-spacing : -0.005em;
+	padding        : 0 var( --spa-hor-m01 );                                                                      /* Spacing Horizontal Base Minus 1 = 11px */
+	transition     : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ), transform var( --dur-tra-m02 ); /* Duration Transition Base Minus 1 ~= 119.2ms, Duration Transition Base Minus 2 ~= 89.9ms */
+	white-space    : nowrap;
+
+
+}
+.docOpeBut:hover { /* What: Hovered Document Button. Why: The button should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+.docOpeBut:active { /* What: Pressed Document Button. Why: A press should feel physical. How: This nudges it down half a pixel. */
+
+
+	transform : translateY( 0.5px );
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Document Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.docOpeBut { /* What: Still Document Open Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion setRowDiv */
+
+
+
+/* #region aboInfDiv */
+
+.aboInfDiv { /* What: About Info Div. Why: The app's name, version, and links stack as one identity block. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */
+
+
+}
+
+
+/* #region aboBraDiv */
+
+.aboBraDiv { /* What: About Brand Div. Why: The app's name sits on its own line. How: This lines it up on a baseline row. */
+
+
+	align-items : baseline;
+	display     : flex;
+	gap         : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+}
+
+.aboNamSpa { /* What: About Name Span. Why: The app's name leads the block. How: This sets it large and bold. */
+
+
+	font-size      : var( --fon-siz-p02 ); /* Font Size Base Plus 2 ~= 19.304px */
+	font-weight    : 600;
+	letter-spacing : -0.015em;
+
+
+}
+
+/* #endregion aboBraDiv */
+
+
+.aboVerSpa { /* What: About Version Span. Why: The build version reads as small metadata. How: This sets it in small muted mono type. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.03em;
+
+
+}
+
+.aboCreSpa { /* What: About Creator Span. Why: The creator and source links read as quieter lines. How: This sets them small and muted. */
+
+
+	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-bas ); /* Font Size Base = 11px */
+
+
+}
+.aboLinAnc { /* What: About Link Anchor. Why: The link should read as a link. How: This colors it in the accent. */
+
+
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.aboLinAnc:hover { /* What: Hovered About Link. Why: The link should respond to the pointer. How: This darkens it to body text. */
+
+
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+
+/* #endregion aboInfDiv */
+
+/* #endregion setSecSec */
+
+/* #endregion setSecDiv */
+
+/* #endregion setGriDiv */
+
+/* #endregion tabPagDiv */
+
+

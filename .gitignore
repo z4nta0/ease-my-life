@@ -1,6 +1,4 @@
-
-# Editor Directories and Files
-!.vscode/extensions.json
+# What: Editor Files Block. Why: Editor and operating system settings belong to each machine, not the project. How: This ignores their folders and files.
 *.njsproj
 *.ntvs*
 *.sln
@@ -12,7 +10,7 @@
 
 
 
-# Log Directories and Files
+# What: Log Files Block. Why: Logs are local run output, not source. How: This ignores every log file and folder the package managers write.
 *.log
 lerna-debug.log*
 logs
@@ -23,15 +21,19 @@ yarn-error.log*
 
 
 
-# Miscellaneous Directories and Files
+# What: Generated And Local Files Block. Why: Build output, dependencies, local secrets, and tool state are recreated or kept per machine. How: This ignores the build and dev output, node_modules, local env files, design sources, and the Claude and Playwright working folders.
+*.env
 *.local
+.claude
+.playwright
+.playwright-cli
+design/
 dev-dist/
 dist
 dist-ssr
 node_modules
-*.env
-.claude
-.playwright
-.playwright-cli
 
 
+
+# What: Re-Include Block. Why: A shared file inside an ignored folder still belongs in the project, and a re-include only works after the pattern it overrides. How: This re-includes .vscode/extensions.json, so the editor's extension recommendations stay shared.
+!.vscode/extensions.json

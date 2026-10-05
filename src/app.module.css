@@ -1,0 +1,1036 @@
+
+
+
+/**
+ * app.module.css = App Module
+ *
+ * @summary
+ * Styles for the app shell: AppRooCom's full-height root, which is also the
+ * "app" size container every @container query in the app measures, the
+ * scrolling main area, and TabBarCom's navigation bar in its three
+ * placements. At the bottom it's a floating pill of tab buttons; at the side
+ * it's a rail with the Ease My Life wordmark, which becomes an off-canvas
+ * drawer with a pull handle and scrim on a narrow screen; at the top it's a
+ * bar with the wordmark and tabs on one line. A single indicator pill slides
+ * behind the active tab. When the placement changes, a ghost copy of the old
+ * bar exits toward its edge while the real one enters from its new edge.
+ *
+ * The main area reads data-tab-today-active, set while the Today tab shows,
+ * since Today runs edge to edge.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region appRooDiv */
+
+.appRooDiv { /* What: App Root. Why: The app fills the viewport, and its width drives every container query in the app. How: This makes it a full-height flex column that clips overflow and names it the "app" inline-size container. */
+
+
+	container      : app / inline-size;
+	display        : flex;
+	flex-direction : column;
+	height         : 100dvh;
+	overflow       : hidden;
+
+
+}
+.appRooDiv[data-placement='side'] { /* What: Side Placement App Root. Why: A side rail sits beside the content rather than above it. How: This lays the root out as a row. */
+
+
+	flex-direction : row;
+
+
+}
+.appRooDiv[data-placement='top'] { /* What: Top Placement App Root. Why: A top bar sits above the content. How: This keeps the root a column. */
+
+
+	flex-direction : column;
+
+
+}
+
+/* #region appTabNav */
+
+.appTabNav { /* What: Tab Bar. Why: The navigation reads as a translucent frosted bar over the content. How: This lays the tabs out in a centered row on a blurred translucent background, with a zero-width border each placement widens on its own edge. */
+
+
+	-webkit-backdrop-filter : blur( calc( var( --ver-rhy-p01 ) * 1rem ) ) saturate( 150% ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */ /* What: WebKit Backdrop Filter. Why: Safari only honors its own prefixed backdrop-filter. How: This blurs what's behind in WebKit, the same as the standard backdrop-filter line below. */
+	align-items             : center;
+	backdrop-filter         : blur( calc( var( --ver-rhy-p01 ) * 1rem ) ) saturate( 150% ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	background              : oklch( from var( --bac-pag-col ) l c h / 0.85 );              /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border                  : 0 solid var( --bor-mai-col );                                 /* Border Main Color = oklch( 0.91 0.005 240 ) */
+	display                 : flex;
+	gap                     : var( --spa-hor-m05 );                                         /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+
+
+}
+.appTabNav--exiting { /* What: Exiting Tab Bar. Why: When the placement changes, a ghost of the old bar plays its exit over the page without taking clicks. How: This makes it inert and raises it, and must stay before the placement rules so their own stacking wins where they set one. */
+
+
+	pointer-events : none;
+	z-index        : 16; /* What: Exiting Bar Stack Level. Why: The ghost of the old tab bar plays its exit over the new bar at 15. How: 16 keeps it above that bar and below the drawer scrim at 17. */
+
+
+}
+.appTabNav--exiting.appTabNav--side { /* What: Exiting Side Tab Bar. Why: The ghost side rail leaves the layout so the real bar can take its slot. How: This pins it to the left edge as an overlay. */
+
+
+	bottom   : 0;
+	left     : 0;
+	position : fixed;
+	top      : 0;
+
+
+}
+.appTabNav--exiting.appTabNav--top { /* What: Exiting Top Tab Bar. Why: The ghost top bar leaves the layout so the real bar can take its slot. How: This pins it to the top edge as an overlay. */
+
+
+	left     : 0;
+	position : fixed;
+	right    : 0;
+	top      : 0;
+
+
+}
+.appTabNav--exiting.appTabNav--bottom { /* What: Exiting Bottom Tab Bar Motion. Why: The old bottom bar should slide away toward its own edge. How: This plays the bottom exit. */
+
+
+	animation : appTabNavBottomSlideOut var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */
+
+
+}
+.appTabNav--exiting.appTabNav--top { /* What: Exiting Top Tab Bar Motion. Why: The old top bar should slide away toward its own edge. How: This plays the top exit. */
+
+
+	animation : appTabNavTopSlideOut var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */
+
+
+}
+.appTabNav--exiting.appTabNav--side { /* What: Exiting Side Tab Bar Motion. Why: The old side rail should slide away toward its own edge. How: This plays the side exit. */
+
+
+	animation : appTabNavSideSlideOut var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */
+
+
+}
+.appTabNav--entering.appTabNav--bottom { /* What: Entering Bottom Tab Bar. Why: The new bottom bar should arrive from its edge just after the old one leaves. How: This plays the bottom entrance after a short stagger. */
+
+
+	animation : appTabNavBottomSlideIn var( --dur-ani-p04 ) var( --mot-dec-eas ) var( --dur-ani-m01 ) both; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Duration Animation Base Minus 1 ~= 119.2ms */
+
+
+}
+.appTabNav--entering.appTabNav--top { /* What: Entering Top Tab Bar. Why: The new top bar should arrive from its edge just after the old one leaves. How: This plays the top entrance after a short stagger. */
+
+
+	animation : appTabNavTopSlideIn var( --dur-ani-p04 ) var( --mot-dec-eas ) var( --dur-ani-m01 ) both; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Duration Animation Base Minus 1 ~= 119.2ms */
+
+
+}
+.appTabNav--entering.appTabNav--side { /* What: Entering Side Tab Bar. Why: The new side rail should arrive from its edge just after the old one leaves. How: This plays the side entrance after a short stagger. */
+
+
+	animation : appTabNavSideSlideIn var( --dur-ani-p04 ) var( --mot-dec-eas ) var( --dur-ani-m01 ) both; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Duration Animation Base Minus 1 ~= 119.2ms */
+
+
+}
+.appTabNav--bottom { /* What: Bottom Tab Bar. Why: At the bottom, the tabs float in a centered pill above the screen's bottom edge. How: This fixes a content-width rounded pill with a border, shadow, and surface fill, centered across the screen, while the width rules below set how far it sits from the edge. */
+
+
+	background      : oklch( from var( --bac-sur-col ) l c h / 0.94 ); /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : 999px;
+	box-shadow      : var( --ele-med-sha );                            /* Elevation Medium Shadow, about 0 8px 26px plus 0 3.6px 8px -2px */
+	gap             : var( --spa-hor-m07 );                            /* Spacing Horizontal Base Minus 7 ~= 2.035px */
+	justify-content : center;
+	left            : 50%;
+	padding         : var( --spa-ver-m03 ) var( --spa-hor-m02 );       /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+	position        : fixed;
+	right           : auto;
+	transform       : translateX( -50% );
+	width           : max-content;
+	z-index         : 15;                                              /* What: Bottom Bar Stack Level. Why: The floating pill must stay over every page layer, including the Edit Mode banner at 14. How: 15 keeps it above all page content. */
+
+
+}
+@container app ( min-width : 720px ) { /* What: Wide Bottom Tab Bar. Why: On a wide screen the pill floats well clear of the bottom edge. How: This applies only when the app is at least 720px wide. */
+
+
+	.appTabNav--bottom { /* What: Floating Bottom Tab Bar. Why: A wide screen has room to lift the pill off the edge. How: This sets it the p01 vertical spacing step above the bottom edge. */
+
+
+		bottom : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
+
+
+	}
+
+
+}
+@container app ( max-width : 719.98px ) { /* What: Narrow Bottom Tab Bar. Why: On a small screen the pill has to fit the phone and clear its home indicator. How: This applies only when the app is narrower than 720px. */
+
+
+	.appTabNav--bottom { /* What: Floating Narrow Bottom Tab Bar. Why: The pill must fit a phone and clear its home indicator. How: This sets it just above the safe area and caps its width to the screen. */
+
+
+		bottom    : calc( var( --spa-ver-m01 ) + env( safe-area-inset-bottom ) ); /* Spacing Vertical Base Minus 1 = 11px */
+		max-width : calc( 100% - var( --spa-hor-p02 ) );                          /* Spacing Horizontal Base Plus 2 ~= 25.572px */
+
+
+	}
+
+
+}
+.appTabNav--side { /* What: Side Tab Bar. Why: At the side, the tabs stack in a full-height rail beside the content. How: This makes a sticky full-height column with a right border. */
+
+
+	align-items        : stretch;
+	border-right-width : var( --bor-wid-sma );                      /* Border Width Small ~= 0.499px */
+	flex-direction     : column;
+	gap                : var( --spa-ver-m07 );                      /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	height             : 100dvh;
+	padding            : var( --spa-ver-p02 ) var( --spa-hor-bas ); /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base ~= 14.572px */
+	position           : sticky;
+	top                : 0;
+	width              : calc( var( --ver-rhy-p10 ) * 1rem );       /* Vertical Rhythm Base Plus 10 ~= 242.522px */
+
+
+}
+@container app ( max-width : 720px ) { /* What: Narrow Side Tab Bar. Why: On a small screen the side rail becomes an off-canvas drawer overlaying the content instead of taking its width. How: This applies only when the app is 720px wide or less. */
+
+
+	.appTabNav--side { /* What: Drawer Side Tab Bar. Why: The rail should sit off the left edge until its handle opens it. How: This fixes the rail to the left edge, translated fully off screen, sliding when it opens. */
+
+
+		align-items    : stretch;
+		bottom         : 0;
+		flex-direction : column;
+		height         : 100dvh;
+		left           : 0;
+		padding        : var( --spa-ver-p02 ) var( --spa-hor-bas ) calc( var( --spa-ver-p02 ) + env( safe-area-inset-bottom ) ); /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base ~= 14.572px */
+		position       : fixed;
+		top            : 0;
+		transform      : translateX( -100% );
+		transition     : transform var( --dur-tra-p02 ) var( --mot-sta-eas );                                                    /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+		width          : calc( var( --ver-rhy-p10 ) * 1rem );                                                                    /* Vertical Rhythm Base Plus 10 ~= 242.522px */
+		z-index        : 18;                                                                                                     /* What: Drawer Stack Level. Why: The open drawer must sit above the scrim that dims everything else, at 17. How: 18 makes it the app shell's highest layer. */
+
+
+	}
+
+	.appTabNav--side[data-rail-open-active] { /* What: Open Drawer Side Tab Bar. Why: An open drawer slides into view over the content. How: This slides it back on screen with a soft shadow. */
+
+
+		box-shadow : var( --ele-sid-sha ); /* Elevation Side Shadow, about 19px 0 45px -15px plus 6px 0 15px -4px */
+		transform  : translateX( 0 );
+
+
+	}
+
+
+}
+.appTabNav--top { /* What: Top Tab Bar. Why: At the top, the brand and tabs sit in one sticky bar whose content lines up with the page column. How: This makes a sticky bar with a bottom border and padding that centers its content in the Today column's width. */
+
+
+	border-bottom-width : var( --bor-wid-sma );                                                                                 /* Border Width Small ~= 0.499px */
+	justify-content     : space-between;
+	padding             : var( --spa-ver-m01 ) max( var( --spa-hor-p01 ), calc( ( 100% - var( --ver-rhy-p15 ) * 1rem ) / 2 ) ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Plus 1 ~= 19.304px, Vertical Rhythm Base Plus 15 ~= 989.390px */ /* What: Centered Column Padding. Why: The bar's content should line up with the Today tab's column, capped at the p15 rhythm step. How: The side padding grows to center that width, never below the p01 horizontal spacing step; the other tabs' column would use the same formula with the p14 step. */
+	position            : sticky;
+	top                 : 0;
+	z-index             : 15;                                                                                                   /* What: Top Bar Stack Level. Why: The sticky bar must stay over every page layer, including the Edit Mode banner at 14. How: 15 keeps it above all page content. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tab Bar. Why: Someone who asked for less motion shouldn't see the bars slide out and in, or the drawer slide. How: This applies only when the reduced-motion preference is set. */
+
+
+	.appTabNav--exiting { /* What: Hidden Exiting Tab Bar. Why: Without its slide the ghost bar adds nothing. How: This hides it. */
+
+
+		display : none;
+
+
+	}
+
+	.appTabNav--entering.appTabNav--bottom,
+	.appTabNav--entering.appTabNav--top,
+	.appTabNav--entering.appTabNav--side { /* What: Still Entering Tab Bar. Why: The new bar should simply be there. How: This turns the entrances off. */
+
+
+		animation : none;
+
+
+	}
+
+	.appTabNav--side { /* What: Still Side Tab Bar. Why: The drawer should simply open and close. How: This turns its slide off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+@keyframes appTabNavBottomSlideOut { /* What: App Tab Nav Bottom Slide Out. Why: The bottom bar leaves downward. How: This slides the centered bar below the screen while fading it. */
+
+
+	to {
+
+
+		opacity   : 0;
+		transform : translateX( -50% ) translateY( 130% );
+
+
+	}
+
+
+}
+@keyframes appTabNavTopSlideOut { /* What: App Tab Nav Top Slide Out. Why: The top bar leaves upward. How: This slides the bar above the screen while fading it. */
+
+
+	to {
+
+
+		opacity   : 0;
+		transform : translateY( -130% );
+
+
+	}
+
+
+}
+@keyframes appTabNavSideSlideOut { /* What: App Tab Nav Side Slide Out. Why: The side rail leaves to the left. How: This slides the rail off the left edge while fading it. */
+
+
+	to {
+
+
+		opacity   : 0;
+		transform : translateX( -115% );
+
+
+	}
+
+
+}
+@keyframes appTabNavBottomSlideIn { /* What: App Tab Nav Bottom Slide In. Why: The bottom bar arrives from below. How: This slides the centered bar up from below the screen while fading it in. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateX( -50% ) translateY( 130% );
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : translateX( -50% );
+
+
+	}
+
+
+}
+@keyframes appTabNavTopSlideIn { /* What: App Tab Nav Top Slide In. Why: The top bar arrives from above. How: This slides the bar down from above the screen while fading it in. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY( -130% );
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes appTabNavSideSlideIn { /* What: App Tab Nav Side Slide In. Why: The side rail arrives from the left. How: This slides the rail in from off the left edge while fading it in. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateX( -115% );
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+.tabIndSpa { /* What: Tab Indicator. Why: One accent pill slides behind the active tab. How: JS measures the active tab and writes the pill's size and position, which glide on transform, width, and height behind the buttons. */
+
+
+	background     : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-radius  : var( --rad-bor-med ); /* Radius Border Medium = 11px */
+	left           : 0;
+	pointer-events : none;
+	position       : absolute;
+	top            : 0;
+	transition     : transform var( --dur-tra-p03 ) var( --mot-dec-eas ), width var( --dur-tra-p03 ) var( --mot-dec-eas ), height var( --dur-tra-p03 ) var( --mot-dec-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Indicator Size Transition. Why: A scale transform would stretch the pill's rounded corners as it resizes between tabs of different widths. How: This animates its real width and height alongside the transform. */
+	z-index        : 0;                    /* What: Indicator Stack Level. Why: The pill has to sit behind the tab buttons at 1. How: This keeps it on the bar's base level. */
+
+
+}
+.appTabNav--bottom .tabIndSpa { /* What: Bottom Tab Indicator. Why: The floating bottom pill needs a rounder indicator than the squarer side and top bars. How: This rounds it further. */
+
+
+	border-radius : var( --rad-bor-xla ); /* Radius Border Extra Large ~= 19.304px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tab Indicator. Why: Someone who asked for less motion shouldn't see the pill glide. How: This applies only when the reduced-motion preference is set. */
+
+
+	.tabIndSpa { /* What: Still Tab Indicator. Why: The pill should simply jump to the active tab. How: This turns its glide off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region tabBraBut */
+
+.tabBraBut { /* What: Tab Bar Brand. Why: The brand is a button back to Today that the placement rules lay out, not a styled native button. How: This strips the button chrome and inherits the text styling. */
+
+
+	-webkit-appearance : none; /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping a button's native styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : pointer;
+	font               : inherit;
+	text-align         : left;
+
+
+}
+.appTabNav--bottom .tabBraBut { /* What: Bottom Tab Bar Brand. Why: The bottom bar has no room for a brand, and each tab's header already shows the logo. How: This hides it. */
+
+
+	display : none;
+
+
+}
+.appTabNav--side .tabBraBut { /* What: Side Tab Bar Brand. Why: The rail leads with the wordmark above its tabs. How: This lays the brand out as a padded row above the tabs. */
+
+
+	align-items : center;
+	display     : flex;
+	font-weight : 600;
+	gap         : var( --spa-hor-m02 );                                           /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	padding     : var( --spa-ver-m03 ) var( --spa-hor-m01 ) var( --spa-ver-p01 ); /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 1 = 11px, Spacing Vertical Base Plus 1 ~= 19.304px */
+
+
+}
+.appTabNav--top .tabBraBut { /* What: Top Tab Bar Brand. Why: The top bar leads with the wordmark, divided from the tabs. How: This lays the brand out as a row with a right divider. */
+
+
+	align-items   : center;
+	border-right  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display       : flex;
+	font-weight   : 600;
+	margin-right  : var( --spa-hor-m02 );                            /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	padding-right : var( --spa-hor-bas );                            /* Spacing Horizontal Base ~= 14.572px */
+
+
+}
+@container app ( max-width : 720px ) { /* What: Narrow Top Tab Bar Brand. Why: On a small screen the top bar must fit on one line. How: This applies only when the app is 720px wide or less. */
+
+
+	.appTabNav--top .tabBraBut { /* What: Tight Top Tab Bar Brand. Why: The brand should give the icon-only tabs more room. How: This tightens its divider spacing. */
+
+
+		margin-right  : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+		padding-right : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+	}
+
+
+}
+
+/* #region braWorSpa */
+
+.braWorSpa { /* What: Nav Wordmark. Why: The wordmark only belongs in the side and top bars. How: This hides it by default. */
+
+
+	display : none;
+
+
+}
+.appTabNav--side .braWorSpa,
+.appTabNav--top .braWorSpa { /* What: Shown Nav Wordmark. Why: The side and top bars lead with "Ease" over "My Life" beside the mark. How: This lays the mark and the stacked lines out in a tight row in capitals. */
+
+
+	align-items    : center;
+	display        : flex;
+	flex-direction : row;
+	gap            : var( --spa-hor-m01 );                        /* Spacing Horizontal Base Minus 1 = 11px */
+	line-height    : var( --ver-rhy-m01 );                        /* Vertical Rhythm Base Minus 1 = 1 */
+	padding        : var( --spa-ver-m07 ) var( --spa-hor-m07 ) 0; /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 7 ~= 2.035px */
+	text-transform : uppercase;
+
+
+}
+@container app ( max-width : 500px ) { /* What: Narrowest Top Wordmark. Why: On the narrowest screens the top bar keeps only the mark so five tabs still fit. How: This applies only when the app is 500px wide or less. */
+
+
+	.appTabNav--top .braWorSpa { /* What: Mark-Only Top Wordmark. Why: With the text gone, the gap is empty space. How: This drops the gap. */
+
+
+		gap : 0;
+
+
+	}
+
+
+}
+
+/* #region worMarSpa */
+
+.appTabNav--side .braWorSpa .worMarSpa,
+.appTabNav--top .braWorSpa .worMarSpa { /* What: Wordmark Mark. Why: The wordmark repeats the small logo mark beside its text. How: This sizes a fixed square in the accent color. */
+
+
+	color   : var( --acc-mai-col );                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	display : inline-flex;
+	flex    : none;
+	height  : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	width   : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+
+.appTabNav--side .braWorSpa .worMarSpa .worMarSvg,
+.appTabNav--top .braWorSpa .worMarSpa .worMarSvg { /* What: Wordmark Mark Glyph. Why: The logo should fill its square. How: This sizes the svg to the full box as a block. */
+
+
+	display : block;
+	height  : 100%;
+	width   : 100%;
+
+
+}
+
+/* #endregion worMarSpa */
+
+
+/* #region worLinSpa */
+
+.appTabNav--side .braWorSpa .worLinSpa,
+.appTabNav--top .braWorSpa .worLinSpa { /* What: Wordmark Lines. Why: "Ease" stacks over "My Life". How: This stacks the two lines left-aligned. */
+
+
+	align-items    : flex-start;
+	display        : flex;
+	flex-direction : column;
+
+
+}
+@container app ( max-width : 500px ) { /* What: Narrowest Top Wordmark Lines. Why: On the narrowest screens the top bar keeps only the mark. How: This applies only when the app is 500px wide or less. */
+
+
+	.appTabNav--top .braWorSpa .worLinSpa { /* What: Hidden Top Wordmark Lines. Why: Five tabs and the brand must fit on one line. How: This hides the text. */
+
+
+		display : none;
+
+
+	}
+
+
+}
+
+.appTabNav--side .braWorSpa .worEasSpa,
+.appTabNav--top .braWorSpa .worEasSpa { /* What: Wordmark Ease Line. Why: "Ease" leads the wordmark in the brand's display face. How: This sets it large and bold in Shantell Sans, in the accent color. */
+
+
+	color          : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	font-family    : var( --fon-fam-br1 ); /* Font Family Brand 1 = 'Shantell Sans', then the main font */
+	font-size      : var( --fon-siz-p04 ); /* Font Size Base Plus 4 ~= 33.876px */
+	font-weight    : 600;
+	letter-spacing : -0.01em;
+
+
+}
+
+.appTabNav--side .braWorSpa .worResSpa,
+.appTabNav--top .braWorSpa .worResSpa { /* What: Wordmark My Life Line. Why: "My Life" completes the wordmark in the brand's second face. How: This sets it bold in Quicksand, in the text color. */
+
+
+	color          : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family    : var( --fon-fam-br2 ); /* Font Family Brand 2 = 'Quicksand', then the main font */
+	font-size      : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
+	font-weight    : 700;
+	letter-spacing : -0.005em;
+
+
+}
+
+/* #endregion worLinSpa */
+
+/* #endregion braWorSpa */
+
+/* #endregion tabBraBut */
+
+
+
+/* #region navTabBut */
+
+.navTabBut { /* What: Tab Button. Why: Each tab button sits above the sliding indicator and fades its colors as it becomes active. How: This lays out its icon and label in a row, raised above the indicator. */
+
+
+	align-items : center;
+	display     : flex;
+	position    : relative;
+	transition  : color var( --dur-tra-m01 ), background var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	z-index     : 1;                                                           /* What: Tab Button Stack Level. Why: Each button has to sit above the sliding indicator at 0. How: This raises it one level. */
+
+
+}
+.navTabBut:hover:not( [aria-current='page'] ) { /* What: Hovered Tab Button. Why: An inactive tab should respond to the pointer. How: This darkens its text, keyed off the active tab's own aria-current. */
+
+
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.appTabNav--bottom .navTabBut { /* What: Bottom Tab Button. Why: In the floating pill, each tab is a compact rounded pill. How: This lays its icon and label in a row in muted text, while the width rules below set its size. */
+
+
+	border-radius  : 999px;
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	flex           : 0 0 auto;
+	flex-direction : row;
+	font-weight    : 500;
+	letter-spacing : 0.01em;
+
+
+}
+.appTabNav--bottom .navTabBut[aria-current='page'] { /* What: Active Bottom Tab Button. Why: The active tab reads in the accent color over the indicator. How: This colors it accent with no fill of its own. */
+
+
+	background : transparent;
+	color      : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@container app ( min-width : 720px ) { /* What: Wide Bottom Tab Button. Why: In the floating wide pill, tabs sit as compact rounded pills with the icon beside the label. How: This applies only when the app is at least 720px wide. */
+
+
+	.appTabNav--bottom .navTabBut { /* What: Pill Bottom Tab Button. Why: Each tab sizes to its icon and label. How: This sets the large text, the label gap, its side padding, and the p03 rhythm height. */
+
+
+		font-size : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
+		gap       : var( --spa-hor-m03 );                /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+		height    : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+		padding   : 0 var( --spa-hor-bas );              /* Spacing Horizontal Base ~= 14.572px */
+
+
+	}
+
+
+}
+@container app ( max-width : 719.98px ) { /* What: Narrow Bottom Tab Button. Why: In the floating narrow pill, tabs are icon-only pills. How: This applies only when the app is narrower than 720px. */
+
+
+	.appTabNav--bottom .navTabBut { /* What: Icon Pill Bottom Tab Button. Why: Each tab is a roomy icon-only pill. How: This drops the label gap and sets roomy side padding and the p04 touch-target height. */
+
+
+		gap     : 0;
+		height  : calc( var( --ver-rhy-p04 ) * 1rem ); /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+		padding : 0 var( --spa-hor-p02 );              /* Spacing Horizontal Base Plus 2 ~= 25.572px */
+
+
+	}
+
+
+}
+@container app ( max-width : 440px ) { /* What: Narrowest Bottom Tab Button. Why: Below about 430px, five buttons at their full side padding overflow the pill's rounded edges. How: This applies only when the app is 440px wide or less. */
+
+
+	.appTabNav--bottom .navTabBut { /* What: Tight Bottom Tab Button. Why: Every button should stay inside the pill down to the narrowest phones. How: This trims the side padding to the p01 step. */
+
+
+		padding-left  : var( --spa-hor-p01 ); /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+		padding-right : var( --spa-hor-p01 ); /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+
+
+	}
+
+
+}
+.appTabNav--side .navTabBut { /* What: Side Tab Button. Why: In the rail each tab is a full-width row. How: This lays icon and label in a left-aligned padded row in muted text. */
+
+
+	border-radius   : var( --rad-bor-med );                /* Radius Border Medium = 11px */
+	color           : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	flex-direction  : row;
+	font-size       : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight     : 500;
+	gap             : var( --spa-hor-m01 );                /* Spacing Horizontal Base Minus 1 = 11px */
+	height          : calc( var( --ver-rhy-p04 ) * 1rem ); /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	justify-content : flex-start;
+	padding         : 0 var( --spa-hor-m01 );              /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+}
+.appTabNav--side .navTabBut[aria-current='page'] { /* What: Active Side Tab Button. Why: The active tab reads in the accent color over the indicator. How: This colors it accent with no fill of its own. */
+
+
+	background : transparent;
+	color      : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.appTabNav--top .navTabBut { /* What: Top Tab Button. Why: In the top bar each tab is a compact pill. How: This lays icon and label in a padded row pill in muted text. */
+
+
+	border-radius  : 999px;
+	color          : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	flex-direction : row;
+	font-size      : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight    : 500;
+	gap            : var( --spa-hor-m02 );                /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	height         : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	padding        : 0 var( --spa-hor-bas );              /* Spacing Horizontal Base ~= 14.572px */
+
+
+}
+.appTabNav--top .navTabBut[aria-current='page'] { /* What: Active Top Tab Button. Why: The active tab reads in the accent color over the indicator. How: This colors it accent with no fill of its own. */
+
+
+	background : transparent;
+	color      : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@container app ( max-width : 720px ) { /* What: Narrow Top Tab Button. Why: On a small screen the top bar keeps everything on one line with icon-only tabs. How: This applies only when the app is 720px wide or less. */
+
+
+	.appTabNav--top .navTabBut { /* What: Icon Top Tab Button. Why: With the label gone the tab only needs room for its icon. How: This tightens its padding and drops the gap. */
+
+
+		gap     : 0;
+		padding : 0 var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+
+
+	}
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tab Button. Why: Someone who asked for less motion shouldn't see a tab's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.navTabBut { /* What: Still Tab Button. Why: Its colors should simply switch. How: This turns the fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+@container app ( max-width : 719.98px ) { /* What: Narrow Bottom Tab Label. Why: The narrow pill is icon-only. How: This applies only when the app is narrower than 720px. */
+
+
+	.appTabNav--bottom .navTabBut .tabLabSpa { /* What: Hidden Bottom Tab Label. Why: Five labels don't fit a phone-width pill. How: This hides the label. */
+
+
+		display : none;
+
+
+	}
+
+
+}
+@container app ( max-width : 720px ) { /* What: Narrow Top Tab Label. Why: The narrow top bar is icon-only. How: This applies only when the app is 720px wide or less. */
+
+
+	.appTabNav--top .navTabBut .tabLabSpa { /* What: Hidden Top Tab Label. Why: The brand and five labels don't fit on one line. How: This hides the label. */
+
+
+		display : none;
+
+
+	}
+
+
+}
+
+.appTabNav--side .navTabBut[aria-current='page'] .tabIcoSvg,
+.appTabNav--top .navTabBut[aria-current='page'] .tabIcoSvg { /* What: Active Tab Icon. Why: The active tab's icon should match its accent label. How: This colors the icon accent. */
+
+
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+
+/* #endregion navTabBut */
+
+
+.raiHanBut { /* What: Rail Pull Handle. Why: The drawer rail needs a visible pull tab riding its right edge, which only exists on a small screen. How: This draws a frosted tab centered on the rail's right edge, hidden until the narrow-screen query shows it. */
+
+
+	-webkit-backdrop-filter : blur( calc( var( --ver-rhy-p01 ) * 1rem ) ) saturate( 150% ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */ /* What: WebKit Backdrop Filter. Why: Safari only honors its own prefixed backdrop-filter. How: This blurs what's behind in WebKit, the same as the standard backdrop-filter line below. */
+	align-items             : center;
+	backdrop-filter         : blur( calc( var( --ver-rhy-p01 ) * 1rem ) ) saturate( 150% ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	background              : oklch( from var( --bac-pag-col ) l c h / 0.92 );              /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border                  : var( --bor-wid-sma ) solid var( --bor-mai-col );              /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-left             : 0;
+	border-radius           : 0 var( --rad-bor-med ) var( --rad-bor-med ) 0;                /* Radius Border Medium = 11px */
+	box-shadow              : var( --ele-sid-sha );                                         /* Elevation Side Shadow, about 19px 0 45px -15px plus 6px 0 15px -4px */
+	color                   : var( --tex-mut-col );                                         /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor                  : pointer;
+	display                 : none;
+	height                  : calc( var( --ver-rhy-p05 ) * 1rem );                          /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	justify-content         : center;
+	left                    : 100%;
+	padding                 : 0;
+	position                : absolute;
+	top                     : 50%;
+	transform               : translateY( -50% );
+	width                   : calc( var( --ver-rhy-p01 ) * 1rem );                          /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+
+
+}
+.raiHanBut:hover { /* What: Hovered Rail Pull Handle. Why: The handle should respond to the pointer. How: This colors its glyph accent. */
+
+
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@container app ( max-width : 720px ) { /* What: Narrow Rail Pull Handle. Why: The handle only exists while the rail is a drawer. How: This applies only when the app is 720px wide or less. */
+
+
+	.appTabNav--side .raiHanBut { /* What: Shown Rail Pull Handle. Why: The drawer needs its handle. How: This shows it. */
+
+
+		display : flex;
+
+
+	}
+
+
+}
+
+/* #endregion appTabNav */
+
+
+
+.raiScrDiv { /* What: Rail Scrim. Why: An open drawer dims the content behind it, and only exists on a small screen. How: This covers the viewport with a translucent layer below the drawer, hidden until the narrow-screen query shows it. */
+
+
+	background : oklch( from var( --tex-mai-col ) l c h / var( --cdn-pow-004-rec ) ); /* Text Main Color = oklch( 0.17 0.012 250 ), Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
+	display    : none;
+	inset      : 0;
+	position   : fixed;
+	z-index    : 17;                                                                  /* What: Scrim Stack Level. Why: The scrim has to dim the tab bars at 15 and their exiting ghost at 16, but not the drawer at 18. How: 17 sits between them. */
+
+
+}
+@container app ( max-width : 720px ) { /* What: Narrow Rail Scrim. Why: The scrim only belongs to the drawer rail. How: This applies only when the app is 720px wide or less. */
+
+
+	.appRooDiv[data-placement='side'] .raiScrDiv { /* What: Shown Rail Scrim. Why: With the side placement as a drawer, an open rail dims the content. How: This shows the scrim. */
+
+
+		display : block;
+
+
+	}
+
+
+}
+
+
+
+/* #region appConMai */
+
+.appConMai { /* What: Main Area. Why: The active tab scrolls in its own area, with side padding each layout can change, clipped horizontally so the background flourish's edge glyphs never scroll it sideways. How: This fills the remaining space, pads it from --mai-hor-pad, scrolls vertically, and eases padding changes between layouts. */
+
+
+	flex           : 1;
+	min-height     : 0;
+	min-width      : 0;
+	overflow-x     : hidden;                                            /* What: Explicit Horizontal Clip. Why: Setting overflow-y alone makes overflow-x compute to auto, giving main its own sideways scroll that the flourish's edge glyphs would push. How: This sets it to hidden explicitly. */
+	overflow-y     : auto;
+	padding-bottom : var( --spa-ver-p07 );                              /* Spacing Vertical Base Plus 7 ~= 104.323px */
+	padding-left   : var( --mai-hor-pad, var( --spa-hor-p01 ) );        /* Main Horizontal Padding, set by its layout rules, falling back to Spacing Horizontal Base Plus 1 ~= 19.304px */
+	padding-right  : var( --mai-hor-pad, var( --spa-hor-p01 ) );        /* Main Horizontal Padding, set by its layout rules, falling back to Spacing Horizontal Base Plus 1 ~= 19.304px */
+	transition     : padding var( --dur-tra-p04 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 4 ~= 486.1ms, Motion Standard Easing = ease */ /* What: Layout Padding Transition. Why: The content has to reflow as the padding changes between layouts, which a transform can't do. How: This animates the padding itself. */
+
+
+}
+.appRooDiv[data-placement='side'] .appConMai { /* What: Side Placement Main Area. Why: Beside a rail, the content has no bottom bar to clear and more room to pad. How: This widens its side padding and shortens its bottom padding. */
+
+
+	--mai-hor-pad : var( --spa-hor-p03 ); /* Spacing Horizontal Base Plus 3 ~= 33.876px */
+
+	padding-bottom : var( --spa-ver-p03 ); /* Spacing Vertical Base Plus 3 ~= 33.876px */
+
+
+}
+.appRooDiv[data-placement='top'] .appConMai { /* What: Top Placement Main Area. Why: Under a top bar, there is no bottom bar to clear. How: This shortens its bottom padding. */
+
+
+	padding-bottom : var( --spa-ver-p03 ); /* Spacing Vertical Base Plus 3 ~= 33.876px */
+
+
+}
+.appConMai[data-tab-today-active] { /* What: Today Main Area. Why: The Today tab runs edge to edge. How: This drops the side padding while Today shows, which the placement rules above can still override. */
+
+
+	--mai-hor-pad : 0;
+
+
+}
+@container app ( min-width : 720px ) { /* What: Wide Bottom Placement Main Area. Why: The floating wide pill sits higher, so the content needs more room to clear it. How: This applies only when the app is at least 720px wide. */
+
+
+	.appRooDiv[data-placement='bottom'] .appConMai { /* What: Clear Wide Pill Main Area. Why: The last content should scroll clear of the pill. How: This deepens the bottom padding. */
+
+
+		padding-bottom : var( --spa-ver-p07 ); /* Spacing Vertical Base Plus 7 ~= 104.323px */
+
+
+	}
+
+
+}
+@container app ( max-width : 719.98px ) { /* What: Narrow Bottom Placement Main Area. Why: The narrow pill floats above the home indicator. How: This applies only when the app is narrower than 720px. */
+
+
+	.appRooDiv[data-placement='bottom'] .appConMai { /* What: Clear Narrow Pill Main Area. Why: The last content should scroll clear of the pill and the safe area. How: This pads the bottom by the pill plus the safe area. */
+
+
+		padding-bottom : calc( var( --spa-ver-p07 ) + env( safe-area-inset-bottom ) ); /* Spacing Vertical Base Plus 7 ~= 104.323px */
+
+
+	}
+
+
+}
+@container app ( min-width : 880px ) { /* What: Widest Bottom Placement Main Area. Why: On a wide screen the content can take more side padding. How: This applies only when the app is at least 880px wide. */
+
+
+	.appRooDiv[data-placement='bottom'] .appConMai { /* What: Roomy Main Area. Why: Wider screens read better with more margin. How: This widens the side padding and keeps room to clear the pill. */
+
+
+		--mai-hor-pad : var( --spa-hor-p03 ); /* Spacing Horizontal Base Plus 3 ~= 33.876px */
+
+		padding-bottom : var( --spa-ver-p07 ); /* Spacing Vertical Base Plus 7 ~= 104.323px */
+
+
+	}
+
+
+}
+@container app ( max-width : 720px ) { /* What: Narrow Side Placement Main Area. Why: With the rail as an overlay drawer, the content takes the full width again. How: This applies only when the app is 720px wide or less. */
+
+
+	.appRooDiv[data-placement='side'] .appConMai { /* What: Full-Width Main Area. Why: The content no longer shares the row with the rail. How: This returns to the standard side padding. */
+
+
+		--mai-hor-pad : var( --spa-hor-p01 ); /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+
+		padding-bottom : var( --spa-ver-p03 ); /* Spacing Vertical Base Plus 3 ~= 33.876px */
+
+
+	}
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Main Area. Why: Someone who asked for less motion shouldn't see the content reflow between layouts. How: This applies only when the reduced-motion preference is set. */
+
+
+	.appConMai { /* What: Still Main Area. Why: The padding should simply switch. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.maiInnDiv { /* What: Main Content Column. Why: Every tab but Today reads in one centered, capped column. How: This centers a capped flex column with a top offset and a gap between sections. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-p02 );                /* Spacing Vertical Base Plus 2 ~= 25.572px */
+	margin         : 0 auto;
+	max-width      : calc( var( --ver-rhy-p14 ) * 1rem ); /* Vertical Rhythm Base Plus 14 ~= 746.868px */
+	padding-top    : var( --spa-ver-p02 );                /* Spacing Vertical Base Plus 2 ~= 25.572px */
+	position       : relative;
+
+
+}
+
+.tabFadDiv { /* What: Tab Fade. Why: Switching tabs should fade and lift the new tab in rather than snap. How: This plays the shared fade each time the keyed wrapper remounts. */
+
+
+	animation : global( tabOpenFadeIn ) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The tabOpenFadeIn keyframes are shared with the tabs' own fading sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tab Fade. Why: Someone who asked for less motion shouldn't see tabs fade in. How: This applies only when the reduced-motion preference is set. */
+
+
+	.tabFadDiv { /* What: Still Tab Fade. Why: The new tab should simply appear. How: This turns the fade off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #endregion appConMai */
+
+/* #endregion appRooDiv */
+
+

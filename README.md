@@ -1,63 +1,68 @@
-# Vite skeleton — Ease My Life
+# Ease My Life
 
-This folder is Phase B of `Vite Handoff Checklist.md`, already done: the app
-converted from `window.*` globals to real ES modules. Drop it into an empty
-directory, `npm install`, `npm run dev`.
+Pick what to do today, without deciding. Live at [easemylife.app](https://easemylife.app/).
+
+Ease My Life is a small app for the everyday choices that eat up attention:
+which chore to tackle, what to cook, which book to pick up next. You build
+**pickers**, pools of items with their own rules for how one gets chosen, and
+the app puts together a short list for each day. Reminders cover the things
+that happen on a fixed schedule, and conditionals can give a picker a day off.
+
+## How it works
+
+- **No accounts, no server.** Everything is stored on your own device
+  (IndexedDB, with a localStorage fallback). Settings can export a backup file
+  and import it again on another device.
+- **Installable.** It's a Progressive Web App, so it can be added to a home
+  screen or dock and works offline.
+- **Pickers choose in different ways:** truly random, weighted, dynamic, or
+  easing up or down over time so an item comes around again at a steady pace.
+- **Nothing changes until you do it.** A picked item only updates its picker
+  once it's marked done, and unchecking it undoes that exactly.
+
+## Running it locally
+
+Requires Node.js and npm.
 
 ```
-vite/
-  index.html          build entry (Vite parses this — keep it at the ROOT)
-  package.json        react/react-dom pinned to 18.3.1
-  vite.config.js      @vitejs/plugin-react (PWA plugin goes here in Phase C)
-  src/
-    main.jsx          boot gate: STORAGE.init() -> createRoot().render(<App />)
-    *.js *.jsx        the app, as modules
-    styles.css        copied from app/
-    styles2.css
+npm install
+npm run dev       # development server
+npm run build     # production build into dist/
+npm run preview   # serve the production build locally
 ```
 
-## Still yours to do
+There is no test suite; changes are verified by running the app in a browser.
+ESLint is configured and can be run by hand with `npx eslint <file>`.
 
-- `public/` — copy `favicon.ico`, `assets/`, `manifest.webmanifest`,
-  `robots.txt`, `sitemap.xml` in. Nothing references them from `src/`, so Vite
-  will not copy them for you. (Phase A + F.)
-- Phase C (PWA plugin, self-hosted fonts), D (Netlify), E (device testing),
-  F (real domain). Unchanged.
-- The `CHECK` items in Phase B: this conversion is validated structurally
-  (every import resolves to a real export, no cycles, no stray globals) but it
-  has **never been executed**. `npm run dev` is the first real test.
+## Project layout
 
-## What changed beyond mechanical renaming
+```
+src/
+  main.jsx       entry point: waits for storage, then mounts the app
+  app.jsx        root component and tab bar
+  core/          scheduling and picking logic, no React
+  state/         app state, persistence, and sample data
+  platform/      browser services: notifications, install, appearance
+  ui/            shared components and editors
+  tabs/          one folder per tab: today, pickers, stats, data, settings
+  onboarding/    the welcome tour and the guided mini-tours
+  help/          the on-demand help mode
+  styles/        global CSS (fonts, tokens, base styles, shared animations)
+public/          files served at fixed URLs (icons, manifest, hosting rules)
+scripts/         build helpers
+```
 
-Four things needed a judgement call, not just a find-and-replace:
+Each component keeps its styles in a CSS module next to it
+(`entry-card.jsx` with `entry-card.module.css`).
 
-1. **`appearance.js` is new.** `PALETTES` / `applyPaletteObj` /
-   `resolveCustomPalette` / `resolveActiveThemeKey` used to live in `app.jsx`
-   and hang off `window.APPEARANCE`, but `tab-settings.jsx` reads them — which
-   as modules is an import cycle (`app -> tab-settings -> app`). They now live
-   in their own module that neither imports. `resolveActiveThemeKey` was also
-   being bolted onto the `APPEARANCE` object one line after it was created; it
-   is a normal export now.
+## Conventions
 
-2. **`constants.js` is new.** `EASE_UP_RANGE_WARN` was declared in
-   `tab-data.jsx` and read by `tab-today.jsx`, while `tab-data.jsx` reads
-   `EntryEditor` back out of `tab-today.jsx` — the second cycle. The string
-   moved to its own module.
+This codebase follows a detailed, project-specific set of naming, formatting,
+and comment rules, written down in [CLAUDE.md](CLAUDE.md). Read it before
+changing code; it also documents the architecture and the reasoning behind
+the less obvious parts of the domain logic.
 
-3. **The Tweaks panel is gone from `app.jsx`** — `useTweaks`, `TWEAK_DEFAULTS`,
-   the `<TweaksPanel>` block, and the now-unused `PaletteSwatch`. It was
-   design-time tooling. Note that palette / animation style / tab placement
-   were already real persisted settings read from `state.appearance`; the only
-   thing the panel uniquely drove was the `viewport: mobile` preview toggle,
-   which has no place in the shipped app.
+## License
 
-4. **Six globals deliberately stay on `window`**: `__escStack`, `__escBound`,
-   `__editGuard`, `__emlGenerate`, `__emlPickerCreated`, `__dismissBootSplash`.
-   These are runtime registration channels — a component assigns one on mount so
-   another component (or `index.html`) can call it later. Converting them to
-   imports would mean rewriting the coordination, which is a refactor, not a
-   port. They are all `__`-prefixed, so they are easy to find later.
-
-One cosmetic wart: `ui.jsx` declares `let announce;` at the top and assigns it
-inside an IIFE further down, because that is where the live-region element gets
-built. It exports correctly; it just does not read as nicely as the rest.
+MIT-style with a non-commercial clause: free to use, copy, and modify, but not
+for commercial purposes. See [LICENSE.md](LICENSE.md) for the full terms.

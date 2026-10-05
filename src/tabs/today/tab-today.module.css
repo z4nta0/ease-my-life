@@ -1,0 +1,2238 @@
+
+
+
+/**
+ * tab-today.module.css = Today Tab Module
+ *
+ * @summary
+ * Styles for the Today tab's own markup: the sticky header with its date
+ * kicker, streak chip, brand mark, cross-fading title, and progress ring;
+ * the Edit Mode banner; the group rail (a sticky sidebar that becomes a
+ * scrolling pill row on narrow widths); the group sections the cards stack
+ * in; the confetti and sparkle celebration overlay; the onboarding Generate
+ * and empty-state cards; and the footer with its regenerate confirm. The
+ * ring's pulse and celebration classes, the streak's bump class, the banner's
+ * closing class, and the onboarding card's removing and pulse classes are
+ * animation triggers this file adds itself. A title state keys off its own
+ * aria-hidden, a selected rail button off data-rail-select-active, the Edit
+ * Mode button off data-edit-mode-active, a blocked Generate card off
+ * data-card-needed-active, and a disabled-looking tip button off the
+ * aria-disabled its info tip sets. The footer's Edit Mode button hides
+ * through --but-bas-dis, which ButBasCom reads.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region todTabDiv */
+
+.todTabDiv { /* What: Today Tab Div. Why: The header and body stack flush and full width, with extra room below while a tour runs. How: This clears the tab gap and width cap and reads --tab-tou-pad, which the body sets while a tour is active. */
+
+
+	gap            : 0;
+	max-width      : none;
+	padding-bottom : var( --tab-tou-pad, 0 ); /* Tab Tour Padding ~= 242.522px, set on the body while a tour runs */
+
+
+}
+
+
+/* #region todPagHea */
+
+.todPagHea { /* What: Today Page Header. Why: The header stays pinned at the top while the list scrolls under it. How: This makes it a sticky padded bar on the page background above a hairline. */
+
+
+	background    : var( --bac-pag-col );                                           /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col );                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	padding       : var( --spa-ver-p02 ) var( --spa-hor-p01 ) var( --spa-ver-p02 ); /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
+	position      : sticky;
+	top           : 0;
+	z-index       : 12;                                                             /* What: Header Stack Level. Why: The sticky header has to stay over the list and over the sticky pill row at 11 that tucks under it. How: 12 sits just above that row. */
+
+
+}
+@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.todPagHea { /* What: Trimmed Today Header. Why: The narrow header needs less padding. How: This tightens its padding. */
+
+
+		padding : var( --spa-ver-bas ) var( --spa-hor-p01 ) var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
+
+
+	}
+
+
+}
+
+
+/* #region heaInnDiv */
+
+.heaInnDiv { /* What: Header Inner Div. Why: The header's content caps at the page width. How: This centers a capped row that stretches its column. */
+
+
+	align-items     : stretch;
+	display         : flex;
+	gap             : var( --spa-hor-p01 );                /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+	justify-content : space-between;
+	margin          : 0 auto;
+	max-width       : calc( var( --ver-rhy-p15 ) * 1rem ); /* Vertical Rhythm Base Plus 15 ~= 989.390px */
+
+
+}
+
+
+/* #region heaColDiv */
+
+.heaColDiv { /* What: Header Column Div. Why: The kicker row sits above the lead row, spread to the header's height. How: This stacks them in a full-width column spaced apart. */
+
+
+	display         : flex;
+	flex            : 1 1 auto;
+	flex-direction  : column;
+	gap             : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
+	justify-content : space-between;
+	min-width       : 0;
+	width           : 100%;
+
+
+}
+
+
+/* #region kicRowDiv */
+
+.kicRowDiv { /* What: Kicker Row Div. Why: The date kicker and the streak and help toggle sit on one line at opposite ends. How: This spreads them across a centered row. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	min-width       : 0;
+
+
+}
+
+.pagKicDiv,
+.raiKicDiv { /* What: Page Kicker Div And Rail Kicker Div. Why: A small eyebrow label names the day above the title and heads the rail. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	font-weight    : 500;
+	letter-spacing : 0.08em;
+	line-height    : var( --ver-rhy-p02 ); /* Vertical Rhythm Base Plus 2 ~= 2.325 */
+	text-transform : uppercase;
+
+
+}
+
+.kicTimSpa { /* What: Kicker Time Span. Why: The time reads apart from the date. How: This divides it from the date with a hairline. */
+
+
+	border-left  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	margin-left  : var( --spa-hor-m03 );                            /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	padding-left : var( --spa-hor-m02 );                            /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+
+
+}
+@container app ( max-width : 440px ) { /* What: Very Narrow Kicker. Why: On a very narrow app the time drops under the date. How: This applies only when the app is 440px wide or less. */
+
+
+	.kicTimSpa { /* What: Stacked Kicker Time. Why: The time needs its own line. How: This makes it a centered block without its divider. */
+
+
+		border-left  : none;
+		display      : block;
+		margin-left  : 0;
+		padding-left : 0;
+		text-align   : center;
+
+
+	}
+
+
+}
+
+
+
+/* #region rowRigDiv */
+
+.rowRigDiv { /* What: Row Right Div. Why: The streak and help toggle pair up at the row's end. How: This lines them up in a fixed-size row. */
+
+
+	align-items : center;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : var( --spa-hor-p01 ); /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+
+
+}
+
+
+/* #region todStrDiv */
+
+.todStrDiv { /* What: Today Streak Div. Why: The current streak sits on the kicker row as a small pill. How: This draws a small outlined mono pill that fades its colors. */
+
+
+	align-items    : center;
+	background     : var( --bac-sur-col );                                               /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );                    /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : 999px;
+	color          : var( --tex-mut-col );                                               /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display        : inline-flex;
+	font-family    : var( --fon-fam-sec );                                               /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                                               /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m03 );                                               /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	height         : calc( var( --ver-rhy-p02 ) * 1rem );                                /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	letter-spacing : 0.08em;
+	padding        : 0 var( --spa-hor-m01 );                                             /* Spacing Horizontal Base Minus 1 = 11px */
+	text-transform : uppercase;
+	transition     : background var( --dur-tra-p01 ), border-color var( --dur-tra-p01 ); /* Duration Transition Base Plus 1 ~= 209.1ms */
+	white-space    : nowrap;
+
+
+}
+.todStrDiv.todStrDiv--bumped { /* What: Bumped Today Streak Div. Why: A streak that just grew should pop and warm up for a moment. How: This plays a springy scale and tints the chip warm while the bumped class is set. */
+
+
+	animation    : todStrDivBumpBounce var( --dur-ani-p06 ) var( --mot-bou-eas );          /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	background   : oklch( from var( --acc-sec-col ) calc( l + 0.32 ) calc( c - 0.05 ) h ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
+	border-color : oklch( from var( --acc-sec-col ) calc( l + 0.2 ) calc( c - 0.03 ) h );  /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Streak Chip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.todStrDiv { /* What: Still Streak Chip. Why: The warm tint should switch at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+	.todStrDiv.todStrDiv--bumped { /* What: Still Bumped Streak Chip. Why: The chip shouldn't pop, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes todStrDivBumpBounce { /* What: Today Streak Div Bump Bounce Keyframes. Why: The chip swells briefly. How: This scales it up and back. */
+
+
+	0% {
+
+
+		transform : scale( 1 );
+
+
+	}
+
+	35% {
+
+
+		transform : scale( 1.10 );
+
+
+	}
+
+	100% {
+
+
+		transform : scale( 1 );
+
+
+	}
+
+
+}
+
+.strFlaSvg { /* What: Streak Flame Svg. Why: The flame icon reads warm beside the count. How: This colors it warm at its natural size, easing its transform and glow. */
+
+
+	color      : var( --acc-sec-col );                                        /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
+	flex       : 0 0 auto;
+	transition : filter var( --dur-tra-p01 ), transform var( --dur-tra-p01 ); /* Duration Transition Base Plus 1 ~= 209.1ms */
+
+
+}
+.todStrDiv.todStrDiv--bumped .strFlaSvg { /* What: Bumped Streak Flame. Why: The flame flares as the streak grows. How: This plays a scale, tilt, and glow flare. */
+
+
+	animation : strFlaSvgBumpFlare var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Streak Flame. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.strFlaSvg { /* What: Still Streak Flame. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+	.todStrDiv.todStrDiv--bumped .strFlaSvg { /* What: Still Bumped Streak Flame. Why: The flame shouldn't flare, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes strFlaSvgBumpFlare { /* What: Streak Flame Svg Bump Flare Keyframes. Why: The flame flares and settles. How: This scales, tilts, and glows it, then eases back. */
+
+
+	0% {
+
+
+		filter    : drop-shadow( 0 0 0 transparent );
+		transform : scale( 1 ) rotate( 0 );
+
+
+	}
+
+	35% {
+
+
+		filter    : drop-shadow( 0 0 calc( var( --ver-rhy-m04 ) * 1rem ) var( --acc-sec-col ) ); /* Vertical Rhythm Base Minus 4 ~= 4.731px, Accent Secondary Color = oklch( 0.62 0.13 50 ) */
+		transform : scale( 1.4 ) rotate( -6deg );
+
+
+	}
+
+	70% {
+
+
+		transform : scale( 1.1 ) rotate( 3deg );
+
+
+	}
+
+	100% {
+
+
+		filter    : drop-shadow( 0 0 0 transparent );
+		transform : scale( 1 ) rotate( 0 );
+
+
+	}
+
+
+}
+
+.todStrDiv.todStrDiv--bumped .strCouSpa { /* What: Bumped Streak Count. Why: The count flashes warm as it grows. How: This plays a brief warm, bolder color flash. */
+
+
+	animation : strCouSpaBumpFlash var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Streak Count. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.todStrDiv.todStrDiv--bumped .strCouSpa { /* What: Still Bumped Streak Count. Why: The count shouldn't flash, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes strCouSpaBumpFlash { /* What: Streak Count Span Bump Flash Keyframes. Why: The count warms and bolds for a beat. How: This runs its color to warm and back. */
+
+
+	0% {
+
+
+		color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+	}
+
+	35% {
+
+
+		color       : var( --acc-sec-col ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
+		font-weight : 600;
+
+
+	}
+
+	100% {
+
+
+		color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+	}
+
+
+}
+
+/* #endregion todStrDiv */
+
+/* #endregion rowRigDiv */
+
+/* #endregion kicRowDiv */
+
+
+
+/* #region heaLeaDiv */
+
+.heaLeaDiv { /* What: Header Lead Div. Why: The brand mark, title, and ring sit on one row. How: This lines them up in a centered row that can shrink. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : var( --spa-hor-bas ); /* Spacing Horizontal Base ~= 14.572px */
+	min-width   : 0;
+
+
+}
+@container app ( max-width : 640px ) { /* What: Narrow Header Lead. Why: On a narrow screen the row sits tighter. How: This applies only when the app is 640px wide or less. */
+
+
+	.heaLeaDiv { /* What: Tighter Header Lead. Why: The row has less room. How: This tightens its gap. */
+
+
+		gap : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+	}
+
+
+}
+
+
+/* #region braMarBut */
+
+.braMarBut { /* What: Brand Mark Button. Why: The logo beside the title is also a button back to Today's top, sized to match the ring. How: This strips the button chrome and sizes the mark as a square that lifts on hover. */
+
+
+	-webkit-appearance : none;
+	appearance         : none;
+	aspect-ratio       : 1 / 1;
+	background         : none;
+	border             : 0;
+	border-radius      : var( --rad-bor-med );                                /* Radius Border Medium = 11px */
+	color              : var( --acc-mai-col );                                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	cursor             : pointer;
+	display            : block;
+	flex               : 0 0 auto;
+	font               : inherit;
+	height             : calc( var( --ver-rhy-p06 ) * 1rem );                 /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	padding            : 0;
+	text-decoration    : none;
+	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+
+
+}
+.braMarBut:hover { /* What: Hovered Brand Mark. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
+
+
+	transform : translateY( -1px );
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Brand Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.braMarBut { /* What: Still Brand Mark. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.braMarSvg { /* What: Brand Mark Svg. Why: The logo fills its button. How: This sizes the svg to the full box as a block. */
+
+
+	display : block;
+	height  : 100%;
+	width   : 100%;
+
+
+}
+
+/* #endregion braMarBut */
+
+
+
+/* #region todTitHea */
+
+.todTitHea { /* What: Today Title Heading. Why: The default and celebratory titles stack on each other so they can cross-fade without the header reflowing. How: This sets the heading large and tight on a one-cell grid. */
+
+
+	align-items    : center;
+	display        : grid;
+	flex           : 1 1 auto;
+	font-size      : var( --fon-siz-p04 ); /* Font Size Base Plus 4 ~= 33.876px */
+	font-weight    : 500;
+	letter-spacing : -0.03em;
+	line-height    : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+	margin         : 0;
+	min-width      : 0;
+
+
+}
+@container app ( max-width : 560px ) { /* What: Narrow Today Title. Why: A narrow app needs a smaller heading. How: This applies only when the app is 560px wide or less. */
+
+
+	.todTitHea { /* What: Smaller Today Title. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
+
+
+		font-size : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
+
+
+	}
+
+
+}
+
+
+/* #region titStaSpa */
+
+.todTitHea .titStaSpa { /* What: Title State. Why: Both titles share one cell and cross-fade. How: This places each in the grid's one cell and eases its opacity and position. */
+
+
+	grid-area  : 1 / 1;
+	transition : opacity var( --dur-tra-p02 ) var( --mot-sta-eas ), transform var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+
+
+}
+.todTitHea .titStaSpa[aria-hidden='true'] { /* What: Hidden Title State. Why: The inactive title fades up and away. How: This hides it, nudged up, keying off the aria-hidden it already sets. */
+
+
+	opacity        : 0;
+	pointer-events : none;
+	transform      : translateY( -4px );
+
+
+}
+.todTitHea .titStaSpa[aria-hidden='false'] { /* What: Shown Title State. Why: The active title rests in place. How: This shows it unmoved. */
+
+
+	opacity   : 1;
+	transform : none;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Title State. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.todTitHea .titStaSpa { /* What: Still Title State. Why: The titles should swap at once. How: This turns their transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.todTitHea .titStaSpa--done .titWorSpa { /* What: Celebration Title Word. Why: The celebratory title's words enter one by one. How: This starts each word hidden and low and plays a fade-rise. */
+
+
+	animation : titWorSpaRiseFadeIn var( --dur-ani-p04 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	display   : inline-block;
+	opacity   : 0;
+	transform : translateY( var( --spa-ver-m02 ) );                                     /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--1 { /* What: First Celebration Word. Why: The words stagger in. How: This delays the first by the m03 step. */
+
+
+	animation-delay : var( --dur-ani-m03 ); /* Duration Animation Base Minus 3 ~= 67.9ms */
+
+
+}
+.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--2 { /* What: Second Celebration Word. Why: The words stagger in. How: This delays the second by the p01 step. */
+
+
+	animation-delay : var( --dur-ani-p01 ); /* Duration Animation Base Plus 1 ~= 209.1ms */
+
+
+}
+.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--3 { /* What: Third Celebration Word. Why: "eased!" lands last with a spring to match its meaning. How: This plays a delayed spring scale in the accent color. */
+
+
+	animation        : titWorSpaSpringBounce var( --dur-ani-p06 ) var( --mot-bou-eas ) var( --dur-ani-p04 ) forwards; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ), Duration Animation Base Plus 4 ~= 486.1ms */
+	color            : var( --acc-mai-col );                                                                          /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	transform-origin : 0% 70%;
+
+
+}
+.todTitHea .titStaSpa--done[aria-hidden='true'] .titWorSpa { /* What: Held Celebration Word. Why: While the celebration title is hidden, its words wait at their start state so the reveal replays cleanly next time. How: This turns their animation off. */
+
+
+	animation : none;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Celebration Title Word. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.todTitHea .titStaSpa--done .titWorSpa,
+	.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--1,
+	.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--2,
+	.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--3 { /* What: Still Celebration Title Word. Why: The words animate in from hidden, so without motion they must be pinned visible. How: This turns their animation off and pins them shown and unmoved. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes titWorSpaRiseFadeIn { /* What: Title Word Span Rise Fade In Keyframes. Why: Each word fades up into place. How: This runs opacity up while lifting it 8px. */
+
+
+	0% {
+
+
+		opacity   : 0;
+		transform : translateY( var( --spa-ver-m02 ) ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+	}
+
+	100% {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes titWorSpaSpringBounce { /* What: Title Word Span Spring Bounce Keyframes. Why: The last word bounces into place. How: This lifts, overshoots, and settles its scale. */
+
+
+	0% {
+
+
+		opacity   : 0;
+		transform : translateY( var( --spa-ver-m01 ) ) scale( 0.86 ); /* Spacing Vertical Base Minus 1 = 11px */
+
+
+	}
+
+	55% {
+
+
+		opacity   : 1;
+		transform : translateY( 0 ) scale( 1.12 );
+
+
+	}
+
+	78% {
+
+
+		transform : translateY( 0 ) scale( 0.97 );
+
+
+	}
+
+	100% {
+
+
+		opacity   : 1;
+		transform : translateY( 0 ) scale( 1 );
+
+
+	}
+
+
+}
+
+/* #endregion titStaSpa */
+
+/* #endregion todTitHea */
+
+
+
+/* #region proRinDiv */
+
+.proRinDiv { /* What: Progress Ring Div. Why: The ring shows how much of the day is done and matches the brand mark's height, so the title row reads as a triad. How: This sizes a positioned square pushed to the row's end. */
+
+
+	flex        : 0 0 auto;
+	height      : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	margin-left : auto;
+	position    : relative;
+	width       : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+
+
+}
+
+
+/* #region rinGraSvg */
+
+.rinGraSvg { /* What: Ring Graphic Svg. Why: The arc starts at the top rather than the right. How: This fills the ring and turns it a quarter back. */
+
+
+	height    : 100%;
+	transform : rotate( -90deg );
+	width     : 100%;
+
+
+}
+.proRinDiv.proRinDiv--pulsing .rinGraSvg { /* What: Pulsing Ring Graphic. Why: Each completed item gives the ring a small pop. How: This plays a springy scale while the pulsing class is set. */
+
+
+	animation : rinGraSvgPulseBounce var( --dur-ani-p05 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Graphic. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.proRinDiv.proRinDiv--pulsing .rinGraSvg,
+	.proRinDiv.proRinDiv--celebrating .rinGraSvg { /* What: Still Ring Graphic. Why: The ring shouldn't pop, but must keep its quarter turn so the arc still starts at the top. How: This turns its animation off, leaving the base rotation in place. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes rinGraSvgPulseBounce { /* What: Ring Graphic Svg Pulse Bounce Keyframes. Why: The ring swells briefly without losing its rotation. How: This scales it up and back while keeping the quarter turn. */
+
+
+	0% {
+
+
+		transform : rotate( -90deg ) scale( 1 );
+
+
+	}
+
+	35% {
+
+
+		transform : rotate( -90deg ) scale( 1.10 );
+
+
+	}
+
+	100% {
+
+
+		transform : rotate( -90deg ) scale( 1 );
+
+
+	}
+
+
+}
+
+.rinTraCir { /* What: Ring Track Circle. Why: The unfilled track sits under the progress arc. How: This strokes the circle in the border color. */
+
+
+	fill         : none;
+	stroke       : var( --bor-mai-col ); /* Border Main Color = oklch( 0.91 0.005 240 ) */
+	stroke-width : 2.8;
+
+
+}
+
+.rinProCir { /* What: Ring Progress Circle. Why: The arc grows with each completed item, springing to its new length. How: This strokes the circle in the accent with round caps and eases its dash length. */
+
+
+	fill           : none;
+	stroke         : var( --acc-mai-col );                                       /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	stroke-linecap : round;
+	stroke-width   : 2.8;
+	transition     : stroke-dasharray var( --dur-tra-p05 ) var( --mot-ove-eas ); /* Duration Transition Base Plus 5 ~= 643.9ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Progress. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rinProCir { /* What: Still Ring Progress. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion rinGraSvg */
+
+
+/* #region rinTexDiv */
+
+.rinTexDiv { /* What: Ring Text Div. Why: The done count sits centered over the ring. How: This centers the fraction in a tabular mono row over the whole ring. */
+
+
+	align-items          : center;
+	display              : flex;
+	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-variant-numeric : tabular-nums;
+	gap                  : var( --spa-hor-m07 ); /* Spacing Horizontal Base Minus 7 ~= 2.035px */
+	inset                : 0;
+	justify-content      : center;
+	line-height          : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+	position             : absolute;
+
+
+}
+
+.rinNumSpa { /* What: Ring Number Span. Why: The done count leads the fraction. How: This sets it large and tight. */
+
+
+	font-size      : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
+	font-weight    : 500;
+	letter-spacing : -0.04em;
+	line-height    : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+
+
+}
+.proRinDiv.proRinDiv--pulsing .rinNumSpa { /* What: Pulsing Ring Count. Why: The count flashes as it grows. How: This plays a springy scale and accent flash. */
+
+
+	animation : rinNumSpaPulseBounce var( --dur-ani-p05 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+
+
+}
+.proRinDiv.proRinDiv--celebrating .rinNumSpa { /* What: Celebrating Ring Count. Why: Completing the day gives the count a bigger flash. How: This plays a larger springy scale and accent flash. */
+
+
+	animation : rinNumSpaCompleteBounce var( --dur-ani-p08 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 8 ~= 1497.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Count. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.proRinDiv.proRinDiv--pulsing .rinNumSpa,
+	.proRinDiv.proRinDiv--celebrating .rinNumSpa { /* What: Still Ring Count. Why: The count shouldn't pop. How: This turns its animation and transform off. */
+
+
+		animation : none;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes rinNumSpaPulseBounce { /* What: Ring Number Span Pulse Bounce Keyframes. Why: The count swells in the accent and settles. How: This scales it and flashes its color. */
+
+
+	0% {
+
+
+		color     : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+		transform : scale( 1 );
+
+
+	}
+
+	35% {
+
+
+		color     : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+		transform : scale( 1.18 );
+
+
+	}
+
+	100% {
+
+
+		color     : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+		transform : scale( 1 );
+
+
+	}
+
+
+}
+@keyframes rinNumSpaCompleteBounce { /* What: Ring Number Span Complete Bounce Keyframes. Why: The count swells bigger for the finished day. How: This overshoots its scale in the accent and settles. */
+
+
+	0% {
+
+
+		color     : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+		transform : scale( 1 );
+
+
+	}
+
+	30% {
+
+
+		color     : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+		transform : scale( 1.35 );
+
+
+	}
+
+	60% {
+
+
+		color     : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+		transform : scale( 0.96 );
+
+
+	}
+
+	100% {
+
+
+		color     : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+		transform : scale( 1 );
+
+
+	}
+
+
+}
+
+.rinDenSpa { /* What: Ring Denominator Span. Why: The total reads quieter than the count. How: This sets it small and muted. */
+
+
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+
+
+}
+
+/* #endregion rinTexDiv */
+
+
+.rinGloIta { /* What: Ring Glow Italic. Why: A soft glow blooms behind the ring when it pulses or completes. How: This draws an invisible accent radial disc behind the ring. */
+
+
+	background     : radial-gradient( circle, var( --acc-mai-col ), transparent 65% );    /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius  : 50%;
+	inset          : calc( var( --spa-ver-m05 ) * -1 ) calc( var( --spa-hor-m05 ) * -1 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
+	opacity        : 0;
+	pointer-events : none;
+	position       : absolute;
+	z-index        : -1;                                                                  /* What: Glow Stack Level. Why: The glow has to bloom behind the ring it lights. How: This puts it one level below the ring. */
+
+
+}
+.proRinDiv.proRinDiv--pulsing .rinGloIta { /* What: Pulsing Ring Glow. Why: Each completed item blooms a small glow. How: This plays a short glow bloom. */
+
+
+	animation : rinGloItaPulseFade var( --dur-ani-p06 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+
+
+}
+.proRinDiv.proRinDiv--celebrating .rinGloIta { /* What: Celebrating Ring Glow. Why: Completing the day blooms a bigger glow. How: This plays a longer, wider glow bloom. */
+
+
+	animation : rinGloItaCompleteFade var( --dur-ani-p08 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 8 ~= 1497.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Glow. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.proRinDiv.proRinDiv--pulsing .rinGloIta,
+	.proRinDiv.proRinDiv--celebrating .rinGloIta { /* What: Still Ring Glow. Why: The glow is purely decorative. How: This turns its animation off and keeps it hidden. */
+
+
+		animation : none;
+		opacity   : 0;
+
+
+	}
+
+
+}
+@keyframes rinGloItaPulseFade { /* What: Ring Glow Italic Pulse Fade Keyframes. Why: The glow blooms and fades. How: This raises its opacity while scaling it slightly. */
+
+
+	0% {
+
+
+		opacity   : 0;
+		transform : scale( 0.85 );
+
+
+	}
+
+	35% {
+
+
+		opacity   : var( --cdn-pow-004-rec ); /* Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
+		transform : scale( 1 );
+
+
+	}
+
+	100% {
+
+
+		opacity   : 0;
+		transform : scale( 1.05 );
+
+
+	}
+
+
+}
+@keyframes rinGloItaCompleteFade { /* What: Ring Glow Italic Complete Fade Keyframes. Why: The glow blooms wider for the finished day. How: This raises its opacity while scaling it well past the ring. */
+
+
+	0% {
+
+
+		opacity   : 0;
+		transform : scale( 0.85 );
+
+
+	}
+
+	30% {
+
+
+		opacity   : var( --cdn-pow-002-rec ); /* Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
+		transform : scale( 1.15 );
+
+
+	}
+
+	100% {
+
+
+		opacity   : 0;
+		transform : scale( 1.45 );
+
+
+	}
+
+
+}
+
+.rinRipIta { /* What: Ring Ripple Italic. Why: Completing the day sends a ripple off the ring itself. How: This draws an invisible accent circle over the ring that expands when celebrating. */
+
+
+	border         : var( --bor-wid-bas ) solid var( --acc-mai-col ); /* Border Width Base ~= 1.160px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius  : 50%;
+	inset          : 0;
+	opacity        : 0;
+	pointer-events : none;
+	position       : absolute;
+
+
+}
+.proRinDiv.proRinDiv--celebrating .rinRipIta { /* What: Celebrating Ring Ripple. Why: The ripple marks the moment the ring fills. How: This plays the ripple once over the p08 step, matching the ring's other completion animations. */
+
+
+	animation : rinRipItaCompleteRipple var( --dur-ani-p08 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 8 ~= 1497.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Ripple. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.proRinDiv.proRinDiv--celebrating .rinRipIta { /* What: Still Ring Ripple. Why: The ripple is purely decorative. How: This turns its animation off and keeps it hidden. */
+
+
+		animation : none;
+		opacity   : 0;
+
+
+	}
+
+
+}
+@keyframes rinRipItaCompleteRipple { /* What: Ring Ripple Italic Complete Ripple Keyframes. Why: The ripple grows off the ring and fades as it thins. How: This scales it to 2.4 times while fading it from 0.85 and thinning its border. */
+
+
+	0% {
+
+
+		border-width : var( --bor-wid-bas ); /* Border Width Base ~= 1.160px */
+		opacity      : 0.85;
+		transform    : scale( 1 );
+
+
+	}
+
+	100% {
+
+
+		border-width : var( --bor-wid-sma ); /* Border Width Small ~= 0.499px */
+		opacity      : 0;
+		transform    : scale( 2.4 );
+
+
+	}
+
+
+}
+
+/* #endregion proRinDiv */
+
+/* #endregion heaLeaDiv */
+
+/* #endregion heaColDiv */
+
+/* #endregion heaInnDiv */
+
+/* #endregion todPagHea */
+
+
+
+/* #region todBodDiv */
+
+.todBodDiv { /* What: Today Body Div. Why: The banner, layout, and footer cap at the page width below the header. How: This centers a padded, capped column that anchors its overlays. */
+
+
+	margin    : 0 auto;
+	max-width : calc( var( --ver-rhy-p15 ) * 1rem );         /* Vertical Rhythm Base Plus 15 ~= 989.390px */
+	padding   : var( --spa-ver-p01 ) var( --spa-hor-p01 ) 0; /* Spacing Vertical Base Plus 1 ~= 19.304px, Spacing Horizontal Base Plus 1 ~= 19.304px */
+	position  : relative;
+
+
+}
+@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.todBodDiv { /* What: Flush Today Body. Why: The narrow pill row's own padding already spaces it from the header. How: This drops the top padding. */
+
+
+		padding-top : 0;
+
+
+	}
+
+
+}
+
+
+/* #region ediBanDiv */
+
+.ediBanDiv { /* What: Edit Banner Div. Why: While Edit Mode is on, a pinned banner says so under the header, sliding in. How: This draws a sticky soft-accent bar with its message and actions spread apart. */
+
+
+	align-items     : center;
+	animation       : ediBanDivOpenFadeIn var( --dur-ani-p02 ) var( --mot-sta-eas ) both;                             /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+	background      : var( --acc-tin-col );                                                                           /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border          : var( --bor-wid-bas ) solid oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-004-rec ) ); /* Border Width Base ~= 1.160px, Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
+	border-radius   : var( --rad-bor-med );                                                                           /* Radius Border Medium = 11px */
+	display         : flex;
+	gap             : var( --spa-hor-bas );                                                                           /* Spacing Horizontal Base ~= 14.572px */
+	justify-content : space-between;
+	margin          : 0 0 var( --spa-ver-p01 );                                                                       /* Spacing Vertical Base Plus 1 ~= 19.304px */
+	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );                                                      /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
+	position        : sticky;
+	top             : calc( var( --tod-hea-hei, calc( var( --ver-rhy-p09 ) * 1rem ) ) + var( --spa-ver-m02 ) );       /* Today Header Height, set by its parent, falling back to Vertical Rhythm Base Plus 9 ~= 183.074px, Spacing Vertical Base Minus 2 ~= 8.304px */
+	z-index         : 14;                                                                                             /* What: Banner Stack Level. Why: The sticky banner has to stay over a card being dragged, which reorder.js raises to 13. How: 14 sits above that card. */
+
+
+}
+.ediBanDiv.ediBanDiv--closing { /* What: Closing Edit Banner Div. Why: Leaving Edit Mode folds the banner away so the list slides back up. How: This plays the fold once, ended by its animationend handler. */
+
+
+	animation : ediBanDivCloseFadeOut var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+	overflow  : hidden;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Edit Mode Banner. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ediBanDiv.ediBanDiv--closing { /* What: Quick Closing Edit Mode Banner. Why: The banner should go at once, while still ending the animation its handler waits on. How: This shortens the fold to .01ms. */
+
+
+		animation-duration : .01ms;
+
+
+	}
+
+	.ediBanDiv { /* What: Still Edit Mode Banner. Why: The banner should simply appear. How: This turns its entrance off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes ediBanDivOpenFadeIn { /* What: Edit Banner Div Open Fade In Keyframes. Why: The banner drops into place. How: This fades it in from 6px up. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY( calc( var( --spa-ver-m03 ) * -1 ) ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : translateY( 0 );
+
+
+	}
+
+
+}
+@keyframes ediBanDivCloseFadeOut { /* What: Edit Banner Div Close Fade Out Keyframes. Why: The banner fades and folds its space shut. How: This fades it up while collapsing its height, margin, and padding. */
+
+
+	from {
+
+
+		margin-bottom  : var( --spa-ver-p01 );                /* Spacing Vertical Base Plus 1 ~= 19.304px */
+		max-height     : calc( var( --ver-rhy-p09 ) * 1rem ); /* Vertical Rhythm Base Plus 9 ~= 183.074px */
+		opacity        : 1;
+		padding-bottom : var( --spa-ver-m01 );                /* Spacing Vertical Base Minus 1 = 11px */
+		padding-top    : var( --spa-ver-m01 );                /* Spacing Vertical Base Minus 1 = 11px */
+		transform      : translateY( 0 );
+
+
+	}
+
+	to {
+
+
+		margin-bottom  : 0;                                               /* What: Layout Collapse. Why: The list below has to slide up into the banner's place as it leaves, which a transform can't make it do. How: This shrinks the banner's own box so the gap closes as it fades. */
+		max-height     : 0;                                               /* What: Layout Collapse. Why: The list below has to slide up into the banner's place as it leaves, which a transform can't make it do. How: This shrinks the banner's own box so the gap closes as it fades. */
+		opacity        : 0;
+		padding-bottom : 0;                                               /* What: Layout Collapse. Why: The list below has to slide up into the banner's place as it leaves, which a transform can't make it do. How: This shrinks the banner's own box so the gap closes as it fades. */
+		padding-top    : 0;                                               /* What: Layout Collapse. Why: The list below has to slide up into the banner's place as it leaves, which a transform can't make it do. How: This shrinks the banner's own box so the gap closes as it fades. */
+		transform      : translateY( calc( var( --spa-ver-m03 ) * -1 ) ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+
+
+	}
+
+
+}
+
+
+/* #region banMesSpa */
+
+.banMesSpa { /* What: Banner Message Span. Why: The banner leads with its icon and message in the accent. How: This lines them up in a bold accent row. */
+
+
+	align-items : center;
+	color       : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	display     : inline-flex;
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight : 600;
+	gap         : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+
+
+}
+
+.banIcoSvg { /* What: Banner Icon Svg. Why: The icon reads a touch quieter than the text. How: This fades it slightly. */
+
+
+	opacity : 0.85;
+
+
+}
+
+/* #endregion banMesSpa */
+
+
+.ediBanSpa { /* What: Edit Banner Span. Why: The banner's buttons sit together at its end. How: This lines them up in a row that never shrinks. */
+
+
+	align-items : center;
+	display     : flex;
+	flex        : none;
+	gap         : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+
+
+}
+
+/* #endregion ediBanDiv */
+
+
+
+/* #region todLayDiv */
+
+.todLayDiv { /* What: Today Layout Div. Why: The rail and the list sit side by side. How: This lays them out on a two-column grid. */
+
+
+	align-items           : start;
+	display               : grid;
+	gap                   : var( --spa-ver-p03 ) var( --spa-hor-p03 ); /* Spacing Vertical Base Plus 3 ~= 33.876px, Spacing Horizontal Base Plus 3 ~= 33.876px */
+	grid-template-columns : calc( var( --ver-rhy-p09 ) * 1rem ) 1fr;   /* Vertical Rhythm Base Plus 9 ~= 183.074px */
+
+
+}
+@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.todLayDiv { /* What: Stacked Today Layout. Why: The rail becomes a row above the list. How: This collapses the grid to one column. */
+
+
+		gap                   : var( --spa-ver-bas ) var( --spa-hor-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
+		grid-template-columns : 1fr;
+
+
+	}
+
+
+}
+
+
+/* #region groRaiAsi */
+
+.groRaiAsi { /* What: Group Rail Aside. Why: The rail of groups stays in view beside the list, scrolling on its own when long. How: This makes it a sticky column below the header, capped to the viewport, with its scrollbar hidden. */
+
+
+	align-self      : start;
+	display         : flex;
+	flex-direction  : column;
+	gap             : var( --spa-ver-m03 );                                                                                                     /* Spacing Vertical Base Minus 3 ~= 6.268px */
+	max-height      : calc( 100dvh - var( --tod-hea-hei, calc( var( --ver-rhy-p09 ) * 1rem ) ) - var( --spa-ver-bas ) - var( --spa-ver-p07 ) ); /* Today Header Height, set by its parent, falling back to Vertical Rhythm Base Plus 9 ~= 183.074px, Spacing Vertical Base ~= 14.572px, Spacing Vertical Base Plus 7 ~= 104.323px */ /* What: Rail Maximum Height. Why: The sticky rail should end where the page content's own bottom clearance does, so it never runs behind the floating tab bar. How: This subtracts the header, the rail's gap below it, and the p07 bottom clearance from the viewport height. */
+	overflow-y      : auto;
+	position        : sticky;
+	scrollbar-width : none;
+	top             : calc( var( --tod-hea-hei, calc( var( --ver-rhy-p09 ) * 1rem ) ) + var( --spa-ver-bas ) );                                 /* Today Header Height, set by its parent, falling back to Vertical Rhythm Base Plus 9 ~= 183.074px, Spacing Vertical Base ~= 14.572px */
+
+
+}
+.groRaiAsi::-webkit-scrollbar { /* What: Group Rail Scrollbar. Why: The rail scrolls without a visible bar. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.groRaiAsi { /* What: Group Pill Row. Why: The rail becomes a frosted, sticky pill row under the header that scrolls sideways, its edges faded as a cue. How: This turns it into a full-bleed scrolling row with a blurred translucent background and a gradient mask on each end. */
+
+
+		--fad-edg-off : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the row. How: --fad-lef-off and --fad-rig-off start from it. */
+		--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 28.0PX */ /* What: Fade Left Offset. Why: The left edge fades until the row reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+		--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 28.0PX */ /* What: Fade Right Offset. Why: The right edge fades until the row reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+
+		-webkit-backdrop-filter : blur( calc( var( --ver-rhy-p01 ) * 1rem ) ) saturate( 140% );                                                                      /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+		-webkit-mask-image      : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 28.0PX, Fade Right Offset ~= 28.0PX */
+		backdrop-filter         : blur( calc( var( --ver-rhy-p01 ) * 1rem ) ) saturate( 140% ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+		background              : oklch( from var( --bac-pag-col ) l c h / 0.92 );              /* Background Page Color = oklch( 0.985 0.003 240 ) */
+		border-bottom           : var( --bor-wid-sma ) solid var( --bor-mai-col );              /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+		flex-direction          : row;
+		gap                     : var( --spa-hor-m03 );                                         /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+		margin                  : 0 calc( var( --spa-hor-p01 ) * -1 );                          /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+		mask-image              : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 28.0PX, Fade Right Offset ~= 28.0PX */
+		max-height              : none;
+		overflow-x              : auto;
+		overflow-y              : hidden;
+		padding                 : var( --spa-ver-bas ) var( --spa-hor-p01 );                    /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
+		position                : sticky;
+		top                     : var( --tod-hea-hei, calc( var( --ver-rhy-p09 ) * 1rem ) );    /* Today Header Height, set by its parent, falling back to Vertical Rhythm Base Plus 9 ~= 183.074px */
+		z-index                 : 11;                                                           /* What: Pill Row Stack Level. Why: The sticky row has to stay over the cards but slide under the sticky header at 12. How: 11 sits between them. */
+
+
+	}
+
+	.groRaiAsi[data-scroll-start-active] { /* What: Group Pill Row At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+		--fad-lef-off : 0px;
+
+
+	}
+
+	.groRaiAsi[data-scroll-end-active] { /* What: Group Pill Row At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+		--fad-rig-off : 0px;
+
+
+	}
+
+
+}
+
+.raiKicDiv { /* What: Rail Kicker Div. Why: The rail's heading lines up with its buttons and keeps the kicker's usual line height, since only the date row beside the streak chip needs the taller one. How: This insets it like a button and restores the large rhythm line height. */
+
+
+	line-height : var( --ver-rhy-p01 );                        /* Vertical Rhythm Base Plus 1 ~= 1.755 */
+	padding     : 0 var( --spa-hor-m01 ) var( --spa-ver-m05 ); /* Spacing Horizontal Base Minus 1 = 11px, Spacing Vertical Base Minus 5 ~= 3.571px */
+
+
+}
+@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.raiKicDiv { /* What: Hidden Rail Kicker. Why: The pill row has no room for a heading. How: This hides it. */
+
+
+		display : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region raiLisUno */
+
+.raiLisUno { /* What: Rail List Unordered. Why: The rail's buttons stack tightly. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+
+
+}
+@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.raiLisUno { /* What: Rail Pill List. Why: The pills sit in one row as wide as they need. How: This lays them out in a row at its content width. */
+
+
+		flex           : 0 0 auto;
+		flex-direction : row;
+		gap            : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+		width          : max-content;
+
+
+	}
+
+
+}
+
+
+/* #region raiGroBut */
+
+.raiGroBut { /* What: Rail Group Button. Why: Each group is a rail button that jumps to its section, with its name and done count spread apart. How: This lays them out in a full-width rounded row that fades between colors. */
+
+
+	align-items     : center;
+	border-radius   : var( --rad-bor-sma );                                        /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display         : flex;
+	font-size       : var( --fon-siz-p01 );                                        /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight     : 500;
+	gap             : var( --spa-hor-m01 );                                        /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	letter-spacing  : -0.005em;
+	min-height      : calc( var( --ver-rhy-p03 ) * 1rem );                         /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	padding         : var( --spa-ver-m03 ) var( --spa-hor-m01 );                   /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 1 = 11px */
+	text-align      : left;
+	transition      : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width           : 100%;
+
+
+}
+.raiGroBut:hover { /* What: Hovered Rail Button. Why: The button should respond to the pointer. How: This darkens its text. */
+
+
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.raiGroBut[data-rail-select-active] { /* What: Selected Rail Button. Why: The group in view should stand out. How: This fills it in the soft accent, keying off data-rail-select-active. */
+
+
+	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	color      : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.raiGroBut { /* What: Rail Pill. Why: In the narrow pill row each group is an outlined pill. How: This turns the button into a compact bordered pill that never shrinks or wraps. */
+
+
+		background    : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+		border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+		border-radius : 999px;
+		flex-shrink   : 0;
+		padding       : var( --spa-ver-m03 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 1 = 11px */
+		white-space   : nowrap;
+
+
+	}
+
+	.raiGroBut[data-rail-select-active] { /* What: Selected Rail Pill. Why: The pill in view should stand out. How: This borders it in the accent over the soft accent fill. */
+
+
+		background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+		border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+	}
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Rail Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.raiGroBut { /* What: Still Rail Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.raiNamSpa { /* What: Rail Name Span. Why: A long group name should wrap evenly. How: This balances its line breaks. */
+
+
+	text-wrap : pretty;
+
+
+}
+.raiGroBut--reminders[data-rail-select-active] .raiNamSpa { /* What: Selected Reminders Rail Name. Why: The Reminders entry's name follows its selected color. How: This colors it in the accent. */
+
+
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+
+
+/* #region raiCouSpa */
+
+.raiCouSpa { /* What: Rail Count Span. Why: The done and total counts read as a quiet mono cluster. How: This sets them on one baseline in faded tabular mono type. */
+
+
+	align-items          : baseline;
+	color                : inherit;
+	display              : inline-flex;
+	font-family          : var( --fon-fam-sec );     /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-bas );     /* Font Size Base = 11px */
+	font-variant-numeric : tabular-nums;
+	gap                  : var( --spa-hor-m09 );     /* Spacing Horizontal Base Minus 9 ~= 1.160px */
+	opacity              : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+
+.raiTotSpa { /* What: Rail Total Span. Why: The total reads quieter than the done count. How: This fades it further. */
+
+
+	opacity : var( --cdn-pow-002-rec ); /* Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
+
+
+}
+
+/* #endregion raiCouSpa */
+
+/* #endregion raiGroBut */
+
+/* #endregion raiLisUno */
+
+
+
+/* #region raiEdiDiv */
+
+.raiEdiDiv { /* What: Rail Edit Div. Why: Edit Mode is a list action under the groups, divided from them. How: This spaces it below a dashed divider. */
+
+
+	border-top  : var( --bor-wid-bas ) dashed var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	margin-top  : var( --spa-ver-m01 );                             /* Spacing Vertical Base Minus 1 = 11px */
+	padding-top : var( --spa-ver-bas );                             /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.raiEdiDiv { /* What: Hidden Rail Edit Mode Block. Why: The pill row has no room for it, so the footer button takes over. How: This hides it. */
+
+
+		display : none;
+
+
+	}
+
+
+}
+
+.ediRaiBut { /* What: Edit Rail Button. Why: The toggle reads as a list action, not a group link. How: This draws a full-width dashed button on a slightly darker fill that fades between colors. */
+
+
+	align-items     : center;
+	background      : var( --bac-wel-col );                                                                           /* Background Well Color = oklch( 0.96 0.004 240 ) */
+	border          : var( --bor-wid-bas ) dashed var( --bor-mai-col );                                               /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor          : pointer;
+	display         : flex;
+	font-size       : var( --fon-siz-bas );                                                                           /* Font Size Base = 11px */
+	font-weight     : 600;
+	gap             : var( --spa-hor-m02 );                                                                           /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	justify-content : center;
+	letter-spacing  : -0.005em;
+	padding         : 0 var( --spa-hor-m01 );                                                                         /* Spacing Horizontal Base Minus 1 = 11px */
+	transition      : color var( --dur-tra-m01 ), border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width           : 100%;
+
+
+}
+.ediRaiBut:hover { /* What: Hovered Edit Mode Rail Button. Why: The toggle should respond to the pointer. How: This tints it in the accent. */
+
+
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.ediRaiBut[data-edit-mode-active] { /* What: Active Edit Mode Rail Button. Why: While Edit Mode is on, its toggle reads as on. How: This solidifies its accent border over the soft accent fill, keying off data-edit-mode-active. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-style : solid;
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Edit Mode Rail Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ediRaiBut { /* What: Still Edit Mode Rail Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion raiEdiDiv */
+
+/* #endregion groRaiAsi */
+
+
+
+/* #region todGroDiv */
+
+.todGroDiv { /* What: Today Groups Div. Why: The list column stacks its sections and can shrink beside the rail. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-p02 ); /* Spacing Vertical Base Plus 2 ~= 25.572px */
+	min-width      : 0;
+
+
+}
+
+
+/* #region celOveDiv */
+
+.celOveDiv { /* What: Celebration Overlay Div. Why: The confetti and sparkle particles cover the cards area, fixed at its on-screen rect and clipped so they stay contained. How: This fixes a clipped, click-through layer above the cards. */
+
+
+	overflow       : hidden;
+	pointer-events : none;
+	position       : fixed;
+	z-index        : 10; /* What: Overlay Stack Level. Why: The particles have to fall over the cards but under the sticky pill row at 11 and header at 12. How: 10 sits below both. */
+
+
+}
+
+.conPieIta { /* What: Confetti Piece Italic. Why: Each piece bursts out from the center along its own angle and distance. How: This draws a small accent chip at the center that plays the shared burst, reading its inline angle, distance, rotation, and opacity. */
+
+
+	animation     : global( confettiCelebrateBurst ) var( --dur-ani-p06 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global confettiCelebrateBurst Keyframes. Why: The confettiCelebrateBurst keyframes are shared with the Settings celebration preview, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background    : var( --acc-mai-col );                                                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius : var( --rad-bor-xsm );                                                            /* Radius Border Extra Small ~= 3.571px */
+	height        : calc( var( --ver-rhy-bas ) * 1rem );                                             /* Vertical Rhythm Base ~= 14.572px */
+	left          : 50%;
+	opacity       : 0;
+	position      : absolute;
+	top           : 50%;
+	width         : calc( var( --ver-rhy-m02 ) * 1rem );                                             /* Vertical Rhythm Base Minus 2 ~= 8.304px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Confetti Piece. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.conPieIta { /* What: Still Confetti Piece. Why: Particles are purely decorative, so they stay hidden. How: This turns its animation and opacity off. */
+
+
+		animation : none;
+		opacity   : 0;
+
+
+	}
+
+
+}
+
+.spaPieSpa { /* What: Sparkle Piece Span. Why: Each sparkle twinkles at its own spot. How: This draws a small accent glyph centered on its inline position that plays the shared twinkle. */
+
+
+	animation   : global( sparkleCelebrateTwinkle ) var( --dur-ani-p06 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */ /* What: Global sparkleCelebrateTwinkle Keyframes. Why: The sparkleCelebrateTwinkle keyframes are shared with the Settings celebration preview, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	color       : var( --acc-mai-col );                                                             /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	font-size   : var( --fon-siz-p02 );                                                             /* Font Size Base Plus 2 ~= 19.304px */
+	line-height : var( --ver-rhy-m01 );                                                             /* Vertical Rhythm Base Minus 1 = 1 */
+	opacity     : 0;
+	position    : absolute;
+	transform   : translate( -50%, -50% ) scale( 0.4 );
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sparkle Piece. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.spaPieSpa { /* What: Still Sparkle Piece. Why: Particles are purely decorative, so they stay hidden. How: This turns its animation and opacity off. */
+
+
+		animation : none;
+		opacity   : 0;
+
+
+	}
+
+
+}
+
+/* #endregion celOveDiv */
+
+
+
+/* #region groDraDiv */
+
+.groDraDiv { /* What: Group Drag Div. Why: The sections stack with room between them. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-p02 ); /* Spacing Vertical Base Plus 2 ~= 25.572px */
+
+
+}
+
+
+/* #region todGroSec */
+
+.todGroSec { /* What: Today Group Section. Why: Each group's header and cards stack, and a jump to it lands clear of the sticky header and rail. How: This stacks them and offsets its scroll margin by --sti-top-hei, which the tab root sets. */
+
+
+	display           : flex;
+	flex-direction    : column;
+	gap               : var( --spa-ver-m01 );                                                                     /* Spacing Vertical Base Minus 1 = 11px */
+	scroll-margin-top : calc( var( --sti-top-hei, calc( var( --ver-rhy-p09 ) * 1rem ) ) + var( --spa-ver-bas ) ); /* Sticky Top Height, set by its parent, falling back to Vertical Rhythm Base Plus 9 ~= 183.074px, Spacing Vertical Base ~= 14.572px */
+
+
+}
+.groDraDiv > .todGroSec:not( :first-child ) { /* What: Following Group Section. Why: Each section after the first is divided from the one above. How: This draws a hairline above it with room below. */
+
+
+	border-top  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	padding-top : var( --spa-ver-p02 );                            /* Spacing Vertical Base Plus 2 ~= 25.572px */
+
+
+}
+@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.groDraDiv > .todGroSec:not( :first-child ) { /* What: Tighter Following Group Section. Why: The narrow list needs less room above each divider. How: This trims the space to large vertical spacing. */
+
+
+		padding-top : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
+
+
+	}
+
+
+}
+.groDraDiv > .todGroSec[data-item-drag-active] { /* What: Dragged Group Section. Why: A section being dragged lifts off the page as a card, without its divider. How: This raises it on a shadowed surface card and drops its divider and top padding, which reorder.js marks with data-item-drag-active, matching the following-section rule's specificity and sitting after its narrow-width variant so it wins by order. */
+
+
+	background    : var( --bac-sur-col ); /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border-radius : var( --rad-bor-lar ); /* Radius Border Large ~= 14.572px */
+	border-top    : 0;
+	box-shadow    : var( --ele-lar-sha ); /* Elevation Large Shadow, about 0 19px 45px -15px plus 0 6px 15px -4px */
+	padding-top   : 0;
+
+
+}
+
+
+/* #region todLisDiv */
+
+.todLisDiv { /* What: Today List Div. Why: A group's cards stack in order. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+
+
+}
+
+.entEdiDiv { /* What: Entry Editor Div. Why: An item editor opened under its card sits inset without a divider above its rows. How: This sets the --ent-* properties EntEdiCom reads. */
+
+
+	--ent-edi-pad : 0 var( --spa-hor-bas ) var( --spa-ver-bas ); /* Spacing Horizontal Base ~= 14.572px, Spacing Vertical Base ~= 14.572px */ /* What: Editor Padding. Why: The editor lines up with the card above it. How: EntEdiCom reads this for its own padding. */
+	--ent-lis-bor : 0;                                           /* What: Editor Rows Divider. Why: The card above already divides the editor. How: EntEdiCom reads this for its rows' top border. */
+
+
+}
+
+/* #endregion todLisDiv */
+
+/* #endregion todGroSec */
+
+/* #endregion groDraDiv */
+
+
+
+/* #region onbCreDiv */
+
+.onbCreDiv { /* What: Onboarding Create Div. Why: The Generate and empty-state cards read as dashed accent prompts in the list. How: This draws a centered dashed soft-accent card stacking its icon, heading, text, and action. */
+
+
+	align-items    : center;
+	background     : var( --acc-tin-col );                                                       /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border         : var( --bor-wid-bas ) dashed oklch( from var( --acc-mai-col ) l c h / 0.5 ); /* Border Width Base ~= 1.160px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius  : var( --rad-bor-med );                                                       /* Radius Border Medium = 11px */
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m03 );                                                       /* Spacing Vertical Base Minus 3 ~= 6.268px */
+	margin-bottom  : var( --spa-ver-bas );                                                       /* Spacing Vertical Base ~= 14.572px */
+	padding        : var( --spa-ver-p01 ) var( --spa-hor-bas );                                  /* Spacing Vertical Base Plus 1 ~= 19.304px, Spacing Horizontal Base ~= 14.572px */
+	text-align     : center;
+
+
+}
+.onbCreDiv--generate[data-card-needed-active] { /* What: Blocked Generate Card. Why: A Generate card still waiting on its tutorials reads as unfinished, warm rather than red. How: This tints its border and fill warm, keying off data-card-needed-active. */
+
+
+	background   : oklch( from var( --acc-sec-col ) l c h / var( --cdn-pow-009-rec ) ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
+	border-color : oklch( from var( --acc-sec-col ) l c h / var( --cdn-pow-002-rec ) ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ), Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
+
+
+}
+.onbCreDiv.onbCreDiv--removing { /* What: Removing Onboarding Create Div. Why: The Generate card slides away once the real list is made. How: This plays the shared card skip-out. */
+
+
+	animation : global( cardRemoveSlideOut ) var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */ /* What: Global cardRemoveSlideOut Keyframes. Why: The cardRemoveSlideOut keyframes are shared with the Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Removing Onboarding Card. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.onbCreDiv.onbCreDiv--removing { /* What: Still Removing Onboarding Card. Why: The card should go at once. How: This turns its animation and opacity off. */
+
+
+		animation : none;
+		opacity   : 0;
+
+
+	}
+
+
+}
+.onbCreDiv--pulsing { /* What: Pulsing Onboarding Create Div. Why: A Generate card ready to click sends a sonar ping out onto the page, which needs a positioned card to anchor it. How: This positions the card for its ping. */
+
+
+	position : relative;
+
+
+}
+.onbCreDiv--pulsing::after { /* What: Generate Card Ping. Why: The ping expands from the card's edge outward onto the page, where it reads against the background. How: This draws a matching click-through layer that plays an expanding accent ring. */
+
+
+	animation      : onbCreDivPulsePing var( --dur-ani-p09 ) var( --mot-dec-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1983.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	border-radius  : inherit;
+	content        : '';
+	inset          : 0;
+	pointer-events : none;
+	position       : absolute;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Generate Card Ping. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.onbCreDiv--pulsing::after { /* What: Still Generate Card Ping. Why: The ping is purely decorative. How: This turns its animation and transition off. */
+
+
+		animation  : none;
+		transition : none;
+
+
+	}
+
+
+}
+@keyframes onbCreDivPulsePing { /* What: Onboarding Create Div Pulse Ping Keyframes. Why: The ring spreads and fades. How: This grows an accent box shadow to the p01 rhythm step while fading it out. */
+
+
+	0% {
+
+
+		box-shadow : 0 0 0 0 oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-002-rec ) ); /* Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
+
+
+	}
+
+	40% {
+
+
+		box-shadow : 0 0 0 calc( var( --ver-rhy-p01 ) * 1rem / 2 ) oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-004-rec ) ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
+
+
+	}
+
+	100% {
+
+
+		box-shadow : 0 0 0 calc( var( --ver-rhy-p01 ) * 1rem ) oklch( from var( --acc-mai-col ) l c h / 0 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+	}
+
+
+}
+
+.onbIcoDiv { /* What: Onboarding Icon Div. Why: Each card leads with an icon on a raised tile. How: This centers the accent icon in a small bordered surface tile. */
+
+
+	align-items     : center;
+	background      : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-med );                            /* Radius Border Medium = 11px */
+	color           : var( --acc-mai-col );                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	display         : flex;
+	height          : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	justify-content : center;
+	width           : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+
+
+}
+
+.onbTitBol { /* What: Onboarding Title Bold. Why: The card's bold line reads as its heading. How: This sets it a size up in semibold. */
+
+
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight : 600;
+
+
+}
+
+.onbTexPar { /* What: Onboarding Text Paragraph. Why: The explanation reads small and muted, capped so it wraps comfortably. How: This sets muted text capped at the small text width. */
+
+
+	color       : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas );     /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas );     /* Vertical Rhythm Base ~= 1.325 */
+	margin      : 0 0 var( --spa-ver-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+	max-width   : var( --tex-wid-sma );     /* Text Width Small Maximum ~= 22.047em */
+
+
+}
+.onbCreDiv--norun .onbTexPar { /* What: No-Run Card Text. Why: With no button, the card's gap spaces its two paragraphs, so a paragraph margin would double it. How: This drops the margin. */
+
+
+	margin : 0;
+
+
+}
+
+.subLinBut { /* What: Sub Link Button. Why: The no-run card links to other tabs inline. How: This strips the button chrome down to underlined accent text. */
+
+
+	background            : none;
+	border                : 0;
+	color                 : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	cursor                : pointer;
+	font                  : inherit;
+	padding               : 0;
+	text-decoration       : underline;
+	text-underline-offset : 2px;
+
+
+}
+.subLinBut:hover { /* What: Hovered Card Link. Why: The link should respond to the pointer. How: This thickens its underline. */
+
+
+	text-decoration-thickness : 2px;
+
+
+}
+
+.onbGenSpa,
+.genLisSpa { /* What: Onboarding Generate Span And Generate List Span. Why: A blocked action stands in as an info tip styled like the button it replaces. How: This lays out the label in a rounded pill that eases its colors and press. */
+
+
+	align-items    : center;
+	border-radius  : 999px;
+	display        : inline-flex;
+	font-size      : var( --fon-siz-p01 );                                                                        /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight    : 500;
+	gap            : var( --spa-hor-m03 );                                                                        /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	height         : calc( var( --ver-rhy-p03 ) * 1rem );                                                         /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	letter-spacing : -0.005em;
+	padding        : 0 var( --spa-hor-bas );                                                                      /* Spacing Horizontal Base ~= 14.572px */
+	transition     : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ), transform var( --dur-tra-m02 ); /* Duration Transition Base Minus 1 ~= 119.2ms, Duration Transition Base Minus 2 ~= 89.9ms */
+
+
+}
+.onbGenSpa:active,
+.genLisSpa:active { /* What: Pressed Tip Button. Why: A press should feel physical. How: This nudges it down half a pixel. */
+
+
+	transform : translateY( 0.5px );
+
+
+}
+.onbGenSpa { /* What: Onboarding Generate Span. Why: The onboarding card's Generate stand-in is the card's compact main action. How: This drops its height one rhythm step, shrinks its padding and gap, and fills it with the text color. */
+
+
+	background    : var( --tex-mai-col );                /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	border-radius : 999px;
+	color         : var( --bac-pag-col );                /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	font-size     : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
+	gap           : var( --spa-hor-m04 );                /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	height        : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	padding       : 0 var( --spa-hor-m01 );              /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+}
+.onbGenSpa:hover { /* What: Hovered Onboarding Generate Span. Why: The main action should respond to the pointer. How: This lightens its fill slightly. */
+
+
+	background : oklch( from var( --tex-mai-col ) calc( l + 0.06 ) c h ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.genLisSpa { /* What: Generate List Span. Why: The footer's Regenerate stand-in is an outlined action whose count keeps a steady width. How: This gives it a surface fill, a hairline border, and tabular numerals. */
+
+
+	background           : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border               : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	color                : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-variant-numeric : tabular-nums;
+
+
+}
+.genLisSpa:hover { /* What: Hovered Generate List Span. Why: An outlined button should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+.onbGenSpa[aria-disabled='true'],
+.genLisSpa[aria-disabled='true'] { /* What: Disabled Tip Button. Why: The stand-in should read as unavailable. How: This dims it and drops the pointer cursor, keying off the aria-disabled its info tip sets. */
+
+
+	cursor  : default;
+	opacity : var( --cdn-pow-003-rec ); /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
+
+
+}
+.onbGenSpa[aria-disabled='true']:hover,
+.genLisSpa[aria-disabled='true']:hover { /* What: Hovered Disabled Tip Button. Why: A disabled stand-in shouldn't light up on hover. How: This holds a flat page-background fill and its own text color. */
+
+
+	background : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	color      : inherit;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tip Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.onbGenSpa,
+	.genLisSpa { /* What: Still Tip Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion onbCreDiv */
+
+/* #endregion todGroDiv */
+
+/* #endregion todLayDiv */
+
+
+
+/* #region todFooDiv */
+
+.todFooDiv { /* What: Today Footer Div. Why: The regenerate controls and the generated time sit centered under the list, with steady button widths as counts change. How: This stacks them centered in muted text and sets --but-bas-fig, which ButBasCom reads. */
+
+
+	--but-bas-fig : tabular-nums; /* What: Button Base Figures. Why: A button label with a count shouldn't change width. How: ButBasCom reads this for its font-variant-numeric. */
+
+	align-items    : center;
+	color          : var( --tex-mut-col );   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m05 );   /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	padding        : var( --spa-ver-m01 ) 0; /* Spacing Vertical Base Minus 1 = 11px */
+
+
+}
+
+
+/* #region genConDiv */
+
+.genConDiv { /* What: Generate Confirm Div. Why: Confirming a regenerate replaces the footer button with an inline question. How: This stacks the message and actions centered at a readable width. */
+
+
+	align-items    : center;
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m01 );                /* Spacing Vertical Base Minus 1 = 11px */
+	max-width      : calc( var( --ver-rhy-p12 ) * 1rem ); /* Vertical Rhythm Base Plus 12 ~= 425.596px */
+	text-align     : center;
+
+
+}
+
+.conMesPar { /* What: Confirm Message Paragraph. Why: The question explains what regenerating replaces. How: This sets it in body text. */
+
+
+	color       : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
+	margin      : 0;
+	text-wrap   : pretty;
+
+
+}
+
+.conActDiv { /* What: Confirm Actions Div. Why: Cancel and Continue pair up. How: This lines them up in a row. */
+
+
+	display : flex;
+	gap     : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+
+
+}
+
+/* #endregion genConDiv */
+
+
+/* #region fooActDiv */
+
+.fooActDiv { /* What: Footer Actions Div. Why: The footer's buttons sit centered in a row. How: This centers them in a spaced row. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : center;
+
+
+}
+
+.fooEdiBut { /* What: Footer Edit Button. Why: On a wide app Edit Mode lives in the rail, so the footer copy stays hidden. How: This sets --but-bas-dis, which ButBasCom reads, to none. */
+
+
+	--but-bas-dis : none;
+
+
+}
+@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.fooEdiBut { /* What: Shown Footer Edit Mode Button. Why: The narrow pill row has no room for Edit Mode, so the footer takes over. How: This sets --but-bas-dis back to inline-flex. */
+
+
+		--but-bas-dis : inline-flex;
+
+
+	}
+
+
+}
+
+/* #endregion fooActDiv */
+
+
+.fooSubDiv { /* What: Footer Sub Div. Why: When the list was generated reads as quiet metadata. How: This sets it in small uppercase mono type. */
+
+
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+.fooActDiv + .fooSubDiv { /* What: Spaced Footer Note. Why: The generated time needs room below the buttons. How: This spaces it extra small 1 vertical spacing down. */
+
+
+	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+
+/* #endregion todFooDiv */
+
+/* #endregion todBodDiv */
+
+/* #endregion todTabDiv */
+
+

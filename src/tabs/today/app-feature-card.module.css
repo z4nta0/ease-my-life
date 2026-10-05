@@ -1,0 +1,356 @@
+
+
+
+/**
+ * app-feature-card.module.css = App Feature Card Module
+ *
+ * @summary
+ * Styles for AppFeaCom, the Today list card that offers an App Feature
+ * tutorial. It looks and behaves like a real Today card: a play button in the
+ * check spot starts the tutorial, the card fills with a done check once the
+ * tutorial is resolved, and a Cancel icon dismisses it. A tutorial that can't
+ * run yet shows a dimmed check that explains why on tap, and its card takes
+ * the warm "needs attention" tint. The card's declarations are copied from the
+ * shared Today card classes the other cards still use, until the
+ * design-system pass merges them.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region todCarArt */
+
+.todCarArt { /* What: Today Card Article. Why: The tutorial offer should sit in the list like any other Today card. How: This lays out the check, body, and actions in the Today card's three-column grid, surface, border, and spacing. */
+
+
+	align-items           : center;
+	background            : var( --bac-sur-col );                                                                             /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border                : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                  /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius         : var( --rad-bor-lar );                                                                             /* Radius Border Large ~= 14.572px */
+	cursor                : pointer;
+	display               : grid;
+	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );                                                        /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
+	grid-template-columns : auto 1fr auto;
+	margin-bottom         : var( --spa-ver-m01 );                                                                             /* Spacing Vertical Base Minus 1 = 11px */
+	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );                                                        /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
+	perspective           : calc( var( --ver-rhy-p14 ) * 1rem );                                                              /* Vertical Rhythm Base Plus 14 ~= 746.868px */
+	transition            : background var( --dur-tra-bas ), opacity var( --dur-tra-p01 ), border-color var( --dur-tra-m01 ); /* Duration Transition Base ~= 157.8ms, Duration Transition Base Plus 1 ~= 209.1ms, Duration Transition Base Minus 1 ~= 119.2ms */
+	user-select           : none;
+
+
+}
+.todCarArt:last-child { /* What: Last App Feature Card. Why: The last card in a list needs no gap below it. How: This drops its bottom margin. */
+
+
+	margin-bottom : 0;
+
+
+}
+.todCarArt:hover { /* What: Hovered App Feature Card. Why: The card should respond to the pointer. How: This darkens its border slightly. */
+
+
+	border-color : var( --bor-hov-col ); /* Border Hover Color = oklch( 0.83 0.005 240 ) */
+
+
+}
+.todCarArt:active { /* What: Pressed App Feature Card. Why: A press should register on the card. How: This darkens its surface slightly. */
+
+
+	background : var( --bac-pre-col ); /* Background Pressed Color = oklch( 0.965 0.004 240 ) */
+
+
+}
+.todCarArt[data-card-done-active] { /* What: Done App Feature Card. Why: A finished tutorial should read as done, like a checked-off card. How: This dims the card's surface slightly, and must stay after the pressed rule so it wins. */
+
+
+	background : var( --bac-sun-col ); /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
+
+
+}
+.todCarArt[data-card-needed-active] { /* What: Needs Attention App Feature Card. Why: A tutorial that can't run yet is flagged as unfinished, warm rather than red, since nothing is wrong. How: This tints the card's border and surface with the warm color, and must stay after the hover and pressed rules so it wins. */
+
+
+	background   : oklch( from var( --acc-sec-col ) l c h / var( --cdn-pow-010-rec ) ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ), Core-Design-Number to the Power of 10 Reciprocal ~= 0.060 */
+	border-color : oklch( from var( --acc-sec-col ) l c h / var( --cdn-pow-002-rec ) ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ), Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
+
+
+}
+.todCarArt[data-card-needed-active]:hover { /* What: Hovered Needs Attention App Feature Card. Why: The flagged card should still respond to the pointer. How: This deepens its warm border. */
+
+
+	border-color : oklch( from var( --acc-sec-col ) l c h / var( --cdn-pow-001-rec ) ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ), Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion App Feature Card. Why: Someone who asked for less motion shouldn't see the card fade between states. How: This applies only when the reduced-motion preference is set. */
+
+
+	.todCarArt { /* What: Still App Feature Card. Why: The card's state changes should simply switch. How: This turns its fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+/* #region carCheBut */
+
+.carCheBut,
+.carCheSpa { /* What: Card Check Button And Span. Why: The check spot holds the play and undo buttons, shaped like a real card's checkbox. How: This draws the rounded square with the button chrome reset and a color fade. */
+
+
+	-webkit-appearance : none;                                                                                           /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping a button's native styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : var( --bor-wid-bas ) solid var( --bor-mai-col );                                                /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius      : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
+	color              : inherit;
+	display            : inline-flex;
+	flex               : none;
+	font               : inherit;
+	height             : calc( var( --ver-rhy-p02 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	justify-content    : center;
+	margin             : 0;
+	padding            : 0;
+	position           : relative;
+	transition         : background var( --dur-tra-m01 ), border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width              : calc( var( --ver-rhy-p02 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+
+
+}
+.carCheBut { /* What: Card Check Button. Why: The check spot is a real button in the play and undo states. How: This shows the pointer cursor. */
+
+
+	cursor : pointer;
+
+
+}
+.carCheBut:focus-visible,
+.carCheSpa:focus-visible { /* What: Focused App Feature Check Button. Why: A keyboard user needs a visible ring that still reads on the filled done state. How: This draws an accent ring separated from the box by a background-colored gap. */
+
+
+	box-shadow     : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.571px, Background Page Color = oklch( 0.985 0.003 240 ) */
+	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col );                /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset : calc( var( --ver-rhy-m05 ) * 1rem );                            /* Vertical Rhythm Base Minus 5 ~= 3.571px */
+
+
+}
+.todCarArt[data-card-done-active] .carCheBut:focus-visible { /* What: Focused Done App Feature Check Button. Why: On the filled box, the ring's gap and the checkmark's edge both need to stay distinct. How: This adds a thin background-colored inset line inside the gap. */
+
+
+	box-shadow : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ), inset 0 0 0 calc( var( --ver-rhy-m08 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.571px, Background Page Color = oklch( 0.985 0.003 240 ), Vertical Rhythm Base Minus 8 ~= 1.537px */
+
+
+}
+.carCheBut:hover,
+.carCheSpa:hover { /* What: Hovered App Feature Check Button. Why: The button should respond to the pointer. How: This darkens its border to the text color. */
+
+
+	border-color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.carCheSpa[aria-disabled='true'] { /* What: Blocked App Feature Check. Why: A tutorial that can't run yet shows a dimmed play button that explains itself on tap instead of starting. How: This dims it and drops the help cursor, keying off the aria-disabled its info tip sets so it outranks the tip's own cursor. */
+
+
+	cursor  : default;
+	opacity : var( --cdn-pow-003-rec ); /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
+
+
+}
+.carCheSpa[aria-disabled='true']:hover { /* What: Hovered Blocked App Feature Check. Why: A blocked button shouldn't look clickable on hover. How: This holds its border at the normal border color. */
+
+
+	border-color : var( --bor-mai-col ); /* Border Main Color = oklch( 0.91 0.005 240 ) */
+
+
+}
+.todCarArt[data-card-done-active] .carCheBut { /* What: Done App Feature Check Button. Why: A finished tutorial's check should read as checked. How: This fills the box with the accent color and sets its glyph in the background color. */
+
+
+	background   : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion App Feature Check Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.carCheBut,
+	.carCheSpa { /* What: Still Card Check Button And Span. Why: Its colors should simply switch. How: This turns the fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.cheRipSpa { /* What: Check Ripple Span. Why: The done check keeps the same ripple layer every done row carries. How: This draws an invisible accent ring just outside the box that never takes the pointer. */
+
+
+	border         : var( --bor-wid-bas ) solid var( --acc-mai-col ); /* Border Width Base ~= 1.160px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius  : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	inset          : calc( var( --bor-wid-bas ) * -1 );               /* Border Width Base ~= 1.160px */
+	opacity        : 0;
+	pointer-events : none;
+	position       : absolute;
+
+
+}
+
+.cheIcoSvg { /* What: Check Icon Svg. Why: The checkmark should spring in when the tutorial is resolved. How: This plays the shared spring animation on the glyph. */
+
+
+	animation : global( checkDoneBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Spring Keyframes. Why: The checkDoneBounce keyframes are shared with the other Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion App Feature Checkmark. Why: The checkmark is state, so it stays, but its spring is motion. How: This applies only when the reduced-motion preference is set. */
+
+
+	.cheIcoSvg { /* What: Still Check Icon Svg. Why: The checkmark should simply be there. How: This turns the spring off and holds the glyph fully visible at full size. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+/* #endregion carCheBut */
+
+
+
+/* #region carBodDiv */
+
+.carBodDiv { /* What: Card Body Div. Why: The meta row and name row read as one block beside the check. How: This stacks them in a tight column that may shrink below its content's width. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	min-width      : 0;
+
+
+}
+
+
+/* #region carMetDiv */
+
+.carMetDiv { /* What: Card Meta Div. Why: The feature's page label and time estimate sit above the call to action like a real card's meta line. How: This sets them in small, spaced, muted mono capitals. */
+
+
+	align-items    : center;
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display        : flex;
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+.metDotSpa { /* What: Meta Dot Span. Why: The dot between the label and the time should sit quieter than either. How: This fades it. */
+
+
+	opacity : 0.5;
+
+
+}
+
+/* #endregion carMetDiv */
+
+
+.carNamDiv { /* What: Card Name Div. Why: The call to action reads like a real card's item name. How: This sets it in large medium-weight text. */
+
+
+	font-size      : var( --fon-siz-p02 ); /* Font Size Base Plus 2 ~= 19.304px */
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+	text-wrap      : pretty;
+
+
+}
+.todCarArt[data-card-done-active] .carNamDiv { /* What: Done App Feature Card Name. Why: A finished tutorial's text should read as checked off. How: This mutes it and strikes it through with a hairline. */
+
+
+	color                     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	text-decoration           : line-through;
+	text-decoration-thickness : var( --bor-wid-sma ); /* Border Width Small ~= 0.499px */
+
+
+}
+
+/* #endregion carBodDiv */
+
+
+
+/* #region carActDiv */
+
+.carActDiv { /* What: Card Actions Div. Why: The Cancel action sits at the card's right edge like a real card's action strip. How: This lays it out as a small-gap row. */
+
+
+	display : flex;
+	gap     : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+
+
+}
+
+.actIcoBut { /* What: Action Icon Button. Why: Cancel is a quiet icon action beside the card's content. How: This draws a small muted square button with a color fade. */
+
+
+	align-items     : center;
+	border-radius   : var( --rad-bor-sma );                                        /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display         : inline-flex;
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );                         /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	justify-content : center;
+	transition      : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );                         /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+.actIcoBut:hover { /* What: Hovered App Feature Cancel Button. Why: The button should respond to the pointer. How: This gives it a background fill and the full text color. */
+
+
+	background : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	color      : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion App Feature Cancel Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.actIcoBut { /* What: Still Action Icon Button. Why: Its colors should simply switch. How: This turns the fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion carActDiv */
+
+/* #endregion todCarArt */
+
+

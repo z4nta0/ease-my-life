@@ -1,0 +1,491 @@
+
+
+
+/**
+ * holiday-editor.module.css = Holiday Editor Module
+ *
+ * @summary
+ * Styles for HolEdiCom, Settings' Days off list and its add form. Each
+ * built-in holiday is a row with its name, landing date, and an optional
+ * "observed" note on the left and a switch on the right; turning a holiday off
+ * mutes its name and draws a line through its date. A custom day off shows its
+ * date with an "every year" tag and a delete button, slides in when added, and
+ * collapses away when removed. The add form below the list takes a name and a
+ * date.
+ *
+ * The switch, delete button, and text field declarations are copied from
+ * shared classes other screens still use, until the design-system pass
+ * merges them.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region holLisUno */
+
+.holLisUno { /* What: Holiday List Unordered. Why: The rows read as a plain stack, not a bulleted list. How: This strips the list's markers, margin, and padding. */
+
+
+	list-style : none;
+	margin     : 0;
+	padding    : 0;
+
+
+}
+
+
+/* #region holRowIte */
+
+.holRowIte { /* What: Holiday Row Item. Why: Each day off is one row, its details left and its control right, divided from the next. How: This spreads the two apart in a padded flex row with a bottom divider. */
+
+
+	align-items     : center;
+	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display         : flex;
+	gap             : var( --spa-hor-bas );                            /* Spacing Horizontal Base ~= 14.572px */
+	justify-content : space-between;
+	padding         : var( --spa-ver-m01 ) 0;                          /* Spacing Vertical Base Minus 1 = 11px */
+
+
+}
+.holRowIte:last-child { /* What: Last Holiday Row. Why: The card's own edge already closes the list. How: This drops the last row's divider. */
+
+
+	border-bottom : 0;
+
+
+}
+.holRowIte--enter { /* What: Entering Holiday Row Item. Why: A newly added custom day should slide in rather than appear. How: This plays a short fade-and-drop as the row mounts, which existing rows skip since they're keyed by id. */
+
+
+	animation : holRowIteEnterFadeIn var( --dur-ani-p03 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
+
+
+}
+.holRowIte.holRowIte--exiting { /* What: Exiting Holiday Row Item. Why: A removed custom day should fade up and collapse so the rows below slide up smoothly. How: This plays the exit animation, which also collapses the row's height, and stops it taking clicks, with the base class chained in so it outranks the entering modifier's reduced-motion animation : none that a custom row also carries. */
+
+
+	animation      : holRowIteExitFold var( --dur-ani-p02 ) var( --mot-sta-eas ) forwards; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+	overflow       : hidden;
+	pointer-events : none;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Holiday Row. Why: Someone who asked for less motion shouldn't see rows slide in or out. How: This applies only when the reduced-motion preference is set. */
+
+
+	.holRowIte--enter { /* What: Still Entering Holiday Row Item. Why: A new row should simply appear. How: This turns the entrance off. */
+
+
+		animation : none;
+
+
+	}
+
+	.holRowIte.holRowIte--exiting { /* What: Instant Exiting Holiday Row. Why: Turning the exit off would leave the row fully visible until it's removed. How: This shortens the exit to an instant so the row jumps straight to its collapsed end state. */
+
+
+		animation-duration : .01ms;
+
+
+	}
+
+
+}
+@keyframes holRowIteEnterFadeIn { /* What: Holiday Row Item Enter Fade In Keyframes. Why: A short drop reads as the row joining the list. How: This fades the row in from slightly above. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY( calc( var( --spa-ver-m03 ) * -1 ) ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes holRowIteExitFold { /* What: Holiday Row Item Exit Fold Keyframes. Why: The row should leave the way it came while closing its gap. How: This fades the row up and out while collapsing its height, padding, and divider. */
+
+
+	from {
+
+
+		max-height     : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */ /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
+		opacity        : 1;
+		padding-bottom : var( --spa-ver-m01 );                /* Spacing Vertical Base Minus 1 = 11px */ /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
+		padding-top    : var( --spa-ver-m01 );                /* Spacing Vertical Base Minus 1 = 11px */ /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
+		transform      : none;
+
+
+	}
+
+	to {
+
+
+		border-bottom-width : 0;                                               /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
+		max-height          : 0;                                               /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
+		opacity             : 0;
+		padding-bottom      : 0;                                               /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
+		padding-top         : 0;                                               /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
+		transform           : translateY( calc( var( --spa-ver-m03 ) * -1 ) ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+
+
+	}
+
+
+}
+
+
+/* #region holInfDiv */
+
+.holInfDiv { /* What: Holiday Info Div. Why: The name and date stack together on the row's left. How: This stacks them in a tight column that may shrink below its content's width. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	min-width      : 0;
+
+
+}
+
+.holNamSpa { /* What: Holiday Name Span. Why: The day off's name leads its row, and mutes when the day is turned off. How: This sets it in medium-weight body text that fades its color. */
+
+
+	font-size   : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight : 500;
+	transition  : color var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+
+
+}
+.holRowIte[data-holiday-off-active] .holNamSpa { /* What: Off Holiday Name. Why: A turned-off day should read as inactive. How: This mutes its name. */
+
+
+	color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Holiday Name. Why: Someone who asked for less motion shouldn't see the name's color fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.holNamSpa { /* What: Still Holiday Name Span. Why: The color should simply switch. How: This turns the fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+/* #region holDatSpa */
+
+.holDatSpa { /* What: Holiday Date Span. Why: The landing date and any observed note stack under the name in quieter type. How: This sets them in small muted mono, stacked in a tight column. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display        : flex;
+	flex-direction : column;
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	letter-spacing : 0.02em;
+	position       : relative;
+
+
+}
+.holDatSpa--custom { /* What: Custom Holiday Date Span. Why: A custom day's date and "every year" tag fit on one line. How: This lays them out in a wrapping baseline row. */
+
+
+	align-items    : baseline;
+	flex-direction : row;
+	flex-wrap      : wrap;
+	gap            : var( --spa-ver-m04 ) var( --spa-hor-m04 ); /* Spacing Vertical Base Minus 4 ~= 4.731px, Spacing Horizontal Base Minus 4 ~= 4.731px */
+
+
+}
+
+.datMaiSpa { /* What: Date Main Span. Why: The landing date carries the strike line when the day is turned off. How: This positions it for the line and keeps it to its own width. */
+
+
+	align-self : flex-start;
+	position   : relative;
+
+
+}
+.datMaiSpa::after { /* What: Holiday Date Strike Line. Why: Turning a day off should strike its date through, drawn in from the left, which text-decoration can't animate. How: This draws a thin top-border line across the date's middle, scaled to nothing until the day is off. */
+
+
+	border-top       : var( --bor-wid-bas ) solid currentColor;             /* Border Width Base ~= 1.160px */
+	content          : '';
+	height           : 0;
+	left             : 0;
+	position         : absolute;
+	top              : 50%;
+	transform        : scaleX( 0 );
+	transform-origin : left center;
+	transition       : transform var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+	width            : 100%;
+
+
+}
+.holRowIte[data-holiday-off-active] .datMaiSpa::after { /* What: Off Holiday Date Strike Line. Why: A turned-off day's date should read as struck through. How: This scales the line to full width. */
+
+
+	transform : scaleX( 1 );
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Holiday Date Strike Line. Why: Someone who asked for less motion shouldn't see the line draw in. How: This applies only when the reduced-motion preference is set. */
+
+
+	.datMaiSpa::after { /* What: Still Holiday Date Strike Line. Why: The line should simply appear. How: This turns its draw-in off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.holObsSpa { /* What: Holiday Observed Span. Why: A holiday observed on a different weekday says so in an accent aside. How: This sets it in small italic accent text in the body font. */
+
+
+	color          : var( --acc-mai-col );          /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	font-family    : var( --fon-fam-mai, inherit ); /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size      : var( --fon-siz-bas );          /* Font Size Base = 11px */
+	font-style     : italic;
+	letter-spacing : 0;
+
+
+}
+
+.holReuSpa { /* What: Holiday Recurrence Span. Why: The "every year" tag should sit quieter than the date. How: This fades it. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+
+/* #endregion holDatSpa */
+
+/* #endregion holInfDiv */
+
+
+
+/* #region togSwiBut */
+
+.togSwiBut { /* What: Toggle Switch Button. Why: Each built-in day off can be turned off without deleting it. How: This draws a small rounded track that keeps its size in the row, fading to the accent when on. */
+
+
+	background    : var( --bor-mai-col );                /* Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : 999px;
+	cursor        : pointer;
+	flex-shrink   : 0;
+	height        : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	position      : relative;
+	transition    : background var( --dur-tra-bas );     /* Duration Transition Base ~= 157.8ms */
+	width         : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+.togSwiBut[aria-pressed='true'] { /* What: On Holiday Switch. Why: An enabled day's switch should read as on. How: This fills the track with the accent, keyed off the switch's own pressed state. */
+
+
+	background : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Holiday Switch. Why: Someone who asked for less motion shouldn't see the track fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.togSwiBut { /* What: Still Toggle Switch Button. Why: The track should simply switch. How: This turns its fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.swiKnoIta { /* What: Switch Knob Italic. Why: The knob's position shows the switch's state at a glance. How: This draws a small round knob with a soft shadow that slides across the track. */
+
+
+	background    : var( --bac-pag-col );                                               /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border-radius : 50%;
+	box-shadow    : var( --ele-sma-sha );                                               /* Elevation Small Shadow, about 0 1.2px 2px */
+	height        : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
+	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	position      : absolute;
+	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	transition    : transform var( --dur-tra-bas );                                     /* Duration Transition Base ~= 157.8ms */
+	width         : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
+
+
+}
+.togSwiBut[aria-pressed='true'] .swiKnoIta { /* What: On Holiday Switch Knob. Why: An on switch's knob sits at the right end. How: This slides the knob across. */
+
+
+	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) ); /* Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 1 ~= 19.304px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Holiday Switch Knob. Why: Someone who asked for less motion shouldn't see the knob slide. How: This applies only when the reduced-motion preference is set. */
+
+
+	.swiKnoIta { /* What: Still Switch Knob Italic. Why: The knob should simply jump to its new end. How: This turns the slide off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion togSwiBut */
+
+
+.holDelBut { /* What: Holiday Delete Button. Why: A custom day off can be removed with a quiet icon button. How: This draws a small muted square button that turns red on hover, with a color fade. */
+
+
+	align-items     : center;
+	border-radius   : var( --rad-bor-sma );                                        /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display         : inline-flex;
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );                         /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	justify-content : center;
+	transition      : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );                         /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+
+
+}
+.holDelBut:hover { /* What: Hovered Custom Holiday Delete Button. Why: A destructive action should warn as the pointer reaches it. How: This gives it a background fill and turns its glyph red. */
+
+
+	background : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	color      : var( --err-dar-col ); /* Error Dark Color = oklch( 0.5 0.18 25 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Custom Holiday Delete Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.holDelBut { /* What: Still Holiday Delete Button. Why: Its colors should simply switch. How: This turns the fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion holRowIte */
+
+/* #endregion holLisUno */
+
+
+
+/* #region holAddDiv */
+
+.holAddDiv { /* What: Holiday Add Div. Why: Adding a custom day off sits below the list, divided from it. How: This lays the name field, date field, and Add button out in a wrapping row under a hairline border. */
+
+
+	align-items : center;
+	border-top  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display     : flex;
+	flex-wrap   : wrap;
+	gap         : var( --spa-ver-m02 ) var( --spa-hor-m02 );       /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+	margin-top  : var( --spa-ver-bas );                            /* Spacing Vertical Base ~= 14.572px */
+	padding-top : var( --spa-ver-bas );                            /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+
+.holNamInp,
+.holDatInp { /* What: Holiday Date Input. Why: The name and date fields should look like the app's other form fields while sharing the row. How: This gives them the shared field border, radius, padding, and type, lets them grow from a rhythm step, caps them at a rhythm step, and fades the border on focus. */
+
+
+	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	flex          : 1 1 calc( var( --ver-rhy-p09 ) * 1rem );         /* Vertical Rhythm Base Plus 9 ~= 183.074px */
+	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	margin-top    : var( --spa-ver-m07 );                            /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	max-width     : calc( var( --ver-rhy-p10 ) * 1rem );             /* Vertical Rhythm Base Plus 10 ~= 242.522px */
+	outline       : none;
+	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width         : 100%;
+
+
+}
+.holNamInp::placeholder,
+.holDatInp::placeholder { /* What: Holiday Add Field Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
+
+
+	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+.holNamInp:focus,
+.holDatInp:focus { /* What: Focused Holiday Add Field. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
+
+
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Holiday Add Field. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.holNamInp,
+	.holDatInp { /* What: Still Holiday Date Input. Why: The focus border should simply switch. How: This turns the border fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.holDatInp { /* What: Holiday Date Input. Why: The native date picker needs enough room to show a full date. How: This gives it a minimum width. */
+
+
+	min-width : calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+
+
+}
+
+/* #endregion holAddDiv */
+
+

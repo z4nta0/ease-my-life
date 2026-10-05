@@ -1,0 +1,870 @@
+
+
+
+/**
+ * reminders-manager.module.css = Reminders Manager Module
+ *
+ * @summary
+ * Styles for the Data tab's Reminders section: its collapsible card and
+ * header, the Controls and Items toggles, the settings matrix of switches
+ * with its footer, the Add control, the empty message, and each reminder's
+ * row (a button while closed, a live name field while open) above its inline
+ * editor. Most of these classes are shared with the Data tab's other
+ * sections, so their rules are copies of the global ones, resolved where this
+ * section's own overrides used to win on specificity, and they keep the same
+ * names in every section's module. The Add control, the row, and the row's
+ * chevron each render as two different tags, so each tag has its own class,
+ * sharing one rule. An open chevron keys off
+ * data-chevron-open-active, an open row off data-row-edit-active, a one-time
+ * reminder's icon off data-reminder-once-active, a switch off its own
+ * aria-pressed, and the disabled Add control off data-tour-disabled-active,
+ * which its info tip forwards. The inline editor's footer reads the
+ * --edi-foo-* properties this section sets.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region datCatSec */
+
+.datCatSec { /* What: Data Category Section. Why: The Reminders section reads as one card among the Data tab's sections. How: This draws a bordered, rounded surface that clips its body, and plays the shared entrance each time it mounts. */
+
+
+	animation     : global( categoryEnterFadeIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global categoryEnterFadeIn Keyframes. Why: The categoryEnterFadeIn keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background    : var( --bac-sur-col );                                                         /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );                              /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-med );                                                         /* Radius Border Medium = 11px */
+	overflow      : hidden;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Category Card. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.datCatSec { /* What: Still Data Category Section. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+
+/* #region catHeaHea */
+
+.catHeaHea { /* What: Category Header Header. Why: The header opens and closes the whole section. How: This spreads its contents across a padded row with a pointer cursor and no text selection. */
+
+
+	align-items     : center;
+	cursor          : pointer;
+	display         : flex;
+	gap             : var( --spa-hor-m01 );                      /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );       /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
+	user-select     : none;
+
+
+}
+
+
+/* #region catHeaBut */
+
+.catHeaBut { /* What: Category Header Button. Why: The chevron and the name block read as one control, and the toggle is a real button that should look like the header text it holds. How: This strips the button chrome, lets it fill the header's width, and lines its contents up in a centered row. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : pointer;
+	display            : flex;
+	flex               : 1 1 auto;
+	font               : inherit;
+	gap                : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+	margin             : 0;
+	min-width          : 0;
+	padding            : 0;
+	text-align         : left;
+
+
+}
+
+
+/* #region chvDisSpa */
+
+.chvDisSpa { /* What: Chevron Disclosure Span. Why: A disclosure shows which way it will open. How: This sets the muted icon in an inline box that turns when opened. */
+
+
+	color      : var( --tex-mut-col );           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display    : inline-flex;
+	transition : transform var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
+
+
+}
+.chvDisSpa[data-chevron-open-active] { /* What: Open Chevron. Why: An open disclosure points down. How: This turns the chevron a quarter turn. */
+
+
+	transform : rotate( 90deg );
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Chevron. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.chvDisSpa { /* What: Still Chevron Disclosure Span. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion chvDisSpa */
+
+
+
+/* #region catMaiSpa */
+
+.catMaiSpa { /* What: Category Main Span. Why: The name and count stack as the header's text. How: This stacks them in a column that takes the remaining width. */
+
+
+	display        : flex;
+	flex           : 1 1 auto;
+	flex-direction : column;
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	min-width      : 0;
+
+
+}
+
+.catNamHea { /* What: Category Name Heading. Why: The section's name is its heading and should never wrap. How: This sets it at heading size on one line, ending in an ellipsis when it runs out of room. */
+
+
+	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+	margin         : 0;
+	overflow       : hidden;
+	text-overflow  : ellipsis;
+	white-space    : nowrap;
+
+
+}
+
+
+/* #region catCouSpa */
+
+.catCouSpa { /* What: Category Count Span. Why: The section's counts read as small mono metadata under the name. How: This sets the count pieces on one baseline in muted mono type. */
+
+
+	align-items    : baseline;
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display        : flex;
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m06 ); /* Spacing Horizontal Base Minus 6 ~= 2.696px */
+	letter-spacing : 0.03em;
+
+
+}
+
+/* #endregion catCouSpa */
+
+/* #endregion catMaiSpa */
+
+/* #endregion catHeaBut */
+
+/* #endregion catHeaHea */
+
+
+
+/* #region catBodDiv */
+
+.catBodDiv { /* What: Category Body Div. Why: The section's contents sit on a slightly recessed panel below the header. How: This shades it under a hairline and hands the sort row its padding and divider. */
+
+
+	--sor-row-bor : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */ /* What: Sort Row Border. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
+	--sor-row-pad : var( --spa-ver-bas ) var( --spa-hor-bas );       /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */ /* What: Sort Row Padding. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own padding. */
+
+	background : var( --bac-sun-col );                            /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
+	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+
+
+}
+
+
+/* #region catTogBut */
+
+.catTogBut { /* What: Category Toggle Button. Why: Controls and Items each open and close under their own full-width toggle. How: This strips the button chrome down to a shaded, divided row that spreads its label and summary apart. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : var( --bac-wel-col );                            /* Background Well Color = oklch( 0.96 0.004 240 ) */
+	border-bottom      : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-left        : 0;
+	border-radius      : 0;
+	border-right       : 0;
+	border-top         : 0;
+	color              : inherit;
+	cursor             : pointer;
+	display            : flex;
+	font               : inherit;
+	justify-content    : space-between;
+	padding            : var( --spa-ver-m01 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
+	text-align         : left;
+	user-select        : none;
+	width              : 100%;
+
+
+}
+.catTogBut ~ .catTogBut { /* What: Following Section Toggle. Why: The second toggle needs a divider above it too. How: This draws a hairline on top of every toggle after the first. */
+
+
+	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+
+
+}
+
+
+/* #region togLabSpa */
+
+.togLabSpa { /* What: Toggle Label Span. Why: The chevron and the label read as one. How: This lines them up in a centered row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+
+
+}
+
+.togKicSpa { /* What: Toggle Kicker Span. Why: The toggle's label reads as a small eyebrow. How: This sets it in small uppercase muted mono type on a tight line. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	font-weight    : 500;
+	letter-spacing : 0.08em;
+	line-height    : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion togLabSpa */
+
+
+.togSumSpa { /* What: Toggle Summary Span. Why: A closed toggle says how much it hides. How: This sets the count in small muted mono type. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.03em;
+
+
+}
+
+/* #endregion catTogBut */
+
+
+
+/* #region remMatDiv */
+
+.remMatDiv { /* What: Reminder Matrix Div. Why: The reminder settings read as a recessed table under the Controls toggle. How: This shades it and closes it with a hairline. */
+
+
+	background    : var( --bac-wel-col );                            /* Background Well Color = oklch( 0.96 0.004 240 ) */
+	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+
+
+}
+
+
+/* #region matHeaDiv */
+
+.matHeaDiv { /* What: Matrix Header Div. Why: The columns name the two reminder kinds. How: This lays the header out on the matrix's three-column grid. */
+
+
+	align-items           : center;
+	display               : grid;
+	grid-template-columns : 1fr calc( var( --ver-rhy-p06 ) * 1rem ) calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	padding               : var( --spa-ver-m02 ) var( --spa-hor-bas );                                   /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base ~= 14.572px */
+
+
+}
+
+.matColSpa { /* What: Matrix Column Span. Why: Each kind is named above its column. How: This sets it centered in small uppercase muted mono type. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.05em;
+	text-align     : center;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion matHeaDiv */
+
+
+
+/* #region matRowDiv */
+
+.matRowDiv { /* What: Matrix Row Div. Why: Each setting is one row with a switch per kind. How: This lays it out on the three-column grid, divided from the next row. */
+
+
+	align-items           : center;
+	border-bottom         : var( --bor-wid-sma ) solid var( --bor-mai-col );                             /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display               : grid;
+	grid-template-columns : 1fr calc( var( --ver-rhy-p06 ) * 1rem ) calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	padding               : var( --spa-ver-m01 ) var( --spa-hor-bas );                                   /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
+
+
+}
+.matRowDiv:last-child { /* What: Last Matrix Row. Why: The footer's divider already closes the table. How: This drops the last row's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+
+
+/* #region matNamSpa */
+
+.matNamSpa { /* What: Matrix Name Span. Why: Each setting's name sits over its live explanation. How: This stacks them in a column clear of the switches. */
+
+
+	display        : flex;
+	flex-direction : column;
+	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	gap            : var( --spa-ver-m09 ); /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	padding-right  : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+}
+
+.matSubSpa { /* What: Matrix Sub Span. Why: The line under each setting explains what the current switches do, fading in each time it changes. How: This sets it small and muted and plays the shared fade whenever its keyed span remounts. */
+
+
+	animation   : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	color       : var( --tex-mut-col );                                                     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas );                                                     /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas );                                                     /* Vertical Rhythm Base ~= 1.325 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Matrix Setting Explanation. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.matSubSpa { /* What: Still Matrix Sub Span. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #endregion matNamSpa */
+
+
+
+/* #region matCelSpa */
+
+.matCelSpa { /* What: Matrix Cell Span. Why: Each switch sits centered in its column. How: This centers it in a flex cell. */
+
+
+	display         : flex;
+	justify-content : center;
+
+
+}
+
+
+
+/* #region togSwiBut */
+
+.togSwiBut { /* What: Toggle Switch Button. Why: Each reminder setting turns on or off per reminder kind. How: This draws a pill track whose knob slides across, fading its color. */
+
+
+	background    : var( --bor-mai-col );                /* Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : 999px;
+	cursor        : pointer;
+	height        : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	position      : relative;
+	transition    : background var( --dur-tra-bas );     /* Duration Transition Base ~= 157.8ms */
+	width         : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+.togSwiBut[aria-pressed='true'] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-pressed the switch already sets. */
+
+
+	background : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Setting Switch. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.togSwiBut { /* What: Still Toggle Switch Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.swiKnoIta { /* What: Switch Knob Italic. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
+
+
+	background    : var( --bac-pag-col );                                               /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border-radius : 50%;
+	box-shadow    : var( --ele-sma-sha );                                               /* Elevation Small Shadow, about 0 1.2px 2px */
+	height        : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
+	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	position      : absolute;
+	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	transition    : transform var( --dur-tra-bas );                                     /* Duration Transition Base ~= 157.8ms */
+	width         : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
+
+
+}
+.togSwiBut[aria-pressed='true'] .swiKnoIta { /* What: On Setting Switch Knob. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
+
+
+	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) ); /* Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 1 ~= 19.304px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Setting Switch Knob. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.swiKnoIta { /* What: Still Switch Knob Italic. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion togSwiBut */
+
+/* #endregion matCelSpa */
+
+/* #endregion matRowDiv */
+
+
+
+/* #region matFooDiv */
+
+.matFooDiv { /* What: Matrix Footer Div. Why: Cancel and Save end the matrix below a divider. How: This pushes them right in a padded row under a hairline. */
+
+
+	border-top      : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display         : flex;
+	justify-content : flex-end;
+	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
+
+
+}
+
+
+/* #region fooRigDiv */
+
+.fooRigDiv { /* What: Footer Right Div. Why: Cancel and Save pair up on the right. How: This lays them out in a fixed-size row pushed right. */
+
+
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	margin-left : auto;
+
+
+}
+
+/* #endregion fooRigDiv */
+
+/* #endregion matFooDiv */
+
+/* #endregion remMatDiv */
+
+
+
+/* #region rowAddBut */
+
+.rowAddSpa,
+.rowAddBut { /* What: Row Add Span And Button. Why: Adding a reminder is a full-width row at the top of the list. How: This sets an uppercase mono label beside its plus icon, divided from the rows below. */
+
+
+	align-items    : center;
+	border-bottom  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	color          : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display        : flex;
+	font-family    : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                            /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m03 );                            /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	letter-spacing : 0.04em;
+	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );       /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
+	text-align     : left;
+	text-transform : uppercase;
+	width          : 100%;
+
+
+}
+.rowAddSpa:hover,
+.rowAddBut:hover { /* What: Hovered Row Add Span And Button. Why: The control should respond to the pointer. How: This tints it in the accent color. */
+
+
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.rowAddSpa[data-tour-disabled-active] { /* What: Disabled Row Add Span. Why: While the tutorials run, adding a reminder is unavailable and should look it. How: This dims the control and drops the pointer cursor, keying off data-tour-disabled-active, which its info tip forwards. */
+
+
+	cursor  : default;
+	opacity : 0.5;
+
+
+}
+
+/* #endregion rowAddBut */
+
+
+
+.lisEmpDiv { /* What: List Empty Div. Why: An empty list explains how to start. How: This sets a muted message padded like a row. */
+
+
+	color     : var( --tex-mut-col );                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-p01 );                                           /* Font Size Base Plus 1 ~= 14.572px */
+	padding   : var( --spa-ver-bas ) var( --spa-hor-bas ) var( --spa-ver-p01 ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px, Spacing Vertical Base Plus 1 ~= 19.304px */
+
+
+}
+
+
+
+/* #region lisIteDiv */
+
+.lisIteDiv { /* What: List Item Div. Why: Each reminder is divided from the next. How: This draws a hairline under every item but the last. */
+
+
+	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+
+
+}
+.lisIteDiv:last-child { /* What: Last Reminder Item. Why: The card's own border already ends the list. How: This drops the last item's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+.lisIteDiv--insert { /* What: Inserted List Item Div. Why: A just-added reminder springs into the list. How: This plays the shared row insert once, cleared by the row's own animationend handler. */
+
+
+	animation : global( rowInsertSlideIn ) var( --dur-ani-p03 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */ /* What: Global rowInsertSlideIn Keyframes. Why: The rowInsertSlideIn keyframes are shared with the Data tab's item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Inserted Reminder Item. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.lisIteDiv--insert { /* What: Still Inserted List Item Div. Why: The row should appear at once, while still ending the animation its handler waits on. How: This shortens its insert to .01ms instead of turning it off. */
+
+
+		animation-duration : .01ms;
+
+
+	}
+
+
+}
+
+
+/* #region lisRowBut */
+
+.lisRowDiv,
+.lisRowBut { /* What: List Row Div And Button. Why: A closed row is one button that opens its reminder. How: This strips the button chrome and lays the row's pieces out in a padded row. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : pointer;
+	display            : flex;
+	font               : inherit;
+	gap                : var( --spa-hor-m01 );                      /* Spacing Horizontal Base Minus 1 = 11px */
+	padding            : var( --spa-ver-m01 ) var( --spa-hor-bas ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
+	text-align         : left;
+	user-select        : none;
+	width              : 100%;
+
+
+}
+.lisRowDiv:hover,
+.lisRowBut:hover { /* What: Hovered List Row Div And Button. Why: The row should respond to the pointer. How: This shades it slightly darker than the surface. */
+
+
+	background : var( --bac-pre-col ); /* Background Pressed Color = oklch( 0.965 0.004 240 ) */
+
+
+}
+.lisIteDiv[data-row-edit-active] > .lisRowDiv:hover,
+.lisIteDiv[data-row-edit-active] > .lisRowBut:hover { /* What: Hovered Open List Row Div And Button. Why: An open row's header isn't a button, so it shouldn't react to hover. How: This keeps its background clear. */
+
+
+	background : transparent;
+
+
+}
+.lisIteDiv[data-row-edit-active] > .lisRowDiv,
+.lisIteDiv[data-row-edit-active] > .lisRowBut { /* What: Open List Row Div And Button. Why: An open row's header isn't clickable. How: This resets the cursor. */
+
+
+	cursor : default;
+
+
+}
+
+
+/* #region rowIcoSpa */
+
+.rowIcoSpa { /* What: Row Icon Span. Why: Each row leads with an icon for its reminder's kind. How: This draws a small rounded tile tinted in the accent color. */
+
+
+	align-items     : center;
+	background      : var( --acc-tin-col );                /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-radius   : var( --rad-bor-sma );                /* Radius Border Small ~= 8.304px */
+	color           : var( --acc-mai-col );                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	height          : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	justify-content : center;
+	width           : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+.rowIcoSpa[data-reminder-once-active] { /* What: One-Time Reminder Icon. Why: A one-time reminder reads warm, apart from the recurring ones. How: This tints the tile in the warm color, keying off data-reminder-once-active. */
+
+
+	background : oklch( from var( --acc-sec-col ) calc( l + 0.28 ) c h ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
+	color      : var( --acc-sec-col );                                    /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
+
+
+}
+
+/* #endregion rowIcoSpa */
+
+
+
+/* #region rowMaiSpa */
+
+.rowMaiSpa { /* What: Row Main Span. Why: The name and its summary stack as the row's text. How: This stacks them in a column that takes the remaining width. */
+
+
+	display        : flex;
+	flex           : 1 1 auto;
+	flex-direction : column;
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	min-width      : 0;
+
+
+}
+
+.rowNamInp { /* What: Row Name Input. Why: An open row renames its reminder in place, styled like the name it replaces. How: This draws a borderless field with only an underline. */
+
+
+	background     : transparent;
+	border         : 0;
+	border-bottom  : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	font           : inherit;
+	font-size      : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight    : 500;
+	letter-spacing : -0.005em;
+	padding        : var( --spa-ver-m09 ) 0;                          /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	transition     : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width          : 100%;
+
+
+}
+.rowNamInp:focus { /* What: Focused Row Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
+
+
+	border-bottom-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline             : none;
+
+
+}
+.rowNamInp::placeholder { /* What: Row Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+
+
+	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Row Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rowNamInp { /* What: Still Row Name Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.rowNamSpa { /* What: Row Name Span. Why: A closed row leads with its reminder's name. How: This sets it in medium weight. */
+
+
+	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight    : 500;
+	letter-spacing : -0.005em;
+
+
+}
+
+.rowSumSpa { /* What: Row Summary Span. Why: The row's summary reads as quiet metadata. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion rowMaiSpa */
+
+
+
+/* #region rowChvBut */
+
+.rowChvSpa,
+.rowChvBut { /* What: Row Chevron Span And Button. Why: The chevron keeps a fixed slot at the row's end. How: This stops it from growing or shrinking and mutes its color. */
+
+
+	color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	flex  : 0 0 auto;
+
+
+}
+.lisIteDiv[data-row-edit-active] .rowChvSpa,
+.lisIteDiv[data-row-edit-active] .rowChvBut { /* What: Open Row Chevron Span And Button. Why: An open row's chevron marks it as the one being edited. How: This turns it the accent color. */
+
+
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.rowChvBut { /* What: Row Chevron Button. Why: While a row is open its chevron is a real button that closes it. How: This strips the button chrome and gives it a small padded hit area that doesn't shift the layout. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : pointer;
+	display            : inline-flex;
+	font               : inherit;
+	margin             : calc( var( --spa-ver-m05 ) * -1 ) calc( var( --spa-hor-m05 ) * -1 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
+	padding            : var( --spa-ver-m05 ) var( --spa-hor-m05 );                           /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
+
+
+}
+
+/* #endregion rowChvBut */
+
+/* #endregion lisRowBut */
+
+
+
+/* #region remEdiDiv */
+
+.remEdiDiv { /* What: Reminder Editor Div. Why: The editor sits under its row, and its footer runs edge to edge. How: This pads the editor and sets the --edi-foo-* properties EdiFooCom reads for its full-bleed divider. */
+
+
+	--edi-foo-bor : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */ /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
+	--edi-foo-mar : 0 calc( var( --spa-hor-bas ) * -1 );             /* Spacing Horizontal Base ~= 14.572px */ /* What: Footer Margin. Why: The footer runs edge to edge. How: EdiFooCom reads this to pull itself past the editor's padding. */
+	--edi-foo-pad : var( --spa-ver-bas ) var( --spa-hor-bas ) 0;     /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */ /* What: Footer Padding. Why: The footer's buttons stay inset from the edges. How: EdiFooCom reads this for its own padding. */
+
+	padding : var( --spa-ver-m07 ) var( --spa-hor-bas ) var( --spa-ver-bas ); /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base ~= 14.572px, Spacing Vertical Base ~= 14.572px */
+
+
+}
+
+.inlEdiDiv { /* What: Inline Editor Div. Why: The editor body blends into its row rather than drawing its own card, and fades in as it opens. How: This clears the card chrome and plays the shared row entrance. */
+
+
+	animation     : global( editorOpenFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ); /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background    : none;
+	border        : 0;
+	border-radius : 0;
+	margin        : 0;
+	padding       : 0;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reminder Editor Body. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.inlEdiDiv { /* What: Still Inline Editor Div. Why: The body should simply appear, fully shown. How: This turns its entrance off and pins it fully shown in place. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+/* #endregion remEdiDiv */
+
+/* #endregion lisIteDiv */
+
+/* #endregion catBodDiv */
+
+/* #endregion datCatSec */
+
+

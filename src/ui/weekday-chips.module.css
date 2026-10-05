@@ -1,0 +1,104 @@
+
+
+
+/**
+ * weekday-chips.module.css = Weekday Chips Module
+ *
+ * @summary
+ * Styles for WeeChiCom, the row of seven round weekday toggles used by the
+ * new-picker form, the Data tab's picker controls, and the reminder schedule
+ * editor. A chip fills with the accent tint while its day is selected, and a
+ * locked chip (a weekly picker's anchor day) looks selected but explains
+ * itself on tap instead of toggling. The small size shrinks every chip.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region dowChiDiv */
+
+.dowChiDiv { /* What: Day-Of-Week Chips Div. Why: The seven days read as one row that wraps on a narrow screen. How: This lays the chips out in a wrapping row with a small gap. */
+
+
+	display   : flex;
+	flex-wrap : wrap;
+	gap       : var( --spa-ver-m03 ) var( --spa-hor-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+
+
+}
+
+.dowChiBut,
+.dowChiSpa { /* What: Day-Of-Week Chip Button And Span. Why: Each day is a small round chip showing its initial, a toggle button or, for a locked day, an info tip span. How: This draws a fixed-size bordered circle with the letter centered in muted text, fading its colors as it toggles. */
+
+
+	align-items     : center;
+	background      : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border          : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : 999px;
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor          : pointer;
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	font-size       : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight     : 600;
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	justify-content : center;
+	transition      : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+.dowChiBut:hover { /* What: Hovered Day-Of-Week Chip Button. Why: A toggle chip should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+.dowChiBut[aria-pressed='true'],
+.dowChiSpa { /* What: Selected Day-Of-Week Chip Button And Span. Why: A selected day should read as switched on, and a locked day always is. How: This fills the chip with the accent tint and colors its border and letter, keyed off a toggle chip's own pressed state and applied to every locked chip. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.dowChiSpa { /* What: Locked Day-Of-Week Chip Span. Why: The anchor day explains itself instead of toggling, so it shouldn't look clickable. How: This shows the help cursor instead of the pointer, and since only the toggle chip darkens on hover, its accent border holds. */
+
+
+	cursor : help;
+
+
+}
+.dowChiDiv--sm .dowChiBut,
+.dowChiDiv--sm .dowChiSpa { /* What: Small Day-Of-Week Chip Button And Span. Why: Compact contexts need smaller chips. How: This shrinks every chip inside a small chip row, the locked one included. */
+
+
+	font-size : var( --fon-siz-bas );                /* Font Size Base = 11px */
+	height    : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	width     : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Day-Of-Week Chip Button And Span. Why: Someone who asked for less motion shouldn't see a chip's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.dowChiBut,
+	.dowChiSpa { /* What: Still Day-Of-Week Chip Button And Span. Why: A chip's colors should simply switch. How: This turns the color fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion dowChiDiv */
+
+

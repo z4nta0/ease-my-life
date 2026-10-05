@@ -1,5 +1,8 @@
-# Ease My Life — a single-page app; everything is crawlable from the root.
+# What: Every Crawler Group. Why: The app is one public page, so nothing needs hiding from crawlers. How: This lets every crawler crawl everything from the root.
 User-agent: *
 Allow: /
 
+
+
+# What: Sitemap Line. Why: Crawlers should find the sitemap without guessing its address. How: This points at the sitemap's absolute URL, which the protocol requires.
 Sitemap: https://easemylife.app/sitemap.xml

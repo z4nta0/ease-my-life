@@ -1,0 +1,69 @@
+
+
+
+/**
+ * progress-bar.module.css = Progress Bar Module
+ *
+ * @summary
+ * Styles for ProBarCom's dash-bar: the rounded track and the fill inside it.
+ * The fill always spans the whole track and the component slides it left by
+ * the empty share inline, so a value change animates on the compositor while
+ * the track's rounded clip keeps both ends round. The warm modifier recolors
+ * the fill for ease-down pickers.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region proTraDiv */
+
+.proTraDiv { /* What: Progress Track Div. Why: The fill needs a fixed, rounded background track to slide inside. How: This sizes the track and clips the fill to its rounded shape. */
+
+
+	background    : var( --bor-fil-col );                /* Border Fill Color = oklch( 0.93 0.005 240 ) */
+	border-radius : 999px;
+	flex          : 1;
+	height        : calc( var( --ver-rhy-m05 ) * 1rem ); /* Vertical Rhythm Base Minus 5 ~= 3.571px */
+	min-width     : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	overflow      : hidden;
+
+
+}
+
+.proFilIta { /* What: Progress Fill Italic. Why: This is the filled portion showing how far along the value is. How: This spans the track and slides with the transform the component sets inline, so the track hides the empty share. */
+
+
+	background    : var( --acc-mai-col );                                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius : 999px;
+	display       : block;
+	height        : 100%;
+	transition    : transform var( --dur-tra-p02 ) var( --mot-ove-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
+
+
+}
+.proTraDiv--warm .proFilIta { /* What: Warm Progress Fill. Why: An ease-down picker's bar reads in the warm color. How: This recolors the fill under the warm modifier. */
+
+
+	background : var( --acc-sec-col ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Progress Fill. Why: Someone who asked for less motion shouldn't see the fill slide. How: This applies only when the reduced-motion preference is set. */
+
+
+	.proFilIta { /* What: Still Progress Fill Italic. Why: The fill should jump straight to its new position. How: This turns the slide off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion proTraDiv */
+
+

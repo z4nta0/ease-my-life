@@ -1,0 +1,295 @@
+
+
+
+/**
+ * legal-docs.module.css = Legal Docs Module
+ *
+ * @summary
+ * Styles for the Settings legal modal: a dimmed backdrop that fades in and
+ * out, the panel that rises into place with its title row and close button,
+ * and the scrollable body the Privacy Policy or Terms of Service render into.
+ * A modal suits this rare, self-contained content since the user opens it on
+ * purpose.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region legBacDiv */
+
+.legBacDiv { /* What: Legal Backdrop Div. Why: The document should sit over a dimmed page that makes it clear the rest is inactive. How: This covers the viewport, centers the panel, and fades in. */
+
+
+	align-items     : center;
+	animation       : legBacDivOpenFadeIn var( --dur-ani-p01 ) var( --mot-sta-eas ) both;  /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+	background      : oklch( from var( --scr-mai-col ) l c h / var( --cdn-pow-003-rec ) ); /* Scrim Main Color = oklch( 0.15 0.02 250 ), Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
+	display         : flex;
+	inset           : 0;
+	justify-content : center;
+	padding         : var( --spa-ver-p02 ) var( --spa-hor-p02 );                           /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 2 ~= 25.572px */
+	position        : fixed;
+	z-index         : 21;                                                                  /* What: Legal Modal Stack Level. Why: Help mode can be on while a legal document opens, and the modal must sit above its dim and highlights (19) and its toggle (20), not behind them. How: This sits one level above the help toggle. */
+
+
+}
+.legBacDiv--closing { /* What: Closing Legal Backdrop Div. Why: The dim should fade away with the panel rather than vanish. How: This plays the fade-out while the modal's closing class is on. */
+
+
+	animation : legBacDivCloseFadeOut var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Legal Modal Backdrop. Why: Someone who asked for less motion shouldn't see the dim fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.legBacDiv,
+	.legBacDiv--closing { /* What: Closing Legal Backdrop Div. Why: The dim should simply appear and disappear. How: This turns both fades off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes legBacDivOpenFadeIn { /* What: Legal Backdrop Div Open Fade In Keyframes. Why: The dim should ease in. How: This fades the backdrop from transparent. */
+
+
+	from {
+
+
+		opacity : 0;
+
+
+	}
+
+	to {
+
+
+		opacity : 1;
+
+
+	}
+
+
+}
+@keyframes legBacDivCloseFadeOut { /* What: Legal Backdrop Div Close Fade Out Keyframes. Why: The dim should ease out. How: This fades the backdrop to transparent. */
+
+
+	from {
+
+
+		opacity : 1;
+
+
+	}
+
+	to {
+
+
+		opacity : 0;
+
+
+	}
+
+
+}
+
+
+/* #region legPanDiv */
+
+.legPanDiv { /* What: Legal Panel Div. Why: The document needs a contained, readable panel whose body scrolls on its own. How: This sizes a rounded column panel to the screen and rises it into place. */
+
+
+	animation      : legPanDivOpenRise var( --dur-ani-p02 ) var( --mot-dec-eas ) both;                                          /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	background     : var( --bac-sur-col, var( --bac-pag-col ) );                                                                /* Background Surface Color = oklch( 0.975 0.004 240 ), Background Page Color = oklch( 0.985 0.003 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                           /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : var( --rad-bor-lar );                                                                                      /* Radius Border Large ~= 14.572px */
+	box-shadow     : var( --ele-xla-sha );                                                                                      /* Elevation Extra Large Shadow, about 0 26px 59px -19px plus 0 8px 19px -5px */
+	color          : var( --tex-mai-col );                                                                                      /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	display        : flex;
+	flex-direction : column;
+	max-height     : 85vh;
+	max-width      : calc( var( --cdn-pow-012 ) * var( --fon-siz-p01 ) + ( var( --spa-hor-p02 ) + var( --bor-wid-sma ) ) * 2 ); /* Core-Design-Number to the Power of 12 ~= 29.207, Font Size Base Plus 1 ~= 14.572px, Spacing Horizontal Base Plus 2 ~= 25.572px, Border Width Small ~= 0.499px */ /* What: Legal Modal Maximum Width. Why: The panel should fit its paragraphs at the base text width rather than a free-standing number. How: This is the base text width at the paragraphs' font size plus the body's side padding and the panel's side border, each counted twice, since the box is border-box. */
+	outline        : none;
+	overflow       : hidden;
+	width          : 100%;
+
+
+}
+.legPanDiv--closing { /* What: Closing Legal Panel Div. Why: The panel should drop away rather than vanish. How: This plays the panel's exit while the modal's closing class is on. */
+
+
+	animation : legPanDivCloseDrop var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Legal Modal Panel. Why: Someone who asked for less motion shouldn't see the panel move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.legPanDiv,
+	.legPanDiv--closing { /* What: Closing Legal Panel Div. Why: The panel should simply appear and disappear. How: This turns its entrance and exit off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes legPanDivOpenRise { /* What: Legal Panel Div Open Rise Keyframes. Why: A panel that rises a little reads as arriving rather than blinking in. How: This fades the panel in from slightly lower and smaller. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY( var( --spa-ver-m01 ) ) scale( .98 ); /* Spacing Vertical Base Minus 1 = 11px */
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes legPanDivCloseDrop { /* What: Legal Panel Div Close Drop Keyframes. Why: The panel should leave the way it came. How: This fades the panel out while it drops slightly and shrinks. */
+
+
+	from {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+	to {
+
+
+		opacity   : 0;
+		transform : translateY( var( --spa-ver-m02 ) ) scale( .98 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+	}
+
+
+}
+
+
+/* #region panHeaDiv */
+
+.panHeaDiv { /* What: Panel Header Div. Why: The document's name and the close button share one fixed row above the scrolling body. How: This spreads them across a bordered row that never shrinks. */
+
+
+	align-items     : center;
+	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col );                                     /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display         : flex;
+	flex            : 0 0 auto;
+	gap             : var( --spa-hor-m01 );                                                                /* Spacing Horizontal Base Minus 1 = 11px */
+	justify-content : space-between;
+	padding         : var( --spa-ver-bas ) var( --spa-hor-bas ) var( --spa-ver-bas ) var( --spa-hor-p01 ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
+
+
+}
+
+.panTitSpa { /* What: Panel Title Span. Why: The head names which document is open. How: This sets the name in bold, slightly larger text. */
+
+
+	color       : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight : 600;
+
+
+}
+
+.panCloBut { /* What: Panel Close Button. Why: Closing should be a quiet but easy target. How: This styles a borderless square icon button in the muted color. */
+
+
+	align-items     : center;
+	background      : transparent;
+	border          : 0;
+	border-radius   : var( --rad-bor-sma );                /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	cursor          : pointer;
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	height          : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	justify-content : center;
+	width           : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+.panCloBut:hover { /* What: Hovered Legal Modal Close Button. Why: The close button should respond to the pointer. How: This gives it the hover tint and full text color. */
+
+
+	background : var( --bac-hov-col ); /* Background Hover Color = oklch( 0 0 0 / 0.05 ) */
+	color      : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+
+/* #endregion panHeaDiv */
+
+
+/* #region panBodDiv */
+
+.panBodDiv { /* What: Panel Body Div. Why: A long document has to scroll inside the panel while the head stays put. How: This pads the body and lets it scroll on its own, with momentum on iOS. */
+
+
+	-webkit-overflow-scrolling : touch;
+	overflow-y                 : auto;
+	padding                    : var( --spa-ver-m02 ) var( --spa-hor-p02 ) var( --spa-ver-p02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Plus 2 ~= 25.572px, Spacing Vertical Base Plus 2 ~= 25.572px */
+
+
+}
+
+.panBodDiv h1 { /* What: Legal Document Title. Why: The document opens with its own name. How: This sets it large and tight. */
+
+
+	font-size      : var( --fon-siz-p03 );     /* Font Size Base Plus 3 ~= 25.572px */
+	letter-spacing : -0.02em;
+	margin         : var( --spa-ver-bas ) 0 0; /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+
+.panBodDiv h2 { /* What: Legal Document Section Heading. Why: Section headings break the document into scannable parts. How: This sizes them and spaces them from the text around them. */
+
+
+	font-size : var( --fon-siz-p02 );                        /* Font Size Base Plus 2 ~= 19.304px */
+	margin    : var( --spa-ver-p03 ) 0 var( --spa-ver-m02 ); /* Spacing Vertical Base Plus 3 ~= 33.876px, Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+
+.panBodDiv p,
+.panBodDiv li { /* What: Legal Document Text. Why: Long legal prose needs a comfortable reading rhythm. How: This sets paragraphs and list items at a relaxed line height in slightly softened text. */
+
+
+	color       : oklch( from var( --tex-mai-col ) l c h / 0.88 ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-size   : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	line-height : var( --ver-rhy-bas );                            /* Vertical Rhythm Base ~= 1.325 */
+
+
+}
+
+/* #endregion panBodDiv */
+
+/* #endregion legPanDiv */
+
+/* #endregion legBacDiv */
+
+
