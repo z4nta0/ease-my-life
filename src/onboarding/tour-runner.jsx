@@ -1868,6 +1868,51 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
+		// #region claHorFun
+
+		/**
+		 * claHorFun = Clamp Horizontal Function
+		 *
+		 * @summary
+		 * Pulls the drawn highlight rect in from the viewport's left and right edges
+		 * by the spotlight's own padding, so the padded spotlight never runs off
+		 * screen. A full-width target, such as the group rail on a phone, would
+		 * otherwise push the spotlight past the screen edge by its padding and cut
+		 * off its rounded corners. Unlike claChrFun this applies to every target,
+		 * chrome included, since the screen edge clips everything alike.
+		 *
+		 * @author z4nta0 <https://github.com/z4nta0>
+		 *
+		 * @param curRecObj - Current Rect Object: The rect returned by claChrFun.
+		 *
+		 * @returns The rect with its left, right, and width clamped to the
+		 * viewport, inset by spoPadNum.
+		 *
+		 * @example
+		 * ```ts
+		 * claHorFun( claChrFun( uniRecFun( curEleArr ), curEleArr ) ) // => rect
+		 * ```
+		 *
+		*/
+
+		const claHorFun = ( curRecObj ) => { // What: Clamp Horizontal Function. Why: A full-width target would push the padded spotlight past the screen edge. How: This clamps the rect's left and right edges inside the viewport by spoPadNum.
+
+
+			const claLefNum = Math.max( curRecObj.left, spoPadNum );                     // What: Clamp Left Number. Why: The padded spot must not start left of the screen. How: This keeps the rect's left edge at least spoPadNum from the viewport's left edge.
+			const claRigNum = Math.min( curRecObj.right, window.innerWidth - spoPadNum ); // What: Clamp Right Number. Why: The padded spot must not end past the screen. How: This keeps the rect's right edge at least spoPadNum from the viewport's right edge.
+			const claWidNum = Math.max( 0, claRigNum - claLefNum );                       // What: Clamp Width Number. Why: The clamped rect's own width must match its clamped edges, and never go negative for a target narrower than the padding. How: This subtracts claLefNum from claRigNum, floored at 0.
+
+
+
+			return { ...curRecObj, left : claLefNum, right : claRigNum, width : claWidNum }; // What: Clamped Rect Return. Why: The caller needs the clamped rect back, width recomputed to match. How: This spreads curRecObj, then overwrites left/right/width with the clamped values.
+
+
+		};
+
+		// #endregion claHorFun
+
+
+
 		// #region plaTarFun
 
 		/**
@@ -1899,7 +1944,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		const plaTarFun = ( curEleArr ) => { // What: Place Target Function. Why: This positions both the spotlight and the real coach imperatively, every frame, so neither one visibly lags behind a smooth scroll the way pure React state would. How: This writes the clipped target rect onto the spotlight's style, then places the coach beside it from the same rect.
 
 
-			const tarRecObj = claChrFun( uniRecFun( curEleArr ), curEleArr ); // What: Target Rect Object. Why: Both the spotlight and the coach below need the same clamped, unioned rect. How: This unions curEleArr, then clamps the result against chrome.
+			const tarRecObj = claHorFun( claChrFun( uniRecFun( curEleArr ), curEleArr ) ); // What: Target Rect Object. Why: Both the spotlight and the coach below need the same clamped, unioned rect. How: This unions curEleArr, then clamps the result against chrome and the screen's side edges.
 
 
 			if ( spoEleRef.current ) { // What: Spotlight Ref Guard. Why: The spotlight element may not be mounted yet on the very first call. How: This only writes to spoEleRef.current when it is actually present.
