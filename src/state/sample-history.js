@@ -49,7 +49,7 @@ import { ONB_SPI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sam
  *
  * @example
  * ```ts
- * hidHisFun( actStoObj ) // => void
+ * hidHisFun(actStoObj) // => void
  * ```
  *
 */
@@ -98,7 +98,7 @@ const hidHisFun = ( actStoObj ) => { // What: Hide History Function. Why: The re
  *
  * @example
  * ```ts
- * unhHisFun( staAppObj, actStoObj ) // => void
+ * unhHisFun(staAppObj, actStoObj) // => void
  * ```
  *
 */

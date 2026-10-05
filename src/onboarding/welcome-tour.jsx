@@ -126,7 +126,7 @@ const BRA_ICO_ELE = ( // What: Brand Icon Element. Why: The intro modal's own ic
  *
  * @example
  * ```ts
- * sedTasFun( staAppObj, actStoObj, true ) // => void
+ * sedTasFun(staAppObj, actStoObj, true) // => void
  * ```
  *
 */
@@ -518,7 +518,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } ) {
 	 *
 	 * @example
 	 * ```ts
-	 * bacSteFun( 1 ) // => void
+	 * bacSteFun(1) // => void
 	 * ```
 	 *
 	*/

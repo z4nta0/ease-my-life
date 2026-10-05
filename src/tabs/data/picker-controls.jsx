@@ -149,7 +149,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	 *
 	 * @example
 	 * ```ts
-	 * patPicFun( { group : 'Chores' } ) // => void
+	 * patPicFun({ group : 'Chores' }) // => void
 	 * ```
 	 *
 	*/
@@ -249,7 +249,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	 *
 	 * @example
 	 * ```ts
-	 * raiRefFun( raiCurEle ) // => void
+	 * raiRefFun(raiCurEle) // => void
 	 * ```
 	 *
 	*/

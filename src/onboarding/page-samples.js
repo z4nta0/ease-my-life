@@ -91,7 +91,7 @@ const tasCopFun = ( samIdeStr ) => `pt_${ samIdeStr }`; // What: Task Copy Funct
  *
  * @example
  * ```ts
- * clePicFun( actStoObj ) // => void
+ * clePicFun(actStoObj) // => void
  * ```
  *
 */
@@ -126,7 +126,7 @@ const clePicFun = ( actStoObj ) => { // What: Clear Picker Function. Why: A disp
  *
  * @example
  * ```ts
- * cleTasFun( actStoObj ) // => void
+ * cleTasFun(actStoObj) // => void
  * ```
  *
 */
@@ -162,7 +162,7 @@ const cleTasFun = ( actStoObj ) => { // What: Clear Task Function. Why: A dispos
  *
  * @example
  * ```ts
- * neeCopFun( 'explore_pickers' ) // => true
+ * neeCopFun('explore_pickers') // => true
  * ```
  *
 */
@@ -195,7 +195,7 @@ const neeCopFun = ( pagIdeStr ) => pagIdeStr === 'explore_pickers' || pagIdeStr 
  *
  * @example
  * ```ts
- * seePicFun( staAppObj, actStoObj ) // => void
+ * seePicFun(staAppObj, actStoObj) // => void
  * ```
  *
 */
@@ -262,7 +262,7 @@ const seePicFun = ( staAppObj, actStoObj ) => { // What: Seed Picker Function. W
  *
  * @example
  * ```ts
- * seeTasFun( staAppObj, actStoObj ) // => void
+ * seeTasFun(staAppObj, actStoObj) // => void
  * ```
  *
 */

@@ -63,7 +63,7 @@ import { uniNamFun   } from '../utils/format.js'; // What: Unique Name Function.
  *
  * @example
  * ```ts
- * buiIteFun( curPicObj, sibIteArr, 'New item' ) // => newIteObj
+ * buiIteFun(curPicObj, sibIteArr, 'New item') // => newIteObj
  * ```
  *
 */
@@ -147,7 +147,7 @@ function buiIteFun ( curPicObj, sibIteArr, newNamStr, optIdeStr ) {
  *
  * @example
  * ```ts
- * modDefFun( 'ease-up', 100 ) // => { easeMax, easeMin, value, weight }
+ * modDefFun('ease-up', 100) // => { easeMax, easeMin, value, weight }
  * ```
  *
 */

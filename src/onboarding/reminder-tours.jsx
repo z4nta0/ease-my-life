@@ -268,7 +268,7 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
  *
  * @example
  * ```ts
- * buiAddFun( varKeyStr, staAppObj ) // => step object
+ * buiAddFun(varKeyStr, staAppObj) // => step object
  * ```
  *
 */
@@ -351,7 +351,7 @@ const buiAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why
  *
  * @example
  * ```ts
- * buiFreFun( draRepStr ) // => step object
+ * buiFreFun(draRepStr) // => step object
  * ```
  *
 */
@@ -407,7 +407,7 @@ const buiFreFun = ( repValStr ) => { // What: Build Frequency Function. Why: Ste
  *
  * @example
  * ```ts
- * buiSubFun( 'once' ) // => step object
+ * buiSubFun('once') // => step object
  * ```
  *
 */
@@ -518,7 +518,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 	 *
 	 * @example
 	 * ```ts
-	 * cloTouFun( 'finished' ) // => void
+	 * cloTouFun('finished') // => void
 	 * ```
 	 *
 	*/

@@ -158,7 +158,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 	 *
 	 * @example
 	 * ```ts
-	 * setSooFun( 3 ) // => void
+	 * setSooFun(3) // => void
 	 * ```
 	 *
 	*/
@@ -202,7 +202,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 	 *
 	 * @example
 	 * ```ts
-	 * setLatFun( 7 ) // => void
+	 * setLatFun(7) // => void
 	 * ```
 	 *
 	*/

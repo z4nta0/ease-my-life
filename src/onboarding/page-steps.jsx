@@ -724,7 +724,7 @@ const canRenFun = () => { // What: Cancel Rename Function. Why: A Back out of th
  *
  * @example
  * ```ts
- * forNamFun( actStoObj ) // => void
+ * forNamFun(actStoObj) // => void
  * ```
  *
 */
@@ -767,7 +767,7 @@ const forNamFun = ( actStoObj ) => { // What: Force Name Function. Why: A click 
  *
  * @example
  * ```ts
- * buiTesFun( 'explore_today', actStoObj ) // => [ step, ... ]
+ * buiTesFun('explore_today', actStoObj) // => [ step, ... ]
  * ```
  *
 */
@@ -1352,7 +1352,7 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
  *
  * @example
  * ```ts
- * buiTs1Fun( 'picker', seeRunFun, 'Next', 'Pickers' ) // => step object
+ * buiTs1Fun('picker', seeRunFun, 'Next', 'Pickers') // => step object
  * ```
  *
 */

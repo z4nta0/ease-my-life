@@ -72,7 +72,7 @@ import { rhyPxlFun } from '../utils/rhythm.js'; // What: Rhythm Pixel Function. 
  *
  * @example
  * ```ts
- * plaTipFun( tarRecObj, tipWidNum, tipHeiNum ) // => placement
+ * plaTipFun(tarRecObj, tipWidNum, tipHeiNum) // => placement
  * ```
  *
 */

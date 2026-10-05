@@ -45,7 +45,7 @@
  *
  * @example
  * ```ts
- * motEasFun( 'dec' ) // => 'cubic-bezier( .2, .7, .3, 1 )'
+ * motEasFun('dec') // => 'cubic-bezier( .2, .7, .3, 1 )'
  * ```
  *
 */

@@ -585,7 +585,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 	 *
 	 * @example
 	 * ```ts
-	 * delAniFun( conIdeStr ) // => void
+	 * delAniFun(conIdeStr) // => void
 	 * ```
 	 *
 	*/
@@ -644,7 +644,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 	 *
 	 * @example
 	 * ```ts
-	 * savAniFun( finNamStr ) // => void
+	 * savAniFun(finNamStr) // => void
 	 * ```
 	 *
 	*/

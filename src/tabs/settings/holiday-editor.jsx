@@ -105,7 +105,7 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 	 *
 	 * @example
 	 * ```ts
-	 * rmvExiFun( cusIdeStr ) // => void
+	 * rmvExiFun(cusIdeStr) // => void
 	 * ```
 	 *
 	*/

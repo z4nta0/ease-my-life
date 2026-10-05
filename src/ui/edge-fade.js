@@ -47,7 +47,7 @@
  *
  * @example
  * ```ts
- * togFadFun( raiCurEle ) // => void
+ * togFadFun(raiCurEle) // => void
  * ```
  *
 */

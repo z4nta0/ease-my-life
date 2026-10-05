@@ -73,7 +73,7 @@ const CHR_PRI_OBJ = { '[data-element-name-hook~="appTabNav"]' : 2, '[data-elemen
  *
  * @example
  * ```ts
- * cliHorFun( tarRecObj, tarDomEle ) // => clipped rect, or null
+ * cliHorFun(tarRecObj, tarDomEle) // => clipped rect, or null
  * ```
  *
 */
@@ -163,7 +163,7 @@ function cliHorFun ( tarRecObj, tarDomEle ) {
  *
  * @example
  * ```ts
- * finTarFun( selLisStr ) // => matched elements, or []
+ * finTarFun(selLisStr) // => matched elements, or []
  * ```
  *
 */
@@ -226,7 +226,7 @@ function finTarFun ( selLisStr ) {
  *
  * @example
  * ```ts
- * uniRecFun( tarEleArr ) // => union rect
+ * uniRecFun(tarEleArr) // => union rect
  * ```
  *
 */
@@ -318,7 +318,7 @@ function uniRecFun ( tarEleArr ) {
  *
  * @example
  * ```ts
- * cliChrFun( tarRecObj, chrIteArr, tarEleArr ) // => clipped rect, or null
+ * cliChrFun(tarRecObj, chrIteArr, tarEleArr) // => clipped rect, or null
  * ```
  *
 */
@@ -452,7 +452,7 @@ function cliChrFun ( tarRecObj, chrIteArr, tarEleArr ) {
  *
  * @example
  * ```ts
- * claPadFun( tarRecObj, padHorNum, padVerNum, ... ) // => padding
+ * claPadFun(tarRecObj, padHorNum, padVerNum, ...) // => padding
  * ```
  *
 */
@@ -533,7 +533,7 @@ function claPadFun ( tarRecObj, padHorNum, padVerNum, chrIteArr, tarEleArr ) {
  *
  * @example
  * ```ts
- * detEdgFun( chrRecObj ) // => 'top' | 'bottom' | 'left' | 'right'
+ * detEdgFun(chrRecObj) // => 'top' | 'bottom' | 'left' | 'right'
  * ```
  *
 */
@@ -602,7 +602,7 @@ function detEdgFun ( chrRecObj ) {
  *
  * @example
  * ```ts
- * badRecFun( tarRecObj, cenBadBoo ) // => badge rect
+ * badRecFun(tarRecObj, cenBadBoo) // => badge rect
  * ```
  *
 */
@@ -705,7 +705,7 @@ function badRecFun ( tarRecObj, cenBadBoo ) {
  *
  * @example
  * ```ts
- * shaRadFun( tarDomEle, padWidNum, padHeiNum, shaOveStr ) // => radii
+ * shaRadFun(tarDomEle, padWidNum, padHeiNum, shaOveStr) // => radii
  * ```
  *
 */

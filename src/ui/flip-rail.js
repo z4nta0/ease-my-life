@@ -68,7 +68,7 @@ import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function.
  *
  * @example
  * ```ts
- * useFliRaiFun( raiNodRef, trgKeyStr ) // => void
+ * useFliRaiFun(raiNodRef, trgKeyStr) // => void
  * ```
  *
 */

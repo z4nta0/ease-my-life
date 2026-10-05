@@ -223,7 +223,7 @@ const TYP_MET_ARR = [ // What: Type Meta Array. Why: This defines the one-time v
  *
  * @example
  * ```ts
- * couLevFun( 6 ) // => 4
+ * couLevFun(6) // => 4
  * ```
  *
 */
@@ -261,7 +261,7 @@ function couLevFun ( donCouNum ) {
  *
  * @example
  * ```ts
- * relWheFun( '2026-09-01T12:00:00.000Z' ) // => 'Tue, Sep 1'
+ * relWheFun('2026-09-01T12:00:00.000Z') // => 'Tue, Sep 1'
  * ```
  *
 */

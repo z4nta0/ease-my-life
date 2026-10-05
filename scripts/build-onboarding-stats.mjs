@@ -210,7 +210,7 @@ const isoIndFun = ( isoDayStr ) => { // What: Iso Index Function. Why: Day offse
  *
  * @example
  * ```ts
- * conLogFun( hisRowArr, todIndNum ) // => [ { daysAgo, done, group, h, ... } ]
+ * conLogFun(hisRowArr, todIndNum) // => [ { daysAgo, done, group, h, ... } ]
  * ```
  *
 */
@@ -268,7 +268,7 @@ const conLogFun = ( hisRowArr, todIndNum ) => hisRowArr.map( ( curRowObj ) => { 
  *
  * @example
  * ```ts
- * buiRemFun( todDatObj ) // => { remLogArr, remSkiArr }
+ * buiRemFun(todDatObj) // => { remLogArr, remSkiArr }
  * ```
  *
 */
@@ -434,7 +434,7 @@ const forKeyFun = ( keyOneStr, keyTwoStr ) => keyOneStr.toLowerCase().localeComp
  *
  * @example
  * ```ts
- * forArrFun( outPicArr, ',', '// What: Pick Log. ...' ) // => '[ // What: ...'
+ * forArrFun(outPicArr, ',', '// What: Pick Log. ...') // => '[ // What: ...'
  * ```
  *
 */
@@ -509,7 +509,7 @@ const forArrFun = ( rowArrAny, traTexStr, comTexStr ) => { // What: Format Array
  *
  * @example
  * ```ts
- * buiOutFun( outDatObj ) // => '\n\n\n/**\n * onboarding-stats-data.js = ...'
+ * buiOutFun(outDatObj) // => '\n\n\n/**\n * onboarding-stats-data.js = ...'
  * ```
  *
 */

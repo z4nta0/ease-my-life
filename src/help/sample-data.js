@@ -226,7 +226,7 @@ const helIdeFun = ( rawIdeStr ) => `hlp_${ rawIdeStr }`; // What: Help Identifie
  *
  * @example
  * ```ts
- * clePicFun( actStoObj ) // => void
+ * clePicFun(actStoObj) // => void
  * ```
  *
 */
@@ -266,7 +266,7 @@ const clePicFun = ( actStoObj ) => { // What: Clear Pickers Function. Why: Every
  *
  * @example
  * ```ts
- * cleTasFun( actStoObj ) // => void
+ * cleTasFun(actStoObj) // => void
  * ```
  *
 */
@@ -306,7 +306,7 @@ const cleTasFun = ( actStoObj ) => { // What: Clear Tasks Function. Why: Every r
  *
  * @example
  * ```ts
- * sedPicFun( staAppObj, actStoObj ) // => void
+ * sedPicFun(staAppObj, actStoObj) // => void
  * ```
  *
 */
@@ -384,7 +384,7 @@ const sedPicFun = ( staAppObj, actStoObj ) => { // What: Seed Pickers Function. 
  *
  * @example
  * ```ts
- * sedTasFun( staAppObj, actStoObj ) // => void
+ * sedTasFun(staAppObj, actStoObj) // => void
  * ```
  *
 */

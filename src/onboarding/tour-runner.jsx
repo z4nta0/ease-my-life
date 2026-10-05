@@ -80,7 +80,7 @@ const COA_HEI_NUM = 220; // What: Coach Height Number. Why: This is a conservati
  *
  * @example
  * ```ts
- * arrHorFun( curRecObj, coaLefNum, coaWidNum ) // => 142
+ * arrHorFun(curRecObj, coaLefNum, coaWidNum) // => 142
  * ```
  *
 */
@@ -174,7 +174,7 @@ const safBotFun = () => { // What: Safe Bottom Function. Why: A bottom-anchored 
  *
  * @example
  * ```ts
- * safTopFun( { forCoaBoo : true } ) // => 0
+ * safTopFun({ forCoaBoo : true }) // => 0
  * ```
  *
 */
@@ -253,7 +253,7 @@ const safTopFun = ( { forCoaBoo } = {} ) => { // What: Safe Top Function. Why: E
  *
  * @example
  * ```ts
- * coaLayFun( curRecObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum )
+ * coaLayFun(curRecObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum)
  * // => { arrStr, left, top }
  * ```
  *
@@ -303,7 +303,7 @@ const coaLayFun = ( curRecObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ) => {
  *
  * @example
  * ```ts
- * coaWidFun( 1440 ) // => about 272.6 at an 11px root font size
+ * coaWidFun(1440) // => about 272.6 at an 11px root font size
  * ```
  *
 */
@@ -338,7 +338,7 @@ const coaWidFun = ( vieWidNum ) => Math.min( rhyPxlFun( 'p10' ) + ( rhyPxlFun( '
  *
  * @example
  * ```ts
- * todTopFun( actIdeStr, selTabFun ) // => void
+ * todTopFun(actIdeStr, selTabFun) // => void
  * ```
  *
 */
@@ -751,7 +751,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 *
 	 * @example
 	 * ```ts
-	 * finTarFun( curSteObj.selStr ) // => [ curIteEle, ... ]
+	 * finTarFun(curSteObj.selStr) // => [ curIteEle, ... ]
 	 * ```
 	 *
 	*/
@@ -818,7 +818,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 *
 	 * @example
 	 * ```ts
-	 * cliHorFun( curIteEle.getBoundingClientRect(), curIteEle ) // => rect
+	 * cliHorFun(curIteEle.getBoundingClientRect(), curIteEle) // => rect
 	 * ```
 	 *
 	*/
@@ -909,7 +909,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 *
 	 * @example
 	 * ```ts
-	 * uniRecFun( curEleArr ) // => rect
+	 * uniRecFun(curEleArr) // => rect
 	 * ```
 	 *
 	*/
@@ -1014,7 +1014,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 *
 	 * @example
 	 * ```ts
-	 * isaPasFun( cliEveObj ) // => false
+	 * isaPasFun(cliEveObj) // => false
 	 * ```
 	 *
 	*/
@@ -1057,7 +1057,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 *
 	 * @example
 	 * ```ts
-	 * isaOffFun( cliEveObj ) // => true
+	 * isaOffFun(cliEveObj) // => true
 	 * ```
 	 *
 	*/
@@ -1547,7 +1547,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		 * @example
 		 * ```ts
-		 * getScrFun( curEleArr[ 0 ] ) // => scroller element
+		 * getScrFun(curEleArr[ 0 ]) // => scroller element
 		 * ```
 		 *
 		*/
@@ -1606,7 +1606,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		 * @example
 		 * ```ts
-		 * scrAmoFun( curScrEle, 120 ) // => void
+		 * scrAmoFun(curScrEle, 120) // => void
 		 * ```
 		 *
 		*/
@@ -1839,7 +1839,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		 * @example
 		 * ```ts
-		 * claChrFun( uniRecFun( curEleArr ), curEleArr ) // => rect
+		 * claChrFun(uniRecFun(curEleArr), curEleArr) // => rect
 		 * ```
 		 *
 		*/
@@ -1890,7 +1890,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		 * @example
 		 * ```ts
-		 * claHorFun( claChrFun( uniRecFun( curEleArr ), curEleArr ) ) // => rect
+		 * claHorFun(claChrFun(uniRecFun(curEleArr), curEleArr)) // => rect
 		 * ```
 		 *
 		*/
@@ -1936,7 +1936,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		 * @example
 		 * ```ts
-		 * plaTarFun( curEleArr ) // => rect
+		 * plaTarFun(curEleArr) // => rect
 		 * ```
 		 *
 		*/
@@ -2024,7 +2024,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		 * @example
 		 * ```ts
-		 * decResFun( curEleArr ) // => void
+		 * decResFun(curEleArr) // => void
 		 * ```
 		 *
 		*/

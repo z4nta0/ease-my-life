@@ -438,7 +438,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @example
 	 * ```ts
-	 * pagColFun( rawValStr ) // => message or null
+	 * pagColFun(rawValStr) // => message or null
 	 * ```
 	 *
 	*/
@@ -1046,7 +1046,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @example
 	 * ```ts
-	 * hanCheFun( entRecObj ) // => void
+	 * hanCheFun(entRecObj) // => void
 	 * ```
 	 *
 	*/
@@ -1115,7 +1115,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @example
 	 * ```ts
-	 * hanSkiFun( entIdeStr ) // => void
+	 * hanSkiFun(entIdeStr) // => void
 	 * ```
 	 *
 	*/
@@ -1166,7 +1166,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @example
 	 * ```ts
-	 * hanDelFun( entIdeStr, iteIdeStr ) // => void
+	 * hanDelFun(entIdeStr, iteIdeStr) // => void
 	 * ```
 	 *
 	*/
@@ -1255,7 +1255,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @example
 	 * ```ts
-	 * hanRerFun( entRecObj, picRecObj ) // => void
+	 * hanRerFun(entRecObj, picRecObj) // => void
 	 * ```
 	 *
 	*/
@@ -1717,7 +1717,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @example
 	 * ```ts
-	 * reqRenFun( oldNamStr, rawNewStr ) // => void
+	 * reqRenFun(oldNamStr, rawNewStr) // => void
 	 * ```
 	 *
 	*/
@@ -1830,7 +1830,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @example
 	 * ```ts
-	 * groDraFun( poiEveObj ) // => void
+	 * groDraFun(poiEveObj) // => void
 	 * ```
 	 *
 	*/
@@ -1900,7 +1900,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @example
 	 * ```ts
-	 * iteDraFun( poiEveObj, curGroObj ) // => void
+	 * iteDraFun(poiEveObj, curGroObj) // => void
 	 * ```
 	 *
 	*/
@@ -1990,7 +1990,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @example
 	 * ```ts
-	 * genLisFun( { autBoo : true } ) // => Promise<void>
+	 * genLisFun({ autBoo : true }) // => Promise<void>
 	 * ```
 	 *
 	*/
@@ -2955,7 +2955,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @example
 	 * ```ts
-	 * staTouFun( 'pageTour', touIdeStr ) // => void
+	 * staTouFun('pageTour', touIdeStr) // => void
 	 * ```
 	 *
 	*/

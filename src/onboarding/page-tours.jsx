@@ -248,7 +248,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 	 *
 	 * @example
 	 * ```ts
-	 * cloTouFun( 'finished' ) // => void
+	 * cloTouFun('finished') // => void
 	 * ```
 	 *
 	*/

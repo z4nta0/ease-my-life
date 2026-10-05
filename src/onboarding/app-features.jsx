@@ -318,7 +318,7 @@ const TIP_STE_OBJ = { // What: Tip Step Object. Why: FeaTipCom's own GuiTouCom n
  *
  * @example
  * ```ts
- * bloReaFun( feaIdeStr, staAppObj )
+ * bloReaFun(feaIdeStr, staAppObj)
  * // => a blocked-reason string, or null
  * ```
  *
@@ -376,7 +376,7 @@ function bloReaFun ( feaIdeStr, staAppObj ) {
  *
  * @example
  * ```ts
- * buiTesFun( 'feat_edit_item', actStoObj, false ) // => [ step, ... ]
+ * buiTesFun('feat_edit_item', actStoObj, false) // => [ step, ... ]
  * ```
  *
 */
@@ -1040,7 +1040,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 	 *
 	 * @example
 	 * ```ts
-	 * cloTouFun( 'finished' ) // => void
+	 * cloTouFun('finished') // => void
 	 * ```
 	 *
 	*/

@@ -154,7 +154,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 	 *
 	 * @example
 	 * ```ts
-	 * aftExiFun( rerActFun ) // => void
+	 * aftExiFun(rerActFun) // => void
 	 * ```
 	 *
 	*/
@@ -277,7 +277,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 	 *
 	 * @example
 	 * ```ts
-	 * senIteFun( iteIdeStr ) // => void
+	 * senIteFun(iteIdeStr) // => void
 	 * ```
 	 *
 	*/
@@ -348,7 +348,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 	 *
 	 * @example
 	 * ```ts
-	 * cmtDraFun( draIteObj ) // => void
+	 * cmtDraFun(draIteObj) // => void
 	 * ```
 	 *
 	*/
@@ -518,7 +518,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 	 *
 	 * @example
 	 * ```ts
-	 * opeEdiFun( tarIdeStr ) // => void
+	 * opeEdiFun(tarIdeStr) // => void
 	 * ```
 	 *
 	*/
@@ -586,7 +586,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 	 *
 	 * @example
 	 * ```ts
-	 * staEdiFun( tarIdeStr ) // => void
+	 * staEdiFun(tarIdeStr) // => void
 	 * ```
 	 *
 	*/

@@ -42,7 +42,7 @@
  *
  * @example
  * ```ts
- * splSelFun( ':is(a, b), c' ) // => [ ':is(a, b)', 'c' ]
+ * splSelFun(':is(a, b), c') // => [ ':is(a, b)', 'c' ]
  * ```
  *
 */

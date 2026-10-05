@@ -581,7 +581,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	 *
 	 * @example
 	 * ```ts
-	 * delPicFun( picIdeStr ) // => void
+	 * delPicFun(picIdeStr) // => void
 	 * ```
 	 *
 	*/
@@ -657,7 +657,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	 *
 	 * @example
 	 * ```ts
-	 * patNewFun( { mode : 'ease-up' } ) // => void
+	 * patNewFun({ mode : 'ease-up' }) // => void
 	 * ```
 	 *
 	*/
@@ -810,7 +810,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	 *
 	 * @example
 	 * ```ts
-	 * savNewFun( picArgObj, filAllBoo ) // => void
+	 * savNewFun(picArgObj, filAllBoo) // => void
 	 * ```
 	 *
 	*/

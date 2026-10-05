@@ -59,7 +59,7 @@ import React from 'react'; // What: React. Why: The draft is held in React state
  *
  * @example
  * ```ts
- * useRcdDraFun( curTasObj ) // => { draRcdObj, oriRcdObj, patDraFun }
+ * useRcdDraFun(curTasObj) // => { draRcdObj, oriRcdObj, patDraFun }
  * ```
  *
 */
@@ -126,7 +126,7 @@ function useRcdDraFun ( rcdDatObj ) {
  *
  * @example
  * ```ts
- * useIteDraFun( actStoObj, curIteObj ) // => { comDraFun, draIteObj, ... }
+ * useIteDraFun(actStoObj, curIteObj) // => { comDraFun, draIteObj, ... }
  * ```
  *
 */
@@ -233,7 +233,7 @@ function useIteDraFun ( tarActObj, iteDatObj ) {
  *
  * @example
  * ```ts
- * useTasDraFun( actStoObj, curTasObj ) // => { comDraFun, draTasObj, ... }
+ * useTasDraFun(actStoObj, curTasObj) // => { comDraFun, draTasObj, ... }
  * ```
  *
 */

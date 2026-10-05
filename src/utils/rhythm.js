@@ -61,7 +61,7 @@ const steOffFun = ( steNamStr ) => steNamStr === 'bas' ? 0 : ( steNamStr[ 0 ] ==
  *
  * @example
  * ```ts
- * durMilFun( 'p04' ) // => about 486
+ * durMilFun('p04') // => about 486
  * ```
  *
 */
@@ -94,7 +94,7 @@ const durMilFun = ( durSteStr ) => Math.pow( COR_DES_NUM, 18 + steOffFun( durSte
  *
  * @example
  * ```ts
- * rhyPxlFun( 'bas' ) // => about 14.57 at an 11px root font size
+ * rhyPxlFun('bas') // => about 14.57 at an 11px root font size
  * ```
  *
 */

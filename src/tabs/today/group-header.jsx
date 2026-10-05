@@ -190,7 +190,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 	 *
 	 * @example
 	 * ```ts
-	 * finCloFun( chaValBoo, newValStr ) // => void
+	 * finCloFun(chaValBoo, newValStr) // => void
 	 * ```
 	 *
 	*/

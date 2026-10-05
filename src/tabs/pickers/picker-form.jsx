@@ -279,7 +279,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	 * @example
 	 * ```ts
-	 * raiCalFun( raiCurEle ) // => void
+	 * raiCalFun(raiCurEle) // => void
 	 * ```
 	 *
 	*/
@@ -735,7 +735,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	 * @example
 	 * ```ts
-	 * opeDraFun( tarIdeStr ) // => void
+	 * opeDraFun(tarIdeStr) // => void
 	 * ```
 	 *
 	*/
@@ -805,7 +805,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	 * @example
 	 * ```ts
-	 * staDraFun( tarIdeStr ) // => void
+	 * staDraFun(tarIdeStr) // => void
 	 * ```
 	 *
 	*/

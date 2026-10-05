@@ -588,7 +588,7 @@ const WEI_STE_OBJ = { // What: Weight Step Object. Why: This step highlights the
  *
  * @example
  * ```ts
- * buiAddFun( picIdeStr ) // => step object
+ * buiAddFun(picIdeStr) // => step object
  * ```
  *
 */
@@ -652,7 +652,7 @@ const buiAddFun = ( picIdeStr ) => ({ // What: Build Add Function. Why: This bui
  *
  * @example
  * ```ts
- * buiLatFun( picIdeStr ) // => step object
+ * buiLatFun(picIdeStr) // => step object
  * ```
  *
 */
@@ -708,7 +708,7 @@ const buiLatFun = ( picIdeStr ) => ({ // What: Build Latest Function. Why: This 
  *
  * @example
  * ```ts
- * buiModFun( picIdeStr ) // => step object
+ * buiModFun(picIdeStr) // => step object
  * ```
  *
 */
@@ -753,7 +753,7 @@ const buiModFun = ( picIdeStr ) => ({ // What: Build Mode Function. Why: This bu
  *
  * @example
  * ```ts
- * buiNamFun( picIdeStr ) // => step object
+ * buiNamFun(picIdeStr) // => step object
  * ```
  *
 */
@@ -821,7 +821,7 @@ const buiNamFun = ( picIdeStr ) => ({ // What: Build Name Function. Why: This bu
  *
  * @example
  * ```ts
- * buiNewFun( picIdeStr, staAppObj ) // => step object
+ * buiNewFun(picIdeStr, staAppObj) // => step object
  * ```
  *
 */
@@ -895,7 +895,7 @@ const buiNewFun = ( picIdeStr, staAppObj ) => ({ // What: Build New Function. Wh
  *
  * @example
  * ```ts
- * buiSooFun( picIdeStr ) // => step object
+ * buiSooFun(picIdeStr) // => step object
  * ```
  *
 */
@@ -1022,7 +1022,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 	 *
 	 * @example
 	 * ```ts
-	 * cloTouFun( 'finished' ) // => void
+	 * cloTouFun('finished') // => void
 	 * ```
 	 *
 	*/

@@ -130,7 +130,7 @@ const SET_SEC_ARR = [ // What: Settings Section Array. Why: This drives both the
  *
  * @example
  * ```ts
- * forRunFun( '04:00' ) // => '4:00 AM'
+ * forRunFun('04:00') // => '4:00 AM'
  * ```
  *
 */
@@ -239,7 +239,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	 *
 	 * @example
 	 * ```ts
-	 * plaCelFun( 'confetti' ) // => void
+	 * plaCelFun('confetti') // => void
 	 * ```
 	 *
 	*/
@@ -275,7 +275,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	 *
 	 * @example
 	 * ```ts
-	 * plaPicFun( 'reel' ) // => void
+	 * plaPicFun('reel') // => void
 	 * ```
 	 *
 	*/

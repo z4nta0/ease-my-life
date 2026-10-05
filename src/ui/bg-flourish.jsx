@@ -404,7 +404,7 @@ function bloAroFun ( bloGriArr, rowIndNum, colIndNum, heiSpaNum, widSpaNum ) {
  *
  * @example
  * ```ts
- * plaGriFun( colCouNum, rowCouNum ) // => array of placements
+ * plaGriFun(colCouNum, rowCouNum) // => array of placements
  * ```
  *
 */
