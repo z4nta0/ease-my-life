@@ -1075,7 +1075,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return () => cleFunArr.forEach( ( cleCurFun ) => cleCurFun() ); // What: Effect Cleanup Return. Why: Every row's own individual cleanup must actually run. How: This calls every function collected in cleFunArr.
 
 
-	}, [ allPicArr.length, filGroStr, filTypStr, exiModArr.length, visPicArr.length, curScoStr, conIteArr.length, filConStr ] ); // What: Effect Dependency Array. Why: Any of these changing can add, remove, or resize a row, which can change whether it overflows at all. How: Each value independently affects one or more of the 4 rows' own layout.
+	}, [ allPicArr.length, filGroStr, filTypStr, exiModArr.length, visPicArr.length, curScoStr, conIteArr.length, filConStr ] ); // What: Effect Dependency Array. Why: Any of these changing can add, remove, or resize a row, which can change whether it overflows at all. How: allPicArr.length changes how many groups the Group row holds, filGroStr and filTypStr change which pickers the Show row lists, exiModArr.length decides whether the Type row exists and how many pills it holds, visPicArr.length changes the Show row's pill count, curScoStr moves the Show row's selection, conIteArr.length mounts or unmounts the Conditionals row and its Type pill, and filConStr moves the Conditionals row's selection.
 
 	// #endregion Filter Rows
 
@@ -1221,7 +1221,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return colEntArr.sort( ( entOneObj, entTwoObj ) => sorEntFun( entOneObj, entTwoObj, secSorStr ) ); // What: Entry Array Return. Why: The rendered list needs to actually be in secSorStr's own order. How: This sorts colEntArr via sorEntFun.
 
 
-	}, [ shoConBoo, shoRemBoo, shoPicArr, picSecMap, conIteArr.length, remCouNum, secSorStr ] ); // What: Memo Dependency Array. Why: Any of these changing can add, remove, or reorder a section. How: Each value independently affects the entry list or its own sort order.
+	}, [ shoConBoo, shoRemBoo, shoPicArr, picSecMap, conIteArr.length, remCouNum, secSorStr ] ); // What: Memo Dependency Array. Why: Any of these changing can add, remove, or reorder a section. How: shoConBoo and shoRemBoo add or drop the Conditionals and Reminders sections, shoPicArr changes which picker sections exist, picSecMap changes each picker section's count and active state, conIteArr.length and remCouNum change the other two sections' counts, and secSorStr changes the sort order itself.
 
 
 	const draEntObj = newPicObj ? { draBoo : true, kinStr : 'picker', picObj : newPicObj } : null; // What: Draft Entry Object. Why: The draft card is deliberately NOT part of secEntArr/its sort, so it always renders last regardless of sort order and never shows up filtered out by an unrelated group/type/conditional filter. How: This is null unless a real draft picker exists.

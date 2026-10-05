@@ -1267,7 +1267,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		todTopFun( actIdeStr, selTabFun ); // What: Today Landing. Why: A finished tour should always end on a pristine Today, regardless of which tab/scroll position its last step left things in. How: This calls the shared todTopFun helper with the current actIdeStr tab and selTabFun.
 
 
-	}, [ onFinTouFun, actIdeStr, selTabFun ] ); // What: Effect Dependency Array. Why: This callback must re-close over a fresh onFinTouFun whenever the prop itself changes, and over fresh actIdeStr/selTabFun so the landing logic always targets the current tab state. How: onFinTouFun is the completion hook being called, actIdeStr is read to decide whether a tab switch is needed, and selTabFun is the function that performs it.
+	}, [ onFinTouFun, actIdeStr, selTabFun ] ); // What: Callback Dependency Array. Why: This callback must re-close over a fresh onFinTouFun whenever the prop itself changes, and over fresh actIdeStr/selTabFun so the landing logic always targets the current tab state. How: onFinTouFun is the completion hook being called, actIdeStr is read to decide whether a tab switch is needed, and selTabFun is the function that performs it.
 
 	// #endregion finTouFun
 

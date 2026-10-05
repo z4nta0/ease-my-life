@@ -736,7 +736,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return isoDayFun( cutDatObj ); // What: Cutoff Iso Return. Why: Every comparison against this cutoff elsewhere compares against a plain date string, not a Date object. How: This converts cutDatObj via the shared isoDayFun helper.
 
 
-	}, [ ranDefObj, todDatObj ] ); // What: Effect Dependency Array. Why: The cutoff only ever needs recomputing when the active range definition or today's own date changes. How: ranDefObj changes the day-count subtracted, todDatObj changes the date it's subtracted from.
+	}, [ ranDefObj, todDatObj ] ); // What: Memo Dependency Array. Why: The cutoff only ever needs recomputing when the active range definition or today's own date changes. How: ranDefObj changes the day-count subtracted, todDatObj changes the date it's subtracted from.
 
 
 
@@ -750,7 +750,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		new Set( picLisArr.filter( ( picCurObj ) => picCurObj.hidden ).map( ( picCurObj ) => picCurObj.id ) ) // What: Hidden Picker Id Set. Why: This is the finished lookup. How: This keeps hidden pickers, maps them to ids, and wraps the ids in a Set.
 
 
-	), [ picLisArr ] ); // What: Effect Dependency Array. Why: This set only ever needs rebuilding when the picker list itself changes. How: picLisArr is the sole source the filter/map above reads from.
+	), [ picLisArr ] ); // What: Memo Dependency Array. Why: This set only ever needs rebuilding when the picker list itself changes. How: picLisArr is the sole source the filter/map above reads from.
 
 
 	const hidTasSet = React.useMemo( () => ( // What: Hidden Task Set Memo. Why: Excluding a hidden reminder task's own rows from every reminder rollup needs the same fast id lookup. How: This collects every task flagged hidden into a Set of ids.
@@ -759,7 +759,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		new Set( ( staAppObj.tasks || [] ).filter( ( tasCurObj ) => tasCurObj.hidden ).map( ( tasCurObj ) => tasCurObj.id ) ) // What: Hidden Task Id Set. Why: This is the finished lookup. How: This keeps hidden tasks, maps them to ids, and wraps the ids in a Set.
 
 
-	), [ staAppObj.tasks ] ); // What: Effect Dependency Array. Why: This set only ever needs rebuilding when the persisted task list itself changes. How: staAppObj.tasks is the sole source the filter/map above reads from.
+	), [ staAppObj.tasks ] ); // What: Memo Dependency Array. Why: This set only ever needs rebuilding when the persisted task list itself changes. How: staAppObj.tasks is the sole source the filter/map above reads from.
 
 
 
@@ -904,7 +904,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return outConArr; // What: Conditional Stats Return. Why: This is the finished, per-conditional summary the headline numbers and breakdown list both read from. How: This returns the ordered array built above.
 
 
-	}, [ conDefArr, conLogArr, cutIsoStr ] ); // What: Effect Dependency Array. Why: The whole summary only ever needs recomputing when the live definitions, the trigger log, or the active range's own cutoff changes. How: conDefArr seeds live rows, conLogArr supplies the history folded in, cutIsoStr bounds which rows count.
+	}, [ conDefArr, conLogArr, cutIsoStr ] ); // What: Memo Dependency Array. Why: The whole summary only ever needs recomputing when the live definitions, the trigger log, or the active range's own cutoff changes. How: conDefArr seeds live rows, conLogArr supplies the history folded in, cutIsoStr bounds which rows count.
 
 
 	const conTotObj = React.useMemo( () => { // What: Conditional Totals Object Memo. Why: The Conditionals headline cards need one combined totNum/firNum/ratNum/lasStr across every conditional, not per-conditional detail. How: This reduces conStaArr into those four combined fields.
@@ -928,7 +928,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		};
 
 
-	}, [ conStaArr ] ); // What: Effect Dependency Array. Why: The combined totals only ever need recomputing when the per-conditional stats array itself changes. How: conStaArr is the sole source every reduce above reads from.
+	}, [ conStaArr ] ); // What: Memo Dependency Array. Why: The combined totals only ever need recomputing when the per-conditional stats array itself changes. How: conStaArr is the sole source every reduce above reads from.
 
 
 	const conBreArr = React.useMemo( () => { // What: Conditional Breakdown Array Memo. Why: The Conditionals breakdown card needs conStaArr resorted by whichever metric pill is currently active. How: This picks a comparable value per conMetStr, then sorts with nulls always sinking to the bottom. // Conditionals breakdown list, sorted by the active metric. A null metric value (no rate / no interval / never fired) always sinks to the bottom regardless of sort direction.
@@ -974,7 +974,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		} );
 
 
-	}, [ conStaArr, conMetStr, conSorStr ] ); // What: Effect Dependency Array. Why: The sorted list only ever needs recomputing when the underlying stats, the active metric, or the sort direction changes. How: conStaArr supplies the rows, conMetStr picks the compared field, conSorStr picks the direction.
+	}, [ conStaArr, conMetStr, conSorStr ] ); // What: Memo Dependency Array. Why: The sorted list only ever needs recomputing when the underlying stats, the active metric, or the sort direction changes. How: conStaArr supplies the rows, conMetStr picks the compared field, conSorStr picks the direction.
 
 	// #endregion Conditionals Scope Data
 
@@ -1007,7 +1007,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return seeGroArr.sort( ( groOneStr, groTwoStr ) => groOneStr.localeCompare( groTwoStr ) ); // What: Sorted Group Return. Why: The filter row's own pills should list alphabetically, not in whatever order pickers happen to be stored. How: This sorts the collected group names via localeCompare.
 
 
-	}, [ picLisArr ] ); // What: Effect Dependency Array. Why: The group list only ever needs recomputing when the live picker list itself changes. How: picLisArr is the sole source the loop above reads from.
+	}, [ picLisArr ] ); // What: Memo Dependency Array. Why: The group list only ever needs recomputing when the live picker list itself changes. How: picLisArr is the sole source the loop above reads from.
 
 
 	const [ staGroStr, setStaGroStr ] = React.useState( 'all' ); // What: Stat Group String And Setter. Why: This is the single source of truth for the active Group filter pill. How: This is read by visPicArr below and written by the Group filter row's own buttons. // staGroStr only scopes which pickers appear in the Show row below; it never filters the stats themselves. 'all' also lets the All + Reminders options show. A hidden picker (see store.js's own hidden flag) never appears here at all.
@@ -1025,7 +1025,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return [ ...seeModSet ].sort( ( modOneStr, modTwoStr ) => SED_NAM_OBJ.MOD_DEF_OBJ[ modOneStr ].labStr.localeCompare( SED_NAM_OBJ.MOD_DEF_OBJ[ modTwoStr ].labStr ) ); // What: Sorted Mode Return. Why: The Type row's own pills should list by their user-facing label, not their raw internal mode key. How: This spreads the set into an array and sorts by each mode's own SED_NAM_OBJ.MOD_DEF_OBJ label.
 
 
-	}, [ picLisArr ] ); // What: Effect Dependency Array. Why: The mode list only ever needs recomputing when the live picker list itself changes. How: picLisArr is the sole source the loop above reads from.
+	}, [ picLisArr ] ); // What: Memo Dependency Array. Why: The mode list only ever needs recomputing when the live picker list itself changes. How: picLisArr is the sole source the loop above reads from.
 
 
 	const [ typFilStr, setTypFilStr ] = React.useState( 'all' ); // What: Type Filter String And Setter. Why: This is the single source of truth for the active Type filter pill, including the Conditionals/Reminders sentinels. How: This is read by visPicArr below and written by the Type filter row's own buttons. // typFilStr also carries the Conditionals/Reminders sentinel values (moved here from staGroStr): a real picker's mode never matches either, so visPicArr naturally excludes every real picker under both, same as any other empty filter value.
@@ -1051,7 +1051,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		} )
 
 
-	), [ picLisArr, staGroStr, typFilStr ] ); // What: Effect Dependency Array. Why: The narrowed list only ever needs recomputing when the live picker list or either filter itself changes. How: picLisArr supplies the rows, staGroStr and typFilStr each gate one of the two filter checks above.
+	), [ picLisArr, staGroStr, typFilStr ] ); // What: Memo Dependency Array. Why: The narrowed list only ever needs recomputing when the live picker list or either filter itself changes. How: picLisArr supplies the rows, staGroStr and typFilStr each gate one of the two filter checks above.
 
 	// #endregion Group And Type Filters
 
@@ -1091,7 +1091,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		[ ...visPicArr ].sort( ( picOneObj, picTwoObj ) => picOneObj.name.localeCompare( picTwoObj.name ) ) // What: Name Sorted Copy. Why: The original visPicArr order must stay untouched. How: This sorts a spread copy by each picker's own name.
 
 
-	), [ visPicArr ] ); // What: Effect Dependency Array. Why: This only ever needs resorting when the visible picker list itself changes. How: visPicArr is the sole source the sort above reads from.
+	), [ visPicArr ] ); // What: Memo Dependency Array. Why: This only ever needs resorting when the visible picker list itself changes. How: visPicArr is the sole source the sort above reads from.
 
 
 	const preFilRef = React.useRef( { staGroStr, typFilStr } ); // What: Previous Filter Reference. Why: The repair effect below needs to remember the last-seen filter pair across renders to detect an actual change. How: This starts at the current filter pair and is updated by the effect below on every run. // Keep scoValStr coherent with the Group + Type filters: within a specific group and/or type, All/Reminders aren't offered, so if the current scope isn't one of the filtered pickers, fall back to the first one, alphabetically, matching the Show row. Also jumps whenever either filter itself just changed, not only once the OLD scope happens to fall out of view (e.g. switching between two groups that both happen to contain the same picker used to leave the view stranded there instead of jumping to the new filter's own first card).
@@ -1188,7 +1188,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return () => cleFunArr.forEach( ( cleCurFun ) => cleCurFun() ); // What: Effect Cleanup Return. Why: Every row's own cleanup function built above must actually run on unmount or re-run. How: This invokes each one in turn.
 
 
-	}, [ picLisArr.length, remEnaBoo, scoValStr, ranValStr, metKeyStr, remMetStr, conMetStr, isaConBoo, isaRemBoo, staGroStr, typFilStr, exiModArr.length, visPicArr.length ] ); // What: Effect Dependency Array. Why: Any change that can mount, unmount, resize, or reflow one of these rows needs this to re-attach its listeners against the current DOM nodes. How: Each dependency corresponds to a value that can change which rows exist or how wide their content is.
+	}, [ picLisArr.length, remEnaBoo, scoValStr, ranValStr, metKeyStr, remMetStr, conMetStr, isaConBoo, isaRemBoo, staGroStr, typFilStr, exiModArr.length, visPicArr.length ] ); // What: Effect Dependency Array. Why: Any change that can mount, unmount, resize, or reflow one of these rows needs this to re-attach its listeners against the current DOM nodes. How: picLisArr.length, staGroStr, typFilStr, and visPicArr.length change how many pills the Show and Group rows hold, exiModArr.length and remEnaBoo decide whether the Type row exists, scoValStr, isaConBoo, and isaRemBoo swap which scope's metric rows mount, ranValStr moves the Range row's selection, and metKeyStr, remMetStr, and conMetStr move each metric row's selection.
 
 	// #endregion Filter Row Scroll Fades
 
@@ -1221,7 +1221,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		} );
 
 
-	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Effect Dependency Array. Why: This filtered view only ever needs recomputing when the raw log, the active scope, the range cutoff, the Reminders-scope flag, or the hidden-picker set changes. How: Each dependency corresponds to one of the four filter conditions above (or the log itself).
+	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This filtered view only ever needs recomputing when the raw log, the active scope, the range cutoff, the Reminders-scope flag, or the hidden-picker set changes. How: Each dependency corresponds to one of the four filter conditions above (or the log itself).
 
 
 	const rejCouMap = React.useMemo( () => { // What: Rejected Count Map Memo. Why: The Pick breakdown's own "Re-Rolled Away" metric needs a per-item rejection count under the same scope/range rules as picRowArr. How: This walks the raw log once, counting only 'rejected'-outcome rows matching the active filters. // Per-item count of re-rolled-away (rejected) rows, range + scope aware.
@@ -1264,7 +1264,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return outMapObj; // What: Rejected Count Return. Why: This is the finished per-item map the breakdown's Re-Rolled Away column reads. How: This returns the map built above.
 
 
-	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Effect Dependency Array. Why: This map only ever needs rebuilding when the same inputs picRowArr itself depends on change. How: Each dependency gates one of the same four filter conditions.
+	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the same inputs picRowArr itself depends on change. How: Each dependency gates one of the same four filter conditions.
 
 
 	const skiCouMap = React.useMemo( () => { // What: Skipped Count Map Memo. Why: The Pick breakdown's own "Skipped" metric needs a per-item skip count under the same scope/range rules as picRowArr. How: This walks the raw log once, counting only 'skipped'-outcome rows matching the active filters. // Per-item count of skipped rows, range + scope aware.
@@ -1307,7 +1307,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return outMapObj; // What: Skipped Count Return. Why: This is the finished per-item map the breakdown's Skipped column reads. How: This returns the map built above.
 
 
-	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Effect Dependency Array. Why: This map only ever needs rebuilding when the same inputs picRowArr itself depends on change. How: Each dependency gates one of the same four filter conditions.
+	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the same inputs picRowArr itself depends on change. How: Each dependency gates one of the same four filter conditions.
 
 
 	const remRowArr = React.useMemo( () => ( // What: Reminder Row Array Memo. Why: Every reminder-shaped card below shares this one type/hidden/range-filtered view of the reminder completion log. How: This keeps only rows whose own type opts into Stats, whose own task isn't hidden, and whose own completion date is inside the active range. // Reminder rows for the active range.
@@ -1319,7 +1319,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 			.filter( ( rowCurObj ) => !cutIsoStr || isoDayFun( new Date( rowCurObj.completedAt ) ) >= cutIsoStr ) // What: Range Filter. Why: Only completions inside the active range count. How: This keeps rows completed on or after cutIsoStr, or every row with no cutoff.
 
 
-	), [ staAppObj.reminderLog, enaTypArr.join( ',' ), cutIsoStr, hidTasSet ] ); // What: Effect Dependency Array. Why: This filtered view only ever needs recomputing when the raw log, the enabled-types set, the range cutoff, or the hidden-task set changes. How: enaTypArr is joined to a stable string since a fresh array identity would otherwise re-trigger this every render.
+	), [ staAppObj.reminderLog, enaTypArr.join( ',' ), cutIsoStr, hidTasSet ] ); // What: Memo Dependency Array. Why: This filtered view only ever needs recomputing when the raw log, the enabled-types set, the range cutoff, or the hidden-task set changes. How: enaTypArr is joined to a stable string since a fresh array identity would otherwise re-trigger this every render.
 
 
 	const dayAggMap = React.useMemo( () => { // What: Day Aggregate Map Memo. Why: The heatmap, streak, and full-days count all need one shared per-day rollup, built once instead of separately per card. How: This walks either remRowArr or picRowArr (whichever scope is active) into a Map keyed by calendar day. // Per-day aggregation, one { donNum, iteArr, totNum } entry per calendar day, each iteArr entry a { donBoo, namStr } pair. A pick day counts every logged row toward totNum and only completed ones toward donNum; a reminder day counts every completion toward both.
@@ -1396,7 +1396,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return outMapObj; // What: Day Aggregate Return. Why: This is the finished per-day rollup every heatmap/streak/full-days computation below reads from. How: This returns the map built by whichever branch ran above.
 
 
-	}, [ picRowArr, remRowArr, isaRemBoo ] ); // What: Effect Dependency Array. Why: The rollup only ever needs rebuilding when the underlying pick rows, reminder rows, or which scope is active changes. How: picRowArr/remRowArr each feed one branch, isaRemBoo picks which branch runs.
+	}, [ picRowArr, remRowArr, isaRemBoo ] ); // What: Memo Dependency Array. Why: The rollup only ever needs rebuilding when the underlying pick rows, reminder rows, or which scope is active changes. How: picRowArr/remRowArr each feed one branch, isaRemBoo picks which branch runs.
 
 	// #endregion Pick And Reminder Rows
 
@@ -1452,7 +1452,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return stkCouNum; // What: Streak Count Return. Why: This is the finished consecutive-day count the headline card reads. How: This returns the accumulator built by the walk above.
 
 
-	}, [ dayAggMap, todDatObj, todIsoStr ] ); // What: Effect Dependency Array. Why: The streak only ever needs rewalking when the day aggregate, today's own date, or today's own ISO string changes. How: dayAggMap supplies the per-day data, todDatObj/todIsoStr anchor where the backward walk starts.
+	}, [ dayAggMap, todDatObj, todIsoStr ] ); // What: Memo Dependency Array. Why: The streak only ever needs rewalking when the day aggregate, today's own date, or today's own ISO string changes. How: dayAggMap supplies the per-day data, todDatObj/todIsoStr anchor where the backward walk starts.
 
 	// #endregion Headline Numbers
 
@@ -1482,7 +1482,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return outYeaArr; // What: Data Year Return. Why: This is the finished year list the pager below reads its own bounds from. How: This returns the array built above.
 
 
-	}, [ dayAggMap, todDatObj ] ); // What: Effect Dependency Array. Why: The year list only ever needs recomputing when the day aggregate or today's own date changes. How: dayAggMap supplies the earliest logged day, todDatObj supplies the current year ceiling.
+	}, [ dayAggMap, todDatObj ] ); // What: Memo Dependency Array. Why: The year list only ever needs recomputing when the day aggregate or today's own date changes. How: dayAggMap supplies the earliest logged day, todDatObj supplies the current year ceiling.
 
 
 	const yeaPagBoo = ranValStr === 'all' && datYeaArr.length > 1; // What: Year Paging Boolean. Why: The year-pager arrows should only render when "All time" is active and actually spans more than one calendar year. How: This checks both conditions together.
@@ -1553,7 +1553,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return outDayArr; // What: Heat Day Return. Why: This is the finished, gap-free day list the heatmap grid renders one cell per. How: This returns the array built by the fill loop above.
 
 
-	}, [ dayAggMap, cutIsoStr, todIsoStr, actYeaNum ] ); // What: Effect Dependency Array. Why: The grid only ever needs rebuilding when the day aggregate, the range cutoff, today's own date, or the active paged year changes. How: Each dependency feeds one part of the start/end window computed above.
+	}, [ dayAggMap, cutIsoStr, todIsoStr, actYeaNum ] ); // What: Memo Dependency Array. Why: The grid only ever needs rebuilding when the day aggregate, the range cutoff, today's own date, or the active paged year changes. How: Each dependency feeds one part of the start/end window computed above.
 
 	// #endregion Heatmap Grid
 
@@ -1592,7 +1592,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return outMapObj; // What: Pick Count Return. Why: This is the finished per-item map both rankings and the breakdown card read from. How: This returns the map built above.
 
 
-	}, [ picRowArr ] ); // What: Effect Dependency Array. Why: This map only ever needs rebuilding when the underlying pick rows themselves change. How: picRowArr is the sole source the loop above reads from.
+	}, [ picRowArr ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the underlying pick rows themselves change. How: picRowArr is the sole source the loop above reads from.
 
 
 	const topPicArr = React.useMemo( () => ( // What: Top Pick Array Memo. Why: The "Most picked" card needs the 5 highest-count items, in descending order. How: This filters out zero-count entries, sorts descending by count, and takes the first 5.
@@ -1601,7 +1601,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		[ ...picCouMap.values() ].filter( ( iteEntObj ) => iteEntObj.couNum > 0 ).sort( ( iteOneObj, iteTwoObj ) => iteTwoObj.couNum - iteOneObj.couNum ).slice( 0, 5 ) // What: Top Five Chain. Why: Only picked items belong in the ranking, highest first. How: This drops zero-count entries, sorts descending by couNum, and keeps the first 5.
 
 
-	), [ picCouMap ] ); // What: Effect Dependency Array. Why: This top-5 list only ever needs resorting when the underlying count map changes. How: picCouMap is the sole source the filter/sort above reads from.
+	), [ picCouMap ] ); // What: Memo Dependency Array. Why: This top-5 list only ever needs resorting when the underlying count map changes. How: picCouMap is the sole source the filter/sort above reads from.
 
 
 	const colIteArr = React.useMemo( () => { // What: Cold Item Array Memo. Why: The "Coldest items" card needs the 5 lowest-count LIVE items (not deleted ones), including ones never picked at all. How: This starts from staAppObj.items rather than picCouMap, so a zero-pick item still appears.
@@ -1638,7 +1638,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 			.slice( 0, 5 ); // What: Cold Slice. Why: Only the 5 coldest items are shown. How: This takes the first 5 entries of the sorted array.
 
 
-	}, [ staAppObj.items, scoValStr, picCouMap, hidPicSet ] ); // What: Effect Dependency Array. Why: This ranking only ever needs recomputing when the live item list, the active scope, the pick counts, or the hidden-picker set changes. How: Each dependency feeds one part of the filter/map/sort above.
+	}, [ staAppObj.items, scoValStr, picCouMap, hidPicSet ] ); // What: Memo Dependency Array. Why: This ranking only ever needs recomputing when the live item list, the active scope, the pick counts, or the hidden-picker set changes. How: Each dependency feeds one part of the filter/map/sort above.
 
 	// #endregion Rankings
 
@@ -1737,7 +1737,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		};
 
 
-	}, [ staAppObj.vacationLog ] ); // What: Effect Dependency Array. Why: This only ever needs rebuilding when the raw vacation log itself changes. How: staAppObj.vacationLog is the sole source the grouping loop above reads from.
+	}, [ staAppObj.vacationLog ] ); // What: Memo Dependency Array. Why: This only ever needs rebuilding when the raw vacation log itself changes. How: staAppObj.vacationLog is the sole source the grouping loop above reads from.
 
 
 	const actDatArr = React.useMemo( () => [ ...new Set( picRowArr.map( ( rowCurObj ) => rowCurObj.date ) ) ].sort(), [ picRowArr ] ); // What: Active Date Array Memo. Why: The Frequency/Spent/Last-picked metrics all need the distinct set of days the picker actually ran, in order. How: This deduplicates picRowArr's own date field via a Set, then sorts it. // Picker run days in range (distinct active-pick dates).
@@ -1823,7 +1823,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return outMapObj; // What: Frequency Gap Return. Why: This is the finished per-item gap map the Frequency metric reads from. How: This returns the map built above.
 
 
-	}, [ isaPicBoo, easDowBoo, picRowArr, actDatArr, vacCheObj ] ); // What: Effect Dependency Array. Why: This map only ever needs rebuilding when the picker scope, the ease-down flag, the pick rows, the active dates, or the vacation-check api changes. How: Each dependency feeds one part of the grouping/averaging above.
+	}, [ isaPicBoo, easDowBoo, picRowArr, actDatArr, vacCheObj ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the picker scope, the ease-down flag, the pick rows, the active dates, or the vacation-check api changes. How: Each dependency feeds one part of the grouping/averaging above.
 
 
 	const speGapMap = React.useMemo( () => { // What: Spent Gap Map Memo. Why: The ease-down Spent metric needs a per-item average completed-cycle length, in both run-count and calendar-day units. How: This walks picRowArr's own dates in order, grouping consecutive same-item runs and keeping only ones that ended depleted. // Ease Down "Spent": measured from ACTUAL history, the average length of a completed depletion streak (consecutive runs of the same active item that ended when its charge hit 0, flagged depletedEnd). Abandoned streaks (re-roll / inactive / manual) never reach 0, so they're excluded, which is why recharging an abandoned item can't skew this. elig = runs; cal = calendar days spanned. null when the item has no completed cycle in range.
@@ -1918,7 +1918,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return outMapObj; // What: Spent Gap Return. Why: This is the finished per-item spent map the Spent metric reads from. How: This returns the map built above.
 
 
-	}, [ easDowBoo, picRowArr ] ); // What: Effect Dependency Array. Why: This map only ever needs rebuilding when the ease-down flag or the underlying pick rows change. How: Both feed the run-detection and averaging logic above.
+	}, [ easDowBoo, picRowArr ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the ease-down flag or the underlying pick rows change. How: Both feed the run-detection and averaging logic above.
 
 
 	const lasPicMap = React.useMemo( () => { // What: Last Pick Map Memo. Why: The Last Picked metric needs each item's own most recent active-pick date. How: This walks picRowArr once, keeping only the latest date seen per item. // Most-recent active pick date per item (used by the "Last picked" metric). Range + scope aware via picRowArr; rejected rows are already excluded there.
@@ -1943,7 +1943,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return outMapObj; // What: Last Pick Return. Why: This is the finished per-item latest-date map the Last Picked metric reads from. How: This returns the map built above.
 
 
-	}, [ picRowArr ] ); // What: Effect Dependency Array. Why: This map only ever needs rebuilding when the underlying pick rows themselves change. How: picRowArr is the sole source the loop above reads from.
+	}, [ picRowArr ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the underlying pick rows themselves change. How: picRowArr is the sole source the loop above reads from.
 
 	// #endregion Per-Item Metric Memos
 
@@ -2045,7 +2045,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		} );
 
 
-	}, [ isaPicBoo, staAppObj.items, scoValStr, picLogArr, cutIsoStr, picCouMap, freGapMap, rejCouMap, skiCouMap, speGapMap, lasPicMap, actDatArr, vacCheObj, picRowArr, lasModStr, freModStr, speModStr, todIsoStr ] ); // What: Effect Dependency Array. Why: Every input this join reads from must be listed so a change to any one of them rebuilds the combined rows. How: Each dependency feeds one specific field or filter used inside the map above.
+	}, [ isaPicBoo, staAppObj.items, scoValStr, picLogArr, cutIsoStr, picCouMap, freGapMap, rejCouMap, skiCouMap, speGapMap, lasPicMap, actDatArr, vacCheObj, picRowArr, lasModStr, freModStr, speModStr, todIsoStr ] ); // What: Memo Dependency Array. Why: Every input this join reads from must be listed so a change to any one of them rebuilds the combined rows. How: isaPicBoo, scoValStr, and staAppObj.items decide which items get rows, picLogArr, cutIsoStr, and todIsoStr bound the logged history and its day gaps, picCouMap, freGapMap, rejCouMap, skiCouMap, speGapMap, lasPicMap, and picRowArr supply each row's counts and gaps, actDatArr and vacCheObj decide which days count as active, and lasModStr, freModStr, and speModStr pick each metric's calendar or eligible mode.
 
 
 
@@ -2098,7 +2098,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return sorIteArr; // What: Breakdown List Return. Why: This is the finished, metric-sorted list the Pick breakdown card renders. How: This returns whichever branch above sorted sorIteArr in place.
 
 
-	}, [ perIteArr, effMetStr, sorDirStr ] ); // What: Effect Dependency Array. Why: This list only ever needs resorting when the underlying rows, the active metric, or the sort direction changes. How: perIteArr supplies the rows, effMetStr/sorDirStr together determine the comparator branch and direction.
+	}, [ perIteArr, effMetStr, sorDirStr ] ); // What: Memo Dependency Array. Why: This list only ever needs resorting when the underlying rows, the active metric, or the sort direction changes. How: perIteArr supplies the rows, effMetStr/sorDirStr together determine the comparator branch and direction.
 
 	// #endregion Per-Item Breakdown List
 
@@ -2209,7 +2209,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return `weight ${ iteCurObj.weight ?? 1 }`; // What: Weight Suffix Return. Why: This is the finished suffix under the item's name. How: This reads the item's own weight, defaulting to 1.
 
 
-	}, [ useWeiBoo ] ); // What: Effect Dependency Array. Why: This callback's own identity only needs to change when the weighted/dynamic flag itself changes. How: useWeiBoo is the sole external value the function body reads.
+	}, [ useWeiBoo ] ); // What: Callback Dependency Array. Why: This callback's own identity only needs to change when the weighted/dynamic flag itself changes. How: useWeiBoo is the sole external value the function body reads.
 
 
 	const ranSufFun = React.useCallback( ( iteCurObj ) => { // What: Range Suffix Function. Why: An ease-up/ease-down item's own configured drift band needs surfacing as a day-range suffix. How: This computes the soonest/latest day-band from the item's own (or the picker's default) easeMin/easeMax.
@@ -2234,7 +2234,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return `range ${ sooDayNum }–${ latDayNum } ${ uniWorStr }`; // What: Range Suffix Return. Why: This is the finished "range X-Y unit" string rendered under the item's own name. How: This joins the two computed bounds with an en dash and the resolved unit word.
 
 
-	}, [ easUpwBoo, easDowBoo, scoPicObj ] ); // What: Effect Dependency Array. Why: This callback's own identity only needs to change when either ease-mode flag or the scoped picker itself changes. How: Each is read directly inside the function body above.
+	}, [ easUpwBoo, easDowBoo, scoPicObj ] ); // What: Callback Dependency Array. Why: This callback's own identity only needs to change when either ease-mode flag or the scoped picker itself changes. How: Each is read directly inside the function body above.
 
 
 	const actSufFun = React.useCallback( ( iteCurObj ) => { // What: Active Suffix Function. Why: The breakdown list needs one function resolving "whichever suffix applies to the currently active metric", rather than the card checking both individually. How: This dispatches to weiSufFun for the Count metric, ranSufFun for Frequency/Spent, and null otherwise. // Suffix shown for the active metric (count -> weight, freq/spent -> range).
@@ -2251,7 +2251,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return null; // What: No Suffix Return. Why: Every other metric shows no suffix. How: This returns null.
 
 
-	}, [ effMetStr, weiSufFun, ranSufFun ] ); // What: Effect Dependency Array. Why: This callback's own identity only needs to change when the active metric or either underlying suffix function changes. How: Each is read directly inside the function body above.
+	}, [ effMetStr, weiSufFun, ranSufFun ] ); // What: Callback Dependency Array. Why: This callback's own identity only needs to change when the active metric or either underlying suffix function changes. How: Each is read directly inside the function body above.
 
 
 	const iteObjMap = React.useMemo( () => { // What: Item Object Map Memo. Why: The breakdown list's own rows don't carry every raw item field, so a suffix needs to look the real item back up by id. How: This maps every live item's own id to itself. // Per-item lookup so the card can fetch the raw item for its suffix.
@@ -2267,7 +2267,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return outMapObj; // What: Item Map Return. Why: This is the finished id-to-item lookup. How: This returns outMapObj.
 
 
-	}, [ staAppObj.items ] ); // What: Effect Dependency Array. Why: This map only ever needs rebuilding when the live item list itself changes. How: staAppObj.items is the sole source the loop above reads from.
+	}, [ staAppObj.items ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the live item list itself changes. How: staAppObj.items is the sole source the loop above reads from.
 
 
 
@@ -2318,7 +2318,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		} ) );
 
 
-	}, [ picRowArr ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when the underlying pick rows themselves change. How: picRowArr is the sole source the tally loop above reads from.
+	}, [ picRowArr ] ); // What: Memo Dependency Array. Why: This only ever needs recomputing when the underlying pick rows themselves change. How: picRowArr is the sole source the tally loop above reads from.
 
 
 	const typSegArr = React.useMemo( () => { // What: Type Segment Array Memo. Why: The "By reminder type" card needs TYP_MET_ARR joined with each type's own live count. How: This tallies remRowArr's own type field, then maps TYP_MET_ARR to include each count. // Reminder type split + log list.
@@ -2341,7 +2341,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		} ) );
 
 
-	}, [ remRowArr ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when the underlying reminder rows themselves change. How: remRowArr is the sole source the tally loop above reads from.
+	}, [ remRowArr ] ); // What: Memo Dependency Array. Why: This only ever needs recomputing when the underlying reminder rows themselves change. How: remRowArr is the sole source the tally loop above reads from.
 
 
 	const remLogArr = React.useMemo( () => ( // What: Reminder Log Array Memo. Why: The "Reminders completed" summary card (All view) needs remRowArr sorted newest-first, independent of the breakdown card's own sort toggle. How: This sorts a copy of remRowArr descending by completedAt.
@@ -2350,7 +2350,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		remRowArr.slice().sort( ( rowOneObj, rowTwoObj ) => ( rowOneObj.completedAt < rowTwoObj.completedAt ? 1 : -1 ) ) // What: Newest First Sort. Why: The summary lists the latest completions first. How: This sorts a copy of remRowArr descending by completedAt.
 
 
-	), [ remRowArr ] ); // What: Effect Dependency Array. Why: This only ever needs resorting when the underlying reminder rows themselves change. How: remRowArr is the sole source the sort above reads from.
+	), [ remRowArr ] ); // What: Memo Dependency Array. Why: This only ever needs resorting when the underlying reminder rows themselves change. How: remRowArr is the sole source the sort above reads from.
 
 
 	const remComArr = React.useMemo( () => { // What: Reminder Completion Array Memo. Why: The Completions metric pivot needs one row per reminder with its own total completion count in range. How: This groups remRowArr by taskId, then sorts the grouped totals by remSorStr. // "Reminders breakdown" card data. Per-reminder COMPLETION totals in range (grouped by taskId, denormalized name/type). Includes long- gone one-time reminders, since the log row persists after the task is purged, so its history stays counted.
@@ -2386,7 +2386,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return [ ...remTotMap.values() ].sort( ( remOneObj, remTwoObj ) => sorDirNum * ( remOneObj.couNum - remTwoObj.couNum ) || remOneObj.namStr.localeCompare( remTwoObj.namStr ) ); // What: Completion Totals Return. Why: This is the finished, sorted per-reminder completion list the Completions pivot renders. How: This sorts the grouped totals by couNum, tie-breaking alphabetically.
 
 
-	}, [ isaRemBoo, remRowArr, remSorStr ] ); // What: Effect Dependency Array. Why: This list only ever needs rebuilding when the Reminders-scope flag, the underlying rows, or the sort direction changes. How: Each feeds one part of the grouping/sorting above.
+	}, [ isaRemBoo, remRowArr, remSorStr ] ); // What: Memo Dependency Array. Why: This list only ever needs rebuilding when the Reminders-scope flag, the underlying rows, or the sort direction changes. How: Each feeds one part of the grouping/sorting above.
 
 
 	const remSkiArr = React.useMemo( () => { // What: Reminder Skip Array Memo. Why: The Skipped metric pivot needs one row per reminder with its own total skip count in range. How: This groups staAppObj.reminderSkipLog by taskId, then sorts the grouped totals by remSorStr. // Per-reminder SKIP totals in range (same shape).
@@ -2434,7 +2434,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return [ ...remTotMap.values() ].sort( ( remOneObj, remTwoObj ) => sorDirNum * ( remOneObj.couNum - remTwoObj.couNum ) || remOneObj.namStr.localeCompare( remTwoObj.namStr ) ); // What: Skip Totals Return. Why: This is the finished, sorted per-reminder skip list the Skipped pivot renders. How: This sorts the grouped totals by couNum, tie-breaking alphabetically.
 
 
-	}, [ isaRemBoo, staAppObj.reminderSkipLog, enaTypArr.join( ',' ), cutIsoStr, remSorStr, hidTasSet ] ); // What: Effect Dependency Array. Why: This list only ever needs rebuilding when the Reminders-scope flag, the raw skip log, the enabled types, the range cutoff, the sort direction, or the hidden-task set changes. How: Each feeds one part of the filter/grouping/sorting above.
+	}, [ isaRemBoo, staAppObj.reminderSkipLog, enaTypArr.join( ',' ), cutIsoStr, remSorStr, hidTasSet ] ); // What: Memo Dependency Array. Why: This list only ever needs rebuilding when the Reminders-scope flag, the raw skip log, the enabled types, the range cutoff, the sort direction, or the hidden-task set changes. How: Each feeds one part of the filter/grouping/sorting above.
 
 
 
@@ -2448,7 +2448,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		return remRowArr.slice().sort( ( rowOneObj, rowTwoObj ) => ( rowOneObj.completedAt < rowTwoObj.completedAt ? -1 : rowOneObj.completedAt > rowTwoObj.completedAt ? 1 : 0 ) * sorDirNum ).map( ( rowCurObj ) => ( { ideStr : rowCurObj.rowId, namStr : rowCurObj.name, timStr : rowCurObj.completedAt, typStr : rowCurObj.type } ) ); // What: Recent Sort Return. Why: The Recent pivot lists raw completion events in the chosen direction, under the same field names as the Completions/Skipped totals it shares a renderer with. How: This sorts a copy of remRowArr by completedAt, flipped by sorDirNum, then copies each row's saved fields into ideStr/namStr/timStr/typStr.
 
 
-	}, [ remRowArr, remSorStr ] ); // What: Effect Dependency Array. Why: This only ever needs resorting when the underlying reminder rows or the sort direction changes. How: Both feed the sort comparator above.
+	}, [ remRowArr, remSorStr ] ); // What: Memo Dependency Array. Why: This only ever needs resorting when the underlying reminder rows or the sort direction changes. How: Both feed the sort comparator above.
 
 
 	const remBreArr = remMetStr === 'skipped' ? remSkiArr : remMetStr === 'completions' ? remComArr : remRecArr; // What: Reminder Breakdown Array. Why: The card's own rendered list depends on which of the three metric pivots is active. How: This selects remSkiArr/remComArr/remRecArr by remMetStr.

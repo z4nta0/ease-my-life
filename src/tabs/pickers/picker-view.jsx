@@ -651,7 +651,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 		() => new Set( ( staAppObj.today.entries || [] ).filter( ( entCurObj ) => entCurObj.itemId ).map( ( entCurObj ) => entCurObj.itemId ) ), // What: Today Ids Build. Why: Only entries actually tied to an item (not a reminder or conditional row) belong in this set. How: This filters to entries with an itemId, then maps to just that id.
 
-		[ staAppObj.today.entries ] // What: Effect Dependency Array. Why: The set only needs recomputing when today's own entries list changes. How: state.today.entries is the sole source this memo reads.
+		[ staAppObj.today.entries ] // What: Memo Dependency Array. Why: The set only needs recomputing when today's own entries list changes. How: state.today.entries is the sole source this memo reads.
 
 	);
 
@@ -693,7 +693,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 		return seeGroArr.sort( ( groOneStr, groTwoStr ) => groOneStr.localeCompare( groTwoStr ) ); // What: Sorted Groups Return. Why: The group chips should read in a stable, predictable order. How: This returns seeGroArr sorted alphabetically.
 
 
-	}, [ staAppObj.pickers ] ); // What: Effect Dependency Array. Why: The group list only needs recomputing when the pickers list itself changes. How: staAppObj.pickers is what the loop above actually reads.
+	}, [ staAppObj.pickers ] ); // What: Memo Dependency Array. Why: The group list only needs recomputing when the pickers list itself changes. How: staAppObj.pickers is what the loop above actually reads.
 
 
 	const ediIniObj = { // What: Edit Initial Object. Why: PicForCom's own edit mode needs every one of this picker's current settings prefilled, so Save can round-trip them through savEdiFun unchanged unless the user actually edits a field. How: This maps every relevant picker field onto the same shape PicForCom's own initial prop expects. // What: Deliberately Omitted Group Field. Why: `group` specifically means "prefill the inline ADD-A-NEW-GROUP sub-form" (see PicForCom's own addGroBoo/newGroStr state), which would be wrong here: this picker's group already exists (it's necessarily in ediGroArr, since that list is derived from staAppObj.pickers including this picker itself), so it should land on that EXISTING pill instead. How: iniGroStr (passed at the return below) is the prop that does that, same as the create flow's own group-filter prefill.

@@ -555,7 +555,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 		}
 
 
-	}, [ allIteArr ] ); // What: Effect Dependency Array. Why: This callback's own identity only needs to change when the underlying catalog itself changes. How: allIteArr is read directly throughout the callback body above.
+	}, [ allIteArr ] ); // What: Callback Dependency Array. Why: This callback's own identity only needs to change when the underlying catalog itself changes. How: allIteArr is read directly throughout the callback body above.
 
 
 
@@ -567,7 +567,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 		catch ( errCatObj ) { console.error( '[help-mode] recompute failed', errCatObj ); } // What: Recompute Catch. Why: Swallowing the error here, instead of letting it propagate, is what keeps the rAF loop alive for every later frame. How: This logs errCatObj to the console and does nothing else.
 
 
-	}, [ recTarFun ] ); // What: Effect Dependency Array. Why: This callback's own identity only needs to change when recTarFun's own identity does. How: recTarFun is called directly inside the try block above.
+	}, [ recTarFun ] ); // What: Callback Dependency Array. Why: This callback's own identity only needs to change when recTarFun's own identity does. How: recTarFun is called directly inside the try block above.
 
 
 

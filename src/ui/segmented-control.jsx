@@ -138,7 +138,7 @@ function SegConCom ( { ariLabStr, desIdeStr, layVarStr, onChange, optIteArr, val
 		preIndRef.current = curIndNum; // What: Previous Index Update. Why: The next call to plaThuFun needs to compare against the index that's current now. How: This overwrites preIndRef with curIndNum.
 
 
-	}, [ value, optIteArr ] ); // What: Effect Dependency Array. Why: plaThuFun must be recreated whenever either the selected value or the option set itself changes, since both affect which button is "active". How: value decides which button matches, optIteArr decides the whole set plaThuFun searches.
+	}, [ value, optIteArr ] ); // What: Callback Dependency Array. Why: plaThuFun must be recreated whenever either the selected value or the option set itself changes, since both affect which button is "active". How: value decides which button matches, optIteArr decides the whole set plaThuFun searches.
 
 
 	React.useLayoutEffect( () => { plaThuFun( true ); }, [ value ] ); // What: Selection Change Effect. Why: A genuine value change should animate the thumb to its new position. How: This calls plaThuFun with animation enabled whenever value itself changes.

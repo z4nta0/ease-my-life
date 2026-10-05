@@ -230,7 +230,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		return ideOrdArr; // What: Block Order Return. Why: The rail and content column both need this final sequence. How: This returns the same array built by the passes above.
 
 
-	}, [ staAppObj.groupOrder, groDisArr ] ); // What: Effect Dependency Array. Why: This only needs recomputing when the user's own saved order changes, or when the real group list itself changes shape. How: staAppObj.groupOrder is the saved-order source; groDisArr is the real-group source.
+	}, [ staAppObj.groupOrder, groDisArr ] ); // What: Memo Dependency Array. Why: This only needs recomputing when the user's own saved order changes, or when the real group list itself changes shape. How: staAppObj.groupOrder is the saved-order source; groDisArr is the real-group source.
 
 	// #endregion bloOrdArr
 
