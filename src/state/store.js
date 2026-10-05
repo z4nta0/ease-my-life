@@ -1358,6 +1358,8 @@ function useAppStaFun ( optArgObj ) {
 
 		// #region Holiday List Subsystem
 
+		// #region addHolFun
+
 		/**
 		 * addHolFun = Add Holiday Function
 		 *
@@ -1422,6 +1424,8 @@ function useAppStaFun ( optArgObj ) {
 
 
 		} ),
+
+		// #endregion addHolFun
 
 
 
@@ -1887,6 +1891,8 @@ function useAppStaFun ( optArgObj ) {
 
 		// #region Manual Reminders Subsystem
 
+		// #region addTasFun
+
 		/**
 		 * addTasFun = Add Task Function
 		 *
@@ -1946,6 +1952,8 @@ function useAppStaFun ( optArgObj ) {
 
 
 		} ),
+
+		// #endregion addTasFun
 
 
 
@@ -3054,6 +3062,8 @@ function useAppStaFun ( optArgObj ) {
 
 		// #region Today Edit-Mode Reordering Mechanism
 
+		// #region reoGroFun
+
 		/**
 		 * reoGroFun = Reorder Groups Function
 		 *
@@ -3090,6 +3100,8 @@ function useAppStaFun ( optArgObj ) {
 
 
 		} ) ),
+
+		// #endregion reoGroFun
 
 
 
