@@ -3131,7 +3131,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		 * A double rAF, not a direct call, since the last checklist item
 		 * is very often resolved by a tour's own Skip/Done, and EVERY
 		 * tour funnels both through onboarding/tour-runner.jsx's
-		 * TodTopFun, which forces main.scrollTop back to 0 via its OWN
+		 * todTopFun, which forces main.scrollTop back to 0 via its OWN
 		 * requestAnimationFrame, already queued by the time this effect
 		 * runs. A single rAF here would land in the same frame and race
 		 * it (losing, depending on exact scheduling); deferring one frame

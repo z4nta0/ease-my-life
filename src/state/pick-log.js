@@ -98,12 +98,15 @@ function newLogFun () {
  * @param curStaObj             - Current State Object: The current state,
  *                                read (not mutated) to look up the item and
  *                                picker being logged.
+ * @param logFieObj             - Log Field Object: The row's own fields, read
+ *                                by property since their keys are the
+ *                                persisted row's own.
  * @param logFieObj.date        - Date: The 'YYYY-MM-DD' to stamp the row with;
  *                                defaults to today.
  * @param logFieObj.depletedEnd - Depleted End: Whether this row ends an Ease
  *                                Down depletion streak; defaults to false.
- * @param logFieObj.eid         - Eid: Links the row to its live today.entries
- *                                row; defaults to null.
+ * @param logFieObj.eid         - Entry Identifier: Links the row to its
+ *                                live today.entries row; defaults to null.
  * @param logFieObj.itemId      - Item Id: The item that was picked.
  * @param logFieObj.pickerId    - Picker Id: The picker the pick belongs to.
  * @param logFieObj.source      - Source: How the pick was made: 'auto' |
@@ -118,30 +121,30 @@ function newLogFun () {
  *
 */
 
-function logRowFun ( curStaObj, { date : datValStr, depletedEnd : depEndBoo = false, eid : entIdeStr = null, itemId : iteIdeStr, pickerId : picIdeStr, source : souValStr } ) {
+function logRowFun ( curStaObj, logFieObj ) {
 
 
-	const curIteObj = curStaObj.items.find( ( iteFinObj ) => iteFinObj.id === iteIdeStr );   // What: Current Item Object And Guard. Why: The row below needs the item's own live name, or a removed-item fallback. How: This looks up iteIdeStr in curStaObj.items, undefined once removed.
-	const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === picIdeStr ); // What: Current Picker Object And Guard. Why: The row below needs the picker's own live name/group, or removed-picker fallbacks. How: This looks up picIdeStr in curStaObj.pickers, undefined once removed.
+	const curIteObj = curStaObj.items.find( ( iteFinObj ) => iteFinObj.id === logFieObj.itemId );     // What: Current Item Object And Guard. Why: The row below needs the item's own live name, or a removed-item fallback. How: This looks up logFieObj.itemId in curStaObj.items, undefined once removed.
+	const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === logFieObj.pickerId ); // What: Current Picker Object And Guard. Why: The row below needs the picker's own live name/group, or removed-picker fallbacks. How: This looks up logFieObj.pickerId in curStaObj.pickers, undefined once removed.
 
 
 
 	return { // What: Pick-Log Row Return. Why: The caller needs one fresh row shaped to state.pickLog's own contract. How: This builds the row from every argument plus the lookups above.
 
 
-		completedAt : null,                                     // What: Completed At. Why: A freshly-logged pick has no completion timestamp yet. How: This is always null for a brand-new row.
-		date        : datValStr || isoDayFun(),                 // What: Date. Why: Stats groups/filters rows by their own calendar day. How: This uses the given datValStr, defaulting to isoDayFun() when omitted.
-		done        : false,                                    // What: Done. Why: A freshly-logged pick was never yet completed. How: This is always false for a brand-new row.
-		eid         : entIdeStr,                                // What: Entry Identifier. Why: This links the row back to its live today.entries row, until the day rolls. How: This is copied straight from the entIdeStr parameter.
-		group       : curPicObj ? curPicObj.group : '',         // What: Group. Why: Stats groups rows by their own picker's group. How: This reads curPicObj's own group, else empty when the picker is gone.
-		id          : newLogFun(),                              // What: Id. Why: Every row needs its own stable, unique identifier. How: This mints one via newLogFun.
-		itemId      : iteIdeStr,                                // What: Item Id. Why: Every row must record which item it belongs to. How: This is copied straight from the iteIdeStr parameter.
-		itemName    : curIteObj ? curIteObj.name : '(removed)', // What: Item Name. Why: This denormalized copy lets the row survive a later rename or deletion of the item itself. How: This reads curIteObj's own name, else a removed-item placeholder.
-		pickerId    : picIdeStr,                                // What: Picker Id. Why: Every row must record which picker it belongs to. How: This is copied straight from the picIdeStr parameter.
-		pickerName  : curPicObj ? curPicObj.name : '(removed)', // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This reads curPicObj's own name, else a removed-picker placeholder.
-		source      : souValStr,                                // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from the souValStr parameter.
+		completedAt : null,                                               // What: Completed At. Why: A freshly-logged pick has no completion timestamp yet. How: This is always null for a brand-new row.
+		date        : logFieObj.date || isoDayFun(),                      // What: Date. Why: Stats groups/filters rows by their own calendar day. How: This uses the given logFieObj.date, defaulting to isoDayFun() when omitted.
+		done        : false,                                              // What: Done. Why: A freshly-logged pick was never yet completed. How: This is always false for a brand-new row.
+		eid         : logFieObj.eid === undefined ? null : logFieObj.eid, // What: Entry Identifier. Why: This links the row back to its live today.entries row, until the day rolls. How: This copies logFieObj.eid, defaulting to null when omitted.
+		group       : curPicObj ? curPicObj.group : '',                   // What: Group. Why: Stats groups rows by their own picker's group. How: This reads curPicObj's own group, else empty when the picker is gone.
+		id          : newLogFun(),                                        // What: Id. Why: Every row needs its own stable, unique identifier. How: This mints one via newLogFun.
+		itemId      : logFieObj.itemId,                                   // What: Item Id. Why: Every row must record which item it belongs to. How: This is copied straight from logFieObj.itemId.
+		itemName    : curIteObj ? curIteObj.name : '(removed)',           // What: Item Name. Why: This denormalized copy lets the row survive a later rename or deletion of the item itself. How: This reads curIteObj's own name, else a removed-item placeholder.
+		pickerId    : logFieObj.pickerId,                                 // What: Picker Id. Why: Every row must record which picker it belongs to. How: This is copied straight from logFieObj.pickerId.
+		pickerName  : curPicObj ? curPicObj.name : '(removed)',           // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This reads curPicObj's own name, else a removed-picker placeholder.
+		source      : logFieObj.source,                                   // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from logFieObj.source.
 
-		...( depEndBoo ? { depletedEnd : true } : {} ) // What: Depleted End Spread. Why: Only a row ending an Ease Down depletion streak needs this flag at all. How: This spreads in depletedEnd:true only when the depEndBoo parameter is truthy.
+		...( logFieObj.depletedEnd ? { depletedEnd : true } : {} ) // What: Depleted End Spread. Why: Only a row ending an Ease Down depletion streak needs this flag at all. How: This spreads in depletedEnd:true only when logFieObj.depletedEnd is truthy, so an omitted flag adds nothing.
 
 
 	};

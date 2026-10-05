@@ -2119,7 +2119,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-					const freScrEle = getScrFun( freEleArr[ 0 ] );                                                             // What: Fresh Scroll Element. Why: The scroller itself may have changed too, now that the reserve padding has actually rendered, so this must be re-resolved fresh rather than reusing resScrEle from before the frame. How: This resolves the first fresh element's own scroller via getScrFun.
+					const freScrEle = getScrFun( freEleArr[ 0 ] );                                                             // What: Fresh Scroll Element. Why: The scroller itself may have changed too, now that the reserve padding has actually rendered, so this must be re-resolved fresh rather than reusing one resolved before the frame. How: This resolves the first fresh element's own scroller via getScrFun.
 					const freTopNum = uniRecFun( freEleArr ).top;                                                              // What: Fresh Top Number. Why: This is the target's own real, post-padding top edge. How: This unions freEleArr and reads its own top.
 					const desTopNum = safTopFun( { forCoaBoo : true } ) + rhyPxlFun( 'm01' ) + coaHeiNum + rhyPxlFun( 'bas' ); // What: Desired Top Number. Why: This scrolls so the target lands exactly coaHeiNum plus a base step below the safe floor, the same threshold the "fits above" check above uses, and what the coach's own render-time placement needs to actually seat it flush above the target instead of overlapping it. How: This adds the safe floor, its small-step margin, the coach's own height, and a base-step gap. // Vertical Rhythm Base Minus 1 = 11px, Vertical Rhythm Base ~= 14.572px
 

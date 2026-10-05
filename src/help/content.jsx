@@ -624,7 +624,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	{ // What: Cancel / Save Help Item. Why: This is the on-demand help tip for the Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // New (unsaved) reminders never render a Delete button, see ReminderEditFoot's `!isaNewBoo &&` guard, so this covers that footer state with its own Cancel/Save-only copy.
+	{ // What: Cancel / Save Help Item. Why: This is the on-demand help tip for the Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // New (unsaved) reminders never render a Delete button, see EdiFooCom's `!isaNewBoo &&` guard, so this covers that footer state with its own Cancel/Save-only copy.
 
 
 		ideStr : 'dataReminderFootNew',
@@ -3265,7 +3265,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	// #region Editing An Existing Reminder
 
-	// ReminderCard's name input + the ReminderInlineEdit/ReminderEditFoot pair it expands into, same underlying editor as Add a Reminder above, so these reuse its exact copy where the content is identical (name field, repeat schedule). The only real difference: Save replaces Add (no "stays disabled" caveat, Save has no disabled state, unlike Add), and there's a Delete button Add's form doesn't have.
+	// RemCarCom's name input + the InlEdiCom/EdiFooCom pair it expands into, same underlying editor as Add a Reminder above, so these reuse its exact copy where the content is identical (name field, repeat schedule). The only real difference: Save replaces Add (no "stays disabled" caveat, Save has no disabled state, unlike Add), and there's a Delete button Add's form doesn't have.
 	{ // What: Reminder Name Help Item. Why: This is the on-demand help tip for the Reminder Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 

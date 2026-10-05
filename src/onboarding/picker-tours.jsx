@@ -788,7 +788,7 @@ const buiNamFun = ( picIdeStr ) => ({ // What: Build Name Function. Why: This bu
  * as NAV_STE_OBJ above. runFun() publishes the sample's own data as the
  * emlTouObj bus's prefill, timed so the real click (which natively opens the
  * form via the button's own onClick, not this runFun()) ends up mounting
- * NewPickerForm with it already applied. See the design-rationale comment on
+ * PicForCom with it already applied. See the design-rationale comment on
  * PicTouCom below for why this specific ordering matters.
  *
  * "+Add" is the FIRST tab in the strip (tab-picker.jsx), not the last; no
@@ -1119,7 +1119,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 			steObjArr={ steObjArr }
 			touIdeStr={ `picker-${ picIdeStr }` }
 
-			onBacTouFun={ ( tarSteNum ) => { // What: On Go Back Handler. Why: Back from buiAddFun's own step (index 6, the Items sub-step's "+ Add Item" button) to ITE_STE_OBJ's own step (index 5, "Add Items") needs the form pushed back to its Details sub-step first; unlike the Reminders tours' own "+" button, .ob-picker-next's own click is a one-way step change inside NewPickerForm, not a toggle, so without this ITE_STE_OBJ's own target stays gone (the form is still showing Items) and the tour has nothing to highlight. How: This branches on tarSteNum, clicking the real DOM control that reverses whichever one-way transition the tour is backing out of.
+			onBacTouFun={ ( tarSteNum ) => { // What: On Go Back Handler. Why: Back from buiAddFun's own step (index 6, the Items sub-step's "+ Add Item" button) to ITE_STE_OBJ's own step (index 5, "Add Items") needs the form pushed back to its Details sub-step first; unlike the Reminders tours' own "+" button, .ob-picker-next's own click is a one-way step change inside PicForCom, not a toggle, so without this ITE_STE_OBJ's own target stays gone (the form is still showing Items) and the tour has nothing to highlight. How: This branches on tarSteNum, clicking the real DOM control that reverses whichever one-way transition the tour is backing out of.
 
 
 				if ( tarSteNum === 5 ) { // What: Details Step Back Check. Why: Reversing buiAddFun's own step needs the form pushed back to Details. How: This clicks the form's own "Details" step-indicator tab, the only way to reverse this from outside the form, which owns that step state locally.

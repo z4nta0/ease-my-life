@@ -642,7 +642,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		reaStaFun(); // What: Initial Status Read. Why: The row should already show real status on mount, without waiting for a PWA-layer change. How: This invokes reaStaFun once, synchronously (its own internal read is still async).
 
 
-		const onPwaChaFun = () => { // What: On Progressive-Web-App Change Function. Why: An install or persistence-grant event can change both the storage status and the install/standalone flags read below. How: This bumps pwaTicNum to force a re-render, then re-reads the storage status.
+		const onPwaChaFun = () => { // What: On Progressive-Web-App Change Function. Why: An install or persistence-grant event can change both the storage status and the install/standalone flags read below. How: This bumps the tick behind setPwaTicNum to force a re-render, then re-reads the storage status.
 
 
 			setPwaTicNum( ( ticCurNum ) => ticCurNum + 1 ); // What: Progressive-Web-App Tick Bump. Why: The install/standalone flags below are read fresh on every render, so a re-render is all they need. How: This increments the unread tick value.

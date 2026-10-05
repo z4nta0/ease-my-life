@@ -550,7 +550,7 @@ function useAppStaFun ( optArgObj ) {
 		 * read consults location.hash for its #settings deep link, and a
 		 * reload alone would otherwise land right back on Settings for
 		 * anyone who'd arrived that way, the same "onboarding anchors only
-		 * exist on Today" problem the Settings button's own onNavTab
+		 * exist on Today" problem the Settings button's own onNavTabFun
 		 * ('today') call exists to avoid.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
@@ -2856,7 +2856,7 @@ function useAppStaFun ( optArgObj ) {
 		 *
 		 * @summary
 		 * Commits an edit made via the Pickers page's own "Edit" button,
-		 * which reuses NewPickerForm's own Details step (items aren't
+		 * which reuses PicForCom's own Details step (items aren't
 		 * touched by this flow; those are edited via the Data tab or the
 		 * live Pickers-tab pool instead). Mirrors addPicFun's own field
 		 * normalization (name dedup, cadence/days, conditional attach) but

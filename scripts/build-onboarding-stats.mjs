@@ -434,7 +434,7 @@ const forKeyFun = ( keyOneStr, keyTwoStr ) => keyOneStr.toLowerCase().localeComp
  *
  * @example
  * ```ts
- * forArrFun(outPicArr, ',', '// What: Pick Log. ...') // => '[ // What: ...'
+ * forArrFun(outDatObj.pickLog, ',', '// What: Pick Log. ...') // => '[ ...'
  * ```
  *
 */

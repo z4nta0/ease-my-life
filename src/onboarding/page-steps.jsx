@@ -1352,7 +1352,7 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
  *
  * @example
  * ```ts
- * buiTs1Fun('picker', seeRunFun, 'Next', 'Pickers') // => step object
+ * buiTs1Fun(touRcdObj.pagStr, oneRunFun, 'Next', touRcdObj.labStr) // => step
  * ```
  *
 */
