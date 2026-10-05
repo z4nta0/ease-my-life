@@ -1052,7 +1052,6 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 										className={ cssModObj.conPilBut }
 
-										data-element-name-hook='conPilBut'
 										data-flip-item-key={ conCurObj.id } // What: Flip Item Key Attribute. Why: The shared reorder animation slides each pill from its old spot to its new one. How: This gives useFliRaiFun the pill's own conditional id to track it by.
 										data-pill-select-active={ draPicObj.conditionalId === conCurObj.id || undefined } // What: Pill Select Active Attribute. Why: The attached conditional's pill should stand out. How: This sets the presence-only attribute while this conditional is the picker's own.
 
