@@ -32,7 +32,7 @@
 	inset          : 0;
 	pointer-events : none;
 	position       : fixed;
-	z-index        : 203; /* What: Tour Layer Height. Why: A tour step can run while help mode's own dim layer (z-index 201) is up, and two equal layers fall back to DOM order, which put help mode's dim over the tour. How: 203 keeps the tour above it, and above the help button's own 202. */
+	z-index        : 21; /* What: Tour Layer Height. Why: A tour step can run while help mode's own dim layer (z-index 19) is up, and two equal layers fall back to DOM order, which put help mode's dim over the tour. How: 21 keeps the tour above it, and above the help button's own 20. */
 
 
 }

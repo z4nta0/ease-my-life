@@ -49,7 +49,7 @@
 	padding       : var( --spa-ver-p02 ) var( --spa-hor-p01 ) var( --spa-ver-p02 ); /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
 	position      : sticky;
 	top           : 0;
-	z-index       : 20;                                                             /* What: Header Stack Level. Why: The sticky header has to stay over the list and over the sticky pill row at 18 that tucks under it. How: 20 sits just above that row. */
+	z-index       : 12;                                                             /* What: Header Stack Level. Why: The sticky header has to stay over the list and over the sticky pill row at 11 that tucks under it. How: 12 sits just above that row. */
 
 
 }
@@ -1166,7 +1166,7 @@
 	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );                                                      /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
 	position        : sticky;
 	top             : calc( var( --tod-hea-hei, calc( var( --ver-rhy-p09 ) * 1rem ) ) + var( --spa-ver-m02 ) );       /* Today Header Height, set by its parent, falling back to Vertical Rhythm Base Plus 9 ~= 183.074px, Spacing Vertical Base Minus 2 ~= 8.304px */
-	z-index         : 60;                                                                                             /* What: Banner Stack Level. Why: The sticky banner has to stay over a card being dragged, which reorder.js raises to 50. How: 60 sits above that card. */
+	z-index         : 14;                                                                                             /* What: Banner Stack Level. Why: The sticky banner has to stay over a card being dragged, which reorder.js raises to 13. How: 14 sits above that card. */
 
 
 }
@@ -1373,7 +1373,7 @@
 		padding                 : var( --spa-ver-bas ) var( --spa-hor-p01 );                    /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
 		position                : sticky;
 		top                     : var( --tod-hea-hei, calc( var( --ver-rhy-p09 ) * 1rem ) );    /* Today Header Height, set by its parent, falling back to Vertical Rhythm Base Plus 9 ~= 183.074px */
-		z-index                 : 18;                                                           /* What: Pill Row Stack Level. Why: The sticky row has to stay over the cards but slide under the sticky header at 20. How: 18 sits between them. */
+		z-index                 : 11;                                                           /* What: Pill Row Stack Level. Why: The sticky row has to stay over the cards but slide under the sticky header at 12. How: 11 sits between them. */
 
 
 	}
@@ -1684,7 +1684,7 @@
 	overflow       : hidden;
 	pointer-events : none;
 	position       : fixed;
-	z-index        : 5; /* What: Overlay Stack Level. Why: The particles have to fall over the cards but under the sticky header at 20. How: 5 sits between them. */
+	z-index        : 10; /* What: Overlay Stack Level. Why: The particles have to fall over the cards but under the sticky pill row at 11 and header at 12. How: 10 sits below both. */
 
 
 }

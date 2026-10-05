@@ -343,7 +343,7 @@
 		padding    : var( --spa-ver-bas ) var( --spa-hor-p01 ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
 		position   : sticky;
 		top        : 0;
-		z-index    : 18;                                        /* What: Pill Rail Stack Level. Why: The sticky rail has to stay over the sections scrolling beneath it. How: 18 matches Today's sticky pill row and stays below the tab bars at 100. */
+		z-index    : 11;                                        /* What: Pill Rail Stack Level. Why: The sticky rail has to stay over the sections scrolling beneath it. How: 11 matches Today's sticky pill row and stays below the tab bars at 15. */
 
 
 	}

@@ -71,7 +71,7 @@
 
 
 	pointer-events : none;
-	z-index        : 150; /* What: Exiting Bar Stack Level. Why: The ghost of the old tab bar plays its exit over the new bar at 100. How: 150 keeps it above that bar and below the drawer scrim at 190. */
+	z-index        : 16; /* What: Exiting Bar Stack Level. Why: The ghost of the old tab bar plays its exit over the new bar at 15. How: 16 keeps it above that bar and below the drawer scrim at 17. */
 
 
 }
@@ -152,7 +152,7 @@
 	right           : auto;
 	transform       : translateX( -50% );
 	width           : max-content;
-	z-index         : 100;                                             /* What: Bottom Bar Stack Level. Why: The floating pill must stay over every page layer, including the Edit Mode banner at 60. How: 100 keeps it above all page content. */
+	z-index         : 15;                                              /* What: Bottom Bar Stack Level. Why: The floating pill must stay over every page layer, including the Edit Mode banner at 14. How: 15 keeps it above all page content. */
 
 
 }
@@ -215,7 +215,7 @@
 		transform      : translateX( -100% );
 		transition     : transform var( --dur-tra-p02 ) var( --mot-sta-eas );                                                    /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
 		width          : calc( var( --ver-rhy-p10 ) * 1rem );                                                                    /* Vertical Rhythm Base Plus 10 ~= 242.522px */
-		z-index        : 200;                                                                                                    /* What: Drawer Stack Level. Why: The open drawer must sit above the scrim that dims everything else, at 190. How: 200 makes it the app shell's highest layer. */
+		z-index        : 18;                                                                                                     /* What: Drawer Stack Level. Why: The open drawer must sit above the scrim that dims everything else, at 17. How: 18 makes it the app shell's highest layer. */
 
 
 	}
@@ -239,7 +239,7 @@
 	padding             : var( --spa-ver-m01 ) max( var( --spa-hor-p01 ), calc( ( 100% - var( --ver-rhy-p15 ) * 1rem ) / 2 ) ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Plus 1 ~= 19.304px, Vertical Rhythm Base Plus 15 ~= 989.390px */ /* What: Centered Column Padding. Why: The bar's content should line up with the Today tab's column, capped at the p15 rhythm step. How: The side padding grows to center that width, never below the p01 horizontal spacing step; the other tabs' column would use the same formula with the p14 step. */
 	position            : sticky;
 	top                 : 0;
-	z-index             : 100;                                                                                                  /* What: Top Bar Stack Level. Why: The sticky bar must stay over every page layer, including the Edit Mode banner at 60. How: 100 keeps it above all page content. */
+	z-index             : 15;                                                                                                   /* What: Top Bar Stack Level. Why: The sticky bar must stay over every page layer, including the Edit Mode banner at 14. How: 15 keeps it above all page content. */
 
 
 }
@@ -864,7 +864,7 @@
 	display    : none;
 	inset      : 0;
 	position   : fixed;
-	z-index    : 190;                                                                 /* What: Scrim Stack Level. Why: The scrim has to dim the tab bars at 100 and their exiting ghost at 150, but not the drawer at 200. How: 190 sits between them. */
+	z-index    : 17;                                                                  /* What: Scrim Stack Level. Why: The scrim has to dim the tab bars at 15 and their exiting ghost at 16, but not the drawer at 18. How: 17 sits between them. */
 
 
 }
