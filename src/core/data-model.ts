@@ -6,13 +6,13 @@
  *
  * @summary
  * The TypeScript types for the records the app saves: items, pickers,
- * conditionals, reminders (tasks), holiday settings, and pick-log rows, plus
- * the fixed value sets several of their fields draw from. They live in core/
- * because core/ is the lowest layer that reads these records, and nothing
- * below it may import from state/. Every field name is the one saved in user
- * data, so none of them follow the naming rule; renaming them waits for the
- * persisted-name migration. Fields only some records carry, such as the ease
- * band on items outside the ease modes, are optional.
+ * conditionals, reminders (tasks) and their options, holiday settings, and
+ * pick-log rows, plus the fixed value sets several of their fields draw from.
+ * They live in core/ because core/ is the lowest layer that reads these
+ * records, and nothing below it may import from state/. Every field name is
+ * the one saved in user data, so none of them follow the naming rule; renaming
+ * them waits for the persisted-name migration. Fields only some records carry,
+ * such as the ease band on items outside the ease modes, are optional.
  *
  * Sections:
  *  - Types
@@ -150,6 +150,24 @@ type PicRcdTyp = { // What: Picker Record Type. Why: A picker is a pool of items
 
 
 
+type RemClaTyp = { // What: Reminder Class Type. Why: One-time and recurring reminders each have their own switches. How: This describes one class's options, state.reminderOpts.once or .recurring.
+
+
+	excludeHolidays : boolean; // What: Exclude Holidays. Why: A class can sit out holidays. How: This hides its reminders on a holiday when true.
+	excludeWeekends : boolean; // What: Exclude Weekends. Why: A class can sit out weekends. How: This hides its reminders on Saturday and Sunday when true.
+	ring            : boolean; // What: Ring. Why: A class can count toward Today's progress ring or not. How: This includes it when true.
+	stats           : boolean; // What: Stats. Why: A class can count toward Stats or not. How: This includes it when true.
+	streak          : boolean; // What: Streak. Why: A class can count toward the day streak or not. How: This includes it when true.
+
+
+};
+
+
+
+type RemOptTyp = { once : RemClaTyp, recurring : RemClaTyp }; // What: Reminder Options Type. Why: Reminders follow per-class switches set in Settings. How: This describes state.reminderOpts, one RemClaTyp per class.
+
+
+
 type TasRcdTyp = { // What: Task Record Type. Why: A reminder is a scheduled task, separate from the randomly picked items. How: This describes one entry of state.tasks.
 
 
@@ -181,7 +199,7 @@ type TasRcdTyp = { // What: Task Record Type. Why: A reminder is a scheduled tas
 
 // #region Exports
 
-export { type CadNamTyp, type ConRcdTyp, type DatModTyp, type HolCusTyp, type HolStaTyp, type IteRcdTyp, type ModNamTyp, type PclOutTyp, type PclRowTyp, type PclSouTyp, type PicRcdTyp, type RepNamTyp, type TasRcdTyp }; // What: Named Type Exports. Why: core/, state/, and the UI all read the same saved records. How: This exports every record type and value set by name, each marked type so it disappears from the build.
+export { type CadNamTyp, type ConRcdTyp, type DatModTyp, type HolCusTyp, type HolStaTyp, type IteRcdTyp, type ModNamTyp, type PclOutTyp, type PclRowTyp, type PclSouTyp, type PicRcdTyp, type RemClaTyp, type RemOptTyp, type RepNamTyp, type TasRcdTyp }; // What: Named Type Exports. Why: core/, state/, and the UI all read the same saved records. How: This exports every record type and value set by name, each marked type so it disappears from the build.
 
 // #endregion Exports
 

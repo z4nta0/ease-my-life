@@ -1,6 +1,15 @@
 
 
 
+// #region Imports
+
+import type { IteRcdTyp } from './data-model.ts'; // What: Item Record Type. Why: Every picking function reads saved items. How: This types each item parameter and the picked result.
+import type { PicRcdTyp } from './data-model.ts'; // What: Picker Record Type. Why: A pick runs against one saved picker's mode and settings. How: This types the picker parameter and its patch.
+
+// #endregion Imports
+
+
+
 /**
  * pickers.ts = Pickers
  *
@@ -59,6 +68,7 @@
  * needs its own dedicated, migration-safe design before it can move.
  *
  * Sections:
+ *  - Types
  *  - Constants
  *  - Helpers
  *  - Exports
@@ -66,6 +76,41 @@
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Types
+
+type PicOptTyp = { // What: Pick Option Type. Why: A single pick can be steered by the caller. How: This describes picIteFun's options, every one optional.
+
+
+	excludeIds?   : Set< string >; // What: Exclude Ids. Why: A manual spin mustn't land on an item already live on Today. How: This holds those items' ids.
+	excludeNames? : Set< string >; // What: Exclude Names. Why: An avoidDuplicates picker mustn't repeat a name already on today's list. How: This holds those names, lower-cased.
+	forceItemId?  : string;        // What: Force Item Id. Why: A manual send targets one specific item. How: This is that item's id, bypassing the draw.
+	forceNew?     : boolean;       // What: Force New. Why: An Ease Down re-roll has to abandon the active item. How: This starts a fresh streak when true.
+
+
+};
+
+
+
+type PicUpdTyp = { chargeStep? : number, id : string, value? : number, weight? : number }; // What: Pick Update Type. Why: A pick can change other items' charge, weight, or step as a side effect. How: This describes one item's change, keyed by the saved field names, since the update is saved as is into a pending Today entry.
+
+
+
+type PicResTyp = { // What: Pick Result Type. Why: Every mode's branch hands back the same shape. How: This describes what picIteFun returns.
+
+
+	cycArr  : IteRcdTyp[];          // What: Cycle Array. Why: The pick animation flashes through the eligible pool. How: This lists it.
+	depBoo? : boolean;              // What: Depleted Boolean. Why: An Ease Down streak can run out on this pick. How: This is true when it did, Ease Down only.
+	patObj? : Partial< PicRcdTyp >; // What: Patch Object. Why: Ease Down tracks its active item on the picker. How: This holds that picker update, Ease Down only.
+	picObj  : IteRcdTyp | null;     // What: Picked Object. Why: The caller shows and saves the picked item. How: This is that item, or null when nothing was eligible.
+	updArr  : PicUpdTyp[];          // What: Update Array. Why: A pick's side effects land on other items too. How: This lists every item change it caused.
+
+
+};
+
+// #endregion Types
 
 
 
@@ -116,7 +161,7 @@ const EAS_TOL_NUM = 0.5; // What: Ease Tolerance Number. Why: A threshold/N char
  *
 */
 
-function titCasFun ( rawNamStr ) {
+function titCasFun ( rawNamStr : string ) : string {
 
 
 	const cleNamStr = String( rawNamStr || '' ).replace( /[^a-z0-9'’&]+/gi, ' ' ).trim().replace( /\s+/g, ' ' ); // What: Cleaned Name String. Why: A messy user-typed name needs every separator run collapsed to plain single spacing before it can be split into words. How: This coerces rawNamStr to a string, turns every run of characters other than letters, digits, apostrophes, and ampersands into one space, trims the ends, then collapses any remaining space run to one.
@@ -162,7 +207,7 @@ function titCasFun ( rawNamStr ) {
  *
 */
 
-function norConFun ( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tidied Conditional Name Body. Why: A conditional name only ever needs the shared Title Case tidy-up; collision reuse happens at the call site instead. How: This is a thin wrapper straight over titCasFun.
+function norConFun ( rawNamStr : string ) : string { return titCasFun( rawNamStr ); } // What: Tidied Conditional Name Body. Why: A conditional name only ever needs the shared Title Case tidy-up; collision reuse happens at the call site instead. How: This is a thin wrapper straight over titCasFun.
 
 // #endregion norConFun
 
@@ -200,7 +245,7 @@ function norConFun ( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tid
  *
 */
 
-function norGroFun ( rawNamStr, exiGroArr ) {
+function norGroFun ( rawNamStr : string, exiGroArr : string[] ) : string {
 
 
 	const titNamStr = titCasFun( rawNamStr ); // What: Titled Name String. Why: Every further step below needs the already Title Cased version of rawNamStr to compare and possibly return. How: This calls titCasFun once and reuses the result throughout.
@@ -259,7 +304,7 @@ function norGroFun ( rawNamStr, exiGroArr ) {
  *
 */
 
-function norPicFun ( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tidied Picker Name Body. Why: A picker name only ever needs the shared Title Case tidy-up, with no collision-reuse step. How: This is a thin wrapper straight over titCasFun.
+function norPicFun ( rawNamStr : string ) : string { return titCasFun( rawNamStr ); } // What: Tidied Picker Name Body. Why: A picker name only ever needs the shared Title Case tidy-up, with no collision-reuse step. How: This is a thin wrapper straight over titCasFun.
 
 // #endregion norPicFun
 
@@ -301,7 +346,7 @@ function norPicFun ( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tid
  *
 */
 
-function aveEasFun ( iteAllArr, picIdeStr ) {
+function aveEasFun ( iteAllArr : IteRcdTyp[], picIdeStr : string ) : Required< Pick< IteRcdTyp, 'easeMax' | 'easeMin' > > {
 
 
 	const sibIteArr = ( iteAllArr || [] ).filter( ( curIteObj ) => curIteObj.pickerId === picIdeStr ); // What: Sibling Item Array. Why: Only this picker's own items should factor into its own averaged band. How: This filters iteAllArr down to items whose own pickerId matches picIdeStr.
@@ -311,7 +356,7 @@ function aveEasFun ( iteAllArr, picIdeStr ) {
 
 
 
-	const aveKeyFun = ( curKeyStr ) => sibIteArr.reduce( ( sumValNum, curIteObj ) => sumValNum + ( curIteObj[ curKeyStr ] ?? DEF_EAS_OBJ[ curKeyStr ] ), 0 ) / sibIteArr.length; // What: Average Key Function. Why: Both easeMin and easeMax need the exact same averaging logic, just keyed differently. How: This sums curKeyStr across sibIteArr (each falling back to DEF_EAS_OBJ's own value when missing), divided by the sibling count.
+	const aveKeyFun = ( curKeyStr : 'easeMax' | 'easeMin' ) => sibIteArr.reduce( ( sumValNum, curIteObj ) => sumValNum + ( curIteObj[ curKeyStr ] ?? DEF_EAS_OBJ[ curKeyStr ] ), 0 ) / sibIteArr.length; // What: Average Key Function. Why: Both easeMin and easeMax need the exact same averaging logic, just keyed differently. How: This sums curKeyStr across sibIteArr (each falling back to DEF_EAS_OBJ's own value when missing), divided by the sibling count.
 
 
 
@@ -359,7 +404,7 @@ function aveEasFun ( iteAllArr, picIdeStr ) {
  *
 */
 
-const easEliFun = ( iteRcdObj, thrValNum ) => ( iteRcdObj.value ?? 0 ) >= ( ( thrValNum ?? 100 ) - EAS_TOL_NUM ); // What: Ease Eligible Function. Why: Comparing an item's own value against its threshold directly (with no tolerance) can make an item at 99.7 invisible to a re-roll cycle count while still being eligible to the generator itself, a real inconsistency this file used to have. How: This treats iteRcdObj as eligible once its own value reaches thrValNum minus EAS_TOL_NUM, both defaulted the same way picIteFun defaults them.
+const easEliFun = ( iteRcdObj : IteRcdTyp, thrValNum : number ) : boolean => ( iteRcdObj.value ?? 0 ) >= ( ( thrValNum ?? 100 ) - EAS_TOL_NUM ); // What: Ease Eligible Function. Why: Comparing an item's own value against its threshold directly (with no tolerance) can make an item at 99.7 invisible to a re-roll cycle count while still being eligible to the generator itself, a real inconsistency this file used to have. How: This treats iteRcdObj as eligible once its own value reaches thrValNum minus EAS_TOL_NUM, both defaulted the same way picIteFun defaults them.
 
 // #endregion easEliFun
 
@@ -389,7 +434,7 @@ const easEliFun = ( iteRcdObj, thrValNum ) => ( iteRcdObj.value ?? 0 ) >= ( ( th
  *
 */
 
-function eliPooFun ( iteSouArr ) { return iteSouArr.filter( ( curIteObj ) => !curIteObj.vacation ); } // What: Eligible Pool Body. Why: The caller needs only the items actually available to pick from right now. How: This keeps every item in iteSouArr whose own vacation field is falsy.
+function eliPooFun ( iteSouArr : IteRcdTyp[] ) : IteRcdTyp[] { return iteSouArr.filter( ( curIteObj ) => !curIteObj.vacation ); } // What: Eligible Pool Body. Why: The caller needs only the items actually available to pick from right now. How: This keeps every item in iteSouArr whose own vacation field is falsy.
 
 // #endregion eliPooFun
 
@@ -421,7 +466,7 @@ function eliPooFun ( iteSouArr ) { return iteSouArr.filter( ( curIteObj ) => !cu
  *
 */
 
-const modEliFun = ( iteRcdObj, picRcdObj ) => { // What: Mode Eligible Function. Why: Some callers need to know whether an item could be picked RIGHT NOW under its own picker's mode, independent of whether the item is active/inactive. How: This branches on picRcdObj's own mode, delegating ease-up to easEliFun and treating ease-down/dynamic/random/weighted by their own simpler rules.
+const modEliFun = ( iteRcdObj : IteRcdTyp, picRcdObj : PicRcdTyp | null | undefined ) : boolean => { // What: Mode Eligible Function. Why: Some callers need to know whether an item could be picked RIGHT NOW under its own picker's mode, independent of whether the item is active/inactive. How: This branches on picRcdObj's own mode, delegating ease-up to easEliFun and treating ease-down/dynamic/random/weighted by their own simpler rules.
 
 
 	if ( !picRcdObj ) return true; // What: No Picker Guard. Why: With no picker to check a mode against, nothing can be ruled ineligible. How: This returns true early when picRcdObj is missing.
@@ -474,7 +519,7 @@ const modEliFun = ( iteRcdObj, picRcdObj ) => { // What: Mode Eligible Function.
  *
 */
 
-function reaValFun ( iteRcdObj, modKeyStr, thrValNum = 100 ) {
+function reaValFun ( iteRcdObj : IteRcdTyp, modKeyStr : string, thrValNum : number = 100 ) : number | null {
 
 
 	if ( modKeyStr === 'ease-up' ) return Math.min( 1, iteRcdObj.value / thrValNum ); // What: Ease Up Readiness Check. Why: Ease Up's own readiness is how close the item's value has charged toward thrValNum. How: This divides iteRcdObj's own value by thrValNum, capped at 1.
@@ -532,7 +577,7 @@ function reaValFun ( iteRcdObj, modKeyStr, thrValNum = 100 ) {
  *
 */
 
-function weiPicFun ( itePooArr, weiGetFun ) {
+function weiPicFun ( itePooArr : IteRcdTyp[], weiGetFun : ( iteRcdObj : IteRcdTyp ) => number ) : IteRcdTyp | null {
 
 
 	const weiValArr = itePooArr.map( weiGetFun );                                               // What: Weight Value Array. Why: The roulette-wheel draw below needs every item's own weight resolved up front, not recomputed on each loop iteration. How: This calls weiGetFun once per item in itePooArr.
@@ -616,7 +661,7 @@ function weiPicFun ( itePooArr, weiGetFun ) {
  *
 */
 
-function picIteFun ( picRcdObj, iteAllArr, optConObj ) {
+function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? : PicOptTyp ) : PicResTyp {
 
 
 	// #region Today Exclusion
@@ -768,7 +813,7 @@ function picIteFun ( picRcdObj, iteAllArr, optConObj ) {
 			const falEasObj = aveEasFun( updPooArr, picRcdObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a drift band to roll a target cycle count from. How: This computes the sibling-average fallback band via aveEasFun.
 
 
-			const rolSteFun = ( curIteObj ) => { // What: Roll Step Function. Why: A freshly-reset item needs a brand new fixed charge step planned, uniformly across its own eligible cycle-count range. How: This rolls a target cycle count in [sooCycNum, latCycNum], then returns the fixed step that lands the item exactly on thrValNum in that many cycles.
+			const rolSteFun = ( curIteObj : IteRcdTyp ) => { // What: Roll Step Function. Why: A freshly-reset item needs a brand new fixed charge step planned, uniformly across its own eligible cycle-count range. How: This rolls a target cycle count in [sooCycNum, latCycNum], then returns the fixed step that lands the item exactly on thrValNum in that many cycles.
 
 
 				const sooCycNum = Math.max( 1, Math.round( thrValNum / ( curIteObj.easeMax ?? falEasObj.easeMax ) ) );         // What: Soonest Cycle Number. Why: This is the fewest cycles this item's own band allows before becoming eligible. How: This divides thrValNum by the item's own (or fallback) easeMax, its fastest charge rate.
@@ -783,10 +828,10 @@ function picIteFun ( picRcdObj, iteAllArr, optConObj ) {
 			};
 
 
-			const getSteFun = ( curIteObj ) => ( curIteObj.chargeStep && curIteObj.chargeStep > 0 ) ? curIteObj.chargeStep : rolSteFun( curIteObj ); // What: Get Step Function. Why: An item already mid-plan must keep charging by its own already-rolled step; only a legacy item with none rolls a fresh one. How: This returns curIteObj's own chargeStep when it's a real positive number, rolling one via rolSteFun otherwise.
+			const getSteFun = ( curIteObj : IteRcdTyp ) => ( curIteObj.chargeStep && curIteObj.chargeStep > 0 ) ? curIteObj.chargeStep : rolSteFun( curIteObj ); // What: Get Step Function. Why: An item already mid-plan must keep charging by its own already-rolled step; only a legacy item with none rolls a fresh one. How: This returns curIteObj's own chargeStep when it's a real positive number, rolling one via rolSteFun otherwise.
 
 
-			const chrUpdFun = ( curIteObj ) => { // What: Charge Update Function. Why: A waiting item needs its own resolved step both applied to its value and persisted for next cycle. How: This resolves the step once via getSteFun, then returns an update carrying both the new value and that same step.
+			const chrUpdFun = ( curIteObj : IteRcdTyp ) => { // What: Charge Update Function. Why: A waiting item needs its own resolved step both applied to its value and persisted for next cycle. How: This resolves the step once via getSteFun, then returns an update carrying both the new value and that same step.
 
 
 				const curSteNum = getSteFun( curIteObj ); // What: Current Step Number. Why: This item's own resolved charge step is needed twice below, for the value increment and the persisted chargeStep. How: This calls getSteFun once and reuses the result.
@@ -831,7 +876,7 @@ function picIteFun ( picRcdObj, iteAllArr, optConObj ) {
 
 
 
-			const getTimFun = ( curIteObj ) => curIteObj.lastPicked ? Date.parse( curIteObj.lastPicked ) : 0; // What: Get Time Function. Why: A tie between equally-overdue items must break on whichever waited longest. How: This resolves an item's own lastPicked into a comparable timestamp, treating a never-picked item as the oldest possible (0).
+			const getTimFun = ( curIteObj : IteRcdTyp ) => curIteObj.lastPicked ? Date.parse( curIteObj.lastPicked ) : 0; // What: Get Time Function. Why: A tie between equally-overdue items must break on whichever waited longest. How: This resolves an item's own lastPicked into a comparable timestamp, treating a never-picked item as the oldest possible (0).
 
 
 			const picResObj = forIteObj || eliIteArr.reduce( ( besIteObj, curIteObj ) => { // What: Picked Result Object. Why: A forced target wins outright; otherwise the most overdue eligible item (by value, ties broken by oldest lastPicked) is picked. How: This reduces eliIteArr, keeping whichever of besIteObj/curIteObj is more overdue by the rules in its own body.
@@ -965,7 +1010,7 @@ function picIteFun ( picRcdObj, iteAllArr, optConObj ) {
 			const falEasObj = aveEasFun( updPooArr, picRcdObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a decay band to roll a target cycle count from. How: This computes the sibling-average fallback band via aveEasFun.
 
 
-			const rolSteFun = ( curIteObj ) => { // What: Roll Step Function. Why: A freshly-chosen item needs a brand new fixed decay step planned, uniformly across its own eligible cycle-count range. How: This rolls a target cycle count in [sooCycNum, latCycNum], then returns the fixed step that empties the item exactly in that many cycles.
+			const rolSteFun = ( curIteObj : IteRcdTyp ) => { // What: Roll Step Function. Why: A freshly-chosen item needs a brand new fixed decay step planned, uniformly across its own eligible cycle-count range. How: This rolls a target cycle count in [sooCycNum, latCycNum], then returns the fixed step that empties the item exactly in that many cycles.
 
 
 				const sooCycNum = Math.max( 1, Math.round( thrValNum / ( curIteObj.easeMax ?? falEasObj.easeMax ) ) );         // What: Soonest Cycle Number. Why: This is the fewest cycles this item's own band allows before fully depleting. How: This divides thrValNum by the item's own (or fallback) easeMax, its fastest decay rate.
@@ -1170,7 +1215,7 @@ const PIC_NAM_OBJ = { // What: Pickers Namespace Object. Why: store.ts, tab-toda
 
 
 
-export { norConFun, norGroFun, norPicFun, PIC_NAM_OBJ }; // What: Named Exports. Why: store.ts and the tab files import the three name normalizers individually and reach everything else through the PIC_NAM_OBJ namespace. How: This exports all four bindings by name in one statement at the very end of the file.
+export { norConFun, norGroFun, norPicFun, PIC_NAM_OBJ, type PicOptTyp, type PicResTyp, type PicUpdTyp }; // What: Named Exports. Why: store.ts and the tab files import the three name normalizers individually and reach everything else through the PIC_NAM_OBJ namespace. How: This exports all four bindings, plus the pick option, result, and update types, by name in one statement at the very end of the file.
 
 // #endregion Exports
 

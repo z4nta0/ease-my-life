@@ -1,6 +1,14 @@
 
 
 
+// #region Imports
+
+import type { ConRcdTyp } from './data-model.ts'; // What: Conditional Record Type. Why: Every function here reads a saved conditional or returns a partial update to one. How: This types those parameters and patches.
+
+// #endregion Imports
+
+
+
 /**
  * conditionals.ts = Conditionals
  *
@@ -65,13 +73,13 @@
 
 // #region Helpers
 
-const claValFun = ( curValNum, minValNum, maxValNum ) => Math.max( minValNum, Math.min( maxValNum, curValNum ) ); // What: Clamp Value Function. Why: Several value-family calculations below need a result kept within a hard [min, max] band, most often [0, threshold]. How: This nests Math.min/Math.max to floor curValNum at minValNum after first ceiling it at maxValNum.
+const claValFun = ( curValNum : number, minValNum : number, maxValNum : number ) => Math.max( minValNum, Math.min( maxValNum, curValNum ) ); // What: Clamp Value Function. Why: Several value-family calculations below need a result kept within a hard [min, max] band, most often [0, threshold]. How: This nests Math.min/Math.max to floor curValNum at minValNum after first ceiling it at maxValNum.
 
 
 
 // #region Mode Classification
 
-const modProFun = ( modKeyStr ) => modKeyStr === 'random' || modKeyStr === 'weighted'; // What: Mode Probability Function. Why: resDayFun below needs to know whether a conditional's own mode rolls triggered fresh at generate time. How: This is true for exactly the two probability-family modes, random and weighted.
+const modProFun = ( modKeyStr : string ) => modKeyStr === 'random' || modKeyStr === 'weighted'; // What: Mode Probability Function. Why: resDayFun below needs to know whether a conditional's own mode rolls triggered fresh at generate time. How: This is true for exactly the two probability-family modes, random and weighted.
 
 
 
@@ -99,7 +107,7 @@ const modProFun = ( modKeyStr ) => modKeyStr === 'random' || modKeyStr === 'weig
  *
 */
 
-const modValFun = ( modKeyStr ) => [ 'dynamic', 'ease-down', 'ease-up' ].includes( modKeyStr ); // What: Mode Value Function. Why: advValFun below, day-log.tsx, and store.ts all need to know whether a conditional's own mode is completion-driven instead of rolled. How: This is true for exactly the three value-family modes, ease-up, ease-down, and dynamic.
+const modValFun = ( modKeyStr : string ) : boolean => [ 'dynamic', 'ease-down', 'ease-up' ].includes( modKeyStr ); // What: Mode Value Function. Why: advValFun below, day-log.tsx, and store.ts all need to know whether a conditional's own mode is completion-driven instead of rolled. How: This is true for exactly the three value-family modes, ease-up, ease-down, and dynamic.
 
 // #endregion modValFun
 
@@ -136,7 +144,7 @@ const modValFun = ( modKeyStr ) => [ 'dynamic', 'ease-down', 'ease-up' ].include
  *
 */
 
-function supGatFun ( conCurObj ) { return !!( conCurObj && conCurObj.active !== false && conCurObj.triggered ); } // What: Suppress Gate Body. Why: The caller needs one single boolean covering both the enabled check and the triggered check at once. How: This combines both conditions with &&, wrapped in !! so a nullish conCurObj resolves to a real false rather than undefined.
+function supGatFun ( conCurObj : ConRcdTyp | null | undefined ) : boolean { return !!( conCurObj && conCurObj.active !== false && conCurObj.triggered ); } // What: Suppress Gate Body. Why: The caller needs one single boolean covering both the enabled check and the triggered check at once. How: This combines both conditions with &&, wrapped in !! so a nullish conCurObj resolves to a real false rather than undefined.
 
 // #endregion supGatFun
 
@@ -168,7 +176,7 @@ function supGatFun ( conCurObj ) { return !!( conCurObj && conCurObj.active !== 
  *
 */
 
-function truOddFun ( conCurObj ) {
+function truOddFun ( conCurObj : ConRcdTyp ) : number {
 
 
 	if ( conCurObj.mode === 'random' ) return 0.5; // What: Random Mode Guard. Why: A random-mode conditional always resolves at a fixed fifty percent, with no oddsPct or value involved at all. How: This returns 0.5 immediately when conCurObj's own mode is 'random'.
@@ -222,10 +230,10 @@ function truOddFun ( conCurObj ) {
  *
 */
 
-function resDayFun ( conAllArr ) {
+function resDayFun ( conAllArr : ConRcdTyp[] | null | undefined ) : Record< string, Partial< ConRcdTyp > > {
 
 
-	const patIdeObj = {}; // What: Patch Identifier Object. Why: This collects every conditional's own resolved-for-today patch, to apply before this generate's own picker gating runs. How: This starts empty and is written to once per conditional in the loop below.
+	const patIdeObj : Record< string, Partial< ConRcdTyp > > = {}; // What: Patch Identifier Object. Why: This collects every conditional's own resolved-for-today patch, to apply before this generate's own picker gating runs. How: This starts empty and is written to once per conditional in the loop below.
 
 
 	for ( const conCurObj of conAllArr || [] ) { // What: Conditional Walk Loop. Why: Every persisted conditional needs its own triggered state resolved for today, independently of every other one. How: This iterates conAllArr, falling back to an empty array when none was given.
@@ -308,7 +316,7 @@ function resDayFun ( conAllArr ) {
  *
 */
 
-function rolSteFun ( conCurObj, thrValNum ) {
+function rolSteFun ( conCurObj : ConRcdTyp, thrValNum : number ) : number {
 
 
 	const sooCycNum = Math.max( 1, Math.round( thrValNum / ( conCurObj.easeMax ?? 14 ) ) );        // What: Soonest Cycle Number. Why: The target cycle count must be rolled no sooner than the fastest possible cycle length, derived from easeMax the same way threshold/easeMax already bounds the fastest duration. How: This divides thrValNum by conCurObj's own easeMax (defaulted to 14), rounded and floored at 1 cycle via Math.max.
@@ -326,7 +334,7 @@ function rolSteFun ( conCurObj, thrValNum ) {
 
 
 
-const steResFun = ( conCurObj, thrValNum ) => ( conCurObj.chargeStep && conCurObj.chargeStep > 0 ? conCurObj.chargeStep : rolSteFun( conCurObj, thrValNum ) ); // What: Step Resolve Function. Why: A value-mode conditional mid-cycle must keep using its own already-rolled step, while a legacy one with none (or a just-started cycle) needs a fresh roll. How: This returns conCurObj's own chargeStep when it is a real positive number, calling rolSteFun otherwise.
+const steResFun = ( conCurObj : ConRcdTyp, thrValNum : number ) => ( conCurObj.chargeStep && conCurObj.chargeStep > 0 ? conCurObj.chargeStep : rolSteFun( conCurObj, thrValNum ) ); // What: Step Resolve Function. Why: A value-mode conditional mid-cycle must keep using its own already-rolled step, while a legacy one with none (or a just-started cycle) needs a fresh roll. How: This returns conCurObj's own chargeStep when it is a real positive number, calling rolSteFun otherwise.
 
 
 
@@ -360,7 +368,7 @@ const steResFun = ( conCurObj, thrValNum ) => ( conCurObj.chargeStep && conCurOb
  *
 */
 
-function advValFun ( conCurObj ) {
+function advValFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRcdTyp > | null {
 
 
 	const misConBoo = !conCurObj;                    // What: Missing Conditional Boolean. Why: There is nothing to advance for a conditional that doesn't exist. How: This is true when conCurObj is nullish.
@@ -474,7 +482,7 @@ function advValFun ( conCurObj ) {
  *
 */
 
-function carComFun ( conCurObj ) {
+function carComFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRcdTyp > | null {
 
 
 	if ( !conCurObj ) return null; // What: No Conditional Guard. Why: There is nothing to reset or discharge for a conditional that does not exist. How: This returns null immediately when conCurObj is nullish.
