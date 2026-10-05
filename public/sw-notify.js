@@ -6,7 +6,7 @@
  *
  * @summary
  * Adds the notification click behavior to the generated service worker, which
- * loads this file through Workbox's importScripts (see vite.config.js).
+ * loads this file through Workbox's importScripts (see vite.config.ts).
  * Everything else in the worker is Workbox's precache handling. A notification
  * shown with registration.showNotification() belongs to the service worker,
  * not the page, so its click can only be handled here: without this listener,

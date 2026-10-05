@@ -43,7 +43,7 @@
 
 
 }
-.todCarArt[data-card-exhale-active] { /* What: Exhaling Entry Card. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exh-car-del tab-today.jsx sets on each card. */
+.todCarArt[data-card-exhale-active] { /* What: Exhaling Entry Card. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exh-car-del tab-today.tsx sets on each card. */
 
 
 	animation : global( cardCelebrateSwell ) var( --exh-car-dur ) var( --mot-dec-eas ) var( --exh-car-del, 0ms ) both; /* Exhale Card Duration ~= 1130.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Exhale Card Delay, set inline per card by the ripple cascade */ /* What: Global cardCelebrateSwell Keyframes. Why: The cardCelebrateSwell keyframes are shared with the reminder cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */

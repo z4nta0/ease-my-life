@@ -1166,7 +1166,7 @@
 	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );                                                      /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
 	position        : sticky;
 	top             : calc( var( --tod-hea-hei, calc( var( --ver-rhy-p09 ) * 1rem ) ) + var( --spa-ver-m02 ) );       /* Today Header Height, set by its parent, falling back to Vertical Rhythm Base Plus 9 ~= 183.074px, Spacing Vertical Base Minus 2 ~= 8.304px */
-	z-index         : 14;                                                                                             /* What: Banner Stack Level. Why: The sticky banner has to stay over a card being dragged, which reorder.js raises to 13. How: 14 sits above that card. */
+	z-index         : 14;                                                                                             /* What: Banner Stack Level. Why: The sticky banner has to stay over a card being dragged, which reorder.ts raises to 13. How: 14 sits above that card. */
 
 
 }
@@ -1355,8 +1355,8 @@
 
 
 		--fad-edg-off : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the row. How: --fad-lef-off and --fad-rig-off start from it. */
-		--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 28.0PX */ /* What: Fade Left Offset. Why: The left edge fades until the row reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
-		--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 28.0PX */ /* What: Fade Right Offset. Why: The right edge fades until the row reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+		--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 28.0PX */ /* What: Fade Left Offset. Why: The left edge fades until the row reaches its start. How: The mask reads this, and edge-fade.ts zeroes it via data-scroll-start-active. */
+		--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 28.0PX */ /* What: Fade Right Offset. Why: The right edge fades until the row reaches its end. How: The mask reads this, and edge-fade.ts zeroes it via data-scroll-end-active. */
 
 		-webkit-backdrop-filter : blur( calc( var( --ver-rhy-p01 ) * 1rem ) ) saturate( 140% );                                                                      /* Vertical Rhythm Base Plus 1 ~= 19.304px */
 		-webkit-mask-image      : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 28.0PX, Fade Right Offset ~= 28.0PX */
@@ -1797,7 +1797,7 @@
 
 
 }
-.groDraDiv > .todGroSec[data-item-drag-active] { /* What: Dragged Group Section. Why: A section being dragged lifts off the page as a card, without its divider. How: This raises it on a shadowed surface card and drops its divider and top padding, which reorder.js marks with data-item-drag-active, matching the following-section rule's specificity and sitting after its narrow-width variant so it wins by order. */
+.groDraDiv > .todGroSec[data-item-drag-active] { /* What: Dragged Group Section. Why: A section being dragged lifts off the page as a card, without its divider. How: This raises it on a shadowed surface card and drops its divider and top padding, which reorder.ts marks with data-item-drag-active, matching the following-section rule's specificity and sitting after its narrow-width variant so it wins by order. */
 
 
 	background    : var( --bac-sur-col ); /* Background Surface Color = oklch( 0.975 0.004 240 ) */

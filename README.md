@@ -38,8 +38,8 @@ ESLint is configured and can be run by hand with `npx eslint <file>`.
 
 ```
 src/
-  main.jsx       entry point: waits for storage, then mounts the app
-  app.jsx        root component and tab bar
+  main.tsx       entry point: waits for storage, then mounts the app
+  app.tsx        root component and tab bar
   core/          scheduling and picking logic, no React
   state/         app state, persistence, and sample data
   platform/      browser services: notifications, install, appearance
@@ -53,7 +53,7 @@ scripts/         build helpers
 ```
 
 Each component keeps its styles in a CSS module next to it
-(`entry-card.jsx` with `entry-card.module.css`).
+(`entry-card.tsx` with `entry-card.module.css`).
 
 ## Conventions
 
