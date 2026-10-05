@@ -50,7 +50,7 @@
  *
 */
 
-const motEasFun = ( easFamStr ) => getComputedStyle( document.documentElement ).getPropertyValue( `--mot-${ easFamStr }-eas` ).trim() || 'ease'; // What: Motion Easing Function. Why: Element.animate can't read a custom property, yet its curves should match the stylesheet's. How: This reads the family's token from the root element's computed style, falling back to ease.
+const motEasFun = ( easFamStr : string ) : string => getComputedStyle( document.documentElement ).getPropertyValue( `--mot-${ easFamStr }-eas` ).trim() || 'ease'; // What: Motion Easing Function. Why: Element.animate can't read a custom property, yet its curves should match the stylesheet's. How: This reads the family's token from the root element's computed style, falling back to ease.
 
 // #endregion motEasFun
 
@@ -80,7 +80,7 @@ const motEasFun = ( easFamStr ) => getComputedStyle( document.documentElement ).
  *
 */
 
-const redMotFun = () => !!( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ); // What: Reduce Motion Function. Why: JS-driven animations (rAF tweens, Element.animate, smooth scrolls) must check this since the CSS media query alone never reaches them. How: This reports whether the OS's prefers-reduced-motion media query currently matches reduce.
+const redMotFun = () : boolean => !!( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ); // What: Reduce Motion Function. Why: JS-driven animations (rAF tweens, Element.animate, smooth scrolls) must check this since the CSS media query alone never reaches them. How: This reports whether the OS's prefers-reduced-motion media query currently matches reduce.
 
 // #endregion redMotFun
 

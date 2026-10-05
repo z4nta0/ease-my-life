@@ -3375,7 +3375,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							<div className={ cssModObj.pagKicDiv }>{ /* What: Kicker Div Element. Why: Today's own date and time read as one small cluster. How: This renders forDatFun and forTimFun against curNowDat. */ }
 
 
-								{ forDatFun( curNowDat ) }{ /* What: Kicker Date Expression. Why: The header leads with today's own date. How: This formats curNowDat through forDatFun. */ } <span className={ cssModObj.kicTimSpa }>{ forTimFun( curNowDat ) }</span>{ /* What: Kicker Time Span Element. Why: The current time sits beside the date in its own styled span. How: This formats curNowDat through forTimFun, re-rendered every minute by the Live Clock effect. */ }
+								{ forDatFun( curNowDat.toISOString() ) }{ /* What: Kicker Date Expression. Why: The header leads with today's own date. How: This formats curNowDat, as an ISO string, through forDatFun. */ } <span className={ cssModObj.kicTimSpa }>{ forTimFun( curNowDat.toISOString() ) }</span>{ /* What: Kicker Time Span Element. Why: The current time sits beside the date in its own styled span. How: This formats curNowDat, as an ISO string, through forTimFun, re-rendered every minute by the Live Clock effect. */ }
 
 
 							</div>

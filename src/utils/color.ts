@@ -53,7 +53,7 @@
  *
 */
 
-function invColFun ( hexColStr ) {
+function invColFun ( hexColStr : string ) : string {
 
 
 	try { // What: Color Conversion Try. Why: Any malformed input must fall back to the original color instead of throwing. How: The catch below returns hexColStr unchanged.
@@ -77,9 +77,9 @@ function invColFun ( hexColStr ) {
 
 		} )();
 
-		const srgLinFun = ( srgChaNum ) => srgChaNum <= 0.04045 ? srgChaNum / 12.92 : Math.pow( ( srgChaNum + 0.055 ) / 1.055, 2.4 ); // What: Srgb Linear Function. Why: sRGB's own gamma curve must be undone before OKLab's linear-light math applies. How: This applies the standard sRGB-to-linear piecewise formula to one channel.
+		const srgLinFun = ( srgChaNum : number ) => srgChaNum <= 0.04045 ? srgChaNum / 12.92 : Math.pow( ( srgChaNum + 0.055 ) / 1.055, 2.4 ); // What: Srgb Linear Function. Why: sRGB's own gamma curve must be undone before OKLab's linear-light math applies. How: This applies the standard sRGB-to-linear piecewise formula to one channel.
 
-		const linSrgFun = ( linChaNum ) => { // What: Linear Srgb Function. Why: The final result must be re-encoded back into sRGB gamma before it's a displayable hex color. How: This applies the standard linear-to-sRGB piecewise formula to one clamped channel.
+		const linSrgFun = ( linChaNum : number ) => { // What: Linear Srgb Function. Why: The final result must be re-encoded back into sRGB gamma before it's a displayable hex color. How: This applies the standard linear-to-sRGB piecewise formula to one clamped channel.
 
 
 			const claChaNum = Math.max( 0, Math.min( 1, linChaNum ) ); // What: Clamped Channel Number. Why: A channel driven outside 0-1 by the inversion math must be clamped before re-encoding. How: This clamps linChaNum into the [0,1] range.
@@ -91,7 +91,7 @@ function invColFun ( hexColStr ) {
 
 		};
 
-		const linOklFun = ( [ linRedNum, linGrnNum, linBluNum ] ) => { // What: Linear Oklab Function. Why: Lightness must be inverted in OKLab space, not raw RGB, for a perceptually sane result. How: This applies Ottosson's own linear-RGB-to-OKLab matrix multiplication and cube roots.
+		const linOklFun = ( [ linRedNum, linGrnNum, linBluNum ] : number[] ) => { // What: Linear Oklab Function. Why: Lightness must be inverted in OKLab space, not raw RGB, for a perceptually sane result. How: This applies Ottosson's own linear-RGB-to-OKLab matrix multiplication and cube roots.
 
 
 			const lmsLonNum = 0.4122214708 * linRedNum + 0.5363325363 * linGrnNum + 0.0514459929 * linBluNum; // What: Long-Medium-Short Long Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Long-cone row of Ottosson's linear-RGB-to-LMS matrix.
@@ -116,7 +116,7 @@ function invColFun ( hexColStr ) {
 
 		};
 
-		const oklLinFun = ( [ oklLigNum, oklAaxNum, oklBaxNum ] ) => { // What: Oklab Linear Function. Why: Once lightness is inverted in OKLab, the result must be converted back to linear RGB before re-encoding. How: This applies Ottosson's own inverse OKLab-to-LMS matrix, cubes each term, then his inverse LMS-to-linear-RGB matrix.
+		const oklLinFun = ( [ oklLigNum, oklAaxNum, oklBaxNum ] : number[] ) => { // What: Oklab Linear Function. Why: Once lightness is inverted in OKLab, the result must be converted back to linear RGB before re-encoding. How: This applies Ottosson's own inverse OKLab-to-LMS matrix, cubes each term, then his inverse LMS-to-linear-RGB matrix.
 
 
 			const lmsLonPriNum = oklLigNum + 0.3963377774 * oklAaxNum + 0.2158037573 * oklBaxNum; // What: Long-Medium-Short Long Prime Number. Why: OKLab's own inverse must first reconstruct the cube-rooted LMS terms before cubing them back. How: This is the Long-term row of Ottosson's inverse OKLab-to-LMS matrix.

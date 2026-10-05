@@ -47,7 +47,7 @@
  *
 */
 
-const dimCouFun = ( yeaValNum, monOneNum ) => new Date( yeaValNum, monOneNum, 0 ).getDate(); // What: Days-In-Month Count Function. Why: Monthly/yearly clamping and nth-weekday math both need to know how many days a given month actually has. How: This asks for day 0 of the FOLLOWING month, which JS's own Date resolves back to the last real day of monOneNum.
+const dimCouFun = ( yeaValNum : number, monOneNum : number ) : number => new Date( yeaValNum, monOneNum, 0 ).getDate(); // What: Days-In-Month Count Function. Why: Monthly/yearly clamping and nth-weekday math both need to know how many days a given month actually has. How: This asks for day 0 of the FOLLOWING month, which JS's own Date resolves back to the last real day of monOneNum.
 
 // #endregion dimCouFun
 
@@ -76,7 +76,7 @@ const dimCouFun = ( yeaValNum, monOneNum ) => new Date( yeaValNum, monOneNum, 0 
  *
 */
 
-const forDatFun = ( isoDatStr ) => { // What: Format Date Function. Why: Every date shown compactly across the app (Today's header, Stats rows, ...) needs the same short weekday/month/day format. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString.
+const forDatFun = ( isoDatStr? : string ) : string => { // What: Format Date Function. Why: Every date shown compactly across the app (Today's header, Stats rows, ...) needs the same short weekday/month/day format. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString.
 
 
 	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
@@ -114,7 +114,7 @@ const forDatFun = ( isoDatStr ) => { // What: Format Date Function. Why: Every d
  *
 */
 
-const forLonFun = ( isoDatStr ) => { // What: Format Long Function. Why: A few spots (long-form date displays) need the full weekday name instead of the short 3-letter one. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString with a long weekday.
+const forLonFun = ( isoDatStr? : string ) : string => { // What: Format Long Function. Why: A few spots (long-form date displays) need the full weekday name instead of the short 3-letter one. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString with a long weekday.
 
 
 	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
@@ -153,7 +153,7 @@ const forLonFun = ( isoDatStr ) => { // What: Format Long Function. Why: A few s
  *
 */
 
-const forTimFun = ( isoDatStr ) => { // What: Format Time Function. Why: A few spots need a plain "3:42 PM" style time with no seconds. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleTimeString.
+const forTimFun = ( isoDatStr? : string ) : string => { // What: Format Time Function. Why: A few spots need a plain "3:42 PM" style time with no seconds. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleTimeString.
 
 
 	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
@@ -194,7 +194,7 @@ const forTimFun = ( isoDatStr ) => { // What: Format Time Function. Why: A few s
  *
 */
 
-const isoDayFun = ( datInpObj = new Date() ) => { // What: Iso Day Function. Why: Every dated state field (pick-log dates, reminder dates) needs one local-calendar day format. How: This formats datInpObj, defaulting to now, as a local YYYY-MM-DD string.
+const isoDayFun = ( datInpObj : Date = new Date() ) : string => { // What: Iso Day Function. Why: Every dated state field (pick-log dates, reminder dates) needs one local-calendar day format. How: This formats datInpObj, defaulting to now, as a local YYYY-MM-DD string.
 
 
 	const datCopObj = new Date( datInpObj ); // What: Date Copy Object. Why: datInpObj itself must not be mutated by the timezone shift below. How: This constructs a fresh Date instance from datInpObj.
@@ -241,7 +241,7 @@ const isoDayFun = ( datInpObj = new Date() ) => { // What: Iso Day Function. Why
  *
 */
 
-function nexDatFun ( nexDatObj, alwYeaBoo ) {
+function nexDatFun ( nexDatObj : Date | null, alwYeaBoo : boolean ) : string | null {
 
 
 	if ( !nexDatObj ) return null; // What: Missing Date Guard. Why: A caller with no next-eligible date at all still needs a defined, safe return value. How: This returns null outright when nexDatObj is falsy.
@@ -251,7 +251,7 @@ function nexDatFun ( nexDatObj, alwYeaBoo ) {
 	const shoYeaBoo = alwYeaBoo || nexDatObj.getFullYear() !== new Date().getFullYear(); // What: Show Year Boolean. Why: The year clutters a same-year date but is essential context for a yearly reminder or a date in a different year. How: This is true when alwYeaBoo was passed, or when nexDatObj's own year differs from the current year.
 
 
-	const forOptObj = shoYeaBoo // What: Format Options Object. Why: The date's own locale format depends on whether the year shows. How: This picks one of the two options objects below based on shoYeaBoo.
+	const forOptObj : Intl.DateTimeFormatOptions = shoYeaBoo // What: Format Options Object. Why: The date's own locale format depends on whether the year shows. How: This picks one of the two options objects below based on shoYeaBoo.
 		? { day : 'numeric', month : 'long', weekday : 'long', year : 'numeric' } // What: With-Year Format Object. Why: This is the full "Weekday, Month Day, Year" format used whenever shoYeaBoo is true. How: This is passed as toLocaleDateString's own options argument.
 		: { day : 'numeric', month : 'long', weekday : 'long' };                  // What: Without-Year Format Object. Why: This is the shorter "Weekday, Month Day" format used for a same-year date on a non-yearly reminder. How: This is passed as toLocaleDateString's own options argument.
 
@@ -301,7 +301,7 @@ function nexDatFun ( nexDatObj, alwYeaBoo ) {
  *
 */
 
-function nwmDayFun ( yeaValNum, monOneNum, nthValNum, weeValNum ) {
+function nwmDayFun ( yeaValNum : number, monOneNum : number, nthValNum : number, weeValNum : number ) : number {
 
 
 	const firWeeNum = new Date( yeaValNum, monOneNum - 1, 1 ).getDay();                // What: First Weekday Number. Why: Finding the Nth occurrence of weeValNum needs to know which weekday the month itself starts on. How: This reads the weekday of that month's own 1st day.
@@ -343,7 +343,7 @@ function nwmDayFun ( yeaValNum, monOneNum, nthValNum, weeValNum ) {
  *
 */
 
-function ordSufFun ( ordValNum ) {
+function ordSufFun ( ordValNum : number ) : string {
 
 
 	const sufTexArr = [ 'th', 'st', 'nd', 'rd' ];           // What: Suffix Text Array. Why: Every English ordinal suffix boils down to one of just these 4 words. How: This is indexed below by lasTwoNum's own value.

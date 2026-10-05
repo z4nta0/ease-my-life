@@ -35,7 +35,7 @@ const COR_DES_NUM = ( Math.cbrt( 108 + 12 * Math.sqrt( 69 ) ) + Math.cbrt( 108 -
 
 // #region Helpers
 
-const steOffFun = ( steNamStr ) => steNamStr === 'bas' ? 0 : ( steNamStr[ 0 ] === 'p' ? 1 : -1 ) * Number( steNamStr.slice( 1 ) ); // What: Step Offset Function. Why: The rhythm and the duration scale name their steps the same way, by offset from a base step. How: This returns 0 for 'bas', NN for 'pNN', and -NN for 'mNN'.
+const steOffFun = ( steNamStr : string ) => steNamStr === 'bas' ? 0 : ( steNamStr[ 0 ] === 'p' ? 1 : -1 ) * Number( steNamStr.slice( 1 ) ); // What: Step Offset Function. Why: The rhythm and the duration scale name their steps the same way, by offset from a base step. How: This returns 0 for 'bas', NN for 'pNN', and -NN for 'mNN'.
 
 
 
@@ -66,7 +66,7 @@ const steOffFun = ( steNamStr ) => steNamStr === 'bas' ? 0 : ( steNamStr[ 0 ] ==
  *
 */
 
-const durMilFun = ( durSteStr ) => Math.pow( COR_DES_NUM, 18 + steOffFun( durSteStr ) ); // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation need the same step lengths the stylesheet uses. How: This raises the core design number to the 18th power plus the step's offset.
+const durMilFun = ( durSteStr : string ) : number => Math.pow( COR_DES_NUM, 18 + steOffFun( durSteStr ) ); // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation need the same step lengths the stylesheet uses. How: This raises the core design number to the 18th power plus the step's offset.
 
 // #endregion durMilFun
 
@@ -99,7 +99,7 @@ const durMilFun = ( durSteStr ) => Math.pow( COR_DES_NUM, 18 + steOffFun( durSte
  *
 */
 
-const rhyPxlFun = ( rhySteStr ) => { // What: Rhythm Pixel Function. Why: Layout math that works in pixels needs the same step sizes the stylesheet uses. How: This turns the step's name into a power of the core design number and multiplies the root font size by it.
+const rhyPxlFun = ( rhySteStr : string ) : number => { // What: Rhythm Pixel Function. Why: Layout math that works in pixels needs the same step sizes the stylesheet uses. How: This turns the step's name into a power of the core design number and multiplies the root font size by it.
 
 
 	const powValNum = 1 + steOffFun( rhySteStr );                                                // What: Power Value Number. Why: Each step is a power of the core design number, counted from the base step's first power. How: This adds the step's offset to that first power.
