@@ -5,6 +5,9 @@
 
 import { isoDayFun } from '../utils/date.ts'; // What: Iso Day Function. Why: Holiday dates are matched against local-calendar YYYY-MM-DD keys. How: This formats each computed holiday date as that key.
 
+
+import type { HolStaTyp } from './data-model.ts'; // What: Holiday State Type. Why: Every resolver reads the saved holiday settings. How: This types each holStaObj parameter.
+
 // #endregion Imports
 
 
@@ -32,6 +35,7 @@ import { isoDayFun } from '../utils/date.ts'; // What: Iso Day Function. Why: Ho
  * added recurring days off, by month (1-12) and day (1-31).
  *
  * Sections:
+ *  - Types
  *  - Constants
  *  - Helpers
  *  - Exports
@@ -39,6 +43,40 @@ import { isoDayFun } from '../utils/date.ts'; // What: Iso Day Function. Why: Ho
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Types
+
+type HolDefTyp = { // What: Holiday Definition Type. Why: Every built-in holiday is defined by exactly one of three date rules. How: This describes one HOL_DEF_ARR entry, read by datDefFun.
+
+
+	fixArr? : number[]; // What: Fixed Array. Why: A fixed-date holiday falls on the same day every year. How: This is [month, day].
+	keyStr  : string;   // What: Key String. Why: A holiday is disabled by its key. How: This is its stable identifier.
+	lasArr? : number[]; // What: Last Array. Why: Some holidays fall on a month's last given weekday. How: This is [month, weekday].
+	namStr  : string;   // What: Name String. Why: The holiday is shown by name. How: This is its display name.
+	nthArr? : number[]; // What: Nth Array. Why: Some holidays fall on a month's Nth given weekday. How: This is [month, weekday, n].
+
+
+};
+
+
+
+type HolRcdTyp = { // What: Holiday Record Type. Why: Callers need one resolved shape for a computed or custom holiday in a given year. How: This describes what comYeaFun, actYeaFun, and holInfFun return.
+
+
+	actObj? : Date;    // What: Actual Object. Why: A caller wording around an observed shift needs the true date. How: This is the unshifted date, absent on custom days.
+	custom? : boolean; // What: Custom. Why: Callers tell the user's own days apart from computed ones. How: This is true on a custom day and false on a computed one.
+	datObj  : Date;    // What: Date Object. Why: Most callers care about the day actually taken off. How: This is the observed date.
+	isoStr  : string;  // What: Iso String. Why: Callers match a holiday to a calendar day as text. How: This is the observed day as 'YYYY-MM-DD'.
+	keyStr  : string;  // What: Key String. Why: A holiday is disabled by its key. How: This is its identifier, prefixed 'custom:' on custom days.
+	namStr  : string;  // What: Name String. Why: The holiday is shown by name. How: This is its display name.
+	obsBoo? : boolean; // What: Observed Boolean. Why: A caller words a shifted holiday differently. How: This is true when the observed day differs from the actual one.
+
+
+};
+
+// #endregion Types
 
 
 
@@ -69,7 +107,7 @@ const THU_DAY_NUM = 4; // What: Thursday Day Number. Why: Same reasoning as MON_
  *
 */
 
-const HOL_DEF_ARR = [ // What: Holiday Definition Array. Why: This is the single source of truth every US holiday computation in this file reads from. How: This is read by comYeaFun below, resolving each entry's own rule via datDefFun into a concrete date for whatever year is requested.
+const HOL_DEF_ARR : HolDefTyp[] = [ // What: Holiday Definition Array. Why: This is the single source of truth every US holiday computation in this file reads from. How: This is read by comYeaFun below, resolving each entry's own rule via datDefFun into a concrete date for whatever year is requested.
 
 
 	{ keyStr : 'newyear',      namStr : 'New Year\'s Day',            fixArr : [ 1, 1 ]               }, // What: New Year Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to January 1st every year.
@@ -91,7 +129,7 @@ const HOL_DEF_ARR = [ // What: Holiday Definition Array. Why: This is the single
 
 
 
-const REG_DEF_OBJ = { US : { defArr : HOL_DEF_ARR } }; // What: Region Definition Object. Why: This is the country-keyed lookup every region-aware function below resolves against, shaped so more regions can be added later without touching any caller. How: This currently defines just one entry, US, holding HOL_DEF_ARR as its own rule table.
+const REG_DEF_OBJ : Record< string, { defArr : HolDefTyp[] } > = { US : { defArr : HOL_DEF_ARR } }; // What: Region Definition Object. Why: This is the country-keyed lookup every region-aware function below resolves against, shaped so more regions can be added later without touching any caller. How: This currently defines just one entry, US, holding HOL_DEF_ARR as its own rule table.
 
 // #endregion Constants
 
@@ -128,7 +166,7 @@ const REG_DEF_OBJ = { US : { defArr : HOL_DEF_ARR } }; // What: Region Definitio
  *
 */
 
-function lasDayFun ( yeaValNum, monOneNum, dayIndNum ) {
+function lasDayFun ( yeaValNum : number, monOneNum : number, dayIndNum : number ) : Date {
 
 
 	const lasDatObj = new Date( yeaValNum, monOneNum, 0 );        // What: Last Date Object. Why: Day 0 of the NEXT month is JavaScript's own idiom for the last day of THIS month, which every offset below is computed from. How: This constructs a Date one month ahead with a day value of 0, which Date normalizes back to the prior month's final day.
@@ -173,7 +211,7 @@ function lasDayFun ( yeaValNum, monOneNum, dayIndNum ) {
  *
 */
 
-function nthDayFun ( yeaValNum, monOneNum, dayIndNum, nthCouNum ) {
+function nthDayFun ( yeaValNum : number, monOneNum : number, dayIndNum : number, nthCouNum : number ) : Date {
 
 
 	const firDatObj = new Date( yeaValNum, monOneNum - 1, 1 );    // What: First Date Object. Why: The month's own first day is the anchor every weekday-offset calculation below is computed from. How: This constructs a Date for day 1 of the given month/year.
@@ -217,7 +255,7 @@ function nthDayFun ( yeaValNum, monOneNum, dayIndNum, nthCouNum ) {
  *
 */
 
-function obsDatFun ( actDatObj ) {
+function obsDatFun ( actDatObj : Date ) : Date {
 
 
 	const curDayNum = actDatObj.getDay(); // What: Current Day Number. Why: The federal observed-date shift depends on which weekday the actual holiday falls on. How: This reads actDatObj's own weekday via Date.getDay().
@@ -271,7 +309,7 @@ function obsDatFun ( actDatObj ) {
  *
 */
 
-function datDefFun ( holDefObj, yeaValNum ) {
+function datDefFun ( holDefObj : HolDefTyp, yeaValNum : number ) : Date | null {
 
 
 	if ( holDefObj.fixArr ) return new Date( yeaValNum, holDefObj.fixArr[ 0 ] - 1, holDefObj.fixArr[ 1 ] ); // What: Fixed Rule Branch. Why: A fixed-date holiday's actual calendar date never depends on any weekday math at all. How: This builds the date directly from the definition's own [month, day] pair.
@@ -324,7 +362,7 @@ function datDefFun ( holDefObj, yeaValNum ) {
  *
 */
 
-function comYeaFun ( yeaValNum, couCodStr = 'US' ) {
+function comYeaFun ( yeaValNum : number, couCodStr : string = 'US' ) : HolRcdTyp[] {
 
 
 	const curRegObj = REG_DEF_OBJ[ couCodStr ] || REG_DEF_OBJ.US; // What: Current Region Object. Why: Every holiday needs resolving against its own region's own rule table, falling back to the US table when the given code is unrecognized. How: This looks up couCodStr in REG_DEF_OBJ, defaulting to the US entry.
@@ -384,7 +422,7 @@ function comYeaFun ( yeaValNum, couCodStr = 'US' ) {
  *
 */
 
-function defStaFun () { return { country : 'US', custom : [], disabled : [] }; } // What: Default State Body. Why: Every caller needs a safe, well-shaped holidays-state object to fall back to when state.holidays is missing entirely. How: This returns the canonical empty shape with no holidays disabled and no custom days off.
+function defStaFun () : HolStaTyp { return { country : 'US', custom : [], disabled : [] }; } // What: Default State Body. Why: Every caller needs a safe, well-shaped holidays-state object to fall back to when state.holidays is missing entirely. How: This returns the canonical empty shape with no holidays disabled and no custom days off.
 
 // #endregion defStaFun
 
@@ -417,7 +455,7 @@ function defStaFun () { return { country : 'US', custom : [], disabled : [] }; }
  *
 */
 
-function actYeaFun ( holStaObj, yeaValNum ) {
+function actYeaFun ( holStaObj : HolStaTyp | null | undefined, yeaValNum : number ) : HolRcdTyp[] {
 
 
 	const resHolObj = holStaObj || defStaFun(); // What: Resolved Holidays Object. Why: A caller might pass a missing/undefined holidays state, which still needs a safe fallback to read from below. How: This falls back to defStaFun's canonical empty shape when holStaObj is falsy.
@@ -491,7 +529,7 @@ function actYeaFun ( holStaObj, yeaValNum ) {
  *
 */
 
-function holDatFun ( holStaObj, cheDatObj ) {
+function holDatFun ( holStaObj : HolStaTyp | null | undefined, cheDatObj : Date ) : string | null {
 
 
 	const tarIsoStr = isoDayFun( cheDatObj );  // What: Target Iso String. Why: Every candidate year's own active list needs comparing against the queried date as a plain string, not a Date instance. How: This converts cheDatObj via isoDayFun once, reused across every loop iteration below.
@@ -546,7 +584,7 @@ function holDatFun ( holStaObj, cheDatObj ) {
  *
 */
 
-function holInfFun ( holStaObj, cheDatObj ) {
+function holInfFun ( holStaObj : HolStaTyp | null | undefined, cheDatObj : Date ) : HolRcdTyp | null {
 
 
 	const tarIsoStr = isoDayFun( cheDatObj );  // What: Target Iso String. Why: Every candidate year's own active list needs comparing against the queried date as a plain string, not a Date instance. How: This converts cheDatObj via isoDayFun once, reused across every loop iteration below.
@@ -594,7 +632,7 @@ const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is the modul
 
 
 
-export { HOL_NAM_OBJ }; // What: Holidays Namespace Export. Why: Every consumer reaches this file's holiday engine through the one namespace object. How: This exports HOL_NAM_OBJ by name at the very end of the file.
+export { HOL_NAM_OBJ, type HolRcdTyp }; // What: Holidays Namespace Export. Why: Every consumer reaches this file's holiday engine through the one namespace object, and reads its resolved holidays through HolRcdTyp. How: This exports HOL_NAM_OBJ by name at the very end of the file.
 
 // #endregion Exports
 
