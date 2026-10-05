@@ -2196,7 +2196,15 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 											cliEveObj.stopPropagation(); // What: Propagation Stop Call. Why: The click must not also toggle the card header underneath. How: This stops cliEveObj from bubbling.
 
 
-											if ( isaDraBoo ) setDraIteArr( ( preIteArr ) => preIteArr.map( ( curIteObj ) => ( { ...curIteObj, vacation : !allVacBoo } ) ) ); // What: Draft Toggle Branch. Why: A draft picker's items are local, so the toggle sets them directly. How: This sets every draft item's vacation flag to the opposite of allVacBoo.
+											if ( isaDraBoo ) setDraIteArr( ( preIteArr ) => preIteArr.map( ( curIteObj ) => ( { // What: Draft Toggle Branch. Why: A draft picker's items are local, so the toggle sets them directly. How: This sets every draft item's vacation flag to the opposite of allVacBoo.
+
+
+												...curIteObj, // What: Current Item Spread. Why: Every other field carries over as drafted. How: This spreads curIteObj first, so only the vacation flag below is overridden.
+
+												vacation : !allVacBoo // What: Vacation. Why: The bulk toggle flips every item the same way. How: This sets the flag to the opposite of allVacBoo.
+
+
+											} ) ) );
 
 											else actStoObj.togVacFun( picCurObj.id, 'picker' ); // What: Store Toggle Branch. Why: This is the actual vacation toggle for a stored picker. How: This calls togVacFun with the picker's id and kind.
 

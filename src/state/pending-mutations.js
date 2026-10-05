@@ -156,7 +156,23 @@ function spuDroFun ( todEntArr, iteIdeArr ) {
 
 
 
-		return { ...curEntObj, pending : { ...curEntObj.pending, updates : filUpdArr } }; // What: Filtered Entry Return. Why: The caller needs this entry's own pending.updates replaced with the stale rows stripped. How: This spreads curEntObj and its own pending, overriding just updates.
+		return { // What: Filtered Entry Return. Why: The caller needs this entry's own pending.updates replaced with the stale rows stripped. How: This spreads curEntObj and its own pending, overriding just updates.
+
+
+			...curEntObj, // What: Current Entry Spread. Why: Every field of this entry other than pending must carry over unchanged. How: This spreads curEntObj before the pending override below.
+
+			pending : { // What: Pending. Why: Only the updates list inside pending changes, so every other staged field must survive. How: This rebuilds pending from its own current fields plus the filtered updates.
+
+
+				...curEntObj.pending, // What: Current Pending Spread. Why: Every other staged field (pickedId, ...) must carry over unchanged. How: This spreads curEntObj.pending before the updates override below.
+
+				updates : filUpdArr // What: Updates. Why: This is the entry's own staged update list with the stale rows removed. How: This is filUpdArr.
+
+
+			}
+
+
+		};
 
 
 	} );

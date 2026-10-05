@@ -850,7 +850,14 @@ function defOptFun () {
 
 
 
-	return { once : { ...basOptObj }, recurring : { ...basOptObj } }; // What: Default Options Return. Why: The caller needs 2 independent copies, not 2 references to the same object, so editing one class's own switches later can never affect the other. How: This spreads basOptObj fresh into each of the 2 properties.
+	return { // What: Default Options Return. Why: The caller needs 2 independent copies, not 2 references to the same object, so editing one class's own switches later can never affect the other. How: This spreads basOptObj fresh into each of the 2 properties.
+
+
+		once      : { ...basOptObj }, // What: Once. Why: One-time reminders get their own copy of the default switches. How: This spreads basOptObj into a fresh object.
+		recurring : { ...basOptObj }  // What: Recurring. Why: Recurring reminders get their own copy of the default switches, separate from the one-time copy. How: This spreads basOptObj into a second fresh object.
+
+
+	};
 
 
 }

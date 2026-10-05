@@ -81,7 +81,23 @@ function groEntFun ( staAppObj ) {
 
 
 
-			groBucMap.get( groNamStr ).entArr.push( { entRecObj : curEntObj, picRecObj : { group : groNamStr, id : 'dayoff_' + curEntObj.conditionalId, name : curEntObj.cardText } } ); // What: Day-Off Row Push. Why: This is the synthetic row EntCarCom's own day-off branch renders. How: This pairs curEntObj with a picker-shaped stand-in carrying just enough fields (id/name/group/_dayoff) to sort and render like a real one.
+			groBucMap.get( groNamStr ).entArr.push({ // What: Day-Off Row Push. Why: This is the synthetic row EntCarCom's own day-off branch renders. How: This pairs curEntObj with a picker-shaped stand-in carrying just enough fields (id/name/group) to sort and render like a real one.
+
+
+				entRecObj : curEntObj, // What: Entry Record Object. Why: The day-off branch renders the real day-off entry itself. How: This passes curEntObj straight through.
+
+				picRecObj : { // What: Picker Record Object. Why: Sorting and rendering expect a picker beside every entry, and a day-off card has no real one. How: This builds a picker-shaped stand-in from the entry's own fields.
+
+
+					group : groNamStr,                           // What: Group. Why: The stand-in sorts into the same group as the card. How: This passes groNamStr.
+					id    : 'dayoff_' + curEntObj.conditionalId, // What: Id. Why: The stand-in needs a stable id that can't collide with a real picker's. How: This prefixes the conditional's own id with dayoff_.
+					name  : curEntObj.cardText                   // What: Name. Why: The stand-in sorts and labels by the card's own text. How: This passes the entry's own cardText.
+
+
+				}
+
+
+			});
 
 
 
@@ -178,7 +194,23 @@ function groEntFun ( staAppObj ) {
 
 
 
-		groBucMap.get( groNamStr ).entArr.push( { entRecObj : { done : isaDonBoo, eid : 'tut_' + curPicObj.id, kind : 'tutorial' }, picRecObj : curPicObj } ); // What: Tutorial Row Push. Why: This is the synthetic row EntCarCom's own tutorial branch renders. How: This pairs a synthetic { kind, eid, done } entry with the real curPicObj.
+		groBucMap.get( groNamStr ).entArr.push({ // What: Tutorial Row Push. Why: This is the synthetic row EntCarCom's own tutorial branch renders. How: This pairs a synthetic { done, eid, kind } entry with the real curPicObj.
+
+
+			picRecObj : curPicObj, // What: Picker Record Object. Why: The launcher card belongs to the real sample picker it starts a tour for. How: This passes curPicObj straight through.
+
+			entRecObj : { // What: Entry Record Object. Why: A tutorial launcher has no real Today entry, so the card needs an entry-shaped stand-in. How: This builds the few fields the tutorial branch reads.
+
+
+				done : isaDonBoo,             // What: Done. Why: A finished mini-tour shows its launcher as resolved. How: This passes isaDonBoo.
+				eid  : 'tut_' + curPicObj.id, // What: Entry Id. Why: The stand-in needs a stable key that can't collide with a real entry's. How: This prefixes the picker's own id with tut_.
+				kind : 'tutorial'             // What: Kind. Why: The card must render through its tutorial branch. How: This is the fixed tutorial kind.
+
+
+			}
+
+
+		});
 
 
 	}

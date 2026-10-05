@@ -733,7 +733,14 @@ function shaRadFun ( tarDomEle, padWidNum, padHeiNum, shaOveStr ) {
 	const radTokStr = ( getComputedStyle( tarDomEle ).borderRadius || '' ).split( ' ' )[ 0 ]; // What: Radius Token String. Why: A multi-corner border-radius value can list up to 4 tokens; only the first is meaningful for this file's own single-radius rounded-rect approximation. How: This reads tarDomEle's own computed border-radius and takes its first space-separated token.
 
 
-	if ( !radTokStr ) return { radXcoNum : rhyPxlFun( 'm01' ), radYcoNum : rhyPxlFun( 'm01' ) }; // What: No Radius Guard. Why: An element with no computed border-radius at all falls back to the app's own default radius. How: This returns early once radTokStr is empty. // Vertical Rhythm Base Minus 1 = 11px
+	if ( !radTokStr ) return { // What: No Radius Guard. Why: An element with no computed border-radius at all falls back to the app's own default radius. How: This returns early once radTokStr is empty.
+
+
+		radXcoNum : rhyPxlFun( 'm01' ), // What: Radius X-Coordinate Number. Why: The horizontal radius falls back to the app's own default when the element has no border-radius. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
+		radYcoNum : rhyPxlFun( 'm01' )  // What: Radius Y-Coordinate Number. Why: The vertical radius falls back to that same default. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
+
+
+	};
 
 
 
@@ -743,7 +750,14 @@ function shaRadFun ( tarDomEle, padWidNum, padHeiNum, shaOveStr ) {
 		const perRatNum = parseFloat( radTokStr ) / 100; // What: Percent Ratio Number. Why: The parsed percentage needs converting to a plain 0-1 ratio before it can scale anything. How: This parses radTokStr as a float and divides by 100.
 
 
-		if ( Number.isNaN( perRatNum ) ) return { radXcoNum : rhyPxlFun( 'm01' ), radYcoNum : rhyPxlFun( 'm01' ) }; // What: Unparseable Guard. Why: A malformed percentage token must not silently produce NaN radii. How: This falls back to the default radius once perRatNum failed to parse. // Vertical Rhythm Base Minus 1 = 11px
+		if ( Number.isNaN( perRatNum ) ) return { // What: Unparseable Guard. Why: A malformed percentage token must not silently produce NaN radii. How: This falls back to the default radius once perRatNum failed to parse.
+
+
+			radXcoNum : rhyPxlFun( 'm01' ), // What: Radius X-Coordinate Number. Why: A malformed percentage falls back to the app's own default horizontal radius. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
+			radYcoNum : rhyPxlFun( 'm01' )  // What: Radius Y-Coordinate Number. Why: The vertical radius falls back to that same default. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
+
+
+		};
 
 
 
@@ -764,11 +778,25 @@ function shaRadFun ( tarDomEle, padWidNum, padHeiNum, shaOveStr ) {
 	const pixValNum = parseFloat( radTokStr ); // What: Pixel Value Number. Why: Every other radius form is a plain pixel value that needs parsing before it can be compared or added to. How: This parses radTokStr as a float.
 
 
-	if ( Number.isNaN( pixValNum ) || pixValNum === 0 ) return { radXcoNum : rhyPxlFun( 'm01' ), radYcoNum : rhyPxlFun( 'm01' ) }; // What: Zero/Unparseable Guard. Why: A square-cornered element (0) or a malformed value both fall back to the default radius. How: This checks pixValNum against both failure cases at once. // Vertical Rhythm Base Minus 1 = 11px
+	if ( Number.isNaN( pixValNum ) || pixValNum === 0 ) return { // What: Zero/Unparseable Guard. Why: A square-cornered element (0) or a malformed value both fall back to the default radius. How: This checks pixValNum against both failure cases at once.
+
+
+		radXcoNum : rhyPxlFun( 'm01' ), // What: Radius X-Coordinate Number. Why: A square or malformed radius falls back to the app's own default horizontal radius. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
+		radYcoNum : rhyPxlFun( 'm01' )  // What: Radius Y-Coordinate Number. Why: The vertical radius falls back to that same default. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
+
+
+	};
 
 
 
-	if ( pixValNum >= 24 ) return { radXcoNum : rhyPxlFun( 'm01' ), radYcoNum : rhyPxlFun( 'm01' ) }; // What: Pill Cap Guard. Why: A "pill" source radius renders visibly faceted through the SVG mask's own radXcoNum/radYcoNum math at extreme values, confirmed against plain CSS border-radius. How: This caps anything at or past 24px down to the app's own default radius instead. // Vertical Rhythm Base Minus 1 = 11px
+	if ( pixValNum >= 24 ) return { // What: Pill Cap Guard. Why: A "pill" source radius renders visibly faceted through the SVG mask's own radXcoNum/radYcoNum math at extreme values, confirmed against plain CSS border-radius. How: This caps anything at or past 24px down to the app's own default radius instead.
+
+
+		radXcoNum : rhyPxlFun( 'm01' ), // What: Radius X-Coordinate Number. Why: A pill-sized radius is capped to the app's own default horizontal radius. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
+		radYcoNum : rhyPxlFun( 'm01' )  // What: Radius Y-Coordinate Number. Why: The vertical radius is capped to that same default. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
+
+
+	};
 
 
 

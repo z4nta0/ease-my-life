@@ -885,7 +885,14 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		dowLinEle.href     = expUrlStr;                          // What: Download Href Assignment. Why: This is what actually points the anchor at the freshly-built backup blob. How: This sets dowLinEle's own href to expUrlStr.
 		dowLinEle.download = `ease-my-life-${ datStaStr }.json`; // What: Download Filename Assignment. Why: A named download attribute is what gives the saved file a sensible name instead of a random blob id. How: This sets dowLinEle's own download attribute to a dated, app-branded filename.
 
-		setExpMesObj( { entNum : entCouNum, timNum : Date.now() } ); // What: Export Message Update. Why: The on-screen status line needs both a fresh React key and the actual entry count. How: This writes a timestamp/entries pair into expMesObj.
+		setExpMesObj({ // What: Export Message Update. Why: The on-screen status line needs both a fresh React key and the actual entry count. How: This writes a timestamp/entries pair into expMesObj.
+
+
+			entNum : entCouNum, // What: Entry Number. Why: The status line reports how much history the backup carried. How: This is entCouNum.
+			timNum : Date.now() // What: Time Number. Why: Each export needs a fresh React key so the status line re-animates. How: This reads the current timestamp.
+
+
+		});
 
 		annStaFun( `Backup exported, including ${ entCouNum } history ${ entCouNum === 1 ? 'entry' : 'entries' }.`, { assertive : true } ); // What: Export Announce Call. Why: A screen-reader user needs to hear the export actually happened, including how much history it carried. How: This announces the entry count assertively, pluralized correctly for exactly 1 entry. // Announce BEFORE firing the download. The browser's own download UI takes focus the moment the link is clicked, and a screen reader that follows focus into browser chrome drops any pending polite announcement, so the speech has to be assertive and already under way. The file is fully built by this point, so "exported" is true when it is said.
 

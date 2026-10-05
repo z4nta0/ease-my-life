@@ -1340,7 +1340,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 				dayEntObj.donNum++; // What: Done Increment. Why: Every reminder completion counts as done. How: This increments donNum.
 				dayEntObj.totNum++; // What: Total Increment. Why: A reminder day's total always equals its done count. How: This increments totNum.
 
-				dayEntObj.iteArr.push( { donBoo : true, namStr : rowCurObj.name || 'Reminder' } ); // What: Day Entry Item Push. Why: The tap-to-see-detail list needs every completed reminder's own name. How: This appends the row's own denormalized name, always done.
+				dayEntObj.iteArr.push({ // What: Day Entry Item Push. Why: The tap-to-see-detail list needs every completed reminder's own name. How: This appends the row's own denormalized name, always done.
+
+
+					donBoo : true,                        // What: Done Boolean. Why: A reminder completion row only ever records a finished reminder. How: This is always true here.
+					namStr : rowCurObj.name || 'Reminder' // What: Name String. Why: The detail list shows each reminder by name. How: This reads the row's own denormalized name, falling back to Reminder when it has none.
+
+
+				});
 
 				outMapObj.set( dayKeyStr, dayEntObj ); // What: Day Entry Store. Why: The freshly-updated entry must be written back, since it may have just been created above. How: This sets the entry back under its own day key.
 
@@ -1367,7 +1374,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-				dayEntObj.iteArr.push( { donBoo : !!rowCurObj.done, namStr : rowCurObj.itemName } ); // What: Day Entry Item Push. Why: The heatmap's own tap-to-see-detail list needs every item's own name and done state. How: This appends one entry per logged row.
+				dayEntObj.iteArr.push({ // What: Day Entry Item Push. Why: The heatmap's own tap-to-see-detail list needs every item's own name and done state. How: This appends one entry per logged row.
+
+
+					donBoo : !!rowCurObj.done,  // What: Done Boolean. Why: The detail list marks which logged items were completed. How: This coerces the row's own done flag to a real boolean.
+					namStr : rowCurObj.itemName // What: Name String. Why: The detail list shows each item by name. How: This reads the row's own denormalized item name.
+
+
+				});
 
 				outMapObj.set( rowCurObj.date, dayEntObj ); // What: Day Entry Store. Why: The freshly-updated entry must be written back, since it may have just been created above. How: This sets the entry back under its own date key.
 
@@ -1612,7 +1626,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 		return livIteArr // What: Cold Item Return. Why: This is the finished bottom-5 ranking. How: This maps, sorts, and slices livIteArr in the chain below.
-			.map( ( iteCurObj ) => ( { couNum : ( picCouMap.get( iteCurObj.id ) || {} ).couNum || 0, namStr : iteCurObj.name } ) )         // What: Cold Item Mapping. Why: Each live item needs just its own name and its (possibly zero) pick count for this ranking. How: This looks up iteCurObj's own id in picCouMap, defaulting to a zero count.
+			.map( ( iteCurObj ) => ( { // What: Cold Item Mapping. Why: Each live item needs just its own name and its (possibly zero) pick count for this ranking. How: This looks up iteCurObj's own id in picCouMap, defaulting to a zero count.
+
+
+				couNum : ( picCouMap.get( iteCurObj.id ) || {} ).couNum || 0, // What: Count Number. Why: The ranking sorts by how often each item was picked. How: This reads the item's own tally from picCouMap, defaulting to zero when it was never picked.
+				namStr : iteCurObj.name                                       // What: Name String. Why: Each ranked row shows the item's name and breaks count ties alphabetically. How: This copies the item's own name.
+
+
+			} ) )
 			.sort( ( iteOneObj, iteTwoObj ) => iteOneObj.couNum - iteTwoObj.couNum || iteOneObj.namStr.localeCompare( iteTwoObj.namStr ) ) // What: Cold Sort. Why: The coldest (least-picked) items should list first, tied items breaking alphabetically for a stable order. How: This sorts ascending by count, falling back to a name comparison.
 			.slice( 0, 5 ); // What: Cold Slice. Why: Only the 5 coldest items are shown. How: This takes the first 5 entries of the sorted array.
 
@@ -1813,7 +1834,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		const dayInfMap = new Map(); // What: Day Info Map. Why: The run-detection loop below needs each date's own item and depleted-end flag, keyed for lookup. How: This maps each pick date to a small { itemId, depletedEnd } record.
 
 
-		for ( const rowCurObj of picRowArr ) dayInfMap.set( rowCurObj.date, { depBoo : !!rowCurObj.depletedEnd, ideStr : rowCurObj.itemId } ); // What: Day Info Population Loop. Why: Every logged pick contributes its own date's item/depleted-end pair. How: This sets one entry per row, keyed by its own date.
+		for ( const rowCurObj of picRowArr ) dayInfMap.set( rowCurObj.date, { // What: Day Info Population Loop. Why: Every logged pick contributes its own date's item/depleted-end pair. How: This sets one entry per row, keyed by its own date.
+
+
+			depBoo : !!rowCurObj.depletedEnd, // What: Depleted Boolean. Why: Run detection below ends a streak on the day the pool ran out. How: This coerces the row's own depletedEnd flag to a real boolean.
+			ideStr : rowCurObj.itemId         // What: Identifier String. Why: Run detection below groups consecutive dates by the same item. How: This copies the row's own picked item id.
+
+
+		} );
 
 
 
@@ -2081,7 +2109,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	const cadDisFun = ( rawDayNum, uniModStr, daiDayNum ) => { // What: Cadence Display Function. Why: Every day-count metric's own value column needs this same conversion, so it's centralized once instead of repeated per metric. How: This converts rawDayNum into cadence periods for a cadenced picker, otherwise passing daiDayNum straight through. // Format a raw day-count metric for the value column. A cadence picker converts calendar days into periods and ALWAYS shows one decimal (forced ".0") so eligible and calendar line up; a daily picker keeps its existing whole-day display via daiDayNum. Returns { num (string), word }.
 
 
-		if ( !isaCadBoo ) return { numStr : String( daiDayNum ), worStr : ( daiDayNum === 1 ? 'day' : 'days' ) }; // What: Daily Return. Why: A daily picker's own value column already has its own whole-day formatting computed by the caller. How: This returns daiDayNum as-is, with a simple singular/plural "day"/"days" word.
+		if ( !isaCadBoo ) return { // What: Daily Return. Why: A daily picker's own value column already has its own whole-day formatting computed by the caller. How: This returns daiDayNum as-is, with a simple singular/plural "day"/"days" word.
+
+
+			numStr : String( daiDayNum ),                 // What: Number String. Why: The value column renders its number as text. How: This converts daiDayNum to a string unchanged.
+			worStr : ( daiDayNum === 1 ? 'day' : 'days' ) // What: Word String. Why: The value needs a matching singular or plural unit word. How: This picks day for exactly 1 and days otherwise.
+
+
+		};
 
 
 
@@ -2260,7 +2295,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		return SOU_MET_ARR.map( ( souCurObj ) => ( { ...souCurObj, couNum : couTalMap.get( souCurObj.keyStr ) } ) ); // What: Source Segment Return. Why: BreBarCom needs each meta entry joined with its own live count under the couNum field. How: This spreads each SOU_MET_ARR entry, adding its own tallied count.
+		return SOU_MET_ARR.map( ( souCurObj ) => ( { // What: Source Segment Return. Why: BreBarCom needs each meta entry joined with its own live count under the couNum field. How: This spreads each SOU_MET_ARR entry, adding its own tallied count.
+
+
+			...souCurObj, // What: Source Current Spread. Why: Each segment keeps its own color, key, and label from SOU_MET_ARR. How: This spreads the meta entry in first.
+
+			couNum : couTalMap.get( souCurObj.keyStr ) // What: Count Number. Why: Each segment's width comes from its own live tally. How: This looks the entry's own key up in couTalMap.
+
+
+		} ) );
 
 
 	}, [ picRowArr ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when the underlying pick rows themselves change. How: picRowArr is the sole source the tally loop above reads from.
@@ -2275,7 +2318,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		return TYP_MET_ARR.map( ( typCurObj ) => ( { ...typCurObj, couNum : couTalMap.get( typCurObj.keyStr ) } ) ); // What: Type Segment Return. Why: BreBarCom needs each meta entry joined with its own live count under the couNum field. How: This spreads each TYP_MET_ARR entry, adding its own tallied count.
+		return TYP_MET_ARR.map( ( typCurObj ) => ( { // What: Type Segment Return. Why: BreBarCom needs each meta entry joined with its own live count under the couNum field. How: This spreads each TYP_MET_ARR entry, adding its own tallied count.
+
+
+			...typCurObj, // What: Type Current Spread. Why: Each segment keeps its own color, key, and label from TYP_MET_ARR. How: This spreads the meta entry in first.
+
+			couNum : couTalMap.get( typCurObj.keyStr ) // What: Count Number. Why: Each segment's width comes from its own live tally. How: This looks the entry's own key up in couTalMap.
+
+
+		} ) );
 
 
 	}, [ remRowArr ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when the underlying reminder rows themselves change. How: remRowArr is the sole source the tally loop above reads from.
@@ -3491,6 +3542,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										<div className={ cssModObj.staNumDiv }>{ stkDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders stkDayNum. */ }
 
 										<div className={ cssModObj.staLabDiv }>day streak</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "day streak". */ }
+
+
 
 										<IcoSvgCom
 											className={ cssModObj.staIcoSvg }

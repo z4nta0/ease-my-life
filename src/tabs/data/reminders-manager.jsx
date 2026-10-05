@@ -304,7 +304,15 @@ const REM_MAT_ARR = [ // What: Reminder Matrix Array. Why: OptMatCom needs one r
 function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 
 
-	const [ draOptObj, setDraOptObj ] = React.useState( () => ( { once : { ...remOptObj.once }, recurring : { ...remOptObj.recurring } } ) ); // What: Draft Options Object And Setter. Why: Every toggle edits this local copy, so nothing reaches the settings until the matrix is saved or closed. How: This starts as a copy of both classes' options.
+	const [ draOptObj, setDraOptObj ] = React.useState( () => ( { // What: Draft Options Object And Setter. Why: Every toggle edits this local copy, so nothing reaches the settings until the matrix is saved or closed. How: This starts as a copy of both classes' options.
+
+
+		once      : { ...remOptObj.once },     // What: Once. Why: The one-time class's toggles need their own editable copy. How: This shallow-copies remOptObj.once.
+		recurring : { ...remOptObj.recurring } // What: Recurring. Why: The recurring class's toggles need their own editable copy. How: This shallow-copies remOptObj.recurring.
+
+
+	} ) );
+
 
 	const hanCloRef = React.useRef( false ); // What: Handled Close Reference. Why: A matrix already saved or cancelled must not commit again when it unmounts. How: This flips true on either.
 
@@ -445,7 +453,23 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 									aria-label={ `${ tasClaStr === 'once' ? 'One-time' : 'Recurring' }: ${ optDefObj.labStr }` } // What: Switch Label Pick. Why: Each switch's accessible name must say which class and setting it controls. How: This joins the class name with the row's own label.
 									aria-pressed={ swtEnaBoo }
 
-									onClick={ () => setDraOptObj( ( preOptObj ) => ( { ...preOptObj, [ tasClaStr ] : { ...preOptObj[ tasClaStr ], [ optDefObj.keyStr ] : !swtEnaBoo } } ) ) } // What: On Click Handler. Why: A toggle changes the draft, not the live settings. How: This flips this class/setting pair in draOptObj.
+									onClick={ () => setDraOptObj( ( preOptObj ) => ( { // What: On Click Handler. Why: A toggle changes the draft, not the live settings. How: This flips this class/setting pair in draOptObj.
+
+
+										...preOptObj, // What: Previous Options Spread. Why: The other class's toggles must carry over unchanged. How: This spreads preOptObj first, so only this class is overridden.
+
+										[ tasClaStr ] : { // What: Task Class String Key. Why: Only this class's own toggles change. How: This rebuilds the class's options with the one flipped setting below.
+
+
+											...preOptObj[ tasClaStr ], // What: Previous Class Options Spread. Why: This class's other settings must carry over unchanged. How: This spreads the class's current options first.
+
+											[ optDefObj.keyStr ] : !swtEnaBoo // What: Option Definition Key String Key. Why: This is the one setting the switch controls. How: This sets it to the opposite of swtEnaBoo.
+
+
+										}
+
+
+									} ) ) }
 								>{ /* What: Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips this pair in the matrix's draft. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
@@ -658,7 +682,15 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 		if ( newTasObj && newTasObj.id === draTasObj.id ) { // What: New Reminder Guard. Why: A brand-new reminder joins the store as drafted. How: This adds the draft and clears the local new reminder.
 
 
-			actStoObj.addTasFun( { ...draTasObj, name : draTasObj.name.trim() || newTasObj.name } ); // What: Add Task Call. Why: This is the moment the new reminder actually joins the app. How: This adds the draft under its own id, keeping the default name when the drafted one is blank.
+			actStoObj.addTasFun({ // What: Add Task Call. Why: This is the moment the new reminder actually joins the app. How: This adds the draft under its own id, keeping the default name when the drafted one is blank.
+
+
+				...draTasObj, // What: Draft Task Spread. Why: Every drafted field, id included, must join the store as drafted. How: This spreads draTasObj first, so only the name below is overridden.
+
+				name : draTasObj.name.trim() || newTasObj.name // What: Name. Why: A saved reminder never keeps stray spaces or a blank name. How: This trims the drafted name, falling back to the new reminder's default name.
+
+
+			});
 
 			newAddRef.current = null; // What: New-Item Flag Clear. Why: A kept reminder is no longer new. How: This clears newAddRef.
 

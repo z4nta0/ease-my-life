@@ -396,7 +396,14 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 				const difXcoNum = oldXcoNum - pilCurEle.offsetLeft; // What: Difference X-Coordinate Number. Why: The tween's own starting transform is the distance this pill needs to travel back from its new position. How: This subtracts the pill's own current offsetLeft from oldXcoNum.
 
 
-				if ( Math.abs( difXcoNum ) > 1 ) pilCurEle.animate( [ { transform : `translateX(${ difXcoNum }px)` }, { transform : 'none' } ], { duration : durMilFun( 'p03' ), easing : motEasFun( 'dec' ) } ); // What: Flip Animation Guard. Why: A pill that didn't actually move by more than a rounding pixel needs no tween at all. How: This plays the invert-then-play transform over 320ms only when difXcoNum is meaningfully non-zero. // Duration Base Plus 3 ~= 366.9ms
+				if ( Math.abs( difXcoNum ) > 1 ) pilCurEle.animate( [ { transform : `translateX(${ difXcoNum }px)` }, { transform : 'none' } ], { // What: Flip Animation Guard. Why: A pill that didn't actually move by more than a rounding pixel needs no tween at all. How: This plays the invert-then-play transform over the p03 duration step only when difXcoNum is meaningfully non-zero.
+
+
+					duration : durMilFun( 'p03' ), // What: Duration. Why: The slide back into place must match the app's own motion scale. How: This reads the p03 duration step through durMilFun. // Duration Base Plus 3 ~= 366.9ms
+					easing   : motEasFun( 'dec' )  // What: Easing. Why: A pill arriving at its new spot should start fast and land softly. How: This reads the decelerate easing curve through motEasFun. // Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 )
+
+
+				} );
 
 
 			} );
@@ -611,7 +618,15 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 		const chaPicBoo = JSON.stringify( draPicObj ) !== JSON.stringify( oriPicRef.current ); // What: Changed Picker Boolean. Why: An untouched draft must not rewrite the picker. How: This compares the draft with its starting copy.
 
 
-		if ( chaPicBoo ) actStoObj.savEdiFun( picDatObj.id, { ...draPicObj, name : draPicObj.name.trim() || oriPicRef.current.name } ); // What: Save Edit Guard. Why: A changed draft is saved the same way the Pickers tab's edit form saves, and a blank name must never replace the real one. How: This calls savEdiFun with the draft, keeping the original name when the draft's is empty.
+		if ( chaPicBoo ) actStoObj.savEdiFun( picDatObj.id, { // What: Save Edit Guard. Why: A changed draft is saved the same way the Pickers tab's edit form saves, and a blank name must never replace the real one. How: This calls savEdiFun with the draft, keeping the original name when the draft's is empty.
+
+
+			...draPicObj, // What: Draft Picker Spread. Why: Every drafted field must be saved as edited. How: This spreads draPicObj first, so only the name below is overridden.
+
+			name : draPicObj.name.trim() || oriPicRef.current.name // What: Name. Why: A saved picker never keeps stray spaces or a blank name. How: This trims the drafted name, falling back to the original name when it's empty.
+
+
+		} );
 
 
 

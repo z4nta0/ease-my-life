@@ -1210,7 +1210,17 @@ function useAppStaFun ( optArgObj ) {
 
 			const curColObj = ( curStaObj.ui && curStaObj.ui.controlsCollapsed ) || {};                  // What: Current Collapsed Object. Why: The flip below needs the live collapse-state map, or an empty fallback. How: This reads curStaObj's own ui.controlsCollapsed, defaulting to {}.
 			const curValBoo = curColObj[ secIdeStr ] === undefined ? defColBoo : curColObj[ secIdeStr ]; // What: Current Value Boolean. Why: A section with no saved value yet starts from its own caller-supplied default, not always false. How: This reads curColObj's own secIdeStr entry, falling back to defColBoo when it's undefined.
-			const nexColObj = { ...curColObj, [ secIdeStr ] : !curValBoo };                              // What: Next Collapsed Object. Why: The caller needs exactly this one section's own collapse state flipped. How: This spreads curColObj, negating secIdeStr's own entry.
+
+
+			const nexColObj = { // What: Next Collapsed Object. Why: The caller needs exactly this one section's own collapse state flipped. How: This spreads curColObj, negating secIdeStr's own entry.
+
+
+				...curColObj, // What: Current Collapsed Spread. Why: Every other section's own collapse state must carry over unchanged. How: This spreads curColObj before the flipped entry below.
+
+				[ secIdeStr ] : !curValBoo // What: Section Identifier String Entry. Why: This one section's own collapse state is the only value that flips. How: This negates curValBoo.
+
+
+			};
 
 
 
@@ -1913,7 +1923,18 @@ function useAppStaFun ( optArgObj ) {
 			const finTasObj = { ...newTasObj, id : tasIdeStr };    // What: Final Task Object. Why: The task actually written must carry tasIdeStr, not necessarily newTasObj's own freshly-minted one. How: This spreads newTasObj with id overridden.
 
 			const sibNamArr = curStaObj.tasks.filter( ( curTasObj ) => curTasObj.id !== tasIdeStr && !curTasObj.hidden ).map( ( curTasObj ) => curTasObj.name ); // What: Sibling Name Array. Why: The de-duplication below must exclude both this task itself and every hidden (invisible) reminder. How: This filters curStaObj.tasks down to visible siblings, then maps to their own names.
-			const namTasObj = { ...finTasObj, name : uniNamFun( finTasObj.name, sibNamArr ) };                                                                   // What: Named Task Object. Why: The task actually written must carry its own de-duplicated name. How: This spreads finTasObj with name replaced by uniNamFun's own result.
+
+
+			const namTasObj = { // What: Named Task Object. Why: The task actually written must carry its own de-duplicated name. How: This spreads finTasObj with name replaced by uniNamFun's own result.
+
+
+				...finTasObj, // What: Final Task Spread. Why: Every field of the task other than its name must carry over unchanged. How: This spreads finTasObj before the name override below.
+
+				name : uniNamFun( finTasObj.name, sibNamArr ) // What: Name. Why: The written task must not share a visible sibling's own name. How: This passes finTasObj's own name and sibNamArr to uniNamFun.
+
+
+			};
+
 
 			const nexTasArr = tasArgObj.replaceId // What: Next Task Array. Why: A replace updates the one matching task in place; a fresh add prepends the new one. How: This maps in namTasObj for the matching id when tasArgObj.replaceId was given, else prepends namTasObj.
 				? curStaObj.tasks.map( ( curTasObj ) => curTasObj.id === tasIdeStr ? namTasObj : curTasObj ) // What: Replace Branch. Why: An existing task keeps its own place in the list. How: This swaps namTasObj in for the matching task.

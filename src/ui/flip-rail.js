@@ -110,7 +110,14 @@ function useFliRaiFun ( raiNodRef, trgKeyStr ) {
 			if ( preXcoNum == null ) { // What: New Pill Guard. Why: A pill with no recorded previous position is appearing for the first time. How: This plays a fade-and-rise-in animation instead of a horizontal FLIP tween.
 
 
-				pilCurEle.animate( [ { opacity : 0, transform : 'translateY(4px)' }, { opacity : 1, transform : 'none' } ], { duration : durMilFun( 'p02' ), easing : motEasFun( 'dec' ) } ); // What: Entrance Animation Call. Why: A brand-new pill deserves its own entrance rather than a slide from nowhere. How: This fades and rises the pill into place over the p02 duration step. // Duration Base Plus 2 ~= 277.0ms
+				pilCurEle.animate( [ { opacity : 0, transform : 'translateY(4px)' }, { opacity : 1, transform : 'none' } ], { // What: Entrance Animation Call. Why: A brand-new pill deserves its own entrance rather than a slide from nowhere. How: This fades and rises the pill into place over the p02 duration step.
+
+
+					duration : durMilFun( 'p02' ), // What: Duration. Why: The entrance must match the app's own motion scale. How: This reads the p02 duration step through durMilFun. // Duration Base Plus 2 ~= 277.0ms
+					easing   : motEasFun( 'dec' )  // What: Easing. Why: A pill arriving in the row should start fast and land softly. How: This reads the decelerate easing curve through motEasFun. // Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 )
+
+
+				} );
 
 
 			}
@@ -121,7 +128,14 @@ function useFliRaiFun ( raiNodRef, trgKeyStr ) {
 				const difXcoNum = preXcoNum - newXcoNum; // What: Difference X-Coordinate Number. Why: The FLIP tween's own starting transform is the distance this pill needs to travel back from its new position. How: This subtracts the new x from the previous x.
 
 
-				if ( Math.abs( difXcoNum ) > 1 ) pilCurEle.animate( [ { transform : `translateX(${ difXcoNum }px)` }, { transform : 'none' } ], { duration : durMilFun( 'p03' ), easing : motEasFun( 'dec' ) } ); // What: Flip Animation Guard. Why: A pill that didn't actually move by more than a rounding pixel needs no tween at all. How: This plays the invert-then-play transform over the p03 duration step only when difXcoNum is meaningfully non-zero. // Duration Base Plus 3 ~= 366.9ms
+				if ( Math.abs( difXcoNum ) > 1 ) pilCurEle.animate( [ { transform : `translateX(${ difXcoNum }px)` }, { transform : 'none' } ], { // What: Flip Animation Guard. Why: A pill that didn't actually move by more than a rounding pixel needs no tween at all. How: This plays the invert-then-play transform over the p03 duration step only when difXcoNum is meaningfully non-zero.
+
+
+					duration : durMilFun( 'p03' ), // What: Duration. Why: The slide back into place must match the app's own motion scale. How: This reads the p03 duration step through durMilFun. // Duration Base Plus 3 ~= 366.9ms
+					easing   : motEasFun( 'dec' )  // What: Easing. Why: A pill arriving at its new spot should start fast and land softly. How: This reads the decelerate easing curve through motEasFun. // Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 )
+
+
+				} );
 
 
 			}

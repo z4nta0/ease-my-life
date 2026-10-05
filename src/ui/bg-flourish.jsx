@@ -623,7 +623,16 @@ function useFloIteFun ( tabIdeStr, meaEleRef ) {
 		const padSumNum = ( parseFloat( maiStyObj.paddingLeft ) || 0 ) + ( parseFloat( maiStyObj.paddingRight ) || 0 );                         // What: Padding Sum Number. Why: The measured gutter width must exclude .main's own inner padding on both sides. How: This adds maiStyObj's own left and right padding together, falling back to 0 for either if unparseable.
 		const gutWidNum = Math.max( 0, ( maiCurEle.getBoundingClientRect().width - padSumNum - meaCurEle.getBoundingClientRect().width ) / 2 ); // What: Gutter Width Number. Why: This is the actual per-side gutter width every placement below is generated against. How: This subtracts the padding and the centered column's own width from .main's total width, then halves what remains.
 		const conHeiNum = meaCurEle.scrollHeight;                                                                                               // What: Content Height Number. Why: Row placement needs to know how tall the tab's own real content actually is. How: This reads meaCurEle's own scrollHeight, which (unlike a pure-CSS approach) reflects the true rendered content height.
-		const genIteObj = { left : genSidFun( gutWidNum, conHeiNum ), right : genSidFun( gutWidNum, conHeiNum ) };                              // What: Generated Item Object. Why: Both gutters need their own independently-generated placement. How: This calls genSidFun twice, once per side, with the same measured dimensions.
+
+
+		const genIteObj = { // What: Generated Item Object. Why: Both gutters need their own independently-generated placement. How: This calls genSidFun twice, once per side, with the same measured dimensions.
+
+
+			left  : genSidFun( gutWidNum, conHeiNum ), // What: Left. Why: The left gutter needs its own placement. How: This generates it from the measured gutter width and content height.
+			right : genSidFun( gutWidNum, conHeiNum )  // What: Right. Why: The right gutter needs its own placement, independent of the left. How: This generates it from the same measured dimensions.
+
+
+		};
 
 
 		floCacMap.set( tabIdeStr, genIteObj ); // What: Flourish Cache Set. Why: This tab must not be regenerated on a later visit within the same session. How: This stores the freshly-generated items under this tab's own id.

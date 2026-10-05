@@ -632,7 +632,15 @@ function migStaFun ( curStaObj ) {
 
 				const weiValNum = nexConObj.weight ?? 1; // What: Weight Value Number. Why: The odds formula below needs this conditional's own old weight, defaulting to 1 when absent. How: This reads nexConObj.weight, defaulting via ??.
 
-				nexConObj = { ...nexConObj, oddsPct : Math.min( 90, Math.max( 10, Math.round( ( weiValNum / ( weiValNum + 1 ) ) * 10 ) * 10 ) ) }; // What: Odds-Percentage Set. Why: The caller needs a direct percentage replacing the old ratio-weight scheme. How: This converts weiValNum via w/(w+1), rounds to the nearest 10, then clamps to [10,90].
+				nexConObj = { // What: Odds-Percentage Set. Why: The caller needs a direct percentage replacing the old ratio-weight scheme. How: This converts weiValNum via w/(w+1), rounds to the nearest 10, then clamps to [10,90].
+
+
+					...nexConObj, // What: Next Conditional Spread. Why: Every other field of this conditional must survive the odds migration. How: This spreads nexConObj first so only oddsPct below is added.
+
+					oddsPct : Math.min( 90, Math.max( 10, Math.round( ( weiValNum / ( weiValNum + 1 ) ) * 10 ) * 10 ) ) // What: Odds Percentage. Why: This is the conditional's own new direct percentage odds. How: This converts weiValNum via w/(w+1), rounds to the nearest 10, then clamps to [10,90].
+
+
+				};
 
 
 			}

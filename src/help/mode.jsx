@@ -761,11 +761,20 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 					{ recEntArr.map( ( [ curIdeStr, curRecObj ] ) => { // What: Mask Cutout Map. Why: Every currently-highlighted target needs its own black cutout rect, shaped and padded to match how it is actually rendered on top. How: This maps recEntArr, reading each rect's own shape/pad fields.
 
 
-						const { radXcoNum, radYcoNum } = curRecObj.shaObj || { radXcoNum : rhyPxlFun( 'm01' ), radYcoNum : rhyPxlFun( 'm01' ) }; // What: Shape Destructure. Why: A multi-element union with no single shape falls back to the app's own default radius. How: This reads curRecObj's own shape, or the default, directly. // Vertical Rhythm Base Minus 1 = 11px
-						const padTopNum  = curRecObj.padTopNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Top Number. Why: A column group member's own padLefNum/padRigNum are forced to 0 elsewhere, but its padTopNum/padBotNum still apply normally here. How: This reads curRecObj's own padTopNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
-						const padBotNum  = curRecObj.padBotNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Bottom Number. Why: A column group member's own padLefNum/padRigNum are forced to 0 elsewhere, but its padTopNum/padBotNum still apply normally here. How: This reads curRecObj's own padBotNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
-						const padLefNum  = curRecObj.padLefNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Left Number. Why: Same reasoning as padTopNum/padBotNum above, for the horizontal sides. How: This reads curRecObj's own padLefNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
-						const padRigNum  = curRecObj.padRigNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Right Number. Why: Same reasoning as padTopNum/padBotNum above, for the horizontal sides. How: This reads curRecObj's own padRigNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+						const { radXcoNum, radYcoNum } = curRecObj.shaObj || { // What: Shape Destructure. Why: A multi-element union with no single shape falls back to the app's own default radius. How: This reads curRecObj's own shape, or the default, directly.
+
+
+							radXcoNum : rhyPxlFun( 'm01' ), // What: Radius X-Coordinate Number. Why: A target with no measured shape still needs a horizontal corner radius. How: This reads the Vertical Rhythm m01 step in pixels as the default. // Vertical Rhythm Base Minus 1 = 11px
+							radYcoNum : rhyPxlFun( 'm01' )  // What: Radius Y-Coordinate Number. Why: A target with no measured shape still needs a vertical corner radius. How: This reads the Vertical Rhythm m01 step in pixels as the default. // Vertical Rhythm Base Minus 1 = 11px
+
+
+						};
+
+
+						const padTopNum = curRecObj.padTopNum ?? rhyPxlFun( 'm02' ); // What: Pad Top Number. Why: A column group member's own padLefNum/padRigNum are forced to 0 elsewhere, but its padTopNum/padBotNum still apply normally here. How: This reads curRecObj's own padTopNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+						const padBotNum = curRecObj.padBotNum ?? rhyPxlFun( 'm02' ); // What: Pad Bottom Number. Why: A column group member's own padLefNum/padRigNum are forced to 0 elsewhere, but its padTopNum/padBotNum still apply normally here. How: This reads curRecObj's own padBotNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+						const padLefNum = curRecObj.padLefNum ?? rhyPxlFun( 'm02' ); // What: Pad Left Number. Why: Same reasoning as padTopNum/padBotNum above, for the horizontal sides. How: This reads curRecObj's own padLefNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+						const padRigNum = curRecObj.padRigNum ?? rhyPxlFun( 'm02' ); // What: Pad Right Number. Why: Same reasoning as padTopNum/padBotNum above, for the horizontal sides. How: This reads curRecObj's own padRigNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 
 
@@ -822,11 +831,21 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 			{ recEntArr.map( ( [ curIdeStr, curRecObj ] ) => { // What: Highlight Spot Map. Why: Alongside the mask's own dim-layer cutout, each target also gets a rendered help spot div, e.g. for its own visible border/glow styling. How: This maps recEntArr the same way the mask cutouts above do.
 
 
-				const { radXcoNum, radYcoNum } = curRecObj.shaObj || { radXcoNum : rhyPxlFun( 'm01' ), radYcoNum : rhyPxlFun( 'm01' ) }; // What: Shape Destructure. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own shape, or the default, directly. // Vertical Rhythm Base Minus 1 = 11px
-				const padTopNum  = curRecObj.padTopNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Top Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padTopNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
-				const padBotNum  = curRecObj.padBotNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Bottom Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padBotNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
-				const padLefNum  = curRecObj.padLefNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Left Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padLefNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
-				const padRigNum  = curRecObj.padRigNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Right Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padRigNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+				const { radXcoNum, radYcoNum } = curRecObj.shaObj || { // What: Shape Destructure. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own shape, or the default, directly.
+
+
+					radXcoNum : rhyPxlFun( 'm01' ), // What: Radius X-Coordinate Number. Why: A target with no measured shape still needs a horizontal corner radius. How: This reads the Vertical Rhythm m01 step in pixels as the default. // Vertical Rhythm Base Minus 1 = 11px
+					radYcoNum : rhyPxlFun( 'm01' )  // What: Radius Y-Coordinate Number. Why: A target with no measured shape still needs a vertical corner radius. How: This reads the Vertical Rhythm m01 step in pixels as the default. // Vertical Rhythm Base Minus 1 = 11px
+
+
+				};
+
+
+				const padTopNum = curRecObj.padTopNum ?? rhyPxlFun( 'm02' ); // What: Pad Top Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padTopNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+				const padBotNum = curRecObj.padBotNum ?? rhyPxlFun( 'm02' ); // What: Pad Bottom Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padBotNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+				const padLefNum = curRecObj.padLefNum ?? rhyPxlFun( 'm02' ); // What: Pad Left Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padLefNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+				const padRigNum = curRecObj.padRigNum ?? rhyPxlFun( 'm02' ); // What: Pad Right Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padRigNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+
 
 				const spoStyObj = { // What: Spot Style Object. Why: The rendered highlight spot needs its own absolute position/size plus a border-radius matching radXcoNum/radYcoNum exactly. How: This is applied directly as this div's own inline style below.
 

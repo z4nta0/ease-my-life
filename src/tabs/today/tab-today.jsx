@@ -2921,7 +2921,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		return { ideStr : varKeyStr === 'once' ? 'tk_ob_meds' : 'tk_ob_trash', kinStr : 'reminder' }; // What: Resumed Mini-Tour Return. Why: The caller needs a real { ideStr, kinStr } pair to resume against. How: This maps 'once' to the meds sample task, everything else to the trash sample task.
+		return { // What: Resumed Mini-Tour Return. Why: The caller needs a real { ideStr, kinStr } pair to resume against. How: This maps 'once' to the meds sample task, everything else to the trash sample task.
+
+
+			ideStr : varKeyStr === 'once' ? 'tk_ob_meds' : 'tk_ob_trash', // What: Identifier String. Why: The resumed tour needs the concrete sample task to run against. How: This picks the meds task for the once variant and the trash task otherwise.
+			kinStr : 'reminder'                                           // What: Kind String. Why: The caller resumes reminder tours differently from picker tours. How: This is the fixed reminder kind.
+
+
+		};
 
 
 	} );
