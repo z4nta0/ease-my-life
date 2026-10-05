@@ -184,7 +184,7 @@ function paiSubFun ( verTexStr, neiConStr = 'and' ) {
  *   last, which is written out directly for its own documented reason.
  *
  * - `keyStr` (String): Key String ties this row to its own field on
- *   optObj[class], read and written by OptMatCom throughout.
+ *   draOptObj[class], read and written by OptMatCom throughout.
  *
  * - `labStr` (String): Label String is the row's own visible setting
  *   name, rendered by OptMatCom as the row's own leading text.

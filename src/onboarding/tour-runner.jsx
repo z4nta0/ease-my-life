@@ -559,7 +559,7 @@ const todTopFun = ( actIdeStr, selTabFun ) => { // What: Today Top Function. Why
  * @param props.actStoObj   - Action Store Object: The shared app actions
  *                            object, the same app plumbing every tab already
  *                            gets.
- * @param props.onBacTouFun - On Back Tour Function: Optional (targetStepIndex)
+ * @param props.onBacTouFun - On Back Tour Function: Optional (claSteNum)
  *                            => void, side effects to run before navigating
  *                            back to a given step (e.g. undoing something a
  *                            later step did). It is called before the step

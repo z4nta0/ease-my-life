@@ -644,7 +644,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	const helExiFun = React.useCallback( () => setHelModBoo( false ), [] ); // What: Help Exit Function. Why: HelOveCom needs a stable close handler to call when the user dismisses it. How: This forces helModBoo back to false.
 
 
-	const staTouBoo = staAppObj.onboarding?.activeTour?.id === 'page-explore_stats'; // What: Stats Tour Boolean. Why: This page's own help-mode sample borrowing must defer to the page tour whenever the tour is the one currently driving the same samples. How: This checks the persisted onboarding state for that exact active tour id, optional-chaining past a missing onboarding object or active tour. // Skipped while the Stats PAGE TOUR owns these same real samples (see onboarding/page-tours.jsx's own unhideSampleHistory): this effect also runs on mount (helModBoo starts false), and without this guard it would immediately re-hide the samples the instant the tour navigates onto this page, right after the tour's own Step 1 just unhid them. Confirmed as the cause of the Stats page tour going dim-with-nothing- then-ending: the group filter's own existingGroups check never got the chance to see any unhidden pickers before this ran them back to hidden.
+	const staTouBoo = staAppObj.onboarding?.activeTour?.id === 'page-explore_stats'; // What: Stats Tour Boolean. Why: This page's own help-mode sample borrowing must defer to the page tour whenever the tour is the one currently driving the same samples. How: This checks the persisted onboarding state for that exact active tour id, optional-chaining past a missing onboarding object or active tour. // Skipped while the Stats PAGE TOUR owns these same real samples (see onboarding/page-tours.jsx's own unhHisFun call): this effect also runs on mount (helModBoo starts false), and without this guard it would immediately re-hide the samples the instant the tour navigates onto this page, right after the tour's own Step 1 just unhid them. Confirmed as the cause of the Stats page tour going dim-with-nothing- then-ending: the group filter's own exiGroArr check never got the chance to see any unhidden pickers before this ran them back to hidden.
 
 
 	React.useEffect( () => { // What: Help Sample History Effect. Why: Help mode borrows the real hidden sample pickers so the heatmap/breakdown have genuine history to show, and must give them back once help mode ends. How: This unhides the samples while helModBoo is true, or hides them again otherwise, unless the page tour already owns them.
@@ -1880,7 +1880,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-				iteStkMap.get( runIteStr ).push( { calNum : calDayNum, runNum : runCouNum } ); // What: Streak Push. Why: This is the actual filing of the completed streak's own two measurements under its own item. How: This appends the { runs, calDays } pair.
+				iteStkMap.get( runIteStr ).push( { calNum : calDayNum, runNum : runCouNum } ); // What: Streak Push. Why: This is the actual filing of the completed streak's own two measurements under its own item. How: This appends the { calNum, runNum } pair.
 
 
 			}
@@ -1894,7 +1894,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		for ( const [ iteIdeStr, stkRunArr ] of iteStkMap ) { // What: Per-Item Average Loop. Why: Every item with at least one completed streak needs its own averaged elig/cal values. How: This averages every recorded streak's own runs and calDays fields.
+		for ( const [ iteIdeStr, stkRunArr ] of iteStkMap ) { // What: Per-Item Average Loop. Why: Every item with at least one completed streak needs its own averaged elig/cal values. How: This averages every recorded streak's own runNum and calNum fields.
 
 
 			if ( !stkRunArr.length ) continue; // What: Empty Guard. Why: An item that never appears in iteStkMap already has no entry, but this guards a theoretical empty array too. How: This skips straight to the next item.
@@ -2802,7 +2802,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								{ [ // What: Type Pill Entry Array. Why: The Type row's own pills combine every real mode with the Conditionals/Reminders sentinels. How: This spreads all three sources into one array, sorted and rendered by the chain below. // Conditionals/Reminders sort in alphabetically alongside the real modes, rather than being pinned, so they're easy to find now that both this rail and the Show rail below sort that way. typFilStr doubles as their own scope value ('conditionals' / 'reminders', not a real picker mode) so the Show row below can narrow to just that one card instead of the full "All" list, visPicArr's own mode match naturally excludes every real picker under either value, same as any other empty mode.
 
 
-									...exiModArr.map( ( picModStr ) => ( { // What: Mode Entry Mapping. Why: Every real mode in use needs its own pill entry with a matching count/click handler before the combined list is sorted. How: This maps each exiModArr entry to a small { key, name, count, isOn, onClick } shape.
+									...exiModArr.map( ( picModStr ) => ( { // What: Mode Entry Mapping. Why: Every real mode in use needs its own pill entry with a matching count/click handler before the combined list is sorted. How: This maps each exiModArr entry to a small { cliFun, couNum, keyStr, namStr, selBoo } shape.
 
 
 										cliFun : () => setTypFilStr( picModStr ),                                                               // What: Click Function. Why: Choosing this pill narrows the Type filter. How: This sets typFilStr to the mode.

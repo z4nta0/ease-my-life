@@ -17,7 +17,7 @@ import React from 'react'; // What: React. Why: This is the UI library the hook 
  * tabs react to each other without a context provider. For example, a
  * tab anchoring a tour target needs to know the live phase/step even
  * when its own normal render gate is off, or Today needs to push its
- * list down by reserveTop while a tall highlight is up.
+ * list down by resTopNum while a tall highlight is up.
  *
  * This is kept in its own module, not onboarding/welcome-tour.jsx, so the
  * guided-tour engine (onboarding/tour-runner.jsx) and whatever authors an

@@ -26,7 +26,7 @@ import { isoDayFun } from '../utils/date.js'; // What: Iso Day Function. Why: Ho
  * callers.
  *
  * The persisted state shape (lives at state.holidays) is:
- * { country: 'US', disabled: [holidayKey, ...], custom: [{ id, name,
+ * { country: 'US', disabled: [holKeyStr, ...], custom: [{ id, name,
  * month, day }] }. disabled holds computed holidays the user has
  * switched off (won't trigger a skip); custom holds the user's own
  * added recurring days off, by month (1-12) and day (1-31).

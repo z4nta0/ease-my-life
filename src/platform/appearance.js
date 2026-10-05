@@ -252,7 +252,7 @@ let __tinProObj = null; // What: Tint Probe Object. Why: Resolving a CSS color s
  * @summary
  * Builds a full 8-token palette from the 3 colors a Custom theme lets
  * the user pick (background, text, accent), using CSS relative-color
- * syntax so the derived tokens (surface/border/muted/accentSoft) are
+ * syntax so the derived tokens (surface/border/muted/soft accent) are
  * computed by the browser itself off the literal color the user chose,
  * with no color-math library needed here. Dark mode floors the derived
  * lightness rather than using a plain offset, since a plain offset
@@ -264,7 +264,7 @@ let __tinProObj = null; // What: Tint Probe Object. Why: Resolving a CSS color s
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param modKeyStr - Mode Key String: Either 'light' or 'dark'; flips which
- *                    direction the derived surface/border/muted/accentSoft
+ *                    direction the derived surface/border/muted/soft accent
  *                    tokens move away from the user's own chosen colors.
  * @param usrColObj - User Color Object: The user's own 3 chosen colors: { bg,
  *                    text, accent }. This is a separate, persisted contract
@@ -287,10 +287,10 @@ function resCusFun ( modKeyStr, usrColObj ) {
 
 	const bacColStr = usrColObj.bg;     // What: Background Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.bg and reused in the returned object and the relative-color expressions below.
 	const texColStr = usrColObj.text;   // What: Text Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.text and reused in the returned object and the muted expression below.
-	const accColStr = usrColObj.accent; // What: Accent Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.accent and reused in the returned object and the accentSoft expression below.
+	const accColStr = usrColObj.accent; // What: Accent Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.accent and reused in the returned object and the aceStr expression below.
 
 
-	const modSgnNum = modKeyStr === 'dark' ? 1 : -1; // What: Mode Sign Number. Why: The muted/accentSoft tokens need to move toward the page background in dark mode but away from it in light mode. How: This flips the sign of their lightness offset below based on the given mode.
+	const modSgnNum = modKeyStr === 'dark' ? 1 : -1; // What: Mode Sign Number. Why: The mutStr/aceStr tokens need to move toward the page background in dark mode but away from it in light mode. How: This flips the sign of their lightness offset below based on the given mode.
 
 	const calOffFun = ( offAmoNum, floValNum ) => ( modKeyStr === 'dark' // What: Calc Offset Function. Why: Dark mode needs a floored lightness offset to avoid the near-black gamma-encoding hazard described above, while light mode can use a plain one. How: This returns the appropriate CSS calc() expression string for whichever mode is active.
 

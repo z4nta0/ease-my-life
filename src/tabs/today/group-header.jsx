@@ -444,7 +444,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 							className={` ${ cssModObj.proDasIta }   ${ curIndNum === freIndNum ? cssModObj.proDasItaFresh : '' } `}
 
 							data-dash-done-active={ curIndNum < donCouNum || undefined } // What: Dash Done Active Attribute. Why: A done row's dash is filled by its module. How: This sets the presence-only attribute on every dash below donCouNum and removes it otherwise.
-						/> // What: Progress Dash Element. Why: This is one single dash in the group's own progress bar. How: This marks itself with data-dash-done-active once its own index falls under donCouNum, and takes the module's isFresh class for exactly one tick when it is the dash freIndNum names.
+						/> // What: Progress Dash Element. Why: This is one single dash in the group's own progress bar. How: This marks itself with data-dash-done-active once its own index falls under donCouNum, and takes the module's proDasItaFresh class for exactly one tick when it is the dash freIndNum names.
 
 
 					) ) }

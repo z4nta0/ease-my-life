@@ -15,13 +15,13 @@ import { emlTouObj    } from '../../state/tour-bus.js';             // What: Eas
 import { IcoSvgCom    } from '../../ui/icon.jsx';                   // What: Icon Svg Component. Why: Every reminder card and button needs a recognizable glyph. How: This is rendered throughout RemCarCom and RemSecCom.
 import { InfTipCom    } from '../../ui/info-tip.jsx';               // What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add button in RemSecCom.
 import { isoDayFun    } from '../../utils/date.js';                 // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
-import { LogChiCom    } from './day-log.jsx';                       // What: Log Chip Component. Why: The Reminders section's own header needs the same show-today's-log toggle chip as every other group. How: This is rendered in RemSecCom's header, gated on onToggleLog being supplied.
+import { LogChiCom    } from './day-log.jsx';                       // What: Log Chip Component. Why: The Reminders section's own header needs the same show-today's-log toggle chip as every other group. How: This is rendered in RemSecCom's header, gated on onTogLogFun being supplied.
 import { nexDatFun    } from '../../utils/date.js';                 // What: Next Date Function. Why: A reminder's next occurrence reads as a full prose date. How: This is called with the date and whether the year must always show.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: The quick-add entry point must stay disabled while any onboarding tutorial is still in progress, and a tutorial card needs its own launch state. How: This is read via its own tutProFun and entLooFun helpers.
 import { ONB_RCT_OBJ  } from '../../state/onboarding-seed-data.js'; // What: Onboarding Reminder-Card-Text Object. Why: A still-hidden sample reminder's own mini-tour launcher card needs copy distinct from its real schedule summary. How: This is looked up by sample task id inside RemCarCom's own isaTutBoo branch.
 import { ONB_STI_ARR  } from '../../state/onboarding-seed-data.js'; // What: Onboarding Sample-Task-Ids Array. Why: Only the Welcome Tour's own seeded sample reminders should ever render as a mini-tour launcher card. How: This is checked against a hidden task's own id inside RemSecCom's tutTasArr filter.
 import { redMotFun    } from '../../utils/motion.js';               // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant close, skip, or remove instead of a timed animation. How: This is checked before every staged animation in RemCarCom and RemSecCom.
-import { RemLogCom    } from './day-log.jsx';                       // What: Reminders Log Component. Why: The Reminders section's own header chip opens this exact audit panel. How: This is rendered inside RemSecCom, gated on logOpen.
+import { RemLogCom    } from './day-log.jsx';                       // What: Reminders Log Component. Why: The Reminders section's own header chip opens this exact audit panel. How: This is rendered inside RemSecCom, gated on logOpeBoo.
 import { SchEdiCom    } from '../../ui/schedule-editor.jsx';        // What: Schedule Editor Component. Why: A reminder's own repeat and schedule fields are edited with one shared editor. How: This is rendered for the add form and each open reminder.
 import { TAS_NAM_OBJ  } from '../../core/tasks.js';                 // What: Tasks Namespace Object. Why: Every due-ness, visibility, and summary computation for Today's cards defers to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout RemCarCom and RemSecCom.
 import { useEscCanFun } from '../../ui/escape-cancel.js';           // What: Use Escape Cancel Function. Why: The quick-add form needs Escape to discard in-progress edits the same way every other editor does. How: This is called once inside RemSecCom.
@@ -805,7 +805,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 	const [ visForBoo, setVisForBoo ] = React.useState( addOpeBoo ); // What: Visible Form Boolean And Setter. Why: The quick-add form must stay mounted for its own exit animation even after actEdiStr has already moved on to a different editor. How: This starts at addOpeBoo and is later driven by the effect below.
 	const [ draTasObj, setDraTasObj ] = React.useState( null );      // What: Draft Task Object And Setter. Why: The quick-add form holds a full draft task so the same SchEdiCom used on an existing reminder can configure recurrence before it's ever created. How: This starts null and is populated by staAddFun below.
-	const [ addCloBoo, setAddCloBoo ] = React.useState( false );     // What: Add Closing Boolean And Setter. Why: The quick-add form's own exit animation needs a flag distinct from visForBoo, so the form stays mounted but visually collapsing during the close. How: This is toggled by cancelAdd/commit below.
+	const [ addCloBoo, setAddCloBoo ] = React.useState( false );     // What: Add Closing Boolean And Setter. Why: The quick-add form's own exit animation needs a flag distinct from visForBoo, so the form stays mounted but visually collapsing during the close. How: This is toggled by canAddFun/comAddFun below.
 
 	const wasAddRef  = React.useRef( addOpeBoo ); // What: Was Adding Reference. Why: The effect below needs to detect an addOpeBoo transition, not just its current value. How: This is read and overwritten at the end of that same effect.
 	const selCloRef  = React.useRef( false );     // What: Self Closing Reference. Why: Our own cancel/commit already starts the exit animation itself; the effect below must not ALSO re-trigger it as if some other editor forced this one closed. How: This is set just before that self-initiated close begins.
@@ -817,12 +817,12 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 	React.useEffect( () => { if ( addOpeBoo && inpEleRef.current ) inpEleRef.current.focus(); }, [ addOpeBoo ] ); // What: Focus Effect. Why: Opening the quick-add form should focus its own name input immediately. How: This focuses inpEleRef's own current node whenever addOpeBoo becomes true.
 
 
-	React.useEffect( () => { // What: Forced Close Effect. Why: Another editor opening elsewhere should force this quick-add form closed, playing the same exit animation Cancel itself uses rather than snapping shut. How: This detects a addOpeBoo transition to false that WASN'T our own doing, then stages the same close sequence cancelAdd uses.
+	React.useEffect( () => { // What: Forced Close Effect. Why: Another editor opening elsewhere should force this quick-add form closed, playing the same exit animation Cancel itself uses rather than snapping shut. How: This detects a addOpeBoo transition to false that WASN'T our own doing, then stages the same close sequence canAddFun uses.
 
 
 		if ( addOpeBoo ) { setVisForBoo( true ); } // What: Opening Branch. Why: A genuine open transition just needs the form to become visible again. How: This sets visForBoo true while addOpeBoo is true.
 
-		else if ( wasAddRef.current && !selCloRef.current ) { // What: Forced Close Branch. Why: A transition to closed that wasn't flagged as self-initiated means some other editor forced this one shut. How: This stages the same close sequence cancelAdd uses, respecting reduced motion.
+		else if ( wasAddRef.current && !selCloRef.current ) { // What: Forced Close Branch. Why: A transition to closed that wasn't flagged as self-initiated means some other editor forced this one shut. How: This stages the same close sequence canAddFun uses, respecting reduced motion.
 
 
 			clearTimeout( cloTimRef.current ); // What: Stale Timer Clear. Why: A close already scheduled a moment ago must not also fire after this fresh forced-close begins. How: This clears whatever timeout id cloTimRef currently holds.
@@ -837,7 +837,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 			}
 
-			else { // What: Animated Branch. Why: Otherwise the animated close should play, matching cancelAdd's own sequence. How: This stages addCloBoo, then clears the draft/form after the CSS transition finishes.
+			else { // What: Animated Branch. Why: Otherwise the animated close should play, matching canAddFun's own sequence. How: This stages addCloBoo, then clears the draft/form after the CSS transition finishes.
 
 
 				setAddCloBoo( true ); // What: Add Closing Flag Set. Why: The form needs to stay mounted but visually collapsing while the transition plays. How: This flips addCloBoo true.
@@ -888,7 +888,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 		const touBusObj = emlTouObj.get(); // What: Tour Bus Object. Why: A reminder mini-tour publishes the sample it's walking through here so the real "+" button (which the tour has the user click themselves) opens pre-filled with that sample's data instead of blank. How: This reads the shared tour bus's own current snapshot.
 
 
-		setDraTasObj( TAS_NAM_OBJ.defTasFun( { ...( touBusObj.preFilObj || { repeat : 'once' } ), ...( touBusObj.shoCheBoo ? { hidden : true } : {} ) } ) ); // What: Draft Task Seed. Why: Any reminder created while the mini-tour checklist is up should stay hidden from the real list until it concludes, not just a tour's own reminders. How: This spreads touBusObj's own prefill (or a plain 'once' default) plus a hidden flag whenever touBusObj's own showChecklist is set.
+		setDraTasObj( TAS_NAM_OBJ.defTasFun( { ...( touBusObj.preFilObj || { repeat : 'once' } ), ...( touBusObj.shoCheBoo ? { hidden : true } : {} ) } ) ); // What: Draft Task Seed. Why: Any reminder created while the mini-tour checklist is up should stay hidden from the real list until it concludes, not just a tour's own reminders. How: This spreads touBusObj's own prefill (or a plain 'once' default) plus a hidden flag whenever touBusObj's own shoCheBoo is set.
 
 		setAddCloBoo( false );          // What: Add Closing Flag Reset. Why: A freshly-opened form must not start out mid-close, in case a previous close was still in flight. How: This clears addCloBoo back to false.
 		setActEdiStr( 'reminder-add' ); // What: Active Editor Claim. Why: The quick-add form needs to claim the shared actEdiStr slot so every other open editor forces itself closed. How: This sets actEdiStr to the 'reminder-add' sentinel.
@@ -1008,7 +1008,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 	const remPreRef = React.useRef( remDonNum ); // What: Reminder Previous Reference. Why: The dash-bar animation below needs remDonNum's own PRIOR value to detect a genuine increase, not just its current value. How: This starts at remDonNum and is updated at the end of the effect below.
 
-	const [ remFreNum, setRemFreNum ] = React.useState( -1 ); // What: Reminder Fresh Number And Setter. Why: The dash-bar's own just-completed dash needs to know WHICH index to briefly animate, mirroring GroHeaCom's own freshIdx. How: This is set by the effect below and cleared 520ms later.
+	const [ remFreNum, setRemFreNum ] = React.useState( -1 ); // What: Reminder Fresh Number And Setter. Why: The dash-bar's own just-completed dash needs to know WHICH index to briefly animate, mirroring GroHeaCom's own freIndNum. How: This is set by the effect below and cleared 520ms later.
 
 
 	React.useEffect( () => { // What: Dash Animation Effect. Why: The dash that just turned on should animate in, exactly like every other group's own progress bar, even though this section isn't rendered by that shared component. How: This detects a genuine increase in remDonNum, stages remFreNum, then clears it after the flourish's own duration.

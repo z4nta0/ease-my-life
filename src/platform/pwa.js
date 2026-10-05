@@ -536,7 +536,7 @@ async function askInsFun () {
 
 	insCapObj = null; // What: Install Captured Object Reset. Why: A captured prompt can only ever be shown once; leaving insCapObj set would let a later caller try to reuse an already-consumed event. How: This clears insCapObj immediately after curEveObj has captured its own reference.
 
-	notSubFun(); // What: Notify Subscribers Call. Why: canInstall() must now report false, since the captured event is about to be shown (and consumed) below. How: This calls notSubFun so every subscriber re-reads the now-cleared insCapObj.
+	notSubFun(); // What: Notify Subscribers Call. Why: canInsFun() must now report false, since the captured event is about to be shown (and consumed) below. How: This calls notSubFun so every subscriber re-reads the now-cleared insCapObj.
 
 
 
@@ -680,9 +680,9 @@ window.addEventListener( 'beforeinstallprompt', ( insEveObj ) => { // What: Befo
 
 
 	insEveObj.preventDefault(); // What: Prevent Default Call. Why: The browser's own mini-infobar must not appear now that this app is handling the prompt itself. How: This calls the captured event's own preventDefault method.
-	insCapObj = insEveObj;      // What: Install Captured Object Assignment. Why: askInsFun and canInstall both need this exact event later, once the user actually clicks the app's own install button. How: This stores insEveObj onto the module-level insCapObj.
+	insCapObj = insEveObj;      // What: Install Captured Object Assignment. Why: askInsFun and canInsFun both need this exact event later, once the user actually clicks the app's own install button. How: This stores insEveObj onto the module-level insCapObj.
 
-	notSubFun(); // What: Notify Subscribers Call. Why: canInstall()/insStaFun() must now report differently to any subscribed UI. How: This calls notSubFun so every subscriber re-reads the now-set insCapObj.
+	notSubFun(); // What: Notify Subscribers Call. Why: canInsFun()/insStaFun() must now report differently to any subscribed UI. How: This calls notSubFun so every subscriber re-reads the now-set insCapObj.
 
 
 } );
@@ -696,7 +696,7 @@ window.addEventListener( 'appinstalled', () => { // What: App Installed Listener
 
 	askPerFun( true ); // What: Ask Persist Force Call. Why: An install is worth spending this device's one lifetime persistence request on immediately, rather than waiting for the first-picker moment. How: This calls askPerFun with forAskBoo true.
 
-	notSubFun(); // What: Notify Subscribers Call. Why: canInstall() must now report false, since the captured event this app used to offer installing is gone. How: This calls notSubFun.
+	notSubFun(); // What: Notify Subscribers Call. Why: canInsFun() must now report false, since the captured event this app used to offer installing is gone. How: This calls notSubFun.
 
 
 } );

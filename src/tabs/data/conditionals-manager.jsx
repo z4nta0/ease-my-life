@@ -611,7 +611,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 
 
-		setCloIdeStr( conIdeStr ); // What: Closing Id Set. Why: The editor must stay mounted (via closingId) through its own collapse animation instead of unmounting immediately. How: This flags conIdeStr as the row currently mid-delete-animation.
+		setCloIdeStr( conIdeStr ); // What: Closing Id Set. Why: The editor must stay mounted (via cloIdeStr) through its own collapse animation instead of unmounting immediately. How: This flags conIdeStr as the row currently mid-delete-animation.
 
 		setOpeIdeStr( null ); // What: Row Collapse Call. Why: Collapsing the row's own open state is what actually triggers its ColDisCom to animate shut. How: This clears opeIdeStr.
 

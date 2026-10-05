@@ -83,7 +83,7 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 
 	const [ draNamStr, setDraNamStr ] = React.useState( '' );   // What: Draft Name String And Setter. Why: The "add a holiday" form needs somewhere to hold the name being typed before it is actually added. How: This is bound to the name input below and read by addCusFun.
 	const [ draDatStr, setDraDatStr ] = React.useState( '' );   // What: Draft Date String And Setter. Why: The "add a holiday" form needs somewhere to hold the date being picked before it is actually added. How: This is bound to the date input below and read by addCusFun.
-	const [ exiIdeStr, setExiIdeStr ] = React.useState( null ); // What: Exiting Identifier String And Setter. Why: A removed custom holiday should play its fade-up-and-out exit before the row actually disappears. How: This holds the id currently mid-exit, checked per-row below to apply the module's isExiting class.
+	const [ exiIdeStr, setExiIdeStr ] = React.useState( null ); // What: Exiting Identifier String And Setter. Why: A removed custom holiday should play its fade-up-and-out exit before the row actually disappears. How: This holds the id currently mid-exit, checked per-row below to apply the module's holRowIteExiting class.
 
 
 	// #region rmvExiFun

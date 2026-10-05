@@ -119,7 +119,7 @@ function conSubFun ( conRcdObj ) {
  * Builds a per-item status-flags map for one picker on one day, purely
  * derived from state.pickLog's own rows (never mutated). Every row
  * matching this picker/day contributes to its own item's flags: auto
- * for an auto-picked row, pushed for a manual/reroll row, rolledOff or
+ * for an auto-picked row, pushed for a manual/reroll row, rolled off or
  * skipped from the row's own outcome, and completed once a row is
  * marked done.
  *
@@ -1781,7 +1781,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 		if ( rowStaStr === 'notdue' ) { // What: Not Due Guard. Why: A relative due label only makes sense for a task that is neither done, skipped, nor due today. How: This computes and assigns dueLabStr only while rowStaStr is still 'notdue'.
 
 
-			const nexDatObj = TAS_NAM_OBJ.nexEliFun( curTasObj, staAppObj.reminderOpts, staAppObj.holidays, ancDatObj, true ); // What: Next Date Object. Why: This is the raw next-occurrence Date forDueFun below needs, honoring an active manual skip so the label reflects when the reminder actually reappears. How: This calls TAS_NAM_OBJ.nexEliFun with respectSkipUntil set true.
+			const nexDatObj = TAS_NAM_OBJ.nexEliFun( curTasObj, staAppObj.reminderOpts, staAppObj.holidays, ancDatObj, true ); // What: Next Date Object. Why: This is the raw next-occurrence Date forDueFun below needs, honoring an active manual skip so the label reflects when the reminder actually reappears. How: This calls TAS_NAM_OBJ.nexEliFun with resSkiBoo set true.
 
 			dueLabStr = forDueFun( nexDatObj, dayKeyStr ); // What: Due Label String Assign. Why: The row below needs the final short relative label, not the raw Date. How: This calls forDueFun with nexDatObj and dayKeyStr.
 

@@ -86,7 +86,7 @@ const SCH_VER_NUM = 1; // What: Schema Version Number. Why: migStaFun() stamps t
  *
  * @example
  * ```ts
- * migStaFun(rawState) // => state
+ * migStaFun(curStaObj) // => curStaObj
  * ```
  *
 */
@@ -337,7 +337,7 @@ function migStaFun ( curStaObj ) {
 	 * The Data tab's main sections (Conditionals, Reminders, each
 	 * picker card) all default COLLAPSED and are read via `=== false`
 	 * for expanded, so no seeding is normally needed (see
-	 * togColFun's own defaultCollapsed argument). But
+	 * togColFun's own defColBoo argument). But
 	 * values saved by the OLD, inverted picker-card flag must be
 	 * dropped once, so those cards don't load pre-expanded under the
 	 * new polarity; the __collapseDefaultsV2 flag guards this so it

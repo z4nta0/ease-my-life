@@ -527,7 +527,8 @@ function staDraFun ( dowEveObj, draConObj ) {
 	 * successful drop and a cancel. Cancels the auto-scroll loop,
 	 * releases the pointer capture and every listener this gesture
 	 * added, restores every sibling's own inline style/class back to
-	 * its pre-drag state, and finally calls the caller's own onEnd hook.
+	 * its pre-drag state, and finally calls the caller's own onEndDraFun
+	 * hook.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *

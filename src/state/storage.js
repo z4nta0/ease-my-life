@@ -1050,7 +1050,7 @@ async function reaPerFun () {
 async function datBytFun () {
 
 
-	try { // What: Data Bytes Try. Why: readPersisted and JSON.stringify can both throw, and either failure should resolve to null rather than reject the caller. How: This wraps the whole measure sequence below, falling back to null in its own catch.
+	try { // What: Data Bytes Try. Why: reaPerFun and JSON.stringify can both throw, and either failure should resolve to null rather than reject the caller. How: This wraps the whole measure sequence below, falling back to null in its own catch.
 
 
 		const curStaObj = ( await reaPerFun() ) || cacStaObj; // What: Current State Object. Why: The freshest available state must be measured, preferring the authoritative persisted copy over the in-memory one. How: This awaits reaPerFun and falls back to cacStaObj only when that resolves to nothing.

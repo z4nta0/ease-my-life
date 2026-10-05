@@ -484,7 +484,7 @@ function enpRevFun ( curStaObj, curEntObj ) {
  *
  * @example
  * ```ts
- * cotAplFun(state, nextEntries, entry, true) // => conditionals
+ * cotAplFun(curStaObj, nexEntArr, togEntObj, true) // => conditionals
  * ```
  *
 */
@@ -667,7 +667,7 @@ function cotAplFun ( curStaObj, nexEntArr, togEntObj, nowDonBoo ) {
  *
  * @example
  * ```ts
- * cdlAplFun(state, nextEntries, entry, true) // => conditionalLog
+ * cdlAplFun(curStaObj, nexEntArr, togEntObj, true) // => conditionalLog
  * ```
  *
 */

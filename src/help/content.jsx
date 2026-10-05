@@ -131,7 +131,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// The Conditionals filter row below carries BOTH .stat-scope-groups AND .stat-scope-groups--cond, and the Type row carries BOTH .stat-scope-groups AND .stat-scope-groups--type (each an additional modifier, not a replacement, see their own conditionalsFilter/typeFilter entries), unscoped, this selector matched both of those rows' pills too, unioning the highlight all the way down through them.
+	// The Conditionals and Type filter rows below render the same filPilBut pills inside their own conFilDiv/typFilDiv hooks (see their own conditionalsFilter/typeFilter entries), so unscoped, this selector matched both of those rows' pills too, unioning the highlight all the way down through them.
 	{ // What: Group Filter Help Item. Why: This is the on-demand help tip for the Group Filter element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -193,13 +193,13 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	// #region Conditionals Manager
 
-	// Each conditional gets its own highlight/tooltip, not just the section as a whole. The per-type controls (Type/Weight/Odds/Boost/Charge Controls/Active) reuse the EXACT same selectors as the Pickers-page create-flow verbatim: CodConCom is the same shared component either way (this tab passes variant="inline" instead of the default 'card', but that only swaps a wrapper class neither selector touches), so there was nothing to re-derive, see PIC_HEL_ARR's own newCond* entries for the original comments on each of these.
+	// Each conditional gets its own highlight/tooltip, not just the section as a whole. The per-type controls (Type/Weight/Odds/Boost/Charge Controls/Active) reuse the EXACT same selectors as the Pickers-page create-flow verbatim: CodConCom is the same shared component either way (this tab passes variant="inline" instead of the default 'card', but that only swaps a wrapper class neither selector touches), so there was nothing to re-derive, see PIC_HEL_ARR's own newCondName through newCondActive entries for the original comments on each of these.
 	{ // What: Conditionals Help Item. Why: This is the on-demand help tip for the Conditionals element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
 		bodEle    : <>This is where you can view and edit all of your conditionals. Tap the header to expand or collapse the section.</>,
 		ideStr    : 'conditionalsManager',
-		padYcoNum : 0, // padYcoNum:0, .catHeaHea has no border/gap of its own below it, but .catBodDiv (wrapping the Add button and every row) sits directly against it with only a hairline border, same zero-gap stacking as the rest of this card. The 20px flex gap above .cnd-manager itself (from .tab--data) easily absorbs losing the default pad on that side too.
+		padYcoNum : 0, // padYcoNum:0, .catHeaHea has no border/gap of its own below it, but .catBodDiv (wrapping the Add button and every row) sits directly against it with only a hairline border, same zero-gap stacking as the rest of this card. The roughly 19px flex gap above the conCatSec section itself (from .tabPagDiv) easily absorbs losing the default pad on that side too.
 		selStr    : '[data-element-name-hook~="conCatSec"] [data-element-name-hook~="catHeaHea"]',
 		titStr    : 'Conditionals'
 
@@ -244,7 +244,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// Reused verbatim from PIC_HEL_ARR's newCondCardText, same CodConCom markup either way, missed when the other newCond* entries were copied over for this pass. // padYcoNum:0, .conConDiv--inline (the variant used here, unlike the Pickers-page card variant) has gap:0 between fields, so this bleeds into its neighbors above/below without it.
+	// Reused verbatim from PIC_HEL_ARR's newCondCardText, same CodConCom markup either way, missed when the other newCondName through newCondActive entries were copied over for this pass. // padYcoNum:0, .conConDiv--inline (the variant used here, unlike the Pickers-page card variant) has gap:0 between fields, so this bleeds into its neighbors above/below without it.
 	{ // What: Conditional Card Text Help Item. Why: This is the on-demand help tip for the Conditional Card Text element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -596,7 +596,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	{ // What: Delete / Cancel / Save Help Item. Why: This is the on-demand help tip for the Delete / Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // selStr targets .ediFooDiv (the shared wrapper), not the plain footer alone, see editReminderFoot's own comment (TOD_HEL_ARR) for why: Delete's own confirm prompt swaps in a different sibling class (.ediFooDiv--confirm), which the plain footer alone would miss, leaving its Cancel/Delete buttons genuinely unreachable (no dim-mask hole, blocked by the click-guard) while help mode is on. // Delete is only rendered when !isNew (see editor-footer.jsx's EdiFooCom), :has(.btn--danger) splits this from dataReminderFootNew below rather than always mentioning Delete, same fix as dataCondFoot/dataCondFootNew.
+	{ // What: Delete / Cancel / Save Help Item. Why: This is the on-demand help tip for the Delete / Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // selStr targets .ediFooDiv (the shared wrapper), not the plain footer alone, see editReminderFoot's own comment (TOD_HEL_ARR) for why: Delete's own confirm prompt swaps in a different sibling class (.ediFooDiv--confirm), which the plain footer alone would miss, leaving its Cancel/Delete buttons genuinely unreachable (no dim-mask hole, blocked by the click-guard) while help mode is on. // Delete is only rendered when !isaNewBoo (see editor-footer.jsx's EdiFooCom), :has() on the delActBut hook splits this from dataReminderFootNew below rather than always mentioning Delete, same fix as dataCondFoot/dataCondFootNew.
 
 
 		ideStr : 'dataReminderFoot',
@@ -921,7 +921,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// Split by section type (three separate entries, each named for its own context) rather than one shared "Item Sort", Conditionals/Reminders/pickers all render the exact same SorSelCom markup (ui.jsx) inside their own .catBodDiv, so the selectors below key off each section's own distinguishing class/attribute instead: .cnd-manager (Conditionals), .cat--reminders (Reminders), and a picker section's own data-picker-id (set only there, unlike a plain className check, which would need :not() exclusions against the other two instead). // mulBoo is true because every expanded section's own sort control gets its own badge, since more than one can be visible (and set to a different order) at once, matters most for pickers, where several can be expanded together.
+	// Split by section type (three separate entries, each named for its own context) rather than one shared "Item Sort", Conditionals/Reminders/pickers all render the exact same SorSelCom markup (sort-select.jsx) inside their own .catBodDiv, so the selectors below key off each section's own distinguishing hook/attribute instead: the conCatSec hook (Conditionals), the remCatSec hook (Reminders), and a picker section's own data-picker-id (set only there, unlike a plain className check, which would need :not() exclusions against the other two instead). // mulBoo is true because every expanded section's own sort control gets its own badge, since more than one can be visible (and set to a different order) at once, matters most for pickers, where several can be expanded together.
 	{ // What: Conditional Items Sort Help Item. Why: This is the on-demand help tip for the Conditional Items Sort element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -964,7 +964,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This is one of this picker's items. Tap it to view and edit its settings.</>,
 		ideStr    : 'dataItemRow',
 		mulBoo    : true, // mulBoo is true because every item in every expanded picker gets its own badge.
-		padYcoNum : 0,    // padYcoNum:0, .lisIteDiv rows stack with zero gap (touching, separated only by a hairline border), same as conditionalRow/reminderRow.
+		padYcoNum : 0,    // padYcoNum:0, .lisIteDiv rows stack with zero gap (touching, separated only by a hairline border), same as conditionalRow/reminderRowOnce/reminderRowRecurring.
 		selStr    : '[data-element-name-hook~="datLisDiv"] [data-element-name-hook~="datCatSec"][data-picker-id] [data-element-name-hook~="lisIteDiv"] > :is([data-element-name-hook~="lisRowBut"], [data-element-name-hook~="lisRowDiv"])',
 		titStr    : 'Picker Item'
 
@@ -1103,7 +1103,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	{ // What: Delete / Cancel / Save Help Item. Why: This is the on-demand help tip for the Delete / Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // selStr targets .ediFooDiv (the shared wrapper), not the plain footer alone, Delete swaps that sibling out for .ediFooDiv--confirm (its own Cancel/Delete pair), which a selector scoped to the plain footer would miss entirely once that swap happens: no dim-mask hole, AND the click-guard would treat its buttons as off-target and block them, making the confirmation genuinely unreachable while help mode is on. // Delete is only rendered when !isNew (see EntEdiCom in tab-today.jsx), :has(.btn--danger) splits this from itemFootNew below rather than always mentioning Delete, same fix as dataCondFoot/dataReminderFoot.
+	{ // What: Delete / Cancel / Save Help Item. Why: This is the on-demand help tip for the Delete / Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // selStr targets .ediFooDiv (the shared wrapper), not the plain footer alone, Delete swaps that sibling out for .ediFooDiv--confirm (its own Cancel/Delete pair), which a selector scoped to the plain footer would miss entirely once that swap happens: no dim-mask hole, AND the click-guard would treat its buttons as off-target and block them, making the confirmation genuinely unreachable while help mode is on. // Delete is only rendered when !isaNewBoo (see EntEdiCom in ui/entry-editor.jsx), :has() on the delActBut hook splits this from itemFootNew below rather than always mentioning Delete, same fix as dataCondFoot/dataReminderFoot.
 
 
 		ideStr : 'itemFoot',
@@ -3200,7 +3200,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	{ // What: Reminder Schedule Help Item. Why: This is the on-demand help tip for the Reminder Schedule element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .schEdiDiv (not just .seg, the pill row) so this always covers whatever extra fields the current selection reveals below the pills (the weekday chips for Weekly, the day/date pickers for the others), every option's own extra fields, not just whichever ones happened to share a class with the Reminder Name field above. No pinBelowSel here (unlike a first attempt at this), the highlighted rect IS .schEdiDiv itself, so the tip's normal "below the target" placement already tracks its own bottom edge as it grows/shrinks with the selection, without needing to pin to some other, unrelated element.
+	{ // What: Reminder Schedule Help Item. Why: This is the on-demand help tip for the Reminder Schedule element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .schEdiDiv (not just .seg, the pill row) so this always covers whatever extra fields the current selection reveals below the pills (the weekday chips for Weekly, the day/date pickers for the others), every option's own extra fields, not just whichever ones happened to share a class with the Reminder Name field above. No pinning to a separate element here (unlike a first attempt at this), the highlighted rect IS .schEdiDiv itself, so the tip's normal "below the target" placement already tracks its own bottom edge as it grows/shrinks with the selection, without needing to pin to some other, unrelated element.
 
 
 		ideStr : 'addReminderRepeat',

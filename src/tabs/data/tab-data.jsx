@@ -9,16 +9,16 @@ import React     from 'react';                 // What: React. Why: TabDatCom is
 
 import { buiIteFun    } from '../../state/new-item.js';             // What: Build Item Function. Why: A new item's local draft starts from the same defaults the store would give it. How: This is called when a row adds a new item.
 import { CAD_NAM_OBJ  } from '../../core/cadence.js';               // What: Cadence Namespace Object. Why: Each picker card's own header needs the shared cadence summary helpers. How: This is called in TabDatCom's picker cards.
-import { clePicFun    } from '../../help/sample-data.js';           // What: Clear Pickers Function. Why: Help mode's disposable sample pickers must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabDatCom's own unmount cleanup.
-import { cleTasFun    } from '../../help/sample-data.js';           // What: Clear Tasks Function. Why: Help mode's disposable sample reminders must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabDatCom's own unmount cleanup.
+import { clePicFun    } from '../../help/sample-data.js';           // What: Clear Pickers Function. Why: Help mode's disposable sample pickers must not survive past the help session or this tab unmounting. How: This is called whenever helOpeBoo turns off and on TabDatCom's own unmount cleanup.
+import { cleTasFun    } from '../../help/sample-data.js';           // What: Clear Tasks Function. Why: Help mode's disposable sample reminders must not survive past the help session or this tab unmounting. How: This is called whenever helOpeBoo turns off and on TabDatCom's own unmount cleanup.
 import { ColDisCom    } from '../../ui/collapse.jsx';               // What: Collapse Disclosure Component. Why: Picker cards, their Controls and Items disclosures, and item rows share the same collapse-height animation. How: This wraps each of those bodies, driven by the matching open boolean.
 import { ConManCom    } from './conditionals-manager.jsx';          // What: Conditional Manager Component. Why: The Data tab lists every conditional in its own section above the picker cards. How: This is rendered once in TabDatCom whenever the Conditionals scope is shown.
 import { DAT_HEL_ARR  } from '../../help/content.jsx';              // What: Data Help Array. Why: Help mode needs this tab's own catalog of labeled elements to badge. How: This is passed straight through to HelOveCom's own items prop.
 import { durMilFun    } from '../../utils/rhythm.js';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { EntEdiCom    } from '../../ui/entry-editor.jsx';           // What: Entry Editor Component. Why: A picker's own item editor must stay an exact copy of Today's, so this file reuses it rather than a second implementation. How: This is aliased to IteEdiCom and rendered once per open item row.
 import { freEdiFun    } from './list-sorting.js';                   // What: Freeze Edited Function. Why: An item mid-edit must not visually jump position if its own sort key changes underneath it. How: This is called once per picker's item list, given the sorted list and the currently-open item id.
-import { HelButCom    } from '../../help/button.jsx';               // What: Help Button Component. Why: This tab needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helpOnBoo.
-import { HelOveCom    } from '../../help/mode.jsx';                 // What: Help Overlay Component. Why: This tab needs the same help-mode badge overlay every other tab exposes. How: This is rendered once, driven by helpOnBoo and DAT_HEL_ARR.
+import { HelButCom    } from '../../help/button.jsx';               // What: Help Button Component. Why: This tab needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helOpeBoo.
+import { HelOveCom    } from '../../help/mode.jsx';                 // What: Help Overlay Component. Why: This tab needs the same help-mode badge overlay every other tab exposes. How: This is rendered once, driven by helOpeBoo and DAT_HEL_ARR.
 import { IcoSvgCom    } from '../../ui/icon.jsx';                   // What: Icon Svg Component. Why: Nearly every button and row in this tab needs a recognizable glyph. How: This is rendered throughout TabDatCom.
 import { InfTipCom    } from '../../ui/info-tip.jsx';               // What: Info Tip Component. Why: A disabled control or a truncated pill still needs to explain itself on demand. How: This wraps disabled add buttons and truncatable type/group labels throughout TabDatCom.
 import { modDefFun    } from '../../state/new-item.js';             // What: Mode Defaults Function. Why: A draft picker's type change resets its items the same way a saved picker's does. How: This is called by patNewFun.
@@ -28,8 +28,8 @@ import { PicConCom    } from './picker-controls.jsx';               // What: Pic
 import { redMotFun    } from '../../utils/motion.js';               // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see any of this tab's own FLIP, scroll, or collapse animations. How: This is checked before every animation in TabDatCom.
 import { RemManCom    } from './reminders-manager.jsx';             // What: Reminder Manager Component. Why: The Reminders section of this tab is a full, separately-maintained editor. How: This is rendered once, in place of a picker card, whenever the Reminders scope is shown.
 import { SED_NAM_OBJ  } from '../../state/seed.js';                 // What: Seed Namespace Object. Why: Every picker mode's own label and hint text comes from this shared catalog. How: This is read (MOD_DEF_OBJ) in TabDatCom for mode labels and the new-picker mode radio group.
-import { sedPicFun    } from '../../help/sample-data.js';           // What: Seed Pickers Function. Why: Help mode needs a real picker of every mode to show a representative "view and edit" section. How: This is called whenever helpOnBoo turns on.
-import { sedTasFun    } from '../../help/sample-data.js';           // What: Seed Tasks Function. Why: Help mode needs real reminders of every recurrence kind to show a representative "view and edit" section. How: This is called whenever helpOnBoo turns on.
+import { sedPicFun    } from '../../help/sample-data.js';           // What: Seed Pickers Function. Why: Help mode needs a real picker of every mode to show a representative "view and edit" section. How: This is called whenever helOpeBoo turns on.
+import { sedTasFun    } from '../../help/sample-data.js';           // What: Seed Tasks Function. Why: Help mode needs real reminders of every recurrence kind to show a representative "view and edit" section. How: This is called whenever helOpeBoo turns on.
 import { sorEntFun    } from './list-sorting.js';                   // What: Sort Entries Function. Why: Sections and picker items share the app's own sort-key vocabulary. How: This is called once per comparison inside each list's own sort.
 import { SorSelCom    } from './sort-select.jsx';                   // What: Sort Select Component. Why: Every sortable list in this tab needs the same sort control. How: This is rendered for sections and each picker's own item list.
 import { togFadFun    } from '../../ui/edge-fade.js';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
@@ -547,7 +547,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 	const [ filGroStr, setFilGroStr ] = React.useState( 'all' ); // What: Filter Group String And Setter. Why: The Group filter row narrows which pickers appear below, mirroring the Pickers + Stats tabs; both default to "All". How: This is committed by the Group pill row and read throughout this component.
 	const [ filTypStr, setFilTypStr ] = React.useState( 'all' ); // What: Filter Type String And Setter. Why: The Type filter row narrows by picker mode, and also carries the Conditionals/Reminders sentinel scope values. How: This is committed by the Type pill row and read throughout this component.
-	const [ curScoStr, setCurScoStr ] = React.useState( 'all' ); // What: Current Scope String And Setter. Why: The Show row's own active box needs its own selection state, independent of (but reconciled with) the other 2 filters. How: This is committed by onSelect below and read throughout this component.
+	const [ curScoStr, setCurScoStr ] = React.useState( 'all' ); // What: Current Scope String And Setter. Why: The Show row's own active box needs its own selection state, independent of (but reconciled with) the other 2 filters. How: This is committed by selScoFun below and read throughout this component.
 	const [ filConStr, setFilConStr ] = React.useState( 'all' ); // What: Filter Conditional String And Setter. Why: The Conditionals filter row narrows pickers to those gated by one chosen conditional. How: This is committed by the Conditionals pill row and read throughout this component.
 
 	const allPicArr = staAppObj.pickers || []; // What: All Picker Array. Why: Nearly every filter/list computation below needs the full picker list to start from. How: This reads staAppObj.pickers, falling back to an empty array.
@@ -1081,7 +1081,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-	const togSecFun = ( secIdeStr ) => actStoObj.togColFun( secIdeStr, true ); // What: Toggle Section Function. Why: Every picker card defaults collapsed, so its own toggle needs that default baked in. How: This calls togColFun with defaultCollapsed true.
+	const togSecFun = ( secIdeStr ) => actStoObj.togColFun( secIdeStr, true ); // What: Toggle Section Function. Why: Every picker card defaults collapsed, so its own toggle needs that default baked in. How: This calls togColFun with defColBoo true.
 
 
 
@@ -1982,7 +1982,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					const falEasObj = isaEasBoo ? PIC_NAM_OBJ.aveEasFun( picIteArr, picCurObj.id ) : null; // What: Fallback Ease Object. Why: An item with no ease band of its own falls back to the same average the picking engine itself uses. How: This is computed once per card, shared by both the sort entries and every item row below.
 
 
-					const iteEntFun = ( iteCurObj ) => { // What: Item Entry Function. Why: Every item needs the same comparable shape before sorEntFun can sort them. How: This builds a { name, type, group, count, range, boost, isActive } entry per item, mode-dependent per pickerItemSortOptions.
+					const iteEntFun = ( iteCurObj ) => { // What: Item Entry Function. Why: Every item needs the same comparable shape before sorEntFun can sort them. How: This builds a { name, type, group, count, range, boost, isActive } entry per item, mode-dependent per pisOptFun.
 
 
 						const easMaxNum = iteCurObj.easeMax ?? falEasObj?.easeMax ?? 20; // What: Ease Max Number. Why: The Range field below needs this item's own (or the fallback) ease-max value. How: This reads iteCurObj.easeMax, falling back to falEasObj's own easeMax, then a hardcoded 20.
@@ -2059,7 +2059,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							style={{
 								animationDelay : ( isaDraBoo ? 0 : entIndNum * 45 ) + 'ms',
 								...( isaDraBoo ? { scrollMarginTop : 'var( --spa-ver-bas )' } : {} ),                        // Spacing Vertical Base ~= 14.572px
-								...( rmvPicStr === picCurObj.id && rmvHeiNum ? { '--cat-rem-hei' : rmvHeiNum + 'px' } : {} ) // What: Removing Height Spread. Why: A removing card's collapse must start from its own measured height. How: This sets --cat-rem-hei for the catRemove keyframes only while this card is the one being removed.
+								...( rmvPicStr === picCurObj.id && rmvHeiNum ? { '--cat-rem-hei' : rmvHeiNum + 'px' } : {} ) // What: Removing Height Spread. Why: A removing card's collapse must start from its own measured height. How: This sets --cat-rem-hei for the datCatSecRemoveFold keyframes only while this card is the one being removed.
 							}}
 
 							data-card-vacation-active={ allVacBoo || undefined } // What: Card Vacation Active Attribute. Why: A picker with every item on vacation fades back. How: This sets the presence-only attribute while allVacBoo is true.

@@ -2287,7 +2287,7 @@ function useAppStaFun ( optArgObj ) {
 		 * @summary
 		 * Resolves (or un-resolves) one mini-tour checklist item (see
 		 * onboarding-checklist.js). patValObj is {status:'finished'|
-		 * 'skipped'|'cancelled', createdId?} to resolve it, or null to
+		 * 'skipped'|'cancelled'} to resolve it, or null to
 		 * uncheck it back to pending (redo). Never touches the underlying
 		 * sample picker/task; resolution is tracked here only, which is
 		 * exactly what makes unchecking free. Also flags the exact moment
@@ -2608,7 +2608,7 @@ function useAppStaFun ( optArgObj ) {
 				 * step is what hides it), so if a real picker already
 				 * happens to share its exact name, the dedup below would
 				 * otherwise rename the SAMPLE before onboarding's own name-
-				 * collision suppression (tab-today.jsx's groupEntries) ever
+				 * collision suppression (group-entries.js's groEntFun) ever
 				 * runs, which compares against the sample's own exact,
 				 * canonical name; that would silently defeat the
 				 * suppression instead of triggering it, since the renamed
@@ -3028,7 +3028,7 @@ function useAppStaFun ( optArgObj ) {
 		 *
 		*/
 
-		updPicFun : ( picIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Update Picker Function. Why: Any patch touching cadence/anchorDow/daysOfWeek must be re-run through enforceWeeklyDay, so switching to Weekly (or changing its own day) selects that day in the Days control automatically. How: This merges patValObj onto the one matching picker, then re-derives daysOfWeek.
+		updPicFun : ( picIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Update Picker Function. Why: Any patch touching cadence/anchorDow/daysOfWeek must be re-run through CAD_NAM_OBJ.enfWeeFun, so switching to Weekly (or changing its own day) selects that day in the Days control automatically. How: This merges patValObj onto the one matching picker, then re-derives daysOfWeek.
 
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -3421,11 +3421,11 @@ function useAppStaFun ( optArgObj ) {
 
 			const nexEntArr = curStaObj.today.entries.filter( ( entFilObj ) => entFilObj.eid !== entIdeStr ); // What: Next Entry Array. Why: A skipped entry is removed from today entirely, not merely marked. How: This filters out the one entry matching entIdeStr.
 
-			const nexConArr = ( curEntObj && curEntObj.done ) // What: Next Conditionals Array. Why: A completed entry being skipped is no longer a completion, so any conditional charge/discharge it drove must be reverted. How: This calls cotAplFun with nowDone:false only when curEntObj was actually done, else passes conditionals through unchanged.
+			const nexConArr = ( curEntObj && curEntObj.done ) // What: Next Conditionals Array. Why: A completed entry being skipped is no longer a completion, so any conditional charge/discharge it drove must be reverted. How: This calls cotAplFun with nowDonBoo false only when curEntObj was actually done, else passes conditionals through unchanged.
 				? cotAplFun( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curEntObj, false ) // What: Undo Charge Branch. Why: A done entry being skipped must undo the conditional charge it drove. How: This re-runs cotAplFun as not-done.
 				: ( curStaObj.conditionals || [] );                                                                  // What: Unchanged Conditionals Branch. Why: A not-done entry never drove a charge. How: This passes the conditionals through.
 
-			const nexCdlArr = ( curEntObj && curEntObj.done ) // What: Next Conditional-Log Array. Why: The matching cycle's own log row must be un-recorded too, for the same reason as nexConArr above. How: This calls cdlAplFun with nowDone:false only when curEntObj was actually done, else passes conditionalLog through unchanged.
+			const nexCdlArr = ( curEntObj && curEntObj.done ) // What: Next Conditional-Log Array. Why: The matching cycle's own log row must be un-recorded too, for the same reason as nexConArr above. How: This calls cdlAplFun with nowDonBoo false only when curEntObj was actually done, else passes conditionalLog through unchanged.
 				? cdlAplFun( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curEntObj, false ) // What: Undo Log Branch. Why: The matching cycle's row must be un-recorded too. How: This re-runs cdlAplFun as not-done.
 				: ( curStaObj.conditionalLog || [] );                                                                // What: Unchanged Log Branch. Why: A not-done entry never logged a cycle. How: This passes the conditional log through.
 

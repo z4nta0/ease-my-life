@@ -98,7 +98,7 @@ const FIR_PAR_ELE = <>Pickers are where the magic happens. They have rules for w
  *   own drift/decay band (drift for an Ease Up sample, decay for an Ease Down
  *   sample), same underlying reasoning as sooNum just for the opposite end;
  *   read as picCopObj.latNum inside buiAddFun's own runFun() below, converted
- *   into itemEaseMin there.
+ *   into iteMinNum there.
  *
  * - `namEle` (Element, optional): Name Element overrides buiNamFun's own
  *   default body with domain-specific wording for this sample; read as
@@ -118,7 +118,7 @@ const FIR_PAR_ELE = <>Pickers are where the magic happens. They have rules for w
  * - `sooNum` (Number, optional): Soonest Number overrides the generic 7/14-day
  *   default band for this tour's own added item, tailored to fit that sample's
  *   own theme; read as picCopObj.sooNum inside buiAddFun's own runFun() below,
- *   converted into itemEaseMax there. See each entry's own comment for why its
+ *   converted into iteMaxNum there. See each entry's own comment for why its
  *   specific value was chosen.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -165,7 +165,7 @@ const PIC_COP_OBJ = { // What: Picker Copy Object. Why: Every picker mini-tour's
 		latNum : 62,
 		preStr : 'Wash the windows',
 		sooEle : <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again within a certain timeframe.</>,
-		sooNum : 31 // What: Soonest Number. Why: This overrides the generic 7/14-day default drift band for just this tour's own added item; a monthly-cadence picker's own sample item should look the part instead of a daily/weekly one. How: This is read as picCopObj.sooNum inside buiAddFun's runFun() below, converted into itemEaseMax there.
+		sooNum : 31 // What: Soonest Number. Why: This overrides the generic 7/14-day default drift band for just this tour's own added item; a monthly-cadence picker's own sample item should look the part instead of a daily/weekly one. How: This is read as picCopObj.sooNum inside buiAddFun's runFun() below, converted into iteMaxNum there.
 
 
 	},
@@ -179,7 +179,7 @@ const PIC_COP_OBJ = { // What: Picker Copy Object. Why: Every picker mini-tour's
 		namEle : <>This is the name of the activity item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
 		preStr : 'Take a nap',
 		sooEle : <>This controls the <b>minimum number of days that an activity item will stay picked before it discharges</b> and another item is picked. This is useful since most activities you want to stick with for a certain timeframe instead of changing every day.</>,
-		sooNum : 3 // What: Soonest Number. Why: This overrides the generic 7/14-day default decay band; a Relax picker's own sample item should stick around on a shorter cadence. How: This is read as picCopObj.sooNum inside buiAddFun's runFun() below, converted into itemEaseMax there.
+		sooNum : 3 // What: Soonest Number. Why: This overrides the generic 7/14-day default decay band; a Relax picker's own sample item should stick around on a shorter cadence. How: This is read as picCopObj.sooNum inside buiAddFun's runFun() below, converted into iteMaxNum there.
 
 
 	},
@@ -193,7 +193,7 @@ const PIC_COP_OBJ = { // What: Picker Copy Object. Why: Every picker mini-tour's
 		namEle : <>This is the name of the workout item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
 		preStr : 'Cardio',
 		sooEle : <>This controls the <b>minimum number of days that a workout item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same workout to be chosen again within a certain timeframe.</>,
-		sooNum : 3 // What: Soonest Number. Why: This overrides the generic 7/14-day default drift band; a workout picker's own sample item should recharge on a much shorter cadence. How: This is read as picCopObj.sooNum inside buiAddFun's runFun() below, converted into itemEaseMax there.
+		sooNum : 3 // What: Soonest Number. Why: This overrides the generic 7/14-day default drift band; a workout picker's own sample item should recharge on a much shorter cadence. How: This is read as picCopObj.sooNum inside buiAddFun's runFun() below, converted into iteMaxNum there.
 
 
 	}
@@ -991,7 +991,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 
 
 	const onbStaObj = staAppObj.onboarding || {};                                                                                // What: Onboarding State Object. Why: A reload lands here with app.jsx already having re-derived actPicStr from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resBoo) step to land on. How: This reads staAppObj.onboarding, falling back to an empty object.
-	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `picker-${ picIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding/tour-runner.jsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this picker's own tourId, otherwise null.
+	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `picker-${ picIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding/tour-runner.jsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this picker's own tour id, otherwise null.
 
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuiTouCom running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
 
@@ -1119,7 +1119,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 			steObjArr={ steObjArr }
 			touIdeStr={ `picker-${ picIdeStr }` }
 
-			onBacTouFun={ ( tarSteNum ) => { // What: On Go Back Handler. Why: Back from buiAddFun's own step (index 6, the Items sub-step's "+ Add Item" button) to ITE_STE_OBJ's own step (index 5, "Add Items") needs the form pushed back to its Details sub-step first; unlike the Reminders tours' own "+" button, .ob-picker-next's own click is a one-way step change inside PicForCom, not a toggle, so without this ITE_STE_OBJ's own target stays gone (the form is still showing Items) and the tour has nothing to highlight. How: This branches on tarSteNum, clicking the real DOM control that reverses whichever one-way transition the tour is backing out of.
+			onBacTouFun={ ( tarSteNum ) => { // What: On Go Back Handler. Why: Back from buiAddFun's own step (index 6, the Items sub-step's "+ Add Item" button) to ITE_STE_OBJ's own step (index 5, "Add Items") needs the form pushed back to its Details sub-step first; unlike the Reminders tours' own "+" button, the forNexBut hook's own click is a one-way step change inside PicForCom, not a toggle, so without this ITE_STE_OBJ's own target stays gone (the form is still showing Items) and the tour has nothing to highlight. How: This branches on tarSteNum, clicking the real DOM control that reverses whichever one-way transition the tour is backing out of.
 
 
 				if ( tarSteNum === 5 ) { // What: Details Step Back Check. Why: Reversing buiAddFun's own step needs the form pushed back to Details. How: This clicks the form's own "Details" step-indicator tab, the only way to reverse this from outside the form, which owns that step state locally.

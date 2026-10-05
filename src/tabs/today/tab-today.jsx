@@ -737,7 +737,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 				const carAreEle = carAreRef.current;                                             // What: Card Area Element. Why: This is the actual DOM node the overlay's own horizontal bounds are measured from. How: This reads carAreRef.current.
-				const scrCurEle = carAreEle?.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroller Current Element. Why: The overlay's own vertical bounds must span the scroll container's on-screen viewport, not the (possibly scrolled-away) cards list itself. How: This walks up from carAreEle to its nearest .main ancestor.
+				const scrCurEle = carAreEle?.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroller Current Element. Why: The overlay's own vertical bounds must span the scroll container's on-screen viewport, not the (possibly scrolled-away) cards list itself. How: This walks up from carAreEle to its nearest appConMai hook ancestor.
 
 
 				if ( carAreEle && scrCurEle ) { // What: Both Elements Found Branch. Why: A real measurement is only possible once both elements exist. How: This computes celRecObj from their two bounding rects.
@@ -980,7 +980,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		const tabCurEle = heaCurEle.closest( '[data-element-name-hook~="todTabDiv"]' ); // What: Tab Current Element. Why: The 3 CSS custom properties this effect publishes must land on the tab's own root, not the header itself. How: This walks up from heaCurEle to its nearest .tab--today ancestor.
+		const tabCurEle = heaCurEle.closest( '[data-element-name-hook~="todTabDiv"]' ); // What: Tab Current Element. Why: The 3 CSS custom properties this effect publishes must land on the tab's own root, not the header itself. How: This walks up from heaCurEle to its nearest todTabDiv hook ancestor.
 
 
 		if ( !tabCurEle ) return; // What: No Tab Root Guard. Why: Without the tab root there is nowhere to publish the measured values. How: This bails out of the effect early when tabCurEle is missing.
@@ -1493,10 +1493,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-			const tabCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="todTabDiv"]' );                                                                    // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from maiScrRef.current to its nearest .tab--today ancestor.
+			const tabCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="todTabDiv"]' );                                                                    // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from maiScrRef.current to its nearest todTabDiv hook ancestor.
 			const stiHeiNum = tabCurEle ? ( parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sti-top-hei' ) ) || rhyPxlFun( 'p09' ) ) : rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: This is the exact offset the sticky-offset effect above publishes. How: This reads the --sti-top-hei custom property, falling back to the p09 rhythm step. // Vertical Rhythm Base Plus 9 ~= 183.074px
 			const biaLinNum = stiHeiNum + 20; // What: Bias Line Number. Why: A small extra margin beyond the raw sticky offset reads as more natural than snapping exactly at the pixel boundary. How: This adds a fixed 20px to stiHeiNum.
-			const scrCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' );                                                                    // What: Scroller Current Element. Why: The bottomed-out check below needs the real scroll container, not the window, whenever one exists. How: This walks up from maiScrRef.current to its nearest .main ancestor.
+			const scrCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' );                                                                    // What: Scroller Current Element. Why: The bottomed-out check below needs the real scroll container, not the window, whenever one exists. How: This walks up from maiScrRef.current to its nearest appConMai hook ancestor.
 
 
 			const botEdgBoo = scrCurEle // What: Bottom Edge Boolean. Why: A user scrolled all the way to the end should always spy the LAST section, even if its own header can never reach the spy line. How: This checks either the scroller's own metrics or, without one, the window's.
@@ -1595,8 +1595,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		setActGroStr( groIdeStr ); // What: Active Group Set. Why: The clicked rail button should highlight immediately, without waiting for the scroll-spy effect to catch up. How: This publishes groIdeStr into actGroStr directly.
 		skiSpyRef.current = true;  // What: Skip Spy Set. Why: The scroll-spy effect must not fight this programmatic scroll while it is in flight. How: This flags skiSpyRef true for the duration of the scroll below.
 
-		const maiScrEle = tarSecEle.closest( '[data-element-name-hook~="appConMai"]' );                                        // What: Main Scroll Element. Why: The scroll target depends on whether a real scroll container exists. How: This walks up from tarSecEle to its nearest .main ancestor.
-		const tabCurEle = tarSecEle.closest( '[data-element-name-hook~="todTabDiv"]' );                                        // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from tarSecEle to its nearest .tab--today ancestor.
+		const maiScrEle = tarSecEle.closest( '[data-element-name-hook~="appConMai"]' );                                        // What: Main Scroll Element. Why: The scroll target depends on whether a real scroll container exists. How: This walks up from tarSecEle to its nearest appConMai hook ancestor.
+		const tabCurEle = tarSecEle.closest( '[data-element-name-hook~="todTabDiv"]' );                                        // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from tarSecEle to its nearest todTabDiv hook ancestor.
 		const stiHeiNum = parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sti-top-hei' ) ) || rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail, not at the section's own raw offset. How: This reads the --sti-top-hei custom property, falling back to the p09 rhythm step. // Vertical Rhythm Base Plus 9 ~= 183.074px
 		const extPadNum = rhyPxlFun( 'bas' );                                                                                  // What: Extra Padding Number. Why: A small extra gap beyond the sticky offset reads as more natural than a section's header touching the sticky edge exactly. How: This is a base rhythm step added to the scroll target below. // Vertical Rhythm Base ~= 14.572px
 		const scrBehStr = redMotFun() ? 'auto' : 'smooth';                                                                     // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
@@ -1882,7 +1882,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			iteSelStr   : '[data-element-name-hook~="todGroSec"]',                               // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the todGroSec hook selector.
 			onEndDraFun : () => emlTouObj.set( { draActBoo : false } ),                          // What: On End Drag Function. Why: The coach must reappear once the gesture ends. How: This publishes draActBoo : false onto the shared tour bus.
 			onStaDraFun : () => emlTouObj.set( { draActBoo : true } ),                           // What: On Start Drag Function. Why: Dragging a group should hide the mini-tour coach for the gesture's own duration (see Today's own "Movable IcoSvgCom" tour step), since its tooltip card can sit right over the group being dragged. How: This publishes draActBoo : true onto the shared tour bus, a harmless no-op when no tour is mounted.
-			scrConEle   : maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' ), // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest .main ancestor.
+			scrConEle   : maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' ), // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest appConMai hook ancestor.
 
 			onDroOrdFun : ( ordNumArr ) => { // What: On Drop Order Function. Why: The actual persisted group order needs to be recomputed from the drop's own DOM-position indices. How: This maps ordNumArr back through shoOrdRef's own shown order, then merges the result into staAppObj.groupOrder.
 
@@ -1957,7 +1957,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			iteSelStr   : '[data-element-name-hook~="todCarArt"]',                               // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the todCarArt hook selector.
 			onEndDraFun : () => emlTouObj.set( { draActBoo : false } ),                          // What: On End Drag Function. Why: Same reasoning as groDraFun's own onEndDraFun above. How: This publishes draActBoo : false onto the shared tour bus.
 			onStaDraFun : () => emlTouObj.set( { draActBoo : true } ),                           // What: On Start Drag Function. Why: Same reasoning as groDraFun's own onStaDraFun above. How: This publishes draActBoo : true onto the shared tour bus.
-			scrConEle   : maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' ), // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest .main ancestor.
+			scrConEle   : maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' ), // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest appConMai hook ancestor.
 
 			onDroOrdFun : ( ordNumArr ) => { // What: On Drop Order Function. Why: The actual persisted per-group picker order needs to be recomputed from the drop's own DOM-position indices. How: This maps ordNumArr back through curGroObj's own current entries, then merges the result into staAppObj.pickerOrder for this group.
 
@@ -2057,7 +2057,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		 *
 		*/
 
-		const scrCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroller Current Element. Why: The scroll-to-top below needs the real scroll container when one exists. How: This walks up from maiScrRef.current to its nearest .main ancestor.
+		const scrCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroller Current Element. Why: The scroll-to-top below needs the real scroll container when one exists. How: This walks up from maiScrRef.current to its nearest appConMai hook ancestor.
 		const topEdgBoo = scrCurEle ? scrCurEle.scrollTop <= 1 : window.scrollY <= 1;            // What: Top Edge Boolean. Why: A list already at the top needs no scroll (and no settle wait) at all. How: This checks either the scroller's own scrollTop or the window's own scrollY.
 
 
@@ -2738,7 +2738,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const curEntArr = staAppObj.today.entries || [];                                                                                               // What: Current Entry Array. Why: The "already on screen" checks below need today's own current entries. How: This reads staAppObj.today.entries, falling back to an empty array.
 		const havPicSet = new Set( curEntArr.map( ( curEntObj ) => curEntObj.pickerId ).filter( Boolean ) );                                           // What: Have Picker Set. Why: A picker already represented by a real entry doesn't need a placeholder slot. How: This collects every current entry's own pickerId.
 		const havDaoSet = new Set( curEntArr.filter( ( curEntObj ) => curEntObj.kind === 'dayoff' ).map( ( curEntObj ) => curEntObj.conditionalId ) ); // What: Have Day-Off Set. Why: A day-off card carries a conditionalId instead of a pickerId, so its own "already on screen" check needs its own set. How: This collects every current day-off entry's own conditionalId.
-		const outMapObj = {}; // What: Out Map Object. Why: This is the actual { groupName: [picker, ...] } result being built. How: This is populated by the loop below and returned at the end.
+		const outMapObj = {}; // What: Out Map Object. Why: This is the actual { [groNamStr]: [picker, ...] } result being built. How: This is populated by the loop below and returned at the end.
 
 
 		for ( const picIdeStr of Object.keys( genMapObj ) ) { // What: Generating Picker Loop. Why: Every picker with an active generation slot is a candidate for a placeholder, unless it is already represented on screen. How: This walks every key in genMapObj, filtering out already-present pickers/day-offs.
@@ -2772,7 +2772,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		return outMapObj; // What: New Slot By Group Return. Why: The content column below needs this exact { groupName: [picker, ...] } shape. How: This returns the same object populated by the loop above.
+		return outMapObj; // What: New Slot By Group Return. Why: The content column below needs this exact { [groNamStr]: [picker, ...] } shape. How: This returns the same object populated by the loop above.
 
 
 	}, [ genActBoo, genMapObj, staAppObj.today.entries, staAppObj.pickers ] ); // What: Memo Dependency Array. Why: The placeholder slots only change while a generation is running or when the live entries/pickers change. How: genActBoo and genMapObj gate and supply the slots, while the entries and pickers decide which ones are already present.
@@ -3155,8 +3155,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 				const genCurEle = genCarRef.current;                                             // What: Generate Current Element. Why: Every measurement below reads this same node. How: This reads genCarRef.current.
-				const maiScrEle = genCurEle?.closest( '[data-element-name-hook~="appConMai"]' ); // What: Main Scroll Element. Why: The scroll target needs the real scroll container. How: This walks up from genCurEle to its nearest .main ancestor.
-				const tabCurEle = genCurEle?.closest( '[data-element-name-hook~="todTabDiv"]' ); // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from genCurEle to its nearest .tab--today ancestor.
+				const maiScrEle = genCurEle?.closest( '[data-element-name-hook~="appConMai"]' ); // What: Main Scroll Element. Why: The scroll target needs the real scroll container. How: This walks up from genCurEle to its nearest appConMai hook ancestor.
+				const tabCurEle = genCurEle?.closest( '[data-element-name-hook~="todTabDiv"]' ); // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from genCurEle to its nearest todTabDiv hook ancestor.
 
 
 				if ( genCurEle && maiScrEle && tabCurEle ) { // What: All Found Branch. Why: The scroll can only happen once every one of these 3 exists. How: This computes and applies the scroll only when all 3 are present.

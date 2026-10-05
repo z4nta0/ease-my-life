@@ -17,11 +17,10 @@ import { ONB_STI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sam
  * The full "todo list" of mini-tour launcher cards shown on Today after
  * the main Welcome Tour ends, plus the one closing "Generate a real
  * list" card. Every item's resolution lives in one place,
- * state.onboarding.checklist: { [itemId]: { status, createdId? } },
- * where status is 'finished' | 'skipped' | 'cancelled'. It's set
- * instantly by X (cancelled), by skipping mid-mini-tour (skipped), or by
- * finishing a mini-tour (finished, with createdId pointing at the real
- * picker/task it produced, for sample items only).
+ * state.onboarding.checklist: { [itemId]: { status } }, where status is
+ * 'finished' | 'skipped' | 'cancelled'. It's set instantly by X
+ * (cancelled), by skipping mid-mini-tour (skipped), or by finishing a
+ * mini-tour (finished).
  * state.onboarding.checklistDone flips true once the Generate card's own
  * flow completes; every card here stops rendering at that point, in one
  * shot.
@@ -130,8 +129,8 @@ const CHE_IDE_ARR = [ // What: Checklist Identifier Array. Why: This is the full
  * entLooFun = Entry Lookup Function
  *
  * @summary
- * Looks up one checklist item's own resolution entry, { status,
- * createdId? }, in state.onboarding.checklist. A truthy result means the
+ * Looks up one checklist item's own resolution entry, { status }, in
+ * state.onboarding.checklist. A truthy result means the
  * item is resolved in any of the 3 ways (finished, skipped or
  * cancelled); null means it is still open. Tolerates a save with no
  * onboarding state at all.
@@ -260,7 +259,7 @@ function othRemFun ( appStaObj ) { return CHE_IDE_ARR.filter( ( iteIdeStr ) => i
  *
  * Counts hidden ones too: a picker created while the mini-tour
  * checklist is still up stays hidden only until the closing Generate
- * step (see tab-today.jsx's generateItemResolved effect), at which
+ * step (see tab-today.jsx's genResBoo effect), at which
  * point it becomes exactly the real data this is asking about.
  *
  * @author z4nta0 <https://github.com/z4nta0>

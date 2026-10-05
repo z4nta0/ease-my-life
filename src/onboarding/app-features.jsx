@@ -552,7 +552,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 
 			},
 
-			{ // What: Edit Picker Settings Step. Why: This is the edit-item tour's own 4th step. How: This invites free exploration, then collapses Controls again on the way to the Items Section step. // Same selStr as the previous step, still the whole picker box, now with Controls ITSELF expanded (the previous step's own click), so the box has grown to include all of PicConCom' real fields. No cliSelStr this time: every click inside stays genuinely usable (name/group/type fields, weight steppers, the works), "explore and do whatever you want" is the point. The only two things still guarded are the picker's own header and the Items header, both via real `disabled` props in tab-data.jsx (disableEditTourToggles) rather than the click-guard, since collapsing either would pull this step's own target out from under the user mid-step. catBoo: true, Controls' real field set is easily taller than a short viewport can fit alongside the coach, same "pin coach to top, let the section run off the bottom" treatment as the manual-pick tour's own tall-target steps, see catBoo's own doc comment in onboarding/tour-runner.jsx.
+			{ // What: Edit Picker Settings Step. Why: This is the edit-item tour's own 4th step. How: This invites free exploration, then collapses Controls again on the way to the Items Section step. // Same selStr as the previous step, still the whole picker box, now with Controls ITSELF expanded (the previous step's own click), so the box has grown to include all of PicConCom' real fields. No cliSelStr this time: every click inside stays genuinely usable (name/group/type fields, weight steppers, the works), "explore and do whatever you want" is the point. The only two things still guarded are the picker's own header and the Items header, both via real `disabled` props in tab-data.jsx (detPicBoo/detIteBoo) rather than the click-guard, since collapsing either would pull this step's own target out from under the user mid-step. catBoo: true, Controls' real field set is easily taller than a short viewport can fit alongside the coach, same "pin coach to top, let the section run off the bottom" treatment as the manual-pick tour's own tall-target steps, see catBoo's own doc comment in onboarding/tour-runner.jsx.
 
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to Controls Section. How: GuiTouCom shows its own Back button whenever this is true.
@@ -597,7 +597,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 
 			},
 
-			{ // What: Picker Items Step. Why: This is the edit-item tour's own 6th step. How: This narrows the click guard to any item row while narrating the disabled Add Item button. // Same whole-picker selStr as Controls Section through Items Section, now with Items expanded (the previous step's own click). cliSelStr narrows to any item row, same selector help/content.jsx's own dataItemRow entry uses (.datLisDiv .lisIteDiv > .lisRowBut), so clicking ANY one of them satisfies this step, not just a specific item. The "+ Add new item" button (.rowAddBut, same scoped selector as help/content.jsx's own dataAddItem) is disabled for this and the next step (disableEditTourAddItem in tab-data.jsx), narrating that it exists is the point, not inviting a brand-new item mid-tutorial. catBoo: true, the item list's own height is unpredictable (depends how many items this picker has), same reasoning as every other "explore" step's own catBoo.
+			{ // What: Picker Items Step. Why: This is the edit-item tour's own 6th step. How: This narrows the click guard to any item row while narrating the disabled Add Item button. // Same whole-picker selStr as Controls Section through Items Section, now with Items expanded (the previous step's own click). cliSelStr narrows to any item row, same selector help/content.jsx's own dataItemRow entry uses (.datLisDiv .lisIteDiv > .lisRowBut), so clicking ANY one of them satisfies this step, not just a specific item. The "+ Add new item" button (.rowAddBut, same scoped selector as help/content.jsx's own dataAddItem) is disabled for this and the next step (detAddBoo in tab-data.jsx), narrating that it exists is the point, not inviting a brand-new item mid-tutorial. catBoo: true, the item list's own height is unpredictable (depends how many items this picker has), same reasoning as every other "explore" step's own catBoo.
 
 
 				bacBoo    : true,             // What: Back Boolean. Why: The user should always be able to return to Items Section. How: GuiTouCom shows its own Back button whenever this is true.
@@ -644,11 +644,11 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 		return [ // What: Run Time Tour Steps Return. Why: The caller needs this feature tour's own full ordered step array beyond Step 1. How: This returns the generator run-time tour's own remaining steps, each carrying its own selector/copy/navigation fields.
 
 
-			{ // What: Daily Generator Settings Step. Why: This is the run-time tour's own only step beyond Step 1. How: This spotlights the real Daily Generator section as a reference blurb. // Body copied verbatim from the Settings page tour's own daily target (SET_TAR_OBJ in onboarding/page-steps.jsx), same section, same explanation. Title given its own, more specific wording rather than reusing that tour's plain "Daily Generator" verbatim. catBoo: true, matches every section step in that same tour, since .set-section--daily can run taller than the viewport just like the others.
+			{ // What: Daily Generator Settings Step. Why: This is the run-time tour's own only step beyond Step 1. How: This spotlights the real Daily Generator section as a reference blurb. // Body copied verbatim from the Settings page tour's own daily target (SET_TAR_OBJ in onboarding/page-steps.jsx), same section, same explanation. Title given its own, more specific wording rather than reusing that tour's plain "Daily Generator" verbatim. catBoo: true, matches every section step in that same tour, since the setDaiSec section can run taller than the viewport just like the others.
 
 
 				bacBoo : true,                                    // What: Back Boolean. Why: The user should always be able to return to Step 1's own nav highlight. How: GuiTouCom shows its own Back button whenever this is true.
-				catBoo : true,                                    // What: Coach-At-Top Boolean. Why: .set-section--daily can run taller than the viewport, same as every other Settings section. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead.
+				catBoo : true,                                    // What: Coach-At-Top Boolean. Why: The setDaiSec section can run taller than the viewport, same as every other Settings section. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead.
 				priStr : 'Done',                                  // What: Primary String. Why: This is this tour's own only step, so its main action finishes the tour instead of advancing. How: GuiTouCom reads a 'Done' priStr as the signal to call onFinTouFun.
 				selStr : '[data-element-name-hook~="setDaiSec"]', // What: Selector String. Why: This step highlights the whole Daily Generator section. How: GuiTouCom spotlights whatever this selector matches.
 				tabStr : 'settings',                              // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
@@ -688,7 +688,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 
 			},
 
-			{ // What: Light Theme Settings Step. Why: This is the theme tour's own 3rd step. How: This spotlights the real Light Theme settings as a reference blurb. // .set-subsection--theme-light, already its own modifier class in TheSecCom (tab-settings.jsx), no changes needed there.
+			{ // What: Light Theme Settings Step. Why: This is the theme tour's own 3rd step. How: This spotlights the real Light Theme settings as a reference blurb. // The theLigDiv hook, already on its own subsection in TheSecCom (theme-picker.jsx), no changes needed there.
 
 
 				bacBoo : true,                                    // What: Back Boolean. Why: The user should always be able to return to System Preferences Toggle. How: GuiTouCom shows its own Back button whenever this is true.
@@ -732,7 +732,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 		return [ // What: Celebration Tour Steps Return. Why: The caller needs this feature tour's own full ordered step array beyond Step 1. How: This returns the celebration-animation tour's own remaining steps, each carrying its own selector/copy/navigation fields.
 
 
-			{ // What: Completion Celebration Step. Why: This is the celebration tour's own only step beyond Step 1. How: This spotlights the real Completion Celebration settings as a reference blurb. // .set-subsection--celebration, already its own modifier class in tab-settings.jsx's Appearance section, no changes needed there.
+			{ // What: Completion Celebration Step. Why: This is the celebration tour's own only step beyond Step 1. How: This spotlights the real Completion Celebration settings as a reference blurb. // The celStyDiv hook, already on its own subsection in tab-settings.jsx's Appearance section, no changes needed there.
 
 
 				bacBoo : true,                                    // What: Back Boolean. Why: The user should always be able to return to Step 1's own nav highlight. How: GuiTouCom shows its own Back button whenever this is true.
@@ -761,7 +761,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 		return [ // What: Pick Animation Tour Steps Return. Why: The caller needs this feature tour's own full ordered step array beyond Step 1. How: This returns the picker-animation tour's own remaining steps, each carrying its own selector/copy/navigation fields.
 
 
-			{ // What: Picker Animation Step. Why: This is the pick-animation tour's own only step beyond Step 1. How: This spotlights the real Picker Animation settings as a reference blurb. // .set-subsection--pickanim, already its own modifier class in tab-settings.jsx's Appearance section, no changes needed there. Same shape as feat_celebration's own step just above.
+			{ // What: Picker Animation Step. Why: This is the pick-animation tour's own only step beyond Step 1. How: This spotlights the real Picker Animation settings as a reference blurb. // The picAniDiv hook, already on its own subsection in tab-settings.jsx's Appearance section, no changes needed there. Same shape as feat_celebration's own step just above.
 
 
 				bacBoo : true,                                    // What: Back Boolean. Why: The user should always be able to return to Step 1's own nav highlight. How: GuiTouCom shows its own Back button whenever this is true.
@@ -834,7 +834,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 		return [ // What: Protect Data Tour Steps Return. Why: The caller needs this feature tour's own full ordered step array beyond Step 1. How: This returns the protect-data tour's own remaining steps, each carrying its own selector/copy/navigation fields.
 
 
-			...( alrProBoo ? [] : [ { // What: Protect Your Data Step Spread. Why: This step must not exist at all for a browser whose storage is already persisted, since its own target would never render. How: This spreads in a single-entry array only when alrProBoo is false, otherwise an empty array. // .set-protect-btn, new modifier class on the "Protect Data" ButBasCom in tab-settings.jsx (only rendered while !stor.persisted, same condition already gating the real button). Omitted entirely when alrProBoo (see FeaTouCom's own effect that computes it): a browser that already has persisted storage never renders this button at all, so this step's cirBoo target would never resolve; without this the tour would sit on a phantom "Step 2 of 3" until the generic not-found timeout gave up and cancelled the whole tutorial. Skipping the step outright instead makes this a clean "Step n of 2".
+			...( alrProBoo ? [] : [ { // What: Protect Your Data Step Spread. Why: This step must not exist at all for a browser whose storage is already persisted, since its own target would never render. How: This spreads in a single-entry array only when alrProBoo is false, otherwise an empty array. // The proDatBut hook on the "Protect Data" ButBasCom in tab-settings.jsx (only rendered while !stoStaObj.persisted, same condition already gating the real button). Omitted entirely when alrProBoo (see FeaTouCom's own effect that computes it): a browser that already has persisted storage never renders this button at all, so this step's cirBoo target would never resolve; without this the tour would sit on a phantom "Step 2 of 3" until the generic not-found timeout gave up and cancelled the whole tutorial. Skipping the step outright instead makes this a clean "Step n of 2".
 
 
 				bacBoo : true,                                    // What: Back Boolean. Why: The user should always be able to return to Step 1's own nav highlight. How: GuiTouCom shows its own Back button whenever this is true.
@@ -850,7 +850,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 
 			} ] ),
 
-			{ // What: Install The App Step. Why: This is the protect-data tour's own final step. How: This spotlights whichever real install control applies without needing to know the browser. // Comma-separated fallback (see findTargets' own comma-splitting in onboarding/tour-runner.jsx), the insAppBut hook (only rendered when canInstall) is tried first; if this browser can't offer a real install prompt, falls back to the insRowDiv hook (shared by all of tab-settings.jsx's own browser-specific instructional blocks, iOS, Mac, or the generic "not available here" note, exactly one of which renders at a time), so this targets whichever one actually applies without needing to know which browser it's running in. No cirBoo, Done is enabled outright, last step of this tutorial.
+			{ // What: Install The App Step. Why: This is the protect-data tour's own final step. How: This spotlights whichever real install control applies without needing to know the browser. // Comma-separated fallback (see finTarFun's own comma-splitting in onboarding/tour-runner.jsx), the insAppBut hook (only rendered when canInsBoo) is tried first; if this browser can't offer a real install prompt, falls back to the insRowDiv hook (shared by all of tab-settings.jsx's own browser-specific instructional blocks, iOS, Mac, or the generic "not available here" note, exactly one of which renders at a time), so this targets whichever one actually applies without needing to know which browser it's running in. No cirBoo, Done is enabled outright, last step of this tutorial.
 
 
 				bacBoo : true,                                                                           // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
