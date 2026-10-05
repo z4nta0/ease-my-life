@@ -16,19 +16,27 @@ localStorage fallback/mirror); there is no server component to this app at all.
 npm run dev       # vite dev server (PWA service worker also active via devOptions)
 npm run build     # production build to dist/
 npm run preview   # serve the production build locally
+npm run typecheck # tsc -b across tsconfig.app.json (src/) and tsconfig.node.json
 ```
 
-There is no test suite and no type checker wired up
-(`change-later-tsconfig.json` / `tsconfig.node.json` exist but are not
-referenced by any script). ESLint is installed and configured
+TypeScript is being adopted (decided 2026-10-05, on the `integrate-typescript`
+branch). `tsconfig.json` only references `tsconfig.app.json` (everything in
+`src/`, browser and JSX) and `tsconfig.node.json` (`vite.config`,
+`eslint.config`, and `scripts/`, with Node's types). `strict` starts off on
+purpose so the file rename doesn't bury real problems; it gets turned on area
+by area once the code is typed, and stays a tracked to-do until it is.
+`typecheck` isn't part of `build` yet, so a type error can't block a deploy
+mid-migration. `public/boot-splash.js` and `public/sw-notify.js` stay
+JavaScript, since the browser and service worker load them by fixed URL
+outside the build. There is no test suite. ESLint is installed and configured
 (`eslint.config.js`, with `eslint-plugin-react-hooks`' recommended rules for
-`.jsx` files, plus `no-undef` and `react/jsx-no-undef` with browser globals
+`.jsx` files, minus its four React Compiler readiness rules, plus `no-undef` and `react/jsx-no-undef` with browser globals
 for everything under `src/`, which catch a reference a rename missed; its
 `files` globs avoid `{a,b}` braces, since the `brace-expansion` override in
 `package.json` breaks ESLint's brace matching), but no npm script runs it, so
 it only runs when invoked by hand
 (`npx eslint <file>`) or through an editor integration; don't assume `tsc` or
-ESLint gate anything. Verify changes by running `npm run dev` and exercising
+ESLint gate anything yet. Verify changes by running `npm run dev` and exercising
 the app in a browser.
 
 `__APP_VERSION__` is injected at build time from `package.json`'s `version`
