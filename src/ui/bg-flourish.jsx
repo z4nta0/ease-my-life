@@ -566,7 +566,7 @@ function genSidFun ( gutWidNum, conHeiNum ) {
 // #region useFloIteFun
 
 /**
- * useFloIteFun = Use Flourish Items
+ * useFloIteFun = Use Flourish Items Function
  *
  * @summary
  * Loads (from floCacMap) or generates this tab's own left/right flourish

@@ -8,7 +8,7 @@ import React     from 'react';                 // What: React. Why: TabDatCom is
 
 
 import { buiIteFun    } from '../../state/new-item.js';             // What: Build Item Function. Why: A new item's local draft starts from the same defaults the store would give it. How: This is called when a row adds a new item.
-import { CAD_NAM_OBJ  } from '../../core/cadence.js';               // What: Cadence. Why: Each picker card's own header needs the shared cadence summary helpers. How: This is called in TabDatCom's picker cards.
+import { CAD_NAM_OBJ  } from '../../core/cadence.js';               // What: Cadence Namespace Object. Why: Each picker card's own header needs the shared cadence summary helpers. How: This is called in TabDatCom's picker cards.
 import { clePicFun    } from '../../help/sample-data.js';           // What: Clear Pickers Function. Why: Help mode's disposable sample pickers must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabDatCom's own unmount cleanup.
 import { cleTasFun    } from '../../help/sample-data.js';           // What: Clear Tasks Function. Why: Help mode's disposable sample reminders must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabDatCom's own unmount cleanup.
 import { ColDisCom    } from '../../ui/collapse.jsx';               // What: Collapse Disclosure Component. Why: Picker cards, their Controls and Items disclosures, and item rows share the same collapse-height animation. How: This wraps each of those bodies, driven by the matching open boolean.
@@ -34,7 +34,7 @@ import { sorEntFun    } from './list-sorting.js';                   // What: Sor
 import { SorSelCom    } from './sort-select.jsx';                   // What: Sort Select Component. Why: Every sortable list in this tab needs the same sort control. How: This is rendered for sections and each picker's own item list.
 import { togFadFun    } from '../../ui/edge-fade.js';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { UnmWatCom    } from '../../ui/unmount-watcher.js';         // What: Unmount Watcher Component. Why: An open row that disappears some other way than its own chevron or Save still keeps its edits. How: This is rendered inside the open row's editor.
-import { useEmlTouFun } from '../../state/tour-bus.js';             // What: Use Ease My Life Tour. Why: Several controls in this file must disable themselves or highlight during specific onboarding tour steps. How: This is called once to read the shared tour event bus's touPhaStr/touIdeStr/touSteNum fields.
+import { useEmlTouFun } from '../../state/tour-bus.js';             // What: Use Ease My Life Tour Function. Why: Several controls in this file must disable themselves or highlight during specific onboarding tour steps. How: This is called once to read the shared tour event bus's touPhaStr/touIdeStr/touSteNum fields.
 import { useIteDraFun } from '../../ui/record-draft.js';            // What: Use Item Draft Function. Why: The open item row edits a local draft, committed when the row closes. How: This is called once with whichever item's row is open.
 
 // #endregion Imports
@@ -818,7 +818,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	const savNewFun = ( picArgObj, filAllBoo ) => { // What: Save New Function. Why: Save creates the draft picker and its items for real, in one step. How: This folds in any open draft row, applies a pending Fill all, then calls addPicFun.
 
 
-		const draExiBoo = !!draIteObj;                      // What: Draft Existing Boolean. Why: Only an open row has a draft that could still need keeping. How: This is true whenever an item row is open.
+		const draExiBoo = !!draIteObj;                       // What: Draft Existing Boolean. Why: Only an open row has a draft that could still need keeping. How: This is true whenever an item row is open.
 		const draInsBoo = draIteObj?.pickerId === newDraStr; // What: Draft Inside Boolean. Why: Only a row inside the draft picker belongs to this save. How: This compares the open draft's pickerId with the draft picker's id, safely false with no open row.
 		const draUnhBoo = hanDraRef.current !== draIteObj;   // What: Draft Unhandled Boolean. Why: A draft already folded in by the row's own close must not be kept twice. How: This checks the open draft isn't the one hanDraRef already handled.
 
@@ -1808,12 +1808,12 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							...visPicArr.map( ( picCurObj ) => ( { // What: Picker Boxes Spread. Why: Every visible picker gets its own box. How: This maps visPicArr to one entry each.
 
 
-								cliFun : () => selScoFun( picCurObj.id ), // What: Click Function. Why: Clicking the box selects this picker's scope. How: This calls selScoFun with the picker's id.
-								ideStr : picCurObj.id,                    // What: Identifier String. Why: The tour and help mode find a picker's box by its data-picker-id. How: This is the picker's id.
+								cliFun : () => selScoFun( picCurObj.id ),                  // What: Click Function. Why: Clicking the box selects this picker's scope. How: This calls selScoFun with the picker's id.
+								ideStr : picCurObj.id,                                     // What: Identifier String. Why: The tour and help mode find a picker's box by its data-picker-id. How: This is the picker's id.
 								keyStr : picCurObj.id,                                     // What: Key String. Why: React needs a stable key per box. How: This is the picker's id.
 								labStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr, // What: Label String. Why: The box's second line names the picker's mode. How: This reads the mode's label.
-								namStr : picCurObj.name,                  // What: Name String. Why: The box shows the picker's name. How: This reads picCurObj.name.
-								selBoo : curScoStr === picCurObj.id       // What: Selected Boolean. Why: The active box is highlighted. How: This checks curScoStr against the picker's id.
+								namStr : picCurObj.name,                                   // What: Name String. Why: The box shows the picker's name. How: This reads picCurObj.name.
+								selBoo : curScoStr === picCurObj.id                        // What: Selected Boolean. Why: The active box is highlighted. How: This checks curScoStr against the picker's id.
 
 
 							} ) )
@@ -2057,7 +2057,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							style={{
 								animationDelay : ( isaDraBoo ? 0 : entIndNum * 45 ) + 'ms',
-								...( isaDraBoo ? { scrollMarginTop : 'var( --spa-ver-bas )' } : {} ), // Spacing Vertical Base ~= 14.572px
+								...( isaDraBoo ? { scrollMarginTop : 'var( --spa-ver-bas )' } : {} ),                        // Spacing Vertical Base ~= 14.572px
 								...( rmvPicStr === picCurObj.id && rmvHeiNum ? { '--cat-rem-hei' : rmvHeiNum + 'px' } : {} ) // What: Removing Height Spread. Why: A removing card's collapse must start from its own measured height. How: This sets --cat-rem-hei for the catRemove keyframes only while this card is the one being removed.
 							}}
 

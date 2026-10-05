@@ -99,7 +99,7 @@ const ButBasCom = React.forwardRef( function ButBasCom ( { children, className =
 
 					icoNamStr={ icoNamStr }
 					sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-				/> // What: Leading Icon Svg Component. Why: This is the optional glyph shown ahead of the button's own text. How: This renders icoNamStr at the base rhythm step for every button size, carrying any icoClaStr class the caller passed.
+				/> // What: Icon Svg Component. Why: This is the optional glyph shown ahead of the button's own text. How: This renders icoNamStr at the base rhythm step for every button size, carrying any icoClaStr class the caller passed.
 
 
 			) }

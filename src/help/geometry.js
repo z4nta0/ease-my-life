@@ -287,7 +287,7 @@ function uniRecFun ( tarEleArr ) {
 // #region cliChrFun
 
 /**
- * cliChrFun = Clip To Chrome Function
+ * cliChrFun = Clip Chrome Function
  *
  * @summary
  * Clips a rect against every piece of always-on-top navigation chrome
@@ -641,7 +641,7 @@ function badRecFun ( tarRecObj, cenBadBoo ) {
 
 	const padRigNum = tarRecObj.padRigNum ?? rhyPxlFun( 'm02' );                                   // What: Pad Right Number. Why: The right-corner placement below needs whichever pad actually survived clipping on its own right side. How: This reads tarRecObj's own padRigNum, falling back to the flat pad margin. // Vertical Rhythm Base Minus 2 ~= 8.304px
 	const padLefNum = tarRecObj.padLefNum ?? rhyPxlFun( 'm02' );                                   // What: Pad Left Number. Why: The left-corner fallback below needs whichever pad actually survived clipping on its own left side. How: This reads tarRecObj's own padLefNum, falling back to the flat pad margin. // Vertical Rhythm Base Minus 2 ~= 8.304px
-	const rigLefNum = tarRecObj.right + padRigNum - rhyPxlFun( 'p01' ) / 2;                        // What: Right Corner Left Number. Why: This is the badge's own candidate left position for the usual top-right corner placement. How: This adds the surviving right pad to the target's own right edge, then centers the badge on that point. // Vertical Rhythm Base Plus 1 ~= 19.304px
+	const rigLefNum = tarRecObj.right + padRigNum - rhyPxlFun( 'p01' ) / 2;                        // What: Right Left Number. Why: This is the badge's own candidate left position for the usual top-right corner placement. How: This adds the surviving right pad to the target's own right edge, then centers the badge on that point. // Vertical Rhythm Base Plus 1 ~= 19.304px
 	const oveRigBoo = rigLefNum + rhyPxlFun( 'p01' ) > window.innerWidth;                          // What: Overflows Right Boolean. Why: A target rect already clipped flush to the viewport can still overflow once the badge's own pad gap and half-width are added on top. How: This checks whether the right-corner candidate's own far edge would cross the viewport's own width. // Vertical Rhythm Base Plus 1 ~= 19.304px
 	const lefBadNum = oveRigBoo ? tarRecObj.left - padLefNum - rhyPxlFun( 'p01' ) / 2 : rigLefNum; // What: Left Badge Number. Why: The badge must fall back to the target's own top-LEFT corner whenever the right corner would overflow. How: This picks the left-corner candidate when oveRigBoo is true, otherwise the right-corner candidate. // Vertical Rhythm Base Plus 1 ~= 19.304px
 

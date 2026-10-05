@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { CON_NAM_OBJ } from '../core/conditionals.js'; // What: Conditionals. Why: A day-off card's completion advances or reverts its conditional through this module's own logic. How: This is aliased to conModObj inside cotAplFun.
+import { CON_NAM_OBJ } from '../core/conditionals.js'; // What: Conditionals Namespace Object. Why: A day-off card's completion advances or reverts its conditional through this module's own logic. How: This is aliased to conModObj inside cotAplFun.
 import { isoDayFun   } from '../utils/date.js';        // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 
 // #endregion Imports
@@ -307,7 +307,7 @@ function enpAplFun ( curStaObj, curEntObj ) {
 		: curStaObj.pickers; // What: Unchanged Pickers Branch. Why: Without a patch nothing about the pickers changes. How: This passes the pickers through.
 
 
-	const nexLogArr = curPenObj.depletedEnd // What: Next Pick-Log Array. Why: depletedEnd is a value consequence, so it's only recorded on the live log row once the pending payload is actually applied. How: This flags the live (no outcome) row sharing curEntObj's own eid, else passes pickLog through unchanged.
+	const nexLogArr = curPenObj.depletedEnd // What: Next Log Array. Why: depletedEnd is a value consequence, so it's only recorded on the live log row once the pending payload is actually applied. How: This flags the live (no outcome) row sharing curEntObj's own eid, else passes pickLog through unchanged.
 		? ( curStaObj.pickLog || [] ).map( ( curRowObj ) => ( curRowObj.eid === curEntObj.eid && !curRowObj.outcome ) ? { ...curRowObj, depletedEnd : true } : curRowObj ) // What: Depleted Flag Branch. Why: The live log row records that this pick ended a depletion streak. How: This flags only the entry's own live row.
 		: ( curStaObj.pickLog || [] ); // What: Unchanged Log Branch. Why: Without depletedEnd the log stays as it is. How: This passes the pick log through, defaulting to an empty array.
 
@@ -422,7 +422,7 @@ function enpRevFun ( curStaObj, curEntObj ) {
 		: curStaObj.pickers; // What: Unchanged Pickers Branch. Why: With nothing recorded there is nothing to restore. How: This passes the pickers through.
 
 
-	const nexLogArr = ( curStaObj.pickLog || [] ).map( ( curRowObj ) => // What: Next Pick-Log Array. Why: A reverted day no longer counts as ending an Ease Down depletion streak. How: This strips depletedEnd back to false on the live (no outcome) row sharing curEntObj's own eid.
+	const nexLogArr = ( curStaObj.pickLog || [] ).map( ( curRowObj ) => // What: Next Log Array. Why: A reverted day no longer counts as ending an Ease Down depletion streak. How: This strips depletedEnd back to false on the live (no outcome) row sharing curEntObj's own eid.
 		( curRowObj.eid === curEntObj.eid && !curRowObj.outcome ) ? { ...curRowObj, depletedEnd : false } : curRowObj ); // What: Depleted Flag Clear. Why: Only the entry's own live row carried the flag. How: This sets depletedEnd back to false on that row and passes every other row through.
 
 

@@ -99,7 +99,7 @@ function FilButCom ( { isaDisBoo, labTexStr, onFilActFun } ) {
 
 
 			} }
-		>{ /* What: Fill Button Element. Why: This is FilButCom's own rendered control, reusing ButBasCom for consistent button chrome. How: This shows the spin class while spiAniBoo is true, is fully inert while disabled, and clears the spin on its own CSS animation finishing. */ }
+		>{ /* What: Button Base Component. Why: This is FilButCom's own rendered control, reusing ButBasCom for consistent button chrome. How: This shows the spin class while spiAniBoo is true, is fully inert while disabled, and clears the spin on its own CSS animation finishing. */ }
 
 
 			{ labTexStr }

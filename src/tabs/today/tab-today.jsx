@@ -8,7 +8,7 @@ import React     from 'react';                  // What: React. Why: This is the
 
 
 import { APP_FEA_ARR  } from '../../onboarding/app-features.jsx';   // What: App Feature Array. Why: This is the fixed catalog of App Features tutorial cards rendered once the checklist concludes. How: This is mapped over to render one AppFeaCom per entry and to compute the section's own done/total counts.
-import { AppFeaCom    } from './app-feature-card.jsx';              // What: App Feature Card Component. Why: Each app feature gets a launcher card in the App Features group. How: This is rendered once per feature.
+import { AppFeaCom    } from './app-feature-card.jsx';              // What: App Feature Component. Why: Each app feature gets a launcher card in the App Features group. How: This is rendered once per feature.
 import { BacFloCom    } from '../../ui/bg-flourish.jsx';            // What: Background Flourish Component. Why: The decorative background glyphs render behind Today's own centered column too, same as every other tab. How: This is passed Today's own body ref and the fixed 'today' tab id.
 import { ButBasCom    } from '../../ui/button.jsx';                 // What: Button Base Component. Why: Nearly every action in this file (confirm, cancel, save, merge, generate) is a shared styled button. How: This is used throughout instead of a bare <button> for anything that needs the app's own button styling.
 import { CAD_NAM_OBJ  } from '../../core/cadence.js';               // What: Cadence Namespace Object. Why: Non-daily pickers need period-key math shared with the rest of the app. How: This is called for perKeyFun/comPerFun throughout generate() and the charging checks.
@@ -40,7 +40,7 @@ import { ONB_EPT_ARR  } from '../../state/onboarding-checklist.js'; // What: Onb
 import { ONB_GII_STR  } from '../../state/onboarding-checklist.js'; // What: Onboarding Generate-Item-Id String. Why: The closing "Generate a real list" card needs the checklist's own fixed key for that single card. How: This is passed to ONB_CHE_OBJ.entLooFun/setCarFun wherever that specific card is read or resolved.
 import { ONB_SPI_ARR  } from '../../state/onboarding-seed-data.js'; // What: Onboarding Sample-Picker-Ids Array. Why: Every count/filter that distinguishes a real picker from a sample one needs this fixed id list. How: This is checked with .includes throughout TabTodCom's own counts.
 import { ONB_STI_ARR  } from '../../state/onboarding-seed-data.js'; // What: Onboarding Sample-Task-Ids Array. Why: Every count/filter that distinguishes a real reminder from a sample one needs this fixed id list. How: This is checked with .includes throughout TabTodCom's own tutorial-task counts.
-import { PagTouCom    } from './page-tour-card.jsx';                // What: Page Tour Card Component. Why: Each page tour gets a launcher card in the Page Tours group. How: This is rendered once per page tour.
+import { PagTouCom    } from './page-tour-card.jsx';                // What: Page Tour Component. Why: Each page tour gets a launcher card in the Page Tours group. How: This is rendered once per page tour.
 import { PIC_NAM_OBJ  } from '../../core/pickers.js';               // What: Pickers Namespace Object. Why: Picking, re-rolling, and ease eligibility all funnel through this shared namespace. How: This is called for picIteFun/easEliFun throughout generate() and hanRerFun.
 import { redMotFun    } from '../../utils/motion.js';               // What: Reduce Motion Function. Why: Nearly every animated sequence in this file (celebration, reel cascade, card flip, scroll) needs to skip or shorten itself for a user who prefers reduced motion. How: This is checked throughout as a plain function call.
 import { RemSecCom    } from './reminders-section.jsx';             // What: Reminder Section Component. Why: The Reminders block is one whole section rendered alongside the picker groups. How: This is rendered once per the '__reminders' sentinel in genOrdArr.
@@ -50,7 +50,7 @@ import { rhyPxlFun    } from '../../utils/rhythm.js';               // What: Rhy
 import { TAS_NAM_OBJ  } from '../../core/tasks.js';                 // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for ancDatFun/visTodFun/isaDonFun/optForFun/isaComFun.
 import { TOD_HEL_ARR  } from '../../help/content.jsx';              // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
 import { togFadFun    } from '../../ui/edge-fade.js';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
-import { useEmlTouFun } from '../../state/tour-bus.js';             // What: Use Ease My Life Tour. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
+import { useEmlTouFun } from '../../state/tour-bus.js';             // What: Use Ease My Life Tour Function. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
 import { useIteDraFun } from '../../ui/record-draft.js';            // What: Use Item Draft Function. Why: The open item editor edits a local draft, committed only on Save. How: This is called once with whichever item's editor is open.
 
 // #endregion Imports
@@ -315,7 +315,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const cheDonBoo = !!( staAppObj.onboarding && staAppObj.onboarding.checklistDone );                                            // What: Checklist Done Boolean. Why: This decides whether the mini-tour checklist phase should still be showing at all. How: This reads staAppObj.onboarding.checklistDone.
 	const picHidBoo = staAppObj.pickers.some( ( curPicObj ) => curPicObj.hidden && ONB_SPI_ARR.includes( curPicObj.id ) );         // What: Picker Hidden Boolean. Why: Sample pickers flip hidden exactly once, at the main Welcome Tour's last step. How: This is true once any sample picker is hidden.
 	const tasHidBoo = ( staAppObj.tasks || [] ).some( ( curTasObj ) => curTasObj.hidden && ONB_STI_ARR.includes( curTasObj.id ) ); // What: Task Hidden Boolean. Why: Sample reminders flip hidden at that same moment. How: This is true once any sample task is hidden.
-	const maiEndBoo = picHidBoo || tasHidBoo;                                                                                      // What: Main Tour Ended Boolean. Why: Whether the main Welcome Tour has concluded decides whether the checklist phase should be considered at all, independent of cheDonBoo. How: This is true once either kind of sample has flipped hidden.
+	const maiEndBoo = picHidBoo || tasHidBoo;                                                                                      // What: Main Ended Boolean. Why: Whether the main Welcome Tour has concluded decides whether the checklist phase should be considered at all, independent of cheDonBoo. How: This is true once either kind of sample has flipped hidden.
 	const shoCheBoo = maiEndBoo && !cheDonBoo;                                                                                     // What: Show Checklist Boolean. Why: The whole checklist phase (launcher cards, Page Tours, the closing Generate card) should only show between the main tour ending and the checklist actually concluding. How: This combines maiEndBoo with the negation of cheDonBoo.
 
 	// #endregion Checklist Visibility
@@ -407,7 +407,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const shoFeaBoo = cheDonBoo && ( fecDonBoo ? APP_FEA_ARR.some( ( curFeaObj ) => !feaStaObj[ curFeaObj.ideStr ] ) : !fsrFlaBoo ); // What: Show App Features Boolean. Why: See the doc comment just above. How: This branches on fecDonBoo to pick either the live "some still unresolved" check or the negation of the first-time snapshot.
+	const shoFeaBoo = cheDonBoo && ( fecDonBoo ? APP_FEA_ARR.some( ( curFeaObj ) => !feaStaObj[ curFeaObj.ideStr ] ) : !fsrFlaBoo ); // What: Show Feature Boolean. Why: See the doc comment just above. How: This branches on fecDonBoo to pick either the live "some still unresolved" check or the negation of the first-time snapshot.
 
 	// #endregion shoFeaBoo
 
@@ -562,8 +562,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 	const pagDonNum = shoCheBoo ? ONB_EPT_ARR.filter( ( curTouObj ) => ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.ideStr ) ).length : 0; // What: Page Done Number. Why: The first-time phase counts every resolved page tour as done. How: This counts resolved ONB_EPT_ARR entries, 0 outside shoCheBoo.
-	const genCarNum = shoCheBoo ? 1 : 0;                                                                                                  // What: Generate Card Count Number. Why: The closing Generate card only ever contributes 1 slot to the total, and only during the first-time checklist phase. How: This is 1 while shoCheBoo, otherwise 0.
-	const genDonNum = ( shoCheBoo && ONB_CHE_OBJ.entLooFun( staAppObj, ONB_GII_STR ) ) ? 1 : 0;                                           // What: Generate Card Done Number. Why: The closing Generate card's own done contribution mirrors genCarNum. How: This is 1 only while shoCheBoo AND the Generate item already has a checklist entry.
+	const genCarNum = shoCheBoo ? 1 : 0;                                                                                                  // What: Generate Card Number. Why: The closing Generate card only ever contributes 1 slot to the total, and only during the first-time checklist phase. How: This is 1 while shoCheBoo, otherwise 0.
+	const genDonNum = ( shoCheBoo && ONB_CHE_OBJ.entLooFun( staAppObj, ONB_GII_STR ) ) ? 1 : 0;                                           // What: Generate Done Number. Why: The closing Generate card's own done contribution mirrors genCarNum. How: This is 1 only while shoCheBoo AND the Generate item already has a checklist entry.
 
 	// #endregion Replay-Continuation Counts
 
@@ -1648,7 +1648,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const intSeeBoo = !!( staAppObj.onboarding && staAppObj.onboarding.appFeaturesIntroSeen ); // What: Feature Intro Seen Boolean. Why: The tip must never show a second time once the user has already seen it. How: This reads staAppObj.onboarding.appFeaturesIntroSeen.
+	const intSeeBoo = !!( staAppObj.onboarding && staAppObj.onboarding.appFeaturesIntroSeen ); // What: Intro Seen Boolean. Why: The tip must never show a second time once the user has already seen it. How: This reads staAppObj.onboarding.appFeaturesIntroSeen.
 
 	const [ shoIntBoo, setShoIntBoo ] = React.useState( false ); // What: Show Feature Intro Boolean And Setter. Why: See the doc comment just above. How: This is set by the effect below.
 
@@ -1660,7 +1660,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		const intTimNum = setTimeout( () => setShoIntBoo( true ), 500 ); // What: Feature Intro Timeout Number. Why: This is the actual delayed reveal described in the doc comment above. How: This sets shoIntBoo true 500ms later.
+		const intTimNum = setTimeout( () => setShoIntBoo( true ), 500 ); // What: Intro Timeout Number. Why: This is the actual delayed reveal described in the doc comment above. How: This sets shoIntBoo true 500ms later.
 
 
 
@@ -1981,6 +1981,18 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
+	 * @param genOptObj - Generate Options Object: Optional settings, empty by
+	 *                    default; its autBoo is true only for the scheduled
+	 *                    boundary-check run.
+	 *
+	 * @returns A promise that settles once the cascade has finished and today's
+	 * list is committed.
+	 *
+	 * @example
+	 * ```ts
+	 * genLisFun( { autBoo : true } ) // => Promise<void>
+	 * ```
+	 *
 	*/
 
 	const genLisFun = async ( genOptObj = {} ) => { // What: Generate List Function. Why: See the doc comment just above. How: This scrolls to the top, computes every pick up front, plays the reel cascade, then commits the new entries and reminder transitions.
@@ -2066,7 +2078,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const conAllArr = actStoObj.resConFun() || staAppObj.conditionals || [];                    // What: Conditional All Array. Why: Phase A resolves every conditional's own `triggered` for today up front, before the per-picker loop below needs to read it. How: This calls actStoObj.resConFun, falling back to staAppObj.conditionals or an empty array.
 		const conIdeMap = new Map( conAllArr.map( ( curConObj ) => [ curConObj.id, curConObj ] ) ); // What: Conditional Identifier Map. Why: The per-picker loop below needs a fast lookup from a picker's own conditionalId to its resolved conditional. How: This maps conAllArr down to an id-keyed Map.
 
-		const exiPicMap = new Map(); // What: Existing By Picker Map. Why: Existing live pick/charging entries are the source of truth for cadence carry/suppress decisions, since they persist across days until a regenerate. How: This is populated by the loop just below.
+		const exiPicMap = new Map(); // What: Existing Picker Map. Why: Existing live pick/charging entries are the source of truth for cadence carry/suppress decisions, since they persist across days until a regenerate. How: This is populated by the loop just below.
 
 
 		for ( const curEntObj of staAppObj.today.entries ) { // What: Existing Entry Index Loop. Why: Every current entry needs indexing by picker before the main per-picker loop below can consult it. How: This walks staAppObj.today.entries, keying exiPicMap by pickerId (day-off cards, which have none, are excluded).
@@ -2359,7 +2371,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		else { // What: Full Cascade Branch. Why: Everyone else gets the real pending-active-settled reel cascade, one slot at a time. How: This awaits perSteNum between each slot's own active-then-settled transition.
 
 
-			const perSteNum = ordSloArr.length > 0 ? genTotNum / ordSloArr.length : 0; // What: Per Step Ms Number. Why: The whole cascade must always wrap at genTotNum regardless of how many slots exist. How: This divides genTotNum by ordSloArr's own length.
+			const perSteNum = ordSloArr.length > 0 ? genTotNum / ordSloArr.length : 0; // What: Per Step Number. Why: The whole cascade must always wrap at genTotNum regardless of how many slots exist. How: This divides genTotNum by ordSloArr's own length.
 
 
 			for ( const curSloObj of ordSloArr ) { // What: Cascade Step Loop. Why: This is the actual per-slot animation driver. How: This flips each slot to active, waits perSteNum, then flips it to settled, in encounter order.
@@ -2735,7 +2747,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	}, [ genActBoo, genMapObj, staAppObj.today.entries, staAppObj.pickers ] ); // What: Memo Dependency Array. Why: The placeholder slots only change while a generation is running or when the live entries/pickers change. How: genActBoo and genMapObj gate and supply the slots, while the entries and pickers decide which ones are already present.
 
 
-	const genOrdArr = React.useMemo( () => { // What: Generate Block Order Array. Why: While generating, a group with no entries yet but an incoming slot (per sloGroObj) still needs its own section mounted to hold that placeholder, and this order must match the rendered sections exactly, since group drops resolve by position. How: This appends any such group's own name onto bloOrdArr, then drops the Page Tours block while it isn't showing.
+	const genOrdArr = React.useMemo( () => { // What: Generate Order Array. Why: While generating, a group with no entries yet but an incoming slot (per sloGroObj) still needs its own section mounted to hold that placeholder, and this order must match the rendered sections exactly, since group drops resolve by position. How: This appends any such group's own name onto bloOrdArr, then drops the Page Tours block while it isn't showing.
 
 
 		const extGroArr = Object.keys( sloGroObj ).filter( ( curNamStr ) => !bloOrdArr.includes( curNamStr ) ); // What: Extra Group Array. Why: This is the actual set of groups bloOrdArr is missing but sloGroObj needs. How: This filters sloGroObj's own keys down to ones bloOrdArr doesn't already include.
@@ -2851,7 +2863,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	// #endregion idlTodBoo
 
 
-	const hasTutBoo = shoCheBoo;                                                       // What: Has Tutorial Cards Boolean. Why: idlTodBoo's own visibility is suppressed while the mini-tour checklist is still up (any launcher card, checked or not, until cheDonBoo), since the page isn't actually empty then, it's full of tutorial cards instead of real picks; reappears normally once the checklist concludes and there's still genuinely nothing to run. How: This is just shoCheBoo, given its own name here for readability at the call site below.
+	const hasTutBoo = shoCheBoo;                                                       // What: Has Tutorial Boolean. Why: idlTodBoo's own visibility is suppressed while the mini-tour checklist is still up (any launcher card, checked or not, until cheDonBoo), since the page isn't actually empty then, it's full of tutorial cards instead of real picks; reappears normally once the checklist concludes and there's still genuinely nothing to run. How: This is just shoCheBoo, given its own name here for readability at the call site below.
 	const zerEntBoo = todEntArr.length === 0;                                          // What: Zero Entry Boolean. Why: The idle empty state only replaces an empty list. How: This checks the entry count.
 	const shoIdlBoo = !onbCreBoo && notTouBoo && idlTodBoo && zerEntBoo && !hasTutBoo; // What: Show Idle Boolean. Why: This is the actual final gate the JSX below renders from. How: This combines every condition above: not the create card, not mid-tour, no runnable picker, no entries at all, and no tutorial cards masking the emptiness.
 
@@ -2918,7 +2930,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	// #region staTouFun
 
 	/**
-	 * staTouFun = Start Mini-Tour Function
+	 * staTouFun = Start Tour Function
 	 *
 	 * @summary
 	 * The single dispatcher behind every launcher card's Play button and row
@@ -2941,7 +2953,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const staTouFun = ( touKinStr, touIdeStr ) => { // What: Start Mini-Tour Function. Why: Every launcher card's own Play button (or row click) funnels through this one dispatcher, since which state it actually starts depends on touKinStr. How: This dispatches picker/pageTour/appFeature tours up to the app level, otherwise stages a local reminder mini-tour.
+	const staTouFun = ( touKinStr, touIdeStr ) => { // What: Start Tour Function. Why: Every launcher card's own Play button (or row click) funnels through this one dispatcher, since which state it actually starts depends on touKinStr. How: This dispatches picker/pageTour/appFeature tours up to the app level, otherwise stages a local reminder mini-tour.
 
 
 		if ( touKinStr === 'picker' ) onStaPicFun( touIdeStr ); // What: Picker Tour Branch. Why: A picker mini-tour runs at the app level, since its steps leave the Today tab. How: This calls onStaPicFun with the tour's own id.
@@ -4121,7 +4133,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 														onPlaTutFun={ staTouFun }
 														onUncTutFun={ uncTutFun }
-													/> // What: Page Tour Card Component. Why: This is one page tour's own launcher card. How: This is passed curTouObj plus the shared mini-tour dispatchers.
+													/> // What: Page Tour Component. Why: This is one page tour's own launcher card. How: This is passed curTouObj plus the shared mini-tour dispatchers.
 
 
 												) ) }
@@ -4196,7 +4208,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 												staAppObj={ staAppObj }
 
 												onCloLogFun={ () => togLogFun( curGroObj.namStr ) }
-											/>{ /* What: Group Log. Why: This renders curGroObj's own picker audit rows. How: This is passed curGroObj's own name and a close handler that re-toggles it shut. */ }
+											/>{ /* What: Group Log Component. Why: This renders curGroObj's own picker audit rows. How: This is passed curGroObj's own name and a close handler that re-toggles it shut. */ }
 
 
 										</ColDisCom>
@@ -4386,7 +4398,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 											onPlaTutFun={ staTouFun }
 											onUncFeaFun={ uncFeaFun }
-										/> // What: App Feature Card Component. Why: This is one App Feature's own launcher card. How: This is passed curFeaObj plus the shared mini-tour dispatchers.
+										/> // What: App Feature Component. Why: This is one App Feature's own launcher card. How: This is passed curFeaObj plus the shared mini-tour dispatchers.
 
 
 									) ) }
@@ -4734,7 +4746,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			{ shoIntBoo && ( // What: App Features Intro Check. Why: The one-time intro tip only belongs once, right when it first becomes relevant. How: This renders FeaTipCom only while shoIntBoo is true.
 
 
-				<FeaTipCom actStoObj={ actStoObj } /> // What: App Features Intro Tip. Why: The App Features section needs its own one-time "One Last Thing..." intro. How: This renders only while shoIntBoo is true.
+				<FeaTipCom actStoObj={ actStoObj } /> // What: Feature Tip Component. Why: The App Features section needs its own one-time "One Last Thing..." intro. How: This renders only while shoIntBoo is true.
 
 
 			) }

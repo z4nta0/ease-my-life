@@ -6,7 +6,7 @@
 import { dimCouFun   } from '../utils/date.js'; // What: Days-In-Month Count Function. Why: Monthly and yearly clamping need a month's real length. How: This is called with a year and 1-based month.
 import { HOL_NAM_OBJ } from './holidays.js';    // What: Holidays Namespace Object. Why: A reminder's own weekend/holiday participation switches need to know whether a given date is an active day off. How: This is called (guarded, since it's an external module) inside visTodFun/todVisFun/nexEliFun below.
 import { isoDayFun   } from '../utils/date.js'; // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
-import { nwmDayFun   } from '../utils/date.js'; // What: Nth Weekday Of Month Day Function. Why: An nth-weekday schedule needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
+import { nwmDayFun   } from '../utils/date.js'; // What: Nth-Weekday-Month Day Function. Why: An nth-weekday schedule needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
 import { ordSufFun   } from '../utils/date.js'; // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
 
 // #endregion Imports

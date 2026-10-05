@@ -938,7 +938,7 @@ function ConSecCom ( { picGroArr, staAppObj } ) {
 
 											labTexStr={ conRcdObj.name }
 											trnOnlBoo
-										>{ conRcdObj.name }</InfTipCom>{ /* What: Conditional Name Info Tip Element. Why: A long conditional name can truncate in a narrow layout. How: This renders conRcdObj's own name as a truncation-revealing InfTipCom. */ }
+										>{ conRcdObj.name }</InfTipCom>{ /* What: Info Tip Component. Why: A long conditional name can truncate in a narrow layout. How: This renders conRcdObj's own name as a truncation-revealing InfTipCom. */ }
 
 
 
@@ -949,7 +949,7 @@ function ConSecCom ( { picGroArr, staAppObj } ) {
 
 											labTexStr={ modLabStr }
 											trnOnlBoo
-										>{ modLabStr }</InfTipCom>{ /* What: Mode Pill Info Tip Element. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
+										>{ modLabStr }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
 
 
 									</span>
@@ -991,7 +991,7 @@ function ConSecCom ( { picGroArr, staAppObj } ) {
 									className={ cssModObj.affIcoSvg }
 
 									icoKeyStr='braEle'
-								/>{ /* What: Icon Shape Component. Why: This strip needs a small branch glyph marking it as a "this affects these" note. How: This renders IcoSetCom's own "branch" shape. */ }
+								/>{ /* What: Icon Set Component. Why: This strip needs a small branch glyph marking it as a "this affects these" note. How: This renders IcoSetCom's own "branch" shape. */ }
 
 
 
@@ -1109,7 +1109,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 
 							labTexStr={ modLabStr }
 							trnOnlBoo
-						>{ modLabStr }</InfTipCom>{ /* What: Mode Pill Info Tip Element. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
+						>{ modLabStr }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
 
 
 					</span>
@@ -1201,7 +1201,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 
 						labTexStr={ modLabStr }
 						trnOnlBoo
-					>{ modLabStr }</InfTipCom>{ /* What: Mode Pill Info Tip Element. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
+					>{ modLabStr }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
 
 
 				</span>
@@ -1288,7 +1288,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 
 										labTexStr={ iteRcdObj.name }
 										trnOnlBoo
-									>{ iteRcdObj.name }</InfTipCom>{ /* What: Item Name Info Tip Element. Why: A long item name can truncate in a narrow layout. How: This renders iteRcdObj's own name as a truncation-revealing InfTipCom. */ }
+									>{ iteRcdObj.name }</InfTipCom>{ /* What: Info Tip Component. Why: A long item name can truncate in a narrow layout. How: This renders iteRcdObj's own name as a truncation-revealing InfTipCom. */ }
 
 
 
@@ -1430,7 +1430,7 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } ) {
 						className={ cssModObj.kicIcoSvg }
 
 						icoKeyStr='logEle'
-					/>{ /* What: Icon Shape Component. Why: The kicker needs a small recognizable log glyph. How: This renders IcoSetCom's own "log" shape. */ }
+					/>{ /* What: Icon Set Component. Why: The kicker needs a small recognizable log glyph. How: This renders IcoSetCom's own "log" shape. */ }
 
 
 
@@ -1691,7 +1691,7 @@ function LogChiCom ( { onTogLogFun, open } ) {
 				className={ cssModObj.chiIcoSvg }
 
 				icoKeyStr='logEle'
-			/>{ /* What: Icon Shape Component. Why: The chip needs a small recognizable log glyph next to its own label. How: This renders IcoSetCom's own "log" shape. */ }
+			/>{ /* What: Icon Set Component. Why: The chip needs a small recognizable log glyph next to its own label. How: This renders IcoSetCom's own "log" shape. */ }
 
 			{ ' Log' }{ /* What: Chip Label Text. Why: The chip needs a plain visible label alongside its own icon. How: This renders the literal text " Log". */ }
 
@@ -1828,7 +1828,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 						className={ cssModObj.kicIcoSvg }
 
 						icoKeyStr='clcEle'
-					/>{ /* What: Icon Shape Component. Why: The kicker needs a small recognizable clock glyph. How: This renders IcoSetCom's own "clock" shape. */ }
+					/>{ /* What: Icon Set Component. Why: The kicker needs a small recognizable clock glyph. How: This renders IcoSetCom's own "clock" shape. */ }
 
 
 
@@ -1914,7 +1914,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 
 							labTexStr={ tasRcdObj.name }
 							trnOnlBoo
-						>{ tasRcdObj.name }</InfTipCom>{ /* What: Reminder Name Info Tip Element. Why: A long reminder name can truncate in a narrow layout. How: This renders tasRcdObj's own name as a truncation-revealing InfTipCom. Its data-element-name-hook is read by help mode's Today catalog. */ }
+						>{ tasRcdObj.name }</InfTipCom>{ /* What: Info Tip Component. Why: A long reminder name can truncate in a narrow layout. How: This renders tasRcdObj's own name as a truncation-revealing InfTipCom. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 

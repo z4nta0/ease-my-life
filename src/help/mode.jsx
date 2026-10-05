@@ -594,7 +594,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 		let looCanBoo = false; // What: Loop Cancelled Boolean. Why: A frame already in flight when this effect is cleaned up must not schedule yet another one after it fires. How: This starts false and is flipped true by the cleanup function below.
 
 
-		const looRafFun = () => { // What: Loop Function. Why: This is the actual self-rescheduling tick that keeps every rect fresh every frame. How: This bails out once cancelled, otherwise recomputes and reschedules itself.
+		const looRafFun = () => { // What: Loop Request-Animation-Frame Function. Why: This is the actual self-rescheduling tick that keeps every rect fresh every frame. How: This bails out once cancelled, otherwise recomputes and reschedules itself.
 
 
 			if ( looCanBoo ) return; // What: Cancelled Guard. Why: A frame that fires after cleanup must do nothing at all. How: This returns immediately once looCanBoo is true.

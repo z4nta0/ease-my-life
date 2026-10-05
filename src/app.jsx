@@ -22,7 +22,7 @@ import { TabSetCom    } from './tabs/settings/tab-settings.jsx'; // What: Tab Se
 import { TabStaCom    } from './tabs/stats/tab-stats.jsx';       // What: Tab Stats Component. Why: This is the actual Stats tab content. How: This is rendered while actIdeStr is 'stats', passed the shared state/actions.
 import { TabTodCom    } from './tabs/today/tab-today.jsx';       // What: Tab Today Component. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
 import { useAppStaFun } from './state/store.js';                 // What: Use App State Function. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
-import { useEmlTouFun } from './state/tour-bus.js';              // What: Use Ease My Life Tour. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's touPhaStr/wanRaiBoo/touSteNum fields.
+import { useEmlTouFun } from './state/tour-bus.js';              // What: Use Ease My Life Tour Function. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's touPhaStr/wanRaiBoo/touSteNum fields.
 import { WelTouCom    } from './onboarding/welcome-tour.jsx';    // What: Welcome Tour Component. Why: The first-run welcome modal and its driven tour need to run above every tab. How: This is rendered once, passed the shared state/actions plus the active tab and the tab-switching function.
 
 // #endregion Imports
@@ -580,7 +580,7 @@ function AppRooCom () {
 
 		else if ( theKeyStr === 'customDark' && appCurObj.customDark ) palResObj = APP_NAM_OBJ.resCusFun( 'dark', appCurObj.customDark ); // What: Custom Dark Branch. Why: Same reasoning as the light branch, for a user-defined dark palette. How: This resolves the user's own saved custom-dark colors into a usable palette object.
 
-		else palResObj = APP_NAM_OBJ.PAL_SET_OBJ[theKeyStr] || APP_NAM_OBJ.PAL_SET_OBJ.ink; // What: Built-in Palette Branch. Why: Every other theme key maps to one of the app's own built-in palettes. How: This looks up the resolved key in PAL_SET_OBJ, falling back to the ink palette if the key is somehow unrecognized.
+		else palResObj = APP_NAM_OBJ.PAL_SET_OBJ[ theKeyStr ] || APP_NAM_OBJ.PAL_SET_OBJ.ink; // What: Built-in Palette Branch. Why: Every other theme key maps to one of the app's own built-in palettes. How: This looks up the resolved key in PAL_SET_OBJ, falling back to the ink palette if the key is somehow unrecognized.
 
 
 
@@ -864,7 +864,7 @@ function AppRooCom () {
 					staAppObj={ staAppObj }
 
 					onCloTouFun={ () => setActPicStr( null ) }
-				/> // What: PicTouCom. Why: This drives the currently-running sample-picker mini-tour. How: This is passed the specific picker's id, the shared state/actions, the active tab, the tab-switching function, and a close handler that clears actPicStr.
+				/> // What: Picker Tour Component. Why: This drives the currently-running sample-picker mini-tour. How: This is passed the specific picker's id, the shared state/actions, the active tab, the tab-switching function, and a close handler that clears actPicStr.
 
 
 			) }
@@ -882,7 +882,7 @@ function AppRooCom () {
 					staAppObj={ staAppObj }
 
 					onCloTouFun={ () => setActPagStr( null ) }
-				/> // What: PagTouCom. Why: This drives the currently-running "Explore the page" tour. How: This is passed the specific page's id, the shared state/actions, the active tab, the tab-switching function, and a close handler that clears actPagStr.
+				/> // What: Page Tour Component. Why: This drives the currently-running "Explore the page" tour. How: This is passed the specific page's id, the shared state/actions, the active tab, the tab-switching function, and a close handler that clears actPagStr.
 
 
 			) }
@@ -900,7 +900,7 @@ function AppRooCom () {
 					staAppObj={ staAppObj }
 
 					onCloTouFun={ () => setActFeaStr( null ) }
-				/> // What: FeaTouCom. Why: This drives the currently-running App Features tutorial. How: This is passed the specific feature's id, the shared state/actions, the active tab, the tab-switching function, and a close handler that clears actFeaStr.
+				/> // What: Feature Tour Component. Why: This drives the currently-running App Features tutorial. How: This is passed the specific feature's id, the shared state/actions, the active tab, the tab-switching function, and a close handler that clears actFeaStr.
 
 
 			) }

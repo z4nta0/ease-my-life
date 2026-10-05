@@ -39,7 +39,7 @@ import { PAG_LAB_OBJ } from '../../onboarding/app-features.jsx'; // What: Page L
 // #region AppFeaCom
 
 /**
- * AppFeaCom = App Feature Card Component
+ * AppFeaCom = App Feature Component
  *
  * @summary
  * An "App Features" launcher card: same shape/behavior as a PagTouCom

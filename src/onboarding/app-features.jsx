@@ -530,13 +530,13 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 			{ // What: Controls Section Step. Why: This is the edit-item tour's own 3rd step. How: This stays on the whole expanded picker's own box while narrowing the click guard to the Controls header alone. // selStr highlights the WHOLE expanded picker's own .datCatSec section (header + its collapsed Controls/Items rows), keeps the user oriented on WHICH picker this is, same "highlight the bigger box, narrow the click" reasoning as the manual-pick tour's own Add to Todo List step (picRunDiv + picSenBut). :has() scopes to whichever picker is currently expanded specifically, unlike .catBodDiv's content, the outer .datCatSec <section>/header render for EVERY picker unconditionally, so a bare .datLisDiv > .datCatSec would highlight every picker's header at once. cliSelStr then narrows the actual click-guard/cirBoo target down to the Controls header alone (same selector help/content.jsx's own dataPickerControlsHeader entry uses), doubling as a safety net: clicking the picker's own header (inside selStr but outside cliSelStr) is silently blocked by the guard instead of collapsing the section and losing this step's target out from under the user.
 
 
-				bacBoo    : true,             // What: Back Boolean. Why: The user should always be able to return to Your Pickers. How: GuiTouCom shows its own Back button whenever this is true.
-				cirBoo    : true,             // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuiTouCom disables Next and only advances once the real target is clicked.
+				bacBoo    : true,               // What: Back Boolean. Why: The user should always be able to return to Your Pickers. How: GuiTouCom shows its own Back button whenever this is true.
+				cirBoo    : true,               // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuiTouCom disables Next and only advances once the real target is clicked.
 				cliSelStr : '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"] [data-element-name-hook~="catBodDiv"] > button[data-element-name-hook~="catTogBut"]:nth-of-type(1)', // What: Click Selector String. Why: Only the Controls header itself may satisfy this step. How: This is read by the click-guard/cirBoo logic separately from selStr.
-				priStr    : 'Next',           // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
-				pulSelStr : '[data-ob-none]', // What: Pulse Selector String. Why: The default cirBoo pulse must be suppressed in favor of the Controls header's own individual pulse. How: This is a selector chosen to never match anything currently on screen. // Same pulse suppression as the previous step, the Controls header itself pulses (.catTogBut--tour, tab-data.jsx) instead of a ring around the whole picker card.
+				priStr    : 'Next',             // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				pulSelStr : '[data-ob-none]',   // What: Pulse Selector String. Why: The default cirBoo pulse must be suppressed in favor of the Controls header's own individual pulse. How: This is a selector chosen to never match anything currently on screen. // Same pulse suppression as the previous step, the Controls header itself pulses (.catTogBut--tour, tab-data.jsx) instead of a ring around the whole picker card.
 				selStr    : '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"]:has([data-element-name-hook~="catHeaBut"][aria-expanded="true"])', // What: Selector String. Why: This step highlights the whole expanded picker's own section, keeping the user oriented on which picker this is. How: GuiTouCom spotlights whatever this selector matches.
-				tabStr    : 'data',           // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
+				tabStr    : 'data',             // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 				titStr    : 'Controls Section', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuiTouCom renders this as the step's own heading text.
 
 				bodEle : <>This is where you can <b>view and edit a picker's Controls</b>. This includes its name, group, type, and other settings. Click on the Controls' header now to expand it and continue.</> // What: Body Element. Why: This step's own coach card needs a plain description plus an explicit click instruction. How: GuiTouCom renders this as the step's own descriptive paragraph.
@@ -930,7 +930,7 @@ function FeaTipCom ( { actStoObj } ) {
 
 			onFinTouFun={ () => actStoObj.setOnbFun( { appFeaturesIntroSeen : true } ) }
 			onSkiTouFun={ () => actStoObj.setOnbFun( { appFeaturesIntroSeen : true } ) }
-		/> // What: Guided Tour Element. Why: This is the single, solo spotlight step described above. How: This is passed a fixed touIdeStr, the single step above, and the actIdeStr='today'/no-op selTabFun stand-ins described in this function's own doc comment.
+		/> // What: Guided Tour Component. Why: This is the single, solo spotlight step described above. How: This is passed a fixed touIdeStr, the single step above, and the actIdeStr='today'/no-op selTabFun stand-ins described in this function's own doc comment.
 
 
 	);
@@ -1091,7 +1091,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 
 				onBegTouFun={ () => setTouPhaStr( 'tour' ) }
 				onSkiTouFun={ () => cloTouFun( 'cancelled' ) }
-			/> // What: Tutorial Intro Modal Element. Why: This is this feature's own opening screen, shown before any spotlight step ever does. How: This is passed this feature's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
+			/> // What: Intro Modal Component. Why: This is this feature's own opening screen, shown before any spotlight step ever does. How: This is passed this feature's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
 
 
 		);
@@ -1236,7 +1236,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 
 
 			} }
-		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough for this feature, mounted once its own intro modal has been accepted or resumed into. How: This is passed this feature's own touIdeStr, step array, and the resume/lifecycle plumbing above.
+		/> // What: Guided Tour Component. Why: This is the actual running spotlight walkthrough for this feature, mounted once its own intro modal has been accepted or resumed into. How: This is passed this feature's own touIdeStr, step array, and the resume/lifecycle plumbing above.
 
 
 	);

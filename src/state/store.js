@@ -7,12 +7,12 @@ import React from 'react'; // What: React. Why: This is the UI library the whole
 
 
 import { buiIteFun   } from './new-item.js';             // What: Build Item Function. Why: addIteFun builds its new item with the same defaults the Data tab's new-item draft uses. How: This is called once per added item.
-import { CAD_NAM_OBJ } from '../core/cadence.js';        // What: Cadence. Why: Every picker's own daily/weekly/monthly/yearly surfacing schedule is computed by this module. How: This is called (enfWeeFun/norCadFun) from the picker-authoring actions below.
-import { cdlAplFun   } from './pending-mutations.js';    // What: Conditional Log Apply Function. Why: A day-off card's completion is recorded in the conditional log. How: This is called by togDonFun for a day-off entry.
-import { CON_NAM_OBJ } from '../core/conditionals.js';   // What: Conditionals. Why: Day-off gate resolution logic lives here, not in this file. How: This is called (resDayFun) from resConFun below.
-import { cotAplFun   } from './pending-mutations.js';    // What: Conditional Toggle Apply Function. Why: Checking off a day-off card advances or reverts its conditional. How: This is called by togDonFun for a day-off entry.
-import { enpAplFun   } from './pending-mutations.js';    // What: Entry Pending Apply Function. Why: A pick's staged consequences land only when its entry is marked done. How: This is called when an entry is checked off.
-import { enpRevFun   } from './pending-mutations.js';    // What: Entry Pending Revert Function. Why: Unchecking a done entry must restore exactly what completing it changed. How: This is called when an entry is unchecked.
+import { CAD_NAM_OBJ } from '../core/cadence.js';        // What: Cadence Namespace Object. Why: Every picker's own daily/weekly/monthly/yearly surfacing schedule is computed by this module. How: This is called (enfWeeFun/norCadFun) from the picker-authoring actions below.
+import { cdlAplFun   } from './pending-mutations.js';    // What: Conditional-Log Apply Function. Why: A day-off card's completion is recorded in the conditional log. How: This is called by togDonFun for a day-off entry.
+import { CON_NAM_OBJ } from '../core/conditionals.js';   // What: Conditionals Namespace Object. Why: Day-off gate resolution logic lives here, not in this file. How: This is called (resDayFun) from resConFun below.
+import { cotAplFun   } from './pending-mutations.js';    // What: Conditional-Toggle Apply Function. Why: Checking off a day-off card advances or reverts its conditional. How: This is called by togDonFun for a day-off entry.
+import { enpAplFun   } from './pending-mutations.js';    // What: Entry-Pending Apply Function. Why: A pick's staged consequences land only when its entry is marked done. How: This is called when an entry is checked off.
+import { enpRevFun   } from './pending-mutations.js';    // What: Entry-Pending Revert Function. Why: Unchecking a done entry must restore exactly what completing it changed. How: This is called when an entry is unchecked.
 import { HOL_NAM_OBJ } from '../core/holidays.js';       // What: Holidays Namespace Object. Why: The holiday-editing actions need the canonical empty holidays shape. How: This is called (defStaFun) from the holiday actions below.
 import { invColFun   } from '../utils/color.js';         // What: Invert Color Function. Why: A custom theme's other half is derived from whichever color the user edited. How: This is called in setCusFun with the edited hex color.
 import { isoDayFun   } from '../utils/date.js';          // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
@@ -27,7 +27,7 @@ import { ONB_CHE_OBJ } from './onboarding-checklist.js'; // What: Onboarding Che
 import { ONB_SPI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sample-Picker-Ids Array. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicFun below.
 import { PWA_NAM_OBJ } from '../platform/pwa.js';        // What: Progressive Web App Namespace Object. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (askFirFun) once, from inside addPicFun below.
 import { SED_NAM_OBJ } from './seed.js';                 // What: Seed Namespace Object. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called (buiCleFun) by loaStaFun and by the reset action below.
-import { spuDroFun   } from './pending-mutations.js';    // What: Stale Pending Updates Drop Function. Why: A direct item edit must not be overwritten by a sibling entry's stale pending row. How: This is called by the direct item-edit actions.
+import { spuDroFun   } from './pending-mutations.js';    // What: Stale-Pending-Updates Drop Function. Why: A direct item edit must not be overwritten by a sibling entry's stale pending row. How: This is called by the direct item-edit actions.
 import { STG_NAM_OBJ } from './storage.js';              // What: Storage Namespace Object. Why: This is the actual persistence engine this file's own load/save/flush wrappers delegate to. How: This is called from loaStaFun, wriStaFun, fluStaFun, and the reset/impDatFun actions below.
 import { TAS_NAM_OBJ } from '../core/tasks.js';          // What: Tasks Namespace Object. Why: The reminders engine's own scheduling/eligibility/normalization logic lives here, not in this file. How: This is called throughout stkSynFun and the task actions below.
 import { uniNamFun   } from '../utils/format.js';        // What: Unique Name Function. Why: Two entries in the same scope can't share a name the user can't tell apart. How: This is called whenever an item, reminder, or picker is added or renamed.
@@ -1567,7 +1567,7 @@ function useAppStaFun ( optArgObj ) {
 			const nexEntArr = ( curStaObj.today.entries || [] ).filter( ( curEntObj ) => curEntObj.itemId !== tarIdeStr ); // What: Next Entry Array. Why: A removed item can no longer have a live Today entry pointing at it. How: This filters out every entry whose own itemId matches tarIdeStr.
 
 			const curDayStr = isoDayFun(); // What: Current Day String. Why: The pick-log purge below only drops TODAY's own rows, keeping history intact. How: This reads isoDayFun().
-			const nexLogArr = ( curStaObj.pickLog || [] ).filter( ( curRowObj ) => !( curRowObj.itemId === tarIdeStr && curRowObj.date === curDayStr ) ); // What: Next Pick-Log Array. Why: Only today's own live rows for this item are dropped; historical rows survive (their own denormalized name preserves past stats, like reminderLog does). How: This filters out rows matching both tarIdeStr and curDayStr.
+			const nexLogArr = ( curStaObj.pickLog || [] ).filter( ( curRowObj ) => !( curRowObj.itemId === tarIdeStr && curRowObj.date === curDayStr ) ); // What: Next Log Array. Why: Only today's own live rows for this item are dropped; historical rows survive (their own denormalized name preserves past stats, like reminderLog does). How: This filters out rows matching both tarIdeStr and curDayStr.
 
 			const { stkClaBoo, stkValNum } = stkSynFun( curStaObj, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Removing an item can drop entries off today, which can flip whether today counts as fully done. How: This calls stkSynFun against the already-filtered entries.
 
@@ -2136,7 +2136,7 @@ function useAppStaFun ( optArgObj ) {
 			const nexTasArr = curStaObj.tasks.map( ( tasMapObj ) => // What: Next Task Array. Why: Only the toggled task's own lastDone actually changes. How: This maps curStaObj.tasks, setting lastDone to null (un-checking) or curDayStr (completing) on the one matching task.
 				tasMapObj.id === tarIdeStr ? { ...tasMapObj, lastDone : wasDonBoo ? null : curDayStr } : tasMapObj ); // What: Toggled Task Patch. Why: Only the toggled task changes. How: This clears lastDone when un-checking, sets it to today when checking, and passes every other task through.
 
-			let nexLogArr = curStaObj.reminderLog || []; // What: Next Reminder-Log Array. Why: Both branches below patch this same array, one way or the other. How: This starts at curStaObj's own current reminderLog.
+			let nexLogArr = curStaObj.reminderLog || []; // What: Next Log Array. Why: Both branches below patch this same array, one way or the other. How: This starts at curStaObj's own current reminderLog.
 
 
 			if ( wasDonBoo ) { // What: Un-Check Branch. Why: Un-checking must void today's own completion row for this reminder. How: This filters out the one row matching taskId and curDayStr.
@@ -2445,7 +2445,7 @@ function useAppStaFun ( optArgObj ) {
 
 
 
-			const picIdeStr = picArgObj.replaceId || picArgObj.id || ( 'pkr_' + Math.random().toString( 36 ).slice( 2, 8 ) ); // What: Picker Id String. Why: An explicit id (onboarding's own sample pickers only, so their ids match the ones baked into precomputed Stats history) must win; every other caller gets a fresh random one. How: This prefers picArgObj.replaceId, then id, else mints a fresh 'pkr_' id.
+			const picIdeStr = picArgObj.replaceId || picArgObj.id || ( 'pkr_' + Math.random().toString( 36 ).slice( 2, 8 ) ); // What: Picker Identifier String. Why: An explicit id (onboarding's own sample pickers only, so their ids match the ones baked into precomputed Stats history) must win; every other caller gets a fresh random one. How: This prefers picArgObj.replaceId, then id, else mints a fresh 'pkr_' id.
 			const iniValNum = picArgObj.mode === 'ease-down' ? 100 : 0;                                                       // What: Initial Value Number. Why: Every new item's own starting drift value depends on the picker's own mode. How: This is 100 for ease-down (starts "charged"), else 0.
 			const isaEasBoo = picArgObj.mode === 'ease-up' || picArgObj.mode === 'ease-down';                                 // What: Is-An Ease Boolean. Why: Only an ease-mode item carries its own per-item drift band. How: This is true when mode is either ease-up or ease-down.
 			const isaDowBoo = picArgObj.mode === 'ease-down';                                                                 // What: Is-A Down Boolean. Why: Only ease-down forces every item to a uniform starting weight of 1 regardless of any user-supplied weight. How: This is true only when mode is 'ease-down'.
@@ -3195,7 +3195,7 @@ function useAppStaFun ( optArgObj ) {
 				? [ ...curStaObj.today.entries.filter( ( curEntObj ) => curEntObj.pickerId !== picIdeStr ), newEntObj ] // What: Replace Entry Branch. Why: Ease Down replaces its own picker's entry. How: This drops the old entry and appends newEntObj.
 				: [ ...curStaObj.today.entries, newEntObj ];                                                            // What: Add Entry Branch. Why: Every other case adds an entry. How: This appends newEntObj.
 
-			const nexLogArr = easDowBoo // What: Next Pick-Log Array. Why: A replaced Ease Down entry must not leave its own prior log row behind under the same eid. How: This drops any earlier row sharing eid before appending logRowObj, only for ease-down; every other mode simply appends.
+			const nexLogArr = easDowBoo // What: Next Log Array. Why: A replaced Ease Down entry must not leave its own prior log row behind under the same eid. How: This drops any earlier row sharing eid before appending logRowObj, only for ease-down; every other mode simply appends.
 				? [ ...( curStaObj.pickLog || [] ).filter( ( curRowObj ) => curRowObj.eid !== entIdeStr ), logRowObj ] // What: Replace Row Branch. Why: A replaced entry's old row must not linger under the same eid. How: This drops that row and appends logRowObj.
 				: [ ...( curStaObj.pickLog || [] ), logRowObj ];                                                       // What: Append Row Branch. Why: A new entry just adds its row. How: This appends logRowObj.
 
@@ -3307,7 +3307,7 @@ function useAppStaFun ( optArgObj ) {
 			const newRowArr = freEntArr.filter( ( curEntObj ) => !curEntObj.kind && curEntObj.pickerId ).map( ( curEntObj ) => // What: New Row Array. Why: Only a real (non-day-off-card) fresh entry needs its own auto pick-log row; depletedEnd is deliberately NOT written here, since it's a value consequence recorded only on completion. How: This builds one logRowFun row per qualifying fresh entry, source:'auto'.
 				logRowFun( curStaObj, { date : curDayStr, eid : curEntObj.eid, itemId : curEntObj.itemId, pickerId : curEntObj.pickerId, source : 'auto' } ) ); // What: Auto Row Build. Why: Every fresh entry logs as an automatic pick. How: This builds the row from the entry's own eid, item and picker.
 
-			const nexLogArr = ( curStaObj.pickLog || [] ).filter( ( curRowObj ) => curRowObj.date !== curDayStr || carEidSet.has( curRowObj.eid ) ).concat( newRowArr ); // What: Next Pick-Log Array. Why: The generator owns today, so every OTHER row logged today (auto or manual) must be dropped, except a carried entry's own still-live row. How: This keeps every row not dated today (or belonging to a carried eid), then appends newRowArr.
+			const nexLogArr = ( curStaObj.pickLog || [] ).filter( ( curRowObj ) => curRowObj.date !== curDayStr || carEidSet.has( curRowObj.eid ) ).concat( newRowArr ); // What: Next Log Array. Why: The generator owns today, so every OTHER row logged today (auto or manual) must be dropped, except a carried entry's own still-live row. How: This keeps every row not dated today (or belonging to a carried eid), then appends newRowArr.
 
 			const nexTodObj = { ...curStaObj.today, entries : nexEntArr }; // What: Next Today Object. Why: The caller needs a fresh today object carrying the new entries. How: This spreads curStaObj.today with entries replaced by nexEntArr.
 
@@ -3363,7 +3363,7 @@ function useAppStaFun ( optArgObj ) {
 
 			let nexIteArr = curStaObj.items;         // What: Next Item Array. Why: This defaults to the unchanged items and is only replaced below when an already-done entry needs its own pending undone first. How: This starts at curStaObj.items.
 			let nexPicArr = curStaObj.pickers;       // What: Next Picker Array. Why: This defaults to the unchanged pickers and is only replaced below when an already-done entry needs its own pending undone first. How: This starts at curStaObj.pickers.
-			let nexLogArr = curStaObj.pickLog || []; // What: Next Pick-Log Array. Why: This defaults to the unchanged pick log and is only replaced below when an already-done entry needs its own pending undone first. How: This starts at curStaObj.pickLog, defaulting to [].
+			let nexLogArr = curStaObj.pickLog || []; // What: Next Log Array. Why: This defaults to the unchanged pick log and is only replaced below when an already-done entry needs its own pending undone first. How: This starts at curStaObj.pickLog, defaulting to [].
 
 
 			if ( curEntObj && curEntObj.done && curEntObj.revert ) { // What: Already-Done Undo Guard. Why: A skipped entry is no longer a completion, so any staged mutation it already applied must be undone first. How: This calls enpRevFun and adopts its own result.
@@ -3458,7 +3458,7 @@ function useAppStaFun ( optArgObj ) {
 
 			let nexIteArr = curStaObj.items;         // What: Next Item Array. Why: This defaults to the unchanged items and is only replaced below when an already-completed entry needs its own pending undone first. How: This starts at curStaObj.items.
 			let nexPicArr = curStaObj.pickers;       // What: Next Picker Array. Why: This defaults to the unchanged pickers and is only replaced below when an already-completed entry needs its own pending undone first. How: This starts at curStaObj.pickers.
-			let nexLogArr = curStaObj.pickLog || []; // What: Next Pick-Log Array. Why: This defaults to the unchanged pick log and is only replaced below when an already-completed entry needs its own pending undone first. How: This starts at curStaObj.pickLog, defaulting to [].
+			let nexLogArr = curStaObj.pickLog || []; // What: Next Log Array. Why: This defaults to the unchanged pick log and is only replaced below when an already-completed entry needs its own pending undone first. How: This starts at curStaObj.pickLog, defaulting to [].
 
 
 			if ( curEntObj && curEntObj.done && curEntObj.revert ) { // What: Already-Done Undo Guard. Why: A re-roll always lands not-done, so an already-completed entry's own staged mutation must be undone first. How: This calls enpRevFun and adopts its own result when curEntObj is done and carries a revert snapshot.
@@ -3556,7 +3556,7 @@ function useAppStaFun ( optArgObj ) {
 
 			let nexIteArr = curStaObj.items;         // What: Next Item Array. Why: This defaults to the unchanged items and is replaced below by whichever branch fires. How: This starts at curStaObj.items.
 			let nexPicArr = curStaObj.pickers;       // What: Next Picker Array. Why: This defaults to the unchanged pickers and is replaced below by whichever branch fires. How: This starts at curStaObj.pickers.
-			let nexLogArr = curStaObj.pickLog || []; // What: Next Pick-Log Array. Why: This defaults to the unchanged pick log and is replaced below by whichever branch fires. How: This starts at curStaObj.pickLog, defaulting to [].
+			let nexLogArr = curStaObj.pickLog || []; // What: Next Log Array. Why: This defaults to the unchanged pick log and is replaced below by whichever branch fires. How: This starts at curStaObj.pickLog, defaulting to [].
 			let nexRevObj = null;                    // What: Next Revert Object. Why: Only the apply branch stages a fresh revert snapshot; the revert branch leaves this null. How: This starts at null.
 
 

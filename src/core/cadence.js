@@ -5,7 +5,7 @@
 
 import { dimCouFun } from '../utils/date.js'; // What: Days-In-Month Count Function. Why: Monthly and yearly anchors clamp to the month's real length. How: This is called with a year and 1-based month.
 import { isoDayFun } from '../utils/date.js'; // What: Iso Day Function. Why: Period keys and generated log rows are local-calendar YYYY-MM-DD strings. How: This formats a Date as that key.
-import { nwmDayFun } from '../utils/date.js'; // What: Nth Weekday Of Month Day Function. Why: An nth-weekday cadence needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
+import { nwmDayFun } from '../utils/date.js'; // What: Nth-Weekday-Month Day Function. Why: An nth-weekday cadence needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
 import { ordSufFun } from '../utils/date.js'; // What: Ordinal Suffix Function. Why: Cadence summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
 
 // #endregion Imports

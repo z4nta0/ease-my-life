@@ -8,7 +8,7 @@ import React     from 'react';                        // What: React. Why: PicCo
 
 
 import { ButBasCom    } from '../../ui/button.jsx';          // What: Button Base Component. Why: PicConCom's own footer and inline actions need consistently-styled buttons. How: This is rendered throughout PicConCom.
-import { CAD_NAM_OBJ  } from '../../core/cadence.js';        // What: Cadence. Why: PicConCom needs the shared cadence math/summary helpers to render its own "how often" tip and select options. How: This is called throughout PicConCom for tipMesFun/sumCadFun/dimCouFun/uniWorFun/locTipFun.
+import { CAD_NAM_OBJ  } from '../../core/cadence.js';        // What: Cadence Namespace Object. Why: PicConCom needs the shared cadence math/summary helpers to render its own "how often" tip and select options. How: This is called throughout PicConCom for tipMesFun/sumCadFun/dimCouFun/uniWorFun/locTipFun.
 import { CAD_OPT_ARR  } from '../../ui/cadence-control.jsx'; // What: Cadence Options Array. Why: PicConCom's own daily-cadence summary needs the same daily-cadence sub-explanation CadConCom itself uses. How: This is looked up by key 'daily' inside PicConCom's cadence-summary block.
 import { ColDisCom    } from '../../ui/collapse.jsx';        // What: Collapse Disclosure Component. Why: PicConCom's own sub-sections open and close with the same collapse-height animation as every other disclosure. How: This wraps each of those bodies, driven by the matching open boolean.
 import { dimCouFun    } from '../../utils/date.js';          // What: Days-In-Month Count Function. Why: Monthly and yearly clamping need a month's real length. How: This is called with a year and 1-based month.

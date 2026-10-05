@@ -667,7 +667,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 	const [ ediOpeBoo, setEdiOpeBoo ] = React.useState( false ); // What: Editing Open Boolean And Setter. Why: Editing this picker's own Details reuses PicForCom's Details step, pre-filled from its current settings, in place of the normal run/pool view. How: This is NOT an early return: every hook above still needs to run every render regardless of ediOpeBoo, so the branch only happens at the very end, where this component actually returns its JSX.
 
 
-	const ediGroArr = React.useMemo( () => { // What: Edit Existing Groups Array. Why: This is the same distinct-groups memo TabPicCom itself computes, duplicated here rather than threaded down as a prop, since it's only needed while this one picker's own edit form is open. How: This walks staAppObj.pickers collecting each visible picker's own group name once, then alphabetizes them.
+	const ediGroArr = React.useMemo( () => { // What: Edit Group Array. Why: This is the same distinct-groups memo TabPicCom itself computes, duplicated here rather than threaded down as a prop, since it's only needed while this one picker's own edit form is open. How: This walks staAppObj.pickers collecting each visible picker's own group name once, then alphabetizes them.
 
 
 		const seeGroArr = []; // What: Seen Group Array. Why: The loop below needs an accumulator to collect each distinct group name into. How: This starts empty and is pushed to by the loop.
@@ -824,7 +824,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 	// #endregion onAniDonFun
 
 
-	const seeRedRef = React.useRef( touBusObj.redNonNum ); // What: Seen Redo Nonce Reference. Why: Whenever the Pickers page tour's own onBacTouFun bumps touBusObj.redNonNum (Back from its "Picker Items" step to "Add to Todo List"), a fresh 'done' result must be synthesized directly instead of going through runPicFun's own animated 'running' phase, since Step 8's own target (the Send to Today button) needs runPhaStr to genuinely be 'done'/'sent', and by the time this fires the earlier real pick has already run its full course and reverted; skipping the spin is deliberate, this is a revisit. How: Unlike touBusObj.resNonNum above, a plain truthiness guard isn't enough here, since this bus value outlives any one PicVieCom instance (it's a module-level singleton, not component state); tracking the last-seen value (initialized to whatever's already on the bus at mount) makes this only fire on a genuine increment that happens while mounted.
+	const seeRedRef = React.useRef( touBusObj.redNonNum ); // What: Seen Redo Reference. Why: Whenever the Pickers page tour's own onBacTouFun bumps touBusObj.redNonNum (Back from its "Picker Items" step to "Add to Todo List"), a fresh 'done' result must be synthesized directly instead of going through runPicFun's own animated 'running' phase, since Step 8's own target (the Send to Today button) needs runPhaStr to genuinely be 'done'/'sent', and by the time this fires the earlier real pick has already run its full course and reverted; skipping the spin is deliberate, this is a revisit. How: Unlike touBusObj.resNonNum above, a plain truthiness guard isn't enough here, since this bus value outlives any one PicVieCom instance (it's a module-level singleton, not component state); tracking the last-seen value (initialized to whatever's already on the bus at mount) makes this only fire on a genuine increment that happens while mounted.
 
 
 	React.useEffect( () => { // What: Tour Redo Effect. Why: Going Back to the tour's Add to Todo List step needs a fresh settled pick to point at. How: This synthesizes a new 'done' pick whenever pickerTourRedoNonce genuinely changes.
@@ -1459,11 +1459,11 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 
-												{ curIteObj.vacation && <PilTagCom tonValStr='muted'>inactive</PilTagCom> }{ /* What: Inactive PilTagCom Check. Why: A vacationing item needs a clear status label. How: This renders the pill only while curIteObj.vacation is true. */ }
+												{ curIteObj.vacation && <PilTagCom tonValStr='muted'>inactive</PilTagCom> }{ /* What: Inactive Pill Tag Check. Why: A vacationing item needs a clear status label. How: This renders the pill only while curIteObj.vacation is true. */ }
 
 
 
-												{ !eliHerBoo && !curIteObj.vacation && <PilTagCom tonValStr='muted'>{ picDatObj.mode === 'ease-up' ? 'not yet' : 'spent' }</PilTagCom> }{ /* What: Ineligible PilTagCom Check. Why: An active-but-currently-ineligible item needs a status label distinct from "inactive". How: This renders only while eliHerBoo is false and curIteObj.vacation is also false, wording itself per mode. */ }
+												{ !eliHerBoo && !curIteObj.vacation && <PilTagCom tonValStr='muted'>{ picDatObj.mode === 'ease-up' ? 'not yet' : 'spent' }</PilTagCom> }{ /* What: Ineligible Pill Tag Check. Why: An active-but-currently-ineligible item needs a status label distinct from "inactive". How: This renders only while eliHerBoo is false and curIteObj.vacation is also false, wording itself per mode. */ }
 
 
 											</div>

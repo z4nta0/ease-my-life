@@ -798,7 +798,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	const hasDatBoo = hasPicBoo || hasIteBoo || hasConBoo || hasTasBoo || hasPclBoo || hasCdlBoo || hasGroBoo; // What: Has Data Boolean. Why: Both the Export and Reset rows need to know whether there is actually anything to export/reset at all. How: This is true whenever any one of the 7 collections above is non-empty. // Something to reset? True if the user has created any pickers, items, conditionals, reminders, groups, or accrued any pick/completion history.
 
 
-	const cloResFun = () => { // What: Close Reset Confirm Function. Why: Backing out of the reset confirmation (via Cancel or Escape) needs the same leave-then-unmount handling as every other confirm here. How: This flags focus for restoration, then either closes immediately (reduced motion) or plays the leave animation first.
+	const cloResFun = () => { // What: Close Reset Function. Why: Backing out of the reset confirmation (via Cancel or Escape) needs the same leave-then-unmount handling as every other confirm here. How: This flags focus for restoration, then either closes immediately (reduced motion) or plays the leave animation first.
 
 
 		resFocRef.current = true; // What: Reset Focus Flag Set. Why: The focus-restore effect below needs to know this specific close was a real "back out" rather than a successful reset. How: This flags resFocRef true, consumed once conResBoo actually flips back to false.
@@ -973,7 +973,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-	const cloImpFun = () => { // What: Close Import Confirm Function. Why: Backing out of (or completing) the import confirmation needs the same leave-then-unmount handling as the reset confirmation. How: This flags focus for restoration, then either closes immediately (reduced motion) or plays the leave animation first.
+	const cloImpFun = () => { // What: Close Import Function. Why: Backing out of (or completing) the import confirmation needs the same leave-then-unmount handling as the reset confirmation. How: This flags focus for restoration, then either closes immediately (reduced motion) or plays the leave animation first.
 
 
 		impFocRef.current = true; // What: Import Focus Flag Set. Why: The focus-restore effect below needs to know this close should restore focus once the real Import button remounts. How: This flags impFocRef true. // Focus restore is driven by a commit-watching effect below, not from here: the Import button is unmounted while the confirm pair shows, and a requestAnimationFrame guess can run before React commits the remount.
@@ -1610,7 +1610,6 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									<SegConCom
-										ariLabStr='Tab bar placement'
 										optIteArr={ [ // What: Placement Option Array. Why: The segmented control needs one button per supported tab-bar placement. How: Each entry's own keyStr is compared against the current tabPlacement and written back on selection, while its labStr is the button's own visible text.
 
 
@@ -1621,6 +1620,8 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										] }
 										value={ ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' }
+
+										ariLabStr='Tab bar placement'
 
 										onChange={ actStoObj.setPlaFun }
 									/>{ /* What: Segment Control Component. Why: This is the actual 3-way exclusive control for the tab-bar placement. How: This is bound to the persisted tabPlacement, saving via actStoObj.setPlaFun. */ }

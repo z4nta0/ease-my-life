@@ -305,7 +305,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 
 				onBegTouFun={ () => setTouPhaStr( 'tour' ) }
 				onSkiTouFun={ () => cloTouFun( 'cancelled' ) } // What: On Skip Handler. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying page. How: This calls cloTouFun with 'cancelled'.
-			/> // What: Tutorial Intro Modal Element. Why: This is this page's own opening screen, shown before any spotlight step ever does. How: This is passed this page's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
+			/> // What: Intro Modal Component. Why: This is this page's own opening screen, shown before any spotlight step ever does. How: This is passed this page's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
 
 
 		);
@@ -441,7 +441,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 				if ( tarSteNum === 3 ) { // What: Edit Mode Toggle Check. Why: Back from Group Grip to Edit Mode must toggle Edit Mode back off via its own real control, since the fooEdiBut target only exists while it's off. How: This clicks whichever real Edit Mode toggle/Cancel control is currently visible.
 
 
-					const butEdmEle = document.querySelector( '[data-element-name-hook~="ediRaiBut"][data-edit-mode-active]' ) || document.querySelector( '[data-element-name-hook~="fooActDiv"] [data-element-name-hook~="ediCanBut"]' ); // What: Edit Mode Button Element. Why: Desktop's own toggle always exists and flips itself regardless of state, mobile's own footer swaps to Cancel/Done buttons instead of keeping fooEdiBut. How: This looks up whichever control is currently present.
+					const butEdmEle = document.querySelector( '[data-element-name-hook~="ediRaiBut"][data-edit-mode-active]' ) || document.querySelector( '[data-element-name-hook~="fooActDiv"] [data-element-name-hook~="ediCanBut"]' ); // What: Button Edit-Mode Element. Why: Desktop's own toggle always exists and flips itself regardless of state, mobile's own footer swaps to Cancel/Done buttons instead of keeping fooEdiBut. How: This looks up whichever control is currently present.
 
 
 					if ( butEdmEle ) butEdmEle.click(); // What: Edit Mode Button Click. Why: This must only fire when a control actually exists. How: This clicks butEdmEle.
@@ -480,7 +480,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 
 
 			} }
-		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough for this page, mounted once its own intro modal has been accepted or resumed into. How: This is passed this page's own touIdeStr, step array, and the resume/lifecycle plumbing above.
+		/> // What: Guided Tour Component. Why: This is the actual running spotlight walkthrough for this page, mounted once its own intro modal has been accepted or resumed into. How: This is passed this page's own touIdeStr, step array, and the resume/lifecycle plumbing above.
 
 
 	);

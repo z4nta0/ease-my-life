@@ -191,9 +191,9 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 	// #region Gesture State
 
-	const staCliNum = dowEveObj.clientY; // What: Start Client Y Number. Why: Every later delta is measured relative to where the gesture actually began. How: This is read once from the triggering pointerdown event.
+	const staCliNum = dowEveObj.clientY; // What: Start Client Number. Why: Every later delta is measured relative to where the gesture actually began. How: This is read once from the triggering pointerdown event.
 
-	let delCliNum   = 0;         // What: Delta Client Y Number. Why: This is the gesture's own running vertical offset, driving every shift/target recomputation. How: This starts at 0 and is updated by onMovPoiFun and edgLooFun as the pointer moves and/or the container auto-scrolls.
+	let delCliNum   = 0;         // What: Delta Client Number. Why: This is the gesture's own running vertical offset, driving every shift/target recomputation. How: This starts at 0 and is updated by onMovPoiFun and edgLooFun as the pointer moves and/or the container auto-scrolls.
 	let tarIndNum   = oriIndNum; // What: Target Index Number. Why: This is the currently-computed drop target, read by onRelPoiFun once the gesture ends. How: This starts at oriIndNum (no movement yet) and is reassigned by appShiFun on every recomputation.
 	let edgLooNum   = null;      // What: Edge Loop Number. Why: The auto-scroll rAF loop must be cancellable on cleanup. How: This holds the current requestAnimationFrame id, reassigned every frame by edgLooFun itself.
 	let edgDirNum   = 0;         // What: Edge Direction Number. Why: edgLooFun needs to know which way (if any) to auto-scroll on its next frame. How: This is -1 for up, +1 for down, or 0 for no auto-scroll, set by onMovPoiFun.

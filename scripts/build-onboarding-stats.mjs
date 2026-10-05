@@ -245,6 +245,8 @@ const conLogFun = ( hisRowArr, todIndNum ) => hisRowArr.map( ( curRowObj ) => { 
 
 } );
 
+// #endregion conLogFun
+
 
 
 // #region buiRemFun

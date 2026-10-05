@@ -140,7 +140,7 @@ const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, siz
 						className={ cssModObj.dowChiSpa }
 
 						labTexStr={ locTipStr }
-					>{ labChrStr }</InfTipCom> // What: Locked Day Chip Element. Why: This looks selected like any other "on" chip, but tapping explains why it can't be turned off instead of silently doing nothing. How: This renders as an InfTipCom whose trigger is the day's own single-letter label.
+					>{ labChrStr }</InfTipCom> // What: Info Tip Component. Why: This looks selected like any other "on" chip, but tapping explains why it can't be turned off instead of silently doing nothing. How: This renders as an InfTipCom whose trigger is the day's own single-letter label.
 
 
 				);

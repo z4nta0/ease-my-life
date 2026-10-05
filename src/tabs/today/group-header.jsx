@@ -181,6 +181,18 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
+	 * @param chaValBoo - Change Value Boolean: True for a real, validated change
+	 *                    to commit, false for a cancel or a no-op close.
+	 * @param newValStr - New Value String: The validated group name to commit,
+	 *                    unused when chaValBoo is false.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * finCloFun( chaValBoo, newValStr ) // => void
+	 * ```
+	 *
 	*/
 
 	const finCloFun = ( chaValBoo, newValStr ) => { // What: Finish Close Function. Why: See the doc comment just above. How: This stages cloOutBoo, then after the out animation's base duration step closes ediOpeBoo and either commits newValStr or reverts draNamStr.
@@ -205,6 +217,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 	};
 
 	// #endregion finCloFun
+
 
 
 	const comEdiFun = () => { // What: Commit Edit Function. Why: Both blur (Enter blurs the input) and an explicit commit path need this exact same validation-then-close sequence. How: This trims the draft, checks whether it actually changed, validates it, and either stages an error or finishes closing.

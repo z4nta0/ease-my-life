@@ -22,7 +22,7 @@ import { TAS_NAM_OBJ  } from '../../core/tasks.js';           // What: Tasks Nam
 import { THR_VAL_NUM  } from '../../constants.js';            // What: Threshold Value Number. Why: Ease day-range math in this file divides by the shared full-charge ceiling. How: This is divided by an item's own easeMin/easeMax wherever a drift-to-days conversion happens.
 import { togFadFun    } from '../../ui/edge-fade.js';         // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { unhHisFun    } from '../../state/sample-history.js'; // What: Unhide History Function. Why: Help mode borrows the real hidden sample pickers so the heatmap and breakdown have genuine history to show. How: This is called whenever helModBoo turns true, as long as the page tour doesn't already own the same samples.
-import { useEmlTouFun } from '../../state/tour-bus.js';       // What: Use Ease My Life Tour. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's resTopNum field.
+import { useEmlTouFun } from '../../state/tour-bus.js';       // What: Use Ease My Life Tour Function. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's resTopNum field.
 
 // #endregion Imports
 
@@ -2889,12 +2889,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								...visPicArr.map( ( picCurObj ) => ( { // What: Picker Tab Entry Mapping. Why: Every currently-visible picker needs its own scope tab entry before the combined list is sorted. How: This maps each visPicArr entry to a small { cliFun, keyStr, labStr, namStr, picStr, selBoo } shape.
 
 
-									cliFun : () => setScoValStr( picCurObj.id ), // What: Click Function. Why: Choosing this tab switches the page to this picker. How: This sets scoValStr to the picker's own id.
+									cliFun : () => setScoValStr( picCurObj.id ),               // What: Click Function. Why: Choosing this tab switches the page to this picker. How: This sets scoValStr to the picker's own id.
 									keyStr : picCurObj.id,                                     // What: Key String. Why: Each tab needs a stable React key. How: This uses the picker's own id.
 									labStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr, // What: Label String. Why: The tab's subline names the picker's mode. How: This reads the mode's own display label.
-									namStr : picCurObj.name,                     // What: Name String. Why: The tab shows the picker's own name. How: This copies it.
-									picStr : picCurObj.id,                       // What: Picker String. Why: The tab carries a data-picker-id hook for the tours. How: This copies the picker's own id.
-									selBoo : scoValStr === picCurObj.id          // What: Selected Boolean. Why: The active tab is highlighted. How: This compares scoValStr against the picker's own id.
+									namStr : picCurObj.name,                                   // What: Name String. Why: The tab shows the picker's own name. How: This copies it.
+									picStr : picCurObj.id,                                     // What: Picker String. Why: The tab carries a data-picker-id hook for the tours. How: This copies the picker's own id.
+									selBoo : scoValStr === picCurObj.id                        // What: Selected Boolean. Why: The active tab is highlighted. How: This compares scoValStr against the picker's own id.
 
 
 								} ) )

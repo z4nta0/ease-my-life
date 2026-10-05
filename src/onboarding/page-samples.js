@@ -206,7 +206,7 @@ const seePicFun = ( staAppObj, actStoObj ) => { // What: Seed Picker Function. W
 	PAG_SAM_ARR.forEach( ( samPicObj ) => { // What: Sample Picker Object Loop. Why: Every sample picker's own template needs its own disposable copy. How: This iterates PAG_SAM_ARR, seeding one copy per entry.
 
 
-		const copIdeStr = picCopFun( samPicObj.id ); // What: (Picker) Copy Identifier String. Why: This copy's own id must never collide with the real hidden picker's own id. How: This derives it from samPicObj's own id via picCopFun.
+		const copIdeStr = picCopFun( samPicObj.id ); // What: Copy Identifier String. Why: This copy's own id must never collide with the real hidden picker's own id. How: This derives it from samPicObj's own id via picCopFun.
 
 
 		if ( staAppObj.pickers.some( ( exiPicObj ) => exiPicObj.id === copIdeStr ) ) return; // What: Existing Copy Guard. Why: Re-firing this runFun (Back then Forward again) must not create a duplicate-id picker. How: This returns early whenever a picker with this exact copy id already exists.
@@ -273,7 +273,7 @@ const seeTasFun = ( staAppObj, actStoObj ) => { // What: Seed Task Function. Why
 	ONB_TAS_ARR.forEach( ( samTasObj ) => { // What: Sample Task Object Loop. Why: Every sample reminder's own template needs its own disposable copy. How: This iterates ONB_TAS_ARR, seeding one copy per entry.
 
 
-		const copIdeStr = tasCopFun( samTasObj.id ); // What: Task Copy Identifier String. Why: This copy's own id must never collide with the real hidden reminder's own id. How: This derives it from samTasObj's own id via tasCopFun.
+		const copIdeStr = tasCopFun( samTasObj.id ); // What: Copy Identifier String. Why: This copy's own id must never collide with the real hidden reminder's own id. How: This derives it from samTasObj's own id via tasCopFun.
 
 
 		if ( staAppObj.tasks.some( ( exiTasObj ) => exiTasObj.id === copIdeStr ) ) return; // What: Existing Copy Guard. Why: Re-firing this runFun must not create a duplicate-id reminder. How: This returns early whenever a task with this exact copy id already exists.

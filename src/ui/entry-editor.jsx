@@ -334,10 +334,11 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 
 
 								<NumSteCom
-									ariLabStr={ `${ sooLabStr } for ${ iteDatObj.name }` }
 									maxValNum={ 60 }
 									minValNum={ 1 }
 									value={ sooDayNum }
+
+									ariLabStr={ `${ sooLabStr } for ${ iteDatObj.name }` }
 
 									onSetValFun={ setSooFun }
 								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Soonest/Shortest day count. How: This is passed sooDayNum and setSooFun, clamped to [1, 60]. */ }
@@ -404,10 +405,11 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 
 
 								<NumSteCom
-									ariLabStr={ `${ latLabStr } for ${ iteDatObj.name }` }
 									maxValNum={ 90 }
 									minValNum={ 1 }
 									value={ latDayNum }
+
+									ariLabStr={ `${ latLabStr } for ${ iteDatObj.name }` }
 
 									onSetValFun={ setLatFun }
 								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Latest/Longest day count. How: This is passed latDayNum and setLatFun, clamped to [1, 90]. */ }

@@ -37,7 +37,7 @@ import { ONB_CHE_OBJ } from '../../state/onboarding-checklist.js'; // What: Onbo
 // #region PagTouCom
 
 /**
- * PagTouCom = Page Tour Card Component
+ * PagTouCom = Page Tour Component
  *
  * @summary
  * A "Page Tours" launcher card: same shape/behavior as a picker's
@@ -119,7 +119,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
 
-						cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
+						cliEveObj.stopPropagation();     // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
 						onUncTutFun( touRecObj.ideStr ); // What: Uncheck Tutorial Call. Why: This card's own tutorial should go back to unresolved. How: This calls onUncTutFun with the card's own id.
 
 
@@ -159,7 +159,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
 
-						cliEveObj.stopPropagation();             // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
+						cliEveObj.stopPropagation();                 // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
 						onPlaTutFun( 'pageTour', touRecObj.ideStr ); // What: Play Tutorial Call. Why: This card's own tutorial should start playing. How: This calls onPlaTutFun with the tutorial kind and id.
 
 
@@ -233,7 +233,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 						onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
 
-							cliEveObj.stopPropagation();                                   // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
+							cliEveObj.stopPropagation();                                       // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
 							actStoObj.setCarFun( touRecObj.ideStr, { status : 'cancelled' } ); // What: Cancel Tutorial Call. Why: The user is dismissing this tutorial card entirely. How: This marks the checklist entry cancelled via actStoObj.setCarFun.
 
 

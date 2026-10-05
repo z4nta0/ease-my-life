@@ -204,8 +204,8 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
 	once : { // What: Once Entry. Why: This is the copy content descriptor for the one-time reminder tour variant. How: This is looked up by VAR_COP_OBJ via the real 'once' varKeyStr.
 
 
-		icoStr : 'pinEle',     // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
-		ideStr : 'tk_ob_meds', // What: Identifier String. Why: This ties the 'once' varKeyStr to its own sample reminder. How: This is read back against state.tasks/ONB_TAS_ARR by buiAddFun's runFun below and against the checklist by cloTouFun.
+		icoStr : 'pinEle',             // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
+		ideStr : 'tk_ob_meds',         // What: Identifier String. Why: This ties the 'once' varKeyStr to its own sample reminder. How: This is read back against state.tasks/ONB_TAS_ARR by buiAddFun's runFun below and against the checklist by cloTouFun.
 		titStr : 'One-Time Reminders', // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own titHeaStr prop.
 
 		bodStr : 'One-time reminders are simple one off things that need to get done and will never show up again once they are marked as completed in your todo list. e.g. pickup precription or pickup dry cleaning. Let’s create one of these now.' // What: Body String. Why: This varKeyStr's own second intro paragraph explains what a one-time reminder is. How: This is rendered as the second entry of IntModCom's own parEleArr prop.
@@ -216,8 +216,8 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
 	recurring : { // What: Recurring Entry. Why: This is the copy content descriptor for the recurring reminder tour variant. How: This is looked up by VAR_COP_OBJ via the real 'recurring' varKeyStr.
 
 
-		icoStr : 'calEle',      // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
-		ideStr : 'tk_ob_trash', // What: Identifier String. Why: This ties the 'recurring' varKeyStr to its own sample reminder. How: This is read back against state.tasks/ONB_TAS_ARR by buiAddFun's runFun below and against the checklist by cloTouFun.
+		icoStr : 'calEle',              // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
+		ideStr : 'tk_ob_trash',         // What: Identifier String. Why: This ties the 'recurring' varKeyStr to its own sample reminder. How: This is read back against state.tasks/ONB_TAS_ARR by buiAddFun's runFun below and against the checklist by cloTouFun.
 		titStr : 'Recurring Reminders', // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own titHeaStr prop.
 
 		bodStr : 'Recurring tasks are things that need to get done on a set schedule. e.g. take trash out for pickup (weekly) or get the mail (daily). Let’s create one of these now.' // What: Body String. Why: This varKeyStr's own second intro paragraph explains what a recurring reminder is. How: This is rendered as the second entry of IntModCom's own parEleArr prop.
@@ -577,7 +577,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 
 
 				} }
-			/> // What: Tutorial Intro Modal Element. Why: This is this varKeyStr's own opening screen, shown before any spotlight step ever does. How: This is passed this varKeyStr's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
+			/> // What: Intro Modal Component. Why: This is this varKeyStr's own opening screen, shown before any spotlight step ever does. How: This is passed this varKeyStr's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
 
 
 		);
@@ -615,7 +615,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 
 
 			} }
-		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough for this varKeyStr, mounted once its own intro modal has been accepted or resumed into. How: This is passed this varKeyStr's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
+		/> // What: Guided Tour Component. Why: This is the actual running spotlight walkthrough for this varKeyStr, mounted once its own intro modal has been accepted or resumed into. How: This is passed this varKeyStr's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
 
 
 	);

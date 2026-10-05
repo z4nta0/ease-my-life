@@ -77,9 +77,9 @@ function invColFun ( hexColStr ) {
 
 		} )();
 
-		const srgLinFun = ( srgChaNum ) => srgChaNum <= 0.04045 ? srgChaNum / 12.92 : Math.pow( ( srgChaNum + 0.055 ) / 1.055, 2.4 ); // What: Srgb To Linear Function. Why: sRGB's own gamma curve must be undone before OKLab's linear-light math applies. How: This applies the standard sRGB-to-linear piecewise formula to one channel.
+		const srgLinFun = ( srgChaNum ) => srgChaNum <= 0.04045 ? srgChaNum / 12.92 : Math.pow( ( srgChaNum + 0.055 ) / 1.055, 2.4 ); // What: Srgb Linear Function. Why: sRGB's own gamma curve must be undone before OKLab's linear-light math applies. How: This applies the standard sRGB-to-linear piecewise formula to one channel.
 
-		const linSrgFun = ( linChaNum ) => { // What: Linear To Srgb Function. Why: The final result must be re-encoded back into sRGB gamma before it's a displayable hex color. How: This applies the standard linear-to-sRGB piecewise formula to one clamped channel.
+		const linSrgFun = ( linChaNum ) => { // What: Linear Srgb Function. Why: The final result must be re-encoded back into sRGB gamma before it's a displayable hex color. How: This applies the standard linear-to-sRGB piecewise formula to one clamped channel.
 
 
 			const claChaNum = Math.max( 0, Math.min( 1, linChaNum ) ); // What: Clamped Channel Number. Why: A channel driven outside 0-1 by the inversion math must be clamped before re-encoding. How: This clamps linChaNum into the [0,1] range.
@@ -91,15 +91,15 @@ function invColFun ( hexColStr ) {
 
 		};
 
-		const linOklFun = ( [ linRedNum, linGrnNum, linBluNum ] ) => { // What: Linear Rgb To Oklab Function. Why: Lightness must be inverted in OKLab space, not raw RGB, for a perceptually sane result. How: This applies Ottosson's own linear-RGB-to-OKLab matrix multiplication and cube roots.
+		const linOklFun = ( [ linRedNum, linGrnNum, linBluNum ] ) => { // What: Linear Oklab Function. Why: Lightness must be inverted in OKLab space, not raw RGB, for a perceptually sane result. How: This applies Ottosson's own linear-RGB-to-OKLab matrix multiplication and cube roots.
 
 
 			const lmsLonNum = 0.4122214708 * linRedNum + 0.5363325363 * linGrnNum + 0.0514459929 * linBluNum; // What: Long-Medium-Short Long Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Long-cone row of Ottosson's linear-RGB-to-LMS matrix.
 			const lmsMedNum = 0.2119034982 * linRedNum + 0.6806995451 * linGrnNum + 0.1073969566 * linBluNum; // What: Long-Medium-Short Medium Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Medium-cone row of Ottosson's linear-RGB-to-LMS matrix.
 			const lmsShoNum = 0.0883024619 * linRedNum + 0.2817188376 * linGrnNum + 0.6299787005 * linBluNum; // What: Long-Medium-Short Short Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Short-cone row of Ottosson's linear-RGB-to-LMS matrix.
-			const cbrLonNum = Math.cbrt( lmsLonNum );                                                         // What: Cube Root Long Number. Why: OKLab's own nonlinearity is a cube root of each cone response, applied before the final matrix. How: This cube-roots lmsLonNum.
-			const cbrMedNum = Math.cbrt( lmsMedNum );                                                         // What: Cube Root Medium Number. Why: OKLab's own nonlinearity is a cube root of each cone response, applied before the final matrix. How: This cube-roots lmsMedNum.
-			const cbrShoNum = Math.cbrt( lmsShoNum );                                                         // What: Cube Root Short Number. Why: OKLab's own nonlinearity is a cube root of each cone response, applied before the final matrix. How: This cube-roots lmsShoNum.
+			const cbrLonNum = Math.cbrt( lmsLonNum );                                                         // What: Cube-Root Long Number. Why: OKLab's own nonlinearity is a cube root of each cone response, applied before the final matrix. How: This cube-roots lmsLonNum.
+			const cbrMedNum = Math.cbrt( lmsMedNum );                                                         // What: Cube-Root Medium Number. Why: OKLab's own nonlinearity is a cube root of each cone response, applied before the final matrix. How: This cube-roots lmsMedNum.
+			const cbrShoNum = Math.cbrt( lmsShoNum );                                                         // What: Cube-Root Short Number. Why: OKLab's own nonlinearity is a cube root of each cone response, applied before the final matrix. How: This cube-roots lmsShoNum.
 
 
 
@@ -116,7 +116,7 @@ function invColFun ( hexColStr ) {
 
 		};
 
-		const oklLinFun = ( [ oklLigNum, oklAaxNum, oklBaxNum ] ) => { // What: Oklab To Linear Rgb Function. Why: Once lightness is inverted in OKLab, the result must be converted back to linear RGB before re-encoding. How: This applies Ottosson's own inverse OKLab-to-LMS matrix, cubes each term, then his inverse LMS-to-linear-RGB matrix.
+		const oklLinFun = ( [ oklLigNum, oklAaxNum, oklBaxNum ] ) => { // What: Oklab Linear Function. Why: Once lightness is inverted in OKLab, the result must be converted back to linear RGB before re-encoding. How: This applies Ottosson's own inverse OKLab-to-LMS matrix, cubes each term, then his inverse LMS-to-linear-RGB matrix.
 
 
 			const lmsLonPriNum = oklLigNum + 0.3963377774 * oklAaxNum + 0.2158037573 * oklBaxNum; // What: Long-Medium-Short Long Prime Number. Why: OKLab's own inverse must first reconstruct the cube-rooted LMS terms before cubing them back. How: This is the Long-term row of Ottosson's inverse OKLab-to-LMS matrix.

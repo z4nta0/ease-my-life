@@ -609,7 +609,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } ) {
 
 
 				} }
-			/> // What: Tutorial Intro Modal Element. Why: This is the Welcome Tour's own opening screen, shown before any spotlight step ever does. How: This is passed this file's own brand icon, copy, pills, and the onBegTouFun/onSkiTouFun handlers above.
+			/> // What: Intro Modal Component. Why: This is the Welcome Tour's own opening screen, shown before any spotlight step ever does. How: This is passed this file's own brand icon, copy, pills, and the onBegTouFun/onSkiTouFun handlers above.
 
 
 		);
@@ -633,7 +633,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } ) {
 			onBacTouFun={ bacSteFun }
 			onFinTouFun={ finTouFun }
 			onSkiTouFun={ skiEndFun }
-		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough, mounted once the intro modal has been accepted or resumed into. How: This is passed this file's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
+		/> // What: Guided Tour Component. Why: This is the actual running spotlight walkthrough, mounted once the intro modal has been accepted or resumed into. How: This is passed this file's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
 
 
 	);

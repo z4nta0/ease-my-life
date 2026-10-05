@@ -609,17 +609,17 @@ function hydStaFun ( staRawObj ) {
 		return { // What: Pick Log Row Return. Why: This is one hydrated row, in the exact shape state.pickLog itself expects. How: This builds the row from rowDatObj/comTimStr above plus picRowObj's own denormalized fields, passed through unchanged.
 
 
-			completedAt : comTimStr,              // What: Completed At. Why: state.pickLog's own completedAt field expects an ISO string when the row was actually completed, else null. How: This is comTimStr, resolved above.
-			date        : isoDayFun( rowDatObj ), // What: Date. Why: Every pickLog row needs its own real calendar day. How: This converts rowDatObj to an ISO day string via isoDayFun.
-			done        : picRowObj.done,         // What: Done. Why: The row must record whether this pick was ever actually completed. How: This is copied straight from picRowObj's own done.
-			eid         : null,                   // What: Eid. Why: A real pickLog row always carries an entry id linking it back to a live Today entry, but a precomputed sample row has none. How: This is always null, since no real Today entry ever backed this hydrated row.
+			completedAt : comTimStr,                                  // What: Completed At. Why: state.pickLog's own completedAt field expects an ISO string when the row was actually completed, else null. How: This is comTimStr, resolved above.
+			date        : isoDayFun( rowDatObj ),                     // What: Date. Why: Every pickLog row needs its own real calendar day. How: This converts rowDatObj to an ISO day string via isoDayFun.
+			done        : picRowObj.done,                             // What: Done. Why: The row must record whether this pick was ever actually completed. How: This is copied straight from picRowObj's own done.
+			eid         : null,                                       // What: Eid. Why: A real pickLog row always carries an entry id linking it back to a live Today entry, but a precomputed sample row has none. How: This is always null, since no real Today entry ever backed this hydrated row.
 			group       : picRowObj.group,                            // What: Group. Why: This denormalized copy lets the row survive a later rename or deletion of the picker's own group. How: This is copied straight from picRowObj's own group.
 			id          : 'pls_ob_' + ( seqCouNum++ ).toString( 36 ), // What: Id. Why: Every pickLog row needs its own unique identifier. How: This mints one from the shared seqCouNum counter, prefixed and base-36 encoded.
-			itemId      : picRowObj.itemId,       // What: Item Id. Why: Stats and other consumers filter/group pickLog rows by the item they belong to. How: This is copied straight from picRowObj's own itemId.
-			itemName    : picRowObj.itemName,     // What: Item Name. Why: This denormalized copy lets the row survive a later rename or deletion of the item itself. How: This is copied straight from picRowObj's own itemName.
-			pickerId    : picRowObj.pickerId,     // What: Picker Id. Why: Stats and other consumers filter/group pickLog rows by the picker they belong to. How: This is copied straight from picRowObj's own pickerId.
-			pickerName  : picRowObj.pickerName,   // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This is copied straight from picRowObj's own pickerName.
-			source      : picRowObj.source,       // What: Source. Why: Stats distinguishes how a pick actually happened (generated, manual, re-roll, ...). How: This is copied straight from picRowObj's own source.
+			itemId      : picRowObj.itemId,                           // What: Item Id. Why: Stats and other consumers filter/group pickLog rows by the item they belong to. How: This is copied straight from picRowObj's own itemId.
+			itemName    : picRowObj.itemName,                         // What: Item Name. Why: This denormalized copy lets the row survive a later rename or deletion of the item itself. How: This is copied straight from picRowObj's own itemName.
+			pickerId    : picRowObj.pickerId,                         // What: Picker Id. Why: Stats and other consumers filter/group pickLog rows by the picker they belong to. How: This is copied straight from picRowObj's own pickerId.
+			pickerName  : picRowObj.pickerName,                       // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This is copied straight from picRowObj's own pickerName.
+			source      : picRowObj.source,                           // What: Source. Why: Stats distinguishes how a pick actually happened (generated, manual, re-roll, ...). How: This is copied straight from picRowObj's own source.
 
 			...( picRowObj.outcome ? { outcome : picRowObj.outcome } : {} ), // What: Outcome Spread. Why: Only a row with a real, non-default outcome (e.g. a rejected pick) needs this field at all. How: This spreads in outcome only when picRowObj's own outcome is truthy.
 			...( picRowObj.depletedEnd ? { depletedEnd : true } : {} )       // What: Depleted End Spread. Why: Only the row ending an Ease Down depletion streak needs this flag at all. How: This spreads in depletedEnd:true only when picRowObj's own depletedEnd is truthy.

@@ -52,8 +52,8 @@
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param rowOneObj   - Row One Object: The left-hand row to compare.
- * @param rowTwoObj   - Row Two Object: The right-hand row to compare.
+ * @param rowOneObj - Row One Object: The left-hand row to compare.
+ * @param rowTwoObj - Row Two Object: The right-hand row to compare.
  * @param sorKeyStr - Sort Key String: The sort key, e.g. 'name-asc' or
  *                    'count-desc'; everything before the last dash names the
  *                    field, the trailing 'asc'/'desc' names the direction.

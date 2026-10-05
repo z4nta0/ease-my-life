@@ -283,7 +283,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 
 
 
-		const parCleTim = setTimeout( () => setParIteArr( [] ), durMilFun( 'p09' ) ); // What: Particle Clear Schedule. Why: A rolled batch of particles must not linger onscreen forever once its own fly-out/glint animation has finished. How: This schedules parIteArr back to empty after the p09 duration step, which outlasts every particle's own p06 animation plus its random delay. // Duration Base Plus 9 ~= 1983.0ms
+		const parCleTim = setTimeout( () => setParIteArr( [] ), durMilFun( 'p09' ) ); // What: Particle Clear Timeout. Why: A rolled batch of particles must not linger onscreen forever once its own fly-out/glint animation has finished. How: This schedules parIteArr back to empty after the p09 duration step, which outlasts every particle's own p06 animation plus its random delay. // Duration Base Plus 9 ~= 1983.0ms
 
 
 

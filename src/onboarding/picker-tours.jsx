@@ -1071,7 +1071,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 
 				onBegTouFun={ () => setTouPhaStr( 'tour' ) }
 				onSkiTouFun={ () => cloTouFun( 'cancelled' ) } // What: On Skip Handler. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying sample picker. How: This calls cloTouFun with 'cancelled'.
-			/> // What: Tutorial Intro Modal Element. Why: This is this sample's own opening screen, shown before any spotlight step ever does. How: This is passed this sample's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
+			/> // What: Intro Modal Component. Why: This is this sample's own opening screen, shown before any spotlight step ever does. How: This is passed this sample's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
 
 
 		);
@@ -1156,7 +1156,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 			} }
 			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Handler. Why: This only fires from CRE_STE_OBJ's own cirBoo, after the real click that creates the picker has already reached the button's own handler. How: This calls cloTouFun with 'finished'.
 			onSkiTouFun={ () => cloTouFun( 'skipped' ) } // What: On Skip Handler. Why: Skip (or the not-found watchdog) reads as "the user didn't finish", distinct both from the intro modal's own 'cancelled' and from a genuine 'finished' below. How: This calls cloTouFun with 'skipped'.
-		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough for this sample, mounted once its own intro modal has been accepted or resumed into. How: This is passed this sample's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
+		/> // What: Guided Tour Component. Why: This is the actual running spotlight walkthrough for this sample, mounted once its own intro modal has been accepted or resumed into. How: This is passed this sample's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
 
 
 	);

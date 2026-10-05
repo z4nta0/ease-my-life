@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { CAD_NAM_OBJ } from '../core/cadence.js';  // What: Cadence. Why: A picker's own saved cadence must be normalized to the current shape. How: This is called (enfWeeFun/norCadFun/isaCadFun) from migStaFun.
+import { CAD_NAM_OBJ } from '../core/cadence.js';  // What: Cadence Namespace Object. Why: A picker's own saved cadence must be normalized to the current shape. How: This is called (enfWeeFun/norCadFun/isaCadFun) from migStaFun.
 import { HOL_NAM_OBJ } from '../core/holidays.js'; // What: Holidays Namespace Object. Why: A save with no holiday list gets the canonical empty holidays shape. How: This is called (defStaFun) from migStaFun.
 import { newEidFun   } from './ids.js';            // What: New Entry-Id Function. Why: Migrated entries and new Today entries both need unique ids. How: This is called once per entry that needs one.
 import { norGroFun   } from '../core/pickers.js';  // What: Normalize Group Function. Why: Every saved picker's group label is tidied and de-duplicated on load. How: This is called from migStaFun.
@@ -624,7 +624,7 @@ function migStaFun ( curStaObj ) {
 		curStaObj.conditionals = curStaObj.conditionals.map( ( curConObj ) => { // What: Conditional Split-And-Odds Map. Why: Every conditional needs both migrations applied, in order, before it's usable under the new shape. How: This applies the active/triggered split, then the weight-to-oddsPct migration, to each conditional.
 
 
-			let nexConObj = ( 'triggered' in curConObj ) ? curConObj : { ...curConObj, active : true, triggered : !!curConObj.active }; // What: Split Conditional And Guard. Why: A conditional already carrying its own triggered field is already past this migration. How: This passes curConObj through unchanged when triggered already exists, else derives it from the old active value.
+			let nexConObj = ( 'triggered' in curConObj ) ? curConObj : { ...curConObj, active : true, triggered : !!curConObj.active }; // What: Next Conditional Object. Why: A conditional already carrying its own triggered field is already past this migration. How: This passes curConObj through unchanged when triggered already exists, else derives it from the old active value.
 
 
 			if ( !( 'oddsPct' in nexConObj ) ) { // What: Odds-Percentage Migrate Guard. Why: Only a conditional still missing oddsPct needs its old weight-ratio odds converted. How: This derives oddsPct from nexConObj's own weight, clamped to the 10-90 range in steps of 10.
