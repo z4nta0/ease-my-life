@@ -1519,7 +1519,15 @@ function useAppStaFun( optArgObj ) {
 
 
 
-			return { ...curStaObj, items : [ buiIteFun( curPicObj, sibIteArr, newNamStr, optIdeStr ), ...curStaObj.items ] }; // What: Next State Return. Why: A newly-added item goes to the front of the global items array. How: This builds it with buiIteFun and puts it first.
+			return { // What: Next State Return. Why: A newly-added item is prepended to the global items array. How: This spreads curStaObj with items rebuilt as the new item first, then everything else.
+
+
+				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the items override below.
+
+				items : [ buiIteFun( curPicObj, sibIteArr, newNamStr, optIdeStr ), ...curStaObj.items ] // What: Items. Why: A newly-added item goes to the front of the global items array. How: This builds it with buiIteFun from the picker and its existing items, then puts it first, ahead of every existing item.
+
+
+			};
 
 
 		} ),
@@ -2853,10 +2861,12 @@ function useAppStaFun( optArgObj ) {
 			const modChaBoo = picArgObj.mode !== curPicObj.mode; // What: Mode Changed Boolean. Why: Only an actual mode change triggers the item-defaults reset further below. How: This is true when the new mode differs from curPicObj's own current one.
 			const newConObj = picArgObj.newConditional;          // What: New Conditional Object. Why: The inline-conditional build below reads many of this one field's own properties. How: This reads picArgObj.newConditional, which is null/undefined when no inline conditional was authored.
 
+
 			const finNamStr = uniNamFun( // What: Final Name String. Why: The committed picker still needs its own name tidied and de-duplicated against every OTHER visible picker. How: This calls uniNamFun with the tidied name against every sibling picker's own name, excluding itself.
 				norPicFun( picArgObj.name ) || picArgObj.name,                                                                                      // What: Tidied Name Argument. Why: The de-duplication starts from the tidied name. How: This normalizes picArgObj.name, falling back to the raw name.
 				curStaObj.pickers.filter( ( picFilObj ) => !picFilObj.hidden && picFilObj.id !== picIdeStr ).map( ( picFilObj ) => picFilObj.name ) // What: Sibling Names Argument. Why: The edited name must not collide with another visible picker. How: This lists every other visible picker's own name.
 			);
+
 
 			const madConObj = newConObj ? { // What: Made Conditional Object. Why: A brand-new inline conditional authored inline in this same edit form needs its own fresh id, mirroring addPicFun's own madConObj. How: This builds a full conditional object from newConObj's own fields.
 
@@ -2878,6 +2888,7 @@ function useAppStaFun( optArgObj ) {
 
 			} : null;
 
+
 			const norCadObj = CAD_NAM_OBJ.norCadFun({ // What: Normalized Cadence Object. Why: The schedule resolve and the cadence spread below both need the same normalized cadence fields. How: This calls CAD_NAM_OBJ.norCadFun once with picArgObj's own 8 cadence fields, reused by both the daysOfWeek resolve and the cadence spread below.
 
 
@@ -2892,6 +2903,7 @@ function useAppStaFun( optArgObj ) {
 
 
 			});
+
 
 			const finPicObj = { // What: Final Picker Object. Why: This is curPicObj patched with every field this edit form can change. How: This spreads curPicObj, overriding name/group/mode/schedule/gate fields with the resolved values below.
 
@@ -2920,6 +2932,7 @@ function useAppStaFun( optArgObj ) {
 
 			};
 
+
 			const thrValNum = curPicObj.threshold ?? 100;             // What: Threshold Value Number. Why: An Ease Down picker's items reset to fully charged at its threshold. How: This reads curPicObj's own threshold, defaulting to 100.
 			const modDefObj = modDefFun( picArgObj.mode, thrValNum ); // What: Mode Defaults Object. Why: Every item's own weight/value/drift-band must reset to sensible defaults for whichever mode was just switched to. How: This calls modDefFun with the new mode and this picker's threshold.
 
@@ -2927,6 +2940,7 @@ function useAppStaFun( optArgObj ) {
 			const nexIteArr = modChaBoo // What: Next Item Array. Why: Only an ACTUAL mode change resets this picker's own items; an unchanged mode leaves every item's own tuning untouched. How: This maps curStaObj.items, merging modDefObj onto every item owned by picIdeStr, only when modChaBoo is true.
 				? curStaObj.items.map( ( curIteObj ) => curIteObj.pickerId === picIdeStr ? { ...curIteObj, ...modDefObj } : curIteObj ) // What: Reset Items Branch. Why: A mode change resets this picker's own items. How: This spreads modDefObj onto each of its items.
 				: curStaObj.items; // What: Unchanged Items Branch. Why: An unchanged mode keeps every item's tuning. How: This passes the items through.
+
 
 			const nexPidArr = picArgObj.includeInDaily // What: Next Picker-Ids Array. Why: picArgObj.includeInDaily decides whether this picker joins or leaves the Daily generator's own membership list, same as addPicFun's own resolution. How: This adds picIdeStr when it's included and it isn't already present, else removes it.
 				? ( curStaObj.daily.pickerIds.includes( picIdeStr ) ? curStaObj.daily.pickerIds : [ ...curStaObj.daily.pickerIds, picIdeStr ] ) // What: Include Branch. Why: The picker joins the Daily generator. How: This appends picIdeStr unless it's already listed.

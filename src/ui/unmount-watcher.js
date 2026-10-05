@@ -38,35 +38,35 @@ import React from 'react'; // What: React. Why: The watcher is a component built
  * UnmWatCom = Unmount Watcher Component
  *
  * @summary
- * Calls onUnmFun once, when this component unmounts. The handler is read
+ * Calls onUnmWatFun once, when this component unmounts. The handler is read
  * from the most recent render, so it always sees the parent's latest state
  * (the newest draft) rather than whatever existed when the watcher mounted.
  * Renders nothing.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.onUnmFun - On Unmount Function: The handler to run when this
- *                         watcher unmounts.
+ * @param props.onUnmWatFun - On Unmount Watcher Function: The handler to run
+ *                            when this watcher unmounts.
  *
  * @returns Nothing, since the watcher has no markup of its own.
  *
  * @example
  * ```tsx
- * UnmWatCom({ onUnmFun }) // => <UnmWatCom />
+ * UnmWatCom({ onUnmWatFun }) // => <UnmWatCom />
  * ```
  *
 */
 
-function UnmWatCom ( { onUnmFun } ) {
+function UnmWatCom ( { onUnmWatFun } ) {
 
 
-	const onUnmRef = React.useRef( onUnmFun ); // What: On Unmount Reference. Why: The unmount cleanup below runs long after its own effect was created, so it must read the latest handler from somewhere that keeps changing. How: This holds the most recent onUnmFun.
+	const unmHanRef = React.useRef( onUnmWatFun ); // What: Unmount Handler Reference. Why: The unmount cleanup below runs long after its own effect was created, so it must read the latest handler from somewhere that keeps changing. How: This holds the most recent onUnmWatFun.
 
 
-	React.useLayoutEffect( () => { onUnmRef.current = onUnmFun; } ); // What: Handler Sync Effect. Why: Every render's own handler sees the parent's newest state. How: This copies the latest onUnmFun into onUnmRef after each render.
+	React.useLayoutEffect( () => { unmHanRef.current = onUnmWatFun; } ); // What: Handler Sync Effect. Why: Every render's own handler sees the parent's newest state. How: This copies the latest onUnmWatFun into unmHanRef after each render.
 
 
-	React.useEffect( () => () => onUnmRef.current(), [] ); // What: Unmount Report Effect. Why: The parent needs to know the moment this watcher leaves the page. How: This returns a cleanup that calls the latest handler, run only on unmount.
+	React.useEffect( () => () => unmHanRef.current(), [] ); // What: Unmount Report Effect. Why: The parent needs to know the moment this watcher leaves the page. How: This returns a cleanup that calls the latest handler, run only on unmount.
 
 
 

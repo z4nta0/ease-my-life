@@ -128,17 +128,44 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	const hanCloRef = React.useRef( false );                                        // What: Handled Close Reference. Why: A Controls already saved, cancelled, or deleted must not commit again when it unmounts. How: This flips true on any of those.
 
 
+
+	// #region patPicFun
+
+	/**
+	 * patPicFun = Patch Picker Function
+	 *
+	 * @summary
+	 * Merges a field or two into the local draft, the one way every Controls
+	 * field writes. For a brand-new draft picker it also passes the same change
+	 * up through onPatNewFun, since that picker's card header and new items read
+	 * its draft from the parent.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param patPicObj - Patch Picker Object: The fields to merge into the
+	 *                    draft.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * patPicFun( { group : 'Chores' } ) // => void
+	 * ```
+	 *
+	*/
+
 	const patPicFun = ( patPicObj ) => { // What: Patch Picker Function. Why: Every Controls field changes a field or two of the draft, and a brand-new picker's card also shows its draft as it's typed. How: This merges patPicObj into the draft, passing it up to onPatNewFun for a new picker.
 
 
 		setDraPicObj( ( preDraObj ) => ( { ...preDraObj, ...patPicObj } ) ); // What: Draft Merge Call. Why: The field change lands in the draft. How: This merges patPicObj into draPicObj.
 
 
-
 		if ( isaNewBoo && onPatNewFun ) onPatNewFun( patPicObj ); // What: New Picker Mirror Guard. Why: A brand-new picker's card header and new items read its draft from the parent. How: This passes the same change to onPatNewFun.
 
 
 	};
+
+	// #endregion patPicFun
 
 	// #endregion Picker Draft
 
@@ -198,7 +225,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	const [ conAttBoo, setConAttBoo ] = React.useState( !!draPicObj.conditionalId ); // What: Conditional Attached Boolean And Setter. Why: The "Attach a conditional" toggle needs its own on/off state, seeded from whether this picker already has one attached. How: This starts true when draPicObj.conditionalId is already set, and is flipped by the switch button below.
 
 	const raiCleRef = React.useRef( null ); // What: Rail Cleanup Reference. Why: The rail's own scroll/resize wiring needs to be torn down and rebuilt on every reattach. How: This holds whichever cleanup function the last attachment registered.
-	const raiNodRef = React.useRef( null ); // What: Rail Node Reference. Why: The FLIP reorder effect below needs a stable handle on the rail's own live DOM node. How: This is written by raiRefFun below and read by the FLIP effect.
+	const raiNodRef = React.useRef( null ); // What: Rail Node Reference. Why: The shared reorder animation and the scroll reset effect below need a stable handle on the rail's own live DOM node. How: This is written by raiRefFun below and read by useFliRaiFun and the scroll reset effect.
 
 
 	// #region raiRefFun
@@ -484,7 +511,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	}, [ newGroBoo ] ); // What: Effect Dependency Array. Why: This effect's own focus-and-pin sequence only needs to run when the inline input actually opens. How: newGroBoo is the single value this effect's own guard is built around.
 
 
-	const oriGroRef = React.useRef( picDatObj.group ); // What: Original Group Reference. Why: The group choice list below must keep listing the picker's ORIGINAL group even if it's since been moved away mid-edit, so a stray click is recoverable until Save. How: This snapshots draPicObj.group once, on mount, and is never reassigned.
+	const oriGroRef = React.useRef( picDatObj.group ); // What: Original Group Reference. Why: The group choice list below must keep listing the picker's ORIGINAL group even if it's since been moved away mid-edit, so a stray click is recoverable until Save. How: This snapshots picDatObj.group once, on mount, and is never reassigned.
 
 
 	const groChoArr = React.useMemo( () => { // What: Group Choices Array. Why: The Group selector needs every existing group, plus this picker's own current and original group in case either isn't otherwise represented. How: This builds the combined list and sorts the picker's own current group to the front.
@@ -542,6 +569,8 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 
+	// #region Close Handling
+
 	// #region comPicFun
 
 	/**
@@ -594,6 +623,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	// #endregion comPicFun
 
 
+
 	const canConFun = () => { // What: Cancel Controls Function. Why: Cancel drops the draft and closes Controls. How: This marks the close handled, then collapses Controls.
 
 
@@ -614,6 +644,8 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 	};
+
+	// #endregion Close Handling
 
 
 
@@ -1021,13 +1053,13 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 										className={ cssModObj.conPilBut }
 
 										data-element-name-hook='conPilBut'
-										data-flip-item-key={ conCurObj.id }
+										data-flip-item-key={ conCurObj.id } // What: Flip Item Key Attribute. Why: The shared reorder animation slides each pill from its old spot to its new one. How: This gives useFliRaiFun the pill's own conditional id to track it by.
 										data-pill-select-active={ draPicObj.conditionalId === conCurObj.id || undefined } // What: Pill Select Active Attribute. Why: The attached conditional's pill should stand out. How: This sets the presence-only attribute while this conditional is the picker's own.
 
 										type='button'
 
 										onClick={ () => patPicFun( { conditionalId : conCurObj.id } ) }
-									>{ /* What: Conditional Pill Button Element. Why: Clicking a pill attaches that conditional to this picker. How: This marks itself with data-pill-select-active when it matches draPicObj.conditionalId and commits conCurObj.id on click. Its data-element-name-hook is read by PicConCom's own conditional-rail scrolling. */ }
+									>{ /* What: Conditional Pill Button Element. Why: Clicking a pill attaches that conditional to this picker. How: This marks itself with data-pill-select-active when it matches draPicObj.conditionalId and commits conCurObj.id on click. Its data-flip-item-key is read by useFliRaiFun. */ }
 
 
 										<span className={ cssModObj.conNamSpa }>{ conCurObj.name }</span>{ /* What: Pill Name Span Element. Why: Every conditional pill needs its own visible name. How: This renders conCurObj's own name. */ }
@@ -1104,7 +1136,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 						aria-pressed={ draPicObj.includeInDaily }
 
 						onClick={ () => patPicFun( { includeInDaily : !draPicObj.includeInDaily } ) } // What: On Click Handler. Why: The switch adds or removes this picker from the daily generator, as part of the draft. How: This flips the draft's includeInDaily.
-					><i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked or aria-pressed. */ }</button>{ /* What: Daily Switch Button Element. Why: This is the actual on/off control for daily-generator membership. How: This adds or removes picDatObj.id from daiIdeArr on click. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+					><i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked or aria-pressed. */ }</button>{ /* What: Daily Switch Button Element. Why: This is the actual on/off control for daily-generator membership. How: This flips the draft's includeInDaily on click. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 				</div>
@@ -1741,7 +1773,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 									labTexStr='Fill all'
 
 									onFilActFun={ () => setFilAllBoo( true ) } // What: On Fill Action Function. Why: Fill all is part of the draft, applied to the items only when Controls is committed. How: This flips filAllBoo.
-								/>{ /* What: Fill Button Component. Why: This is the actual bulk-charge action for an ease-up picker. How: This is disabled once every item is already at threshold, and calls filPicFun on click. */ }
+								/>{ /* What: Fill Button Component. Why: This is the actual bulk-charge action for an ease-up picker. How: This is disabled once every item is already at threshold or a Fill all is pending, and marks a Fill all in the draft on click. */ }
 
 
 							</div>
@@ -1773,11 +1805,11 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 								<FilButCom
-									isaDisBoo={ picIteArr.length > 0 && notFulNum === 0 } // What: Is-A Disabled Boolean. Why: Fill has nothing left to do once every item is charged, or once a Fill all is already pending in the draft. How: This disables the button when notFulNum is 0.
+									isaDisBoo={ picIteArr.length > 0 && notFulNum === 0 } // What: Is-A Disabled Boolean. Why: Refill has nothing left to do once every item is charged, or once a Refill all is already pending in the draft. How: This disables the button when notFulNum is 0.
 									labTexStr='Refill all'
 
-									onFilActFun={ () => setFilAllBoo( true ) } // What: On Fill Action Function. Why: Fill all is part of the draft, applied to the items only when Controls is committed. How: This flips filAllBoo.
-								/>{ /* What: Fill Button Component. Why: This is the actual bulk-charge action for an ease-down picker. How: This is disabled once every item is already at threshold, and calls filPicFun on click. */ }
+									onFilActFun={ () => setFilAllBoo( true ) } // What: On Fill Action Function. Why: Refill all is part of the draft, applied to the items only when Controls is committed. How: This flips filAllBoo.
+								/>{ /* What: Fill Button Component. Why: This is the actual bulk-charge action for an ease-down picker. How: This is disabled once every item is already at threshold or a Fill all is pending, and marks a Fill all in the draft on click. */ }
 
 
 							</div>
@@ -1957,7 +1989,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 
-			<UnmWatCom onUnmFun={ comPicFun } />{ /* What: Unmount Watcher Component. Why: Controls that close without Save (collapsing Controls or its card, a filter hiding the picker, a tab switch) still keep their edits. How: This calls comPicFun when Controls unmounts, which skips a draft already saved, cancelled, or deleted. */ }
+			<UnmWatCom onUnmWatFun={ comPicFun } />{ /* What: Unmount Watcher Component. Why: Controls that close without Save (collapsing Controls or its card, a filter hiding the picker, a tab switch) still keep their edits. How: This calls comPicFun when Controls unmounts, which skips a draft already saved, cancelled, or deleted. */ }
 
 
 		</div>

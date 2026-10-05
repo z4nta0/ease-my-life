@@ -69,19 +69,24 @@ function useRcdDraFun( rcdDatObj ) {
 
 	const [ draStaObj, setDraStaObj ] = React.useState( { draRcdObj : null, oriRcdObj : null } ); // What: Draft State Object And Setter. Why: The draft and the record it started from must change together, in one update. How: This holds both, starting empty.
 
+	const opeIdeStr = rcdDatObj ? rcdDatObj.id : null;                     // What: Open Identifier String. Why: A different open record must start a fresh draft. How: This reads rcdDatObj's own id, or null when nothing is open.
+	const draIdeStr = draStaObj.oriRcdObj ? draStaObj.oriRcdObj.id : null; // What: Draft Identifier String. Why: The current draft must be tied to the record it started from. How: This reads the starting copy's own id, or null when there's no draft.
 
 
-	// #region Draft Restart
+	const resDraObj = { // What: Restarted Draft Object. Why: A freshly opened record needs its own draft, copied from the record as it is now. How: This copies rcdDatObj into a new draft beside the record itself.
 
-	const opeIdeStr = rcdDatObj ? rcdDatObj.id : null;                                                    // What: Open Identifier String. Why: A different open record must start a fresh draft. How: This reads rcdDatObj's own id, or null when nothing is open.
-	const draIdeStr = draStaObj.oriRcdObj ? draStaObj.oriRcdObj.id : null;                                // What: Draft Identifier String. Why: The current draft must be tied to the record it started from. How: This reads the starting copy's own id, or null when there's no draft.
-	const resDraObj = { draRcdObj : rcdDatObj ? { ...rcdDatObj } : null, oriRcdObj : rcdDatObj || null }; // What: Restarted Draft Object. Why: A freshly opened record needs its own draft, copied from the record as it is now. How: This copies rcdDatObj into a new draft beside the record itself.
-	const curStaObj = opeIdeStr === draIdeStr ? draStaObj : resDraObj;                                    // What: Current State Object. Why: This render must already show the fresh draft, not wait for the update below. How: This picks the restarted draft whenever the open record changed.
+
+		draRcdObj : rcdDatObj ? { ...rcdDatObj } : null, // What: Draft Record Object. Why: The editor must change a copy, never the real record. How: This spreads rcdDatObj into a new object, or is null when nothing is open.
+		oriRcdObj : rcdDatObj || null                    // What: Original Record Object. Why: A commit compares the draft against the record as it was when the draft started. How: This keeps rcdDatObj itself, or null when nothing is open.
+
+
+	};
+
+
+	const curStaObj = opeIdeStr === draIdeStr ? draStaObj : resDraObj; // What: Current State Object. Why: This render must already show the fresh draft, not wait for the update below. How: This picks the restarted draft whenever the open record changed.
 
 
 	if ( curStaObj !== draStaObj ) setDraStaObj( curStaObj ); // What: Draft Restart Guard. Why: The restarted draft must also be kept for the renders after this one. How: This stores it, which React allows during render for state derived like this.
-
-	// #endregion Draft Restart
 
 
 

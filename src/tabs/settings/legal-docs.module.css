@@ -30,7 +30,7 @@
 	justify-content : center;
 	padding         : var( --spa-ver-p02 ) var( --spa-hor-p02 );                           /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 2 ~= 25.572px */
 	position        : fixed;
-	z-index         : 203; /* What: Legal Modal Stack Level. Why: Help mode can be on while a legal document opens, and the modal must sit above its dim and highlights (201) and its toggle (202), not behind them. How: This sits one level above the help toggle. */
+	z-index         : 203;                                                                 /* What: Legal Modal Stack Level. Why: Help mode can be on while a legal document opens, and the modal must sit above its dim and highlights (201) and its toggle (202), not behind them. How: This sits one level above the help toggle. */
 
 
 }

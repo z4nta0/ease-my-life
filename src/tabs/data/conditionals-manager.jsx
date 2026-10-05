@@ -993,6 +993,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 														if ( isaPenBoo ) inpCurEle.select(); // What: New Conditional Select Check. Why: A brand-new conditional opens with a default name that typing should replace outright, while an existing one's name is edited in place. How: This selects the whole name only for the pending new conditional.
 
 
+
 														focInpRef.current = inpCurEle; // What: Focused Input Record. Why: A later re-render must not steal focus back. How: This stores inpCurEle in focInpRef.
 
 

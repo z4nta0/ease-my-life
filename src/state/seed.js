@@ -554,7 +554,7 @@ function buiCleFun() {
 		reminderOpts    : TAS_NAM_OBJ.defOptFun(),                                     // What: Reminder Opts. Why: A brand-new user still needs a full, valid reminder-options object. How: This calls TAS_NAM_OBJ's own defOptFun.
 		reminderSkipLog : [],                                                          // What: Reminder Skip Log. Why: A brand-new user has no reminder skip history at all. How: This is an empty array.
 		streak          : 0,                                                           // What: Streak. Why: A brand-new user has no streak yet. How: This is a fixed literal 0.
-		tasks           : [],                                                          // What: Tasks Namespace Object. Why: A brand-new user has no reminders at all. How: This is an empty array.
+		tasks           : [],                                                          // What: Tasks. Why: A brand-new user has no reminders at all. How: This is an empty array.
 		today           : { entries : [], generatedAt : null, streakClaimed : false }, // What: Today. Why: A brand-new user still needs a valid Today, just an entirely empty one. How: This is an empty entry list with no generation yet.
 		vacationLog     : [],                                                          // What: Vacation Log. Why: A brand-new user has no inactive-state history at all. How: This is an empty array.
 

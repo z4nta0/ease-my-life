@@ -22,7 +22,7 @@ import { ONB_RCT_OBJ  } from '../../state/onboarding-seed-data.js'; // What: Onb
 import { ONB_STI_ARR  } from '../../state/onboarding-seed-data.js'; // What: Onboarding Sample-Task-Ids Array. Why: Only the Welcome Tour's own seeded sample reminders should ever render as a mini-tour launcher card. How: This is checked against a hidden task's own id inside RemSecCom's tutTasArr filter.
 import { redMotFun    } from '../../utils/motion.js';               // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant close, skip, or remove instead of a timed animation. How: This is checked before every staged animation in RemCarCom and RemSecCom.
 import { RemLogCom    } from './day-log.jsx';                       // What: Reminders Log Component. Why: The Reminders section's own header chip opens this exact audit panel. How: This is rendered inside RemSecCom, gated on logOpen.
-import { SchEdiCom    } from '../../ui/schedule-editor.jsx';        // What: Schedule Editor Component. Why: A reminder's own name, repeat, and schedule fields are edited with one shared editor. How: This is rendered for the add form and each open reminder.
+import { SchEdiCom    } from '../../ui/schedule-editor.jsx';        // What: Schedule Editor Component. Why: A reminder's own repeat and schedule fields are edited with one shared editor. How: This is rendered for the add form and each open reminder.
 import { TAS_NAM_OBJ  } from '../../core/tasks.js';                 // What: Tasks Namespace Object. Why: Every due-ness, visibility, and summary computation for Today's cards defers to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout RemCarCom and RemSecCom.
 import { useEscCanFun } from '../../ui/escape-cancel.js';           // What: Use Escape Cancel Function. Why: The quick-add form needs Escape to discard in-progress edits the same way every other editor does. How: This is called once inside RemSecCom.
 import { useTasDraFun } from '../../ui/record-draft.js';            // What: Use Task Draft Function. Why: An open reminder's name input and schedule editor share one local draft, committed only on Save. How: This is called once inside RemSecCom with the open reminder.
@@ -440,7 +440,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 						aria-label='Reminder name'
 
 						onChange={ ( chaEveObj ) => onRenTasFun( chaEveObj.target.value ) }
-						onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() }                                            // What: Row Click Isolation. Why: Clicking into the name input must not also toggle the row done. How: This stops the click from bubbling to the card.
+						onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() } // What: Row Click Isolation. Why: Clicking into the name input must not also toggle the row done. How: This stops the click from bubbling to the card.
 						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Shortcut. Why: Pressing Enter should finish typing the name. How: This blurs the input on Enter, leaving the name in the draft until Save.
 					/> // What: Name Input Element. Why: While isaOpeBoo, the plain name div below is replaced with a live-editable input. How: This writes every change into the editor's draft through onRenTasFun, trimmed on Save, and blurs itself on Enter. Its data-element-name-hook is read by the reminder card's own row-click handler and help mode's Today catalog.
 
@@ -711,6 +711,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 	const opeTasStr = ( typeof actEdiStr === 'string' && actEdiStr.startsWith( 'reminder:' ) ) // What: Open Task String. Why: This is the id of whichever SAVED reminder's own inline editor is currently open, distinct from the quick-add form. How: This strips the 'reminder:' prefix off actEdiStr when it has one, otherwise null.
 		? actEdiStr.slice( 'reminder:'.length ) // What: Prefixed Id Branch. Why: A saved reminder's editor slot is 'reminder:' plus its id. How: This strips the prefix to leave the id.
 		: null;                                 // What: No Open Task Branch. Why: Any other slot value means no saved reminder's editor is open. How: This is null.
+
 
 	const opeTasObj = opeTasStr ? ( staAppObj.tasks || [] ).find( ( curTasObj ) => curTasObj.id === opeTasStr ) || null : null; // What: Open Task Object. Why: The open editor's draft is a copy of this reminder. How: This looks the open id up among the tasks, or null when no saved reminder's editor is open.
 

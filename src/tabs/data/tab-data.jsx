@@ -625,13 +625,13 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		const bltIteObj = buiIteFun( newPicObj, draIteArr, 'New item' ); // What: Built Item Object. Why: The draft's first item starts as a local draft with the same defaults the store would give it. How: This builds an item named 'New item' for the draft picker.
+		const buiIteObj = buiIteFun( newPicObj, draIteArr, 'New item' ); // What: Built Item Object. Why: The draft's first item starts as a local draft with the same defaults the store would give it. How: This builds an item named 'New item' for the draft picker.
 
 
-		newIteRef.current = bltIteObj.id; // What: New Item Mark. Why: Cancel must discard this exact item rather than keep it. How: This flags its id as the brand-new, not-yet-kept item.
-		setNewIteObj( bltIteObj );        // What: New Item Set Call. Why: The row renders from this local item until it's kept. How: This stores bltIteObj in newIteObj.
-		setInsIteStr( bltIteObj.id );     // What: Insert Item Set Call. Why: The freshly-created row should play the slide-in entrance. How: This sets insIteStr to the new id.
-		setOpeIteStr( bltIteObj.id );     // What: Open Item Set Call. Why: The freshly-created item's own editor should open immediately. How: This sets opeIteStr to the new id.
+		newIteRef.current = buiIteObj.id; // What: New Item Mark. Why: Cancel must discard this exact item rather than keep it. How: This flags its id as the brand-new, not-yet-kept item.
+		setNewIteObj( buiIteObj );        // What: New Item Set Call. Why: The row renders from this local item until it's kept. How: This stores buiIteObj in newIteObj.
+		setInsIteStr( buiIteObj.id );     // What: Insert Item Set Call. Why: The freshly-created row should play the slide-in entrance. How: This sets insIteStr to the new id.
+		setOpeIteStr( buiIteObj.id );     // What: Open Item Set Call. Why: The freshly-created item's own editor should open immediately. How: This sets opeIteStr to the new id.
 
 
 	}, [ penAutBoo ] ); // What: Effect Dependency Array. Why: This only ever needs to run when the one-shot flag itself is set. How: penAutBoo is the single value this effect's own guard is built around.
@@ -711,18 +711,18 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		setNewPicObj({ // What: New Picker Set Call. Why: The draft picker starts locally, pre-filled from the active filters, with the same fields a created picker has. How: This stores a fresh draft picker in newPicObj.
 
 
-			avoidDuplicates : false,                                                    // What: Avoid Duplicates. Why: A new picker allows duplicates until told otherwise. How: This is false.
-			conditionalId   : filConStr !== 'all' ? filConStr : null,                   // What: Conditional Id. Why: An active Conditionals filter pre-attaches that conditional. How: This uses filConStr unless it's 'all'.
-			daysOfWeek      : [ 0, 1, 2, 3, 4, 5, 6 ],                                  // What: Days Of Week. Why: A new picker runs every day until narrowed. How: This lists all 7 weekdays.
-			easeMax         : 20,                                                       // What: Ease Max. Why: The picker-level drift band is only its items' fallback span. How: This is addPicFun's own default, 20.
-			easeMin         : 10,                                                       // What: Ease Min. Why: The picker-level drift band is only its items' fallback span. How: This is addPicFun's own default, 10.
-			group           : filGroStr !== 'all' ? filGroStr : '',                     // What: Group. Why: An active Group filter pre-fills the group. How: This uses filGroStr unless it's 'all'.
-			id              : 'pkr_' + Math.random().toString( 36 ).slice( 2, 8 ),      // What: Id. Why: The draft's card and its items need a stable id, kept when the picker is created. How: This mints a random 'pkr_' id.
-			includeInDaily  : true,                                                     // What: Include In Daily. Why: A new picker joins the daily generator unless told otherwise. How: This is true.
-			mode            : isaReaBoo ? filTypStr : 'random',                         // What: Mode. Why: An active Type filter pre-fills the mode when it's a real picker mode. How: This uses filTypStr when isaReaBoo, otherwise 'random'.
-			name            : '',                                                       // What: Name. Why: The draft's name is typed in its own card. How: This starts empty.
-			skipHolidays    : false,                                                    // What: Skip Holidays. Why: A new picker runs on holidays until told otherwise. How: This is false.
-			threshold       : 100,                                                      // What: Threshold. Why: Ease items charge toward this full value. How: This is 100.
+			avoidDuplicates : false,                                               // What: Avoid Duplicates. Why: A new picker allows duplicates until told otherwise. How: This is false.
+			conditionalId   : filConStr !== 'all' ? filConStr : null,              // What: Conditional Id. Why: An active Conditionals filter pre-attaches that conditional. How: This uses filConStr unless it's 'all'.
+			daysOfWeek      : [ 0, 1, 2, 3, 4, 5, 6 ],                             // What: Days Of Week. Why: A new picker runs every day until narrowed. How: This lists all 7 weekdays.
+			easeMax         : 20,                                                  // What: Ease Max. Why: The picker-level drift band is only its items' fallback span. How: This is addPicFun's own default, 20.
+			easeMin         : 10,                                                  // What: Ease Min. Why: The picker-level drift band is only its items' fallback span. How: This is addPicFun's own default, 10.
+			group           : filGroStr !== 'all' ? filGroStr : '',                // What: Group. Why: An active Group filter pre-fills the group. How: This uses filGroStr unless it's 'all'.
+			id              : 'pkr_' + Math.random().toString( 36 ).slice( 2, 8 ), // What: Id. Why: The draft's card and its items need a stable id, kept when the picker is created. How: This mints a random 'pkr_' id.
+			includeInDaily  : true,                                                // What: Include In Daily. Why: A new picker joins the daily generator unless told otherwise. How: This is true.
+			mode            : isaReaBoo ? filTypStr : 'random',                    // What: Mode. Why: An active Type filter pre-fills the mode when it's a real picker mode. How: This uses filTypStr when isaReaBoo, otherwise 'random'.
+			name            : '',                                                  // What: Name. Why: The draft's name is typed in its own card. How: This starts empty.
+			skipHolidays    : false,                                               // What: Skip Holidays. Why: A new picker runs on holidays until told otherwise. How: This is false.
+			threshold       : 100,                                                 // What: Threshold. Why: Ease items charge toward this full value. How: This is 100.
 
 			...CAD_NAM_OBJ.norCadFun( {} ) // What: Cadence Defaults Spread. Why: The draft needs every cadence field a created picker has. How: This spreads norCadFun's own daily defaults.
 
@@ -801,35 +801,41 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param draPicArgObj - Draft Picker Argument Object: The Controls draft of
-	 *                       the new picker's fields.
-	 * @param filAllBoo    - Fill All Boolean: Whether a Fill all or Refill all
-	 *                       is pending in that draft.
+	 * @param picArgObj - Picker Argument Object: The Controls draft of the new
+	 *                    picker's fields.
+	 * @param filAllBoo - Fill All Boolean: Whether a Fill all or Refill all is
+	 *                    pending in that draft.
 	 *
 	 * @returns This function does not return anything.
 	 *
 	 * @example
 	 * ```ts
-	 * savNewFun( draPicArgObj, filAllBoo ) // => void
+	 * savNewFun( picArgObj, filAllBoo ) // => void
 	 * ```
 	 *
 	*/
 
-	const savNewFun = ( draPicArgObj, filAllBoo ) => { // What: Save New Function. Why: Save creates the draft picker and its items for real, in one step. How: This folds in any open draft row, applies a pending Fill all, then calls addPicFun.
+	const savNewFun = ( picArgObj, filAllBoo ) => { // What: Save New Function. Why: Save creates the draft picker and its items for real, in one step. How: This folds in any open draft row, applies a pending Fill all, then calls addPicFun.
 
 
-		const opeDraBoo = !!draIteObj && draIteObj.pickerId === newDraStr && hanDraRef.current !== draIteObj;                           // What: Open Draft Boolean. Why: An item row still open inside the draft keeps its edits along with the picker. How: This is true when the open row's unhandled draft belongs to the draft picker.
-		const keeIteArr = opeDraBoo ? [ ...draIteArr.filter( ( curIteObj ) => curIteObj.id !== draIteObj.id ), draIteObj ] : draIteArr; // What: Kept Item Array. Why: The open row's draft replaces (or joins) its item. How: This swaps the open draft into draIteArr when opeDraBoo, else keeps draIteArr.
-		const thrValNum = draPicArgObj.threshold ?? 100;                                                                                // What: Threshold Value Number. Why: A pending Fill all charges each item up to this. How: This reads the draft's threshold, defaulting to 100.
+		const draExiBoo = !!draIteObj;                      // What: Draft Existing Boolean. Why: Only an open row has a draft that could still need keeping. How: This is true whenever an item row is open.
+		const draInsBoo = draIteObj?.pickerId === newDraStr; // What: Draft Inside Boolean. Why: Only a row inside the draft picker belongs to this save. How: This compares the open draft's pickerId with the draft picker's id, safely false with no open row.
+		const draUnhBoo = hanDraRef.current !== draIteObj;   // What: Draft Unhandled Boolean. Why: A draft already folded in by the row's own close must not be kept twice. How: This checks the open draft isn't the one hanDraRef already handled.
+
+		const opeDraBoo = draExiBoo && draInsBoo && draUnhBoo; // What: Open Draft Boolean. Why: An item row still open inside the draft keeps its edits along with the picker. How: This is true when the open row's unhandled draft belongs to the draft picker.
 
 
-		const finIteArr = keeIteArr.map( ( curIteObj ) => ( { // What: Final Item Array. Why: Every item is created with its trimmed name, and charged when a Fill all is pending. How: This maps keeIteArr to its final shape.
+		const kepIteArr = opeDraBoo ? [ ...draIteArr.filter( ( curIteObj ) => curIteObj.id !== draIteObj.id ), draIteObj ] : draIteArr; // What: Kept Item Array. Why: The open row's draft replaces (or joins) its item. How: This swaps the open draft into draIteArr when opeDraBoo, else keeps draIteArr.
+		const thrValNum = picArgObj.threshold ?? 100;                                                                                   // What: Threshold Value Number. Why: A pending Fill all charges each item up to this. How: This reads the draft's threshold, defaulting to 100.
+
+
+		const finIteArr = kepIteArr.map( ( curIteObj ) => ( { // What: Final Item Array. Why: Every item is created with its trimmed name, and charged when a Fill all is pending. How: This maps kepIteArr to its final shape.
 
 
 			...curIteObj, // What: Current Item Spread. Why: Every other field carries over as drafted. How: This spreads curIteObj.
 
-			name  : curIteObj.name.trim() || 'New item',                                                       // What: Name. Why: A created item never keeps stray spaces or a blank name. How: This trims the name, falling back to 'New item'.
-			value : filAllBoo ? Math.max( curIteObj.value ?? 0, thrValNum ) : curIteObj.value                  // What: Value. Why: A pending Fill all charges every item. How: This raises the value to thrValNum when filAllBoo, else keeps it.
+			name  : curIteObj.name.trim() || 'New item',                                      // What: Name. Why: A created item never keeps stray spaces or a blank name. How: This trims the name, falling back to 'New item'.
+			value : filAllBoo ? Math.max( curIteObj.value ?? 0, thrValNum ) : curIteObj.value // What: Value. Why: A pending Fill all charges every item. How: This raises the value to thrValNum when filAllBoo, else keeps it.
 
 
 		} ) );
@@ -840,7 +846,16 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		actStoObj.addPicFun( { ...draPicArgObj, items : finIteArr, name : draPicArgObj.name.trim() } ); // What: Add Picker Call. Why: This is the moment the draft picker and its items actually join the app. How: This creates them with the draft's own fields, ids included.
+		actStoObj.addPicFun({ // What: Add Picker Call. Why: This is the moment the draft picker and its items actually join the app. How: This creates them with the draft's own fields, ids included.
+
+
+			...picArgObj, // What: Picker Argument Spread. Why: Every field the Controls draft holds carries over, its id included. How: This spreads picArgObj.
+
+			items : finIteArr,            // What: Items. Why: The picker is created together with its items. How: This passes finIteArr.
+			name  : picArgObj.name.trim() // What: Name. Why: A created picker never keeps stray spaces around its name. How: This trims the draft's name.
+
+
+		});
 
 		newIteRef.current = null; // What: New Item Clear. Why: No new item is in progress once the draft is saved. How: This clears newIteRef.
 		setNewIteObj( null );     // What: New Item Object Clear. Why: Any local new item went with the draft. How: This clears newIteObj.
@@ -1950,7 +1965,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					const secOpeBoo = isaDraBoo || colMapObj[ picCurObj.id ] === false;                                                       // What: Section Open Boolean. Why: A draft is always expanded (no toggle at all, see the header button's disabled prop below); an existing picker reads its own persisted state. How: This is true for a draft, or when the persisted entry is explicitly false.
 					const isaEasBoo = picCurObj.mode === 'ease-up' || picCurObj.mode === 'ease-down';                                         // What: Is-A Ease Boolean. Why: The item sort options and the meta text per item both depend on this. How: This is true whenever picCurObj.mode is 'ease-up' or 'ease-down'.
 					const useWeiBoo = picCurObj.mode === 'weighted' || picCurObj.mode === 'dynamic';                                          // What: Uses Weight Boolean. Why: Same reasoning as isaEasBoo, for the weighted/dynamic modes. How: This is true whenever picCurObj.mode is 'weighted' or 'dynamic'.
-					const incDaiBoo = isaDraBoo ? picCurObj.includeInDaily : staAppObj.daily.pickerIds.includes( picCurObj.id );              // What: Included Daily Boolean. Why: PicConCom needs to know this picker's own current daily-generator membership. How: This checks staAppObj.daily.pickerIds for picCurObj.id.
+					const incDaiBoo = isaDraBoo ? picCurObj.includeInDaily : staAppObj.daily.pickerIds.includes( picCurObj.id );              // What: Included Daily Boolean. Why: PicConCom needs to know this picker's own current daily-generator membership. How: This reads the draft's own includeInDaily for the draft card, else checks staAppObj.daily.pickerIds for picCurObj.id.
 					const conColBoo = !!colMapObj[ picCurObj.id + ':controls' ];                                                              // What: Controls Collapsed Boolean. Why: The Controls disclosure's own persisted state is keyed separately from the card's own open/closed state. How: This reads colMapObj at the ':controls' suffix key.
 					const iteColBoo = isaDraBoo ? !draIteBoo : !!colMapObj[ picCurObj.id + ':items' ];                                        // What: Items Collapsed Boolean. Why: A draft's own Items section tracks draIteBoo instead of the normal persisted map. How: This reads draIteBoo for a draft, otherwise the persisted entry at the ':items' suffix key.
 
@@ -2007,13 +2022,13 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-						const bltIteObj = buiIteFun( picCurObj, picIteArr, 'New item' ); // What: Built Item Object. Why: A new item starts as a local draft with the same defaults the store would give it. How: This builds an item named 'New item' for picCurObj from its current items.
+						const buiIteObj = buiIteFun( picCurObj, picIteArr, 'New item' ); // What: Built Item Object. Why: A new item starts as a local draft with the same defaults the store would give it. How: This builds an item named 'New item' for picCurObj from its current items.
 
 
-						newIteRef.current = bltIteObj.id; // What: New Item Mark. Why: Cancel must discard this exact item rather than keep it. How: This flags its id as the brand-new, not-yet-kept item.
-						setNewIteObj( bltIteObj );        // What: New Item Set Call. Why: The row renders from this local item until it's kept. How: This stores bltIteObj in newIteObj.
-						setInsIteStr( bltIteObj.id );     // What: Insert Item Set Call. Why: The freshly-created row should play the slide-in entrance. How: This sets insIteStr to the new id.
-						setOpeIteStr( bltIteObj.id );     // What: Open Item Set Call. Why: The freshly-created item's own editor should open immediately. How: This sets opeIteStr to the new id.
+						newIteRef.current = buiIteObj.id; // What: New Item Mark. Why: Cancel must discard this exact item rather than keep it. How: This flags its id as the brand-new, not-yet-kept item.
+						setNewIteObj( buiIteObj );        // What: New Item Set Call. Why: The row renders from this local item until it's kept. How: This stores buiIteObj in newIteObj.
+						setInsIteStr( buiIteObj.id );     // What: Insert Item Set Call. Why: The freshly-created row should play the slide-in entrance. How: This sets insIteStr to the new id.
+						setOpeIteStr( buiIteObj.id );     // What: Open Item Set Call. Why: The freshly-created item's own editor should open immediately. How: This sets opeIteStr to the new id.
 
 
 					};
@@ -2288,7 +2303,6 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 											onCanNewFun={ canNewFun }
 											onColConFun={ () => actStoObj.togColFun( picCurObj.id + ':controls' ) }
-											onPatNewFun={ isaDraBoo ? patNewFun : undefined } // What: On Patch New Function. Why: Only the draft card mirrors its Controls draft up, for its header and its new items' defaults. How: This passes patNewFun to the draft card only.
 											onOpeSecFun={ () => { // What: On Open Section Handler. Why: The draft's first "Add Items" click must open the Items section and also queue a ready-to-type new item. How: This opens draIteBoo and arms penAutBoo together.
 
 
@@ -2297,6 +2311,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 											} }
+											onPatNewFun={ isaDraBoo ? patNewFun : undefined } // What: On Patch New Function. Why: Only the draft card mirrors its Controls draft up, for its header and its new items' defaults. How: This passes patNewFun to the draft card only.
 											onReqDelFun={ () => delPicFun( picCurObj.id ) }
 											onSavNewFun={ savNewFun }
 										/>{ /* What: Picker Controls Component. Why: This is this picker's own full Controls body. How: This is passed the picker (or the local draft picker), its items, and every handler this card's own draft lifecycle needs. */ }
@@ -2646,6 +2661,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 																		const rmvIdeStr = iteCurObj.id;                      // What: Remove Identifier String. Why: The (possibly deferred) removal below needs a stable copy of this item's own id. How: This reads iteCurObj.id once.
 
 
+
 																		if ( redMotFun() ) { delActObj.delIteFun( rmvIdeStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This removes the item directly and returns.
 
 
@@ -2660,7 +2676,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-																<UnmWatCom onUnmFun={ () => { if ( opeIteStr === iteCurObj.id ) cloIteFun(); } } />{ /* What: Unmount Watcher Component. Why: A row that disappears without its own chevron or Save (its card or Items section collapsing, a filter hiding it, a tab switch) still keeps its edits. How: This keeps and closes the row when the watcher unmounts while this row is still the open one, so a row finishing its close animation after another opened leaves that one alone. */ }
+																<UnmWatCom onUnmWatFun={ () => { if ( opeIteStr === iteCurObj.id ) cloIteFun(); } } />{ /* What: Unmount Watcher Component. Why: A row that disappears without its own chevron or Save (its card or Items section collapsing, a filter hiding it, a tab switch) still keeps its edits. How: This keeps and closes the row when the watcher unmounts while this row is still the open one, so a row finishing its close animation after another opened leaves that one alone. */ }
 
 
 															</div>

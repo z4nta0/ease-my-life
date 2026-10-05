@@ -83,6 +83,7 @@ function buiIteFun( curPicObj, sibIteArr, newNamStr, optIdeStr ) {
 
 		iniValNum = curPicObj.threshold ?? 100; // What: Charged Value Set. Why: A new ease-down item starts fully charged, same as every other item in that mode. How: This reads curPicObj's own threshold, defaulting to 100.
 
+
 		const perWeiArr = sibIteArr.map( ( curIteObj ) => curIteObj.weight ?? 1 ).filter( ( curWeiNum ) => curWeiNum > 0 ); // What: Peer Weight Array. Why: The average below must exclude the weight-0 active item, so a fresh streak's own zero can't drag the newcomer down. How: This maps sibIteArr to its own weights (defaulting 1), then drops any that are 0 or below.
 
 		weiValNum = perWeiArr.length // What: Fairness Weight Average. Why: A brand-new item should join the rotation at roughly its peers' own average standing, not always at 1. How: This averages perWeiArr, rounds, and floors at 1, else falls back to 1 when there are no peers yet.
@@ -129,7 +130,7 @@ function buiIteFun( curPicObj, sibIteArr, newNamStr, optIdeStr ) {
  *
  * @summary
  * The fresh item fields a picker's items reset to when the picker switches to
- * modStr. An item's weight, value, and drift band from the old type have no
+ * newModStr. An item's weight, value, and drift band from the old type have no
  * meaningful translation to a new one (a Weighted item's weight means nothing
  * as an Ease Up drift band), so a type change resets them rather than trying
  * to carry them over: Ease Down items start fully charged at the threshold,
@@ -138,7 +139,7 @@ function buiIteFun( curPicObj, sibIteArr, newNamStr, optIdeStr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param modStr    - Mode String: The type the picker is switching to.
+ * @param newModStr - New Mode String: The type the picker is switching to.
  * @param thrValNum - Threshold Value Number: The picker's threshold, an Ease
  *                    Down item's starting charge.
  *
@@ -151,14 +152,14 @@ function buiIteFun( curPicObj, sibIteArr, newNamStr, optIdeStr ) {
  *
 */
 
-function modDefFun( modStr, thrValNum ) {
+function modDefFun( newModStr, thrValNum ) {
 
 
-	if ( modStr === 'ease-down' ) return { easeMax : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax, easeMin : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, value : thrValNum, weight : 1 }; // What: Ease Down Defaults Guard. Why: Ease Down items start fully charged. How: This returns the default drift band with value at the threshold.
+	if ( newModStr === 'ease-down' ) return { easeMax : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax, easeMin : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, value : thrValNum, weight : 1 }; // What: Ease Down Defaults Guard. Why: Ease Down items start fully charged. How: This returns the default drift band with value at the threshold.
 
 
 
-	if ( modStr === 'ease-up' ) return { easeMax : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax, easeMin : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, value : 0, weight : 1 }; // What: Ease Up Defaults Guard. Why: Ease Up items start uncharged. How: This returns the default drift band with value 0.
+	if ( newModStr === 'ease-up' ) return { easeMax : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax, easeMin : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, value : 0, weight : 1 }; // What: Ease Up Defaults Guard. Why: Ease Up items start uncharged. How: This returns the default drift band with value 0.
 
 
 

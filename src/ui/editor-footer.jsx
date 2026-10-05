@@ -73,7 +73,7 @@ function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } ) {
 	const [ conOpeBoo, setConOpeBoo ] = React.useState( false ); // What: Confirm Open Boolean And Setter. Why: Delete is confirm-gated, morphing this footer into a Delete/Cancel prompt instead of firing immediately. How: This toggles between the plain footer and the confirm prompt.
 
 
-	useEscCanFun( true, () => { // What: Use Escape Cancel Function. Why: Escape should cancel the edit, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canNowFun.
+	useEscCanFun( true, () => { // What: Use Escape Cancel Function. Why: Escape should cancel the edit, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls onCanTasFun.
 
 
 		if ( conOpeBoo ) setConOpeBoo( false ); // What: Close Confirm Branch. Why: While the delete confirm prompt is up, Escape should just back out of it instead of cancelling the whole edit. How: This closes the confirm by setting conOpeBoo false.

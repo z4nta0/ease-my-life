@@ -924,6 +924,8 @@ function TerSerCom () {
  * outright for a user who prefers reduced motion). Background scroll
  * is locked to whatever offset the app's own <main> scroller was
  * showing at open time and restored to that exact offset on close.
+ * It renders into <body> through a portal, above help mode, and its own
+ * Escape runs first and is marked handled, so help mode stays on.
  * Renders nothing at all while legDocStr is null.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -934,8 +936,8 @@ function TerSerCom () {
  *                            animation (or the instant reduced-motion path)
  *                            finishes.
  *
- * @returns The modal's own backdrop-and-panel markup, or null while
- * legDocStr is null.
+ * @returns The modal's own backdrop-and-panel markup, portaled into <body>,
+ * or null while legDocStr is null.
  *
  * @example
  * ```tsx

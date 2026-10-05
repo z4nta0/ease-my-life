@@ -16,7 +16,7 @@ import { IcoSvgCom    } from '../../ui/icon.jsx';                   // What: Ico
 import { InfTipCom    } from '../../ui/info-tip.jsx';               // What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add button in RemManCom.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Adding a reminder must stay disabled while any onboarding tutorial is still in progress. How: This is read via its own tutProFun helper in RemManCom.
 import { redMotFun    } from '../../utils/motion.js';               // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant close or remove instead of a timed animation. How: This is checked before every staged animation in RemManCom.
-import { SchEdiCom    } from '../../ui/schedule-editor.jsx';        // What: Schedule Editor Component. Why: A reminder's own name, repeat, and schedule fields are edited with one shared editor. How: This is rendered for the add form and each open reminder.
+import { SchEdiCom    } from '../../ui/schedule-editor.jsx';        // What: Schedule Editor Component. Why: A reminder's own repeat and schedule fields are edited with one shared editor. How: This is rendered for the add form and each open reminder.
 import { sorEntFun    } from './list-sorting.js';                   // What: Sort Entries Function. Why: The Data tab's reminder list needs the exact same sort vocabulary as the rest of the Data tab. How: This is called once per comparison inside RemManCom's own sorTasArr sort.
 import { SorSelCom    } from './sort-select.jsx';                   // What: Sort Select Component. Why: The Data tab's reminder Items list needs the same sort control as every other Data tab list. How: This is rendered in RemManCom, driven by ITE_SOR_ARR.
 import { TAS_NAM_OBJ  } from '../../core/tasks.js';                 // What: Tasks Namespace Object. Why: Every reminder's own summary, next date, and default shape defer to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout RemManCom.
@@ -423,7 +423,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 					{ [ 'once', 'recurring' ].map( ( tasClaStr ) => { // What: Switch Cell List Render. Why: Every row needs exactly 2 switch cells, one per participation class. How: This maps the 2 literal class keys to one switch cell each.
 
 
-						const swtEnaBoo = !!draOptObj[ tasClaStr ][ optDefObj.keyStr ]; // What: Switch Enabled Boolean. Why: Each cell's own switch needs to know whether this specific class/setting pair is currently on. How: This reads remOptObj indexed first by tasClaStr, then by optDefObj's own keyStr.
+						const swtEnaBoo = !!draOptObj[ tasClaStr ][ optDefObj.keyStr ]; // What: Switch Enabled Boolean. Why: Each cell's own switch needs to know whether this specific class/setting pair is currently on. How: This reads draOptObj indexed first by tasClaStr, then by optDefObj's own keyStr.
 
 
 
@@ -504,7 +504,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 
 
 
-			<UnmWatCom onUnmFun={ comOptFun } />{ /* What: Unmount Watcher Component. Why: A matrix closed without Save (collapsing Controls or the Reminders card, a tab switch) still keeps its toggles. How: This calls comOptFun when the matrix unmounts, which skips one already saved or cancelled. */ }
+			<UnmWatCom onUnmWatFun={ comOptFun } />{ /* What: Unmount Watcher Component. Why: A matrix closed without Save (collapsing Controls or the Reminders card, a tab switch) still keeps its toggles. How: This calls comOptFun when the matrix unmounts, which skips one already saved or cancelled. */ }
 
 
 		</div>
@@ -661,7 +661,8 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 			actStoObj.addTasFun( { ...draTasObj, name : draTasObj.name.trim() || newTasObj.name } ); // What: Add Task Call. Why: This is the moment the new reminder actually joins the app. How: This adds the draft under its own id, keeping the default name when the drafted one is blank.
 
 			newAddRef.current = null; // What: New-Item Flag Clear. Why: A kept reminder is no longer new. How: This clears newAddRef.
-			setNewTasObj( null );     // What: New Task Object Clear. Why: The store now holds this reminder. How: This clears newTasObj.
+
+			setNewTasObj( null ); // What: New Task Object Clear. Why: The store now holds this reminder. How: This clears newTasObj.
 
 
 		}
@@ -815,13 +816,14 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 
-		const bltTasObj = TAS_NAM_OBJ.defTasFun( { name : 'New reminder', repeat : 'once' } ); // What: Built Task Object. Why: A new reminder starts as a local draft with the same defaults the store would give it. How: This builds a one-time reminder named 'New reminder' with a fresh id.
+		const buiTasObj = TAS_NAM_OBJ.defTasFun( { name : 'New reminder', repeat : 'once' } ); // What: Built Task Object. Why: A new reminder starts as a local draft with the same defaults the store would give it. How: This builds a one-time reminder named 'New reminder' with a fresh id.
 
 
-		newAddRef.current = bltTasObj.id; // What: New-Item Flag Set. Why: The freshly-created row needs to know it's "new" for its own isaNewBoo prop. How: This sets newAddRef to its id.
-		setNewTasObj( bltTasObj );        // What: New Task Set Call. Why: The row renders from this local reminder until it's kept. How: This stores bltTasObj in newTasObj.
-		setInsIdeStr( bltTasObj.id );     // What: Insert Identifier Stage Call. Why: The new row needs to play its own entrance animation exactly once. How: This sets insIdeStr to the new id.
-		setOpeIdeStr( bltTasObj.id );     // What: Open Row Stage Call. Why: The new reminder's own editor should open immediately so the user can fill it in. How: This sets opeIdeStr to the new id.
+		newAddRef.current = buiTasObj.id; // What: New-Item Flag Set. Why: The freshly-created row needs to know it's "new" for its own isaNewBoo prop. How: This sets newAddRef to its id.
+
+		setNewTasObj( buiTasObj );    // What: New Task Set Call. Why: The row renders from this local reminder until it's kept. How: This stores buiTasObj in newTasObj.
+		setInsIdeStr( buiTasObj.id ); // What: Insert Identifier Stage Call. Why: The new row needs to play its own entrance animation exactly once. How: This sets insIdeStr to the new id.
+		setOpeIdeStr( buiTasObj.id ); // What: Open Row Stage Call. Why: The new reminder's own editor should open immediately so the user can fill it in. How: This sets opeIdeStr to the new id.
 
 		if ( !secOpeBoo ) actStoObj.togColFun( '__reminders_main', true ); // What: Main Section Expand Guard. Why: The newly-open editor must actually be visible, which requires the main section itself to be expanded. How: This expands the main section only while it was collapsed.
 
@@ -1165,6 +1167,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 																		if ( newAddRef.current === curTasObj.id ) inpCurEle.select(); // What: New Reminder Select Check. Why: A brand-new reminder opens with a default name that typing should replace outright, while an existing one's name is edited in place. How: This selects the whole name only for the new reminder.
 
 
+
 																		focInpRef.current = inpCurEle; // What: Focused Input Mark. Why: The guard above must skip this node next time. How: This stores it in focInpRef.
 
 
@@ -1303,7 +1306,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 															className={ cssModObj.inlEdiDiv }
 
 															data-element-name-hook='inlEdiDiv'
-														>{ /* What: Inline Editor Div Element. Why: The schedule editor and its own footer need to sit together, matching InlEdiCom's own root layout. How: This renders SchEdiCom against curTasObj directly (the real store, not a local draft), then EdiFooCom below it. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
+														>{ /* What: Inline Editor Div Element. Why: The schedule editor and its own footer need to sit together, matching InlEdiCom's own root layout. How: This renders SchEdiCom against the row's draft, then EdiFooCom below it. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
 
 
 															<SchEdiCom
@@ -1368,7 +1371,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 
-															<UnmWatCom onUnmFun={ () => { if ( opeIdeStr === curTasObj.id ) cloTasFun(); } } />{ /* What: Unmount Watcher Component. Why: A row that disappears without its own chevron or Save (the Reminders card or its Items section collapsing, a tab switch) still keeps its edits. How: This keeps and closes the row when the watcher unmounts while this row is still the open one. */ }
+															<UnmWatCom onUnmWatFun={ () => { if ( opeIdeStr === curTasObj.id ) cloTasFun(); } } />{ /* What: Unmount Watcher Component. Why: A row that disappears without its own chevron or Save (the Reminders card or its Items section collapsing, a tab switch) still keeps its edits. How: This keeps and closes the row when the watcher unmounts while this row is still the open one. */ }
 
 
 														</div>

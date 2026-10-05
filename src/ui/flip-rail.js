@@ -47,7 +47,7 @@ import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function.
  * useFliRaiFun = Use Flip Rail Function
  *
  * @summary
- * Plays the rail's reorder animation every time triKeyStr changes. It runs
+ * Plays the rail's reorder animation every time trgKeyStr changes. It runs
  * as a layout effect, after React has re-sorted the pills but before the
  * browser paints, so each moved pill can be shifted back to its old spot and
  * glide forward without ever showing the snapped order. Positions are kept
@@ -60,7 +60,7 @@ import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function.
  *
  * @param raiNodRef - Rail Node Reference: A ref holding the rail's own live
  *                    DOM node, null while the rail isn't mounted.
- * @param triKeyStr - Trigger Key String: Any string that changes whenever
+ * @param trgKeyStr - Trigger Key String: Any string that changes whenever
  *                    the rail re-sorts or remounts, such as the selected id
  *                    joined with the rail's visibility and pill count.
  *
@@ -68,12 +68,12 @@ import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function.
  *
  * @example
  * ```ts
- * useFliRaiFun( raiNodRef, triKeyStr ) // => void
+ * useFliRaiFun( raiNodRef, trgKeyStr ) // => void
  * ```
  *
 */
 
-function useFliRaiFun( raiNodRef, triKeyStr ) {
+function useFliRaiFun( raiNodRef, trgKeyStr ) {
 
 
 	const fliFirRef = React.useRef( new Map() ); // What: Flip First Reference. Why: Each pill's PREVIOUS x position is needed to compute how far it moved. How: This starts as an empty map and is repopulated at the end of every effect run.
@@ -136,7 +136,7 @@ function useFliRaiFun( raiNodRef, triKeyStr ) {
 		pilNodArr.forEach( ( pilCurEle ) => firMapObj.set( pilCurEle.dataset.flipItemKey, pilCurEle.offsetLeft ) ); // What: First Map Populate. Why: The NEXT reorder's own FLIP tween needs this run's final positions as its own "previous" baseline. How: This records every pill's own current offsetLeft, keyed by its own data-flip-item-key.
 
 
-	}, [ raiNodRef, triKeyStr ] ); // What: Effect Dependency Array. Why: The animation must run once per re-sort, and a different rail ref would mean different pills. How: triKeyStr is the caller's own reorder trigger, and raiNodRef is the stable ref the effect reads the rail through.
+	}, [ raiNodRef, trgKeyStr ] ); // What: Effect Dependency Array. Why: The animation must run once per re-sort, and a different rail ref would mean different pills. How: trgKeyStr is the caller's own reorder trigger, and raiNodRef is the stable ref the effect reads the rail through.
 
 
 }

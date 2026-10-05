@@ -23,11 +23,11 @@ import { WeeChiCom   } from './weekday-chips.jsx';     // What: Weekday Chip Com
  *
  * @summary
  * A reminder's own schedule editor, shared by Today's reminders section and
- * the Data tab's reminder manager: SchEdiCom edits a reminder's name, its
- * repeat kind (REP_OPT_ARR, one of the shared SegConCom's options), and that
- * kind's own schedule fields, and VisNotCom beneath it explains when a
- * reminder won't show today, with reaPhrFun naming the settings behind it. All
- * scheduling logic lives in tasks.js; this file is presentation plus small
+ * the Data tab's reminder manager: SchEdiCom edits the caller's draft of a
+ * reminder's repeat kind (REP_OPT_ARR, one of the shared SegConCom's options)
+ * and that kind's own schedule fields, and VisNotCom beneath it explains when
+ * a reminder won't show today, with reaPhrFun naming the settings behind it.
+ * All scheduling logic lives in tasks.js; this file is presentation plus small
  * local form state only.
  *
  * Sections:

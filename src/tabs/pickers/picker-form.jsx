@@ -548,12 +548,12 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const draActObj = { // What: Draft Actions Object. Why: The pool rows and useIteDraFun's commit both need store-shaped actions, but pooIteArr isn't the real store. How: Every method below mirrors the real store action's own name and signature, but writes into pooIteArr instead of dispatching a real store update.
 
 
-		delIteFun : ( tarIdeStr ) => setPooIteArr( ( preIteArr ) => preIteArr.filter( ( iteCurObj ) => iteCurObj.id !== tarIdeStr ) ),                                                            // What: Delete Item Function. Why: EntEdiCom's own footer Delete button (hidden here via CSS, same as the live flow) still expects this method to exist. How: This filters the matching entry out entirely.
-		renIteFun : ( tarIdeStr, newNamStr ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { ...iteCurObj, name : newNamStr } : iteCurObj ) ),   // What: Rename Item Function. Why: The name input's own onBlur calls this exactly like the real store action. How: This overwrites just the name field on the matching entry.
-		setWeiFun : ( tarIdeStr, weiValNum ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { ...iteCurObj, weight : weiValNum } : iteCurObj ) ), // What: Set Weight Function. Why: EntEdiCom's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on the matching entry.
-		updIteFun : ( tarIdeStr, patIteObj ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { ...iteCurObj, ...patIteObj } : iteCurObj ) ),       // What: Update Item Function. Why: EntEdiCom calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into whichever pooIteArr entry matches tarIdeStr.
+		delIteFun : ( tarIdeStr ) => setPooIteArr( ( preIteArr ) => preIteArr.filter( ( iteCurObj ) => iteCurObj.id !== tarIdeStr ) ),                                                            // What: Delete Item Function. Why: A removed pool row and a discarded in-progress item both drop out of the pool. How: This filters the matching entry out entirely.
+		renIteFun : ( tarIdeStr, newNamStr ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { ...iteCurObj, name : newNamStr } : iteCurObj ) ),   // What: Rename Item Function. Why: useIteDraFun's commit and the new item's name input blur call this exactly like the real store action. How: This overwrites just the name field on the matching entry.
+		setWeiFun : ( tarIdeStr, weiValNum ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { ...iteCurObj, weight : weiValNum } : iteCurObj ) ), // What: Set Weight Function. Why: useIteDraFun's commit sends a changed weight through this exactly like the real store action. How: This overwrites just the weight field on the matching entry.
+		updIteFun : ( tarIdeStr, patIteObj ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { ...iteCurObj, ...patIteObj } : iteCurObj ) ),       // What: Update Item Function. Why: useIteDraFun's commit and the new item's editor call this exactly like the real store action to apply a field patch. How: This merges patIteObj into whichever pooIteArr entry matches tarIdeStr.
 
-		togVacFun : ( tarIdeStr ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { // What: Toggle Vacation Function. Why: EntEdiCom's own Active switch calls this exactly like the real store action. How: This flips just the vacation field on the matching entry.
+		togVacFun : ( tarIdeStr ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { // What: Toggle Vacation Function. Why: useIteDraFun's commit sends a changed Active state through this exactly like the real store action. How: This flips just the vacation field on the matching entry.
 
 
 			...iteCurObj, // What: Current Item Spread. Why: Every other field stays as it was. How: This copies iteCurObj.
@@ -810,7 +810,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	*/
 
-	const staDraFun = ( tarIdeStr ) => { // What: Start Draft Function. Why: Switching straight from one open editor to another (or from the new-item form) needs to close whatever's currently open first, dropping its unsaved draft, before this edit can actually open. How: This closes an existing editor (with an explicit revert) or the new-item form, staging tarIdeStr to reopen once that closing animation finishes; otherwise it opens directly.
+	const staDraFun = ( tarIdeStr ) => { // What: Start Draft Function. Why: Switching straight from one open editor to another (or from the new-item form) needs to close whatever's currently open first, dropping its unsaved draft, before this edit can actually open. How: This closes an existing editor or the new-item form, staging tarIdeStr to reopen once that closing animation finishes; otherwise it opens directly.
 
 
 		if ( ediIteStr === tarIdeStr ) return; // What: Already Open Guard. Why: Re-clicking Edit on the exact same row that's already open should do nothing. How: This bails out when tarIdeStr matches the currently-open editor.
@@ -1494,7 +1494,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 												className={ cssModObj.conPilBut }
 
-												data-flip-item-key={ curConObj.id }
+												data-flip-item-key={ curConObj.id } // What: Flip Item Key Attribute. Why: The shared reorder animation slides each pill from its old spot to its new one. How: This gives useFliRaiFun the pill's own conditional id to track it by.
 												data-pill-select-active={ conSelStr === curConObj.id || undefined } // What: Pill Select Active Attribute. Why: The conditional to attach should stand out. How: This sets the presence-only attribute while this pill is chosen.
 
 												type='button'
@@ -2429,7 +2429,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 													} }
-												/>{ /* What: Entry Editor Component. Why: Editing a pool item reuses the exact item editor Today and Data use. How: This is passed the item's draft (or the pool item while closing), the picker, and its cancel, patch, and save handlers. */ }{ /* What: Editor Key Design Note. Why: See PicVieCom's own EntEdiCom for why a key on ediLivObj.id matters when switching directly between two items' editors. How: The key below gives each item's editor its own fresh instance. */ }
+												/>{ /* What: Entry Editor Component. Why: Editing a pool item reuses the exact item editor Today and Data use. How: This is passed the item's draft (or the pool item while closing), the picker, and its cancel, patch, and save handlers. */ }{ /* What: Editor Key Design Note. Why: See PicVieCom's own EntEdiCom for why a key on ediLivObj.id matters when switching directly between two items' editors. How: The key above gives each item's editor its own fresh instance. */ }
 
 
 											</div>

@@ -189,7 +189,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 	// #region Pool Row State
 
 	const [ shoDriBoo, setShoDriBoo ] = React.useState( picDatObj.mode !== 'random' && picDatObj.mode !== 'weighted' ); // What: Show Drift Boolean And Setter. Why: A non-random/weighted picker's pool rows can optionally reveal each item's own drift/readiness bar, hidden by default to keep the list simple. How: This starts true whenever the picker's mode isn't 'random' or 'weighted', and is toggled by the pool header's own "Show/Hide drift" link.
-	const [ newDraObj, setNewDraObj ] = React.useState( null );                                                         // What: New Draft Object And Setter. Why: Adding a new pool item is held as a LOCAL draft, not committed to the store, until Save, so a reload or tab-switch discards an in-progress item, matching the new-picker create flow. How: This is the editing item; draActObj (below) edits it locally, and cmtDraFun commits it via the real store actions on Save.
+	const [ newDraObj, setNewDraObj ] = React.useState( null );                                                         // What: New Draft Object And Setter. Why: Adding a new pool item is held as a LOCAL draft, not committed to the store, until Save, so a reload or tab-switch discards an in-progress item, matching the new-picker create flow. How: This is the editing item; patNewFun (below) edits it locally, and cmtDraFun commits it via the real store actions on Save.
 	const [ insSavStr, setInsSavStr ] = React.useState( null );                                                         // What: Insert Saved String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set by cmtDraFun and cleared once the row's own insert keyframe finishes.
 	const [ conDelStr, setConDelStr ] = React.useState( null );                                                         // What: Confirm Delete String And Setter. Why: Deleting a pool item asks for confirmation inline, in place of that row's own normal content. How: This holds the id currently showing its own delete-confirm row.
 	const [ conLeaStr, setConLeaStr ] = React.useState( null );                                                         // What: Confirm Leaving String And Setter. Why: Cancelling a delete confirmation needs its own out-animation before the row reverts to normal. How: This holds the id currently playing that leaving animation, cleared once it finishes.
@@ -871,7 +871,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 	}, [ touBusObj.redNonNum ] ); // What: Effect Dependency Array. Why: Only a genuine change to this exact bus value should re-run this synthesis. How: touBusObj.redNonNum is the sole trigger; deliberately excluded from a broader deps list since picker/staAppObj.items/todIdeSet are read fresh from the closure each time it fires.
 
 
-	const rerActFun = () => runPicFun(); // What: Reroll Action Function. Why: Re-roll needs a fresh pick straight from the settled one, keeping the stage on screen instead of flashing its idle view. How: This calls runPicFun, whose new run count remounts the strip into a fresh cycle.;
+	const rerActFun = () => runPicFun(); // What: Reroll Action Function. Why: Re-roll needs a fresh pick straight from the settled one, keeping the stage on screen instead of flashing its idle view. How: This calls runPicFun, whose new run count remounts the strip into a fresh cycle.
 
 
 	// #region senTodFun

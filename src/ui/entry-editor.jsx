@@ -91,7 +91,7 @@ import { useEscCanFun } from './escape-cancel.js';   // What: Use Escape Cancel 
  *
 */
 
-function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun, onPatIteFun, onSavEdiFun, picDatObj, picIteArr } ) { // What: Entry Editor Component. Why: This is the shared inline editor for a picker item, reused by the Today/Pickers/Data tabs so every one of them edits an item identically: a weight stepper for weighted/dynamic, a cadence range for ease-up/ease-down, an Active/Inactive toggle, and a confirm-gated delete. How: This renders the caller's own draft item and reports every change through onPatIteFun, leaving Save, Cancel and Delete to the caller.
+function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun, onPatIteFun, onSavEdiFun, picDatObj, picIteArr } ) {
 
 
 	// #region Delete Confirm
@@ -147,8 +147,8 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 	 *
 	 * @summary
 	 * NumSteCom's handler for the Soonest (or Shortest) day count. It clamps the
-	 * typed count, converts it back to a drift value and writes it to the item's
-	 * easeMax field.
+	 * typed count, converts it back to a drift value and writes it into the
+	 * draft's easeMax field through onPatIteFun.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -191,8 +191,8 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 	 *
 	 * @summary
 	 * NumSteCom's handler for the Latest (or Longest) day count. It clamps the
-	 * typed count, converts it back to a drift value and writes it to the item's
-	 * easeMin field.
+	 * typed count, converts it back to a drift value and writes it into the
+	 * draft's easeMin field through onPatIteFun.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
