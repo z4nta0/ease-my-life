@@ -638,7 +638,7 @@ function sumCadFun ( picCadObj ) {
  *
 */
 
-const tipMesFun = ( cadValStr, dayLabStr = 'Days' ) => { // What: Tip Message Function. Why: The "?" InfoTip on each cadence needs copy explaining how that cadence interacts with the Days control, and the control is named differently per surface. How: This switches on cadValStr (defaulted to 'daily'), interpolating dayLabStr into whichever message applies.
+const tipMesFun = ( cadValStr, dayLabStr = 'Days' ) => { // What: Tip Message Function. Why: The "?" InfTipCom on each cadence needs copy explaining how that cadence interacts with the Days control, and the control is named differently per surface. How: This switches on cadValStr (defaulted to 'daily'), interpolating dayLabStr into whichever message applies.
 
 
 	switch ( cadValStr || 'daily' ) { // What: Cadence Tip Switch. Why: Each cadence needs its own tip copy explaining how it interacts with the Days control, defaulted to 'daily' the same way every other function in this file defaults a missing cadence. How: This branches on cadValStr, falling through the shared monthly/yearly warning and defaulting to a plain hint for daily.

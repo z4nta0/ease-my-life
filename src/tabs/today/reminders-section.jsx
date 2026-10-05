@@ -58,7 +58,7 @@ import { useTasDraFun } from '../../ui/record-draft.js';            // What: Use
  * RemCarCom = Reminder Card Component
  *
  * @summary
- * Today: a single reminder row. Matches the picker EntryCard's own
+ * Today: a single reminder row. Matches the picker EntCarCom's own
  * structure: the whole row toggles done; the actions area (skip/edit)
  * is click-isolated. The schedule summary sits where a picker entry
  * shows its picker name. Also doubles as a mini-tour launcher card
@@ -366,7 +366,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 			onAnimationEnd={ onAniEndFun }
 			onClick={ onRowCliFun }
-		>{ /* What: Reminder Article Element. Why: This is the real reminder row's own root element, matching a picker EntryCard's structure. How: This marks itself done/fresh/editing per the 3 booleans above, plus whatever animation class extClaStr carries. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
+		>{ /* What: Reminder Article Element. Why: This is the real reminder row's own root element, matching a picker EntCarCom's structure. How: This marks itself done/fresh/editing per the 3 booleans above, plus whatever animation class extClaStr carries. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
 			<button
@@ -1008,7 +1008,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 	const remPreRef = React.useRef( remDonNum ); // What: Reminder Previous Reference. Why: The dash-bar animation below needs remDonNum's own PRIOR value to detect a genuine increase, not just its current value. How: This starts at remDonNum and is updated at the end of the effect below.
 
-	const [ remFreNum, setRemFreNum ] = React.useState( -1 ); // What: Reminder Fresh Number And Setter. Why: The dash-bar's own just-completed dash needs to know WHICH index to briefly animate, mirroring GroupHeader's own freshIdx. How: This is set by the effect below and cleared 520ms later.
+	const [ remFreNum, setRemFreNum ] = React.useState( -1 ); // What: Reminder Fresh Number And Setter. Why: The dash-bar's own just-completed dash needs to know WHICH index to briefly animate, mirroring GroHeaCom's own freshIdx. How: This is set by the effect below and cleared 520ms later.
 
 
 	React.useEffect( () => { // What: Dash Animation Effect. Why: The dash that just turned on should animate in, exactly like every other group's own progress bar, even though this section isn't rendered by that shared component. How: This detects a genuine increase in remDonNum, stages remFreNum, then clears it after the flourish's own duration.
@@ -1126,7 +1126,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 				<div className={ cssModObj.heaRigDiv }>{ /* What: Header Right Div Element. Why: The progress dash-bar and the add button read together on the header's own right side. How: This wraps both below. */ }
 
 
-					<div className={ cssModObj.groProDiv }>{ /* What: Group Progress Div Element. Why: This mirrors GroupHeader's own dash-bar for every other Today group, even though this section isn't rendered by that shared component. How: This renders one dash per remTotNum, marking the done ones and briefly flourishing the freshest one. */ }
+					<div className={ cssModObj.groProDiv }>{ /* What: Group Progress Div Element. Why: This mirrors GroHeaCom's own dash-bar for every other Today group, even though this section isn't rendered by that shared component. How: This renders one dash per remTotNum, marking the done ones and briefly flourishing the freshest one. */ }
 
 
 						{ [ ...Array( remTotNum ).keys() ].map( ( dasIndNum ) => ( // What: Dash List Render. Why: One dash is needed per item this section counts toward its own total. How: This maps the indices of a remTotNum-length array to one <i> per dash, keyed by its own index (stable here, since remTotNum only ever grows/shrinks at its own end).

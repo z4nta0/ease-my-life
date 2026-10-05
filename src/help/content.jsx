@@ -375,7 +375,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	{ // What: Delete / Cancel / Save Help Item. Why: This is the on-demand help tip for the Delete / Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .conEdiDiv scopes this to ConditionalEditor's own footer, its .conFooDiv wrapper class is shared with PickerControls' footer below, which lives in a differently-rooted tree (.conEdiDiv is unique to this one). Delete is only rendered when !isNew (see tab-data.jsx's ConditionalEditor), so :has(.btn--danger) splits this from dataCondFootNew below rather than always mentioning Delete.
+	{ // What: Delete / Cancel / Save Help Item. Why: This is the on-demand help tip for the Delete / Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .conEdiDiv scopes this to ConEdiCom's own footer. Delete is only rendered when !isaNewBoo (see conditionals-manager.jsx's ConEdiCom), so :has(delActBut) splits this from dataCondFootNew below rather than always mentioning Delete.
 
 
 		ideStr : 'dataCondFoot',
@@ -403,7 +403,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	{ // What: Cancel / Save Help Item. Why: This is the on-demand help tip for the Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // New (unsaved) conditionals never render a Delete button, see ConditionalEditor's `!isaNewBoo &&` guard, so this covers that footer state with its own Cancel/Save-only copy.
+	{ // What: Cancel / Save Help Item. Why: This is the on-demand help tip for the Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // New (unsaved) conditionals never render a Delete button, see ConEdiCom's `!isaNewBoo &&` guard, so this covers that footer state with its own Cancel/Save-only copy.
 
 
 		ideStr : 'dataCondFootNew',
@@ -466,7 +466,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle    : <>This controls whether one-time and recurring reminders are included in the day streak, completion ring or the Stats page. There are also controls to exclude those same types from weekends or holidays. Each type of reminder can be toggled independently.</>,
 		ideStr    : 'remControlsMatrix',
-		padYcoNum : 0, // padYcoNum:0, .remMatDiv sits flush against the Controls header above and the Items header below (no .ediBodDiv padding wrapper here, unlike PickerControls), so the default pad bled 8px into both.
+		padYcoNum : 0, // padYcoNum:0, .remMatDiv sits flush against the Controls header above and the Items header below (no .ediBodDiv padding wrapper here, unlike PicConCom), so the default pad bled 8px into both.
 		selStr    : '[data-element-name-hook~="remMatDiv"]',
 		titStr    : 'Reminders Settings'
 
@@ -656,7 +656,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	// #region Pickers Manager
 
-	// Each picker gets its own highlight, plus each of its own settings controls individually (PickerControls) and each of its items individually (reusing the shared item-editor entries below). Scoped via the direct .datLisDiv > .datCatSec > .catHeaHea chain since .catHeaHea is also reused by the Conditionals/Reminders managers' own outer headers (which render outside .datLisDiv entirely).
+	// Each picker gets its own highlight, plus each of its own settings controls individually (PicConCom) and each of its items individually (reusing the shared item-editor entries below). Scoped via the direct .datLisDiv > .datCatSec > .catHeaHea chain since .catHeaHea is also reused by the Conditionals/Reminders managers' own outer headers (which render outside .datLisDiv entirely).
 	{ // What: Picker Row Help Item. Why: This is the on-demand help tip for the Picker Row element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -723,7 +723,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	{ // What: Picker Type Help Item. Why: This is the on-demand help tip for the Picker Type element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to PickerControls' own "How it picks" group, ConditionalEditor has its own separate .conModDiv inside .conConDiv, which doesn't live under .conGroFie--picks.
+	{ // What: Picker Type Help Item. Why: This is the on-demand help tip for the Picker Type element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to PicConCom's own "How it picks" group, ConEdiCom has its own separate .conModDiv inside .conConDiv, which doesn't live under .conGroFie--picks.
 
 
 		bodEle    : <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
@@ -3018,7 +3018,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	// #region Editing A Picker Item
 
-	// This is reachable from Today's own Edit button too, not just the Data tab (DAT_HEL_ARR has its own copy of these same 6 items, scoped identically via .entEdiDiv, that class is shared verbatim by both tabs since it's literally the same EntEdiCom component either way). // Item Name is the one exception: Today's own name field lives right on the card (.entNamInp, EntryCard's own markup), not inside .entEdiDiv like Data's .rowNamInp does.
+	// This is reachable from Today's own Edit button too, not just the Data tab (DAT_HEL_ARR has its own copy of these same 6 items, scoped identically via .entEdiDiv, that class is shared verbatim by both tabs since it's literally the same EntEdiCom component either way). // Item Name is the one exception: Today's own name field lives right on the card (.entNamInp, EntCarCom's own markup), not inside .entEdiDiv like Data's .rowNamInp does.
 	{ // What: Item Name Help Item. Why: This is the on-demand help tip for the Item Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
