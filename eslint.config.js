@@ -18,8 +18,11 @@ import reactHooks from 'eslint-plugin-react-hooks'; // What: React Hooks. Why: H
  * The lint config. Every .js and .jsx file under src/ is checked by no-undef
  * and react/jsx-no-undef, with the browser's globals and __APP_VERSION__
  * declared, which catches a reference a rename missed. Every .jsx file also
- * gets the React Hooks plugin's recommended rules. No npm script runs it; it
- * runs only through npx eslint or an editor integration.
+ * gets the React Hooks plugin's recommended rules, minus the four React
+ * Compiler readiness rules, which only matter to an app built with the React
+ * Compiler, which this one isn't. Generated output (dist/, dev-dist/) is
+ * ignored. No npm script runs it; it runs only through npx eslint or an
+ * editor integration.
  *
  * Sections:
  *  - Constants
@@ -33,8 +36,10 @@ import reactHooks from 'eslint-plugin-react-hooks'; // What: React Hooks. Why: H
 
 // #region Constants
 
-const ESL_CON_ARR = [ // What: ESLint Config Array. Why: ESLint reads its flat config as an array of objects, each scoped to the files it lists. How: This holds the src/ undefined-reference config and the .jsx hooks config.
+const ESL_CON_ARR = [ // What: ESLint Config Array. Why: ESLint reads its flat config as an array of objects, each scoped to the files it lists. How: This holds the generated-output ignores, the src/ undefined-reference config, and the .jsx hooks config.
 
+
+	{ ignores : [ 'dev-dist/**', 'dist/**' ] }, // What: Ignores Object. Why: The build output and the PWA plugin's dev service worker are generated, not hand-written, so their lint results mean nothing. How: This global ignores entry skips both folders for every config below; two globs, since braces break ESLint's matching here.
 
 	{ // What: Source Config Object. Why: A reference a rename missed should fail lint everywhere under src/. How: This turns on the two undefined-reference rules for every .js and .jsx file there.
 
@@ -63,7 +68,19 @@ const ESL_CON_ARR = [ // What: ESLint Config Array. Why: ESLint reads its flat c
 		files           : [ '**/*.jsx' ],                                        // What: Files. Why: Hooks only appear in .jsx files. How: This matches every one of them.
 		languageOptions : { parserOptions : { ecmaFeatures : { jsx : true } } }, // What: Language Options. Why: These files contain JSX. How: This turns on JSX parsing.
 		plugins         : { react, 'react-hooks' : reactHooks },                 // What: Plugins. Why: The hooks rules come from the React Hooks plugin. How: This registers it beside the React plugin.
-		rules           : { ...reactHooks.configs.recommended.rules }            // What: Rules. Why: The plugin's recommended set is the standard hooks checks. How: This spreads it in.
+
+		rules : { // What: Rules. Why: The plugin's recommended set is the standard hooks checks, but four of its rules only judge whether a component suits the React Compiler, which this app doesn't use. How: This spreads the recommended set in, then turns those four off.
+
+
+			...reactHooks.configs.recommended.rules, // What: Recommended Rules Spread. Why: These are the standard hooks checks, rules-of-hooks and exhaustive-deps among them. How: This spreads the plugin's recommended set in first, so the overrides below win.
+
+			'react-hooks/preserve-manual-memoization' : 'off', // What: Preserve Manual Memoization Rule. Why: It only reports where the compiler would skip a component. How: This turns it off.
+			'react-hooks/purity'                      : 'off', // What: Purity Rule. Why: It flags impure calls the compiler can't place, including ones that only run in event handlers. How: This turns it off.
+			'react-hooks/refs'                        : 'off', // What: Refs Rule. Why: The app reads refs during render on purpose, for latest-value refs and frozen editor rows, which only conflicts with the compiler. How: This turns it off.
+			'react-hooks/set-state-in-effect'         : 'off'  // What: Set State In Effect Rule. Why: Syncing or measuring into state inside an effect is a working React pattern that only costs an extra render outside the compiler. How: This turns it off.
+
+
+		}
 
 
 	}
