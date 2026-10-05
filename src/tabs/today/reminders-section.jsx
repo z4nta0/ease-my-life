@@ -596,7 +596,7 @@ function InlEdiCom ( { draTasObj, onCloEdiFun, onDelTasFun, onPatTasFun, onSavTa
 				onCanTasFun={ onCloEdiFun }
 				onDelTasFun={ onDelTasFun }
 				onDonTasFun={ onSavTasFun }
-			/>{ /* What: Editor Foot Component. Why: This is the shared Cancel/Save/Delete footer. How: Cancel just closes, dropping the draft; Save commits it through onSavTasFun. */ }
+			/>{ /* What: Editor Footer Component. Why: This is the shared Cancel/Save/Delete footer. How: Cancel just closes, dropping the draft; Save commits it through onSavTasFun. */ }
 
 
 		</div>

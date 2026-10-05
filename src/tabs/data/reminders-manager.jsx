@@ -1367,7 +1367,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 																} }
 																onDonTasFun={ () => kepCloFun( curTasObj.id ) }
-															/>{ /* What: Editor Foot Component. Why: This is the shared Cancel/Save/Delete footer, same component InlEdiCom uses on Today. How: Cancel drops the draft (a new reminder after its collapse), Delete removes the reminder after its collapse, and Save keeps the draft through kepCloFun. */ }
+															/>{ /* What: Editor Footer Component. Why: This is the shared Cancel/Save/Delete footer, same component InlEdiCom uses on Today. How: Cancel drops the draft (a new reminder after its collapse), Delete removes the reminder after its collapse, and Save keeps the draft through kepCloFun. */ }
 
 
 

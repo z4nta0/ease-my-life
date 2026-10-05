@@ -37,7 +37,7 @@ import { useEscCanFun } from './escape-cancel.js'; // What: Use Escape Cancel Fu
 // #region EdiFooCom
 
 /**
- * EdiFooCom = Editor Foot Component
+ * EdiFooCom = Editor Footer Component
  *
  * @summary
  * The shared Cancel/Save/Delete footer for a reminder's editor, used by both
