@@ -229,21 +229,23 @@ const APP_FEA_ARR = [ // What: App Feature Array. Why: Every App Feature tutoria
 
 
 
+// #region PAG_LAB_OBJ
+
 /**
  * PAG_LAB_OBJ = Page Label Object
  *
  * @summary
- * Display label per `page` id, the same 5 tabs as app.jsx's own TABS array,
+ * Display label per `pagStr` id, the same 5 tabs as app.jsx's own TAB_OBJ_ARR,
  * which isn't exported, so this stays self-contained rather than reaching into
- * that file for it. Used for the launcher card's own kicker text (see tab-
- * today.jsx's AppFeatureCard): the page each feature's icon/nav-click step
- * belongs to.
+ * that file for it. Used for the launcher card's own kicker text (see
+ * app-feature-card.jsx's AppFeaCom): the page each feature's icon/nav-click
+ * step belongs to.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const PAG_LAB_OBJ = { // What: Page Label Object. Why: tab-today.jsx's own AppFeatureCard reads this by a feature's own page id for its kicker text. How: This is looked up by APP_FEA_ARR entries' own page field wherever this file or tab-today.jsx needs the real tab's display name.
+const PAG_LAB_OBJ = { // What: Page Label Object. Why: app-feature-card.jsx's own AppFeaCom reads this by a feature's own page id for its kicker text. How: This is looked up by APP_FEA_ARR entries' own pagStr field wherever this file or app-feature-card.jsx needs the real tab's display name.
 
 
 	data     : 'Data',     // What: Data Label. Why: This names the Data tab for any feature whose own page is 'data'. How: This is read back as PAG_LAB_OBJ.data.
@@ -255,7 +257,11 @@ const PAG_LAB_OBJ = { // What: Page Label Object. Why: tab-today.jsx's own AppFe
 
 };
 
+// #endregion PAG_LAB_OBJ
 
+
+
+// #region TIP_STE_OBJ
 
 /**
  * TIP_STE_OBJ = Tip Step Object
@@ -283,6 +289,8 @@ const TIP_STE_OBJ = { // What: Tip Step Object. Why: FeaTipCom's own GuiTouCom n
 
 
 };
+
+// #endregion TIP_STE_OBJ
 
 // #endregion Constants
 
