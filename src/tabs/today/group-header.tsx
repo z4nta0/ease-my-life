@@ -139,7 +139,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 	const [ draNamStr, setDraNamStr ] = React.useState( groNamStr ); // What: Draft Name String And Setter. Why: The inline field edits a local draft, never groNamStr directly, until it is explicitly committed. How: This starts at groNamStr and is freely typed into while ediOpeBoo is true.
 	const [ namErrStr, setNamErrStr ] = React.useState( '' );        // What: Name Error String And Setter. Why: Only set when valNamFun rejects a commit (e.g. a Page Tours rename colliding with an existing group name), since it has nothing to merge into, unlike onRenGroFun, so it blocks instead of offering a merge. How: This keeps the field open, un-committed, until the user edits again or cancels.
 
-	const namInpRef = React.useRef( null ); // What: Name Input Reference. Why: Opening the field needs to both focus and select its own text. How: This is attached to the input's own ref prop below.
+	const namInpRef = React.useRef< HTMLInputElement | null >( null ); // What: Name Input Reference. Why: Opening the field needs to both focus and select its own text. How: This is attached to the input's own ref prop below.
 
 
 	React.useEffect( () => { // What: Explicit Focus Effect. Why: autoFocus's own default scroll-into-view would fight a guided-tour spotlight already mid-positioning this same input, since the tour's own scroll-to-target math runs a tick later and sees this as a moving target. How: This focuses namInpRef with preventScroll instead of relying on autoFocus, then selects its text.

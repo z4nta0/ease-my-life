@@ -99,6 +99,7 @@ import type { TodRowTyp } from './group-entries.ts';        // What: Today Row T
 
 // #region Components
 
+type CelParTyp = { angNum? : number, delNum : number, disNum? : number, ideNum : number, opaStr? : string, posXcoNum? : number, posYcoNum? : number, rotNum? : number }; // What: Celebration Particle Type. Why: The confetti and sparkle celebrations each roll a batch of pieces into one list, read by whichever style is playing. How: Every piece has a delay and a key, a confetti piece adds its angle, distance, opacity, and spin, and a sparkle adds its position.
 type TtdProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, onStaFeaFun : ( ideStr : string ) => void, onStaPagFun : ( ideStr : string ) => void, onStaPicFun : ( ideStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Today-Component Props Type. Why: The Today tab reads and edits the whole app state, navigates to other tabs, and starts tours that run at the app level. How: This types TabTodCom's props, named Ttd since Ttc already belongs to TabStaCom.
 
 // #region TabTodCom
@@ -144,7 +145,7 @@ type TtdProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
 function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPagFun, onStaPicFun, staAppObj } : TtdProTyp ) : React.JSX.Element {
 
 
-	const todBodRef = React.useRef( null ); // What: Today Body Reference. Why: Today does not share app.tsx's shared .maiInnDiv wrapper (see .todBodDiv's own comment below), so it measures/caches its own flourish instance instead of reusing a ref threaded down from there. How: This is attached to the .todBodDiv div's own ref prop below and read by BacFloCom to measure it.
+	const todBodRef = React.useRef< HTMLDivElement | null >( null ); // What: Today Body Reference. Why: Today does not share app.tsx's shared .maiInnDiv wrapper (see .todBodDiv's own comment below), so it measures/caches its own flourish instance instead of reusing a ref threaded down from there. How: This is attached to the .todBodDiv div's own ref prop below and read by BacFloCom to measure it.
 
 
 
@@ -672,8 +673,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	const [ jusCheStr, setJusCheStr ] = React.useState< string | null >( null ); // What: Just-Checked String And Setter. Why: A just-completed row needs a brief "fresh" cue, keyed by its own eid. How: This is set by hanCheFun below and cleared 700ms later.
 
-	const rinEleRef = React.useRef( null );                                     // What: Ring Element Reference. Why: The celebration effect below needs a direct DOM handle to trigger CSS classes on. How: This is attached to the .ring div's own ref prop below.
-	const stkEleRef = React.useRef( null );                                     // What: Streak Element Reference. Why: The streak-pulse effect below needs a direct DOM handle to trigger its own CSS class on. How: This is attached to the .streak div's own ref prop below.
+	const rinEleRef = React.useRef< HTMLDivElement | null >( null );            // What: Ring Element Reference. Why: The celebration effect below needs a direct DOM handle to trigger CSS classes on. How: This is attached to the .ring div's own ref prop below.
+	const stkEleRef = React.useRef< HTMLDivElement | null >( null );            // What: Streak Element Reference. Why: The streak-pulse effect below needs a direct DOM handle to trigger its own CSS class on. How: This is attached to the .streak div's own ref prop below.
 	const preDonRef = React.useRef( donCouNum );                                // What: Previous Done Reference. Why: The celebration effect needs last render's own donCouNum to detect a genuine rise. How: This starts at the initial donCouNum and is overwritten at the end of that same effect.
 	const preFulRef = React.useRef( totCouNum > 0 && donCouNum === totCouNum ); // What: Previous Full Reference. Why: The celebration effect needs last render's own completion state to detect a genuine 0-to-1 transition into "all done". How: This starts at the initial completion state and is overwritten at the end of that same effect.
 	const preClaRef = React.useRef( !!staAppObj.today.streakClaimed );          // What: Previous Claimed Reference. Why: The streak-pulse effect needs last render's own claimed state to detect a genuine false-to-true transition. How: This starts at the initial claimed state and is overwritten at the end of that same effect.
@@ -702,7 +703,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	const celStyStr = staAppObj.appearance.completionStyle; // What: Celebration Style String. Why: Every branch below needs this same resolved celebration style. How: This reads staAppObj.appearance.completionStyle.
 
-	const [ parIteArr, setParIteArr ] = React.useState( [] ); // What: Particle Item Array And Setter. Why: See the doc comment just above. How: This is populated by the celebration effect below and cleared once the celebration ends.
+	const [ parIteArr, setParIteArr ] = React.useState< CelParTyp[] >( [] ); // What: Particle Item Array And Setter. Why: See the doc comment just above. How: This is populated by the celebration effect below and cleared once the celebration ends.
 
 	// #endregion Celebration Particles
 
@@ -725,9 +726,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const [ celRecObj, setCelRecObj ] = React.useState( null ); // What: Celebration Rect Object And Setter. Why: See the doc comment just above. How: This is computed by the celebration effect below, right before the overlay portal renders from it.
+	const [ celRecObj, setCelRecObj ] = React.useState< { height : number, left : number, top : number, width : number } | null >( null ); // What: Celebration Rect Object And Setter. Why: See the doc comment just above. How: This is computed by the celebration effect below, right before the overlay portal renders from it.
 
-	const carAreRef = React.useRef( null ); // What: Card Area Reference. Why: The celebration effect needs a DOM handle on the cards column itself to measure celRecObj's own horizontal bounds. How: This is attached to the .todGroDiv div's own ref prop further down.
+	const carAreRef = React.useRef< HTMLDivElement | null >( null ); // What: Card Area Reference. Why: The celebration effect needs a DOM handle on the cards column itself to measure celRecObj's own horizontal bounds. How: This is attached to the .todGroDiv div's own ref prop further down.
 
 	// #endregion Celebration Overlay Rect
 
@@ -981,8 +982,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const heaEleRef = React.useRef( null ); // What: Header Element Reference. Why: This effect needs a direct DOM handle on the sticky header to measure it. How: This is attached to the <header> element's own ref prop further down.
-	const raiEleRef = React.useRef( null ); // What: Rail Element Reference. Why: This effect needs a direct DOM handle on the group rail to measure it when it stacks horizontally. How: This is attached to the <aside> rail's own ref prop further down.
+	const heaEleRef = React.useRef< HTMLElement | null >( null ); // What: Header Element Reference. Why: This effect needs a direct DOM handle on the sticky header to measure it. How: This is attached to the <header> element's own ref prop further down.
+	const raiEleRef = React.useRef< HTMLElement | null >( null ); // What: Rail Element Reference. Why: This effect needs a direct DOM handle on the group rail to measure it when it stacks horizontally. How: This is attached to the <aside> rail's own ref prop further down.
 
 
 	React.useEffect( () => { // What: Sticky Offset Effect. Why: See the doc comment just above. How: This measures both elements on mount, on their own resize, and on window resize, publishing 3 CSS custom properties onto the tab root.
@@ -995,7 +996,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		const tabCurEle = heaCurEle.closest( '[data-element-name-hook~="todTabDiv"]' ); // What: Tab Current Element. Why: The 3 CSS custom properties this effect publishes must land on the tab's own root, not the header itself. How: This walks up from heaCurEle to its nearest todTabDiv hook ancestor.
+		const tabCurEle = heaCurEle.closest< HTMLElement >( '[data-element-name-hook~="todTabDiv"]' ); // What: Tab Current Element. Why: The 3 CSS custom properties this effect publishes must land on the tab's own root, not the header itself. How: This walks up from heaCurEle to its nearest todTabDiv hook ancestor.
 
 
 		if ( !tabCurEle ) return; // What: No Tab Root Guard. Why: Without the tab root there is nowhere to publish the measured values. How: This bails out of the effect early when tabCurEle is missing.
@@ -1486,7 +1487,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const secRefObj = React.useRef< Record< string, HTMLElement | null > >( {} ); // What: Section Reference Object. Why: The scroll-spy effect below needs a live handle on every rendered group/Reminders/Page-Tours section element. How: This is populated by each section's own ref callback further down and read here.
 	const maiScrRef = React.useRef< HTMLDivElement | null >( null );              // What: Main Scroll Reference. Why: Several handlers (scroll spy, generate's own scroll-to-top, jumGroFun) all need a handle on the shared scroll layout wrapper. How: This is attached to the .todLayDiv div's own ref prop further down.
 	const skiSpyRef = React.useRef( false );                                      // What: Skip Spy Reference. Why: A programmatic scroll (jumGroFun, or generate's own scroll-to-top) must not have the scroll-spy effect immediately fight back and reassign actGroStr mid-animation. How: This is set true right before such a scroll starts and cleared shortly after it settles.
-	const pinGroRef = React.useRef( null );                                       // What: Pinned Group Reference. Why: See the doc comment just above. How: This is set by jumGroFun and read/cleared by the scroll-spy effect below.
+	const pinGroRef = React.useRef< string | null >( null );                      // What: Pinned Group Reference. Why: See the doc comment just above. How: This is set by jumGroFun and read/cleared by the scroll-spy effect below.
 
 
 	React.useEffect( () => { // What: Scroll Spy Effect. Why: See the doc comment just above. How: This computes, on every scroll, which section's own header sits closest to (without crossing) the sticky offset line, honoring any pinned bottom-cluster group first.
@@ -1724,13 +1725,13 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const [ ediModBoo, setEdiModBoo ] = React.useState( false ); // What: Edit Mode Boolean And Setter. Why: This is the single source of truth for whether the list is currently in Edit Mode. How: This is toggled by togModFun/opeModFun/cloModFun below.
-	const [ banCloBoo, setBanCloBoo ] = React.useState( false ); // What: Banner Closing Boolean And Setter. Why: See the doc comment just above. How: This is set true right when Edit Mode ends and cleared once the collapse animation finishes.
-	const [ merProObj, setMerProObj ] = React.useState( null );  // What: Merge Prompt Object And Setter. Why: A pending group-rename that would MERGE into an existing group is held here until the user confirms. How: This is set by reqRenFun below and read by GroHeaCom's own merPenObj prop.
+	const [ ediModBoo, setEdiModBoo ] = React.useState( false );                                         // What: Edit Mode Boolean And Setter. Why: This is the single source of truth for whether the list is currently in Edit Mode. How: This is toggled by togModFun/opeModFun/cloModFun below.
+	const [ banCloBoo, setBanCloBoo ] = React.useState( false );                                         // What: Banner Closing Boolean And Setter. Why: See the doc comment just above. How: This is set true right when Edit Mode ends and cleared once the collapse animation finishes.
+	const [ merProObj, setMerProObj ] = React.useState< { from : string, to : string } | null >( null ); // What: Merge Prompt Object And Setter. Why: A pending group-rename that would MERGE into an existing group is held here until the user confirms. How: This is set by reqRenFun below and read by GroHeaCom's own merPenObj prop.
 
-	const groDndRef = React.useRef< HTMLDivElement | null >( null ); // What: Group Dnd Reference. Why: groDraFun below needs a handle on the groups wrapper to scope the drag container to. How: This is attached to the .groDraDiv div's own ref prop further down.
-	const shoOrdRef = React.useRef( [] );                            // What: Shown Order Reference. Why: Drop indices from REO_NAM_OBJ are DOM positions, so they must resolve against whatever order the content column was LAST rendered from, not the unpadded bloOrdArr. How: This is written just before the return JSX below and read by groDraFun's own onDroOrdFun.
-	const ordSnaRef = React.useRef( null );                          // What: Order Snapshot Reference. Why: A snapshot taken on entering Edit Mode lets Cancel/Escape discard every drag made during the whole session. How: This is populated by opeModFun and read/cleared by cloModFun.
+	const groDndRef = React.useRef< HTMLDivElement | null >( null );                                             // What: Group Dnd Reference. Why: groDraFun below needs a handle on the groups wrapper to scope the drag container to. How: This is attached to the .groDraDiv div's own ref prop further down.
+	const shoOrdRef = React.useRef< string[] >( [] );                                                            // What: Shown Order Reference. Why: Drop indices from REO_NAM_OBJ are DOM positions, so they must resolve against whatever order the content column was LAST rendered from, not the unpadded bloOrdArr. How: This is written just before the return JSX below and read by groDraFun's own onDroOrdFun.
+	const ordSnaRef = React.useRef< { groArr : string[], picObj : Record< string, string[] > } | null >( null ); // What: Order Snapshot Reference. Why: A snapshot taken on entering Edit Mode lets Cancel/Escape discard every drag made during the whole session. How: This is populated by opeModFun and read/cleared by cloModFun.
 
 
 	// #region reqRenFun
@@ -2008,8 +2009,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const [ leaTasSet, setLeaTasSet ] = React.useState( () => new Set< string >() ); // What: Leaving Task Set And Setter. Why: A completed one-time reminder a Generate is about to purge needs the same played-out removal animation, on the reminder card itself, before actStoObj.setEntFun actually removes it. How: This is staged by genLisFun below and cleared right after, and is passed straight through to RemSecCom as its own leaTasSet prop.
 	const [ ariTasSet, setAriTasSet ] = React.useState( () => new Set< string >() ); // What: Arriving Task Set And Setter. Why: A reminder a Generate just made newly visible (its day arrived but the generator hadn't run yet) needs to play an entrance instead of just popping in. How: This is staged by genLisFun below and cleared shortly after, and is passed straight through to RemSecCom as its own ariTasSet prop.
 
-	const genBusRef = React.useRef( false ); // What: Generate Busy Reference. Why: genLisFun's own re-entrancy guard needs a value that updates synchronously, unlike React state. How: This is set true at genLisFun's own start and false at its own end.
-	const genMapRef = React.useRef( null );  // What: Generate Map Reference. Why: The departing-entry computation inside genLisFun needs to read the live generate map synchronously, without waiting for a state update to land. How: This mirrors genMapObj, written by genLisFun alongside every setGenMapObj call.
+	const genBusRef = React.useRef( false );                                      // What: Generate Busy Reference. Why: genLisFun's own re-entrancy guard needs a value that updates synchronously, unlike React state. How: This is set true at genLisFun's own start and false at its own end.
+	const genMapRef = React.useRef< Record< string, GenSloTyp > | null >( null ); // What: Generate Map Reference. Why: The departing-entry computation inside genLisFun needs to read the live generate map synchronously, without waiting for a state update to land. How: This mirrors genMapObj, written by genLisFun alongside every setGenMapObj call.
 
 	const genTotNum = 3200; // What: Generate Total Number. Why: The whole reel-cascade animation shares this one fixed total duration; per-step pace flexes with how many slots are in the list (8 slots -> 400ms each; fewer slots -> slower and savorable, more -> quicker), so the whole cascade always wraps at this exact total. How: This is divided by ordSloArr.length inside genLisFun below.
 
@@ -3136,8 +3137,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const genCarRef = React.useRef( null );                         // What: Generate Card Reference. Why: The scroll effect below needs a direct DOM handle on the Generate card itself. How: This is attached to the card's own ref prop further down.
-	const scrPenBoo = !!staAppObj.onboarding.generateScrollPending; // What: Scroll Pending Boolean. Why: See the doc comment just above. How: This reads staAppObj.onboarding.generateScrollPending.
+	const genCarRef = React.useRef< HTMLDivElement | null >( null ); // What: Generate Card Reference. Why: The scroll effect below needs a direct DOM handle on the Generate card itself. How: This is attached to the card's own ref prop further down.
+	const scrPenBoo = !!staAppObj.onboarding.generateScrollPending;  // What: Scroll Pending Boolean. Why: See the doc comment just above. How: This reads staAppObj.onboarding.generateScrollPending.
 
 
 	React.useEffect( () => { // What: Generate Card Scroll Effect. Why: See the doc comment just above. How: This waits two animation frames for layout to settle, scrolls the Generate card under the sticky header, then clears the pending flag.
