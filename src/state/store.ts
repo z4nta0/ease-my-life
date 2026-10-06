@@ -1996,7 +1996,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * addPicFun's own replaceId, used when a reminder mini-tour is
 		 * replayed after already finishing once (see reminders-section.tsx's
 		 * own comAddFun, which looks up the prior real task via
-		 * createdFromSample).
+		 * createdFromSample). A new reminder due today reopens a fully done
+		 * day, so the streak is reconciled through stkSynFun.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -2041,7 +2042,21 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 
-			return { ...curStaObj, tasks : nexTasArr }; // What: Next State Return. Why: The caller needs tasks replaced on a fresh state. How: This spreads curStaObj with tasks replaced by nexTasArr.
+			const { stkClaBoo, stkValNum } = stkSynFun( curStaObj, curStaObj.today.entries, nexTasArr ); // What: Streak Reconcile. Why: A new reminder due today means a fully done day isn't done anymore, so its streak point must be given back. How: This reconciles the streak against the tasks with the new one added.
+
+
+
+			return { // What: Next State Return. Why: The caller needs the tasks and the reconciled streak written onto a fresh state. How: This spreads curStaObj with streak, tasks, and today replaced.
+
+
+				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
+
+				streak : stkValNum,                                        // What: Streak. Why: The persisted streak count must reflect the reconciled verdict. How: This is stkValNum, from stkSynFun.
+				tasks  : nexTasArr,                                        // What: Tasks. Why: The added or replaced task lands here. How: This is nexTasArr.
+				today  : { ...curStaObj.today, streakClaimed : stkClaBoo } // What: Today. Why: Today's own claimed flag must reflect the reconciled verdict. How: This spreads curStaObj.today with streakClaimed replaced.
+
+
+			};
 
 
 		} ),
@@ -3252,7 +3267,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * (Pickers-tab spin) normally passes the full staged pick result,
 		 * falling back to the ease-down default (make this item active,
 		 * recharge the previously-active one on done) only when it
-		 * doesn't.
+		 * doesn't. The new entry starts unchecked, so a day that was fully
+		 * done gives its streak point back through stkSynFun.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -3333,13 +3349,18 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 
-			return { // What: Next State Return. Why: The caller needs the new entry and its own log row written onto a fresh state. How: This spreads curStaObj with today.entries and pickLog replaced.
+			const { stkClaBoo, stkValNum } = stkSynFun( curStaObj, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: A new, unchecked entry means a fully done day isn't done anymore, so its streak point must be given back. How: This reconciles the streak against the entries with the new one added.
+
+
+
+			return { // What: Next State Return. Why: The caller needs the new entry, its own log row, and the reconciled streak written onto a fresh state. How: This spreads curStaObj with pickLog, streak, and today replaced.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
 
-				pickLog : nexLogArr,                                  // What: Pick Log. Why: The manual send's own log row must land in state. How: This is nexLogArr.
-				today   : { ...curStaObj.today, entries : nexEntArr } // What: Today. Why: The new (or replacing) entry must land in today's own list. How: This spreads curStaObj.today with entries replaced by nexEntArr.
+				pickLog : nexLogArr,                                                             // What: Pick Log. Why: The manual send's own log row must land in state. How: This is nexLogArr.
+				streak  : stkValNum,                                                             // What: Streak. Why: The persisted streak count must reflect the reconciled verdict. How: This is stkValNum, from stkSynFun.
+				today   : { ...curStaObj.today, entries : nexEntArr, streakClaimed : stkClaBoo } // What: Today. Why: The new (or replacing) entry and today's claimed flag must land together. How: This spreads curStaObj.today with entries and streakClaimed replaced.
 
 
 			};

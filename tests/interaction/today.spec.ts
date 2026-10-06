@@ -8,6 +8,7 @@ import { opeFixFun } from '../support/app.ts';     // What: Open Fixture Functio
 import { reaStaFun } from '../support/storage.ts'; // What: Read State Function. Why: Flows compare saved state before and after. How: This reads it.
 import { recAniFun } from '../support/watch.ts';   // What: Record Animations Function. Why: Flows confirm their animations played. How: This starts recording.
 import { seeAniFun } from '../support/watch.ts';   // What: Seen Animation Function. Why: Flows confirm their animations played. How: This checks the record.
+import { selTabFun } from '../support/app.ts';     // What: Select Tab Function. Why: The streak test pushes an item from the Pickers tab. How: This switches tabs.
 import { test      } from '@playwright/test';      // What: Test. Why: Each flow is its own test. How: This declares them.
 import { waiStaFun } from '../support/storage.ts'; // What: Wait State Function. Why: Saves land a moment after each action. How: This waits for them.
 import { watErrFun } from '../support/watch.ts';   // What: Watch Errors Function. Why: A flow fails on any page error. How: This collects them.
@@ -24,16 +25,17 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * today.spec.ts = Today Spec
  *
  * @summary
- * Drives every control on the Today tab on real data and checks each one
- * both ways: the saved state in IndexedDB changed as it should, and the
- * animation tied to it played. Checking a card off pulses the progress ring
- * and is undone by checking it again; finishing every card celebrates, and
- * bumps the streak when that claims the day. Re-rolling spins the card and
- * rejects its pick-log row; skipping slides it out and removes it. The item
- * editor writes only on Save. Reminders can be added, renamed, and skipped.
- * Edit Mode opens and its Cancel closes it without reordering anything;
- * Regenerate rebuilds the list; groups can be renamed in Edit Mode; and the
- * day log opens. Every flow also fails on any page or console error.
+ * Drives every control on the Today tab on real data and checks each one both
+ * ways: the saved state in IndexedDB changed as it should, and the animation
+ * tied to it played. Checking a card off pulses the progress ring and is
+ * undone by checking it again; finishing every card celebrates, and bumps the
+ * streak when that claims the day, and pushing an item onto the finished day
+ * gives that streak point back and untints the badge. Re-rolling spins the
+ * card and rejects its pick-log row; skipping slides it out and removes it.
+ * The item editor writes only on Save. Reminders can be added, renamed, and
+ * skipped. Edit Mode opens and its Cancel closes it without reordering
+ * anything; Regenerate rebuilds the list; groups can be renamed in Edit Mode;
+ * and the day log opens. Every flow also fails on any page or console error.
  *
  * Sections:
  *  - Constants
@@ -237,6 +239,66 @@ test( 'finishing every card celebrates', async ( { page : curPagObj } ) => { // 
 
 
 	if ( !preStaObj.today.streakClaimed && finStaObj.today.streakClaimed ) expect( await seeAniFun( curPagObj, 'todStrDiv--bumped' ), 'streak bump' ).toBe( true ); // What: Streak Bump Assertion. Why: The streak badge bumps only when the day's claim goes from false to true, which happens once every card is done. How: This checks its class appeared when this run made the claim.
+
+
+} );
+
+
+
+test( 'pushing an item onto a finished day gives the streak back', async ( { page : curPagObj } ) => { // What: Streak Reopen Test. Why: A day that gains an unchecked card is no longer finished, so its streak point must be given back. How: This finishes the day, sends an item from the Pickers tab, and checks the streak drops back.
+
+
+	for ( let cliNumVal = 0; cliNumVal < 60 && await curPagObj.locator( `${ ENT_CAR_STR } ${ UNC_BUT_STR }, ${ REM_CAR_STR } ${ UNC_BUT_STR }` ).count(); cliNumVal++ ) { // What: Check-Off Loop. Why: The day must be finished first. How: This clicks the next unchecked card until none remain.
+
+
+		await curPagObj.locator( `${ ENT_CAR_STR } ${ UNC_BUT_STR }, ${ REM_CAR_STR } ${ UNC_BUT_STR }` ).first().click(); // What: Next Click Call. Why: Each card is checked off in turn. How: This clicks the first unchecked one.
+
+
+
+		await curPagObj.waitForTimeout( 150 ); // What: Click Gap Wait. Why: Each click re-renders the list. How: This waits a moment.
+
+
+	}
+
+
+
+	const finStaObj = await waiStaFun( curPagObj, ( staAppObj ) => !!staAppObj.today.streakClaimed, 'streak claimed' ); // What: Finished State Object. Why: The streak point is given back from the finished day's count. How: This waits for the claim to reach storage.
+
+
+
+	await expect( curPagObj.locator( '[data-element-name-hook~="todStrDiv"]' ), 'badge tinted' ).toHaveAttribute( 'data-streak-claim-active' ); // What: Tinted Badge Assertion. Why: A claimed day keeps the streak badge tinted. How: This checks the badge carries the claim attribute.
+
+
+
+	await selTabFun( curPagObj, 'picker' ); // What: Pickers Tab Call. Why: Items are pushed to Today from the Pickers tab. How: This switches to it.
+
+
+
+	await curPagObj.locator( '[data-element-name-hook~="picOneBut"]' ).click(); // What: Pick Click Call. Why: Pick One chooses the item to push. How: This clicks it.
+
+
+
+	await expect( curPagObj.locator( '[data-element-name-hook~="picSenBut"]' ), 'send button' ).toBeEnabled( { timeout : 15000 } ); // What: Send Ready Assertion. Why: Send unlocks once the reel settles. How: This waits for it to enable.
+
+
+
+	await curPagObj.locator( '[data-element-name-hook~="picSenBut"]' ).click(); // What: Send Click Call. Why: Sending pushes an unchecked item onto Today. How: This clicks it.
+
+
+
+	const reoStaObj = await waiStaFun( curPagObj, ( staAppObj ) => !staAppObj.today.streakClaimed, 'streak given back' ); // What: Reopened State Object. Why: The pushed item reopens the day. How: This waits for the claim to clear in storage.
+
+
+
+	expect( reoStaObj.streak, 'streak count' ).toBe( Math.max( 0, finStaObj.streak - 1 ) ); // What: Streak Count Assertion. Why: Reopening the day gives back exactly the point it claimed. How: This expects one less than the finished day's streak.
+
+
+
+	await selTabFun( curPagObj, 'today' ); // What: Today Tab Call. Why: The streak badge lives on Today. How: This switches back to it.
+
+
+
+	await expect( curPagObj.locator( '[data-element-name-hook~="todStrDiv"]' ), 'badge untinted' ).not.toHaveAttribute( 'data-streak-claim-active' ); // What: Untinted Badge Assertion. Why: A reopened day drops the badge's tint. How: This checks the claim attribute is gone.
 
 
 } );
