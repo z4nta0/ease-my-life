@@ -769,7 +769,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 		return () => clearTimeout( scrTimNum ); // What: Effect Cleanup Return. Why: A stale scroll must not fire after this effect re-runs (e.g. a different row opens) or the component unmounts. How: This cancels scrTimNum.
 
 
-	}, [ opeIdeStr ] ); // What: Effect Dependency Array. Why: This scroll only ever needs to reconsider itself when which row is open actually changes. How: opeIdeStr is the single value this effect's own guard is built around.
+	}, [ opeIdeStr, penConObj ] ); // What: Effect Dependency Array. Why: This scroll only ever needs to reconsider itself when which row is open, or whether it's a pending new one, actually changes. How: opeIdeStr and penConObj are set together when a new conditional opens, and a re-run after penConObj clears returns at the guard.
 
 	// #endregion New Row Scroll
 

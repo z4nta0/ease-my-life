@@ -322,7 +322,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 		}
 
 
-	}, [ helOpeBoo ] ); // What: Effect Dependency Array. Why: This only ever needs to reconsider itself when help mode's own on/off state changes. How: helOpeBoo is the single value this effect's own guard is built around.
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: With help mode off, every state change would re-run the clear helpers, whose deletes change the state again, in a loop, and with it on, a sample the user deleted would come back. How: staAppObj is read from the render where help mode toggled.
+	}, [ actStoObj, helOpeBoo ] ); // What: Effect Dependency Array. Why: This only ever needs to reconsider itself when help mode's own on/off state changes. How: helOpeBoo is the value this effect's own guard is built around, and actStoObj never changes identity.
 
 
 	React.useEffect( () => () => { // What: Unmount Cleanup Effect. Why: Navigating away from this tab entirely must not leave help mode's own sample data behind. How: This returns a cleanup that clears both sample sets, run once on unmount.
@@ -332,7 +333,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 		cleTasFun( actStoObj ); // What: Clear Tasks Call. Why: Leaving the tab must not strand sample reminders. How: This removes them on unmount.
 
 
-	}, [] ); // What: Effect Dependency Array. Why: This cleanup only needs to run once, on unmount. How: An empty array means the returned cleanup runs only when the tab goes away.
+	}, [ actStoObj ] ); // What: Effect Dependency Array. Why: This cleanup only needs to run once, on unmount. How: actStoObj never changes identity, so the returned cleanup still runs only when the tab goes away.
 
 	// #endregion Help Mode
 
@@ -557,7 +558,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	const [ curScoStr, setCurScoStr ] = React.useState( 'all' ); // What: Current Scope String And Setter. Why: The Show row's own active box needs its own selection state, independent of (but reconciled with) the other 2 filters. How: This is committed by selScoFun below and read throughout this component.
 	const [ filConStr, setFilConStr ] = React.useState( 'all' ); // What: Filter Conditional String And Setter. Why: The Conditionals filter row narrows pickers to those gated by one chosen conditional. How: This is committed by the Conditionals pill row and read throughout this component.
 
-	const allPicArr = staAppObj.pickers || []; // What: All Picker Array. Why: Nearly every filter/list computation below needs the full picker list to start from. How: This reads staAppObj.pickers, falling back to an empty array.
+	const allPicArr = staAppObj.pickers; // What: All Picker Array. Why: Nearly every filter/list computation below needs the full picker list to start from. How: This reads staAppObj.pickers, which every state carries, so it stays the same array until a picker changes.
 
 	// #endregion Filter State
 
@@ -642,7 +643,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 		setOpeIteStr( buiIteObj.id );     // What: Open Item Set Call. Why: The freshly-created item's own editor should open immediately. How: This sets opeIteStr to the new id.
 
 
-	}, [ penAutBoo ] ); // What: Effect Dependency Array. Why: This only ever needs to run when the one-shot flag itself is set. How: penAutBoo is the single value this effect's own guard is built around.
+	}, [ draIteArr, newDraStr, newPicObj, penAutBoo ] ); // What: Effect Dependency Array. Why: This only ever needs to run when the one-shot flag itself is set. How: penAutBoo is the value this effect's own guard is built around, so a re-run caused by the draft values returns at that guard unless the auto-add is pending.
 
 
 	// #region patNewFun
@@ -1107,9 +1108,15 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	const shoConBoo = conTypBoo && allConBoo && conScoBoo; // What: Show Conditionals Boolean. Why: The Conditionals manager is shown even with none created, since it's the only place to create one; gating on existence would make it unreachable from a clean state. How: This combines the same 3-condition shape as shoRemBoo.
 
 
-	const shoPicArr = ( curScoStr === 'reminders' || curScoStr === 'conditionals' ) // What: Shown Picker Array. Why: The rendered picker cards are visPicArr narrowed once more by the active scope. How: This is empty at the Reminders/Conditionals scopes, every visPicArr entry at 'all', or just the one matching picker otherwise.
-		? []                                                                                                     // What: Special Scope Branch. Why: The Reminders or Conditionals scope shows no picker cards. How: This returns an empty array.
-		: ( curScoStr === 'all' ? visPicArr : visPicArr.filter( ( picCurObj ) => picCurObj.id === curScoStr ) ); // What: Picker Scope Branch. Why: The All scope shows every visible picker, a picker scope shows just that one. How: This returns visPicArr or its single matching picker.
+	const shoPicArr = React.useMemo( () => ( // What: Shown Picker Array. Why: The rendered picker cards are visPicArr narrowed once more by the active scope. How: This is empty at the Reminders/Conditionals scopes, every visPicArr entry at 'all', or just the one matching picker otherwise, memoized so the hooks that read it see one array until the scope or the pickers change.
+
+
+		( curScoStr === 'reminders' || curScoStr === 'conditionals' ) // What: Special Scope Check. Why: The Reminders and Conditionals scopes show no picker cards. How: This checks curScoStr against both.
+			? [] // What: Special Scope Branch. Why: The Reminders or Conditionals scope shows no picker cards. How: This returns an empty array.
+			: ( curScoStr === 'all' ? visPicArr : visPicArr.filter( ( picCurObj ) => picCurObj.id === curScoStr ) ) // What: Picker Scope Branch. Why: The All scope shows every visible picker, a picker scope shows just that one. How: This returns visPicArr or its single matching picker.
+
+
+	), [ curScoStr, visPicArr ] ); // What: Memo Dependency Array. Why: The shown cards only change when the scope or the visible pickers do. How: Memoizing on both keeps one array identity for every hook that reads shoPicArr until one of them changes.
 
 
 
