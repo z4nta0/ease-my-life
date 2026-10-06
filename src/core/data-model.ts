@@ -391,7 +391,7 @@ type TodStaTyp = { // What: Today State Type. Why: Today's list is generated onc
 
 
 
-type UiStaTyp = { // What: UI State Type. Why: A few display choices persist between visits. How: This describes state.ui.
+type UsiStaTyp = { // What: User-Interface State Type. Why: A few display choices persist between visits. How: This describes state.ui.
 
 
 	controlsCollapsed : Record< string, boolean >; // What: Controls Collapsed. Why: Data tab sections stay as the user left them. How: This maps each section key to whether it's collapsed.
@@ -437,7 +437,7 @@ type StaAppTyp = { // What: State App Type. Why: The whole app runs on one saved
 	streak                : number;                     // What: Streak. Why: Finishing days in a row builds a streak. How: This is its length in days.
 	tasks                 : TasRcdTyp[];                // What: Tasks. Why: Reminders are scheduled tasks. How: This lists them.
 	today                 : TodStaTyp;                  // What: Today. Why: Today's list is kept for the day. How: This holds it.
-	ui                    : UiStaTyp;                   // What: UI. Why: A few display choices persist. How: This holds them.
+	ui                    : UsiStaTyp;                  // What: UI. Why: A few display choices persist. How: This holds them.
 	v                     : number;                     // What: Version. Why: The saved shape changes over time. How: This is the save format's version.
 	vacationLog           : VclRowTyp[];                // What: Vacation Log. Why: Stats leaves deactivated days out. How: This holds every row.
 
@@ -455,7 +455,7 @@ type RawSavTyp = any; // What: Raw Save Type. Why: Saved state is read before mi
 
 // #region Exports
 
-export { type AppSetTyp, type CadNamTyp, type CdlRowTyp, type CheStaTyp, type ConRcdTyp, type CusPalTyp, type DaiSetTyp, type DatModTyp, type EntKinTyp, type EntPenTyp, type EntRevTyp, type HolCusTyp, type HolStaTyp, type IteRcdTyp, type ModNamTyp, type OnbStaTyp, type PclOutTyp, type PclRowTyp, type PclSouTyp, type PicArgTyp, type PicForTyp, type PicRcdTyp, type RawSavTyp, type RemClaTyp, type RemKinTyp, type RemOptTyp, type RepNamTyp, type RmlRowTyp, type RslRowTyp, type StaAppTyp, type TasArgTyp, type TasRcdTyp, type TodEntTyp, type TodStaTyp, type UiStaTyp, type VclRowTyp }; // What: Named Type Exports. Why: core/, state/, and the UI all read the same saved records. How: This exports every record type and value set by name, each marked type so it disappears from the build.
+export { type AppSetTyp, type CadNamTyp, type CdlRowTyp, type CheStaTyp, type ConRcdTyp, type CusPalTyp, type DaiSetTyp, type DatModTyp, type EntKinTyp, type EntPenTyp, type EntRevTyp, type HolCusTyp, type HolStaTyp, type IteRcdTyp, type ModNamTyp, type OnbStaTyp, type PclOutTyp, type PclRowTyp, type PclSouTyp, type PicArgTyp, type PicForTyp, type PicRcdTyp, type RawSavTyp, type RemClaTyp, type RemKinTyp, type RemOptTyp, type RepNamTyp, type RmlRowTyp, type RslRowTyp, type StaAppTyp, type TasArgTyp, type TasRcdTyp, type TodEntTyp, type TodStaTyp, type UsiStaTyp, type VclRowTyp }; // What: Named Type Exports. Why: core/, state/, and the UI all read the same saved records. How: This exports every record type and value set by name, each marked type so it disappears from the build.
 
 // #endregion Exports
 

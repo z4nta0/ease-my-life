@@ -54,14 +54,14 @@ import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use
 import { useIteDraFun } from '../../ui/record-draft.ts';            // What: Use Item Draft Function. Why: The open item editor edits a local draft, committed only on Save. How: This is called once with whichever item's editor is open.
 
 
-import type { ActStoTyp } from '../../state/store.ts';      // What: Action Store Type. Why: The tab changes state through the store's actions. How: This types TtdProTyp's actStoObj.
+import type { ActStoTyp } from '../../state/store.ts';      // What: Action Store Type. Why: The tab changes state through the store's actions. How: This types TocProTyp's actStoObj.
 import type { DaiSetTyp } from '../../core/data-model.ts';  // What: Daily Settings Type. Why: The auto-generator reads the daily settings, or nothing on a save that never had them. How: This types its partial copy.
 import type { EntDesTyp } from '../../state/store.ts';      // What: Entry Descriptor Type. Why: Generating collects carried entries and new cards for setEntFun. How: This types those collections.
 import type { GenSloTyp } from './regeneration-loader.tsx'; // What: Generate Slot Type. Why: Generating animates one loader slot per picker. How: This types the slots and their maps.
 import type { IteRcdTyp } from '../../core/data-model.ts';  // What: Item Record Type. Why: Rerolling picks among a picker's items. How: This types the reroll helpers' items.
 import type { PicRcdTyp } from '../../core/data-model.ts';  // What: Picker Record Type. Why: Incoming loader slots are grouped by picker. How: This types the slot group map.
 import type { PicResTyp } from '../../core/pickers.ts';     // What: Pick Result Type. Why: Each fresh pick keeps the engine's result for its pending changes. How: This types newPicArr's results.
-import type { StaAppTyp } from '../../core/data-model.ts';  // What: State App Type. Why: The tab reads the current app state. How: This types TtdProTyp's staAppObj.
+import type { StaAppTyp } from '../../core/data-model.ts';  // What: State App Type. Why: The tab reads the current app state. How: This types TocProTyp's staAppObj.
 import type { TodGroTyp } from './group-entries.ts';        // What: Today Group Type. Why: The tab looks groups up by name and drags their rows. How: This types the group map and the drag handler's group.
 import type { TodRowTyp } from './group-entries.ts';        // What: Today Row Type. Why: The check and reroll handlers act on one Today row. How: This types their entry and picker.
 
@@ -100,7 +100,7 @@ import type { TodRowTyp } from './group-entries.ts';        // What: Today Row T
 // #region Components
 
 type CelParTyp = { angNum? : number, delNum : number, disNum? : number, ideNum : number, opaStr? : string, posXcoNum? : number, posYcoNum? : number, rotNum? : number }; // What: Celebration Particle Type. Why: The confetti and sparkle celebrations each roll a batch of pieces into one list, read by whichever style is playing. How: Every piece has a delay and a key, a confetti piece adds its angle, distance, opacity, and spin, and a sparkle adds its position.
-type TtdProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, onStaFeaFun : ( ideStr : string ) => void, onStaPagFun : ( ideStr : string ) => void, onStaPicFun : ( ideStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Today-Component Props Type. Why: The Today tab reads and edits the whole app state, navigates to other tabs, and starts tours that run at the app level. How: This types TabTodCom's props, named Ttd since Ttc already belongs to TabStaCom.
+type TocProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, onStaFeaFun : ( ideStr : string ) => void, onStaPagFun : ( ideStr : string ) => void, onStaPicFun : ( ideStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Today-Component Props Type. Why: The Today tab reads and edits the whole app state, navigates to other tabs, and starts tours that run at the app level. How: This types TabTodCom's props, named Ttd since Ttc already belongs to TabStaCom.
 
 // #region TabTodCom
 
@@ -142,7 +142,7 @@ type TtdProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
  *
 */
 
-function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPagFun, onStaPicFun, staAppObj } : TtdProTyp ) : React.JSX.Element {
+function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPagFun, onStaPicFun, staAppObj } : TocProTyp ) : React.JSX.Element {
 
 
 	const todBodRef = React.useRef< HTMLDivElement | null >( null ); // What: Today Body Reference. Why: Today does not share app.tsx's shared .maiInnDiv wrapper (see .todBodDiv's own comment below), so it measures/caches its own flourish instance instead of reusing a ref threaded down from there. How: This is attached to the .todBodDiv div's own ref prop below and read by BacFloCom to measure it.
