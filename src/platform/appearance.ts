@@ -6,6 +6,10 @@
 import { durMilFun } from '../utils/rhythm.ts'; // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function. Why: The palette cross-fade should be skipped for a user who prefers reduced motion. How: This is called inside appPalFun to gate the theme fade attribute toggle.
 
+
+import type { AppSetTyp } from '../core/data-model.ts'; // What: Appearance Settings Type. Why: Picking the active theme reads the saved appearance settings. How: This types resTheFun's appSetObj.
+import type { CusPalTyp } from '../core/data-model.ts'; // What: Custom Palette Type. Why: A custom theme is derived from the user's three saved colors. How: This types resCusFun's usrColObj.
+
 // #endregion Imports
 
 
@@ -27,6 +31,7 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function.
  * auto-switching via THE_PAI_OBJ's own light/dark theme pairings.
  *
  * Sections:
+ *  - Types
  *  - Constants
  *  - Module State
  *  - Helpers
@@ -35,6 +40,28 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function.
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Types
+
+type PalTokTyp = { // What: Palette Tokens Type. Why: Built-in and custom themes alike resolve to the same color tokens before they're applied. How: This describes one palette, a PAL_SET_OBJ entry or resCusFun's derived one.
+
+
+	accStr  : string; // What: Accent String. Why: Actions and selection use the primary accent. How: This is written onto --acc-mai-col.
+	aceStr  : string; // What: Accent Soft String. Why: Accent text sits on a softened accent background. How: This is written onto --acc-tin-col.
+	bacStr  : string; // What: Background String. Why: The page sits on its own base background. How: This is written onto --bac-pag-col.
+	borStr  : string; // What: Border String. Why: Borders and dividers share one color. How: This is written onto --bor-mai-col.
+	mutStr  : string; // What: Muted String. Why: De-emphasized text uses a muted color. How: This is written onto --tex-mut-col.
+	namStr? : string; // What: Name String. Why: The Settings tab's theme picker labels each built-in theme. How: This is that label, never written onto a custom property, and absent on a derived custom palette.
+	surStr  : string; // What: Surface String. Why: Cards and surfaces sit on their own background. How: This is written onto --bac-sur-col.
+	texStr  : string; // What: Text String. Why: Body text uses the main text color. How: This is written onto --tex-mai-col.
+	warStr  : string; // What: Warm String. Why: Celebrations use a warm second accent. How: This is written onto --acc-sec-col.
+
+
+};
+
+// #endregion Types
 
 
 
@@ -282,7 +309,7 @@ let __tinProObj = null; // What: Tint Probe Object. Why: Resolving a CSS color s
  *
 */
 
-function resCusFun ( modKeyStr, usrColObj ) {
+function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' | 'bg' | 'text' > ) : PalTokTyp {
 
 
 	const bacColStr = usrColObj.bg;     // What: Background Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.bg and reused in the returned object and the relative-color expressions below.
@@ -292,7 +319,7 @@ function resCusFun ( modKeyStr, usrColObj ) {
 
 	const modSgnNum = modKeyStr === 'dark' ? 1 : -1; // What: Mode Sign Number. Why: The mutStr/aceStr tokens need to move toward the page background in dark mode but away from it in light mode. How: This flips the sign of their lightness offset below based on the given mode.
 
-	const calOffFun = ( offAmoNum, floValNum ) => ( modKeyStr === 'dark' // What: Calc Offset Function. Why: Dark mode needs a floored lightness offset to avoid the near-black gamma-encoding hazard described above, while light mode can use a plain one. How: This returns the appropriate CSS calc() expression string for whichever mode is active.
+	const calOffFun = ( offAmoNum : number, floValNum : number ) => ( modKeyStr === 'dark' // What: Calc Offset Function. Why: Dark mode needs a floored lightness offset to avoid the near-black gamma-encoding hazard described above, while light mode can use a plain one. How: This returns the appropriate CSS calc() expression string for whichever mode is active.
 
 		? `calc(max(l + ${ offAmoNum }, ${ floValNum }))` // What: Dark Mode Calc Expression. Why: Flooring the result keeps surface/border from vanishing into true black. How: This raises the lightness by offAmoNum, but never below floValNum.
 
@@ -352,7 +379,7 @@ function resCusFun ( modKeyStr, usrColObj ) {
  *
 */
 
-function resTheFun ( appSetObj, sysDarBoo ) {
+function resTheFun ( appSetObj : AppSetTyp, sysDarBoo : boolean ) : string {
 
 
 	const theKeyStr = appSetObj.theme || 'ink'; // What: Theme Key String. Why: Very old/incomplete persisted states might not have a theme field at all. How: This falls back to 'ink' when appSetObj.theme is missing.
@@ -425,7 +452,7 @@ function resTheFun ( appSetObj, sysDarBoo ) {
  *
 */
 
-function covHexFun ( cssColStr ) {
+function covHexFun ( cssColStr : string ) : string | null {
 
 
 	try { // What: Fill Style Probe Try. Why: Assigning an unsupported color to a canvas context's fillStyle could throw in some environments rather than silently no-op. How: This wraps the whole probe-and-resolve sequence below so any such error is caught and treated as an ordinary parse failure.
@@ -519,7 +546,7 @@ function covHexFun ( cssColStr ) {
  *
 */
 
-function synTinFun ( bacColStr ) {
+function synTinFun ( bacColStr : string ) : void {
 
 
 	const hexResStr = covHexFun( bacColStr ); // What: Hex Result String. Why: A <meta name="theme-color"> tag's content must be a color the UA will definitely parse. How: This resolves the given background color down to a plain hex string.
@@ -604,7 +631,7 @@ function synTinFun ( bacColStr ) {
  *
 */
 
-function appPalFun ( palResObj, theKeyStr ) {
+function appPalFun ( palResObj : PalTokTyp, theKeyStr : string ) : void {
 
 
 	const palSigStr = [ palResObj.bacStr, palResObj.surStr, palResObj.texStr, palResObj.accStr, palResObj.aceStr, palResObj.borStr, palResObj.mutStr, palResObj.warStr ].join( '|' ); // What: Palette Signature String. Why: Detecting an actual color change requires comparing against what was last applied, not just re-running on every call. How: This joins every token into one comparable string.
