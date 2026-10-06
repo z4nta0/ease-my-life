@@ -21,7 +21,7 @@ yarn-error.log*
 
 
 
-# What: Generated And Local Files Block. Why: Build output, dependencies, local secrets, and tool state are recreated or kept per machine. How: This ignores the build and dev output, node_modules, local env files, design sources, and the Claude and Playwright working folders.
+# What: Generated And Local Files Block. Why: Build output, dependencies, local secrets, and tool state are recreated or kept per machine. How: This ignores the build and dev output, node_modules, local env files, design sources, the Claude and Playwright working folders, and the test suites' reports and run output.
 *.env
 *.local
 .claude
@@ -32,6 +32,7 @@ dev-dist/
 dist
 dist-ssr
 node_modules
+tests/output
 
 
 

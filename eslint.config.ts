@@ -26,8 +26,9 @@ import tseslint   from 'typescript-eslint';         // What: TypeScript ESLint. 
  * (IDBTransactionMode, ...). Every .tsx file also gets the React Hooks
  * plugin's recommended rules, minus the four React Compiler readiness rules,
  * which only matter to an app built with the React Compiler, which this one
- * isn't. Generated output (dist/, dev-dist/) is ignored. npm run lint runs it
- * across the repo, and an editor integration can run it per file.
+ * isn't. Generated output (dist/, dev-dist/, tests/output/) is ignored. npm
+ * run lint runs it across the repo, and an editor integration can run it per
+ * file.
  *
  * Sections:
  *  - Constants
@@ -44,7 +45,7 @@ import tseslint   from 'typescript-eslint';         // What: TypeScript ESLint. 
 const ESL_CON_ARR = [ // What: ESLint Config Array. Why: ESLint reads its flat config as an array of objects, each scoped to the files it lists. How: This holds the generated-output ignores, typescript-eslint's recommended configs and two rule overrides, the src/ undefined-component config, and the .tsx hooks config.
 
 
-	{ ignores : [ 'dev-dist/**', 'dist/**' ] }, // What: Ignores Object. Why: The build output and the PWA plugin's dev service worker are generated, not hand-written, so their lint results mean nothing. How: This global ignores entry skips both folders for every config below; two globs, since braces break ESLint's matching here.
+	{ ignores : [ 'dev-dist/**', 'dist/**', 'tests/output/**' ] }, // What: Ignores Object. Why: The build output, the PWA plugin's dev service worker, and the test suites' reports are generated, not hand-written, so their lint results mean nothing. How: This global ignores entry skips all three folders for every config below; one glob each, since braces break ESLint's matching here.
 
 	...tseslint.configs.recommended, // What: Recommended Configs Spread. Why: typescript-eslint's recommended rules catch TypeScript mistakes the compiler allows, such as an any or an unused variable. How: This spreads its recommended configs in, which apply to every file ESLint lints and switch off the core rules TypeScript already covers.
 
