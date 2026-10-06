@@ -14,6 +14,7 @@ import { HelOveCom    } from '../../help/mode.tsx';           // What: Help Over
 import { hidHisFun    } from '../../state/sample-history.ts'; // What: Hide History Function. Why: The real hidden sample pickers borrowed for help mode must be re-hidden once help mode ends. How: This is called whenever helModBoo turns false, and again on unmount.
 import { IcoSvgCom    } from '../../ui/icon.tsx';             // What: Icon Svg Component. Why: Several small glyphs (sort-direction arrows, the streak flame) are needed throughout this page. How: This is rendered with a specific name and size wherever one of those glyphs is shown.
 import { InfTipCom    } from '../../ui/info-tip.tsx';         // What: Info Tip Component. Why: The Spent metric's "no completed cycle yet" case needs a small inline explanation. How: This renders a "?" bubble with its own label text next to that N/A value.
+import { isaTruFun    } from '../../utils/guard.ts';          // What: Is-A Truthy Function. Why: The scroll-fade rows drop any that aren't mounted. How: This filters them so the rest read as real elements.
 import { isoDayFun    } from '../../utils/date.ts';           // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { PilTagCom    } from '../../ui/pill-tag.tsx';         // What: Pill Tag Component. Why: The single-picker header needs a small labelled pill showing the picker's own mode. How: This renders that pill, toned as 'mode'.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';           // What: Seed Namespace Object. Why: Every picker mode's own display label and hint text live in this shared table. How: This is looked up (MOD_DEF_OBJ) by a picker's own mode key throughout the page.
@@ -710,9 +711,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const [ conMetStr, setConMetStr ] = React.useState( 'rate' ); // What: Conditional Metric String And Setter. Why: The Conditionals breakdown list can pivot across fire rate, trigger count, cycle count, average interval, or last-fired date. How: This selects the sort key used inside conBreArr below. // Conditionals scope breakdown: which metric its own list pivots on, plus its sort direction.
 	const [ conSorStr, setConSorStr ] = React.useState( 'desc' ); // What: Conditional Sort String And Setter. Why: Every one of conMetStr's own shapes still needs a shared High/Low toggle. How: This is applied inside conBreArr's own sort and flipped by the card's sort button.
 
-	const [ heaSelStr, setHeaSelStr ] = React.useState( null ); // What: Heat Selected String And Setter. Why: Touch devices have no hover, so a tapped day needs its own persisted selection to show its detail list. How: This holds the tapped day's own date string, or null when nothing is selected. // Heatmap: the day cell the user tapped, whose own detail shows below the grid. Hover still uses the native title tooltip; a tap drives this instead, for touch.
-	const [ heaYeaNum, setHeaYeaNum ] = React.useState( null ); // What: Heat Year Number And Setter. Why: An "All time" heatmap spanning several calendar years would otherwise grow unreasonably tall. How: This is clamped into actYeaNum below and changed by the year-pager arrows. // Heatmap year pager, only used when "All time" spans more than one calendar year (keeps the grid bounded to one year at a time). null means "the latest year".
-	const [ heaDirStr, setHeaDirStr ] = React.useState( '' );   // What: Heat Direction String And Setter. Why: The heatmap's own slide-in animation needs to know which edge to enter from. How: This is set by the year-pager arrows and applied as a className modifier on the grid. // Direction of the last year-page change ('next' | 'prev'), so the grid can slide in from the matching side. Cleared to '' on any other change.
+	const [ heaSelStr, setHeaSelStr ] = React.useState< string | null >( null ); // What: Heat Selected String And Setter. Why: Touch devices have no hover, so a tapped day needs its own persisted selection to show its detail list. How: This holds the tapped day's own date string, or null when nothing is selected. // Heatmap: the day cell the user tapped, whose own detail shows below the grid. Hover still uses the native title tooltip; a tap drives this instead, for touch.
+	const [ heaYeaNum, setHeaYeaNum ] = React.useState< number | null >( null ); // What: Heat Year Number And Setter. Why: An "All time" heatmap spanning several calendar years would otherwise grow unreasonably tall. How: This is clamped into actYeaNum below and changed by the year-pager arrows. // Heatmap year pager, only used when "All time" spans more than one calendar year (keeps the grid bounded to one year at a time). null means "the latest year".
+	const [ heaDirStr, setHeaDirStr ] = React.useState( '' );                    // What: Heat Direction String And Setter. Why: The heatmap's own slide-in animation needs to know which edge to enter from. How: This is set by the year-pager arrows and applied as a className modifier on the grid. // Direction of the last year-page change ('next' | 'prev'), so the grid can slide in from the matching side. Cleared to '' on any other change.
 
 	// #endregion Scope And Filter State
 
@@ -1159,19 +1160,19 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	// #region Filter Row Scroll Fades
 
-	const scoRowRef = React.useRef( null ); // What: Scope Row Reference. Why: The Show row's own scroll-fade effect below needs a handle on its DOM node. How: This is attached to the Show row's own ref prop and read inside the effect. // Scroll-edge fades on the filter pill rows, the same affordance as the Pickers tab strip: a mask gradient that only fades the side with more content.
-	const groRowRef = React.useRef( null ); // What: Group Row Reference. Why: The Group row's own scroll-fade effect below needs a handle on its DOM node. How: This is attached to the Group row's own ref prop and read inside the effect.
-	const typRowRef = React.useRef( null ); // What: Type Row Reference. Why: The Type row's own scroll-fade effect below needs a handle on its DOM node. How: This is attached to the Type row's own ref prop and read inside the effect.
-	const ranRowRef = React.useRef( null ); // What: Range Row Reference. Why: The Range row's own scroll-fade effect below needs a handle on its DOM node. How: This is attached to the Range row's own ref prop and read inside the effect.
-	const metRowRef = React.useRef( null ); // What: Metric Row Reference. Why: The Pick breakdown metric row's own scroll-fade effect below needs a handle on its DOM node. How: This is attached to that row's own ref prop and read inside the effect.
-	const remRowRef = React.useRef( null ); // What: Reminder Row Reference. Why: The Reminders breakdown metric row's own scroll-fade effect below needs a handle on its DOM node. How: This is attached to that row's own ref prop and read inside the effect.
-	const conRowRef = React.useRef( null ); // What: Conditional Row Reference. Why: The Conditionals breakdown metric row's own scroll-fade effect below needs a handle on its DOM node. How: This is attached to that row's own ref prop and read inside the effect.
+	const scoRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Scope Row Reference. Why: The Show row's own scroll-fade effect below needs a handle on its DOM node. How: This is attached to the Show row's own ref prop and read inside the effect. // Scroll-edge fades on the filter pill rows, the same affordance as the Pickers tab strip: a mask gradient that only fades the side with more content.
+	const groRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Group Row Reference. Why: The Group row's own scroll-fade effect below needs a handle on its DOM node. How: This is attached to the Group row's own ref prop and read inside the effect.
+	const typRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Type Row Reference. Why: The Type row's own scroll-fade effect below needs a handle on its DOM node. How: This is attached to the Type row's own ref prop and read inside the effect.
+	const ranRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Range Row Reference. Why: The Range row's own scroll-fade effect below needs a handle on its DOM node. How: This is attached to the Range row's own ref prop and read inside the effect.
+	const metRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Metric Row Reference. Why: The Pick breakdown metric row's own scroll-fade effect below needs a handle on its DOM node. How: This is attached to that row's own ref prop and read inside the effect.
+	const remRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Reminder Row Reference. Why: The Reminders breakdown metric row's own scroll-fade effect below needs a handle on its DOM node. How: This is attached to that row's own ref prop and read inside the effect.
+	const conRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Conditional Row Reference. Why: The Conditionals breakdown metric row's own scroll-fade effect below needs a handle on its DOM node. How: This is attached to that row's own ref prop and read inside the effect.
 
 
 	React.useEffect( () => { // What: Scroll Fade Effect. Why: Every filter/metric pill row needs the same "fade the scrollable edge" affordance, without duplicating the logic once per row. How: This attaches one scroll/resize-driven class toggler to each currently-mounted ref, then tears every one of them down on cleanup.
 
 
-		const rowEleArr = [ scoRowRef.current, groRowRef.current, typRowRef.current, ranRowRef.current, metRowRef.current, remRowRef.current, conRowRef.current ].filter( Boolean ); // What: Row Element Array. Why: Not every row is mounted at once (e.g. the Group row only exists with 2+ groups), so only the currently-real DOM nodes should get a listener. How: This collects every ref's own current value, dropping any that are still null.
+		const rowEleArr = [ scoRowRef.current, groRowRef.current, typRowRef.current, ranRowRef.current, metRowRef.current, remRowRef.current, conRowRef.current ].filter( isaTruFun ); // What: Row Element Array. Why: Not every row is mounted at once (e.g. the Group row only exists with 2+ groups), so only the currently-real DOM nodes should get a listener. How: This collects every ref's own current value, dropping any that are still null.
 
 
 		const cleFunArr = rowEleArr.map( ( rowCurEle ) => { // What: Cleanup Function Array. Why: Each row needs its own scroll listener and ResizeObserver, and each needs its own matching teardown. How: This maps every row element to a function that removes that specific row's own listener and observer.
@@ -1512,7 +1513,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 	const actYeaNum = yeaPagBoo // What: Active Year Number. Why: The heatmap's own bounds below need one concrete active year whenever paging is in effect. How: This uses heaYeaNum if it's still a valid year, otherwise falls back to the latest one, or null when paging isn't active at all. // Clamp the (possibly stale) selected year to what's available; default to the latest.
-		? ( datYeaArr.includes( heaYeaNum ) ? heaYeaNum : datYeaArr[ datYeaArr.length - 1 ] ) // What: Paged Year Branch. Why: A stale heaYeaNum must fall back to a real year. How: This keeps heaYeaNum when it's still valid, otherwise the latest year.
+		? ( heaYeaNum !== null && datYeaArr.includes( heaYeaNum ) ? heaYeaNum : datYeaArr[ datYeaArr.length - 1 ] ) // What: Paged Year Branch. Why: A stale heaYeaNum must fall back to a real year. How: This keeps heaYeaNum when it's still valid, otherwise the latest year.
 		: null;                                                                               // What: Unpaged Branch. Why: Without paging there's no single active year. How: This returns null.
 
 
@@ -1669,14 +1670,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	// #region Single-Picker Breakdown Setup
 
-	const notAllBoo = scoValStr !== 'all'; // What: Not All Boolean. Why: A single-picker scope first needs the view narrowed past All. How: This compares scoValStr against 'all'.
-	const notRemBoo = !isaRemBoo;          // What: Not Reminder Boolean. Why: The Reminders scope narrows the view without being a real picker. How: This negates isaRemBoo.
-	const notConBoo = !isaConBoo;          // What: Not Conditional Boolean. Why: The Conditionals scope narrows the view without being a real picker either. How: This negates isaConBoo.
+	const scoPicObj = picLisArr.find( ( picCurObj ) => picCurObj.id === scoValStr ); // What: Scope Picker Object. Why: The single-picker header and every mode-dependent branch below need the actual picker object, not just its id. How: This looks scoValStr up in picLisArr.
+	const notAllBoo = scoValStr !== 'all';                                           // What: Not All Boolean. Why: A single-picker scope first needs the view narrowed past All. How: This compares scoValStr against 'all'.
+	const notRemBoo = !isaRemBoo;                                                    // What: Not Reminder Boolean. Why: The Reminders scope narrows the view without being a real picker. How: This negates isaRemBoo.
+	const notConBoo = !isaConBoo;                                                    // What: Not Conditional Boolean. Why: The Conditionals scope narrows the view without being a real picker either. How: This negates isaConBoo.
+	const hasPicBoo = !!scoPicObj;                                                   // What: Has Picker Boolean. Why: A scoped picker that just disappeared, such as a help sample removed while Stats is open, must not render its card for the one frame before the scope repair runs. How: This is true when scoPicObj was found.
 
-	const isaPicBoo = notAllBoo && notRemBoo && notConBoo; // What: Is-A Picker Boolean. Why: Several blocks below only make sense while a single real picker is the active scope. How: This is true when scoValStr isn't 'all' and neither the Reminders nor Conditionals sentinel is active. // Single-picker breakdown: EVERY item in the picker (including zero-pick and inactive ones), with all per-item metrics on one object. The Pick breakdown card pivots on metKeyStr to choose which value to show and sort by.
+	const isaPicBoo = notAllBoo && notRemBoo && notConBoo && hasPicBoo; // What: Is-A Picker Boolean. Why: Several blocks below only make sense while a single real picker is the active scope. How: This is true when scoValStr isn't 'all', neither the Reminders nor Conditionals sentinel is active, and the scoped picker exists. // Single-picker breakdown: EVERY item in the picker (including zero-pick and inactive ones), with all per-item metrics on one object. The Pick breakdown card pivots on metKeyStr to choose which value to show and sort by.
 
 
-	const scoPicObj = picLisArr.find( ( picCurObj ) => picCurObj.id === scoValStr );                               // What: Scope Picker Object. Why: The single-picker header and every mode-dependent branch below need the actual picker object, not just its id. How: This looks scoValStr up in picLisArr.
 	const easDowBoo = isaPicBoo && scoPicObj && scoPicObj.mode === 'ease-down';                                    // What: Ease Down Boolean. Why: An ease-down picker swaps the Frequency metric for Spent and measures things differently below. How: This checks the scoped picker's own mode.
 	const easUpwBoo = isaPicBoo && scoPicObj && scoPicObj.mode === 'ease-up';                                      // What: Ease Upward Boolean. Why: An ease-up picker's own items show a range suffix the same way an ease-down picker's do. How: This checks the scoped picker's own mode.
 	const useWeiBoo = isaPicBoo && scoPicObj && ( scoPicObj.mode === 'weighted' || scoPicObj.mode === 'dynamic' ); // What: Uses Weight Boolean. Why: Only a weighted or dynamic picker's items have a meaningful weight suffix to show. How: This checks the scoped picker's own mode against both weight-driven modes.
@@ -1694,7 +1696,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-			iteEveMap.get( rowCurObj.itemId ).push( rowCurObj ); // What: Event Push. Why: This is the actual filing of the row under its own item. How: This appends rowCurObj to that item's own array.
+			iteEveMap.get( rowCurObj.itemId )!.push( rowCurObj ); // What: Event Push. Why: This is the actual filing of the row under its own item. How: This appends rowCurObj to that item's own array. // What: Non-Null Note. Why: The lazy check just above creates this item's array before anything is pushed. How: The ! tells TypeScript the get returns it.
 
 
 		}
@@ -1903,7 +1905,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-				iteStkMap.get( runIteStr ).push( { calNum : calDayNum, runNum : runCouNum } ); // What: Streak Push. Why: This is the actual filing of the completed streak's own two measurements under its own item. How: This appends the { calNum, runNum } pair.
+				iteStkMap.get( runIteStr )!.push( { calNum : calDayNum, runNum : runCouNum } ); // What: Streak Push. Why: This is the actual filing of the completed streak's own two measurements under its own item. How: This appends the { calNum, runNum } pair. // What: Non-Null Note. Why: The lazy check just above creates this item's array before anything is pushed. How: The ! tells TypeScript the get returns it.
 
 
 			}
@@ -2013,7 +2015,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		) );
 
 
-		const allIteArr : ( Partial< IteRcdTyp > & { __delBoo? : boolean } )[] = [ ...livIteArr, ...ghoIteArr ]; // What: All Item Array. Why: The mapping below builds one output row per item regardless of whether it's live or a ghost. How: This concatenates both arrays into one combined list.
+		const allIteArr : ( Partial< IteRcdTyp > & Pick< IteRcdTyp, 'id' | 'name' > & { __delBoo? : boolean } )[] = [ ...livIteArr, ...ghoIteArr ]; // What: All Item Array. Why: The mapping below builds one output row per item regardless of whether it's live or a ghost. How: This concatenates both arrays into one combined list.
 
 
 
@@ -2326,7 +2328,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 		const couTalMap = new Map( SOU_MET_ARR.map( ( souCurObj ) => [ souCurObj.keyStr, 0 ] ) ); // What: Count Tally Map. Why: The tally needs one accumulator per real source value, keyed by the pick rows' own saved source values. How: This starts every SOU_MET_ARR source at zero and is incremented by the loop below.
 
-		for ( const rowCurObj of picRowArr ) if ( couTalMap.has( rowCurObj.source ) ) couTalMap.set( rowCurObj.source, couTalMap.get( rowCurObj.source ) + 1 ); // What: Source Tally Loop. Why: Every logged pick contributes one to whichever source produced it. How: This increments couTalMap's own matching entry per row.
+		for ( const rowCurObj of picRowArr ) if ( couTalMap.has( rowCurObj.source ) ) couTalMap.set( rowCurObj.source, couTalMap.get( rowCurObj.source )! + 1 ); // What: Source Tally Loop. Why: Every logged pick contributes one to whichever source produced it. How: This increments couTalMap's own matching entry per row. // What: Non-Null Note. Why: The has check just before it found this key in the tally. How: The ! tells TypeScript the get returns its count.
 
 
 
@@ -2335,7 +2337,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 			...souCurObj, // What: Source Current Spread. Why: Each segment keeps its own color, key, and label from SOU_MET_ARR. How: This spreads the meta entry in first.
 
-			couNum : couTalMap.get( souCurObj.keyStr ) // What: Count Number. Why: Each segment's width comes from its own live tally. How: This looks the entry's own key up in couTalMap.
+			couNum : couTalMap.get( souCurObj.keyStr )! // What: Count Number. Why: Each segment's width comes from its own live tally. How: This looks the entry's own key up in couTalMap. // What: Non-Null Note. Why: couTalMap was built with one entry per row of this same list. How: The ! tells TypeScript every key reads back a count.
 
 
 		} ) );
@@ -2349,7 +2351,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 		const couTalMap = new Map( TYP_MET_ARR.map( ( typCurObj ) => [ typCurObj.keyStr, 0 ] ) ); // What: Count Tally Map. Why: The tally needs one accumulator per real type value, keyed by the reminder rows' own saved type values. How: This starts every TYP_MET_ARR type at zero and is incremented by the loop below.
 
-		for ( const rowCurObj of remRowArr ) if ( couTalMap.has( rowCurObj.type ) ) couTalMap.set( rowCurObj.type, couTalMap.get( rowCurObj.type ) + 1 ); // What: Type Tally Loop. Why: Every logged completion contributes one to whichever type it belongs to. How: This increments couTalMap's own matching entry per row.
+		for ( const rowCurObj of remRowArr ) if ( couTalMap.has( rowCurObj.type ) ) couTalMap.set( rowCurObj.type, couTalMap.get( rowCurObj.type )! + 1 ); // What: Type Tally Loop. Why: Every logged completion contributes one to whichever type it belongs to. How: This increments couTalMap's own matching entry per row. // What: Non-Null Note. Why: The has check just before it found this key in the tally. How: The ! tells TypeScript the get returns its count.
 
 
 
@@ -2358,7 +2360,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 			...typCurObj, // What: Type Current Spread. Why: Each segment keeps its own color, key, and label from TYP_MET_ARR. How: This spreads the meta entry in first.
 
-			couNum : couTalMap.get( typCurObj.keyStr ) // What: Count Number. Why: Each segment's width comes from its own live tally. How: This looks the entry's own key up in couTalMap.
+			couNum : couTalMap.get( typCurObj.keyStr )! // What: Count Number. Why: Each segment's width comes from its own live tally. How: This looks the entry's own key up in couTalMap. // What: Non-Null Note. Why: couTalMap was built with one entry per row of this same list. How: The ! tells TypeScript every key reads back a count.
 
 
 		} ) );
@@ -3678,7 +3680,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 							{ yeaPagBoo && ( () => { // What: Year Pager Visibility Check. Why: The year-pager arrows only belong on an "All time" view spanning more than one calendar year. How: This IIFE computes the active year's own index and a small navigation helper once, then returns the pager row.
 
 
-								const yeaIndNum = datYeaArr.indexOf( actYeaNum ); // What: Year Index Number. Why: Both arrows need to know the active year's own position in datYeaArr to disable themselves at either end. How: This looks actYeaNum up in datYeaArr.
+								const yeaIndNum = datYeaArr.indexOf( actYeaNum! ); // What: Year Index Number. Why: Both arrows need to know the active year's own position in datYeaArr to disable themselves at either end. How: This looks actYeaNum up in datYeaArr. // What: Non-Null Note. Why: The pager only renders while yeaPagBoo holds, and actYeaNum is a real year whenever it does. How: The ! tells TypeScript actYeaNum is set here.
 
 
 								const jumYeaFun = ( yeaCurNum : number, sliDirStr : string ) => { // What: Jump Year Function. Why: Paging to a different year needs to set the slide direction, the target year, and clear any tapped-cell selection together. How: This updates all three pieces of state in one call.
