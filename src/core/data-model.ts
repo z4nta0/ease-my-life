@@ -255,6 +255,9 @@ type PicRcdTyp = { // What: Picker Record Type. Why: A picker is a pool of items
 
 
 
+type PicArgTyp = Partial< PicRcdTyp > & { includeInDaily? : boolean, items? : Partial< IteRcdTyp >[], newConditional? : Partial< ConRcdTyp > | null, replaceId? : string, step? : number }; // What: Picker Argument Type. Why: Adding, editing, or prefilling a picker passes the form's fields, its items, and any new conditional together. How: This is a partial picker plus whether it joins the daily list, its items, a new conditional, the id of a sample it replaces, and the create form step a tour prefill opens on.
+
+
 type EntPenTyp = { // What: Entry Pending Type. Why: A pick's effects wait until its entry is checked off, so nothing changes for a pick the user never does. How: This describes an entry's staged effects, entry.pending.
 
 
@@ -340,6 +343,9 @@ type TasRcdTyp = { // What: Task Record Type. Why: A reminder is a scheduled tas
 
 };
 
+
+
+type TasArgTyp = Partial< TasRcdTyp > & { replaceId? : string }; // What: Task Argument Type. Why: Adding a reminder passes the editor's fields. How: This is a partial reminder plus the id of a sample it replaces.
 
 
 type TodEntTyp = { // What: Today Entry Type. Why: Each card on Today is one entry, a pick or a day-off card. How: This describes one entry of state.today.entries.
@@ -437,7 +443,7 @@ type StaAppTyp = { // What: State App Type. Why: The whole app runs on one saved
 
 // #region Exports
 
-export { type AppSetTyp, type CadNamTyp, type CdlRowTyp, type CheStaTyp, type ConRcdTyp, type CusPalTyp, type DaiSetTyp, type DatModTyp, type EntKinTyp, type EntPenTyp, type EntRevTyp, type HolCusTyp, type HolStaTyp, type IteRcdTyp, type ModNamTyp, type OnbStaTyp, type PclOutTyp, type PclRowTyp, type PclSouTyp, type PicRcdTyp, type RemClaTyp, type RemKinTyp, type RemOptTyp, type RepNamTyp, type RmlRowTyp, type RslRowTyp, type StaAppTyp, type TasRcdTyp, type TodEntTyp, type TodStaTyp, type UiStaTyp, type VclRowTyp }; // What: Named Type Exports. Why: core/, state/, and the UI all read the same saved records. How: This exports every record type and value set by name, each marked type so it disappears from the build.
+export { type AppSetTyp, type CadNamTyp, type CdlRowTyp, type CheStaTyp, type ConRcdTyp, type CusPalTyp, type DaiSetTyp, type DatModTyp, type EntKinTyp, type EntPenTyp, type EntRevTyp, type HolCusTyp, type HolStaTyp, type IteRcdTyp, type ModNamTyp, type OnbStaTyp, type PclOutTyp, type PclRowTyp, type PclSouTyp, type PicArgTyp, type PicRcdTyp, type RemClaTyp, type RemKinTyp, type RemOptTyp, type RepNamTyp, type RmlRowTyp, type RslRowTyp, type StaAppTyp, type TasArgTyp, type TasRcdTyp, type TodEntTyp, type TodStaTyp, type UiStaTyp, type VclRowTyp }; // What: Named Type Exports. Why: core/, state/, and the UI all read the same saved records. How: This exports every record type and value set by name, each marked type so it disappears from the build.
 
 // #endregion Exports
 

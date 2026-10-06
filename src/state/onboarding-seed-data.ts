@@ -7,8 +7,10 @@ import { isoDayFun } from '../utils/date.ts'; // What: Iso Day Function. Why: Pe
 
 
 import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: A precomputed pick row is a saved pick-log row minus its dated fields. How: This is the base of RawPicTyp and part of hydStaFun's return.
+import type { PicArgTyp } from '../core/data-model.ts'; // What: Picker Argument Type. Why: The sample pickers are seeded through addPicFun. How: This types them as its argument.
 import type { RmlRowTyp } from '../core/data-model.ts'; // What: Reminder-Log Row Type. Why: A precomputed reminder row is a saved reminder-log row minus its dated fields. How: This is the base of RawRemTyp and part of hydStaFun's return.
 import type { RslRowTyp } from '../core/data-model.ts'; // What: Reminder-Skip-Log Row Type. Why: Skipped reminders hydrate into their own log. How: This is part of hydStaFun's return.
+import type { TasArgTyp } from '../core/data-model.ts'; // What: Task Argument Type. Why: The sample reminders are seeded through addTasFun. How: This types them as its argument.
 
 // #endregion Imports
 
@@ -141,7 +143,7 @@ type RawStaTyp = { pickLog : RawPicTyp[], reminderLog : RawRemTyp[], reminderSki
  *
 */
 
-const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why: This is the extra sample-picker pool described above, seeded alongside ONB_EXA_OBJ. How: This is spread into actStoObj.addPicFun by onboarding/welcome-tour.tsx's own seeding effect, exactly like a real, user-created picker.
+const ONB_ESP_ARR : PicArgTyp[] = [ // What: Onboarding Extra-Sample-Pickers Array. Why: This is the extra sample-picker pool described above, seeded alongside ONB_EXA_OBJ. How: This is spread into actStoObj.addPicFun by onboarding/welcome-tour.tsx's own seeding effect, exactly like a real, user-created picker.
 
 
 	{ // What: Monthly Chores Entry. Why: This is a second, less-frequent Chores-group picker alongside ONB_EXA_OBJ's own "Daily Chores," rounding out a generated day with deeper, longer-cycle cleaning tasks. How: This is read by the picker engine exactly like any real picker, its own 5 items (oven, whole-house dust, fridge, under-furniture vacuum, mop) themed around chores done far less often than the Daily Chores picker's own pool.
@@ -344,7 +346,7 @@ const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why: This 
  *
 */
 
-const ONB_EXA_OBJ = { // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour (see the comment above this declaration). How: This is spread into actStoObj.addPicFun by onboarding/welcome-tour.tsx's own seeding effect, exactly like a real, user-created picker.
+const ONB_EXA_OBJ : PicArgTyp = { // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour (see the comment above this declaration). How: This is spread into actStoObj.addPicFun by onboarding/welcome-tour.tsx's own seeding effect, exactly like a real, user-created picker.
 
 
 	group : 'Chores',
@@ -497,7 +499,7 @@ const ONB_RCT_OBJ = { // What: Onboarding Reminder-Card-Text Object. Why: This i
  *
 */
 
-const ONB_TAS_ARR = [ // What: Onboarding Task Array. Why: This is the sample-reminder pool described above, seeded alongside the pickers. How: This is spread into actStoObj.addTasFun by onboarding/welcome-tour.tsx's own seeding effect, exactly like a real, user-created task.
+const ONB_TAS_ARR : TasArgTyp[] = [ // What: Onboarding Task Array. Why: This is the sample-reminder pool described above, seeded alongside the pickers. How: This is spread into actStoObj.addTasFun by onboarding/welcome-tour.tsx's own seeding effect, exactly like a real, user-created task.
 
 
 	{ id : 'tk_ob_meds',  name : 'Pick up prescription', repeat : 'once'                                       }, // What: One-Time Reminder Entry. Why: This is the one-time sample reminder's own entry (see the comment above this array for why it stays pending). How: This is read by the reminders engine (tasks.ts) exactly like any real, user-created task.

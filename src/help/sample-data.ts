@@ -6,6 +6,13 @@
 import { ONB_ESP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Extra-Sample-Pickers Array. Why: These are the real onboarding sample pickers, borrowed here so help mode's own copies of them look identical. How: This is read alongside ONB_EXA_OBJ by sedPicFun/clePicFun below.
 import { ONB_EXA_OBJ } from '../state/onboarding-seed-data.ts'; // What: Onboarding Example Object. Why: This is the real onboarding sample picker, borrowed here so help mode's own copy of it looks identical. How: This is read alongside ONB_ESP_ARR by sedPicFun/clePicFun below.
 
+
+import type { ActStoTyp } from '../state/store.ts';     // What: Action Store Type. Why: Seeding and clearing go through the store's actions. How: This types each actStoObj parameter.
+import type { ConRcdTyp } from '../core/data-model.ts'; // What: Conditional Record Type. Why: The gated example's conditional is added through addConFun. How: This types CON_GAT_OBJ as a partial conditional.
+import type { PicArgTyp } from '../core/data-model.ts'; // What: Picker Argument Type. Why: The sample pickers are added through addPicFun. How: This types them as its argument.
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: Seeding checks what already exists in state. How: This types each staAppObj parameter.
+import type { TasArgTyp } from '../core/data-model.ts'; // What: Task Argument Type. Why: The sample reminders are added through addTasFun. How: This types them as its argument.
+
 // #endregion Imports
 
 
@@ -60,7 +67,7 @@ const CON_GAT_STR = 'cnd_hlp_restday'; // What: Conditional Gate String. Why: PI
 
 
 
-const CON_GAT_OBJ = { // What: Conditional Gate Object. Why: This is the day-off gate example described above, holding an existing item of value; PIC_GAT_OBJ depends on it via conditionalId. How: This is added by sedPicFun/removed by clePicFun exactly like any real, user-created conditional.
+const CON_GAT_OBJ : Partial< ConRcdTyp > = { // What: Conditional Gate Object. Why: This is the day-off gate example described above, holding an existing item of value; PIC_GAT_OBJ depends on it via conditionalId. How: This is added by sedPicFun/removed by clePicFun exactly like any real, user-created conditional.
 
 
 	cardText : 'Take a rest day, no yard work today!', // What: Card Text String. Why: This is the message shown on Today whenever this conditional actually gates PIC_GAT_OBJ off for the day. How: This is read wherever a gated-off picker's own card text needs displaying.
@@ -73,7 +80,7 @@ const CON_GAT_OBJ = { // What: Conditional Gate Object. Why: This is the day-off
 
 
 
-const PIC_GAT_OBJ = { // What: Picker Gate Object. Why: This is the picker that depends on CON_GAT_OBJ in the day-off gate example described above. How: This is added by sedPicFun/removed by clePicFun exactly like any real, user-created picker.
+const PIC_GAT_OBJ : PicArgTyp = { // What: Picker Gate Object. Why: This is the picker that depends on CON_GAT_OBJ in the day-off gate example described above. How: This is added by sedPicFun/removed by clePicFun exactly like any real, user-created picker.
 
 
 	conditionalId : CON_GAT_STR,        // What: Conditional Identifier String. Why: This is what actually gates this picker off on the conditional's own down days. How: This is CON_GAT_STR, matching CON_GAT_OBJ's own id.
@@ -115,7 +122,7 @@ const PIC_GAT_OBJ = { // What: Picker Gate Object. Why: This is the picker that 
  *
 */
 
-const EXT_PIC_ARR = [ // What: Extra Picker Array. Why: This is the extra sample-picker pool described above, seeded/removed alongside every other help-only picker. How: This is read by sedPicFun to add each entry (guarded by existing id) and by clePicFun to remove each by id.
+const EXT_PIC_ARR : PicArgTyp[] = [ // What: Extra Picker Array. Why: This is the extra sample-picker pool described above, seeded/removed alongside every other help-only picker. How: This is read by sedPicFun to add each entry (guarded by existing id) and by clePicFun to remove each by id.
 
 
 	{ // What: Extra Picker Object. Why: This is one of the extra picker-mode examples described in the comment above this array, rounding out all 5 picker modes. How: This is read by the picker engine exactly like any real, user-created picker.
@@ -183,7 +190,7 @@ const EXT_PIC_ARR = [ // What: Extra Picker Array. Why: This is the extra sample
  *
 */
 
-const TAS_SAM_ARR = [ // What: Task Sample Array. Why: This is the sample-reminder pool described above, seeded/removed by sedTasFun/cleTasFun. How: This is iterated by sedTasFun to add each entry (guarded by existing id) and by cleTasFun to remove each by id.
+const TAS_SAM_ARR : TasArgTyp[] = [ // What: Task Sample Array. Why: This is the sample-reminder pool described above, seeded/removed by sedTasFun/cleTasFun. How: This is iterated by sedTasFun to add each entry (guarded by existing id) and by cleTasFun to remove each by id.
 
 
 	{ id : 'hlp_tk_once',     name : 'Renew car registration', repeat : 'once'                            }, // What: Sample Task Object. Why: This is one reminder covering one of tasks.ts's own 5 repeat kinds (see the comment above this array for which is which). How: This is read by the reminders engine (tasks.ts) exactly like any real, user-created task.
@@ -203,7 +210,7 @@ const TAS_SAM_ARR = [ // What: Task Sample Array. Why: This is the sample-remind
 
 // #region Helpers
 
-const helIdeFun = ( rawIdeStr ) => `hlp_${ rawIdeStr }`; // What: Help Identifier Function. Why: Every help-mode copy needs its own id, kept in a namespace that can never collide with a real onboarding or user picker. How: This prefixes the given rawIdeStr with the literal 'hlp_' string.
+const helIdeFun = ( rawIdeStr : string ) => `hlp_${ rawIdeStr }`; // What: Help Identifier Function. Why: Every help-mode copy needs its own id, kept in a namespace that can never collide with a real onboarding or user picker. How: This prefixes the given rawIdeStr with the literal 'hlp_' string.
 
 
 
@@ -231,7 +238,7 @@ const helIdeFun = ( rawIdeStr ) => `hlp_${ rawIdeStr }`; // What: Help Identifie
  *
 */
 
-const clePicFun = ( actStoObj ) => { // What: Clear Pickers Function. Why: Every picker/conditional seeded by sedPicFun must be torn back down the moment help mode turns off. How: This removes each onboarding-sample copy and help-only picker by id, then removes the day-off conditional.
+const clePicFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Pickers Function. Why: Every picker/conditional seeded by sedPicFun must be torn back down the moment help mode turns off. How: This removes each onboarding-sample copy and help-only picker by id, then removes the day-off conditional.
 
 
 	[ ONB_EXA_OBJ, ...ONB_ESP_ARR ].forEach( ( curPicObj ) => actStoObj.delPicFun( helIdeFun( curPicObj.id ) ) ); // What: Onboarding Sample Copy Removal Loop. Why: Every copy seeded by sedPicFun's own onboarding-sample loop must be removed again. How: This maps each entry's own id through helIdeFun to find its copy's id, then removes it.
@@ -271,7 +278,7 @@ const clePicFun = ( actStoObj ) => { // What: Clear Pickers Function. Why: Every
  *
 */
 
-const cleTasFun = ( actStoObj ) => { // What: Clear Tasks Function. Why: Every reminder seeded by sedTasFun must be torn back down the moment help mode turns off. How: This removes each TAS_SAM_ARR entry by id.
+const cleTasFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Tasks Function. Why: Every reminder seeded by sedTasFun must be torn back down the moment help mode turns off. How: This removes each TAS_SAM_ARR entry by id.
 
 
 	TAS_SAM_ARR.forEach( ( curTasObj ) => actStoObj.delTasFun( curTasObj.id ) ); // What: Task Sample Removal Loop. Why: Every reminder seeded by sedTasFun must be removed again. How: This removes each TAS_SAM_ARR entry directly by its own id.
@@ -311,7 +318,7 @@ const cleTasFun = ( actStoObj ) => { // What: Clear Tasks Function. Why: Every r
  *
 */
 
-const sedPicFun = ( staAppObj, actStoObj ) => { // What: Seed Pickers Function. Why: Pickers and Data need real, editable copies of every mode plus the conditional-gated example whenever help mode turns on. How: This adds the day-off conditional, then adds each onboarding-sample and help-only picker under its own id, guarded by existence so re-toggling help mode repeatedly can't create duplicates.
+const sedPicFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { // What: Seed Pickers Function. Why: Pickers and Data need real, editable copies of every mode plus the conditional-gated example whenever help mode turns on. How: This adds the day-off conditional, then adds each onboarding-sample and help-only picker under its own id, guarded by existence so re-toggling help mode repeatedly can't create duplicates.
 
 
 	actStoObj.addConFun( CON_GAT_OBJ ); // What: Conditional Seed Call. Why: The gated-picker example needs its own day-off conditional to exist before the picker that depends on it is added. How: This adds CON_GAT_OBJ via the shared addConFun action.
@@ -389,7 +396,7 @@ const sedPicFun = ( staAppObj, actStoObj ) => { // What: Seed Pickers Function. 
  *
 */
 
-const sedTasFun = ( staAppObj, actStoObj ) => { // What: Seed Tasks Function. Why: Data needs one real reminder per recurrence kind whenever help mode turns on. How: This adds each TAS_SAM_ARR entry, guarded by existence so re-toggling help mode repeatedly can't create duplicates.
+const sedTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { // What: Seed Tasks Function. Why: Data needs one real reminder per recurrence kind whenever help mode turns on. How: This adds each TAS_SAM_ARR entry, guarded by existence so re-toggling help mode repeatedly can't create duplicates.
 
 
 	TAS_SAM_ARR.forEach( ( curTasObj ) => { // What: Task Sample Seed Loop. Why: Every entry in TAS_SAM_ARR needs its own guarded add. How: This iterates TAS_SAM_ARR, adding each entry not already present.

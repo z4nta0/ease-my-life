@@ -40,11 +40,13 @@ import type { EntPenTyp } from '../core/data-model.ts'; // What: Entry Pending T
 import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: Item actions patch items. How: This types updIteFun's patch and PicArgTyp's items.
 import type { OnbStaTyp } from '../core/data-model.ts'; // What: Onboarding State Type. Why: The tours flip onboarding flags. How: This types setOnbFun's patch.
 import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: A re-roll marks the rolled-away row rejected. How: This types swaIteFun's rejected log so its outcome stays a known value.
+import type { PicArgTyp } from '../core/data-model.ts'; // What: Picker Argument Type. Why: Adding and editing a picker take the form's fields. How: This types addPicFun's and savEdiFun's argument.
 import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record Type. Why: Picker actions take picker fields. How: This types updPicFun's patch and PicArgTyp's base.
 import type { RemClaTyp } from '../core/data-model.ts'; // What: Reminder Class Type. Why: Each reminder class has its own switches. How: This types setOptFun's switch key.
 import type { RemKinTyp } from '../core/data-model.ts'; // What: Reminder Kind Type. Why: Switches belong to one-time or recurring reminders. How: This types setOptFun's class.
 import type { RslRowTyp } from '../core/data-model.ts'; // What: Reminder-Skip-Log Row Type. Why: Skipping a reminder logs a row. How: This types skiTasFun's skip row so its type stays a known value.
 import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The hook holds the whole app state. How: This types useAppStaFun's returned state and sedHisFun's logs.
+import type { TasArgTyp } from '../core/data-model.ts'; // What: Task Argument Type. Why: Adding a reminder takes the editor's fields. How: This types addTasFun's argument.
 import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Type. Why: Reminder actions take reminder fields. How: This types updTasFun's patch and TasArgTyp's base.
 import type { TodEntTyp } from '../core/data-model.ts'; // What: Today Entry Type. Why: Generating carries Today entries forward. How: This types EntDesTyp's entry fields.
 
@@ -86,9 +88,7 @@ import type { TodEntTyp } from '../core/data-model.ts'; // What: Today Entry Typ
 
 // #region Types
 
-type EntDesTyp = Partial< TodEntTyp > & { _carry? : boolean, entry? : TodEntTyp };                                                                                          // What: Entry Descriptor Type. Why: Generating hands setEntFun both carried entries and fresh picks. How: A carried one is flagged _carry and wraps its existing entry, and a fresh one holds the new entry's fields.
-type PicArgTyp = Partial< PicRcdTyp > & { includeInDaily? : boolean, items? : Partial< IteRcdTyp >[], newConditional? : Partial< ConRcdTyp > | null, replaceId? : string }; // What: Picker Argument Type. Why: Adding or editing a picker passes the form's fields, its items, and any new conditional together. How: This is a partial picker plus whether it joins the daily list, its items, a new conditional, and the id of a sample it replaces.
-type TasArgTyp = Partial< TasRcdTyp > & { replaceId? : string };                                                                                                            // What: Task Argument Type. Why: Adding a reminder passes the editor's fields. How: This is a partial reminder plus the id of a sample it replaces.
+type EntDesTyp = Partial< TodEntTyp > & { _carry? : boolean, entry? : TodEntTyp }; // What: Entry Descriptor Type. Why: Generating hands setEntFun both carried entries and fresh picks. How: A carried one is flagged _carry and wraps its existing entry, and a fresh one holds the new entry's fields.
 
 
 
