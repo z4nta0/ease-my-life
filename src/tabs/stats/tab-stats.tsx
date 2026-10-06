@@ -28,6 +28,7 @@ import { useEmlTouFun } from '../../state/tour-bus.ts';       // What: Use Ease 
 import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The Stats tab changes its saved filters through the store's actions. How: This types TtcProTyp's actStoObj.
 import type { IteRcdTyp } from '../../core/data-model.ts'; // What: Item Record Type. Why: The per-item breakdown mixes live items with deleted ones rebuilt from the log. How: This types that combined list as partial items.
 import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The Stats tab reads every log in the app state. How: This types TtcProTyp's staAppObj.
+import type { VclRowTyp } from '../../core/data-model.ts'; // What: Vacation-Log Row Type. Why: The inactive-day checks replay each item's vacation toggles. How: This types the events grouped per item.
 
 // #endregion Imports
 
@@ -47,6 +48,7 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
  * section together as the tab.
  *
  * Sections:
+ *  - Types
  *  - Constants
  *  - Helpers
  *  - Components
@@ -58,17 +60,25 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
 
 
 
+// #region Types
+
+type PibRowTyp = { autNum : number, couNum : number, delBoo : boolean, denNum : number, freNum : number, gapNum : number | null, ideStr : string, lasNum : number | null, manNum : number, namStr : string, rejNum : number, skiNum : number, speNum : number | null, vacBoo : boolean, wasBoo : boolean }; // What: Pick-Breakdown Row Type. Why: The Pick breakdown card renders, sorts, and labels one combined row per item, live or deleted. How: This types that row's identity flags and every metric it can show, with the gap, last-picked, and spent values null when an item has none.
+
+// #endregion Types
+
+
+
 // #region Constants
 
 const HEA_LEV_ARR = [ cssModObj.hetCelButLevel0, cssModObj.hetCelButLevel1, cssModObj.hetCelButLevel2, cssModObj.hetCelButLevel3, cssModObj.hetCelButLevel4 ]; // What: Heat Level Array. Why: A day's cell tints by its completion level, and a hashed module class can't be built from a string. How: This lists each level's module class in order, so HEA_LEV_ARR[ levValNum ] picks the cell's tint.
 
 
 
-const MET_FIE_OBJ = { auto : 'autNum', count : 'couNum', manual : 'manNum', rejected : 'rejNum', skipped : 'skiNum' }; // What: Metric Field Object. Why: The Pick breakdown's plain-count metrics are selected by id, but each one's value lives under its own row field name. How: This maps a metric id (metKeyStr's own value) to the breakdown row field its sort and display read.
+const MET_FIE_OBJ : Record< string, 'autNum' | 'couNum' | 'manNum' | 'rejNum' | 'skiNum' > = { auto : 'autNum', count : 'couNum', manual : 'manNum', rejected : 'rejNum', skipped : 'skiNum' }; // What: Metric Field Object. Why: The Pick breakdown's plain-count metrics are selected by id, but each one's value lives under its own row field name. How: This maps a metric id (metKeyStr's own value) to the breakdown row field its sort and display read.
 
 
 
-const PER_DAY_OBJ = { monthly : 30, weekly : 7, yearly : 365 }; // What: Period Day Object. Why: Converting a raw calendar-day count into cadence periods needs each cadence's own approximate period length. How: This is looked up by a picker's own cadence value, whose keys it must match exactly.
+const PER_DAY_OBJ : Record< string, number > = { monthly : 30, weekly : 7, yearly : 365 }; // What: Period Day Object. Why: Converting a raw calendar-day count into cadence periods needs each cadence's own approximate period length. How: This is looked up by a picker's own cadence value, whose keys it must match exactly.
 
 
 
@@ -947,7 +957,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const conBreArr = React.useMemo( () => { // What: Conditional Breakdown Array Memo. Why: The Conditionals breakdown card needs conStaArr resorted by whichever metric pill is currently active. How: This picks a comparable value per conMetStr, then sorts with nulls always sinking to the bottom. // Conditionals breakdown list, sorted by the active metric. A null metric value (no rate / no interval / never fired) always sinks to the bottom regardless of sort direction.
 
 
-		const conValFun = ( conRowObj ) => conMetStr === 'triggers' // What: Conditional Value Function. Why: Each metric pill compares a different field, so the sort below needs one function resolving "the active metric's own value" per row. How: This branches on conMetStr, defaulting to the fire-rate field.
+		const conValFun = ( conRowObj : { firNum : number, intNum : number | null, lasStr : string | null, ratNum : number | null, totNum : number } ) => conMetStr === 'triggers' // What: Conditional Value Function. Why: Each metric pill compares a different field, so the sort below needs one function resolving "the active metric's own value" per row. How: This branches on conMetStr, defaulting to the fire-rate field.
 			? conRowObj.firNum                                                     // What: Triggers Branch. Why: The triggers metric compares fired counts. How: This returns firNum.
 			: conMetStr === 'cycles'                                               // What: Cycles Check. Why: The cycles metric compares evaluated-cycle counts. How: This tests for the cycles pill next.
 			? conRowObj.totNum                                                     // What: Cycles Branch. Why: The cycles metric compares totals. How: This returns totNum.
@@ -998,7 +1008,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const exiGroArr = React.useMemo( () => { // What: Existing Group Array Memo. Why: The Group filter row needs the live, deduplicated set of group names actually in use. How: This walks picLisArr once, collecting each non-hidden picker's own group the first time it's seen, then sorts alphabetically. // Distinct group names, alphabetical: drives the group selector that narrows the Show row below it (mirrors the Pickers tab; "All" itself is a separate, always-first pill rendered outside this list).
 
 
-		const seeGroArr = []; // What: Seen Group Array. Why: A plain array preserves first-seen order for the loop below to check membership against, before the final sort reorders it. How: This starts empty and is pushed to as new group names are found.
+		const seeGroArr : string[] = []; // What: Seen Group Array. Why: A plain array preserves first-seen order for the loop below to check membership against, before the final sort reorders it. How: This starts empty and is pushed to as new group names are found.
 
 		for ( const picCurObj of picLisArr ) { // What: Group Collection Loop. Why: Every non-hidden picker with a group contributes that group name, but only once each. How: This pushes a picker's own group the first time it's encountered.
 
@@ -1072,9 +1082,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	// #region Reminder Availability
 
-	const remOptObj = React.useMemo( () => TAS_NAM_OBJ.norOptFun( staAppObj.reminderOpts ), [ staAppObj.reminderOpts ] );                    // What: Reminder Options Object. Why: Which reminder types opt into Stats is a persisted setting that may be missing/partial on an older save. How: This normalizes the raw persisted reminderOpts via TAS_NAM_OBJ' own helper. It's memoized on the saved options, so it keeps one identity until they change.
-	const enaTypArr = React.useMemo( () => [ 'once', 'recurring' ].filter( ( typCurStr ) => remOptObj[ typCurStr ].stats ), [ remOptObj ] ); // What: Enabled Type Array. Why: Every reminder-scoped query below needs to know exactly which of the two types are opted into Stats. How: This keeps whichever of 'once'/'recurring' has its own stats flag turned on, memoized on remOptObj so the dependency arrays below see one stable array until the options change.
-	const remEnaBoo = enaTypArr.length > 0;                                                                                                  // What: Reminder Enabled Boolean. Why: The whole Reminders scope, and its Type-row pill, should only exist once at least one reminder type opts in. How: This is true when enaTypArr isn't empty.
+	const remOptObj = React.useMemo( () => TAS_NAM_OBJ.norOptFun( staAppObj.reminderOpts ), [ staAppObj.reminderOpts ] );                                 // What: Reminder Options Object. Why: Which reminder types opt into Stats is a persisted setting that may be missing/partial on an older save. How: This normalizes the raw persisted reminderOpts via TAS_NAM_OBJ' own helper. It's memoized on the saved options, so it keeps one identity until they change.
+	const enaTypArr = React.useMemo( () => ( [ 'once', 'recurring' ] as const ).filter( ( typCurStr ) => remOptObj[ typCurStr ].stats ), [ remOptObj ] ); // What: Enabled Type Array. Why: Every reminder-scoped query below needs to know exactly which of the two types are opted into Stats. How: This keeps whichever of 'once'/'recurring' has its own stats flag turned on, memoized on remOptObj so the dependency arrays below see one stable array until the options change. // What: Class Tuple Note. Why: Each class name indexes the reminder options. How: The two names are read as a constant tuple so each one is a real class key.
+	const remEnaBoo = enaTypArr.length > 0; // What: Reminder Enabled Boolean. Why: The whole Reminders scope, and its Type-row pill, should only exist once at least one reminder type opts in. How: This is true when enaTypArr isn't empty.
 
 
 	React.useEffect( () => { // What: Reminder Scope Guard Effect. Why: Turning off every reminder type's own Stats opt-in while the Reminders scope is active would otherwise leave the page showing a now-unreachable scope. How: This falls back to 'all' whenever scoValStr is 'reminders' but remEnaBoo has gone false. // Don't strand the view on a Reminders scope that's just been turned off.
@@ -1338,7 +1348,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const dayAggMap = React.useMemo( () => { // What: Day Aggregate Map Memo. Why: The heatmap, streak, and full-days count all need one shared per-day rollup, built once instead of separately per card. How: This walks either remRowArr or picRowArr (whichever scope is active) into a Map keyed by calendar day. // Per-day aggregation, one { donNum, iteArr, totNum } entry per calendar day, each iteArr entry a { donBoo, namStr } pair. A pick day counts every logged row toward totNum and only completed ones toward donNum; a reminder day counts every completion toward both.
 
 
-		const outMapObj = new Map(); // What: Out Map Object. Why: The per-day rollup needs a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by whichever branch below runs.
+		const outMapObj = new Map< string, { donNum : number, iteArr : { donBoo : boolean, namStr : string }[], totNum : number } >(); // What: Out Map Object. Why: The per-day rollup needs a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by whichever branch below runs.
 
 		if ( isaRemBoo ) { // What: Reminders Aggregation Branch. Why: A reminder completion has no "possible total" the way a pick day does, so its own day entry counts done and total identically. How: This walks remRowArr, incrementing both done and total for every completion on its own day.
 
@@ -1675,7 +1685,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const vacCheObj = React.useMemo( () => { // What: Vacation Check Object Memo. Why: Several metrics below need to know an item's own active/inactive state on an arbitrary past day, not just its current state. How: This replays staAppObj.vacationLog into a per-item sorted event list, then exposes two small lookup functions closing over it. // Inactive-state replay from the event log: vacCheObj.inaDayFun(itemId, date) answers whether that item was inactive that day; vacCheObj.retAftFun answers whether an 'on' (return-from-vacation) transition happened after that date.
 
 
-		const iteEveMap = new Map(); // What: Item Event Map. Why: Each item's own vacation-toggle history needs to be grouped before it can be replayed. How: This starts empty and is filled by the loop below.
+		const iteEveMap = new Map< string, VclRowTyp[] >(); // What: Item Event Map. Why: Each item's own vacation-toggle history needs to be grouped before it can be replayed. How: This starts empty and is filled by the loop below.
 
 		for ( const rowCurObj of ( staAppObj.vacationLog || [] ) ) { // What: Vacation Row Grouping Loop. Why: Every logged toggle event needs filing under its own item. How: This appends each row to that item's own array, lazily creating it on first use.
 
@@ -1695,7 +1705,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-		const inaDayFun = ( iteIdeStr, dayIsoStr ) => { // What: Inactive Day Function. Why: Several metrics need to ask "was this item inactive on this specific day", replayed from its own toggle history. How: This walks the item's own sorted events up through dayIsoStr, remembering the most recent on/off state.
+		const inaDayFun = ( iteIdeStr : string, dayIsoStr : string ) => { // What: Inactive Day Function. Why: Several metrics need to ask "was this item inactive on this specific day", replayed from its own toggle history. How: This walks the item's own sorted events up through dayIsoStr, remembering the most recent on/off state.
 
 
 			const iteEveArr = iteEveMap.get( iteIdeStr ); // What: Item Event Array. Why: An item with no vacation history at all has nothing to replay. How: This looks up the item's own event array, which may be undefined.
@@ -1726,7 +1736,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		};
 
 
-		const retAftFun = ( iteIdeStr, dayIsoStr ) => { // What: Return After Function. Why: The "was on vacation" label needs to know whether an item returned FROM vacation after a specific day, not just its state on that day. How: This checks the item's own event array for any later 'on' transition.
+		const retAftFun = ( iteIdeStr : string, dayIsoStr : string ) => { // What: Return After Function. Why: The "was on vacation" label needs to know whether an item returned FROM vacation after a specific day, not just its state on that day. How: This checks the item's own event array for any later 'on' transition.
 
 
 			const iteEveArr = iteEveMap.get( iteIdeStr ); // What: Item Event Array. Why: An item with no vacation history at all can't have a later transition either. How: This looks up the item's own event array, which may be undefined.
@@ -1864,8 +1874,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-		const sorDatArr = [ ...dayInfMap.keys() ].sort(); // What: Sorted Date Array. Why: Run detection below depends on walking the picker's own dates in chronological order. How: This spreads and sorts dayInfMap's own keys.
-		const iteStkMap = new Map();                      // What: Item Streak Map. Why: Every completed depletion streak needs filing under its own item before it can be averaged. How: This starts empty and is filled by the run-walk loop below.
+		const sorDatArr = [ ...dayInfMap.keys() ].sort();                              // What: Sorted Date Array. Why: Run detection below depends on walking the picker's own dates in chronological order. How: This spreads and sorts dayInfMap's own keys.
+		const iteStkMap = new Map< string, { calNum : number, runNum : number }[] >(); // What: Item Streak Map. Why: Every completed depletion streak needs filing under its own item before it can be averaged. How: This starts empty and is filled by the run-walk loop below.
 
 		let staIndNum = 0; // What: Start Index Number. Why: The run-walk loop below needs a cursor marking where the current same-item run began. How: This starts at 0 and advances past each completed run.
 
@@ -2007,7 +2017,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-		return allIteArr.map( ( iteCurObj ) => { // What: Row Build Map. Why: Every item, live or ghost, needs its own combined row of every metric the breakdown card can show. How: This looks each item up in every per-item map above and packages the results together.
+		return allIteArr.map( ( iteCurObj ) : PibRowTyp => { // What: Row Build Map. Why: Every item, live or ghost, needs its own combined row of every metric the breakdown card can show. How: This looks each item up in every per-item map above and packages the results together.
 
 
 			const couEntObj = picCouMap.get( iteCurObj.id ) || { autNum : 0, couNum : 0, manNum : 0, rerNum : 0 };           // What: Count Entry Object. Why: An item with no picks at all still needs a zeroed count entry to read from. How: This looks iteCurObj's own id up in picCouMap, falling back to zeros.
@@ -2073,7 +2083,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		const sorIteArr = perIteArr.slice();             // What: Sorted Item Array. Why: The original perIteArr order must stay stable for other consumers, so a copy is sorted instead. How: This is a shallow copy, sorted in place by whichever branch below runs.
 
 
-		const nulSorFun = ( keyNamStr, tieBreFun ) => ( iteOneObj, iteTwoObj ) => { // What: Null Sort Function. Why: Frequency, Last Picked, and Spent all share the same "missing values sink to the bottom" comparator, differing only in which field they read and how they break a double-null tie. How: This returns a comparator over keyNamStr that pins nulls last and uses tieBreFun when both sides are null.
+		const nulSorFun = ( keyNamStr : 'gapNum' | 'lasNum' | 'speNum', tieBreFun : ( iteOneObj : PibRowTyp, iteTwoObj : PibRowTyp ) => number ) => ( iteOneObj : PibRowTyp, iteTwoObj : PibRowTyp ) => { // What: Null Sort Function. Why: Frequency, Last Picked, and Spent all share the same "missing values sink to the bottom" comparator, differing only in which field they read and how they break a double-null tie. How: This returns a comparator over keyNamStr that pins nulls last and uses tieBreFun when both sides are null.
 
 
 			if ( iteOneObj[ keyNamStr ] == null && iteTwoObj[ keyNamStr ] == null ) return tieBreFun( iteOneObj, iteTwoObj ); // What: Both Null Guard. Why: Two equally-missing values fall back to the caller's own tie-break. How: This returns tieBreFun's own result.
@@ -2094,7 +2104,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		};
 
 
-		const namTieFun = ( iteOneObj, iteTwoObj ) => iteOneObj.namStr.localeCompare( iteTwoObj.namStr ); // What: Name Tie Function. Why: Most null-pinned metrics break a double-null tie alphabetically. How: This compares the two rows' own names.
+		const namTieFun = ( iteOneObj : PibRowTyp, iteTwoObj : PibRowTyp ) => iteOneObj.namStr.localeCompare( iteTwoObj.namStr ); // What: Name Tie Function. Why: Most null-pinned metrics break a double-null tie alphabetically. How: This compares the two rows' own names.
 
 
 
@@ -2126,12 +2136,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const calUniStr = isaCadBoo ? `calendar ${ eliUniStr }` : 'calendar days';    // What: Calendar Unit String. Why: The calendar-mode toggle button's own label needs the same cadence-aware relabeling as the eligible one. How: This prefixes eliUniStr with "calendar", or falls back to the literal "calendar days". // Toggle-button label for calendar mode (relabelled to the cadence unit).
 
 
-	const uniForFun = ( valCouNum ) => isaCadBoo // What: Unit For Function. Why: A day-count metric's own unit word depends on both the picker's cadence and whether the value is singular or plural. How: This defers to CAD_NAM_OBJ.uniWorFun for a cadenced picker, otherwise pluralizes the literal word "day".
+	const uniForFun = ( valCouNum : number ) => isaCadBoo // What: Unit For Function. Why: A day-count metric's own unit word depends on both the picker's cadence and whether the value is singular or plural. How: This defers to CAD_NAM_OBJ.uniWorFun for a cadenced picker, otherwise pluralizes the literal word "day".
 		? CAD_NAM_OBJ.uniWorFun( staCadStr, valCouNum ) // What: Cadenced Branch. Why: A cadenced picker counts in its own period unit. How: This asks CAD_NAM_OBJ.uniWorFun for the matching word.
 		: ( valCouNum === 1 ? 'day' : 'days' );         // What: Daily Branch. Why: A daily picker counts in plain days. How: This pluralizes "day" by valCouNum.
 
 
-	const cadDisFun = ( rawDayNum, uniModStr, daiDayNum ) => { // What: Cadence Display Function. Why: Every day-count metric's own value column needs this same conversion, so it's centralized once instead of repeated per metric. How: This converts rawDayNum into cadence periods for a cadenced picker, otherwise passing daiDayNum straight through. // Format a raw day-count metric for the value column. A cadence picker converts calendar days into periods and ALWAYS shows one decimal (forced ".0") so eligible and calendar line up; a daily picker keeps its existing whole-day display via daiDayNum. Returns { num (string), word }.
+	const cadDisFun = ( rawDayNum : number, uniModStr : string, daiDayNum : number ) => { // What: Cadence Display Function. Why: Every day-count metric's own value column needs this same conversion, so it's centralized once instead of repeated per metric. How: This converts rawDayNum into cadence periods for a cadenced picker, otherwise passing daiDayNum straight through. // Format a raw day-count metric for the value column. A cadence picker converts calendar days into periods and ALWAYS shows one decimal (forced ".0") so eligible and calendar line up; a daily picker keeps its existing whole-day display via daiDayNum. Returns { num (string), word }.
 
 
 		if ( !isaCadBoo ) return { // What: Daily Return. Why: A daily picker's own value column already has its own whole-day formatting computed by the caller. How: This returns daiDayNum as-is, with a simple singular/plural "day"/"days" word.
@@ -2162,7 +2172,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	};
 
 
-	const lasForFun = ( dayCouNum, uniModStr ) => { // What: Last Format Function. Why: The Last Picked metric's own value column needs a distinct elapsed-time label rather than the plain cadDisFun format. How: This special-cases zero (as "Most recent"), otherwise phrasing a cadence-aware or literal "N days ago" string. // Human label for "last picked", in the active unit.
+	const lasForFun = ( dayCouNum : number, uniModStr : string ) => { // What: Last Format Function. Why: The Last Picked metric's own value column needs a distinct elapsed-time label rather than the plain cadDisFun format. How: This special-cases zero (as "Most recent"), otherwise phrasing a cadence-aware or literal "N days ago" string. // Human label for "last picked", in the active unit.
 
 
 		if ( uniModStr === 'eligible' ) { // What: Eligible Mode Branch. Why: Eligible-mode "last picked" is already a period count, phrased differently from the calendar branch below. How: This special-cases zero, then a cadenced or plain count.
@@ -2212,7 +2222,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	// #region Suffix Helpers
 
-	const weiSufFun = React.useCallback( ( iteCurObj ) => { // What: Weight Suffix Function. Why: A weighted/dynamic picker's own items need their configured weight shown alongside the Count metric. How: This returns null unless useWeiBoo is true, otherwise a "weight N" string. // Name suffixes, scoped to the metric being shown: - Count -> weight suffix (weighted / dynamic) - Freq/Spent -> range suffix (ease modes), days from the drift band (soonest = 100/easeMax, latest = 100/easeMin) - Auto/Hand Picked/Re-Rolled Away -> no suffix ("{name} {count}")
+	const weiSufFun = React.useCallback( ( iteCurObj : Partial< IteRcdTyp > | undefined ) => { // What: Weight Suffix Function. Why: A weighted/dynamic picker's own items need their configured weight shown alongside the Count metric. How: This returns null unless useWeiBoo is true, otherwise a "weight N" string. // Name suffixes, scoped to the metric being shown: - Count -> weight suffix (weighted / dynamic) - Freq/Spent -> range suffix (ease modes), days from the drift band (soonest = 100/easeMax, latest = 100/easeMin) - Auto/Hand Picked/Re-Rolled Away -> no suffix ("{name} {count}")
 
 
 		if ( !iteCurObj || !useWeiBoo ) return null; // What: Weight Mode Guard. Why: Only a weighted or dynamic picker's items carry a weight worth showing. How: This returns null for every other mode, or a missing item.
@@ -2225,7 +2235,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	}, [ useWeiBoo ] ); // What: Callback Dependency Array. Why: This callback's own identity only needs to change when the weighted/dynamic flag itself changes. How: useWeiBoo is the sole external value the function body reads.
 
 
-	const ranSufFun = React.useCallback( ( iteCurObj ) => { // What: Range Suffix Function. Why: An ease-up/ease-down item's own configured drift band needs surfacing as a day-range suffix. How: This computes the soonest/latest day-band from the item's own (or the picker's default) easeMin/easeMax.
+	const ranSufFun = React.useCallback( ( iteCurObj : Partial< IteRcdTyp > | undefined ) => { // What: Range Suffix Function. Why: An ease-up/ease-down item's own configured drift band needs surfacing as a day-range suffix. How: This computes the soonest/latest day-band from the item's own (or the picker's default) easeMin/easeMax.
 
 
 		if ( !iteCurObj || !( easUpwBoo || easDowBoo ) ) return null; // What: Ease Mode Guard. Why: This suffix only applies to an ease-up or ease-down picker. How: This returns null for every other mode.
@@ -2250,7 +2260,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	}, [ easUpwBoo, easDowBoo, scoPicObj ] ); // What: Callback Dependency Array. Why: This callback's own identity only needs to change when either ease-mode flag or the scoped picker itself changes. How: Each is read directly inside the function body above.
 
 
-	const actSufFun = React.useCallback( ( iteCurObj ) => { // What: Active Suffix Function. Why: The breakdown list needs one function resolving "whichever suffix applies to the currently active metric", rather than the card checking both individually. How: This dispatches to weiSufFun for the Count metric, ranSufFun for Frequency/Spent, and null otherwise. // Suffix shown for the active metric (count -> weight, freq/spent -> range).
+	const actSufFun = React.useCallback( ( iteCurObj : Partial< IteRcdTyp > | undefined ) => { // What: Active Suffix Function. Why: The breakdown list needs one function resolving "whichever suffix applies to the currently active metric", rather than the card checking both individually. How: This dispatches to weiSufFun for the Count metric, ranSufFun for Frequency/Spent, and null otherwise. // Suffix shown for the active metric (count -> weight, freq/spent -> range).
 
 
 		if ( effMetStr === 'count' ) return weiSufFun( iteCurObj ); // What: Count Suffix Branch. Why: The Count metric shows each item's own weight. How: This returns weiSufFun's own result.
@@ -2284,7 +2294,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-	const gapForFun = ( gapValNum ) => ( gapValNum >= 10 ? Math.round( gapValNum ) : Math.round( gapValNum * 10 ) / 10 ); // What: Gap Format Function. Why: The Frequency metric's own displayed gap should show one decimal for a small, precise value but round to a whole number once the gap is large enough that a decimal adds no useful precision. How: This rounds to the nearest whole number at or above 10, otherwise to one decimal place.
+	const gapForFun = ( gapValNum : number ) => ( gapValNum >= 10 ? Math.round( gapValNum ) : Math.round( gapValNum * 10 ) / 10 ); // What: Gap Format Function. Why: The Frequency metric's own displayed gap should show one decimal for a small, precise value but round to a whole number once the gap is large enough that a decimal adds no useful precision. How: This rounds to the nearest whole number at or above 10, otherwise to one decimal place.
 
 
 
@@ -3148,7 +3158,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 					{ isaConBoo && ( () => { // What: Conditionals Body Visibility Check. Why: This entire block only renders while the Conditionals scope is active. How: This IIFE computes two small local formatters once, then returns the headline cards and breakdown list together.
 
 
-						const conDayFun = ( datIsoStr ) => new Date( datIsoStr + 'T00:00:00' ).toLocaleDateString( undefined, { day : 'numeric', month : 'short' } ); // What: Conditional Day Function. Why: Both the headline "last fired" card and the breakdown's own Last Fired column need the same short date label. How: This formats an ISO date string as a locale "month day" label.
+						const conDayFun = ( datIsoStr : string ) => new Date( datIsoStr + 'T00:00:00' ).toLocaleDateString( undefined, { day : 'numeric', month : 'short' } ); // What: Conditional Day Function. Why: Both the headline "last fired" card and the breakdown's own Last Fired column need the same short date label. How: This formats an ISO date string as a locale "month day" label.
 
 
 
@@ -3671,7 +3681,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 								const yeaIndNum = datYeaArr.indexOf( actYeaNum ); // What: Year Index Number. Why: Both arrows need to know the active year's own position in datYeaArr to disable themselves at either end. How: This looks actYeaNum up in datYeaArr.
 
 
-								const jumYeaFun = ( yeaCurNum, sliDirStr ) => { // What: Jump Year Function. Why: Paging to a different year needs to set the slide direction, the target year, and clear any tapped-cell selection together. How: This updates all three pieces of state in one call.
+								const jumYeaFun = ( yeaCurNum : number, sliDirStr : string ) => { // What: Jump Year Function. Why: Paging to a different year needs to set the slide direction, the target year, and clear any tapped-cell selection together. How: This updates all three pieces of state in one call.
 
 
 									setHeaDirStr( sliDirStr ); // What: Slide Direction Set. Why: The grid slides in from the matching side. How: This writes sliDirStr into heaDirStr.
