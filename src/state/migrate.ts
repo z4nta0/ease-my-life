@@ -10,6 +10,9 @@ import { norGroFun   } from '../core/pickers.ts';  // What: Normalize Group Func
 import { norPicFun   } from '../core/pickers.ts';  // What: Normalize Picker Function. Why: Every saved picker's display name is tidied on load. How: This is called from migStaFun.
 import { TAS_NAM_OBJ } from '../core/tasks.ts';    // What: Tasks Namespace Object. Why: Saved reminders and reminder options are normalized by the reminders engine, not this file. How: This is called (isaStaFun/norOptFun) from migStaFun.
 
+
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: Whatever shape a save arrives in, migStaFun hands back the current one. How: This types its return.
+
 // #endregion Imports
 
 
@@ -78,7 +81,9 @@ const SCH_VER_NUM = 1; // What: Schema Version Number. Why: migStaFun() stamps t
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param curStaObj - Current State Object: The raw, possibly-old-shaped state
- *                    to migStaFun in place.
+ *                    to migStaFun in place. It's typed any, since a save
+ *                    from any app version, or an imported file, can hold
+ *                    anything.
  *
  * @returns curStaObj itself, mutated in place with every missing field
  * backfilled and state.v stamped.
@@ -91,7 +96,7 @@ const SCH_VER_NUM = 1; // What: Schema Version Number. Why: migStaFun() stamps t
  *
 */
 
-function migStaFun ( curStaObj ) {
+function migStaFun ( curStaObj : any ) : StaAppTyp {
 
 
 	if ( curStaObj && curStaObj.today && !curStaObj.today.generatedAt ) { // What: Generated-At Backfill Guard. Why: Old state predates today.generatedAt entirely, and the footer needs SOME timestamp to read sensibly until the next regen. How: This backfills to "this morning" (7:12am) when today exists but generatedAt is missing.
