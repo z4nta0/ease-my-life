@@ -27,6 +27,11 @@ import { TAS_NAM_OBJ  } from '../../core/tasks.ts';                 // What: Tas
 import { useEscCanFun } from '../../ui/escape-cancel.ts';           // What: Use Escape Cancel Function. Why: The quick-add form needs Escape to discard in-progress edits the same way every other editor does. How: This is called once inside RemSecCom.
 import { useTasDraFun } from '../../ui/record-draft.ts';            // What: Use Task Draft Function. Why: An open reminder's name input and schedule editor share one local draft, committed only on Save. How: This is called once inside RemSecCom with the open reminder.
 
+
+import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The section and its cards change reminders through the store's actions. How: This types their actStoObj.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The section reads every reminder and its logs from the app state. How: This types its staAppObj.
+import type { TasRcdTyp } from '../../core/data-model.ts'; // What: Task Record Type. Why: Each card and editor shows one reminder. How: This types the reminder and its draft.
+
 // #endregion Imports
 
 
@@ -51,6 +56,8 @@ import { useTasDraFun } from '../../ui/record-draft.ts';            // What: Use
 
 
 // #region Components
+
+type RccProTyp = { actStoObj : ActStoTyp, cheDatObj? : Date, draNamStr? : string, extClaStr? : string, isaOpeBoo? : boolean, isaTutBoo? : boolean, jusCheStr? : string | null, onAniEndFun? : ( aniEveObj : React.AnimationEvent ) => void, onEdiTasFun? : () => void, onPlaTutFun? : ( kinStr : string, ideStr : string ) => void, onRenTasFun? : ( renNamStr : string ) => void, onSkiTasFun? : () => void, onTogTasFun? : ( tasRcdObj : TasRcdTyp ) => void, onUncTutFun? : ( ideStr : string ) => void, tasRcdObj : TasRcdTyp, tutDonBoo? : boolean }; // What: Reminder-Card-Component Props Type. Why: A reminder card renders either a due reminder with its check, edit, rename, and skip actions, or a sample's tutorial launcher, which passes only a few of them. How: This types RemCarCom's props, with everything beyond the actions bag and the reminder optional.
 
 // #region RemCarCom
 
@@ -79,8 +86,6 @@ import { useTasDraFun } from '../../ui/record-draft.ts';            // What: Use
  *                            animations, defaulting to an empty string.
  * @param props.isaOpeBoo   - Is-An Open Boolean: Whether this card's own
  *                            inline editor is currently open.
- * @param props.isaSkiBoo   - Is-A Skip Boolean: Whether this card's own skip
- *                            confirm is currently open.
  * @param props.isaTutBoo   - Is-A Tutorial Boolean: Whether this instance is a
  *                            mini-tour launcher card for a still-hidden
  *                            sample, rather than a real due reminder.
@@ -118,7 +123,7 @@ import { useTasDraFun } from '../../ui/record-draft.ts';            // What: Use
  *
 */
 
-function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBoo, isaSkiBoo, isaTutBoo, jusCheStr, onAniEndFun, onEdiTasFun, onPlaTutFun, onRenTasFun, onSkiTasFun, onTogTasFun, onUncTutFun, tasRcdObj, tutDonBoo } ) {
+function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBoo, isaTutBoo, jusCheStr, onAniEndFun, onEdiTasFun, onPlaTutFun, onRenTasFun, onSkiTasFun, onTogTasFun, onUncTutFun, tasRcdObj, tutDonBoo } : RccProTyp ) : React.JSX.Element {
 
 
 	if ( isaTutBoo ) { // What: Tutorial Branch. Why: A still-hidden sample reminder renders as a mini-tour launcher card instead of a real due-reminder row. How: This returns the launcher card's own markup outright, never falling through to the real row below.
@@ -543,6 +548,8 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 
 
+type IdcProTyp = { draTasObj : TasRcdTyp, onCloEdiFun : () => void, onDelTasFun : () => void, onPatTasFun : ( patValObj : Partial< TasRcdTyp > ) => void, onSavTasFun : () => void, staAppObj : StaAppTyp }; // What: Inline-Editor-Component Props Type. Why: The inline editor edits a reminder's draft and runs its parent's Cancel, Delete, and Save. How: This types InlEdiCom's props, named Idc since Iec already belongs to IcoSetCom.
+
 // #region InlEdiCom
 
 /**
@@ -578,7 +585,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
  *
 */
 
-function InlEdiCom ( { draTasObj, onCloEdiFun, onDelTasFun, onPatTasFun, onSavTasFun, staAppObj } ) {
+function InlEdiCom ( { draTasObj, onCloEdiFun, onDelTasFun, onPatTasFun, onSavTasFun, staAppObj } : IdcProTyp ) : React.JSX.Element {
 
 
 	return (
@@ -620,6 +627,8 @@ function InlEdiCom ( { draTasObj, onCloEdiFun, onDelTasFun, onPatTasFun, onSavTa
 // #endregion InlEdiCom
 
 
+
+type RscProTyp = { actEdiStr : string | null, actStoObj : ActStoTyp, ariTasSet : Set< string >, cheExiBoo : boolean, ediModBoo : boolean, leaTasSet : Set< string >, logOpeBoo : boolean, onGriDowFun : ( poiEveObj : React.PointerEvent ) => void, onPlaTutFun : ( kinStr : string, ideStr : string ) => void, onTogLogFun : () => void, onUncTutFun : ( ideStr : string ) => void, secRefFun : ( secCurEle : HTMLElement | null ) => void, setActEdiStr : React.Dispatch< React.SetStateAction< string | null > >, staAppObj : StaAppTyp }; // What: Reminder-Section-Component Props Type. Why: The Reminders section lists today's reminders and shares Today's single open-editor slot, Edit Mode, and log panel. How: This types RemSecCom's props.
 
 // #region RemSecCom
 
@@ -677,7 +686,7 @@ function InlEdiCom ( { draTasObj, onCloEdiFun, onDelTasFun, onPatTasFun, onSavTa
  *
 */
 
-function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, leaTasSet, logOpeBoo, onGriDowFun, onPlaTutFun, onTogLogFun, onUncTutFun, secRefFun, setActEdiStr, staAppObj } ) {
+function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, leaTasSet, logOpeBoo, onGriDowFun, onPlaTutFun, onTogLogFun, onUncTutFun, secRefFun, setActEdiStr, staAppObj } : RscProTyp ) : React.JSX.Element {
 
 
 	// #region Due And Tutorial Lists
@@ -1392,7 +1401,6 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 								: ''                                             // What: No Class. Why: A card in no transition needs no extra class. How: This is an empty string.
 							}
 							isaOpeBoo={ opeTasStr === curTasObj.id }
-							isaSkiBoo={ skiIdeStr === curTasObj.id }
 							jusCheStr={ jusCheStr }
 							tasRcdObj={ curTasObj }
 

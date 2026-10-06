@@ -53,6 +53,11 @@ import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Tog
 import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use Ease My Life Tour Function. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
 import { useIteDraFun } from '../../ui/record-draft.ts';            // What: Use Item Draft Function. Why: The open item editor edits a local draft, committed only on Save. How: This is called once with whichever item's editor is open.
 
+
+import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The tab changes state through the store's actions. How: This types TtdProTyp's actStoObj.
+import type { DaiSetTyp } from '../../core/data-model.ts'; // What: Daily Settings Type. Why: The auto-generator reads the daily settings, or nothing on a save that never had them. How: This types its partial copy.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The tab reads the current app state. How: This types TtdProTyp's staAppObj.
+
 // #endregion Imports
 
 
@@ -86,6 +91,8 @@ import { useIteDraFun } from '../../ui/record-draft.ts';            // What: Use
 
 
 // #region Components
+
+type TtdProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, onStaFeaFun : ( ideStr : string ) => void, onStaPagFun : ( ideStr : string ) => void, onStaPicFun : ( ideStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Today-Component Props Type. Why: The Today tab reads and edits the whole app state, navigates to other tabs, and starts tours that run at the app level. How: This types TabTodCom's props, named Ttd since Ttc already belongs to TabStaCom.
 
 // #region TabTodCom
 
@@ -127,7 +134,7 @@ import { useIteDraFun } from '../../ui/record-draft.ts';            // What: Use
  *
 */
 
-function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPagFun, onStaPicFun, staAppObj } ) {
+function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPagFun, onStaPicFun, staAppObj } : TtdProTyp ) : React.JSX.Element {
 
 
 	const todBodRef = React.useRef( null ); // What: Today Body Reference. Why: Today does not share app.tsx's shared .maiInnDiv wrapper (see .todBodDiv's own comment below), so it measures/caches its own flourish instance instead of reusing a ref threaded down from there. How: This is attached to the .todBodDiv div's own ref prop below and read by BacFloCom to measure it.
@@ -1468,10 +1475,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	const [ actGroStr, setActGroStr ] = React.useState( '__reminders' ); // What: Active Group String And Setter. Why: This is the single source of truth for which rail button is highlighted. How: This starts on the Reminders sentinel and is updated by the scroll-spy effect below.
 
-	const secRefObj = React.useRef( {} );    // What: Section Reference Object. Why: The scroll-spy effect below needs a live handle on every rendered group/Reminders/Page-Tours section element. How: This is populated by each section's own ref callback further down and read here.
-	const maiScrRef = React.useRef( null );  // What: Main Scroll Reference. Why: Several handlers (scroll spy, generate's own scroll-to-top, jumGroFun) all need a handle on the shared scroll layout wrapper. How: This is attached to the .todLayDiv div's own ref prop further down.
-	const skiSpyRef = React.useRef( false ); // What: Skip Spy Reference. Why: A programmatic scroll (jumGroFun, or generate's own scroll-to-top) must not have the scroll-spy effect immediately fight back and reassign actGroStr mid-animation. How: This is set true right before such a scroll starts and cleared shortly after it settles.
-	const pinGroRef = React.useRef( null );  // What: Pinned Group Reference. Why: See the doc comment just above. How: This is set by jumGroFun and read/cleared by the scroll-spy effect below.
+	const secRefObj = React.useRef< Record< string, HTMLElement | null > >( {} ); // What: Section Reference Object. Why: The scroll-spy effect below needs a live handle on every rendered group/Reminders/Page-Tours section element. How: This is populated by each section's own ref callback further down and read here.
+	const maiScrRef = React.useRef( null );                                       // What: Main Scroll Reference. Why: Several handlers (scroll spy, generate's own scroll-to-top, jumGroFun) all need a handle on the shared scroll layout wrapper. How: This is attached to the .todLayDiv div's own ref prop further down.
+	const skiSpyRef = React.useRef( false );                                      // What: Skip Spy Reference. Why: A programmatic scroll (jumGroFun, or generate's own scroll-to-top) must not have the scroll-spy effect immediately fight back and reassign actGroStr mid-animation. How: This is set true right before such a scroll starts and cleared shortly after it settles.
+	const pinGroRef = React.useRef( null );                                       // What: Pinned Group Reference. Why: See the doc comment just above. How: This is set by jumGroFun and read/cleared by the scroll-spy effect below.
 
 
 	React.useEffect( () => { // What: Scroll Spy Effect. Why: See the doc comment just above. How: This computes, on every scroll, which section's own header sits closest to (without crossing) the sticky offset line, honoring any pinned bottom-cluster group first.
@@ -1983,9 +1990,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	const [ genMapObj, setGenMapObj ] = React.useState( null ); // What: Generate Map Object And Setter. Why: Every LoaCarCom rendered during a regeneration needs its own live { canArr, ideStr, kinStr, staStr, texStr } record to read from. How: This is populated by genLisFun below and cleared once the cascade finishes.
 
-	const [ leaEntSet, setLeaEntSet ] = React.useState( () => new Set() ); // What: Leaving Entry Set And Setter. Why: A regenerate can drop an entry entirely (its own picker produced no new pick, e.g. its last eligible item just went inactive) without a loader card to cover it, so without this it would sit untouched through the whole generation and then blink out; this flags it to play the normal removal animation instead. How: This is staged by genLisFun below right before the commit and cleared right after.
-	const [ leaTasSet, setLeaTasSet ] = React.useState( () => new Set() ); // What: Leaving Task Set And Setter. Why: A completed one-time reminder a Generate is about to purge needs the same played-out removal animation, on the reminder card itself, before actStoObj.setEntFun actually removes it. How: This is staged by genLisFun below and cleared right after, and is passed straight through to RemSecCom as its own leaTasSet prop.
-	const [ ariTasSet, setAriTasSet ] = React.useState( () => new Set() ); // What: Arriving Task Set And Setter. Why: A reminder a Generate just made newly visible (its day arrived but the generator hadn't run yet) needs to play an entrance instead of just popping in. How: This is staged by genLisFun below and cleared shortly after, and is passed straight through to RemSecCom as its own ariTasSet prop.
+	const [ leaEntSet, setLeaEntSet ] = React.useState( () => new Set() );           // What: Leaving Entry Set And Setter. Why: A regenerate can drop an entry entirely (its own picker produced no new pick, e.g. its last eligible item just went inactive) without a loader card to cover it, so without this it would sit untouched through the whole generation and then blink out; this flags it to play the normal removal animation instead. How: This is staged by genLisFun below right before the commit and cleared right after.
+	const [ leaTasSet, setLeaTasSet ] = React.useState( () => new Set< string >() ); // What: Leaving Task Set And Setter. Why: A completed one-time reminder a Generate is about to purge needs the same played-out removal animation, on the reminder card itself, before actStoObj.setEntFun actually removes it. How: This is staged by genLisFun below and cleared right after, and is passed straight through to RemSecCom as its own leaTasSet prop.
+	const [ ariTasSet, setAriTasSet ] = React.useState( () => new Set< string >() ); // What: Arriving Task Set And Setter. Why: A reminder a Generate just made newly visible (its day arrived but the generator hadn't run yet) needs to play an entrance instead of just popping in. How: This is staged by genLisFun below and cleared shortly after, and is passed straight through to RemSecCom as its own ariTasSet prop.
 
 	const genBusRef = React.useRef( false ); // What: Generate Busy Reference. Why: genLisFun's own re-entrancy guard needs a value that updates synchronously, unlike React state. How: This is set true at genLisFun's own start and false at its own end.
 	const genMapRef = React.useRef( null );  // What: Generate Map Reference. Why: The departing-entry computation inside genLisFun needs to read the live generate map synchronously, without waiting for a state update to land. How: This mirrors genMapObj, written by genLisFun alongside every setGenMapObj call.
@@ -2026,7 +2033,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const genLisFun = async ( genOptObj = {} ) => { // What: Generate List Function. Why: See the doc comment just above. How: This scrolls to the top, computes every pick up front, plays the reel cascade, then commits the new entries and reminder transitions.
+	const genLisFun = async ( genOptObj : { autBoo? : boolean } = {} ) => { // What: Generate List Function. Why: See the doc comment just above. How: This scrolls to the top, computes every pick up front, plays the reel cascade, then commits the new entries and reminder transitions.
 
 
 		const isaAutBoo = !!genOptObj.autBoo; // What: Is-A Auto Boolean. Why: Every branch below that behaves differently for a scheduled auto-run versus a manual/tour-triggered one needs this single flag. How: This reads genOptObj.autBoo, coerced to a real boolean.
@@ -2130,7 +2137,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const ordSloArr = []; // What: Ordered Slot Array. Why: Ordered animation slots (encounter order) let day-off/charging cards settle DURING the cascade alongside picks, instead of popping in at the final commit; each slot is keyed by the picker whose list position it occupies during the loader. How: This is pushed to inside the main loop below.
 		const carEntArr = []; // What: Carried Entry Array. Why: A cadence pick persisting from a prior day still needs its own encounter-order slot, wrapped so the commit step below can tell it apart from a fresh pick. How: This is pushed to inside the main loop below.
 
-		const picNamSet = new Set(); // What: Picked Name Set. Why: Item names already committed to today's list so far (lowercased) are fed to any avoidDuplicates picker below so it won't re-surface an item another picker already put on today's list; seeded with carried-over cadence picks (still "on the list" today, just not freshly picked), then grown as each fresh pick lands, in encounter order, matching "as it is being built" rather than checking against the final list. How: This is read by PIC_NAM_OBJ.picIteFun's own excludeNames option and added to throughout the loop below.
+		const picNamSet = new Set< string >(); // What: Picked Name Set. Why: Item names already committed to today's list so far (lowercased) are fed to any avoidDuplicates picker below so it won't re-surface an item another picker already put on today's list; seeded with carried-over cadence picks (still "on the list" today, just not freshly picked), then grown as each fresh pick lands, in encounter order, matching "as it is being built" rather than checking against the final list. How: This is read by PIC_NAM_OBJ.picIteFun's own excludeNames option and added to throughout the loop below.
 
 
 		for ( const picIdeStr of staAppObj.daily.pickerIds ) { // What: Daily Picker Loop. Why: This is the actual per-picker scheduling/picking pass every other collection above feeds from. How: This walks every picker id in staAppObj.daily.pickerIds, gating and picking (or suppressing) each one in turn.
@@ -2655,7 +2662,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	React.useEffect( () => { // What: Daily Auto-Generator Effect. Why: See the doc comment just above. How: This checks the run-time boundary immediately and then once a minute, generating a fresh list whenever the last generation predates it.
 
 
-		const daiRecObj = staAppObj.daily || {}; // What: Daily Record Object. Why: Every check below reads this same resolved daily-generator config. How: This reads staAppObj.daily, falling back to an empty object.
+		const daiRecObj : Partial< DaiSetTyp > = staAppObj.daily || {}; // What: Daily Record Object. Why: Every check below reads this same resolved daily-generator config. How: This reads staAppObj.daily, falling back to an empty object.
 
 
 		if ( ( daiRecObj.mode || 'auto' ) !== 'auto' ) return; // What: Not Auto Mode Guard. Why: A manual-only daily generator must never run itself. How: This bails out of the effect entirely unless daiRecObj.mode resolves to 'auto'.

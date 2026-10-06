@@ -36,6 +36,8 @@ import { LogChiCom } from './day-log.tsx';         // What: Log Chip Component. 
 
 // #region Components
 
+type GhcProTyp = { donCouNum : number, ediModBoo : boolean, groNamStr : string, logOpeBoo? : boolean, merPenObj? : { from : string, to : string } | null, onCanMerFun? : () => void, onConMerFun? : () => void, onGriDowFun? : ( poiEveObj : React.PointerEvent ) => void, onRenGroFun? : ( newValStr : string ) => void, onTogLogFun? : () => void, totCouNum : number, valNamFun? : ( rawValStr : string ) => string | null }; // What: Group-Header-Component Props Type. Why: A group header shows its progress and, in Edit Mode, renames and reorders its group, while the Reminders header uses only the basics. How: This types GroHeaCom's props, with every rename, merge, reorder, and log prop optional.
+
 // #region GroHeaCom
 
 /**
@@ -86,7 +88,7 @@ import { LogChiCom } from './day-log.tsx';         // What: Log Chip Component. 
  *
 */
 
-function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, onCanMerFun, onConMerFun, onGriDowFun, onRenGroFun, onTogLogFun, totCouNum, valNamFun } ) {
+function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, onCanMerFun, onConMerFun, onGriDowFun, onRenGroFun, onTogLogFun, totCouNum, valNamFun } : GhcProTyp ) : React.JSX.Element {
 
 
 	// #region Cascade Dash Animation
@@ -195,7 +197,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 	 *
 	*/
 
-	const finCloFun = ( chaValBoo, newValStr ) => { // What: Finish Close Function. Why: See the doc comment just above. How: This stages cloOutBoo, then after the out animation's base duration step closes ediOpeBoo and either commits newValStr or reverts draNamStr.
+	const finCloFun = ( chaValBoo : boolean, newValStr? : string ) => { // What: Finish Close Function. Why: See the doc comment just above. How: This stages cloOutBoo, then after the out animation's base duration step closes ediOpeBoo and either commits newValStr or reverts draNamStr.
 
 
 		setCloOutBoo( true ); // What: Closing Flag Set. Why: The field's own out-animation needs to start immediately. How: This flips cloOutBoo to true.

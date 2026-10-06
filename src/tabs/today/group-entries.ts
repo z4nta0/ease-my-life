@@ -6,6 +6,12 @@
 import { ONB_CHE_OBJ } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: A sample picker keeps its launcher card only until its tutorial is done. How: This is called via ONB_CHE_OBJ.entLooFun.
 import { ONB_SPI_ARR } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: Sample pickers get launcher cards instead of picked entries. How: This is checked with .includes for each picker.
 
+
+import type { EntKinTyp } from '../../core/data-model.ts'; // What: Entry Kind Type. Why: A row's entry kind extends the saved kinds with a tutorial launcher. How: This types TodRowTyp's kind.
+import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Record Type. Why: Every row carries its picker or a stand-in for one. How: This types TodRowTyp's picRecObj.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: Grouping reads today's entries, the pickers, and the saved orders. How: This types groEntFun's staAppObj.
+import type { TodEntTyp } from '../../core/data-model.ts'; // What: Today Entry Type. Why: Every row carries an entry or a stand-in for one. How: This types TodRowTyp's entRecObj.
+
 // #endregion Imports
 
 
@@ -21,12 +27,22 @@ import { ONB_SPI_ARR } from '../../state/onboarding-seed-data.ts'; // What: Onbo
  * without disturbing groups or pickers that have no entries today.
  *
  * Sections:
+ *  - Types
  *  - Helpers
  *  - Exports
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Types
+
+type TodRowTyp = { entRecObj : Partial< Omit< TodEntTyp, 'kind' > > & { kind? : EntKinTyp | 'tutorial' }, picRecObj : Partial< PicRcdTyp > }; // What: Today Row Type. Why: Every Today card pairs an entry with its picker, but day-off and tutorial cards build stand-ins for whichever half they lack. How: This types a row whose entry and picker may each be partial, and whose kind can also be a tutorial launcher.
+type TodGroTyp = { entArr : TodRowTyp[], namStr : string };                                                                                   // What: Today Group Type. Why: The Today list renders one header and its rows per group. How: This types a group's name and its sorted rows.
+
+// #endregion Types
 
 
 
@@ -60,12 +76,12 @@ import { ONB_SPI_ARR } from '../../state/onboarding-seed-data.ts'; // What: Onbo
  *
 */
 
-function groEntFun ( staAppObj ) {
+function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 
 
 	// #region Bucket Picker/Day-Off Entries
 
-	const groBucMap = new Map(); // What: Group Bucket Map. Why: Every entry below needs to land in its own group's bucket, created the first time that group is seen. How: This is read and populated by both loops in this region, keyed by group name.
+	const groBucMap = new Map< string, TodGroTyp >(); // What: Group Bucket Map. Why: Every entry below needs to land in its own group's bucket, created the first time that group is seen. How: This is read and populated by both loops in this region, keyed by group name.
 
 
 	for ( const curEntObj of staAppObj.today.entries ) { // What: Today Entry Bucket Loop. Why: Every real entry (pick, day-off, charging) needs to land in its own picker's group. How: This walks staAppObj.today.entries, resolving each one's own picker and group before pushing it into groBucMap.
@@ -338,7 +354,7 @@ function groEntFun ( staAppObj ) {
  *
 */
 
-function merOrdFun ( fulOrdArr, preNewArr ) {
+function merOrdFun ( fulOrdArr : string[] | null | undefined, preNewArr : string[] | null | undefined ) : string[] {
 
 
 	// #region Dedupe Present Keys
@@ -433,7 +449,7 @@ function merOrdFun ( fulOrdArr, preNewArr ) {
 
 // #region Exports
 
-export { groEntFun, merOrdFun }; // What: Named Exports. Why: The Today tab builds its grouped list with groEntFun and saves Edit Mode reorders with merOrdFun. How: This exports both helpers by name.
+export { groEntFun, merOrdFun, type TodGroTyp, type TodRowTyp }; // What: Named Exports. Why: The Today tab builds its grouped list with groEntFun, saves Edit Mode reorders with merOrdFun, and types its rows and groups. How: This exports both helpers and both types by name.
 
 // #endregion Exports
 

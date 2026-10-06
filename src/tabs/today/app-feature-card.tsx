@@ -12,6 +12,10 @@ import { IcoSvgCom   } from '../../ui/icon.tsx';                 // What: Icon S
 import { InfTipCom   } from '../../ui/info-tip.tsx';             // What: Info Tip Component. Why: A blocked tour's Play button needs to explain why it is disabled. How: This wraps that button with the blocked reason as its tip.
 import { PAG_LAB_OBJ } from '../../onboarding/app-features.tsx'; // What: Page Label Object. Why: The card's meta row names the page its feature lives on. How: This is looked up by the feature's page.
 
+
+import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The card changes state through the store's actions. How: This types AfcProTyp's actStoObj.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The card reads whether its tutorial is done. How: This types AfcProTyp's staAppObj.
+
 // #endregion Imports
 
 
@@ -35,6 +39,8 @@ import { PAG_LAB_OBJ } from '../../onboarding/app-features.tsx'; // What: Page L
 
 
 // #region Components
+
+type AfcProTyp = { actStoObj : ActStoTyp, feaRecObj : { ideStr : string, labStr : string, pagStr : string, timStr : string }, onPlaTutFun : ( kinStr : string, ideStr : string ) => void, onUncFeaFun : ( ideStr : string ) => void, staAppObj : StaAppTyp }; // What: App-Feature-Component Props Type. Why: An App Features launcher card starts or un-resolves its tutorial and reads whether it's done. How: This types AppFeaCom's props.
 
 // #region AppFeaCom
 
@@ -68,7 +74,7 @@ import { PAG_LAB_OBJ } from '../../onboarding/app-features.tsx'; // What: Page L
  *
 */
 
-function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj } ) {
+function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj } : AfcProTyp ) : React.JSX.Element {
 
 
 	const tutDonBoo = !!( staAppObj.onboarding && staAppObj.onboarding.appFeatures && staAppObj.onboarding.appFeatures[ feaRecObj.ideStr ] ); // What: Tutorial Done Boolean. Why: A resolved App Feature card renders/behaves differently from a pending one. How: This reads staAppObj's own onboarding.appFeatures map for feaRecObj's own ideStr.

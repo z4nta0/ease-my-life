@@ -16,6 +16,13 @@ import { SED_NAM_OBJ } from '../../state/seed.ts';        // What: Seed Namespac
 import { TAS_NAM_OBJ } from '../../core/tasks.ts';        // What: Tasks Namespace Object. Why: RemLogCom needs the reminders engine's own scheduling helpers (ancDatFun, visTodFun, isaDonFun, nexEliFun, sumTasFun). How: These are called throughout RemLogCom below.
 import { THR_VAL_NUM } from '../../constants.ts';         // What: Threshold Value Number. Why: Ease day-range math in this file divides by the shared full-charge ceiling. How: This is divided by an item's own easeMin/easeMax wherever a drift-to-days conversion happens.
 
+
+import type { ConRcdTyp } from '../../core/data-model.ts'; // What: Conditional Record Type. Why: The log describes each conditional gating a group. How: This types conSubFun's conRcdObj.
+import type { IteRcdTyp } from '../../core/data-model.ts'; // What: Item Record Type. Why: The log describes each picker's items. How: This types iteSubFun's iteRcdObj.
+import type { PclRowTyp } from '../../core/data-model.ts'; // What: Pick-Log Row Type. Why: Item flags come from today's pick log rows. How: This types dayFlaFun's picLogArr.
+import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Record Type. Why: The log is organized by picker. How: This types the pickers its helpers and blocks read.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The log panels read the logs, pickers, and reminders in the app state. How: This types their staAppObj.
+
 // #endregion Imports
 
 
@@ -39,6 +46,7 @@ import { THR_VAL_NUM } from '../../constants.ts';         // What: Threshold Val
  * at state.today.genLog.
  *
  * Sections:
+ *  - Types
  *  - Helpers
  *  - Components
  *  - Exports
@@ -46,6 +54,14 @@ import { THR_VAL_NUM } from '../../constants.ts';         // What: Threshold Val
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Types
+
+type IteFlaTyp = { anyBoo : boolean, autBoo : boolean, comBoo : boolean, pusBoo : boolean, rolBoo : boolean, skiBoo : boolean }; // What: Item Flags Type. Why: Each item's row shows status chips for what happened to it today. How: This types the flags dayFlaFun builds and StaChiCom reads, each true once a pick log row sets it.
+
+// #endregion Types
 
 
 
@@ -74,7 +90,7 @@ import { THR_VAL_NUM } from '../../constants.ts';         // What: Threshold Val
  *
 */
 
-function conSubFun ( conRcdObj ) {
+function conSubFun ( conRcdObj : ConRcdTyp ) : string {
 
 
 	if ( conRcdObj.mode === 'ease-up' || conRcdObj.mode === 'ease-down' ) { // What: Ease Mode Branch. Why: Both ease modes phrase their own subline as a soonest-latest day range. How: This computes that range from conRcdObj's own threshold/ease-min/ease-max.
@@ -142,10 +158,10 @@ function conSubFun ( conRcdObj ) {
  *
 */
 
-function dayFlaFun ( picLogArr, picIdeStr, dayKeyStr ) {
+function dayFlaFun ( picLogArr : PclRowTyp[], picIdeStr : string, dayKeyStr : string ) : Map< string, IteFlaTyp > {
 
 
-	const iteFlaMap = new Map(); // What: Item Flags Map. Why: Every matching row below folds into this same per-item accumulator. How: This starts empty and is populated by the loop below, keyed by itemId.
+	const iteFlaMap = new Map< string, IteFlaTyp >(); // What: Item Flags Map. Why: Every matching row below folds into this same per-item accumulator. How: This starts empty and is populated by the loop below, keyed by itemId.
 
 
 	for ( const logRowObj of ( picLogArr || [] ) ) { // What: Pick Log Row Loop. Why: Every row in picLogArr is a candidate contribution to iteFlaMap. How: This walks picLogArr (or an empty array when it's missing), skipping any row that isn't for this exact picker/day.
@@ -227,7 +243,7 @@ function dayFlaFun ( picLogArr, picIdeStr, dayKeyStr ) {
  *
 */
 
-function forDueFun ( dueDatObj, dayKeyStr ) {
+function forDueFun ( dueDatObj : Date | null, dayKeyStr : string ) : string {
 
 
 	if ( !dueDatObj ) return 'No upcoming'; // What: No Upcoming Guard. Why: A reminder with no real next occurrence at all needs its own plain label. How: This returns immediately when dueDatObj is falsy.
@@ -238,7 +254,7 @@ function forDueFun ( dueDatObj, dayKeyStr ) {
 
 	const curMidObj = new Date( yeaValNum, monValNum - 1, domValNum );                                // What: Current Midnight Object. Why: The day-count below must compare 2 midnights, not 2 arbitrary times of day. How: This builds a local Date at midnight from yeaValNum/monValNum/domValNum.
 	const dueMidObj = new Date( dueDatObj.getFullYear(), dueDatObj.getMonth(), dueDatObj.getDate() ); // What: Due Midnight Object. Why: The day-count below must compare 2 midnights, not 2 arbitrary times of day. How: This builds a local Date at midnight from dueDatObj's own year/month/day.
-	const dayDifNum = Math.round( ( dueMidObj - curMidObj ) / 86400000 );                             // What: Day Difference Number. Why: The branches below phrase their own label from a whole day count, not a raw millisecond difference. How: This subtracts curMidObj from dueMidObj and divides by the number of milliseconds in a day.
+	const dayDifNum = Math.round( ( dueMidObj.getTime() - curMidObj.getTime() ) / 86400000 );         // What: Day Difference Number. Why: The branches below phrase their own label from a whole day count, not a raw millisecond difference. How: This subtracts curMidObj from dueMidObj and divides by the number of milliseconds in a day.
 
 
 	if ( dayDifNum <= 1 ) return 'Due tomorrow'; // What: Due Tomorrow Return. Why: 0 or 1 day out reads better as "tomorrow" than a bare day count. How: This returns once dayDifNum falls at or below 1.
@@ -258,7 +274,7 @@ function forDueFun ( dueDatObj, dayKeyStr ) {
 
 
 
-const forTimFun = ( isoTimStr ) => { // What: Format Time Function. Why: Both GroLogCom's kicker needs a plain "3:42 PM" style time for when the day was generated. How: This builds a Date from isoTimStr and formats it via toLocaleTimeString, swallowing an invalid input as an empty string.
+const forTimFun = ( isoTimStr : string ) => { // What: Format Time Function. Why: Both GroLogCom's kicker needs a plain "3:42 PM" style time for when the day was generated. How: This builds a Date from isoTimStr and formats it via toLocaleTimeString, swallowing an invalid input as an empty string.
 
 
 	try { return new Date( isoTimStr ).toLocaleTimeString( [], { hour : 'numeric', minute : '2-digit' } ); } // What: Format Attempt. Why: An otherwise-valid isoTimStr should render as a plain local time. How: This builds a Date from isoTimStr and formats it with no seconds.
@@ -270,7 +286,7 @@ const forTimFun = ( isoTimStr ) => { // What: Format Time Function. Why: Both Gr
 
 
 
-const hasValFun = ( picModStr ) => { // What: Has Value Function. Why: PicBloCom and ValCelCom both need to know whether a picker's own mode tracks a numeric value at all, since random/weighted modes have nothing to show in the At-generation/After columns. How: This is called with a picker's own mode string.
+const hasValFun = ( picModStr : string ) => { // What: Has Value Function. Why: PicBloCom and ValCelCom both need to know whether a picker's own mode tracks a numeric value at all, since random/weighted modes have nothing to show in the At-generation/After columns. How: This is called with a picker's own mode string.
 
 
 	const easUpwBoo = picModStr === 'ease-up';   // What: Ease Upward Boolean. Why: This mode is one of the 3 that track a numeric value. How: This checks picModStr against the literal 'ease-up' mode key.
@@ -323,7 +339,7 @@ const hasValFun = ( picModStr ) => { // What: Has Value Function. Why: PicBloCom
  *
 */
 
-function iteSubFun ( picRcdObj, iteRcdObj, booValNum ) {
+function iteSubFun ( picRcdObj : PicRcdTyp, iteRcdObj : IteRcdTyp, booValNum : number | null ) : React.ReactNode {
 
 
 	const picModStr = picRcdObj.mode; // What: Picker Mode String. Why: Every branch below decides its own subline shape from this same picker mode. How: This reads picRcdObj's own mode once for reuse throughout.
@@ -402,6 +418,8 @@ function iteSubFun ( picRcdObj, iteRcdObj, booValNum ) {
 
 // #region Components
 
+type IecProTyp = { className? : string, icoKeyStr : string, strWidNum? : number }; // What: Icon-Set-Component Props Type. Why: A status icon draws one named shape, optionally styled and stroked by its parent. How: This types IcoSetCom's props, named Iec since Isc already belongs to another component.
+
 // #region IcoSetCom
 
 /**
@@ -430,7 +448,7 @@ function iteSubFun ( picRcdObj, iteRcdObj, booValNum ) {
  *
 */
 
-function IcoSetCom ( { className, icoKeyStr, strWidNum = 2 } ) {
+function IcoSetCom ( { className, icoKeyStr, strWidNum = 2 } : IecProTyp ) : React.JSX.Element {
 
 
 	const isePatObj = { // What: Icon-Shape-Element Path Object. Why: This is the lookup table mapping every icon key this file uses to its own inline SVG shape markup. How: This is indexed below by icoKeyStr to pick which shape the rendered svg actually draws.
@@ -486,6 +504,8 @@ function IcoSetCom ( { className, icoKeyStr, strWidNum = 2 } ) {
 
 
 
+type ShcProTyp = { iteFlaObj : IteFlaTyp | undefined }; // What: Status-Chip-Component Props Type. Why: An item's status chips show what happened to it today. How: This types StaChiCom's props, named Shc since Scc already belongs to another component.
+
 // #region StaChiCom
 
 /**
@@ -512,7 +532,7 @@ function IcoSetCom ( { className, icoKeyStr, strWidNum = 2 } ) {
  *
 */
 
-function StaChiCom ( { iteFlaObj } ) {
+function StaChiCom ( { iteFlaObj } : ShcProTyp ) : React.JSX.Element {
 
 
 	if ( !iteFlaObj || !iteFlaObj.anyBoo ) { // What: No Rows Guard. Why: An item with no pick-log rows today has nothing to show but a placeholder. How: This returns the em-dash placeholder span below (a display glyph, not prose) before building any chips below.
@@ -606,6 +626,8 @@ function StaChiCom ( { iteFlaObj } ) {
 
 
 
+type ThcProTyp = { heaLabStr? : string }; // What: Table-Header-Component Props Type. Why: A log table's header names its first column. How: This types TabHeaCom's props.
+
 // #region TabHeaCom
 
 /**
@@ -630,7 +652,7 @@ function StaChiCom ( { iteFlaObj } ) {
  *
 */
 
-function TabHeaCom ( { heaLabStr = 'Item' } ) {
+function TabHeaCom ( { heaLabStr = 'Item' } : ThcProTyp ) : React.JSX.Element {
 
 
 	return (
@@ -706,6 +728,8 @@ function TabHeaCom ( { heaLabStr = 'Item' } ) {
 
 
 
+type VccProTyp = { aftValNum : number | null, genValNum : number | null, hasValBoo : boolean, offValNum? : number }; // What: Value-Cell-Component Props Type. Why: A value cell compares an item's value at generation with its value now. How: This types ValCelCom's props.
+
 // #region ValCelCom
 
 /**
@@ -745,7 +769,7 @@ function TabHeaCom ( { heaLabStr = 'Item' } ) {
  *
 */
 
-function ValCelCom ( { aftValNum, genValNum, hasValBoo, offValNum = 0 } ) {
+function ValCelCom ( { aftValNum, genValNum, hasValBoo, offValNum = 0 } : VccProTyp ) : React.JSX.Element {
 
 
 	if ( !hasValBoo || genValNum == null ) { // What: No Value Guard. Why: A moded-out row or one with no generation snapshot at all has nothing real to show in any of the 3 cells. How: This renders all 3 as N/A/flat placeholders before computing anything below.
@@ -831,6 +855,8 @@ function ValCelCom ( { aftValNum, genValNum, hasValBoo, offValNum = 0 } ) {
 
 
 
+type CsoProTyp = { picGroArr : PicRcdTyp[], staAppObj : StaAppTyp }; // What: Conditional-Section-Component Props Type. Why: The conditional section lists the conditionals gating one group's pickers. How: This types ConSecCom's props, named Cso since Csc, Cec, and Ccc already belong to other components.
+
 // #region ConSecCom
 
 /**
@@ -859,7 +885,7 @@ function ValCelCom ( { aftValNum, genValNum, hasValBoo, offValNum = 0 } ) {
  *
 */
 
-function ConSecCom ( { picGroArr, staAppObj } ) {
+function ConSecCom ( { picGroArr, staAppObj } : CsoProTyp ) : React.JSX.Element | null {
 
 
 	const conIdeArr = [ ...new Set( picGroArr.filter( ( picRcdObj ) => picRcdObj.conditionalId ).map( ( picRcdObj ) => picRcdObj.conditionalId ) ) ]; // What: Conditional Identifier Array. Why: This section only needs the unique conditional ids actually attached to this group's own pickers. How: This maps picGroArr down to its own conditionalId values, deduped via a Set.
@@ -1028,6 +1054,8 @@ function ConSecCom ( { picGroArr, staAppObj } ) {
 
 
 
+type PlcProTyp = { dayKeyStr : string, isaSupBoo : boolean, picRcdObj : PicRcdTyp, staAppObj : StaAppTyp }; // What: Picker-Block-Component Props Type. Why: A picker block shows one picker's items and what happened to each today. How: This types PicBloCom's props, named Plc since Pbc already belongs to ProBarCom.
+
 // #region PicBloCom
 
 /**
@@ -1061,7 +1089,7 @@ function ConSecCom ( { picGroArr, staAppObj } ) {
  *
 */
 
-function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
+function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp ) : React.JSX.Element {
 
 
 	const [ bloOpeBoo, setBloOpeBoo ] = React.useState( true ); // What: Block Open Boolean And Setter. Why: This picker's own item table starts expanded, but can be collapsed independently of every other picker's own block. How: This is flipped by the header button's own onClick below.
@@ -1345,6 +1373,8 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 
 
 
+type GlcProTyp = { groNamStr : string, onCloLogFun : () => void, staAppObj : StaAppTyp }; // What: Group-Log-Component Props Type. Why: A group's log panel covers that group's pickers and can be closed. How: This types GroLogCom's props.
+
 // #region GroLogCom
 
 /**
@@ -1374,7 +1404,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
  *
 */
 
-function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } ) {
+function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React.JSX.Element {
 
 
 	const dayKeyStr = isoDayFun();                                                                                                    // What: Day Key String. Why: Every lookup below (conditionals, pickers, items) is scoped to today's own date key. How: This calls isoDayFun with no argument, defaulting to right now.
@@ -1632,6 +1662,8 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } ) {
 
 
 
+type LccProTyp = { onTogLogFun : () => void, open : boolean }; // What: Log-Chip-Component Props Type. Why: The log chip opens and closes a section's log panel. How: This types LogChiCom's props.
+
 // #region LogChiCom
 
 /**
@@ -1659,7 +1691,7 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } ) {
  *
 */
 
-function LogChiCom ( { onTogLogFun, open } ) {
+function LogChiCom ( { onTogLogFun, open } : LccProTyp ) : React.JSX.Element {
 
 
 	return (
@@ -1708,6 +1740,8 @@ function LogChiCom ( { onTogLogFun, open } ) {
 
 
 
+type RlcProTyp = { onCloLogFun : () => void, staAppObj : StaAppTyp }; // What: Reminder-Log-Component Props Type. Why: The reminders' log panel covers every reminder and can be closed. How: This types RemLogCom's props.
+
 // #region RemLogCom
 
 /**
@@ -1738,7 +1772,7 @@ function LogChiCom ( { onTogLogFun, open } ) {
  *
 */
 
-function RemLogCom ( { onCloLogFun, staAppObj } ) {
+function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Element {
 
 
 	const ancDatObj = TAS_NAM_OBJ.ancDatFun( staAppObj.today && staAppObj.today.generatedAt );                         // What: Anchor Date Object. Why: Every lookup below must use the same frozen anchor the Reminders section above this panel already used. How: This calls TAS_NAM_OBJ.ancDatFun with staAppObj's own today.generatedAt, if any.

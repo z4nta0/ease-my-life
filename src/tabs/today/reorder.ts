@@ -46,6 +46,8 @@ const SHI_EAS_STR = 'transform 0.18s cubic-bezier(0.4, 0, 0.2, 1)'; // What: Shi
 
 // #region Helpers
 
+type DraConTyp = { conLisEle : HTMLElement, griIcoEle? : HTMLElement | null, hanDraEle : HTMLElement, iteSelStr : string, onDroOrdFun : ( newOrdArr : number[] ) => void, onEndDraFun? : () => void, onStaDraFun? : () => void, scrConEle? : HTMLElement | null }; // What: Drag Configuration Type. Why: A caller hands the gesture its list, its dragged element, and its callbacks. How: This types staDraFun's draConObj, with the grip, scroll container, and lifecycle hooks optional.
+
 // #region staDraFun
 
 /**
@@ -93,7 +95,7 @@ const SHI_EAS_STR = 'transform 0.18s cubic-bezier(0.4, 0, 0.2, 1)'; // What: Shi
  *
 */
 
-function staDraFun ( dowEveObj, draConObj ) {
+function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'pointerId' | 'preventDefault' >, draConObj : DraConTyp ) : void {
 
 
 	// #region Drag Configuration
@@ -126,7 +128,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 	// #region Origin Lookup
 
-	const iteEleArr = Array.from( conLisEle.querySelectorAll( iteSelStr ) ) // What: Item Element Array. Why: Every reorderable sibling's rect needs to be snapshotted before the gesture moves anything. How: This queries every iteSelStr match under conLisEle, then keeps only its own direct children below.
+	const iteEleArr = Array.from( conLisEle.querySelectorAll< HTMLElement >( iteSelStr ) ) // What: Item Element Array. Why: Every reorderable sibling's rect needs to be snapshotted before the gesture moves anything. How: This queries every iteSelStr match under conLisEle, then keeps only its own direct children below.
 		.filter( ( chiCurEle ) => chiCurEle.parentElement === conLisEle ); // What: Direct Child Filter. Why: A nested match (e.g. a card inside a card) would otherwise be mistaken for a top-level sibling. How: This keeps only the elements whose own parentElement is conLisEle itself.
 
 

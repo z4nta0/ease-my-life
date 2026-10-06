@@ -10,6 +10,10 @@ import React     from 'react';                       // What: React. Why: PagTou
 import { IcoSvgCom   } from '../../ui/icon.tsx';                   // What: Icon Svg Component. Why: The card's Play and uncheck controls show small glyphs. How: This is rendered inside those buttons.
 import { ONB_CHE_OBJ } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: A page tour's card shows whether that tour is already done. How: This is called via ONB_CHE_OBJ.entLooFun.
 
+
+import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The card changes state through the store's actions. How: This types PtoProTyp's actStoObj.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The card reads whether its tour is done. How: This types PtoProTyp's staAppObj.
+
 // #endregion Imports
 
 
@@ -33,6 +37,8 @@ import { ONB_CHE_OBJ } from '../../state/onboarding-checklist.ts'; // What: Onbo
 
 
 // #region Components
+
+type PtoProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, onPlaTutFun : ( kinStr : string, ideStr : string ) => void, onUncTutFun : ( ideStr : string ) => void, staAppObj : StaAppTyp, touRecObj : { ideStr : string, labStr : string, timStr : string } }; // What: Page-Tour-Component Props Type. Why: A page tour's launcher card starts or un-resolves its tour and reads whether it's done. How: This types PagTouCom's props, named Pto since Ptc, Poc, and Puc already belong to other components.
 
 // #region PagTouCom
 
@@ -68,7 +74,7 @@ import { ONB_CHE_OBJ } from '../../state/onboarding-checklist.ts'; // What: Onbo
  *
 */
 
-function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj, touRecObj } ) {
+function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj, touRecObj } : PtoProTyp ) : React.JSX.Element {
 
 
 	const tutDonBoo = !!ONB_CHE_OBJ.entLooFun( staAppObj, touRecObj.ideStr ); // What: Tutorial Done Boolean. Why: A resolved page-tour card renders/behaves differently from a pending one. How: This checks ONB_CHE_OBJ for an existing entry against touRecObj's own id.

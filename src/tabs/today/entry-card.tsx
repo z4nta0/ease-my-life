@@ -13,6 +13,11 @@ import { ONB_CHE_OBJ } from '../../state/onboarding-checklist.ts'; // What: Onbo
 import { ONB_PCT_OBJ } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Picker-Card-Time Object. Why: A sample picker's tutorial card shows an estimated time. How: This is looked up by the card's picker id.
 import { PIC_NAM_OBJ } from '../../core/pickers.ts';               // What: Pickers Namespace Object. Why: An ease-up card's Re-roll is only offered while another item is charged. How: This is called via PIC_NAM_OBJ.easEliFun to count the eligible items.
 
+
+import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The card changes state through the store's actions. How: This types EccProTyp's actStoObj.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The card reads its item and picker details from the app state. How: This types EccProTyp's staAppObj.
+import type { TodRowTyp } from './group-entries.ts';       // What: Today Row Type. Why: A card renders one grouped Today row. How: This types EccProTyp's entry and picker.
+
 // #endregion Imports
 
 
@@ -37,6 +42,8 @@ import { PIC_NAM_OBJ } from '../../core/pickers.ts';               // What: Pick
 
 
 // #region Components
+
+type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : string, ediModBoo : boolean, entRecObj : TodRowTyp[ 'entRecObj' ], isaEdiBoo : boolean, isaRmvBoo : boolean, isaRolBoo : boolean, jusCheStr : string | null, onGriDowFun : ( poiEveObj : React.PointerEvent ) => void, onPlaTutFun : ( kinStr : string, ideStr : string ) => void, onRenIteFun : ( curNamStr : string ) => void, onRerEntFun : ( entRecObj : TodRowTyp[ 'entRecObj' ], picRecObj : TodRowTyp[ 'picRecObj' ] ) => void, onSkiEntFun : ( entIdeStr : string ) => void, onTogDonFun : ( entRecObj : TodRowTyp[ 'entRecObj' ] ) => void, onTogEdiFun : () => void, onUncTutFun : ( ideStr : string ) => void, picRecObj : TodRowTyp[ 'picRecObj' ], staAppObj : StaAppTyp }; // What: Entry-Card-Component Props Type. Why: An entry card renders one Today row, a pick, day-off, charging, or tutorial card, with its check, skip, reroll, rename, and drag actions. How: This types EntCarCom's props, its entry and picker taken from the grouped row they come from.
 
 // #region EntCarCom
 
@@ -104,7 +111,7 @@ import { PIC_NAM_OBJ } from '../../core/pickers.ts';               // What: Pick
  *
 */
 
-function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, isaEdiBoo, isaRmvBoo, isaRolBoo, jusCheStr, onGriDowFun, onPlaTutFun, onRenIteFun, onRerEntFun, onSkiEntFun, onTogDonFun, onTogEdiFun, onUncTutFun, picRecObj, staAppObj } ) {
+function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, isaEdiBoo, isaRmvBoo, isaRolBoo, jusCheStr, onGriDowFun, onPlaTutFun, onRenIteFun, onRerEntFun, onSkiEntFun, onTogDonFun, onTogEdiFun, onUncTutFun, picRecObj, staAppObj } : EccProTyp ) : React.JSX.Element | null {
 
 
 	// #region Tutorial Branch

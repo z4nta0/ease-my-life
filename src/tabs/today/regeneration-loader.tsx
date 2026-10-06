@@ -6,6 +6,9 @@
 import cssModObj from './regeneration-loader.module.css'; // What: CSS Module Object. Why: The loader card and its reel are styled from their own module. How: This maps each class name in regeneration-loader.module.css to its hashed module class.
 import React     from 'react';                            // What: React. Why: LoaReeCom and LoaCarCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useState) instead of importing individual named hooks.
 
+
+import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Record Type. Why: A loader card belongs to one picker, or a day-off stand-in for one. How: This types LacProTyp's picRecObj.
+
 // #endregion Imports
 
 
@@ -21,6 +24,7 @@ import React     from 'react';                            // What: React. Why: L
  * until then.
  *
  * Sections:
+ *  - Types
  *  - Components
  *  - Exports
  *
@@ -30,7 +34,17 @@ import React     from 'react';                            // What: React. Why: L
 
 
 
+// #region Types
+
+type GenSloTyp = { canArr? : { id : string, name : string }[], ideStr? : string | null, kinStr? : 'charging' | 'dayoff' | 'pick', staStr? : 'active' | 'pending' | 'settled', texStr? : string }; // What: Generate Slot Type. Why: Each picker slot in a regeneration shows its candidates cycling, then the item it settled on. How: This types one slot's candidates, chosen item id, kind, phase, and day-off text, as TabTodCom builds them.
+
+// #endregion Types
+
+
+
 // #region Components
+
+type LrcProTyp = { canIteArr : GenSloTyp[ 'canArr' ] }; // What: Loader-Reel-Component Props Type. Why: The reel cycles through a slot's candidate names. How: This types LoaReeCom's props.
 
 // #region LoaReeCom
 
@@ -58,7 +72,7 @@ import React     from 'react';                            // What: React. Why: L
  *
 */
 
-function LoaReeCom ( { canIteArr } ) {
+function LoaReeCom ( { canIteArr } : LrcProTyp ) : React.JSX.Element {
 
 
 	const [ curIndNum, setCurIndNum ] = React.useState( 0 ); // What: Current Index Number And Setter. Why: This tracks which candidate is currently shown. How: This starts at 0 and is advanced by the cycling effect below.
@@ -113,6 +127,8 @@ function LoaReeCom ( { canIteArr } ) {
 
 
 
+type LacProTyp = { infRecObj : GenSloTyp | undefined, picRecObj : Partial< PicRcdTyp > }; // What: Loader-Card-Component Props Type. Why: A loader card shows one picker's slot during a regeneration. How: This types LoaCarCom's props, named Lac since Lcc already belongs to LogChiCom.
+
 // #region LoaCarCom
 
 /**
@@ -142,7 +158,7 @@ function LoaReeCom ( { canIteArr } ) {
  *
 */
 
-function LoaCarCom ( { infRecObj, picRecObj } ) {
+function LoaCarCom ( { infRecObj, picRecObj } : LacProTyp ) : React.JSX.Element {
 
 
 	const sloStaStr = infRecObj?.staStr || 'pending'; // What: Slot Status String. Why: Every branch below renders differently depending on this slot's own current phase. How: This reads infRecObj's own staStr, defaulting to 'pending' before the generator even sets one.
@@ -243,7 +259,7 @@ function LoaCarCom ( { infRecObj, picRecObj } ) {
 
 // #region Exports
 
-export { LoaCarCom }; // What: Named Export. Why: The Today tab shows one loader card per picker slot while generating. How: This exports LoaCarCom by name; LoaReeCom stays private to this file.
+export { type GenSloTyp, LoaCarCom }; // What: Named Exports. Why: The Today tab shows one loader card per picker slot while generating, and builds each slot's state. How: This exports LoaCarCom and the slot type by name; LoaReeCom stays private to this file.
 
 // #endregion Exports
 
