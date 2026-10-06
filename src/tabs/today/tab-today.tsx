@@ -31,6 +31,7 @@ import { HelOveCom    } from '../../help/mode.tsx';                 // What: Hel
 import { HOL_NAM_OBJ  } from '../../core/holidays.ts';              // What: Holidays Namespace Object. Why: Both generate()'s own skipHolidays gate and the no-run-today empty state need to know if today is an active holiday. How: This is called via HOL_NAM_OBJ.holDatFun against staAppObj.holidays.
 import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon Svg Component. Why: Nearly every card/button in this file needs a small named glyph alongside its label. How: This is rendered throughout, given a name and a size.
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled action (a locked re-roll, a blocked tutorial, a disabled Regenerate) still needs to explain itself on hover/tap. How: This wraps whichever control needs an explanatory label throughout this file.
+import { isaTruFun    } from '../../utils/guard.ts';                // What: Is-A Truthy Function. Why: The drag-drop order and the loader's picker set both drop missing ids. How: This filters them through the shared truthy guard, so TypeScript sees only real ids.
 import { LoaCarCom    } from './regeneration-loader.tsx';           // What: Loader Card Component. Why: While a list generates, each picker's slot shows a cycling placeholder card. How: This is rendered once per slot until generation settles.
 import { merOrdFun    } from './group-entries.ts';                  // What: Merge Order Function. Why: An Edit Mode drag reorders only the groups or pickers present today. How: This merges that new order back into the full saved order before it is written.
 import { norGroFun    } from '../../core/pickers.ts';               // What: Normalize Group Function. Why: A typed group rename/Page Tours rename needs the same normalization real picker groups already get. How: This is called inside reqRenFun and pagColFun.
@@ -1917,8 +1918,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			onDroOrdFun : ( ordNumArr ) => { // What: On Drop Order Function. Why: The actual persisted group order needs to be recomputed from the drop's own DOM-position indices. How: This maps ordNumArr back through shoOrdRef's own shown order, then merges the result into staAppObj.groupOrder.
 
 
-				const shoOrdArr = shoOrdRef.current || [];                                                    // What: Shown Order Array. Why: A drop index is a DOM position, which only makes sense against whatever order was actually rendered. How: This reads shoOrdRef.current, falling back to an empty array.
-				const newOrdArr = ordNumArr.map( ( curIndNum ) => shoOrdArr[ curIndNum ] ).filter( Boolean ); // What: New Order Array. Why: This translates the drop's own numeric indices back into real block ids. How: This maps each index through shoOrdArr, dropping any that resolve to nothing.
+				const shoOrdArr = shoOrdRef.current || [];                                                      // What: Shown Order Array. Why: A drop index is a DOM position, which only makes sense against whatever order was actually rendered. How: This reads shoOrdRef.current, falling back to an empty array.
+				const newOrdArr = ordNumArr.map( ( curIndNum ) => shoOrdArr[ curIndNum ] ).filter( isaTruFun ); // What: New Order Array. Why: This translates the drop's own numeric indices back into real block ids. How: This maps each index through shoOrdArr, dropping any that resolve to nothing.
 
 
 				actStoObj.reoGroFun( merOrdFun( staAppObj.groupOrder || [], newOrdArr ) ); // What: Reorder Groups Call. Why: This is the actual persisted write. How: This merges newOrdArr's own new order back into the fuller saved order via merOrdFun.
@@ -2770,7 +2771,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 		const curEntArr = staAppObj.today.entries || [];                                                                                               // What: Current Entry Array. Why: The "already on screen" checks below need today's own current entries. How: This reads staAppObj.today.entries, falling back to an empty array.
-		const havPicSet = new Set( curEntArr.map( ( curEntObj ) => curEntObj.pickerId ).filter( Boolean ) );                                           // What: Have Picker Set. Why: A picker already represented by a real entry doesn't need a placeholder slot. How: This collects every current entry's own pickerId.
+		const havPicSet = new Set( curEntArr.map( ( curEntObj ) => curEntObj.pickerId ).filter( isaTruFun ) );                                         // What: Have Picker Set. Why: A picker already represented by a real entry doesn't need a placeholder slot. How: This collects every current entry's own pickerId.
 		const havDaoSet = new Set( curEntArr.filter( ( curEntObj ) => curEntObj.kind === 'dayoff' ).map( ( curEntObj ) => curEntObj.conditionalId ) ); // What: Have Day-Off Set. Why: A day-off card carries a conditionalId instead of a pickerId, so its own "already on screen" check needs its own set. How: This collects every current day-off entry's own conditionalId.
 		const outMapObj : Record< string, PicRcdTyp[] > = {};                                                                                          // What: Out Map Object. Why: This is the actual { [groNamStr]: [picker, ...] } result being built. How: This is populated by the loop below and returned at the end.
 

@@ -4,6 +4,7 @@
 // #region Imports
 
 import { CON_NAM_OBJ } from '../core/conditionals.ts'; // What: Conditionals Namespace Object. Why: A day-off card's completion advances or reverts its conditional through this module's own logic. How: This is aliased to conModObj inside cotAplFun.
+import { isaTruFun   } from '../utils/guard.ts';       // What: Is-A Truthy Function. Why: The touched-id set drops a missing picked id. How: This filters the ids through the shared truthy guard, so TypeScript sees only real ids.
 import { isoDayFun   } from '../utils/date.ts';        // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 
 
@@ -258,8 +259,8 @@ function enpAplFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 
 
 
-	const updIdeMap = new Map( ( curPenObj.updates || [] ).map( ( curUpdObj ) => [ curUpdObj.id, curUpdObj ] ) );                               // What: Update Identifier Map. Why: The items map below needs O(1) lookup of a touched item's own staged update. How: This maps every pending.updates row by its own id.
-	const touIdeSet = new Set( [ ...( curPenObj.updates || [] ).map( ( curUpdObj ) => curUpdObj.id ), curPenObj.pickedId ].filter( Boolean ) ); // What: Touched Identifier Set. Why: Both the revert snapshot and the items map below need to know every item id this pending payload actually touches. How: This unions every updates row's own id with pickedId, dropping falsy entries.
+	const updIdeMap = new Map( ( curPenObj.updates || [] ).map( ( curUpdObj ) => [ curUpdObj.id, curUpdObj ] ) );                                 // What: Update Identifier Map. Why: The items map below needs O(1) lookup of a touched item's own staged update. How: This maps every pending.updates row by its own id.
+	const touIdeSet = new Set( [ ...( curPenObj.updates || [] ).map( ( curUpdObj ) => curUpdObj.id ), curPenObj.pickedId ].filter( isaTruFun ) ); // What: Touched Identifier Set. Why: Both the revert snapshot and the items map below need to know every item id this pending payload actually touches. How: This unions every updates row's own id with pickedId, dropping falsy entries.
 
 	const revIteArr = curStaObj.items.filter( ( curIteObj ) => touIdeSet.has( curIteObj.id ) ).map( ( curIteObj ) => ( // What: Revert Item Array. Why: An exact undo later needs each touched item's own pre-apply snapshot. How: This filters to just the touched items and copies their own value/weight/picks/lastPicked/chargeStep.
 
