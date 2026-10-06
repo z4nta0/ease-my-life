@@ -7,6 +7,15 @@ import { HOL_NAM_OBJ } from '../core/holidays.ts'; // What: Holidays Namespace O
 import { isoDayFun   } from '../utils/date.ts';    // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { TAS_NAM_OBJ } from '../core/tasks.ts';    // What: Tasks Namespace Object. Why: The clean state needs the reminders engine's own default options shape. How: This is called (defOptFun) by buiCleFun below.
 
+
+import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: The history simulation draws picks from items. How: This types every item parameter.
+import type { OnbStaTyp } from '../core/data-model.ts'; // What: Onboarding State Type. Why: A fresh state carries only part of onboarding. How: This types CleStaTyp's narrowed onboarding.
+import type { PclOutTyp } from '../core/data-model.ts'; // What: Pick-Log Outcome Type. Why: A simulated pick can be rejected or skipped. How: This types logPicFun's outcome.
+import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: The simulation produces pick-log rows. How: This types picLogFun's history.
+import type { PclSouTyp } from '../core/data-model.ts'; // What: Pick-Log Source Type. Why: A simulated pick records how it was made. How: This types logPicFun's source.
+import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record Type. Why: The simulation runs every sample picker. How: This types every picker parameter.
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: buiCleFun builds the whole clean state. How: This types CleStaTyp's base.
+
 // #endregion Imports
 
 
@@ -214,7 +223,7 @@ const MOD_DEF_OBJ = { // What: Mode Definition Object. Why: Every consumer needi
  *
 */
 
-function picWeiFun ( itePooArr ) {
+function picWeiFun ( itePooArr : IteRcdTyp[] ) : IteRcdTyp {
 
 
 	const totWeiNum = itePooArr.reduce( ( sumWeiNum, curIteObj ) => sumWeiNum + ( curIteObj.weight || 1 ), 0 ); // What: Total Weight Number. Why: The random draw below needs the combined weight of the whole pool to scale against. How: This sums every item's own weight, defaulting a missing weight to 1.
@@ -245,6 +254,7 @@ function picWeiFun ( itePooArr ) {
 
 
 
+type EasStaTyp = Record< string, { activeItemId : string | null, charge : number } >; // What: Ease State Type. Why: The simulation ends with each Ease Down picker's live item and charge, which the sample data carries into the real state. How: This maps each picker id to its active item id (or null) and charge.
 // #region picLogFun
 
 /**
@@ -282,7 +292,7 @@ function picWeiFun ( itePooArr ) {
  *
 */
 
-function picLogFun ( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
+function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun : ( iteIdeStr : string, dayIsoStr : string ) => boolean, totDayNum : number = 365 ) : { easStaObj : EasStaTyp, hisRowArr : PclRowTyp[] } {
 
 
 	const picRowArr = [];         // What: Pick Row Array And Guard. Why: Every row built by logPicFun below needs somewhere to accumulate. How: This starts empty and is pushed into below.
@@ -299,10 +309,10 @@ function picLogFun ( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
 
 	let seqCouNum = 0; // What: Sequence Count Number And Guard. Why: Every row needs its own unique id, and nothing else in this scope tracks that count. How: This starts at 0 and is incremented once per row created below.
 
-	const ranBetFun = ( lowBouNum, higBouNum ) => lowBouNum + Math.random() * ( higBouNum - lowBouNum ); // What: Random Between Function. Why: Several places below need a random value somewhere inside a given range, not just 0 to 1. How: This scales Math.random()'s own 0-1 output into the [ lowBouNum, higBouNum ] range.
+	const ranBetFun = ( lowBouNum : number, higBouNum : number ) => lowBouNum + Math.random() * ( higBouNum - lowBouNum ); // What: Random Between Function. Why: Several places below need a random value somewhere inside a given range, not just 0 to 1. How: This scales Math.random()'s own 0-1 output into the [ lowBouNum, higBouNum ] range.
 
 
-	const logPicFun = ( datValObj, curPicObj, curIteObj, donValBoo, souValStr, outValStr, depEndBoo ) => { // What: Log Pick Function. Why: Every simulated pick, toss, skip, or Ease Down tick below shares the same row-building logic. How: This builds one pickLog row shaped to state.pickLog's own contract and pushes it onto picRowArr.
+	const logPicFun = ( datValObj : Date, curPicObj : PicRcdTyp, curIteObj : IteRcdTyp, donValBoo : boolean, souValStr : PclSouTyp, outValStr? : PclOutTyp, depEndBoo? : boolean ) => { // What: Log Pick Function. Why: Every simulated pick, toss, skip, or Ease Down tick below shares the same row-building logic. How: This builds one pickLog row shaped to state.pickLog's own contract and pushes it onto picRowArr.
 
 
 		const picTimObj = new Date( datValObj ); // What: Pick Timestamp Object. Why: A completed pick needs a plausible time of day, not just a bare date. How: This constructs a fresh copy of datValObj to set a random time of day on below.
@@ -336,7 +346,7 @@ function picLogFun ( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
 	};
 
 
-	const isaOffFun = ( dayIndNum ) => dayIndNum === 11 ? true : ( dayIndNum <= 10 ? false : Math.random() < 0.13 ); // What: Is-An Off Function. Why: A sprinkling of fully skipped days makes the simulated streaks below read as honest rather than mechanically perfect, while the most recent 10 days are forced active so the headline streak holds. How: This forces day 11 off, forces days 0-10 active, and otherwise rolls a 13% chance of being off.
+	const isaOffFun = ( dayIndNum : number ) => dayIndNum === 11 ? true : ( dayIndNum <= 10 ? false : Math.random() < 0.13 ); // What: Is-An Off Function. Why: A sprinkling of fully skipped days makes the simulated streaks below read as honest rather than mechanically perfect, while the most recent 10 days are forced active so the headline streak holds. How: This forces day 11 off, forces days 0-10 active, and otherwise rolls a 13% chance of being off.
 
 
 	for ( let dayIndNum = totDayNum - 1; dayIndNum >= 1; dayIndNum-- ) { // What: Daily Simulation Loop. Why: Every past day (excluding today, added separately from today.entries) needs its own simulated picks. How: This walks backward from totDayNum - 1 days ago to 1 day ago.
@@ -420,7 +430,7 @@ function picLogFun ( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
 
 
 
-	const easStaObj = {}; // What: Ease State Object And Guard. Why: Every Ease Down picker's own final in-progress state must be reported back to the caller, since the live app needs to resume it. How: This starts empty and is filled once per Ease Down picker by the loop directly below.
+	const easStaObj : EasStaTyp = {}; // What: Ease State Object And Guard. Why: Every Ease Down picker's own final in-progress state must be reported back to the caller, since the live app needs to resume it. How: This starts empty and is filled once per Ease Down picker by the loop directly below.
 
 
 	for ( const curPicObj of allPicArr ) { // What: Ease Down Simulation Loop. Why: An Ease Down picker's own item stays picked across many days and decays over time, which the per-picker loop above deliberately skips. How: This simulates every Ease Down picker's own full history independently.
@@ -510,6 +520,7 @@ function picLogFun ( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
 
 
 
+type CleStaTyp = Omit< StaAppTyp, 'groupOrder' | 'onboarding' | 'pickerOrder' | 'ui' | 'v' > & { onboarding : Pick< OnbStaTyp, 'dismissed' | 'welcomed' > }; // What: Clean State Type. Why: A fresh state is never used until migStaFun has run on it, which fills in the group and picker orders, the UI settings, the schema version, and the rest of onboarding. How: This is the full app state without those four fields, and with onboarding narrowed to the two flags a new user needs.
 // #region buiCleFun
 
 /**
@@ -518,13 +529,14 @@ function picLogFun ( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
  * @summary
  * Builds the canonical clean state: what a brand-new user sees, no
  * pickers, no items, no reminders, and every app setting at its own
- * default. A Reset restores exactly this.
+ * default. A Reset restores exactly this. It leaves a few fields for
+ * migStaFun to fill in, which every caller runs on it before use.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param void - This function takes no parameters.
  *
- * @returns The full clean app state object.
+ * @returns The clean app state, before migStaFun completes it.
  *
  * @example
  * ```ts
@@ -533,7 +545,7 @@ function picLogFun ( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
  *
 */
 
-function buiCleFun () {
+function buiCleFun () : CleStaTyp {
 
 
 	return { // What: Clean State Return. Why: This is the full canonical empty app state, in state's own top-level shape. How: This builds every top-level field to its own genuinely empty/default value.

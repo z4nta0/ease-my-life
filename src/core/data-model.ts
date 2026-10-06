@@ -367,7 +367,6 @@ type TodEntTyp = { // What: Today Entry Type. Why: Each card on Today is one ent
 type TodStaTyp = { // What: Today State Type. Why: Today's list is generated once per day and kept. How: This describes state.today.
 
 
-	date          : string;                                                                               // What: Date. Why: A new day starts a new list. How: This is the day the list belongs to.
 	entries       : TodEntTyp[];                                                                          // What: Entries. Why: The list is made of cards. How: This lists them in order.
 	generatedAt   : string | null;                                                                        // What: Generated At. Why: The list is generated at most once a day. How: This is the last generation's ISO timestamp.
 	genLog?       : { conds : Record< string, Partial< ConRcdTyp > >, items : Record< string, number > }; // What: Generation Log. Why: The Day Log shows each item's and conditional's state at generation. How: This snapshots them, keyed by id.
