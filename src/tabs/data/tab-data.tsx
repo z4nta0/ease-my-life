@@ -43,7 +43,8 @@ import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store
 import type { IteRcdTyp } from '../../core/data-model.ts'; // What: Item Record Type. Why: The item lists and the sort entries read items. How: This types iteEntFun's item.
 import type { ModNamTyp } from '../../core/data-model.ts'; // What: Mode Name Type. Why: A draft picker starts in the filtered mode when it's a real one. How: This types that mode.
 import type { PicForTyp } from '../../core/data-model.ts'; // What: Picker Form Type. Why: The draft picker always has a name, group, and mode, and is created as a complete picker. How: This types the draft state, patNewFun's patch, and savNewFun's argument.
-import type { SorRowTyp } from './list-sorting.ts';        // What: Sort Row Type. Why: Sections and items are sorted as comparable rows. How: This types the collected section entries and each item's entry.
+import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Record Type. Why: A picker section's sort entry carries the live picker it renders. How: This types SecEntTyp's picker field.
+import type { SorRowTyp } from './list-sorting.ts';        // What: Sort Row Type. Why: Sections and items are sorted as comparable rows. How: This types each item's entry and is the base SecEntTyp extends for the section entries.
 import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The component reads the current app state. How: This types its staAppObj.
 
 // #endregion Imports
@@ -231,8 +232,9 @@ function pisOptFun ( picModStr : string ) : { keyStr : string, labStr : string }
 
 // #region Components
 
-type DatScoTyp = { cliFun : () => void, ideStr? : string, keyStr : string, labStr : string, namStr : string, selBoo : boolean };             // What: Data Scope Type. Why: The Show row mixes the Conditionals and Reminders boxes with one box per picker, and only a picker box carries a picker id. How: This describes one scope box entry.
-type TdcProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Data-Component Props Type. Why: The Data tab reads and edits the whole app state and can navigate to other tabs. How: This types TabDatCom's props.
+type DatScoTyp = { cliFun : () => void, ideStr? : string, keyStr : string, labStr : string, namStr : string, selBoo : boolean };                           // What: Data Scope Type. Why: The Show row mixes the Conditionals and Reminders boxes with one box per picker, and only a picker box carries a picker id. How: This describes one scope box entry.
+type SecEntTyp = SorRowTyp & { draBoo? : boolean, kinStr : 'conditionals' | 'picker' | 'reminders', picObj? : PicRcdTyp & { includeInDaily? : boolean } }; // What: Section Entry Type. Why: The Data tab sorts its Conditionals, Reminders, and picker sections together, then renders each by kind, with the draft picker appended last. How: This adds the kind, the picker record, and the draft flag to a sortable row.
+type TdcProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp };               // What: Tab-Data-Component Props Type. Why: The Data tab reads and edits the whole app state and can navigate to other tabs. How: This types TabDatCom's props.
 
 // #region TabDatCom
 
@@ -1167,7 +1169,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	const secEntArr = React.useMemo( () => { // What: Section Entry Array. Why: Conditionals/Reminders/every shown picker all need a common comparable shape before they can be sorted together. How: This builds one entry per visible section, then sorts the combined list via sorEntFun.
 
 
-		const colEntArr : SorRowTyp[] = []; // What: Collected Entry Array. Why: The pushes below need somewhere to collect one entry per visible section. How: This starts empty and is conditionally pushed to just below.
+		const colEntArr : SecEntTyp[] = []; // What: Collected Entry Array. Why: The pushes below need somewhere to collect one entry per visible section. How: This starts empty and is conditionally pushed to just below.
 
 
 		if ( shoConBoo ) { // What: Conditionals Entry Push. Why: Group/Active have no meaning for Conditionals as a WHOLE section. How: This pushes a null group/isActive entry, with count as the total conditional count.
@@ -1243,7 +1245,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	}, [ shoConBoo, shoRemBoo, shoPicArr, picSecMap, conIteArr.length, remCouNum, secSorStr ] ); // What: Memo Dependency Array. Why: Any of these changing can add, remove, or reorder a section. How: shoConBoo and shoRemBoo add or drop the Conditionals and Reminders sections, shoPicArr changes which picker sections exist, picSecMap changes each picker section's count and active state, conIteArr.length and remCouNum change the other two sections' counts, and secSorStr changes the sort order itself.
 
 
-	const draEntObj = newPicObj ? { draBoo : true, kinStr : 'picker', picObj : newPicObj } : null; // What: Draft Entry Object. Why: The draft card is deliberately NOT part of secEntArr/its sort, so it always renders last regardless of sort order and never shows up filtered out by an unrelated group/type/conditional filter. How: This is null unless a real draft picker exists.
+	const draEntObj : SecEntTyp | null = newPicObj ? { draBoo : true, kinStr : 'picker', name : newPicObj.name, picObj : newPicObj as PicRcdTyp } : null; // What: Draft Entry Object. Why: The draft card is deliberately NOT part of secEntArr/its sort, so it always renders last regardless of sort order and never shows up filtered out by an unrelated group/type/conditional filter. How: This is null unless a real draft picker exists. // What: Type Assertion Note. Why: staNewFun builds the draft with every field a picker card reads, so it renders through the same code as a stored picker. How: The as tells TypeScript to treat the draft as a picker record.
 	const shoSecArr = draEntObj ? [ ...secEntArr, draEntObj ] : secEntArr;                         // What: Shown Section Array. Why: The list below needs the sorted sections plus, when present, the draft appended after them. How: This appends draEntObj only when it exists.
 
 
@@ -1976,7 +1978,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 
-					const picCurObj = entCurObj.picObj;                                                                                       // What: Picker Current Object. Why: Every remaining branch below is a real picker card and needs its own record. How: This reads entCurObj.pk.
+					const picCurObj = entCurObj.picObj!;                                                                                      // What: Picker Current Object. Why: Every remaining branch below is a real picker card and needs its own record. How: This reads entCurObj.pk. // What: Non-Null Note. Why: The Conditionals and Reminders entries already returned above, and every picker entry carries its record. How: The ! tells TypeScript picObj is set here.
 					const isaDraBoo = !!entCurObj.draBoo;                                                                                     // What: Is-A Draft Boolean. Why: The draft's own card renders slightly differently (always expanded, no collapse toggle, Items starts closed). How: This checks entCurObj.isDraft.
 					const stoIteArr = isaDraBoo ? draIteArr : staAppObj.items.filter( ( iteCurObj ) => iteCurObj.pickerId === picCurObj.id ); // What: Stored Item Array. Why: This picker's own kept items are the base of its list. How: This is the draft's own local items for the draft card, else the whole app's items filtered down to this picker's own.
 					const picIteArr = newIteObj && newIteObj.pickerId === picCurObj.id ? [ ...stoIteArr, newIteObj ] : stoIteArr;             // What: Picker Item Array. Why: This card's own header count and Items section both need this picker's own items, including a new item still being drafted. How: This adds the local new item to stoIteArr when it belongs to this picker.
@@ -1985,7 +1987,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 					const secOpeBoo = isaDraBoo || colMapObj[ picCurObj.id ] === false;                                                       // What: Section Open Boolean. Why: A draft is always expanded (no toggle at all, see the header button's disabled prop below); an existing picker reads its own persisted state. How: This is true for a draft, or when the persisted entry is explicitly false.
 					const isaEasBoo = picCurObj.mode === 'ease-up' || picCurObj.mode === 'ease-down';                                         // What: Is-A Ease Boolean. Why: The item sort options and the meta text per item both depend on this. How: This is true whenever picCurObj.mode is 'ease-up' or 'ease-down'.
 					const useWeiBoo = picCurObj.mode === 'weighted' || picCurObj.mode === 'dynamic';                                          // What: Uses Weight Boolean. Why: Same reasoning as isaEasBoo, for the weighted/dynamic modes. How: This is true whenever picCurObj.mode is 'weighted' or 'dynamic'.
-					const incDaiBoo = isaDraBoo ? picCurObj.includeInDaily : staAppObj.daily.pickerIds.includes( picCurObj.id );              // What: Included Daily Boolean. Why: PicConCom needs to know this picker's own current daily-generator membership. How: This reads the draft's own includeInDaily for the draft card, else checks staAppObj.daily.pickerIds for picCurObj.id.
+					const incDaiBoo = isaDraBoo ? picCurObj.includeInDaily! : staAppObj.daily.pickerIds.includes( picCurObj.id );             // What: Included Daily Boolean. Why: PicConCom needs to know this picker's own current daily-generator membership. How: This reads the draft's own includeInDaily for the draft card, else checks staAppObj.daily.pickerIds for picCurObj.id. // What: Non-Null Note. Why: staNewFun always sets the draft's includeInDaily, and its edits only ever replace it with another boolean. How: The ! tells TypeScript it's set on a draft.
 					const conColBoo = !!colMapObj[ picCurObj.id + ':controls' ];                                                              // What: Controls Collapsed Boolean. Why: The Controls disclosure's own persisted state is keyed separately from the card's own open/closed state. How: This reads colMapObj at the ':controls' suffix key.
 					const iteColBoo = isaDraBoo ? !draIteBoo : !!colMapObj[ picCurObj.id + ':items' ];                                        // What: Items Collapsed Boolean. Why: A draft's own Items section tracks draIteBoo instead of the normal persisted map. How: This reads draIteBoo for a draft, otherwise the persisted entry at the ':items' suffix key.
 

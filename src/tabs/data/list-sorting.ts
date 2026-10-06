@@ -29,7 +29,7 @@ import type { RefObject } from 'react'; // What: Ref Object. Why: The frozen row
 
 // #region Helpers
 
-type SorRowTyp = { name : string } & Record< string, any >; // What: Sort Row Type. Why: The Data tab sorts items, conditionals, reminders, and pickers with one comparator, each carrying different fields. How: This is any row with a name, its other fields read by whichever sort key applies.
+type SorRowTyp = { boost? : number | null, count? : number | null, date? : number | null, group? : string | null, isActive? : boolean | null, name : string, odds? : number | null, range? : number | null, type? : string | null }; // What: Sort Row Type. Why: The Data tab sorts items, conditionals, reminders, and pickers with one comparator, each carrying different fields. How: This is any row with a name, its other fields read by whichever sort key applies.
 
 // #region sorEntFun
 
@@ -140,7 +140,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 	};
 
 
-	const numLasFun = ( cmpOneVal : number | null, cmpTwoVal : number | null ) => { // What: Numeric Last Function. Why: A numeric field (Range/Odds/Boost) that's irrelevant to a row needs the same "always last" rule as lasNulFun, plus the actual numeric comparison once both sides are real. How: This defers to lasNulFun first, then subtracts the two values and applies revSorBoo/the name tie-break.
+	const numLasFun = ( cmpOneVal : number | null | undefined, cmpTwoVal : number | null | undefined ) => { // What: Numeric Last Function. Why: A numeric field (Range/Odds/Boost) that's irrelevant to a row needs the same "always last" rule as lasNulFun, plus the actual numeric comparison once both sides are real. How: This defers to lasNulFun first, then subtracts the two values and applies revSorBoo/the name tie-break.
 
 
 		const notAvaNum = lasNulFun( cmpOneVal, cmpTwoVal ); // What: Not Available Number. Why: A real comparison result from lasNulFun means one side was N/A and nothing more needs computing. How: This calls lasNulFun and checks its result before doing any real math.
@@ -168,7 +168,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 		case 'type': { // What: Type Case Block. Why: Type has no N/A concept at all, unlike most other fields, so it skips straight to a real comparison. How: This compares the two rows' own type strings, flips for descending, and falls back to name on a tie.
 
 
-			const priCmpNum = rowOneObj.type.localeCompare( rowTwoObj.type ); // What: Primary Compare Number. Why: This is the actual field comparison this case exists to perform. How: This calls String.localeCompare between the two rows' own type fields.
+			const priCmpNum = rowOneObj.type!.localeCompare( rowTwoObj.type! ); // What: Primary Compare Number. Why: This is the actual field comparison this case exists to perform. How: This calls String.localeCompare between the two rows' own type fields. // What: Non-Null Note. Why: Only the lists whose rows all carry a type label offer the Type sort. How: The ! tells TypeScript both types are set here.
 
 
 
@@ -187,7 +187,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 
 
 
-			const priCmpNum = rowOneObj.group.localeCompare( rowTwoObj.group ); // What: Primary Compare Number. Why: Both sides are confirmed real strings at this point. How: This calls String.localeCompare between the two rows' own group fields.
+			const priCmpNum = rowOneObj.group!.localeCompare( rowTwoObj.group! ); // What: Primary Compare Number. Why: Both sides are confirmed real strings at this point. How: This calls String.localeCompare between the two rows' own group fields. // What: Non-Null Note. Why: dirNulFun already returned for any row missing its group. How: The ! tells TypeScript both groups are set here.
 
 
 
@@ -199,7 +199,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 		case 'count': { // What: Count Case Block. Why: Count is always a real number for every row, with no N/A concept at all. How: This compares the two rows' own count fields directly.
 
 
-			const priCmpNum = rowOneObj.count - rowTwoObj.count; // What: Primary Compare Number. Why: This is the actual field comparison this case exists to perform. How: This subtracts rowTwoObj.count from rowOneObj.count.
+			const priCmpNum = ( rowOneObj.count ?? 0 ) - ( rowTwoObj.count ?? 0 ); // What: Primary Compare Number. Why: This is the actual field comparison this case exists to perform. How: This subtracts rowTwoObj.count from rowOneObj.count, reading a missing count as 0, the same value a null count always gave the subtraction.
 
 
 
@@ -218,7 +218,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 
 
 
-			const priCmpNum = rowOneObj.date - rowTwoObj.date; // What: Primary Compare Number. Why: Both sides are confirmed real timestamps at this point. How: This subtracts rowTwoObj.date from rowOneObj.date.
+			const priCmpNum = rowOneObj.date! - rowTwoObj.date!; // What: Primary Compare Number. Why: Both sides are confirmed real timestamps at this point. How: This subtracts rowTwoObj.date from rowOneObj.date. // What: Non-Null Note. Why: dirNulFun already returned for any row missing its date. How: The ! tells TypeScript both dates are set here.
 
 
 
