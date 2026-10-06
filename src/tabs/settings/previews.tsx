@@ -300,6 +300,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 		};
 
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: The preview replays only when Play is pressed, never just because a different style was selected. How: styKeyStr is read from the render where repTokNum changed.
 	}, [ repTokNum ] ); // What: Effect Dependency Array. Why: This must only replay when repTokNum itself bumps, a real Play press, never merely because styKeyStr changed on its own, since switching the style dropdown without pressing Play should not retrigger anything. How: repTokNum is the only value this effect's own change-detection is built around.
 
 
