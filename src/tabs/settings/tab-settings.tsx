@@ -571,11 +571,21 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 		const onMotChaFun = () => setRedMotBoo( medQueObj.matches );                 // What: On Motion Change Function. Why: The OS's own reduced-motion setting can change at any time while the app is open. How: This updates redMotBoo to the media query's current match state whenever it fires a change event.
 
 
-		medQueObj.addEventListener ? medQueObj.addEventListener( 'change', onMotChaFun ) : medQueObj.addListener( onMotChaFun ); // What: Change Subscribe Call. Why: Older browsers only support the deprecated addListener form. How: This registers onMotChaFun via whichever subscription method medQueObj actually supports.
+		if ( medQueObj.addEventListener ) medQueObj.addEventListener( 'change', onMotChaFun ); // What: Modern Subscribe Call. Why: Current browsers subscribe to a media query through addEventListener. How: This registers onMotChaFun for change events when that method exists.
+
+		else medQueObj.addListener( onMotChaFun ); // What: Legacy Subscribe Call. Why: Older browsers only support the deprecated addListener form. How: This registers onMotChaFun through it instead.
 
 
 
-		return () => { medQueObj.removeEventListener ? medQueObj.removeEventListener( 'change', onMotChaFun ) : medQueObj.removeListener( onMotChaFun ); }; // What: Effect Cleanup Return. Why: The change listener must not outlive this effect run. How: This removes the same onMotChaFun reference, via whichever method it was originally added with.
+		return () => { // What: Effect Cleanup Return. Why: The change listener must not outlive this effect run. How: This removes the same onMotChaFun reference, via whichever method it was originally added with.
+
+
+			if ( medQueObj.removeEventListener ) medQueObj.removeEventListener( 'change', onMotChaFun ); // What: Modern Unsubscribe Call. Why: A listener added through addEventListener has to be removed the same way. How: This removes onMotChaFun when that method exists.
+
+			else medQueObj.removeListener( onMotChaFun ); // What: Legacy Unsubscribe Call. Why: Older browsers only support the deprecated removeListener form. How: This removes onMotChaFun through it instead.
+
+
+		};
 
 
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to subscribe once, on mount. How: An empty array means it never re-subscribes or re-runs after the initial mount.

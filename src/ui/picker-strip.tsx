@@ -149,7 +149,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 		if ( aniOffBoo ) { // What: Reduced Motion Branch. Why: Under reduced motion the cycle should skip straight to done instead of running its schedule loop. How: This defers the onCycDonFun call to the next tick and returns its own cleanup, skipping the rest of the effect.
 
 
-			const defDonTim = setTimeout( () => { onCycDonFun && onCycDonFun(); }, 0 ); // What: Deferred Done Timeout. Why: Calling onCycDonFun synchronously here could fire the caller's own phase transition ('running' to 'done') mid-render. How: This hands control back on the very next tick instead.
+			const defDonTim = setTimeout( () => { if ( onCycDonFun ) onCycDonFun(); }, 0 ); // What: Deferred Done Timeout. Why: Calling onCycDonFun synchronously here could fire the caller's own phase transition ('running' to 'done') mid-render. How: This hands control back on the very next tick instead.
 
 
 
@@ -187,7 +187,8 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 					setCycPhaStr( 'settled' ); // What: Settle Phase Call. Why: Every style's render branch needs to know the cycle has landed. How: This writes 'settled' into cycPhaStr.
 
-					onCycDonFun && onCycDonFun(); // What: Done Callback Guard. Why: The caller needs to know the cycle has finished so it can move its own phase from 'running' to 'done'. How: This calls onCycDonFun only when the caller actually passed one.
+
+					if ( onCycDonFun ) onCycDonFun(); // What: Done Callback Guard. Why: The caller needs to know the cycle has finished so it can move its own phase from 'running' to 'done'. How: This calls onCycDonFun only when the caller actually passed one.
 
 
 

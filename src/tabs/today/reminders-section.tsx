@@ -1200,7 +1200,15 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 								aria-label='Add a Reminder'
 								title='Add a Reminder'
 
-								onClick={ () => { addOpeBoo ? canAddFun() : staAddFun(); } } // What: Add Toggle Click. Why: The same button opens the quick-add form or cancels it when already open. How: This calls canAddFun while addOpeBoo, staAddFun otherwise.
+								onClick={ () => { // What: Add Toggle Click. Why: The same button opens the quick-add form or cancels it when already open. How: This calls canAddFun while addOpeBoo, staAddFun otherwise.
+
+
+									if ( addOpeBoo ) canAddFun(); // What: Cancel Add Branch. Why: An open form's button cancels it. How: This calls canAddFun while addOpeBoo is true.
+
+									else staAddFun(); // What: Start Add Branch. Why: A closed form's button opens it. How: This calls staAddFun otherwise.
+
+
+								} }
 							>{ /* What: Add Button Element. Why: This is the real, clickable entry point into the quick-add form. How: This toggles between canAddFun and staAddFun based on whether the form is already open. Its data-element-name-hook is read by the reminder mini-tours and help mode's Today catalog. */ }
 
 

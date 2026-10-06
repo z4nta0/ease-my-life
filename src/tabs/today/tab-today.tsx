@@ -1831,7 +1831,15 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	React.useLayoutEffect( () => { cloModRef.current = cloModFun; } ); // What: Close Mode Sync Effect. Why: The Escape listener must always call the current render's cloModFun. How: This copies the newest cloModFun into cloModRef after every render.
 
 
-	const togModFun = () => { ediModBoo ? cloModFun( true ) : opeModFun(); }; // What: Toggle Mode Function. Why: The rail's own Edit Mode button needs one handler that does the right thing either direction. How: This calls cloModFun(true) (treated as a commit) while already on, otherwise opeModFun.
+	const togModFun = () => { // What: Toggle Mode Function. Why: The rail's own Edit Mode button needs one handler that does the right thing either direction. How: This calls cloModFun(true) (treated as a commit) while already on, otherwise opeModFun.
+
+
+		if ( ediModBoo ) cloModFun( true ); // What: Close Mode Branch. Why: Pressing the button while Edit Mode is on commits and leaves it. How: This calls cloModFun with true, which treats the close as a commit.
+
+		else opeModFun(); // What: Open Mode Branch. Why: Pressing the button while Edit Mode is off enters it. How: This calls opeModFun.
+
+
+	};
 
 
 
