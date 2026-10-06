@@ -48,7 +48,7 @@ import type { TasArgTyp } from '../core/data-model.ts'; // What: Task Argument T
 // #region Types
 
 type RawPicTyp = Omit< PclRowTyp, 'completedAt' | 'date' | 'eid' | 'id' > & { daysAgo : number, h : number | null, m : number | null }; // What: Raw Pick Type. Why: A precomputed pick row stores how many days ago it happened instead of a date, and hydStaFun fills in the rest. How: This is a pick-log row without its completion time, date, entry id, and id, plus the day offset and the completion hour and minute (null when never done).
-type RawRemTyp = Omit< RmlRowTyp, 'completedAt' | 'rowId' > & { daysAgo : number, h : number, m : number };                            // What: Raw Reminder Type. Why: A precomputed reminder row, done or skipped, stores a day offset and time of day instead of a timestamp. How: This is a reminder-log row without its timestamp and row id, plus the day offset and the hour and minute.
+type RawRemTyp = Omit< RmlRowTyp, 'completedAt' | 'rowId' > & { daysAgo : number, h : number, m : number };                             // What: Raw Reminder Type. Why: A precomputed reminder row, done or skipped, stores a day offset and time of day instead of a timestamp. How: This is a reminder-log row without its timestamp and row id, plus the day offset and the hour and minute.
 
 
 

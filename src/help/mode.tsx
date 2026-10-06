@@ -252,10 +252,11 @@ type HocProTyp = { actModBoo : boolean, helIteArr : HelIteTyp[], onCloAllFun : (
 function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React.JSX.Element | null {
 
 
-	const allIteArr                   = React.useMemo( () => [ NAV_HEL_OBJ, RAI_HAN_OBJ, ...helIteArr ], [ helIteArr ] ); // What: All Items Array And Memo. Why: The nav item and rail handle item are shared by every page, ahead of whatever page-specific items the caller passed. How: This concatenates the 2 shared items ahead of helIteArr, recomputed only when helIteArr itself changes.
-	const [ recMapObj, setRecMapObj ] = React.useState< Record< string, HelRecTyp > >( {} );                                                             // What: Rect Map Object And Setter. Why: Every tagged element's own current rect (keyed by its own catalog id) drives the whole rendered overlay. How: This starts empty and is written wholesale by recTarFun below on every animation frame while actModBoo.
+	const allIteArr = React.useMemo( () => [ NAV_HEL_OBJ, RAI_HAN_OBJ, ...helIteArr ], [ helIteArr ] ); // What: All Items Array And Memo. Why: The nav item and rail handle item are shared by every page, ahead of whatever page-specific items the caller passed. How: This concatenates the 2 shared items ahead of helIteArr, recomputed only when helIteArr itself changes.
+
+	const [ recMapObj, setRecMapObj ] = React.useState< Record< string, HelRecTyp > >( {} );                                               // What: Rect Map Object And Setter. Why: Every tagged element's own current rect (keyed by its own catalog id) drives the whole rendered overlay. How: This starts empty and is written wholesale by recTarFun below on every animation frame while actModBoo.
 	const [ opeIdeStr, setOpeIdeStr ] = React.useState< string | null >( null );                                                           // What: Open Identifier String And Setter. Why: At most one tip can be open at a time, tracked by its own (possibly mulBoo-suffixed) id. How: This starts null (no tip open) and is toggled by a badge's own onClick below.
-	const [ togRecObj, setTogRecObj ] = React.useState< { height : number, left : number, top : number, width : number } | null >( null );                                                           // What: Toggle Rect Object And Setter. Why: The page's own help toggle button needs a mask cutout too, even though it is never one of allIteArr. How: This is written by recTarFun below whenever a .helTogBut is found on the page.
+	const [ togRecObj, setTogRecObj ] = React.useState< { height : number, left : number, top : number, width : number } | null >( null ); // What: Toggle Rect Object And Setter. Why: The page's own help toggle button needs a mask cutout too, even though it is never one of allIteArr. How: This is written by recTarFun below whenever a .helTogBut is found on the page.
 
 
 

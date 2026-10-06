@@ -7,7 +7,7 @@ import { hydStaFun   } from './onboarding-seed-data.ts'; // What: Hydrate Stats 
 import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: Every real sample picker (not a disposable copy) is unhidden and rehidden by id. How: This is iterated by both functions in this file.
 
 
-import type { ActStoTyp } from './store.ts';             // What: Action Store Type. Why: Both helpers change state through the shared actions. How: This types each actStoObj parameter.
+import type { ActStoTyp } from './store.ts';            // What: Action Store Type. Why: Both helpers change state through the shared actions. How: This types each actStoObj parameter.
 import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: Unhiding reads the current state. How: This types unhHisFun's staAppObj.
 
 // #endregion Imports

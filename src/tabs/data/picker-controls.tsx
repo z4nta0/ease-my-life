@@ -389,7 +389,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 		const pilNodArr = [ ...groCurEle.querySelectorAll< HTMLElement >( '[data-element-name-hook~="groPilBut"]' ) ]; // What: Pill Node Array. Why: Every currently-rendered group pill needs to be checked for movement. How: This queries every groPilBut element inside the row and spreads the NodeList into a real array.
-		const preMapObj = groFliRef.current;                                                            // What: Previous Map Object. Why: A FLIP tween needs each pill's own position from before this render's reorder. How: This reads whatever the previous run of this effect recorded.
+		const preMapObj = groFliRef.current;                                                                           // What: Previous Map Object. Why: A FLIP tween needs each pill's own position from before this render's reorder. How: This reads whatever the previous run of this effect recorded.
 
 
 		if ( preMapObj && !redMotFun() ) { // What: Has Previous Guard. Why: The very first run has nothing to compare against, and a reduced-motion user should never see this tween. How: This only attempts to animate once a previous snapshot exists and motion isn't reduced.

@@ -51,24 +51,24 @@ type PreFilTyp = Partial< PicRcdTyp & TasRcdTyp > & { items? : Partial< IteRcdTy
 type TouBusTyp = { // What: Tour Bus Type. Why: The tours, the tour runner, and the tabs coordinate through one shared state. How: This describes it, every field optional since each is written by whichever module needs it.
 
 
-	draActBoo? : boolean;                                                          // What: Draft Active Boolean. Why: A tour waits while a draft editor is open. How: This is true while one is.
-	draRepStr? : string | null;                                                    // What: Draft Repeat String. Why: A reminder tour reads the draft's repeat kind. How: This holds it, or null while no draft is open.
-	exiIdeStr? : string | null;                                                    // What: Existing Identifier String. Why: A replayed tour reuses what it made before. How: This holds that record's id, or null once a tour clears it.
-	iteMaxNum? : number | null;                                                    // What: Item Max Number. Why: A tour can stage an added item's ease band. How: This holds its easeMax, or null once a tour clears it.
-	iteMinNum? : number | null;                                                    // What: Item Min Number. Why: A tour can stage an added item's ease band. How: This holds its easeMin, or null once a tour clears it.
-	itePreStr? : string | null;                                                    // What: Item Prefill String. Why: A tour can stage an added item's name. How: This holds it, or null once a tour clears it.
-	preFilObj? : PreFilTyp | null;                                                 // What: Prefill Object. Why: A tour prefills the real create form. How: This holds the prefill, or null once consumed.
-	redNonNum? : number;                                                           // What: Redo Nonce Number. Why: Going back in a tour asks the Pickers tab for a fresh pick. How: Each change of this number is one request.
-	reoNonNum? : number;                                                           // What: Reopen Nonce Number. Why: Going back in a tour can reopen a form. How: Each change of this number is one request.
-	resNonNum? : number;                                                           // What: Reset Nonce Number. Why: A tour can ask a page to reset to its starting state. How: Each change of this number is one request.
-	resTopNum? : number;                                                           // What: Reserve Top Number. Why: Today pushes its list down while a tall highlight is up. How: This is the space to reserve, in pixels.
-	samIdeStr? : string | null;                                                    // What: Sample Identifier String. Why: A tour names the sample it's working with. How: This holds its id, or null once a tour clears it.
-	shoCheBoo? : boolean;                                                          // What: Show Checklist Boolean. Why: A tour can ask Today to show the setup checklist. How: This is true while it should.
+	draActBoo? : boolean;                                                         // What: Draft Active Boolean. Why: A tour waits while a draft editor is open. How: This is true while one is.
+	draRepStr? : string | null;                                                   // What: Draft Repeat String. Why: A reminder tour reads the draft's repeat kind. How: This holds it, or null while no draft is open.
+	exiIdeStr? : string | null;                                                   // What: Existing Identifier String. Why: A replayed tour reuses what it made before. How: This holds that record's id, or null once a tour clears it.
+	iteMaxNum? : number | null;                                                   // What: Item Max Number. Why: A tour can stage an added item's ease band. How: This holds its easeMax, or null once a tour clears it.
+	iteMinNum? : number | null;                                                   // What: Item Min Number. Why: A tour can stage an added item's ease band. How: This holds its easeMin, or null once a tour clears it.
+	itePreStr? : string | null;                                                   // What: Item Prefill String. Why: A tour can stage an added item's name. How: This holds it, or null once a tour clears it.
+	preFilObj? : PreFilTyp | null;                                                // What: Prefill Object. Why: A tour prefills the real create form. How: This holds the prefill, or null once consumed.
+	redNonNum? : number;                                                          // What: Redo Nonce Number. Why: Going back in a tour asks the Pickers tab for a fresh pick. How: Each change of this number is one request.
+	reoNonNum? : number;                                                          // What: Reopen Nonce Number. Why: Going back in a tour can reopen a form. How: Each change of this number is one request.
+	resNonNum? : number;                                                          // What: Reset Nonce Number. Why: A tour can ask a page to reset to its starting state. How: Each change of this number is one request.
+	resTopNum? : number;                                                          // What: Reserve Top Number. Why: Today pushes its list down while a tall highlight is up. How: This is the space to reserve, in pixels.
+	samIdeStr? : string | null;                                                   // What: Sample Identifier String. Why: A tour names the sample it's working with. How: This holds its id, or null once a tour clears it.
+	shoCheBoo? : boolean;                                                         // What: Show Checklist Boolean. Why: A tour can ask Today to show the setup checklist. How: This is true while it should.
 	staCreObj? : { focusName? : boolean, name? : string, step? : number } | null; // What: Start Create Object. Why: Today can ask the Pickers tab to open its create form. How: This holds the request, or null once consumed.
-	touIdeStr? : string;                                                           // What: Tour Identifier String. Why: Gates check which tour is running. How: This is its id.
-	touPhaStr? : string;                                                           // What: Tour Phase String. Why: Modules check whether any tour is running. How: This is 'tour' while one is and 'off' otherwise.
-	touSteNum? : number;                                                           // What: Tour Step Number. Why: Gates check the running tour's step. How: This is its index.
-	wanRaiBoo? : boolean;                                                          // What: Want Rail Boolean. Why: A tour can ask for the side rail to be open. How: This is true while it should.
+	touIdeStr? : string;                                                          // What: Tour Identifier String. Why: Gates check which tour is running. How: This is its id.
+	touPhaStr? : string;                                                          // What: Tour Phase String. Why: Modules check whether any tour is running. How: This is 'tour' while one is and 'off' otherwise.
+	touSteNum? : number;                                                          // What: Tour Step Number. Why: Gates check the running tour's step. How: This is its index.
+	wanRaiBoo? : boolean;                                                         // What: Want Rail Boolean. Why: A tour can ask for the side rail to be open. How: This is true while it should.
 
 
 };

@@ -42,7 +42,7 @@ interface Navigator { // What: Navigator Interface. Why: pwa.ts reads two naviga
 
 
 	getInstalledRelatedApps? : () => Promise< RelAppTyp[] >; // What: Get Installed Related Apps. Why: Chromium can tell whether this app is already installed elsewhere on the device. How: This is the method that lists those installs.
-	standalone?              : boolean;                       // What: Standalone. Why: iOS Safari reports a home-screen launch only through this flag. How: This is true when the app runs from the home screen.
+	standalone?              : boolean;                      // What: Standalone. Why: iOS Safari reports a home-screen launch only through this flag. How: This is true when the app runs from the home screen.
 
 
 }

@@ -1119,7 +1119,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 		( curScoStr === 'reminders' || curScoStr === 'conditionals' ) // What: Special Scope Check. Why: The Reminders and Conditionals scopes show no picker cards. How: This checks curScoStr against both.
-			? [] // What: Special Scope Branch. Why: The Reminders or Conditionals scope shows no picker cards. How: This returns an empty array.
+			? []                                                                                                    // What: Special Scope Branch. Why: The Reminders or Conditionals scope shows no picker cards. How: This returns an empty array.
 			: ( curScoStr === 'all' ? visPicArr : visPicArr.filter( ( picCurObj ) => picCurObj.id === curScoStr ) ) // What: Picker Scope Branch. Why: The All scope shows every visible picker, a picker scope shows just that one. How: This returns visPicArr or its single matching picker.
 
 
@@ -1246,7 +1246,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 	const draEntObj : SecEntTyp | null = newPicObj ? { draBoo : true, kinStr : 'picker', name : newPicObj.name, picObj : newPicObj as PicRcdTyp } : null; // What: Draft Entry Object. Why: The draft card is deliberately NOT part of secEntArr/its sort, so it always renders last regardless of sort order and never shows up filtered out by an unrelated group/type/conditional filter. How: This is null unless a real draft picker exists. // What: Type Assertion Note. Why: staNewFun builds the draft with every field a picker card reads, so it renders through the same code as a stored picker. How: The as tells TypeScript to treat the draft as a picker record.
-	const shoSecArr = draEntObj ? [ ...secEntArr, draEntObj ] : secEntArr;                         // What: Shown Section Array. Why: The list below needs the sorted sections plus, when present, the draft appended after them. How: This appends draEntObj only when it exists.
+
+	const shoSecArr = draEntObj ? [ ...secEntArr, draEntObj ] : secEntArr; // What: Shown Section Array. Why: The list below needs the sorted sections plus, when present, the draft appended after them. How: This appends draEntObj only when it exists.
 
 
 	const notConBoo = !shoConBoo;             // What: Not Conditionals Boolean. Why: The empty state only applies while the Conditionals section is hidden. How: This negates shoConBoo.
@@ -2112,8 +2113,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 								onClick={ ( cliEveObj ) => { // What: On Click Handler. Why: Clicking anywhere on the header outside a real button toggles the card. How: This toggles the section unless it's a draft, the tour is guarding the header, or the click landed on a button.
 
 
-									const notDraBoo = !isaDraBoo;                            // What: Not Draft Boolean. Why: A draft card is always expanded. How: This negates isaDraBoo.
-									const notDetBoo = !detPicBoo;                            // What: Not Disable-Edit-Tour Boolean. Why: The Edit Items tour guards the header during some steps. How: This negates detPicBoo.
+									const notDraBoo = !isaDraBoo;                                           // What: Not Draft Boolean. Why: A draft card is always expanded. How: This negates isaDraBoo.
+									const notDetBoo = !detPicBoo;                                           // What: Not Disable-Edit-Tour Boolean. Why: The Edit Items tour guards the header during some steps. How: This negates detPicBoo.
 									const notButBoo = !( cliEveObj.target as Element ).closest( 'button' ); // What: Not Button Boolean. Why: A click on a real button inside the header has its own action. How: This checks the click target isn't inside a button.
 
 									const togSecBoo = notDraBoo && notDetBoo && notButBoo; // What: Toggle Section Boolean. Why: The header only toggles when all 3 checks pass. How: This ANDs them.

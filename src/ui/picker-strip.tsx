@@ -122,7 +122,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 
 
-		const medQueObj   = matchMedia( '(max-height: 750px)' );                // What: Media Query Object. Why: The same query used for the initial value must be reused here so the listener matches. How: This is the live MediaQueryList the change listener below attaches to.
+		const medQueObj   = matchMedia( '(max-height: 750px)' );                                      // What: Media Query Object. Why: The same query used for the initial value must be reused here so the listener matches. How: This is the live MediaQueryList the change listener below attaches to.
 		const onVieChaFun = ( chaEveObj : MediaQueryListEvent ) => setShoVieBoo( chaEveObj.matches ); // What: On Viewport Change Function. Why: The viewport's own height can cross the 750px breakpoint at any time while the app is open. How: This updates shoVieBoo to the media query's current match state whenever it fires a change event.
 
 

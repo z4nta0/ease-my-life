@@ -2500,7 +2500,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 				...curStaObj.onboarding, // What: Current Onboarding Spread. Why: Every onboarding flag the patch doesn't mention must carry over unchanged. How: This spreads curStaObj.onboarding.
-				...patValObj                       // What: Patch Spread. Why: The caller's own flags must override the current ones. How: This spreads patValObj last, so its keys win.
+				...patValObj             // What: Patch Spread. Why: The caller's own flags must override the current ones. How: This spreads patValObj last, so its keys win.
 
 
 			}
