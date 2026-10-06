@@ -31,7 +31,7 @@ import React     from 'react';                          // What: React. Why: Seg
 
 // #region Components
 
-type SccProTyp = { ariLabStr : string, desIdeStr? : string, layVarStr? : string, onChange : ( keyStr : string ) => void, optIteArr : { keyStr : string, labStr : string }[], value : string }; // What: Segmented-Control-Component Props Type. Why: The control picks one of its options by key, with an accessible name and an optional description and layout. How: This types SegConCom's props.
+type SccProTyp< T extends string > = { ariLabStr : string, desIdeStr? : string, layVarStr? : string, onChange : ( keyStr : T ) => void, optIteArr : { keyStr : T, labStr : string }[], value : T }; // What: Segmented-Control-Component Props Type. Why: The control picks one of its options by key, with an accessible name and an optional description and layout. How: This types SegConCom's props, with T the options' own key type, so a caller whose keys are a fixed set gets one of them back.
 
 // #region SegConCom
 
@@ -75,7 +75,7 @@ type SccProTyp = { ariLabStr : string, desIdeStr? : string, layVarStr? : string,
  *
 */
 
-function SegConCom ( { ariLabStr, desIdeStr, layVarStr, onChange, optIteArr, value } : SccProTyp ) : React.JSX.Element {
+function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onChange, optIteArr, value } : SccProTyp< T > ) : React.JSX.Element {
 
 
 	const segEleRef = React.useRef( null );                                                               // What: Segment Element Reference. Why: plaThuFun needs a handle on the actual group DOM node to query and measure it. How: This is attached via the group div's own ref prop below.

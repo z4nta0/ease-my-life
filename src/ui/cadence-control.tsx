@@ -12,6 +12,12 @@ import { InfTipCom   } from './info-tip.tsx';          // What: Info Tip Compone
 import { ordSufFun   } from '../utils/date.ts';        // What: Ordinal Suffix Function. Why: Every day-of-month, week-ordinal, and weekday-of-month summary needs the correct English ordinal. How: This is called with the day number.
 import { SegConCom   } from './segmented-control.tsx'; // What: Segment Control Component. Why: The top-level cadence picker and the monthly/yearly Date-vs-Weekday picker both need the same animated segmented control. How: This is rendered once for the cadence choice and once more inside each of the monthly and yearly subsections.
 
+
+import type { CadFieTyp } from '../core/cadence.ts';    // What: Cadence Fields Type. Why: The editor reads and patches a picker's cadence fields. How: This types CccProTyp's value and patches.
+import type { CadNamTyp } from '../core/data-model.ts'; // What: Cadence Name Type. Why: Each cadence option's key is one of the fixed cadences. How: This types CAD_OPT_ARR's keys, so the cadence picker hands back a real cadence.
+import type { DatModTyp } from '../core/data-model.ts'; // What: Date Mode Type. Why: Each date mode option's key is one of the fixed modes. How: This types DAT_MOD_ARR's keys, so the mode picker hands back a real mode.
+import type { JSX       } from 'react';                 // What: JSX. Why: The component declares the element it returns. How: This types its return as a JSX element.
+
 // #endregion Imports
 
 
@@ -71,7 +77,7 @@ import { SegConCom   } from './segmented-control.tsx'; // What: Segment Control 
  *
 */
 
-const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence picker below needs one option per cadence, each carrying its own live sub-explanation; tab-data.tsx also reads this same array directly for its own cadence-summary lookup. How: This is passed as the top SegConCom's own optIteArr prop below.
+const CAD_OPT_ARR : { keyStr : CadNamTyp, labStr : string, subEle : JSX.Element }[] = [ // What: Cadence Options Array. Why: The top-level cadence picker below needs one option per cadence, each carrying its own live sub-explanation; tab-data.tsx also reads this same array directly for its own cadence-summary lookup. How: This is passed as the top SegConCom's own optIteArr prop below.
 
 
 	{ // What: Daily Cadence Option. Why: A picker that surfaces every day it runs, the default needs its own option. How: This pairs the 'daily' key with its label and live explanation.
@@ -124,7 +130,7 @@ const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence
 
 
 
-const DAT_MOD_ARR = [ // What: Date Mode Array. Why: The monthly and yearly subsections below both offer the same Date-vs-Weekday choice, driven by one shared SegConCom control. How: This is passed as that SegConCom's own optIteArr prop in both subsections below.
+const DAT_MOD_ARR : { keyStr : DatModTyp, labStr : string }[] = [ // What: Date Mode Array. Why: The monthly and yearly subsections below both offer the same Date-vs-Weekday choice, driven by one shared SegConCom control. How: This is passed as that SegConCom's own optIteArr prop in both subsections below.
 
 
 	{ keyStr : 'date',       labStr : 'Date'    }, // What: Key String. Why: This is the default day-of-month/day targeting mode's own value. How: SegConCom compares this against the current dateMode and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
@@ -169,7 +175,7 @@ const MON_FUL_ARR = [ 'January', 'February', 'March', 'April', 'May', 'June', 'J
  *
 */
 
-const dayCouFun = ( monOneNum ) => new Date( 2024, monOneNum, 0 ).getDate(); // What: Day Count Function. Why: The yearly subsection's day-of-month select always needs to allow day 29 for February, regardless of the real current year. How: This asks for day 0 of the month after monOneNum in a fixed leap year (2024), which JS's own Date resolves back to that month's own real last day.
+const dayCouFun = ( monOneNum : number ) : number => new Date( 2024, monOneNum, 0 ).getDate(); // What: Day Count Function. Why: The yearly subsection's day-of-month select always needs to allow day 29 for February, regardless of the real current year. How: This asks for day 0 of the month after monOneNum in a fixed leap year (2024), which JS's own Date resolves back to that month's own real last day.
 
 // #endregion dayCouFun
 
@@ -178,6 +184,8 @@ const dayCouFun = ( monOneNum ) => new Date( 2024, monOneNum, 0 ).getDate(); // 
 
 
 // #region Components
+
+type CccProTyp = { onChange : ( patValObj : CadFieTyp ) => void, value : CadFieTyp | null | undefined }; // What: Cadence-Control-Component Props Type. Why: The editor shows a picker's cadence fields and hands each change back as a patch. How: This types CadConCom's props.
 
 // #region CadConCom
 
@@ -211,11 +219,11 @@ const dayCouFun = ( monOneNum ) => new Date( 2024, monOneNum, 0 ).getDate(); // 
  *
 */
 
-function CadConCom ( { onChange, value } ) {
+function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 
 
 	const norCadObj = CAD_NAM_OBJ.norCadFun( value || {} );                                                         // What: Normalized Cadence Object. Why: Every field read throughout this component needs a fully-defaulted cadence value, not a possibly-partial draft. How: This calls CAD_NAM_OBJ.norCadFun against the caller's own value, falling back to an empty object for a brand-new draft.
-	const setPatFun = ( patValObj ) => onChange( patValObj );                                                       // What: Set Patch Function. Why: Every field editor below needs one shared way to forward a partial change up to the caller. How: This calls onChange directly with whatever patch object it is given.
+	const setPatFun = ( patValObj : CadFieTyp ) => onChange( patValObj );                                           // What: Set Patch Function. Why: Every field editor below needs one shared way to forward a partial change up to the caller. How: This calls onChange directly with whatever patch object it is given.
 	const curSubEle = ( CAD_OPT_ARR.find( ( optConObj ) => optConObj.keyStr === norCadObj.cadence ) || {} ).subEle; // What: Current Sub Element. Why: The cadence picker's own live sub-explanation needs whichever CAD_OPT_ARR entry matches the currently-selected cadence. How: This looks up norCadObj's own cadence in CAD_OPT_ARR and reads that entry's own subEle field.
 
 
