@@ -301,13 +301,6 @@
 
 
 }
-.forFieDiv--tour { /* What: Tour Form Field Div. Why: The Items step's name field, shown during the tour, needs room above and below. How: This adds base vertical spacing margins. */
-
-
-	margin : var( --spa-ver-bas ) 0 var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
-
-
-}
 
 .forLabLab,
 .forLabSpa,

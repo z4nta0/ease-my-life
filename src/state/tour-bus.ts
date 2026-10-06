@@ -65,7 +65,6 @@ type TouBusTyp = { // What: Tour Bus Type. Why: The tours, the tour runner, and 
 	samIdeStr? : string;                                                           // What: Sample Identifier String. Why: A tour names the sample it's working with. How: This holds its id.
 	shoCheBoo? : boolean;                                                          // What: Show Checklist Boolean. Why: A tour can ask Today to show the setup checklist. How: This is true while it should.
 	staCreObj? : { focusName? : boolean, name? : string, step? : number } | null; // What: Start Create Object. Why: Today can ask the Pickers tab to open its create form. How: This holds the request, or null once consumed.
-	supAutBoo? : boolean;                                                          // What: Suppress Auto Boolean. Why: A tour can hold off the automatic generator. How: This is true while it does.
 	touIdeStr? : string;                                                           // What: Tour Identifier String. Why: Gates check which tour is running. How: This is its id.
 	touPhaStr? : string;                                                           // What: Tour Phase String. Why: Modules check whether any tour is running. How: This is 'tour' while one is and 'off' otherwise.
 	touSteNum? : number;                                                           // What: Tour Step Number. Why: Gates check the running tour's step. How: This is its index.

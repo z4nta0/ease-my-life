@@ -62,7 +62,7 @@ import type { PicArgTyp } from '../../core/data-model.ts'; // What: Picker Argum
 
 // #region Components
 
-type PfcProTyp = { conObjArr? : ConRcdTyp[], exiGroArr : string[], iniForObj? : ( PicArgTyp & { focusName? : boolean } ) | null, iniGroStr? : string, isaEdiBoo? : boolean, onCanForFun : () => void, onCrePicFun? : ( payForObj : PicArgTyp ) => void, onSavEdiFun? : ( payForObj : PicArgTyp ) => void, opeTouBoo? : boolean }; // What: Picker-Form-Component Props Type. Why: The form creates a new picker or edits an existing one's details, starting from an optional prefill. How: This types PicForCom's props, with the create and save callbacks both taking the finished payload.
+type PfcProTyp = { conObjArr? : ConRcdTyp[], exiGroArr : string[], iniForObj? : ( PicArgTyp & { focusName? : boolean } ) | null, iniGroStr? : string, isaEdiBoo? : boolean, onCanForFun : () => void, onCrePicFun? : ( payForObj : PicArgTyp ) => void, onSavEdiFun? : ( payForObj : PicArgTyp ) => void }; // What: Picker-Form-Component Props Type. Why: The form creates a new picker or edits an existing one's details, starting from an optional prefill. How: This types PicForCom's props, with the create and save callbacks both taking the finished payload.
 
 // #region PicForCom
 
@@ -107,11 +107,6 @@ type PfcProTyp = { conObjArr? : ConRcdTyp[], exiGroArr : string[], iniForObj? : 
  * @param props.onSavEdiFun - On Save Edit Function: Called with the finished
  *                            payload when an edit is submitted (isaEdiBoo
  *                            true).
- * @param props.opeTouBoo   - Open Tour Boolean: Marks this instance as opened
- *                            by a guided tour, so advSteFun skips its own
- *                            scroll-to-top (a tour step's own highlight target
- *                            can sit further down this same Items sub-step);
- *                            defaults to undefined (falsy).
  *
  * @returns The form's own current step (Details or Items), or, while
  * isaEdiBoo is true, only ever the Details step.
@@ -123,7 +118,7 @@ type PfcProTyp = { conObjArr? : ConRcdTyp[], exiGroArr : string[], iniForObj? : 
  *
 */
 
-function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBoo, onCanForFun, onCrePicFun, onSavEdiFun, opeTouBoo } : PfcProTyp ) : React.JSX.Element {
+function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBoo, onCanForFun, onCrePicFun, onSavEdiFun } : PfcProTyp ) : React.JSX.Element {
 
 
 	// #region Form Step And Name
@@ -2075,42 +2070,6 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 						<p className={` ${ cssModObj.steHinPar }   ${ cssModObj.steHinParMode } `}>Because you chose &ldquo;Ease Down&rdquo;, each item gets its own cadence. This is set per item below, since each item might need a different selection period. For each one you will need to pick a soonest and a latest value, which will be used to determine its new value as it discharges towards deselection.</p> // What: Ease Down Note Paragraph Element. Why: Ease Down items each need their own selection band. How: This renders a fixed explanation.
-
-
-					) }
-
-					{ iniForObj && !opeTouBoo && ( // What: Tour Name Field Check. Why: Only the empty-state quick-start prefill (not a real tour walkthrough) ever needs this redundant name field this deep into the form. How: This renders the field only when a prefill exists and it wasn't opened by a tour. // What: Tour Name Field Design Note. Why: The guided tour now walks through the Details sub-step normally (where the real name input already lives) before reaching Items, so this redundant field is only needed for the OTHER initial-prefill path. How: Today's "no pickers yet" quick-start card jumps straight here, which is the sole real remaining reason iniForObj can reach Step 2 without opeTouBoo.
-
-
-						<div
-							className={` ${ cssModObj.forFieDiv }   ${ cssModObj.forFieDivTour } `}
-
-							data-element-name-hook='forFieDiv'
-						>{ /* What: Tour Name Field Div Element. Why: The label and input form one field unit. How: This wraps those two pieces. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-							<label
-								className={ cssModObj.forLabLab }
-
-								htmlFor='np-tour-name'
-							>Picker name</label>{ /* What: Picker Name Label Element. Why: The tour name field needs its own visible label, tied to the input below. How: This renders the literal text "Picker name" and points at np-tour-name through htmlFor. */ }
-
-							<input
-								id='np-tour-name'
-
-								className={ cssModObj.forTexInp }
-
-								autoComplete='off'
-								maxLength={ 40 }
-								placeholder='e.g. Chores'
-								type='text'
-								value={ newNamStr }
-
-								onChange={ ( chaEveObj ) => setNewNamStr( chaEveObj.target.value ) }
-							/>{ /* What: Picker Name Input Element. Why: The tour-prefilled form still needs a real, editable name field. How: This is a controlled text input bound to newNamStr. */ }
-
-
-						</div>
 
 
 					) }

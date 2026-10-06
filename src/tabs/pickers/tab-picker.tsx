@@ -148,32 +148,10 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 	const picTouBoo = isaTouBoo && typeof touBusObj.touIdeStr === 'string' && touBusObj.touIdeStr.startsWith( 'picker-' ); // What: Picker Tour Boolean. Why: A running picker mini-tour's own Step 2 wants the user to click the real Add New Picker button themselves, not a simulated click, exempting it from tutProBoo's own gate below for its whole run (later steps' own cirBoo targets are elsewhere, so the click-guard already keeps a stray click on this button from doing anything by then anyway). How: This checks the shared 'picker-' tour id prefix convention picker mini-tours use.
 	const tutProBoo = ONB_CHE_OBJ.tutProFun( staAppObj ) && !picTouBoo;                                                    // What: Tutorials Progress Boolean. Why: This button is separately disabled anywhere from the Welcome Tour's first step through the closing Generate card's flow completing. How: This is distinct from disAddBoo above (still needed on its own: a Replay of the Pickers page tour runs AFTER the checklist finishes, when this is always false), and is exempted for the whole run of a picker mini-tour via picTouBoo.
 
-	const [ opeTouBoo, setOpeTouBoo ] = React.useState( false ); // What: Opened Tour Boolean And Setter. Why: Prefill staged by Today's empty-state card (name focus + "Chores") needs to know NOT to fire the tour's own advance callback, unlike a real tour walkthrough. How: This is set true only by the tour-prefill effect below, never by the empty-state entry effect.
-	const [ empIniObj, setEmpIniObj ] = React.useState( null );  // What: Empty Initial Object And Setter. Why: Prefill staged by Today's empty-state card needs to survive clearing the bus signal that carried it. How: This is set once by the empty-state effect below and consumed as PicForCom's own iniForObj prop.
+	const [ empIniObj, setEmpIniObj ] = React.useState( null ); // What: Empty Initial Object And Setter. Why: Prefill staged by Today's empty-state card needs to survive clearing the bus signal that carried it. How: This is set once by the empty-state effect below and consumed as PicForCom's own iniForObj prop.
 
 
-	React.useEffect( () => { // What: Tour Prefill Effect. Why: When the tour stages a prefill, the create form should open for it automatically. How: This opens creOpeBoo and flags opeTouBoo, but only when nothing is already open and the tour hasn't explicitly suppressed this auto-open (see touBusObj.supAutBoo's own comment at its use site in onboarding/picker-tours.tsx: that tour always opens this form via a real click on the button below, which sets creOpeBoo itself; without this flag, that same click's prefill can reach this effect on an earlier render than the one where creOpeBoo turns true, since the bus's subscriber callback isn't part of the click's own React batch, making this effect wrongly claim credit and flip opeTouBoo to true).
-
-
-		const hasPreBoo = !!touBusObj.preFilObj; // What: Has Prefill Boolean. Why: The chain below combines 3 real-expression operands, so each is named individually per this project's long-boolean-expression rule. How: This is true whenever the bus is currently staging a prefill.
-		const notCreBoo = !creOpeBoo;            // What: Not Creating Boolean. Why: See hasPreBoo's own comment. How: This is true whenever the create form isn't already open.
-		const skiAutBoo = !touBusObj.supAutBoo;  // What: Skip Auto-Open Boolean. Why: See hasPreBoo's own comment. How: This is true whenever the tour hasn't explicitly suppressed this auto-open.
-
-
-		if ( hasPreBoo && notCreBoo && skiAutBoo ) { // What: Auto-Open Guard. Why: All 3 conditions must hold before this effect may claim credit for opening the form. How: This opens creOpeBoo and flags opeTouBoo together.
-
-
-			setCreOpeBoo( true ); // What: Create Open Call. Why: The tour's prefill needs the create form open. How: This sets creOpeBoo to true.
-			setOpeTouBoo( true ); // What: Tour Open Mark Call. Why: The form must know a tour opened it. How: This sets opeTouBoo to true.
-
-
-		}
-
-
-	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: Closing the form would otherwise re-run this and reopen it for a prefill still on the bus, and the suppress flag only matters at the moment a prefill arrives. How: creOpeBoo and touBusObj.supAutBoo are read from the render where the prefill changed.
-	}, [ touBusObj.preFilObj ] ); // What: Effect Dependency Array. Why: Only a genuine change to the staged prefill should re-evaluate this. How: touBusObj.preFilObj is the sole trigger.
-
-	React.useEffect( () => { // What: Empty-State Create Effect. Why: Today's "no pickers" empty-state card should open the create form with its own staged prefill, but WITHOUT opeTouBoo, since this isn't the tour and creating the picker must not fire the tour's own advance callback. How: This consumes touBusObj.staCreObj once, then clears it, prefilling a "Chores" group only when there are no groups to auto-select (a group can technically exist with no pickers, so an existing one is respected by leaving group unset, letting the form auto-select it).
+	React.useEffect( () => { // What: Empty-State Create Effect. Why: Today's "no pickers" empty-state card should open the create form with its own staged prefill. How: This consumes touBusObj.staCreObj once, then clears it, prefilling a "Chores" group only when there are no groups to auto-select (a group can technically exist with no pickers, so an existing one is respected by leaving group unset, letting the form auto-select it).
 
 
 		if ( touBusObj.staCreObj && !creOpeBoo ) { // What: Start Create Guard. Why: Only a genuinely-staged empty-state prefill, with nothing already open, should trigger this. How: This checks both conditions before doing anything.
@@ -945,37 +923,19 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 							exiGroArr={ exiGroArr }
 							iniForObj={ touBusObj.preFilObj || empIniObj || null }
 							iniGroStr={ groFilStr === 'all' ? '' : groFilStr }
-							opeTouBoo={ opeTouBoo }
 
-							onCanForFun={ () => { // What: On Cancel Form Handler. Why: Cancelling the create form must also drop any tour state and prefill. How: This clears the tour flag and the prefill, then runs canCreFun.
+							onCanForFun={ () => { // What: On Cancel Form Handler. Why: Cancelling the create form must also drop any staged prefill. How: This clears the prefill, then runs canCreFun.
 
 
-								setOpeTouBoo( false ); // What: Tour Open Clear Call. Why: The form is no longer tour-driven. How: This resets opeTouBoo to false.
-								setEmpIniObj( null );  // What: Empty Prefill Clear Call. Why: A cancelled form should not reopen with the old prefill. How: This resets empIniObj to null.
-								canCreFun();           // What: Cancel Create Call. Why: The rest of the cancel teardown is shared. How: This calls canCreFun.
+								setEmpIniObj( null ); // What: Empty Prefill Clear Call. Why: A cancelled form should not reopen with the old prefill. How: This resets empIniObj to null.
+								canCreFun();          // What: Cancel Create Call. Why: The rest of the cancel teardown is shared. How: This calls canCreFun.
 
 
 							} }
-							onCrePicFun={ ( payForObj ) => { // What: On Create Function. Why: A successful create must reconcile with whatever the guided-tour checklist expects, then land the user on the freshly-made picker. How: This dedupes an onboarding revisit by name, tags a tour-created picker for later replay matching, then advances the selection once the created id comes back.
+							onCrePicFun={ ( payForObj ) => { // What: On Create Function. Why: A successful create must reconcile with whatever the guided-tour checklist expects, then land the user on the freshly-made picker. How: This tags a tour-created picker for later replay matching, then advances the selection once the created id comes back.
 
 
-								if ( opeTouBoo && !touBusObj.exiIdeStr && staAppObj.pickers.some( ( picCurObj ) => picCurObj.name === payForObj.name ) ) { // What: Onboarding Dedupe Guard. Why: During onboarding, a revisit must never create a second copy of the example picker; instead it should just dedupe by name and close the form. How: This is skipped when touBusObj.exiIdeStr is set, since that's an INTENTIONAL replay of an already-finished tutorial (see the picker tour's own Step 2 run()), where payForObj.name matching the prior picker is expected, not a same-session double-fire to guard against.
-
-
-									setOpeTouBoo( false ); // What: Tour Flag Clear Call. Why: This branch is itself the tour's own completion path, so the flag must not linger. How: This resets opeTouBoo to false.
-
-									canCreFun(); // What: Cancel Create Call. Why: The form must close exactly the same way a manual cancel would. How: This calls the shared canCreFun.
-
-
-
-									return; // What: Early Return. Why: A genuine duplicate must not fall through into the real actions.addPicFun call below. How: This exits the handler immediately.
-
-
-								}
-
-
-
-								const newPicStr = actStoObj.addPicFun({ // What: New Picker String. Why: This is the actual created (or replayed-in-place) picker's own id. How: This calls actions.addPicFun with the payload plus the tour-driven fields above. // What: Replay Update Note. Why: A replay updates the SAME picker in place (via replaceId) instead of creating a duplicate, see store.ts's own addPicFun; createdFromSample tags this run's picker either way, so a LATER replay can find it too. How: This is gated on touBusObj.preFilObj, not opeTouBoo, since this tour walks the form via a real click (opeTouBoo only ever gets set by the OTHER, dormant-auto-open prefill entry point above), so opeTouBoo is always false here. // What: Hidden Field Note. Why: While the mini-tour checklist is up, ANY picker created here (via a tutorial's own walkthrough OR the user just clicking this same real button themselves) stays out of the real list until the closing Generate step (mirrors reminders-section.tsx's own staAddFun). How: This is driven by touBusObj.shoCheBoo below.
+								const newPicStr = actStoObj.addPicFun({ // What: New Picker String. Why: This is the actual created (or replayed-in-place) picker's own id. How: This calls actions.addPicFun with the payload plus the tour-driven fields above. // What: Replay Update Note. Why: A replay updates the SAME picker in place (via replaceId) instead of creating a duplicate, see store.ts's own addPicFun; createdFromSample tags this run's picker either way, so a LATER replay can find it too. How: This is gated on touBusObj.preFilObj, which is only set while a picker tutorial walks this form. // What: Hidden Field Note. Why: While the mini-tour checklist is up, ANY picker created here (via a tutorial's own walkthrough OR the user just clicking this same real button themselves) stays out of the real list until the closing Generate step (mirrors reminders-section.tsx's own staAddFun). How: This is driven by touBusObj.shoCheBoo below.
 
 
 									...payForObj, // What: Payload Spread. Why: Every field the form collected goes into the new picker. How: This spreads in payForObj.
@@ -987,16 +947,6 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 								});
-
-
-								if ( opeTouBoo ) { // What: Tour Open Guard. Why: A genuine tour-driven create (not the dedupe branch above) ends the form's tour-driven state once it lands. How: This clears opeTouBoo, only while it was actually true.
-
-
-									setOpeTouBoo( false ); // What: Tour Open Clear Call. Why: The form is no longer tour-driven. How: This resets opeTouBoo to false.
-
-
-								}
-
 
 
 								setEmpIniObj( null ); // What: Empty Prefill Clear Call. Why: A consumed empty-state prefill must not linger for the next time this form opens. How: This resets empIniObj to null.

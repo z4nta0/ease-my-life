@@ -804,10 +804,6 @@ const buiNamFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Name F
  * trouble finding it there at all) fixed that same problem for real usage too,
  * not just this tour.
  *
- * supAutBoo exists because tab-picker.tsx has its own dormant effect from the
- * original (stashed) create-a-picker tour design (its own Tour Prefill Effect)
- * that auto-opens the form the instant prefill appears; without this flag it
- * would wrongly claim credit for the click this step is teaching.
  * exiIdeStr/samIdeStr let a finished-before run of this same tour update its
  * own already-created picker in place (via addPicFun's own replaceId) instead
  * of creating a name-colliding duplicate. samIdeStr is republished regardless
@@ -855,8 +851,7 @@ const buiNewFun = ( picIdeStr : string, staAppObj : StaAppTyp ) : TouSteTyp => (
 
 			exiIdeStr : exiPicObj ? exiPicObj.id : null, // What: Existing Identifier String. Why: A previously-finished run's own real picker must be updated in place, not duplicated. How: This carries exiPicObj's own id through when found, null otherwise.
 			preFilObj : PIC_SAM_OBJ[ picIdeStr ],        // What: Prefill Object. Why: The real form's own fields need this sample's own template data. How: This reads PIC_SAM_OBJ by picIdeStr straight through.
-			samIdeStr : picIdeStr,                       // What: Sample Identifier String. Why: A future replay of this same tour needs to find this run's own picker. How: This tags the prefill with picIdeStr.
-			supAutBoo : true                             // What: Suppress Auto Boolean. Why: tab-picker.tsx's own dormant auto-open effect must not wrongly claim credit for the click this step is teaching. How: This is read by that effect's own guard, which stays silent whenever this is true.
+			samIdeStr : picIdeStr                        // What: Sample Identifier String. Why: A future replay of this same tour needs to find this run's own picker. How: This tags the prefill with picIdeStr.
 
 
 		});
@@ -943,24 +938,11 @@ type PucProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onCloTouFun : () =
  * unmount TabTodCom (and this along with it) if it lived there instead.
  * actIdeStr/selTabFun are therefore the real app-wide ones, not stubs.
  *
- * Why buiNewFun's own runFun() (not, say, NAV_STE_OBJ's, or PicTouCom's own
- * mount) is where prefill gets published: tab-picker.tsx has its own dormant
- * effect from the original (stashed) create-a-picker tour design (its own Tour
- * Prefill Effect, which calls setCreOpeBoo( true ) and setOpeTouBoo( true )),
- * that auto-opens the form the instant prefill appears. Publishing any earlier
- * (tour start, or even Step 1) would trigger that the moment TabPicCom mounts,
- * skipping Step 2 entirely (the form would already be open before the user
- * ever sees "+ Add New Picker" highlighted). runFun() fires in the
- * click-guard's own CAPTURE-phase handling of the same click whose native
- * bubble-phase handler is the button's own onClick, which calls setCreOpeBoo(
- * true ), that ordering (not, as an earlier version of this comment assumed,
- * both landing in one React batch; they do not, the bus's own plain-JS
- * subscriber callback commits its own render before the native handler's does)
- * is exactly why runFun() also sets `supAutBoo : true`, without it the dormant
- * effect would see `creOpeBoo` still false on its own earlier render and
- * wrongly claim credit, flipping opeTouBoo to true (this tour walks Details
- * normally via a real click, unlike the other prefill entry point that comment
- * block still documents, which SHOULD trigger that effect).
+ * Why buiNewFun's own runFun() is where the prefill gets published: it fires
+ * in the click guard's own capture-phase handling of the "+ Add New Picker"
+ * click, before the button's own bubble-phase onClick opens the form, so
+ * PicForCom mounts with the sample's data already on the bus as its
+ * iniForObj.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1012,11 +994,11 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 	 * @summary
 	 * Ends this picker mini-tour however it ends, recording how in the sample's
 	 * own checklist entry. It clears every prefill field this tour published on
-	 * the shared bus, since tab-picker.tsx's own dormant auto-open effect keys
-	 * off preFilObj's mere presence and a leftover value would silently reopen
-	 * the create form with stale sample data the next time TabPicCom mounts. It
-	 * then updates this sample's own launcher card status and calls onCloTouFun
-	 * so app.tsx unmounts the tour.
+	 * the shared bus, since tab-picker.tsx prefills its create form from
+ * preFilObj whenever one is present, so a leftover value would fill the next
+ * picker the user creates with stale sample data. It then updates this
+ * sample's own launcher card status and calls onCloTouFun so app.tsx unmounts
+ * the tour.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1034,7 +1016,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 	 *
 	*/
 
-	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Clears both bus fields regardless of exit path (cancelled/skipped/finished), since tab-picker.tsx's own dormant auto-open effect keys off tour.preFilObj's mere presence, so a leftover value from THIS tour would silently reopen the create form with stale sample data the next time TabPicCom mounts. How: This publishes every prefill-related field back to its own idle value, updates the checklist, then calls onCloTouFun.
+	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Every exit path (cancelled, skipped, or finished) must clear this tour's prefill fields, since tab-picker.tsx prefills its create form from preFilObj whenever one is present, so a leftover value would fill the next picker the user creates with stale sample data. How: This publishes every prefill-related field back to its own idle value, updates the checklist, then calls onCloTouFun.
 
 
 		emlTouObj.set({ // What: Prefill Clear Call. Why: A stale prefill left over from this tour must not leak into a future visit to the Pickers tab. How: This resets every field buiNewFun's/buiAddFun's own runFun() published, back to its own idle value.
@@ -1045,8 +1027,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 			iteMinNum : null, // What: Item Minimum Number. Why: Same reasoning as itePreStr, for the drift band's own slow end. How: This clears the field buiAddFun's own runFun() set.
 			itePreStr : null, // What: Item Prefill String. Why: The item editor must not reopen with a stale prefilled name. How: This clears the field buiAddFun's own runFun() set.
 			preFilObj : null, // What: Prefill Object. Why: The create-picker form must not reopen with stale sample data. How: This clears the field buiNewFun's own runFun() set.
-			samIdeStr : null, // What: Sample Identifier String. Why: Same reasoning as exiIdeStr. How: This clears the field buiNewFun's own runFun() set.
-			supAutBoo : false // What: Suppress Auto Boolean. Why: A future, non-tour visit to the Pickers tab must not have its own dormant auto-open effect silenced. How: This resets the flag buiNewFun's own runFun() set.
+			samIdeStr : null  // What: Sample Identifier String. Why: Same reasoning as exiIdeStr. How: This clears the field buiNewFun's own runFun() set.
 
 
 		});
