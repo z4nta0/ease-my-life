@@ -97,9 +97,9 @@ function useFliRaiFun ( raiNodRef : React.RefObject< HTMLElement | null >, trgKe
 		pilNodArr.forEach( ( pilCurEle ) => { // What: Pill Animate Loop. Why: Every pill needs its own individual FLIP tween (or fade-in, if new), since each may have moved a different distance. How: This computes each pill's own delta from firMapObj and plays the matching animation.
 
 
-			const pilIdeStr = pilCurEle.dataset.flipItemKey; // What: Pill Identifier String. Why: firMapObj is keyed by each pill's own stable id, not the DOM node itself. How: This reads the pill's own data-flip-item-key attribute.
-			const preXcoNum = firMapObj.get( pilIdeStr );    // What: Previous X-Coordinate Number. Why: A FLIP tween needs to know where this exact pill sat before the reorder. How: This looks up pilIdeStr in firMapObj, undefined if this pill is brand new.
-			const newXcoNum = pilCurEle.offsetLeft;          // What: New X-Coordinate Number. Why: The tween's own end point is wherever the pill actually landed after the reorder. How: This reads the pill's own current offsetLeft.
+			const pilIdeStr = pilCurEle.dataset.flipItemKey!; // What: Pill Identifier String. Why: firMapObj is keyed by each pill's own stable id, not the DOM node itself. How: This reads the pill's own data-flip-item-key attribute. // What: Non-Null Note. Why: Every pill was selected by its data-flip-item-key attribute, so the key is always present. How: The ! tells TypeScript the key is set here.
+			const preXcoNum = firMapObj.get( pilIdeStr );     // What: Previous X-Coordinate Number. Why: A FLIP tween needs to know where this exact pill sat before the reorder. How: This looks up pilIdeStr in firMapObj, undefined if this pill is brand new.
+			const newXcoNum = pilCurEle.offsetLeft;           // What: New X-Coordinate Number. Why: The tween's own end point is wherever the pill actually landed after the reorder. How: This reads the pill's own current offsetLeft.
 
 
 
@@ -147,7 +147,7 @@ function useFliRaiFun ( raiNodRef : React.RefObject< HTMLElement | null >, trgKe
 
 		firMapObj.clear(); // What: First Map Clear. Why: The map must not accumulate stale positions from a pill that no longer exists. How: This empties firMapObj before it's repopulated just below.
 
-		pilNodArr.forEach( ( pilCurEle ) => firMapObj.set( pilCurEle.dataset.flipItemKey, pilCurEle.offsetLeft ) ); // What: First Map Populate. Why: The NEXT reorder's own FLIP tween needs this run's final positions as its own "previous" baseline. How: This records every pill's own current offsetLeft, keyed by its own data-flip-item-key.
+		pilNodArr.forEach( ( pilCurEle ) => firMapObj.set( pilCurEle.dataset.flipItemKey!, pilCurEle.offsetLeft ) ); // What: First Map Populate. Why: The NEXT reorder's own FLIP tween needs this run's final positions as its own "previous" baseline. How: This records every pill's own current offsetLeft, keyed by its own data-flip-item-key. // What: Non-Null Note. Why: Every pill was selected by its data-flip-item-key attribute, so the key is always present. How: The ! tells TypeScript the key is set here.
 
 
 	}, [ raiNodRef, trgKeyStr ] ); // What: Effect Dependency Array. Why: The animation must run once per re-sort, and a different rail ref would mean different pills. How: trgKeyStr is the caller's own reorder trigger, and raiNodRef is the stable ref the effect reads the rail through.

@@ -635,7 +635,7 @@ function useFloIteFun ( tabIdeStr : string, meaEleRef : React.RefObject< HTMLEle
 	React.useEffect( () => { // What: Generate Effect. Why: A tab not already cached needs its own gutters measured and generated exactly once. How: This checks the cache first, then measures meaEleRef's own parent .main and generates both sides if nothing was cached.
 
 
-		if ( floCacMap.has( tabIdeStr ) ) { setFloIteObj( floCacMap.get( tabIdeStr ) ); return; } // What: Cache Hit Guard. Why: A tab generated earlier in this session must not be regenerated. How: This applies the cached entry directly and bails out of the rest of the effect.
+		if ( floCacMap.has( tabIdeStr ) ) { setFloIteObj( floCacMap.get( tabIdeStr )! ); return; } // What: Cache Hit Guard. Why: A tab generated earlier in this session must not be regenerated. How: This applies the cached entry directly and bails out of the rest of the effect. // What: Non-Null Note. Why: The has check just found this tab in the cache. How: The ! tells TypeScript the get returns its entry.
 
 
 

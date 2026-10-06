@@ -692,7 +692,8 @@ const tipMesFun = ( cadValStr : string, dayLabStr : string = 'Days' ) : string =
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param cadValStr - Cadence Value String: The picker's own cadence
- *                    value.
+ *                    value, or nothing for a picker without one, which
+ *                    counts in days.
  * @param couValNum - Count Value Number: How many of the unit are being
  *                    displayed; exactly 1 gets the singular form,
  *                    anything else the plural.
@@ -706,7 +707,7 @@ const tipMesFun = ( cadValStr : string, dayLabStr : string = 'Days' ) : string =
  *
 */
 
-function uniWorFun ( cadValStr : string, couValNum : number ) : string {
+function uniWorFun ( cadValStr : string | null | undefined, couValNum : number ) : string {
 
 
 	switch ( cadValStr ) { // What: Cadence Switch. Why: Each cadence has its own unit word, singular or plural per couValNum. How: This branches on cadValStr, falling back to the daily day/days pair for anything else.

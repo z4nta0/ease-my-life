@@ -334,7 +334,8 @@ function norPicFun ( rawNamStr : string | undefined ) : string { return titCasFu
  * @param iteAllArr - Item All Array: The items to average siblings from (only
  *                    entries matching picIdeStr are actually used).
  * @param picIdeStr - Picker Identifier String: The picker id whose own items'
- *                    band should be averaged.
+ *                    band should be averaged, or undefined for an unsaved
+ *                    picker, which matches no items.
  *
  * @returns { easeMin, easeMax }, averaged from iteAllArr's own matching
  * items, or a copy of DEF_EAS_OBJ when none exist at all.
@@ -346,7 +347,7 @@ function norPicFun ( rawNamStr : string | undefined ) : string { return titCasFu
  *
 */
 
-function aveEasFun ( iteAllArr : IteRcdTyp[], picIdeStr : string ) : Required< Pick< IteRcdTyp, 'easeMax' | 'easeMin' > > {
+function aveEasFun ( iteAllArr : IteRcdTyp[], picIdeStr : string | undefined ) : Required< Pick< IteRcdTyp, 'easeMax' | 'easeMin' > > {
 
 
 	const sibIteArr = ( iteAllArr || [] ).filter( ( curIteObj ) => curIteObj.pickerId === picIdeStr ); // What: Sibling Item Array. Why: Only this picker's own items should factor into its own averaged band. How: This filters iteAllArr down to items whose own pickerId matches picIdeStr.

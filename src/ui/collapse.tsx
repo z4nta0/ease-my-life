@@ -71,7 +71,7 @@ type CdcProTyp = { children : React.ReactNode, className? : string, isaInsBoo? :
  *
 */
 
-function ColDisCom ( { children, className = '', isaInsBoo = false, open } : CdcProTyp ) : React.JSX.Element {
+function ColDisCom ( { children, className = '', isaInsBoo = false, open } : CdcProTyp ) : React.JSX.Element | null {
 
 
 	const [ chiMouBoo, setChiMouBoo ] = React.useState( open );              // What: Child Mounted Boolean And Setter. Why: Children must stay in the DOM through the close animation and unmount only once it finishes. How: This starts matching the initial open value and is flipped by the effects below.

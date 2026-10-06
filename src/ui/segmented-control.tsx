@@ -78,8 +78,8 @@ type SccProTyp< T extends string > = { ariLabStr : string, desIdeStr? : string, 
 function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onChange, optIteArr, value } : SccProTyp< T > ) : React.JSX.Element {
 
 
-	const segEleRef = React.useRef( null );                                                               // What: Segment Element Reference. Why: plaThuFun needs a handle on the actual group DOM node to query and measure it. How: This is attached via the group div's own ref prop below.
-	const thuEleRef = React.useRef( null );                                                               // What: Thumb Element Reference. Why: plaThuFun needs a handle on the sliding thumb span to move and resize it. How: This is attached via the thumb span's own ref prop below.
+	const segEleRef = React.useRef< HTMLDivElement | null >( null );                                      // What: Segment Element Reference. Why: plaThuFun needs a handle on the actual group DOM node to query and measure it. How: This is attached via the group div's own ref prop below.
+	const thuEleRef = React.useRef< HTMLSpanElement | null >( null );                                     // What: Thumb Element Reference. Why: plaThuFun needs a handle on the sliding thumb span to move and resize it. How: This is attached via the thumb span's own ref prop below.
 	const preIndRef = React.useRef( optIteArr.findIndex( ( optConObj ) => optConObj.keyStr === value ) ); // What: Previous Index Reference. Why: plaThuFun needs to know which direction the selection just moved in, to decide which edge of the thumb leads the animation. How: This starts at the initially-selected entry's own index and is updated at the end of every plaThuFun run.
 
 
@@ -94,7 +94,7 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 
 
 
-		const butActEle = segCurEle.querySelector( '[data-element-name-hook~="segConBut"][aria-pressed="true"]' ); // What: Button Active Element. Why: This is the specific option button the thumb needs to sit under. How: This is found via its hook and aria-pressed state inside the group.
+		const butActEle = segCurEle.querySelector< HTMLButtonElement >( '[data-element-name-hook~="segConBut"][aria-pressed="true"]' ); // What: Button Active Element. Why: This is the specific option button the thumb needs to sit under. How: This is found via its hook and aria-pressed state inside the group.
 
 
 		if ( !butActEle ) return; // What: No Active Button Guard. Why: No option is currently marked active, such as mid-transition. How: This bails out of the rest of the placement when there is nothing to measure against.

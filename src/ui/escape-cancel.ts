@@ -90,17 +90,17 @@ function useEscCanFun ( actStaBoo : boolean, hanCalFun : () => void ) : void {
 		const staEntObj = { runFun : () => hanFunRef.current && hanFunRef.current() }; // What: Stack Entry Object. Why: The shared stack needs a stable object identity per registration, so this exact entry can be found and removed again on cleanup. How: This wraps a call to whatever handler hanFunRef currently points at.
 
 
-		window.__escStack.push( staEntObj ); // What: Stack Push Call. Why: This is what actually makes this editor reachable by the document-level Escape listener below. How: This appends staEntObj to the shared stack.
+		window.__escStack!.push( staEntObj ); // What: Stack Push Call. Why: This is what actually makes this editor reachable by the document-level Escape listener below. How: This appends staEntObj to the shared stack. // What: Non-Null Note. Why: This module creates window.__escStack when it loads, before any hook or listener can run. How: The ! tells TypeScript the stack is set here.
 
 
 
 		return () => { // What: Stack Cleanup Function. Why: A closed or unmounted editor must not linger on the shared stack. How: This finds staEntObj's own current index and removes it.
 
 
-			const entIndNum = window.__escStack.indexOf( staEntObj ); // What: Entry Index Number. Why: splice needs a real index, not the entry object itself. How: This looks up staEntObj's own current position in the shared stack.
+			const entIndNum = window.__escStack!.indexOf( staEntObj ); // What: Entry Index Number. Why: splice needs a real index, not the entry object itself. How: This looks up staEntObj's own current position in the shared stack. // What: Non-Null Note. Why: This module creates window.__escStack when it loads, before any hook or listener can run. How: The ! tells TypeScript the stack is set here.
 
 
-			if ( entIndNum > -1 ) window.__escStack.splice( entIndNum, 1 ); // What: Stack Splice Guard. Why: The entry could conceivably already be gone. How: This removes exactly one element at entIndNum when it was actually found.
+			if ( entIndNum > -1 ) window.__escStack!.splice( entIndNum, 1 ); // What: Stack Splice Guard. Why: The entry could conceivably already be gone. How: This removes exactly one element at entIndNum when it was actually found. // What: Non-Null Note. Why: This module creates window.__escStack when it loads, before any hook or listener can run. How: The ! tells TypeScript the stack is set here.
 
 
 		};
@@ -131,7 +131,7 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 
 
 
-		const escStaArr = window.__escStack; // What: Escape Stack Array. Why: The rest of this handler needs a stable local reference to the shared stack. How: This reads window.__escStack once and reuses it below.
+		const escStaArr = window.__escStack!; // What: Escape Stack Array. Why: The rest of this handler needs a stable local reference to the shared stack. How: This reads window.__escStack once and reuses it below. // What: Non-Null Note. Why: This module creates window.__escStack when it loads, before any hook or listener can run. How: The ! tells TypeScript the stack is set here.
 
 
 		if ( !escStaArr.length ) return; // What: Empty Stack Guard. Why: There is nothing to cancel when no editor is currently registered. How: This bails out when the shared stack is empty.

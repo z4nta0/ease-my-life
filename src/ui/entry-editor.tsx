@@ -85,7 +85,8 @@ type EecProTyp = { isaNewBoo? : boolean, iteCouNum? : number, iteDatObj : IteRcd
  * @param props.picDatObj   - Picker Data Object: The item's own picker, read
  *                            for its mode, cadence, and threshold.
  * @param props.picIteArr   - Picker Item Array: Every item, used to average
- *                            a fallback ease band for an unstamped item.
+ *                            a fallback ease band for an unstamped item,
+ *                            defaulting to none.
  *
  * @returns The editor's rows and footer, or the delete confirm prompt
  * while one is showing.
@@ -97,7 +98,7 @@ type EecProTyp = { isaNewBoo? : boolean, iteCouNum? : number, iteDatObj : IteRcd
  *
 */
 
-function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun, onPatIteFun, onSavEdiFun, picDatObj, picIteArr } : EecProTyp ) : React.JSX.Element {
+function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun, onPatIteFun, onSavEdiFun, picDatObj, picIteArr = [] } : EecProTyp ) : React.JSX.Element {
 
 
 	// #region Delete Confirm
@@ -463,10 +464,10 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 
 
 								<FilButCom
-									isaDisBoo={ ( iteDatObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) }
+									isaDisBoo={ ( iteDatObj.value ?? 0 ) >= ( picDatObj!.threshold ?? 100 ) } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
 									labTexStr='Fill'
 
-									onFilActFun={ () => onPatIteFun( { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
+									onFilActFun={ () => onPatIteFun( { value : Math.max( iteDatObj.value ?? 0, picDatObj!.threshold ?? 100 ) } ) } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
 								/>{ /* What: Fill Button Component. Why: This is the actual instant-fill shortcut for an ease-up item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
 
 
@@ -504,10 +505,10 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 
 
 								<FilButCom
-									isaDisBoo={ ( iteDatObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) }
+									isaDisBoo={ ( iteDatObj.value ?? 0 ) >= ( picDatObj!.threshold ?? 100 ) } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
 									labTexStr='Refill'
 
-									onFilActFun={ () => onPatIteFun( { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
+									onFilActFun={ () => onPatIteFun( { value : Math.max( iteDatObj.value ?? 0, picDatObj!.threshold ?? 100 ) } ) } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
 								/>{ /* What: Fill Button Component. Why: This is the actual instant-refill shortcut for an ease-down item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
 
 
