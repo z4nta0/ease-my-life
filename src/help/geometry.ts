@@ -20,6 +20,7 @@ import { splSelFun } from '../utils/selector.ts'; // What: Split Selector Functi
  * each highlight's cutout and badge (Shape And Placement).
  *
  * Sections:
+ *  - Types
  *  - Constants
  *  - Helpers
  *  - Exports
@@ -27,6 +28,21 @@ import { splSelFun } from '../utils/selector.ts'; // What: Split Selector Functi
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Types
+
+type BadRecTyp = { bottom : number, height : number, left : number, top : number, width : number };        // What: Badge Rect Type. Why: A help badge is placed as a fixed-size box. How: This describes badRecFun's badge rect.
+type ChrIteTyp = { chrDomEle : HTMLElement, chrRecObj : DOMRect, chrSelStr : string, chrSidStr : string }; // What: Chrome Item Type. Why: Highlights are clipped against each piece of fixed app chrome on the page. How: This describes one chrome element, its rect, its selector, and the side it sits on.
+type EdgRecTyp = { bottom : number, left : number, right : number, top : number };                         // What: Edge Rect Type. Why: Clipping only ever moves a rect's four edges. How: This describes a rect by those edges.
+type PadSidTyp = { padBotNum : number, padLefNum : number, padRigNum : number, padTopNum : number };       // What: Pad Sides Type. Why: A highlight's padding can be cut short on each side separately. How: This describes how much survived on each side.
+
+
+
+type BoxRecTyp = EdgRecTyp & { height : number, width : number }; // What: Box Rect Type. Why: A unioned target also carries its size. How: This is an edge rect plus its height and width.
+
+// #endregion Types
 
 
 
@@ -78,7 +94,7 @@ const CHR_PRI_OBJ = { '[data-element-name-hook~="appTabNav"]' : 2, '[data-elemen
  *
 */
 
-function cliHorFun ( tarRecObj, tarDomEle ) {
+function cliHorFun ( tarRecObj : EdgRecTyp, tarDomEle : HTMLElement ) : EdgRecTyp | null {
 
 
 	let topCurNum = tarRecObj.top;    // What: Top Current Number. Why: The clamp below needs its own mutable copy of the incoming rect's own top edge. How: This starts as a plain copy of tarRecObj's own top.
@@ -181,13 +197,13 @@ function cliHorFun ( tarRecObj, tarDomEle ) {
  *
 */
 
-function finTarFun ( selLisStr ) {
+function finTarFun ( selLisStr : string ) : HTMLElement[] {
 
 
 	for ( const oneSelStr of splSelFun( selLisStr ) ) { // What: Selector Alternative Loop. Why: Each comma-separated alternative must be tried in order until one actually matches something visible. How: This walks selLisStr's own alternatives left to right.
 
 
-		const tarEleArr = [ ...document.querySelectorAll( oneSelStr ) ] // What: Target Element Array. Why: Every element matching this one alternative needs collecting before it can be filtered down to visible ones. How: This spreads the live NodeList from querySelectorAll into a plain array.
+		const tarEleArr = [ ...document.querySelectorAll< HTMLElement >( oneSelStr ) ] // What: Target Element Array. Why: Every element matching this one alternative needs collecting before it can be filtered down to visible ones. How: This spreads the live NodeList from querySelectorAll into a plain array.
 			.filter( ( curTarEle ) => { // What: Visibility Filter. Why: A matched element that is display:none or otherwise zero-sized should never count as a real, clickable target. How: This keeps only elements whose own bounding rect has a real width or height.
 
 
@@ -244,7 +260,7 @@ function finTarFun ( selLisStr ) {
  *
 */
 
-function uniRecFun ( tarEleArr ) {
+function uniRecFun ( tarEleArr : HTMLElement[] ) : BoxRecTyp {
 
 
 	let topCurNum = Infinity;  // What: Top Current Number. Why: The union must start from a value any real rect's own top will immediately beat. How: This starts at Infinity, narrowed by Math.min as elements are folded in below.
@@ -336,7 +352,7 @@ function uniRecFun ( tarEleArr ) {
  *
 */
 
-function cliChrFun ( tarRecObj, chrIteArr, tarEleArr ) {
+function cliChrFun ( tarRecObj : EdgRecTyp, chrIteArr : ChrIteTyp[], tarEleArr : HTMLElement[] ) : EdgRecTyp | null {
 
 
 	let { bottom : botEdgNum, left : lefEdgNum, right : rigEdgNum, top : topEdgNum } = tarRecObj; // What: Working Rect Numbers. Why: Every clamp in the loop below needs its own mutable copy of tarRecObj's own 4 edges. How: This destructures tarRecObj directly into 4 reassignable bindings.
@@ -470,7 +486,7 @@ function cliChrFun ( tarRecObj, chrIteArr, tarEleArr ) {
  *
 */
 
-function claPadFun ( tarRecObj, padHorNum, padVerNum, chrIteArr, tarEleArr ) {
+function claPadFun ( tarRecObj : EdgRecTyp, padHorNum : number, padVerNum : number, chrIteArr : ChrIteTyp[], tarEleArr : HTMLElement[] ) : PadSidTyp {
 
 
 	const padRecObj = { // What: Padded Rect Object. Why: This is the candidate box before it is checked against chrome. How: This expands tarRecObj outward by padVerNum vertically and padHorNum horizontally.
@@ -550,7 +566,7 @@ function claPadFun ( tarRecObj, padHorNum, padVerNum, chrIteArr, tarEleArr ) {
  *
 */
 
-function detEdgFun ( chrRecObj ) {
+function detEdgFun ( chrRecObj : EdgRecTyp ) : string {
 
 
 	const edgGapObj = { // What: Edge Gap Object. Why: Every one of the 4 viewport edges needs its own candidate gap computed before the smallest one can be picked. How: This is reduced below to whichever single entry holds the smallest gap.
@@ -619,7 +635,7 @@ function detEdgFun ( chrRecObj ) {
  *
 */
 
-function badRecFun ( tarRecObj, cenBadBoo ) {
+function badRecFun ( tarRecObj : BoxRecTyp & Partial< PadSidTyp >, cenBadBoo : boolean ) : BadRecTyp {
 
 
 	const padTopNum = tarRecObj.padTopNum ?? rhyPxlFun( 'm02' );                                               // What: Pad Top Number. Why: The badge's own vertical anchor must match whatever pad actually survived clipping on this target's own top side, not the flat default. How: This reads tarRecObj's own padTopNum, falling back to the flat pad margin. // Vertical Rhythm Base Minus 2 ~= 8.304px
@@ -722,7 +738,7 @@ function badRecFun ( tarRecObj, cenBadBoo ) {
  *
 */
 
-function shaRadFun ( tarDomEle, padWidNum, padHeiNum, shaOveStr ) {
+function shaRadFun ( tarDomEle : HTMLElement, padWidNum : number, padHeiNum : number, shaOveStr? : string ) : { radXcoNum : number, radYcoNum : number } {
 
 
 	if ( shaOveStr === 'circle' ) { // What: Circle Override Guard. Why: A target whose round appearance comes from an inner SVG shape rather than its own border-radius has nothing for getComputedStyle to read. How: This forces a perfect ellipse matching the padded box's own half-width/half-height.
