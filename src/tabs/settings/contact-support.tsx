@@ -327,7 +327,7 @@ function ConSupCom () : React.JSX.Element {
 
 		}
 
-		catch ( errCatObj ) {} // What: Clipboard Error Guard. Why: A clipboard failure must never crash the form, since the address is on screen either way. How: This silently swallows any error.
+		catch {} // What: Clipboard Error Guard. Why: A clipboard failure must never crash the form, since the address is on screen either way. How: This silently swallows any error.
 
 
 	};

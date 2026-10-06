@@ -164,7 +164,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 
 		}
 
-		catch ( errCatObj ) {} // What: Capture Failure Guard. Why: A small number of environments can throw here even though the feature-detected method exists. How: This silently ignores the failure, leaving capSucBoo at its default false.
+		catch {} // What: Capture Failure Guard. Why: A small number of environments can throw here even though the feature-detected method exists. How: This silently ignores the failure, leaving capSucBoo at its default false.
 
 
 	}
@@ -566,7 +566,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 
 			try { capTarEle.releasePointerCapture( poiIdeNum ); } // What: Pointer Capture Release Call. Why: This is the actual release, matching the capture acquired earlier in staDraFun. How: This calls releasePointerCapture with the same poiIdeNum.
 
-			catch ( errCatObj ) {} // What: Pointer Capture Release Failure Guard. Why: An already-implicitly-released capture (e.g. after a pointercancel) can throw on an explicit release attempt. How: This silently ignores any such failure.
+			catch {} // What: Pointer Capture Release Failure Guard. Why: An already-implicitly-released capture (e.g. after a pointercancel) can throw on an explicit release attempt. How: This silently ignores any such failure.
 
 
 		}

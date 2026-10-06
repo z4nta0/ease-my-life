@@ -130,7 +130,7 @@ const notSubFun = () => { // What: Notify Subscribers Function. Why: Every subsc
 
 		try { curSubFun(); } // What: Subscriber Call Try. Why: This is the actual notification. How: This calls the subscriber with no arguments.
 
-		catch ( errCatObj ) {} // What: Subscriber Error Guard. Why: One throwing subscriber must not stop the rest from being notified. How: This swallows the error and moves on to the next subscriber.
+		catch {} // What: Subscriber Error Guard. Why: One throwing subscriber must not stop the rest from being notified. How: This swallows the error and moves on to the next subscriber.
 
 
 	}
@@ -261,7 +261,7 @@ function isaStaFun () : boolean {
 
 	}
 
-	catch ( errCatObj ) { return false; } // What: Is-A Standalone Guard. Why: An environment missing matchMedia entirely must not crash whichever caller invoked this. How: This returns false instead of letting the error propagate.
+	catch { return false; } // What: Is-A Standalone Guard. Why: An environment missing matchMedia entirely must not crash whichever caller invoked this. How: This returns false instead of letting the error propagate.
 
 
 }
@@ -406,7 +406,7 @@ function proRelFun () : void {
 
 	}
 
-	catch ( errCatObj ) {} // What: Probe Related Guard. Why: An unsupported or throwing API must not abort the rest of this module's own boot sequence. How: This silently ignores any error from the try block above.
+	catch {} // What: Probe Related Guard. Why: An unsupported or throwing API must not abort the rest of this module's own boot sequence. How: This silently ignores any error from the try block above.
 
 
 }
@@ -488,7 +488,7 @@ function proSupFun () : void {
 
 	}
 
-	catch ( errCatObj ) { finProFun(); } // What: Probe Support Guard. Why: A throwing serviceWorker access must still leave the grace-period clock running. How: This falls back to calling finProFun directly.
+	catch { finProFun(); } // What: Probe Support Guard. Why: A throwing serviceWorker access must still leave the grace-period clock running. How: This falls back to calling finProFun directly.
 
 
 }
@@ -556,7 +556,7 @@ async function askInsFun () : Promise< 'accepted' | 'dismissed' | 'unavailable' 
 
 	}
 
-	catch ( errCatObj ) { return 'unavailable'; } // What: Ask Install Guard. Why: A failure to show or read the native dialog must not crash whichever caller invoked this. How: This returns 'unavailable' instead of letting the error propagate.
+	catch { return 'unavailable'; } // What: Ask Install Guard. Why: A failure to show or read the native dialog must not crash whichever caller invoked this. How: This returns 'unavailable' instead of letting the error propagate.
 
 
 }
@@ -607,7 +607,7 @@ async function askPerFun ( forAskBoo : boolean ) : Promise< boolean > {
 
 	}
 
-	catch ( errCatObj ) {} // What: Ask Persist Guard. Why: Private mode (or an otherwise inaccessible localStorage) is not a reason to skip the actual request below. How: This silently ignores any error from the bookkeeping above.
+	catch {} // What: Ask Persist Guard. Why: Private mode (or an otherwise inaccessible localStorage) is not a reason to skip the actual request below. How: This silently ignores any error from the bookkeeping above.
 
 
 
