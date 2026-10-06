@@ -1,6 +1,14 @@
 
 
 
+// #region Imports
+
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: Every write persists the current app state. How: This types each appStaObj parameter.
+
+// #endregion Imports
+
+
+
 /**
  * storage.ts = Storage Layer
  *
@@ -155,7 +163,7 @@ let logSusBoo = false; // What: Log Suspect Boolean. Why: wriDatFun must refuse 
  *
 */
 
-function opeDatFun () {
+function opeDatFun () : Promise< IDBDatabase > {
 
 
 	return new Promise( ( resValFun, rejErrFun ) => { // What: Open Database Promise. Why: The caller needs a real Promise it can await, not indexedDB.open's own request-object callback style. How: This wraps the whole open/upgrade/timeout sequence below and settles resValFun/rejErrFun exactly once.
@@ -208,7 +216,7 @@ function opeDatFun () {
 
 
 
-const reqProFun = ( idbReqObj ) => new Promise( ( resValFun, rejErrFun ) => { // What: Request Promise Function. Why: Every IndexedDB request needs to be awaited like a normal Promise rather than driven through its own onsuccess/onerror callbacks by hand at every call site. How: This wraps the given IDBRequest in a new Promise, resolving with its own result on success and rejecting with its own error on failure.
+const reqProFun = < T >( idbReqObj : IDBRequest< T > ) : Promise< T > => new Promise( ( resValFun, rejErrFun ) => { // What: Request Promise Function. Why: Every IndexedDB request needs to be awaited like a normal Promise rather than driven through its own onsuccess/onerror callbacks by hand at every call site. How: This wraps the given IDBRequest in a new Promise, resolving with its own result on success and rejecting with its own error on failure.
 
 
 	idbReqObj.onsuccess = () => resValFun( idbReqObj.result ); // What: Success Handler Assignment. Why: A successful IndexedDB request must resolve the wrapping Promise with that request's own result. How: This assigns an onsuccess handler that calls resValFun with idbReqObj.result.
@@ -247,7 +255,7 @@ const reqProFun = ( idbReqObj ) => new Promise( ( resValFun, rejErrFun ) => { //
  *
 */
 
-function traStoFun ( stoNamStr, modValStr ) { return datConObj.transaction( stoNamStr, modValStr ).objectStore( stoNamStr ); } // What: Transaction Store Body. Why: Every IndexedDB read/write elsewhere in this file needs a freshly-opened store to call get/put/clear on. How: This opens one transaction on datConObj in the given mode and returns its own named object store.
+function traStoFun ( stoNamStr : string, modValStr : 'readonly' | 'readwrite' ) : IDBObjectStore { return datConObj.transaction( stoNamStr, modValStr ).objectStore( stoNamStr ); } // What: Transaction Store Body. Why: Every IndexedDB read/write elsewhere in this file needs a freshly-opened store to call get/put/clear on. How: This opens one transaction on datConObj in the given mode and returns its own named object store.
 
 // #endregion traStoFun
 
@@ -277,7 +285,7 @@ function traStoFun ( stoNamStr, modValStr ) { return datConObj.transaction( stoN
  *
 */
 
-async function reaDatFun () {
+async function reaDatFun () : Promise< any > {
 
 
 	const resStaObj = await reqProFun( traStoFun( STA_STO_STR, 'readonly' ).get( 'main' ) ); // What: Rest State Object. Why: The non-pickLog portion of state lives in its own object store, read independently from the log. How: This awaits reqProFun wrapping a get('main') request against the state object store.
@@ -335,7 +343,7 @@ async function reaDatFun () {
  *
 */
 
-async function wriDatFun ( appStaObj ) {
+async function wriDatFun ( appStaObj : StaAppTyp ) : Promise< void > {
 
 
 	const { pickLog : picLogArr, ...resStaObj } = appStaObj; // What: Rest State Object Destructure. Why: The pick log and the rest of state are written to two separate object stores and must be split apart before either write happens. How: This pulls pickLog out as picLogArr, leaving every other field in resStaObj.
@@ -406,7 +414,7 @@ async function wriDatFun ( appStaObj ) {
  *
 */
 
-function ownKeyFun () {
+function ownKeyFun () : string[] {
 
 
 	try { return Object.keys( localStorage ).filter( ( curKeyStr ) => OWN_KEY_REG.test( curKeyStr ) ); } // What: Owned Key Filter Try. Why: Every current localStorage key must be checked against OWN_KEY_REG to find the ones this app has ever written. How: This filters every key currently in localStorage down to the ones OWN_KEY_REG matches.
@@ -446,7 +454,7 @@ function ownKeyFun () {
  *
 */
 
-function reaLocFun () {
+function reaLocFun () : any {
 
 
 	try { // What: Local Read Try. Why: Both localStorage.getItem and JSON.parse can throw (a blocked origin, corrupted data), and either failure should be treated the same way. How: This wraps the whole read-and-parse sequence below so any such error falls through to the catch's own null return.
@@ -512,13 +520,13 @@ function reaLocFun () {
  *
 */
 
-function wriLocFun ( appStaObj, fulWriBoo ) {
+function wriLocFun ( appStaObj : StaAppTyp, fulWriBoo : boolean ) : boolean {
 
 
 	try { // What: Local Write Try. Why: localStorage.setItem can throw on quota, and that failure must be surfaced rather than crash the caller. How: This wraps the whole build-and-write sequence below so a quota failure falls through to the catch below instead.
 
 
-		let payDatObj = appStaObj; // What: Payload Data Object. Why: The value actually written depends on fulWriBoo, computed just below. How: This starts as appStaObj itself and is only replaced when fulWriBoo is false.
+		let payDatObj : StaAppTyp | ( Omit< StaAppTyp, 'pickLog' > & { __mirrorNoLog : true } ) = appStaObj; // What: Payload Data Object. Why: The value actually written depends on fulWriBoo, computed just below. How: This starts as appStaObj itself and is only replaced when fulWriBoo is false.
 
 
 		if ( !fulWriBoo ) { // What: Not Full Write Check. Why: A warm-mirror write (as opposed to a fallback-engine write) must exclude pickLog entirely. How: This rebuilds payDatObj without pickLog, flagged with __mirrorNoLog, whenever fulWriBoo is false.
@@ -597,7 +605,7 @@ function wriLocFun ( appStaObj, fulWriBoo ) {
  *
 */
 
-const cacStaFun = () => cacStaObj; // What: Cached State Function. Why: store.ts's own loaStaFun() reads this synchronously to seed React state before any save has happened yet. How: This closes over the module-private cacStaObj rather than exposing it directly.
+const cacStaFun = () : any => cacStaObj; // What: Cached State Function. Why: store.ts's own loaStaFun() reads this synchronously to seed React state before any save has happened yet. How: This closes over the module-private cacStaObj rather than exposing it directly.
 
 // #endregion cacStaFun
 
@@ -627,7 +635,7 @@ const cacStaFun = () => cacStaObj; // What: Cached State Function. Why: store.ts
  *
 */
 
-function fluSynFun ( appStaObj ) {
+function fluSynFun ( appStaObj : StaAppTyp ) : void {
 
 
 	wriLocFun( appStaObj, curEngStr !== 'idb' ); // What: Sync Local Write Call. Why: A tab about to be hidden or torn down needs a synchronous mirror write it cannot risk missing. How: This calls wriLocFun immediately, writing pickLog too whenever IDB is not the current engine of record.
@@ -673,7 +681,7 @@ function fluSynFun ( appStaObj ) {
  *
 */
 
-async function iniStoFun () {
+async function iniStoFun () : Promise< any > {
 
 
 	try { // What: Storage Boot Try. Why: Opening IndexedDB at all can fail outright (private mode, an opaque origin, a blocked/hanging open), and that whole path must fall back to localStorage instead of crashing boot. How: This wraps the full IDB-open-and-migrate sequence below, falling back in the catch beneath it.
@@ -827,7 +835,7 @@ async function iniStoFun () {
  *
 */
 
-function logAutFun () { logSusBoo = false; } // What: Log Authoritative Body. Why: A caller that just imported or reset the pick log knows its own emptiness (or non-emptiness) is real, not a mirror artefact. How: This clears logSusBoo unconditionally.
+function logAutFun () : void { logSusBoo = false; } // What: Log Authoritative Body. Why: A caller that just imported or reset the pick log knows its own emptiness (or non-emptiness) is real, not a mirror artefact. How: This clears logSusBoo unconditionally.
 
 // #endregion logAutFun
 
@@ -858,7 +866,7 @@ function logAutFun () { logSusBoo = false; } // What: Log Authoritative Body. Wh
  *
 */
 
-function savStaFun ( appStaObj ) {
+function savStaFun ( appStaObj : StaAppTyp ) : void {
 
 
 	if ( curEngStr === 'idb' && datConObj ) { // What: Idb Engine Check. Why: The IDB write path and the localStorage-only path are mutually exclusive; only one of them should run per call. How: This gates the IDB write attempt below, falling through to the plain wriLocFun call at the end when it does not hold.
@@ -920,7 +928,7 @@ function savStaFun ( appStaObj ) {
  *
 */
 
-async function wipDatFun () {
+async function wipDatFun () : Promise< void > {
 
 
 	lplRefArr = undefined; // What: Last-Pick-Log Reference Reset. Why: A wiped store has nothing to compare a future write's own pickLog against. How: This resets lplRefArr back to its own initial undefined value.
@@ -990,7 +998,7 @@ async function wipDatFun () {
  *
 */
 
-async function reaPerFun () {
+async function reaPerFun () : Promise< any > {
 
 
 	if ( curEngStr === 'idb' && datConObj ) { // What: Idb Engine Check. Why: IDB is the actual store of record whenever it is the current engine, so it must be read directly rather than relying on any in-memory copy. How: This gates the direct reaDatFun read below on that condition.
@@ -1047,7 +1055,7 @@ async function reaPerFun () {
  *
 */
 
-async function datBytFun () {
+async function datBytFun () : Promise< number | null > {
 
 
 	try { // What: Data Bytes Try. Why: reaPerFun and JSON.stringify can both throw, and either failure should resolve to null rather than reject the caller. How: This wraps the whole measure sequence below, falling back to null in its own catch.
@@ -1110,7 +1118,7 @@ async function datBytFun () {
  *
 */
 
-async function reqPerFun () {
+async function reqPerFun () : Promise< boolean > {
 
 
 	try { // What: Request Persist Try. Why: navigator.storage itself, or its persist/persisted methods, may not exist in every browser. How: This wraps the whole check-then-request sequence below, falling back to false in its own catch.
@@ -1138,6 +1146,7 @@ async function reqPerFun () {
 
 
 
+type StoRepTyp = { dataBytes : number | null, engine : string, mirrorAt : string | null, mirrorOk : boolean, persisted : boolean, quota : number | null, usage : number | null }; // What: Storage Report Type. Why: The Settings storage panel shows which engine is active, how much is saved, whether the mirror and persistence are working, and the browser's headroom. How: This describes staRepFun's report, with null for anything the browser couldn't measure.
 // #region staRepFun
 
 /**
@@ -1163,7 +1172,7 @@ async function reqPerFun () {
  *
 */
 
-async function staRepFun () {
+async function staRepFun () : Promise< StoRepTyp > {
 
 
 	let mirTimStr = null; // What: Mirror Time String. Why: The mirror freshness timestamp is read from localStorage, which can itself throw. How: This starts null and is only assigned inside the try block below.
@@ -1176,7 +1185,7 @@ async function staRepFun () {
 
 
 
-	const outStaObj = { dataBytes : null, engine : curEngStr, mirrorAt : mirTimStr, mirrorOk : mirWriBoo, persisted : false, quota : null, usage : null }; // What: Output Status Object. Why: This is the full report shape the Settings storage panel expects, seeded with everything already known synchronously. How: This is built once here and then filled in further by the awaited calls below.
+	const outStaObj : StoRepTyp = { dataBytes : null, engine : curEngStr, mirrorAt : mirTimStr, mirrorOk : mirWriBoo, persisted : false, quota : null, usage : null }; // What: Output Status Object. Why: This is the full report shape the Settings storage panel expects, seeded with everything already known synchronously. How: This is built once here and then filled in further by the awaited calls below.
 
 	outStaObj.dataBytes = await datBytFun(); // What: Output Data Bytes Assignment. Why: The exact persisted byte size can only be known after an async measurement. How: This awaits datBytFun and assigns its result onto outStaObj.
 
