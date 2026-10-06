@@ -24,6 +24,11 @@ import { togFadFun    } from '../../ui/edge-fade.ts';         // What: Toggle Fa
 import { unhHisFun    } from '../../state/sample-history.ts'; // What: Unhide History Function. Why: Help mode borrows the real hidden sample pickers so the heatmap and breakdown have genuine history to show. How: This is called whenever helModBoo turns true, as long as the page tour doesn't already own the same samples.
 import { useEmlTouFun } from '../../state/tour-bus.ts';       // What: Use Ease My Life Tour Function. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's resTopNum field.
 
+
+import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The Stats tab changes its saved filters through the store's actions. How: This types TtcProTyp's actStoObj.
+import type { IteRcdTyp } from '../../core/data-model.ts'; // What: Item Record Type. Why: The per-item breakdown mixes live items with deleted ones rebuilt from the log. How: This types that combined list as partial items.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The Stats tab reads every log in the app state. How: This types TtcProTyp's staAppObj.
+
 // #endregion Imports
 
 
@@ -228,7 +233,7 @@ const TYP_MET_ARR = [ // What: Type Meta Array. Why: This defines the one-time v
  *
 */
 
-function couLevFun ( donCouNum ) {
+function couLevFun ( donCouNum : number ) : number {
 
 
 	return donCouNum <= 0 ? 0 : donCouNum >= 4 ? 4 : donCouNum; // What: Heat Level Return. Why: Zero and negative counts show as empty, four or more caps at the darkest cell, and anything between maps onto itself. How: This is a plain clamp of donCouNum into the 0-4 range.
@@ -266,7 +271,7 @@ function couLevFun ( donCouNum ) {
  *
 */
 
-function relWheFun ( wheIsoStr ) {
+function relWheFun ( wheIsoStr : string ) : string {
 
 
 	const wheDatObj = new Date( wheIsoStr ); // What: When Date Object. Why: The formatter below needs a real Date, not the raw ISO string. How: This parses wheIsoStr into a Date instance.
@@ -285,6 +290,8 @@ function relWheFun ( wheIsoStr ) {
 
 
 // #region Components
+
+type BacProTyp = { 'data-element-name-hook'? : string, empMesStr : string, kicTexStr : string, segDatArr : { colStr : string, couNum : number, keyStr : string, labStr : string }[], totCouNum : number }; // What: Breakdown-Bar-Component Props Type. Why: A breakdown card splits a total across colored segments, or shows a message when there's nothing to split. How: This types BreBarCom's props, named Bac since Bbc and Brc already belong to ButBasCom and BooResCom.
 
 // #region BreBarCom
 
@@ -326,7 +333,7 @@ function relWheFun ( wheIsoStr ) {
  *
 */
 
-function BreBarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexStr, segDatArr, totCouNum } ) {
+function BreBarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexStr, segDatArr, totCouNum } : BacProTyp ) : React.JSX.Element {
 
 
 	return (
@@ -452,7 +459,7 @@ function BreBarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
  *
 */
 
-function HeaLegCom () {
+function HeaLegCom () : React.JSX.Element {
 
 
 	return (
@@ -487,6 +494,8 @@ function HeaLegCom () {
 // #endregion HeaLegCom
 
 
+
+type PncProTyp = { alwShoBoo? : boolean, curPagNum : number, onChange : ( nexPagNum : number ) => void, pagSizNum : number, totIteNum : number, uniWorStr? : string }; // What: Page-Navigation-Component Props Type. Why: A pager steps through a long list a page at a time. How: This types PagNavCom's props.
 
 // #region PagNavCom
 
@@ -523,7 +532,7 @@ function HeaLegCom () {
  *
 */
 
-function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIteNum, uniWorStr = 'items' } ) {
+function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIteNum, uniWorStr = 'items' } : PncProTyp ) : React.JSX.Element | null {
 
 
 	const pagCouNum = Math.max( 1, Math.ceil( totIteNum / pagSizNum ) ); // What: Page Count Number. Why: The arrows need to know how many pages actually exist so the last page's next arrow can disable itself. How: This divides totIteNum by pagSizNum, rounding up, floored at 1 even for an empty list.
@@ -594,6 +603,9 @@ function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIte
 
 
 
+type ScoTabTyp = { cliFun : () => void, keyStr : string, labStr : string, namStr : string, picStr? : string, selBoo : boolean };             // What: Scope Tab Type. Why: The Show row mixes the Conditionals and Reminders tabs with one tab per picker, and only a picker tab carries a picker id. How: This describes one scope tab entry.
+type TtcProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Stats-Component Props Type. Why: The Stats tab reads the whole app state, filters it, and can navigate to other tabs. How: This types TabStaCom's props, named Ttc since Tsc already belongs to TheSecCom.
+
 // #region TabStaCom
 
 /**
@@ -630,7 +642,7 @@ function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIte
  *
 */
 
-function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
+function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcProTyp ) : React.JSX.Element {
 
 
 	// #region Page Tour And Help Mode
@@ -870,7 +882,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 				let gapSumNum = 0; // What: Gap Sum Number. Why: The running total of day-gaps needs an accumulator before the loop below can average it. How: This starts at zero and is added to by every consecutive pair.
 
 
-				for ( let indCurNum = 1; indCurNum < sorDatArr.length; indCurNum++ ) gapSumNum += ( new Date( sorDatArr[ indCurNum ] ) - new Date( sorDatArr[ indCurNum - 1 ] ) ) / 86400000; // What: Gap Accumulation Loop. Why: Every consecutive pair of fire dates contributes one day-gap to the running average. How: This divides the millisecond difference between two Dates by a day's own millisecond count and adds it to gapSumNum.
+				for ( let indCurNum = 1; indCurNum < sorDatArr.length; indCurNum++ ) gapSumNum += ( new Date( sorDatArr[ indCurNum ] ).getTime() - new Date( sorDatArr[ indCurNum - 1 ] ).getTime() ) / 86400000; // What: Gap Accumulation Loop. Why: Every consecutive pair of fire dates contributes one day-gap to the running average. How: This divides the millisecond difference between two Dates by a day's own millisecond count and adds it to gapSumNum.
 
 
 
@@ -1016,7 +1028,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	const exiModArr = React.useMemo( () => { // What: Existing Mode Array Memo. Why: The Type filter row needs the live, deduplicated set of picker modes actually in use, ordered by their own display label. How: This walks picLisArr once collecting non-hidden modes into a Set, then sorts by SED_NAM_OBJ.MOD_DEF_OBJ's own label text. // Distinct modes actually in use, alphabetical by their own display label: feeds the Type filter row's own picker-mode pills ("All" pinned first, same as Group). Independent of staGroStr, both narrow visPicArr together.
 
 
-		const seeModSet = new Set(); // What: Seen Mode Set. Why: A Set naturally deduplicates without a manual membership check, unlike the group loop above which needed first-seen order preserved. How: This starts empty and is added to below.
+		const seeModSet = new Set< string >(); // What: Seen Mode Set. Why: A Set naturally deduplicates without a manual membership check, unlike the group loop above which needed first-seen order preserved. How: This starts empty and is added to below.
 
 		for ( const picCurObj of picLisArr ) if ( !picCurObj.hidden ) seeModSet.add( picCurObj.mode ); // What: Mode Collection Loop. Why: Every non-hidden picker contributes its own mode key. How: This adds a picker's own mode to the set.
 
@@ -1798,7 +1810,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 					eliSumNum += ( eliIndMap.get( sorDatArr[ indCurNum ] ) ?? 0 ) - ( eliIndMap.get( sorDatArr[ indCurNum - 1 ] ) ?? 0 ); // What: Eligible Gap Add. Why: This is the actual eligible-day distance between one pick and the next. How: This subtracts the earlier date's own eligible index from the later one's.
 
-					calSumNum += Math.round( ( new Date( sorDatArr[ indCurNum ] ) - new Date( sorDatArr[ indCurNum - 1 ] ) ) / 86400000 ); // What: Calendar Gap Add. Why: This is the actual wall-clock day distance between one pick and the next. How: This divides the millisecond difference by a day's own millisecond count.
+					calSumNum += Math.round( ( new Date( sorDatArr[ indCurNum ] ).getTime() - new Date( sorDatArr[ indCurNum - 1 ] ).getTime() ) / 86400000 ); // What: Calendar Gap Add. Why: This is the actual wall-clock day distance between one pick and the next. How: This divides the millisecond difference by a day's own millisecond count.
 
 
 				}
@@ -1873,7 +1885,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 				const runCouNum = endIndNum - staIndNum + 1;                                                                                // What: Run Count Number. Why: The eligible-unit average needs the run's own length in picks. How: This is the inclusive distance between the run's start and end indices.
-				const calDayNum = Math.round( ( new Date( sorDatArr[ endIndNum ] ) - new Date( sorDatArr[ staIndNum ] ) ) / 86400000 ) + 1; // What: Calendar Day Number. Why: The calendar-unit average needs the run's own wall-clock span, inclusive of both endpoints. How: This divides the millisecond difference by a day's own millisecond count, then adds 1 to make it inclusive.
+				const calDayNum = Math.round( ( new Date( sorDatArr[ endIndNum ] ).getTime() - new Date( sorDatArr[ staIndNum ] ).getTime() ) / 86400000 ) + 1; // What: Calendar Day Number. Why: The calendar-unit average needs the run's own wall-clock span, inclusive of both endpoints. How: This divides the millisecond difference by a day's own millisecond count, then adds 1 to make it inclusive.
 
 
 				if ( !iteStkMap.has( runIteStr ) ) iteStkMap.set( runIteStr, [] ); // What: Lazy Array Guard. Why: An item's own streak array must exist before a completed streak can be pushed onto it. How: This seeds an empty array the first time this item's id completes a streak.
@@ -1990,7 +2002,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		) );
 
 
-		const allIteArr = [ ...livIteArr, ...ghoIteArr ]; // What: All Item Array. Why: The mapping below builds one output row per item regardless of whether it's live or a ghost. How: This concatenates both arrays into one combined list.
+		const allIteArr : ( Partial< IteRcdTyp > & { __delBoo? : boolean } )[] = [ ...livIteArr, ...ghoIteArr ]; // What: All Item Array. Why: The mapping below builds one output row per item regardless of whether it's live or a ghost. How: This concatenates both arrays into one combined list.
 
 
 
@@ -2001,7 +2013,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 			const freEntObj = freGapMap.get( iteCurObj.id ) || { calNum : null, couNum : 0, eliNum : null };                 // What: Frequency Entry Object. Why: An item with no frequency data at all still needs a null-filled entry to read from. How: This looks iteCurObj's own id up in freGapMap, falling back to nulls.
 			const aveGapNum = freModStr === 'calendar' ? freEntObj.calNum : freEntObj.eliNum;                                // What: Average Gap Number. Why: The row's own displayed gap depends on which unit mode is currently active. How: This picks whichever of freEntObj's two fields matches freModStr.
 			const lasDatStr = lasPicMap.get( iteCurObj.id ) || null;                                                         // What: Last Date String. Why: The row needs this item's own most recent pick date, or null if it's never been picked. How: This looks iteCurObj's own id up in lasPicMap.
-			const lasCalNum = lasDatStr ? Math.round( ( new Date( todIsoStr ) - new Date( lasDatStr ) ) / 86400000 ) : null; // What: Last Calendar Number. Why: The calendar-mode "days ago" reading needs a literal wall-clock day count. How: This divides the millisecond difference between today and lasDatStr by a day's own millisecond count. // Calendar days ago vs. eligible days ago; eligible excludes days the picker itself didn't run AND days this item was inactive.
+			const lasCalNum = lasDatStr ? Math.round( ( new Date( todIsoStr ).getTime() - new Date( lasDatStr ).getTime() ) / 86400000 ) : null; // What: Last Calendar Number. Why: The calendar-mode "days ago" reading needs a literal wall-clock day count. How: This divides the millisecond difference between today and lasDatStr by a day's own millisecond count. // Calendar days ago vs. eligible days ago; eligible excludes days the picker itself didn't run AND days this item was inactive.
 			const eliDatArr = actDatArr.filter( ( dayIsoStr ) => !vacCheObj.inaDayFun( iteCurObj.id, dayIsoStr ) );          // What: Eligible Date Array. Why: The eligible-mode reading needs this item's own subset of run days, excluding its inactive stretches. How: This filters actDatArr down to days vacCheObj.inaDayFun reports as active for this item.
 			const eliIndNum = eliDatArr.indexOf( lasDatStr );                                                                // What: Eligible Index Number. Why: The eligible-mode reading needs to know this pick's own position among eligible days. How: This finds lasDatStr's own position in eliDatArr, or -1 if it isn't present at all.
 			const lasEliNum = ( lasDatStr != null && eliIndNum >= 0 ) ? ( eliDatArr.length - 1 - eliIndNum ) : null;         // What: Last Eligible Number. Why: The eligible-mode reading needs "how many eligible days ago", not the raw index. How: This subtracts the pick's own position from the last eligible index.
@@ -2965,7 +2977,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							]
 								.sort( ( entOneObj, entTwoObj ) => entOneObj.namStr.localeCompare( entTwoObj.namStr ) ) // What: Scope Tab Sort. Why: Sentinels and pickers list alphabetically together. How: This compares each entry's own namStr.
-								.map( ( entCurObj, entIndNum ) => (                                                     // What: Scope Tab Render. Why: The combined, sorted list of Conditionals/Reminders/pickers needs one button per entry, staggered by its own position. How: This maps the sorted array to one button, each with its own animation delay based on entIndNum.
+								.map( ( entCurObj : ScoTabTyp, entIndNum ) => (                                         // What: Scope Tab Render. Why: The combined, sorted list of Conditionals/Reminders/pickers needs one button per entry, staggered by its own position. How: This maps the sorted array to one button, each with its own animation delay based on entIndNum.
 
 
 									<button
