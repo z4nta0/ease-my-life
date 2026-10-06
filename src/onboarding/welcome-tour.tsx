@@ -18,6 +18,10 @@ import { ONB_STI_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboard
 import { ONB_TAS_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actStoObj.addTasFun by the Generate step's own runFun and by skiEndFun below.
 import { todTopFun   } from './tour-runner.tsx';                // What: Today Top Function. Why: Skipping the Welcome Tour should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This is called from the intro modal's own onSkiTouFun handler below.
 
+
+import type { ActStoTyp } from '../state/store.ts';     // What: Action Store Type. Why: The tour changes state through the store's actions. How: This types its actStoObj.
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The tour reads the current app state. How: This types its staAppObj.
+
 // #endregion Imports
 
 
@@ -131,7 +135,7 @@ const BRA_ICO_ELE = ( // What: Brand Icon Element. Why: The intro modal's own ic
  *
 */
 
-const sedTasFun = ( staAppObj, actStoObj, hidTasBoo ) => { // What: Seed Tasks Function. Why: The Generate step and skiEndFun both seed the same sample reminders. How: This adds each ONB_TAS_ARR entry unless one already exists, pinning a weekly one to today and hiding them when hidTasBoo is true.
+const sedTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp, hidTasBoo : boolean ) : void => { // What: Seed Tasks Function. Why: The Generate step and skiEndFun both seed the same sample reminders. How: This adds each ONB_TAS_ARR entry unless one already exists, pinning a weekly one to today and hiding them when hidTasBoo is true.
 
 
 	if ( staAppObj.tasks.some( ( curTasObj ) => ONB_STI_ARR.includes( curTasObj.id ) ) ) return; // What: Sample Tasks Present Guard. Why: A Skip that runs twice, a Replay that already seeded these, or a Back-then-Forward through the Generate step must never duplicate the sample reminders. How: This returns early when any sample task id already exists.
@@ -161,6 +165,8 @@ const sedTasFun = ( staAppObj, actStoObj, hidTasBoo ) => { // What: Seed Tasks F
 
 
 // #region Components
+
+type WtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, selTabFun : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Welcome-Tour-Component Props Type. Why: The welcome tour runs on the real app from the first launch. How: This types WelTouCom's props.
 
 // #region WelTouCom
 
@@ -197,10 +203,10 @@ const sedTasFun = ( staAppObj, actStoObj, hidTasBoo ) => { // What: Seed Tasks F
  *
 */
 
-function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } ) {
+function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp ) : React.JSX.Element | null {
 
 
-	const onbStaObj = staAppObj.onboarding || { welcomed : true };                                                // What: Onboarding State Object. Why: A brand-new install has no persisted onboarding slice yet, so a plain stand-in default is needed until the real one exists. How: This reads staAppObj.onboarding, falling back to an object whose welcomed field alone is enough for every check below.
+	const onbStaObj = staAppObj.onboarding;                                                                       // What: Onboarding State Object. Why: Every check below reads the onboarding slice, which migStaFun guarantees on every state, a brand-new one included. How: This reads staAppObj.onboarding.
 	const resTouObj = onbStaObj.welcomed && onbStaObj.activeTour?.id === 'welcome' ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: A tour a reload interrupted should resume exactly where it left off instead of vanishing, since activeTour survives a reload (it's real persisted state) unlike GuiTouCom's own step state, but only once welcomed is already true, so the welcome modal (not yet dismissed) always takes priority. How: This reads onbStaObj.activeTour back out only when its own id matches 'welcome', otherwise null.
 
 	const [ onbPhaStr, setOnbPhaStr ] = React.useState( !onbStaObj.welcomed ? 'welcome' : ( resTouObj ? 'tour' : 'off' ) ); // What: Onboarding Phase String And Setter. Why: This is the tour's own top-level position: 'welcome' (intro modal showing), 'tour' (GuiTouCom running), or 'off' (nothing to show). How: This starts on 'welcome' whenever onbStaObj.welcomed is false, otherwise resumes straight into 'tour' when resTouObj says a tour was left running, else 'off'.

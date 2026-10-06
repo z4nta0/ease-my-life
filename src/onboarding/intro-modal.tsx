@@ -37,6 +37,8 @@ import { redMotFun    } from '../utils/motion.ts'; // What: Reduce Motion Functi
 
 // #region Components
 
+type ImcProTyp = { begLabStr? : string, icoTopEle : React.ReactNode, onBegTouFun : () => void, onSkiTouFun : () => void, parEleArr : React.ReactNode[], pilLabArr? : string[], skiLabStr? : string, titHeaStr : string }; // What: Intro-Modal-Component Props Type. Why: Every tour opens with the same intro modal, filled with its own icon, heading, paragraphs, pills, and button labels. How: This types IntModCom's props.
+
 // #region IntModCom
 
 /**
@@ -89,7 +91,7 @@ import { redMotFun    } from '../utils/motion.ts'; // What: Reduce Motion Functi
  *
 */
 
-function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onSkiTouFun, parEleArr, pilLabArr, skiLabStr = 'Skip', titHeaStr } ) {
+function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onSkiTouFun, parEleArr, pilLabArr, skiLabStr = 'Skip', titHeaStr } : ImcProTyp ) : React.ReactPortal {
 
 
 	const redMotBoo = redMotFun(); // What: Reduced Motion Boolean. Why: The card's own slide-in entrance animation should be skipped when the user prefers reduced motion. How: This calls the shared redMotFun() check once per render.

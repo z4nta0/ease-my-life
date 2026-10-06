@@ -13,6 +13,11 @@ import { IntModCom    } from './intro-modal.tsx';                // What: Intro 
 import { ONB_TAS_ARR  } from '../state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: A reload can land on this tour before the live sample task has been re-derived from state.tasks. How: This is searched as the fallback template lookup in buiAddFun's runFun below.
 import { useEmlTouFun } from '../state/tour-bus.ts';             // What: Use Ease My Life Tour Function. Why: The recurring tour's own Step 4 needs to read the live draft's current schedule type off the shared bus. How: This is called once to subscribe to the bus and read its own draRepStr field.
 
+
+import type { ActStoTyp } from '../state/store.ts';     // What: Action Store Type. Why: The tour changes state through the store's actions. How: This types its actStoObj.
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The tour reads the current app state. How: This types its staAppObj.
+import type { TouSteTyp } from './tour-runner.tsx';     // What: Tour Step Type. Why: The tour's steps run on GuiTouCom. How: This types the steps it builds.
+
 // #endregion Imports
 
 
@@ -273,7 +278,7 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
  *
 */
 
-const buiAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why: This builds both tours' shared step that highlights the real "+" button. How: This returns a step object whose runFun stages the live sample's prefill data onto the bus before the real click opens the add-reminder form.
+const buiAddFun = ( varKeyStr : string, staAppObj : StaAppTyp ) : TouSteTyp => { // What: Build Add Function. Why: This builds both tours' shared step that highlights the real "+" button. How: This returns a step object whose runFun stages the live sample's prefill data onto the bus before the real click opens the add-reminder form.
 
 
 	const varCopObj = VAR_COP_OBJ[ varKeyStr ]; // What: Variant Copy Object. Why: The step's own runFun needs this varKeyStr's own sample task id to look up the live sample. How: This looks up VAR_COP_OBJ by varKeyStr.
@@ -356,7 +361,7 @@ const buiAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why
  *
 */
 
-const buiFreFun = ( repValStr ) => { // What: Build Frequency Function. Why: Step 4 highlights whichever schedule control the recurring draft's own repeat kind reveals, with copy that tracks it. How: This looks up REP_COP_OBJ by repValStr, falling back to 'weekly' for the one frame before reminders-section.tsx's own staAddFun/draActObj have published a real value onto the bus yet.
+const buiFreFun = ( repValStr : string ) : TouSteTyp => { // What: Build Frequency Function. Why: Step 4 highlights whichever schedule control the recurring draft's own repeat kind reveals, with copy that tracks it. How: This looks up REP_COP_OBJ by repValStr, falling back to 'weekly' for the one frame before reminders-section.tsx's own staAddFun/draActObj have published a real value onto the bus yet.
 
 
 	const repCopObj = REP_COP_OBJ[ repValStr ] || REP_COP_OBJ.weekly; // What: Repeat Copy Object. Why: The step's own titStr/bodEle below need this repeat kind's own copy. How: This looks up REP_COP_OBJ by repValStr, falling back to weekly.
@@ -412,7 +417,7 @@ const buiFreFun = ( repValStr ) => { // What: Build Frequency Function. Why: Ste
  *
 */
 
-const buiSubFun = ( varKeyStr ) => ({ // What: Build Submit Function. Why: This builds both tours' shared closing step on the real "Add" button. How: This returns a step object whose body adds a recurrence-date note for the recurring varKeyStr.
+const buiSubFun = ( varKeyStr : string ) : TouSteTyp => ({ // What: Build Submit Function. Why: This builds both tours' shared closing step on the real "Add" button. How: This returns a step object whose body adds a recurrence-date note for the recurring varKeyStr.
 
 
 	bacBoo : true,                                                                          // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
@@ -437,6 +442,8 @@ const buiSubFun = ( varKeyStr ) => ({ // What: Build Submit Function. Why: This 
 
 
 // #region Components
+
+type RtcProTyp = { actStoObj : ActStoTyp, onCloForFun : () => void, onCloTouFun : () => void, staAppObj : StaAppTyp, varKeyStr : string }; // What: Reminder-Tour-Component Props Type. Why: A reminder tour drives the real reminder form for one sample and closes both when it ends. How: This types RemTouCom's props.
 
 // #region RemTouCom
 
@@ -483,11 +490,11 @@ const buiSubFun = ( varKeyStr ) => ({ // What: Build Submit Function. Why: This 
  *
 */
 
-function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr } ) {
+function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr } : RtcProTyp ) : React.JSX.Element {
 
 
 	const varCopObj = VAR_COP_OBJ[ varKeyStr ];                                                                                    // What: Variant Copy Object. Why: Both the intro modal and cloTouFun below need this varKeyStr's own sample task id, icon, title, and second paragraph. How: This looks up VAR_COP_OBJ by the varKeyStr prop.
-	const onbStaObj = staAppObj.onboarding || {};                                                                                  // What: Onboarding State Object. Why: A reload lands here with tab-today.tsx's own minTouObj already re-derived from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which step to resume into. How: This reads staAppObj.onboarding, falling back to an empty object.
+	const onbStaObj = staAppObj.onboarding;                                                                                        // What: Onboarding State Object. Why: A reload lands here with tab-today.tsx's own minTouObj already re-derived from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which step to resume into. How: This reads staAppObj.onboarding, which migStaFun guarantees on every state.
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `reminder-${ varKeyStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding/tour-runner.tsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this varKeyStr's own touIdeStr, otherwise null.
 
 	const { draRepStr }               = useEmlTouFun();                                 // What: Draft Repeat String. Why: Only the recurring tour's own Step 4 actually depends on this, but the hook itself has to run unconditionally either way. How: This subscribes to the shared bus and reads its own draRepStr field, harmless to read up front even when unused.

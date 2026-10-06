@@ -24,6 +24,10 @@ import { seePicFun   } from './page-samples.ts';                // What: Seed Pi
 import { seeTasFun   } from './page-samples.ts';                // What: Seed Task Function. Why: The Data tour needs real, disposable reminder copies to demonstrate on. How: This is called when that tour opens.
 import { unhHisFun   } from '../state/sample-history.ts';       // What: Unhide History Function. Why: The Stats tour's own heatmap and breakdown need the real sample pickers and their history. How: This is called when the Stats tour starts.
 
+
+import type { ActStoTyp } from '../state/store.ts';     // What: Action Store Type. Why: The tour changes state through the store's actions. How: This types its actStoObj.
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The tour reads the current app state. How: This types its staAppObj.
+
 // #endregion Imports
 
 
@@ -167,6 +171,8 @@ const PAG_COP_OBJ = { // What: Page Copy Object. Why: PagTouCom's own intro moda
 
 // #region Components
 
+type PocProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onCloTouFun : () => void, pagIdeStr : string, selTabFun : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Page-Tour-Component Props Type. Why: A page tour runs on the real app for one page and clears itself when it ends. How: This types PagTouCom's props, named Poc since Ptc already belongs to PilTagCom.
+
 // #region PagTouCom
 
 /**
@@ -207,7 +213,7 @@ const PAG_COP_OBJ = { // What: Page Copy Object. Why: PagTouCom's own intro moda
  *
 */
 
-function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, staAppObj } ) {
+function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, staAppObj } : PocProTyp ) : React.JSX.Element {
 
 
 	const touRcdObj = ONB_EPT_ARR.find( ( curTouObj ) => curTouObj.ideStr === pagIdeStr ); // What: Tour Record Object. Why: This page's own real page key/label are read off its own ONB_EPT_ARR manifest entry. How: This searches ONB_EPT_ARR for the entry whose own id matches pagIdeStr.
@@ -216,7 +222,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 
 
 
-	const onbStaObj = staAppObj.onboarding || {};                                                                              // What: Onboarding State Object. Why: A reload lands here with tab-today.tsx's own minTouObj already re-derived from this SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resBoo) step to land on. How: This reads staAppObj.onboarding, falling back to an empty object.
+	const onbStaObj = staAppObj.onboarding;                                                                                    // What: Onboarding State Object. Why: A reload lands here with tab-today.tsx's own minTouObj already re-derived from this SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resBoo) step to land on. How: This reads staAppObj.onboarding, which migStaFun guarantees on every state.
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `page-${ pagIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding/tour-runner.tsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this page's own tour id, otherwise null.
 
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuiTouCom running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
@@ -441,7 +447,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 				if ( tarSteNum === 3 ) { // What: Edit Mode Toggle Check. Why: Back from Group Grip to Edit Mode must toggle Edit Mode back off via its own real control, since the fooEdiBut target only exists while it's off. How: This clicks whichever real Edit Mode toggle/Cancel control is currently visible.
 
 
-					const butEdmEle = document.querySelector( '[data-element-name-hook~="ediRaiBut"][data-edit-mode-active]' ) || document.querySelector( '[data-element-name-hook~="fooActDiv"] [data-element-name-hook~="ediCanBut"]' ); // What: Button Edit-Mode Element. Why: Desktop's own toggle always exists and flips itself regardless of state, mobile's own footer swaps to Cancel/Done buttons instead of keeping fooEdiBut. How: This looks up whichever control is currently present.
+					const butEdmEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="ediRaiBut"][data-edit-mode-active]' ) || document.querySelector< HTMLElement >( '[data-element-name-hook~="fooActDiv"] [data-element-name-hook~="ediCanBut"]' ); // What: Button Edit-Mode Element. Why: Desktop's own toggle always exists and flips itself regardless of state, mobile's own footer swaps to Cancel/Done buttons instead of keeping fooEdiBut. How: This looks up whichever control is currently present.
 
 
 					if ( butEdmEle ) butEdmEle.click(); // What: Edit Mode Button Click. Why: This must only fire when a control actually exists. How: This clicks butEdmEle.
@@ -469,7 +475,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 
 
 
-				const canButEle = document.querySelector( '[data-element-name-hook~="ediBanSpa"] [data-element-name-hook~="ediCanBut"]' ); // What: Cancel Button Element. Why: This reverts any group reordering, a harmless no-op if Edit Mode was never entered, since the banner/button won't exist. How: This looks it up fresh, since it only exists while Edit Mode is on.
+				const canButEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="ediBanSpa"] [data-element-name-hook~="ediCanBut"]' ); // What: Cancel Button Element. Why: This reverts any group reordering, a harmless no-op if Edit Mode was never entered, since the banner/button won't exist. How: This looks it up fresh, since it only exists while Edit Mode is on.
 
 
 				if ( canButEle ) canButEle.click(); // What: Cancel Button Click. Why: This must only fire when the control actually exists. How: This clicks canButEle.
