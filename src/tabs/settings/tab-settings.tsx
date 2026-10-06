@@ -36,6 +36,7 @@ import { useEscCanFun } from '../../ui/escape-cancel.ts';           // What: Use
 
 import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The component changes state through the store's actions. How: This types its actStoObj.
 import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The component reads the current app state. How: This types its staAppObj.
+import type { StoRepTyp } from '../../state/storage.ts';   // What: Storage Report Type. Why: The Data Control section shows the storage report. How: This types the state holding it.
 
 // #endregion Imports
 
@@ -55,6 +56,7 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
  * section rail tracks and drives scroll position across all of them.
  *
  * Sections:
+ *  - Types
  *  - Constants
  *  - Helpers
  *  - Components
@@ -63,6 +65,14 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Types
+
+type StaMesTyp = { okaBoo : boolean, texStr : string }; // What: Status Message Type. Why: The install, protect, and import actions each report a short success or failure line. How: This holds whether it worked and the text to show.
+
+// #endregion Types
 
 
 
@@ -204,7 +214,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 
 
-	const [ legDocStr, setLegDocStr ] = React.useState( null ); // What: Legal Document String And Setter. Why: The Legal section's own View buttons need somewhere to record which document ('privacy' | 'terms') to show, or null for neither. How: This gates and selects LegModCom's own content below.
+	const [ legDocStr, setLegDocStr ] = React.useState< 'privacy' | 'terms' | null >( null ); // What: Legal Document String And Setter. Why: The Legal section's own View buttons need somewhere to record which document ('privacy' | 'terms') to show, or null for neither. How: This gates and selects LegModCom's own content below.
 
 
 
@@ -220,10 +230,10 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 	// #region Style Previews
 
-	const [ celTokNum, setCelTokNum ] = React.useState( 0 );          // What: Celebration Token Number And Setter. Why: CelPreCom needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plaCelFun and passed straight through as CelPreCom's own repTokNum prop. // Appearance preview stages: bumping a token replays; celStyStr/picPreStr hold which style is currently showing (null = idle, selector visible).
-	const [ celStyStr, setCelStyStr ] = React.useState( 'confetti' ); // What: Celebration Style String And Setter. Why: The preview stage needs to know which specific style to actually play. How: This is set by plaCelFun and passed straight through as CelPreCom's own styKeyStr prop.
-	const [ picTokNum, setPicTokNum ] = React.useState( 0 );          // What: Picker Token Number And Setter. Why: PicAniCom needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plaPicFun and passed straight through as PicAniCom's own repTokNum prop.
-	const [ picPreStr, setPicPreStr ] = React.useState( null );       // What: Picker Preview String And Setter. Why: The picker-animation stage should keep showing whichever style was last previewed, not the selected style, once its own cycle finishes. How: This is set by plaPicFun and, while non-null, overrides the selected pickAnim value passed to PicAniCom.
+	const [ celTokNum, setCelTokNum ] = React.useState( 0 );                     // What: Celebration Token Number And Setter. Why: CelPreCom needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plaCelFun and passed straight through as CelPreCom's own repTokNum prop. // Appearance preview stages: bumping a token replays; celStyStr/picPreStr hold which style is currently showing (null = idle, selector visible).
+	const [ celStyStr, setCelStyStr ] = React.useState( 'confetti' );            // What: Celebration Style String And Setter. Why: The preview stage needs to know which specific style to actually play. How: This is set by plaCelFun and passed straight through as CelPreCom's own styKeyStr prop.
+	const [ picTokNum, setPicTokNum ] = React.useState( 0 );                     // What: Picker Token Number And Setter. Why: PicAniCom needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plaPicFun and passed straight through as PicAniCom's own repTokNum prop.
+	const [ picPreStr, setPicPreStr ] = React.useState< string | null >( null ); // What: Picker Preview String And Setter. Why: The picker-animation stage should keep showing whichever style was last previewed, not the selected style, once its own cycle finishes. How: This is set by plaPicFun and, while non-null, overrides the selected pickAnim value passed to PicAniCom.
 
 
 	// #region plaCelFun
@@ -307,9 +317,9 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 	const [ legMinNum, setLegMinNum ] = React.useState( 0 );       // What: Legal Minimum Number And Setter. Why: Legal is the last section, so without extra room below it the page runs out of scroll before its own top can reach the spy's base line. How: This holds the minimum height the Legal section needs, measured by the Legal spacer effect below and applied as its own minHeight.
 
 	const secMapRef = React.useRef< Record< string, HTMLElement | null > >( {} ); // What: Section Map Reference. Why: Every section below registers itself here via its own ref callback, giving the scroll-spy/jump-to logic a live lookup from section id to DOM element. How: This is written to by each section's own ref prop and read throughout this component.
-	const raiEleRef = React.useRef( null );                                       // What: Rail Element Reference. Why: stiOffFun and the rail-fade effect both need a handle on the rail's own outer element. How: This is attached to the aside's own ref prop below.
-	const raiScrRef = React.useRef( null );                                       // What: Rail Scroll Reference. Why: The rail-fade effect needs to read scroll position from the actual scrolling element, distinct from the sticky outer rail the fade attributes are toggled on. How: This is attached to the rail's own inner scroll wrapper below. // The mobile pill bar's own horizontal scroller, separate from raiEleRef; see the fade-edge effect's own comment below for why.
-	const rooEleRef = React.useRef( null );                                       // What: Root Element Reference. Why: The scroll-spy effect needs a handle on this component's own root to find its nearest '.appConMai' scroll ancestor. How: This is attached to the tab's own outer div below.
+	const raiEleRef = React.useRef< HTMLElement | null >( null );                 // What: Rail Element Reference. Why: stiOffFun and the rail-fade effect both need a handle on the rail's own outer element. How: This is attached to the aside's own ref prop below.
+	const raiScrRef = React.useRef< HTMLDivElement | null >( null );              // What: Rail Scroll Reference. Why: The rail-fade effect needs to read scroll position from the actual scrolling element, distinct from the sticky outer rail the fade attributes are toggled on. How: This is attached to the rail's own inner scroll wrapper below. // The mobile pill bar's own horizontal scroller, separate from raiEleRef; see the fade-edge effect's own comment below for why.
+	const rooEleRef = React.useRef< HTMLDivElement | null >( null );              // What: Root Element Reference. Why: The scroll-spy effect needs a handle on this component's own root to find its nearest '.appConMai' scroll ancestor. How: This is attached to the tab's own outer div below.
 	const skiSpyRef = React.useRef( false );                                      // What: Skip Spy Reference. Why: A section just jumped to via the rail must not have scroll-spy immediately recompute over it mid-scroll. How: This is set true for the duration of jumSecFun's own scroll animation and read as a guard at the top of the scroll-spy handler.
 
 
@@ -331,7 +341,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 	React.useEffect( () => { // What: Scroll Spy Effect. Why: The rail's own active link must track which section is actually in view as the user scrolls, without fighting a section the user just explicitly jumped to. How: This computes, on every scroll, which registered section's own top has crossed the spy's base line.
 
 
-		const secEntArr = SET_SEC_ARR.filter( ( secConObj ) => secMapRef.current[ secConObj.ideStr ] ).map( ( secConObj ) : [ string, HTMLElement ] => [ secConObj.ideStr, secMapRef.current[ secConObj.ideStr ] ] ); // What: Section Entry Array. Why: Only sections that have actually mounted and registered a ref can be measured. How: This drops any SET_SEC_ARR entry whose element is still missing, then maps the rest to [id, element] pairs.
+		const secEntArr = SET_SEC_ARR.filter( ( secConObj ) => secMapRef.current[ secConObj.ideStr ] ).map( ( secConObj ) : [ string, HTMLElement ] => [ secConObj.ideStr, secMapRef.current[ secConObj.ideStr ]! ] ); // What: Section Entry Array. Why: Only sections that have actually mounted and registered a ref can be measured. How: This drops any SET_SEC_ARR entry whose element is still missing, then maps the rest to [id, element] pairs. // What: Non-Null Note. Why: The filter just kept only sections whose element is registered. How: The ! tells TypeScript the map reads a real element.
 
 
 		if ( !secEntArr.length ) return; // What: No Sections Guard. Why: There is nothing to spy on before any section has mounted. How: This bails out of the whole effect early when secEntArr came back empty.
@@ -621,9 +631,9 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 	// #region Storage And Installation
 
-	const [ stoStaObj, setStoStaObj ] = React.useState( null ); // What: Storage Status Object And Setter. Why: The Data Control section's "Where your data lives" row needs the real, live storage status to render at all. How: This is populated by the effect below and read throughout the Data Control section. // Reports where the data actually lives, whether the browser has promised not to evict it, and how fresh the fallback copy is. Refreshed on mount and whenever the PWA layer changes (install, persistence grant).
-	const [ , setPwaTicNum ]          = React.useState( 0 );    // What: Progressive-Web-App Tick Number Setter. Why: A PWA-layer change (install, persistence grant) needs to force a re-render even though it doesn't directly change any other piece of state here. How: This is incremented by the effect below whenever PWA_NAM_OBJ.subscribe fires; the tick value itself is never read, so only the setter is bound.
-	const [ perMesObj, setPerMesObj ] = React.useState( null ); // What: Persist Message Object And Setter. Why: Both the Install and Protect Data actions need somewhere to report their own outcome. How: This is set by onInsAppFun/onProDatFun and rendered as a status line in the storage row.
+	const [ stoStaObj, setStoStaObj ] = React.useState< StoRepTyp | null >( null ); // What: Storage Status Object And Setter. Why: The Data Control section's "Where your data lives" row needs the real, live storage status to render at all. How: This is populated by the effect below and read throughout the Data Control section. // Reports where the data actually lives, whether the browser has promised not to evict it, and how fresh the fallback copy is. Refreshed on mount and whenever the PWA layer changes (install, persistence grant).
+	const [ , setPwaTicNum ]          = React.useState( 0 );                        // What: Progressive-Web-App Tick Number Setter. Why: A PWA-layer change (install, persistence grant) needs to force a re-render even though it doesn't directly change any other piece of state here. How: This is incremented by the effect below whenever PWA_NAM_OBJ.subscribe fires; the tick value itself is never read, so only the setter is bound.
+	const [ perMesObj, setPerMesObj ] = React.useState< StaMesTyp | null >( null ); // What: Persist Message Object And Setter. Why: Both the Install and Protect Data actions need somewhere to report their own outcome. How: This is set by onInsAppFun/onProDatFun and rendered as a status line in the storage row.
 
 
 	React.useEffect( () => { // What: Storage Status Effect. Why: The storage row needs to read real, live status on mount and stay in sync with any later PWA-layer change. How: This reads STG_NAM_OBJ.staRepFun() once immediately, then again every time PWA reports a change, guarding against a result landing after unmount.
@@ -687,7 +697,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 
 
-	const forBytFun = ( bytCouNum : number ) => { // What: Format Byte Function. Why: The storage row needs a human-readable size, not a raw byte count. How: This picks whichever of B/KB/MB unit reads most naturally for bytCouNum's own magnitude.
+	const forBytFun = ( bytCouNum : number | null ) => { // What: Format Byte Function. Why: The storage row needs a human-readable size, not a raw byte count. How: This picks whichever of B/KB/MB unit reads most naturally for bytCouNum's own magnitude.
 
 
 		if ( bytCouNum == null ) return '—'; // What: Missing Byte Count Guard. Why: A not-yet-known size should render as a placeholder dash, not "undefined B". How: This returns the em-dash placeholder glyph whenever bytCouNum is null/undefined.
@@ -709,7 +719,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 
 
-	const forWheFun = ( isoTimStr : string ) => { // What: Format When Function. Why: The storage row's "fallback copy" fact needs a friendly relative-or-absolute label, not a raw ISO timestamp. How: This special-cases "never" and "today", otherwise falling back to a short absolute date, catching any parse failure along the way.
+	const forWheFun = ( isoTimStr : string | null ) => { // What: Format When Function. Why: The storage row's "fallback copy" fact needs a friendly relative-or-absolute label, not a raw ISO timestamp. How: This special-cases "never" and "today", otherwise falling back to a short absolute date, catching any parse failure along the way.
 
 
 		if ( !isoTimStr ) return 'not yet this install'; // What: Missing Timestamp Guard. Why: A fallback copy that has never actually been written needs its own distinct label. How: This returns a fixed "not yet this install" string whenever isoTimStr is falsy.
@@ -774,22 +784,22 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 	// #region Data Control Export Import And Reset
 
-	const filInpRef = React.useRef( null );  // What: File Input Reference. Why: The Import button itself is not the real file input; it needs a handle on the real (visually hidden) one to trigger its own click. How: This is attached to the hidden file input's own ref prop below.
-	const expButRef = React.useRef( null );  // What: Export Button Reference. Why: expDatFun needs a handle on the Export button to restore focus to it after the download link is clicked. How: This is attached to the Export ButBasCom's own ref prop below. // Both actions hand focus away (export clicks a download link, import opens the file dialog), leaving focus on <body> where a screen reader starts reading the browser and page title. Refocus the button that was used and annStaFun through the app-level live region.
-	const impButRef = React.useRef( null );  // What: Import Button Reference. Why: Both onImpFilFun's own failure path and the focus-restore effect below need a handle on the Import button. How: This is attached to the Import ButBasCom's own ref prop below. // Both actions hand focus away (export clicks a download link, import opens the file dialog), leaving focus on <body> where a screen reader starts reading the browser and page title. Refocus the button that was used and annStaFun through the app-level live region.
-	const impConRef = React.useRef( null );  // What: Import Confirm Reference. Why: Opening the confirmation should move focus onto its own Import button. How: This is attached to that button's own ref prop below.
-	const impFocRef = React.useRef( false ); // What: Import Focus Reference. Why: The commit where the real Import button remounts happens after this closing function returns, so a plain synchronous focus call here would be too early. How: This flags that focus should be restored, consumed by the effect below once penImpObj is actually cleared. // Set when a confirm closes; consumed by the effect that runs after the Import button has actually remounted, so focus never lands on <body>.
-	const resButRef = React.useRef( null );  // What: Reset Button Reference. Why: Closing the confirmation without resetting should return focus to the row's own Reset button. How: This is attached to that button's own ref prop below. // Same unmount-on-swap problem as the import row: the trigger button is replaced by the confirm pair, so focus has to be moved deliberately in the commit AFTER each swap or it falls to <body>.
-	const resConRef = React.useRef( null );  // What: Reset Confirm Reference. Why: Opening the confirmation should move focus onto its own Reset button. How: This is attached to that button's own ref prop below. // Same unmount-on-swap problem as the import row: the trigger button is replaced by the confirm pair, so focus has to be moved deliberately in the commit AFTER each swap or it falls to <body>.
-	const resFocRef = React.useRef( false ); // What: Reset Focus Reference. Why: The commit where the real Reset button remounts happens after the closing function returns, so a plain synchronous focus call here would be too early. How: This flags that focus should be restored, consumed by the effect below once conResBoo is actually cleared.
+	const filInpRef = React.useRef< HTMLInputElement | null >( null );  // What: File Input Reference. Why: The Import button itself is not the real file input; it needs a handle on the real (visually hidden) one to trigger its own click. How: This is attached to the hidden file input's own ref prop below.
+	const expButRef = React.useRef< HTMLButtonElement | null >( null ); // What: Export Button Reference. Why: expDatFun needs a handle on the Export button to restore focus to it after the download link is clicked. How: This is attached to the Export ButBasCom's own ref prop below. // Both actions hand focus away (export clicks a download link, import opens the file dialog), leaving focus on <body> where a screen reader starts reading the browser and page title. Refocus the button that was used and annStaFun through the app-level live region.
+	const impButRef = React.useRef< HTMLButtonElement | null >( null ); // What: Import Button Reference. Why: Both onImpFilFun's own failure path and the focus-restore effect below need a handle on the Import button. How: This is attached to the Import ButBasCom's own ref prop below. // Both actions hand focus away (export clicks a download link, import opens the file dialog), leaving focus on <body> where a screen reader starts reading the browser and page title. Refocus the button that was used and annStaFun through the app-level live region.
+	const impConRef = React.useRef< HTMLButtonElement | null >( null ); // What: Import Confirm Reference. Why: Opening the confirmation should move focus onto its own Import button. How: This is attached to that button's own ref prop below.
+	const impFocRef = React.useRef( false );                            // What: Import Focus Reference. Why: The commit where the real Import button remounts happens after this closing function returns, so a plain synchronous focus call here would be too early. How: This flags that focus should be restored, consumed by the effect below once penImpObj is actually cleared. // Set when a confirm closes; consumed by the effect that runs after the Import button has actually remounted, so focus never lands on <body>.
+	const resButRef = React.useRef< HTMLButtonElement | null >( null ); // What: Reset Button Reference. Why: Closing the confirmation without resetting should return focus to the row's own Reset button. How: This is attached to that button's own ref prop below. // Same unmount-on-swap problem as the import row: the trigger button is replaced by the confirm pair, so focus has to be moved deliberately in the commit AFTER each swap or it falls to <body>.
+	const resConRef = React.useRef< HTMLButtonElement | null >( null ); // What: Reset Confirm Reference. Why: Opening the confirmation should move focus onto its own Reset button. How: This is attached to that button's own ref prop below. // Same unmount-on-swap problem as the import row: the trigger button is replaced by the confirm pair, so focus has to be moved deliberately in the commit AFTER each swap or it falls to <body>.
+	const resFocRef = React.useRef( false );                            // What: Reset Focus Reference. Why: The commit where the real Reset button remounts happens after the closing function returns, so a plain synchronous focus call here would be too early. How: This flags that focus should be restored, consumed by the effect below once conResBoo is actually cleared.
 
-	const [ impMesObj, setImpMesObj ] = React.useState( null );  // What: Import Message Object And Setter. Why: A completed (or failed) import needs somewhere to report its own outcome once the confirmation itself is gone. How: This is rendered as a status line below the import row.
-	const [ penImpObj, setPenImpObj ] = React.useState( null );  // What: Pending Import Object And Setter. Why: A chosen backup file must be confirmed in-app before it actually replaces all data. How: This holds the parsed { datObj, namStr } pair while the confirm row is showing, read by runImpFun. // Parsed-but-unconfirmed backup. Replaces a native confirm(), which the browser owns and no screen reader can be told about.
-	const [ impLeaBoo, setImpLeaBoo ] = React.useState( false ); // What: Import Leaving Boolean And Setter. Why: Closing the import confirmation should play its own leave animation before actually unmounting. How: This flags the confirm row as leaving for the duration of that animation.
-	const [ expMesObj, setExpMesObj ] = React.useState( null );  // What: Export Message Object And Setter. Why: A completed export needs somewhere to report how many history entries it actually included. How: This is rendered as a status line below the export row.
-	const [ conResBoo, setConResBoo ] = React.useState( false ); // What: Confirm Reset Boolean And Setter. Why: The Reset row needs to know whether its own confirm pair is currently showing. How: This swaps the Reset button for the confirm pair below.
-	const [ resLeaBoo, setResLeaBoo ] = React.useState( false ); // What: Reset Leaving Boolean And Setter. Why: Closing the reset confirmation should play its own leave animation before actually unmounting. How: This flags the confirm row as leaving for the duration of that animation.
-	const [ resMesStr, setResMesStr ] = React.useState( null );  // What: Reset Message String And Setter. Why: A completed reset needs somewhere to report its own outcome, once the row's own Reset button has gone away. How: This is rendered as a status line below the reset row.
+	const [ impMesObj, setImpMesObj ] = React.useState< StaMesTyp | null >( null );                            // What: Import Message Object And Setter. Why: A completed (or failed) import needs somewhere to report its own outcome once the confirmation itself is gone. How: This is rendered as a status line below the import row.
+	const [ penImpObj, setPenImpObj ] = React.useState< { datObj : any, namStr : string } | null >( null );    // What: Pending Import Object And Setter. Why: A chosen backup file must be confirmed in-app before it actually replaces all data. How: This holds the parsed { datObj, namStr } pair while the confirm row is showing, read by runImpFun. // Parsed-but-unconfirmed backup. Replaces a native confirm(), which the browser owns and no screen reader can be told about.
+	const [ impLeaBoo, setImpLeaBoo ] = React.useState( false );                                               // What: Import Leaving Boolean And Setter. Why: Closing the import confirmation should play its own leave animation before actually unmounting. How: This flags the confirm row as leaving for the duration of that animation.
+	const [ expMesObj, setExpMesObj ] = React.useState< { entNum : number, timNum : number } | null >( null ); // What: Export Message Object And Setter. Why: A completed export needs somewhere to report how many history entries it actually included. How: This is rendered as a status line below the export row.
+	const [ conResBoo, setConResBoo ] = React.useState( false );                                               // What: Confirm Reset Boolean And Setter. Why: The Reset row needs to know whether its own confirm pair is currently showing. How: This swaps the Reset button for the confirm pair below.
+	const [ resLeaBoo, setResLeaBoo ] = React.useState( false );                                               // What: Reset Leaving Boolean And Setter. Why: Closing the reset confirmation should play its own leave animation before actually unmounting. How: This flags the confirm row as leaving for the duration of that animation.
+	const [ resMesStr, setResMesStr ] = React.useState< string | null >( null );                               // What: Reset Message String And Setter. Why: A completed reset needs somewhere to report its own outcome, once the row's own Reset button has gone away. How: This is rendered as a status line below the reset row.
 
 
 

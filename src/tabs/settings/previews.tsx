@@ -144,6 +144,7 @@ const PRE_CAR_ARR = [ // What: Preview Card Array. Why: The celebration preview 
 
 // #region Components
 
+type ParIteTyp = { angNum : number, delNum : number, disNum : number, ideStr : string, kinStr : 'confetti', opaNum : number, rotStr : string } | { delNum : number, ideStr : string, kinStr : 'sparkle', lefNum : number, topNum : number }; // What: Particle Item Type. Why: The confetti and sparkle previews roll pieces of two different shapes into one list. How: This is either a confetti piece, flying out at an angle, or a sparkle, placed at a point, told apart by kinStr.
 type CpcProTyp = { repTokNum : number, styKeyStr : string }; // What: Celebration-Preview-Component Props Type. Why: The preview replays one celebration style each time its token changes. How: This types CelPreCom's props.
 
 // #region CelPreCom
@@ -177,10 +178,10 @@ type CpcProTyp = { repTokNum : number, styKeyStr : string }; // What: Celebratio
 function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element {
 
 
-	const carConRef = React.useRef( null ); // What: Card Container Reference. Why: The ripple style animates the real DOM card elements directly, so it needs a stable handle on their shared wrapper to query into. How: This is attached via the mock cards row's own ref prop below and read inside the replay effect.
-	const firMouRef = React.useRef( true ); // What: First Mount Reference. Why: The very first render must not immediately replay the effect just because repTokNum already holds a defined starting value. How: This starts true and is flipped false the first time the effect below runs, gating the early return that skips that first run.
+	const carConRef = React.useRef< HTMLDivElement | null >( null ); // What: Card Container Reference. Why: The ripple style animates the real DOM card elements directly, so it needs a stable handle on their shared wrapper to query into. How: This is attached via the mock cards row's own ref prop below and read inside the replay effect.
+	const firMouRef = React.useRef( true );                          // What: First Mount Reference. Why: The very first render must not immediately replay the effect just because repTokNum already holds a defined starting value. How: This starts true and is flipped false the first time the effect below runs, gating the early return that skips that first run.
 
-	const [ parIteArr, setParIteArr ] = React.useState( [] ); // What: Particle Item Array And Setter. Why: The confetti/sparkle styles need a list of already-rolled particle items to render. How: This starts empty and is populated by the replay effect below whenever repTokNum bumps.
+	const [ parIteArr, setParIteArr ] = React.useState< ParIteTyp[] >( [] ); // What: Particle Item Array And Setter. Why: The confetti/sparkle styles need a list of already-rolled particle items to render. How: This starts empty and is populated by the replay effect below whenever repTokNum bumps.
 
 
 	React.useEffect( () => { // What: Replay Effect. Why: Bumping repTokNum is Settings' own explicit "Play" trigger, and this is what actually restarts the ripple exhale cascade and/or rolls a fresh batch of confetti/sparkle particles. How: This skips its own first run on mount, then (depending on styKeyStr) restarts the card exhale animation, rolls new particles, or clears them, always tearing down its own timeouts on cleanup.
@@ -190,7 +191,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 
 
 
-		const carEleArr = carConRef.current ? [ ...carConRef.current.querySelectorAll( '[data-element-name-hook~="preCarDiv"]' ) ] : []; // What: Card Element Array. Why: The ripple style needs the actual rendered card DOM elements to animate directly. How: This queries every preCarDiv hook inside carConRef's own current element, or an empty array before it has mounted.
+		const carEleArr = carConRef.current ? [ ...carConRef.current.querySelectorAll< HTMLElement >( '[data-element-name-hook~="preCarDiv"]' ) ] : []; // What: Card Element Array. Why: The ripple style needs the actual rendered card DOM elements to animate directly. How: This queries every preCarDiv hook inside carConRef's own current element, or an empty array before it has mounted.
 
 		let ripCleTim : number; // What: Ripple Clear Timeout. Why: The ripple branch below may schedule a cleanup timeout that this same effect's own cleanup function later needs to be able to cancel. How: This starts undefined and is assigned only inside the ripple branch below.
 

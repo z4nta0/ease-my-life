@@ -1250,7 +1250,7 @@ const STG_NAM_OBJ = { // What: Storage Namespace Object. Why: This is the single
 
 
 
-export { STG_NAM_OBJ }; // What: Storage Namespace Object Export. Why: main.tsx, store.ts, pwa.ts and tab-settings.tsx reach every persistence operation through the one namespace object. How: This exports STG_NAM_OBJ by name at the very end of the file.
+export { STG_NAM_OBJ, type StoRepTyp }; // What: Storage Namespace Object And Report Type Export. Why: main.tsx, store.ts, pwa.ts and tab-settings.tsx reach every persistence operation through the one namespace object, and Settings holds the storage report it returns. How: This exports STG_NAM_OBJ and StoRepTyp by name at the very end of the file.
 
 // #endregion Exports
 

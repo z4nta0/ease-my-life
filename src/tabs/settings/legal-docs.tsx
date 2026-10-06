@@ -951,8 +951,8 @@ type LmcProTyp = { legDocStr : 'privacy' | 'terms' | null, onCloModFun : () => v
 function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPortal | null {
 
 
-	const panEleRef                   = React.useRef( null );    // What: Panel Element Reference. Why: This gives the effect below a handle on the panel so it can be focused on open. How: This is attached via the panel div's ref prop and read inside the open/close effect.
-	const [ modCloBoo, setModCloBoo ] = React.useState( false ); // What: Modal Closing Boolean And Setter. Why: This flags the closing-animation window so the backdrop/panel can swap to their own --closing modifier classes. How: This is set true by modDisFun and read in both className expressions below.
+	const panEleRef                   = React.useRef< HTMLDivElement | null >( null ); // What: Panel Element Reference. Why: This gives the effect below a handle on the panel so it can be focused on open. How: This is attached via the panel div's ref prop and read inside the open/close effect.
+	const [ modCloBoo, setModCloBoo ] = React.useState( false );                       // What: Modal Closing Boolean And Setter. Why: This flags the closing-animation window so the backdrop/panel can swap to their own --closing modifier classes. How: This is set true by modDisFun and read in both className expressions below.
 
 
 	// #region modDisFun

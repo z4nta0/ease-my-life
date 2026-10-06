@@ -206,10 +206,10 @@ function ConSupCom () : React.JSX.Element {
 	const [ botFieStr, setBotFieStr ] = React.useState( '' );    // What: Bot Field String And Setter. Why: A spam bot filling this hidden field is the signal a real human never would. How: This is posted alongside the real fields and left for Netlify's own spam filtering to act on. // Honeypot. Bots fill every field they find; humans never see this one, so a non-empty value means we silently accept and drop the submission.
 	const [ isaSenBoo, setIsaSenBoo ] = React.useState( false ); // What: Is-A Sending Boolean And Setter. Why: A second Send press must not fire a second overlapping request while one is already in flight. How: This gates senForFun's own guard and disables the Send button while true.
 
-	const broNamStr = React.useMemo( () => detBroFun(), [] );    // What: Browser Name String. Why: The diagnostic fields need the detected browser, computed once rather than on every render. How: This memoizes detBroFun's own return value with an empty dependency array.
-	const appVerStr = APP_VER_STR == null ? '1.0' : APP_VER_STR; // What: App Version String. Why: The diagnostic fields still need a sane version to show even on a build where the define is missing. How: This falls back to '1.0' when APP_VER_STR is null.
-	const forCarRef = React.useRef( null );                      // What: Form Card Reference. Why: opeForFun needs a handle on the rendered form to scroll it into view. How: This is attached to the supForDiv div's own ref prop below.
-	const canSenBoo = draSubStr.trim() && draMesStr.trim();      // What: Can Send Boolean. Why: The Send button's own enabled state, and the validation guard, both depend on both drafts actually holding text. How: This is true only while both draSubStr and draMesStr trim to something non-empty.
+	const broNamStr = React.useMemo( () => detBroFun(), [] );        // What: Browser Name String. Why: The diagnostic fields need the detected browser, computed once rather than on every render. How: This memoizes detBroFun's own return value with an empty dependency array.
+	const appVerStr = APP_VER_STR == null ? '1.0' : APP_VER_STR;     // What: App Version String. Why: The diagnostic fields still need a sane version to show even on a build where the define is missing. How: This falls back to '1.0' when APP_VER_STR is null.
+	const forCarRef = React.useRef< HTMLDivElement | null >( null ); // What: Form Card Reference. Why: opeForFun needs a handle on the rendered form to scroll it into view. How: This is attached to the supForDiv div's own ref prop below.
+	const canSenBoo = draSubStr.trim() && draMesStr.trim();          // What: Can Send Boolean. Why: The Send button's own enabled state, and the validation guard, both depend on both drafts actually holding text. How: This is true only while both draSubStr and draMesStr trim to something non-empty.
 
 	// #endregion Form State
 
