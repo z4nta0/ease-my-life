@@ -255,7 +255,7 @@ const reqProFun = < T >( idbReqObj : IDBRequest< T > ) : Promise< T > => new Pro
  *
 */
 
-function traStoFun ( stoNamStr : string, modValStr : 'readonly' | 'readwrite' ) : IDBObjectStore { return datConObj.transaction( stoNamStr, modValStr ).objectStore( stoNamStr ); } // What: Transaction Store Body. Why: Every IndexedDB read/write elsewhere in this file needs a freshly-opened store to call get/put/clear on. How: This opens one transaction on datConObj in the given mode and returns its own named object store.
+function traStoFun ( stoNamStr : string, modValStr : IDBTransactionMode ) : IDBObjectStore { return datConObj.transaction( stoNamStr, modValStr ).objectStore( stoNamStr ); } // What: Transaction Store Body. Why: Every IndexedDB read/write elsewhere in this file needs a freshly-opened store to call get/put/clear on. How: This opens one transaction on datConObj in the given mode and returns its own named object store.
 
 // #endregion traStoFun
 

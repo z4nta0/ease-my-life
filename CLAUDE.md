@@ -32,8 +32,10 @@ outside the build. There is no test suite. ESLint is installed and configured
 (`eslint.config.ts`, loaded through `jiti`, reading every file through
 `typescript-eslint`'s parser, with `eslint-plugin-react-hooks`'
 recommended rules for `.tsx` files, minus its four React Compiler readiness
-rules, plus `no-undef` and `react/jsx-no-undef` with browser globals for
-everything under `src/`, which catch a reference a rename missed; its
+rules, plus `react/jsx-no-undef` for everything under `src/`, which catches
+a component reference a rename missed. ESLint's own `no-undef` is off, as
+`typescript-eslint` recommends: `tsc` already reports every undefined name,
+and `no-undef` can't see TypeScript's type-only names. Its
 `files` globs avoid `{a,b}` braces, since the `brace-expansion` override in
 `package.json` breaks ESLint's brace matching), but no npm script runs it, so
 it only runs when invoked by hand
