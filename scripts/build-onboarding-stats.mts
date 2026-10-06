@@ -517,6 +517,14 @@ const forArrFun = ( rowArrAny, traTexStr, comTexStr ) => { // What: Format Array
 const buiOutFun = ( outDatObj ) => `
 
 
+// #region Imports
+
+import type { RawStaTyp } from './onboarding-seed-data.ts'; // What: Raw Stats Type. Why: hydStaFun reads these logs, so their rows must match the shape it expects. How: This types ONB_STA_OBJ.
+
+// #endregion Imports
+
+
+
 /**
  * onboarding-stats-data.ts = Onboarding Stats Data
  *
@@ -553,23 +561,14 @@ const buiOutFun = ( outDatObj ) => `
  * state.pickLog/.reminderLog/.reminderSkipLog, minus the fields hydStaFun in
  * onboarding-seed-data.ts fills in at hydration time (id/eid/completedAt for a
  * pick row, rowId plus completedAt or skippedAt for a reminder row) from each
- * row's own daysAgo/h/m:
- *
- * - \`pickLog\` rows: \`daysAgo\` (Number), \`depletedEnd\` (Boolean,
- *   optional), \`done\` (Boolean), \`group\` (String), \`h\` (Number or null,
- *   the completion hour), \`itemId\`/\`itemName\` (String), \`m\` (Number or
- *   null, the completion minute), \`outcome\` (String, optional),
- *   \`pickerId\`/\`pickerName\` (String), \`source\` (String).
- *
- * - \`reminderLog\`/\`reminderSkipLog\` rows: \`daysAgo\` (Number), \`h\`/\`m\`
- *   (Number, the time of day), \`name\` (String), \`taskId\` (String),
- *   \`type\` (String).
+ * row's own daysAgo/h/m. Their fields are described by RawPicTyp and
+ * RawRemTyp in that same file.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const ONB_STA_OBJ = { // What: Onboarding Stats Object. Why: The Welcome Tour and help mode seed a year of realistic history into Stats. How: This holds the 3 precomputed logs, turned into real dated rows by hydStaFun.
+const ONB_STA_OBJ : RawStaTyp = { // What: Onboarding Stats Object. Why: The Welcome Tour and help mode seed a year of realistic history into Stats. How: This holds the 3 precomputed logs, turned into real dated rows by hydStaFun.
 
 
 	pickLog : ${ forArrFun( outDatObj.pickLog, ',', '// What: Pick Log. Why: Stats needs a year of sample picks. How: This lists every simulated pick as a daysAgo-based row.' ) }

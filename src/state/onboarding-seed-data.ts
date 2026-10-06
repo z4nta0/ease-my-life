@@ -5,6 +5,11 @@
 
 import { isoDayFun } from '../utils/date.ts'; // What: Iso Day Function. Why: Period keys and generated log rows are local-calendar YYYY-MM-DD strings. How: This formats a Date as that key.
 
+
+import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: A precomputed pick row is a saved pick-log row minus its dated fields. How: This is the base of RawPicTyp and part of hydStaFun's return.
+import type { RmlRowTyp } from '../core/data-model.ts'; // What: Reminder-Log Row Type. Why: A precomputed reminder row is a saved reminder-log row minus its dated fields. How: This is the base of RawRemTyp and part of hydStaFun's return.
+import type { RslRowTyp } from '../core/data-model.ts'; // What: Reminder-Skip-Log Row Type. Why: Skipped reminders hydrate into their own log. How: This is part of hydStaFun's return.
+
 // #endregion Imports
 
 
@@ -27,6 +32,7 @@ import { isoDayFun } from '../utils/date.ts'; // What: Iso Day Function. Why: Pe
  * treat it as read-only.
  *
  * Sections:
+ *  - Types
  *  - Constants
  *  - Helpers
  *  - Exports
@@ -34,6 +40,19 @@ import { isoDayFun } from '../utils/date.ts'; // What: Iso Day Function. Why: Pe
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Types
+
+type RawPicTyp = Omit< PclRowTyp, 'completedAt' | 'date' | 'eid' | 'id' > & { daysAgo : number, h : number | null, m : number | null }; // What: Raw Pick Type. Why: A precomputed pick row stores how many days ago it happened instead of a date, and hydStaFun fills in the rest. How: This is a pick-log row without its completion time, date, entry id, and id, plus the day offset and the completion hour and minute (null when never done).
+type RawRemTyp = Omit< RmlRowTyp, 'completedAt' | 'rowId' > & { daysAgo : number, h : number, m : number };                            // What: Raw Reminder Type. Why: A precomputed reminder row, done or skipped, stores a day offset and time of day instead of a timestamp. How: This is a reminder-log row without its timestamp and row id, plus the day offset and the hour and minute.
+
+
+
+type RawStaTyp = { pickLog : RawPicTyp[], reminderLog : RawRemTyp[], reminderSkipLog : RawRemTyp[] }; // What: Raw Stats Type. Why: onboarding-stats-data.ts holds the three precomputed logs that hydStaFun turns into real history. How: This is that file's ONB_STA_OBJ shape.
+
+// #endregion Types
 
 
 
@@ -544,7 +563,7 @@ const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id );           
  *
 */
 
-function hydStaFun ( staRawObj ) {
+function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminderLog : RmlRowTyp[], reminderSkipLog : RslRowTyp[] } {
 
 
 	// #region Date Anchoring
@@ -703,7 +722,7 @@ function hydStaFun ( staRawObj ) {
 
 // #region Exports
 
-export { hydStaFun, ONB_ESP_ARR, ONB_EXA_OBJ, ONB_PCT_OBJ, ONB_RCT_OBJ, ONB_SPI_ARR, ONB_STI_ARR, ONB_TAS_ARR }; // What: Named Exports. Why: The onboarding tours, help mode, store.ts, the Today and Settings tabs, and scripts/build-onboarding-stats.mts each read some of this sample data by name. How: This exports the sample pickers, tasks, id lists, card copy tables and the stats hydrator.
+export { hydStaFun, ONB_ESP_ARR, ONB_EXA_OBJ, ONB_PCT_OBJ, ONB_RCT_OBJ, ONB_SPI_ARR, ONB_STI_ARR, ONB_TAS_ARR, type RawStaTyp }; // What: Named Exports. Why: The onboarding tours, help mode, store.ts, the Today and Settings tabs, and scripts/build-onboarding-stats.mts each read some of this sample data by name. How: This exports the sample pickers, tasks, id lists, card copy tables and the stats hydrator.
 
 // #endregion Exports
 
