@@ -14,9 +14,7 @@
  * getInstalledRelatedApps, and Chromium's beforeinstallprompt event. This
  * file has no imports or exports, so TypeScript reads it as a global
  * script: each interface below merges into the built-in one of the same
- * name, and nothing here ends up in the build. The
- * window.__emlPickerCreated global the Pickers tab calls is deliberately
- * left out, since nothing ever assigns it and it's under investigation.
+ * name, and nothing here ends up in the build.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

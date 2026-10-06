@@ -177,15 +177,13 @@ lookups without preserving that survivability property.
 ### Runtime globals on `window`
 
 A handful of `__`-prefixed globals (`__escStack`, `__escBound`,
-`__emlGenerate`, `__emlPickerCreated`, `__dismissBootSplash`) are deliberate
+`__emlGenerate`, `__dismissBootSplash`) are deliberate
 cross-module registration channels (e.g. a component registers a callback on
 mount so `index.html`'s boot script or the onboarding tour can call it
 later), not accidental leaks. Leave them as globals rather than "fixing" them
 into imports; the components that set them are meant to be reachable before/
 outside the normal React import graph. Their types live in `src/globals.d.ts`
 (along with `__APP_VERSION__`); a new global gets declared there too.
-`__emlPickerCreated` is left out on purpose: nothing ever assigns it, so the
-Pickers tab's two calls to it never run, and it's under investigation.
 
 ### PWA / deploy details
 

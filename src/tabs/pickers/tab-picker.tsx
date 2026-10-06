@@ -949,14 +949,12 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 							onCrePicFun={ ( payForObj ) => { // What: On Create Function. Why: A successful create must reconcile with whatever the guided-tour checklist expects, then land the user on the freshly-made picker. How: This dedupes an onboarding revisit by name, tags a tour-created picker for later replay matching, then advances the selection once the created id comes back.
 
 
-								if ( opeTouBoo && !touBusObj.exiIdeStr && staAppObj.pickers.some( ( picCurObj ) => picCurObj.name === payForObj.name ) ) { // What: Onboarding Dedupe Guard. Why: During onboarding, a revisit must never create a second copy of the example picker; instead it should just dedupe by name and advance the tour. How: This is skipped when touBusObj.exiIdeStr is set, since that's an INTENTIONAL replay of an already-finished tutorial (see the picker tour's own Step 2 run()), where payForObj.name matching the prior picker is expected, not a same-session double-fire to guard against.
+								if ( opeTouBoo && !touBusObj.exiIdeStr && staAppObj.pickers.some( ( picCurObj ) => picCurObj.name === payForObj.name ) ) { // What: Onboarding Dedupe Guard. Why: During onboarding, a revisit must never create a second copy of the example picker; instead it should just dedupe by name and close the form. How: This is skipped when touBusObj.exiIdeStr is set, since that's an INTENTIONAL replay of an already-finished tutorial (see the picker tour's own Step 2 run()), where payForObj.name matching the prior picker is expected, not a same-session double-fire to guard against.
 
 
 									setOpeTouBoo( false ); // What: Tour Flag Clear Call. Why: This branch is itself the tour's own completion path, so the flag must not linger. How: This resets opeTouBoo to false.
 
 									canCreFun(); // What: Cancel Create Call. Why: The form must close exactly the same way a manual cancel would. How: This calls the shared canCreFun.
-
-									if ( window.__emlPickerCreated ) window.__emlPickerCreated(); // What: Tour Advance Guard. Why: The tour still needs to advance past its own "create the picker" step, even though nothing new was actually created this time. How: This calls the global tour hook only if it's actually registered.
 
 
 
@@ -981,12 +979,10 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 								});
 
 
-								if ( opeTouBoo ) { // What: Tour Advance Guard. Why: A genuine tour-driven create (not the dedupe branch above) still needs to advance the tour once it lands. How: This clears opeTouBoo and calls the global tour hook, only while opeTouBoo was actually true.
+								if ( opeTouBoo ) { // What: Tour Open Guard. Why: A genuine tour-driven create (not the dedupe branch above) ends the form's tour-driven state once it lands. How: This clears opeTouBoo, only while it was actually true.
 
 
 									setOpeTouBoo( false ); // What: Tour Open Clear Call. Why: The form is no longer tour-driven. How: This resets opeTouBoo to false.
-
-									if ( window.__emlPickerCreated ) window.__emlPickerCreated(); // What: Picker Created Guard. Why: A waiting tour needs to know the picker now exists. How: This calls the registered global callback when there is one.
 
 
 								}
