@@ -182,7 +182,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 	const exiGroArr = React.useMemo( () => { // What: Existing Group Array. Why: Distinct group names, alphabetical, offered as chips in the form and as the group filter bar above the picker strip ("All" itself is a separate, always-first pill rendered outside this list). How: This walks staAppObj.pickers collecting each visible picker's own group name once, then alphabetizes them.
 
 
-		const seeGroArr = []; // What: Seen Group Array. Why: The loop below needs an accumulator to collect each distinct group name into. How: This starts empty and is pushed to by the loop.
+		const seeGroArr : string[] = []; // What: Seen Group Array. Why: The loop below needs an accumulator to collect each distinct group name into. How: This starts empty and is pushed to by the loop.
 
 
 		for ( const curPicObj of staAppObj.pickers ) { // What: Collect Groups Loop. Why: Every visible picker's own group name (if it has one, and isn't already collected) belongs in the result. How: This walks staAppObj.pickers, pushing each new group name onto seeGroArr.

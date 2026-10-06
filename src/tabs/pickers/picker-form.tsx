@@ -30,6 +30,7 @@ import { useIteDraFun } from '../../ui/record-draft.ts';          // What: Use I
 import { WeeChiCom    } from '../../ui/weekday-chips.tsx';        // What: Weekday Chip Component. Why: The daily-schedule block needs a 7-day picker for which weekdays a picker may run on. How: This is rendered in PicForCom's schedule block, wired to the local daysOfWeek state.
 
 
+import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The new picker's local pool mirrors the store's item actions. How: This types draActObj's methods.
 import type { ConRcdTyp } from '../../core/data-model.ts'; // What: Conditional Record Type. Why: The form offers every existing conditional for attachment. How: This types PfcProTyp's conObjArr.
 import type { IteRcdTyp } from '../../core/data-model.ts'; // What: Item Record Type. Why: The new picker's pool is built from items. How: This types the pool the item editors read.
 import type { ModNamTyp } from '../../core/data-model.ts'; // What: Mode Name Type. Why: The mode radios pick one of the five modes. How: This types the chosen mode.
@@ -213,8 +214,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const [ avoDupBoo, setAvoDupBoo ] = React.useState( ( iniForObj && iniForObj.avoidDuplicates ) || false );              // What: Avoid Duplicates Boolean And Setter. Why: Excludes an item from this picker's own pool for the day if its name (case-insensitive) is already present elsewhere on today's list, for pickers that intentionally share items with another picker and don't want the same one to surface twice. How: This defaults off, since most pickers don't share a pool with anything else, so this should stay opt-in.
 	const [ cadCurObj, setCadCurObj ] = React.useState( () => CAD_NAM_OBJ.norCadFun( iniForObj || {} ) );                   // What: Cadence Current Object And Setter. Why: How often this picker surfaces, plus its anchor. How: This defaults to daily, unless editing an existing picker (which prefills its current cadence): CAD_NAM_OBJ.norCadFun's accepted shape matches the same fields addPicFun/savEdiFun read off iniForObj here, so passing it straight through picks up any of them that are present and falls back to daily defaults for the rest.
 
-	const locDowNum = cadCurObj.cadence === 'weekly' ? cadCurObj.anchorDow : null;                        // What: Locked Dow Number. Why: Weekly cadence pins its anchor day ON in the Days control (and blocks the presets from dropping it), so the two controls can't contradict each other. How: This is the anchor day while weekly, otherwise null.
-	const witLocFun = ( dayInpArr ) => CAD_NAM_OBJ.enfWeeFun( { ...cadCurObj, daysOfWeek : dayInpArr } ); // What: With Locked Function. Why: Every preset button below needs to apply the same locked-day enforcement the effect below already applies to manual edits. How: This calls the shared CAD_NAM_OBJ helper with the candidate days merged into the current cadence.
+	const locDowNum = cadCurObj.cadence === 'weekly' ? cadCurObj.anchorDow : null;                                   // What: Locked Dow Number. Why: Weekly cadence pins its anchor day ON in the Days control (and blocks the presets from dropping it), so the two controls can't contradict each other. How: This is the anchor day while weekly, otherwise null.
+	const witLocFun = ( dayInpArr : number[] ) => CAD_NAM_OBJ.enfWeeFun( { ...cadCurObj, daysOfWeek : dayInpArr } ); // What: With Locked Function. Why: Every preset button below needs to apply the same locked-day enforcement the effect below already applies to manual edits. How: This calls the shared CAD_NAM_OBJ helper with the candidate days merged into the current cadence.
 
 
 	React.useEffect( () => { // What: Enforce Weekly Day Effect. Why: A cadence change (e.g. switching into weekly, or changing which day is anchored) must also keep runDowArr consistent with the new anchor. How: This re-applies CAD_NAM_OBJ.enfWeeFun whenever the cadence or its anchor day changes.
@@ -287,7 +288,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	*/
 
-	const raiCalFun = React.useCallback( ( raiCurEle ) => { // What: Rail Callback Function. Why: ColDisCom (below) mounts this rail one render AFTER conAttBoo flips true (it stages its own `render` state first), so a plain useEffect keyed on conAttBoo would fire while the ref is still null and never get another chance to run once the rail actually appears; a callback ref, which fires exactly when the DOM node attaches, plus a ResizeObserver, which re-fires whenever conditionals are added/removed and the rail's content width changes, sidesteps that race entirely. How: This registers a scroll listener and a ResizeObserver on whatever element the rail's own ref prop attaches to below, tearing down the previous ones first.
+	const raiCalFun = React.useCallback( ( raiCurEle : HTMLElement | null ) => { // What: Rail Callback Function. Why: ColDisCom (below) mounts this rail one render AFTER conAttBoo flips true (it stages its own `render` state first), so a plain useEffect keyed on conAttBoo would fire while the ref is still null and never get another chance to run once the rail actually appears; a callback ref, which fires exactly when the DOM node attaches, plus a ResizeObserver, which re-fires whenever conditionals are added/removed and the rail's content width changes, sidesteps that race entirely. How: This registers a scroll listener and a ResizeObserver on whatever element the rail's own ref prop attaches to below, tearing down the previous ones first.
 
 
 		if ( raiCleRef.current ) { // What: Previous Cleanup Guard. Why: A remount (or unmount) must not leave the prior element's own listeners dangling. How: This runs and clears whatever teardown function was registered for the previous element, if any.
@@ -468,10 +469,10 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const easThrNum = 100;                           // What: Ease Threshold Number. Why: This is the fixed 0-100 scale every item's own drift value moves across. How: This is used throughout the conversion helpers right below. // What: Ease Cadence Design Note. Why: Ease cadence is PER-ITEM, since a fridge-clean and a counter-wipe want different rhythms; each item carries its own drift band { easeMin, easeMax }. How: Two human questions are asked per item and converted: soonest days (least time before it CAN come up) -> easeMax = 100/soonest; latest days (most time before it MUST come up) -> easeMin = 100/latest. The engine moves an item across the 0-100 threshold by random(easeMin, easeMax) each daily run, so maturing fastest (every roll = easeMax) takes 100/easeMax days = the soonest, and slowest (every roll = easeMin) takes 100/easeMin days = the latest; the gap between the two answers IS the randomness. Drift values are the source of truth on each item.
 	const defEasObj = { easeMax : 14, easeMin : 7 }; // What: Default Ease Object. Why: A freshly-added item needs a sensible starting drift band before the user tunes it. How: This seeds addDraFun's own new-item shape below. // What: Default Band Note. Why: The raw numbers are easier to picture as days. How: This band works out to roughly a 7-day soonest and a 14-day latest.
 
-	const covSooFun = ( easMaxNum ) => Math.max( 1, Math.round( easThrNum / ( easMaxNum || 1 ) ) ); // What: Convert Soonest Function. Why: The soonest-days question is really just easThrNum divided by an item's own easeMax, floored at 1 day. How: This rounds the division and clamps it to at least 1.
-	const covLatFun = ( easMinNum ) => Math.max( 1, Math.round( easThrNum / ( easMinNum || 1 ) ) ); // What: Convert Latest Function. Why: The latest-days question is really just easThrNum divided by an item's own easeMin, floored at 1 day. How: This rounds the division and clamps it to at least 1.
+	const covSooFun = ( easMaxNum : number ) => Math.max( 1, Math.round( easThrNum / ( easMaxNum || 1 ) ) ); // What: Convert Soonest Function. Why: The soonest-days question is really just easThrNum divided by an item's own easeMax, floored at 1 day. How: This rounds the division and clamps it to at least 1.
+	const covLatFun = ( easMinNum : number ) => Math.max( 1, Math.round( easThrNum / ( easMinNum || 1 ) ) ); // What: Convert Latest Function. Why: The latest-days question is really just easThrNum divided by an item's own easeMin, floored at 1 day. How: This rounds the division and clamps it to at least 1.
 
-	const capStrFun = ( souTexStr ) => souTexStr.length ? souTexStr[ 0 ].toUpperCase() + souTexStr.slice( 1 ) : souTexStr; // What: Capitalize String Function. Why: Every item/picker name this form commits should read with a capitalized first letter, regardless of how the user actually typed it. How: This upper-cases just the first character and leaves the rest untouched.
+	const capStrFun = ( souTexStr : string ) => souTexStr.length ? souTexStr[ 0 ].toUpperCase() + souTexStr.slice( 1 ) : souTexStr; // What: Capitalize String Function. Why: Every item/picker name this form commits should read with a capitalized first letter, regardless of how the user actually typed it. How: This upper-cases just the first character and leaves the rest untouched.
 
 	// #endregion Mode Derivations
 
@@ -485,7 +486,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const [ conDelStr, setConDelStr ] = React.useState( null );                               // What: Confirm Delete String And Setter. Why: Deleting a pool item asks for confirmation inline. How: This holds the id currently showing its own delete-confirm row.
 	const [ conLeaStr, setConLeaStr ] = React.useState( null );                               // What: Confirm Leaving String And Setter. Why: Cancelling a delete confirmation needs its own out-animation before the row reverts to normal. How: This holds the id currently playing that leaving animation, cleared once it finishes.
 
-	const selAllFun = React.useCallback( ( inpCurEle ) => { if ( inpCurEle ) inpCurEle.select(); }, [] ); // What: Select All Function. Why: A new pool item opens with a default name that typing should replace outright. How: This stable ref callback selects the name field's text once, as it mounts.
+	const selAllFun = React.useCallback( ( inpCurEle : HTMLInputElement | null ) => { if ( inpCurEle ) inpCurEle.select(); }, [] ); // What: Select All Function. Why: A new pool item opens with a default name that typing should replace outright. How: This stable ref callback selects the name field's text once, as it mounts.
 
 
 	// #region canConFun
@@ -548,7 +549,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const enoIteBoo = comCouNum >= 2;                                                         // What: Enough Item Boolean. Why: A picker must have at least 2 real, committed items before it can be created. How: This is true once comCouNum reaches 2.
 
 
-	const draActObj = { // What: Draft Actions Object. Why: The pool rows and useIteDraFun's commit both need store-shaped actions, but pooIteArr isn't the real store. How: Every method below mirrors the real store action's own name and signature, but writes into pooIteArr instead of dispatching a real store update.
+	const draActObj : Pick< ActStoTyp, 'delIteFun' | 'renIteFun' | 'setWeiFun' | 'togVacFun' | 'updIteFun' > = { // What: Draft Actions Object. Why: The pool rows and useIteDraFun's commit both need store-shaped actions, but pooIteArr isn't the real store. How: Every method below mirrors the real store action's own name and signature, but writes into pooIteArr instead of dispatching a real store update.
 
 
 		delIteFun : ( tarIdeStr ) => setPooIteArr( ( preIteArr ) => preIteArr.filter( ( iteCurObj ) => iteCurObj.id !== tarIdeStr ) ),                                                            // What: Delete Item Function. Why: A removed pool row and a discarded in-progress item both drop out of the pool. How: This filters the matching entry out entirely.
@@ -743,7 +744,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	*/
 
-	const opeDraFun = ( tarIdeStr ) => { // What: Open Draft Function. Why: Opening an already-committed draft item's editor must check the item still exists before showing it. How: This looks up the item, bails out if it's gone, opens its editor, then scrolls the editor into view.
+	const opeDraFun = ( tarIdeStr : string ) => { // What: Open Draft Function. Why: Opening an already-committed draft item's editor must check the item still exists before showing it. How: This looks up the item, bails out if it's gone, opens its editor, then scrolls the editor into view.
 
 
 		const fouIteObj = pooIteArr.find( ( iteCurObj ) => iteCurObj.id === tarIdeStr ); // What: Found Item Object. Why: The editor needs the real, current draft item record to open against. How: This looks up tarIdeStr in pooIteArr.
@@ -813,7 +814,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	*/
 
-	const staDraFun = ( tarIdeStr ) => { // What: Start Draft Function. Why: Switching straight from one open editor to another (or from the new-item form) needs to close whatever's currently open first, dropping its unsaved draft, before this edit can actually open. How: This closes an existing editor or the new-item form, staging tarIdeStr to reopen once that closing animation finishes; otherwise it opens directly.
+	const staDraFun = ( tarIdeStr : string ) => { // What: Start Draft Function. Why: Switching straight from one open editor to another (or from the new-item form) needs to close whatever's currently open first, dropping its unsaved draft, before this edit can actually open. How: This closes an existing editor or the new-item form, staging tarIdeStr to reopen once that closing animation finishes; otherwise it opens directly.
 
 
 		if ( ediIteStr === tarIdeStr ) return; // What: Already Open Guard. Why: Re-clicking Edit on the exact same row that's already open should do nothing. How: This bails out when tarIdeStr matches the currently-open editor.

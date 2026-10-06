@@ -167,7 +167,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 *
 	*/
 
-	const aftExiFun = ( runActFun ) => { // What: After Exit Function. Why: Re-roll/Done need a shared helper that plays the exit animation (unless reduced motion applies) before running whatever the caller actually wants to happen. How: This either runs runActFun immediately, or stages butLeaBoo for 180ms first.
+	const aftExiFun = ( runActFun : () => void ) => { // What: After Exit Function. Why: Re-roll/Done need a shared helper that plays the exit animation (unless reduced motion applies) before running whatever the caller actually wants to happen. How: This either runs runActFun immediately, or stages butLeaBoo for 180ms first.
 
 
 		if ( redMotFun() ) { runActFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped animation. How: This runs the caller's action immediately and returns, skipping the staged delay below.
@@ -197,12 +197,12 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	// #region Pool Row State
 
 	const [ shoDriBoo, setShoDriBoo ] = React.useState( picDatObj.mode !== 'random' && picDatObj.mode !== 'weighted' ); // What: Show Drift Boolean And Setter. Why: A non-random/weighted picker's pool rows can optionally reveal each item's own drift/readiness bar, hidden by default to keep the list simple. How: This starts true whenever the picker's mode isn't 'random' or 'weighted', and is toggled by the pool header's own "Show/Hide drift" link.
-	const [ newDraObj, setNewDraObj ] = React.useState( null );                                                         // What: New Draft Object And Setter. Why: Adding a new pool item is held as a LOCAL draft, not committed to the store, until Save, so a reload or tab-switch discards an in-progress item, matching the new-picker create flow. How: This is the editing item; patNewFun (below) edits it locally, and cmtDraFun commits it via the real store actions on Save.
+	const [ newDraObj, setNewDraObj ] = React.useState< IteRcdTyp | null >( null );                                     // What: New Draft Object And Setter. Why: Adding a new pool item is held as a LOCAL draft, not committed to the store, until Save, so a reload or tab-switch discards an in-progress item, matching the new-picker create flow. How: This is the editing item; patNewFun (below) edits it locally, and cmtDraFun commits it via the real store actions on Save.
 	const [ insSavStr, setInsSavStr ] = React.useState( null );                                                         // What: Insert Saved String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set by cmtDraFun and cleared once the row's own insert keyframe finishes.
 	const [ conDelStr, setConDelStr ] = React.useState( null );                                                         // What: Confirm Delete String And Setter. Why: Deleting a pool item asks for confirmation inline, in place of that row's own normal content. How: This holds the id currently showing its own delete-confirm row.
 	const [ conLeaStr, setConLeaStr ] = React.useState( null );                                                         // What: Confirm Leaving String And Setter. Why: Cancelling a delete confirmation needs its own out-animation before the row reverts to normal. How: This holds the id currently playing that leaving animation, cleared once it finishes.
 
-	const selAllFun = React.useCallback( ( inpCurEle ) => { if ( inpCurEle ) inpCurEle.select(); }, [] ); // What: Select All Function. Why: A new item opens with a default name that typing should replace outright. How: This stable ref callback selects the name field's text once, as it mounts.
+	const selAllFun = React.useCallback( ( inpCurEle : HTMLInputElement | null ) => { if ( inpCurEle ) inpCurEle.select(); }, [] ); // What: Select All Function. Why: A new item opens with a default name that typing should replace outright. How: This stable ref callback selects the name field's text once, as it mounts.
 
 	const penEdiRef = React.useRef( null ); // What: Pending Edit Reference. Why: Set by staEdiFun when it has to close an in-progress new-item draft OR another item's open editor out of the way first, this is picked back up once that draft's/editor's own closing animation ends, so the edit opens right after instead of being silently dropped. How: This holds the target item id to reopen, consumed by the relevant onAnimationEnd handler below.
 
@@ -260,8 +260,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	// #region Item Removal And Sending
 
-	const [ rmvIdeStr, setRmvIdeStr ] = React.useState( null ); // What: Removing Identifier String And Setter. Why: A deleted pool row needs its own removal animation to finish before it's actually taken out of the store. How: This holds the id currently playing that removal animation; the row's own onAnimationEnd handler below both clears it and calls actions.delIteFun.
-	const [ senIdeStr, setSenIdeStr ] = React.useState( null ); // What: Sent Identifier String And Setter. Why: A pool item just sent to Today via its own per-row button needs a brief checkmark confirmation on that exact row. How: This holds the id currently showing that confirmation, cleared 1400ms later by senIteFun.
+	const [ rmvIdeStr, setRmvIdeStr ] = React.useState( null );                  // What: Removing Identifier String And Setter. Why: A deleted pool row needs its own removal animation to finish before it's actually taken out of the store. How: This holds the id currently playing that removal animation; the row's own onAnimationEnd handler below both clears it and calls actions.delIteFun.
+	const [ senIdeStr, setSenIdeStr ] = React.useState< string | null >( null ); // What: Sent Identifier String And Setter. Why: A pool item just sent to Today via its own per-row button needs a brief checkmark confirmation on that exact row. How: This holds the id currently showing that confirmation, cleared 1400ms later by senIteFun.
 
 
 	// #region senIteFun
@@ -290,7 +290,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 *
 	*/
 
-	const senIteFun = ( iteIdeStr ) => { // What: Send Item Function. Why: This is full parity with "Pick One" -> Send: it runs the engine forcing this exact item, then stages the identical pending mutation (drift/weight plus bumpPick) so marking it done has the same consequence as a natural pick. How: Ease Down replaces the picker's single entry; other modes add one, both handled inside actions.addEntFun.
+	const senIteFun = ( iteIdeStr : string ) => { // What: Send Item Function. Why: This is full parity with "Pick One" -> Send: it runs the engine forcing this exact item, then stages the identical pending mutation (drift/weight plus bumpPick) so marking it done has the same consequence as a natural pick. How: Ease Down replaces the picker's single entry; other modes add one, both handled inside actions.addEntFun.
 
 
 		const senResObj = PIC_NAM_OBJ.picIteFun( picDatObj, staAppObj.items, { forceItemId : iteIdeStr } ); // What: Send Result Object. Why: Forcing the pick engine onto this exact item still needs to compute the same pending updates a natural pick would. How: This calls PIC_NAM_OBJ.picIteFun with forceItemId set to the item being sent.
@@ -334,7 +334,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	const isaEasBoo = picDatObj.mode === 'ease-up' || picDatObj.mode === 'ease-down'; // What: Is-An Ease Boolean. Why: Only these two modes use the easeMin/easeMax drift band at all. How: This gates whether ease fields are carried over/shown throughout this view.
 
 
-	const patNewFun = ( patIteObj ) => setNewDraObj( ( preDraObj ) => preDraObj ? { ...preDraObj, ...patIteObj } : preDraObj ); // What: Patch New Function. Why: The new-item draft's name input and its editor both change a field or two of the draft, which isn't in the store yet. How: This merges patIteObj into newDraObj, leaving it alone once the draft is gone.
+	const patNewFun = ( patIteObj : Partial< IteRcdTyp > ) => setNewDraObj( ( preDraObj ) => preDraObj ? { ...preDraObj, ...patIteObj } : preDraObj ); // What: Patch New Function. Why: The new-item draft's name input and its editor both change a field or two of the draft, which isn't in the store yet. How: This merges patIteObj into newDraObj, leaving it alone once the draft is gone.
 
 
 	// #region cmtDraFun
@@ -361,7 +361,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 *
 	*/
 
-	const cmtDraFun = ( draIteObj ) => { // What: Commit Draft Function. Why: Saving the new-item draft must create the real store item and then carry over every field the draft flow itself edited. How: This calls actions.addIteFun, then patches in vacation/weight/ease fields, moves the new item to the end of the pool, and flags it for its own insert animation.
+	const cmtDraFun = ( draIteObj : IteRcdTyp ) => { // What: Commit Draft Function. Why: Saving the new-item draft must create the real store item and then carry over every field the draft flow itself edited. How: This calls actions.addIteFun, then patches in vacation/weight/ease fields, moves the new item to the end of the pool, and flags it for its own insert animation.
 
 
 		actStoObj.addIteFun( picDatObj.id, draIteObj.name, draIteObj.id ); // What: Add Item Call. Why: The draft only exists locally until this point; this is what actually creates it in the store. How: This passes the draft's own id through so the created item keeps the same id the draft UI was already using.
@@ -432,7 +432,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 		const newIdeStr = 'it_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: New Identifier String. Why: The new draft item needs a stable, unique-enough id before it's ever committed to the store. How: This builds a short random suffix onto the conventional 'it_' item-id prefix.
 
 
-		setNewDraObj({ // What: New Draft Seed Call. Why: The freshly-opened editor needs a complete, sensible default item shape to start from. How: This seeds a full charge default for Ease Down (matching addPicFun's own iniValNum) and a zeroed one otherwise.
+		setNewDraObj( { // What: New Draft Seed Call. Why: The freshly-opened editor needs a complete, sensible default item shape to start from. How: This seeds a full charge default for Ease Down (matching addPicFun's own iniValNum) and a zeroed one otherwise, asserted as an item since the store fills in its saved-only fields when the draft is committed.
 
 
 			easeMax  : 14,                                                                  // What: Ease Max. Why: Ease items start with a default latest end. How: This is 14.
@@ -444,7 +444,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 			weight   : 1                                                                    // What: Weight. Why: Every item starts at the baseline weight. How: This is 1.
 
 
-		});
+		} as IteRcdTyp );
 
 		requestAnimationFrame( () => requestAnimationFrame( () => { // What: Scroll Into View Call. Why: The just-opened creation slot can be well out of view at the bottom of a long pool. How: This waits two animation frames for layout to settle, then scrolls the shared .main container just enough to bring the slot fully into view.
 
@@ -531,7 +531,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 *
 	*/
 
-	const opeEdiFun = ( tarIdeStr ) => { // What: Open Edit Function. Why: Opening an existing item's editor must check the item still exists before showing it. How: This looks up the item, opens its editor, then scrolls the editor into view.
+	const opeEdiFun = ( tarIdeStr : string ) => { // What: Open Edit Function. Why: Opening an existing item's editor must check the item still exists before showing it. How: This looks up the item, opens its editor, then scrolls the editor into view.
 
 
 		const fouIteObj = staAppObj.items.find( ( iteCurObj ) => iteCurObj.id === tarIdeStr ); // What: Found Item Object. Why: The editor needs the real, current item record to open against. How: This looks up tarIdeStr in staAppObj.items.
@@ -599,7 +599,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 *
 	*/
 
-	const staEdiFun = ( tarIdeStr ) => { // What: Start Edit Function. Why: Switching straight from one open editor to another (or from the new-item draft) needs to close whatever's currently open first, dropping its unsaved draft, before this edit can actually open. How: This closes an existing editor or the new-item draft, staging tarIdeStr to reopen once that closing animation finishes, or opens directly when nothing is in the way.
+	const staEdiFun = ( tarIdeStr : string ) => { // What: Start Edit Function. Why: Switching straight from one open editor to another (or from the new-item draft) needs to close whatever's currently open first, dropping its unsaved draft, before this edit can actually open. How: This closes an existing editor or the new-item draft, staging tarIdeStr to reopen once that closing animation finishes, or opens directly when nothing is in the way.
 
 
 		if ( ediIteStr === tarIdeStr ) return; // What: Already Open Guard. Why: Re-clicking Edit on the exact same row that's already open should do nothing. How: This bails out when tarIdeStr matches the currently-open editor.
@@ -678,7 +678,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	const ediGroArr = React.useMemo( () => { // What: Edit Group Array. Why: This is the same distinct-groups memo TabPicCom itself computes, duplicated here rather than threaded down as a prop, since it's only needed while this one picker's own edit form is open. How: This walks staAppObj.pickers collecting each visible picker's own group name once, then alphabetizes them.
 
 
-		const seeGroArr = []; // What: Seen Group Array. Why: The loop below needs an accumulator to collect each distinct group name into. How: This starts empty and is pushed to by the loop.
+		const seeGroArr : string[] = []; // What: Seen Group Array. Why: The loop below needs an accumulator to collect each distinct group name into. How: This starts empty and is pushed to by the loop.
 
 
 		for ( const curPicObj of staAppObj.pickers ) { // What: Collect Groups Loop. Why: Every visible picker's own group name (if it has one, and isn't already collected) belongs in the result. How: This walks staAppObj.pickers, pushing each new group name onto seeGroArr.
