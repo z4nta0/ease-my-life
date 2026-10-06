@@ -1019,7 +1019,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 
 
 
-		const onKeyEscFun = ( keyEveObj ) => { // What: On Key Escape Function. Why: Esc must dismiss the modal from anywhere on the page while it is open, and only the modal, not help mode underneath it. How: This dismisses the modal on Escape and marks the key handled.
+		const onKeyEscFun = ( keyEveObj : KeyboardEvent ) => { // What: On Key Escape Function. Why: Esc must dismiss the modal from anywhere on the page while it is open, and only the modal, not help mode underneath it. How: This dismisses the modal on Escape and marks the key handled.
 
 
 			if ( keyEveObj.key !== 'Escape' ) return; // What: Non Escape Guard. Why: Only Escape dismisses the modal. How: This ignores every other key.

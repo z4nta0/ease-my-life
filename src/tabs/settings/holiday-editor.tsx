@@ -116,7 +116,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 	 *
 	*/
 
-	const rmvExiFun = ( cusIdeStr ) => { // What: Remove Exit Function. Why: Deleting a custom holiday should not simply vanish the row; it should play its own exit animation first. How: This flags cusIdeStr as exiting, then removes it from the store 300ms later, once that animation has had time to play.
+	const rmvExiFun = ( cusIdeStr : string ) => { // What: Remove Exit Function. Why: Deleting a custom holiday should not simply vanish the row; it should play its own exit animation first. How: This flags cusIdeStr as exiting, then removes it from the store 300ms later, once that animation has had time to play.
 
 
 		setExiIdeStr( cusIdeStr ); // What: Exiting Identifier Set. Why: This is what actually triggers the row's own exit class below. How: This writes the removed row's own id into exiIdeStr.
@@ -142,9 +142,9 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 
 	// #region Date Formatting
 
-	const shoDatFun = ( holDatObj ) => holDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'short' } );                          // What: Short Date Function. Why: Every computed holiday row needs a compact "Weekday, Month Day" label for when it lands. How: This formats holDatObj via toLocaleDateString with short weekday/month and numeric day.
-	const reaDayFun = ( holDatObj ) => holDatObj.toLocaleDateString( 'en-US', { weekday : 'long' } );                                                             // What: Real Day Function. Why: An observed holiday (one shifted off a weekend) needs to also say which weekday it actually falls on. How: This formats holDatObj as just its own full weekday name.
-	const recDatFun = ( monValNum, dayValNum ) => new Date( 2001, monValNum - 1, dayValNum ).toLocaleDateString( 'en-US', { day : 'numeric', month : 'short' } ); // What: Recur Date Function. Why: A custom holiday recurs every year on the same month/day, so it needs a year-agnostic "Month Day" label instead of a real date. How: This builds a throwaway Date in a fixed dummy year purely to reuse toLocaleDateString's own formatting.
+	const shoDatFun = ( holDatObj : Date ) => holDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'short' } );                                     // What: Short Date Function. Why: Every computed holiday row needs a compact "Weekday, Month Day" label for when it lands. How: This formats holDatObj via toLocaleDateString with short weekday/month and numeric day.
+	const reaDayFun = ( holDatObj : Date ) => holDatObj.toLocaleDateString( 'en-US', { weekday : 'long' } );                                                                        // What: Real Day Function. Why: An observed holiday (one shifted off a weekend) needs to also say which weekday it actually falls on. How: This formats holDatObj as just its own full weekday name.
+	const recDatFun = ( monValNum : number, dayValNum : number ) => new Date( 2001, monValNum - 1, dayValNum ).toLocaleDateString( 'en-US', { day : 'numeric', month : 'short' } ); // What: Recur Date Function. Why: A custom holiday recurs every year on the same month/day, so it needs a year-agnostic "Month Day" label instead of a real date. How: This builds a throwaway Date in a fixed dummy year purely to reuse toLocaleDateString's own formatting.
 
 	// #endregion Date Formatting
 

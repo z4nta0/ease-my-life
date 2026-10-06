@@ -105,7 +105,7 @@ function TheCusCom ( { actStoObj, actTheBoo, cusColObj, darModBoo, theModStr } :
 		: { accent : '#3360a8', bg : '#fcfbf9', text : '#242629' } ); // What: Light Starting Palette. Why: The Light card's own custom row needs light starting colors. How: This supplies a light background with dark text.
 
 
-	const setColFun = ( colKeyStr, colValStr ) => actStoObj.setCusFun( theModStr, { ...draColObj, [ colKeyStr ] : colValStr } ); // What: Set Color Function. Why: Changing any one swatch must save the FULL custom color set back to the store, not just the one changed key. How: This spreads draColObj and overwrites just the one changed key before saving.
+	const setColFun = ( colKeyStr : string, colValStr : string ) => actStoObj.setCusFun( theModStr, { ...draColObj, [ colKeyStr ] : colValStr } ); // What: Set Color Function. Why: Changing any one swatch must save the FULL custom color set back to the store, not just the one changed key. How: This spreads draColObj and overwrites just the one changed key before saving.
 
 
 
@@ -354,7 +354,7 @@ type TscProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Them
 function TheSecCom ( { actStoObj, staAppObj } : TscProTyp ) : React.JSX.Element {
 
 
-	const appCurObj = staAppObj.appearance || { customDark : null, customLight : null, theme : 'ink' }; // What: Appearance Current Object. Why: A very old/incomplete persisted state might not carry an appearance object at all. How: This falls back to a default ink/no-custom-themes object when staAppObj.appearance is missing.
+	const appCurObj = staAppObj.appearance; // What: Appearance Current Object. Why: The theme rows read the persisted appearance settings. How: This reads staAppObj.appearance, which migStaFun guarantees on every load.
 
 
 

@@ -79,7 +79,7 @@ let annStaFun : ( mesTexStr : string, mesOptObj? : { assertive? : boolean } ) =>
 
 
 
-	let annTimNum = null; // What: Announce Timeout Number. Why: A rapid-fire annStaFun() call must debounce against the previous call's own pending timeout. How: This holds the current setTimeout id, cleared and reassigned on every call below.
+	let annTimNum : number | null = null; // What: Announce Timeout Number. Why: A rapid-fire annStaFun() call must debounce against the previous call's own pending timeout. How: This holds the current setTimeout id, cleared and reassigned on every call below.
 
 
 	// #region annStaFun

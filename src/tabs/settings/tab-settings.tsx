@@ -200,7 +200,7 @@ type TecProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
 function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecProTyp ) : React.JSX.Element {
 
 
-	const appCurObj = staAppObj.appearance || { autoSystem : false, customDark : null, customLight : null, theme : 'ink' }; // What: Appearance Current Object. Why: A very old/incomplete persisted state might not carry an appearance object at all. How: This falls back to a default ink/no-custom-themes/no-auto-system object when staAppObj.appearance is missing.
+	const appCurObj = staAppObj.appearance; // What: Appearance Current Object. Why: The appearance rows read the persisted appearance settings. How: This reads staAppObj.appearance, which migStaFun guarantees on every load.
 
 
 
@@ -250,7 +250,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 	 *
 	*/
 
-	const plaCelFun = ( newStyStr ) => { // What: Play Celebration Function. Why: Pressing Preview on a celebration style option needs to both select and immediately replay that style. How: This sets celStyStr to newStyStr, then bumps celTokNum to trigger CelPreCom's own replay effect.
+	const plaCelFun = ( newStyStr : string ) => { // What: Play Celebration Function. Why: Pressing Preview on a celebration style option needs to both select and immediately replay that style. How: This sets celStyStr to newStyStr, then bumps celTokNum to trigger CelPreCom's own replay effect.
 
 
 		setCelStyStr( newStyStr );                      // What: Celebration Style Set. Why: The stage needs to know which style to play. How: This writes newStyStr into celStyStr.
@@ -286,7 +286,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 	 *
 	*/
 
-	const plaPicFun = ( newStyStr ) => { // What: Play Pick Function. Why: Pressing Preview on a picker-animation style option needs to both select and immediately replay that style. How: This sets picPreStr and bumps picTokNum to trigger PicAniCom's own remount. // The strip runs ~2s. picPreStr keeps holding the previewed style after it ends (it never reverts to the selected style), so the stage keeps the previewed animation's final frame instead of snapping to another style.
+	const plaPicFun = ( newStyStr : string ) => { // What: Play Pick Function. Why: Pressing Preview on a picker-animation style option needs to both select and immediately replay that style. How: This sets picPreStr and bumps picTokNum to trigger PicAniCom's own remount. // The strip runs ~2s. picPreStr keeps holding the previewed style after it ends (it never reverts to the selected style), so the stage keeps the previewed animation's final frame instead of snapping to another style.
 
 
 		setPicPreStr( newStyStr );                      // What: Picker Preview Set. Why: The stage needs to know which style to play. How: This writes newStyStr into picPreStr.
@@ -306,11 +306,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 	const [ actSecStr, setActSecStr ] = React.useState( 'daily' ); // What: Active Section String And Setter. Why: Both the rail's own highlighted link and the scroll-spy effect below need one shared source of truth for which section reads as current. How: This is written by the scroll-spy effect during normal scrolling and by jumSecFun when a rail link is clicked. // Mirrors the Today tab's own group rail. The scroll container is the shared <main className="main">; sections live in the right pane and the sticky rail on the left tracks / drives position.
 	const [ legMinNum, setLegMinNum ] = React.useState( 0 );       // What: Legal Minimum Number And Setter. Why: Legal is the last section, so without extra room below it the page runs out of scroll before its own top can reach the spy's base line. How: This holds the minimum height the Legal section needs, measured by the Legal spacer effect below and applied as its own minHeight.
 
-	const secMapRef = React.useRef( {} );    // What: Section Map Reference. Why: Every section below registers itself here via its own ref callback, giving the scroll-spy/jump-to logic a live lookup from section id to DOM element. How: This is written to by each section's own ref prop and read throughout this component.
-	const raiEleRef = React.useRef( null );  // What: Rail Element Reference. Why: stiOffFun and the rail-fade effect both need a handle on the rail's own outer element. How: This is attached to the aside's own ref prop below.
-	const raiScrRef = React.useRef( null );  // What: Rail Scroll Reference. Why: The rail-fade effect needs to read scroll position from the actual scrolling element, distinct from the sticky outer rail the fade attributes are toggled on. How: This is attached to the rail's own inner scroll wrapper below. // The mobile pill bar's own horizontal scroller, separate from raiEleRef; see the fade-edge effect's own comment below for why.
-	const rooEleRef = React.useRef( null );  // What: Root Element Reference. Why: The scroll-spy effect needs a handle on this component's own root to find its nearest '.appConMai' scroll ancestor. How: This is attached to the tab's own outer div below.
-	const skiSpyRef = React.useRef( false ); // What: Skip Spy Reference. Why: A section just jumped to via the rail must not have scroll-spy immediately recompute over it mid-scroll. How: This is set true for the duration of jumSecFun's own scroll animation and read as a guard at the top of the scroll-spy handler.
+	const secMapRef = React.useRef< Record< string, HTMLElement | null > >( {} ); // What: Section Map Reference. Why: Every section below registers itself here via its own ref callback, giving the scroll-spy/jump-to logic a live lookup from section id to DOM element. How: This is written to by each section's own ref prop and read throughout this component.
+	const raiEleRef = React.useRef( null );                                       // What: Rail Element Reference. Why: stiOffFun and the rail-fade effect both need a handle on the rail's own outer element. How: This is attached to the aside's own ref prop below.
+	const raiScrRef = React.useRef( null );                                       // What: Rail Scroll Reference. Why: The rail-fade effect needs to read scroll position from the actual scrolling element, distinct from the sticky outer rail the fade attributes are toggled on. How: This is attached to the rail's own inner scroll wrapper below. // The mobile pill bar's own horizontal scroller, separate from raiEleRef; see the fade-edge effect's own comment below for why.
+	const rooEleRef = React.useRef( null );                                       // What: Root Element Reference. Why: The scroll-spy effect needs a handle on this component's own root to find its nearest '.appConMai' scroll ancestor. How: This is attached to the tab's own outer div below.
+	const skiSpyRef = React.useRef( false );                                      // What: Skip Spy Reference. Why: A section just jumped to via the rail must not have scroll-spy immediately recompute over it mid-scroll. How: This is set true for the duration of jumSecFun's own scroll animation and read as a guard at the top of the scroll-spy handler.
 
 
 	const stiOffFun = () => { // What: Sticky Offset Function. Why: Both the scroll-spy handler and jumSecFun need the exact same "how far below the viewport top" figure, computed fresh each time layout may have changed. How: This measures the rail's own current orientation and height, returning the extra offset a mobile sticky bar needs on top of a fixed 16px margin. // Where a jumped-to section should land below the top of the scroll viewport (the desktop rail sticks at a base rhythm step; on mobile the rail is a sticky bar, so its own height is added too). Measured live so the 2 stay in agreement.
@@ -331,7 +331,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 	React.useEffect( () => { // What: Scroll Spy Effect. Why: The rail's own active link must track which section is actually in view as the user scrolls, without fighting a section the user just explicitly jumped to. How: This computes, on every scroll, which registered section's own top has crossed the spy's base line.
 
 
-		const secEntArr = SET_SEC_ARR.filter( ( secConObj ) => secMapRef.current[ secConObj.ideStr ] ).map( ( secConObj ) => [ secConObj.ideStr, secMapRef.current[ secConObj.ideStr ] ] ); // What: Section Entry Array. Why: Only sections that have actually mounted and registered a ref can be measured. How: This drops any SET_SEC_ARR entry whose element is still missing, then maps the rest to [id, element] pairs.
+		const secEntArr = SET_SEC_ARR.filter( ( secConObj ) => secMapRef.current[ secConObj.ideStr ] ).map( ( secConObj ) : [ string, HTMLElement ] => [ secConObj.ideStr, secMapRef.current[ secConObj.ideStr ] ] ); // What: Section Entry Array. Why: Only sections that have actually mounted and registered a ref can be measured. How: This drops any SET_SEC_ARR entry whose element is still missing, then maps the rest to [id, element] pairs.
 
 
 		if ( !secEntArr.length ) return; // What: No Sections Guard. Why: There is nothing to spy on before any section has mounted. How: This bails out of the whole effect early when secEntArr came back empty.
@@ -479,7 +479,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 
 
-	const jumSecFun = ( secIdeStr ) => { // What: Jump Section Function. Why: Clicking a rail link should scroll straight to that section and mark it active immediately, rather than waiting on the scroll-spy to catch up. How: This marks the target active, then scrolls the right container to the right offset.
+	const jumSecFun = ( secIdeStr : string ) => { // What: Jump Section Function. Why: Clicking a rail link should scroll straight to that section and mark it active immediately, rather than waiting on the scroll-spy to catch up. How: This marks the target active, then scrolls the right container to the right offset.
 
 
 		const secCurEle = secMapRef.current[ secIdeStr ]; // What: Section Current Element. Why: There is nothing to jump to if this section has not actually registered a ref. How: This looks up secIdeStr in secMapRef.
@@ -571,7 +571,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to subscribe once, on mount. How: An empty array means it never re-subscribes or re-runs after the initial mount.
 
 
-	const motNotFun = ( namTexStr ) => redMotBoo ? ( // What: Motion Note Function. Why: Both style-picker sections need the exact same reduced-motion note, differing only in what they name. How: This returns the note paragraph while redMotBoo is true, or null to render nothing.
+	const motNotFun = ( namTexStr : string ) => redMotBoo ? ( // What: Motion Note Function. Why: Both style-picker sections need the exact same reduced-motion note, differing only in what they name. How: This returns the note paragraph while redMotBoo is true, or null to render nothing.
 
 
 		<p className={` ${ cssModObj.secSubPar }   ${ cssModObj.secSubParMotion } `}>Your system is set to reduce motion, so { namTexStr } will not play in the app. You can still preview each one here.</p> // What: Set Rm Note Paragraph Element. Why: This is the actual note copy, naming whichever feature the caller passed in. How: This renders namTexStr inline inside the fixed surrounding sentence.
@@ -601,7 +601,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to subscribe once, on mount. How: An empty array means it never re-subscribes; NOT_NAM_OBJ itself is a stable module-level import.
 
 
-	const onRunChaFun = ( newTimStr ) => { // What: On Run Change Function. Why: Changing the run-time is the one deliberate gesture this section asks notification permission from. How: This saves the new run time, then (if supported) asks for permission exactly once.
+	const onRunChaFun = ( newTimStr : string ) => { // What: On Run Change Function. Why: Changing the run-time is the one deliberate gesture this section asks notification permission from. How: This saves the new run time, then (if supported) asks for permission exactly once.
 
 
 		actStoObj.daiTimFun( newTimStr ); // What: Run Time Save Call. Why: This is the actual persisted setting the Daily generator reads to know when to run. How: This calls actStoObj.daiTimFun with newTimStr.
@@ -687,7 +687,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 
 
-	const forBytFun = ( bytCouNum ) => { // What: Format Byte Function. Why: The storage row needs a human-readable size, not a raw byte count. How: This picks whichever of B/KB/MB unit reads most naturally for bytCouNum's own magnitude.
+	const forBytFun = ( bytCouNum : number ) => { // What: Format Byte Function. Why: The storage row needs a human-readable size, not a raw byte count. How: This picks whichever of B/KB/MB unit reads most naturally for bytCouNum's own magnitude.
 
 
 		if ( bytCouNum == null ) return '—'; // What: Missing Byte Count Guard. Why: A not-yet-known size should render as a placeholder dash, not "undefined B". How: This returns the em-dash placeholder glyph whenever bytCouNum is null/undefined.
@@ -709,7 +709,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 
 
-	const forWheFun = ( isoTimStr ) => { // What: Format When Function. Why: The storage row's "fallback copy" fact needs a friendly relative-or-absolute label, not a raw ISO timestamp. How: This special-cases "never" and "today", otherwise falling back to a short absolute date, catching any parse failure along the way.
+	const forWheFun = ( isoTimStr : string ) => { // What: Format When Function. Why: The storage row's "fallback copy" fact needs a friendly relative-or-absolute label, not a raw ISO timestamp. How: This special-cases "never" and "today", otherwise falling back to a short absolute date, catching any parse failure along the way.
 
 
 		if ( !isoTimStr ) return 'not yet this install'; // What: Missing Timestamp Guard. Why: A fallback copy that has never actually been written needs its own distinct label. How: This returns a fixed "not yet this install" string whenever isoTimStr is falsy.
@@ -920,7 +920,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 
 
-	const onImpFilFun = ( chaEveObj ) => { // What: On Import File Function. Why: Choosing a backup file needs to be parsed and held for in-app confirmation before it can actually replace all data. How: This reads the chosen file as text, parses it as JSON, and either stages it as penImpObj or reports a read failure.
+	const onImpFilFun = ( chaEveObj : React.ChangeEvent< HTMLInputElement > ) => { // What: On Import File Function. Why: Choosing a backup file needs to be parsed and held for in-app confirmation before it can actually replace all data. How: This reads the chosen file as text, parses it as JSON, and either stages it as penImpObj or reports a read failure.
 
 
 		const impFilObj = chaEveObj.target.files && chaEveObj.target.files[ 0 ]; // What: Import File Object. Why: The native file input may have no file chosen at all, such as a cancelled dialog. How: This reads the first (and only) selected file, or undefined.

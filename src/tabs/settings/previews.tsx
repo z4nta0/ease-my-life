@@ -192,7 +192,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 
 		const carEleArr = carConRef.current ? [ ...carConRef.current.querySelectorAll( '[data-element-name-hook~="preCarDiv"]' ) ] : []; // What: Card Element Array. Why: The ripple style needs the actual rendered card DOM elements to animate directly. How: This queries every preCarDiv hook inside carConRef's own current element, or an empty array before it has mounted.
 
-		let ripCleTim; // What: Ripple Clear Timeout. Why: The ripple branch below may schedule a cleanup timeout that this same effect's own cleanup function later needs to be able to cancel. How: This starts undefined and is assigned only inside the ripple branch below.
+		let ripCleTim : number; // What: Ripple Clear Timeout. Why: The ripple branch below may schedule a cleanup timeout that this same effect's own cleanup function later needs to be able to cancel. How: This starts undefined and is assigned only inside the ripple branch below.
 
 
 		if ( styKeyStr === 'ripple' ) { // What: Ripple Style Check. Why: The exhale cascade below only applies when this preview is actually showing the ripple style. How: This restarts every mock card's own staggered exhale animation and schedules its cleanup.
