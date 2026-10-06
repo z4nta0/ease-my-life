@@ -14,7 +14,8 @@ localStorage fallback/mirror); there is no server component to this app at all.
 
 ```
 npm run dev       # vite dev server (PWA service worker also active via devOptions)
-npm run build     # production build to dist/
+npm run build     # type check (tsc -b), then production build to dist/
+npm run lint      # eslint across the whole repo
 npm run preview   # serve the production build locally
 npm run typecheck # tsc -b across tsconfig.app.json (src/) and tsconfig.node.json
 ```
@@ -26,8 +27,8 @@ branch). `tsconfig.json` only references `tsconfig.app.json` (everything in
 on (since 2026-10-05). Where the code guarantees something TypeScript can't
 see, it says so with a `!` or `as` and a merged `Non-Null Note` or `Type
 Assertion Note` comment; checks that don't narrow go through
-`utils/guard.ts`. `typecheck` isn't part of `build` yet, so a type error
-can't block a deploy. `public/boot-splash.js` and `public/sw-notify.js` stay
+`utils/guard.ts`. `build` runs `tsc -b` first, so a type error fails the
+build and blocks a deploy. `public/boot-splash.js` and `public/sw-notify.js` stay
 JavaScript, since the browser and service worker load them by fixed URL
 outside the build. There is no test suite. ESLint is installed and configured
 (`eslint.config.ts`, loaded through `jiti`, reading every file through
@@ -38,10 +39,9 @@ a component reference a rename missed. ESLint's own `no-undef` is off, as
 `typescript-eslint` recommends: `tsc` already reports every undefined name,
 and `no-undef` can't see TypeScript's type-only names. Its
 `files` globs avoid `{a,b}` braces, since the `brace-expansion` override in
-`package.json` breaks ESLint's brace matching), but no npm script runs it, so
-it only runs when invoked by hand
-(`npx eslint <file>`) or through an editor integration; don't assume `tsc` or
-ESLint gate anything yet. Verify changes by running `npm run dev` and exercising
+`package.json` breaks ESLint's brace matching). `npm run lint` checks the
+whole repo, but nothing runs it automatically, so ESLint doesn't gate a
+deploy the way `tsc` does. Verify changes by running `npm run dev` and exercising
 the app in a browser.
 
 `__APP_VERSION__` is injected at build time from `package.json`'s `version`

@@ -4,8 +4,9 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"build": "vite build",
+		"build": "tsc -b && vite build",
 		"dev": "vite",
+		"lint": "eslint .",
 		"preview": "vite preview",
 		"typecheck": "tsc -b"
 	},
