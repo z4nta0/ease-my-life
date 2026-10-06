@@ -81,7 +81,7 @@ import type { HelRecTyp } from './geometry.ts'; // What: Help Rect Type. Why: Th
  *
 */
 
-function plaTipFun ( tarRecObj : HelRecTyp, tipWidNum : number, tipHeiNum : number ) : { arrHorNum : number, lefTipNum : number, maxHeiNum : number | null, tipClaStr : string, topTipNum : number } {
+function plaTipFun ( tarRecObj : HelRecTyp, tipWidNum : number, tipHeiNum : number ) : { arrHorNum : number, lefTipNum : number, maxHeiNum : number, tipClaStr : string, topTipNum : number } {
 
 
 	const vieWidNum = window.innerWidth;  // What: Viewport Width Number. Why: Every clamp below needs the current viewport's own width. How: This is read once from window.innerWidth and reused throughout.
@@ -108,7 +108,7 @@ function plaTipFun ( tarRecObj : HelRecTyp, tipWidNum : number, tipHeiNum : numb
 
 
 		const useBadBoo = tarRecObj.badAncNum != null;                         // What: Use Badge Boolean. Why: A column group member's own badge sits well above tarRecObj.top itself, so an above-placed tip anchored to tarRecObj.top would point its own arrow at empty space instead of the badge. How: This checks whether tarRecObj carries a badAncNum at all.
-		const aboAncNum = useBadBoo ? tarRecObj.badAncNum : tarRecObj.top;     // What: Above Anchor Number. Why: The "flips above" branch below needs one single Y to anchor against, whichever is correct for this target. How: This picks badAncNum when useBadBoo, otherwise the target's own top edge.
+		const aboAncNum = tarRecObj.badAncNum ?? tarRecObj.top;                // What: Above Anchor Number. Why: The "flips above" branch below needs one single Y to anchor against, whichever is correct for this target. How: This picks badAncNum when it's set, the same check as useBadBoo, otherwise the target's own top edge.
 		const gapAboNum = useBadBoo ? rhyPxlFun( 'm02' ) : rhyPxlFun( 'bas' ); // What: Gap Above Number. Why: The usual base-step breathing room reads as "detached" for a small round badge specifically, so a badge anchor uses a tighter m02 step instead. How: This picks the m02 step when anchored to a badge, otherwise the app's own normal base-step gap. // Vertical Rhythm Base Minus 2 ~= 8.304px, Vertical Rhythm Base ~= 14.572px
 		const spaBelNum = vieHeiNum - tarRecObj.bottom - rhyPxlFun( 'bas' );   // What: Space Below Number. Why: This is how much room the "below" placement actually has to work with. How: This subtracts the target's own bottom edge and the normal base-step gap from the viewport's own height. // Vertical Rhythm Base ~= 14.572px
 		const spaAboNum = aboAncNum - gapAboNum - edgMarNum;                   // What: Space Above Number. Why: This is how much room the "above" placement actually has to work with. How: This subtracts gapAboNum and the edge margin from aboAncNum.
@@ -199,10 +199,10 @@ type HtcProTyp = { tarRecObj : HelRecTyp, tipIteObj : HelIteTyp }; // What: Help
 function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element {
 
 
-	const tipEleRef                   = React.useRef( null );              // What: Tip Element Reference. Why: The layout effect below needs a handle on the real tip DOM node to measure and position it. How: This is attached to the root coach div's own ref prop below.
-	const [ tipStyObj, setTipStyObj ] = React.useState( null );            // What: Tip Style Object And Setter. Why: The tip's own absolute position is not known until after its first mount/measure. How: This starts null (rendered off-screen) and is written by the layout effect below.
-	const [ arrClaStr, setArrClaStr ] = React.useState( 'helTipDiv--up' ); // What: Arrow Class String And Setter. Why: The tip's own arrow direction depends on whether it landed above or below the target. How: This starts pointing up (the "below target" case) and is written by the layout effect below.
-	const [ scrMaxNum, setScrMaxNum ] = React.useState( null );            // What: Scroll Max Number And Setter. Why: A scrollable tip needs its own inner cap recomputed alongside its position. How: This starts null (uncapped) and is written by the layout effect below.
+	const tipEleRef                   = React.useRef< HTMLDivElement | null >( null );        // What: Tip Element Reference. Why: The layout effect below needs a handle on the real tip DOM node to measure and position it. How: This is attached to the root coach div's own ref prop below.
+	const [ tipStyObj, setTipStyObj ] = React.useState< React.CSSProperties | null >( null ); // What: Tip Style Object And Setter. Why: The tip's own absolute position is not known until after its first mount/measure. How: This starts null (rendered off-screen) and is written by the layout effect below.
+	const [ arrClaStr, setArrClaStr ] = React.useState( 'helTipDiv--up' );                    // What: Arrow Class String And Setter. Why: The tip's own arrow direction depends on whether it landed above or below the target. How: This starts pointing up (the "below target" case) and is written by the layout effect below.
+	const [ scrMaxNum, setScrMaxNum ] = React.useState< number | null >( null );              // What: Scroll Max Number And Setter. Why: A scrollable tip needs its own inner cap recomputed alongside its position. How: This starts null (uncapped) and is written by the layout effect below.
 
 	const widStyObj = tipIteObj.mtwBoo && tarRecObj.tipWidNum != null ? { width : tarRecObj.tipWidNum } : null; // What: Width Style Object. Why: Only a tip whose own catalog item opts in, AND whose target actually computed a tipWidNum, should override the usual fixed 280px. How: This reads tarRecObj.tipWidNum only under that combined condition, otherwise falls through to no override at all.
 
@@ -239,7 +239,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element 
 
 
 
-	const innStyObj : React.CSSProperties | null = scrMaxNum != null ? { maxHeight : scrMaxNum, overflowY : 'auto' } : null; // What: Inner Style Object. Why: Only a scrollable item's own inner wrapper needs a capped height and its own scrollbar. How: This builds the style object only while scrMaxNum holds a real cap.
+	const innStyObj : React.CSSProperties | undefined = scrMaxNum != null ? { maxHeight : scrMaxNum, overflowY : 'auto' } : undefined; // What: Inner Style Object. Why: Only a scrollable item's own inner wrapper needs a capped height and its own scrollbar. How: This builds the style object only while scrMaxNum holds a real cap.
 
 
 

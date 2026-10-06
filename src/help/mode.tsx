@@ -16,6 +16,7 @@ import { detEdgFun    } from './geometry.ts';      // What: Detect Edge Function
 import { finTarFun    } from './geometry.ts';      // What: Find Target Function. Why: Each help item names its target by selector, which may match several elements. How: This is called once per help item.
 import { HelTipCom    } from './tooltip.tsx';      // What: Help Tip Component. Why: A clicked badge reveals its own target's tip. How: This is rendered once for the open help item, given its target rect and item.
 import { IcoSvgCom    } from '../ui/icon.tsx';     // What: Icon Svg Component. Why: The navigation help item's own bodEle renders each tab's real nav icon next to its label. How: This is rendered once per tab entry inside NAV_HEL_OBJ's own bodEle JSX.
+import { isaTruFun    } from '../utils/guard.ts';  // What: Is-A Truthy Function. Why: The chrome matches drop their misses before being measured. How: This filters them so the rest read as real matches.
 import { rhyPxlFun    } from '../utils/rhythm.ts'; // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { shaRadFun    } from './geometry.ts';      // What: Shape Radius Function. Why: Each highlight cutout roughly matches its own target's border radius. How: This is called once per highlighted target.
 import { uniRecFun    } from './geometry.ts';      // What: Union Rect Function. Why: A help item covering several elements highlights them as one box. How: This is called once per multi-element help item.
@@ -289,7 +290,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 			} )
-			.filter( Boolean ); // What: Missing Chrome Filter. Why: Chrome absent from this page must never be clipped against. How: This drops every null from the map above.
+			.filter( isaTruFun ); // What: Missing Chrome Filter. Why: Chrome absent from this page must never be clipped against. How: This drops every null from the map above.
 
 		const chrIteArr = chrMatArr // What: Chrome Item Array. Why: cliChrFun needs each chrome item's own real rect and resolved side, not just its selector. How: This measures every matched chrome element and resolves 'auto' via detEdgFun, since only the tab bar's own placement varies at runtime.
 			.map( ( { chrDomEle, chrSelStr, chrSidStr } ) => { // What: Chrome Measure Callback. Why: Each matched chrome element needs its own live rect and a concrete side. How: This measures chrDomEle and resolves an 'auto' side from that rect.
@@ -646,11 +647,11 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 		const hitTarFun = ( cliEveObj : MouseEvent ) => { // What: Hit Target Function. Why: A click is allowed through only when it lands on something help mode itself recognizes. How: This checks the app's own always-exempt chrome first, then falls back to checking every catalog item's own matched elements.
 
 
-			if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="helBadBut"], [data-element-name-hook~="helTipDiv"], [data-element-name-hook~="helTogBut"], [data-element-name-hook~="appTabNav"], [data-element-name-hook~="touOveDiv"], [data-element-name-hook~="legBacDiv"]' ) ) return true; // What: Exempt Chrome Guard. Why: Navigating away (the tab bar) must still work while help mode is up, a guided tour walking through this exact feature owns its own clicks already, and a legal document modal opened over help mode must still close and scroll. How: This allows the click through once it lands inside any of these 6 always-exempt regions, reading the event's target as the Element a click always lands on.
+			if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="helBadBut"], [data-element-name-hook~="helTipDiv"], [data-element-name-hook~="helTogBut"], [data-element-name-hook~="appTabNav"], [data-element-name-hook~="touOveDiv"], [data-element-name-hook~="legBacDiv"]' ) ) return true; // What: Exempt Chrome Guard. Why: Navigating away (the tab bar) must still work while help mode is up, a guided tour walking through this exact feature owns its own clicks already, and a legal document modal opened over help mode must still close and scroll. How: This allows the click through once it lands inside any of these 6 always-exempt regions, reading the event's target as the Element a click always lands on. // What: Type Assertion Note. Why: A click always lands on an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
 
 
 
-			return allIteArr.some( ( curIteObj ) => finTarFun( curIteObj.selStr ).some( ( curTarEle ) => curTarEle.contains( cliEveObj.target as Node ) ) ); // What: Tagged Element Check. Why: A click on any currently-highlighted target itself must also be allowed through. How: This checks whether the click's own target falls inside any catalog item's own currently-matched elements.
+			return allIteArr.some( ( curIteObj ) => finTarFun( curIteObj.selStr ).some( ( curTarEle ) => curTarEle.contains( cliEveObj.target as Node ) ) ); // What: Tagged Element Check. Why: A click on any currently-highlighted target itself must also be allowed through. How: This checks whether the click's own target falls inside any catalog item's own currently-matched elements. // What: Type Assertion Note. Why: A click always lands on a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
 
 
 		};

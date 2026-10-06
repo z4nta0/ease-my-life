@@ -80,7 +80,7 @@ const CON_GAT_OBJ : Partial< ConRcdTyp > = { // What: Conditional Gate Object. W
 
 
 
-const PIC_GAT_OBJ : PicForTyp = { // What: Picker Gate Object. Why: This is the picker that depends on CON_GAT_OBJ in the day-off gate example described above. How: This is added by sedPicFun/removed by clePicFun exactly like any real, user-created picker.
+const PIC_GAT_OBJ : PicForTyp & { id : string } = { // What: Picker Gate Object. Why: This is the picker that depends on CON_GAT_OBJ in the day-off gate example described above. How: This is added by sedPicFun/removed by clePicFun exactly like any real, user-created picker.
 
 
 	conditionalId : CON_GAT_STR,        // What: Conditional Identifier String. Why: This is what actually gates this picker off on the conditional's own down days. How: This is CON_GAT_STR, matching CON_GAT_OBJ's own id.
@@ -122,7 +122,7 @@ const PIC_GAT_OBJ : PicForTyp = { // What: Picker Gate Object. Why: This is the 
  *
 */
 
-const EXT_PIC_ARR : PicForTyp[] = [ // What: Extra Picker Array. Why: This is the extra sample-picker pool described above, seeded/removed alongside every other help-only picker. How: This is read by sedPicFun to add each entry (guarded by existing id) and by clePicFun to remove each by id.
+const EXT_PIC_ARR : ( PicForTyp & { id : string } )[] = [ // What: Extra Picker Array. Why: This is the extra sample-picker pool described above, seeded/removed alongside every other help-only picker. How: This is read by sedPicFun to add each entry (guarded by existing id) and by clePicFun to remove each by id.
 
 
 	{ // What: Extra Picker Object. Why: This is one of the extra picker-mode examples described in the comment above this array, rounding out all 5 picker modes. How: This is read by the picker engine exactly like any real, user-created picker.
@@ -190,7 +190,7 @@ const EXT_PIC_ARR : PicForTyp[] = [ // What: Extra Picker Array. Why: This is th
  *
 */
 
-const TAS_SAM_ARR : TasArgTyp[] = [ // What: Task Sample Array. Why: This is the sample-reminder pool described above, seeded/removed by sedTasFun/cleTasFun. How: This is iterated by sedTasFun to add each entry (guarded by existing id) and by cleTasFun to remove each by id.
+const TAS_SAM_ARR : ( TasArgTyp & { id : string } )[] = [ // What: Task Sample Array. Why: This is the sample-reminder pool described above, seeded/removed by sedTasFun/cleTasFun. How: This is iterated by sedTasFun to add each entry (guarded by existing id) and by cleTasFun to remove each by id.
 
 
 	{ id : 'hlp_tk_once',     name : 'Renew car registration', repeat : 'once'                            }, // What: Sample Task Object. Why: This is one reminder covering one of tasks.ts's own 5 repeat kinds (see the comment above this array for which is which). How: This is read by the reminders engine (tasks.ts) exactly like any real, user-created task.

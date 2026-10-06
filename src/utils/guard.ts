@@ -51,13 +51,44 @@ const isaIntFun = ( valAny : unknown ) : valAny is number => Number.isInteger( v
 
 // #endregion isaIntFun
 
+
+
+// #region isaTruFun
+
+/**
+ * isaTruFun = Is-A Truthy Function
+ *
+ * @summary
+ * Whether a value is truthy, exactly as Boolean reports it, and, when it
+ * is, that the value isn't null or undefined. An array filtered with a
+ * bare Boolean still reads as holding nulls, so filtering through this
+ * instead keeps Boolean's behavior while the array reads as holding only
+ * real values.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param valAny - Value Any: The value to check, of any type.
+ *
+ * @returns Whether the value is truthy.
+ *
+ * @example
+ * ```ts
+ * chrMatArr.filter(isaTruFun) // => the matches without nulls
+ * ```
+ *
+*/
+
+const isaTruFun = < T >( valAny : T ) : valAny is NonNullable< T > => Boolean( valAny ); // What: Is-A Truthy Function. Why: Filtering with Boolean drops nulls without telling TypeScript. How: This runs Boolean and declares a passing value not null or undefined.
+
+// #endregion isaTruFun
+
 // #endregion Helpers
 
 
 
 // #region Exports
 
-export { isaIntFun }; // What: Named Export. Why: Code reading optional saved numbers narrows through this guard. How: This exports isaIntFun by name.
+export { isaIntFun, isaTruFun }; // What: Named Exports. Why: Code reading optional saved numbers or filtering out missing values narrows through these guards. How: This exports isaIntFun and isaTruFun by name.
 
 // #endregion Exports
 

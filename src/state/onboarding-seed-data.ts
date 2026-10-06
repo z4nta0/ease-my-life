@@ -143,7 +143,7 @@ type RawStaTyp = { pickLog : RawPicTyp[], reminderLog : RawRemTyp[], reminderSki
  *
 */
 
-const ONB_ESP_ARR : ( PicForTyp & { id : string } )[] = [ // What: Onboarding Extra-Sample-Pickers Array. Why: This is the extra sample-picker pool described above, seeded alongside ONB_EXA_OBJ. How: This is spread into actStoObj.addPicFun by onboarding/welcome-tour.tsx's own seeding effect, exactly like a real, user-created picker.
+const ONB_ESP_ARR : ( PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > )[] = [ // What: Onboarding Extra-Sample-Pickers Array. Why: This is the extra sample-picker pool described above, seeded alongside ONB_EXA_OBJ. How: This is spread into actStoObj.addPicFun by onboarding/welcome-tour.tsx's own seeding effect, exactly like a real, user-created picker.
 
 
 	{ // What: Monthly Chores Entry. Why: This is a second, less-frequent Chores-group picker alongside ONB_EXA_OBJ's own "Daily Chores," rounding out a generated day with deeper, longer-cycle cleaning tasks. How: This is read by the picker engine exactly like any real picker, its own 5 items (oven, whole-house dust, fridge, under-furniture vacuum, mop) themed around chores done far less often than the Daily Chores picker's own pool.
@@ -346,7 +346,7 @@ const ONB_ESP_ARR : ( PicForTyp & { id : string } )[] = [ // What: Onboarding Ex
  *
 */
 
-const ONB_EXA_OBJ : PicForTyp & { id : string } = { // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour (see the comment above this declaration). How: This is spread into actStoObj.addPicFun by onboarding/welcome-tour.tsx's own seeding effect, exactly like a real, user-created picker.
+const ONB_EXA_OBJ : PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > = { // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour (see the comment above this declaration). How: This is spread into actStoObj.addPicFun by onboarding/welcome-tour.tsx's own seeding effect, exactly like a real, user-created picker.
 
 
 	group : 'Chores',
