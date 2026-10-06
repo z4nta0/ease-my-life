@@ -218,7 +218,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 		if ( !onbStaObj.welcomed && onbPhaStr === 'off' ) setOnbPhaStr( 'welcome' ); // What: Reopen Guard. Why: Only a genuinely idle onboarding should be reopened by this effect. How: This sets onbPhaStr only when welcomed is false and onbPhaStr is currently 'off'.
 
 
-	}, [ onbStaObj.welcomed ] ); // What: Effect Dependency Array. Why: This must re-run whenever the persisted welcomed flag itself flips. How: onbStaObj.welcomed is the exact value this effect reopens on.
+	}, [ onbPhaStr, onbStaObj.welcomed ] ); // What: Effect Dependency Array. Why: This must re-run whenever the persisted welcomed flag flips, and reads onbPhaStr in its guard. How: A re-run caused by onbPhaStr alone returns at the guard, since every path that sets the phase to off has already set welcomed to true.
 
 
 	React.useEffect( () => { // What: Seed Samples Effect. Why: Every tour step always needs real content to point at and generate from, and this must re-run on every genuine "flag flips" event (a Replay Tour on an already-mounted app), not just once on initial mount, guarded on the sample ids specifically existing (any status, hidden or not) rather than "the user has any picker at all", since a Replay Tour or an imported backup can leave welcomed false while state.pickers already holds the user's own real, sample-unrelated pickers; a plain "has any picker" check would read that as already-seeded and skip forever, leaving the per-page mini-tours with no sample to ever point at. How: This seeds ONB_EXA_OBJ plus every ONB_ESP_ARR entry as real pickers, then dynamic-imports the ~650KB precomputed Stats history (irrelevant to everyone past their first run, so kept out of the main bundle) and hydrates its day-offsets into real ISO dates relative to today via hydStaFun.
@@ -240,7 +240,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 		} );
 
 
-	}, [ onbStaObj.welcomed ] ); // What: Effect Dependency Array. Why: This must re-run whenever the persisted welcomed flag itself flips, the same trigger the reopen effect above reacts to, not just once at mount. How: onbStaObj.welcomed is the exact value gating whether seeding is even considered.
+	}, [ actStoObj, onbStaObj.welcomed, staAppObj.pickers ] ); // What: Effect Dependency Array. Why: This must re-run whenever the persisted welcomed flag flips, the same trigger the reopen effect above reacts to, and reads the actions and pickers too. How: actStoObj never changes identity, and a re-run caused by the pickers returns at the guard once the samples exist or welcomed is true.
 
 
 
