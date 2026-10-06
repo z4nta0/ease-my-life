@@ -21,6 +21,7 @@ import { HelButCom    } from '../../help/button.tsx';               // What: Hel
 import { HelOveCom    } from '../../help/mode.tsx';                 // What: Help Overlay Component. Why: This tab needs the same help-mode badge overlay every other tab exposes. How: This is rendered once, driven by helOpeBoo and DAT_HEL_ARR.
 import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon Svg Component. Why: Nearly every button and row in this tab needs a recognizable glyph. How: This is rendered throughout TabDatCom.
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled control or a truncated pill still needs to explain itself on demand. How: This wraps disabled add buttons and truncatable type/group labels throughout TabDatCom.
+import { isaTruFun    } from '../../utils/guard.ts';                // What: Is-A Truthy Function. Why: The scroll-fade rows drop any that aren't mounted. How: This filters them so the rest read as real elements.
 import { modDefFun    } from '../../state/new-item.ts';             // What: Mode Defaults Function. Why: A draft picker's type change resets its items the same way a saved picker's does. How: This is called by patNewFun.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Several add/edit controls in this tab must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutProFun throughout TabDatCom.
 import { PIC_NAM_OBJ  } from '../../core/pickers.ts';               // What: Pickers Namespace Object. Why: An ease-mode picker's item list needs the same fallback ease-band math the picking engine itself uses. How: This is called once per picker via PIC_NAM_OBJ.aveEasFun.
@@ -281,10 +282,10 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	const disCreBoo = expTouBoo && touBusObj.touSteNum === 6; // What: Disable Create Boolean. Why: Step 7 only points at the Create Picker button; actually clicking it would open a whole new draft form the tour knows nothing about and never cleans up. How: This is true only during page-explore_data's own Step 6.
 
 
-	const detPicBoo = ediTouBoo && [ 3, 5, 6 ].includes( touBusObj.touSteNum ); // What: Disable-Edit-Tour Picker Boolean. Why: Steps 4/6/7 of the "edit your first item" tour all depend on this exact picker staying expanded as their own target. How: This guards the picker header's own collapse toggle during those 3 steps.
-	const detConBoo = ediTouBoo && [ 5, 6 ].includes( touBusObj.touSteNum );    // What: Disable-Edit-Tour Control Boolean. Why: Steps 6/7 would let the highlighted box balloon to include Controls, which those steps were never about. How: This guards the Controls header's own toggle during those 2 steps.
-	const detIteBoo = ediTouBoo && [ 3, 5, 6 ].includes( touBusObj.touSteNum ); // What: Disable-Edit-Tour Items Boolean. Why: Collapsing Items during steps 6/7 would hide the item rows/Add button those steps depend on. How: This guards the Items header's own toggle during all 3 steps.
-	const detAddBoo = ediTouBoo && [ 5, 6 ].includes( touBusObj.touSteNum );    // What: Disable-Edit-Tour Add Boolean. Why: Step 6's own body text says this button is disabled for the tutorial, and a brand-new item would shift every row's position out from under its "click any of these" framing. How: This guards the Add button during steps 6/7.
+	const detPicBoo = ediTouBoo && [ 3, 5, 6 ].includes( touBusObj.touSteNum! ); // What: Disable-Edit-Tour Picker Boolean. Why: Steps 4/6/7 of the "edit your first item" tour all depend on this exact picker staying expanded as their own target. How: This guards the picker header's own collapse toggle during those 3 steps. // What: Non-Null Note. Why: The tour runner publishes its step before its id, so a matched tour id means the step is set. How: The ! tells TypeScript touSteNum is a number here.
+	const detConBoo = ediTouBoo && [ 5, 6 ].includes( touBusObj.touSteNum! );    // What: Disable-Edit-Tour Control Boolean. Why: Steps 6/7 would let the highlighted box balloon to include Controls, which those steps were never about. How: This guards the Controls header's own toggle during those 2 steps. // What: Non-Null Note. Why: The tour runner publishes its step before its id, so a matched tour id means the step is set. How: The ! tells TypeScript touSteNum is a number here.
+	const detIteBoo = ediTouBoo && [ 3, 5, 6 ].includes( touBusObj.touSteNum! ); // What: Disable-Edit-Tour Items Boolean. Why: Collapsing Items during steps 6/7 would hide the item rows/Add button those steps depend on. How: This guards the Items header's own toggle during all 3 steps. // What: Non-Null Note. Why: The tour runner publishes its step before its id, so a matched tour id means the step is set. How: The ! tells TypeScript touSteNum is a number here.
+	const detAddBoo = ediTouBoo && [ 5, 6 ].includes( touBusObj.touSteNum! );    // What: Disable-Edit-Tour Add Boolean. Why: Step 6's own body text says this button is disabled for the tutorial, and a brand-new item would shift every row's position out from under its "click any of these" framing. How: This guards the Add button during steps 6/7. // What: Non-Null Note. Why: The tour runner publishes its step before its id, so a matched tour id means the step is set. How: The ! tells TypeScript touSteNum is a number here.
 
 	const tutProBoo = ONB_CHE_OBJ.tutProFun( staAppObj ); // What: Tutorial Progress Boolean. Why: Several add/edit controls (distinct from the detAddBoo tour above, which only runs AFTER this is always false) must stay disabled until the Welcome Tour's own checklist finishes. How: This calls the shared ONB_CHE_OBJ helper against the whole app state.
 
@@ -346,7 +347,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	// #region Draft Picker State
 
 	const [ newPicObj, setNewPicObj ] = React.useState< ( PicForTyp & { id : string } ) | null >( null ); // What: New Picker Object And Setter. Why: The "Create Picker" trigger starts a local draft picker, out of the store and storage, until its own Save creates it. How: This holds that draft, built from the active filters, or null when none is in progress.
-	const [ draIteArr, setDraIteArr ] = React.useState( [] );                                             // What: Draft Item Array And Setter. Why: The draft picker's items stay local along with it until its Save creates them together. How: This holds every item already kept in the draft.
+	const [ draIteArr, setDraIteArr ] = React.useState< IteRcdTyp[] >( [] );                              // What: Draft Item Array And Setter. Why: The draft picker's items stay local along with it until its Save creates them together. How: This holds every item already kept in the draft.
 	const [ draIteBoo, setDraIteBoo ] = React.useState( false );                                          // What: Draft Items Boolean And Setter. Why: The draft's own Items section starts closed, unlike a real picker's default-open one, since there's nothing to add to yet. How: This is toggled by the footer's "Add Items" button or the Items section's own header.
 	const [ penAutBoo, setPenAutBoo ] = React.useState( false );                                          // What: Pending Auto Boolean And Setter. Why: The footer's first "Add Items" click should ALSO land straight in a ready-to-type new-item form, but PicConCom's own Items ColDisCom only starts mounting children one render after draIteBoo flips, so this defers the auto-add by one effect tick. How: This is flagged true by onOpeSecFun and consumed by the effect below.
 
@@ -358,15 +359,15 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 	// #region Item Editor State
 
-	const [ opeIteStr, setOpeIteStr ] = React.useState< string | null >( null ); // What: Open Item String And Setter. Why: Only one picker item across the whole page can be expanded for editing at a time, mirroring the Reminders list. How: This holds whichever item's own id is currently open, or null.
-	const [ insIteStr, setInsIteStr ] = React.useState( null );                  // What: Insert Item String And Setter. Why: A just-inserted row needs to play its own slide-in entrance exactly once. How: This holds whichever item's own id should currently play that entrance.
-	const [ newIteObj, setNewIteObj ] = React.useState( null );                  // What: New Item Object And Setter. Why: A brand-new item stays a local draft, out of the store and storage, until it's kept. How: This holds that item, built with buiIteFun's defaults, or null when none is being added.
+	const [ opeIteStr, setOpeIteStr ] = React.useState< string | null >( null );    // What: Open Item String And Setter. Why: Only one picker item across the whole page can be expanded for editing at a time, mirroring the Reminders list. How: This holds whichever item's own id is currently open, or null.
+	const [ insIteStr, setInsIteStr ] = React.useState< string | null >( null );    // What: Insert Item String And Setter. Why: A just-inserted row needs to play its own slide-in entrance exactly once. How: This holds whichever item's own id should currently play that entrance.
+	const [ newIteObj, setNewIteObj ] = React.useState< IteRcdTyp | null >( null ); // What: New Item Object And Setter. Why: A brand-new item stays a local draft, out of the store and storage, until it's kept. How: This holds that item, built with buiIteFun's defaults, or null when none is being added.
 
-	const newIteRef = React.useRef( null ); // What: New Item Reference. Why: A brand-new, not-yet-kept item needs to be tracked so Cancel can discard the whole add instead of keeping it. How: This holds whichever new item's own id was just created, cleared once it's kept or discarded.
-	const froIndRef = React.useRef( null ); // What: Frozen Index Reference. Why: freEdiFun needs one shared ref across every picker's own item list (only one item can be open at a time). How: This is passed straight through to freEdiFun below.
+	const newIteRef = React.useRef< string | null >( null );                               // What: New Item Reference. Why: A brand-new, not-yet-kept item needs to be tracked so Cancel can discard the whole add instead of keeping it. How: This holds whichever new item's own id was just created, cleared once it's kept or discarded.
+	const froIndRef = React.useRef< { ideVal : string, indNum : number } | null >( null ); // What: Frozen Index Reference. Why: freEdiFun needs one shared ref across every picker's own item list (only one item can be open at a time). How: This is passed straight through to freEdiFun below.
 
 
-	const preOpeRef = React.useRef( null ); // What: Previous Open Reference. Why: The insert-entrance replay effect below needs to compare against whichever item was open on the PREVIOUS render. How: This starts null and is updated by the effect below on every change.
+	const preOpeRef = React.useRef< string | null >( null ); // What: Previous Open Reference. Why: The insert-entrance replay effect below needs to compare against whichever item was open on the PREVIOUS render. How: This starts null and is updated by the effect below on every change.
 
 
 	React.useEffect( () => { // What: Insert Replay Effect. Why: Whenever an item's editor closes (Save, Cancel, delete, or the row's own collapse chevron), it should replay the same insert-entrance treatment a freshly-created row gets, instead of silently snapping into its new sorted position. How: This detects the transition and flags the previously-open item's own id for insIteStr.
@@ -386,7 +387,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 
-	const opeRowRef = React.useRef( null ); // What: Open Row Reference. Why: A brand-new item's own "+ Add" click needs a handle on the resulting row so it can be scrolled into view. How: This is attached to whichever row is currently open.
+	const opeRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Open Row Reference. Why: A brand-new item's own "+ Add" click needs a handle on the resulting row so it can be scrolled into view. How: This is attached to whichever row is currently open.
 
 
 	React.useEffect( () => { // What: Scroll Into View Effect. Why: A freshly-created item's own form should scroll into view once its ColDisCom has actually finished opening, pinned right below the sort control rather than the top of a possibly-tall list. How: This waits 300ms (matching the ColDisCom open animation) before scrolling, or scrolls instantly under reduced motion.
@@ -403,7 +404,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 
-		const rowCurEle = opeRowRef.current; // What: Row Current Element. Why: The scroll call below needs a stable local reference to the live row node. How: This reads opeRowRef.current once and reuses it.
+		const rowCurEle = opeRowRef.current!; // What: Row Current Element. Why: The scroll call below needs a stable local reference to the live row node. How: This reads opeRowRef.current once and reuses it. // What: Non-Null Note. Why: The skip guard above already returned when the row wasn't mounted. How: The ! tells TypeScript the row is set here.
 
 
 
@@ -422,7 +423,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 
-	const focInpRef = React.useRef( null ); // What: Focused Input Reference. Why: The name input focuses itself via a ref callback (inline, below) instead of the plain autoFocus attribute, so it can pass preventScroll and avoid fighting the deliberate smooth scroll above. How: This is guarded by node identity so a later re-render of the SAME input doesn't refocus it repeatedly.
+	const focInpRef = React.useRef< HTMLInputElement | null >( null ); // What: Focused Input Reference. Why: The name input focuses itself via a ref callback (inline, below) instead of the plain autoFocus attribute, so it can pass preventScroll and avoid fighting the deliberate smooth scroll above. How: This is guarded by node identity so a later re-render of the SAME input doesn't refocus it repeatedly.
 
 
 
@@ -450,7 +451,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 	const { comDraFun, draIteObj, patDraFun } = useIteDraFun( draPicBoo ? draActObj : actStoObj, opeIteObj ); // What: Item Draft Destructure. Why: The open row's name input and editor both edit one local draft, committed when the row closes or saves. How: This calls useIteDraFun with the open item, committing through draActObj for a draft picker's item.
 
-	const hanDraRef = React.useRef( null ); // What: Handled Draft Reference. Why: A draft that was already saved or cancelled must not be committed again when its row unmounts afterward. How: This holds the last draft object keeIteFun committed or Cancel dropped.
+	const hanDraRef = React.useRef< IteRcdTyp | null >( null ); // What: Handled Draft Reference. Why: A draft that was already saved or cancelled must not be committed again when its row unmounts afterward. How: This holds the last draft object keeIteFun committed or Cancel dropped.
 
 
 	// #region keeIteFun
@@ -570,8 +571,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 	// #region Picker Removal
 
-	const [ rmvHeiNum, setRmvHeiNum ] = React.useState( 0 );    // What: Removing Height Number And Setter. Why: A deleted picker's open card can be any height, so its collapse needs its real height as the starting ceiling. How: delPicFun measures the card just before flagging it, and the card passes this to its keyframes as --cat-rem-hei.
-	const [ rmvPicStr, setRmvPicStr ] = React.useState( null ); // What: Removing Picker String And Setter. Why: A deleted picker's own card needs to finish its collapse+fade-out animation before actually being removed. How: This holds whichever picker's own id is currently mid-removal-animation.
+	const [ rmvHeiNum, setRmvHeiNum ] = React.useState( 0 );                     // What: Removing Height Number And Setter. Why: A deleted picker's open card can be any height, so its collapse needs its real height as the starting ceiling. How: delPicFun measures the card just before flagging it, and the card passes this to its keyframes as --cat-rem-hei.
+	const [ rmvPicStr, setRmvPicStr ] = React.useState< string | null >( null ); // What: Removing Picker String And Setter. Why: A deleted picker's own card needs to finish its collapse+fade-out animation before actually being removed. How: This holds whichever picker's own id is currently mid-removal-animation.
 
 
 	// #region delPicFun
@@ -638,7 +639,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 
-		const buiIteObj = buiIteFun( newPicObj, draIteArr, 'New item' ); // What: Built Item Object. Why: The draft's first item starts as a local draft with the same defaults the store would give it. How: This builds an item named 'New item' for the draft picker.
+		const buiIteObj = buiIteFun( newPicObj!, draIteArr, 'New item' ); // What: Built Item Object. Why: The draft's first item starts as a local draft with the same defaults the store would give it. How: This builds an item named 'New item' for the draft picker. // What: Non-Null Note. Why: newDraStr is only set while a draft picker exists, and the guard above returned without one. How: The ! tells TypeScript newPicObj is set here.
 
 
 		newIteRef.current = buiIteObj.id; // What: New Item Mark. Why: Cancel must discard this exact item rather than keep it. How: This flags its id as the brand-new, not-yet-kept item.
@@ -682,7 +683,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 
-		if ( newPicObj && patPicObj.mode && patPicObj.mode !== newPicObj.mode ) setDraIteArr( ( preIteArr ) => preIteArr.map( ( curIteObj ) => ( { ...curIteObj, ...modDefFun( patPicObj.mode, newPicObj.threshold ?? 100 ) } ) ) ); // What: Type Change Guard. Why: A type change resets the draft's items, as it does for a saved picker. How: This merges modDefFun's defaults for the new type into every draft item.
+		if ( newPicObj && patPicObj.mode && patPicObj.mode !== newPicObj.mode ) setDraIteArr( ( preIteArr ) => preIteArr.map( ( curIteObj ) => ( { ...curIteObj, ...modDefFun( patPicObj.mode!, newPicObj.threshold ?? 100 ) } ) ) ); // What: Type Change Guard. Why: A type change resets the draft's items, as it does for a saved picker. How: This merges modDefFun's defaults for the new type into every draft item. // What: Non-Null Note. Why: The guard on this same line already checked patPicObj.mode, which the map callback can't see. How: The ! tells TypeScript the mode is set inside it.
 
 
 	};
@@ -884,7 +885,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 
-	const draCarRef = React.useRef( null ); // What: Draft Card Reference. Why: The freshly-created draft's own card needs to scroll all the way to the viewport's own top, since its form is tall enough that "nearest" would still leave most of it below the fold. How: This is attached to the draft card's own ref prop.
+	const draCarRef = React.useRef< HTMLElement | null >( null ); // What: Draft Card Reference. Why: The freshly-created draft's own card needs to scroll all the way to the viewport's own top, since its form is tall enough that "nearest" would still leave most of it below the fold. How: This is attached to the draft card's own ref prop.
 
 
 	React.useEffect( () => { // What: Draft Scroll Effect. Why: The draft's own final layout height is already correct by the time this runs (its own Collapses are forced instant), so there's no animation to wait for first, unlike the item/conditional row scrolls above. How: This scrolls draCarRef into view at the viewport's own top.
@@ -1039,16 +1040,16 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	const selScoFun = ( nexScoStr : string ) => setCurScoStr( nexScoStr ); // What: Select Scope Function. Why: The boxes' own click behavior is a stub for now, ready to wire up later; selection state itself still needs to update. How: This just commits nexScoStr as the new curScoStr.
 
 
-	const groRowRef = React.useRef( null ); // What: Group Row Reference. Why: The scroll-edge-fade effect below needs a handle on the Group filter row's own scrollable element. How: This is attached to that row's own ref prop.
-	const typRowRef = React.useRef( null ); // What: Type Row Reference. Why: Same reasoning as groRowRef, for the Type filter row. How: This is attached to that row's own ref prop.
-	const scoRowRef = React.useRef( null ); // What: Scope Row Reference. Why: Same reasoning as groRowRef, for the Show row. How: This is attached to that row's own ref prop.
-	const conRowRef = React.useRef( null ); // What: Conditional Row Reference. Why: Same reasoning as groRowRef, for the Conditionals filter row. How: This is attached to that row's own ref prop.
+	const groRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Group Row Reference. Why: The scroll-edge-fade effect below needs a handle on the Group filter row's own scrollable element. How: This is attached to that row's own ref prop.
+	const typRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Type Row Reference. Why: Same reasoning as groRowRef, for the Type filter row. How: This is attached to that row's own ref prop.
+	const scoRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Scope Row Reference. Why: Same reasoning as groRowRef, for the Show row. How: This is attached to that row's own ref prop.
+	const conRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Conditional Row Reference. Why: Same reasoning as groRowRef, for the Conditionals filter row. How: This is attached to that row's own ref prop.
 
 
 	React.useEffect( () => { // What: Filter Rows Fade Effect. Why: Every filter row shares the same scroll-edge-fade affordance as the Stats tab. How: This wires up scroll-edge tracking for whichever of the 4 rows are currently mounted, and tears every one down on cleanup.
 
 
-		const rowEleArr = [ groRowRef.current, typRowRef.current, scoRowRef.current, conRowRef.current ].filter( Boolean ); // What: Row Element Array. Why: Not every row is always mounted (e.g. a single-group app has no Group row at all). How: This collects only the currently-mounted refs.
+		const rowEleArr = [ groRowRef.current, typRowRef.current, scoRowRef.current, conRowRef.current ].filter( isaTruFun ); // What: Row Element Array. Why: Not every row is always mounted (e.g. a single-group app has no Group row at all). How: This collects only the currently-mounted refs.
 
 
 		const cleFunArr = rowEleArr.map( ( rowCurEle ) => { // What: Cleanup Function Array. Why: Every row needs its own independent wiring and its own independent teardown. How: This maps each row element to its own cleanup function, collected for the effect's own return below.

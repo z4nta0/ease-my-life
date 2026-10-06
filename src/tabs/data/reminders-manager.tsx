@@ -28,6 +28,7 @@ import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store
 import type { RemClaTyp } from '../../core/data-model.ts'; // What: Reminder Class Type. Why: Each changed setting is written by its key. How: This types the setting keys read from the draft.
 import type { RemOptTyp } from '../../core/data-model.ts'; // What: Reminder Options Type. Why: The matrix edits both classes' switches. How: This types OmcProTyp's options.
 import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The component reads the current app state. How: This types its staAppObj.
+import type { TasRcdTyp } from '../../core/data-model.ts'; // What: Task Record Type. Why: The new-reminder draft and the handled-draft mark each hold a reminder. How: This types that state and ref.
 
 // #endregion Imports
 
@@ -588,15 +589,15 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 	// #region Open Row Tracking
 
-	const [ opeIdeStr, setOpeIdeStr ] = React.useState< string | null >( null ); // What: Open Identifier String And Setter. Why: This tracks which reminder's own row is currently expanded into its editor. How: This is compared against each row's own id throughout the render below.
-	const [ insIdeStr, setInsIdeStr ] = React.useState( null );                  // What: Insert Identifier String And Setter. Why: A just-inserted reminder row needs to play its own slide-in entrance exactly once. How: This is set right when a row is created or an editor closes, cleared on that row's own animation end.
-	const [ newTasObj, setNewTasObj ] = React.useState( null );                  // What: New Task Object And Setter. Why: A brand-new reminder stays a local draft, out of the store and storage, until it's kept. How: This holds that reminder, built with TAS_NAM_OBJ.defTasFun's defaults, or null when none is being added.
+	const [ opeIdeStr, setOpeIdeStr ] = React.useState< string | null >( null );    // What: Open Identifier String And Setter. Why: This tracks which reminder's own row is currently expanded into its editor. How: This is compared against each row's own id throughout the render below.
+	const [ insIdeStr, setInsIdeStr ] = React.useState< string | null >( null );    // What: Insert Identifier String And Setter. Why: A just-inserted reminder row needs to play its own slide-in entrance exactly once. How: This is set right when a row is created or an editor closes, cleared on that row's own animation end.
+	const [ newTasObj, setNewTasObj ] = React.useState< TasRcdTyp | null >( null ); // What: New Task Object And Setter. Why: A brand-new reminder stays a local draft, out of the store and storage, until it's kept. How: This holds that reminder, built with TAS_NAM_OBJ.defTasFun's defaults, or null when none is being added.
 
-	const newAddRef = React.useRef( null ); // What: New Added Reference. Why: A reminder just created via "New reminder" hasn't been kept yet; Cancel on such an item discards the whole add rather than keeping it. How: This holds that reminder's own id until it's kept or discarded.
-	const froIndRef = React.useRef( null ); // What: Frozen Index Reference. Why: freEdiFun needs a place to remember whichever reminder's own render position is currently frozen. How: This is passed straight through to freEdiFun below.
-	const preOpeRef = React.useRef( null ); // What: Previous Open Reference. Why: The effect right below needs opeIdeStr's own PRIOR value to detect a genuine close, not just its current value. How: This is read and overwritten at the end of that same effect.
-	const opeRowRef = React.useRef( null ); // What: Open Row Reference. Why: A brand-new reminder's own "+ New reminder" click needs to scroll the resulting form into view, since it opens pinned below the sort control rather than guaranteed to already be on-screen. How: This is attached only to the currently-open row's own DOM node, via its ref prop below.
-	const focInpRef = React.useRef( null ); // What: Focus Input Reference. Why: The open row's own name input focuses itself via a ref callback below instead of plain autoFocus, suppressing the browser's own instant focus-scroll so it doesn't fight the deliberate smooth scroll above. How: This is attached via that input's own ref callback in the render below.
+	const newAddRef = React.useRef< string | null >( null );                               // What: New Added Reference. Why: A reminder just created via "New reminder" hasn't been kept yet; Cancel on such an item discards the whole add rather than keeping it. How: This holds that reminder's own id until it's kept or discarded.
+	const froIndRef = React.useRef< { ideVal : string, indNum : number } | null >( null ); // What: Frozen Index Reference. Why: freEdiFun needs a place to remember whichever reminder's own render position is currently frozen. How: This is passed straight through to freEdiFun below.
+	const preOpeRef = React.useRef< string | null >( null );                               // What: Previous Open Reference. Why: The effect right below needs opeIdeStr's own PRIOR value to detect a genuine close, not just its current value. How: This is read and overwritten at the end of that same effect.
+	const opeRowRef = React.useRef< HTMLDivElement | null >( null );                       // What: Open Row Reference. Why: A brand-new reminder's own "+ New reminder" click needs to scroll the resulting form into view, since it opens pinned below the sort control rather than guaranteed to already be on-screen. How: This is attached only to the currently-open row's own DOM node, via its ref prop below.
+	const focInpRef = React.useRef< HTMLInputElement | null >( null );                     // What: Focus Input Reference. Why: The open row's own name input focuses itself via a ref callback below instead of plain autoFocus, suppressing the browser's own instant focus-scroll so it doesn't fight the deliberate smooth scroll above. How: This is attached via that input's own ref callback in the render below.
 
 
 	React.useEffect( () => { // What: Replay Insert Effect. Why: Whichever reminder's own editor just closed (Save, Cancel, delete, or the row's own collapse chevron) should replay the insert entrance once it settles into its (possibly new, now-unfrozen) sorted position, instead of silently snapping there. How: This detects an opeIdeStr transition away from a real id, then stages that id as insIdeStr.
@@ -629,7 +630,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 
 
-		const rowCurEle = opeRowRef.current; // What: Row Current Element. Why: This gives a stable local reference to the live row DOM node for this scroll pass. How: This is read once from opeRowRef.current and reused below.
+		const rowCurEle = opeRowRef.current!; // What: Row Current Element. Why: This gives a stable local reference to the live row DOM node for this scroll pass. How: This is read once from opeRowRef.current and reused below. // What: Non-Null Note. Why: The skip guard above already returned when the row wasn't mounted. How: The ! tells TypeScript the row is set here.
 
 
 
@@ -657,7 +658,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 	const { comDraFun, draTasObj, patDraFun } = useTasDraFun( actStoObj, opeTasObj ); // What: Task Draft Destructure. Why: The open row's name input and schedule editor both edit one local draft, committed when the row closes or saves. How: This calls useTasDraFun with the open reminder.
 
-	const hanDraRef = React.useRef( null ); // What: Handled Draft Reference. Why: A draft that was already saved or cancelled must not be committed again when its row unmounts afterward. How: This holds the last draft object keeTasFun committed or Cancel dropped.
+	const hanDraRef = React.useRef< TasRcdTyp | null >( null ); // What: Handled Draft Reference. Why: A draft that was already saved or cancelled must not be committed again when its row unmounts afterward. How: This holds the last draft object keeTasFun committed or Cancel dropped.
 
 
 	// #region keeTasFun

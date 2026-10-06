@@ -119,7 +119,7 @@ const CIS_OPT_ARR = [ // What: Conditional-Item-Sort Options Array. Why: ConManC
 
 // #region Components
 
-type CecProTyp = { actStoObj : ActStoTyp, conDraObj : Partial< ConRcdTyp >, curConObj : ConRcdTyp | null, isaNewBoo : boolean, namErrStr : string | null, onCloEdiFun : () => void, onDelConFun : () => void, onDisDraFun : () => void, onSavNewFun? : () => void, setConDraObj : ( nexDraObj : Partial< ConRcdTyp > | null ) => void, tidNamStr : string }; // What: Conditional-Editor-Component Props Type. Why: A conditional row edits a draft of one conditional, new or existing, and hands every save, close, discard, and delete to its section. How: This types ConEdiCom's props.
+type CecProTyp = { actStoObj : ActStoTyp, conDraObj : Partial< ConRcdTyp >, curConObj : ConRcdTyp, isaNewBoo : boolean, namErrStr : string | null, onCloEdiFun : () => void, onDelConFun : () => void, onDisDraFun : () => void, onSavNewFun? : () => void, setConDraObj : ( nexDraObj : Partial< ConRcdTyp > | null ) => void, tidNamStr : string }; // What: Conditional-Editor-Component Props Type. Why: A conditional row edits a draft of one conditional, new or existing, and hands every save, close, discard, and delete to its section. How: This types ConEdiCom's props.
 
 // #region ConEdiCom
 
@@ -419,10 +419,10 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 	// #region Editor State
 
-	const [ opeIdeStr, setOpeIdeStr ] = React.useState< string | null >( null ); // What: Open Identifier String And Setter. Why: Only one conditional's own row can be expanded for editing at a time. How: This holds whichever conditional's own id is currently open, or null.
-	const [ conDraObj, setConDraObj ] = React.useState( null );                  // What: Conditional Draft Object And Setter. Why: The open row's own in-progress, not-yet-committed field values need somewhere to live. How: This is populated by opeEdiFun and cleared by cloEdiFun.
-	const [ penConObj, setPenConObj ] = React.useState( null );                  // What: Pending Conditional Object And Setter. Why: A brand-new conditional is held locally, not written to the store, until Save. How: This holds the brand-new conditional's own object while it's still unsaved.
-	const [ cloIdeStr, setCloIdeStr ] = React.useState( null );                  // What: Closing Identifier String And Setter. Why: A deleted conditional's own row must finish its collapse-shut animation before actually being removed. How: This holds whichever conditional's own id is currently mid-delete-animation.
+	const [ opeIdeStr, setOpeIdeStr ] = React.useState< string | null >( null );                                     // What: Open Identifier String And Setter. Why: Only one conditional's own row can be expanded for editing at a time. How: This holds whichever conditional's own id is currently open, or null.
+	const [ conDraObj, setConDraObj ] = React.useState< Partial< ConRcdTyp > | null >( null );                       // What: Conditional Draft Object And Setter. Why: The open row's own in-progress, not-yet-committed field values need somewhere to live. How: This is populated by opeEdiFun and cleared by cloEdiFun.
+	const [ penConObj, setPenConObj ] = React.useState< ( Partial< ConRcdTyp > & { id : string } ) | null >( null ); // What: Pending Conditional Object And Setter. Why: A brand-new conditional is held locally, not written to the store, until Save. How: This holds the brand-new conditional's own object while it's still unsaved.
+	const [ cloIdeStr, setCloIdeStr ] = React.useState< string | null >( null );                                     // What: Closing Identifier String And Setter. Why: A deleted conditional's own row must finish its collapse-shut animation before actually being removed. How: This holds whichever conditional's own id is currently mid-delete-animation.
 
 	// #endregion Editor State
 
@@ -724,7 +724,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 
 
-		actStoObj.updConFun( opeIdeStr, { ...conDraObj, name : tidNamStr } ); // What: Update Conditional Call. Why: An existing conditional's own "keep" means committing its edited fields. How: This writes every draft field, with name replaced by its tidied form.
+		actStoObj.updConFun( opeIdeStr!, { ...conDraObj, name : tidNamStr } ); // What: Update Conditional Call. Why: An existing conditional's own "keep" means committing its edited fields. How: This writes every draft field, with name replaced by its tidied form. // What: Non-Null Note. Why: keeCloFun only runs from an open row's own chevron, so a row is open. How: The ! tells TypeScript opeIdeStr is set here.
 
 		cloEdiFun(); // What: Close Editor Call. Why: A successful keep should also close the row. How: This calls cloEdiFun after the update above.
 
@@ -737,7 +737,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 	// #region New Row Scroll
 
-	const opeRowRef = React.useRef( null ); // What: Open Row Reference. Why: A brand-new conditional's own "+ Add a conditional" click needs a handle on the resulting row so it can be scrolled into view. How: This is attached to whichever row is currently open.
+	const opeRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Open Row Reference. Why: A brand-new conditional's own "+ Add a conditional" click needs a handle on the resulting row so it can be scrolled into view. How: This is attached to whichever row is currently open.
 
 
 	React.useEffect( () => { // What: Scroll Into View Effect. Why: A freshly-created conditional's own form should scroll into view once its ColDisCom has actually finished opening. How: This waits 300ms (matching the ColDisCom open animation) before scrolling, or scrolls instantly under reduced motion.
@@ -754,7 +754,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 
 
-		const rowCurEle = opeRowRef.current; // What: Row Current Element. Why: The scroll call below needs a stable local reference to the live row node. How: This reads opeRowRef.current once and reuses it.
+		const rowCurEle = opeRowRef.current!; // What: Row Current Element. Why: The scroll call below needs a stable local reference to the live row node. How: This reads opeRowRef.current once and reuses it. // What: Non-Null Note. Why: The skip guard above already returned when the row wasn't mounted. How: The ! tells TypeScript the row is set here.
 
 
 
@@ -775,7 +775,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 
 
-	const focInpRef = React.useRef( null ); // What: Focused Input Reference. Why: The name input focuses itself via a ref callback (below, inline) instead of the plain autoFocus attribute, so it can pass preventScroll and avoid fighting the deliberate smooth scroll above. How: This is guarded by node identity so a later re-render of the SAME input doesn't refocus it repeatedly.
+	const focInpRef = React.useRef< HTMLInputElement | null >( null ); // What: Focused Input Reference. Why: The name input focuses itself via a ref callback (below, inline) instead of the plain autoFocus attribute, so it can pass preventScroll and avoid fighting the deliberate smooth scroll above. How: This is guarded by node identity so a later re-render of the SAME input doesn't refocus it repeatedly.
 
 
 
@@ -953,7 +953,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 
 
-					{ ( penConObj ? [ penConObj, ...sorConArr ] : sorConArr ).map( ( conCurObj ) => { // What: Conditional Row Map. Why: A brand-new pending conditional renders first, ahead of every sorted existing one. How: This maps the combined list to one collapsible row each.
+					{ ( penConObj ? [ penConObj as ConRcdTyp, ...sorConArr ] : sorConArr ).map( ( conCurObj ) => { // What: Conditional Row Map. Why: A brand-new pending conditional renders first, ahead of every sorted existing one. How: This maps the combined list to one collapsible row each. // What: Type Assertion Note. Why: A pending draft holds only the fields conDraFun gives a new conditional, but it renders through the same row as a saved one until Save fills in the rest. How: The as ConRcdTyp lets it share that row.
 
 
 						const isaPenBoo = !!penConObj && conCurObj.id === penConObj.id; // What: Is-A Pending Boolean. Why: The pending row needs slightly different editor treatment (isaNewBoo) than an existing one. How: This is true only for the one row matching penConObj's own id.

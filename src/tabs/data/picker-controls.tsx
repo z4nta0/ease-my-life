@@ -62,7 +62,7 @@ import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Recor
 
 // #region Components
 
-type PccProTyp = { actStoObj : ActStoTyp, allGroArr : string[], conIteArr? : ConRcdTyp[], hasNewBoo? : boolean, incDaiBoo : boolean, isaNewBoo? : boolean, iteSecBoo? : boolean, onCanNewFun? : () => void, onColConFun : () => void, onOpeSecFun? : () => void, onPatNewFun? : ( patPicObj : Partial< PicForTyp > ) => void, onReqDelFun? : () => void, onSavNewFun? : ( draPicObj : PicForTyp, filAllBoo : boolean ) => void, picDatObj : PicRcdTyp, picIteArr : IteRcdTyp[] }; // What: Picker-Controls-Component Props Type. Why: A picker's Controls body edits one picker, real or a brand-new draft, and hands a draft's changes, save, and cancel to its card. How: This types PicConCom's props.
+type PccProTyp = { actStoObj : ActStoTyp, allGroArr : string[], conIteArr? : ConRcdTyp[], hasNewBoo? : boolean, incDaiBoo : boolean, isaNewBoo? : boolean, iteSecBoo? : boolean, onCanNewFun : () => void, onColConFun : () => void, onOpeSecFun? : () => void, onPatNewFun? : ( patPicObj : Partial< PicForTyp > ) => void, onReqDelFun? : () => void, onSavNewFun : ( draPicObj : PicForTyp, filAllBoo : boolean ) => void, picDatObj : PicRcdTyp, picIteArr : IteRcdTyp[] }; // What: Picker-Controls-Component Props Type. Why: A picker's Controls body edits one picker, real or a brand-new draft, and hands a draft's changes, save, and cancel to its card. How: This types PicConCom's props.
 
 // #region PicConCom
 
@@ -236,8 +236,8 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 	const [ conAttBoo, setConAttBoo ] = React.useState( !!draPicObj.conditionalId ); // What: Conditional Attached Boolean And Setter. Why: The "Attach a conditional" toggle needs its own on/off state, seeded from whether this picker already has one attached. How: This starts true when draPicObj.conditionalId is already set, and is flipped by the switch button below.
 
-	const raiCleRef = React.useRef( null ); // What: Rail Cleanup Reference. Why: The rail's own scroll/resize wiring needs to be torn down and rebuilt on every reattach. How: This holds whichever cleanup function the last attachment registered.
-	const raiNodRef = React.useRef( null ); // What: Rail Node Reference. Why: The shared reorder animation and the scroll reset effect below need a stable handle on the rail's own live DOM node. How: This is written by raiRefFun below and read by useFliRaiFun and the scroll reset effect.
+	const raiCleRef = React.useRef< ( () => void ) | null >( null ); // What: Rail Cleanup Reference. Why: The rail's own scroll/resize wiring needs to be torn down and rebuilt on every reattach. How: This holds whichever cleanup function the last attachment registered.
+	const raiNodRef = React.useRef< HTMLElement | null >( null );    // What: Rail Node Reference. Why: The shared reorder animation and the scroll reset effect below need a stable handle on the rail's own live DOM node. How: This is written by raiRefFun below and read by useFliRaiFun and the scroll reset effect.
 
 
 	// #region raiRefFun
@@ -371,11 +371,11 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	const [ pilRetBoo, setPilRetBoo ] = React.useState( false ); // What: Pill Returning Boolean And Setter. Why: The "+ New Group" pill needs to know when it's mid-return-animation after the input closes. How: This is set true by cloGroFun and cleared 200ms later.
 	const [ newGroStr, setNewGroStr ] = React.useState( '' );    // What: New Group String And Setter. Why: The inline input needs its own in-progress text, separate from any real group name. How: This is read on blur/Enter and normalized into a real group by cmtGroFun.
 
-	const newGroRef = React.useRef( null ); // What: New Group Reference. Why: The inline input must be focused the instant it mounts. How: This is attached to the input's own ref prop and focused by the effect below.
-	const groPilRef = React.useRef( null ); // What: Group Pill Reference. Why: Both the scroll-edge-fade effect and the "keep scrolled to the end while growing" effect below need the live pill row element. How: This is attached to the pill row's own ref prop.
+	const newGroRef = React.useRef< HTMLInputElement | null >( null ); // What: New Group Reference. Why: The inline input must be focused the instant it mounts. How: This is attached to the input's own ref prop and focused by the effect below.
+	const groPilRef = React.useRef< HTMLDivElement | null >( null );   // What: Group Pill Reference. Why: Both the scroll-edge-fade effect and the "keep scrolled to the end while growing" effect below need the live pill row element. How: This is attached to the pill row's own ref prop.
 
 
-	const groFliRef = React.useRef( null ); // What: Group Flip Reference. Why: Selecting a group re-sorts its pill to the front, and this needs each pill's own previous x to animate that shuffle instead of snapping. How: This starts null and is populated by the layout effect below.
+	const groFliRef = React.useRef< Map< string, number > | null >( null ); // What: Group Flip Reference. Why: Selecting a group re-sorts its pill to the front, and this needs each pill's own previous x to animate that shuffle instead of snapping. How: This starts null and is populated by the layout effect below.
 
 
 	React.useLayoutEffect( () => { // What: Group Pills Flip Effect. Why: Re-sorting the group pills on selection should glide, not snap, matching the conditional rail's own FLIP treatment. How: This is guarded against measuring while the panel is hidden, then tweens each pill by its own previous-to-new x delta.
@@ -388,7 +388,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 
-		const pilNodArr = [ ...groCurEle.querySelectorAll( '[data-element-name-hook~="groPilBut"]' ) ]; // What: Pill Node Array. Why: Every currently-rendered group pill needs to be checked for movement. How: This queries every groPilBut element inside the row and spreads the NodeList into a real array.
+		const pilNodArr = [ ...groCurEle.querySelectorAll< HTMLElement >( '[data-element-name-hook~="groPilBut"]' ) ]; // What: Pill Node Array. Why: Every currently-rendered group pill needs to be checked for movement. How: This queries every groPilBut element inside the row and spreads the NodeList into a real array.
 		const preMapObj = groFliRef.current;                                                            // What: Previous Map Object. Why: A FLIP tween needs each pill's own position from before this render's reorder. How: This reads whatever the previous run of this effect recorded.
 
 
@@ -398,7 +398,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 			pilNodArr.forEach( ( pilCurEle ) => { // What: Pill Animate Loop. Why: Every pill needs its own individual tween, since each may have moved a different distance (or none at all). How: This computes each pill's own delta from preMapObj and plays a matching transform.
 
 
-				const oldXcoNum = preMapObj.get( pilCurEle.dataset.g ); // What: Old X-Coordinate Number. Why: This pill's own previous position is keyed by its own group name. How: This looks up the pill's own data-g attribute in preMapObj.
+				const oldXcoNum = preMapObj.get( pilCurEle.dataset.g! ); // What: Old X-Coordinate Number. Why: This pill's own previous position is keyed by its own group name. How: This looks up the pill's own data-g attribute in preMapObj. // What: Non-Null Note. Why: Every group pill renders with its own data-g group name. How: The ! tells TypeScript the key is set.
 
 
 				if ( oldXcoNum == null ) return; // What: New Pill Guard. Why: A pill with no recorded previous position is brand new and has nothing to tween from. How: This skips straight to the next pill.

@@ -150,7 +150,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 
 
 
-		const priCmpNum = cmpOneVal - cmpTwoVal; // What: Primary Compare Number. Why: Both sides are confirmed real numbers at this point, so a plain subtraction is a valid ascending comparison. How: This subtracts cmpTwoVal from cmpOneVal.
+		const priCmpNum = cmpOneVal! - cmpTwoVal!; // What: Primary Compare Number. Why: Both sides are confirmed real numbers at this point, so a plain subtraction is a valid ascending comparison. How: This subtracts cmpTwoVal from cmpOneVal. // What: Non-Null Note. Why: lasNulFun only returns null once both values are real. How: The ! tells TypeScript both are numbers here.
 
 
 
