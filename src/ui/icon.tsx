@@ -30,6 +30,7 @@ import type { JSX } from 'react'; // What: JSX. Why: The icon table holds JSX el
 // #region Components
 
 type IscProTyp = { className? : string, icoNamStr : string, sizSteStr? : string }; // What: Icon-Svg-Component Props Type. Why: An icon is drawn by name, at a rhythm step, with an optional class from its parent. How: This types IcoSvgCom's props.
+
 // #region IcoSvgCom
 
 /**

@@ -35,6 +35,7 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function.
 // #region Components
 
 type CdcProTyp = { children : React.ReactNode, className? : string, isaInsBoo? : boolean, open : boolean }; // What: Collapse-Disclosure-Component Props Type. Why: A disclosure shows or hides its content, optionally without animating. How: This types ColDisCom's props.
+
 // #region ColDisCom
 
 /**

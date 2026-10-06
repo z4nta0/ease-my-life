@@ -271,6 +271,7 @@ function isaStaFun () : boolean {
 
 
 type InsStaTyp = 'installed' | 'ios' | 'mac' | 'pending' | 'ready' | 'standalone' | 'unsupported'; // What: Install State Type. Why: The Settings tab's install row shows a different message for each way this device can install, or has installed, the app. How: This lists every state insStaFun can report, as documented on it.
+
 // #region insStaFun
 
 /**

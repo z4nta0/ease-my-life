@@ -31,6 +31,7 @@ import React     from 'react';                       // What: React. Why: NumSte
 // #region Components
 
 type NscProTyp = { ariLabStr : string, maxValNum? : number, minValNum? : number, onSetValFun : ( newValNum : number ) => void, value : number }; // What: Number-Stepper-Component Props Type. Why: The stepper edits one whole number between optional bounds and hands each change to its parent. How: This types NumSteCom's props.
+
 // #region NumSteCom
 
 /**

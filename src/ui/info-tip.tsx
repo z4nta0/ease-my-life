@@ -36,6 +36,7 @@ import { rhyPxlFun    } from '../utils/rhythm.ts'; // What: Rhythm Pixel Functio
 // #region Components
 
 type ItcProTyp = { actNamStr? : string | null, children : React.ReactNode, className? : string, 'data-element-name-hook'? : string, labTexStr : string, trnOnlBoo? : boolean } & { [ datAttStr : `data-${ string }` ] : string | boolean | undefined }; // What: Info-Tip-Component Props Type. Why: A tip wraps its trigger content with a label, optionally standing in for a disabled action or showing only when truncated, and forwards any data attributes. How: This types InfTipCom's props, with any data-* attribute allowed.
+
 // #region InfTipCom
 
 /**

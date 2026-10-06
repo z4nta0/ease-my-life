@@ -35,6 +35,7 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function.
 // #region Components
 
 type FbcProTyp = { isaDisBoo : boolean, labTexStr : string, onFilActFun : () => void }; // What: Fill-Button-Component Props Type. Why: The lever needs its label, its action, and whether it's available. How: This types FilButCom's props.
+
 // #region FilButCom
 
 /**

@@ -32,6 +32,7 @@ import React     from 'react';                          // What: React. Why: Seg
 // #region Components
 
 type SccProTyp = { ariLabStr : string, desIdeStr? : string, layVarStr? : string, onChange : ( keyStr : string ) => void, optIteArr : { keyStr : string, labStr : string }[], value : string }; // What: Segmented-Control-Component Props Type. Why: The control picks one of its options by key, with an accessible name and an optional description and layout. How: This types SegConCom's props.
+
 // #region SegConCom
 
 /**

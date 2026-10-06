@@ -33,6 +33,7 @@ import type { ReactNode } from 'react'; // What: React Node. Why: A pill's text 
 // #region Components
 
 type PtcProTyp = { children : ReactNode, 'data-element-name-hook'? : string, tonValStr? : string }; // What: Pill-Tag-Component Props Type. Why: A pill shows its text in a tone, with an optional identity hook. How: This types PilTagCom's props.
+
 // #region PilTagCom
 
 /**

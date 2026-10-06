@@ -33,6 +33,7 @@ import React from 'react'; // What: React. Why: The watcher is a component built
 // #region Components
 
 type UwcProTyp = { onUnmWatFun : () => void }; // What: Unmount-Watcher-Component Props Type. Why: The watcher's only prop is the handler it runs on unmount. How: This types UnmWatCom's props.
+
 // #region UnmWatCom
 
 /**

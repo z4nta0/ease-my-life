@@ -49,6 +49,7 @@ const WEE_LAB_ARR = [ 'S', 'M', 'T', 'W', 'T', 'F', 'S' ]; // What: Week Label A
 // #region Components
 
 type WccProTyp = { desIdeStr? : string, locDayNum? : number | null, locTipStr? : string, onChange : ( nexDayArr : number[] ) => void, sizValStr? : string, value : number[] }; // What: Weekday-Chip-Component Props Type. Why: The chips select days of the week, optionally pinning one on with a reason. How: This types WeeChiCom's props.
+
 // #region WeeChiCom
 
 /**

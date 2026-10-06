@@ -1147,6 +1147,7 @@ async function reqPerFun () : Promise< boolean > {
 
 
 type StoRepTyp = { dataBytes : number | null, engine : string, mirrorAt : string | null, mirrorOk : boolean, persisted : boolean, quota : number | null, usage : number | null }; // What: Storage Report Type. Why: The Settings storage panel shows which engine is active, how much is saved, whether the mirror and persistence are working, and the browser's headroom. How: This describes staRepFun's report, with null for anything the browser couldn't measure.
+
 // #region staRepFun
 
 /**

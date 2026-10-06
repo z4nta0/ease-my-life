@@ -35,6 +35,7 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function.
 // #region Components
 
 type BrcProTyp = { booValNum : number, onResBooFun : () => void, sufTexStr? : string }; // What: Boost-Reset-Component Props Type. Why: The control shows a boost value with an optional suffix and resets it through its parent. How: This types BooResCom's props.
+
 // #region BooResCom
 
 /**

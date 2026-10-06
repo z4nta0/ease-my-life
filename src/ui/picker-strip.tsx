@@ -38,6 +38,7 @@ import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Typ
 // #region Components
 
 type PscProTyp = { canIteArr : Pick< IteRcdTyp, 'id' | 'name' >[], forMotBoo? : boolean, onCycDonFun? : () => void, picIteObj : Pick< IteRcdTyp, 'id' | 'name' > | null, styKeyStr : string }; // What: Picker-Strip-Component Props Type. Why: The strip animates through candidate names toward an already-picked one, in one of three styles. How: This types PicStrCom's props, reading only each candidate's id and name.
+
 // #region PicStrCom
 
 /**

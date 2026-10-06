@@ -34,6 +34,7 @@ import type { JSX            } from 'react'; // What: JSX. Why: The component de
 // #region Components
 
 type CscProTyp = ComponentProps< 'div' > & { isaPadBoo? : boolean }; // What: Card-Surface-Component Props Type. Why: The card takes every native div prop plus whether it's padded. How: This types CarSurCom's props.
+
 // #region CarSurCom
 
 /**

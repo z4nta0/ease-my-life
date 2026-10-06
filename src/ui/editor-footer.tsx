@@ -35,6 +35,7 @@ import { useEscCanFun } from './escape-cancel.ts'; // What: Use Escape Cancel Fu
 // #region Components
 
 type EfcProTyp = { isaNewBoo? : boolean, onCanTasFun : () => void, onDelTasFun : () => void, onDonTasFun : () => void }; // What: Editor-Footer-Component Props Type. Why: The footer runs its parent's Cancel, Delete, and Save, and hides Delete for a reminder that isn't kept yet. How: This types EdiFooCom's props.
+
 // #region EdiFooCom
 
 /**

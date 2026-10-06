@@ -38,6 +38,7 @@ import type { JSX            } from 'react'; // What: JSX. Why: The component de
 // #region Components
 
 type BbcProTyp = ComponentProps< 'button' > & { icoClaStr? : string, icoNamStr? : string, kinValStr? : string, sizValStr? : string }; // What: Button-Basic-Component Props Type. Why: The base button takes every native button prop, its ref included, plus its own icon, kind, and size. How: This types ButBasCom's props.
+
 // #region ButBasCom
 
 /**

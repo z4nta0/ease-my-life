@@ -255,6 +255,7 @@ function picWeiFun ( itePooArr : IteRcdTyp[] ) : IteRcdTyp {
 
 
 type EasStaTyp = Record< string, { activeItemId : string | null, charge : number } >; // What: Ease State Type. Why: The simulation ends with each Ease Down picker's live item and charge, which the sample data carries into the real state. How: This maps each picker id to its active item id (or null) and charge.
+
 // #region picLogFun
 
 /**
@@ -521,6 +522,7 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 
 type CleStaTyp = Omit< StaAppTyp, 'groupOrder' | 'onboarding' | 'pickerOrder' | 'ui' | 'v' > & { onboarding : Pick< OnbStaTyp, 'dismissed' | 'welcomed' > }; // What: Clean State Type. Why: A fresh state is never used until migStaFun has run on it, which fills in the group and picker orders, the UI settings, the schema version, and the rest of onboarding. How: This is the full app state without those four fields, and with onboarding narrowed to the two flags a new user needs.
+
 // #region buiCleFun
 
 /**
