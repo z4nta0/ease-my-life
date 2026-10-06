@@ -26,6 +26,7 @@ import { unhHisFun   } from '../state/sample-history.ts';       // What: Unhide 
 
 
 import type { ActStoTyp } from '../state/store.ts';     // What: Action Store Type. Why: The tour changes state through the store's actions. How: This types its actStoObj.
+import type { CheStaTyp } from '../core/data-model.ts'; // What: Checklist Status Type. Why: A closing tour records how it ended. How: This types cloTouFun's staValStr.
 import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The tour reads the current app state. How: This types its staAppObj.
 
 // #endregion Imports
@@ -107,7 +108,7 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  *
 */
 
-const PAG_COP_OBJ = { // What: Page Copy Object. Why: PagTouCom's own intro modal reads this by pagIdeStr for its title/body/pills, falling back to navTarObj's own content when a page has no entry here. How: This is looked up by pagIdeStr inside PagTouCom below.
+const PAG_COP_OBJ : Record< string, { bodEle : React.ReactNode, pilArr : string[], titStr : string } > = { // What: Page Copy Object. Why: PagTouCom's own intro modal reads this by pagIdeStr for its title/body/pills, falling back to navTarObj's own content when a page has no entry here. How: This is looked up by pagIdeStr inside PagTouCom below.
 
 
 	explore_data : { // What: Explore Data Entry. Why: This is the intro-modal content descriptor for the Data page's own tour. How: This is looked up by PagTouCom via the real 'explore_data' pagIdeStr.
@@ -259,7 +260,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 	 *
 	*/
 
-	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Discards this tour's own disposable sample copies/borrowed history the moment it ends, however it ends, harmless no-op paths included. How: This branches on pagIdeStr to run whichever cleanup that page's own tour needs, then updates the checklist and calls onCloTouFun.
+	const cloTouFun = ( staValStr : CheStaTyp ) : void => { // What: Close Tour Function. Why: Discards this tour's own disposable sample copies/borrowed history the moment it ends, however it ends, harmless no-op paths included. How: This branches on pagIdeStr to run whichever cleanup that page's own tour needs, then updates the checklist and calls onCloTouFun.
 
 
 		if ( neeCopFun( pagIdeStr ) ) clePicFun( actStoObj ); // What: Picker Copy Cleanup Call. Why: The Pickers/Data tours must never leave a disposable picker copy behind. How: This calls clePicFun whenever neeCopFun says this page needed copies.

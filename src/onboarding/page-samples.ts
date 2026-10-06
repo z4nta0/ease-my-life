@@ -7,6 +7,10 @@ import { ONB_ESP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboard
 import { ONB_EXA_OBJ } from '../state/onboarding-seed-data.ts'; // What: Onboarding Example Object. Why: This is the "Daily Chores" sample picker's own template, one of the entries PAG_SAM_ARR carries. How: This is spread into PAG_SAM_ARR below.
 import { ONB_TAS_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: The Data tour needs real reminders to point at, seeded/cleared as disposable copies the same way PAG_SAM_ARR is for pickers. How: This is iterated by seeTasFun/cleTasFun below.
 
+
+import type { ActStoTyp } from '../state/store.ts';     // What: Action Store Type. Why: The seed and clear helpers change pickers and reminders through the store's actions. How: This types their actStoObj.
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The seed helpers check which copies already exist. How: This types their staAppObj.
+
 // #endregion Imports
 
 
@@ -64,11 +68,11 @@ const PAG_SAM_ARR = [ ONB_EXA_OBJ, ...ONB_ESP_ARR ]; // What: Page Sample Array.
 
 // #region Helpers
 
-const picCopFun = ( samIdeStr ) => `pt_${ samIdeStr }`; // What: Picker Copy Function. Why: Every disposable picker copy's own id needs deriving from its real sample's id, consistently. How: This prefixes samIdeStr with 'pt_'.
+const picCopFun = ( samIdeStr : string ) => `pt_${ samIdeStr }`; // What: Picker Copy Function. Why: Every disposable picker copy's own id needs deriving from its real sample's id, consistently. How: This prefixes samIdeStr with 'pt_'.
 
 
 
-const tasCopFun = ( samIdeStr ) => `pt_${ samIdeStr }`; // What: Task Copy Function. Why: Every disposable reminder copy's own id needs deriving from its real sample's id, consistently. How: This prefixes samIdeStr with 'pt_'.
+const tasCopFun = ( samIdeStr : string ) => `pt_${ samIdeStr }`; // What: Task Copy Function. Why: Every disposable reminder copy's own id needs deriving from its real sample's id, consistently. How: This prefixes samIdeStr with 'pt_'.
 
 
 
@@ -96,7 +100,7 @@ const tasCopFun = ( samIdeStr ) => `pt_${ samIdeStr }`; // What: Task Copy Funct
  *
 */
 
-const clePicFun = ( actStoObj ) => { // What: Clear Picker Function. Why: A disposable copy must never linger in the user's real picker list once its own tour ends. How: This removes every PAG_SAM_ARR entry's own copy id, a harmless no-op for one never seeded.
+const clePicFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Picker Function. Why: A disposable copy must never linger in the user's real picker list once its own tour ends. How: This removes every PAG_SAM_ARR entry's own copy id, a harmless no-op for one never seeded.
 
 
 	PAG_SAM_ARR.forEach( ( samPicObj ) => actStoObj.delPicFun( picCopFun( samPicObj.id ) ) ); // What: Remove Picker Call. Why: Every seeded copy must be discarded, not just some. How: This removes a picker at picCopFun's own derived id for each PAG_SAM_ARR entry.
@@ -131,7 +135,7 @@ const clePicFun = ( actStoObj ) => { // What: Clear Picker Function. Why: A disp
  *
 */
 
-const cleTasFun = ( actStoObj ) => { // What: Clear Task Function. Why: A disposable reminder copy must never linger in the user's real reminder list once its own tour ends. How: This removes every ONB_TAS_ARR entry's own copy id, a harmless no-op for one never seeded.
+const cleTasFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Task Function. Why: A disposable reminder copy must never linger in the user's real reminder list once its own tour ends. How: This removes every ONB_TAS_ARR entry's own copy id, a harmless no-op for one never seeded.
 
 
 	ONB_TAS_ARR.forEach( ( samTasObj ) => actStoObj.delTasFun( tasCopFun( samTasObj.id ) ) ); // What: Remove Task Call. Why: Every seeded copy must be discarded, not just some. How: This removes a task at tasCopFun's own derived id for each ONB_TAS_ARR entry.
@@ -167,7 +171,7 @@ const cleTasFun = ( actStoObj ) => { // What: Clear Task Function. Why: A dispos
  *
 */
 
-const neeCopFun = ( pagIdeStr ) => pagIdeStr === 'explore_pickers' || pagIdeStr === 'explore_data'; // What: Needs Copies Function. Why: Only the Pickers/Data tours seed/clear disposable picker copies at all. How: This checks pagIdeStr against both of those page ids.
+const neeCopFun = ( pagIdeStr : string ) : boolean => pagIdeStr === 'explore_pickers' || pagIdeStr === 'explore_data'; // What: Needs Copies Function. Why: Only the Pickers/Data tours seed/clear disposable picker copies at all. How: This checks pagIdeStr against both of those page ids.
 
 // #endregion neeCopFun
 
@@ -200,7 +204,7 @@ const neeCopFun = ( pagIdeStr ) => pagIdeStr === 'explore_pickers' || pagIdeStr 
  *
 */
 
-const seePicFun = ( staAppObj, actStoObj ) => { // What: Seed Picker Function. Why: The Pickers/Data tours need real, disposable copies of every sample picker seeded before their own steps can point at them. How: This adds one copy per PAG_SAM_ARR entry, skipping any already seeded.
+const seePicFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { // What: Seed Picker Function. Why: The Pickers/Data tours need real, disposable copies of every sample picker seeded before their own steps can point at them. How: This adds one copy per PAG_SAM_ARR entry, skipping any already seeded.
 
 
 	PAG_SAM_ARR.forEach( ( samPicObj ) => { // What: Sample Picker Object Loop. Why: Every sample picker's own template needs its own disposable copy. How: This iterates PAG_SAM_ARR, seeding one copy per entry.
@@ -267,7 +271,7 @@ const seePicFun = ( staAppObj, actStoObj ) => { // What: Seed Picker Function. W
  *
 */
 
-const seeTasFun = ( staAppObj, actStoObj ) => { // What: Seed Task Function. Why: The Data tour needs real, disposable copies of every sample reminder seeded before its Reminders step can point at them. How: This adds one copy per ONB_TAS_ARR entry, skipping any already seeded.
+const seeTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { // What: Seed Task Function. Why: The Data tour needs real, disposable copies of every sample reminder seeded before its Reminders step can point at them. How: This adds one copy per ONB_TAS_ARR entry, skipping any already seeded.
 
 
 	ONB_TAS_ARR.forEach( ( samTasObj ) => { // What: Sample Task Object Loop. Why: Every sample reminder's own template needs its own disposable copy. How: This iterates ONB_TAS_ARR, seeding one copy per entry.

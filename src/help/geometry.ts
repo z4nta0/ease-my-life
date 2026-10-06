@@ -855,7 +855,7 @@ function shaRadFun ( tarDomEle : HTMLElement, padWidNum : number, padHeiNum : nu
 
 // #region Exports
 
-export { badRecFun, type ChrIteTyp, claPadFun, cliChrFun, cliHorFun, detEdgFun, finTarFun, type HelRecTyp, shaRadFun, type ShaRadTyp, uniRecFun }; // What: Named Exports. Why: HelOveCom measures, clips, and shapes every highlight with these, and the overlay, catalog, and tip type their chrome items, rects, and shapes with the three types. How: This exports every helper the overlay reads and the three types by name; CHR_PRI_OBJ stays private to this file.
+export { badRecFun, type BoxRecTyp, type ChrIteTyp, claPadFun, cliChrFun, cliHorFun, detEdgFun, finTarFun, type HelRecTyp, shaRadFun, type ShaRadTyp, uniRecFun }; // What: Named Exports. Why: HelOveCom measures, clips, and shapes every highlight with these, and the overlay, catalog, and tip type their chrome items, rects, and shapes with the three types. How: This exports every helper the overlay reads and the three types by name; CHR_PRI_OBJ stays private to this file.
 
 // #endregion Exports
 

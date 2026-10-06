@@ -1,6 +1,14 @@
 
 
 
+// #region Imports
+
+import type { ReactNode } from 'react'; // What: React Node. Why: Each nav target's body is renderable content. How: This types NAV_TAR_OBJ's bodEle.
+
+// #endregion Imports
+
+
+
 /**
  * targets.tsx = Targets
  *
@@ -67,7 +75,7 @@
  *
 */
 
-const NAV_TAR_OBJ = { // What: Nav Target Object. Why: This is the shared onboarding nav-target catalog, kept as one source of truth instead of duplicating each page's selector/title/body per consumer. How: This is read by the Welcome Tour, the page-tour system, and the picker-tour system, each spreading or looking up one entry by its own page id.
+const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titStr : string } > = { // What: Nav Target Object. Why: This is the shared onboarding nav-target catalog, kept as one source of truth instead of duplicating each page's selector/title/body per consumer. How: This is read by the Welcome Tour, the page-tour system, and the picker-tour system, each spreading or looking up one entry by its own page id.
 
 
 	data : { // What: Data Nav Target Object. Why: This is the nav-target descriptor for the Data page's own tab button. How: This is spread into the Welcome Tour's Data step and read by the page-tour system's opening step for the 'data' page id.

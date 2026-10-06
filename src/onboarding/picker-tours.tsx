@@ -16,6 +16,7 @@ import { SED_NAM_OBJ } from '../state/seed.ts';                 // What: Seed Na
 
 
 import type { ActStoTyp } from '../state/store.ts';     // What: Action Store Type. Why: The tour changes state through the store's actions. How: This types its actStoObj.
+import type { CheStaTyp } from '../core/data-model.ts'; // What: Checklist Status Type. Why: A closing tour records how it ended. How: This types cloTouFun's staValStr.
 import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The tour reads the current app state. How: This types its staAppObj.
 import type { TouSteTyp } from './tour-runner.tsx';     // What: Tour Step Type. Why: The tour's steps run on GuiTouCom. How: This types the steps it builds.
 
@@ -130,7 +131,7 @@ const FIR_PAR_ELE = <>Pickers are where the magic happens. They have rules for w
  *
 */
 
-const PIC_COP_OBJ = { // What: Picker Copy Object. Why: Every picker mini-tour's own second intro paragraph, item prefill, and any per-step body override lives here, one entry per sample picker id. How: This is looked up by picIdeStr everywhere a step or the intro modal needs picker-specific copy.
+const PIC_COP_OBJ : Record< string, { bodEle : React.ReactNode, latEle? : React.ReactNode, latNum? : number, namEle? : React.ReactNode, preStr : string, sooEle? : React.ReactNode, sooNum? : number } > = { // What: Picker Copy Object. Why: Every picker mini-tour's own second intro paragraph, item prefill, and any per-step body override lives here, one entry per sample picker id. How: This is looked up by picIdeStr everywhere a step or the intro modal needs picker-specific copy.
 
 
 	pkr_ob_coffee : { // What: Coffee Creamer Entry. Why: This is the copy/prefill content descriptor for the Coffee Creamer sample picker's own mini-tour. How: This is looked up by picCopObj via the real 'pkr_ob_coffee' picIdeStr.
@@ -1016,7 +1017,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 	 *
 	*/
 
-	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Every exit path (cancelled, skipped, or finished) must clear this tour's prefill fields, since tab-picker.tsx prefills its create form from preFilObj whenever one is present, so a leftover value would fill the next picker the user creates with stale sample data. How: This publishes every prefill-related field back to its own idle value, updates the checklist, then calls onCloTouFun.
+	const cloTouFun = ( staValStr : CheStaTyp ) : void => { // What: Close Tour Function. Why: Every exit path (cancelled, skipped, or finished) must clear this tour's prefill fields, since tab-picker.tsx prefills its create form from preFilObj whenever one is present, so a leftover value would fill the next picker the user creates with stale sample data. How: This publishes every prefill-related field back to its own idle value, updates the checklist, then calls onCloTouFun.
 
 
 		emlTouObj.set({ // What: Prefill Clear Call. Why: A stale prefill left over from this tour must not leak into a future visit to the Pickers tab. How: This resets every field buiNewFun's/buiAddFun's own runFun() published, back to its own idle value.

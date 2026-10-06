@@ -14,6 +14,7 @@ import { IntModCom } from './intro-modal.tsx'; // What: Intro Modal Component. W
 
 
 import type { ActStoTyp } from '../state/store.ts';     // What: Action Store Type. Why: The tour changes state through the store's actions. How: This types its actStoObj.
+import type { CheStaTyp } from '../core/data-model.ts'; // What: Checklist Status Type. Why: A closing tour records how it ended. How: This types cloTouFun's staValStr.
 import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The tour reads the current app state. How: This types its staAppObj.
 import type { TouSteTyp } from './tour-runner.tsx';     // What: Tour Step Type. Why: The tour's steps run on GuiTouCom. How: This types the steps it builds.
 
@@ -1062,7 +1063,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 	 *
 	*/
 
-	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Every path that ends this tour, however it ends, needs the exact same cleanup. How: This resolves this feature's own checklist entry to staValStr, then calls onCloTouFun.
+	const cloTouFun = ( staValStr : CheStaTyp ) : void => { // What: Close Tour Function. Why: Every path that ends this tour, however it ends, needs the exact same cleanup. How: This resolves this feature's own checklist entry to staValStr, then calls onCloTouFun.
 
 
 		actStoObj.setFeaFun( feaIdeStr, { status : staValStr } ); // What: Set App Feature Item Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this feature's own appFeatures entry to staValStr.

@@ -15,6 +15,7 @@ import { useEmlTouFun } from '../state/tour-bus.ts';             // What: Use Ea
 
 
 import type { ActStoTyp } from '../state/store.ts';     // What: Action Store Type. Why: The tour changes state through the store's actions. How: This types its actStoObj.
+import type { CheStaTyp } from '../core/data-model.ts'; // What: Checklist Status Type. Why: A closing tour records how it ended. How: This types cloTouFun's staValStr.
 import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The tour reads the current app state. How: This types its staAppObj.
 import type { TouSteTyp } from './tour-runner.tsx';     // What: Tour Step Type. Why: The tour's steps run on GuiTouCom. How: This types the steps it builds.
 
@@ -107,7 +108,7 @@ const NAM_STE_OBJ = { // What: Name Step Object. Why: Both tour variants share t
  *
 */
 
-const REP_COP_OBJ = { // What: Repeat Copy Object. Why: Step 4's own copy differs by which schedule control Step 3's pill choice revealed. How: This is looked up by buiFreFun below, keyed by the live draft's own repeat kind.
+const REP_COP_OBJ : Record< string, { leaStr : string, pluBoo? : boolean, taiStr : string, titStr : string } > = { // What: Repeat Copy Object. Why: Step 4's own copy differs by which schedule control Step 3's pill choice revealed. How: This is looked up by buiFreFun below, keyed by the live draft's own repeat kind.
 
 
 	annual : { // What: Annual Entry. Why: This is the copy content descriptor for the annual recurring-schedule control. How: This is looked up by REP_COP_OBJ via the live draft's own 'annual' repeat kind.
@@ -203,7 +204,7 @@ const REP_STE_OBJ = { // What: Repeat Step Object. Why: The recurring tour's own
 
 
 
-const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr needs its own sample task id, icon, title, and second intro paragraph. How: This is looked up by varKeyStr ('once'/'recurring') everywhere a step or the intro modal needs varKeyStr-specific copy.
+const VAR_COP_OBJ : Record< string, { bodStr : string, icoStr : string, ideStr : string, titStr : string } > = { // What: Variant Copy Object. Why: Each tour varKeyStr needs its own sample task id, icon, title, and second intro paragraph. How: This is looked up by varKeyStr ('once'/'recurring') everywhere a step or the intro modal needs varKeyStr-specific copy.
 
 
 	once : { // What: Once Entry. Why: This is the copy content descriptor for the one-time reminder tour variant. How: This is looked up by VAR_COP_OBJ via the real 'once' varKeyStr.
@@ -530,7 +531,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 	 *
 	*/
 
-	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Clears the checklist status and the shared bus's own prefill together, the only two bits of state this tour ever touches outside its own local phase. How: This never touches the sample task itself (see buiAddFun's own runFun above), only the new draft it seeded gets built from it.
+	const cloTouFun = ( staValStr : CheStaTyp ) : void => { // What: Close Tour Function. Why: Clears the checklist status and the shared bus's own prefill together, the only two bits of state this tour ever touches outside its own local phase. How: This never touches the sample task itself (see buiAddFun's own runFun above), only the new draft it seeded gets built from it.
 
 
 		emlTouObj.set( { preFilObj : null } ); // What: Prefill Clear Call. Why: A stale prefill left over from Step 1 must not leak into whatever the add-reminder form shows next. How: This clears the shared bus's own preFilObj field.
