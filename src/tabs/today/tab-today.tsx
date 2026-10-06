@@ -931,7 +931,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	// #endregion Completion Celebration
 
-	React.useEffect( () => { // What: Streak Pulse Effect. Why: The streak badge needs its own brief pulse, firing once when today's first done is checked, i.e. when staAppObj.today.streakClaimed transitions false to true. How: This detects that transition and toggles a CSS class accordingly.
+	React.useEffect( () => { // What: Streak Pulse Effect. Why: The streak badge needs its own brief pulse, firing once when every entry and streak-counting reminder is done, i.e. when staAppObj.today.streakClaimed transitions false to true. How: This detects that transition and toggles a CSS class accordingly.
 
 
 		const claNowBoo = !!staAppObj.today.streakClaimed; // What: Claimed Now Boolean. Why: This effect's own fresh claimed check must be computed here, not read from a prop, since it needs to compare against preClaRef before that ref is updated. How: This reads staAppObj.today.streakClaimed directly.
