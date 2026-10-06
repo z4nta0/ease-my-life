@@ -51,7 +51,7 @@ const PER_ASK_STR = 'easemylife.persistasked'; // What: Persist Ask String. Why:
 
 // #region Install State
 
-let insCapObj = null; // What: Install Captured Object. Why: The install button needs a live handle on the captured event so it can call that event's own prompt() method later. How: This starts null and is assigned by the beforeinstallprompt listener below, then cleared again once askInsFun consumes it.
+let insCapObj : BipEveTyp | null = null; // What: Install Captured Object. Why: The install button needs a live handle on the captured event so it can call that event's own prompt() method later. How: This starts null and is assigned by the beforeinstallprompt listener below, then cleared again once askInsFun consumes it.
 
 
 
@@ -96,7 +96,7 @@ let relInsBoo = false; // What: Related Installed Boolean. Why: insStaFun must b
 
 
 
-const subFunSet = new Set(); // What: Subscriber Function Set. Why: More than one UI component (Settings, an install button) may want to know about install/persistence changes. How: This holds every callback added via the exported subscribe property, each invoked in turn by notSubFun.
+const subFunSet = new Set< () => void >(); // What: Subscriber Function Set. Why: More than one UI component (Settings, an install button) may want to know about install/persistence changes. How: This holds every callback added via the exported subscribe property, each invoked in turn by notSubFun.
 
 
 
@@ -165,14 +165,14 @@ const notSubFun = () => { // What: Notify Subscribers Function. Why: Every subsc
  *
 */
 
-const subAddFun = ( newSubFun ) => { // What: Subscribe Add Function. Why: A UI component needs to learn about install/persistence changes without polling. How: This adds newSubFun to subFunSet and returns its own unsubscribe function.
+const subAddFun = ( newSubFun : () => void ) : ( () => void ) => { // What: Subscribe Add Function. Why: A UI component needs to learn about install/persistence changes without polling. How: This adds newSubFun to subFunSet and returns its own unsubscribe function.
 
 
 	subFunSet.add( newSubFun ); // What: New Subscriber Add Call. Why: The freshly-added callback must actually be tracked so notSubFun can reach it later. How: This adds newSubFun to subFunSet.
 
 
 
-	return () => subFunSet.delete( newSubFun ); // What: Unsubscribe Return. Why: The caller needs a way to stop receiving notifications later. How: This returns a closure that removes newSubFun from subFunSet when called.
+	return () => { subFunSet.delete( newSubFun ); }; // What: Unsubscribe Return. Why: The caller needs a way to stop receiving notifications later. How: This returns a closure that removes newSubFun from subFunSet when called.
 
 
 };
@@ -209,7 +209,7 @@ const subAddFun = ( newSubFun ) => { // What: Subscribe Add Function. Why: A UI 
  *
 */
 
-const canInsFun = () => !!insCapObj; // What: Can Install Function. Why: tab-settings.tsx calls this to decide whether to render its own install button at all. How: This closes over the module-private insCapObj rather than exposing it directly.
+const canInsFun = () : boolean => !!insCapObj; // What: Can Install Function. Why: tab-settings.tsx calls this to decide whether to render its own install button at all. How: This closes over the module-private insCapObj rather than exposing it directly.
 
 // #endregion canInsFun
 
@@ -242,7 +242,7 @@ const canInsFun = () => !!insCapObj; // What: Can Install Function. Why: tab-set
  *
 */
 
-function isaStaFun () {
+function isaStaFun () : boolean {
 
 
 	try { // What: Is-A Standalone Try. Why: window.matchMedia is not guaranteed to exist in every environment this code might run in. How: This wraps the three checks and their combination below, falling back to false in its own catch.
@@ -270,6 +270,7 @@ function isaStaFun () {
 
 
 
+type InsStaTyp = 'installed' | 'ios' | 'mac' | 'pending' | 'ready' | 'standalone' | 'unsupported'; // What: Install State Type. Why: The Settings tab's install row shows a different message for each way this device can install, or has installed, the app. How: This lists every state insStaFun can report, as documented on it.
 // #region insStaFun
 
 /**
@@ -313,7 +314,7 @@ function isaStaFun () {
  *
 */
 
-function insStaFun () {
+function insStaFun () : InsStaTyp {
 
 
 	if ( isaStaFun() ) return 'standalone'; // What: Standalone Guard. Why: An already-installed, already-running app has nothing left to offer installing. How: This returns 'standalone' as soon as isaStaFun reports true.
@@ -374,7 +375,7 @@ function insStaFun () {
  *
 */
 
-function proRelFun () {
+function proRelFun () : void {
 
 
 	try { // What: Probe Related Try. Why: navigator.getInstalledRelatedApps itself may not exist, and calling a missing method would throw. How: This wraps the whole check-and-query sequence below, silently giving up in its own catch.
@@ -441,7 +442,7 @@ function proRelFun () {
  *
 */
 
-function proSupFun () {
+function proSupFun () : void {
 
 
 	const staGraNum = 2500; // What: Start Grace Number. Why: This is the fixed number of milliseconds to wait, once the service worker is ready, before concluding the install prompt is never coming. How: This is passed as the delay to the setTimeout call inside finProFun below.
@@ -525,7 +526,7 @@ function proSupFun () {
  *
 */
 
-async function askInsFun () {
+async function askInsFun () : Promise< 'accepted' | 'dismissed' | 'unavailable' > {
 
 
 	if ( !insCapObj ) return 'unavailable'; // What: No Install Event Guard. Why: There is nothing to prompt with when beforeinstallprompt was never captured, or was already consumed by an earlier call. How: This returns 'unavailable' immediately whenever insCapObj is falsy.
@@ -590,7 +591,7 @@ async function askInsFun () {
  *
 */
 
-async function askPerFun ( forAskBoo ) {
+async function askPerFun ( forAskBoo : boolean ) : Promise< boolean > {
 
 
 	try { // What: Ask Persist Try. Why: localStorage.getItem/setItem can both throw in private mode, and either failure should still let the actual persistence request below proceed. How: This wraps the ask-once bookkeeping below, silently giving up in its own catch.
@@ -652,7 +653,7 @@ async function askPerFun ( forAskBoo ) {
  *
 */
 
-const askFirFun = () => askPerFun( false ); // What: Ask First Function. Why: store.ts calls this the moment the user creates their first picker, the first instant there is data worth protecting from eviction. How: This calls askPerFun unforced, so a device that already asked (and was denied) is not asked again.
+const askFirFun = () : Promise< boolean > => askPerFun( false ); // What: Ask First Function. Why: store.ts calls this the moment the user creates their first picker, the first instant there is data worth protecting from eviction. How: This calls askPerFun unforced, so a device that already asked (and was denied) is not asked again.
 
 // #endregion askFirFun
 
