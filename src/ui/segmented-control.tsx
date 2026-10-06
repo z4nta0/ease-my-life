@@ -143,12 +143,19 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 	}, [ value, optIteArr ] ); // What: Callback Dependency Array. Why: plaThuFun must be recreated whenever either the selected value or the option set itself changes, since both affect which button is "active". How: value decides which button matches, optIteArr decides the whole set plaThuFun searches.
 
 
+	const plaThuRef = React.useRef( plaThuFun ); // What: Place Thumb Reference. Why: The ResizeObserver below lives for the component's whole life, so calling the plaThuFun it closed over at mount would place the thumb with a stale value and record a stale previous index. How: This holds the newest plaThuFun, synced by the effect just below.
+
+
+	React.useLayoutEffect( () => { plaThuRef.current = plaThuFun; } ); // What: Place Thumb Sync Effect. Why: The resize observer must always call the current render's plaThuFun. How: This copies the newest plaThuFun into plaThuRef after every render.
+
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: Only a real selection change should animate the thumb, while plaThuFun also changes whenever a parent passes a fresh options array. How: The effect body is recreated every render, so it still calls the current plaThuFun when value changes.
 	React.useLayoutEffect( () => { plaThuFun( true ); }, [ value ] ); // What: Selection Change Effect. Why: A genuine value change should animate the thumb to its new position. How: This calls plaThuFun with animation enabled whenever value itself changes.
 
 	React.useLayoutEffect( () => { // What: Mount And Resize Effect. Why: The thumb needs an initial, unanimated placement on mount, and must stay in sync if the group's own layout changes size. How: This places the thumb instantly, then subscribes a ResizeObserver to re-place it (also instantly) on every observed resize.
 
 
-		plaThuFun( false ); // What: Initial Placement Call. Why: This positions the thumb immediately on mount, without waiting for a resize. How: This invokes plaThuFun with animation disabled.
+		plaThuRef.current( false ); // What: Initial Placement Call. Why: This positions the thumb immediately on mount, without waiting for a resize. How: This invokes the current plaThuFun through plaThuRef with animation disabled.
 
 
 		const resObsObj = new ResizeObserver( () => { // What: Resize Observer Object. Why: The thumb must re-place itself whenever the group's own layout changes size, such as a responsive wrap to a second line. How: This is created once and observes the group element below.
@@ -161,7 +168,7 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 
 
 
-			plaThuFun( false ); // What: Resize Placement Call. Why: This re-measures and re-places the thumb after the layout change. How: This invokes plaThuFun with animation disabled, same as the initial call above.
+			plaThuRef.current( false ); // What: Resize Placement Call. Why: This re-measures and re-places the thumb after the layout change. How: This invokes the current plaThuFun through plaThuRef with animation disabled, same as the initial call above.
 
 
 		} );
