@@ -77,8 +77,8 @@ type AfcProTyp = { actStoObj : ActStoTyp, feaRecObj : { ideStr : string, labStr 
 function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj } : AfcProTyp ) : React.JSX.Element {
 
 
-	const tutDonBoo = !!( staAppObj.onboarding && staAppObj.onboarding.appFeatures && staAppObj.onboarding.appFeatures[ feaRecObj.ideStr ] ); // What: Tutorial Done Boolean. Why: A resolved App Feature card renders/behaves differently from a pending one. How: This reads staAppObj's own onboarding.appFeatures map for feaRecObj's own ideStr.
-	const bloReaStr = !tutDonBoo ? bloReaFun( feaRecObj.ideStr, staAppObj ) : null;                                                           // What: Blocked Reason String. Why: A still-pending card can require an earlier one first, and needs its own explanation string when it does. How: This calls bloReaFun only while tutDonBoo is false, otherwise null.
+	const tutDonBoo = !!( staAppObj.onboarding.appFeatures && staAppObj.onboarding.appFeatures[ feaRecObj.ideStr ] ); // What: Tutorial Done Boolean. Why: A resolved App Feature card renders/behaves differently from a pending one. How: This reads staAppObj's own onboarding.appFeatures map for feaRecObj's own ideStr.
+	const bloReaStr = !tutDonBoo ? bloReaFun( feaRecObj.ideStr, staAppObj ) : null;                                   // What: Blocked Reason String. Why: A still-pending card can require an earlier one first, and needs its own explanation string when it does. How: This calls bloReaFun only while tutDonBoo is false, otherwise null.
 
 
 	const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this feature, unless it is currently blocked. How: This checks the actions-area exclusion and the blocked guard first, then dispatches to onUncFeaFun or onPlaTutFun based on tutDonBoo.

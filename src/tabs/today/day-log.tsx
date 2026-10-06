@@ -889,7 +889,7 @@ function ConSecCom ( { picGroArr, staAppObj } : CsoProTyp ) : React.JSX.Element 
 
 
 	const conIdeArr = [ ...new Set( picGroArr.filter( ( picRcdObj ) => picRcdObj.conditionalId ).map( ( picRcdObj ) => picRcdObj.conditionalId ) ) ]; // What: Conditional Identifier Array. Why: This section only needs the unique conditional ids actually attached to this group's own pickers. How: This maps picGroArr down to its own conditionalId values, deduped via a Set.
-	const conRcdArr = ( staAppObj.conditionals || [] ).filter( ( conRcdObj ) => conIdeArr.includes( conRcdObj.id ) );                                 // What: Conditional Record Array. Why: The table below needs the real conditional records, not just their ids. How: This filters staAppObj's own conditionals down to conIdeArr's own membership.
+	const conRcdArr = staAppObj.conditionals.filter( ( conRcdObj ) => conIdeArr.includes( conRcdObj.id ) );                                           // What: Conditional Record Array. Why: The table below needs the real conditional records, not just their ids. How: This filters staAppObj's own conditionals down to conIdeArr's own membership.
 
 
 	if ( !conRcdArr.length ) return null; // What: No Conditionals Guard. Why: A group with no attached conditionals at all needs no section here. How: This returns null before building any of the table below.
@@ -1106,7 +1106,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 	if ( !hasRowBoo && isaSupBoo ) { // What: Suppressed Rest Guard. Why: A picker suppressed today with no manual-override rows renders as a single static rested row instead of its full table. How: This checks both conditions before returning the rested-row branch below.
 
 
-		const conRcdObj = ( staAppObj.conditionals || [] ).find( ( curConObj ) => curConObj.id === picRcdObj.conditionalId ); // What: Conditional Record Object. Why: The rested row below names which conditional actually suppressed this picker. How: This finds staAppObj's own conditional matching picRcdObj's own conditionalId.
+		const conRcdObj = staAppObj.conditionals.find( ( curConObj ) => curConObj.id === picRcdObj.conditionalId ); // What: Conditional Record Object. Why: The rested row below names which conditional actually suppressed this picker. How: This finds staAppObj's own conditional matching picRcdObj's own conditionalId.
 
 
 
@@ -1433,7 +1433,7 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React
 
 
 
-		const conRcdObj = ( staAppObj.conditionals || [] ).find( ( curConObj ) => curConObj.id === picRcdObj.conditionalId ); // What: Conditional Record Object. Why: The return below needs the real conditional record, not just its id. How: This finds staAppObj's own conditional matching picRcdObj's own conditionalId.
+		const conRcdObj = staAppObj.conditionals.find( ( curConObj ) => curConObj.id === picRcdObj.conditionalId ); // What: Conditional Record Object. Why: The return below needs the real conditional record, not just its id. How: This finds staAppObj's own conditional matching picRcdObj's own conditionalId.
 
 
 
@@ -1777,7 +1777,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 
 	const ancDatObj = TAS_NAM_OBJ.ancDatFun( staAppObj.today && staAppObj.today.generatedAt );                         // What: Anchor Date Object. Why: Every lookup below must use the same frozen anchor the Reminders section above this panel already used. How: This calls TAS_NAM_OBJ.ancDatFun with staAppObj's own today.generatedAt, if any.
 	const dayKeyStr = isoDayFun( ancDatObj );                                                                          // What: Day Key String. Why: The skipped-lookup below needs a plain date key to match against, scoped to ancDatObj rather than live "now". How: This calls isoDayFun with ancDatObj.
-	const tasLisArr = ( staAppObj.tasks || [] ).filter( ( curTasObj ) => !curTasObj.hidden );                          // What: Task List Array. Why: A hidden task/reminder never belongs in this log at all. How: This filters staAppObj's own tasks down to the non-hidden ones.
+	const tasLisArr = staAppObj.tasks.filter( ( curTasObj ) => !curTasObj.hidden );                                    // What: Task List Array. Why: A hidden task/reminder never belongs in this log at all. How: This filters staAppObj's own tasks down to the non-hidden ones.
 	const visTasArr = TAS_NAM_OBJ.visTodFun( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, ancDatObj ); // What: Visible Task Array. Why: The status below needs to know which tasks are actually due today. How: This calls TAS_NAM_OBJ.visTodFun with staAppObj's own tasks/reminderOpts/holidays and ancDatObj.
 	const visIdeSet = new Set( visTasArr.map( ( curTasObj ) => curTasObj.id ) );                                       // What: Visible Identifier Set. Why: The status below needs a fast membership check, not a repeated array scan. How: This maps visTasArr down to just its own ids.
 
@@ -1785,7 +1785,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 	const skiIdeSet = new Set( // What: Skipped Identifier Set. Why: The status below needs to know which tasks were manually skipped specifically today. How: This filters staAppObj's own reminderSkipLog down to today's own rows, then maps to their own taskId.
 
 
-		( staAppObj.reminderSkipLog || [] ) // What: Skip Log Source. Why: Every manual skip ever recorded is a candidate. How: This reads the skip log, or an empty array when it is missing.
+		staAppObj.reminderSkipLog // What: Skip Log Source. Why: Every manual skip ever recorded is a candidate. How: This reads the skip log.
 			.filter( ( logRowObj ) => isoDayFun( new Date( logRowObj.skippedAt ) ) === dayKeyStr ) // What: Today Skip Filter. Why: Only a skip made on the anchor day counts. How: This keeps rows whose own skippedAt falls on dayKeyStr.
 			.map( ( logRowObj ) => logRowObj.taskId )                                              // What: Task Id Map. Why: The set only needs the skipped task ids. How: This maps each row to its own taskId.
 

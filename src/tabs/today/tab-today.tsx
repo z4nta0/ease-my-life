@@ -319,11 +319,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const cheDonBoo = !!( staAppObj.onboarding && staAppObj.onboarding.checklistDone );                                            // What: Checklist Done Boolean. Why: This decides whether the mini-tour checklist phase should still be showing at all. How: This reads staAppObj.onboarding.checklistDone.
-	const picHidBoo = staAppObj.pickers.some( ( curPicObj ) => curPicObj.hidden && ONB_SPI_ARR.includes( curPicObj.id ) );         // What: Picker Hidden Boolean. Why: Sample pickers flip hidden exactly once, at the main Welcome Tour's last step. How: This is true once any sample picker is hidden.
-	const tasHidBoo = ( staAppObj.tasks || [] ).some( ( curTasObj ) => curTasObj.hidden && ONB_STI_ARR.includes( curTasObj.id ) ); // What: Task Hidden Boolean. Why: Sample reminders flip hidden at that same moment. How: This is true once any sample task is hidden.
-	const maiEndBoo = picHidBoo || tasHidBoo;                                                                                      // What: Main Ended Boolean. Why: Whether the main Welcome Tour has concluded decides whether the checklist phase should be considered at all, independent of cheDonBoo. How: This is true once either kind of sample has flipped hidden.
-	const shoCheBoo = maiEndBoo && !cheDonBoo;                                                                                     // What: Show Checklist Boolean. Why: The whole checklist phase (launcher cards, Page Tours, the closing Generate card) should only show between the main tour ending and the checklist actually concluding. How: This combines maiEndBoo with the negation of cheDonBoo.
+	const cheDonBoo = !!staAppObj.onboarding.checklistDone;                                                                // What: Checklist Done Boolean. Why: This decides whether the mini-tour checklist phase should still be showing at all. How: This reads staAppObj.onboarding.checklistDone.
+	const picHidBoo = staAppObj.pickers.some( ( curPicObj ) => curPicObj.hidden && ONB_SPI_ARR.includes( curPicObj.id ) ); // What: Picker Hidden Boolean. Why: Sample pickers flip hidden exactly once, at the main Welcome Tour's last step. How: This is true once any sample picker is hidden.
+	const tasHidBoo = staAppObj.tasks.some( ( curTasObj ) => curTasObj.hidden && ONB_STI_ARR.includes( curTasObj.id ) );   // What: Task Hidden Boolean. Why: Sample reminders flip hidden at that same moment. How: This is true once any sample task is hidden.
+	const maiEndBoo = picHidBoo || tasHidBoo;                                                                              // What: Main Ended Boolean. Why: Whether the main Welcome Tour has concluded decides whether the checklist phase should be considered at all, independent of cheDonBoo. How: This is true once either kind of sample has flipped hidden.
+	const shoCheBoo = maiEndBoo && !cheDonBoo;                                                                             // What: Show Checklist Boolean. Why: The whole checklist phase (launcher cards, Page Tours, the closing Generate card) should only show between the main tour ending and the checklist actually concluding. How: This combines maiEndBoo with the negation of cheDonBoo.
 
 	// #endregion Checklist Visibility
 
@@ -382,9 +382,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const feaStaObj = ( staAppObj.onboarding && staAppObj.onboarding.appFeatures ) || {};            // What: Feature State Object. Why: Every App Features check below needs this same resolved-or-empty map. How: This reads staAppObj.onboarding.appFeatures, falling back to an empty object.
-	const fsrFlaBoo = !!( staAppObj.onboarding && staAppObj.onboarding.appFeaturesSectionResolved ); // What: Feature-Section-Resolved Flag Boolean. Why: A persisted snapshot, only ever flipped true inside generate() itself, deliberately NOT a live check during the user's ORIGINAL first-ever pass, so finishing the last of the 8 tutorials doesn't yank the whole section out from under them mid-session with no natural boundary; it stays visible, fully checked, until their NEXT real generation. How: This reads staAppObj.onboarding.appFeaturesSectionResolved.
-	const fecDonBoo = !!( staAppObj.onboarding && staAppObj.onboarding.appFeaturesEverCompleted );   // What: Feature-Ever-Completed Done Boolean. Why: Unlike fsrFlaBoo, this is NEVER reset by Replay Tour, set once alongside it and staying true forever after, same "permanent, one-way" semantics as cheDonBoo itself; it distinguishes "this is the user's ORIGINAL, first-ever pass" from "this is a REPLAY", since both share the identical feaStaObj shape otherwise. How: This reads staAppObj.onboarding.appFeaturesEverCompleted.
+	const feaStaObj = staAppObj.onboarding.appFeatures;                  // What: Feature State Object. Why: Every App Features check below needs this same map. How: This reads staAppObj.onboarding.appFeatures.
+	const fsrFlaBoo = !!staAppObj.onboarding.appFeaturesSectionResolved; // What: Feature-Section-Resolved Flag Boolean. Why: A persisted snapshot, only ever flipped true inside generate() itself, deliberately NOT a live check during the user's ORIGINAL first-ever pass, so finishing the last of the 8 tutorials doesn't yank the whole section out from under them mid-session with no natural boundary; it stays visible, fully checked, until their NEXT real generation. How: This reads staAppObj.onboarding.appFeaturesSectionResolved.
+	const fecDonBoo = !!staAppObj.onboarding.appFeaturesEverCompleted;   // What: Feature-Ever-Completed Done Boolean. Why: Unlike fsrFlaBoo, this is NEVER reset by Replay Tour, set once alongside it and staying true forever after, same "permanent, one-way" semantics as cheDonBoo itself; it distinguishes "this is the user's ORIGINAL, first-ever pass" from "this is a REPLAY", since both share the identical feaStaObj shape otherwise. How: This reads staAppObj.onboarding.appFeaturesEverCompleted.
 
 	// #endregion App Features Gates
 
@@ -422,7 +422,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	React.useEffect( () => { emlTouObj.set( { shoCheBoo : shoCheBoo } ); }, [ shoCheBoo ] ); // What: Checklist Bus Publish Effect. Why: reminders-section.tsx's staAddFun needs to hide ANY reminder created while the checklist is up, not just ones a mini-tour itself creates, so a user manually clicking "+" mid-onboarding doesn't clutter the list alongside the still-open launcher cards either (see the unhide side in the genResBoo effect further below). How: This republishes shoCheBoo onto the shared tour bus under its own shoCheBoo field.
 
-	const pagNamStr = ( staAppObj.onboarding && staAppObj.onboarding.pageToursName ) || 'Page Tours'; // What: Page Name String. Why: The Page Tours section header needs its own, possibly user-renamed, display name. How: This reads staAppObj.onboarding.pageToursName, falling back to the fixed default.
+	const pagNamStr = staAppObj.onboarding.pageToursName || 'Page Tours'; // What: Page Name String. Why: The Page Tours section header needs its own, possibly user-renamed, display name. How: This reads staAppObj.onboarding.pageToursName, falling back to the fixed default.
 
 
 	// #region pagColFun
@@ -538,7 +538,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	};
 
 
-	const tasAllArr = staAppObj.tasks || []; // What: Task All Array. Why: Every task count below reads the same possibly-missing task list. How: This falls back to an empty array.
+	const tasAllArr = staAppObj.tasks; // What: Task All Array. Why: Every task count below reads the same task list. How: This reads staAppObj.tasks.
 
 
 	const picCarNum = ( shoCheBoo || repActBoo ) // What: Picker Card Number. Why: See the doc comment just above. How: This counts every visible sample picker card, or 0 while neither gate is open.
@@ -692,7 +692,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const celStyStr = ( staAppObj.appearance && staAppObj.appearance.completionStyle ) || 'confetti'; // What: Celebration Style String. Why: Every branch below needs this same resolved celebration style. How: This reads staAppObj.appearance.completionStyle, falling back to 'confetti'.
+	const celStyStr = staAppObj.appearance.completionStyle; // What: Celebration Style String. Why: Every branch below needs this same resolved celebration style. How: This reads staAppObj.appearance.completionStyle.
 
 	const [ parIteArr, setParIteArr ] = React.useState( [] ); // What: Particle Item Array And Setter. Why: See the doc comment just above. How: This is populated by the celebration effect below and cleared once the celebration ends.
 
@@ -1676,7 +1676,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const intSeeBoo = !!( staAppObj.onboarding && staAppObj.onboarding.appFeaturesIntroSeen ); // What: Intro Seen Boolean. Why: The tip must never show a second time once the user has already seen it. How: This reads staAppObj.onboarding.appFeaturesIntroSeen.
+	const intSeeBoo = !!staAppObj.onboarding.appFeaturesIntroSeen; // What: Intro Seen Boolean. Why: The tip must never show a second time once the user has already seen it. How: This reads staAppObj.onboarding.appFeaturesIntroSeen.
 
 	const [ shoIntBoo, setShoIntBoo ] = React.useState( false ); // What: Show Feature Intro Boolean And Setter. Why: See the doc comment just above. How: This is set by the effect below.
 
@@ -2119,7 +2119,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const dowTodNum = genNowDat.getDay();                                     // What: Day-Of-Week Today Number. Why: A picker's own daysOfWeek gate is checked against this. How: This reads genNowDat.getDay().
 		const holTodBoo = HOL_NAM_OBJ.holDatFun( staAppObj.holidays, genNowDat ); // What: Holiday Today Boolean. Why: A picker's own skipHolidays gate is checked against this. How: This calls HOL_NAM_OBJ.holDatFun with staAppObj.holidays and genNowDat.
 
-		const conAllArr = actStoObj.resConFun() || staAppObj.conditionals || [];                    // What: Conditional All Array. Why: Phase A resolves every conditional's own `triggered` for today up front, before the per-picker loop below needs to read it. How: This calls actStoObj.resConFun, falling back to staAppObj.conditionals or an empty array.
+		const conAllArr = actStoObj.resConFun() || staAppObj.conditionals;                          // What: Conditional All Array. Why: Phase A resolves every conditional's own `triggered` for today up front, before the per-picker loop below needs to read it. How: This calls actStoObj.resConFun, falling back to staAppObj.conditionals.
 		const conIdeMap = new Map( conAllArr.map( ( curConObj ) => [ curConObj.id, curConObj ] ) ); // What: Conditional Identifier Map. Why: The per-picker loop below needs a fast lookup from a picker's own conditionalId to its resolved conditional. How: This maps conAllArr down to an id-keyed Map.
 
 		const exiPicMap = new Map(); // What: Existing Picker Map. Why: Existing live pick/charging entries are the source of truth for cadence carry/suppress decisions, since they persist across days until a regenerate. How: This is populated by the loop just below.
@@ -2957,7 +2957,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const [ minTouObj, setMinTouObj ] = React.useState( () => { // What: Mini Tour Object And Setter. Why: See the doc comment just above. How: This lazily resumes a reminder mini-tour saved in onboarding.activeTour, otherwise starts null.
 
 
-		const savTouObj = staAppObj.onboarding && staAppObj.onboarding.activeTour; // What: Saved Tour Object. Why: This is the persisted record of whichever onboarding tour (if any) was mid-progress on last save. How: This reads staAppObj.onboarding.activeTour.
+		const savTouObj = staAppObj.onboarding.activeTour; // What: Saved Tour Object. Why: This is the persisted record of whichever onboarding tour (if any) was mid-progress on last save. How: This reads staAppObj.onboarding.activeTour.
 
 
 		if ( !savTouObj || typeof savTouObj.id !== 'string' || !savTouObj.id.startsWith( 'reminder-' ) ) return null; // What: Non-Reminder Guard. Why: Only a "reminder-" prefixed activeTour id belongs to this state. How: This returns null early unless savTouObj holds a real, "reminder-"-prefixed id.
@@ -3127,8 +3127,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const genCarRef = React.useRef( null );                                                     // What: Generate Card Reference. Why: The scroll effect below needs a direct DOM handle on the Generate card itself. How: This is attached to the card's own ref prop further down.
-	const scrPenBoo = !!( staAppObj.onboarding && staAppObj.onboarding.generateScrollPending ); // What: Scroll Pending Boolean. Why: See the doc comment just above. How: This reads staAppObj.onboarding.generateScrollPending.
+	const genCarRef = React.useRef( null );                         // What: Generate Card Reference. Why: The scroll effect below needs a direct DOM handle on the Generate card itself. How: This is attached to the card's own ref prop further down.
+	const scrPenBoo = !!staAppObj.onboarding.generateScrollPending; // What: Scroll Pending Boolean. Why: See the doc comment just above. How: This reads staAppObj.onboarding.generateScrollPending.
 
 
 	React.useEffect( () => { // What: Generate Card Scroll Effect. Why: See the doc comment just above. How: This waits two animation frames for layout to settle, scrolls the Generate card under the sticky header, then clears the pending flag.

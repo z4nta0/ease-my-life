@@ -173,7 +173,7 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 	 *
 	*/
 
-	const cheDonBoo = !!( staAppObj.onboarding && staAppObj.onboarding.checklistDone ); // What: Checklist Done Boolean. Why: The collision exclusion described above only ever applies post-checklistDone. How: This reads staAppObj's own onboarding.checklistDone.
+	const cheDonBoo = !!staAppObj.onboarding.checklistDone; // What: Checklist Done Boolean. Why: The collision exclusion described above only ever applies post-checklistDone. How: This reads staAppObj's own onboarding.checklistDone.
 
 
 	for ( const curPicObj of staAppObj.pickers ) { // What: Sample Picker Card Loop. Why: One launcher card is needed per still-hidden, still-relevant sample picker. How: This walks every picker, skipping anything that isn't a currently-hidden sample.

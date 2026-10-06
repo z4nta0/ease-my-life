@@ -695,19 +695,19 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 	const dueTasArr = TAS_NAM_OBJ.visTodFun( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, ancDatObj ); // What: Due Task Array. Why: This is the real, non-sample reminder list this section actually renders. How: This calls TAS_NAM_OBJ.visTodFun against staAppObj's own tasks/reminderOpts/holidays, anchored to ancDatObj.
 
 
-	const cheDonBoo = !!( staAppObj.onboarding && staAppObj.onboarding.checklistDone ); // What: Checklist Done Boolean. Why: Mini-tour launcher cards behave differently before vs. after the ORIGINAL first-time checklist concludes (see tutTasArr below). How: This reads staAppObj's own onboarding.checklistDone.
+	const cheDonBoo = !!staAppObj.onboarding.checklistDone; // What: Checklist Done Boolean. Why: Mini-tour launcher cards behave differently before vs. after the ORIGINAL first-time checklist concludes (see tutTasArr below). How: This reads staAppObj's own onboarding.checklistDone.
 
-	const actTouStr = staAppObj.onboarding && staAppObj.onboarding.activeTour && staAppObj.onboarding.activeTour.id; // What: Active Tour String. Why: This decides whether a reminder mini-tour specifically (not just any tour) is currently running. How: This reads staAppObj's own onboarding.activeTour.id, or a falsy value when no tour is active.
-	const remTouBoo = typeof actTouStr === 'string' && actTouStr.startsWith( 'reminder-' );                          // What: Reminder Tour Boolean. Why: The add button below must stay clickable during a reminder mini-tour's own Step 1, which needs the user to click it themselves rather than a simulated click. How: This checks actTouStr's own prefix.
-	const tutProBoo = ONB_CHE_OBJ.tutProFun( staAppObj ) && !remTouBoo;                                              // What: Tutorial Progress Boolean. Why: Every OTHER tutorial still disables the add button as normal; only a reminder tour itself is exempted. How: This combines ONB_CHE_OBJ's own check with the negation of remTouBoo.
-
-
-	const tutTasArr = ( staAppObj.tasks || [] ).filter( ( curTasObj ) => { // What: Tutorial Task Array. Why: One mini-tour launcher card is needed per still-hidden, still-relevant sample reminder. How: This keeps a hidden sample task unless it's already resolved post-checklistDone, or a same-named real reminder has since been created post-checklistDone.
+	const actTouStr = staAppObj.onboarding.activeTour && staAppObj.onboarding.activeTour.id; // What: Active Tour String. Why: This decides whether a reminder mini-tour specifically (not just any tour) is currently running. How: This reads staAppObj's own onboarding.activeTour.id, or a falsy value when no tour is active.
+	const remTouBoo = typeof actTouStr === 'string' && actTouStr.startsWith( 'reminder-' );  // What: Reminder Tour Boolean. Why: The add button below must stay clickable during a reminder mini-tour's own Step 1, which needs the user to click it themselves rather than a simulated click. How: This checks actTouStr's own prefix.
+	const tutProBoo = ONB_CHE_OBJ.tutProFun( staAppObj ) && !remTouBoo;                      // What: Tutorial Progress Boolean. Why: Every OTHER tutorial still disables the add button as normal; only a reminder tour itself is exempted. How: This combines ONB_CHE_OBJ's own check with the negation of remTouBoo.
 
 
-		const hidSamBoo = curTasObj.hidden && ONB_STI_ARR.includes( curTasObj.id );                                                                                   // What: Hidden Sample Boolean. Why: Only a still-hidden sample reminder can have a launcher card at all. How: This checks the task's own hidden flag and the sample id list.
-		const resDonBoo = cheDonBoo && ONB_CHE_OBJ.entLooFun( staAppObj, curTasObj.id );                                                                              // What: Resolved Done Boolean. Why: Once the checklist concludes, a sample whose tutorial entry is already resolved no longer needs its card. How: This looks up the sample's own checklist entry, only once cheDonBoo is true.
-		const reaTwiBoo = cheDonBoo && ( staAppObj.tasks || [] ).some( ( othTasObj ) => !ONB_STI_ARR.includes( othTasObj.id ) && othTasObj.name === curTasObj.name ); // What: Real Twin Boolean. Why: Once the checklist concludes, a real reminder with the same name means the user already made their own. How: This searches the non-sample tasks for a matching name, only once cheDonBoo is true.
+	const tutTasArr = staAppObj.tasks.filter( ( curTasObj ) => { // What: Tutorial Task Array. Why: One mini-tour launcher card is needed per still-hidden, still-relevant sample reminder. How: This keeps a hidden sample task unless it's already resolved post-checklistDone, or a same-named real reminder has since been created post-checklistDone.
+
+
+		const hidSamBoo = curTasObj.hidden && ONB_STI_ARR.includes( curTasObj.id );                                                                         // What: Hidden Sample Boolean. Why: Only a still-hidden sample reminder can have a launcher card at all. How: This checks the task's own hidden flag and the sample id list.
+		const resDonBoo = cheDonBoo && ONB_CHE_OBJ.entLooFun( staAppObj, curTasObj.id );                                                                    // What: Resolved Done Boolean. Why: Once the checklist concludes, a sample whose tutorial entry is already resolved no longer needs its card. How: This looks up the sample's own checklist entry, only once cheDonBoo is true.
+		const reaTwiBoo = cheDonBoo && staAppObj.tasks.some( ( othTasObj ) => !ONB_STI_ARR.includes( othTasObj.id ) && othTasObj.name === curTasObj.name ); // What: Real Twin Boolean. Why: Once the checklist concludes, a real reminder with the same name means the user already made their own. How: This searches the non-sample tasks for a matching name, only once cheDonBoo is true.
 
 		const keeCarBoo = hidSamBoo && !resDonBoo && !reaTwiBoo; // What: Keep Card Boolean. Why: A launcher card stays only for a hidden sample that is neither resolved nor already copied. How: This combines the three checks above.
 
@@ -732,7 +732,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 		: null;                                 // What: No Open Task Branch. Why: Any other slot value means no saved reminder's editor is open. How: This is null.
 
 
-	const opeTasObj = opeTasStr ? ( staAppObj.tasks || [] ).find( ( curTasObj ) => curTasObj.id === opeTasStr ) || null : null; // What: Open Task Object. Why: The open editor's draft is a copy of this reminder. How: This looks the open id up among the tasks, or null when no saved reminder's editor is open.
+	const opeTasObj = opeTasStr ? staAppObj.tasks.find( ( curTasObj ) => curTasObj.id === opeTasStr ) || null : null; // What: Open Task Object. Why: The open editor's draft is a copy of this reminder. How: This looks the open id up among the tasks, or null when no saved reminder's editor is open.
 
 	const { comDraFun, draTasObj : opeDraObj, patDraFun } = useTasDraFun( actStoObj, opeTasObj ); // What: Task Draft Destructure. Why: The open card's name input and its schedule editor both edit one local draft, committed only on Save. How: This calls useTasDraFun with the open reminder.
 
