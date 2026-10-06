@@ -23,6 +23,7 @@
  * load.
  *
  * Sections:
+ *  - Types
  *  - Constants
  *  - Module State
  *  - Helpers
@@ -31,6 +32,14 @@
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Types
+
+type PerStaTyp = NotificationPermission | 'unsupported'; // What: Permission State Type. Why: Callers show the browser's notification permission, or that the browser has no Notification API at all. How: This is the browser's own permission value plus 'unsupported'.
+
+// #endregion Types
 
 
 
@@ -45,7 +54,7 @@ const DAY_KEY_STR = 'easemylife.notifiedday'; // What: Day Key String. Why: This
 
 // #region Module State
 
-const subLisSet = new Set(); // What: Subscriber Listener Set. Why: This holds every callback that wants to hear about a permission change, most notably the Settings page's own permission-state display. How: This is added to by subAddFun and iterated by broSubFun below.
+const subLisSet = new Set< () => void >(); // What: Subscriber Listener Set. Why: This holds every callback that wants to hear about a permission change, most notably the Settings page's own permission-state display. How: This is added to by subAddFun and iterated by broSubFun below.
 
 // #endregion Module State
 
@@ -99,14 +108,14 @@ const broSubFun = () => { // What: Broadcast Subscriber Function. Why: Every sub
  *
 */
 
-const subAddFun = ( lisCalFun ) => { // What: Subscribe Add Function. Why: A caller (the Settings page) needs a way to register for permission-change broadcasts and later unregister again. How: This adds the given callback to subLisSet and hands back its own removal function.
+const subAddFun = ( lisCalFun : () => void ) : ( () => void ) => { // What: Subscribe Add Function. Why: A caller (the Settings page) needs a way to register for permission-change broadcasts and later unregister again. How: This adds the given callback to subLisSet and hands back its own removal function.
 
 
 	subLisSet.add( lisCalFun ); // What: Listener Add. Why: The given callback must actually be reachable by broSubFun above in order to receive future broadcasts. How: This adds lisCalFun to subLisSet.
 
 
 
-	return () => subLisSet.delete( lisCalFun ); // What: Unsubscribe Return. Why: The caller needs a way to stop receiving broadcasts later, most commonly on its own component unmount. How: This returns a fresh function that removes lisCalFun from subLisSet when called.
+	return () => { subLisSet.delete( lisCalFun ); }; // What: Unsubscribe Return. Why: The caller needs a way to stop receiving broadcasts later, most commonly on its own component unmount. How: This returns a fresh function that removes lisCalFun from subLisSet when called.
 
 
 };
@@ -119,7 +128,7 @@ const subAddFun = ( lisCalFun ) => { // What: Subscribe Add Function. Why: A cal
 
 // #region Storage Access
 
-const stoGetFun = ( stoKeyStr ) => { // What: Storage Get Function. Why: localStorage can throw in some contexts (private browsing, a full quota), and a failed read should never crash the caller. How: This wraps getItem in a try/catch, returning null on any failure instead of throwing.
+const stoGetFun = ( stoKeyStr : string ) => { // What: Storage Get Function. Why: localStorage can throw in some contexts (private browsing, a full quota), and a failed read should never crash the caller. How: This wraps getItem in a try/catch, returning null on any failure instead of throwing.
 
 
 	try { return localStorage.getItem( stoKeyStr ); } // What: Storage Get Try. Why: This is the actual read this function exists to perform. How: This returns whatever getItem resolves to for stoKeyStr, including null when the key isn't set.
@@ -131,7 +140,7 @@ const stoGetFun = ( stoKeyStr ) => { // What: Storage Get Function. Why: localSt
 
 
 
-const stoSetFun = ( stoKeyStr, stoValStr ) => { // What: Storage Set Function. Why: Same reasoning as stoGetFun above, for writes: a failed write should never crash the caller. How: This wraps setItem in a try/catch, silently doing nothing on any failure.
+const stoSetFun = ( stoKeyStr : string, stoValStr : string ) => { // What: Storage Set Function. Why: Same reasoning as stoGetFun above, for writes: a failed write should never crash the caller. How: This wraps setItem in a try/catch, silently doing nothing on any failure.
 
 
 	try { localStorage.setItem( stoKeyStr, stoValStr ); } // What: Storage Set Try. Why: This is the actual write this function exists to perform. How: This calls setItem with stoKeyStr and stoValStr.
@@ -147,8 +156,8 @@ const stoSetFun = ( stoKeyStr, stoValStr ) => { // What: Storage Set Function. W
 
 // #region Local Day
 
-const padZerFun = ( rawValNum ) => String( rawValNum ).padStart( 2, '0' );                                                                          // What: Pad Zero Function. Why: A local-day string needs its month/day components zero-padded to 2 digits each. How: This stringifies the given number and left-pads it with '0' to a length of 2.
-const locDayFun = ( dayDatObj ) => `${ dayDatObj.getFullYear() }-${ padZerFun( dayDatObj.getMonth() + 1 ) }-${ padZerFun( dayDatObj.getDate() ) }`; // What: Local Day Function. Why: The once-per-day guard needs a stable, comparable string for "today" in the user's own local time zone. How: This builds a YYYY-MM-DD string from the given Date's own local year/month/day, zero-padding month and day via padZerFun.
+const padZerFun = ( rawValNum : number ) => String( rawValNum ).padStart( 2, '0' );                                                                        // What: Pad Zero Function. Why: A local-day string needs its month/day components zero-padded to 2 digits each. How: This stringifies the given number and left-pads it with '0' to a length of 2.
+const locDayFun = ( dayDatObj : Date ) => `${ dayDatObj.getFullYear() }-${ padZerFun( dayDatObj.getMonth() + 1 ) }-${ padZerFun( dayDatObj.getDate() ) }`; // What: Local Day Function. Why: The once-per-day guard needs a stable, comparable string for "today" in the user's own local time zone. How: This builds a YYYY-MM-DD string from the given Date's own local year/month/day, zero-padding month and day via padZerFun.
 
 // #endregion Local Day
 
@@ -184,7 +193,7 @@ const notSupFun = () => typeof window.Notification === 'function'; // What: Noti
  *
 */
 
-const perCheFun = () => ( notSupFun() ? Notification.permission : 'unsupported' ); // What: Permission Check Function. Why: Callers (the Settings page's own display) need the current permission state without caring whether the API even exists. How: This reports Notification.permission when supported, or the literal string 'unsupported' otherwise.
+const perCheFun = () : PerStaTyp => ( notSupFun() ? Notification.permission : 'unsupported' ); // What: Permission Check Function. Why: Callers (the Settings page's own display) need the current permission state without caring whether the API even exists. How: This reports Notification.permission when supported, or the literal string 'unsupported' otherwise.
 
 // #endregion perCheFun
 
@@ -225,14 +234,14 @@ const perCheFun = () => ( notSupFun() ? Notification.permission : 'unsupported' 
  *
 */
 
-async function askOncFun () {
+async function askOncFun () : Promise< PerStaTyp > {
 
 
 	if ( !notSupFun() || Notification.permission !== 'default' || askCheFun() ) return perCheFun(); // What: Ask Guard Clause. Why: There is nothing to prompt for when notifications aren't supported at all, the permission has already moved past 'default', or this module has already asked once before. How: This checks all 3 conditions with ||, short-circuiting on the first true one, and returns the current permission instead of prompting.
 
 
 
-	let perResStr = 'default'; // What: Permission Result String. Why: This holds the actual outcome of the prompt below, defaulting to 'default' in case the prompt itself throws. How: This is reassigned by the try block right after it, then returned at the end of this function.
+	let perResStr : NotificationPermission = 'default'; // What: Permission Result String. Why: This holds the actual outcome of the prompt below, defaulting to 'default' in case the prompt itself throws. How: This is reassigned by the try block right after it, then returned at the end of this function.
 
 
 
@@ -287,7 +296,7 @@ async function askOncFun () {
  *
 */
 
-async function reqPerFun () {
+async function reqPerFun () : Promise< PerStaTyp > {
 
 
 	if ( !notSupFun() ) return 'unsupported'; // What: Support Guard Clause. Why: There is nothing to request when the browser has no Notification API at all. How: This returns the literal string 'unsupported' early instead of touching Notification.permission below.
@@ -358,7 +367,7 @@ async function reqPerFun () {
  *
 */
 
-async function genNotFun () {
+async function genNotFun () : Promise< boolean > {
 
 
 	if ( !notSupFun() || Notification.permission !== 'granted' ) return false; // What: Permission Granted Guard Clause. Why: There is nothing to show when notifications aren't supported at all or the user hasn't already granted permission. How: This checks both conditions with ||, short-circuiting on the first true one.
