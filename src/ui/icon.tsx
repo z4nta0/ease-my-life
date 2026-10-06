@@ -1,6 +1,14 @@
 
 
 
+// #region Imports
+
+import type { JSX } from 'react'; // What: JSX. Why: The icon table holds JSX elements, and IcoSvgCom returns one. How: This types both.
+
+// #endregion Imports
+
+
+
 /**
  * icon.tsx = Icon
  *
@@ -21,6 +29,7 @@
 
 // #region Components
 
+type IscProTyp = { className? : string, icoNamStr : string, sizSteStr? : string }; // What: Icon-Svg-Component Props Type. Why: An icon is drawn by name, at a rhythm step, with an optional class from its parent. How: This types IcoSvgCom's props.
 // #region IcoSvgCom
 
 /**
@@ -52,10 +61,10 @@
  *
 */
 
-const IcoSvgCom = ( { className, icoNamStr, sizSteStr = 'p01' } ) => { // What: Icon Svg Component. Why: Every tab button, list row, and control across the app needs a small recognizable glyph. How: This looks up icoNamStr in icoPatObj and renders the matching SVG shape at the sizSteStr rhythm step.
+const IcoSvgCom = ( { className, icoNamStr, sizSteStr = 'p01' } : IscProTyp ) : JSX.Element => { // What: Icon Svg Component. Why: Every tab button, list row, and control across the app needs a small recognizable glyph. How: This looks up icoNamStr in icoPatObj and renders the matching SVG shape at the sizSteStr rhythm step.
 
 
-	const icoPatObj = { // What: Icon Path Object. Why: This is the lookup table mapping every icon name to its own inline SVG shape markup. How: This is indexed below by the icoNamStr prop to pick which shape the rendered svg actually draws.
+	const icoPatObj : Record< string, JSX.Element > = { // What: Icon Path Object. Why: This is the lookup table mapping every icon name to its own inline SVG shape markup. How: This is indexed below by the icoNamStr prop to pick which shape the rendered svg actually draws.
 
 
 		ardEle : <><path d='M12 5v14M6 13l6 6 6-6' /></>,                                                                     // What: Arrow-Down Element. Why: This marks a downward move/sort action. How: This draws a vertical line ending in a downward arrowhead.

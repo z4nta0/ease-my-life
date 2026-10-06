@@ -5,6 +5,10 @@
 
 import cssModObj from './card-surface.module.css'; // What: CSS Module Object. Why: The card's own surface and padding styles live in its own module. How: This maps each class name in card-surface.module.css to its hashed module class.
 
+
+import type { ComponentProps } from 'react'; // What: Component Props. Why: The card forwards every native div prop. How: This types CscProTyp's native part.
+import type { JSX            } from 'react'; // What: JSX. Why: The component declares the element it returns. How: This types its return as a JSX element.
+
 // #endregion Imports
 
 
@@ -29,6 +33,7 @@ import cssModObj from './card-surface.module.css'; // What: CSS Module Object. W
 
 // #region Components
 
+type CscProTyp = ComponentProps< 'div' > & { isaPadBoo? : boolean }; // What: Card-Surface-Component Props Type. Why: The card takes every native div prop plus whether it's padded. How: This types CarSurCom's props.
 // #region CarSurCom
 
 /**
@@ -59,7 +64,7 @@ import cssModObj from './card-surface.module.css'; // What: CSS Module Object. W
  *
 */
 
-const CarSurCom = ( { children, className = '', isaPadBoo = true, ...resProObj } ) => ( // What: Card Surface Component. Why: CarSurCom is the shared surface/panel wrapper used throughout every tab. How: This renders a div with the isaPadBoo/className modifier classes, spreading every other passed prop onto the DOM node.
+const CarSurCom = ( { children, className = '', isaPadBoo = true, ...resProObj } : CscProTyp ) : JSX.Element => ( // What: Card Surface Component. Why: CarSurCom is the shared surface/panel wrapper used throughout every tab. How: This renders a div with the isaPadBoo/className modifier classes, spreading every other passed prop onto the DOM node.
 
 
 	<div

@@ -34,6 +34,7 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function.
 
 // #region Components
 
+type FbcProTyp = { isaDisBoo : boolean, labTexStr : string, onFilActFun : () => void }; // What: Fill-Button-Component Props Type. Why: The lever needs its label, its action, and whether it's available. How: This types FilButCom's props.
 // #region FilButCom
 
 /**
@@ -66,7 +67,7 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function.
  *
 */
 
-function FilButCom ( { isaDisBoo, labTexStr, onFilActFun } ) {
+function FilButCom ( { isaDisBoo, labTexStr, onFilActFun } : FbcProTyp ) : React.JSX.Element {
 
 
 	const [ spiAniBoo, setSpiAniBoo ] = React.useState( false ); // What: Spin Animate Boolean And Setter. Why: The refresh icon's own spin is purely decorative feedback, layered on top of the real Fill/Refill action. How: This is started on a live click (unless reduced motion) and cleared once the CSS spin animation finishes.

@@ -8,6 +8,10 @@ import cssModObj from './button.module.css'; // What: CSS Module Object. Why: Th
 
 import { IcoSvgCom } from './icon.tsx'; // What: Icon Svg Component. Why: A button can carry an optional leading icon. How: This renders icoNamStr's glyph ahead of the button's own label.
 
+
+import type { ComponentProps } from 'react'; // What: Component Props. Why: The base button forwards every native button prop. How: This types BbcProTyp's native part.
+import type { JSX            } from 'react'; // What: JSX. Why: The component declares the element it returns. How: This types its return as a JSX element.
+
 // #endregion Imports
 
 
@@ -33,6 +37,7 @@ import { IcoSvgCom } from './icon.tsx'; // What: Icon Svg Component. Why: A butt
 
 // #region Components
 
+type BbcProTyp = ComponentProps< 'button' > & { icoClaStr? : string, icoNamStr? : string, kinValStr? : string, sizValStr? : string }; // What: Button-Basic-Component Props Type. Why: The base button takes every native button prop, its ref included, plus its own icon, kind, and size. How: This types ButBasCom's props.
 // #region ButBasCom
 
 /**
@@ -75,7 +80,7 @@ import { IcoSvgCom } from './icon.tsx'; // What: Icon Svg Component. Why: A butt
  *
 */
 
-function ButBasCom ( { children, className = '', icoClaStr, icoNamStr, kinValStr = 'ghost', ref, sizValStr = 'md', ...resProObj } ) {
+function ButBasCom ( { children, className = '', icoClaStr, icoNamStr, kinValStr = 'ghost', ref, sizValStr = 'md', ...resProObj } : BbcProTyp ) : JSX.Element {
 
 
 	return (

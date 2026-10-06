@@ -5,6 +5,10 @@
 
 import cssModObj from './pill-tag.module.css'; // What: CSS Module Object. Why: The pill's own base and tone styles live in its own module. How: This maps each class name in pill-tag.module.css to its hashed module class.
 
+
+import type { JSX       } from 'react'; // What: JSX. Why: The component declares the element it returns. How: This types its return as a JSX element.
+import type { ReactNode } from 'react'; // What: React Node. Why: A pill's text can be any renderable content. How: This types PtcProTyp's children.
+
 // #endregion Imports
 
 
@@ -28,6 +32,7 @@ import cssModObj from './pill-tag.module.css'; // What: CSS Module Object. Why: 
 
 // #region Components
 
+type PtcProTyp = { children : ReactNode, 'data-element-name-hook'? : string, tonValStr? : string }; // What: Pill-Tag-Component Props Type. Why: A pill shows its text in a tone, with an optional identity hook. How: This types PilTagCom's props.
 // #region PilTagCom
 
 /**
@@ -56,7 +61,7 @@ import cssModObj from './pill-tag.module.css'; // What: CSS Module Object. Why: 
  *
 */
 
-const PilTagCom = ( { children, 'data-element-name-hook' : hooNamStr, tonValStr = 'default' } ) => ( // What: Pill Tag Component. Why: Stats/Pickers/Data all need the same small colored label to tag a mode or status. How: This renders a span whose "pill--{tone}" modifier class picks the actual color/style, defaulting to a neutral tone.
+const PilTagCom = ( { children, 'data-element-name-hook' : hooNamStr, tonValStr = 'default' } : PtcProTyp ) : JSX.Element => ( // What: Pill Tag Component. Why: Stats/Pickers/Data all need the same small colored label to tag a mode or status. How: This renders a span whose "pill--{tone}" modifier class picks the actual color/style, defaulting to a neutral tone.
 
 
 	<span
