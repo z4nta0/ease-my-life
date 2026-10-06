@@ -217,9 +217,9 @@ type PocProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onCloTouFun : () =
 function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, staAppObj } : PocProTyp ) : React.JSX.Element {
 
 
-	const touRcdObj = ONB_EPT_ARR.find( ( curTouObj ) => curTouObj.ideStr === pagIdeStr ); // What: Tour Record Object. Why: This page's own real page key/label are read off its own ONB_EPT_ARR manifest entry. How: This searches ONB_EPT_ARR for the entry whose own id matches pagIdeStr.
-	const navTarObj = NAV_TAR_OBJ[ touRcdObj.pagStr ];                                     // What: Nav Target Object. Why: The intro modal's own fallback titStr/bodEle come from the shared nav-button catalog. How: This looks up NAV_TAR_OBJ by touRcdObj's own page.
-	const pagCopObj = PAG_COP_OBJ[ pagIdeStr ];                                            // What: Page Copy Object. Why: The intro modal's own title/body/pills prefer this page's own dedicated copy when it has one. How: This looks up PAG_COP_OBJ by pagIdeStr.
+	const touRcdObj = ONB_EPT_ARR.find( ( curTouObj ) => curTouObj.ideStr === pagIdeStr )!; // What: Tour Record Object. Why: This page's own real page key/label are read off its own ONB_EPT_ARR manifest entry. How: This searches ONB_EPT_ARR for the entry whose own id matches pagIdeStr. // What: Non-Null Note. Why: A page tour is only opened with an id taken from ONB_EPT_ARR. How: The ! tells TypeScript the find returns its record.
+	const navTarObj = NAV_TAR_OBJ[ touRcdObj.pagStr ];                                      // What: Nav Target Object. Why: The intro modal's own fallback titStr/bodEle come from the shared nav-button catalog. How: This looks up NAV_TAR_OBJ by touRcdObj's own page.
+	const pagCopObj = PAG_COP_OBJ[ pagIdeStr ];                                             // What: Page Copy Object. Why: The intro modal's own title/body/pills prefer this page's own dedicated copy when it has one. How: This looks up PAG_COP_OBJ by pagIdeStr.
 
 
 

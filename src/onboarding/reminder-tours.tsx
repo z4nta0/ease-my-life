@@ -301,7 +301,7 @@ const buiAddFun = ( varKeyStr : string, staAppObj : StaAppTyp ) : TouSteTyp => {
 		runFun : () => { // What: Run Function. Why: The live sample's own prefill data needs staging onto the bus before the real click opens the form. How: This looks up the live sample task, falling back to ONB_TAS_ARR's own static template, then publishes its own name/repeat/daysOfWeek onto the bus.
 
 
-			const samTasObj = ( staAppObj.tasks || [] ).find( ( curTasObj ) => curTasObj.id === varCopObj.ideStr ) || ONB_TAS_ARR.find( ( curTasObj ) => curTasObj.id === varCopObj.ideStr ); // What: Sample Task Object. Why: The Welcome Tour seeds the recurring sample with today's real weekday (see onboarding/welcome-tour.tsx's own Generate step), which the static ONB_TAS_ARR template does not know, so the live one must win whenever it exists. How: This reads the live sample off staAppObj.tasks first, falling back to ONB_TAS_ARR only when no live one exists yet.
+			const samTasObj = ( staAppObj.tasks || [] ).find( ( curTasObj ) => curTasObj.id === varCopObj.ideStr ) || ONB_TAS_ARR.find( ( curTasObj ) => curTasObj.id === varCopObj.ideStr )!; // What: Sample Task Object. Why: The Welcome Tour seeds the recurring sample with today's real weekday (see onboarding/welcome-tour.tsx's own Generate step), which the static ONB_TAS_ARR template does not know, so the live one must win whenever it exists. How: This reads the live sample off staAppObj.tasks first, falling back to ONB_TAS_ARR only when no live one exists yet. // What: Non-Null Note. Why: Every reminder tour's id names a sample in ONB_TAS_ARR, so the fallback always finds it. How: The ! tells TypeScript the find returns its record.
 
 
 			emlTouObj.set({ // What: Prefill Publish Call. Why: reminders-section.tsx's own staAddFun reads this to prefill the real add-reminder form. How: This builds the prefill shape from the resolved samTasObj above.
@@ -351,7 +351,8 @@ const buiAddFun = ( varKeyStr : string, staAppObj : StaAppTyp ) : TouSteTyp => {
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param repValStr - Repeat Value String: The live draft's own repeat kind,
- *                    read off the bus as draRepStr.
+ *                    read off the bus as draRepStr, or undefined before
+ *                    the draft has published one.
  *
  * @returns A GuiTouCom step object for this tour's own steObjArr.
  *
@@ -362,10 +363,10 @@ const buiAddFun = ( varKeyStr : string, staAppObj : StaAppTyp ) : TouSteTyp => {
  *
 */
 
-const buiFreFun = ( repValStr : string ) : TouSteTyp => { // What: Build Frequency Function. Why: Step 4 highlights whichever schedule control the recurring draft's own repeat kind reveals, with copy that tracks it. How: This looks up REP_COP_OBJ by repValStr, falling back to 'weekly' for the one frame before reminders-section.tsx's own staAddFun/draActObj have published a real value onto the bus yet.
+const buiFreFun = ( repValStr : string | undefined ) : TouSteTyp => { // What: Build Frequency Function. Why: Step 4 highlights whichever schedule control the recurring draft's own repeat kind reveals, with copy that tracks it. How: This looks up REP_COP_OBJ by repValStr, falling back to 'weekly' for the one frame before reminders-section.tsx's own staAddFun/draActObj have published a real value onto the bus yet.
 
 
-	const repCopObj = REP_COP_OBJ[ repValStr ] || REP_COP_OBJ.weekly; // What: Repeat Copy Object. Why: The step's own titStr/bodEle below need this repeat kind's own copy. How: This looks up REP_COP_OBJ by repValStr, falling back to weekly.
+	const repCopObj = ( repValStr && REP_COP_OBJ[ repValStr ] ) || REP_COP_OBJ.weekly; // What: Repeat Copy Object. Why: The step's own titStr/bodEle below need this repeat kind's own copy. How: This looks up REP_COP_OBJ by repValStr, falling back to weekly.
 
 
 

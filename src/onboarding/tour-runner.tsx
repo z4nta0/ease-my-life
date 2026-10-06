@@ -657,10 +657,10 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	const [ resTopNum, setResTopNum ] = React.useState( 0 );                                                                               // What: Reserve Top Number And Setter. Why: Extra top-space (px) reserved above the Today list when the current step's highlight is too tall for the coach to fit above or below it. How: This is published on the bus (see the effect below) so TabTodCom can push its list content down by this amount instead of the coach card overlaying part of what is highlighted; driven by rect/viewport math, not any specific step, so any future tour step with a too-tall highlight gets this automatically.
 	const [ coaHeiNum, setCoaHeiNum ] = React.useState( COA_HEI_NUM );                                                                     // What: Coach Height Number And Setter. Why: COA_HEI_NUM is only a rough estimate; a step with longer body text renders taller than it, and using the stale estimate for the "place above" branch made a long step's coach overlap the top of its own target instead of sitting flush above it. How: This starts at the rough estimate and is corrected once the real coach has been measured by the layout effect below.
 
-	const spoEleRef = React.useRef( null );      // What: Spotlight Element Reference. Why: The spotlight is positioned imperatively every frame (no React lag) rather than through React state alone. How: This is attached to the rendered touSpoDiv div below.
-	const meaCoaRef = React.useRef( null );      // What: Measure Coach Reference. Why: A hidden, off-screen coach clone needs a handle so its real rendered height can be measured. How: This is attached to the hidden measurer JSX below.
-	const reaCoaRef = React.useRef( null );      // What: Real Coach Reference. Why: The real, visible coach is also positioned imperatively every frame, same as the spotlight. How: This is attached to the rendered .coaCarDiv div below and written to by plaTarFun.
-	const coaHeiRef = React.useRef( coaHeiNum ); // What: Coach Height Reference. Why: The position-tracking effect below reads this ref rather than coaHeiNum directly, since that effect's own deps are [curSteNum, curSteObj.selStr]: whenever React re-renders without those changing (exactly what happens right after the layout effect below corrects coaHeiNum for a step whose coach differs in height from the one before it), React reuses that effect's ORIGINAL closure rather than the fresher one, permanently freezing whatever coaHeiNum was still stale at that render. How: This is written to on every render, so decResFun always reads the latest measured height regardless of which closure is still live; most visible navigating Back into a step whose coach is taller than the one it is coming from.
+	const spoEleRef = React.useRef< HTMLDivElement | null >( null ); // What: Spotlight Element Reference. Why: The spotlight is positioned imperatively every frame (no React lag) rather than through React state alone. How: This is attached to the rendered touSpoDiv div below.
+	const meaCoaRef = React.useRef< HTMLDivElement | null >( null ); // What: Measure Coach Reference. Why: A hidden, off-screen coach clone needs a handle so its real rendered height can be measured. How: This is attached to the hidden measurer JSX below.
+	const reaCoaRef = React.useRef< HTMLDivElement | null >( null ); // What: Real Coach Reference. Why: The real, visible coach is also positioned imperatively every frame, same as the spotlight. How: This is attached to the rendered .coaCarDiv div below and written to by plaTarFun.
+	const coaHeiRef = React.useRef( coaHeiNum );                     // What: Coach Height Reference. Why: The position-tracking effect below reads this ref rather than coaHeiNum directly, since that effect's own deps are [curSteNum, curSteObj.selStr]: whenever React re-renders without those changing (exactly what happens right after the layout effect below corrects coaHeiNum for a step whose coach differs in height from the one before it), React reuses that effect's ORIGINAL closure rather than the fresher one, permanently freezing whatever coaHeiNum was still stale at that render. How: This is written to on every render, so decResFun always reads the latest measured height regardless of which closure is still live; most visible navigating Back into a step whose coach is taller than the one it is coming from.
 
 	coaHeiRef.current = coaHeiNum; // What: Coach Height Reference Sync. Why: This must happen on every render, not just inside an effect, so the very next synchronous read (even before any effect runs) already sees the latest value. How: This assigns coaHeiNum straight into coaHeiRef.current.
 
@@ -1084,7 +1084,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-		return !!( livSteObj && livSteObj.cptSelStr && finTarFun( livSteObj.cptSelStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ); // What: Pass-Through Check Return. Why: The caller needs a plain boolean answer. How: This checks that a live step exists, that it names a cptSelStr, and that one of its matched elements contains the event's own target. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element.
+		return !!( livSteObj && livSteObj.cptSelStr && finTarFun( livSteObj.cptSelStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ); // What: Pass-Through Check Return. Why: The caller needs a plain boolean answer. How: This checks that a live step exists, that it names a cptSelStr, and that one of its matched elements contains the event's own target. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A click always involves a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
 
 
 	};
@@ -1127,7 +1127,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return false; // What: Coach Exemption Guard. Why: A click anywhere inside the coach card (Skip/Back/Next, or just its own body text) is always legitimate. How: This returns false whenever the event's own target has a .coaCarDiv ancestor. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element.
+		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return false; // What: Coach Exemption Guard. Why: A click anywhere inside the coach card (Skip/Back/Next, or just its own body text) is always legitimate. How: This returns false whenever the event's own target has a .coaCarDiv ancestor. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A click always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
 
 
 
@@ -1139,7 +1139,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-		return !( livSteObj && finTarFun( livSteObj.cliSelStr || livSteObj.selStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ); // What: Off-Target Check Return. Why: The caller needs a plain boolean answer. How: This is true whenever there is no live step, or the event's own target does not sit inside any element the step's own cliSelStr/selStr currently matches. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element.
+		return !( livSteObj && finTarFun( livSteObj.cliSelStr || livSteObj.selStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ); // What: Off-Target Check Return. Why: The caller needs a plain boolean answer. How: This is true whenever there is no live step, or the event's own target does not sit inside any element the step's own cliSelStr/selStr currently matches. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A click always involves a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
 
 
 	};
@@ -1177,11 +1177,11 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return; // What: Coach Exemption Guard. Why: A click anywhere inside the coach card is always legitimate and needs no further handling here. How: This returns whenever the event's own target has a .coaCarDiv ancestor. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element.
+			if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return; // What: Coach Exemption Guard. Why: A click anywhere inside the coach card is always legitimate and needs no further handling here. How: This returns whenever the event's own target has a .coaCarDiv ancestor. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A click always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
 
 
 
-			if ( livSteObj && livSteObj.advCliStr && finTarFun( livSteObj.advCliStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ) { // What: Advance-On Check. Why: See advCliStr's own doc comment in GuiTouCom's own JSDoc above, an optional real-action shortcut, NOT a cirBoo step (Next keeps working normally too): the real target's click just also counts as clicking Next. How: This runs the primary action when the click lands inside an advCliStr match, then returns. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element.
+			if ( livSteObj && livSteObj.advCliStr && finTarFun( livSteObj.advCliStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ) { // What: Advance-On Check. Why: See advCliStr's own doc comment in GuiTouCom's own JSDoc above, an optional real-action shortcut, NOT a cirBoo step (Next keeps working normally too): the real target's click just also counts as clicking Next. How: This runs the primary action when the click lands inside an advCliStr match, then returns. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A click always involves a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
 
 
 				priActRef.current(); // What: Primary Action Trigger. Why: An advCliStr click must run the exact same priActFun logic a real Next click would. How: This calls the latest priActFun via its own ref.
@@ -1195,7 +1195,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			if ( livSteObj && finTarFun( livSteObj.cliSelStr || livSteObj.selStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ) { // What: Target Click Check. Why: A cirBoo step's target click IS its primary action, since the Next button is disabled, so this is the only way forward. How: This runs the primary action for a cirBoo step, then returns so the target click itself goes through. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element.
+			if ( livSteObj && finTarFun( livSteObj.cliSelStr || livSteObj.selStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ) { // What: Target Click Check. Why: A cirBoo step's target click IS its primary action, since the Next button is disabled, so this is the only way forward. How: This runs the primary action for a cirBoo step, then returns so the target click itself goes through. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A click always involves a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
 
 
 				if ( livSteObj.cirBoo ) priActRef.current(); // What: Require-Click Trigger. Why: Only a cirBoo step treats its own target click as the advancing action. How: This calls the latest priActFun only when the live step actually requires it.
@@ -1235,11 +1235,11 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			if ( focEveObj.relatedTarget && ( focEveObj.relatedTarget as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return; // What: Coach Move Exemption. Why: A focus move into the coach card is a legitimate, deliberate way to leave the target. How: This returns whenever the event's own relatedTarget has a .coaCarDiv ancestor. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element.
+			if ( focEveObj.relatedTarget && ( focEveObj.relatedTarget as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return; // What: Coach Move Exemption. Why: A focus move into the coach card is a legitimate, deliberate way to leave the target. How: This returns whenever the event's own relatedTarget has a .coaCarDiv ancestor. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A focus move always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
 
 
 
-			if ( !finTarFun( livSteObj.cliSelStr || livSteObj.selStr ).some( ( curIteEle ) => curIteEle.contains( focEveObj.target as Node ) ) ) return; // What: On-Target Guard. Why: Only a focus loss FROM the current step's own target needs protecting. How: This returns whenever the event's own target does not sit inside any element the step's own cliSelStr/selStr currently matches. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element.
+			if ( !finTarFun( livSteObj.cliSelStr || livSteObj.selStr ).some( ( curIteEle ) => curIteEle.contains( focEveObj.target as Node ) ) ) return; // What: On-Target Guard. Why: Only a focus loss FROM the current step's own target needs protecting. How: This returns whenever the event's own target does not sit inside any element the step's own cliSelStr/selStr currently matches. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A focus move always involves a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
 
 
 
@@ -1501,7 +1501,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-				if ( finTarFun( curSteObj.advSelStr ).length ) advSteFun(); // What: Target Found Advance. Why: The async work's own result is now ready to become the tour's new spotlight. How: This advances once finTarFun actually matches something for the step's own advSelStr selector.
+				if ( finTarFun( curSteObj.advSelStr! ).length ) advSteFun(); // What: Target Found Advance. Why: The async work's own result is now ready to become the tour's new spotlight. How: This advances once finTarFun actually matches something for the step's own advSelStr selector. // What: Non-Null Note. Why: This poll only starts once the guard above found advSelStr on this same step. How: The ! tells TypeScript the selector is set inside the poll.
 
 				else requestAnimationFrame( polTarFun ); // What: Poll Reschedule. Why: The target is not ready yet. How: This schedules another check on the next animation frame.
 
@@ -1833,10 +1833,10 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			if ( resPreBoo ) { // What: Reserve Prediction Guard. Why: This plugs the predicted landing position into the exact same fits-below/fits-above checks decResFun itself uses below, so this can never disagree with what decResFun would have decided anyway, just decided proactively instead of reactively; this replaces the loop's own decResFun (unchanged) used to be the only place this got decided, which meant a visibly separate second "jump then re-scroll" once it found the overlap, this step's target genuinely overlapping the coach at its settled position is exactly the case reproduced live and reported as jank. How: This reserves extra room below the target when the coach would fit neither below nor above its predicted landing position.
 
 
-				const vieHeiNum = window.innerHeight;                                                                                   // What: Viewport Height Number. Why: The fit checks below need the current viewport height. How: This is read fresh from window.innerHeight.
-				const coaHeiNum = coaHeiRef.current;                                                                                    // What: Coach Height Number. Why: The fit checks below need the coach's own latest measured height. How: This is read fresh from coaHeiRef.current.
-				const fitBelBoo = vieHeiNum - ( preTopNum + tarRecObj.height ) >= coaHeiNum + rhyPxlFun( 'bas' );                       // What: Fits Below Boolean. Why: The below placement only works if the coach's own height plus its base-step gap actually fits under the predicted landing position. How: This compares the remaining viewport space under the predicted bottom edge against coaHeiNum plus a base step. // Vertical Rhythm Base ~= 14.572px
-				const fitAboBoo = preTopNum - rhyPxlFun( 'bas' ) - coaHeiNum >= safTopFun( { forCoaBoo : true } ) + rhyPxlFun( 'm01' ); // What: Fits Above Boolean. Why: The above placement only works if the coach's own height plus its base-step gap actually fits above the predicted top edge, down to the coach's own safe floor. How: This compares the predicted top edge minus the coach's own space against the safe floor. // Vertical Rhythm Base ~= 14.572px, Vertical Rhythm Base Minus 1 = 11px
+				const vieHeiNum = window.innerHeight;                                                                                    // What: Viewport Height Number. Why: The fit checks below need the current viewport height. How: This is read fresh from window.innerHeight.
+				const coaHeiNum = coaHeiRef.current;                                                                                     // What: Coach Height Number. Why: The fit checks below need the coach's own latest measured height. How: This is read fresh from coaHeiRef.current.
+				const fitBelBoo = vieHeiNum - ( preTopNum! + tarRecObj.height ) >= coaHeiNum + rhyPxlFun( 'bas' );                       // What: Fits Below Boolean. Why: The below placement only works if the coach's own height plus its base-step gap actually fits under the predicted landing position. How: This compares the remaining viewport space under the predicted bottom edge against coaHeiNum plus a base step. // Vertical Rhythm Base ~= 14.572px // What: Non-Null Note. Why: This branch only runs once hasPreBoo found a predicted top. How: The ! tells TypeScript preTopNum is set here.
+				const fitAboBoo = preTopNum! - rhyPxlFun( 'bas' ) - coaHeiNum >= safTopFun( { forCoaBoo : true } ) + rhyPxlFun( 'm01' ); // What: Fits Above Boolean. Why: The above placement only works if the coach's own height plus its base-step gap actually fits above the predicted top edge, down to the coach's own safe floor. How: This compares the predicted top edge minus the coach's own space against the safe floor. // Vertical Rhythm Base ~= 14.572px, Vertical Rhythm Base Minus 1 = 11px // What: Non-Null Note. Why: This branch only runs once hasPreBoo found a predicted top. How: The ! tells TypeScript preTopNum is set here.
 
 
 				if ( !fitBelBoo && !fitAboBoo ) { // What: No Fit Guard. Why: Reserve space is only ever needed once neither the below nor the above placement actually fits. How: This only enters the reserve branch when both fit checks failed.
@@ -2115,9 +2115,9 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 			const tarRecObj = uniRecFun( curEleArr ); // What: Target Rect Object. Why: The stability check below needs the target's own current union rect. How: This unions curEleArr via uniRecFun.
 
-			const hasLasBoo = lasHeiNum != null;                            // What: Has Last Boolean. Why: The very first frame has no previous geometry to compare against. How: This checks lasHeiNum is not null.
-			const heiStaBoo = Math.abs( tarRecObj.height - lasHeiNum ) < 1; // What: Height Stable Boolean. Why: The target's own height must be unchanged from the previous frame. How: This checks the height delta is under 1px.
-			const topStaBoo = Math.abs( tarRecObj.top - lasTopNum ) < 1;    // What: Top Stable Boolean. Why: The target's own top must be unchanged from the previous frame. How: This checks the top delta is under 1px.
+			const hasLasBoo = lasHeiNum != null;                                     // What: Has Last Boolean. Why: The very first frame has no previous geometry to compare against. How: This checks lasHeiNum is not null.
+			const heiStaBoo = Math.abs( tarRecObj.height - ( lasHeiNum ?? 0 ) ) < 1; // What: Height Stable Boolean. Why: The target's own height must be unchanged from the previous frame. How: This checks the height delta is under 1px, reading a missing last height as 0 the way plain arithmetic would, since hasLasBoo discards that first frame anyway.
+			const topStaBoo = Math.abs( tarRecObj.top - ( lasTopNum ?? 0 ) ) < 1;    // What: Top Stable Boolean. Why: The target's own top must be unchanged from the previous frame. How: This checks the top delta is under 1px, reading a missing last top as 0 the way plain arithmetic would, since hasLasBoo discards that first frame anyway.
 
 			const tarStaBoo = hasLasBoo && heiStaBoo && topStaBoo; // What: Target Stable Boolean. Why: A frame only counts as settled when there is a previous frame and both deltas are under 1px. How: This ANDs the 3 checks above.
 
@@ -2290,7 +2290,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 				}
 
-				else if ( scrStaNum >= 2 && Math.abs( scrHeiNum - broScrNum ) > 40 ) { // What: Content Grew Re-Bring. Why: See preScrNum's own doc comment above, the surrounding content changing size mid-step should re-trigger the bring. How: This re-calls briTarFun once the scroll height has settled more than a 40px tolerance away from where it was last brought.
+				else if ( scrStaNum >= 2 && Math.abs( scrHeiNum - broScrNum! ) > 40 ) { // What: Content Grew Re-Bring. Why: See preScrNum's own doc comment above, the surrounding content changing size mid-step should re-trigger the bring. How: This re-calls briTarFun once the scroll height has settled more than a 40px tolerance away from where it was last brought. // What: Non-Null Note. Why: This branch only runs once the first bring has recorded broScrNum. How: The ! tells TypeScript the brought height is set here.
 
 
 					broScrNum = scrHeiNum; // What: Brought Scroll Commit. Why: The next re-bring must measure growth from this settled height. How: This records the current scroll height.

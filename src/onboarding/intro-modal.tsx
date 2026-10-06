@@ -98,7 +98,7 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onSkiT
 
 
 
-	const priButRef = React.useRef( null ); // What: Primary Button Reference. Why: The primary action button needs a stable handle so it can be focused on mount. How: This starts null and is attached to the primary button's own ref prop below.
+	const priButRef = React.useRef< HTMLButtonElement | null >( null ); // What: Primary Button Reference. Why: The primary action button needs a stable handle so it can be focused on mount. How: This starts null and is attached to the primary button's own ref prop below.
 
 
 	React.useEffect( () => { priButRef.current && priButRef.current.focus( { preventScroll : true } ); }, [] ); // What: Primary Focus Effect. Why: The primary button should be focused immediately on mount so pressing Enter submits right away, but a plain autoFocus's default scroll-into-view would land the page scrolled down to this button near the bottom of the modal instead of showing its own top (icon, title) first, now that .intScrDiv can be a scroll container. How: This focuses priButRef's current button with preventScroll, once, on mount only, guarded so it no-ops if the ref isn't attached yet.
