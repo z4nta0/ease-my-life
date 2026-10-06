@@ -155,7 +155,7 @@ const easDayFun = ( easAmoNum : number ) => Math.max( 1, Math.round( THR_DEF_NUM
 
 // #region Components
 
-type CocProTyp = { conDraObj : Partial< ConRcdTyp >, hidNamBoo? : boolean, layVarStr? : string, namErrStr? : string, onChange : ( nexDraObj : Partial< ConRcdTyp > ) => void }; // What: Conditional-Control-Component Props Type. Why: The editor shows a conditional draft in one of two layouts, optionally without its name field or with a name error, and hands back the whole next draft. How: This types CodConCom's props.
+type CocProTyp = { conDraObj : Partial< ConRcdTyp >, hidNamBoo? : boolean, layVarStr? : string, namErrStr? : string | null, onChange : ( nexDraObj : Partial< ConRcdTyp > ) => void }; // What: Conditional-Control-Component Props Type. Why: The editor shows a conditional draft in one of two layouts, optionally without its name field or with a name error, and hands back the whole next draft. How: This types CodConCom's props.
 
 // #region CodConCom
 

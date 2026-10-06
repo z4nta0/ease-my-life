@@ -125,8 +125,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 	// #region Form Step And Name
 
-	const touBusObj = useEmlTouFun();       // What: Tour Bus Object. Why: advSteFun needs to know whether a guided tour (of any kind) is currently driving the page, so it can skip its own scroll-to-top when a picker mini-tour is mid-flight. How: This subscribes to the shared tour event bus.
-	const namInpRef = React.useRef( null ); // What: Name Input Reference. Why: The focus effect right below needs a handle on the real input DOM node. How: This is attached to the name input's own ref prop, below.
+	const touBusObj = useEmlTouFun();                                  // What: Tour Bus Object. Why: advSteFun needs to know whether a guided tour (of any kind) is currently driving the page, so it can skip its own scroll-to-top when a picker mini-tour is mid-flight. How: This subscribes to the shared tour event bus.
+	const namInpRef = React.useRef< HTMLInputElement | null >( null ); // What: Name Input Reference. Why: The focus effect right below needs a handle on the real input DOM node. How: This is attached to the name input's own ref prop, below.
 
 	const [ forSteNum, setForSteNum ] = React.useState( ( iniForObj && iniForObj.step ) || 1 );  // What: Form Step Number And Setter. Why: This is the whole form's own current sub-step (1 Details, 2 Items). How: This starts from a prefilled step (a tour resuming mid-form) or 1.
 	const [ newNamStr, setNewNamStr ] = React.useState( ( iniForObj && iniForObj.name ) || '' ); // What: New Name String And Setter. Why: This is the picker's own live-typed name field. How: This starts from a prefilled name, or empty.
@@ -158,10 +158,10 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const [ addGroBoo, setAddGroBoo ] = React.useState( ( iniForObj && iniForObj.group ) ? true : exiGroArr.length === 0 );                 // What: Adding Group Boolean And Setter. Why: The inline "New Group" sub-form is its own mode, distinct from picking an existing chip. How: This starts open when a prefill explicitly stages a new group name, or when there are no existing groups to choose from at all.
 	const [ newGroStr, setNewGroStr ] = React.useState( ( iniForObj && iniForObj.group ) || '' );                                           // What: New Group String And Setter. Why: This is the live-typed value of the inline "New Group" sub-form. How: This starts from a prefilled group name, or empty.
 	const [ selModStr, setSelModStr ] = React.useState( ( iniForObj && iniForObj.mode ) || 'random' );                                      // What: Selected Mode String And Setter. Why: This is which picker mode is currently chosen. How: This starts from a prefilled mode, or 'random'.
-	const [ incDaiBoo, setIncDaiBoo ] = React.useState( ( iniForObj && 'includeInDaily' in iniForObj ) ? iniForObj.includeInDaily : true ); // What: Include Daily Boolean And Setter. Why: Whether this picker is included when the user taps Regenerate on Today. How: This defaults on, matching existing behavior for newly-created pickers, unless editing an existing one, which prefills its own current membership.
+	const [ incDaiBoo, setIncDaiBoo ] = React.useState( ( iniForObj && 'includeInDaily' in iniForObj ) ? !!iniForObj.includeInDaily : true ); // What: Include Daily Boolean And Setter. Why: Whether this picker is included when the user taps Regenerate on Today. How: This defaults on, matching existing behavior for newly-created pickers, unless editing an existing one, which prefills its own current membership.
 
-	const daiBloRef = React.useRef( null );  // What: Daily Block Reference. Why: The reveal effect right below needs a handle on the schedule block's own DOM node. How: This is attached to the schedule block's own ref prop, below.
-	const daiTogRef = React.useRef( false ); // What: Daily Toggled Reference. Why: The reveal effect below must only fire when the USER actually flipped the switch, not on an initial prefilled-true render. How: This is set true by the switch's own onClick and read (but never itself triggers a re-render) by the effect below.
+	const daiBloRef = React.useRef< HTMLDivElement | null >( null ); // What: Daily Block Reference. Why: The reveal effect right below needs a handle on the schedule block's own DOM node. How: This is attached to the schedule block's own ref prop, below.
+	const daiTogRef = React.useRef( false );                         // What: Daily Toggled Reference. Why: The reveal effect below must only fire when the USER actually flipped the switch, not on an initial prefilled-true render. How: This is set true by the switch's own onClick and read (but never itself triggers a re-render) by the effect below.
 
 
 	React.useEffect( () => { // What: Daily Reveal Effect. Why: Re-enabling the Daily section should bring the newly-revealed block fully into view, since it can unfurl below the fold. How: This waits for the ColDisCom unfurl to finish, then scrolls the shared .main container just enough to bring the block fully into view.
@@ -258,8 +258,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		: null; // What: No Collision Branch. Why: A unique name has no error. How: This returns null.
 
 
-	const raiCleRef = React.useRef( null ); // What: Rail Cleanup Reference. Why: The edge-fade cue on the conditional rail (matching the app's other horizontal rails) needs its own teardown function remembered across callback-ref re-invocations. How: This holds whatever cleanup function raiCalFun most recently registered, run and cleared at the top of every subsequent call.
-	const raiNodRef = React.useRef( null ); // What: Rail Node Reference. Why: The scroll-to-start effect and the reorder animation below both need to read back the same DOM node raiCalFun most recently attached to. How: This mirrors whatever element is currently mounted, or null while the rail itself isn't rendered.
+	const raiCleRef = React.useRef< ( () => void ) | null >( null ); // What: Rail Cleanup Reference. Why: The edge-fade cue on the conditional rail (matching the app's other horizontal rails) needs its own teardown function remembered across callback-ref re-invocations. How: This holds whatever cleanup function raiCalFun most recently registered, run and cleared at the top of every subsequent call.
+	const raiNodRef = React.useRef< HTMLElement | null >( null );    // What: Rail Node Reference. Why: The scroll-to-start effect and the reorder animation below both need to read back the same DOM node raiCalFun most recently attached to. How: This mirrors whatever element is currently mounted, or null while the rail itself isn't rendered.
 
 
 	// #region raiCalFun
@@ -379,7 +379,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 	const [ pooIteArr, setPooIteArr ] = React.useState< IteRcdTyp[] >( ( ( iniForObj && iniForObj.items ) || [] ) as IteRcdTyp[] ); // What: Pool Item Array And Setter. Why: Step 2's own pool; each item is { name, weight }, weight only mattering for weighted/dynamic modes and only editable inline then. How: This is a fresh pool (Option B, not a pick-from-library), starting from a prefilled items list, or empty; other defaults (drift value, ease knobs) are applied at commit time; it's asserted as items since the shared item editors read only the fields every pool item already carries.
 
-	const forWraRef = React.useRef( null ); // What: Form Wrap Reference. Why: advSteFun needs a handle on this form's own root so it can walk up to whichever ancestor actually scrolls. How: This is attached to the form's own root div, below.
+	const forWraRef = React.useRef< HTMLDivElement | null >( null ); // What: Form Wrap Reference. Why: advSteFun needs a handle on this form's own root so it can walk up to whichever ancestor actually scrolls. How: This is attached to the form's own root div, below.
 
 
 	const advSteFun = () => { // What: Advance Step Function. Why: Moving to Step 2 from the bottom-of-form button leaves the user scrolled down; the form's own scroll container should be pulled back to the top so the add-item field is in view without a manual scroll. How: This is skipped while a guided tour is active, since a picker mini-tour's own next step highlights something further down this same Items sub-step, and this scroll-to-top fought that positioning.
@@ -396,7 +396,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		requestAnimationFrame( () => { // What: Scroll To Top Call. Why: The add-item field should be visible without a manual scroll. How: This walks up from forWraRef looking for the nearest genuinely-scrollable ancestor, falling back to the shared .main container.
 
 
-			let curWalEle = forWraRef.current; // What: Current Walk Element. Why: The loop below needs a mutable pointer to walk up the DOM tree with. How: This starts at the form's own root and is reassigned to each ancestor in turn.
+			let curWalEle : HTMLElement | null = forWraRef.current; // What: Current Walk Element. Why: The loop below needs a mutable pointer to walk up the DOM tree with. How: This starts at the form's own root and is reassigned to each ancestor in turn.
 
 
 			while ( curWalEle && curWalEle !== document.body ) { // What: Ancestor Walk Loop. Why: The nearest ACTUALLY-scrollable ancestor (not just any parent) is what needs scrolling. How: This checks each ancestor's own computed overflow-y and real scroll height before deciding it's the one.
@@ -470,8 +470,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const easThrNum = 100;                           // What: Ease Threshold Number. Why: This is the fixed 0-100 scale every item's own drift value moves across. How: This is used throughout the conversion helpers right below. // What: Ease Cadence Design Note. Why: Ease cadence is PER-ITEM, since a fridge-clean and a counter-wipe want different rhythms; each item carries its own drift band { easeMin, easeMax }. How: Two human questions are asked per item and converted: soonest days (least time before it CAN come up) -> easeMax = 100/soonest; latest days (most time before it MUST come up) -> easeMin = 100/latest. The engine moves an item across the 0-100 threshold by random(easeMin, easeMax) each daily run, so maturing fastest (every roll = easeMax) takes 100/easeMax days = the soonest, and slowest (every roll = easeMin) takes 100/easeMin days = the latest; the gap between the two answers IS the randomness. Drift values are the source of truth on each item.
 	const defEasObj = { easeMax : 14, easeMin : 7 }; // What: Default Ease Object. Why: A freshly-added item needs a sensible starting drift band before the user tunes it. How: This seeds addDraFun's own new-item shape below. // What: Default Band Note. Why: The raw numbers are easier to picture as days. How: This band works out to roughly a 7-day soonest and a 14-day latest.
 
-	const covSooFun = ( easMaxNum : number ) => Math.max( 1, Math.round( easThrNum / ( easMaxNum || 1 ) ) ); // What: Convert Soonest Function. Why: The soonest-days question is really just easThrNum divided by an item's own easeMax, floored at 1 day. How: This rounds the division and clamps it to at least 1.
-	const covLatFun = ( easMinNum : number ) => Math.max( 1, Math.round( easThrNum / ( easMinNum || 1 ) ) ); // What: Convert Latest Function. Why: The latest-days question is really just easThrNum divided by an item's own easeMin, floored at 1 day. How: This rounds the division and clamps it to at least 1.
+	const covSooFun = ( easMaxNum : number | undefined ) => Math.max( 1, Math.round( easThrNum / ( easMaxNum || 1 ) ) ); // What: Convert Soonest Function. Why: The soonest-days question is really just easThrNum divided by an item's own easeMax, floored at 1 day. How: This rounds the division and clamps it to at least 1.
+	const covLatFun = ( easMinNum : number | undefined ) => Math.max( 1, Math.round( easThrNum / ( easMinNum || 1 ) ) ); // What: Convert Latest Function. Why: The latest-days question is really just easThrNum divided by an item's own easeMin, floored at 1 day. How: This rounds the division and clamps it to at least 1.
 
 	const capStrFun = ( souTexStr : string ) => souTexStr.length ? souTexStr[ 0 ].toUpperCase() + souTexStr.slice( 1 ) : souTexStr; // What: Capitalize String Function. Why: Every item/picker name this form commits should read with a capitalized first letter, regardless of how the user actually typed it. How: This upper-cases just the first character and leaves the rest untouched.
 
@@ -481,11 +481,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 	// #region Draft Item Editing
 
-	const [ actNewStr, setActNewStr ] = React.useState( null );                               // What: Active New String And Setter. Why: This holds the id of whichever draft item is currently being newly added (as opposed to an already-committed row being edited). How: This is set by addDraFun and cleared once its own closing animation finishes. // What: Reused Item Editor Design Note. Why: This is the same UI as the live Pickers-tab add flow; draft items carry a stable id so the shared EntEdiCom plus a synthetic actions object (backed by the draft array, not the store) can key off it. How: Adding opens the editor inline at the bottom; Save/Cancel play the same fade animations as the live flow.
+	const [ actNewStr, setActNewStr ] = React.useState< string | null >( null );              // What: Active New String And Setter. Why: This holds the id of whichever draft item is currently being newly added (as opposed to an already-committed row being edited). How: This is set by addDraFun and cleared once its own closing animation finishes. // What: Reused Item Editor Design Note. Why: This is the same UI as the live Pickers-tab add flow; draft items carry a stable id so the shared EntEdiCom plus a synthetic actions object (backed by the draft array, not the store) can key off it. How: Adding opens the editor inline at the bottom; Save/Cancel play the same fade animations as the live flow.
 	const [ actCloStr, setActCloStr ] = React.useState< false | 'cancel' | 'save' >( false ); // What: Active Closing String And Setter. Why: The new-item draft's own editor needs to play a closing animation before it's actually torn down. How: This holds 'save', 'cancel', or false, consumed by the draft wrap's own onAnimationEnd handler below. // What: Closing Values Note. Why: The close reason decides whether the draft is kept. How: It is false while open, otherwise 'save' or 'cancel'.
-	const [ insDraStr, setInsDraStr ] = React.useState( null );                               // What: Insert Draft String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set once a new-item draft's own closing animation reports 'save'.
-	const [ conDelStr, setConDelStr ] = React.useState( null );                               // What: Confirm Delete String And Setter. Why: Deleting a pool item asks for confirmation inline. How: This holds the id currently showing its own delete-confirm row.
-	const [ conLeaStr, setConLeaStr ] = React.useState( null );                               // What: Confirm Leaving String And Setter. Why: Cancelling a delete confirmation needs its own out-animation before the row reverts to normal. How: This holds the id currently playing that leaving animation, cleared once it finishes.
+	const [ insDraStr, setInsDraStr ] = React.useState< string | null >( null );              // What: Insert Draft String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set once a new-item draft's own closing animation reports 'save'.
+	const [ conDelStr, setConDelStr ] = React.useState< string | null >( null );              // What: Confirm Delete String And Setter. Why: Deleting a pool item asks for confirmation inline. How: This holds the id currently showing its own delete-confirm row.
+	const [ conLeaStr, setConLeaStr ] = React.useState< string | null >( null );              // What: Confirm Leaving String And Setter. Why: Cancelling a delete confirmation needs its own out-animation before the row reverts to normal. How: This holds the id currently playing that leaving animation, cleared once it finishes.
 
 	const selAllFun = React.useCallback( ( inpCurEle : HTMLInputElement | null ) => { if ( inpCurEle ) inpCurEle.select(); }, [] ); // What: Select All Function. Why: A new pool item opens with a default name that typing should replace outright. How: This stable ref callback selects the name field's text once, as it mounts.
 
@@ -538,14 +538,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	// #endregion canConFun
 
 
-	const [ rmvIdeStr, setRmvIdeStr ] = React.useState( null ); // What: Removing Identifier String And Setter. Why: A deleted pool row needs its own removal animation to finish before it's actually taken out of pooIteArr. How: This holds the id currently playing that removal animation.
+	const [ rmvIdeStr, setRmvIdeStr ] = React.useState< string | null >( null ); // What: Removing Identifier String And Setter. Why: A deleted pool row needs its own removal animation to finish before it's actually taken out of pooIteArr. How: This holds the id currently playing that removal animation.
 
-	const addWraRef = React.useRef( null ); // What: Add Wrap Reference. Why: Both the new-item and edit-item flows render into this same below-the-list slot, which needs a stable handle so it can be scrolled into view. How: This is attached to the iteAddDiv div's own ref prop, below.
+	const addWraRef = React.useRef< HTMLDivElement | null >( null ); // What: Add Wrap Reference. Why: Both the new-item and edit-item flows render into this same below-the-list slot, which needs a stable handle so it can be scrolled into view. How: This is attached to the iteAddDiv div's own ref prop, below.
 
-	const [ ediIteStr, setEdiIteStr ] = React.useState( null );  // What: Editing Item String And Setter. Why: Editing an already-added draft item mirrors the live Pickers tab's own ediIteStr/opeEdiFun/staEdiFun exactly (see PicVieCom above), just bound to pooIteArr + draActObj instead of the real store. How: This holds the id of whichever committed draft item currently has its editor open, or null.
-	const [ ediCloBoo, setEdiCloBoo ] = React.useState( false ); // What: Editing Closing Boolean And Setter. Why: Closing a committed draft item's editor needs its own out-animation before it's actually torn down. How: This is flipped true to start that animation.
+	const [ ediIteStr, setEdiIteStr ] = React.useState< string | null >( null ); // What: Editing Item String And Setter. Why: Editing an already-added draft item mirrors the live Pickers tab's own ediIteStr/opeEdiFun/staEdiFun exactly (see PicVieCom above), just bound to pooIteArr + draActObj instead of the real store. How: This holds the id of whichever committed draft item currently has its editor open, or null.
+	const [ ediCloBoo, setEdiCloBoo ] = React.useState( false );                 // What: Editing Closing Boolean And Setter. Why: Closing a committed draft item's editor needs its own out-animation before it's actually torn down. How: This is flipped true to start that animation.
 
-	const penEdiRef = React.useRef( null );                                                   // What: Pending Edit Reference. Why: Switching straight from the new-item form (or a different item's editor) into this one must not silently drop the request. How: This holds the target id to reopen once whatever's currently closing finishes.
+	const penEdiRef = React.useRef< string | null >( null );                                  // What: Pending Edit Reference. Why: Switching straight from the new-item form (or a different item's editor) into this one must not silently drop the request. How: This holds the target id to reopen once whatever's currently closing finishes.
 	const comCouNum = pooIteArr.filter( ( iteCurObj ) => iteCurObj.id !== actNewStr ).length; // What: Committed Count Number. Why: The count and the Create button must not react early to a row still being edited, so its own Save hasn't landed yet. How: This is deliberately computed AFTER actNewStr's own declaration above; referencing it earlier in the body would (since this project targets Vite, not a var-hoisting build) read as undefined and this filter would exclude nothing.
 	const enoIteBoo = comCouNum >= 2;                                                         // What: Enough Item Boolean. Why: A picker must have at least 2 real, committed items before it can be created. How: This is true once comCouNum reaches 2.
 
@@ -1040,9 +1040,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-		if ( isaEdiBoo ) onSavEdiFun( payForObj ); // What: Edit Route Branch. Why: An in-progress edit of an existing picker must reach the save flow. How: This calls onSavEdiFun with payForObj.
+		if ( isaEdiBoo ) onSavEdiFun!( payForObj ); // What: Edit Route Branch. Why: An in-progress edit of an existing picker must reach the save flow. How: This calls onSavEdiFun with payForObj. // What: Non-Null Note. Why: The Pickers view opens the form in edit mode and always passes onSavEdiFun with it. How: The ! tells TypeScript the callback is set here.
 
-		else onCrePicFun( payForObj ); // What: Create Route Branch. Why: A brand-new picker must reach the create flow instead. How: This calls onCrePicFun with payForObj.
+		else onCrePicFun!( payForObj ); // What: Create Route Branch. Why: A brand-new picker must reach the create flow instead. How: This calls onCrePicFun with payForObj. // What: Non-Null Note. Why: The Pickers tab opens the form for a create and always passes onCrePicFun with it. How: The ! tells TypeScript the callback is set here.
 
 
 	};

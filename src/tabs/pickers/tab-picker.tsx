@@ -13,6 +13,7 @@ import { HelButCom    } from '../../help/button.tsx';               // What: Hel
 import { HelOveCom    } from '../../help/mode.tsx';                 // What: Help Overlay Component. Why: Help mode needs its own highlighted-tooltip overlay layered above the page. How: This is rendered once, fed this page's own PIC_HEL_ARR.
 import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon Svg Component. Why: The tab's header and add controls show small glyphs. How: This is rendered inside those controls.
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: The Add New Picker button is disabled until the tutorials are complete and must say so. How: This wraps that button with the reason as its tip.
+import { isaTruFun    } from '../../utils/guard.ts';                // What: Is-A Truthy Function. Why: The rail fade skips any filter rail that isn't mounted. How: This filters them so the rest read as real elements.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: The Add New Picker button must stay disabled while the guided-tour checklist is still in progress. How: This is checked via ONB_CHE_OBJ.tutProFun against the shared state.
 import { PIC_HEL_ARR  } from '../../help/content.tsx';              // What: Picker Help Array. Why: Help mode needs this page's own list of highlighted elements and their explanations. How: This is passed straight through to HelOveCom.
 import { PicForCom    } from './picker-form.tsx';                   // What: Picker Form Component. Why: Creating a picker happens in the same slot a picker's view would occupy. How: This is rendered while the create form is open.
@@ -26,6 +27,7 @@ import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use
 
 import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The tab changes state through the store's actions. How: This types TpcProTyp's actStoObj.
 import type { ModNamTyp } from '../../core/data-model.ts'; // What: Mode Name Type. Why: The Type filter collects the modes in use. How: This types the set that collects them.
+import type { PicArgTyp } from '../../core/data-model.ts'; // What: Picker Argument Type. Why: The empty-state prefill is handed to the create form. How: This types the state holding it.
 import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The tab reads the current app state. How: This types TpcProTyp's staAppObj.
 
 // #endregion Imports
@@ -96,7 +98,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 	// #region Picker Selection And Filters
 
-	const [ actPicStr, setActPicStr ] = React.useState( () => ( // What: Active Picker String And Setter. Why: This defaults to the first picker the Show row itself will display (see sorPicArr below), alphabetical, not pickers' own storage-array order, which the row's own render is sorted by too. How: This duplicates sorPicArr's own filter+sort inline, since that memo isn't declared yet at this point in the component, purely for this one initial value.
+	const [ actPicStr, setActPicStr ] = React.useState< string | undefined >( () => ( // What: Active Picker String And Setter. Why: This defaults to the first picker the Show row itself will display (see sorPicArr below), alphabetical, not pickers' own storage-array order, which the row's own render is sorted by too. How: This duplicates sorPicArr's own filter+sort inline, since that memo isn't declared yet at this point in the component, purely for this one initial value.
 
 
 		[ ...staAppObj.pickers ].filter( ( picCurObj ) => !picCurObj.hidden ).sort( ( picOneObj, picTwoObj ) => picOneObj.name.localeCompare( picTwoObj.name ) )[ 0 ]?.id // What: First Visible Picker Expression. Why: The page opens on the first picker the Show row lists. How: This sorts the visible pickers by name and takes the first id.
@@ -148,7 +150,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 	const picTouBoo = isaTouBoo && typeof touBusObj.touIdeStr === 'string' && touBusObj.touIdeStr.startsWith( 'picker-' ); // What: Picker Tour Boolean. Why: A running picker mini-tour's own Step 2 wants the user to click the real Add New Picker button themselves, not a simulated click, exempting it from tutProBoo's own gate below for its whole run (later steps' own cirBoo targets are elsewhere, so the click-guard already keeps a stray click on this button from doing anything by then anyway). How: This checks the shared 'picker-' tour id prefix convention picker mini-tours use.
 	const tutProBoo = ONB_CHE_OBJ.tutProFun( staAppObj ) && !picTouBoo;                                                    // What: Tutorials Progress Boolean. Why: This button is separately disabled anywhere from the Welcome Tour's first step through the closing Generate card's flow completing. How: This is distinct from disAddBoo above (still needed on its own: a Replay of the Pickers page tour runs AFTER the checklist finishes, when this is always false), and is exempted for the whole run of a picker mini-tour via picTouBoo.
 
-	const [ empIniObj, setEmpIniObj ] = React.useState( null ); // What: Empty Initial Object And Setter. Why: Prefill staged by Today's empty-state card needs to survive clearing the bus signal that carried it. How: This is set once by the empty-state effect below and consumed as PicForCom's own iniForObj prop.
+	const [ empIniObj, setEmpIniObj ] = React.useState< ( PicArgTyp & { focusName? : boolean } ) | null >( null ); // What: Empty Initial Object And Setter. Why: Prefill staged by Today's empty-state card needs to survive clearing the bus signal that carried it. How: This is set once by the empty-state effect below and consumed as PicForCom's own iniForObj prop.
 
 
 	React.useEffect( () => { // What: Empty-State Create Effect. Why: Today's "no pickers" empty-state card should open the create form with its own staged prefill. How: This consumes touBusObj.staCreObj once, then clears it, prefilling a "Chores" group only when there are no groups to auto-select (a group can technically exist with no pickers, so an existing one is respected by leaving group unset, letting the form auto-select it).
@@ -271,15 +273,15 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 	}, [ groFilStr, typFilStr, visPicArr, sorPicArr, actPicStr, creOpeBoo ] ); // What: Effect Dependency Array. Why: This must re-check whenever any of these could change what "coherent" means. How: groFilStr/typFilStr are the filters themselves, visPicArr/sorPicArr are what they produce, actPicStr is the current selection, and creOpeBoo gates whether this applies at all.
 
 
-	const tabRaiRef = React.useRef( null ); // What: Tab Rail Reference. Why: The scroll-edge fade effect below needs the Show row's own element. How: This is attached to that rail's ref prop. // What: Scroll-Aware Edge Fades Design Note. Why: The tab strip, and the Group/Type filter rails, all need the same scroll-edge mask-gradient behavior so each one's own fade only shows on the side that has more content. How: tabRaiRef/groRaiRef/typRaiRef below are attached to those three rails; the effect right after wires up a shared scroll+resize listener for whichever of them are actually mounted.
-	const groRaiRef = React.useRef( null ); // What: Group Rail Reference. Why: The scroll-edge fade effect below needs the Group rail's own element. How: This is attached to that rail's ref prop.
-	const typRaiRef = React.useRef( null ); // What: Type Rail Reference. Why: Same reasoning as groRaiRef, for the Type rail. How: This is attached to that rail's ref prop.
+	const tabRaiRef = React.useRef< HTMLDivElement | null >( null ); // What: Tab Rail Reference. Why: The scroll-edge fade effect below needs the Show row's own element. How: This is attached to that rail's ref prop. // What: Scroll-Aware Edge Fades Design Note. Why: The tab strip, and the Group/Type filter rails, all need the same scroll-edge mask-gradient behavior so each one's own fade only shows on the side that has more content. How: tabRaiRef/groRaiRef/typRaiRef below are attached to those three rails; the effect right after wires up a shared scroll+resize listener for whichever of them are actually mounted.
+	const groRaiRef = React.useRef< HTMLDivElement | null >( null ); // What: Group Rail Reference. Why: The scroll-edge fade effect below needs the Group rail's own element. How: This is attached to that rail's ref prop.
+	const typRaiRef = React.useRef< HTMLDivElement | null >( null ); // What: Type Rail Reference. Why: Same reasoning as groRaiRef, for the Type rail. How: This is attached to that rail's ref prop.
 
 
 	React.useEffect( () => { // What: Rail Fade Effect. Why: Every filter rail shares the same scroll-edge fade affordance. How: This wires scroll-edge tracking for each mounted rail and tears it down on change.
 
 
-		const valRaiArr = [ tabRaiRef.current, groRaiRef.current, typRaiRef.current ].filter( Boolean ); // What: Valid Rail Array. Why: Only whichever rails are actually mounted right now (the Group/Type rows can be entirely absent) should get listeners. How: This filters out any null ref.
+		const valRaiArr = [ tabRaiRef.current, groRaiRef.current, typRaiRef.current ].filter( isaTruFun ); // What: Valid Rail Array. Why: Only whichever rails are actually mounted right now (the Group/Type rows can be entirely absent) should get listeners. How: This filters out any null ref.
 
 
 		const cleFunArr = valRaiArr.map( ( curRaiEle ) => { // What: Cleanup Function Array. Why: Each rail needs its own independent listener/observer pair, and its own independent teardown. How: This maps each element to a closure removing exactly its own listener and disconnecting its own observer.
@@ -942,8 +944,8 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 									hidden : !!touBusObj.shoCheBoo, // What: Hidden. Why: A picker made while the tour checklist is up stays out of sight until the tour finishes. How: This is true while the bus shows the checklist.
 
-									...( touBusObj.preFilObj ? { createdFromSample : touBusObj.samIdeStr } : {} ), // What: Sample Tag Spread. Why: A tour-prefilled picker records which sample it came from. How: This adds createdFromSample only while a prefill is active.
-									...( touBusObj.exiIdeStr ? { replaceId : touBusObj.exiIdeStr } : {} )          // What: Replace Id Spread. Why: A tour replay updates its earlier picker in place instead of adding a duplicate. How: This adds replaceId only while the bus names an existing picker.
+									...( touBusObj.preFilObj ? { createdFromSample : touBusObj.samIdeStr! } : {} ), // What: Sample Tag Spread. Why: A tour-prefilled picker records which sample it came from. How: This adds createdFromSample only while a prefill is active. // What: Non-Null Note. Why: A picker tour sets its prefill and its sample id in the same bus write. How: The ! tells TypeScript samIdeStr is set whenever preFilObj is.
+									...( touBusObj.exiIdeStr ? { replaceId : touBusObj.exiIdeStr } : {} )           // What: Replace Id Spread. Why: A tour replay updates its earlier picker in place instead of adding a duplicate. How: This adds replaceId only while the bus names an existing picker.
 
 
 								});

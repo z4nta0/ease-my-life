@@ -12,6 +12,7 @@ import { durMilFun    } from '../../utils/rhythm.ts';     // What: Duration Mill
 import { EntEdiCom    } from '../../ui/entry-editor.tsx'; // What: Entry Editor Component. Why: Adding or editing a pool item reuses the exact same weight/ease editor the Today tab uses. How: This is rendered inline below the pool list, wired to either the real store actions or a local draft-item actions object.
 import { IcoSvgCom    } from '../../ui/icon.tsx';         // What: Icon Svg Component. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
 import { InfTipCom    } from '../../ui/info-tip.tsx';     // What: Info Tip Component. Why: Several controls need an explanatory tooltip on hover/focus. How: This wraps the weight/value pills and the disabled Send/Delete buttons, given the tooltip's own label text.
+import { isaTruFun    } from '../../utils/guard.ts';      // What: Is-A Truthy Function. Why: Entries without an item drop out of the Today id set. How: This filters them so the set holds only real ids.
 import { PIC_NAM_OBJ  } from '../../core/pickers.ts';     // What: Pickers Namespace Object. Why: This is the namespace of pure picking-engine functions this file drives every actual pick through. How: This is called throughout for PIC_NAM_OBJ.picIteFun/reaValFun/modEliFun/aveEasFun.
 import { PicForCom    } from './picker-form.tsx';         // What: Picker Form Component. Why: Editing a picker's details reuses the create form's Details step. How: This is rendered in place of the view while ediOpeBoo is on.
 import { PicStrCom    } from '../../ui/picker-strip.tsx'; // What: Picker Strip Component. Why: Pick One plays the shared reel, spotlight, or dissolve reveal before showing its result. How: This is rendered in the run stage while a pick is cycling.
@@ -27,6 +28,7 @@ import { useIteDraFun } from '../../ui/record-draft.ts';  // What: Use Item Draf
 import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The view changes state through the store's actions. How: This types PvcProTyp's actStoObj.
 import type { IteRcdTyp } from '../../core/data-model.ts'; // What: Item Record Type. Why: A saved draft carries some of its fields over as a patch. How: This types that patch.
 import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Record Type. Why: The view shows one picker. How: This types PvcProTyp's picDatObj.
+import type { PicResTyp } from '../../core/pickers.ts';    // What: Pick Result Type. Why: The stage shows the latest pick. How: This types the state holding it.
 import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The view reads the current app state. How: This types PvcProTyp's staAppObj.
 
 // #endregion Imports
@@ -114,10 +116,10 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	// #region Pick Run State
 
-	const [ busPicBoo, setBusPicBoo ] = React.useState( false );  // What: Busy Picking Boolean And Setter. Why: The Pick One button must disable itself and show a busy label while the cycle animation is actually running. How: This is set true by runPicFun and cleared once onAniDonFun fires.
-	const [ picResObj, setPicResObj ] = React.useState( null );   // What: Pick Result Object And Setter. Why: The stage and action buttons both need the most recent PIC_NAM_OBJ.picIteFun() outcome to render from. How: This is written by runPicFun/rerActFun and read throughout the render below.
-	const [ runCouNum, setRunCouNum ] = React.useState( 0 );      // What: Run Count Number And Setter. Why: Every pick run needs a fresh cycle animation, even a Re-Roll that starts straight from a settled pick without passing through idle. How: runPicFun increments it, and the strip is keyed by it so each run remounts it.
-	const [ runPhaStr, setRunPhaStr ] = React.useState( 'idle' ); // What: Run Phase String And Setter. Why: Every part of this view's stage and action row renders differently depending on where the current run actually is. How: This starts on 'idle' and is advanced by runPicFun, onAniDonFun, senTodFun, and the tour-driven effect below. // What: Run Phase Values Note. Why: The phase drives every stage render, so its possible values are worth listing. How: It is one of 'idle', 'running', 'done', 'sent' or 'empty'.
+	const [ busPicBoo, setBusPicBoo ] = React.useState( false );                    // What: Busy Picking Boolean And Setter. Why: The Pick One button must disable itself and show a busy label while the cycle animation is actually running. How: This is set true by runPicFun and cleared once onAniDonFun fires.
+	const [ picResObj, setPicResObj ] = React.useState< PicResTyp | null >( null ); // What: Pick Result Object And Setter. Why: The stage and action buttons both need the most recent PIC_NAM_OBJ.picIteFun() outcome to render from. How: This is written by runPicFun/rerActFun and read throughout the render below.
+	const [ runCouNum, setRunCouNum ] = React.useState( 0 );                        // What: Run Count Number And Setter. Why: Every pick run needs a fresh cycle animation, even a Re-Roll that starts straight from a settled pick without passing through idle. How: runPicFun increments it, and the strip is keyed by it so each run remounts it.
+	const [ runPhaStr, setRunPhaStr ] = React.useState( 'idle' );                   // What: Run Phase String And Setter. Why: Every part of this view's stage and action row renders differently depending on where the current run actually is. How: This starts on 'idle' and is advanced by runPicFun, onAniDonFun, senTodFun, and the tour-driven effect below. // What: Run Phase Values Note. Why: The phase drives every stage render, so its possible values are worth listing. How: It is one of 'idle', 'running', 'done', 'sent' or 'empty'.
 
 
 	React.useEffect( () => { // What: Tour Reset Effect. Why: Resets this view back to idle whenever the Pickers page tour's own onBacTouFun bumps touBusObj.resNonNum: a Back from its "Add to Todo List" step to "Manual Generation" needs Pick One showing again, not whatever real Send to Today/Re-roll/Done state a completed pick left behind. How: This is guarded on truthiness (not just present in the deps array) so the unset/0 starting value doesn't also reset on every fresh mount, only a genuine bump does anything.
@@ -198,13 +200,13 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	const [ shoDriBoo, setShoDriBoo ] = React.useState( picDatObj.mode !== 'random' && picDatObj.mode !== 'weighted' ); // What: Show Drift Boolean And Setter. Why: A non-random/weighted picker's pool rows can optionally reveal each item's own drift/readiness bar, hidden by default to keep the list simple. How: This starts true whenever the picker's mode isn't 'random' or 'weighted', and is toggled by the pool header's own "Show/Hide drift" link.
 	const [ newDraObj, setNewDraObj ] = React.useState< IteRcdTyp | null >( null );                                     // What: New Draft Object And Setter. Why: Adding a new pool item is held as a LOCAL draft, not committed to the store, until Save, so a reload or tab-switch discards an in-progress item, matching the new-picker create flow. How: This is the editing item; patNewFun (below) edits it locally, and cmtDraFun commits it via the real store actions on Save.
-	const [ insSavStr, setInsSavStr ] = React.useState( null );                                                         // What: Insert Saved String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set by cmtDraFun and cleared once the row's own insert keyframe finishes.
-	const [ conDelStr, setConDelStr ] = React.useState( null );                                                         // What: Confirm Delete String And Setter. Why: Deleting a pool item asks for confirmation inline, in place of that row's own normal content. How: This holds the id currently showing its own delete-confirm row.
-	const [ conLeaStr, setConLeaStr ] = React.useState( null );                                                         // What: Confirm Leaving String And Setter. Why: Cancelling a delete confirmation needs its own out-animation before the row reverts to normal. How: This holds the id currently playing that leaving animation, cleared once it finishes.
+	const [ insSavStr, setInsSavStr ] = React.useState< string | null >( null );                                        // What: Insert Saved String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set by cmtDraFun and cleared once the row's own insert keyframe finishes.
+	const [ conDelStr, setConDelStr ] = React.useState< string | null >( null );                                        // What: Confirm Delete String And Setter. Why: Deleting a pool item asks for confirmation inline, in place of that row's own normal content. How: This holds the id currently showing its own delete-confirm row.
+	const [ conLeaStr, setConLeaStr ] = React.useState< string | null >( null );                                        // What: Confirm Leaving String And Setter. Why: Cancelling a delete confirmation needs its own out-animation before the row reverts to normal. How: This holds the id currently playing that leaving animation, cleared once it finishes.
 
 	const selAllFun = React.useCallback( ( inpCurEle : HTMLInputElement | null ) => { if ( inpCurEle ) inpCurEle.select(); }, [] ); // What: Select All Function. Why: A new item opens with a default name that typing should replace outright. How: This stable ref callback selects the name field's text once, as it mounts.
 
-	const penEdiRef = React.useRef( null ); // What: Pending Edit Reference. Why: Set by staEdiFun when it has to close an in-progress new-item draft OR another item's open editor out of the way first, this is picked back up once that draft's/editor's own closing animation ends, so the edit opens right after instead of being silently dropped. How: This holds the target item id to reopen, consumed by the relevant onAnimationEnd handler below.
+	const penEdiRef = React.useRef< string | null >( null ); // What: Pending Edit Reference. Why: Set by staEdiFun when it has to close an in-progress new-item draft OR another item's open editor out of the way first, this is picked back up once that draft's/editor's own closing animation ends, so the edit opens right after instead of being silently dropped. How: This holds the target item id to reopen, consumed by the relevant onAnimationEnd handler below.
 
 
 	// #region canConFun
@@ -260,7 +262,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	// #region Item Removal And Sending
 
-	const [ rmvIdeStr, setRmvIdeStr ] = React.useState( null );                  // What: Removing Identifier String And Setter. Why: A deleted pool row needs its own removal animation to finish before it's actually taken out of the store. How: This holds the id currently playing that removal animation; the row's own onAnimationEnd handler below both clears it and calls actions.delIteFun.
+	const [ rmvIdeStr, setRmvIdeStr ] = React.useState< string | null >( null ); // What: Removing Identifier String And Setter. Why: A deleted pool row needs its own removal animation to finish before it's actually taken out of the store. How: This holds the id currently playing that removal animation; the row's own onAnimationEnd handler below both clears it and calls actions.delIteFun.
 	const [ senIdeStr, setSenIdeStr ] = React.useState< string | null >( null ); // What: Sent Identifier String And Setter. Why: A pool item just sent to Today via its own per-row button needs a brief checkmark confirmation on that exact row. How: This holds the id currently showing that confirmation, cleared 1400ms later by senIteFun.
 
 
@@ -329,7 +331,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	const [ newCloStr, setNewCloStr ] = React.useState< false | 'cancel' | 'save' >( false ); // What: New Closing String And Setter. Why: The new-item draft's own editor needs to play a closing animation before it's actually torn down, distinguishing a Save close from a Cancel close. How: This holds 'save', 'cancel', or false, consumed by the draft wrap's own onAnimationEnd handler below.
 
-	const addWraRef = React.useRef( null );                                           // What: Add Wrap Reference. Why: Both the new-item and edit-item flows render into this same below-the-list slot, which needs a stable handle so it can be scrolled into view. How: This is attached to the iteAddDiv div's own ref prop, below.
+	const addWraRef = React.useRef< HTMLDivElement | null >( null );                  // What: Add Wrap Reference. Why: Both the new-item and edit-item flows render into this same below-the-list slot, which needs a stable handle so it can be scrolled into view. How: This is attached to the iteAddDiv div's own ref prop, below.
 	const useWeiBoo = picDatObj.mode === 'weighted' || picDatObj.mode === 'dynamic';  // What: Uses Weight Boolean. Why: Only these two modes treat an item's weight as a real lever; the others ignore it entirely. How: This gates whether weight fields are carried over/shown throughout this view.
 	const isaEasBoo = picDatObj.mode === 'ease-up' || picDatObj.mode === 'ease-down'; // What: Is-An Ease Boolean. Why: Only these two modes use the easeMin/easeMax drift band at all. How: This gates whether ease fields are carried over/shown throughout this view.
 
@@ -483,8 +485,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	// #region Item Editor
 
-	const [ ediIteStr, setEdiIteStr ] = React.useState( null );  // What: Editing Item String And Setter. Why: An existing pool item's own edit slot reuses the exact same below-the-list interface as "+ Add Item", just populated from a real item and wired to the REAL actions instead of a draft. How: This holds the id of whichever existing item currently has its editor open, or null.
-	const [ ediCloBoo, setEdiCloBoo ] = React.useState( false ); // What: Editing Closing Boolean And Setter. Why: Closing an existing item's editor needs its own out-animation before it's actually torn down. How: This is flipped true to start that animation and consumed by the editor's own onAnimationEnd handler below.
+	const [ ediIteStr, setEdiIteStr ] = React.useState< string | null >( null ); // What: Editing Item String And Setter. Why: An existing pool item's own edit slot reuses the exact same below-the-list interface as "+ Add Item", just populated from a real item and wired to the REAL actions instead of a draft. How: This holds the id of whichever existing item currently has its editor open, or null.
+	const [ ediCloBoo, setEdiCloBoo ] = React.useState( false );                 // What: Editing Closing Boolean And Setter. Why: Closing an existing item's editor needs its own out-animation before it's actually torn down. How: This is flipped true to start that animation and consumed by the editor's own onAnimationEnd handler below.
 
 	const ediOpeObj = ediIteStr && !ediCloBoo ? staAppObj.items.find( ( iteCurObj ) => iteCurObj.id === ediIteStr ) || null : null; // What: Editing Open Object. Why: Only an editor that's open, not one playing its closing animation, has a draft. How: This looks up the edited item while the editor is open and not closing, else null.
 
@@ -657,7 +659,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	const todIdeSet = React.useMemo( // What: Today Identifier Set. Why: Item ids already on Today are used to disable per-item Send and to keep the "Pick One" spin from landing on a duplicate. How: This is memoized off state.today.entries, recomputed only when the entries themselves change.
 
-		() => new Set( ( staAppObj.today.entries || [] ).filter( ( entCurObj ) => entCurObj.itemId ).map( ( entCurObj ) => entCurObj.itemId ) ), // What: Today Ids Build. Why: Only entries actually tied to an item (not a reminder or conditional row) belong in this set. How: This filters to entries with an itemId, then maps to just that id.
+		() => new Set( ( staAppObj.today.entries || [] ).map( ( entCurObj ) => entCurObj.itemId ).filter( isaTruFun ) ), // What: Today Ids Build. Why: Only entries actually tied to an item (not a reminder or conditional row) belong in this set. How: This maps every entry to its itemId, then drops the empty ones.
 
 		[ staAppObj.today.entries ] // What: Memo Dependency Array. Why: The set only needs recomputing when today's own entries list changes. How: state.today.entries is the sole source this memo reads.
 
@@ -910,13 +912,9 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 		const notDonBoo = runPhaStr !== 'done'; // What: Not Done Boolean. Why: A pick can only be sent once its cycle has settled. How: This checks runPhaStr isn't 'done'.
-		const notResBoo = !picResObj;           // What: Not Result Boolean. Why: There must be a stored pick result. How: This negates picResObj.
-		const notPicBoo = !picResObj.picObj;    // What: Not Picked Boolean. Why: The result must hold a real picked item. How: This negates picResObj.picObj.
-
-		const notReaBoo = notDonBoo || notResBoo || notPicBoo; // What: Not Ready Boolean. Why: Any one missing piece means there's nothing to send. How: This ORs the 3 checks above.
 
 
-		if ( notReaBoo ) return; // What: Not Ready Guard. Why: There is nothing to send unless the cycle has actually settled on a real pick. How: This bails out unless runPhaStr is 'done' and picResObj holds a real outcome.
+		if ( notDonBoo || !picResObj || !picResObj.picObj ) return; // What: Not Ready Guard. Why: There is nothing to send unless the cycle has actually settled on a real pick. How: This bails out unless runPhaStr is 'done' and picResObj holds a real outcome. // The result checks stay inline because each guards the next: reading picObj before confirming picResObj exists would throw.
 
 
 
