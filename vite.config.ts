@@ -13,6 +13,9 @@ import { transform as traCssFun } from 'lightningcss';    // What: Transform Css
 import { VitePWA                } from 'vite-plugin-pwa'; // What: Vite PWA. Why: The app installs and works offline through a generated service worker. How: This is called in the plugins array with its options.
 import { writeFileSync          } from 'node:fs';         // What: Write File Sync. Why: The minified boot-splash.js replaces the copy Vite wrote. How: This writes it back to the output folder.
 
+
+import type { Plugin } from 'vite'; // What: Plugin. Why: The shipped-files minifier is a Vite plugin. How: This types minShiFun's return, which types each of its hooks.
+
 // #endregion Imports
 
 
@@ -52,7 +55,7 @@ const pacJsoObj = JSON.parse( readFileSync( new URL( './package.json', import.me
 
 // #region Helpers
 
-const minCssFun = ( styTexStr ) => traCssFun({ // What: Minify Css Function. Why: Each inline style in index.html is minified the same way. How: This runs lightningcss on the style's text and returns the result as a string.
+const minCssFun = ( styTexStr : string ) => traCssFun({ // What: Minify Css Function. Why: Each inline style in index.html is minified the same way. How: This runs lightningcss on the style's text and returns the result as a string.
 
 
 	code     : Buffer.from( styTexStr ), // What: Code. Why: lightningcss reads its input as bytes. How: This passes the style's text as a buffer.
@@ -95,7 +98,7 @@ const minCssFun = ( styTexStr ) => traCssFun({ // What: Minify Css Function. Why
  *
 */
 
-const minShiFun = () => { // What: Minify Shipped Function. Why: index.html and public/ files ship as written unless something minifies them. How: This returns a build-only Vite plugin that does.
+const minShiFun = () : Plugin => { // What: Minify Shipped Function. Why: index.html and public/ files ship as written unless something minifies them. How: This returns a build-only Vite plugin that does.
 
 
 	let outDirStr = 'dist'; // What: Output Directory String. Why: The script step has to find the copied scripts in whatever folder the build writes to. How: configResolved replaces this default with the resolved build.outDir.

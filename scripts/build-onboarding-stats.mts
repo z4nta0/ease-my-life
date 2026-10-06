@@ -282,9 +282,9 @@ const conLogFun = ( hisRowArr : PclRowTyp[], todIndNum : number ) : RawStaTyp[ '
 const buiRemFun = ( todDatObj : Date ) : { remLogArr : RawStaTyp[ 'reminderLog' ], remSkiArr : RawStaTyp[ 'reminderSkipLog' ] } => { // What: Build Reminder Function. Why: Stats should show a realistic year of the weekly trash reminder. How: This finds every Monday in range and rolls each as completed or skipped.
 
 
-	const monBacArr = []; // What: Monday Back Array. Why: Each reminder row is one Monday's day offset. How: The loop below fills this with every Monday in the last 370 days.
-	const remLogArr = []; // What: Reminder Log Array. Why: Completed Mondays become reminder log rows. How: The second loop below fills this.
-	const remSkiArr = []; // What: Reminder Skip Array. Why: Skipped Mondays become skip log rows. How: The second loop below fills this.
+	const monBacArr : number[]                       = []; // What: Monday Back Array. Why: Each reminder row is one Monday's day offset. How: The loop below fills this with every Monday in the last 370 days.
+	const remLogArr : RawStaTyp[ 'reminderLog' ]     = []; // What: Reminder Log Array. Why: Completed Mondays become reminder log rows. How: The second loop below fills this.
+	const remSkiArr : RawStaTyp[ 'reminderSkipLog' ] = []; // What: Reminder Skip Array. Why: Skipped Mondays become skip log rows. How: The second loop below fills this.
 
 
 	for ( let bacDayNum = 1; bacDayNum <= 370; bacDayNum++ ) { // What: Monday Scan Loop. Why: Every day in range has to be checked for whether it's a Monday. How: This walks back one day at a time from yesterday.
