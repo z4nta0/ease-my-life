@@ -296,13 +296,14 @@ type EasStaTyp = Record< string, { activeItemId : string | null, charge : number
 function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun : ( iteIdeStr : string, dayIsoStr : string ) => boolean, totDayNum : number = 365 ) : { easStaObj : EasStaTyp, hisRowArr : PclRowTyp[] } {
 
 
-	const picRowArr = [];         // What: Pick Row Array And Guard. Why: Every row built by logPicFun below needs somewhere to accumulate. How: This starts empty and is pushed into below.
+	const picRowArr : PclRowTyp[] = []; // What: Pick Row Array And Guard. Why: Every row built by logPicFun below needs somewhere to accumulate. How: This starts empty and is pushed into below.
+
 	const todMidObj = new Date(); // What: Today Midnight Object. Why: Every simulated day below is computed relative to this same anchor. How: This is read as "now" and then floored to midnight on the next line.
 
 	todMidObj.setHours( 0, 0, 0, 0 ); // What: Today Midnight Hours Reset. Why: Only the calendar day matters for the day-offset arithmetic below, not the current time of day. How: This zeroes out todMidObj's own hours/minutes/seconds/milliseconds in place.
 
 
-	const picPooObj = {}; // What: Picker Pool Object And Guard. Why: The simulation below repeatedly needs "every item belonging to this picker," which would otherwise mean re-filtering allIteArr on every single day simulated. How: This starts empty and is filled once by the loop directly below, then read many times.
+	const picPooObj : Record< string, IteRcdTyp[] > = {}; // What: Picker Pool Object And Guard. Why: The simulation below repeatedly needs "every item belonging to this picker," which would otherwise mean re-filtering allIteArr on every single day simulated. How: This starts empty and is filled once by the loop directly below, then read many times.
 
 
 	for ( const curIteObj of allIteArr ) ( picPooObj[ curIteObj.pickerId ] = picPooObj[ curIteObj.pickerId ] || [] ).push( curIteObj ); // What: Picker Pool Fill Loop. Why: Every item must be filed under its own picker exactly once before the simulation below can look pools up cheaply. How: This iterates allIteArr, creating each picker's own bucket on first use and pushing curIteObj into it.

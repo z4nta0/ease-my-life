@@ -578,7 +578,7 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 
 
 
-	const dayAgoFun = ( dayAgoNum ) => { // What: Day Ago Function. Why: Every row below needs to turn its own precomputed daysAgo offset into a real date. How: This subtracts dayAgoNum days from todMidObj and returns a fresh Date for that day.
+	const dayAgoFun = ( dayAgoNum : number ) => { // What: Day Ago Function. Why: Every row below needs to turn its own precomputed daysAgo offset into a real date. How: This subtracts dayAgoNum days from todMidObj and returns a fresh Date for that day.
 
 
 		const offDatObj = new Date( todMidObj ); // What: Offset Date Object. Why: todMidObj itself must not be mutated by the offset below. How: This constructs a fresh copy of todMidObj to offset in place instead.
@@ -603,7 +603,7 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 	let seqCouNum = 0; // What: Sequence Count Number And Guard. Why: Every hydrated row across all 3 logs needs its own unique id, and none of the source data carries one. How: This starts at 0 and is incremented once per row created below, shared across all 3 maps.
 
 
-	const picLogArr = ( staRawObj.pickLog || [] ).map( ( picRowObj ) => { // What: Pick Log Array. Why: Every precomputed pick-log row must become a real, dated pickLog row matching state.pickLog's own shape. How: This maps staRawObj's own pickLog array (or an empty array if missing) through the per-row logic below.
+	const picLogArr = ( staRawObj.pickLog || [] ).map( ( picRowObj ) : PclRowTyp => { // What: Pick Log Array. Why: Every precomputed pick-log row must become a real, dated pickLog row matching state.pickLog's own shape. How: This maps staRawObj's own pickLog array (or an empty array if missing) through the per-row logic below.
 
 
 		const rowDatObj = dayAgoFun( picRowObj.daysAgo ); // What: Row Date Object. Why: This row's own real calendar date is needed both for its own date field and, if done, to build its own completedAt timestamp below. How: This resolves picRowObj's own daysAgo offset via dayAgoFun.

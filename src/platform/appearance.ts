@@ -106,7 +106,7 @@ type PalTokTyp = { // What: Palette Tokens Type. Why: Built-in and custom themes
  *
 */
 
-const PAL_SET_OBJ = { // What: Palette Set Object. Why: This is the app's fixed set of built-in color themes, each a full 8-token palette plus a display name. How: app.tsx looks the active theme's palette up here, and the Settings tab's theme picker reads every palette for its previews.
+const PAL_SET_OBJ : Record< string, PalTokTyp > = { // What: Palette Set Object. Why: This is the app's fixed set of built-in color themes, each a full 8-token palette plus a display name. How: app.tsx looks the active theme's palette up here, and the Settings tab's theme picker reads every palette for its previews.
 
 
 	ember : { // What: Ember Palette Object. Why: This is one of the app's built-in themes. How: This holds Ember's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
@@ -232,7 +232,7 @@ const PAL_SET_OBJ = { // What: Palette Set Object. Why: This is the app's fixed 
  *
 */
 
-const THE_PAI_OBJ = { // What: Theme Pair Object. Why: "System preference" auto-switching needs to know each theme's light/dark sibling; built-ins mirror the palette design (Ink and Night, Sage and Moss, Sand and Ember), and the two custom slots pair with each other. How: This is looked up by the current theme key in resTheFun below.
+const THE_PAI_OBJ : Record< string, { darStr : string, ligStr : string } > = { // What: Theme Pair Object. Why: "System preference" auto-switching needs to know each theme's light/dark sibling; built-ins mirror the palette design (Ink and Night, Sage and Moss, Sand and Ember), and the two custom slots pair with each other. How: This is looked up by the current theme key in resTheFun below.
 
 
 	customDark  : { darStr : 'customDark', ligStr : 'customLight' }, // What: Custom Dark Pair Object. Why: System-preference switching needs Custom Dark's own dark and light siblings. How: resTheFun looks this row up under the active theme key.
@@ -255,13 +255,13 @@ const THE_PAI_OBJ = { // What: Theme Pair Object. Why: "System preference" auto-
 
 // #region Module State
 
-let __lasPalStr = null;  // What: Last Palette String. Why: The cross-fade should only run when the resolved palette's actual colors changed, not on every re-application. How: This holds the previous call's color signature string, compared against the current one below.
-let __palAppBoo = false; // What: Palette Applied Boolean. Why: The very first palette application (initial page load) must never cross-fade, only later theme swaps should. How: This starts false and is set true at the end of appPalFun's first run.
-let __tatIdeNum = null;  // What: Theme-Animation-Timeout Identifier Number. Why: A running cross-fade class needs to be removed again after its own duration, and a fast repeat swap must cancel the previous removal instead of racing it. How: This holds the current setTimeout id, cleared and reassigned on every appPalFun call that starts a new cross-fade.
+let __lasPalStr : string | null = null;  // What: Last Palette String. Why: The cross-fade should only run when the resolved palette's actual colors changed, not on every re-application. How: This holds the previous call's color signature string, compared against the current one below.
+let __palAppBoo : boolean       = false; // What: Palette Applied Boolean. Why: The very first palette application (initial page load) must never cross-fade, only later theme swaps should. How: This starts false and is set true at the end of appPalFun's first run.
+let __tatIdeNum : number | null = null;  // What: Theme-Animation-Timeout Identifier Number. Why: A running cross-fade class needs to be removed again after its own duration, and a fast repeat swap must cancel the previous removal instead of racing it. How: This holds the current setTimeout id, cleared and reassigned on every appPalFun call that starts a new cross-fade.
 
 
 
-let __tinProObj = null; // What: Tint Probe Object. Why: Resolving a CSS color string to hex needs a real canvas 2D context, which is comparatively expensive to create. How: This caches the first successfully-created context so later calls reuse it instead of creating a new canvas each time.
+let __tinProObj : CanvasRenderingContext2D | null = null; // What: Tint Probe Object. Why: Resolving a CSS color string to hex needs a real canvas 2D context, which is comparatively expensive to create. How: This caches the first successfully-created context so later calls reuse it instead of creating a new canvas each time.
 
 // #endregion Module State
 

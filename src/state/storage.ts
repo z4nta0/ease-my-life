@@ -101,11 +101,11 @@ const SNA_KEE_NUM = 3; // What: Snapshot Keep Number. Why: This is how many clea
 
 // #region Module State
 
-let cacStaObj = null;      // What: Cached State Object. Why: This is the state iniStoFun loaded, held in memory so later synchronous reads (like STG_NAM_OBJ.cacStaFun()) do not need to touch storage again. How: This starts null (a fresh install) and is assigned inside iniStoFun.
-let curEngStr = 'memory';  // What: Current Engine String. Why: Every read/write in this file needs to know which backend is actually of record right now: 'idb', 'localStorage', or the fallback 'memory'. How: This starts at 'memory' and is updated by iniStoFun/savStaFun whenever the active engine changes.
-let datConObj = null;      // What: Database Connection Object. Why: Every other function in this file that talks to IndexedDB needs the same open connection. How: This starts null (no connection yet) and is assigned by iniStoFun once opeDatFun resolves.
-let lplRefArr = undefined; // What: Last-Pick-Log Reference Array. Why: wriDatFun must know whether the pick log actually changed since the last write, to avoid re-serializing the largest and fastest-growing piece of state on every save. How: This holds the exact array reference last written, compared with !== inside wriDatFun.
-let mirWriBoo = true;      // What: Mirror Write Boolean. Why: The Settings storage panel needs to know whether the last localStorage mirror write actually succeeded. How: This is flipped by wriLocFun on every call, true on success, false on a quota (or similar) failure.
+let cacStaObj : any                   = null;      // What: Cached State Object. Why: This is the state iniStoFun loaded, held in memory so later synchronous reads (like STG_NAM_OBJ.cacStaFun()) do not need to touch storage again. How: This starts null (a fresh install) and is assigned inside iniStoFun.
+let curEngStr : string                = 'memory';  // What: Current Engine String. Why: Every read/write in this file needs to know which backend is actually of record right now: 'idb', 'localStorage', or the fallback 'memory'. How: This starts at 'memory' and is updated by iniStoFun/savStaFun whenever the active engine changes.
+let datConObj : IDBDatabase | null    = null;      // What: Database Connection Object. Why: Every other function in this file that talks to IndexedDB needs the same open connection. How: This starts null (no connection yet) and is assigned by iniStoFun once opeDatFun resolves.
+let lplRefArr : unknown[] | undefined = undefined; // What: Last-Pick-Log Reference Array. Why: wriDatFun must know whether the pick log actually changed since the last write, to avoid re-serializing the largest and fastest-growing piece of state on every save. How: This holds the exact array reference last written, compared with !== inside wriDatFun.
+let mirWriBoo : boolean               = true;      // What: Mirror Write Boolean. Why: The Settings storage panel needs to know whether the last localStorage mirror write actually succeeded. How: This is flipped by wriLocFun on every call, true on success, false on a quota (or similar) failure.
 
 
 

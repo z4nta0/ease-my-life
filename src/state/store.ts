@@ -194,7 +194,7 @@ const STO_KEY_STR = 'easemylife.v2'; // What: Storage Key String. Why: The local
  *
 */
 
-function fluStaFun ( curStaObj ) {
+function fluStaFun ( curStaObj : StaAppTyp ) : void {
 
 
 	try { // What: Flush Attempt. Why: A storage failure during teardown must never throw while the page is going away. How: This delegates to STG_NAM_OBJ.fluSynFun when available, else falls back to a raw localStorage write.
@@ -309,7 +309,7 @@ function loaStaFun () {
  *
 */
 
-function wriStaFun ( curStaObj ) {
+function wriStaFun ( curStaObj : StaAppTyp ) : void {
 
 
 	try { // What: Persist Attempt. Why: A storage failure (quota, disabled storage, ...) must never crash the caller. How: This delegates to STG_NAM_OBJ.savStaFun when available, else falls back to a raw localStorage write.
@@ -370,7 +370,7 @@ function wriStaFun ( curStaObj ) {
  *
 */
 
-function stkSynFun ( curStaObj, entArgArr, tasArgArr ) {
+function stkSynFun ( curStaObj : StaAppTyp, entArgArr : TodEntTyp[], tasArgArr : TasRcdTyp[] ) : { stkClaBoo : boolean, stkValNum : number } {
 
 
 	const hidPicSet = new Set( ( curStaObj.pickers || [] ).filter( ( curPicObj ) => curPicObj.hidden ).map( ( curPicObj ) => curPicObj.id ) ); // What: Hidden Picker Set. Why: The visible-entries filter below needs fast membership checks against every hidden picker's own id. How: This collects the id of every picker whose own hidden flag is true.
@@ -1225,13 +1225,13 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		marGenFun : () => setAppStaObj( ( curStaObj ) => { // What: Mark Generated Function. Why: This stamps the generation time AND snapshots every item's/conditional's own value at that moment, so the Day Log can show "value at generation to after". Today-only: overwritten on each Regenerate; values are done-gated so the live values only diverge from this snapshot once entries are completed. How: This builds a genLog of {items, conds} keyed by id, alongside a fresh generatedAt.
 
 
-			const iteValObj = {}; // What: Item Values Object. Why: The Day Log needs every item's own value AS OF right now, keyed by id. How: This starts empty and is filled by the loop below.
+			const iteValObj : Record< string, number > = {}; // What: Item Values Object. Why: The Day Log needs every item's own value AS OF right now, keyed by id. How: This starts empty and is filled by the loop below.
 
 
 			( curStaObj.items || [] ).forEach( ( curIteObj ) => { iteValObj[ curIteObj.id ] = curIteObj.value; } ); // What: Item Value Fill. Why: Every item's own current value must be captured before anything changes it. How: This writes each item's value under its own id.
 
 
-			const conValObj = {}; // What: Conditional Values Object. Why: The Day Log needs every conditional's own value/triggered state AS OF right now, keyed by id. How: This starts empty and is filled by the loop below.
+			const conValObj : Record< string, Partial< ConRcdTyp > > = {}; // What: Conditional Values Object. Why: The Day Log needs every conditional's own value/triggered state AS OF right now, keyed by id. How: This starts empty and is filled by the loop below.
 
 
 			( curStaObj.conditionals || [] ).forEach( ( curConObj ) => { conValObj[ curConObj.id ] = { triggered : curConObj.triggered, value : curConObj.value }; } ); // What: Conditional Value Fill. Why: Every conditional's own current value and triggered flag must be captured before anything changes them. How: This writes a { value, triggered } pair under each conditional's own id.
@@ -1825,7 +1825,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			const curDayStr = isoDayFun(); // What: Current Day String. Why: Every vacationLog row below is stamped with today's own calendar day. How: This reads isoDayFun().
 
 
-			const abaStkFun = ( picArgArr, iteArgArr, iteIdeArr ) => { // What: Abandon Streak Function. Why: Both branches below (single item, whole picker) share this same abandon-in-progress-streak logic. How: This walks iteIdeArr, and for any item that's some ease-down picker's own activeItemId, nulls that pointer and recharges the item to full.
+			const abaStkFun = ( picArgArr : PicRcdTyp[], iteArgArr : IteRcdTyp[], iteIdeArr : string[] ) => { // What: Abandon Streak Function. Why: Both branches below (single item, whole picker) share this same abandon-in-progress-streak logic. How: This walks iteIdeArr, and for any item that's some ease-down picker's own activeItemId, nulls that pointer and recharges the item to full.
 
 
 				let nexPicArr = picArgArr; // What: Next Picker Array. Why: The loop below folds its own patch onto this on each iteration that actually finds a match. How: This starts at picArgArr, the caller's own current pickers.
@@ -2577,7 +2577,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 			const newConObj = picArgObj.newConditional; // What: New Conditional Object. Why: The inline-conditional build below reads many of this one field's own properties. How: This reads picArgObj.newConditional, which is null/undefined when no inline conditional was authored.
 
-			const newIteArr = ( picArgObj.items || [] ).map( ( curIteObj ) => ( { // What: New Item Array. Why: Every typed item in the create form becomes a real item object owned by this picker. How: This maps each raw item into state.items' own shape, honoring a form-set value/vacation and defaulting the rest per mode.
+			const newIteArr = ( picArgObj.items || [] ).map( ( curIteObj ) : IteRcdTyp => ( { // What: New Item Array. Why: Every typed item in the create form becomes a real item object owned by this picker. How: This maps each raw item into state.items' own shape, honoring a form-set value/vacation and defaulting the rest per mode.
 
 
 				id         : curIteObj.id || ( 'it_' + Math.random().toString( 36 ).slice( 2, 8 ) ), // What: Id. Why: Every item needs a stable id. How: This keeps curIteObj.id when given, else mints a random 'it_' id.
@@ -3312,8 +3312,9 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 
-			const newEntObj = { done : false, eid : entIdeStr, itemId : iteIdeStr, pending : penValObj, pickerId : picIdeStr, revert : null, skipped : false }; // What: New Entry Object. Why: This is the actual Today entry being added, in today.entries' own shape. How: This bundles entIdeStr/picIdeStr/iteIdeStr, under the entry's own persisted eid/pickerId/itemId keys, with a fresh not-done/not-skipped state and penValObj as its own pending.
-			const logRowObj = logRowFun( curStaObj, { eid : entIdeStr, itemId : iteIdeStr, pickerId : picIdeStr, source : 'manual' } );                         // What: Log Row Object. Why: A manual send must be reflected in the pick log too, denormalized the same way every other pick is. How: This calls logRowFun with source:'manual'.
+			const newEntObj : TodEntTyp = { done : false, eid : entIdeStr, itemId : iteIdeStr, pending : penValObj, pickerId : picIdeStr, revert : null, skipped : false }; // What: New Entry Object. Why: This is the actual Today entry being added, in today.entries' own shape. How: This bundles entIdeStr/picIdeStr/iteIdeStr, under the entry's own persisted eid/pickerId/itemId keys, with a fresh not-done/not-skipped state and penValObj as its own pending.
+
+			const logRowObj = logRowFun( curStaObj, { eid : entIdeStr, itemId : iteIdeStr, pickerId : picIdeStr, source : 'manual' } ); // What: Log Row Object. Why: A manual send must be reflected in the pick log too, denormalized the same way every other pick is. How: This calls logRowFun with source:'manual'.
 
 			const conIdeStr = curPicObj && curPicObj.conditionalId; // What: Conditional Identifier String. Why: The day-off-card check below needs to know which conditional (if any) gates this picker. How: This reads curPicObj's own conditionalId, or stays falsy when curPicObj is missing.
 
@@ -3402,7 +3403,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			const carEntArr = lisEntArr.filter( ( curDesObj ) => curDesObj._carry ).map( ( curDesObj ) => curDesObj.entry ); // What: Carried Entry Array. Why: A carried descriptor's own already-formed entry must be kept verbatim, unwrapped from its own _carry marker. How: This filters lisEntArr to _carry descriptors and unwraps each one's own entry.
 			const carEidSet = new Set( carEntArr.map( ( curEntObj ) => curEntObj.eid ) );                                    // What: Carried Eid Set. Why: The pick-log purge below must never drop a carried entry's own still-live row. How: This collects every carried entry's own eid.
 
-			const freEntArr = lisEntArr.filter( ( curDesObj ) => !curDesObj._carry ).map( ( curDesObj ) => ( { // What: Fresh Entry Array. Why: Every non-carried descriptor becomes a brand-new Today entry with its own fresh eid. How: This maps each descriptor into a full entry, spreading in periodKey/day-off-card fields only when present.
+			const freEntArr = lisEntArr.filter( ( curDesObj ) => !curDesObj._carry ).map( ( curDesObj ) : TodEntTyp => ( { // What: Fresh Entry Array. Why: Every non-carried descriptor becomes a brand-new Today entry with its own fresh eid. How: This maps each descriptor into a full entry, spreading in periodKey/day-off-card fields only when present.
 
 
 				done     : false,                      // What: Done. Why: A freshly generated entry always starts not-done. How: This is false.
