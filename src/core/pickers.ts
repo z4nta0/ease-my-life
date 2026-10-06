@@ -245,7 +245,7 @@ function norConFun ( rawNamStr : string ) : string { return titCasFun( rawNamStr
  *
 */
 
-function norGroFun ( rawNamStr : string, exiGroArr : string[] ) : string {
+function norGroFun ( rawNamStr : string, exiGroArr? : string[] ) : string {
 
 
 	const titNamStr = titCasFun( rawNamStr ); // What: Titled Name String. Why: Every further step below needs the already Title Cased version of rawNamStr to compare and possibly return. How: This calls titCasFun once and reuses the result throughout.
