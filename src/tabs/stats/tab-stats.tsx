@@ -3423,7 +3423,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 																	className={` ${ cssModObj.freValSpa }   ${ cssModObj.freValSpaInterval } `}
 
 																	data-value-dim-active
-																>{ conRowObj.firNum <= 1 ? 'Fired Once' : 'Not Fired' }</span> // What: Interval Placeholder Span Element. Why: The row still needs a dimmed placeholder. How: This says whether it fired once or never.
+																>{ conRowObj.firNum === 1 ? 'Fired Once' : 'Not Fired' }</span> // What: Interval Placeholder Span Element. Why: The row still needs a dimmed placeholder. How: This says whether it fired once or never, since an interval needs two fires.
 
 
 															) ) }
