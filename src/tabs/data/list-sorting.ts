@@ -90,7 +90,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 	const namSorFun = () => rowOneObj.name.localeCompare( rowTwoObj.name ); // What: Name Sort Function. Why: Every field's own tie-break, and the fallback for an unrecognized field, both need the same plain A-Z name comparison. How: This calls String.localeCompare between the two rows' own name fields.
 
 
-	const dirNulFun = ( cmpOneVal, cmpTwoVal ) => { // What: Direction Null Function. Why: A field that's genuinely missing (not merely irrelevant) should sort to whichever end the current direction implies, rather than being forced into a fake value. How: This returns a real comparison result when either side is null/undefined, or null to mean both sides are real values and the caller does the actual field comparison.
+	const dirNulFun = ( cmpOneVal : unknown, cmpTwoVal : unknown ) => { // What: Direction Null Function. Why: A field that's genuinely missing (not merely irrelevant) should sort to whichever end the current direction implies, rather than being forced into a fake value. How: This returns a real comparison result when either side is null/undefined, or null to mean both sides are real values and the caller does the actual field comparison.
 
 
 		const nulOneBoo = cmpOneVal == null; // What: Null One Boolean. Why: The 3 outcomes below all depend on which side (if any) is actually missing. How: This checks cmpOneVal with a loose null comparison, matching undefined too.
@@ -115,7 +115,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 	};
 
 
-	const lasNulFun = ( cmpOneVal, cmpTwoVal ) => { // What: Last Null Function. Why: A field that's irrelevant to a row (not missing, just N/A for its own mode) should always sort last in EITHER direction, unlike a genuinely missing value. How: This is the same idea as dirNulFun, except both null cases return a fixed "goes last" result regardless of revSorBoo.
+	const lasNulFun = ( cmpOneVal : unknown, cmpTwoVal : unknown ) => { // What: Last Null Function. Why: A field that's irrelevant to a row (not missing, just N/A for its own mode) should always sort last in EITHER direction, unlike a genuinely missing value. How: This is the same idea as dirNulFun, except both null cases return a fixed "goes last" result regardless of revSorBoo.
 
 
 		const nulOneBoo = cmpOneVal == null; // What: Null One Boolean. Why: The 3 outcomes below all depend on which side (if any) is actually N/A. How: This checks cmpOneVal with a loose null comparison, matching undefined too.
@@ -140,7 +140,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 	};
 
 
-	const numLasFun = ( cmpOneVal, cmpTwoVal ) => { // What: Numeric Last Function. Why: A numeric field (Range/Odds/Boost) that's irrelevant to a row needs the same "always last" rule as lasNulFun, plus the actual numeric comparison once both sides are real. How: This defers to lasNulFun first, then subtracts the two values and applies revSorBoo/the name tie-break.
+	const numLasFun = ( cmpOneVal : number | null, cmpTwoVal : number | null ) => { // What: Numeric Last Function. Why: A numeric field (Range/Odds/Boost) that's irrelevant to a row needs the same "always last" rule as lasNulFun, plus the actual numeric comparison once both sides are real. How: This defers to lasNulFun first, then subtracts the two values and applies revSorBoo/the name tie-break.
 
 
 		const notAvaNum = lasNulFun( cmpOneVal, cmpTwoVal ); // What: Not Available Number. Why: A real comparison result from lasNulFun means one side was N/A and nothing more needs computing. How: This calls lasNulFun and checks its result before doing any real math.
@@ -381,7 +381,7 @@ function freEdiFun< T extends { id : string } > ( sorLisArr : T[], opeIdeVal : s
 
 // #region Exports
 
-export { freEdiFun, sorEntFun }; // What: Named Exports. Why: The Data tab and the reminders manager sort their lists with these helpers. How: This exports sorEntFun, freEdiFun by name.
+export { freEdiFun, sorEntFun, type SorRowTyp }; // What: Named Exports. Why: The Data tab and the reminders manager sort their lists with these helpers. How: This exports sorEntFun, freEdiFun, and the sort row type by name.
 
 // #endregion Exports
 

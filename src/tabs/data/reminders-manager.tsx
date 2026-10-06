@@ -199,7 +199,7 @@ function paiSubFun ( verTexStr : string, neiConStr : string = 'and' ) : ( oncEna
  *
 */
 
-const REM_MAT_ARR = [ // What: Reminder Matrix Array. Why: OptMatCom needs one row per participation setting, each pivoted across the once/recurring classes. How: This is mapped over in OptMatCom's JSX to render one matrix row per entry.
+const REM_MAT_ARR : { dynFun : ( oncEnaBoo : boolean, reuEnaBoo : boolean ) => React.JSX.Element, keyStr : keyof RemClaTyp, labStr : string }[] = [ // What: Reminder Matrix Array. Why: OptMatCom needs one row per participation setting, each pivoted across the once/recurring classes. How: This is mapped over in OptMatCom's JSX to render one matrix row per entry.
 
 
 	{ // What: Streak Row Entry. Why: Whether a class counts toward the Today page's own day streak is its own independent participation setting. How: This entry's own dynFun explains which classes currently count.
@@ -248,7 +248,7 @@ const REM_MAT_ARR = [ // What: Reminder Matrix Array. Why: OptMatCom needs one r
 		keyStr : 'stats',
 		labStr : 'Include in Stats',
 
-		dynFun : ( oncEnaBoo, reuEnaBoo ) => ( // What: Dynamic Function. Why: This row's own sub-explanation needs custom wording ("statistics") rather than paiSubFun's own generic verb phrasing, so it's written out directly instead of reusing paiSubFun. How: OptMatCom calls this with the live once/recurring toggle states.
+		dynFun : ( oncEnaBoo : boolean, reuEnaBoo : boolean ) => ( // What: Dynamic Function. Why: This row's own sub-explanation needs custom wording ("statistics") rather than paiSubFun's own generic verb phrasing, so it's written out directly instead of reusing paiSubFun. How: OptMatCom calls this with the live once/recurring toggle states.
 
 
 			oncEnaBoo && reuEnaBoo // What: Both Check. Why: The phrase depends on which of the two classes shows statistics. How: This tests both flags first.
@@ -436,7 +436,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 
 					</span>
 
-					{ [ 'once', 'recurring' ].map( ( tasClaStr ) => { // What: Switch Cell List Render. Why: Every row needs exactly 2 switch cells, one per participation class. How: This maps the 2 literal class keys to one switch cell each.
+					{ ( [ 'once', 'recurring' ] as const ).map( ( tasClaStr ) => { // What: Switch Cell List Render. Why: Every row needs exactly 2 switch cells, one per participation class. How: This maps the 2 literal class keys to one switch cell each. // What: Class Tuple Note. Why: Each class name indexes the draft options. How: The two names are read as a constant tuple so each one is a real class key.
 
 
 						const swtEnaBoo = !!draOptObj[ tasClaStr ][ optDefObj.keyStr ]; // What: Switch Enabled Boolean. Why: Each cell's own switch needs to know whether this specific class/setting pair is currently on. How: This reads draOptObj indexed first by tasClaStr, then by optDefObj's own keyStr.
@@ -588,9 +588,9 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 	// #region Open Row Tracking
 
-	const [ opeIdeStr, setOpeIdeStr ] = React.useState( null ); // What: Open Identifier String And Setter. Why: This tracks which reminder's own row is currently expanded into its editor. How: This is compared against each row's own id throughout the render below.
-	const [ insIdeStr, setInsIdeStr ] = React.useState( null ); // What: Insert Identifier String And Setter. Why: A just-inserted reminder row needs to play its own slide-in entrance exactly once. How: This is set right when a row is created or an editor closes, cleared on that row's own animation end.
-	const [ newTasObj, setNewTasObj ] = React.useState( null ); // What: New Task Object And Setter. Why: A brand-new reminder stays a local draft, out of the store and storage, until it's kept. How: This holds that reminder, built with TAS_NAM_OBJ.defTasFun's defaults, or null when none is being added.
+	const [ opeIdeStr, setOpeIdeStr ] = React.useState< string | null >( null ); // What: Open Identifier String And Setter. Why: This tracks which reminder's own row is currently expanded into its editor. How: This is compared against each row's own id throughout the render below.
+	const [ insIdeStr, setInsIdeStr ] = React.useState( null );                  // What: Insert Identifier String And Setter. Why: A just-inserted reminder row needs to play its own slide-in entrance exactly once. How: This is set right when a row is created or an editor closes, cleared on that row's own animation end.
+	const [ newTasObj, setNewTasObj ] = React.useState( null );                  // What: New Task Object And Setter. Why: A brand-new reminder stays a local draft, out of the store and storage, until it's kept. How: This holds that reminder, built with TAS_NAM_OBJ.defTasFun's defaults, or null when none is being added.
 
 	const newAddRef = React.useRef( null ); // What: New Added Reference. Why: A reminder just created via "New reminder" hasn't been kept yet; Cancel on such an item discards the whole add rather than keeping it. How: This holds that reminder's own id until it's kept or discarded.
 	const froIndRef = React.useRef( null ); // What: Frozen Index Reference. Why: freEdiFun needs a place to remember whichever reminder's own render position is currently frozen. How: This is passed straight through to freEdiFun below.
@@ -843,7 +843,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 	// #region Row Actions
 
-	const kepCloFun = ( tasIdeStr ) => { // What: Keep Close Function. Why: The row's own collapse chevron AND EdiFooCom's own Save mean "keep this, I'm done", and both need the exact same cleanup so the chevron can't drift out of sync with what Save already does. How: This keeps the open draft, then closes the row only while it's still this exact one.
+	const kepCloFun = ( tasIdeStr : string ) => { // What: Keep Close Function. Why: The row's own collapse chevron AND EdiFooCom's own Save mean "keep this, I'm done", and both need the exact same cleanup so the chevron can't drift out of sync with what Save already does. How: This keeps the open draft, then closes the row only while it's still this exact one.
 
 
 		keeTasFun(); // What: Keep Task Call. Why: The collapse chevron and Save both keep the row's edits. How: This commits the open draft, adding a brand-new reminder to the store first.

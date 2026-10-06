@@ -97,7 +97,7 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  *
 */
 
-const MOD_DEF_OBJ = { // What: Mode Definition Object. Why: Every consumer needing a picker mode's own display label and explanatory hint text (Pickers/Data/Stats tabs, the picker mini-tours) reads this shared table. How: This maps each of pickers.ts's own 5 selection-algorithm keys to its own { label, hint } pair.
+const MOD_DEF_OBJ : Record< string, { hinArr : string[], labStr : string } > = { // What: Mode Definition Object. Why: Every consumer needing a picker mode's own display label and explanatory hint text (Pickers/Data/Stats tabs, the picker mini-tours) reads this shared table. How: This maps each of pickers.ts's own 5 selection-algorithm keys to its own { label, hint } pair.
 
 
 	'random' : { // What: Random Mode Entry. Why: This documents the random selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).

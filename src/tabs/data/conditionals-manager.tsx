@@ -419,10 +419,10 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 	// #region Editor State
 
-	const [ opeIdeStr, setOpeIdeStr ] = React.useState( null ); // What: Open Identifier String And Setter. Why: Only one conditional's own row can be expanded for editing at a time. How: This holds whichever conditional's own id is currently open, or null.
-	const [ conDraObj, setConDraObj ] = React.useState( null ); // What: Conditional Draft Object And Setter. Why: The open row's own in-progress, not-yet-committed field values need somewhere to live. How: This is populated by opeEdiFun and cleared by cloEdiFun.
-	const [ penConObj, setPenConObj ] = React.useState( null ); // What: Pending Conditional Object And Setter. Why: A brand-new conditional is held locally, not written to the store, until Save. How: This holds the brand-new conditional's own object while it's still unsaved.
-	const [ cloIdeStr, setCloIdeStr ] = React.useState( null ); // What: Closing Identifier String And Setter. Why: A deleted conditional's own row must finish its collapse-shut animation before actually being removed. How: This holds whichever conditional's own id is currently mid-delete-animation.
+	const [ opeIdeStr, setOpeIdeStr ] = React.useState< string | null >( null ); // What: Open Identifier String And Setter. Why: Only one conditional's own row can be expanded for editing at a time. How: This holds whichever conditional's own id is currently open, or null.
+	const [ conDraObj, setConDraObj ] = React.useState( null );                  // What: Conditional Draft Object And Setter. Why: The open row's own in-progress, not-yet-committed field values need somewhere to live. How: This is populated by opeEdiFun and cleared by cloEdiFun.
+	const [ penConObj, setPenConObj ] = React.useState( null );                  // What: Pending Conditional Object And Setter. Why: A brand-new conditional is held locally, not written to the store, until Save. How: This holds the brand-new conditional's own object while it's still unsaved.
+	const [ cloIdeStr, setCloIdeStr ] = React.useState( null );                  // What: Closing Identifier String And Setter. Why: A deleted conditional's own row must finish its collapse-shut animation before actually being removed. How: This holds whichever conditional's own id is currently mid-delete-animation.
 
 	// #endregion Editor State
 
@@ -430,20 +430,20 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 	// #region Row Values And Sorting
 
-	const picCouFun = ( conIdeStr ) => allPicArr.filter( ( picCurObj ) => picCurObj.conditionalId === conIdeStr && !picCurObj.hidden ).length; // What: Picker Count Function. Why: Every conditional's own row needs to show how many (non-hidden) pickers currently use it. How: This counts every picker whose own conditionalId matches conIdeStr.
+	const picCouFun = ( conIdeStr : string ) => allPicArr.filter( ( picCurObj ) => picCurObj.conditionalId === conIdeStr && !picCurObj.hidden ).length; // What: Picker Count Function. Why: Every conditional's own row needs to show how many (non-hidden) pickers currently use it. How: This counts every picker whose own conditionalId matches conIdeStr.
 
 
 	const colMapObj = ( staAppObj.ui && staAppObj.ui.controlsCollapsed ) || {}; // What: Collapsed Map Object. Why: The section's own collapse state is persisted the same way every picker card's own Controls/Items disclosures are. How: This reads staAppObj.ui.controlsCollapsed, falling back to an empty object.
 	const secOpeBoo = colMapObj[ '__conditionals' ] === false;                  // What: Section Open Boolean. Why: This section defaults COLLAPSED (absent means collapsed), unlike its own nested disclosures. How: This is true only when the persisted entry is explicitly false.
 
 
-	const conRanFun = ( conCurObj ) => ( conCurObj.mode === 'ease-up' || conCurObj.mode === 'ease-down' ) // What: Conditional Range Function. Why: Ease-mode conditionals expose a sortable Range value, the same soonest/latest-band math their own editor uses, collapsed to its near end. How: This computes it only for ease-up/ease-down, null otherwise.
+	const conRanFun = ( conCurObj : ConRcdTyp ) => ( conCurObj.mode === 'ease-up' || conCurObj.mode === 'ease-down' ) // What: Conditional Range Function. Why: Ease-mode conditionals expose a sortable Range value, the same soonest/latest-band math their own editor uses, collapsed to its near end. How: This computes it only for ease-up/ease-down, null otherwise.
 		? Math.max( 1, Math.round( ( conCurObj.threshold ?? 100 ) / ( conCurObj.easeMax ?? 14 ) ) ) // What: Ease Range Branch. Why: An ease-mode conditional's range is roughly how many days it takes to fully charge. How: This divides threshold by easeMax, never below 1.
 		: null;                                                                                     // What: No Range Branch. Why: Every other mode has no range to sort by. How: This returns null.
 
 
-	const conOddFun = ( conCurObj ) => ( conCurObj.mode === 'weighted' || conCurObj.mode === 'dynamic' ) ? ( conCurObj.oddsPct ?? 50 ) : null; // What: Conditional Odds Function. Why: Weighted/dynamic conditionals expose their real trigger-likelihood as Odds, not their own vestigial weight field. How: This reads conCurObj.oddsPct only for those 2 modes, null otherwise.
-	const conBooFun = ( conCurObj ) => ( conCurObj.mode === 'dynamic' ) ? ( conCurObj.value ?? 0 ) : null;                                     // What: Conditional Boost Function. Why: Only a dynamic conditional has a meaningful boost value, the same value field ease modes reuse for charge. How: This reads conCurObj.value only for 'dynamic', null otherwise.
+	const conOddFun = ( conCurObj : ConRcdTyp ) => ( conCurObj.mode === 'weighted' || conCurObj.mode === 'dynamic' ) ? ( conCurObj.oddsPct ?? 50 ) : null; // What: Conditional Odds Function. Why: Weighted/dynamic conditionals expose their real trigger-likelihood as Odds, not their own vestigial weight field. How: This reads conCurObj.oddsPct only for those 2 modes, null otherwise.
+	const conBooFun = ( conCurObj : ConRcdTyp ) => ( conCurObj.mode === 'dynamic' ) ? ( conCurObj.value ?? 0 ) : null;                                     // What: Conditional Boost Function. Why: Only a dynamic conditional has a meaningful boost value, the same value field ease modes reuse for charge. How: This reads conCurObj.value only for 'dynamic', null otherwise.
 
 	const iteSorStr = staAppObj.ui?.dataSort?.conditionals || 'name-asc'; // What: Item Sort String. Why: This section's own list needs its own persisted sort choice. How: This reads staAppObj.ui.dataSort.conditionals, falling back to 'name-asc'.
 
@@ -491,7 +491,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 	// #region Row Open And Close
 
-	const opeEdiFun = ( conCurObj ) => { // What: Open Editor Function. Why: Opening an existing conditional's row needs a fresh draft copy and no pending flag. How: This seeds conDraObj from conCurObj and opens its own row.
+	const opeEdiFun = ( conCurObj : ConRcdTyp ) => { // What: Open Editor Function. Why: Opening an existing conditional's row needs a fresh draft copy and no pending flag. How: This seeds conDraObj from conCurObj and opens its own row.
 
 
 		setPenConObj( null );             // What: Pending Clear Call. Why: Opening an existing conditional abandons any pending new one. How: This resets penConObj to null.
@@ -599,7 +599,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 	 *
 	*/
 
-	const delAniFun = ( conIdeStr ) => { // What: Delete Animated Function. Why: Deleting an existing conditional should collapse its card shut before actually removing it from the store. How: This runs the removal immediately when motion is reduced, otherwise defers it by 300ms while the row plays its own collapse.
+	const delAniFun = ( conIdeStr : string ) => { // What: Delete Animated Function. Why: Deleting an existing conditional should collapse its card shut before actually removing it from the store. How: This runs the removal immediately when motion is reduced, otherwise defers it by 300ms while the row plays its own collapse.
 
 
 		const delFinFun = () => { // What: Delete Finish Function. Why: The actual removal and every piece of open/closing state need to clear together, whenever this finally runs. How: This is called either immediately or after the deferred timeout below.
@@ -658,7 +658,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 	 *
 	*/
 
-	const savAniFun = ( finNamStr ) => { // What: Save Animated Function. Why: Committing a brand-new conditional to the store should happen after the row's own collapse, so the row stays in place (same id/name) rather than visibly jumping. How: This commits immediately when motion is reduced, otherwise defers the commit by 300ms.
+	const savAniFun = ( finNamStr : string ) => { // What: Save Animated Function. Why: Committing a brand-new conditional to the store should happen after the row's own collapse, so the row stays in place (same id/name) rather than visibly jumping. How: This commits immediately when motion is reduced, otherwise defers the commit by 300ms.
 
 
 		const finDraObj = { ...conDraObj, name : finNamStr }; // What: Final Draft Object. Why: The committed conditional needs its own name replaced by the freshly-tidied final one. How: This spreads conDraObj with name overridden by finNamStr.

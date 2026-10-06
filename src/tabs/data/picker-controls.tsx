@@ -28,8 +28,11 @@ import { WeeChiCom    } from '../../ui/weekday-chips.tsx';   // What: Weekday Ch
 
 
 import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The Controls body changes the picker through the store's actions. How: This types PccProTyp's actStoObj.
+import type { CadNamTyp } from '../../core/data-model.ts'; // What: Cadence Name Type. Why: The cadence select sets one of the saved cadences. How: This types its value.
 import type { ConRcdTyp } from '../../core/data-model.ts'; // What: Conditional Record Type. Why: A picker can attach one of the existing conditionals. How: This types PccProTyp's conditional list.
+import type { DatModTyp } from '../../core/data-model.ts'; // What: Date Mode Type. Why: The date mode select sets one of the saved date modes. How: This types its value.
 import type { IteRcdTyp } from '../../core/data-model.ts'; // What: Item Record Type. Why: The Controls body reads the picker's own items. How: This types PccProTyp's item list.
+import type { ModNamTyp } from '../../core/data-model.ts'; // What: Mode Name Type. Why: The mode radios set one of the five modes. How: This types the chosen mode.
 import type { PicArgTyp } from '../../core/data-model.ts'; // What: Picker Argument Type. Why: A draft picker's changes and save carry its form fields. How: This types the draft patch and save callbacks.
 import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Record Type. Why: The Controls body edits one picker. How: This types PccProTyp's picker.
 
@@ -163,7 +166,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	 *
 	*/
 
-	const patPicFun = ( patPicObj ) => { // What: Patch Picker Function. Why: Every Controls field changes a field or two of the draft, and a brand-new picker's card also shows its draft as it's typed. How: This merges patPicObj into the draft, passing it up to onPatNewFun for a new picker.
+	const patPicFun = ( patPicObj : PicArgTyp ) => { // What: Patch Picker Function. Why: Every Controls field changes a field or two of the draft, and a brand-new picker's card also shows its draft as it's typed. How: This merges patPicObj into the draft, passing it up to onPatNewFun for a new picker.
 
 
 		setDraPicObj( ( preDraObj ) => ( { ...preDraObj, ...patPicObj } ) ); // What: Draft Merge Call. Why: The field change lands in the draft. How: This merges patPicObj into draPicObj.
@@ -263,7 +266,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	 *
 	*/
 
-	const raiRefFun = React.useCallback( ( raiCurEle ) => { // What: Rail Reference Function. Why: The conditional pill rail needs its own scroll/resize wiring set up on attach and torn down on every reattach or detach. How: This is passed directly as the rail div's own ref prop.
+	const raiRefFun = React.useCallback( ( raiCurEle : HTMLElement | null ) => { // What: Rail Reference Function. Why: The conditional pill rail needs its own scroll/resize wiring set up on attach and torn down on every reattach or detach. How: This is passed directly as the rail div's own ref prop.
 
 
 		if ( raiCleRef.current ) { // What: Previous Cleanup Guard. Why: A prior attachment's own listeners must not leak past this new attach/detach. How: This calls and clears whatever cleanup function the last attachment registered, if any.
@@ -500,12 +503,12 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 
-		let rafIdeNum; // What: Raf Identifier Number. Why: The pin loop below needs to be cancellable on cleanup. How: This is assigned by every requestAnimationFrame call below and read by the cleanup return.
+		let rafIdeNum : number; // What: Raf Identifier Number. Why: The pin loop below needs to be cancellable on cleanup. How: This is assigned by every requestAnimationFrame call below and read by the cleanup return.
 
 		const staTimNum = performance.now(); // What: Start Time Number. Why: The pin loop must stop after a fixed duration matching the unfurl animation, not run forever. How: This records the loop's own start time to compare against on every frame.
 
 
-		const pinScrFun = ( curTimNum ) => { // What: Pin Scroll Function. Why: The existing pills must slide left IN SYNC with the input's own growth, one continuous motion, instead of a jump once the animation finishes. How: This re-scrolls the row to its own full width every frame for 280ms.
+		const pinScrFun = ( curTimNum : number ) => { // What: Pin Scroll Function. Why: The existing pills must slide left IN SYNC with the input's own growth, one continuous motion, instead of a jump once the animation finishes. How: This re-scrolls the row to its own full width every frame for 280ms.
 
 
 			groCurEle.scrollLeft = groCurEle.scrollWidth; // What: Scroll Pin Write. Why: This is the actual pin: keeping the row scrolled all the way to its own end. How: This sets scrollLeft to scrollWidth every frame.
@@ -906,7 +909,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 									checked={ modSelBoo }
 									type='radio'
 
-									onChange={ () => patPicFun( { mode : modKeyStr } ) }
+									onChange={ () => patPicFun( { mode : modKeyStr as ModNamTyp } ) } // What: On Change Handler. Why: Choosing a mode radio selects that mode on the draft. How: This patches mode with modKeyStr, asserted as a mode name since Object.entries types its keys as plain strings.
 								/>{ /* What: Mode Option Input Element. Why: This is the actual selectable control for this mode. How: This is checked when modSelBoo is true and commits modKeyStr as the picker's own mode on change. */ }
 
 								<span
@@ -1255,7 +1258,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 									aria-label='Cadence'
 
-									onChange={ ( chaEveObj ) => patPicFun( { cadence : chaEveObj.target.value } ) }
+									onChange={ ( chaEveObj ) => patPicFun( { cadence : chaEveObj.target.value as CadNamTyp } ) } // What: On Change Handler. Why: Choosing a cadence option sets the draft's cadence. How: This patches cadence with the select's value, asserted as a cadence name since a select's value is a plain string.
 								>{ /* What: Cadence Select Element. Why: This is the top-level "how often" choice. How: This commits its own value directly as the picker's own cadence field. */ }
 
 
@@ -1312,7 +1315,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 										aria-label='Day selection'
 
-										onChange={ ( chaEveObj ) => patPicFun( { dateMode : chaEveObj.target.value } ) }
+										onChange={ ( chaEveObj ) => patPicFun( { dateMode : chaEveObj.target.value as DatModTyp } ) } // What: On Change Handler. Why: Choosing a date mode sets how the draft's day is counted. How: This patches dateMode with the select's value, asserted as a date mode since a select's value is a plain string.
 									>{ /* What: Date Mode Select Element. Why: This is the switch between anchoring to a fixed date vs. an nth weekday. How: This commits its own value directly as the picker's own dateMode field. */ }
 
 
