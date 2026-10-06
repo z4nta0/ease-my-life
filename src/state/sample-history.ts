@@ -6,6 +6,10 @@
 import { hydStaFun   } from './onboarding-seed-data.ts'; // What: Hydrate Stats Function. Why: The borrowed sample history needs converting from its static template shape into real pickLog rows. How: This is called on the lazily imported ONB_STA_OBJ inside unhHisFun.
 import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: Every real sample picker (not a disposable copy) is unhidden and rehidden by id. How: This is iterated by both functions in this file.
 
+
+import type { ActStoTyp } from './store.ts';             // What: Action Store Type. Why: Both helpers change state through the shared actions. How: This types each actStoObj parameter.
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: Unhiding reads the current state. How: This types unhHisFun's staAppObj.
+
 // #endregion Imports
 
 
@@ -54,7 +58,7 @@ import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sam
  *
 */
 
-const hidHisFun = ( actStoObj ) => { // What: Hide History Function. Why: The real sample pickers borrowed for the Stats page must go back to hidden once that is over. How: This updates every ONB_SPI_ARR entry's own hidden field back to true.
+const hidHisFun = ( actStoObj : ActStoTyp ) : void => { // What: Hide History Function. Why: The real sample pickers borrowed for the Stats page must go back to hidden once that is over. How: This updates every ONB_SPI_ARR entry's own hidden field back to true.
 
 
 	ONB_SPI_ARR.forEach( ( samIdeStr ) => actStoObj.updPicFun( samIdeStr, { hidden : true } ) ); // What: Hide Sample Picker Call. Why: This must run for every sample picker unhHisFun could have unhidden. How: This updates every ONB_SPI_ARR entry's own hidden field to true.
@@ -103,7 +107,7 @@ const hidHisFun = ( actStoObj ) => { // What: Hide History Function. Why: The re
  *
 */
 
-const unhHisFun = ( staAppObj, actStoObj ) => { // What: Unhide History Function. Why: The Stats page's own heatmap/breakdown need real sample history to demonstrate, not an empty disposable copy. How: This unhides every real sample picker, backfilling its own pickLog history if none exists yet.
+const unhHisFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { // What: Unhide History Function. Why: The Stats page's own heatmap/breakdown need real sample history to demonstrate, not an empty disposable copy. How: This unhides every real sample picker, backfilling its own pickLog history if none exists yet.
 
 
 	ONB_SPI_ARR.forEach( ( samIdeStr ) => actStoObj.updPicFun( samIdeStr, { hidden : false } ) ); // What: Unhide Sample Picker Call. Why: The Stats tour's own steps need every real sample picker visible for its own duration. How: This updates every ONB_SPI_ARR entry's own hidden field to false.
