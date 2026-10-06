@@ -102,10 +102,11 @@ const CHR_PRI_OBJ : Record< string, number > = { '[data-element-name-hook~="appT
 function cliHorFun ( tarRecObj : EdgRecTyp, tarDomEle : HTMLElement ) : EdgRecTyp | null {
 
 
-	let topCurNum = tarRecObj.top;    // What: Top Current Number. Why: The clamp below needs its own mutable copy of the incoming rect's own top edge. How: This starts as a plain copy of tarRecObj's own top.
-	let lefCurNum = tarRecObj.left;   // What: Left Current Number. Why: The clamp below needs its own mutable copy of the incoming rect's own left edge. How: This starts as a plain copy of tarRecObj's own left.
-	let rigCurNum = tarRecObj.right;  // What: Right Current Number. Why: The clamp below needs its own mutable copy of the incoming rect's own right edge. How: This starts as a plain copy of tarRecObj's own right.
-	let botCurNum = tarRecObj.bottom; // What: Bottom Current Number. Why: The clamp below needs its own mutable copy of the incoming rect's own bottom edge. How: This starts as a plain copy of tarRecObj's own bottom.
+	const topCurNum = tarRecObj.top;    // What: Top Current Number. Why: The returned rect needs the incoming top edge, which this horizontal clamp never changes. How: This copies tarRecObj's own top.
+	const botCurNum = tarRecObj.bottom; // What: Bottom Current Number. Why: The returned rect needs the incoming bottom edge, which this horizontal clamp never changes. How: This copies tarRecObj's own bottom.
+
+	let lefCurNum = tarRecObj.left;  // What: Left Current Number. Why: The clamp below needs its own mutable copy of the incoming rect's own left edge. How: This starts as a plain copy of tarRecObj's own left.
+	let rigCurNum = tarRecObj.right; // What: Right Current Number. Why: The clamp below needs its own mutable copy of the incoming rect's own right edge. How: This starts as a plain copy of tarRecObj's own right.
 
 	const ownOveStr = getComputedStyle( tarDomEle ).overflowX; // What: Own Overflow String. Why: A target that is itself a horizontally-scrollable box must be clipped to its own visible client width, not its full scrollable content width. How: This reads tarDomEle's own computed overflow-x style.
 

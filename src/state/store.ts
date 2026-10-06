@@ -3611,7 +3611,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			const picIdeStr = curRowObj ? curRowObj.pickerId // What: Picker Identifier String. Why: The fresh reroll log row below needs a pickerId, preferring the live log row's own, falling back to the live entry's own. How: This reads curRowObj's own pickerId, else the matching today.entries row's own pickerId.
 				: ( curStaObj.today.entries.find( ( entFinObj ) => entFinObj.eid === entIdeStr ) || {} ).pickerId; // What: Entry Picker Fallback. Why: With no live row, the entry itself still knows its picker. How: This reads the matching entry's own pickerId.
 
-			let rejLogArr : PclRowTyp[] = nexLogArr.map( ( logMapObj ) => // What: Rejected Log Array. Why: The rolled-away row must be marked rejected, keeping its own itemId, before the fresh reroll row is appended. How: This flags the live row sharing entIdeStr as outcome:'rejected'.
+			const rejLogArr : PclRowTyp[] = nexLogArr.map( ( logMapObj ) => // What: Rejected Log Array. Why: The rolled-away row must be marked rejected, keeping its own itemId, before the fresh reroll row is appended. How: This flags the live row sharing entIdeStr as outcome:'rejected'.
 				( logMapObj.eid === entIdeStr && !logMapObj.outcome ) ? { ...logMapObj, outcome : 'rejected' } : logMapObj ); // What: Reject Row Patch. Why: Only this entry's live row is rolled away. How: This marks it rejected and passes every other row through.
 
 
