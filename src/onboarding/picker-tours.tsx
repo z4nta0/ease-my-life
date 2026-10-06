@@ -14,6 +14,11 @@ import { ONB_ESP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboard
 import { ONB_EXA_OBJ } from '../state/onboarding-seed-data.ts'; // What: Onboarding Example Object. Why: This is the "Daily Chores" sample picker's own template, one of the entries PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
 import { SED_NAM_OBJ } from '../state/seed.ts';                 // What: Seed Namespace Object. Why: The intro modal's own pill needs this picker's own mode label, not its raw mode key. How: This is looked up (MOD_DEF_OBJ) by picRcdObj's own mode to resolve modLabStr below.
 
+
+import type { ActStoTyp } from '../state/store.ts';     // What: Action Store Type. Why: The tour changes state through the store's actions. How: This types its actStoObj.
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The tour reads the current app state. How: This types its staAppObj.
+import type { TouSteTyp } from './tour-runner.tsx';     // What: Tour Step Type. Why: The tour's steps run on GuiTouCom. How: This types the steps it builds.
+
 // #endregion Imports
 
 
@@ -392,7 +397,7 @@ const ITE_STE_OBJ = { // What: Items Step Object. Why: This step highlights the 
 	runFun : () => { // What: Run Function. Why: The scroll position must be reset to the top before the native click swaps the form's own content, so the clamp described above never gets a chance to fire. How: This zeroes .main's own scrollTop when it exists.
 
 
-		const scrConEle = document.querySelector( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: This is the app's own shared scroll container whose position needs resetting. How: This looks it up fresh, since it may not exist on every layout.
+		const scrConEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: This is the app's own shared scroll container whose position needs resetting. How: This looks it up fresh, since it may not exist on every layout.
 
 
 		if ( scrConEle ) scrConEle.scrollTop = 0; // What: Scroll Container Reset. Why: This must only run when the element actually exists. How: This zeroes scrConEle's own scrollTop.
@@ -593,7 +598,7 @@ const WEI_STE_OBJ = { // What: Weight Step Object. Why: This step highlights the
  *
 */
 
-const buiAddFun = ( picIdeStr ) => ({ // What: Build Add Function. Why: This builds the step that highlights the real "+ Add Item" button and stages this item's own prefill data. How: This returns a step object whose runFun() publishes picCopObj's own item fields onto the shared bus.
+const buiAddFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Add Function. Why: This builds the step that highlights the real "+ Add Item" button and stages this item's own prefill data. How: This returns a step object whose runFun() publishes picCopObj's own item fields onto the shared bus.
 
 
 	bacBoo : true,                                    // What: Back Boolean. Why: The user should always be able to return to the previous, "Add Items" step. How: GuiTouCom shows its own Back button whenever this is true.
@@ -657,7 +662,7 @@ const buiAddFun = ( picIdeStr ) => ({ // What: Build Add Function. Why: This bui
  *
 */
 
-const buiLatFun = ( picIdeStr ) => ({ // What: Build Latest Function. Why: This builds the step that highlights the item editor's own Latest/Longest row, the second .ediRowDiv right after Soonest/Shortest, same mode gating and per-picker override as buiSooFun above. How: This returns a step object whose bodEle reads picIdeStr's own picCopObj, falling back to DEF_LAT_ELE.
+const buiLatFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Latest Function. Why: This builds the step that highlights the item editor's own Latest/Longest row, the second .ediRowDiv right after Soonest/Shortest, same mode gating and per-picker override as buiSooFun above. How: This returns a step object whose bodEle reads picIdeStr's own picCopObj, falling back to DEF_LAT_ELE.
 
 
 	bacBoo : true,                                                                                       // What: Back Boolean. Why: The user should always be able to return to the previous, Soonest/Shortest step. How: GuiTouCom shows its own Back button whenever this is true.
@@ -713,7 +718,7 @@ const buiLatFun = ( picIdeStr ) => ({ // What: Build Latest Function. Why: This 
  *
 */
 
-const buiModFun = ( picIdeStr ) => ({ // What: Build Mode Function. Why: This builds the mode-selection step, scoped to only this sample's own mode option. How: This returns a step object whose own selector is built from PIC_SAM_OBJ's own mode field.
+const buiModFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Mode Function. Why: This builds the mode-selection step, scoped to only this sample's own mode option. How: This returns a step object whose own selector is built from PIC_SAM_OBJ's own mode field.
 
 
 	bacBoo : true,                   // What: Back Boolean. Why: The user should always be able to return to the previous, Group step. How: GuiTouCom shows its own Back button whenever this is true.
@@ -758,7 +763,7 @@ const buiModFun = ( picIdeStr ) => ({ // What: Build Mode Function. Why: This bu
  *
 */
 
-const buiNamFun = ( picIdeStr ) => ({ // What: Build Name Function. Why: This builds the step that highlights the item editor's own name input. How: This returns a step object whose bodEle reads picIdeStr's own picCopObj, falling back to DEF_NAM_ELE.
+const buiNamFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Name Function. Why: This builds the step that highlights the item editor's own name input. How: This returns a step object whose bodEle reads picIdeStr's own picCopObj, falling back to DEF_NAM_ELE.
 
 
 	bacBoo : true,                                                                          // What: Back Boolean. Why: The user should always be able to return to the previous, "Add Item" step. How: GuiTouCom shows its own Back button whenever this is true.
@@ -826,7 +831,7 @@ const buiNamFun = ( picIdeStr ) => ({ // What: Build Name Function. Why: This bu
  *
 */
 
-const buiNewFun = ( picIdeStr, staAppObj ) => ({ // What: Build New Function. Why: This builds Step 2, the step that highlights the real "+ Add New Picker" tab and stages this sample's own prefill data. How: This returns a step object whose runFun() publishes picIdeStr's own template onto the shared bus before the real click opens the create-picker form.
+const buiNewFun = ( picIdeStr : string, staAppObj : StaAppTyp ) : TouSteTyp => ({ // What: Build New Function. Why: This builds Step 2, the step that highlights the real "+ Add New Picker" tab and stages this sample's own prefill data. How: This returns a step object whose runFun() publishes picIdeStr's own template onto the shared bus before the real click opens the create-picker form.
 
 
 	bacBoo : true,                                                                                // What: Back Boolean. Why: The user should always be able to return to the previous, Pickers-nav step. How: GuiTouCom shows its own Back button whenever this is true.
@@ -900,7 +905,7 @@ const buiNewFun = ( picIdeStr, staAppObj ) => ({ // What: Build New Function. Wh
  *
 */
 
-const buiSooFun = ( picIdeStr ) => ({ // What: Build Soonest Function. Why: This builds the step that highlights the item editor's own Soonest/Shortest row. How: This returns a step object whose bodEle reads picIdeStr's own picCopObj, falling back to DEF_SOO_ELE.
+const buiSooFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Soonest Function. Why: This builds the step that highlights the item editor's own Soonest/Shortest row. How: This returns a step object whose bodEle reads picIdeStr's own picCopObj, falling back to DEF_SOO_ELE.
 
 
 	bacBoo : true,                                                                                      // What: Back Boolean. Why: The user should always be able to return to the previous, name-input step. How: GuiTouCom shows its own Back button whenever this is true.
@@ -922,6 +927,8 @@ const buiSooFun = ( picIdeStr ) => ({ // What: Build Soonest Function. Why: This
 
 
 // #region Components
+
+type PucProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onCloTouFun : () => void, picIdeStr : string, selTabFun : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Picker-Tour-Component Props Type. Why: A picker tour builds one sample picker on the real Pickers tab and clears itself when it ends. How: This types PicTouCom's props, named Puc since Ptc and Poc are already PilTagCom's and PagTouCom's.
 
 // #region PicTouCom
 
@@ -981,7 +988,7 @@ const buiSooFun = ( picIdeStr ) => ({ // What: Build Soonest Function. Why: This
  *
 */
 
-function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, staAppObj } ) {
+function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, staAppObj } : PucProTyp ) : React.JSX.Element {
 
 
 	const picRcdObj = ( staAppObj.pickers || [] ).find( ( curPicObj ) => curPicObj.id === picIdeStr );                // What: Picker Record Object. Why: The intro modal and every mode-gating check below need this sample's own live picker record. How: This searches staAppObj.pickers for the entry whose own id matches picIdeStr.
@@ -990,7 +997,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 
 
 
-	const onbStaObj = staAppObj.onboarding || {};                                                                                // What: Onboarding State Object. Why: A reload lands here with app.tsx already having re-derived actPicStr from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resBoo) step to land on. How: This reads staAppObj.onboarding, falling back to an empty object.
+	const onbStaObj = staAppObj.onboarding;                                                                                      // What: Onboarding State Object. Why: A reload lands here with app.tsx already having re-derived actPicStr from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resBoo) step to land on. How: This reads staAppObj.onboarding, which migStaFun guarantees on every state.
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `picker-${ picIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding/tour-runner.tsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this picker's own tour id, otherwise null.
 
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuiTouCom running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
@@ -1125,7 +1132,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 				if ( tarSteNum === 5 ) { // What: Details Step Back Check. Why: Reversing buiAddFun's own step needs the form pushed back to Details. How: This clicks the form's own "Details" step-indicator tab, the only way to reverse this from outside the form, which owns that step state locally.
 
 
-					const detTabEle = document.querySelector( '[data-element-name-hook~="detSteBut"]' ); // What: Details Tab Element. Why: This is the real control that reverses the form's own Details/Items step. How: This looks it up fresh, since it may not exist outside the create-picker form.
+					const detTabEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="detSteBut"]' ); // What: Details Tab Element. Why: This is the real control that reverses the form's own Details/Items step. How: This looks it up fresh, since it may not exist outside the create-picker form.
 
 
 					if ( detTabEle ) detTabEle.click(); // What: Details Tab Click. Why: This must only fire when the control actually exists. How: This clicks detTabEle.
@@ -1136,7 +1143,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 				else if ( tarSteNum === 6 ) { // What: Item Editor Cancel Check. Why: buiNamFun's own step opened the inline item editor, which is also a one-way transition (no toggle); Cancel is the only real-DOM way to close it back to the bare "+ Add Item" button from outside. How: This clicks the item editor's own Cancel button, same reasoning as the tarSteNum === 5 branch above.
 
 
-					const canButEle = document.querySelector( '[data-element-name-hook~="iteCanBut"]' ); // What: Cancel Button Element. Why: This is the real control that closes the inline item editor back to buiAddFun's own step. How: This looks it up fresh, since it may not exist outside an open item editor.
+					const canButEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="iteCanBut"]' ); // What: Cancel Button Element. Why: This is the real control that closes the inline item editor back to buiAddFun's own step. How: This looks it up fresh, since it may not exist outside an open item editor.
 
 
 					if ( canButEle ) canButEle.click(); // What: Cancel Button Click. Why: This must only fire when the control actually exists. How: This clicks canButEle.
