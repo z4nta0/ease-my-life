@@ -34,6 +34,7 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function.
 
 // #region Components
 
+type CdcProTyp = { children : React.ReactNode, className? : string, isaInsBoo? : boolean, open : boolean }; // What: Collapse-Disclosure-Component Props Type. Why: A disclosure shows or hides its content, optionally without animating. How: This types ColDisCom's props.
 // #region ColDisCom
 
 /**
@@ -69,7 +70,7 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function.
  *
 */
 
-function ColDisCom ( { children, className = '', isaInsBoo = false, open } ) {
+function ColDisCom ( { children, className = '', isaInsBoo = false, open } : CdcProTyp ) : React.JSX.Element {
 
 
 	const [ chiMouBoo, setChiMouBoo ] = React.useState( open );              // What: Child Mounted Boolean And Setter. Why: Children must stay in the DOM through the close animation and unmount only once it finishes. How: This starts matching the initial open value and is flipped by the effects below.
@@ -119,7 +120,7 @@ function ColDisCom ( { children, className = '', isaInsBoo = false, open } ) {
 	}, [ open, chiMouBoo ] ); // What: Effect Dependency Array. Why: open decides whether an expand should happen at all, and chiMouBoo re-runs this on the mount commit rather than only on the open change. How: Both are read directly inside the guard above.
 
 
-	const onTraEndFun = ( traEndObj ) => { // What: On Transition End Function. Why: The child can only safely unmount once the close animation has actually finished playing. How: This checks that the event is the grid-row transition finishing on this element itself while closed, then unmounts the child.
+	const onTraEndFun = ( traEndObj : React.TransitionEvent ) => { // What: On Transition End Function. Why: The child can only safely unmount once the close animation has actually finished playing. How: This checks that the event is the grid-row transition finishing on this element itself while closed, then unmounts the child.
 
 
 		const tarSelBoo = traEndObj.target === traEndObj.currentTarget;    // What: Target Self Boolean. Why: A transitionend can bubble up from an unrelated descendant's own transition. How: This confirms the event fired on this element itself, not a child.

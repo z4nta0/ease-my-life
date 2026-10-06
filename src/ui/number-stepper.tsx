@@ -30,6 +30,7 @@ import React     from 'react';                       // What: React. Why: NumSte
 
 // #region Components
 
+type NscProTyp = { ariLabStr : string, maxValNum? : number, minValNum? : number, onSetValFun : ( newValNum : number ) => void, value : number }; // What: Number-Stepper-Component Props Type. Why: The stepper edits one whole number between optional bounds and hands each change to its parent. How: This types NumSteCom's props.
 // #region NumSteCom
 
 /**
@@ -63,7 +64,7 @@ import React     from 'react';                       // What: React. Why: NumSte
  *
 */
 
-function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, value } ) {
+function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, value } : NscProTyp ) : React.JSX.Element {
 
 
 	const [ texValStr, setTexValStr ] = React.useState( String( value ) ); // What: Text Value String And Setter. Why: The value must be typeable as free text, not just steppable, so a separate string buffer is needed alongside the real numeric value. How: This starts mirroring the initial value and is kept in sync by the effect below and overwritten locally while the user types.

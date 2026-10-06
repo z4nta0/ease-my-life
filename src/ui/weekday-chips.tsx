@@ -8,6 +8,9 @@ import cssModObj from './weekday-chips.module.css'; // What: CSS Module Object. 
 
 import { InfTipCom } from './info-tip.tsx'; // What: Info Tip Component. Why: A weekly cadence's pinned anchor day explains why it can't be turned off. How: This wraps that locked chip with locTipStr as its tip.
 
+
+import type { JSX } from 'react'; // What: JSX. Why: The component declares the element it returns. How: This types its return as a JSX element.
+
 // #endregion Imports
 
 
@@ -45,6 +48,7 @@ const WEE_LAB_ARR = [ 'S', 'M', 'T', 'W', 'T', 'F', 'S' ]; // What: Week Label A
 
 // #region Components
 
+type WccProTyp = { desIdeStr? : string, locDayNum? : number | null, locTipStr? : string, onChange : ( nexDayArr : number[] ) => void, sizValStr? : string, value : number[] }; // What: Weekday-Chip-Component Props Type. Why: The chips select days of the week, optionally pinning one on with a reason. How: This types WeeChiCom's props.
 // #region WeeChiCom
 
 /**
@@ -86,10 +90,10 @@ const WEE_LAB_ARR = [ 'S', 'M', 'T', 'W', 'T', 'F', 'S' ]; // What: Week Label A
  *
 */
 
-const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, sizValStr = 'md', value } ) => { // What: Weekday Chip Component. Why: See the design-rationale block above. How: This renders one chip per weekday, locked (InfTipCom) or toggleable (button) depending on locDayNum.
+const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, sizValStr = 'md', value } : WccProTyp ) : JSX.Element => { // What: Weekday Chip Component. Why: See the design-rationale block above. How: This renders one chip per weekday, locked (InfTipCom) or toggleable (button) depending on locDayNum.
 
 
-	const togDayFun = ( dayIndNum ) => { // What: Toggle Day Function. Why: Clicking an unlocked chip needs to add or remove that single day from the selection, while keeping at least one day selected. How: This flips dayIndNum's membership in value, re-sorts the result, and calls onChange unless doing so would leave the week empty.
+	const togDayFun = ( dayIndNum : number ) => { // What: Toggle Day Function. Why: Clicking an unlocked chip needs to add or remove that single day from the selection, while keeping at least one day selected. How: This flips dayIndNum's membership in value, re-sorts the result, and calls onChange unless doing so would leave the week empty.
 
 
 		const hasDayBoo = value.includes( dayIndNum );                                                                    // What: Has Day Boolean. Why: Whether dayIndNum is already selected decides whether this toggle adds or removes it. How: This checks value's own current membership for dayIndNum.

@@ -34,6 +34,7 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function.
 
 // #region Components
 
+type BrcProTyp = { booValNum : number, onResBooFun : () => void, sufTexStr? : string }; // What: Boost-Reset-Component Props Type. Why: The control shows a boost value with an optional suffix and resets it through its parent. How: This types BooResCom's props.
 // #region BooResCom
 
 /**
@@ -66,7 +67,7 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function.
  *
 */
 
-function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } ) {
+function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } : BrcProTyp ) : React.JSX.Element {
 
 
 	const [ disValNum, setDisValNum ] = React.useState( booValNum ); // What: Display Value Number And Setter. Why: The shown number needs to animate independently of the real committed booValNum while a reset is ticking down. How: This starts mirroring booValNum and is driven by runResFun's own tick loop while a reset animation is running.

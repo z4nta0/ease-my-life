@@ -34,6 +34,7 @@ import { useEscCanFun } from './escape-cancel.ts'; // What: Use Escape Cancel Fu
 
 // #region Components
 
+type EfcProTyp = { isaNewBoo? : boolean, onCanTasFun : () => void, onDelTasFun : () => void, onDonTasFun : () => void }; // What: Editor-Footer-Component Props Type. Why: The footer runs its parent's Cancel, Delete, and Save, and hides Delete for a reminder that isn't kept yet. How: This types EdiFooCom's props.
 // #region EdiFooCom
 
 /**
@@ -67,7 +68,7 @@ import { useEscCanFun } from './escape-cancel.ts'; // What: Use Escape Cancel Fu
  *
 */
 
-function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } ) {
+function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } : EfcProTyp ) : React.JSX.Element {
 
 
 	const [ conOpeBoo, setConOpeBoo ] = React.useState( false ); // What: Confirm Open Boolean And Setter. Why: Delete is confirm-gated, morphing this footer into a Delete/Cancel prompt instead of firing immediately. How: This toggles between the plain footer and the confirm prompt.

@@ -31,6 +31,7 @@ import React     from 'react';                          // What: React. Why: Seg
 
 // #region Components
 
+type SccProTyp = { ariLabStr : string, desIdeStr? : string, layVarStr? : string, onChange : ( keyStr : string ) => void, optIteArr : { keyStr : string, labStr : string }[], value : string }; // What: Segmented-Control-Component Props Type. Why: The control picks one of its options by key, with an accessible name and an optional description and layout. How: This types SegConCom's props.
 // #region SegConCom
 
 /**
@@ -73,7 +74,7 @@ import React     from 'react';                          // What: React. Why: Seg
  *
 */
 
-function SegConCom ( { ariLabStr, desIdeStr, layVarStr, onChange, optIteArr, value } ) {
+function SegConCom ( { ariLabStr, desIdeStr, layVarStr, onChange, optIteArr, value } : SccProTyp ) : React.JSX.Element {
 
 
 	const segEleRef = React.useRef( null );                                                               // What: Segment Element Reference. Why: plaThuFun needs a handle on the actual group DOM node to query and measure it. How: This is attached via the group div's own ref prop below.
@@ -81,7 +82,7 @@ function SegConCom ( { ariLabStr, desIdeStr, layVarStr, onChange, optIteArr, val
 	const preIndRef = React.useRef( optIteArr.findIndex( ( optConObj ) => optConObj.keyStr === value ) ); // What: Previous Index Reference. Why: plaThuFun needs to know which direction the selection just moved in, to decide which edge of the thumb leads the animation. How: This starts at the initially-selected entry's own index and is updated at the end of every plaThuFun run.
 
 
-	const plaThuFun = React.useCallback( ( aniMovBoo ) => { // What: Place Thumb Function. Why: This centralizes measuring the active button and moving/resizing the thumb span to match it, with or without an animated transition. How: This is called by both layout effects below, once on every selection/resize and once (with animation) on every value change.
+	const plaThuFun = React.useCallback( ( aniMovBoo : boolean ) => { // What: Place Thumb Function. Why: This centralizes measuring the active button and moving/resizing the thumb span to match it, with or without an animated transition. How: This is called by both layout effects below, once on every selection/resize and once (with animation) on every value change.
 
 
 		const segCurEle = segEleRef.current; // What: Segment Current Element. Why: This gives a stable local reference to the live group DOM node for this placement pass. How: This is read once from segEleRef.current and reused below.
