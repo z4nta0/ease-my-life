@@ -5,6 +5,11 @@
 
 import React from 'react'; // What: React. Why: The draft is held in React state so every edit re-renders the editor showing it. How: This is used directly (React.useState).
 
+
+import type { ActStoTyp } from '../state/store.ts';     // What: Action Store Type. Why: Each draft commits through a few of the store's actions. How: This types each hook's tarActObj as just the actions it calls.
+import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: An item editor drafts an item. How: This types useIteDraFun's item and draft.
+import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Type. Why: A reminder editor drafts a reminder. How: This types useTasDraFun's reminder and draft.
+
 // #endregion Imports
 
 
@@ -64,10 +69,10 @@ import React from 'react'; // What: React. Why: The draft is held in React state
  *
 */
 
-function useRcdDraFun ( rcdDatObj ) {
+function useRcdDraFun< T extends { id : string } > ( rcdDatObj : T | null ) : { draRcdObj : T | null, oriRcdObj : T | null, patDraFun : ( patRcdObj : Partial< T > ) => void } {
 
 
-	const [ draStaObj, setDraStaObj ] = React.useState( { draRcdObj : null, oriRcdObj : null } ); // What: Draft State Object And Setter. Why: The draft and the record it started from must change together, in one update. How: This holds both, starting empty.
+	const [ draStaObj, setDraStaObj ] = React.useState< { draRcdObj : T | null, oriRcdObj : T | null } >( { draRcdObj : null, oriRcdObj : null } ); // What: Draft State Object And Setter. Why: The draft and the record it started from must change together, in one update. How: This holds both, starting empty.
 
 	const opeIdeStr = rcdDatObj ? rcdDatObj.id : null;                     // What: Open Identifier String. Why: A different open record must start a fresh draft. How: This reads rcdDatObj's own id, or null when nothing is open.
 	const draIdeStr = draStaObj.oriRcdObj ? draStaObj.oriRcdObj.id : null; // What: Draft Identifier String. Why: The current draft must be tied to the record it started from. How: This reads the starting copy's own id, or null when there's no draft.
@@ -90,7 +95,7 @@ function useRcdDraFun ( rcdDatObj ) {
 
 
 
-	const patDraFun = ( patRcdObj ) => setDraStaObj( ( preStaObj ) => preStaObj.draRcdObj ? { ...preStaObj, draRcdObj : { ...preStaObj.draRcdObj, ...patRcdObj } } : preStaObj ); // What: Patch Draft Function. Why: Every editor control changes a field or two of the draft, while a click landing on an editor already closing has no draft left to change. How: This merges patRcdObj into the draft record, or leaves the state alone when there's no draft.
+	const patDraFun = ( patRcdObj : Partial< T > ) => setDraStaObj( ( preStaObj ) => preStaObj.draRcdObj ? { ...preStaObj, draRcdObj : { ...preStaObj.draRcdObj, ...patRcdObj } } : preStaObj ); // What: Patch Draft Function. Why: Every editor control changes a field or two of the draft, while a click landing on an editor already closing has no draft left to change. How: This merges patRcdObj into the draft record, or leaves the state alone when there's no draft.
 
 
 
@@ -131,7 +136,7 @@ function useRcdDraFun ( rcdDatObj ) {
  *
 */
 
-function useIteDraFun ( tarActObj, iteDatObj ) {
+function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' | 'togVacFun' | 'updIteFun' >, iteDatObj : IteRcdTyp | null ) : { comDraFun : () => void, draIteObj : IteRcdTyp | null, patDraFun : ( patRcdObj : Partial< IteRcdTyp > ) => void } {
 
 
 	const { draRcdObj, oriRcdObj, patDraFun } = useRcdDraFun( iteDatObj ); // What: Record Draft Destructure. Why: The item draft is a record draft with an item-specific commit. How: This calls useRcdDraFun with the open item.
@@ -238,7 +243,7 @@ function useIteDraFun ( tarActObj, iteDatObj ) {
  *
 */
 
-function useTasDraFun ( tarActObj, tasDatObj ) {
+function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >, tasDatObj : TasRcdTyp | null ) : { comDraFun : () => void, draTasObj : TasRcdTyp | null, patDraFun : ( patRcdObj : Partial< TasRcdTyp > ) => void } {
 
 
 	const { draRcdObj, oriRcdObj, patDraFun } = useRcdDraFun( tasDatObj ); // What: Record Draft Destructure. Why: The reminder draft is a record draft with a reminder-specific commit. How: This calls useRcdDraFun with the open reminder.
