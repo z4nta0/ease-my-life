@@ -35,6 +35,7 @@ import { rhyPxlFun    } from '../utils/rhythm.ts'; // What: Rhythm Pixel Functio
 
 // #region Components
 
+type ItcProTyp = { actNamStr? : string | null, children : React.ReactNode, className? : string, 'data-element-name-hook'? : string, labTexStr : string, trnOnlBoo? : boolean } & { [ datAttStr : `data-${ string }` ] : string | boolean | undefined }; // What: Info-Tip-Component Props Type. Why: A tip wraps its trigger content with a label, optionally standing in for a disabled action or showing only when truncated, and forwards any data attributes. How: This types InfTipCom's props, with any data-* attribute allowed.
 // #region InfTipCom
 
 /**
@@ -108,7 +109,7 @@ import { rhyPxlFun    } from '../utils/rhythm.ts'; // What: Rhythm Pixel Functio
  *
 */
 
-const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-name-hook' : hooNamStr, labTexStr, trnOnlBoo = false, ...datAttObj } ) => { // What: Info Tip Component. Why: See the design-rationale block above. How: This tracks its own open/position/truncation state and renders either an inert span or the full interactive trigger plus its portaled tooltip below.
+const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-name-hook' : hooNamStr, labTexStr, trnOnlBoo = false, ...datAttObj } : ItcProTyp ) : React.JSX.Element => { // What: Info Tip Component. Why: See the design-rationale block above. How: This tracks its own open/position/truncation state and renders either an inert span or the full interactive trigger plus its portaled tooltip below.
 
 
 	const [ tipOpeBoo, setTipOpeBoo ] = React.useState( false );                                      // What: Tip Open Boolean And Setter. Why: This tracks whether the floating tooltip is currently showing. How: This is flipped by the pointer/keyboard handlers below and read by the render's own portal guard.
@@ -256,7 +257,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 
 
 
-		const onPoiDowFun = ( poiDowObj ) => { // What: On Pointer Down Function. Why: A pointerdown anywhere outside the trigger itself should close the tooltip. How: This checks whether the event's own target falls inside the trigger element before closing.
+		const onPoiDowFun = ( poiDowObj : PointerEvent ) => { // What: On Pointer Down Function. Why: A pointerdown anywhere outside the trigger itself should close the tooltip. How: This checks whether the event's own target falls inside the trigger element before closing.
 
 
 			if ( trgEleRef.current && trgEleRef.current.contains( poiDowObj.target ) ) return; // What: Inside Trigger Guard. Why: A pointerdown on the trigger itself is handled by the trigger's own onPointerDown/onClick handlers below, not this outside-close listener. How: This bails out when the event's own target is contained within the trigger element.
@@ -269,7 +270,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 		};
 
 
-		const onKeyDowFun = ( keyDowObj ) => { if ( keyDowObj.key === 'Escape' ) setTipOpeBoo( false ); }; // What: On Key Down Function. Why: Escape is a standard way to dismiss a transient overlay like this tooltip. How: This closes the tooltip only when the pressed key is exactly Escape.
+		const onKeyDowFun = ( keyDowObj : KeyboardEvent ) => { if ( keyDowObj.key === 'Escape' ) setTipOpeBoo( false ); }; // What: On Key Down Function. Why: Escape is a standard way to dismiss a transient overlay like this tooltip. How: This closes the tooltip only when the pressed key is exactly Escape.
 
 
 		document.addEventListener( 'pointerdown', onPoiDowFun, true ); // What: Pointer Down Listener Add Call. Why: The capture phase ensures this fires before an inner element's own stopPropagation could swallow it. How: This registers onPoiDowFun for every pointerdown in the document.

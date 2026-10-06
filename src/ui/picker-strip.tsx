@@ -9,6 +9,9 @@ import React     from 'react';                     // What: React. Why: This is 
 
 import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function. Why: Under reduced motion the strip skips its cycle and mounts straight into the settled end state. How: This is checked once on mount unless forMotBoo forces the animation.
 
+
+import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: The strip's candidates are items. How: This types PscProTyp's candidates by their id and name.
+
 // #endregion Imports
 
 
@@ -34,6 +37,7 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function.
 
 // #region Components
 
+type PscProTyp = { canIteArr : Pick< IteRcdTyp, 'id' | 'name' >[], forMotBoo? : boolean, onCycDonFun? : () => void, picIteObj : Pick< IteRcdTyp, 'id' | 'name' > | null, styKeyStr : string }; // What: Picker-Strip-Component Props Type. Why: The strip animates through candidate names toward an already-picked one, in one of three styles. How: This types PicStrCom's props, reading only each candidate's id and name.
 // #region PicStrCom
 
 /**
@@ -79,7 +83,7 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function.
  *
 */
 
-function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr } ) {
+function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr } : PscProTyp ) : React.JSX.Element {
 
 
 	// #region Cycle State
@@ -118,7 +122,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 
 		const medQueObj   = matchMedia( '(max-height: 750px)' );                // What: Media Query Object. Why: The same query used for the initial value must be reused here so the listener matches. How: This is the live MediaQueryList the change listener below attaches to.
-		const onVieChaFun = ( chaEveObj ) => setShoVieBoo( chaEveObj.matches ); // What: On Viewport Change Function. Why: The viewport's own height can cross the 750px breakpoint at any time while the app is open. How: This updates shoVieBoo to the media query's current match state whenever it fires a change event.
+		const onVieChaFun = ( chaEveObj : MediaQueryListEvent ) => setShoVieBoo( chaEveObj.matches ); // What: On Viewport Change Function. Why: The viewport's own height can cross the 750px breakpoint at any time while the app is open. How: This updates shoVieBoo to the media query's current match state whenever it fires a change event.
 
 
 		medQueObj.addEventListener( 'change', onVieChaFun ); // What: Viewport Change Subscribe Call. Why: shoVieBoo needs to be kept live, not just set once at mount. How: This registers onVieChaFun to run on every future change event from medQueObj.
@@ -160,7 +164,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 		let canRunBoo = false;     // What: Cancel Run Boolean. Why: A pending setTimeout chain must stop scheduling further steps once this effect is cleaned up. How: This is flipped to true by the cleanup function and checked at the top of every scheduled step.
 
 
-		const schSteFun = ( gapTimNum ) => { // What: Schedule Step Function. Why: Each step's own timing depends on the previous step's computed duration, so the steps must schedule themselves recursively rather than run on one fixed interval. How: This waits gapTimNum ms, advances the position and step count, computes the next gap, updates state, then schedules itself again until totSteNum is reached.
+		const schSteFun = ( gapTimNum : number ) => { // What: Schedule Step Function. Why: Each step's own timing depends on the previous step's computed duration, so the steps must schedule themselves recursively rather than run on one fixed interval. How: This waits gapTimNum ms, advances the position and step count, computes the next gap, updates state, then schedules itself again until totSteNum is reached.
 
 
 			if ( canRunBoo ) return; // What: Already Cancelled Guard. Why: A step that fires after cleanup ran must not do anything at all. How: This bails out before even setting the inner setTimeout.
