@@ -14,6 +14,13 @@ import { SegConCom   } from './segmented-control.tsx'; // What: Segment Control 
 import { TAS_NAM_OBJ } from '../core/tasks.ts';        // What: Tasks Namespace Object. Why: The editor's own summaries, visibility notes, and schedule defaults defer to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout SchEdiCom and VisNotCom.
 import { WeeChiCom   } from './weekday-chips.tsx';     // What: Weekday Chip Component. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This is rendered inside SchEdiCom's own weekly schedule subsection.
 
+
+import type { DatModTyp } from '../core/data-model.ts'; // What: Date Mode Type. Why: Each date mode option's key is one of the fixed modes. How: This types datModArr's keys, so the mode picker hands back a real mode.
+import type { RepNamTyp } from '../core/data-model.ts'; // What: Repeat Name Type. Why: Each repeat option's key is one of the fixed repeat kinds. How: This types REP_OPT_ARR's keys, so the Repeat picker hands back a real kind.
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The visibility note reads the reminder options and holidays from app state. How: This types both components' staAppObj.
+import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Type. Why: The editor edits a draft reminder. How: This types both components' reminder and SchEdiCom's patches.
+import type { TodVisTyp } from '../core/tasks.ts';      // What: Today Visibility Type. Why: The reason phrase reads todVisFun's result. How: This types reaPhrFun's visResObj.
+
 // #endregion Imports
 
 
@@ -74,7 +81,7 @@ import { WeeChiCom   } from './weekday-chips.tsx';     // What: Weekday Chip Com
  *
 */
 
-const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat control needs one entry per schedule kind, each with its own live sub-explanation. How: This is passed as SegConCom's own optIteArr prop from SchEdiCom below.
+const REP_OPT_ARR : { keyStr : RepNamTyp, labStr : string, subEle : React.JSX.Element }[] = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat control needs one entry per schedule kind, each with its own live sub-explanation. How: This is passed as SegConCom's own optIteArr prop from SchEdiCom below.
 
 
 	{ // What: Once Option Entry. Why: A one-time reminder is the default, no-repeat option. How: This entry's own subEle explains it stays included until marked as completed.
@@ -167,7 +174,7 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
  *
 */
 
-function reaPhrFun ( visResObj ) {
+function reaPhrFun ( visResObj : TodVisTyp ) : string {
 
 
 	const reaParArr = []; // What: Reason Part Array. Why: Every applicable settings-based cause below is collected here before being joined into one phrase. How: This is pushed onto by both branches below and joined at the very end.
@@ -204,6 +211,8 @@ function reaPhrFun ( visResObj ) {
 
 
 // #region Components
+
+type VncProTyp = { kinValStr : string, notIdeStr : string, staAppObj : StaAppTyp, tasRcdObj : TasRcdTyp }; // What: Visibility-Note-Component Props Type. Why: The note explains why a reminder won't show today, in one of two placements. How: This types VisNotCom's props.
 
 // #region VisNotCom
 
@@ -251,7 +260,7 @@ function reaPhrFun ( visResObj ) {
  *
 */
 
-function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } ) {
+function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp ) : React.JSX.Element {
 
 
 	const visResObj = tasRcdObj && TAS_NAM_OBJ.todVisFun // What: Visibility Result Object. Why: Every branch below reads this same computed visibility result. How: This calls TAS_NAM_OBJ.todVisFun against tasRcdObj's own schedule, or stays null when there's no task yet.
@@ -392,6 +401,8 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } ) {
 
 
 
+type SecProTyp = { aniExtBoo? : boolean, layVarStr : string, onPatTasFun : ( patValObj : Partial< TasRcdTyp > ) => void, staAppObj : StaAppTyp, tasRcdObj : TasRcdTyp }; // What: Schedule-Editor-Component Props Type. Why: The editor shows a draft reminder's schedule in one of two layouts and hands each change back as a patch. How: This types SchEdiCom's props.
+
 // #region SchEdiCom
 
 /**
@@ -432,7 +443,7 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } ) {
  *
 */
 
-function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tasRcdObj } ) {
+function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tasRcdObj } : SecProTyp ) : React.JSX.Element {
 
 
 	// #region Last Kind Memory
@@ -454,7 +465,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 	const dayFulArr = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];                                             // What: Day Full Array. Why: The weekly single-day and monthly/annual Nth-weekday summaries need the full weekday name. How: This is indexed by daysOfWeek/nthWeekday entries throughout this function.
 
 
-	const datModArr = [ // What: Date Mode Array. Why: The monthly and annual subsections both offer the same Date-vs-Weekday choice, driven by one shared SegConCom control. How: This is passed as that SegConCom's own optIteArr prop in both subsections below.
+	const datModArr : { keyStr : DatModTyp, labStr : string }[] = [ // What: Date Mode Array. Why: The monthly and annual subsections both offer the same Date-vs-Weekday choice, driven by one shared SegConCom control. How: This is passed as that SegConCom's own optIteArr prop in both subsections below.
 
 
 		{ keyStr : 'date',       labStr : 'Date'    }, // What: Plain Date Option. Why: This is the default day-of-month/day targeting mode. How: SegConCom reads this entry the same way as any other options entry.

@@ -1307,7 +1307,7 @@ const TAS_NAM_OBJ = { // What: Tasks Namespace Object. Why: store.ts, the remind
 
 
 
-export { TAS_NAM_OBJ }; // What: Tasks Namespace Object Export. Why: Every consumer reaches this file's own reminders engine through the one namespace object. How: This exports TAS_NAM_OBJ by name at the very end of the file.
+export { TAS_NAM_OBJ, type TodVisTyp }; // What: Named Exports. Why: Every consumer reaches this file's own reminders engine through the one namespace object, and the schedule editor types todVisFun's result with TodVisTyp. How: This exports both by name at the very end of the file.
 
 // #endregion Exports
 
