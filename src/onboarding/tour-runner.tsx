@@ -15,6 +15,10 @@ import { rhyPxlFun    } from '../utils/rhythm.ts';   // What: Rhythm Pixel Funct
 import { splSelFun    } from '../utils/selector.ts'; // What: Split Selector Function. Why: A selector list's alternatives are tried in turn, and a comma nested inside :is() or :has() must not split one alternative in two. How: This is called with the step's or item's own selector list.
 import { useEmlTouFun } from '../state/tour-bus.ts'; // What: Use Ease My Life Tour Function. Why: GuiTouCom needs to know whether a drag gesture is in progress elsewhere in the app, so it can hide its own coach card during one. How: This is called once to subscribe to the shared tour bus and read its own draActBoo field.
 
+
+import type { ActStoTyp } from '../state/store.ts'; // What: Action Store Type. Why: The tour records its progress through the store's actions. How: This types GtcProTyp's actStoObj.
+import type { ReactNode } from 'react';             // What: React Node. Why: A step's body is renderable content. How: This types TouSteTyp's bodEle.
+
 // #endregion Imports
 
 
@@ -34,6 +38,7 @@ import { useEmlTouFun } from '../state/tour-bus.ts'; // What: Use Ease My Life T
  * blocks clicks and no sequential coach, a genuinely different engine.
  *
  * Sections:
+ *  - Types
  *  - Constants
  *  - Helpers
  *  - Components
@@ -42,6 +47,39 @@ import { useEmlTouFun } from '../state/tour-bus.ts'; // What: Use Ease My Life T
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Types
+
+type TouSteTyp = { // What: Tour Step Type. Why: Every guided tour is a list of steps GuiTouCom runs, each described in GuiTouCom's own summary. How: This describes one step.
+
+
+	advCliStr? : string;     // What: Advance Click String. Why: A real click on the narrated control can count as Next. How: A click on this selector advances like the primary button.
+	advDelNum? : number;     // What: Advance Delay Number. Why: A clicked target can play a short confirmation first. How: A cirBoo step waits this many milliseconds before advancing.
+	advSelStr? : string;     // What: Advance Selector String. Why: A click can start something whose result is the next step's target. How: A cirBoo step waits for this selector to appear before advancing.
+	bacBoo?    : boolean;    // What: Back Boolean. Why: Some steps can be revisited. How: This shows the Back button.
+	bodEle     : ReactNode;  // What: Body Element. Why: The coach card explains the step. How: This is its body copy.
+	catBoo?    : boolean;    // What: Can-Avoid-Tallness Boolean. Why: A target taller than the viewport can't have the coach reserve space beside it. How: This skips that reserve and scrolls the target to start below the coach.
+	cirBoo?    : boolean;    // What: Click-In-Real Boolean. Why: Some steps teach the real control rather than narrate it. How: Next is disabled and only a click on the target advances.
+	cliSelStr? : string;     // What: Click Selector String. Why: A highlight can be wider than what should be clicked. How: This narrows what counts as an on-target click, defaulting to selStr.
+	cptSelStr? : string;     // What: Click Pass-Through Selector String. Why: A repeatable action inside a step must stay usable without advancing it. How: Clicks on this selector reach their own handler untouched.
+	priStr     : string;     // What: Primary String. Why: The primary button's label changes on the last step. How: This is that label, with 'Done' finishing the tour.
+	pulSelStr? : string;     // What: Pulse Selector String. Why: The cirBoo pulse should stop once nothing is left to click. How: The pulse only plays while this selector matches.
+	resBoo?    : boolean;    // What: Resume Boolean. Why: A step whose target came from an unsaved earlier action can't be resumed after a reload. How: This is false on such a step, keeping it out of the resume checkpoint.
+	rhsBoo?    : boolean;    // What: Row Horizontal Scroll Boolean. Why: A target in a horizontally scrolling row isn't reached by vertical scrolling. How: This scrolls it into view horizontally once found.
+	runFun?    : () => void; // What: Run Function. Why: A step can perform a real action as it advances. How: This runs when the primary button is clicked, before advancing.
+	selStr     : string;     // What: Selector String. Why: Each step spotlights its target. How: This selector list names the element or elements to highlight.
+	solBoo?    : boolean;    // What: Solo Boolean. Why: A standalone tip isn't part of a step sequence. How: This hides the step counter and Back.
+	stbBoo?    : boolean;    // What: Scroll-To-Bottom Boolean. Why: A target near the page bottom should land there. How: This scrolls its scroller to the bottom instead of centering it.
+	sttBoo?    : boolean;    // What: Scroll-To-Top Boolean. Why: A target at the very top of its page should land there. How: This scrolls its scroller to the top instead of centering it.
+	tabStr?    : string;     // What: Tab String. Why: A step's target lives on one tab. How: The tour switches to this tab before showing the step.
+	titStr     : string;     // What: Title String. Why: The coach card names the step. How: This is its heading.
+
+
+};
+
+// #endregion Types
 
 
 
@@ -85,7 +123,7 @@ const COA_HEI_NUM = 220; // What: Coach Height Number. Why: This is a conservati
  *
 */
 
-const arrHorFun = ( curRecObj, coaLefNum, coaWidNum ) => Math.max( 18, Math.min( curRecObj.left + curRecObj.width / 2 - coaLefNum, coaWidNum - 26 ) ); // What: Arrow Horizontal Function. Why: The coach's own arrow must stay centered on the target's own horizontal midpoint while never sliding into the coach's own rounded corners. How: This computes that midpoint relative to the coach's own left edge, clamped to a safe inset range.
+const arrHorFun = ( curRecObj : { left : number, width : number }, coaLefNum : number, coaWidNum : number ) : number => Math.max( 18, Math.min( curRecObj.left + curRecObj.width / 2 - coaLefNum, coaWidNum - 26 ) ); // What: Arrow Horizontal Function. Why: The coach's own arrow must stay centered on the target's own horizontal midpoint while never sliding into the coach's own rounded corners. How: This computes that midpoint relative to the coach's own left edge, clamped to a safe inset range.
 
 // #endregion arrHorFun
 
@@ -117,7 +155,7 @@ const arrHorFun = ( curRecObj, coaLefNum, coaWidNum ) => Math.max( 18, Math.min(
  *
 */
 
-const safBotFun = () => { // What: Safe Bottom Function. Why: A bottom-anchored tab bar is the one piece of chrome that clips from the BOTTOM of the viewport instead of the top. How: This returns the bar's own top edge when present, otherwise the full viewport height.
+const safBotFun = () : number => { // What: Safe Bottom Function. Why: A bottom-anchored tab bar is the one piece of chrome that clips from the BOTTOM of the viewport instead of the top. How: This returns the bar's own top edge when present, otherwise the full viewport height.
 
 
 	const barCurEle = document.querySelector( '[data-placement="bottom"] > [data-element-name-hook~="appTabNav"]' ); // What: Bar Current Element. Why: Only a bottom-placed tab bar occupies this edge at all. How: This looks up the bar element fresh on every call.
@@ -179,7 +217,7 @@ const safBotFun = () => { // What: Safe Bottom Function. Why: A bottom-anchored 
  *
 */
 
-const safTopFun = ( { forCoaBoo } = {} ) => { // What: Safe Top Function. Why: Every clamp/scroll calculation below needs one shared answer for "how far down does fixed chrome reach". How: This returns 0 for the coach (forCoaBoo), otherwise the lowest bottom edge among the sticky header, the mobile group rail, and the Edit Mode banner.
+const safTopFun = ( { forCoaBoo } : { forCoaBoo? : boolean } = {} ) : number => { // What: Safe Top Function. Why: Every clamp/scroll calculation below needs one shared answer for "how far down does fixed chrome reach". How: This returns 0 for the coach (forCoaBoo), otherwise the lowest bottom edge among the sticky header, the mobile group rail, and the Edit Mode banner.
 
 
 	if ( forCoaBoo ) return 0; // What: Coach Exemption Guard. Why: The coach card floats in its own high z-index overlay, never physically under this chrome. How: This skips the whole exclusion zone and returns 0 whenever forCoaBoo is true.
@@ -259,7 +297,7 @@ const safTopFun = ( { forCoaBoo } = {} ) => { // What: Safe Top Function. Why: E
  *
 */
 
-const coaLayFun = ( curRecObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ) => { // What: Coach Layout Function. Why: This is the one shared answer for where the coach sits relative to a clamped highlight rect. How: This prefers below the target, flipping above it only once there is no room below.
+const coaLayFun = ( curRecObj : { bottom : number, height : number, left : number, top : number, width : number }, coaHeiNum : number, coaWidNum : number, vieWidNum : number, vieHeiNum : number ) : { arrStr : string, left : number, top : number } => { // What: Coach Layout Function. Why: This is the one shared answer for where the coach sits relative to a clamped highlight rect. How: This prefers below the target, flipping above it only once there is no room below.
 
 
 	const coaLefNum = Math.max( rhyPxlFun( 'm01' ), Math.min( curRecObj.left, vieWidNum - coaWidNum - rhyPxlFun( 'm01' ) ) ); // What: Coach Left Number. Why: The coach must never sit flush against either viewport edge. How: This clamps the target's own left edge between a small-step margin and the coach's own width from the right edge. // Vertical Rhythm Base Minus 1 = 11px
@@ -308,7 +346,7 @@ const coaLayFun = ( curRecObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ) => {
  *
 */
 
-const coaWidFun = ( vieWidNum ) => Math.min( rhyPxlFun( 'p10' ) + ( rhyPxlFun( 'bas' ) + rhyPxlFun( 'm12' ) ) * 2, vieWidNum - rhyPxlFun( 'm01' ) * 2 ); // What: Coach Width Function. Why: The coach card should fit its body text like help mode's tip, without outgrowing a narrow viewport. How: This takes the smaller of the text width plus padding and borders, and the viewport less its edge margins. // Vertical Rhythm Base Plus 10 ~= 242.522px, Vertical Rhythm Base ~= 14.572px, Vertical Rhythm Base Minus 12 ~= 0.499px, Vertical Rhythm Base Minus 1 = 11px
+const coaWidFun = ( vieWidNum : number ) : number => Math.min( rhyPxlFun( 'p10' ) + ( rhyPxlFun( 'bas' ) + rhyPxlFun( 'm12' ) ) * 2, vieWidNum - rhyPxlFun( 'm01' ) * 2 ); // What: Coach Width Function. Why: The coach card should fit its body text like help mode's tip, without outgrowing a narrow viewport. How: This takes the smaller of the text width plus padding and borders, and the viewport less its edge margins. // Vertical Rhythm Base Plus 10 ~= 242.522px, Vertical Rhythm Base ~= 14.572px, Vertical Rhythm Base Minus 12 ~= 0.499px, Vertical Rhythm Base Minus 1 = 11px
 
 // #endregion coaWidFun
 
@@ -343,7 +381,7 @@ const coaWidFun = ( vieWidNum ) => Math.min( rhyPxlFun( 'p10' ) + ( rhyPxlFun( '
  *
 */
 
-const todTopFun = ( actIdeStr, selTabFun ) => { // What: Today Top Function. Why: Every tour ending (Skip, Done, or the not-found watchdog) needs to land the user back on a pristine, top-scrolled Today. How: This switches to Today if needed, then scrolls both the app's own scroller and the window to 0.
+const todTopFun = ( actIdeStr : string, selTabFun : ( tabIdeStr : string ) => void ) : void => { // What: Today Top Function. Why: Every tour ending (Skip, Done, or the not-found watchdog) needs to land the user back on a pristine, top-scrolled Today. How: This switches to Today if needed, then scrolls both the app's own scroller and the window to 0.
 
 
 	if ( actIdeStr !== 'today' ) selTabFun( 'today' ); // What: Today Switch Guard. Why: A tour can end from any tab, but the landing spot is always Today. How: This only calls selTabFun when the actIdeStr tab is not already Today.
@@ -375,6 +413,8 @@ const todTopFun = ( actIdeStr, selTabFun ) => { // What: Today Top Function. Why
 
 
 // #region Components
+
+type GtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onBacTouFun? : ( claSteNum : number ) => void, onFinTouFun : () => void, onSkiTouFun? : () => void, resSteNum? : number, selTabFun : ( tabIdeStr : string ) => void, steObjArr : TouSteTyp[], touIdeStr : string }; // What: Guided-Tour-Component Props Type. Why: A tour runs its steps on the real app, switching tabs and reporting how it ended. How: This types GuiTouCom's props.
 
 // #region GuiTouCom
 
@@ -605,7 +645,7 @@ const todTopFun = ( actIdeStr, selTabFun ) => { // What: Today Top Function. Why
  *
 */
 
-function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouFun, resSteNum, selTabFun, steObjArr, touIdeStr } ) {
+function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouFun, resSteNum, selTabFun, steObjArr, touIdeStr } : GtcProTyp ) : React.ReactPortal | null {
 
 
 	// #region State, Refs And Coach Height Tracking
@@ -1627,8 +1667,9 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		const scrAmoFun = ( curScrEle, delYcoNum ) => { // What: Scroll Amount Function. Why: A step that jumps to a different part of the page, or, via briTarFun's own content-grew re-trigger and decResFun's own follow-up correction below, mid-step too, should read as the tour visibly navigating there rather than an unexplained cut. How: This is smooth unless prefers-reduced-motion, and is deliberately NOT applied to todTopFun (the tour-END reset on Skip/Done), which is a closing reset, not a "here's the next thing" step transition, and already fires alongside a tab switch back to Today, staying an instant cut by design.
 
 
-			const curBehStr = redMotFun() ? 'auto' : 'smooth';           // What: Current Behavior String. Why: The scroll should be instant for a user who prefers reduced motion. How: This resolves the reduced-motion preference once.
-			const scrOptObj = { behavior : curBehStr, top : delYcoNum }; // What: Scroll Options Object. Why: Both branches below need the same options. How: This builds one shared options object from curBehStr and delYcoNum.
+			const curBehStr = redMotFun() ? 'auto' : 'smooth'; // What: Current Behavior String. Why: The scroll should be instant for a user who prefers reduced motion. How: This resolves the reduced-motion preference once.
+
+			const scrOptObj : ScrollToOptions = { behavior : curBehStr, top : delYcoNum }; // What: Scroll Options Object. Why: Both branches below need the same options. How: This builds one shared options object from curBehStr and delYcoNum.
 
 
 			if ( curScrEle === document.scrollingElement || curScrEle === document.documentElement ) window.scrollBy( scrOptObj ); // What: Window Scroll By. Why: The document's own scroller is addressed through window, not the element itself. How: This calls window.scrollBy when curScrEle is the document's own scroller.
@@ -1701,8 +1742,9 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			if ( curSteObj.sttBoo ) { // What: Scroll-To-Top Guard. Why: A step whose target starts right at the top of the page anyway (e.g. a full-list review step) should scroll all the way up rather than just nudging it into view, keeping everything visible from the top instead of opening mid-scroll. How: This scrolls the target's scroller, or the window, to the very top, then returns.
 
 
-				const curBehStr = redMotFun() ? 'auto' : 'smooth';   // What: Current Behavior String. Why: The scroll should be instant for a user who prefers reduced motion. How: This resolves the reduced-motion preference once.
-				const scrOptObj = { behavior : curBehStr, top : 0 }; // What: Scroll Options Object. Why: Both branches below need the same options. How: This builds one shared options object that scrolls to the very top.
+				const curBehStr = redMotFun() ? 'auto' : 'smooth'; // What: Current Behavior String. Why: The scroll should be instant for a user who prefers reduced motion. How: This resolves the reduced-motion preference once.
+
+				const scrOptObj : ScrollToOptions = { behavior : curBehStr, top : 0 }; // What: Scroll Options Object. Why: Both branches below need the same options. How: This builds one shared options object that scrolls to the very top.
 
 
 				if ( curScrEle === document.scrollingElement || curScrEle === document.documentElement ) window.scrollTo( scrOptObj ); // What: Window Scroll To. Why: The document's own scroller is addressed through window. How: This calls window.scrollTo when curScrEle is the document's own scroller.
@@ -2652,7 +2694,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 // #region Exports
 
-export { GuiTouCom, todTopFun }; // What: Named Exports. Why: Every onboarding-*-tours.jsx module renders GuiTouCom as its own shared tour engine, and onboarding/welcome-tour.tsx calls todTopFun directly to reset scroll position. How: This re-exports the 2 declared above; every other binding in this file is internal-only.
+export { GuiTouCom, todTopFun, type TouSteTyp }; // What: Named Exports. Why: Every onboarding tour module renders GuiTouCom as its shared tour engine and types its steps with TouSteTyp, and onboarding/welcome-tour.tsx calls todTopFun directly. How: This exports all three by name.
 
 // #endregion Exports
 
