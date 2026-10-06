@@ -113,7 +113,7 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } : BrcProTyp ) : 
 		cancelAnimationFrame( aniFraRef.current ); // What: Frame Cancel Guard. Why: A rapid repeat click must not let an earlier tick loop keep racing this new one. How: This cancels whatever frame id aniFraRef currently holds before starting a fresh loop.
 
 
-		const ticFraFun = ( fraTimNum ) => { // What: Tick Frame Function. Why: This is the actual per-frame step that eases the shown number down to 0 over durValNum. How: This computes an eased progress ratio from elapsed time, sets disValNum accordingly, and reschedules itself until progress reaches 1.
+		const ticFraFun = ( fraTimNum : number ) => { // What: Tick Frame Function. Why: This is the actual per-frame step that eases the shown number down to 0 over durValNum. How: This computes an eased progress ratio from elapsed time, sets disValNum accordingly, and reschedules itself until progress reaches 1.
 
 
 			const proRatNum = Math.min( 1, ( fraTimNum - staTimNum ) / durValNum ); // What: Progress Ratio Number. Why: The eased booValNum below needs a clamped [0,1] linear progress to work from. How: This divides elapsed time by durValNum, capped at 1.

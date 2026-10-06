@@ -177,10 +177,11 @@ function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' |
 
 
 		const namTriStr = String( draRcdObj.name || '' ).trim(); // What: Name Trimmed String. Why: A committed name never keeps stray spaces, and an emptied one must not replace the real name. How: This trims the draft's own name.
-		const patValObj = {};                                    // What: Patch Value Object. Why: The ease band and value all commit through one updIteFun call. How: This starts empty and gains each changed field below.
+
+		const patValObj : Partial< IteRcdTyp > = {}; // What: Patch Value Object. Why: The ease band and value all commit through one updIteFun call. How: This starts empty and gains each changed field below.
 
 
-		[ 'easeMax', 'easeMin', 'value' ].forEach( ( fieKeyStr ) => { if ( draRcdObj[ fieKeyStr ] !== oriRcdObj[ fieKeyStr ] ) patValObj[ fieKeyStr ] = draRcdObj[ fieKeyStr ]; } ); // What: Changed Value Fields Loop. Why: Only fields the user actually changed may be written, leaving any the app changed meanwhile alone. How: This copies each differing field into patValObj.
+		( [ 'easeMax', 'easeMin', 'value' ] as const ).forEach( ( fieKeyStr ) => { if ( draRcdObj[ fieKeyStr ] !== oriRcdObj[ fieKeyStr ] ) patValObj[ fieKeyStr ] = draRcdObj[ fieKeyStr ]; } ); // What: Changed Value Fields Loop. Why: Only fields the user actually changed may be written, leaving any the app changed meanwhile alone. How: This copies each differing field into patValObj, the names read as a constant tuple so each one indexes an item.
 
 
 
@@ -282,10 +283,11 @@ function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >
 
 
 		const namTriStr = String( draRcdObj.name || '' ).trim(); // What: Name Trimmed String. Why: A committed name never keeps stray spaces, and an emptied one must not replace the real name. How: This trims the draft's own name.
-		const patValObj = {};                                    // What: Patch Value Object. Why: Every changed field other than the name commits through one updTasFun call. How: This starts empty and gains each changed field below.
+
+		const patValObj : Record< string, unknown > = {}; // What: Patch Value Object. Why: Every changed field other than the name commits through one updTasFun call. How: This starts empty and gains each changed field below.
 
 
-		Object.keys( draRcdObj ).forEach( ( fieKeyStr ) => { if ( fieKeyStr !== 'name' && JSON.stringify( draRcdObj[ fieKeyStr ] ) !== JSON.stringify( oriRcdObj[ fieKeyStr ] ) ) patValObj[ fieKeyStr ] = draRcdObj[ fieKeyStr ]; } ); // What: Changed Fields Loop. Why: Only fields the user actually changed may be written, leaving any the app changed meanwhile alone. How: This copies each differing field (arrays such as the weekdays compared by value) into patValObj.
+		( Object.keys( draRcdObj ) as ( keyof TasRcdTyp )[] ).forEach( ( fieKeyStr ) => { if ( fieKeyStr !== 'name' && JSON.stringify( draRcdObj[ fieKeyStr ] ) !== JSON.stringify( oriRcdObj[ fieKeyStr ] ) ) patValObj[ fieKeyStr ] = draRcdObj[ fieKeyStr ]; } ); // What: Changed Fields Loop. Why: Only fields the user actually changed may be written, leaving any the app changed meanwhile alone. How: This copies each differing field (arrays such as the weekdays compared by value) into patValObj, reading the draft's keys as reminder keys since Object.keys types them as plain strings.
 
 
 
@@ -293,7 +295,7 @@ function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >
 
 
 
-		if ( Object.keys( patValObj ).length ) tarActObj.updTasFun( oriRcdObj.id, patValObj ); // What: Changed Fields Guard. Why: The schedule edits must be written together. How: This calls updTasFun only when patValObj holds something.
+		if ( Object.keys( patValObj ).length ) tarActObj.updTasFun( oriRcdObj.id, patValObj as Partial< TasRcdTyp > ); // What: Changed Fields Guard. Why: The schedule edits must be written together. How: This calls updTasFun only when patValObj holds something, passing it as a reminder patch since it was copied field by field from the draft.
 
 
 	};

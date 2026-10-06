@@ -261,8 +261,8 @@ function ranArrFun ( lenValNum : number ) : number[] { return Array.from( Array(
 function makCycFun< T > ( pooFacFun : () => T[] ) : () => T {
 
 
-	let curPooArr = []; // What: Current Pool Array. Why: This is the shuffled pool values are currently being handed out from. How: This starts empty so the very first call below immediately triggers a fresh pool.
-	let pooIndNum = 0;  // What: Pool Index Number. Why: This tracks how far through curPooArr the cycler has already handed out. How: This starts at 0 and advances by 1 on every call, reset to 0 whenever a fresh pool is drawn.
+	let curPooArr : T[]    = []; // What: Current Pool Array. Why: This is the shuffled pool values are currently being handed out from. How: This starts empty so the very first call below immediately triggers a fresh pool.
+	let pooIndNum : number = 0;  // What: Pool Index Number. Why: This tracks how far through curPooArr the cycler has already handed out. How: This starts at 0 and advances by 1 on every call, reset to 0 whenever a fresh pool is drawn.
 
 
 

@@ -525,7 +525,7 @@ function AppRooCom () : React.JSX.Element {
 
 	// #region App Shell Behavior
 
-	const selTabFun = React.useCallback( ( tabIdeStr ) => { // What: Select Tab Function. Why: Switching tabs should always land at the top of the new tab, not keep the previous tab's scroll position. How: This sets the active tab, closes the rail, and resets the shared main scroller's scrollTop to 0.
+	const selTabFun = React.useCallback( ( tabIdeStr : string ) => { // What: Select Tab Function. Why: Switching tabs should always land at the top of the new tab, not keep the previous tab's scroll position. How: This sets the active tab, closes the rail, and resets the shared main scroller's scrollTop to 0.
 
 
 		setActIdeStr( tabIdeStr ); // What: Active Tab Update Call. Why: This is the actual tab switch. How: This writes the requested tab id into actIdeStr.
@@ -556,8 +556,8 @@ function AppRooCom () : React.JSX.Element {
 
 
 
-		const medQueObj   = matchMedia( '(prefers-color-scheme: dark)' );       // What: Media Query Object. Why: The same query used for the initial value must be reused here so the listener matches. How: This is the live MediaQueryList that the change listener below attaches to.
-		const onDarChaFun = ( chaEveObj ) => setSysDarBoo( chaEveObj.matches ); // What: On Dark Change Function. Why: The OS's own light/dark setting can change at any time while the app is open. How: This updates sysDarBoo to the media query's current match state whenever it fires a change event.
+		const medQueObj   = matchMedia( '(prefers-color-scheme: dark)' );                             // What: Media Query Object. Why: The same query used for the initial value must be reused here so the listener matches. How: This is the live MediaQueryList that the change listener below attaches to.
+		const onDarChaFun = ( chaEveObj : MediaQueryListEvent ) => setSysDarBoo( chaEveObj.matches ); // What: On Dark Change Function. Why: The OS's own light/dark setting can change at any time while the app is open. How: This updates sysDarBoo to the media query's current match state whenever it fires a change event.
 
 		medQueObj.addEventListener( 'change', onDarChaFun ); // What: Dark Change Subscribe Call. Why: sysDarBoo needs to be kept live, not just set once at mount. How: This registers onDarChaFun to run on every future change event from medQueObj.
 

@@ -596,8 +596,8 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
-		let rafIdeNum;         // What: Raf Identifier Number. Why: The cleanup below needs to cancel whichever pending frame is currently scheduled. How: This starts undefined and is (re)assigned every time looRafFun schedules its own next frame.
-		let looCanBoo = false; // What: Loop Cancelled Boolean. Why: A frame already in flight when this effect is cleaned up must not schedule yet another one after it fires. How: This starts false and is flipped true by the cleanup function below.
+		let rafIdeNum : number;          // What: Raf Identifier Number. Why: The cleanup below needs to cancel whichever pending frame is currently scheduled. How: This starts undefined and is (re)assigned every time looRafFun schedules its own next frame.
+		let looCanBoo : boolean = false; // What: Loop Cancelled Boolean. Why: A frame already in flight when this effect is cleaned up must not schedule yet another one after it fires. How: This starts false and is flipped true by the cleanup function below.
 
 
 		const looRafFun = () => { // What: Loop Request-Animation-Frame Function. Why: This is the actual self-rescheduling tick that keeps every rect fresh every frame. How: This bails out once cancelled, otherwise recomputes and reschedules itself.
