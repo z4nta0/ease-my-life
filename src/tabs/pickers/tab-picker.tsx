@@ -23,6 +23,11 @@ import { sedPicFun    } from '../../help/sample-data.ts';           // What: See
 import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use Ease My Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
 
+
+import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The tab changes state through the store's actions. How: This types TpcProTyp's actStoObj.
+import type { ModNamTyp } from '../../core/data-model.ts'; // What: Mode Name Type. Why: The Type filter collects the modes in use. How: This types the set that collects them.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The tab reads the current app state. How: This types TpcProTyp's staAppObj.
+
 // #endregion Imports
 
 
@@ -48,6 +53,8 @@ import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use
 
 
 // #region Components
+
+type TpcProTyp = { actStoObj : ActStoTyp, aniStyStr : string, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Picker-Component Props Type. Why: The Pickers tab reads and edits the whole app state, picks with the chosen animation, and can navigate to other tabs. How: This types TabPicCom's props.
 
 // #region TabPicCom
 
@@ -84,7 +91,7 @@ import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use
  *
 */
 
-function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj } ) {
+function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj } : TpcProTyp ) : React.JSX.Element {
 
 
 	// #region Picker Selection And Filters
@@ -223,7 +230,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 	const exiModArr = React.useMemo( () => { // What: Existing Mode Array. Why: Distinct modes actually in use, alphabetical by their own display label, are this page's own Type filter bar pills ("All" is pinned first, same as Group); unlike Stats/Data, this page has no management section for Conditionals/Reminders, so Type here is purely a picker-mode filter. How: This walks staAppObj.pickers collecting each visible picker's own mode once, then alphabetizes by SED_NAM_OBJ.MOD_DEF_OBJ's own label.
 
 
-		const seeModSet = new Set(); // What: Seen Mode Set. Why: The loop below needs a Set to collect each distinct mode into, deduplicating for free. How: This starts empty and gains entries from the loop.
+		const seeModSet = new Set< ModNamTyp >(); // What: Seen Mode Set. Why: The loop below needs a Set to collect each distinct mode into, deduplicating for free. How: This starts empty and gains entries from the loop, typed to hold mode names so each one can index MOD_DEF_OBJ.
 
 
 		for ( const curPicObj of staAppObj.pickers ) if ( !curPicObj.hidden ) seeModSet.add( curPicObj.mode ); // What: Collect Modes Loop. Why: Every visible picker's own mode belongs in the result. How: This walks staAppObj.pickers, adding each one's own mode into seeModSet.

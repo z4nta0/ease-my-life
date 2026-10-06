@@ -29,6 +29,12 @@ import { useFliRaiFun } from '../../ui/flip-rail.ts';             // What: Use F
 import { useIteDraFun } from '../../ui/record-draft.ts';          // What: Use Item Draft Function. Why: An added pool item's editor edits a local draft, committed into the pool only on Save. How: This is called once with whichever pool item's editor is open.
 import { WeeChiCom    } from '../../ui/weekday-chips.tsx';        // What: Weekday Chip Component. Why: The daily-schedule block needs a 7-day picker for which weekdays a picker may run on. How: This is rendered in PicForCom's schedule block, wired to the local daysOfWeek state.
 
+
+import type { ConRcdTyp } from '../../core/data-model.ts'; // What: Conditional Record Type. Why: The form offers every existing conditional for attachment. How: This types PfcProTyp's conObjArr.
+import type { IteRcdTyp } from '../../core/data-model.ts'; // What: Item Record Type. Why: The new picker's pool is built from items. How: This types the pool the item editors read.
+import type { ModNamTyp } from '../../core/data-model.ts'; // What: Mode Name Type. Why: The mode radios pick one of the five modes. How: This types the chosen mode.
+import type { PicArgTyp } from '../../core/data-model.ts'; // What: Picker Argument Type. Why: The form starts from an optional prefill and hands back a finished payload. How: This types both, and the payload it builds.
+
 // #endregion Imports
 
 
@@ -55,6 +61,8 @@ import { WeeChiCom    } from '../../ui/weekday-chips.tsx';        // What: Weekd
 
 
 // #region Components
+
+type PfcProTyp = { conObjArr? : ConRcdTyp[], exiGroArr : string[], iniForObj? : ( PicArgTyp & { focusName? : boolean } ) | null, iniGroStr? : string, isaEdiBoo? : boolean, onCanForFun : () => void, onCrePicFun? : ( payForObj : PicArgTyp ) => void, onSavEdiFun? : ( payForObj : PicArgTyp ) => void, opeTouBoo? : boolean }; // What: Picker-Form-Component Props Type. Why: The form creates a new picker or edits an existing one's details, starting from an optional prefill. How: This types PicForCom's props, with the create and save callbacks both taking the finished payload.
 
 // #region PicForCom
 
@@ -115,7 +123,7 @@ import { WeeChiCom    } from '../../ui/weekday-chips.tsx';        // What: Weekd
  *
 */
 
-function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBoo, onCanForFun, onCrePicFun, onSavEdiFun, opeTouBoo } ) {
+function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBoo, onCanForFun, onCrePicFun, onSavEdiFun, opeTouBoo } : PfcProTyp ) : React.JSX.Element {
 
 
 	// #region Form Step And Name
@@ -372,7 +380,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 	// #region Item Pool And Step Advance
 
-	const [ pooIteArr, setPooIteArr ] = React.useState( ( iniForObj && iniForObj.items ) || [] ); // What: Pool Item Array And Setter. Why: Step 2's own pool; each item is { name, weight }, weight only mattering for weighted/dynamic modes and only editable inline then. How: This is a fresh pool (Option B, not a pick-from-library), starting from a prefilled items list, or empty; other defaults (drift value, ease knobs) are applied at commit time.
+	const [ pooIteArr, setPooIteArr ] = React.useState< IteRcdTyp[] >( ( ( iniForObj && iniForObj.items ) || [] ) as IteRcdTyp[] ); // What: Pool Item Array And Setter. Why: Step 2's own pool; each item is { name, weight }, weight only mattering for weighted/dynamic modes and only editable inline then. How: This is a fresh pool (Option B, not a pick-from-library), starting from a prefilled items list, or empty; other defaults (drift value, ease knobs) are applied at commit time; it's asserted as items since the shared item editors read only the fields every pool item already carries.
 
 	const forWraRef = React.useRef( null ); // What: Form Wrap Reference. Why: advSteFun needs a handle on this form's own root so it can walk up to whichever ancestor actually scrolls. How: This is attached to the form's own root div, below.
 
@@ -476,11 +484,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 	// #region Draft Item Editing
 
-	const [ actNewStr, setActNewStr ] = React.useState( null );  // What: Active New String And Setter. Why: This holds the id of whichever draft item is currently being newly added (as opposed to an already-committed row being edited). How: This is set by addDraFun and cleared once its own closing animation finishes. // What: Reused Item Editor Design Note. Why: This is the same UI as the live Pickers-tab add flow; draft items carry a stable id so the shared EntEdiCom plus a synthetic actions object (backed by the draft array, not the store) can key off it. How: Adding opens the editor inline at the bottom; Save/Cancel play the same fade animations as the live flow.
-	const [ actCloStr, setActCloStr ] = React.useState( false ); // What: Active Closing String And Setter. Why: The new-item draft's own editor needs to play a closing animation before it's actually torn down. How: This holds 'save', 'cancel', or false, consumed by the draft wrap's own onAnimationEnd handler below. // What: Closing Values Note. Why: The close reason decides whether the draft is kept. How: It is false while open, otherwise 'save' or 'cancel'.
-	const [ insDraStr, setInsDraStr ] = React.useState( null );  // What: Insert Draft String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set once a new-item draft's own closing animation reports 'save'.
-	const [ conDelStr, setConDelStr ] = React.useState( null );  // What: Confirm Delete String And Setter. Why: Deleting a pool item asks for confirmation inline. How: This holds the id currently showing its own delete-confirm row.
-	const [ conLeaStr, setConLeaStr ] = React.useState( null );  // What: Confirm Leaving String And Setter. Why: Cancelling a delete confirmation needs its own out-animation before the row reverts to normal. How: This holds the id currently playing that leaving animation, cleared once it finishes.
+	const [ actNewStr, setActNewStr ] = React.useState( null );                               // What: Active New String And Setter. Why: This holds the id of whichever draft item is currently being newly added (as opposed to an already-committed row being edited). How: This is set by addDraFun and cleared once its own closing animation finishes. // What: Reused Item Editor Design Note. Why: This is the same UI as the live Pickers-tab add flow; draft items carry a stable id so the shared EntEdiCom plus a synthetic actions object (backed by the draft array, not the store) can key off it. How: Adding opens the editor inline at the bottom; Save/Cancel play the same fade animations as the live flow.
+	const [ actCloStr, setActCloStr ] = React.useState< false | 'cancel' | 'save' >( false ); // What: Active Closing String And Setter. Why: The new-item draft's own editor needs to play a closing animation before it's actually torn down. How: This holds 'save', 'cancel', or false, consumed by the draft wrap's own onAnimationEnd handler below. // What: Closing Values Note. Why: The close reason decides whether the draft is kept. How: It is false while open, otherwise 'save' or 'cancel'.
+	const [ insDraStr, setInsDraStr ] = React.useState( null );                               // What: Insert Draft String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set once a new-item draft's own closing animation reports 'save'.
+	const [ conDelStr, setConDelStr ] = React.useState( null );                               // What: Confirm Delete String And Setter. Why: Deleting a pool item asks for confirmation inline. How: This holds the id currently showing its own delete-confirm row.
+	const [ conLeaStr, setConLeaStr ] = React.useState( null );                               // What: Confirm Leaving String And Setter. Why: Cancelling a delete confirmation needs its own out-animation before the row reverts to normal. How: This holds the id currently playing that leaving animation, cleared once it finishes.
 
 	const selAllFun = React.useCallback( ( inpCurEle ) => { if ( inpCurEle ) inpCurEle.select(); }, [] ); // What: Select All Function. Why: A new pool item opens with a default name that typing should replace outright. How: This stable ref callback selects the name field's text once, as it mounts.
 
@@ -666,7 +674,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 			...preIteArr, // What: Previous Items Spread. Why: Every item already in the pool stays where it is. How: This spreads preIteArr ahead of the new item.
 
-			{ // What: New Item Object. Why: The new item needs every field resolved above. How: This builds the item the editor opens on.
+			{ // What: New Item Object. Why: The new item needs every field resolved above. How: This builds the item the editor opens on, asserted as an item since the store fills in its saved-only fields when the picker is created.
 
 
 				id     : newIdeStr,                 // What: Id. Why: The pool item needs its own id. How: This uses newIdeStr.
@@ -677,7 +685,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 				...easBanObj // What: Ease Band Spread. Why: The item carries the tour's or the default drift band. How: This spreads in easeMin and easeMax.
 
 
-			}
+			} as IteRcdTyp
 
 
 		] );
@@ -968,7 +976,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-		const payForObj = { // What: Payload Form Object. Why: Both onCrePicFun and onSavEdiFun expect this exact shared shape. How: This gathers every Step 1 field that both flows always send.
+		const payForObj : PicArgTyp = { // What: Payload Form Object. Why: Both onCrePicFun and onSavEdiFun expect this exact shared shape. How: This gathers every Step 1 field that both flows always send, typed as a picker argument so the optional fields attached below are allowed.
 
 
 			avoidDuplicates : avoDupBoo,                     // What: Avoid Duplicates. Why: The picker saves the duplicates toggle. How: This passes avoDupBoo.
@@ -1359,7 +1367,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											checked={ selModStr === modKeyStr }
 											type='radio'
 
-											onChange={ () => setSelModStr( modKeyStr ) }
+											onChange={ () => setSelModStr( modKeyStr as ModNamTyp ) } // What: On Change Handler. Why: Choosing a mode radio selects that mode. How: This sets selModStr to modKeyStr, asserted as a mode name since Object.entries types its keys as plain strings.
 										/>{ /* What: Mode Radio Input Element. Why: This is the actual selectable control. How: This is checked when selModStr matches modKeyStr, and selects it on change. */ }
 
 										<div>{ /* What: Mode Text Div Element. Why: The mode's own name and hint text need to sit beside the radio input. How: This wraps modNamDiv and modHinDiv. */ }

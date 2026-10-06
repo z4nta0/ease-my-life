@@ -5,6 +5,9 @@
 
 import cssModObj from './progress-bar.module.css'; // What: CSS Module Object. Why: The bar's own track and fill styles live in its own module. How: This maps each class name in progress-bar.module.css to its hashed module class.
 
+
+import type { JSX } from 'react'; // What: JSX. Why: The component declares the element it returns. How: This types its return as a JSX element.
+
 // #endregion Imports
 
 
@@ -28,6 +31,8 @@ import cssModObj from './progress-bar.module.css'; // What: CSS Module Object. W
 
 
 // #region Components
+
+type PbcProTyp = { curValNum : number, maxValNum? : number, tonValStr? : 'accent' | 'warm' }; // What: Progress-Bar-Component Props Type. Why: A progress bar shows how far one number is toward another, in one of two tones. How: This types ProBarCom's props.
 
 // #region ProBarCom
 
@@ -58,7 +63,7 @@ import cssModObj from './progress-bar.module.css'; // What: CSS Module Object. W
  *
 */
 
-const ProBarCom = ( { curValNum, maxValNum = 1, tonValStr = 'accent' } ) => { // What: Progress Bar Component. Why: Every group header and Stats card needs the same visual dash-bar to show completion progress. How: This renders a track div plus a filled <i>, slid into place by the clamped curValNum/maxValNum ratio, colored by the tonValStr modifier class.
+const ProBarCom = ( { curValNum, maxValNum = 1, tonValStr = 'accent' } : PbcProTyp ) : JSX.Element => { // What: Progress Bar Component. Why: Every group header and Stats card needs the same visual dash-bar to show completion progress. How: This renders a track div plus a filled <i>, slid into place by the clamped curValNum/maxValNum ratio, colored by the tonValStr modifier class.
 
 
 	const filFraNum = Math.max( 0, Math.min( 1, curValNum / maxValNum ) ); // What: Fill Fraction Number. Why: The fill's position comes from how far curValNum is toward maxValNum, never past either end. How: This clamps the ratio to the 0-1 range.

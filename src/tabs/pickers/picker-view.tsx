@@ -23,6 +23,12 @@ import { SED_NAM_OBJ  } from '../../state/seed.ts';       // What: Seed Namespac
 import { useEmlTouFun } from '../../state/tour-bus.ts';   // What: Use Ease My Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
 import { useIteDraFun } from '../../ui/record-draft.ts';  // What: Use Item Draft Function. Why: The open item editor edits a local draft, committed only on Save. How: This is called once with whichever item's editor is open.
 
+
+import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The view changes state through the store's actions. How: This types PvcProTyp's actStoObj.
+import type { IteRcdTyp } from '../../core/data-model.ts'; // What: Item Record Type. Why: A saved draft carries some of its fields over as a patch. How: This types that patch.
+import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Record Type. Why: The view shows one picker. How: This types PvcProTyp's picDatObj.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The view reads the current app state. How: This types PvcProTyp's staAppObj.
+
 // #endregion Imports
 
 
@@ -48,6 +54,8 @@ import { useIteDraFun } from '../../ui/record-draft.ts';  // What: Use Item Draf
 
 
 // #region Components
+
+type PvcProTyp = { actStoObj : ActStoTyp, aniStyStr : string, picDatObj : PicRcdTyp, staAppObj : StaAppTyp }; // What: Picker-View-Component Props Type. Why: The view runs, edits, and lists one picker against the whole app state. How: This types PicVieCom's props.
 
 // #region PicVieCom
 
@@ -85,7 +93,7 @@ import { useIteDraFun } from '../../ui/record-draft.ts';  // What: Use Item Draf
  *
 */
 
-function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
+function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp ) : React.JSX.Element {
 
 
 	// #region Tour Gating
@@ -319,7 +327,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 	// #region New Item Draft
 
-	const [ newCloStr, setNewCloStr ] = React.useState( false ); // What: New Closing String And Setter. Why: The new-item draft's own editor needs to play a closing animation before it's actually torn down, distinguishing a Save close from a Cancel close. How: This holds 'save', 'cancel', or false, consumed by the draft wrap's own onAnimationEnd handler below.
+	const [ newCloStr, setNewCloStr ] = React.useState< false | 'cancel' | 'save' >( false ); // What: New Closing String And Setter. Why: The new-item draft's own editor needs to play a closing animation before it's actually torn down, distinguishing a Save close from a Cancel close. How: This holds 'save', 'cancel', or false, consumed by the draft wrap's own onAnimationEnd handler below.
 
 	const addWraRef = React.useRef( null );                                           // What: Add Wrap Reference. Why: Both the new-item and edit-item flows render into this same below-the-list slot, which needs a stable handle so it can be scrolled into view. How: This is attached to the iteAddDiv div's own ref prop, below.
 	const useWeiBoo = picDatObj.mode === 'weighted' || picDatObj.mode === 'dynamic';  // What: Uses Weight Boolean. Why: Only these two modes treat an item's weight as a real lever; the others ignore it entirely. How: This gates whether weight fields are carried over/shown throughout this view.
@@ -359,7 +367,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 		actStoObj.addIteFun( picDatObj.id, draIteObj.name, draIteObj.id ); // What: Add Item Call. Why: The draft only exists locally until this point; this is what actually creates it in the store. How: This passes the draft's own id through so the created item keeps the same id the draft UI was already using.
 
 
-		const patIteObj = { vacation : draIteObj.vacation }; // What: Patch Item Object. Why: actions.addIteFun always creates the item active, so the draft's own Active toggle must be carried over too, not just weight/ease fields, or turning it off is silently lost. How: This starts from just the vacation field and gains weight/ease fields below when relevant.
+		const patIteObj : Partial< IteRcdTyp > = { vacation : draIteObj.vacation }; // What: Patch Item Object. Why: actions.addIteFun always creates the item active, so the draft's own Active toggle must be carried over too, not just weight/ease fields, or turning it off is silently lost. How: This starts from just the vacation field and gains weight/ease fields below when relevant.
 
 
 		if ( useWeiBoo ) patIteObj.weight = draIteObj.weight; // What: Weight Patch Guard. Why: Weight only matters for weighted/dynamic modes. How: This adds the draft's own weight into patIteObj only when useWeiBoo is true.
