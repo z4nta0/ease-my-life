@@ -17,20 +17,22 @@ npm run dev       # vite dev server (PWA service worker also active via devOptio
 npm run build     # type check (tsc -b), then production build to dist/
 npm run lint      # eslint across the whole repo
 npm run preview   # serve the production build locally
-npm run typecheck # tsc -b across tsconfig.app.json (src/) and tsconfig.node.json
+npm run test      # every Playwright suite (see "Test suites" below)
+npm run typecheck # tsc -b across the app, node, and test tsconfigs
 ```
 
 TypeScript is being adopted (decided 2026-10-05, on the `integrate-typescript`
 branch). `tsconfig.json` only references `tsconfig.app.json` (everything in
 `src/`, browser and JSX) and `tsconfig.node.json` (`vite.config`,
-`eslint.config`, and `scripts/`, with Node's types). Both run with `strict`
+`eslint.config`, and `scripts/`, with Node's types), plus `tsconfig.test.json`
+for `tests/`. All run with `strict`
 on (since 2026-10-05). Where the code guarantees something TypeScript can't
 see, it says so with a `!` or `as` and a merged `Non-Null Note` or `Type
 Assertion Note` comment; checks that don't narrow go through
 `utils/guard.ts`. `build` runs `tsc -b` first, so a type error fails the
 build and blocks a deploy. `public/boot-splash.js` and `public/sw-notify.js` stay
 JavaScript, since the browser and service worker load them by fixed URL
-outside the build. There is no test suite. ESLint is installed and configured
+outside the build. ESLint is installed and configured
 (`eslint.config.ts`, loaded through `jiti`, reading every file through
 `typescript-eslint`'s parser, with `typescript-eslint`'s recommended rules
 for every file (`no-unused-vars` letting a binding beside a rest element go
@@ -47,7 +49,41 @@ and `no-undef` can't see TypeScript's type-only names. The one deliberate
 `package.json` breaks ESLint's brace matching). `npm run lint` checks the
 whole repo, but nothing runs it automatically, so ESLint doesn't gate a
 deploy the way `tsc` does. Verify changes by running `npm run dev` and exercising
-the app in a browser.
+the app in a browser, and run the test suites below before merging a big
+branch.
+
+### Test suites
+
+Added 2026-10-06. Four Playwright suites live in `tests/`, one project each
+in `tests/playwright.config.ts`, which starts its own dev server on port 5190
+(never the usual 5173) and stops it afterwards. Every page runs in Chicago
+time with service workers blocked, and results, screenshots, and simulation
+traces go to `tests/output/` (git-ignored); `npx playwright show-report
+tests/output/report` opens the HTML report.
+- `npm run test:simulation`: loads the real-data backup plus a few "Sim"
+  pickers and reminders (`tests/simulation/scenario.ts`), fakes the clock,
+  and runs about 53 days (Oct 5 to Nov 8, 2026, and Dec 27, 2026 to Jan 13,
+  2027), checking every generated list, check-off, undo, reminder, skip,
+  re-roll, and streak against an independent copy of the rules
+  (`check-*.ts`, `schedule.ts`, `holidays.ts`), then the Stats tab and each
+  probability conditional's odds. About 20 minutes. Scheduling draws in
+  `src/core/` and `src/state/` are seeded, so the same seed repeats the same
+  picks: `EML_SIM_BASELINE=<path to an earlier trace.json>` compares a run
+  against an earlier one (e.g. from `main`) and reports every day that
+  differs. `EML_SIM_SEED` and `EML_SIM_SEGMENTS` override the seed and days.
+- `npm run test:interaction`: drives every tab's controls and editors on
+  real data, checking each change in IndexedDB and that its animation fired.
+- `npm run test:onboarding`: runs the whole onboarding from an empty install
+  (Welcome, every checklist launcher, Generate, every App Features tour, and
+  Replay) at 375px and 1280px.
+- `npm run test:responsive`: measures every tab at 375 to 1280px for
+  sideways scrolling, off-screen or spilling content, and overlapping
+  controls, saving a screenshot of each.
+
+The real-data backup is personal and never enters the repo: the suites read
+`EML_TEST_FIXTURE`, or the newest `.json` export in an
+`ease-my-life-testdata` folder beside the repo. Every suite fails on any page
+or console error.
 
 `__APP_VERSION__` is injected at build time from `package.json`'s `version`
 field (see `vite.config.ts`) and surfaces in Settings → About and in the
