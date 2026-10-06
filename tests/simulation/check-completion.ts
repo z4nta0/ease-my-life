@@ -9,6 +9,7 @@ import { steOkaFun } from './check-generation.ts'; // What: Step Okay Function. 
 
 
 import type { ConRcdTyp } from '../../src/core/data-model.ts'; // What: Conditional Record Type. Why: Completions can change conditionals. How: This types the conditional expectations.
+import type { PicUpdTyp } from '../../src/core/pickers.ts';    // What: Pick Update Type. Why: Staged rows for one item are merged. How: This types the merged map.
 import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State App Type. Why: Each check compares the state before and after a click. How: This types both states.
 import type { TodEntTyp } from '../../src/core/data-model.ts'; // What: Today Entry Type. Why: The checks read the toggled entry. How: This types it.
 
@@ -324,9 +325,9 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entEidStr : st
 
 
 
-	const entPenObj = preEntObj.pending;                                                                                           // What: Entry Pending Object. Why: The staged effects drive every expectation. How: This reads them.
-	const updMapObj = new Map( ( ( entPenObj && entPenObj.updates ) || [] ).map( ( updRowObj ) => [ updRowObj.id, updRowObj ] ) ); // What: Update Map Object. Why: Later rows win per item. How: This folds the staged rows by item.
-	const touIdeSet = new Set( [ ...updMapObj.keys(), ...( entPenObj && entPenObj.pickedId ? [ entPenObj.pickedId ] : [] ) ] );    // What: Touched Identifier Set. Why: Only touched items may change. How: This is the updated ids plus the picked one.
+	const entPenObj = preEntObj.pending; // What: Entry Pending Object. Why: The staged effects drive every expectation. How: This reads them.
+	const updMapObj = ( ( entPenObj && entPenObj.updates ) || [] ).reduce( ( accMapObj, updRowObj ) => accMapObj.set( updRowObj.id, { ...accMapObj.get( updRowObj.id ), ...updRowObj } ), new Map< string, PicUpdTyp >() ); // What: Update Map Object. Why: An item can carry several rows, and each adds its own fields. How: This folds the staged rows by item, merging a later row over an earlier one.
+	const touIdeSet = new Set( [ ...updMapObj.keys(), ...( entPenObj && entPenObj.pickedId ? [ entPenObj.pickedId ] : [] ) ] );                                                                                             // What: Touched Identifier Set. Why: Only touched items may change. How: This is the updated ids plus the picked one.
 
 
 

@@ -407,10 +407,11 @@ const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : numb
 
 
 
-	if ( dayIndNum % 11 === 8 ) { // What: Re-Roll Variation. Why: Re-rolling must reject the old row and log a new one. How: This re-rolls a draw-mode pick.
+	if ( dayIndNum % 11 === 8 ) { // What: Re-Roll Variation. Why: Re-rolling must reject the old row and log a new one. How: This re-rolls a draw-mode pick, or an Ease Down pick on every other re-roll day.
 
 
-		const rolCarObj = await uniCarFun( curPagObj, ( await reaStaFun( curPagObj ) )!, ( curEntObj ) => [ 'dynamic', 'random', 'weighted' ].includes( genStaObj.pickers.find( ( curPicObj ) => curPicObj.id === curEntObj.pickerId )?.mode || '' ) ); // What: Roll Card Object. Why: The re-roll needs a known draw-mode pick. How: This finds one with a unique name. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
+		const rolModArr = dayIndNum % 22 === 19 ? [ 'ease-down' ] : [ 'dynamic', 'random', 'weighted' ]; // What: Roll Mode Array. Why: An Ease Down re-roll abandons its active item, which must recharge to full, so every other re-roll day re-rolls one. How: This picks the Ease Down mode on those days and the draw modes otherwise.
+		const rolCarObj = await uniCarFun( curPagObj, ( await reaStaFun( curPagObj ) )!, ( curEntObj ) => rolModArr.includes( genStaObj.pickers.find( ( curPicObj ) => curPicObj.id === curEntObj.pickerId )?.mode || '' ) ); // What: Roll Card Object. Why: The re-roll needs a known draw-mode pick. How: This finds one with a unique name. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 
 
 

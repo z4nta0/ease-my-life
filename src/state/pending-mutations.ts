@@ -14,6 +14,7 @@ import type { EntRevTyp } from '../core/data-model.ts'; // What: Entry Revert Ty
 import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: Applying and reverting rewrite items. How: This types EnpResTyp's items.
 import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: Applying and reverting update the pick log. How: This types EnpResTyp's pick log.
 import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record Type. Why: Applying and reverting patch pickers. How: This types EnpResTyp's pickers.
+import type { PicUpdTyp } from '../core/pickers.ts';    // What: Pick Update Type. Why: Rows staged for the same item are merged before applying. How: This types the merged update map.
 import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: Every helper reads the current state. How: This types each curStaObj parameter.
 import type { TodEntTyp } from '../core/data-model.ts'; // What: Today Entry Type. Why: Every helper works on Today's entries. How: This types each entry parameter.
 
@@ -259,8 +260,14 @@ function enpAplFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 
 
 
-	const updIdeMap = new Map( ( curPenObj.updates || [] ).map( ( curUpdObj ) => [ curUpdObj.id, curUpdObj ] ) );                                 // What: Update Identifier Map. Why: The items map below needs O(1) lookup of a touched item's own staged update. How: This maps every pending.updates row by its own id.
 	const touIdeSet = new Set( [ ...( curPenObj.updates || [] ).map( ( curUpdObj ) => curUpdObj.id ), curPenObj.pickedId ].filter( isaTruFun ) ); // What: Touched Identifier Set. Why: Both the revert snapshot and the items map below need to know every item id this pending payload actually touches. How: This unions every updates row's own id with pickedId, dropping falsy entries.
+
+	const updIdeMap = new Map< string, PicUpdTyp >(); // What: Update Identifier Map. Why: The items map below needs O(1) lookup of a touched item's own staged update. How: This starts empty and is filled by the merge loop below, one entry per item.
+
+
+	for ( const curUpdObj of curPenObj.updates || [] ) updIdeMap.set( curUpdObj.id, { ...updIdeMap.get( curUpdObj.id ), ...curUpdObj } ); // What: Update Merge Loop. Why: An item can carry more than one row, such as an abandoned Ease Down item's recharge and its fairness weight, and a later row must add to the earlier one rather than replace it. How: This spreads each row over whatever is already stored for its item.
+
+
 
 	const revIteArr = curStaObj.items.filter( ( curIteObj ) => touIdeSet.has( curIteObj.id ) ).map( ( curIteObj ) => ( // What: Revert Item Array. Why: An exact undo later needs each touched item's own pre-apply snapshot. How: This filters to just the touched items and copies their own value/weight/picks/lastPicked/chargeStep.
 
