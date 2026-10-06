@@ -639,7 +639,7 @@ function InlEdiCom ( { draTasObj, onCloEdiFun, onDelTasFun, onPatTasFun, onSavTa
  *                             editor.
  * @param props.actStoObj    - Action Store Object: The shared app actions that
  *                             mutate props.staAppObj.
- * @param props.arvTasSet    - Arriving Task Set: Ids currently playing a
+ * @param props.ariTasSet    - Arriving Task Set: Ids currently playing a
  *                             cross-day arrival animation.
  * @param props.cheExiBoo    - Checklist Exiting Boolean: Whether the
  *                             onboarding checklist itself is mid-exit
@@ -672,12 +672,12 @@ function InlEdiCom ( { draTasObj, onCloEdiFun, onDelTasFun, onPatTasFun, onSavTa
  *
  * @example
  * ```tsx
- * RemSecCom({ actEdiStr, actStoObj, arvTasSet, ... }) // => <RemSecCom />
+ * RemSecCom({ actEdiStr, actStoObj, ariTasSet, ... }) // => <RemSecCom />
  * ```
  *
 */
 
-function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, leaTasSet, logOpeBoo, onGriDowFun, onPlaTutFun, onTogLogFun, onUncTutFun, secRefFun, setActEdiStr, staAppObj } ) {
+function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, leaTasSet, logOpeBoo, onGriDowFun, onPlaTutFun, onTogLogFun, onUncTutFun, secRefFun, setActEdiStr, staAppObj } ) {
 
 
 	// #region Due And Tutorial Lists
@@ -1387,8 +1387,8 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 								? cssModObj.todCarArtDeleting                      // What: Removing Class. Why: This is the deletion exit animation. How: This applies while remIdeStr matches this card.
 								: ( leaTasSet && leaTasSet.has( curTasObj.id ) ) // What: Leaving Check. Why: A card leaving the list for another reason plays the purge animation. How: This checks leaTasSet for this card.
 								? cssModObj.todCarArtPurging                       // What: Purging Class. Why: This is the leave-the-list exit animation. How: This applies while leaTasSet holds this card.
-								: ( arvTasSet && arvTasSet.has( curTasObj.id ) ) // What: Arriving Check. Why: A card newly arriving in the list (e.g. due again) also plays the entrance animation. How: This checks arvTasSet for this card.
-								? cssModObj.todCarArtInserting                        // What: Arriving Class. Why: An arriving card reuses the entrance animation. How: This applies while arvTasSet holds this card.
+								: ( ariTasSet && ariTasSet.has( curTasObj.id ) ) // What: Arriving Check. Why: A card newly arriving in the list (e.g. due again) also plays the entrance animation. How: This checks ariTasSet for this card.
+								? cssModObj.todCarArtInserting                        // What: Arriving Class. Why: An arriving card reuses the entrance animation. How: This applies while ariTasSet holds this card.
 								: ''                                             // What: No Class. Why: A card in no transition needs no extra class. How: This is an empty string.
 							}
 							isaOpeBoo={ opeTasStr === curTasObj.id }
