@@ -196,12 +196,18 @@
 
 
 }
-.todStrDiv.todStrDiv--bumped { /* What: Bumped Today Streak Div. Why: A streak that just grew should pop and warm up for a moment. How: This plays a springy scale and tints the chip warm while the bumped class is set. */
+.todStrDiv[data-streak-claim-active] { /* What: Claimed Today Streak Div. Why: A day that has claimed its streak point should show it for as long as the claim holds. How: This tints the chip warm while the claim attribute is set, fading in and out through the base rule's transition. */
 
 
-	animation    : todStrDivBumpBounce var( --dur-ani-p06 ) var( --mot-bou-eas );          /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
 	background   : oklch( from var( --acc-sec-col ) calc( l + 0.32 ) calc( c - 0.05 ) h ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
 	border-color : oklch( from var( --acc-sec-col ) calc( l + 0.2 ) calc( c - 0.03 ) h );  /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
+
+
+}
+.todStrDiv.todStrDiv--bumped { /* What: Bumped Today Streak Div. Why: A streak that just grew should pop for a moment. How: This plays a springy scale while the bumped class is set. */
+
+
+	animation : todStrDivBumpBounce var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
 
 
 }

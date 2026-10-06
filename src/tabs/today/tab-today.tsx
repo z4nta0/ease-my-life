@@ -3426,6 +3426,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									className={ cssModObj.todStrDiv }
 
 									data-element-name-hook='todStrDiv'
+									data-streak-claim-active={ staAppObj.today.streakClaimed || undefined } // What: Streak Claim Active Attribute. Why: The badge stays tinted for as long as today's streak point is claimed. How: This sets the presence-only attribute while today.streakClaimed is true, and drops it once the day reopens.
 								>{ /* What: Streak Div Element. Why: This is the badge the streak-pulse effect above targets directly. How: This renders a flame icon plus the current streak count. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
@@ -3778,8 +3779,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						className={ cssModObj.groRaiAsi }
 
 						data-element-name-hook='groRaiAsi'
-
 						data-rail-wheel-scroll
+
 						aria-label='Groups'
 					>{ /* What: Group Rail Aside Element. Why: This is the sticky sidebar (or, on mobile, the horizontal pill bar) listing every block. How: This renders one rail button per bloOrdArr entry, then the App Features entry (pinned last), then the Edit Mode toggle. Its data-element-name-hook is read by the tour runner's safe-area math and outside-click checks, help mode's chrome clipping, and help mode's Today catalog. */ }
 
