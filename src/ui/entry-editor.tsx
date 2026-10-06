@@ -18,6 +18,10 @@ import { PIC_NAM_OBJ  } from '../core/pickers.ts';   // What: Pickers Namespace 
 import { THR_VAL_NUM  } from '../constants.ts';      // What: Threshold Value Number. Why: The ease day-range math divides by the shared full-charge ceiling. How: This is divided by an item's own easeMin/easeMax to get its Soonest/Latest day counts.
 import { useEscCanFun } from './escape-cancel.ts';   // What: Use Escape Cancel Function. Why: EntEdiCom's own Escape key needs to cancel the edit (or back out of a delete confirm) exactly like every other inline editor in the app. How: This is called once inside EntEdiCom with a handler that checks conDelBoo first.
 
+
+import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: The editor edits one item and averages its picker's items. How: This types EecProTyp's item, patches, and item list.
+import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record Type. Why: The editor reads its item's picker, which can be an unsaved draft. How: This types EecProTyp's picker as a partial one.
+
 // #endregion Imports
 
 
@@ -44,6 +48,8 @@ import { useEscCanFun } from './escape-cancel.ts';   // What: Use Escape Cancel 
 
 
 // #region Components
+
+type EecProTyp = { isaNewBoo? : boolean, iteCouNum? : number, iteDatObj : IteRcdTyp, onCanEdiFun : () => void, onDelIteFun? : () => void, onPatIteFun : ( patValObj : Partial< IteRcdTyp > ) => void, onSavEdiFun : () => void, picDatObj : Partial< PicRcdTyp > | null, picIteArr? : IteRcdTyp[] }; // What: Entry-Editor-Component Props Type. Why: The editor edits one draft item against its picker, which can itself be an unsaved draft, and hands every change, save, cancel, and delete to its parent. How: This types EntEdiCom's props, with the count, delete, and item list optional, since the Pickers tab enforces its own delete floor on each row instead.
 
 // #region EntEdiCom
 
@@ -91,7 +97,7 @@ import { useEscCanFun } from './escape-cancel.ts';   // What: Use Escape Cancel 
  *
 */
 
-function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun, onPatIteFun, onSavEdiFun, picDatObj, picIteArr } ) {
+function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun, onPatIteFun, onSavEdiFun, picDatObj, picIteArr } : EecProTyp ) : React.JSX.Element {
 
 
 	// #region Delete Confirm
@@ -129,9 +135,9 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 
 	// #region Ease Band Resolution
 
-	const driSooFun = ( maxValNum ) => Math.max( 1, Math.round( THR_VAL_NUM / ( maxValNum || 1 ) ) ); // What: Drift Soonest Function. Why: A "Soonest" day count is the human face of an item's own ease-max drift value. How: This converts maxValNum into a day count, matching the exact conversion the new-picker form itself uses.
-	const driLatFun = ( minValNum ) => Math.max( 1, Math.round( THR_VAL_NUM / ( minValNum || 1 ) ) ); // What: Drift Latest Function. Why: A "Latest" day count is the human face of an item's own ease-min drift value. How: This converts minValNum into a day count, the same conversion as driSooFun, mirrored for the opposite bound.
-	const dayDriFun = ( dayCouNum ) => THR_VAL_NUM / Math.max( 1, dayCouNum );                        // What: Day Drift Function. Why: Writing a user-typed day count back onto the item requires converting it back into a drift value. How: This is the inverse of driSooFun/driLatFun.
+	const driSooFun = ( maxValNum : number ) => Math.max( 1, Math.round( THR_VAL_NUM / ( maxValNum || 1 ) ) ); // What: Drift Soonest Function. Why: A "Soonest" day count is the human face of an item's own ease-max drift value. How: This converts maxValNum into a day count, matching the exact conversion the new-picker form itself uses.
+	const driLatFun = ( minValNum : number ) => Math.max( 1, Math.round( THR_VAL_NUM / ( minValNum || 1 ) ) ); // What: Drift Latest Function. Why: A "Latest" day count is the human face of an item's own ease-min drift value. How: This converts minValNum into a day count, the same conversion as driSooFun, mirrored for the opposite bound.
+	const dayDriFun = ( dayCouNum : number ) => THR_VAL_NUM / Math.max( 1, dayCouNum );                        // What: Day Drift Function. Why: Writing a user-typed day count back onto the item requires converting it back into a drift value. How: This is the inverse of driSooFun/driLatFun.
 
 	const falEasObj = picDatObj ? PIC_NAM_OBJ.aveEasFun( picIteArr, picDatObj.id ) : null; // What: Fallback Ease Object. Why: An item with no ease band of its own (e.g. one added before per-item stamping existed, or from an old imported backup) needs the same fallback the picking engine itself uses. How: This calls PIC_NAM_OBJ.aveEasFun against this picker's own items.
 	const easMinNum = iteDatObj.easeMin ?? falEasObj?.easeMin ?? 10;                       // What: Ease Minimum Number. Why: This is the item's own resolved lower drift bound, read once and reused throughout this region. How: This reads item.easeMin, falling back to falEasObj's own easeMin, then a fixed 10.
@@ -163,7 +169,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 	 *
 	*/
 
-	const setSooFun = ( dayCouNum ) => { // What: Set Soonest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Soonest/Shortest day count back onto the item's own easeMax field. How: This clamps dayCouNum, converts it back to a drift value, and writes it into the draft via onPatIteFun.
+	const setSooFun = ( dayCouNum : number ) => { // What: Set Soonest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Soonest/Shortest day count back onto the item's own easeMax field. How: This clamps dayCouNum, converts it back to a drift value, and writes it into the draft via onPatIteFun.
 
 
 		const newMaxNum = dayDriFun( Math.max( 1, Math.min( 60, dayCouNum ) ) ); // What: New Maximum Number. Why: The typed day count needs converting back into the drift value item.easeMax actually stores. How: This clamps dayCouNum to [1, 60] then converts it via dayDriFun.
@@ -207,7 +213,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 	 *
 	*/
 
-	const setLatFun = ( dayCouNum ) => { // What: Set Latest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Latest/Longest day count back onto the item's own easeMin field. How: This clamps dayCouNum, converts it back to a drift value, and writes it into the draft via onPatIteFun.
+	const setLatFun = ( dayCouNum : number ) => { // What: Set Latest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Latest/Longest day count back onto the item's own easeMin field. How: This clamps dayCouNum, converts it back to a drift value, and writes it into the draft via onPatIteFun.
 
 
 		const newMinNum = dayDriFun( Math.max( 1, Math.min( 90, dayCouNum ) ) ); // What: New Minimum Number. Why: The typed day count needs converting back into the drift value item.easeMin actually stores. How: This clamps dayCouNum to [1, 90] then converts it via dayDriFun.
@@ -232,7 +238,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 	const sooLabStr = isaDowBoo ? 'Shortest' : 'Soonest'; // What: Soonest Label String. Why: The Soonest row's own heading text differs by direction. How: This picks 'Shortest' for ease-down, 'Soonest' otherwise.
 	const latLabStr = isaDowBoo ? 'Longest' : 'Latest';   // What: Latest Label String. Why: The Latest row's own heading text differs by direction. How: This picks 'Longest' for ease-down, 'Latest' otherwise.
 
-	const uniWorFun = ( valCouNum ) => CAD_NAM_OBJ.uniWorFun( picDatObj && picDatObj.cadence, valCouNum ); // What: Unit Word Function. Why: Every day count below needs a correctly-pluralized cadence unit word next to it. How: This calls CAD_NAM_OBJ.uniWorFun with the picker's own cadence and valCouNum.
+	const uniWorFun = ( valCouNum : number ) => CAD_NAM_OBJ.uniWorFun( picDatObj && picDatObj.cadence, valCouNum ); // What: Unit Word Function. Why: Every day count below needs a correctly-pluralized cadence unit word next to it. How: This calls CAD_NAM_OBJ.uniWorFun with the picker's own cadence and valCouNum.
 
 
 	const sooSubEle = isaDowBoo // What: Soonest Sub Element. Why: The Soonest/Shortest row's own subtitle phrasing differs by direction. How: This renders "stays picked N days minimum" for ease-down, or "N days until pickable again" otherwise.
