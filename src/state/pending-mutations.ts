@@ -317,8 +317,9 @@ function enpAplFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 	} );
 
 
-	const hasPipBoo = !!curPenObj.pickerPatch;                                                                                     // What: Has Picker-Patch Boolean. Why: The previous-active lookup below only snapshots activeItemId when a pickerPatch is actually being applied. How: This coerces curPenObj's own pickerPatch to a real boolean.
-	const perRunStr = ( curEntObj.kind !== 'dayoff' && curEntObj.periodKey ) || null;                                              // What: Period Run String. Why: Completing a non-daily pick or charging card is this picker's run for the period, which the cadence check must see even when no pick-log row exists. How: This is the entry's own periodKey, or null for a daily entry or a day-off card, whose completion never counts as a run.
+	const hasPipBoo = !!curPenObj.pickerPatch;                                        // What: Has Picker-Patch Boolean. Why: The previous-active lookup below only snapshots activeItemId when a pickerPatch is actually being applied. How: This coerces curPenObj's own pickerPatch to a real boolean.
+	const perRunStr = ( curEntObj.kind !== 'dayoff' && curEntObj.periodKey ) || null; // What: Period Run String. Why: Completing a non-daily pick or charging card is this picker's run for the period, which the cadence check must see even when no pick-log row exists. How: This is the entry's own periodKey, or null for a daily entry or a day-off card, whose completion never counts as a run.
+
 	const curPicObj : Partial< PicRcdTyp > = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ) || {}; // What: Current Picker Object. Why: Both revert snapshots below need the entry's own picker as it stands BEFORE this apply. How: This finds the picker by the entry's own pickerId, else an empty object.
 
 
