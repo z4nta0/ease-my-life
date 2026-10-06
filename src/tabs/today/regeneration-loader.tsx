@@ -44,7 +44,7 @@ type GenSloTyp = { canArr? : { id : string, name : string }[], conStr? : string,
 
 // #region Components
 
-type LrcProTyp = { canIteArr : GenSloTyp[ 'canArr' ] }; // What: Loader-Reel-Component Props Type. Why: The reel cycles through a slot's candidate names. How: This types LoaReeCom's props.
+type LrcProTyp = { canIteArr : NonNullable< GenSloTyp[ 'canArr' ] > }; // What: Loader-Reel-Component Props Type. Why: The reel cycles through a slot's candidate names. How: This types LoaReeCom's props.
 
 // #region LoaReeCom
 
@@ -167,10 +167,10 @@ function LoaCarCom ( { infRecObj, picRecObj } : LacProTyp ) : React.JSX.Element 
 
 
 	const finNamStr = sloKinStr === 'dayoff' // What: Final Name String. Why: The settled state needs one final display name, computed differently per kind. How: This resolves a day-off's own card text (or the picker's own name), a fixed charging message, or the actually-picked candidate's own name.
-		? ( infRecObj.texStr || picRecObj.name )                                            // What: Day-Off Name Branch. Why: A day-off slot settles on its own card text. How: This falls back to the picker's own name when the card has no text.
-		: sloKinStr === 'charging'                                                          // What: Charging Check. Why: A charging slot has no candidate to settle on. How: This tests for the charging kind next.
-		? 'No eligible items for today'                                                     // What: Charging Name Branch. Why: A charging slot settles on a fixed explanation instead of an item. How: This returns the same text a real charging card shows.
-		: canIteArr.find( ( canCurObj ) => canCurObj.id === infRecObj.ideStr )?.name ?? ''; // What: Picked Name Branch. Why: A pick slot settles on whichever candidate the generator actually chose. How: This finds that candidate by infRecObj's own ideStr, falling back to an empty string.
+		? ( infRecObj!.texStr || picRecObj.name )                                            // What: Day-Off Name Branch. Why: A day-off slot settles on its own card text. How: This falls back to the picker's own name when the card has no text. // What: Non-Null Note. Why: sloKinStr is only 'dayoff' when infRecObj gave it that kind. How: The ! tells TypeScript the slot is set here.
+		: sloKinStr === 'charging'                                                           // What: Charging Check. Why: A charging slot has no candidate to settle on. How: This tests for the charging kind next.
+		? 'No eligible items for today'                                                      // What: Charging Name Branch. Why: A charging slot settles on a fixed explanation instead of an item. How: This returns the same text a real charging card shows.
+		: canIteArr.find( ( canCurObj ) => canCurObj.id === infRecObj!.ideStr )?.name ?? ''; // What: Picked Name Branch. Why: A pick slot settles on whichever candidate the generator actually chose. How: This finds that candidate by infRecObj's own ideStr, falling back to an empty string. // What: Non-Null Note. Why: The find callback only runs when canIteArr has candidates, which only a real slot supplies. How: The ! tells TypeScript the slot is set inside it.
 
 
 	const hasReeBoo = sloKinStr === 'pick' && canIteArr.length > 0; // What: Has Reel Boolean. Why: Only an actual pick slot with real candidates gets the cycling reel; day-off/charging slots just show dots while active. How: This is true only when this is a pick slot with at least one candidate.

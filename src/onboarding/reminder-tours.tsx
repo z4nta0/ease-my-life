@@ -351,7 +351,7 @@ const buiAddFun = ( varKeyStr : string, staAppObj : StaAppTyp ) : TouSteTyp => {
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param repValStr - Repeat Value String: The live draft's own repeat kind,
- *                    read off the bus as draRepStr, or undefined before
+ *                    read off the bus as draRepStr, or nothing before
  *                    the draft has published one.
  *
  * @returns A GuiTouCom step object for this tour's own steObjArr.
@@ -363,7 +363,7 @@ const buiAddFun = ( varKeyStr : string, staAppObj : StaAppTyp ) : TouSteTyp => {
  *
 */
 
-const buiFreFun = ( repValStr : string | undefined ) : TouSteTyp => { // What: Build Frequency Function. Why: Step 4 highlights whichever schedule control the recurring draft's own repeat kind reveals, with copy that tracks it. How: This looks up REP_COP_OBJ by repValStr, falling back to 'weekly' for the one frame before reminders-section.tsx's own staAddFun/draActObj have published a real value onto the bus yet.
+const buiFreFun = ( repValStr : string | null | undefined ) : TouSteTyp => { // What: Build Frequency Function. Why: Step 4 highlights whichever schedule control the recurring draft's own repeat kind reveals, with copy that tracks it. How: This looks up REP_COP_OBJ by repValStr, falling back to 'weekly' for the one frame before reminders-section.tsx's own staAddFun/draActObj have published a real value onto the bus yet.
 
 
 	const repCopObj = ( repValStr && REP_COP_OBJ[ repValStr ] ) || REP_COP_OBJ.weekly; // What: Repeat Copy Object. Why: The step's own titStr/bodEle below need this repeat kind's own copy. How: This looks up REP_COP_OBJ by repValStr, falling back to weekly.

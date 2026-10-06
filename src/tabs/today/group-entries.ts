@@ -39,7 +39,7 @@ import type { TodEntTyp } from '../../core/data-model.ts'; // What: Today Entry 
 
 // #region Types
 
-type TodRowTyp = { entRecObj : Partial< Omit< TodEntTyp, 'kind' > > & { kind? : EntKinTyp | 'tutorial' }, picRecObj : Partial< PicRcdTyp > }; // What: Today Row Type. Why: Every Today card pairs an entry with its picker, but day-off and tutorial cards build stand-ins for whichever half they lack. How: This types a row whose entry and picker may each be partial, and whose kind can also be a tutorial launcher.
+type TodRowTyp = { entRecObj : Partial< Omit< TodEntTyp, 'kind' > > & { eid : string, kind? : EntKinTyp | 'tutorial' }, picRecObj : Partial< PicRcdTyp > & Pick< PicRcdTyp, 'id' > }; // What: Today Row Type. Why: Every Today card pairs an entry with its picker, but day-off and tutorial cards build stand-ins for whichever half they lack. How: This types a row whose entry and picker may each be partial, though the entry always has an eid and the picker an id, and whose kind can also be a tutorial launcher.
 type TodGroTyp = { entArr : TodRowTyp[], namStr : string };                                                                                   // What: Today Group Type. Why: The Today list renders one header and its rows per group. How: This types a group's name and its sorted rows.
 
 // #endregion Types
@@ -97,7 +97,7 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 
 
 
-			groBucMap.get( groNamStr ).entArr.push({ // What: Day-Off Row Push. Why: This is the synthetic row EntCarCom's own day-off branch renders. How: This pairs curEntObj with a picker-shaped stand-in carrying just enough fields (id/name/group) to sort and render like a real one.
+			groBucMap.get( groNamStr )!.entArr.push({ // What: Day-Off Row Push. Why: This is the synthetic row EntCarCom's own day-off branch renders. How: This pairs curEntObj with a picker-shaped stand-in carrying just enough fields (id/name/group) to sort and render like a real one. // What: Non-Null Note. Why: The bucket init guard just above creates this group's bucket before anything is pushed. How: The ! tells TypeScript the get returns it.
 
 
 				entRecObj : curEntObj, // What: Entry Record Object. Why: The day-off branch renders the real day-off entry itself. How: This passes curEntObj straight through.
@@ -138,7 +138,7 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 
 
 
-		groBucMap.get( groNamStr ).entArr.push( { entRecObj : curEntObj, picRecObj : picRecObj } ); // What: Entry Row Push. Why: This is the real row EntCarCom renders. How: This pairs curEntObj with its own resolved picRecObj.
+		groBucMap.get( groNamStr )!.entArr.push( { entRecObj : curEntObj, picRecObj : picRecObj } ); // What: Entry Row Push. Why: This is the real row EntCarCom renders. How: This pairs curEntObj with its own resolved picRecObj. // What: Non-Null Note. Why: The bucket init guard just above creates this group's bucket before anything is pushed. How: The ! tells TypeScript the get returns it.
 
 
 	}
@@ -210,7 +210,7 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 
 
 
-		groBucMap.get( groNamStr ).entArr.push({ // What: Tutorial Row Push. Why: This is the synthetic row EntCarCom's own tutorial branch renders. How: This pairs a synthetic { done, eid, kind } entry with the real curPicObj.
+		groBucMap.get( groNamStr )!.entArr.push({ // What: Tutorial Row Push. Why: This is the synthetic row EntCarCom's own tutorial branch renders. How: This pairs a synthetic { done, eid, kind } entry with the real curPicObj. // What: Non-Null Note. Why: The bucket init guard just above creates this group's bucket before anything is pushed. How: The ! tells TypeScript the get returns it.
 
 
 			picRecObj : curPicObj, // What: Picker Record Object. Why: The launcher card belongs to the real sample picker it starts a tour for. How: This passes curPicObj straight through.
@@ -277,7 +277,7 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 	return disOrdArr.filter( ( curGroStr ) => groBucMap.has( curGroStr ) ).map( ( curGroStr ) => { // What: Group Sort Map. Why: Every group in display order needs its own rows sorted before rendering. How: This maps each group name to its own bucket, sorted below.
 
 
-		const groBucObj = groBucMap.get( curGroStr ); // What: Group Bucket Object. Why: This is the specific bucket being sorted in this iteration. How: This reads curGroStr's own bucket out of groBucMap.
+		const groBucObj = groBucMap.get( curGroStr )!; // What: Group Bucket Object. Why: This is the specific bucket being sorted in this iteration. How: This reads curGroStr's own bucket out of groBucMap. // What: Non-Null Note. Why: The filter above kept only groups that have a bucket. How: The ! tells TypeScript the get returns it.
 
 		const posIndObj : Record< string, number > = {}; // What: Position Index Object. Why: A row's own explicit saved position (if any) always wins, so it needs a fast lookup by picker id. How: This is populated just below from savPioObj's own entry for this group.
 

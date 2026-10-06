@@ -274,7 +274,11 @@ function forDueFun ( dueDatObj : Date | null, dayKeyStr : string ) : string {
 
 
 
-const forTimFun = ( isoTimStr : string ) => { // What: Format Time Function. Why: Both GroLogCom's kicker needs a plain "3:42 PM" style time for when the day was generated. How: This builds a Date from isoTimStr and formats it via toLocaleTimeString, swallowing an invalid input as an empty string.
+const forTimFun = ( isoTimStr : string | null ) => { // What: Format Time Function. Why: Both GroLogCom's kicker needs a plain "3:42 PM" style time for when the day was generated. How: This builds a Date from isoTimStr and formats it via toLocaleTimeString, swallowing an invalid input as an empty string.
+
+
+	if ( !isoTimStr ) return ''; // What: Missing Time Guard. Why: A day that hasn't been generated yet has no time to show, and new Date( null ) would read as the epoch. How: This returns an empty string when isoTimStr is missing.
+
 
 
 	try { return new Date( isoTimStr ).toLocaleTimeString( [], { hour : 'numeric', minute : '2-digit' } ); } // What: Format Attempt. Why: An otherwise-valid isoTimStr should render as a plain local time. How: This builds a Date from isoTimStr and formats it with no seconds.
@@ -728,7 +732,7 @@ function TabHeaCom ( { heaLabStr = 'Item' } : ThcProTyp ) : React.JSX.Element {
 
 
 
-type VccProTyp = { aftValNum : number | null, genValNum : number | null, hasValBoo : boolean, offValNum? : number }; // What: Value-Cell-Component Props Type. Why: A value cell compares an item's value at generation with its value now. How: This types ValCelCom's props.
+type VccProTyp = { aftValNum : number, genValNum : number | null | undefined, hasValBoo : boolean, offValNum? : number }; // What: Value-Cell-Component Props Type. Why: A value cell compares an item's value at generation with its value now. How: This types ValCelCom's props.
 
 // #region ValCelCom
 
@@ -753,7 +757,8 @@ type VccProTyp = { aftValNum : number | null, genValNum : number | null, hasValB
  * @param props.aftValNum - After Value Number: The current value, after
  *                          whatever happened today.
  * @param props.genValNum - Generation Value Number: The value at generation
- *                          time, or null/ undefined when there is no snapshot.
+ *                          time, or null or undefined when there is no
+ *                          snapshot.
  * @param props.hasValBoo - Has Value Boolean: Whether this row's own mode
  *                          tracks a value at all.
  * @param props.offValNum - Offset Value Number: The base weight to add to both

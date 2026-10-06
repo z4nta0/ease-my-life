@@ -806,8 +806,8 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 	const eliCouNum = picRecObj.mode === 'ease-up' // What: Eligible Count Number. Why: This is the actual number of candidates re-roll could land on. How: This counts only threshold-eligible items for ease-up, or the whole active pool for every other mode.
-		? rerPooArr.filter( ( pooIteObj ) => PIC_NAM_OBJ.easEliFun( pooIteObj, picRecObj.threshold ) ).length // What: Ease-Up Count Branch. Why: Ease-up only re-rolls between items charged to the threshold. How: This counts rerPooArr's own eligible items.
-		: rerPooArr.length;                                                                                   // What: Active Pool Count Branch. Why: Every other mode can land on any active item. How: This counts the whole rerPooArr.
+		? rerPooArr.filter( ( pooIteObj ) => PIC_NAM_OBJ.easEliFun( pooIteObj, picRecObj.threshold! ) ).length // What: Ease-Up Count Branch. Why: Ease-up only re-rolls between items charged to the threshold. How: This counts rerPooArr's own eligible items. // What: Non-Null Note. Why: Only a real ease-up picker reaches this branch, and every real picker has a threshold. How: The ! tells TypeScript the threshold is set.
+		: rerPooArr.length;                                                                                    // What: Active Pool Count Branch. Why: Every other mode can land on any active item. How: This counts the whole rerPooArr.
 
 	// #endregion Reroll Eligibility
 

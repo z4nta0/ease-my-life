@@ -59,7 +59,7 @@ type GhcProTyp = { donCouNum : number, ediModBoo : boolean, groNamStr : string, 
  * @param props.groNamStr   - Group Name String: The group's own current
  *                            display name.
  * @param props.logOpeBoo   - Log Open Boolean: Whether this group's own Day
- *                            Log panel is open.
+ *                            Log panel is open, defaulting to false.
  * @param props.merPenObj   - Merge Pending Object: A pending rename that would
  *                            merge into an existing group, or null.
  * @param props.onCanMerFun - On Cancel Merge Function: Cancels the pending
@@ -88,7 +88,7 @@ type GhcProTyp = { donCouNum : number, ediModBoo : boolean, groNamStr : string, 
  *
 */
 
-function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, onCanMerFun, onConMerFun, onGriDowFun, onRenGroFun, onTogLogFun, totCouNum, valNamFun } : GhcProTyp ) : React.JSX.Element {
+function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPenObj, onCanMerFun, onConMerFun, onGriDowFun, onRenGroFun, onTogLogFun, totCouNum, valNamFun } : GhcProTyp ) : React.JSX.Element {
 
 
 	// #region Cascade Dash Animation
@@ -208,7 +208,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 			setEdiOpeBoo( false ); // What: Editing Close. Why: The field itself is done animating out and can now unmount. How: This flips ediOpeBoo back to false.
 			setCloOutBoo( false ); // What: Closing Flag Clear. Why: The out-animation flag must not persist once the field is already gone. How: This flips cloOutBoo back to false.
 
-			if ( chaValBoo ) onRenGroFun( newValStr ); // What: Commit Branch. Why: A real, confirmed change needs to actually rename the group. How: This calls onRenGroFun with newValStr.
+			if ( chaValBoo ) onRenGroFun!( newValStr! ); // What: Commit Branch. Why: A real, confirmed change needs to actually rename the group. How: This calls onRenGroFun with newValStr. // What: Non-Null Note. Why: Renaming only opens on a real group, whose caller always passes onRenGroFun, and a real change always comes with its new name. How: The ! tells TypeScript both are set here.
 
 			else setDraNamStr( groNamStr ); // What: Revert Branch. Why: A cancel, or a no-op commit, should leave the draft matching the real name again for next time. How: This resets draNamStr back to groNamStr.
 
@@ -307,7 +307,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 							tabIndex={ 0 }
 
 							onDragStart={ ( draEveObj ) => draEveObj.preventDefault() }
-							onPointerDown={ ( poiEveObj ) => onGriDowFun( poiEveObj ) }
+							onPointerDown={ ( poiEveObj ) => onGriDowFun!( poiEveObj ) } // What: Non-Null Note. Why: The grip only renders in Edit Mode, where Today always passes onGriDowFun. How: The ! tells TypeScript the handler is set.
 						>{ /* What: Group Grip Span Element. Why: This is the actual pointer-drag handle for reordering this group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. Its data-element-name-hook is read by the Today page tour and help mode's Today catalog. */ }
 
 

@@ -52,7 +52,7 @@ type TouBusTyp = { // What: Tour Bus Type. Why: The tours, the tour runner, and 
 
 
 	draActBoo? : boolean;                                                          // What: Draft Active Boolean. Why: A tour waits while a draft editor is open. How: This is true while one is.
-	draRepStr? : string;                                                           // What: Draft Repeat String. Why: A reminder tour reads the draft's repeat kind. How: This holds it.
+	draRepStr? : string | null;                                                    // What: Draft Repeat String. Why: A reminder tour reads the draft's repeat kind. How: This holds it, or null while no draft is open.
 	exiIdeStr? : string | null;                                                    // What: Existing Identifier String. Why: A replayed tour reuses what it made before. How: This holds that record's id, or null once a tour clears it.
 	iteMaxNum? : number | null;                                                    // What: Item Max Number. Why: A tour can stage an added item's ease band. How: This holds its easeMax, or null once a tour clears it.
 	iteMinNum? : number | null;                                                    // What: Item Min Number. Why: A tour can stage an added item's ease band. How: This holds its easeMin, or null once a tour clears it.

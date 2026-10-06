@@ -150,9 +150,9 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 
 
-			if ( tutDonBoo ) onUncTutFun( tasRcdObj.id ); // What: Done Dispatch Branch. Why: A sample whose mini-tour already finished should un-resolve it back to not-done on click. How: This calls onUncTutFun when tutDonBoo is true.
+			if ( tutDonBoo ) onUncTutFun!( tasRcdObj.id ); // What: Done Dispatch Branch. Why: A sample whose mini-tour already finished should un-resolve it back to not-done on click. How: This calls onUncTutFun when tutDonBoo is true. // What: Non-Null Note. Why: The tutorial card is only rendered with isaTutBoo, and that call always passes onUncTutFun. How: The ! tells TypeScript the callback is set here.
 
-			else onPlaTutFun( 'reminder', tasRcdObj.id ); // What: Not-Done Dispatch Branch. Why: A sample whose mini-tour hasn't finished yet should start playing it on click. How: This calls onPlaTutFun otherwise.
+			else onPlaTutFun!( 'reminder', tasRcdObj.id ); // What: Not-Done Dispatch Branch. Why: A sample whose mini-tour hasn't finished yet should start playing it on click. How: This calls onPlaTutFun otherwise. // What: Non-Null Note. Why: The tutorial card is only rendered with isaTutBoo, and that call always passes onPlaTutFun. How: The ! tells TypeScript the callback is set here.
 
 
 		};
@@ -190,7 +190,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 							cliEveObj.stopPropagation(); // What: Row Click Isolation. Why: The card's own row click must not also fire for this control. How: This stops the click from bubbling to the article.
 
-							onUncTutFun( tasRcdObj.id ); // What: Tutorial Undo Call. Why: This un-resolves the sample's own mini-tour. How: This calls onUncTutFun with the sample's own id.
+							onUncTutFun!( tasRcdObj.id ); // What: Tutorial Undo Call. Why: This un-resolves the sample's own mini-tour. How: This calls onUncTutFun with the sample's own id. // What: Non-Null Note. Why: The tutorial card is only rendered with isaTutBoo, and that call always passes onUncTutFun. How: The ! tells TypeScript the callback is set here.
 
 
 						} }
@@ -231,7 +231,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 							cliEveObj.stopPropagation(); // What: Row Click Isolation. Why: The card's own row click must not also fire for this control. How: This stops the click from bubbling to the article.
 
-							onPlaTutFun( 'reminder', tasRcdObj.id ); // What: Tutorial Play Call. Why: This starts the sample's own reminder mini-tour. How: This calls onPlaTutFun with the 'reminder' tour kind and the sample's own id.
+							onPlaTutFun!( 'reminder', tasRcdObj.id ); // What: Tutorial Play Call. Why: This starts the sample's own reminder mini-tour. How: This calls onPlaTutFun with the 'reminder' tour kind and the sample's own id. // What: Non-Null Note. Why: The tutorial card is only rendered with isaTutBoo, and that call always passes onPlaTutFun. How: The ! tells TypeScript the callback is set here.
 
 
 						} }
@@ -352,7 +352,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 
 
-		onTogTasFun( tasRcdObj ); // What: Toggle Done Call. Why: Once neither exclusion zone matched, the click is a genuine row toggle. How: This calls onTogTasFun against tasRcdObj.
+		onTogTasFun!( tasRcdObj ); // What: Toggle Done Call. Why: Once neither exclusion zone matched, the click is a genuine row toggle. How: This calls onTogTasFun against tasRcdObj. // What: Non-Null Note. Why: The due-reminder card's only caller always passes onTogTasFun. How: The ! tells TypeScript the callback is set here.
 
 
 	};
@@ -389,7 +389,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 					cliEveObj.stopPropagation(); // What: Row Click Isolation. Why: The card's own row click must not also fire for this control. How: This stops the click from bubbling to the article.
 
-					onTogTasFun( tasRcdObj ); // What: Toggle Done Call. Why: The checkbox toggles the reminder's own done state. How: This calls onTogTasFun with the task.
+					onTogTasFun!( tasRcdObj ); // What: Toggle Done Call. Why: The checkbox toggles the reminder's own done state. How: This calls onTogTasFun with the task. // What: Non-Null Note. Why: The due-reminder card's only caller always passes onTogTasFun. How: The ! tells TypeScript the callback is set here.
 
 
 				} }
@@ -454,7 +454,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 						aria-label='Reminder name'
 
-						onChange={ ( chaEveObj ) => onRenTasFun( chaEveObj.target.value ) }
+						onChange={ ( chaEveObj ) => onRenTasFun!( chaEveObj.target.value ) } // What: Non-Null Note. Why: The due-reminder card's only caller always passes onRenTasFun. How: The ! tells TypeScript the callback is set here.
 						onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() } // What: Row Click Isolation. Why: Clicking into the name input must not also toggle the row done. How: This stops the click from bubbling to the card.
 						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Shortcut. Why: Pressing Enter should finish typing the name. How: This blurs the input on Enter, leaving the name in the draft until Save.
 					/> // What: Name Input Element. Why: While isaOpeBoo, the plain name div below is replaced with a live-editable input. How: This writes every change into the editor's draft through onRenTasFun, trimmed on Save, and blurs itself on Enter. Its data-element-name-hook is read by the reminder card's own row-click handler and help mode's Today catalog.
@@ -490,7 +490,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 						cliEveObj.stopPropagation(); // What: Row Click Isolation. Why: The card's own row click must not also fire for this control. How: This stops the click from bubbling to the article.
 
-						onSkiTasFun(); // What: Skip Toggle Call. Why: This opens or closes the card's own skip confirm. How: This calls onSkiTasFun.
+						onSkiTasFun!(); // What: Skip Toggle Call. Why: This opens or closes the card's own skip confirm. How: This calls onSkiTasFun. // What: Non-Null Note. Why: The due-reminder card's only caller always passes onSkiTasFun. How: The ! tells TypeScript the callback is set here.
 
 
 					} }
@@ -517,7 +517,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 						cliEveObj.stopPropagation(); // What: Row Click Isolation. Why: The card's own row click must not also fire for this control. How: This stops the click from bubbling to the article.
 
-						onEdiTasFun(); // What: Edit Toggle Call. Why: This opens or closes the card's own inline editor. How: This calls onEdiTasFun.
+						onEdiTasFun!(); // What: Edit Toggle Call. Why: This opens or closes the card's own inline editor. How: This calls onEdiTasFun. // What: Non-Null Note. Why: The due-reminder card's only caller always passes onEdiTasFun. How: The ! tells TypeScript the callback is set here.
 
 
 					} }
@@ -779,7 +779,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 	const [ addMesObj, setAddMesObj ] = React.useState< { okaBoo : boolean, texStr : string } | null >( null ); // What: Added Message Object And Setter. Why: After a successful add, silence is indistinguishable from a failed save whenever the new reminder won't actually appear today, so this needs an explicit announcement. How: This is populated by annAddFun below and auto-cleared by the effect right after it.
 
-	const addTimRef = React.useRef< number | null >( null ); // What: Added Timeout Reference. Why: The scheduled clearing of addMesObj needs to be cancellable if a second add happens before the first message times out. How: This holds whichever setTimeout id is currently pending.
+	const addTimRef = React.useRef< number | undefined >( undefined ); // What: Added Timeout Reference. Why: The scheduled clearing of addMesObj needs to be cancellable if a second add happens before the first message times out. How: This holds whichever setTimeout id is currently pending.
 
 
 	React.useEffect( () => () => clearTimeout( addTimRef.current ), [] ); // What: Added Timer Cleanup Effect. Why: A pending message-clear timeout must not outlive this component. How: This clears addTimRef's own timeout id on unmount.
@@ -816,11 +816,11 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 	const [ draTasObj, setDraTasObj ] = React.useState< TasRcdTyp | null >( null ); // What: Draft Task Object And Setter. Why: The quick-add form holds a full draft task so the same SchEdiCom used on an existing reminder can configure recurrence before it's ever created. How: This starts null and is populated by staAddFun below.
 	const [ addCloBoo, setAddCloBoo ] = React.useState( false );                    // What: Add Closing Boolean And Setter. Why: The quick-add form's own exit animation needs a flag distinct from visForBoo, so the form stays mounted but visually collapsing during the close. How: This is toggled by canAddFun/comAddFun below.
 
-	const wasAddRef  = React.useRef( addOpeBoo );                      // What: Was Adding Reference. Why: The effect below needs to detect an addOpeBoo transition, not just its current value. How: This is read and overwritten at the end of that same effect.
-	const selCloRef  = React.useRef( false );                          // What: Self Closing Reference. Why: Our own cancel/commit already starts the exit animation itself; the effect below must not ALSO re-trigger it as if some other editor forced this one closed. How: This is set just before that self-initiated close begins.
-	const cloTimRef  = React.useRef< number | null >( null );          // What: Close Timeout Reference. Why: The scheduled end of an in-progress close animation needs to be cancellable if a fresh open/close interrupts it. How: This holds whichever setTimeout id is currently pending.
-	const inpEleRef = React.useRef< HTMLInputElement | null >( null ); // What: Input Element Reference. Why: The quick-add form's own name input needs to be focusable programmatically. How: This is attached to that input's own ref prop below.
-	const comTasRef = React.useRef( false );                           // What: Commit Task Reference. Why: A rapid double-click on Add must not commit the same draft twice. How: This is checked and set at the very top of comAddFun below, then cleared 500ms after it finishes.
+	const wasAddRef  = React.useRef( addOpeBoo );                       // What: Was Adding Reference. Why: The effect below needs to detect an addOpeBoo transition, not just its current value. How: This is read and overwritten at the end of that same effect.
+	const selCloRef  = React.useRef( false );                           // What: Self Closing Reference. Why: Our own cancel/commit already starts the exit animation itself; the effect below must not ALSO re-trigger it as if some other editor forced this one closed. How: This is set just before that self-initiated close begins.
+	const cloTimRef  = React.useRef< number | undefined >( undefined ); // What: Close Timeout Reference. Why: The scheduled end of an in-progress close animation needs to be cancellable if a fresh open/close interrupts it. How: This holds whichever setTimeout id is currently pending.
+	const inpEleRef = React.useRef< HTMLInputElement | null >( null );  // What: Input Element Reference. Why: The quick-add form's own name input needs to be focusable programmatically. How: This is attached to that input's own ref prop below.
+	const comTasRef = React.useRef( false );                            // What: Commit Task Reference. Why: A rapid double-click on Add must not commit the same draft twice. How: This is checked and set at the very top of comAddFun below, then cleared 500ms after it finishes.
 
 
 	React.useEffect( () => { if ( addOpeBoo && inpEleRef.current ) inpEleRef.current.focus(); }, [ addOpeBoo ] ); // What: Focus Effect. Why: Opening the quick-add form should focus its own name input immediately. How: This focuses inpEleRef's own current node whenever addOpeBoo becomes true.
@@ -876,7 +876,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 	}, [ addOpeBoo ] ); // What: Effect Dependency Array. Why: This effect only needs to re-run when addOpeBoo itself changes, since that's the exact transition it's watching for. How: addOpeBoo is compared against wasAddRef's own remembered prior value.
 
 
-	const patAddFun = ( patValObj : Partial< TasRcdTyp > ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, ...patValObj } ) ); // What: Patch Add Function. Why: The quick-add form's schedule editor changes a field or two of its draft task. How: This merges patValObj into draTasObj.
+	const patAddFun = ( patValObj : Partial< TasRcdTyp > ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj!, ...patValObj } ) ); // What: Patch Add Function. Why: The quick-add form's schedule editor changes a field or two of its draft task. How: This merges patValObj into draTasObj. // What: Non-Null Note. Why: The quick-add form only renders, and so only edits, while a draft is open. How: The ! tells TypeScript the previous draft is set.
 
 
 	const draRepStr = draTasObj ? draTasObj.repeat : null; // What: Draft Repeat String. Why: The effect below publishes only the draft's repeat field, so it should depend on that one value. How: This reads draTasObj's repeat, or null while no draft exists.
@@ -957,7 +957,11 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 	const comAddFun = () => { // What: Commit Add Function. Why: This is the quick-add form's own Save action, creating the real reminder (or updating an existing one, for a re-run mini-tour) from draTasObj. How: This validates the name, resolves a possible existing sample-linked task, then stages the same collapse-then-reveal animation commit already used elsewhere.
 
 
-		const tasNamStr = ( draTasObj?.name || '' ).trim(); // What: Task Name String. Why: An empty name is not a valid reminder and must not be committed. How: This trims draTasObj's own name, defaulting to an empty string when draTasObj itself is null.
+		if ( !draTasObj ) return; // What: No Draft Guard. Why: There is nothing to commit while no quick-add draft is open. How: This bails out of the commit when draTasObj is null.
+
+
+
+		const tasNamStr = ( draTasObj.name || '' ).trim(); // What: Task Name String. Why: An empty name is not a valid reminder and must not be committed. How: This trims draTasObj's own name, defaulting to an empty string when it has none.
 
 
 		if ( !tasNamStr || comTasRef.current ) return; // What: Guard: Ignore Rapid Double-Click. Why: Either the name is blank, or a commit is already in flight. How: This bails out of the whole commit when either condition holds.
@@ -1296,7 +1300,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 								aria-label='Reminder name'
 
-								onChange={ ( chaEveObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, name : chaEveObj.target.value } ) ) }
+								onChange={ ( chaEveObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj!, name : chaEveObj.target.value } ) ) } // What: Non-Null Note. Why: The quick-add form only renders, and so only edits, while a draft is open. How: The ! tells TypeScript the previous draft is set.
 								onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) comAddFun(); } } // What: Enter Commit Shortcut. Why: Pressing Enter in the name field should add the reminder. How: This calls comAddFun on Enter.
 							/>{ /* What: Name Input Element. Why: This is the quick-add form's own primary, first-focused field. How: This commits every keystroke straight into draTasObj, and Enter commits the whole form via comAddFun. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
@@ -1549,11 +1553,11 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 
 
-															if ( redMotFun() ) { actStoObj.skiTasFun( curTasObj.id, nexIsoStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant skip instead of an animated collapse-then-skip. How: This calls actStoObj.skiTasFun directly and returns early.
+															if ( redMotFun() ) { actStoObj.skiTasFun( curTasObj.id, nexIsoStr! ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant skip instead of an animated collapse-then-skip. How: This calls actStoObj.skiTasFun directly and returns early. // What: Non-Null Note. Why: The Skip confirm only renders when skiLabStr found a next eligible day, which also sets nexIsoStr. How: The ! tells TypeScript the day is set here.
 
 
 
-															remActRef.current = () => actStoObj.skiTasFun( curTasObj.id, nexIsoStr ); // What: Skip Action Stage Call. Why: The card's own collapse-out animation must finish before the actual skip runs. How: This stages a thunk remActRef reads on the card's own onAniEndFun, reusing the same removal machinery Delete uses.
+															remActRef.current = () => actStoObj.skiTasFun( curTasObj.id, nexIsoStr! ); // What: Skip Action Stage Call. Why: The card's own collapse-out animation must finish before the actual skip runs. How: This stages a thunk remActRef reads on the card's own onAniEndFun, reusing the same removal machinery Delete uses. // What: Non-Null Note. Why: The Skip confirm only renders when skiLabStr found a next eligible day, which also sets nexIsoStr. How: The ! tells TypeScript the day is set here.
 
 															setRemIdeStr( curTasObj.id ); // What: Removal Stage Call. Why: The card above must play its own collapse-out animation before the deferred skiTasFun call actually runs, on that card's own onAniEndFun. How: This stages curTasObj's own id as the currently-removing card, reusing the same removal machinery Delete uses.
 

@@ -555,7 +555,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 		cleDonBoo = true; // What: Cleanup Done Boolean Update. Why: Every call after this one must be caught by the guard above. How: This flips cleDonBoo true before any of the actual teardown below runs.
 
 
-		cancelAnimationFrame( edgLooNum ); // What: Auto-Scroll Loop Cancel. Why: edgLooFun would otherwise keep rescheduling itself forever. How: This cancels whatever frame id edgLooNum currently holds.
+		cancelAnimationFrame( edgLooNum! ); // What: Auto-Scroll Loop Cancel. Why: edgLooFun would otherwise keep rescheduling itself forever. How: This cancels whatever frame id edgLooNum currently holds. // What: Non-Null Note. Why: The loop is scheduled as soon as the gesture starts, before any cleanup can run. How: The ! tells TypeScript a frame id is set here.
 
 
 		document.removeEventListener( 'dragstart', kilDraFun, true ); // What: Dragstart Suppression Unsubscribe. Why: Native drag-and-drop suppression is only needed for this gesture's own duration. How: This removes the exact same kilDraFun/capture-phase pair that staDraFun added earlier.
