@@ -22,11 +22,12 @@ npm run typecheck # tsc -b across tsconfig.app.json (src/) and tsconfig.node.jso
 TypeScript is being adopted (decided 2026-10-05, on the `integrate-typescript`
 branch). `tsconfig.json` only references `tsconfig.app.json` (everything in
 `src/`, browser and JSX) and `tsconfig.node.json` (`vite.config`,
-`eslint.config`, and `scripts/`, with Node's types). `strict` starts off on
-purpose so the file rename doesn't bury real problems; it gets turned on area
-by area once the code is typed, and stays a tracked to-do until it is.
-`typecheck` isn't part of `build` yet, so a type error can't block a deploy
-mid-migration. `public/boot-splash.js` and `public/sw-notify.js` stay
+`eslint.config`, and `scripts/`, with Node's types). Both run with `strict`
+on (since 2026-10-05). Where the code guarantees something TypeScript can't
+see, it says so with a `!` or `as` and a merged `Non-Null Note` or `Type
+Assertion Note` comment; checks that don't narrow go through
+`utils/guard.ts`. `typecheck` isn't part of `build` yet, so a type error
+can't block a deploy. `public/boot-splash.js` and `public/sw-notify.js` stay
 JavaScript, since the browser and service worker load them by fixed URL
 outside the build. There is no test suite. ESLint is installed and configured
 (`eslint.config.ts`, loaded through `jiti`, reading every file through
