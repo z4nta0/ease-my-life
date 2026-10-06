@@ -135,7 +135,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const [ newNamStr, setNewNamStr ] = React.useState( ( iniForObj && iniForObj.name ) || '' ); // What: New Name String And Setter. Why: This is the picker's own live-typed name field. How: This starts from a prefilled name, or empty.
 
 
-	React.useEffect( () => { // What: Focus Name Effect. Why: Arriving from Today's empty-state card should land the cursor directly in the name field, ready to type. How: This focuses and selects the name input, once, only when iniForObj explicitly asks for it.
+	React.useEffect( () => { // What: Focus Name Effect. Why: Arriving from Today's empty-state card should land the cursor directly in the name field, ready to type. How: This focuses and selects the name input only when iniForObj explicitly asks for it.
 
 
 		if ( iniForObj && iniForObj.focusName && namInpRef.current ) { // What: Focus Request Guard. Why: Only an explicit focusName request should steal focus on mount. How: This checks both that a prefill exists and that it actually asked for focus.
@@ -149,7 +149,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		}
 
 
-	}, [] ); // What: Effect Dependency Array. Why: This only ever needs to run once, on mount. How: An empty array means it never re-runs.
+	}, [ iniForObj ] ); // What: Effect Dependency Array. Why: Only a new prefill can ask for focus. How: The one prefill that sets focusName keeps its identity, so this runs once for it, and the edit flow's fresh object every render never sets focusName, so those runs do nothing.
 
 	// #endregion Form Step And Name
 
@@ -238,7 +238,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		} );
 
 
-	}, [ cadCurObj.cadence, cadCurObj.anchorDow ] ); // What: Effect Dependency Array. Why: Only these two fields of cadCurObj can ever change which day must be locked on. How: cadCurObj.cadence decides whether locking applies at all, and cadCurObj.anchorDow decides which day.
+	}, [ cadCurObj ] ); // What: Effect Dependency Array. Why: Only the cadence and its anchor day can change which day must be locked on, and both live in cadCurObj. How: A re-run from any other cadence edit computes the same days, so the reconcile returns the previous array and nothing re-renders.
 
 	// #endregion Schedule Options
 

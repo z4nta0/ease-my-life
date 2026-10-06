@@ -130,9 +130,10 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 		else clePicFun( actStoObj ); // What: Clear Branch. Why: The disposable sample set must not linger once help mode turns back off. How: This calls clePicFun with actions.
 
 
-	}, [ helOpeBoo ] ); // What: Effect Dependency Array. Why: This only needs re-running when help mode itself is toggled. How: helOpeBoo is the sole trigger.
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: With help mode off, every state change would re-run the clear helper, whose deletes change the state again, in a loop, and with it on, a sample the user deleted would come back. How: staAppObj is read from the render where help mode toggled.
+	}, [ actStoObj, helOpeBoo ] ); // What: Effect Dependency Array. Why: This only needs re-running when help mode itself is toggled. How: helOpeBoo is the trigger, and actStoObj never changes identity.
 
-	React.useEffect( () => () => clePicFun( actStoObj ), [] ); // What: Unmount Cleanup Effect. Why: A tab switch away from Pickers with help mode still on needs its own cleanup, since the effect above's own cleanup only fires on a DEPENDENCY change, not on unmount. How: This is unconditional and harmless if nothing was ever seeded, since clePicFun's own delPicFun/delConFun calls are no-ops against ids that don't exist.
+	React.useEffect( () => () => clePicFun( actStoObj ), [ actStoObj ] ); // What: Unmount Cleanup Effect. Why: A tab switch away from Pickers with help mode still on needs its own cleanup, since the effect above's own cleanup only fires on a DEPENDENCY change, not on unmount. How: This is unconditional and harmless if nothing was ever seeded, since clePicFun's own delPicFun/delConFun calls are no-ops against ids that don't exist, and it lists actStoObj, which never changes identity, so it still runs only on unmount.
 
 	// #endregion Help Mode
 
@@ -169,6 +170,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 		}
 
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: Closing the form would otherwise re-run this and reopen it for a prefill still on the bus, and the suppress flag only matters at the moment a prefill arrives. How: creOpeBoo and touBusObj.supAutBoo are read from the render where the prefill changed.
 	}, [ touBusObj.preFilObj ] ); // What: Effect Dependency Array. Why: Only a genuine change to the staged prefill should re-evaluate this. How: touBusObj.preFilObj is the sole trigger.
 
 	React.useEffect( () => { // What: Empty-State Create Effect. Why: Today's "no pickers" empty-state card should open the create form with its own staged prefill, but WITHOUT opeTouBoo, since this isn't the tour and creating the picker must not fire the tour's own advance callback. How: This consumes touBusObj.staCreObj once, then clears it, prefilling a "Chores" group only when there are no groups to auto-select (a group can technically exist with no pickers, so an existing one is respected by leaving group unset, letting the form auto-select it).
@@ -190,7 +192,8 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 		}
 
 
-	}, [ touBusObj.staCreObj ] ); // What: Effect Dependency Array. Why: Only a genuine change to this exact staged signal should re-run this. How: touBusObj.staCreObj is the sole trigger; exiGroArr/creOpeBoo are read fresh from the closure each time it fires.
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: exiGroArr is declared further down this component, so reading it in this array would throw before the memo exists, and creOpeBoo only matters at the moment the signal arrives. How: Both are read fresh from the closure each time the signal changes.
+	}, [ touBusObj.staCreObj ] ); // What: Effect Dependency Array. Why: Only a genuine change to this exact staged signal should re-run this. How: touBusObj.staCreObj is the sole trigger.
 
 	// #endregion Tour Gating And Prefill
 
