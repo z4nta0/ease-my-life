@@ -23,7 +23,8 @@ import type { PicUpdTyp } from './pickers.ts'; // What: Pick Update Type. Why: A
  * Every field name is the one saved in user data, so none of them follow the
  * naming rule; renaming them waits for the persisted-name migration. Fields
  * only some records carry, such as the ease band on items outside the ease
- * modes, are optional.
+ * modes, are optional. RawSavTyp marks a save not yet migrated to this
+ * shape.
  *
  * Sections:
  *  - Types
@@ -443,13 +444,18 @@ type StaAppTyp = { // What: State App Type. Why: The whole app runs on one saved
 
 };
 
+
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- What: Deliberate Any Type. Why: A save read back from storage or an import file can come from any earlier version of the app, or not be a save at all, so no fixed shape describes it. How: This allows any once here, so every other file names the case by type instead of writing any.
+type RawSavTyp = any; // What: Raw Save Type. Why: Saved state is read before migStaFun has brought it up to the current shape, and old saves carry fields and shapes StaAppTyp no longer has. How: This marks every value holding such an unmigrated save, which migStaFun turns into a StaAppTyp.
+
 // #endregion Types
 
 
 
 // #region Exports
 
-export { type AppSetTyp, type CadNamTyp, type CdlRowTyp, type CheStaTyp, type ConRcdTyp, type CusPalTyp, type DaiSetTyp, type DatModTyp, type EntKinTyp, type EntPenTyp, type EntRevTyp, type HolCusTyp, type HolStaTyp, type IteRcdTyp, type ModNamTyp, type OnbStaTyp, type PclOutTyp, type PclRowTyp, type PclSouTyp, type PicArgTyp, type PicForTyp, type PicRcdTyp, type RemClaTyp, type RemKinTyp, type RemOptTyp, type RepNamTyp, type RmlRowTyp, type RslRowTyp, type StaAppTyp, type TasArgTyp, type TasRcdTyp, type TodEntTyp, type TodStaTyp, type UiStaTyp, type VclRowTyp }; // What: Named Type Exports. Why: core/, state/, and the UI all read the same saved records. How: This exports every record type and value set by name, each marked type so it disappears from the build.
+export { type AppSetTyp, type CadNamTyp, type CdlRowTyp, type CheStaTyp, type ConRcdTyp, type CusPalTyp, type DaiSetTyp, type DatModTyp, type EntKinTyp, type EntPenTyp, type EntRevTyp, type HolCusTyp, type HolStaTyp, type IteRcdTyp, type ModNamTyp, type OnbStaTyp, type PclOutTyp, type PclRowTyp, type PclSouTyp, type PicArgTyp, type PicForTyp, type PicRcdTyp, type RawSavTyp, type RemClaTyp, type RemKinTyp, type RemOptTyp, type RepNamTyp, type RmlRowTyp, type RslRowTyp, type StaAppTyp, type TasArgTyp, type TasRcdTyp, type TodEntTyp, type TodStaTyp, type UiStaTyp, type VclRowTyp }; // What: Named Type Exports. Why: core/, state/, and the UI all read the same saved records. How: This exports every record type and value set by name, each marked type so it disappears from the build.
 
 // #endregion Exports
 

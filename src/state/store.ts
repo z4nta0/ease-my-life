@@ -42,6 +42,7 @@ import type { OnbStaTyp } from '../core/data-model.ts'; // What: Onboarding Stat
 import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: A re-roll marks the rolled-away row rejected. How: This types swaIteFun's rejected log so its outcome stays a known value.
 import type { PicForTyp } from '../core/data-model.ts'; // What: Picker Form Type. Why: Adding and editing a picker take the form's fields. How: This types addPicFun's and savEdiFun's argument.
 import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record Type. Why: Picker actions take picker fields. How: This types updPicFun's patch.
+import type { RawSavTyp } from '../core/data-model.ts'; // What: Raw Save Type. Why: An imported backup can come from any earlier version. How: This types impDatFun's argument.
 import type { RemClaTyp } from '../core/data-model.ts'; // What: Reminder Class Type. Why: Each reminder class has its own switches. How: This types setOptFun's switch key.
 import type { RemKinTyp } from '../core/data-model.ts'; // What: Reminder Kind Type. Why: Switches belong to one-time or recurring reminders. How: This types setOptFun's class.
 import type { RslRowTyp } from '../core/data-model.ts'; // What: Reminder-Skip-Log Row Type. Why: Skipping a reminder logs a row. How: This types skiTasFun's skip row so its type stays a known value.
@@ -112,7 +113,7 @@ type ActStoTyp = { // What: Action Store Type. Why: Every tab changes state only
 	delTasFun : ( tarIdeStr : string ) => void;                                                           // What: Delete Task Function. Why: Reminders can be deleted. How: This takes the reminder's id.
 	filPicFun : ( picIdeStr : string ) => void;                                                           // What: Fill Picker Function. Why: Fill and Refill bring a picker's items back to full charge. How: This takes the picker's id.
 	finCheFun : ( donValBoo? : boolean ) => void;                                                         // What: Finish Checklist Function. Why: The setup checklist ends with its Generate card. How: This takes whether it's finished, true by default.
-	impDatFun : ( impRawObj : any ) => void;                                                              // What: Import Data Function. Why: Settings imports a backup file. How: This takes the parsed file, of any age.
+	impDatFun : ( impRawObj : RawSavTyp ) => void;                                                        // What: Import Data Function. Why: Settings imports a backup file. How: This takes the parsed file, of any age.
 	marGenFun : () => void;                                                                               // What: Mark Generated Function. Why: Generating stamps the time and snapshots values for the Day Log. How: This takes nothing.
 	movIteFun : ( tarIdeStr : string ) => void;                                                           // What: Move Item Function. Why: A just-saved item lands at the bottom of its picker's list. How: This takes the item's id.
 	renCusFun : ( theModStr : string, newNamStr : string ) => void;                                       // What: Rename Custom Function. Why: A custom theme can be renamed. How: This takes 'light' or 'dark' and the new name.

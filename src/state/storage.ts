@@ -3,6 +3,7 @@
 
 // #region Imports
 
+import type { RawSavTyp } from '../core/data-model.ts'; // What: Raw Save Type. Why: A save read back from storage hasn't been migrated yet. How: This types the cached state and every read that returns one.
 import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: Every write persists the current app state. How: This types each appStaObj parameter.
 
 // #endregion Imports
@@ -101,7 +102,7 @@ const SNA_KEE_NUM = 3; // What: Snapshot Keep Number. Why: This is how many clea
 
 // #region Module State
 
-let cacStaObj : any                   = null;      // What: Cached State Object. Why: This is the state iniStoFun loaded, held in memory so later synchronous reads (like STG_NAM_OBJ.cacStaFun()) do not need to touch storage again. How: This starts null (a fresh install) and is assigned inside iniStoFun.
+let cacStaObj : RawSavTyp             = null;      // What: Cached State Object. Why: This is the state iniStoFun loaded, held in memory so later synchronous reads (like STG_NAM_OBJ.cacStaFun()) do not need to touch storage again. How: This starts null (a fresh install) and is assigned inside iniStoFun.
 let curEngStr : string                = 'memory';  // What: Current Engine String. Why: Every read/write in this file needs to know which backend is actually of record right now: 'idb', 'localStorage', or the fallback 'memory'. How: This starts at 'memory' and is updated by iniStoFun/savStaFun whenever the active engine changes.
 let datConObj : IDBDatabase | null    = null;      // What: Database Connection Object. Why: Every other function in this file that talks to IndexedDB needs the same open connection. How: This starts null (no connection yet) and is assigned by iniStoFun once opeDatFun resolves.
 let lplRefArr : unknown[] | undefined = undefined; // What: Last-Pick-Log Reference Array. Why: wriDatFun must know whether the pick log actually changed since the last write, to avoid re-serializing the largest and fastest-growing piece of state on every save. How: This holds the exact array reference last written, compared with !== inside wriDatFun.
@@ -285,7 +286,7 @@ function traStoFun ( stoNamStr : string, modValStr : IDBTransactionMode ) : IDBO
  *
 */
 
-async function reaDatFun () : Promise< any > {
+async function reaDatFun () : Promise< RawSavTyp > {
 
 
 	const resStaObj = await reqProFun( traStoFun( STA_STO_STR, 'readonly' ).get( 'main' ) ); // What: Rest State Object. Why: The non-pickLog portion of state lives in its own object store, read independently from the log. How: This awaits reqProFun wrapping a get('main') request against the state object store.
@@ -454,7 +455,7 @@ function ownKeyFun () : string[] {
  *
 */
 
-function reaLocFun () : any {
+function reaLocFun () : RawSavTyp {
 
 
 	try { // What: Local Read Try. Why: Both localStorage.getItem and JSON.parse can throw (a blocked origin, corrupted data), and either failure should be treated the same way. How: This wraps the whole read-and-parse sequence below so any such error falls through to the catch's own null return.
@@ -618,7 +619,7 @@ function wriLocFun ( appStaObj : StaAppTyp, fulWriBoo : boolean ) : boolean {
  *
 */
 
-const cacStaFun = () : any => cacStaObj; // What: Cached State Function. Why: store.ts's own loaStaFun() reads this synchronously to seed React state before any save has happened yet. How: This closes over the module-private cacStaObj rather than exposing it directly.
+const cacStaFun = () : RawSavTyp => cacStaObj; // What: Cached State Function. Why: store.ts's own loaStaFun() reads this synchronously to seed React state before any save has happened yet. How: This closes over the module-private cacStaObj rather than exposing it directly.
 
 // #endregion cacStaFun
 
@@ -694,7 +695,7 @@ function fluSynFun ( appStaObj : StaAppTyp ) : void {
  *
 */
 
-async function iniStoFun () : Promise< any > {
+async function iniStoFun () : Promise< RawSavTyp > {
 
 
 	try { // What: Storage Boot Try. Why: Opening IndexedDB at all can fail outright (private mode, an opaque origin, a blocked/hanging open), and that whole path must fall back to localStorage instead of crashing boot. How: This wraps the full IDB-open-and-migrate sequence below, falling back in the catch beneath it.
@@ -1014,7 +1015,7 @@ async function wipDatFun () : Promise< void > {
  *
 */
 
-async function reaPerFun () : Promise< any > {
+async function reaPerFun () : Promise< RawSavTyp > {
 
 
 	if ( curEngStr === 'idb' && datConObj ) { // What: Idb Engine Check. Why: IDB is the actual store of record whenever it is the current engine, so it must be read directly rather than relying on any in-memory copy. How: This gates the direct reaDatFun read below on that condition.

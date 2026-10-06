@@ -5,7 +5,7 @@
 
 import react      from 'eslint-plugin-react';       // What: React. Why: An undefined component in a JSX tag should fail lint. How: This registers the plugin behind react/jsx-no-undef.
 import reactHooks from 'eslint-plugin-react-hooks'; // What: React Hooks. Why: Hook calls follow rules plain JS linting can't check. How: Its recommended rules are spread into the .tsx config.
-import tseslint   from 'typescript-eslint';         // What: TypeScript ESLint. Why: ESLint's default parser can't read TypeScript's type annotations. How: Its parser is set on both configs below; its own rules aren't turned on yet.
+import tseslint   from 'typescript-eslint';         // What: TypeScript ESLint. Why: ESLint's default parser can't read TypeScript's type annotations. How: Its recommended rules are spread into the config, and its parser is set on both configs below.
 
 // #endregion Imports
 
@@ -16,16 +16,18 @@ import tseslint   from 'typescript-eslint';         // What: TypeScript ESLint. 
  *
  * @summary
  * The lint config, reading every file through typescript-eslint's parser so
- * type annotations parse. Every .ts and .tsx file under src/ is checked by
- * react/jsx-no-undef, which catches a component reference a rename missed.
- * ESLint's own no-undef is left off, as typescript-eslint recommends, since
- * TypeScript already reports every undefined name and no-undef can't see
- * TypeScript's type-only names (IDBTransactionMode, ...). Every .tsx file
- * also gets the React Hooks plugin's recommended rules, minus the
- * four React Compiler readiness rules, which only matter to an app built with
- * the React Compiler, which this one isn't. Generated output (dist/,
- * dev-dist/) is ignored. No npm script runs it; it runs only through npx
- * eslint or an editor integration.
+ * type annotations parse, with typescript-eslint's recommended rules on for
+ * every file, letting a binding beside a rest element go unread and a
+ * destructuring that reassigns some of its bindings stay let. Every .ts and
+ * .tsx file under src/ is checked by react/jsx-no-undef, which catches a
+ * component reference a rename missed. ESLint's own no-undef is left off, as
+ * typescript-eslint recommends, since TypeScript already reports every
+ * undefined name and no-undef can't see TypeScript's type-only names
+ * (IDBTransactionMode, ...). Every .tsx file also gets the React Hooks
+ * plugin's recommended rules, minus the four React Compiler readiness rules,
+ * which only matter to an app built with the React Compiler, which this one
+ * isn't. Generated output (dist/, dev-dist/) is ignored. npm run lint runs it
+ * across the repo, and an editor integration can run it per file.
  *
  * Sections:
  *  - Constants
@@ -39,10 +41,27 @@ import tseslint   from 'typescript-eslint';         // What: TypeScript ESLint. 
 
 // #region Constants
 
-const ESL_CON_ARR = [ // What: ESLint Config Array. Why: ESLint reads its flat config as an array of objects, each scoped to the files it lists. How: This holds the generated-output ignores, the src/ undefined-component config, and the .tsx hooks config.
+const ESL_CON_ARR = [ // What: ESLint Config Array. Why: ESLint reads its flat config as an array of objects, each scoped to the files it lists. How: This holds the generated-output ignores, typescript-eslint's recommended configs and two rule overrides, the src/ undefined-component config, and the .tsx hooks config.
 
 
 	{ ignores : [ 'dev-dist/**', 'dist/**' ] }, // What: Ignores Object. Why: The build output and the PWA plugin's dev service worker are generated, not hand-written, so their lint results mean nothing. How: This global ignores entry skips both folders for every config below; two globs, since braces break ESLint's matching here.
+
+	...tseslint.configs.recommended, // What: Recommended Configs Spread. Why: typescript-eslint's recommended rules catch TypeScript mistakes the compiler allows, such as an any or an unused variable. How: This spreads its recommended configs in, which apply to every file ESLint lints and switch off the core rules TypeScript already covers.
+
+	{ // What: Rule Overrides Object. Why: Two recommended rules flag patterns the app uses on purpose. How: This re-sets both rules with an option that allows those patterns.
+
+
+		rules : { // What: Rules. Why: Each override keeps its rule on, just with one option changed. How: This holds both overrides.
+
+
+			'@typescript-eslint/no-unused-vars' : [ 'error', { ignoreRestSiblings : true } ], // What: Unused Vars Rule. Why: The app drops a field from a copy by destructuring it away beside a rest element, which leaves that binding unread on purpose. How: This lets a binding next to a rest element go unread.
+			'prefer-const'                      : [ 'error', { destructuring : 'all' } ]      // What: Prefer Const Rule. Why: A destructuring that reassigns some of its bindings has to use let for all of them, since one declaration can't mix const and let. How: This only asks for const when every binding in the destructuring could be one.
+
+
+		}
+
+
+	},
 
 	{ // What: Source Config Object. Why: A component reference a rename missed should fail lint everywhere under src/. How: This turns on react/jsx-no-undef for every .ts and .tsx file there.
 

@@ -32,12 +32,17 @@ build and blocks a deploy. `public/boot-splash.js` and `public/sw-notify.js` sta
 JavaScript, since the browser and service worker load them by fixed URL
 outside the build. There is no test suite. ESLint is installed and configured
 (`eslint.config.ts`, loaded through `jiti`, reading every file through
-`typescript-eslint`'s parser, with `eslint-plugin-react-hooks`'
-recommended rules for `.tsx` files, minus its four React Compiler readiness
+`typescript-eslint`'s parser, with `typescript-eslint`'s recommended rules
+for every file (`no-unused-vars` letting a binding beside a rest element go
+unread, and `prefer-const` only flagging a destructuring whose every binding
+could be `const`), `eslint-plugin-react-hooks`' recommended rules for
+`.tsx` files, minus its four React Compiler readiness
 rules, plus `react/jsx-no-undef` for everything under `src/`, which catches
 a component reference a rename missed. ESLint's own `no-undef` is off, as
 `typescript-eslint` recommends: `tsc` already reports every undefined name,
-and `no-undef` can't see TypeScript's type-only names. Its
+and `no-undef` can't see TypeScript's type-only names. The one deliberate
+`any` is `RawSavTyp` in `core/data-model.ts`, which types a save that
+`migStaFun` hasn't migrated yet. Its
 `files` globs avoid `{a,b}` braces, since the `brace-expansion` override in
 `package.json` breaks ESLint's brace matching). `npm run lint` checks the
 whole repo, but nothing runs it automatically, so ESLint doesn't gate a
