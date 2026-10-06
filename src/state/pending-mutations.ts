@@ -6,6 +6,16 @@
 import { CON_NAM_OBJ } from '../core/conditionals.ts'; // What: Conditionals Namespace Object. Why: A day-off card's completion advances or reverts its conditional through this module's own logic. How: This is aliased to conModObj inside cotAplFun.
 import { isoDayFun   } from '../utils/date.ts';        // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 
+
+import type { CdlRowTyp } from '../core/data-model.ts'; // What: Conditional-Log Row Type. Why: Completing a day-off card logs its outcome. How: This types cdlAplFun's return.
+import type { ConRcdTyp } from '../core/data-model.ts'; // What: Conditional Record Type. Why: Completing a day-off card advances its conditional. How: This types cotAplFun's return.
+import type { EntRevTyp } from '../core/data-model.ts'; // What: Entry Revert Type. Why: Applying a pending records how to undo it. How: This types enpAplFun's revert snapshot.
+import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: Applying and reverting rewrite items. How: This types EnpResTyp's items.
+import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: Applying and reverting update the pick log. How: This types EnpResTyp's pick log.
+import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record Type. Why: Applying and reverting patch pickers. How: This types EnpResTyp's pickers.
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: Every helper reads the current state. How: This types each curStaObj parameter.
+import type { TodEntTyp } from '../core/data-model.ts'; // What: Today Entry Type. Why: Every helper works on Today's entries. How: This types each entry parameter.
+
 // #endregion Imports
 
 
@@ -39,6 +49,7 @@ import { isoDayFun   } from '../utils/date.ts';        // What: Iso Day Function
  * supposed to perform its designed effect regardless of an interim Fill.
  *
  * Sections:
+ *  - Types
  *  - Module State
  *  - Helpers
  *  - Exports
@@ -46,6 +57,14 @@ import { isoDayFun   } from '../utils/date.ts';        // What: Iso Day Function
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Types
+
+type EnpResTyp = { items : IteRcdTyp[], pickers : PicRcdTyp[], pickLog : PclRowTyp[] }; // What: Entry-Pending Result Type. Why: Applying and reverting an entry's pending both hand back the three arrays they change. How: This describes those fresh items, pickers, and pick log.
+
+// #endregion Types
 
 
 
@@ -82,7 +101,7 @@ let __cdlSeqNum = 0; // What: Conditional-Log Sequence Number. Why: nclIdeFun be
  *
 */
 
-function nclIdeFun () {
+function nclIdeFun () : string {
 
 
 	return 'cl_' + Date.now().toString( 36 ) + ( __cdlSeqNum++ ).toString( 36 ); // What: Conditional-Log Id Return. Why: The caller needs a short, sortable, collision-resistant id. How: This concatenates a fixed prefix, the current time base-36, and the incrementing counter base-36.
@@ -121,7 +140,7 @@ function nclIdeFun () {
  *
 */
 
-function spuDroFun ( todEntArr, iteIdeArr ) {
+function spuDroFun ( todEntArr : TodEntTyp[], iteIdeArr : string[] ) : TodEntTyp[] {
 
 
 	const iteIdeSet = new Set( iteIdeArr ); // What: Item Identifier Set. Why: The scan below needs fast membership checks against the touched ids. How: This wraps iteIdeArr in a Set.
@@ -220,7 +239,7 @@ function spuDroFun ( todEntArr, iteIdeArr ) {
  *
 */
 
-function enpAplFun ( curStaObj, curEntObj ) {
+function enpAplFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp & { revert : EntRevTyp | null } {
 
 
 	const curPenObj = curEntObj.pending; // What: Current Pending Object And Guard. Why: Every mutation below is driven entirely by this entry's own staged pending payload. How: This reads curEntObj's own pending field.
@@ -298,9 +317,9 @@ function enpAplFun ( curStaObj, curEntObj ) {
 	} );
 
 
-	const hasPipBoo = !!curPenObj.pickerPatch;                                                              // What: Has Picker-Patch Boolean. Why: The previous-active lookup below only snapshots activeItemId when a pickerPatch is actually being applied. How: This coerces curPenObj's own pickerPatch to a real boolean.
-	const perRunStr = ( curEntObj.kind !== 'dayoff' && curEntObj.periodKey ) || null;                       // What: Period Run String. Why: Completing a non-daily pick or charging card is this picker's run for the period, which the cadence check must see even when no pick-log row exists. How: This is the entry's own periodKey, or null for a daily entry or a day-off card, whose completion never counts as a run.
-	const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ) || {}; // What: Current Picker Object. Why: Both revert snapshots below need the entry's own picker as it stands BEFORE this apply. How: This finds the picker by the entry's own pickerId, else an empty object.
+	const hasPipBoo = !!curPenObj.pickerPatch;                                                                                     // What: Has Picker-Patch Boolean. Why: The previous-active lookup below only snapshots activeItemId when a pickerPatch is actually being applied. How: This coerces curPenObj's own pickerPatch to a real boolean.
+	const perRunStr = ( curEntObj.kind !== 'dayoff' && curEntObj.periodKey ) || null;                                              // What: Period Run String. Why: Completing a non-daily pick or charging card is this picker's run for the period, which the cadence check must see even when no pick-log row exists. How: This is the entry's own periodKey, or null for a daily entry or a day-off card, whose completion never counts as a run.
+	const curPicObj : Partial< PicRcdTyp > = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ) || {}; // What: Current Picker Object. Why: Both revert snapshots below need the entry's own picker as it stands BEFORE this apply. How: This finds the picker by the entry's own pickerId, else an empty object.
 
 
 	const praIdeStr = hasPipBoo // What: Previous-Active Identifier String. Why: The revert snapshot needs the picker's own activeItemId as it stood BEFORE this apply, but only when a pickerPatch is actually being applied. How: This looks up curEntObj's own picker and reads its current activeItemId, else stays undefined.
@@ -388,7 +407,7 @@ function enpAplFun ( curStaObj, curEntObj ) {
  *
 */
 
-function enpRevFun ( curStaObj, curEntObj ) {
+function enpRevFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp {
 
 
 	const curRevObj = curEntObj.revert; // What: Current Revert Object And Guard. Why: Every restoration below is driven entirely by this entry's own recorded snapshot. How: This reads curEntObj's own revert field.
@@ -489,7 +508,7 @@ function enpRevFun ( curStaObj, curEntObj ) {
  *
 */
 
-function cotAplFun ( curStaObj, nexEntArr, togEntObj, nowDonBoo ) {
+function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj : TodEntTyp, nowDonBoo : boolean ) : ConRcdTyp[] {
 
 
 	const curConArr = curStaObj.conditionals || []; // What: Current Conditionals Array And Guard. Why: Every branch below reads/maps over the live conditionals list. How: This reads curStaObj's own conditionals, defaulting to empty.
@@ -672,7 +691,7 @@ function cotAplFun ( curStaObj, nexEntArr, togEntObj, nowDonBoo ) {
  *
 */
 
-function cdlAplFun ( curStaObj, nexEntArr, togEntObj, nowDonBoo ) {
+function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj : TodEntTyp, nowDonBoo : boolean ) : CdlRowTyp[] {
 
 
 	const curLogArr = curStaObj.conditionalLog || []; // What: Current Log Array. Why: Every branch below either returns this untouched or derives a new array from it. How: This reads curStaObj's own conditionalLog, defaulting to empty.
