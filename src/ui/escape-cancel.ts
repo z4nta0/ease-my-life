@@ -71,7 +71,7 @@ window.__escStack = window.__escStack || []; // What: Escape Stack Global. Why: 
  *
 */
 
-function useEscCanFun ( actStaBoo, hanCalFun ) {
+function useEscCanFun ( actStaBoo : boolean, hanCalFun : () => void ) : void {
 
 
 	const hanFunRef = React.useRef( hanCalFun ); // What: Handler Function Reference. Why: The registered stack entry must always call the latest handler, not whichever one was passed on the render that first mounted it. How: This is created once from the initial handler and overwritten on every render below.

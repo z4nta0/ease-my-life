@@ -73,10 +73,10 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function.
  *
 */
 
-function useFliRaiFun ( raiNodRef, trgKeyStr ) {
+function useFliRaiFun ( raiNodRef : React.RefObject< HTMLElement | null >, trgKeyStr : string ) : void {
 
 
-	const fliFirRef = React.useRef( new Map() ); // What: Flip First Reference. Why: Each pill's PREVIOUS x position is needed to compute how far it moved. How: This starts as an empty map and is repopulated at the end of every effect run.
+	const fliFirRef = React.useRef( new Map< string, number >() ); // What: Flip First Reference. Why: Each pill's PREVIOUS x position is needed to compute how far it moved. How: This starts as an empty map and is repopulated at the end of every effect run.
 
 
 	React.useLayoutEffect( () => { // What: Rail Flip Effect. Why: A re-sorted pill would otherwise snap to its new spot; this plays a FLIP tween instead. How: This measures each pill's new x, inverts it back to its recorded old x, and plays the transform to none.
@@ -89,9 +89,9 @@ function useFliRaiFun ( raiNodRef, trgKeyStr ) {
 
 
 
-		const firMapObj = fliFirRef.current;                                           // What: First Map Object. Why: This is the map of each pill's own previous x position, read and then overwritten below. How: This is read once from fliFirRef.current and reused throughout this effect run.
-		const pilNodArr = [ ...raiCurEle.querySelectorAll( '[data-flip-item-key]' ) ]; // What: Pill Node Array. Why: Every currently-rendered pill that takes part needs to be measured and possibly animated. How: This queries every element carrying data-flip-item-key inside the rail and spreads the NodeList into a real array.
-		const redMotBoo = redMotFun();                                                 // What: Reduce Motion Boolean. Why: A user who prefers reduced motion should never see this FLIP tween. How: This is checked once per run and read by every pill below.
+		const firMapObj = fliFirRef.current;                                                          // What: First Map Object. Why: This is the map of each pill's own previous x position, read and then overwritten below. How: This is read once from fliFirRef.current and reused throughout this effect run.
+		const pilNodArr = [ ...raiCurEle.querySelectorAll< HTMLElement >( '[data-flip-item-key]' ) ]; // What: Pill Node Array. Why: Every currently-rendered pill that takes part needs to be measured and possibly animated. How: This queries every element carrying data-flip-item-key inside the rail and spreads the NodeList into a real array.
+		const redMotBoo = redMotFun();                                                                // What: Reduce Motion Boolean. Why: A user who prefers reduced motion should never see this FLIP tween. How: This is checked once per run and read by every pill below.
 
 
 		pilNodArr.forEach( ( pilCurEle ) => { // What: Pill Animate Loop. Why: Every pill needs its own individual FLIP tween (or fade-in, if new), since each may have moved a different distance. How: This computes each pill's own delta from firMapObj and plays the matching animation.

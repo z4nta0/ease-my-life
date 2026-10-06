@@ -32,6 +32,7 @@ import React from 'react'; // What: React. Why: The watcher is a component built
 
 // #region Components
 
+type UwcProTyp = { onUnmWatFun : () => void }; // What: Unmount-Watcher-Component Props Type. Why: The watcher's only prop is the handler it runs on unmount. How: This types UnmWatCom's props.
 // #region UnmWatCom
 
 /**
@@ -57,7 +58,7 @@ import React from 'react'; // What: React. Why: The watcher is a component built
  *
 */
 
-function UnmWatCom ( { onUnmWatFun } ) {
+function UnmWatCom ( { onUnmWatFun } : UwcProTyp ) : null {
 
 
 	const unmHanRef = React.useRef( onUnmWatFun ); // What: Unmount Handler Reference. Why: The unmount cleanup below runs long after its own effect was created, so it must read the latest handler from somewhere that keeps changing. How: This holds the most recent onUnmWatFun.

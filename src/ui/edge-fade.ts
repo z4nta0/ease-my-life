@@ -52,7 +52,7 @@
  *
 */
 
-const togFadFun = ( scrCurEle, attCurEle = scrCurEle ) => { // What: Toggle Fade Function. Why: Every scrolling rail hides each edge fade once that edge is reached. How: This measures scrCurEle and toggles both attributes on attCurEle.
+const togFadFun = ( scrCurEle : HTMLElement, attCurEle : HTMLElement = scrCurEle ) : void => { // What: Toggle Fade Function. Why: Every scrolling rail hides each edge fade once that edge is reached. How: This measures scrCurEle and toggles both attributes on attCurEle.
 
 
 	const canScrBoo = scrCurEle.scrollWidth - scrCurEle.clientWidth > 1;                                       // What: Can Scroll Boolean. Why: A rail that doesn't overflow has no edge to fade at all. How: This checks for more than 1px of overflow.
