@@ -499,7 +499,7 @@ const ONB_RCT_OBJ : Record< string, { kicStr? : string, namStr : string, timStr 
  *
 */
 
-const ONB_TAS_ARR : ( TasArgTyp & { id : string } )[] = [ // What: Onboarding Task Array. Why: This is the sample-reminder pool described above, seeded alongside the pickers. How: This is spread into actStoObj.addTasFun by onboarding/welcome-tour.tsx's own seeding effect, exactly like a real, user-created task.
+const ONB_TAS_ARR : ( TasArgTyp & Required< Pick< TasArgTyp, 'id' | 'name' > > )[] = [ // What: Onboarding Task Array. Why: This is the sample-reminder pool described above, seeded alongside the pickers. How: This is spread into actStoObj.addTasFun by onboarding/welcome-tour.tsx's own seeding effect, exactly like a real, user-created task.
 
 
 	{ id : 'tk_ob_meds',  name : 'Pick up prescription', repeat : 'once'                                       }, // What: One-Time Reminder Entry. Why: This is the one-time sample reminder's own entry (see the comment above this array for why it stays pending). How: This is read by the reminders engine (tasks.ts) exactly like any real, user-created task.

@@ -125,8 +125,8 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 	// #region Active Tab Indicator
 
-	const navEleRef                   = React.useRef( null );   // What: Nav Element Reference. Why: This gives the effect a handle on the actual nav DOM node. How: This is attached via the nav element's ref prop and read inside the layout effect to query and measure it.
-	const [ indRecObj, setIndRecObj ] = React.useState( null ); // What: Indicator Record Object And Setter. Why: This holds the active tab's measured position and size so the sliding indicator pill can be rendered. How: This is computed by meaPosFun and consumed in the JSX style to position the indicator span.
+	const navEleRef                   = React.useRef< HTMLElement | null >( null );                                                              // What: Nav Element Reference. Why: This gives the effect a handle on the actual nav DOM node. How: This is attached via the nav element's ref prop and read inside the layout effect to query and measure it.
+	const [ indRecObj, setIndRecObj ] = React.useState< { heiNum : number, lefNum : number, topNum : number, widNum : number } | null >( null ); // What: Indicator Record Object And Setter. Why: This holds the active tab's measured position and size so the sliding indicator pill can be rendered. How: This is computed by meaPosFun and consumed in the JSX style to position the indicator span.
 
 
 	React.useLayoutEffect( () => { // What: Indicator Position Layout Effect. Why: This must measure and set the indicator's position before the browser paints, avoiding a visible flash. How: This measures the active button on mount and on dependency change, re-measures on resize via a ResizeObserver and a window resize listener, and cleans both up on unmount.
@@ -438,7 +438,7 @@ function AppRooCom () : React.JSX.Element {
 
 
 
-	const maiInnRef = React.useRef( null ); // What: Main Inner Reference. Why: Every non-Today tab shares one .maiInnDiv wrapper (remounted per switch), so a single ref reused across all of them is enough, unlike Today which manages its own instance. How: This is attached to the shared maiInnDiv div's ref prop below and read by BacFloCom to measure it.
+	const maiInnRef = React.useRef< HTMLDivElement | null >( null ); // What: Main Inner Reference. Why: Every non-Today tab shares one .maiInnDiv wrapper (remounted per switch), so a single ref reused across all of them is enough, unlike Today which manages its own instance. How: This is attached to the shared maiInnDiv div's ref prop below and read by BacFloCom to measure it.
 
 
 
@@ -509,13 +509,13 @@ function AppRooCom () : React.JSX.Element {
 
 
 
-	const maiEleRef = React.useRef( null ); // What: Main Element Reference. Why: selTabFun needs a handle on the shared main scroller to reset its scroll position on tab switch. How: This is attached to main's own ref prop below.
+	const maiEleRef = React.useRef< HTMLElement | null >( null ); // What: Main Element Reference. Why: selTabFun needs a handle on the shared main scroller to reset its scroll position on tab switch. How: This is attached to main's own ref prop below.
 
 
 
 	// #region Placement Switch State
 
-	const [ exiPlaStr, setExiPlaStr ] = React.useState( null );                            // What: Exiting Placement String And Setter. Why: The old nav bar's ghost copy needs to know which placement it's animating away from. How: This is set to the previous placement when tabPlaStr changes, then cleared after the exit keyframe finishes.
+	const [ exiPlaStr, setExiPlaStr ] = React.useState< string | null >( null );           // What: Exiting Placement String And Setter. Why: The old nav bar's ghost copy needs to know which placement it's animating away from. How: This is set to the previous placement when tabPlaStr changes, then cleared after the exit keyframe finishes.
 	const [ navEntBoo, setNavEntBoo ] = React.useState( false );                           // What: Nav Entering Boolean And Setter. Why: The real nav bar needs to know when it's mid-entrance so it can play its staggered enter-from-edge keyframe. How: This is set true when tabPlaStr changes and cleared after the enter keyframe finishes.
 	const prePlaRef                   = React.useRef( staAppObj.appearance.tabPlacement ); // What: Previous Placement Reference. Why: The layout-switch effect needs to remember the last placement across renders to detect an actual change. How: This starts at the current persisted placement and is updated by the effect below whenever tabPlaStr changes.
 

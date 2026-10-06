@@ -65,7 +65,7 @@ import type { RawStaTyp } from '../src/state/onboarding-seed-data.ts'; // What: 
 const CUR_DIR_STR = path.dirname( fileURLToPath( import.meta.url ) );                           // What: Current Directory String. Why: The output path is resolved from this script's own folder, not the folder it's run from. How: This converts import.meta.url to a file path and takes its directory.
 const OUT_PAT_STR = path.join( CUR_DIR_STR, '..', 'src', 'state', 'onboarding-stats-data.ts' ); // What: Output Path String. Why: The generated file always lands in the same place. How: This joins CUR_DIR_STR with the data file's path in src/state.
 const PIC_DEF_ARR = [ ONB_EXA_OBJ, ...ONB_ESP_ARR ];                                            // What: Picker Definition Array. Why: The picker and item records are both built from the same combined list of sample pickers. How: This puts ONB_EXA_OBJ ahead of every ONB_ESP_ARR entry.
-const TRA_TAS_OBJ = ONB_TAS_ARR.find( ( curTasObj ) => curTasObj.id === 'tk_ob_trash' );        // What: Trash Task Object. Why: Only the weekly "Take trash out for pickup" reminder gets history, since the one-time prescription reminder hasn't been completed on a fresh install. How: This finds its definition by id.
+const TRA_TAS_OBJ = ONB_TAS_ARR.find( ( curTasObj ) => curTasObj.id === 'tk_ob_trash' )!;       // What: Trash Task Object. Why: Only the weekly "Take trash out for pickup" reminder gets history, since the one-time prescription reminder hasn't been completed on a fresh install. How: This finds its definition by id. // What: Non-Null Note. Why: The onboarding samples always include the weekly trash reminder. How: The ! tells TypeScript the find returns it.
 
 // #endregion Constants
 

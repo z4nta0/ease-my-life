@@ -71,7 +71,7 @@ import './styles/styles.css'; // What: Styles Stylesheet Import. Why: This is th
 function booAppFun () : void {
 
 
-	createRoot( document.getElementById( 'appMouDiv' ) ).render( <AppRooCom /> ); // What: Root Render Call. Why: This is the app's actual first mount, deferred until storage has resolved or the race below has given up waiting on it. How: This creates a React root on the #appMouDiv DOM node and renders AppRooCom into it.
+	createRoot( document.getElementById( 'appMouDiv' )! ).render( <AppRooCom /> ); // What: Root Render Call. Why: This is the app's actual first mount, deferred until storage has resolved or the race below has given up waiting on it. How: This creates a React root on the #appMouDiv DOM node and renders AppRooCom into it. // What: Non-Null Note. Why: index.html always ships the appMouDiv mount point. How: The ! tells TypeScript the element is found.
 
 
 
