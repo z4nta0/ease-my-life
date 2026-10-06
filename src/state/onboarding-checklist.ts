@@ -6,6 +6,10 @@
 import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: This module needs every seeded sample picker's own id to list its own checklist entries below and to tell a real, user-created picker apart from a sample one. How: This is read directly by reaPicFun and tutProFun below, and spread into CHE_IDE_ARR.
 import { ONB_STI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Ids Array. Why: This module needs every seeded sample task's own id to list its own checklist entries below. How: This is spread into CHE_IDE_ARR below and read by tutProFun.
 
+
+import type { CheStaTyp } from '../core/data-model.ts'; // What: Checklist Status Type. Why: Every checklist entry records how its item was resolved. How: This types entLooFun's returned entry.
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: Every function here reads the whole app state. How: This types each appStaObj parameter.
+
 // #endregion Imports
 
 
@@ -150,7 +154,7 @@ const CHE_IDE_ARR = [ // What: Checklist Identifier Array. Why: This is the full
  *
 */
 
-const entLooFun = ( appStaObj, iteIdeStr ) => ( appStaObj.onboarding && appStaObj.onboarding.checklist || {} )[ iteIdeStr ] || null; // What: Entry Lookup Function. Why: Every other function in this module needs to know whether one specific checklist item has already been resolved (any status), keyed by its own id. How: This reads appStaObj.onboarding.checklist (falling back to an empty object when either is missing) and looks up iteIdeStr, defaulting to null when there's no entry yet.
+const entLooFun = ( appStaObj : StaAppTyp, iteIdeStr : string ) : { status : CheStaTyp } | null => ( appStaObj.onboarding && appStaObj.onboarding.checklist || {} )[ iteIdeStr ] || null; // What: Entry Lookup Function. Why: Every other function in this module needs to know whether one specific checklist item has already been resolved (any status), keyed by its own id. How: This reads appStaObj.onboarding.checklist (falling back to an empty object when either is missing) and looks up iteIdeStr, defaulting to null when there's no entry yet.
 
 // #endregion entLooFun
 
@@ -181,7 +185,7 @@ const entLooFun = ( appStaObj, iteIdeStr ) => ( appStaObj.onboarding && appStaOb
  *
 */
 
-function cheStaFun ( appStaObj ) {
+function cheStaFun ( appStaObj : StaAppTyp ) : { comBoo : boolean, donNum : number, rmnNum : number, totNum : number } {
 
 
 	const totIteNum = CHE_IDE_ARR.length;                                                                // What: Total Item Number. Why: Every summary needs to know how many checklist items exist at all, as the denominator for "done". How: This is simply CHE_IDE_ARR's own length.
@@ -232,7 +236,7 @@ function cheStaFun ( appStaObj ) {
  *
 */
 
-function othRemFun ( appStaObj ) { return CHE_IDE_ARR.filter( ( iteIdeStr ) => iteIdeStr !== ONB_GII_STR && !entLooFun( appStaObj, iteIdeStr ) ).length; } // What: Others Remaining Return. Why: The caller needs a plain count of every non-Generate item that still has no resolution. How: This filters CHE_IDE_ARR down to ids that are neither the Generate card nor already resolved, then takes the resulting count.
+function othRemFun ( appStaObj : StaAppTyp ) : number { return CHE_IDE_ARR.filter( ( iteIdeStr ) => iteIdeStr !== ONB_GII_STR && !entLooFun( appStaObj, iteIdeStr ) ).length; } // What: Others Remaining Return. Why: The caller needs a plain count of every non-Generate item that still has no resolution. How: This filters CHE_IDE_ARR down to ids that are neither the Generate card nor already resolved, then takes the resulting count.
 
 // #endregion othRemFun
 
@@ -277,7 +281,7 @@ function othRemFun ( appStaObj ) { return CHE_IDE_ARR.filter( ( iteIdeStr ) => i
  *
 */
 
-function reaPicFun ( appStaObj ) { return appStaObj.pickers.filter( ( curPicObj ) => !ONB_SPI_ARR.includes( curPicObj.id ) ).length; } // What: Real Picker Count Return. Why: The caller needs a plain count of every picker that isn't one of the seeded samples. How: This filters appStaObj.pickers down to ids absent from ONB_SPI_ARR, then takes the resulting count.
+function reaPicFun ( appStaObj : StaAppTyp ) : number { return appStaObj.pickers.filter( ( curPicObj ) => !ONB_SPI_ARR.includes( curPicObj.id ) ).length; } // What: Real Picker Count Return. Why: The caller needs a plain count of every picker that isn't one of the seeded samples. How: This filters appStaObj.pickers down to ids absent from ONB_SPI_ARR, then takes the resulting count.
 
 // #endregion reaPicFun
 
@@ -307,7 +311,7 @@ function reaPicFun ( appStaObj ) { return appStaObj.pickers.filter( ( curPicObj 
  *
 */
 
-function reaGenFun ( appStaObj ) { return othRemFun( appStaObj ) === 0 && reaPicFun( appStaObj ) >= 1; } // What: Ready-To-Generate Return. Why: The caller needs a single boolean saying whether the Generate card can actually be actioned yet. How: This combines othRemFun's own zero-check with reaPicFun's own >=1 check.
+function reaGenFun ( appStaObj : StaAppTyp ) : boolean { return othRemFun( appStaObj ) === 0 && reaPicFun( appStaObj ) >= 1; } // What: Ready-To-Generate Return. Why: The caller needs a single boolean saying whether the Generate card can actually be actioned yet. How: This combines othRemFun's own zero-check with reaPicFun's own >=1 check.
 
 // #endregion reaGenFun
 
@@ -352,7 +356,7 @@ function reaGenFun ( appStaObj ) { return othRemFun( appStaObj ) === 0 && reaPic
  *
 */
 
-function tutProFun ( appStaObj ) {
+function tutProFun ( appStaObj : StaAppTyp ) : boolean {
 
 
 	const onbStaObj = appStaObj.onboarding; // What: Onboarding State Object. Why: Every check below reads off this same sub-object, so it's worth resolving once up front. How: This reads appStaObj's own onboarding field directly.
