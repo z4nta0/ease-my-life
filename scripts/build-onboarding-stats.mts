@@ -14,6 +14,12 @@ import { ONB_TAS_ARR   } from '../src/state/onboarding-seed-data.ts'; // What: O
 import { SED_NAM_OBJ   } from '../src/state/seed.ts';                 // What: Seed Namespace Object. Why: The sample history should come from the same pick simulator the app's own seeding uses. How: Its picLogFun runs once in simDatFun over a 365-day span.
 import { writeFileSync } from 'node:fs';                              // What: Write File Sync. Why: The generated file has to land on disk. How: This writes buiOutFun's text to OUT_PAT_STR in the module init.
 
+
+import type { IteRcdTyp } from '../src/core/data-model.ts';            // What: Item Record Type. Why: The simulator runs on rebuilt sample items. How: This types buiIteFun's items, asserted whole for the simulator since it reads only the fields they carry.
+import type { PclRowTyp } from '../src/core/data-model.ts';            // What: Pick-Log Row Type. Why: The simulator returns real pick-log rows. How: This types conLogFun's input.
+import type { PicRcdTyp } from '../src/core/data-model.ts';            // What: Picker Record Type. Why: The simulator runs on rebuilt sample pickers. How: This types buiPicFun's pickers, asserted whole for the simulator since it reads only the fields they carry.
+import type { RawStaTyp } from '../src/state/onboarding-seed-data.ts'; // What: Raw Stats Type. Why: The script writes the three precomputed logs hydStaFun reads. How: This types the logs it builds and writes.
+
 // #endregion Imports
 
 
@@ -92,7 +98,7 @@ const TRA_TAS_OBJ = ONB_TAS_ARR.find( ( curTasObj ) => curTasObj.id === 'tk_ob_t
  *
 */
 
-const buiPicFun = () => PIC_DEF_ARR.map( ( curPicObj ) => ( { // What: Build Picker Function. Why: The pick simulator needs real picker records, not their bare seed definitions. How: This maps each PIC_DEF_ARR entry to the record shape addPicFun builds.
+const buiPicFun = () : Partial< PicRcdTyp >[] => PIC_DEF_ARR.map( ( curPicObj ) => ( { // What: Build Picker Function. Why: The pick simulator needs real picker records, not their bare seed definitions. How: This maps each PIC_DEF_ARR entry to the record shape addPicFun builds.
 
 
 	daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ], // What: Days Of Week. Why: The sample pickers run every day. How: This lists all seven weekdays.
@@ -135,7 +141,7 @@ const buiPicFun = () => PIC_DEF_ARR.map( ( curPicObj ) => ( { // What: Build Pic
  *
 */
 
-const buiIteFun = () => PIC_DEF_ARR.flatMap( ( curPicObj ) => curPicObj.items.map( ( curIteObj ) => { // What: Build Item Function. Why: The pick simulator needs real item records for every picker. How: This flat-maps every definition's items into the record shape addPicFun builds.
+const buiIteFun = () : Partial< IteRcdTyp >[] => PIC_DEF_ARR.flatMap( ( curPicObj ) => curPicObj.items.map( ( curIteObj ) => { // What: Build Item Function. Why: The pick simulator needs real item records for every picker. How: This flat-maps every definition's items into the record shape addPicFun builds.
 
 
 	const isaDowBoo = curPicObj.mode === 'ease-down';            // What: Is-A Down Boolean. Why: An ease-down item's weight and value defaults differ from every other mode's. How: This checks the picker's mode.
@@ -175,7 +181,7 @@ const buiIteFun = () => PIC_DEF_ARR.flatMap( ( curPicObj ) => curPicObj.items.ma
 
 // #region History Building
 
-const isoIndFun = ( isoDayStr ) => { // What: Iso Index Function. Why: Day offsets need a comparable, timezone-safe day count rather than an ISO string. How: This parses the date's parts and converts them to whole UTC days since the epoch.
+const isoIndFun = ( isoDayStr : string ) => { // What: Iso Index Function. Why: Day offsets need a comparable, timezone-safe day count rather than an ISO string. How: This parses the date's parts and converts them to whole UTC days since the epoch.
 
 
 	const [ yeaValNum, monValNum, dayValNum ] = isoDayStr.split( '-' ).map( Number ); // What: Year Month Day Numbers. Why: Date.UTC needs each part as a number. How: This splits the ISO string on its dashes and parses each piece.
@@ -215,7 +221,7 @@ const isoIndFun = ( isoDayStr ) => { // What: Iso Index Function. Why: Day offse
  *
 */
 
-const conLogFun = ( hisRowArr, todIndNum ) => hisRowArr.map( ( curRowObj ) => { // What: Convert Log Function. Why: The generated file stores day offsets rather than dates. How: This maps each history row to its portable shape.
+const conLogFun = ( hisRowArr : PclRowTyp[], todIndNum : number ) : RawStaTyp[ 'pickLog' ] => hisRowArr.map( ( curRowObj ) => { // What: Convert Log Function. Why: The generated file stores day offsets rather than dates. How: This maps each history row to its portable shape.
 
 
 	const comDatObj = curRowObj.completedAt ? new Date( curRowObj.completedAt ) : null; // What: Completed Date Object. Why: Only a completed row has a time of day to record. How: This parses its completedAt, or stays null for a row never completed.
@@ -273,7 +279,7 @@ const conLogFun = ( hisRowArr, todIndNum ) => hisRowArr.map( ( curRowObj ) => { 
  *
 */
 
-const buiRemFun = ( todDatObj ) => { // What: Build Reminder Function. Why: Stats should show a realistic year of the weekly trash reminder. How: This finds every Monday in range and rolls each as completed or skipped.
+const buiRemFun = ( todDatObj : Date ) : { remLogArr : RawStaTyp[ 'reminderLog' ], remSkiArr : RawStaTyp[ 'reminderSkipLog' ] } => { // What: Build Reminder Function. Why: Stats should show a realistic year of the weekly trash reminder. How: This finds every Monday in range and rolls each as completed or skipped.
 
 
 	const monBacArr = []; // What: Monday Back Array. Why: Each reminder row is one Monday's day offset. How: The loop below fills this with every Monday in the last 370 days.
@@ -347,10 +353,10 @@ const buiRemFun = ( todDatObj ) => { // What: Build Reminder Function. Why: Stat
  *
 */
 
-const simDatFun = () => { // What: Simulate Data Function. Why: A normal run writes freshly simulated history. How: This builds the records, runs the simulator, and assembles the three logs.
+const simDatFun = () : RawStaTyp => { // What: Simulate Data Function. Why: A normal run writes freshly simulated history. How: This builds the records, runs the simulator, and assembles the three logs.
 
 
-	const { hisRowArr } = SED_NAM_OBJ.picLogFun( buiIteFun(), buiPicFun(), () => false, 365 ); // What: History Row Array. Why: This is the simulated year of pick-log rows, still dated. How: This runs the simulator over 365 days, with a vacation check that always says no.
+	const { hisRowArr } = SED_NAM_OBJ.picLogFun( buiIteFun() as IteRcdTyp[], buiPicFun() as PicRcdTyp[], () => false, 365 ); // What: History Row Array. Why: This is the simulated year of pick-log rows, still dated. How: This runs the simulator over 365 days, with a vacation check that always says no, passing the rebuilt records as whole ones since it reads only the fields they carry.
 
 	const todDatObj = new Date(); // What: Today Date Object. Why: Every day offset is measured from today. How: This reads now, floored to midnight on the next line.
 
@@ -383,11 +389,11 @@ const simDatFun = () => { // What: Simulate Data Function. Why: A normal run wri
 
 // #region Output Formatting
 
-const forStrFun = ( rawValStr ) => `'${ String( rawValStr ).replace( /'/g, '\\\'' ) }'`; // What: Format String Function. Why: Every string in the generated file uses single quotes, per this repo's quote rule. How: This wraps the value in single quotes, escaping any inside it.
+const forStrFun = ( rawValStr : unknown ) => `'${ String( rawValStr ).replace( /'/g, '\\\'' ) }'`; // What: Format String Function. Why: Every string in the generated file uses single quotes, per this repo's quote rule. How: This wraps the value in single quotes, escaping any inside it.
 
 
 
-const forValFun = ( rawValAny ) => { // What: Format Value Function. Why: forArrFun needs one place that renders any scalar a row holds. How: This dispatches on the value's type.
+const forValFun = ( rawValAny : unknown ) => { // What: Format Value Function. Why: forArrFun needs one place that renders any scalar a row holds. How: This dispatches on the value's type.
 
 
 	if ( rawValAny === null ) return 'null'; // What: Null Guard. Why: A null field, such as an incomplete row's hour, renders as the bare literal. How: This returns the text null.
@@ -405,7 +411,7 @@ const forValFun = ( rawValAny ) => { // What: Format Value Function. Why: forArr
 
 
 
-const forKeyFun = ( keyOneStr, keyTwoStr ) => keyOneStr.toLowerCase().localeCompare( keyTwoStr.toLowerCase() ); // What: Format Key Function. Why: Every row's keys are written alphabetically, compared case-insensitively. How: This is the comparator both key groups sort with.
+const forKeyFun = ( keyOneStr : string, keyTwoStr : string ) => keyOneStr.toLowerCase().localeCompare( keyTwoStr.toLowerCase() ); // What: Format Key Function. Why: Every row's keys are written alphabetically, compared case-insensitively. How: This is the comparator both key groups sort with.
 
 
 
@@ -439,7 +445,7 @@ const forKeyFun = ( keyOneStr, keyTwoStr ) => keyOneStr.toLowerCase().localeComp
  *
 */
 
-const forArrFun = ( rowArrAny, traTexStr, comTexStr ) => { // What: Format Array Function. Why: Each log is written as one aligned table. How: This orders, pads, and joins the rows.
+const forArrFun = ( rowArrAny : Record< string, unknown >[], traTexStr : string, comTexStr : string ) : string => { // What: Format Array Function. Why: Each log is written as one aligned table. How: This orders, pads, and joins the rows.
 
 
 	if ( !rowArrAny.length ) return `[]${ traTexStr } ${ comTexStr }`; // What: Empty Array Guard. Why: An empty array needs no padding. How: This returns the tight brackets, the trailing text, and the comment.
@@ -514,7 +520,7 @@ const forArrFun = ( rowArrAny, traTexStr, comTexStr ) => { // What: Format Array
  *
 */
 
-const buiOutFun = ( outDatObj ) => `
+const buiOutFun = ( outDatObj : RawStaTyp ) : string => `
 
 
 // #region Imports
