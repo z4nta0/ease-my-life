@@ -1460,6 +1460,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 							className={ cssModObj.filRaiDiv }
 
 							data-element-name-hook='groFilDiv'
+							data-rail-wheel-scroll
 
 							aria-label='Filter pickers by group'
 							role='tablist'
@@ -1542,6 +1543,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 							className={ cssModObj.filRaiDiv }
 
 							data-element-name-hook='typFilDiv'
+							data-rail-wheel-scroll
 
 							aria-label='Filter pickers by type'
 							role='tablist'
@@ -1682,6 +1684,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 							className={ cssModObj.filRaiDiv }
 
 							data-element-name-hook='conFilDiv'
+							data-rail-wheel-scroll
 
 							aria-label='Filter pickers by conditional'
 							role='tablist'
@@ -1770,6 +1773,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 						className={ cssModObj.scoTabDiv }
 
 						data-element-name-hook='scoTabDiv'
+						data-rail-wheel-scroll
 					>{ /* What: Show Boxes Div Element. Why: This is the actual box rail, re-keyed on filter change so its own entrance animation replays. How: This renders the All box (when present) then maps shoEntArr's own remaining entries to one box each. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
 
 

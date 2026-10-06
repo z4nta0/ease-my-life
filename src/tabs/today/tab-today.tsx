@@ -3779,6 +3779,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 						data-element-name-hook='groRaiAsi'
 
+						data-rail-wheel-scroll
 						aria-label='Groups'
 					>{ /* What: Group Rail Aside Element. Why: This is the sticky sidebar (or, on mobile, the horizontal pill bar) listing every block. How: This renders one rail button per bloOrdArr entry, then the App Features entry (pinned last), then the Edit Mode toggle. Its data-element-name-hook is read by the tour runner's safe-area math and outside-click checks, help mode's chrome clipping, and help mode's Today catalog. */ }
 

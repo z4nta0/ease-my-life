@@ -23,6 +23,7 @@ import { TabStaCom    } from './tabs/stats/tab-stats.tsx';       // What: Tab St
 import { TabTodCom    } from './tabs/today/tab-today.tsx';       // What: Tab Today Component. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
 import { useAppStaFun } from './state/store.ts';                 // What: Use App State Function. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
 import { useEmlTouFun } from './state/tour-bus.ts';              // What: Use Ease My Life Tour Function. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's touPhaStr/wanRaiBoo/touSteNum fields.
+import { useRaiWheFun } from './ui/rail-wheel.ts';               // What: Use Rail Wheel Function. Why: The pill rails scroll sideways, which a mouse wheel can't do on its own. How: This is called once in AppRooCom.
 import { WelTouCom    } from './onboarding/welcome-tour.tsx';    // What: Welcome Tour Component. Why: The first-run welcome modal and its driven tour need to run above every tab. How: This is rendered once, passed the shared state/actions plus the active tab and the tab-switching function.
 
 // #endregion Imports
@@ -423,6 +424,10 @@ function AppRooCom () : React.JSX.Element {
 	const [ staAppObj, actStoObj ] = useAppStaFun( onbDemBoo ? { initial : SED_NAM_OBJ.buiCleFun(), persist : false } : undefined ); // What: State App Object And Action Store Object. Why: This is the entire app's persisted state and the actions that mutate it. How: This calls useAppStaFun, seeded with a clean, non-persisted state when the onboarding demo flag is set, otherwise loading the real persisted state normally.
 
 	// #endregion App State Setup
+
+
+
+	useRaiWheFun(); // What: Use Rail Wheel Function Call. Why: Every tab's pill rails should scroll with a mouse wheel. How: This attaches the shared wheel listener for as long as the app is mounted.
 
 
 

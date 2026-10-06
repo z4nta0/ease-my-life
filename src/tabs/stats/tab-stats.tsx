@@ -2703,6 +2703,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 								className={ cssModObj.filRaiDiv }
 
 								data-element-name-hook='groFilDiv'
+								data-rail-wheel-scroll
 
 								aria-label='Filter pickers by group'
 								role='tablist'
@@ -2790,6 +2791,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 								className={ cssModObj.filRaiDiv }
 
 								data-element-name-hook='typFilDiv'
+								data-rail-wheel-scroll
 
 								aria-label='Filter pickers by type'
 								role='tablist'
@@ -2933,6 +2935,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 							className={ cssModObj.scoTabDiv }
 
 							data-element-name-hook='scoTabDiv'
+							data-rail-wheel-scroll
 						>{ /* What: Show Tab List Div Element. Why: This is the actual scrollable row of scope tabs (All, Conditionals, Reminders, and every visible picker). How: This remounts (replaying its own enter animation) whenever the Group/Type filter pair changes. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
 
 
@@ -3038,6 +3041,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 							className={ cssModObj.ranPilDiv }
 
 							data-element-name-hook='ranPilDiv'
+							data-rail-wheel-scroll
 						>{ /* What: Range Pill List Div Element. Why: This is the actual scrollable row of Range filter pills. How: This renders one pill per STA_RAN_ARR entry. Its data-element-name-hook is read by the Stats page tour and help mode's Stats catalog. */ }
 
 
@@ -3276,6 +3280,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 										ref={ conRowRef }
 
 										className={ cssModObj.breMetDiv }
+
+										data-rail-wheel-scroll
 									>{ /* What: Metric Pill Row Div Element. Why: The user needs a way to pivot the breakdown list across five different metrics. How: This renders one pill per entry in the inline metric-label list below. */ }
 
 
@@ -4078,6 +4084,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 									ref={ remRowRef }
 
 									className={ cssModObj.breMetDiv }
+
+									data-rail-wheel-scroll
 								>{ /* What: Metric Pill Row Div Element. Why: The user needs a way to pivot the breakdown list across three different metrics. How: This renders one pill per entry in the inline metric-label list below. */ }
 
 
@@ -4474,6 +4482,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 								ref={ metRowRef }
 
 								className={ cssModObj.breMetDiv }
+
+								data-rail-wheel-scroll
 
 								aria-label='Breakdown metric'
 								role='tablist'

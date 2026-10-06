@@ -730,6 +730,8 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 						className={ cssModObj.groPilDiv }
 
+						data-rail-wheel-scroll
+
 						aria-label='Picker group'
 						role='radiogroup'
 					>{ /* What: Group Pills Div Element. Why: This is the actual radiogroup of every existing group plus the inline "+ New Group" control. How: This maps groChoArr to one pill each, then either the inline input or the "+ New Group" pill. */ }
@@ -1054,6 +1056,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 								className={ cssModObj.conRaiDiv }
 
 								data-element-name-hook='conRaiDiv'
+								data-rail-wheel-scroll
 							>{ /* What: Conditional Rail Div Element. Why: This is the actual scrollable pill rail, alphabetical except the attached conditional pins to the front. How: This maps every conditional (sorted per pk.conditionalId first, then by name) to one pill each. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
 
 

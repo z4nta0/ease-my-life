@@ -1472,6 +1472,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										className={ cssModObj.conRaiDiv }
 
 										data-element-name-hook='conRaiDiv'
+										data-rail-wheel-scroll
 										data-scroll-end-active // What: Scroll End Active Attribute. Why: The rail starts with no edge fades until edge-fade.ts first measures it. How: This sets the presence-only attribute that togFadFun later toggles.
 										data-scroll-start-active // What: Scroll Start Active Attribute. Why: The rail starts with no edge fades until edge-fade.ts first measures it. How: This sets the presence-only attribute that togFadFun later toggles.
 									>{ /* What: Conditional Rail Div Element. Why: Every existing conditional plus the "Add New" pill need a horizontally-scrolling rail. How: This wraps one pill per sorted entry in conObjArr, then the fixed "Add New Conditional" pill. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }

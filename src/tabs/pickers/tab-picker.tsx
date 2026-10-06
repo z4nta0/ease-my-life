@@ -588,6 +588,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 								className={ cssModObj.filRaiDiv }
 
 								data-element-name-hook='groFilDiv'
+								data-rail-wheel-scroll
 
 								aria-label='Filter pickers by group'
 								role='tablist'
@@ -686,6 +687,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 								className={ cssModObj.filRaiDiv }
 
 								data-element-name-hook='typFilDiv'
+								data-rail-wheel-scroll
 
 								aria-label='Filter pickers by type'
 								role='tablist'
@@ -784,6 +786,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 							className={ cssModObj.picTabDiv }
 
 							data-element-name-hook='picTabDiv'
+							data-rail-wheel-scroll
 						>{ /* What: Picker Tabs Div Element. Why: The Add New Picker tab plus one tab per currently-visible picker need a horizontally-scrolling rail; re-keying by the two filters together replays each tab's own stagger-in animation whenever the filtered set changes. How: This wraps the Add New Picker tab and one tab per entry in sorPicArr. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
 
 

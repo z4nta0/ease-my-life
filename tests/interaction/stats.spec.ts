@@ -17,11 +17,12 @@ import { watErrFun } from '../support/watch.ts'; // What: Watch Errors Function.
  * stats.spec.ts = Stats Spec
  *
  * @summary
- * Drives the Stats tab on real data: every scope tab and every range pill
- * is selected in turn, each showing its headline cards without errors, and
- * a heatmap day opens its detail panel. The figures themselves are checked
- * against the logs by the simulation; this suite checks the controls.
- * Every flow fails on any page or console error.
+ * Drives the Stats tab on real data: every scope tab and every range pill is
+ * selected in turn, each showing its headline cards without errors, and a
+ * heatmap day opens its detail panel. A mouse wheel scrolls a pill rail
+ * sideways, then scrolls the page once the rail reaches its end. The figures
+ * themselves are checked against the logs by the simulation; this suite checks
+ * the controls. Every flow fails on any page or console error.
  *
  * Sections:
  *  - Module Init
@@ -123,6 +124,53 @@ test( 'a heatmap day opens its detail', async ( { page : curPagObj } ) => { // W
 
 
 	await expect( curPagObj.locator( '[class*="detDatSpa"]' ), 'detail date' ).toBeVisible(); // What: Detail Assertion. Why: The panel shows the day's date. How: This checks it's visible.
+
+
+} );
+
+
+
+test( 'a rail scrolls sideways with the mouse wheel', async ( { page : curPagObj } ) => { // What: Rail Wheel Test. Why: A mouse wheel must move a pill rail sideways, then hand back to the page at the rail's end. How: This turns the wheel over the Type rail at its start and at its end.
+
+
+	const raiDivLoc = curPagObj.locator( '[data-element-name-hook~="typFilDiv"]' );                                                   // What: Rail Div Locator. Why: The Type rail overflows on the fixed day's data. How: This finds it.
+	const maiTopFun = () => curPagObj.evaluate( () => document.querySelector( '[data-element-name-hook~="appConMai"]' )!.scrollTop ); // What: Main Top Function. Why: The page scrolls inside its main area. How: This reads that area's scroll position. // What: Non-Null Note. Why: The main area is always mounted. How: The ! tells TypeScript it exists.
+
+
+
+	await raiDivLoc.scrollIntoViewIfNeeded(); // What: Rail Reveal Call. Why: The wheel acts on whatever is under the pointer. How: This brings the rail on screen.
+
+
+
+	const raiBoxObj = ( await raiDivLoc.boundingBox() )!; // What: Rail Box Object. Why: The pointer goes over the rail's center. How: This measures it. // What: Non-Null Note. Why: The rail was just scrolled on screen. How: The ! tells TypeScript it has a box.
+
+
+	await curPagObj.mouse.move( raiBoxObj.x + raiBoxObj.width / 2, raiBoxObj.y + raiBoxObj.height / 2 ); // What: Pointer Move Call. Why: The wheel turn must land on the rail. How: This moves the pointer to its center.
+
+
+
+	const preTopNum = await maiTopFun(); // What: Previous Top Number. Why: The page mustn't move while the rail can. How: This reads the page's position first.
+
+
+	await curPagObj.mouse.wheel( 0, 120 ); // What: Wheel Turn Call. Why: A forward turn should move the rail. How: This turns the wheel one notch down.
+
+
+
+	await expect.poll( () => raiDivLoc.evaluate( ( raiDomEle ) => raiDomEle.scrollLeft ), { message : 'rail scrolled' } ).toBeGreaterThan( 0 ); // What: Rail Scroll Assertion. Why: The rail moves sideways. How: This waits for its scroll position to leave the start.
+
+
+
+	expect( await maiTopFun(), 'page held' ).toBe( preTopNum ); // What: Page Held Assertion. Why: The page stays put while the rail scrolls. How: This compares its position.
+
+
+
+	await raiDivLoc.evaluate( ( raiDomEle ) => { raiDomEle.scrollLeft = raiDomEle.scrollWidth; } ); // What: Rail End Call. Why: A rail at its end must hand the wheel back. How: This scrolls it to its last pill.
+
+	await curPagObj.mouse.wheel( 0, 120 ); // What: End Wheel Turn Call. Why: A turn past the rail's end should scroll the page. How: This turns the wheel one more notch.
+
+
+
+	await expect.poll( maiTopFun, { message : 'page scrolled' } ).toBeGreaterThan( preTopNum ); // What: Page Scroll Assertion. Why: The page takes over once the rail can't move. How: This waits for the page to scroll.
 
 
 } );

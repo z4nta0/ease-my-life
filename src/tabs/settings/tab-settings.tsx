@@ -1327,6 +1327,8 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 						ref={ raiScrRef }
 
 						className={ cssModObj.raiScrDiv }
+
+						data-rail-wheel-scroll
 					>{ /* What: Settings Rail Scroll Div Element. Why: The rail-fade effect needs a dedicated scrolling element distinct from the non-scrolling outer rail its attributes are toggled on. How: This wraps the actual <ul> of section links. */ }{ /* Own scrolling element, separate from setRaiAsi itself; see the fade-edge effect's own comment for why. */ }
 
 
