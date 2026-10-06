@@ -900,7 +900,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		if ( ticPulBoo ) { // What: Plain Pulse Branch. Why: An ordinary done-count rise that doesn't complete the whole day still deserves a small per-tick pulse. How: This runs while ticPulBoo holds.
 
 
-			const rinCurEle = rinEleRef.current; // What: Ring Current Element. Why: Every DOM manipulation below targets this same node. How: This reads rinEleRef.current once and reuses it throughout this branch.
+			const rinCurEle = rinEleRef.current!; // What: Ring Current Element. Why: Every DOM manipulation below targets this same node. How: This reads rinEleRef.current once and reuses it throughout this branch. // What: Non-Null Note. Why: This branch only runs once rinMouBoo found the ring mounted. How: The ! tells TypeScript the ring is set here.
 
 
 			rinCurEle.classList.remove( cssModObj.proRinDivPulsing ); // What: Stale Class Clear. Why: A CSS animation class must be removed before being re-added, or the browser won't replay it. How: This removes the class unconditionally before the reflow forcing line below.
@@ -1494,7 +1494,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 		const secEntArr = Object.entries( secRefObj.current )                                         // What: Section Entry Array. Why: Sorting by actual document position keeps the first/last entries (used for the top default and the bottomed-out case) matching the real on-screen order, even after groups/Reminders have been reordered in Edit Mode. How: This collects every mounted section ref and sorts by offsetTop.
-			.filter( ( [ , secCurEle ] ) => secCurEle )                                               // What: Mounted Section Filter. Why: A section that has unmounted leaves a null ref behind. How: This keeps only entries whose element still exists.
+			.filter( ( secEntTup ) : secEntTup is [ string, HTMLElement ] => !!secEntTup[ 1 ] )       // What: Mounted Section Filter. Why: A section that has unmounted leaves a null ref behind. How: This keeps only entries whose element still exists.
 			.sort( ( entOneArr, entTwoArr ) => entOneArr[ 1 ].offsetTop - entTwoArr[ 1 ].offsetTop ); // What: Document Order Sort. Why: The spy walks sections top to bottom. How: This sorts entries by each element's own offsetTop.
 
 
@@ -1612,7 +1612,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		skiSpyRef.current = true;  // What: Skip Spy Set. Why: The scroll-spy effect must not fight this programmatic scroll while it is in flight. How: This flags skiSpyRef true for the duration of the scroll below.
 
 		const maiScrEle = tarSecEle.closest( '[data-element-name-hook~="appConMai"]' );                                        // What: Main Scroll Element. Why: The scroll target depends on whether a real scroll container exists. How: This walks up from tarSecEle to its nearest appConMai hook ancestor.
-		const tabCurEle = tarSecEle.closest( '[data-element-name-hook~="todTabDiv"]' );                                        // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from tarSecEle to its nearest todTabDiv hook ancestor.
+		const tabCurEle = tarSecEle.closest( '[data-element-name-hook~="todTabDiv"]' )!;                                       // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from tarSecEle to its nearest todTabDiv hook ancestor. // What: Non-Null Note. Why: Every group section renders inside Today's own tab root. How: The ! tells TypeScript the root is found.
 		const stiHeiNum = parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sti-top-hei' ) ) || rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail, not at the section's own raw offset. How: This reads the --sti-top-hei custom property, falling back to the p09 rhythm step. // Vertical Rhythm Base Plus 9 ~= 183.074px
 		const extPadNum = rhyPxlFun( 'bas' );                                                                                  // What: Extra Padding Number. Why: A small extra gap beyond the sticky offset reads as more natural than a section's header touching the sticky edge exactly. How: This is a base rhythm step added to the scroll target below. // Vertical Rhythm Base ~= 14.572px
 		const scrBehStr = redMotFun() ? 'auto' : 'smooth';                                                                     // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
@@ -2250,7 +2250,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			const conRecObj = picRecObj.conditionalId ? conIdeMap.get( picRecObj.conditionalId ) : null; // What: Conditional Record Object. Why: This is the resolved conditional this picker's own suppression check reads. How: This looks up picRecObj's own conditionalId in conIdeMap, or null when it has none.
 
 
-			if ( CON_NAM_OBJ.supGatFun( conRecObj ) ) { // What: Suppressed Branch. Why: See the doc comment just above. How: This surfaces (or skips, if already shown) a day-off card, then always continues past the pick attempt below.
+			if ( conRecObj && CON_NAM_OBJ.supGatFun( conRecObj ) ) { // What: Suppressed Branch. Why: See the doc comment just above. How: This surfaces (or skips, if already shown) a day-off card, then always continues past the pick attempt below.
 
 
 				if ( !carShoSet.has( conRecObj.id ) ) { // What: First Hit Guard. Why: Only the first picker suppressed by this exact conditional should surface its own card. How: This runs the push below only the first time conRecObj's own id is seen.
@@ -2520,8 +2520,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		 *
 		*/
 
-		const keeIdeSet = new Set( carEntArr.map( ( curCarObj ) => curCarObj._carry ? curCarObj.entry.eid : curCarObj.eid ) ); // What: Keep Identifier Set. Why: A carried entry's own eid must never be treated as departing. How: This reads each carEntArr member's own eid (unwrapping the _carry marker where needed).
-		const nexDaoSet = new Set( daoCarArr.map( ( curDaoObj ) => curDaoObj.conditionalId ) );                                // What: Next Day-Off Set. Why: A day-off card's own departure is judged by whether its conditional still produces one, not by eid. How: This collects every fresh day-off card's own conditionalId.
+		const keeIdeSet = new Set( carEntArr.map( ( curCarObj ) => curCarObj._carry ? curCarObj.entry!.eid : curCarObj.eid ) ); // What: Keep Identifier Set. Why: A carried entry's own eid must never be treated as departing. How: This reads each carEntArr member's own eid (unwrapping the _carry marker where needed). // What: Non-Null Note. Why: The generator only flags a descriptor _carry when it wraps an existing entry. How: The ! tells TypeScript entry is set here.
+		const nexDaoSet = new Set( daoCarArr.map( ( curDaoObj ) => curDaoObj.conditionalId ) );                                 // What: Next Day-Off Set. Why: A day-off card's own departure is judged by whether its conditional still produces one, not by eid. How: This collects every fresh day-off card's own conditionalId.
 
 
 		const depIdeArr = ( staAppObj.today.entries || [] ) // What: Departing Identifier Array. Why: This is the actual list of eids about to be removed, needing their own exit animation first. How: This filters every current entry down to the ones matching neither exclusion above.
@@ -4253,8 +4253,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											onConMerFun={ () => { // What: Confirm Merge Handler. Why: Confirming both performs the merge and dismisses its own prompt. How: This renames the group into the existing one, then clears merProObj.
 
 
-												actStoObj.renGroFun( merProObj.from, merProObj.to ); // What: Merge Rename Call. Why: Confirming the merge performs the rename into the existing group. How: This calls actStoObj.renGroFun with the prompt's own from/to names.
-												setMerProObj( null );                                // What: Merge Prompt Clear. Why: The prompt is resolved. How: This clears merProObj.
+												actStoObj.renGroFun( merProObj!.from, merProObj!.to ); // What: Merge Rename Call. Why: Confirming the merge performs the rename into the existing group. How: This calls actStoObj.renGroFun with the prompt's own from/to names. // What: Non-Null Note. Why: The merge prompt and its Confirm button only render while merProObj holds a pending merge. How: The ! tells TypeScript the merge is set here.
+												setMerProObj( null );                                  // What: Merge Prompt Clear. Why: The prompt is resolved. How: This clears merProObj.
 
 
 											} }
@@ -4399,7 +4399,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 												<LoaCarCom
 													key={ `newslot-${ curPicObj.id }` }
 
-													infRecObj={ genMapObj[ curPicObj.id ] }
+													infRecObj={ genMapObj![ curPicObj.id ] } // What: Non-Null Note. Why: genActBoo and genMapObj are set and cleared together for each generate run. How: The ! tells TypeScript the map is set while slots render.
 													picRecObj={ curPicObj }
 												/> // What: Loader Card Component. Why: A group with no entries yet, but an incoming slot, still needs its own placeholder loader during generation. How: This is passed curPicObj plus its own live genMapObj record.
 

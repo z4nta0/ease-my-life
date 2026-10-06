@@ -103,7 +103,8 @@ const forDatFun = ( isoDatStr? : string ) : string => { // What: Format Date Fun
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param isoDatStr - Iso Date String: The date to format, or omitted for now.
+ * @param isoDatStr - Iso Date String: The date to format, or omitted or null
+ *                    for now.
  *
  * @returns The formatted date, e.g. 'Sunday, Sep 27'.
  *
@@ -114,7 +115,7 @@ const forDatFun = ( isoDatStr? : string ) : string => { // What: Format Date Fun
  *
 */
 
-const forLonFun = ( isoDatStr? : string ) : string => { // What: Format Long Function. Why: A few spots (long-form date displays) need the full weekday name instead of the short 3-letter one. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString with a long weekday.
+const forLonFun = ( isoDatStr? : string | null ) : string => { // What: Format Long Function. Why: A few spots (long-form date displays) need the full weekday name instead of the short 3-letter one. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString with a long weekday.
 
 
 	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
@@ -141,8 +142,8 @@ const forLonFun = ( isoDatStr? : string ) : string => { // What: Format Long Fun
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param isoDatStr - Iso Date String: The moment to format, or omitted for
- *                    now.
+ * @param isoDatStr - Iso Date String: The moment to format, or omitted or
+ *                    null for now.
  *
  * @returns The formatted time, e.g. '3:42 PM'.
  *
@@ -153,7 +154,7 @@ const forLonFun = ( isoDatStr? : string ) : string => { // What: Format Long Fun
  *
 */
 
-const forTimFun = ( isoDatStr? : string ) : string => { // What: Format Time Function. Why: A few spots need a plain "3:42 PM" style time with no seconds. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleTimeString.
+const forTimFun = ( isoDatStr? : string | null ) : string => { // What: Format Time Function. Why: A few spots need a plain "3:42 PM" style time with no seconds. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleTimeString.
 
 
 	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
