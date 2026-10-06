@@ -3773,7 +3773,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 // #region Exports
 
-export { type ActStoTyp, useAppStaFun }; // What: Named Exports. Why: useAppStaFun is the entire app's own state layer, imported by app.tsx, and the tabs type the actions they receive with ActStoTyp. How: This exports the hook and the action type by name.
+export { type ActStoTyp, type EntDesTyp, useAppStaFun }; // What: Named Exports. Why: useAppStaFun is the entire app's own state layer, imported by app.tsx, and the tabs type the actions they receive with ActStoTyp. How: This exports the hook and the action type by name.
 
 // #endregion Exports
 

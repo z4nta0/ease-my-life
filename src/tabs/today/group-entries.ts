@@ -237,8 +237,8 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 
 	// #region Compute Group Display Order
 
-	const disOrdArr = [];                                                                // What: Display Order Array. Why: This collects the final group display order, built up by the three passes below. How: This is pushed to by each pass in turn, then filtered/mapped at the very end of this function.
-	const savOrdArr = Array.isArray( staAppObj.groupOrder ) ? staAppObj.groupOrder : []; // What: Saved Order Array. Why: The user's own Edit Mode drags are the first, highest-priority source of group order. How: This reads staAppObj.groupOrder when it is a real array, otherwise an empty one.
+	const disOrdArr : string[] = [];                                                                // What: Display Order Array. Why: This collects the final group display order, built up by the three passes below. How: This is pushed to by each pass in turn, then filtered/mapped at the very end of this function.
+	const savOrdArr : string[] = Array.isArray( staAppObj.groupOrder ) ? staAppObj.groupOrder : []; // What: Saved Order Array. Why: The user's own Edit Mode drags are the first, highest-priority source of group order. How: This reads staAppObj.groupOrder when it is a real array, otherwise an empty one.
 
 
 	for ( const curGroStr of savOrdArr ) if ( groBucMap.has( curGroStr ) && !disOrdArr.includes( curGroStr ) ) disOrdArr.push( curGroStr ); // What: Saved Order Pass. Why: A group the user has already positioned keeps that position. How: This appends each saved group name that actually has a bucket and isn't already collected.
@@ -270,7 +270,7 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 
 	// #region Sort Rows Within Each Group
 
-	const savPioObj = ( staAppObj.pickerOrder && typeof staAppObj.pickerOrder === 'object' ) ? staAppObj.pickerOrder : {}; // What: Saved Picker-Order Object. Why: Within each group, rows follow the user's own saved per-group picker order. How: This reads staAppObj.pickerOrder when it is a real object, otherwise an empty one.
+	const savPioObj : Record< string, string[] > = ( staAppObj.pickerOrder && typeof staAppObj.pickerOrder === 'object' ) ? staAppObj.pickerOrder : {}; // What: Saved Picker-Order Object. Why: Within each group, rows follow the user's own saved per-group picker order. How: This reads staAppObj.pickerOrder when it is a real object, otherwise an empty one.
 
 
 
@@ -278,13 +278,14 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 
 
 		const groBucObj = groBucMap.get( curGroStr ); // What: Group Bucket Object. Why: This is the specific bucket being sorted in this iteration. How: This reads curGroStr's own bucket out of groBucMap.
-		const posIndObj = {};                         // What: Position Index Object. Why: A row's own explicit saved position (if any) always wins, so it needs a fast lookup by picker id. How: This is populated just below from savPioObj's own entry for this group.
+
+		const posIndObj : Record< string, number > = {}; // What: Position Index Object. Why: A row's own explicit saved position (if any) always wins, so it needs a fast lookup by picker id. How: This is populated just below from savPioObj's own entry for this group.
 
 
 		( savPioObj[ curGroStr ] || [] ).forEach( ( picIdeStr, curIndNum ) => { posIndObj[ picIdeStr ] = curIndNum; } ); // What: Position Index Build. Why: Every saved picker id needs its own saved index recorded before the sort below can use it. How: This walks the saved per-group order, recording each picker id's own index.
 
 
-		const posOrdFun = ( curRowObj ) => { // What: Position Order Function. Why: Sorting needs one numeric position per row: an explicit saved order always wins, so day-off/charging/tutorial cards can still be dragged anywhere; only a row with no stored position falls back to a default. How: This looks up curRowObj's own picker id in posIndObj first, otherwise defaults day-off/charging/tutorial rows to the top and regular picks to the end.
+		const posOrdFun = ( curRowObj : TodRowTyp ) => { // What: Position Order Function. Why: Sorting needs one numeric position per row: an explicit saved order always wins, so day-off/charging/tutorial cards can still be dragged anywhere; only a row with no stored position falls back to a default. How: This looks up curRowObj's own picker id in posIndObj first, otherwise defaults day-off/charging/tutorial rows to the top and regular picks to the end.
 
 
 			if ( curRowObj.picRecObj.id in posIndObj ) return posIndObj[ curRowObj.picRecObj.id ]; // What: Explicit Position Branch. Why: A row the user has already positioned must sort exactly there. How: This returns its own saved index.

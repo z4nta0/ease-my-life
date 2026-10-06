@@ -251,7 +251,7 @@ const APP_FEA_ARR = [ // What: App Feature Array. Why: Every App Feature tutoria
  *
 */
 
-const PAG_LAB_OBJ = { // What: Page Label Object. Why: app-feature-card.tsx's own AppFeaCom reads this by a feature's own page id for its kicker text. How: This is looked up by APP_FEA_ARR entries' own pagStr field wherever this file or app-feature-card.tsx needs the real tab's display name.
+const PAG_LAB_OBJ : Record< string, string > = { // What: Page Label Object. Why: app-feature-card.tsx's own AppFeaCom reads this by a feature's own page id for its kicker text. How: This is looked up by APP_FEA_ARR entries' own pagStr field wherever this file or app-feature-card.tsx needs the real tab's display name.
 
 
 	data     : 'Data',     // What: Data Label. Why: This names the Data tab for any feature whose own page is 'data'. How: This is read back as PAG_LAB_OBJ.data.

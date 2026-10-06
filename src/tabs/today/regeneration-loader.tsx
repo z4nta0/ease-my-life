@@ -36,7 +36,7 @@ import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Recor
 
 // #region Types
 
-type GenSloTyp = { canArr? : { id : string, name : string }[], ideStr? : string | null, kinStr? : 'charging' | 'dayoff' | 'pick', staStr? : 'active' | 'pending' | 'settled', texStr? : string }; // What: Generate Slot Type. Why: Each picker slot in a regeneration shows its candidates cycling, then the item it settled on. How: This types one slot's candidates, chosen item id, kind, phase, and day-off text, as TabTodCom builds them.
+type GenSloTyp = { canArr? : { id : string, name : string }[], conStr? : string, ideStr? : string | null, kinStr? : 'charging' | 'dayoff' | 'pick', staStr? : 'active' | 'pending' | 'settled', texStr? : string }; // What: Generate Slot Type. Why: Each picker slot in a regeneration shows its candidates cycling, then the item it settled on. How: This types one slot's candidates, day-off conditional id, chosen item id, kind, phase, and day-off text, as TabTodCom builds them.
 
 // #endregion Types
 

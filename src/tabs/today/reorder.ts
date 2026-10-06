@@ -195,12 +195,12 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 
 	const staCliNum = dowEveObj.clientY; // What: Start Client Number. Why: Every later delta is measured relative to where the gesture actually began. How: This is read once from the triggering pointerdown event.
 
-	let delCliNum   = 0;         // What: Delta Client Number. Why: This is the gesture's own running vertical offset, driving every shift/target recomputation. How: This starts at 0 and is updated by onMovPoiFun and edgLooFun as the pointer moves and/or the container auto-scrolls.
-	let tarIndNum   = oriIndNum; // What: Target Index Number. Why: This is the currently-computed drop target, read by onRelPoiFun once the gesture ends. How: This starts at oriIndNum (no movement yet) and is reassigned by appShiFun on every recomputation.
-	let edgLooNum   = null;      // What: Edge Loop Number. Why: The auto-scroll rAF loop must be cancellable on cleanup. How: This holds the current requestAnimationFrame id, reassigned every frame by edgLooFun itself.
-	let edgDirNum   = 0;         // What: Edge Direction Number. Why: edgLooFun needs to know which way (if any) to auto-scroll on its next frame. How: This is -1 for up, +1 for down, or 0 for no auto-scroll, set by onMovPoiFun.
-	let scrComNum   = 0;         // What: Scroll Compensation Number. Why: Auto-scroll movement must be folded into delCliNum so the dragged element and its siblings stay visually anchored under the pointer. How: This accumulates every actual scroll movement edgLooFun applies.
-	let cleDonBoo   = false;     // What: Cleanup Done Boolean. Why: cleDraFun can be reached from more than one path and must not tear things down twice. How: This starts false and is flipped true on cleDraFun's own first run.
+	let delCliNum : number        = 0;         // What: Delta Client Number. Why: This is the gesture's own running vertical offset, driving every shift/target recomputation. How: This starts at 0 and is updated by onMovPoiFun and edgLooFun as the pointer moves and/or the container auto-scrolls.
+	let tarIndNum : number        = oriIndNum; // What: Target Index Number. Why: This is the currently-computed drop target, read by onRelPoiFun once the gesture ends. How: This starts at oriIndNum (no movement yet) and is reassigned by appShiFun on every recomputation.
+	let edgLooNum : number | null = null;      // What: Edge Loop Number. Why: The auto-scroll rAF loop must be cancellable on cleanup. How: This holds the current requestAnimationFrame id, reassigned every frame by edgLooFun itself.
+	let edgDirNum : number        = 0;         // What: Edge Direction Number. Why: edgLooFun needs to know which way (if any) to auto-scroll on its next frame. How: This is -1 for up, +1 for down, or 0 for no auto-scroll, set by onMovPoiFun.
+	let scrComNum : number        = 0;         // What: Scroll Compensation Number. Why: Auto-scroll movement must be folded into delCliNum so the dragged element and its siblings stay visually anchored under the pointer. How: This accumulates every actual scroll movement edgLooFun applies.
+	let cleDonBoo : boolean       = false;     // What: Cleanup Done Boolean. Why: cleDraFun can be reached from more than one path and must not tear things down twice. How: This starts false and is flipped true on cleDraFun's own first run.
 
 	// #endregion Gesture State
 
@@ -239,7 +239,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 	document.body.setAttribute( 'data-page-reorder-active', '' ); // What: Page Reorder Attribute Set. Why: The app's own CSS keys off an active drag gesture globally, not just on the dragged element. How: This sets the presence-only attribute on the document body for the gesture's duration.
 
 
-	const kilDraFun = ( draEveObj ) => draEveObj.preventDefault(); // What: Kill Drag Function. Why: Firefox starts a native drag-and-drop on the grip's SVG/icon that silently kills every further pointermove event, and preventDefault on pointerdown alone doesn't stop it. How: This cancels every dragstart event for the gesture's duration.
+	const kilDraFun = ( draEveObj : DragEvent ) => draEveObj.preventDefault(); // What: Kill Drag Function. Why: Firefox starts a native drag-and-drop on the grip's SVG/icon that silently kills every further pointermove event, and preventDefault on pointerdown alone doesn't stop it. How: This cancels every dragstart event for the gesture's duration.
 
 
 	document.addEventListener( 'dragstart', kilDraFun, true ); // What: Dragstart Suppression Subscribe. Why: kilDraFun must actually run for it to have any effect. How: This registers it on the capture phase, document-wide, for the gesture's duration.
@@ -488,7 +488,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 	 *
 	*/
 
-	function onMovPoiFun ( movEveObj ) {
+	function onMovPoiFun ( movEveObj : PointerEvent ) {
 
 
 		delCliNum = ( movEveObj.clientY - staCliNum ) + scrComNum; // What: Delta Client Y Recompute. Why: This is the gesture's own core measurement, combining the raw pointer movement with however much auto-scroll has already been compensated for. How: This subtracts the gesture's own start position from the pointer's current one, then adds scrComNum.

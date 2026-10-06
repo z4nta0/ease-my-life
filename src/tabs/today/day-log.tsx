@@ -451,7 +451,7 @@ type IecProTyp = { className? : string, icoKeyStr : string, strWidNum? : number 
 function IcoSetCom ( { className, icoKeyStr, strWidNum = 2 } : IecProTyp ) : React.JSX.Element {
 
 
-	const isePatObj = { // What: Icon-Shape-Element Path Object. Why: This is the lookup table mapping every icon key this file uses to its own inline SVG shape markup. How: This is indexed below by icoKeyStr to pick which shape the rendered svg actually draws.
+	const isePatObj : Record< string, React.JSX.Element > = { // What: Icon-Shape-Element Path Object. Why: This is the lookup table mapping every icon key this file uses to its own inline SVG shape markup. How: This is indexed below by icoKeyStr to pick which shape the rendered svg actually draws.
 
 
 		braEle : <><path d='M4 4v10a4 4 0 0 0 4 4h12' /><path d='m16 14 4 4-4 4' /></>,                                                  // What: Branch Element. Why: This marks the strip listing which pickers a conditional affects. How: This draws a branching arrow shape.
@@ -555,7 +555,7 @@ function StaChiCom ( { iteFlaObj } : ShcProTyp ) : React.JSX.Element {
 
 
 
-	const chiTupArr = []; // What: Chip Tuple Array. Why: The checks below each conditionally contribute one chip tuple to this same array. How: This starts empty and is filled in place by the pushes below.
+	const chiTupArr : [ string, string, string, number ][] = []; // What: Chip Tuple Array. Why: The checks below each conditionally contribute one chip tuple to this same array. How: This starts empty and is filled in place by the pushes below.
 
 
 	if ( iteFlaObj.autBoo ) chiTupArr.push( [ 'auto', 'shuEle', 'Auto-picked', 2 ] ); // What: Auto Chip Push. Why: An auto-picked item needs its own chip. How: This appends a [key, icon, title, width] tuple when autBoo is true.
@@ -1426,7 +1426,7 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React
 
 
 
-	const cheSupFun = ( picRcdObj ) => { // What: Check Suppressed Function. Why: PicBloCom needs to know, per picker, whether a triggered conditional suppresses it today. How: This finds picRcdObj's own conditional (if any) and checks whether it is currently active and triggered.
+	const cheSupFun = ( picRcdObj : PicRcdTyp ) => { // What: Check Suppressed Function. Why: PicBloCom needs to know, per picker, whether a triggered conditional suppresses it today. How: This finds picRcdObj's own conditional (if any) and checks whether it is currently active and triggered.
 
 
 		if ( !picRcdObj.conditionalId ) return false; // What: No Conditional Guard. Why: A picker with no attached conditional at all can never be suppressed. How: This returns false immediately when picRcdObj's own conditionalId is missing.
@@ -1840,7 +1840,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 
 
 
-	const staRanObj = { done : 0, due : 1, notdue : 3, skip : 2 }; // What: Status Rank Object. Why: The sort below needs a numeric priority per status to order the rows sensibly. How: This is indexed just below by each row's own rowStaStr.
+	const staRanObj : Record< string, number > = { done : 0, due : 1, notdue : 3, skip : 2 }; // What: Status Rank Object. Why: The sort below needs a numeric priority per status to order the rows sensibly. How: This is indexed just below by each row's own rowStaStr.
 
 	remRowArr.sort( ( rowOneObj, rowTwoObj ) => ( staRanObj[ rowOneObj.rowStaStr ] - staRanObj[ rowTwoObj.rowStaStr ] ) || ( rowOneObj.tasRcdObj.name < rowTwoObj.tasRcdObj.name ? -1 : 1 ) ); // What: Reminder Row Sort Call. Why: Rows should group by status first, then alphabetically within a status. How: This sorts remRowArr by staRanObj's own rank difference, falling back to a plain name comparison when ranks tie.
 

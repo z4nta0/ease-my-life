@@ -129,7 +129,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 	if ( isaTutBoo ) { // What: Tutorial Branch. Why: A still-hidden sample reminder renders as a mini-tour launcher card instead of a real due-reminder row. How: This returns the launcher card's own markup outright, never falling through to the real row below.
 
 
-		const oveTexObj = ONB_RCT_OBJ[ tasRcdObj.id ] || {}; // What: Override Text Object. Why: A sample's own launcher card copy can override the real schedule summary/name/time. How: This looks up tasRcdObj's own id in ONB_RCT_OBJ, falling back to an empty object when there's no override.
+		const oveTexObj : { kicStr? : string, namStr? : string, timStr? : string } = ONB_RCT_OBJ[ tasRcdObj.id ] || {}; // What: Override Text Object. Why: A sample's own launcher card copy can override the real schedule summary/name/time. How: This looks up tasRcdObj's own id in ONB_RCT_OBJ, falling back to an empty object when there's no override.
 
 
 		const texDisObj = { // What: Text Display Object. Why: This resolves the 3 pieces of copy the card below actually renders, in one place. How: This falls back to the real schedule summary/name when no override was found, and leaves timStr undefined when none was given.
@@ -143,10 +143,10 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 		};
 
 
-		const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this sample's own mini-tour. How: This checks for a click inside the actions area first, then dispatches to onUncTutFun or onPlaTutFun based on tutDonBoo.
+		const onRowCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this sample's own mini-tour. How: This checks for a click inside the actions area first, then dispatches to onUncTutFun or onPlaTutFun based on tutDonBoo.
 
 
-			if ( cliEveObj.target.closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: The Cancel button below has its own click handling and must not also trigger the row-level tour toggle. How: This bails out when the click landed inside the actions area.
+			if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: The Cancel button below has its own click handling and must not also trigger the row-level tour toggle. How: This bails out when the click landed inside the actions area. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on a card always lands on one.
 
 
 
@@ -341,14 +341,14 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 
 
-	const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the row (other than its own actions area or the open name input) should toggle done. How: This checks both exclusion zones first, then calls onTogTasFun.
+	const onRowCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Row Click Function. Why: Clicking anywhere on the row (other than its own actions area or the open name input) should toggle done. How: This checks both exclusion zones first, then calls onTogTasFun.
 
 
-		if ( cliEveObj.target.closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: The skip/edit buttons have their own click handling and must not also toggle done. How: This bails out when the click landed inside the actions area.
+		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: The skip/edit buttons have their own click handling and must not also toggle done. How: This bails out when the click landed inside the actions area. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on a card always lands on one.
 
 
 
-		if ( cliEveObj.target.closest( '[data-element-name-hook~="remNamInp"]' ) ) return; // What: Name Input Guard. Why: Typing in the open name input must not also toggle done. How: This bails out when the click landed inside the name input.
+		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="remNamInp"]' ) ) return; // What: Name Input Guard. Why: Typing in the open name input must not also toggle done. How: This bails out when the click landed inside the name input. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on a card always lands on one.
 
 
 
@@ -628,7 +628,7 @@ function InlEdiCom ( { draTasObj, onCloEdiFun, onDelTasFun, onPatTasFun, onSavTa
 
 
 
-type RscProTyp = { actEdiStr : string | null, actStoObj : ActStoTyp, ariTasSet : Set< string >, cheExiBoo : boolean, ediModBoo : boolean, leaTasSet : Set< string >, logOpeBoo : boolean, onGriDowFun : ( poiEveObj : React.PointerEvent ) => void, onPlaTutFun : ( kinStr : string, ideStr : string ) => void, onTogLogFun : () => void, onUncTutFun : ( ideStr : string ) => void, secRefFun : ( secCurEle : HTMLElement | null ) => void, setActEdiStr : React.Dispatch< React.SetStateAction< string | null > >, staAppObj : StaAppTyp }; // What: Reminder-Section-Component Props Type. Why: The Reminders section lists today's reminders and shares Today's single open-editor slot, Edit Mode, and log panel. How: This types RemSecCom's props.
+type RscProTyp = { actEdiStr : string | null, actStoObj : ActStoTyp, ariTasSet : Set< string >, cheExiBoo : boolean, ediModBoo : boolean, leaTasSet : Set< string >, logOpeBoo : boolean, onGriDowFun : ( poiEveObj : React.PointerEvent< HTMLElement > ) => void, onPlaTutFun : ( kinStr : string, ideStr : string ) => void, onTogLogFun : () => void, onUncTutFun : ( ideStr : string ) => void, secRefFun : ( secCurEle : HTMLElement | null ) => void, setActEdiStr : React.Dispatch< React.SetStateAction< string | null > >, staAppObj : StaAppTyp }; // What: Reminder-Section-Component Props Type. Why: The Reminders section lists today's reminders and shares Today's single open-editor slot, Edit Mode, and log panel. How: This types RemSecCom's props.
 
 // #region RemSecCom
 
@@ -742,15 +742,15 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 	// #region Card Transitions
 
-	const [ insIdeStr, setInsIdeStr ] = React.useState( null ); // What: Insert Identifier String And Setter. Why: A newly-added card needs to play its own entrance animation exactly once. How: This is set to the new card's own id right when commit finishes, then cleared on that card's own animation end.
-	const [ remIdeStr, setRemIdeStr ] = React.useState( null ); // What: Removing Identifier String And Setter. Why: A card slated for delete/skip needs to play its own collapse-out animation before the underlying task is actually removed. How: This is set right before that animation starts, then cleared once it ends.
-	const [ skiIdeStr, setSkiIdeStr ] = React.useState( null ); // What: Skip Identifier String And Setter. Why: A card's own skip confirm is its own independent open/closed slot, separate from actEdiStr. How: This holds whichever task's own skip confirm is currently open.
-	const [ jusCheStr, setJusCheStr ] = React.useState( null ); // What: Just-Checked String And Setter. Why: A reminder that was JUST checked needs a brief "fresh" flourish, distinct from one that was already done. How: This is set on every fresh check and cleared 700ms later.
+	const [ insIdeStr, setInsIdeStr ] = React.useState( null );                  // What: Insert Identifier String And Setter. Why: A newly-added card needs to play its own entrance animation exactly once. How: This is set to the new card's own id right when commit finishes, then cleared on that card's own animation end.
+	const [ remIdeStr, setRemIdeStr ] = React.useState( null );                  // What: Removing Identifier String And Setter. Why: A card slated for delete/skip needs to play its own collapse-out animation before the underlying task is actually removed. How: This is set right before that animation starts, then cleared once it ends.
+	const [ skiIdeStr, setSkiIdeStr ] = React.useState< string | null >( null ); // What: Skip Identifier String And Setter. Why: A card's own skip confirm is its own independent open/closed slot, separate from actEdiStr. How: This holds whichever task's own skip confirm is currently open.
+	const [ jusCheStr, setJusCheStr ] = React.useState< string | null >( null ); // What: Just-Checked String And Setter. Why: A reminder that was JUST checked needs a brief "fresh" flourish, distinct from one that was already done. How: This is set on every fresh check and cleared 700ms later.
 
 	const remActRef = React.useRef( null ); // What: Remove Action Reference. Why: Delete and Skip share the same collapse-out animation, but each needs its own action to run once it finishes. How: This holds whichever thunk should run on the removing card's own animation end.
 
 
-	const onTogDonFun = ( curTasObj ) => { // What: On Toggle Done Function. Why: Toggling a reminder's own done state also needs to trigger its brief "fresh" flourish, but only on a genuine 0-to-1 transition. How: This calls actStoObj.togTasFun, then stages jusCheStr only when curTasObj wasn't already done.
+	const onTogDonFun = ( curTasObj : TasRcdTyp ) => { // What: On Toggle Done Function. Why: Toggling a reminder's own done state also needs to trigger its brief "fresh" flourish, but only on a genuine 0-to-1 transition. How: This calls actStoObj.togTasFun, then stages jusCheStr only when curTasObj wasn't already done.
 
 
 		const wasDonBoo = TAS_NAM_OBJ.isaDonFun( curTasObj, ancDatObj ); // What: Was Done Boolean. Why: The fresh flourish must never replay for a reminder that was already checked before this toggle. How: This reads curTasObj's own done state before the toggle below applies.
@@ -785,7 +785,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 	React.useEffect( () => () => clearTimeout( addTimRef.current ), [] ); // What: Added Timer Cleanup Effect. Why: A pending message-clear timeout must not outlive this component. How: This clears addTimRef's own timeout id on unmount.
 
 
-	const annAddFun = ( curTasObj ) => { // What: Announce Added Function. Why: This decides and stages the actual wording of the post-add announcement. How: This computes curTasObj's own real visibility, then picks a success or a "won't show today" message accordingly.
+	const annAddFun = ( curTasObj : TasRcdTyp ) => { // What: Announce Added Function. Why: This decides and stages the actual wording of the post-add announcement. How: This computes curTasObj's own real visibility, then picks a success or a "won't show today" message accordingly.
 
 
 		const visResObj = TAS_NAM_OBJ.todVisFun( curTasObj, staAppObj.reminderOpts, staAppObj.holidays ); // What: Visibility Result Object. Why: The message below depends entirely on whether the new reminder is actually visible today. How: This calls TAS_NAM_OBJ.todVisFun against curTasObj.
@@ -812,9 +812,9 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 	// #region Quick-Add Form
 
-	const [ visForBoo, setVisForBoo ] = React.useState( addOpeBoo ); // What: Visible Form Boolean And Setter. Why: The quick-add form must stay mounted for its own exit animation even after actEdiStr has already moved on to a different editor. How: This starts at addOpeBoo and is later driven by the effect below.
-	const [ draTasObj, setDraTasObj ] = React.useState( null );      // What: Draft Task Object And Setter. Why: The quick-add form holds a full draft task so the same SchEdiCom used on an existing reminder can configure recurrence before it's ever created. How: This starts null and is populated by staAddFun below.
-	const [ addCloBoo, setAddCloBoo ] = React.useState( false );     // What: Add Closing Boolean And Setter. Why: The quick-add form's own exit animation needs a flag distinct from visForBoo, so the form stays mounted but visually collapsing during the close. How: This is toggled by canAddFun/comAddFun below.
+	const [ visForBoo, setVisForBoo ] = React.useState( addOpeBoo );                // What: Visible Form Boolean And Setter. Why: The quick-add form must stay mounted for its own exit animation even after actEdiStr has already moved on to a different editor. How: This starts at addOpeBoo and is later driven by the effect below.
+	const [ draTasObj, setDraTasObj ] = React.useState< TasRcdTyp | null >( null ); // What: Draft Task Object And Setter. Why: The quick-add form holds a full draft task so the same SchEdiCom used on an existing reminder can configure recurrence before it's ever created. How: This starts null and is populated by staAddFun below.
+	const [ addCloBoo, setAddCloBoo ] = React.useState( false );                    // What: Add Closing Boolean And Setter. Why: The quick-add form's own exit animation needs a flag distinct from visForBoo, so the form stays mounted but visually collapsing during the close. How: This is toggled by canAddFun/comAddFun below.
 
 	const wasAddRef  = React.useRef( addOpeBoo ); // What: Was Adding Reference. Why: The effect below needs to detect an addOpeBoo transition, not just its current value. How: This is read and overwritten at the end of that same effect.
 	const selCloRef  = React.useRef( false );     // What: Self Closing Reference. Why: Our own cancel/commit already starts the exit animation itself; the effect below must not ALSO re-trigger it as if some other editor forced this one closed. How: This is set just before that self-initiated close begins.
@@ -876,7 +876,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 	}, [ addOpeBoo ] ); // What: Effect Dependency Array. Why: This effect only needs to re-run when addOpeBoo itself changes, since that's the exact transition it's watching for. How: addOpeBoo is compared against wasAddRef's own remembered prior value.
 
 
-	const patAddFun = ( patValObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, ...patValObj } ) ); // What: Patch Add Function. Why: The quick-add form's schedule editor changes a field or two of its draft task. How: This merges patValObj into draTasObj.
+	const patAddFun = ( patValObj : Partial< TasRcdTyp > ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, ...patValObj } ) ); // What: Patch Add Function. Why: The quick-add form's schedule editor changes a field or two of its draft task. How: This merges patValObj into draTasObj.
 
 
 	const draRepStr = draTasObj ? draTasObj.repeat : null; // What: Draft Repeat String. Why: The effect below publishes only the draft's repeat field, so it should depend on that one value. How: This reads draTasObj's repeat, or null while no draft exists.

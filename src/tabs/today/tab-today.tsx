@@ -54,9 +54,16 @@ import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use
 import { useIteDraFun } from '../../ui/record-draft.ts';            // What: Use Item Draft Function. Why: The open item editor edits a local draft, committed only on Save. How: This is called once with whichever item's editor is open.
 
 
-import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The tab changes state through the store's actions. How: This types TtdProTyp's actStoObj.
-import type { DaiSetTyp } from '../../core/data-model.ts'; // What: Daily Settings Type. Why: The auto-generator reads the daily settings, or nothing on a save that never had them. How: This types its partial copy.
-import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The tab reads the current app state. How: This types TtdProTyp's staAppObj.
+import type { ActStoTyp } from '../../state/store.ts';      // What: Action Store Type. Why: The tab changes state through the store's actions. How: This types TtdProTyp's actStoObj.
+import type { DaiSetTyp } from '../../core/data-model.ts';  // What: Daily Settings Type. Why: The auto-generator reads the daily settings, or nothing on a save that never had them. How: This types its partial copy.
+import type { EntDesTyp } from '../../state/store.ts';      // What: Entry Descriptor Type. Why: Generating collects carried entries and new cards for setEntFun. How: This types those collections.
+import type { GenSloTyp } from './regeneration-loader.tsx'; // What: Generate Slot Type. Why: Generating animates one loader slot per picker. How: This types the slots and their maps.
+import type { IteRcdTyp } from '../../core/data-model.ts';  // What: Item Record Type. Why: Rerolling picks among a picker's items. How: This types the reroll helpers' items.
+import type { PicRcdTyp } from '../../core/data-model.ts';  // What: Picker Record Type. Why: Incoming loader slots are grouped by picker. How: This types the slot group map.
+import type { PicResTyp } from '../../core/pickers.ts';     // What: Pick Result Type. Why: Each fresh pick keeps the engine's result for its pending changes. How: This types newPicArr's results.
+import type { StaAppTyp } from '../../core/data-model.ts';  // What: State App Type. Why: The tab reads the current app state. How: This types TtdProTyp's staAppObj.
+import type { TodGroTyp } from './group-entries.ts';        // What: Today Group Type. Why: The tab looks groups up by name and drags their rows. How: This types the group map and the drag handler's group.
+import type { TodRowTyp } from './group-entries.ts';        // What: Today Row Type. Why: The check and reroll handlers act on one Today row. How: This types their entry and picker.
 
 // #endregion Imports
 
@@ -190,11 +197,12 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 		const savOrdArr = staAppObj.groupOrder || [];                         // What: Saved Order Array. Why: The user's own Edit Mode drags are the primary source of block order. How: This reads staAppObj.groupOrder, falling back to an empty array.
 		const groNamArr = groDisArr.map( ( curGroObj ) => curGroObj.namStr ); // What: Group Name Array. Why: The walk below needs a fast way to confirm a saved name still refers to a real, currently-rendered group. How: This maps groDisArr down to just each group's own name.
-		const seeNamSet = new Set();                                          // What: Seen Name Set. Why: The push helper below needs a fast way to avoid collecting the same block twice. How: This is checked and added to by pusIdeFun.
-		const ideOrdArr = [];                                                 // What: Identifier Order Array. Why: This collects the final block order built up by the passes below. How: This is pushed to by pusIdeFun and returned at the end of this memo.
+
+		const seeNamSet : Set< string > = new Set(); // What: Seen Name Set. Why: The push helper below needs a fast way to avoid collecting the same block twice. How: This is checked and added to by pusIdeFun.
+		const ideOrdArr : string[]      = [];        // What: Identifier Order Array. Why: This collects the final block order built up by the passes below. How: This is pushed to by pusIdeFun and returned at the end of this memo.
 
 
-		const pusIdeFun = ( curIdeStr ) => { // What: Push Identifier Function. Why: Every pass below needs the exact same dedupe-then-collect step. How: This adds curIdeStr to both seeNamSet and ideOrdArr only the first time it is seen.
+		const pusIdeFun = ( curIdeStr : string ) => { // What: Push Identifier Function. Why: Every pass below needs the exact same dedupe-then-collect step. How: This adds curIdeStr to both seeNamSet and ideOrdArr only the first time it is seen.
 
 
 			if ( seeNamSet.has( curIdeStr ) ) return; // What: Already Collected Guard. Why: A block must only appear once in the order. How: This bails out when curIdeStr was already collected.
@@ -245,7 +253,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const groNamObj = React.useMemo( () => { // What: Group Name Object. Why: The content column below needs to resolve a block id straight to its own group record, not re-scan groDisArr on every row. How: This builds a { name: group } lookup once per groDisArr change.
 
 
-		const namMapObj = {}; // What: Name Map Object. Why: The forEach below needs a plain object to populate. How: This starts empty and is written to just below.
+		const namMapObj : Record< string, TodGroTyp > = {}; // What: Name Map Object. Why: The forEach below needs a plain object to populate. How: This starts empty and is written to just below.
 
 
 		groDisArr.forEach( ( curGroObj ) => { namMapObj[ curGroObj.namStr ] = curGroObj; } ); // What: Name Map Populate. Why: Every real group needs its own entry in the lookup. How: This keys namMapObj by curGroObj's own name.
@@ -450,7 +458,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const pagColFun = ( rawValStr ) => { // What: Page Collision Function. Why: Page Tours has no pickers to merge into on a name collision (unlike a real group's own rename), so a collision just blocks the rename outright, checked against every real group name plus the fixed "Reminders" label, the other section header that isn't itself a real group. How: This normalizes rawValStr and checks it against every existing group/Reminders name, case-insensitively.
+	const pagColFun = ( rawValStr : string ) => { // What: Page Collision Function. Why: Page Tours has no pickers to merge into on a name collision (unlike a real group's own rename), so a collision just blocks the rename outright, checked against every real group name plus the fixed "Reminders" label, the other section header that isn't itself a real group. How: This normalizes rawValStr and checks it against every existing group/Reminders name, case-insensitively.
 
 
 		const triValStr = String( rawValStr || '' ).trim(); // What: Trimmed Value String. Why: A typed rename needs its surrounding whitespace trimmed before it is checked at all. How: This trims rawValStr, coerced to a string first.
@@ -509,7 +517,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const repActBoo = cheDonBoo && maiEndBoo; // What: Replay Active Boolean. Why: This is the shared gate every count below branches on. How: This combines cheDonBoo with maiEndBoo.
 
 
-	const samVisFun = ( recCurObj, samIdeArr, allRecArr ) => { // What: Sample Visible Function. Why: A sample picker or task card only counts toward the ring while its own card is actually on screen, and that rule is identical for both kinds. How: This checks that recCurObj is a hidden sample, then (only once cheDonBoo) that it is still unresolved and not name-collided with a real record.
+	const samVisFun = ( recCurObj : { hidden? : boolean, id : string, name : string }, samIdeArr : string[], allRecArr : { id : string, name : string }[] ) => { // What: Sample Visible Function. Why: A sample picker or task card only counts toward the ring while its own card is actually on screen, and that rule is identical for both kinds. How: This checks that recCurObj is a hidden sample, then (only once cheDonBoo) that it is still unresolved and not name-collided with a real record.
 
 
 		const isaSamBoo = recCurObj.hidden && samIdeArr.includes( recCurObj.id );                                                                    // What: Is-A Sample Boolean. Why: Only a hidden sample offers a launcher card. How: This checks the hidden flag and samIdeArr membership.
@@ -524,7 +532,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	};
 
 
-	const samDonFun = ( recCurObj, samIdeArr ) => { // What: Sample Done Function. Why: The first-time phase counts a resolved sample card as done, the same way for pickers and tasks. How: This checks that recCurObj is a hidden sample that already has a checklist entry.
+	const samDonFun = ( recCurObj : { hidden? : boolean, id : string }, samIdeArr : string[] ) => { // What: Sample Done Function. Why: The first-time phase counts a resolved sample card as done, the same way for pickers and tasks. How: This checks that recCurObj is a hidden sample that already has a checklist entry.
 
 
 		const isaSamBoo = recCurObj.hidden && samIdeArr.includes( recCurObj.id ); // What: Is-A Sample Boolean. Why: Only a hidden sample offers a launcher card. How: This checks the hidden flag and samIdeArr membership.
@@ -597,7 +605,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const ticCloFun = () => setCurNowDat( new Date() ); // What: Tick Clock Function. Why: Both the initial aligned tick and every later interval tick need this exact same update. How: This writes a fresh Date into curNowDat.
 		const minDelNum = 60000 - ( Date.now() % 60000 );   // What: Minute Delay Number. Why: The first tick should land exactly on the next minute boundary, not an arbitrary offset. How: This computes the milliseconds remaining until that boundary.
 
-		let ticIntNum = null; // What: Tick Interval Number. Why: The recurring interval isn't started until the first aligned tick fires. How: This is assigned inside the alignment timeout below and read by the cleanup.
+		let ticIntNum : number | null = null; // What: Tick Interval Number. Why: The recurring interval isn't started until the first aligned tick fires. How: This is assigned inside the alignment timeout below and read by the cleanup.
 
 
 		const aliTimNum = setTimeout( () => { // What: Align Timeout Number. Why: The very first tick must wait for minDelNum before the regular 60-second cadence can begin. How: This fires ticCloFun once, then starts the recurring interval.
@@ -630,16 +638,16 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	// #region Editor And Log State
 
-	const [ actEdiStr, setActEdiStr ] = React.useState( null ); // What: Active Editor String And Setter. Why: Only one inline editor on this tab should be open at a time. How: This is read/written by every inline editor this tab renders, directly or via RemSecCom. // actEdiStr/setActEdiStr: a picker item's inline editor (`item:<eid>`), a reminder's inline editor, or its quick-add form (owned by RemSecCom, passed down below) all read/write this same lifted slot, so opening any one of them collapses whichever of the others was open (each keeps its unsaved edits in a local draft that collapsing drops, see useIteDraFun below and RemSecCom's own useTasDraFun).
+	const [ actEdiStr, setActEdiStr ] = React.useState< string | null >( null ); // What: Active Editor String And Setter. Why: Only one inline editor on this tab should be open at a time. How: This is read/written by every inline editor this tab renders, directly or via RemSecCom. // actEdiStr/setActEdiStr: a picker item's inline editor (`item:<eid>`), a reminder's inline editor, or its quick-add form (owned by RemSecCom, passed down below) all read/write this same lifted slot, so opening any one of them collapses whichever of the others was open (each keeps its unsaved edits in a local draft that collapsing drops, see useIteDraFun below and RemSecCom's own useTasDraFun).
 
 	const ediEntObj = actEdiStr ? staAppObj.today.entries.find( ( curEntObj ) => `item:${ curEntObj.eid }` === actEdiStr ) : null; // What: Editing Entry Object. Why: The open item editor's draft needs to know which entry it belongs to. How: This finds the entry whose own editor key matches actEdiStr, or null when no item editor is open.
 	const ediIteObj = ediEntObj ? staAppObj.items.find( ( curIteObj ) => curIteObj.id === ediEntObj.itemId ) || null : null;       // What: Editing Item Object. Why: The draft is a copy of this entry's own item. How: This looks the item up by the entry's itemId, or null when there's none.
 
 	const { comDraFun, draIteObj, patDraFun } = useIteDraFun( actStoObj, ediIteObj ); // What: Item Draft Destructure. Why: The open card's name input and its editor both edit one local draft, committed only on Save. How: This calls useIteDraFun with the open item.
 
-	const [ opeLogStr, setOpeLogStr ] = React.useState( null ); // What: Open Log String And Setter. Why: Only one group's (or the Reminders block's) Day Log panel may be open at a time. How: This holds whichever single key is currently open, or null.
+	const [ opeLogStr, setOpeLogStr ] = React.useState< string | null >( null ); // What: Open Log String And Setter. Why: Only one group's (or the Reminders block's) Day Log panel may be open at a time. How: This holds whichever single key is currently open, or null.
 
-	const togLogFun = ( logKeyStr ) => setOpeLogStr( ( curKeyStr ) => curKeyStr === logKeyStr ? null : logKeyStr ); // What: Toggle Log Function. Why: Clicking an already-open group's own chip should close it, not just re-open it. How: This flips opeLogStr to null when logKeyStr is already open, otherwise to logKeyStr.
+	const togLogFun = ( logKeyStr : string ) => setOpeLogStr( ( curKeyStr ) => curKeyStr === logKeyStr ? null : logKeyStr ); // What: Toggle Log Function. Why: Clicking an already-open group's own chip should close it, not just re-open it. How: This flips opeLogStr to null when logKeyStr is already open, otherwise to logKeyStr.
 
 	// #endregion Editor And Log State
 
@@ -662,7 +670,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const [ jusCheStr, setJusCheStr ] = React.useState( null ); // What: Just-Checked String And Setter. Why: A just-completed row needs a brief "fresh" cue, keyed by its own eid. How: This is set by hanCheFun below and cleared 700ms later.
+	const [ jusCheStr, setJusCheStr ] = React.useState< string | null >( null ); // What: Just-Checked String And Setter. Why: A just-completed row needs a brief "fresh" cue, keyed by its own eid. How: This is set by hanCheFun below and cleared 700ms later.
 
 	const rinEleRef = React.useRef( null );                                     // What: Ring Element Reference. Why: The celebration effect below needs a direct DOM handle to trigger CSS classes on. How: This is attached to the .ring div's own ref prop below.
 	const stkEleRef = React.useRef( null );                                     // What: Streak Element Reference. Why: The streak-pulse effect below needs a direct DOM handle to trigger its own CSS class on. How: This is attached to the .streak div's own ref prop below.
@@ -826,9 +834,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			rinCurEle.classList.add( cssModObj.proRinDivCelebrating ); // What: Celebrating Class Add. Why: This is the actual CSS trigger for the ring's own celebration animation. How: This adds the proRinDiv--celebrating modifier to rinCurEle.
 
 
-			const carEleLis = ( celStyStr === 'ripple' && maiScrRef.current ) // What: Card Element List. Why: Only the Ripple style needs the per-card exhale cascade at all. How: This queries every rendered card only under that style, otherwise an empty array.
-				? maiScrRef.current.querySelectorAll( '[data-element-name-hook~="todCarArt"]' ) // What: Ripple Branch. Why: The ripple cascades across every rendered card. How: This queries them all from the scroll root.
-				: [];                                                                           // What: No Ripple Branch. Why: Every other style has no per-card cascade. How: This returns an empty array, so the loop below does nothing.
+			const carEleLis : NodeListOf< HTMLElement > | HTMLElement[] = ( celStyStr === 'ripple' && maiScrRef.current ) // What: Card Element List. Why: Only the Ripple style needs the per-card exhale cascade at all. How: This queries every rendered card only under that style, otherwise an empty array.
+				? maiScrRef.current.querySelectorAll< HTMLElement >( '[data-element-name-hook~="todCarArt"]' ) // What: Ripple Branch. Why: The ripple cascades across every rendered card. How: This queries them all from the scroll root.
+				: [];                                                                                          // What: No Ripple Branch. Why: Every other style has no per-card cascade. How: This returns an empty array, so the loop below does nothing.
 
 
 			carEleLis.forEach( ( curCarEle, curIndNum ) => { // What: Card Exhale Stagger Loop. Why: Each card's own exhale needs a slightly later delay than the one before it, so the cascade reads as a wave. How: This sets a CSS variable and sets the data-card-exhale-active attribute on each card in turn.
@@ -1065,7 +1073,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const hanCheFun = ( entRecObj ) => { // What: Handle Check Function. Why: Toggling done also needs to stage the brief "fresh" cue, but only on a genuine not-done-to-done transition, never on an uncheck. How: This calls actStoObj.togDonFun, then stages jusCheStr only when wasDonBoo was false.
+	const hanCheFun = ( entRecObj : TodRowTyp[ 'entRecObj' ] ) => { // What: Handle Check Function. Why: Toggling done also needs to stage the brief "fresh" cue, but only on a genuine not-done-to-done transition, never on an uncheck. How: This calls actStoObj.togDonFun, then stages jusCheStr only when wasDonBoo was false.
 
 
 		const wasDonBoo = entRecObj.done; // What: Was Done Boolean. Why: The fresh-cue guard below needs to know the PRE-toggle state. How: This reads entRecObj.done before actStoObj.togDonFun below flips it.
@@ -1134,7 +1142,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const hanSkiFun = ( entIdeStr ) => { // What: Handle Skip Function. Why: This is the actual skip trigger, shared by every EntCarCom's own onSkiEntFun prop. How: This stages entIdeStr as removing, then calls actStoObj.skiEntFun after skiAniNum.
+	const hanSkiFun = ( entIdeStr : string ) => { // What: Handle Skip Function. Why: This is the actual skip trigger, shared by every EntCarCom's own onSkiEntFun prop. How: This stages entIdeStr as removing, then calls actStoObj.skiEntFun after skiAniNum.
 
 
 		if ( rmvIdeSet.has( entIdeStr ) ) return; // What: Already Removing Guard. Why: A row already mid-removal must not be re-triggered by a second click. How: This bails out early when entIdeStr is already in rmvIdeSet.
@@ -1185,7 +1193,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const hanDelFun = ( entIdeStr, iteIdeStr ) => { // What: Handle Delete Function. Why: Deleting a picker item from its Today editor should play the same card slide-out as skip, then remove the item (which drops the entry too). How: This closes the item's own editor, then either removes immediately (reduced motion) or stages the same removal animation skip uses.
+	const hanDelFun = ( entIdeStr : string, iteIdeStr : string ) => { // What: Handle Delete Function. Why: Deleting a picker item from its Today editor should play the same card slide-out as skip, then remove the item (which drops the entry too). How: This closes the item's own editor, then either removes immediately (reduced motion) or stages the same removal animation skip uses.
 
 
 		setActEdiStr( ( curValStr ) => curValStr === `item:${ entIdeStr }` ? null : curValStr ); // What: Editor Close. Why: A deleted item's own editor must not stay open. How: This clears actEdiStr only if it currently points at this exact item's own editor slot.
@@ -1274,7 +1282,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const hanRerFun = ( entRecObj, picRecObj ) => { // What: Handle Reroll Function. Why: This is the actual re-roll trigger, shared by every EntCarCom's own onRerEntFun prop. How: This stages entRecObj's own eid as rolling, computes and stages a new pending pick at the flip's own apex, then clears the rolling flag once the flip finishes.
+	const hanRerFun = ( entRecObj : TodRowTyp[ 'entRecObj' ], picRecObj : TodRowTyp[ 'picRecObj' ] ) => { // What: Handle Reroll Function. Why: This is the actual re-roll trigger, shared by every EntCarCom's own onRerEntFun prop. How: This stages entRecObj's own eid as rolling, computes and stages a new pending pick at the flip's own apex, then clears the rolling flag once the flip finishes.
 
 
 		if ( rolIdeSet.has( entRecObj.eid ) ) return; // What: Already Rolling Guard. Why: A row already mid-flip must not be re-triggered by a second click. How: This bails out early when entRecObj's own eid is already in rolIdeSet.
@@ -1289,11 +1297,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			if ( picRecObj.mode === 'ease-up' ) { // What: Ease-Up Reroll Branch. Why: Ease Up re-roll is a manual cycle through eligible (charged >= threshold) items, highest-to-lowest value, wrapping back to the highest, rather than a fresh random pick. How: This computes a deterministic ordering, finds the current item's own position, and steps to the next one.
 
 
-				const picThrNum = picRecObj.threshold ?? 100;                                                         // What: Picker Threshold Number. Why: Eligibility below is judged against this picker's own resolved threshold. How: This reads picRecObj.threshold, falling back to 100.
-				const lasTimFun = ( curIteObj ) => ( curIteObj.lastPicked ? Date.parse( curIteObj.lastPicked ) : 0 ); // What: Last Timestamp Function. Why: The deterministic ordering below needs a numeric sort key for lastPicked. How: This parses curIteObj.lastPicked, treating a never-picked item as 0.
+				const picThrNum = picRecObj.threshold ?? 100;                                                                     // What: Picker Threshold Number. Why: Eligibility below is judged against this picker's own resolved threshold. How: This reads picRecObj.threshold, falling back to 100.
+				const lasTimFun = ( curIteObj : IteRcdTyp ) => ( curIteObj.lastPicked ? Date.parse( curIteObj.lastPicked ) : 0 ); // What: Last Timestamp Function. Why: The deterministic ordering below needs a numeric sort key for lastPicked. How: This parses curIteObj.lastPicked, treating a never-picked item as 0.
 
 
-				const isaEliFun = ( curIteObj ) => { // What: Is-An Eligible Function. Why: Only this picker's own active, fully charged items can be rolled to. How: This combines the three checks below.
+				const isaEliFun = ( curIteObj : IteRcdTyp ) => { // What: Is-An Eligible Function. Why: Only this picker's own active, fully charged items can be rolled to. How: This combines the three checks below.
 
 
 					const ownPicBoo = curIteObj.pickerId === picRecObj.id;           // What: Own Picker Boolean. Why: Items from other pickers are never candidates. How: This compares the item's own pickerId.
@@ -1308,7 +1316,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				};
 
 
-				const ordIteFun = ( iteOneObj, iteTwoObj ) => { // What: Order Item Function. Why: The cycle below needs a stable, deterministic order. How: This sorts by value descending, then oldest lastPicked, then id.
+				const ordIteFun = ( iteOneObj : IteRcdTyp, iteTwoObj : IteRcdTyp ) => { // What: Order Item Function. Why: The cycle below needs a stable, deterministic order. How: This sorts by value descending, then oldest lastPicked, then id.
 
 
 					const valDifNum = iteTwoObj.value - iteOneObj.value;               // What: Value Difference Number. Why: Higher-value items come first. How: This subtracts the first item's own value from the second's, so a larger value sorts earlier.
@@ -1331,9 +1339,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				if ( eliIteArr.length >= 2 ) { // What: Enough Candidates Guard. Why: Fewer than 2 eligible candidates means the UI already disabled the button, so this is a safe no-op rather than a real error case. How: This only proceeds once eliIteArr has at least 2 entries.
 
 
-					const fouIndNum = eliIteArr.findIndex( ( curIteObj ) => curIteObj.id === entRecObj.itemId );           // What: Found Index Number. Why: The next candidate is found relative to whichever one is currently picked. How: This finds entRecObj's own itemId within eliIteArr.
-					const nexIteObj = eliIteArr[ ( fouIndNum + 1 ) % eliIteArr.length ];                                   // What: Next Item Object. Why: This is the actual next candidate to roll to, wrapping back to the front once the end is reached. How: This indexes eliIteArr one past fouIndNum, modulo its own length.
-					const picResObj = PIC_NAM_OBJ.picIteFun( picRecObj, staAppObj.items, { forceItemId : nexIteObj.id } ); // What: Pick Result Object. Why: Forcing the specific next item still needs to run through the real picking engine so its own value/pending mutations compute correctly. How: This calls PIC_NAM_OBJ.picIteFun with forceItemId set to nexIteObj's own id.
+					const fouIndNum = eliIteArr.findIndex( ( curIteObj ) => curIteObj.id === entRecObj.itemId );                        // What: Found Index Number. Why: The next candidate is found relative to whichever one is currently picked. How: This finds entRecObj's own itemId within eliIteArr.
+					const nexIteObj = eliIteArr[ ( fouIndNum + 1 ) % eliIteArr.length ];                                                // What: Next Item Object. Why: This is the actual next candidate to roll to, wrapping back to the front once the end is reached. How: This indexes eliIteArr one past fouIndNum, modulo its own length.
+					const picResObj = PIC_NAM_OBJ.picIteFun( picRecObj as PicRcdTyp, staAppObj.items, { forceItemId : nexIteObj.id } ); // What: Pick Result Object. Why: Forcing the specific next item still needs to run through the real picking engine so its own value/pending mutations compute correctly. How: This calls PIC_NAM_OBJ.picIteFun with forceItemId set to nexIteObj's own id. // What: Picker Record Note. Why: A row's picker is typed as possibly a stand-in. How: A reroll only ever runs on a real pick card, whose picker is a full record, so it's read as one here.
 
 
 					actStoObj.swaIteFun( entRecObj.eid, nexIteObj.id, { // What: Set Entry Item Call. Why: This stages the new pick's own value/weight mutation as pending, applied only once the entry is marked done, preserving the "nothing changes until you actually do it" contract. How: This writes nexIteObj's own id plus picResObj's own updArr/patObj/depBoo.
@@ -1357,7 +1365,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			else { // What: Other Mode Reroll Branch. Why: Every other mode re-rolls via a fresh forced-new pick instead of a manual cycle; forceNew makes ease-down specifically abandon its current active item (recharging it) and roll to a different one, while other modes simply ignore the flag. How: This calls PIC_NAM_OBJ.picIteFun with forceNew and stages whatever it returns as pending.
 
 
-				const picResObj = PIC_NAM_OBJ.picIteFun( picRecObj, staAppObj.items, { forceNew : true } ); // What: Pick Result Object. Why: This is the actual fresh pick this branch draws. How: This calls PIC_NAM_OBJ.picIteFun with forceNew true.
+				const picResObj = PIC_NAM_OBJ.picIteFun( picRecObj as PicRcdTyp, staAppObj.items, { forceNew : true } ); // What: Pick Result Object. Why: This is the actual fresh pick this branch draws. How: This calls PIC_NAM_OBJ.picIteFun with forceNew true. // What: Picker Record Note. Why: A row's picker is typed as possibly a stand-in. How: A reroll only ever runs on a real pick card, whose picker is a full record, so it's read as one here.
 
 
 				if ( picResObj.picObj ) { // What: Picked Guard. Why: A pick can legitimately come back empty (no eligible candidates), in which case there is nothing to stage. How: This only proceeds once picResObj.picObj exists.
@@ -1476,7 +1484,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const [ actGroStr, setActGroStr ] = React.useState( '__reminders' ); // What: Active Group String And Setter. Why: This is the single source of truth for which rail button is highlighted. How: This starts on the Reminders sentinel and is updated by the scroll-spy effect below.
 
 	const secRefObj = React.useRef< Record< string, HTMLElement | null > >( {} ); // What: Section Reference Object. Why: The scroll-spy effect below needs a live handle on every rendered group/Reminders/Page-Tours section element. How: This is populated by each section's own ref callback further down and read here.
-	const maiScrRef = React.useRef( null );                                       // What: Main Scroll Reference. Why: Several handlers (scroll spy, generate's own scroll-to-top, jumGroFun) all need a handle on the shared scroll layout wrapper. How: This is attached to the .todLayDiv div's own ref prop further down.
+	const maiScrRef = React.useRef< HTMLDivElement | null >( null );              // What: Main Scroll Reference. Why: Several handlers (scroll spy, generate's own scroll-to-top, jumGroFun) all need a handle on the shared scroll layout wrapper. How: This is attached to the .todLayDiv div's own ref prop further down.
 	const skiSpyRef = React.useRef( false );                                      // What: Skip Spy Reference. Why: A programmatic scroll (jumGroFun, or generate's own scroll-to-top) must not have the scroll-spy effect immediately fight back and reassign actGroStr mid-animation. How: This is set true right before such a scroll starts and cleared shortly after it settles.
 	const pinGroRef = React.useRef( null );                                       // What: Pinned Group Reference. Why: See the doc comment just above. How: This is set by jumGroFun and read/cleared by the scroll-spy effect below.
 
@@ -1589,7 +1597,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	}, [ groDisArr.length, bloOrdArr, shoFeaBoo ] ); // What: Effect Dependency Array. Why: A changed group count, block order, or App Features visibility can all change which sections even exist to spy on. How: Each of these 3 can add/remove a whole section.
 
 
-	const jumGroFun = ( groIdeStr ) => { // What: Jump Group Function. Why: This is the actual click handler behind every rail button, smooth-scrolling the content column to the named section. How: This resolves the sticky offset, computes a target scroll position, pins the group if it can't reach the spy line, then scrolls.
+	const jumGroFun = ( groIdeStr : string ) => { // What: Jump Group Function. Why: This is the actual click handler behind every rail button, smooth-scrolling the content column to the named section. How: This resolves the sticky offset, computes a target scroll position, pins the group if it can't reach the spy line, then scrolls.
 
 
 		const tarSecEle = secRefObj.current[ groIdeStr ]; // What: Target Section Element. Why: There is nothing to scroll to without a real mounted section. How: This reads secRefObj.current at groIdeStr.
@@ -1720,9 +1728,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const [ banCloBoo, setBanCloBoo ] = React.useState( false ); // What: Banner Closing Boolean And Setter. Why: See the doc comment just above. How: This is set true right when Edit Mode ends and cleared once the collapse animation finishes.
 	const [ merProObj, setMerProObj ] = React.useState( null );  // What: Merge Prompt Object And Setter. Why: A pending group-rename that would MERGE into an existing group is held here until the user confirms. How: This is set by reqRenFun below and read by GroHeaCom's own merPenObj prop.
 
-	const groDndRef = React.useRef( null ); // What: Group Dnd Reference. Why: groDraFun below needs a handle on the groups wrapper to scope the drag container to. How: This is attached to the .groDraDiv div's own ref prop further down.
-	const shoOrdRef = React.useRef( [] );   // What: Shown Order Reference. Why: Drop indices from REO_NAM_OBJ are DOM positions, so they must resolve against whatever order the content column was LAST rendered from, not the unpadded bloOrdArr. How: This is written just before the return JSX below and read by groDraFun's own onDroOrdFun.
-	const ordSnaRef = React.useRef( null ); // What: Order Snapshot Reference. Why: A snapshot taken on entering Edit Mode lets Cancel/Escape discard every drag made during the whole session. How: This is populated by opeModFun and read/cleared by cloModFun.
+	const groDndRef = React.useRef< HTMLDivElement | null >( null ); // What: Group Dnd Reference. Why: groDraFun below needs a handle on the groups wrapper to scope the drag container to. How: This is attached to the .groDraDiv div's own ref prop further down.
+	const shoOrdRef = React.useRef( [] );                            // What: Shown Order Reference. Why: Drop indices from REO_NAM_OBJ are DOM positions, so they must resolve against whatever order the content column was LAST rendered from, not the unpadded bloOrdArr. How: This is written just before the return JSX below and read by groDraFun's own onDroOrdFun.
+	const ordSnaRef = React.useRef( null );                          // What: Order Snapshot Reference. Why: A snapshot taken on entering Edit Mode lets Cancel/Escape discard every drag made during the whole session. How: This is populated by opeModFun and read/cleared by cloModFun.
 
 
 	// #region reqRenFun
@@ -1750,7 +1758,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const reqRenFun = ( oldNamStr, rawNewStr ) => { // What: Request Rename Function. Why: A group header's own rename entry point needs to normalize the typed name and, if it resolves to a DIFFERENT existing group, defer to a merge confirm rather than rename straight away. How: This normalizes rawNewStr, then either stages merProObj or calls actStoObj.renGroFun directly.
+	const reqRenFun = ( oldNamStr : string, rawNewStr : string ) => { // What: Request Rename Function. Why: A group header's own rename entry point needs to normalize the typed name and, if it resolves to a DIFFERENT existing group, defer to a merge confirm rather than rename straight away. How: This normalizes rawNewStr, then either stages merProObj or calls actStoObj.renGroFun directly.
 
 
 		const othGroArr = [ ...new Set( staAppObj.pickers.filter( ( curPicObj ) => curPicObj.group && curPicObj.group !== oldNamStr ).map( ( curPicObj ) => curPicObj.group ) ) ]; // What: Other Group Array. Why: The collision check below needs every OTHER real group name, excluding the one being renamed. How: This deduplicates every non-matching picker's own group field via a Set.
@@ -1791,7 +1799,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	};
 
 
-	const cloModFun = ( cmtEdiBoo ) => { // What: Close Mode Function. Why: Leaving Edit Mode needs to either keep or discard every drag made during the session, then play the banner's own collapse-out. How: This reverts to ordSnaRef's own snapshot unless cmtEdiBoo, clears the snapshot, flips ediModBoo off, and stages banCloBoo.
+	const cloModFun = ( cmtEdiBoo : boolean ) => { // What: Close Mode Function. Why: Leaving Edit Mode needs to either keep or discard every drag made during the session, then play the banner's own collapse-out. How: This reverts to ordSnaRef's own snapshot unless cmtEdiBoo, clears the snapshot, flips ediModBoo off, and stages banCloBoo.
 
 
 		if ( banCloBoo ) return; // What: Already Closing Guard. Why: A close already in flight must not be re-triggered by a second call. How: This bails out early while banCloBoo is already true.
@@ -1869,15 +1877,15 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const groDraFun = ( poiEveObj ) => { // What: Group Drag Function. Why: This is the actual pointerdown handler behind every GroHeaCom's own grip. How: This resolves the drag container/handle, then hands off to REO_NAM_OBJ.staDraFun with the group-specific drop callback.
+	const groDraFun = ( poiEveObj : React.PointerEvent< HTMLElement > ) => { // What: Group Drag Function. Why: This is the actual pointerdown handler behind every GroHeaCom's own grip. How: This resolves the drag container/handle, then hands off to REO_NAM_OBJ.staDraFun with the group-specific drop callback.
 
 
-		const wraCurEle = groDndRef.current;                                            // What: Wrapper Current Element. Why: This is the drag container REO_NAM_OBJ needs. How: This reads groDndRef.current.
-		const griCurEle = poiEveObj.currentTarget;                                      // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads poiEveObj.currentTarget.
-		const secCurEle = griCurEle.closest( '[data-element-name-hook~="todGroSec"]' ); // What: Section Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the group's own section), not just its grip. How: This walks up from griCurEle to its nearest todGroSec ancestor.
-		const misWraBoo = !wraCurEle;                                                   // What: Missing Wrapper Boolean. Why: A drag needs the groups' shared wrapper as its container. How: This negates wraCurEle.
-		const misSecBoo = !secCurEle;                                                   // What: Missing Section Boolean. Why: A drag needs the whole group section it moves, not just its grip. How: This negates secCurEle.
-		const misReoBoo = !REO_NAM_OBJ;                                                 // What: Missing Reorder Boolean. Why: A drag needs the shared reorder module to run it. How: This negates REO_NAM_OBJ.
+		const wraCurEle = groDndRef.current;                                                           // What: Wrapper Current Element. Why: This is the drag container REO_NAM_OBJ needs. How: This reads groDndRef.current.
+		const griCurEle = poiEveObj.currentTarget;                                                     // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads poiEveObj.currentTarget.
+		const secCurEle = griCurEle.closest< HTMLElement >( '[data-element-name-hook~="todGroSec"]' ); // What: Section Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the group's own section), not just its grip. How: This walks up from griCurEle to its nearest todGroSec ancestor.
+		const misWraBoo = !wraCurEle;                                                                  // What: Missing Wrapper Boolean. Why: A drag needs the groups' shared wrapper as its container. How: This negates wraCurEle.
+		const misSecBoo = !secCurEle;                                                                  // What: Missing Section Boolean. Why: A drag needs the whole group section it moves, not just its grip. How: This negates secCurEle.
+		const misReoBoo = !REO_NAM_OBJ;                                                                // What: Missing Reorder Boolean. Why: A drag needs the shared reorder module to run it. How: This negates REO_NAM_OBJ.
 
 		const misPreBoo = misWraBoo || misSecBoo || misReoBoo; // What: Missing Prerequisite Boolean. Why: A drag cannot start without all 3 of these. How: This is true when any one of them is missing.
 
@@ -1944,15 +1952,15 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const iteDraFun = ( poiEveObj, curGroObj ) => { // What: Item Drag Function. Why: This is the actual pointerdown handler behind every EntCarCom's own grip within a group. How: This resolves the drag container/handle, then hands off to REO_NAM_OBJ.staDraFun with the item-specific drop callback.
+	const iteDraFun = ( poiEveObj : React.PointerEvent< HTMLElement >, curGroObj : TodGroTyp ) => { // What: Item Drag Function. Why: This is the actual pointerdown handler behind every EntCarCom's own grip within a group. How: This resolves the drag container/handle, then hands off to REO_NAM_OBJ.staDraFun with the item-specific drop callback.
 
 
-		const griCurEle = poiEveObj.currentTarget;                                      // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads poiEveObj.currentTarget.
-		const lisCurEle = griCurEle.closest( '[data-element-name-hook~="todLisDiv"]' ); // What: List Current Element. Why: This is the drag container REO_NAM_OBJ needs, scoped to this one group's own list. How: This walks up from griCurEle to its nearest todLisDiv ancestor.
-		const carCurEle = griCurEle.closest( '[data-element-name-hook~="todCarArt"]' ); // What: Card Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the item's own card), not just its grip. How: This walks up from griCurEle to its nearest todCarArt ancestor.
-		const misLisBoo = !lisCurEle;                                                   // What: Missing List Boolean. Why: A drag needs the group's own list as its container. How: This negates lisCurEle.
-		const misCarBoo = !carCurEle;                                                   // What: Missing Card Boolean. Why: A drag needs the whole card it moves, not just its grip. How: This negates carCurEle.
-		const misReoBoo = !REO_NAM_OBJ;                                                 // What: Missing Reorder Boolean. Why: A drag needs the shared reorder module to run it. How: This negates REO_NAM_OBJ.
+		const griCurEle = poiEveObj.currentTarget;                                                     // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads poiEveObj.currentTarget.
+		const lisCurEle = griCurEle.closest< HTMLElement >( '[data-element-name-hook~="todLisDiv"]' ); // What: List Current Element. Why: This is the drag container REO_NAM_OBJ needs, scoped to this one group's own list. How: This walks up from griCurEle to its nearest todLisDiv ancestor.
+		const carCurEle = griCurEle.closest< HTMLElement >( '[data-element-name-hook~="todCarArt"]' ); // What: Card Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the item's own card), not just its grip. How: This walks up from griCurEle to its nearest todCarArt ancestor.
+		const misLisBoo = !lisCurEle;                                                                  // What: Missing List Boolean. Why: A drag needs the group's own list as its container. How: This negates lisCurEle.
+		const misCarBoo = !carCurEle;                                                                  // What: Missing Card Boolean. Why: A drag needs the whole card it moves, not just its grip. How: This negates carCurEle.
+		const misReoBoo = !REO_NAM_OBJ;                                                                // What: Missing Reorder Boolean. Why: A drag needs the shared reorder module to run it. How: This negates REO_NAM_OBJ.
 
 		const misPreBoo = misLisBoo || misCarBoo || misReoBoo; // What: Missing Prerequisite Boolean. Why: A drag cannot start without all 3 of these. How: This is true when any one of them is missing.
 
@@ -1994,7 +2002,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	// #endregion Edit Mode
 
 
-	const [ genMapObj, setGenMapObj ] = React.useState( null ); // What: Generate Map Object And Setter. Why: Every LoaCarCom rendered during a regeneration needs its own live { canArr, ideStr, kinStr, staStr, texStr } record to read from. How: This is populated by genLisFun below and cleared once the cascade finishes.
+	const [ genMapObj, setGenMapObj ] = React.useState< Record< string, GenSloTyp > | null >( null ); // What: Generate Map Object And Setter. Why: Every LoaCarCom rendered during a regeneration needs its own live { canArr, ideStr, kinStr, staStr, texStr } record to read from. How: This is populated by genLisFun below and cleared once the cascade finishes.
 
 	const [ leaEntSet, setLeaEntSet ] = React.useState( () => new Set() );           // What: Leaving Entry Set And Setter. Why: A regenerate can drop an entry entirely (its own picker produced no new pick, e.g. its last eligible item just went inactive) without a loader card to cover it, so without this it would sit untouched through the whole generation and then blink out; this flags it to play the normal removal animation instead. How: This is staged by genLisFun below right before the commit and cleared right after.
 	const [ leaTasSet, setLeaTasSet ] = React.useState( () => new Set< string >() ); // What: Leaving Task Set And Setter. Why: A completed one-time reminder a Generate is about to purge needs the same played-out removal animation, on the reminder card itself, before actStoObj.setEntFun actually removes it. How: This is staged by genLisFun below and cleared right after, and is passed straight through to RemSecCom as its own leaTasSet prop.
@@ -2135,13 +2143,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		const daoCarArr = [];        // What: Day-Off Card Array. Why: One card per triggered conditional (first hit wins) is collected here before the commit. How: This is pushed to inside the main loop below.
-		const carShoSet = new Set(); // What: Card Shown Set. Why: Only the FIRST suppressed picker for a given conditional should surface its own day-off card. How: This is checked and added to inside the main loop below.
-		const empEasArr = [];        // What: Empty Ease Array. Why: One card per ease-up picker with nothing eligible today is collected here before the commit. How: This is pushed to inside the main loop below.
-		const newPicArr = [];        // What: New Pick Array. Why: Every fresh pick this generation actually produced is collected here before the commit. How: This is pushed to inside the main loop below.
+		const daoCarArr : EntDesTyp[]   = [];        // What: Day-Off Card Array. Why: One card per triggered conditional (first hit wins) is collected here before the commit. How: This is pushed to inside the main loop below.
+		const carShoSet : Set< string > = new Set(); // What: Card Shown Set. Why: Only the FIRST suppressed picker for a given conditional should surface its own day-off card. How: This is checked and added to inside the main loop below.
+		const empEasArr : EntDesTyp[]   = [];        // What: Empty Ease Array. Why: One card per ease-up picker with nothing eligible today is collected here before the commit. How: This is pushed to inside the main loop below.
 
-		const ordSloArr = []; // What: Ordered Slot Array. Why: Ordered animation slots (encounter order) let day-off/charging cards settle DURING the cascade alongside picks, instead of popping in at the final commit; each slot is keyed by the picker whose list position it occupies during the loader. How: This is pushed to inside the main loop below.
-		const carEntArr = []; // What: Carried Entry Array. Why: A cadence pick persisting from a prior day still needs its own encounter-order slot, wrapped so the commit step below can tell it apart from a fresh pick. How: This is pushed to inside the main loop below.
+		const newPicArr : { ideStr : string, perStr : string | null, picStr : string, resObj : PicResTyp }[] = []; // What: New Pick Array. Why: Every fresh pick this generation actually produced is collected here before the commit. How: This is pushed to inside the main loop below.
+
+		const ordSloArr : { infObj : GenSloTyp, picStr : string }[] = []; // What: Ordered Slot Array. Why: Ordered animation slots (encounter order) let day-off/charging cards settle DURING the cascade alongside picks, instead of popping in at the final commit; each slot is keyed by the picker whose list position it occupies during the loader. How: This is pushed to inside the main loop below.
+		const carEntArr : EntDesTyp[]                               = []; // What: Carried Entry Array. Why: A cadence pick persisting from a prior day still needs its own encounter-order slot, wrapped so the commit step below can tell it apart from a fresh pick. How: This is pushed to inside the main loop below.
 
 		const picNamSet = new Set< string >(); // What: Picked Name Set. Why: Item names already committed to today's list so far (lowercased) are fed to any avoidDuplicates picker below so it won't re-surface an item another picker already put on today's list; seeded with carried-over cadence picks (still "on the list" today, just not freshly picked), then grown as each fresh pick lands, in encounter order, matching "as it is being built" rather than checking against the final list. How: This is read by PIC_NAM_OBJ.picIteFun's own excludeNames option and added to throughout the loop below.
 
@@ -2383,7 +2392,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		const iniSloMap = {}; // What: Initial Slot Map. Why: Every slot must start pending, before the loop below flips each to active then settled in turn. How: This is populated just below from ordSloArr.
+		const iniSloMap : Record< string, GenSloTyp > = {}; // What: Initial Slot Map. Why: Every slot must start pending, before the loop below flips each to active then settled in turn. How: This is populated just below from ordSloArr.
 
 
 		for ( const curSloObj of ordSloArr ) iniSloMap[ curSloObj.picStr ] = { staStr : 'pending', ...curSloObj.infObj }; // What: Initial Slot Populate. Why: This is the actual per-slot seed every LoaCarCom reads from at the very start of the cascade. How: This writes one { status: 'pending', ...info } entry per ordSloArr member.
@@ -2400,7 +2409,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		if ( redMotFun() ) { // What: Reduced Motion Branch. Why: The picks are already fully computed above, so the pending-active-settled cascade is pure theatre for a user who won't perceive it as smooth anyway; this commits every slot straight to settled instead of making them wait genTotNum for a list that already exists. How: This builds and publishes an all-settled map immediately.
 
 
-			const finSloMap = {}; // What: Final Slot Map. Why: Every slot needs to land at 'settled' in one shot. How: This is populated just below from ordSloArr.
+			const finSloMap : Record< string, GenSloTyp > = {}; // What: Final Slot Map. Why: Every slot needs to land at 'settled' in one shot. How: This is populated just below from ordSloArr.
 
 
 			for ( const curSloObj of ordSloArr ) finSloMap[ curSloObj.picStr ] = { staStr : 'settled', ...curSloObj.infObj }; // What: Settled Slot Populate. Why: This is the actual all-settled map. How: This writes one { staStr: 'settled', ...infObj } entry per ordSloArr member.
@@ -2754,7 +2763,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const curEntArr = staAppObj.today.entries || [];                                                                                               // What: Current Entry Array. Why: The "already on screen" checks below need today's own current entries. How: This reads staAppObj.today.entries, falling back to an empty array.
 		const havPicSet = new Set( curEntArr.map( ( curEntObj ) => curEntObj.pickerId ).filter( Boolean ) );                                           // What: Have Picker Set. Why: A picker already represented by a real entry doesn't need a placeholder slot. How: This collects every current entry's own pickerId.
 		const havDaoSet = new Set( curEntArr.filter( ( curEntObj ) => curEntObj.kind === 'dayoff' ).map( ( curEntObj ) => curEntObj.conditionalId ) ); // What: Have Day-Off Set. Why: A day-off card carries a conditionalId instead of a pickerId, so its own "already on screen" check needs its own set. How: This collects every current day-off entry's own conditionalId.
-		const outMapObj = {}; // What: Out Map Object. Why: This is the actual { [groNamStr]: [picker, ...] } result being built. How: This is populated by the loop below and returned at the end.
+		const outMapObj : Record< string, PicRcdTyp[] > = {};                                                                                          // What: Out Map Object. Why: This is the actual { [groNamStr]: [picker, ...] } result being built. How: This is populated by the loop below and returned at the end.
 
 
 		for ( const picIdeStr of Object.keys( genMapObj ) ) { // What: Generating Picker Loop. Why: Every picker with an active generation slot is a candidate for a placeholder, unless it is already represented on screen. How: This walks every key in genMapObj, filtering out already-present pickers/day-offs.
@@ -3007,7 +3016,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const staTouFun = ( touKinStr, touIdeStr ) => { // What: Start Tour Function. Why: Every launcher card's own Play button (or row click) funnels through this one dispatcher, since which state it actually starts depends on touKinStr. How: This dispatches picker/pageTour/appFeature tours up to the app level, otherwise stages a local reminder mini-tour.
+	const staTouFun = ( touKinStr : string, touIdeStr : string ) => { // What: Start Tour Function. Why: Every launcher card's own Play button (or row click) funnels through this one dispatcher, since which state it actually starts depends on touKinStr. How: This dispatches picker/pageTour/appFeature tours up to the app level, otherwise stages a local reminder mini-tour.
 
 
 		if ( touKinStr === 'picker' ) onStaPicFun( touIdeStr ); // What: Picker Tour Branch. Why: A picker mini-tour runs at the app level, since its steps leave the Today tab. How: This calls onStaPicFun with the tour's own id.
@@ -3029,8 +3038,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	// #region Launcher Uncheck Handlers
 
-	const uncTutFun = ( touIdeStr ) => actStoObj.setCarFun( touIdeStr, null ); // What: Uncheck Tutorial Function. Why: This un-resolves an already-resolved launcher card (skipped/cancelled/finished) back to pending, so its mini-tour can be redone; it never touches the sample itself, see onboarding-checklist.ts. How: This calls actStoObj.setCarFun with a null patch.
-	const uncFeaFun = ( feaIdeStr ) => actStoObj.setFeaFun( feaIdeStr, null ); // What: Uncheck Feature Function. Why: Same idea as uncTutFun, but for App Features, which live in their own map rather than the checklist, see onboarding/app-features.tsx's own header comment for why. How: This calls actStoObj.setFeaFun with a null patch.
+	const uncTutFun = ( touIdeStr : string ) => actStoObj.setCarFun( touIdeStr, null ); // What: Uncheck Tutorial Function. Why: This un-resolves an already-resolved launcher card (skipped/cancelled/finished) back to pending, so its mini-tour can be redone; it never touches the sample itself, see onboarding-checklist.ts. How: This calls actStoObj.setCarFun with a null patch.
+	const uncFeaFun = ( feaIdeStr : string ) => actStoObj.setFeaFun( feaIdeStr, null ); // What: Uncheck Feature Function. Why: Same idea as uncTutFun, but for App Features, which live in their own map rather than the checklist, see onboarding/app-features.tsx's own header comment for why. How: This calls actStoObj.setFeaFun with a null patch.
 
 	// #endregion Launcher Uncheck Handlers
 

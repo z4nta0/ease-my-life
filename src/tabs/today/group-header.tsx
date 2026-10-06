@@ -36,7 +36,7 @@ import { LogChiCom } from './day-log.tsx';         // What: Log Chip Component. 
 
 // #region Components
 
-type GhcProTyp = { donCouNum : number, ediModBoo : boolean, groNamStr : string, logOpeBoo? : boolean, merPenObj? : { from : string, to : string } | null, onCanMerFun? : () => void, onConMerFun? : () => void, onGriDowFun? : ( poiEveObj : React.PointerEvent ) => void, onRenGroFun? : ( newValStr : string ) => void, onTogLogFun? : () => void, totCouNum : number, valNamFun? : ( rawValStr : string ) => string | null }; // What: Group-Header-Component Props Type. Why: A group header shows its progress and, in Edit Mode, renames and reorders its group, while the Reminders header uses only the basics. How: This types GroHeaCom's props, with every rename, merge, reorder, and log prop optional.
+type GhcProTyp = { donCouNum : number, ediModBoo : boolean, groNamStr : string, logOpeBoo? : boolean, merPenObj? : { from : string, to : string } | null, onCanMerFun? : () => void, onConMerFun? : () => void, onGriDowFun? : ( poiEveObj : React.PointerEvent< HTMLElement > ) => void, onRenGroFun? : ( newValStr : string ) => void, onTogLogFun? : () => void, totCouNum : number, valNamFun? : ( rawValStr : string ) => string | null }; // What: Group-Header-Component Props Type. Why: A group header shows its progress and, in Edit Mode, renames and reorders its group, while the Reminders header uses only the basics. How: This types GroHeaCom's props, with every rename, merge, reorder, and log prop optional.
 
 // #region GroHeaCom
 

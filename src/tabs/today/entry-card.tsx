@@ -43,7 +43,7 @@ import type { TodRowTyp } from './group-entries.ts';       // What: Today Row Ty
 
 // #region Components
 
-type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : string, ediModBoo : boolean, entRecObj : TodRowTyp[ 'entRecObj' ], isaEdiBoo : boolean, isaRmvBoo : boolean, isaRolBoo : boolean, jusCheStr : string | null, onGriDowFun : ( poiEveObj : React.PointerEvent ) => void, onPlaTutFun : ( kinStr : string, ideStr : string ) => void, onRenIteFun : ( curNamStr : string ) => void, onRerEntFun : ( entRecObj : TodRowTyp[ 'entRecObj' ], picRecObj : TodRowTyp[ 'picRecObj' ] ) => void, onSkiEntFun : ( entIdeStr : string ) => void, onTogDonFun : ( entRecObj : TodRowTyp[ 'entRecObj' ] ) => void, onTogEdiFun : () => void, onUncTutFun : ( ideStr : string ) => void, picRecObj : TodRowTyp[ 'picRecObj' ], staAppObj : StaAppTyp }; // What: Entry-Card-Component Props Type. Why: An entry card renders one Today row, a pick, day-off, charging, or tutorial card, with its check, skip, reroll, rename, and drag actions. How: This types EntCarCom's props, its entry and picker taken from the grouped row they come from.
+type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : string, ediModBoo : boolean, entRecObj : TodRowTyp[ 'entRecObj' ], isaEdiBoo : boolean, isaRmvBoo : boolean, isaRolBoo : boolean, jusCheStr : string | null, onGriDowFun : ( poiEveObj : React.PointerEvent< HTMLElement > ) => void, onPlaTutFun : ( kinStr : string, ideStr : string ) => void, onRenIteFun : ( curNamStr : string ) => void, onRerEntFun : ( entRecObj : TodRowTyp[ 'entRecObj' ], picRecObj : TodRowTyp[ 'picRecObj' ] ) => void, onSkiEntFun : ( entIdeStr : string ) => void, onTogDonFun : ( entRecObj : TodRowTyp[ 'entRecObj' ] ) => void, onTogEdiFun : () => void, onUncTutFun : ( ideStr : string ) => void, picRecObj : TodRowTyp[ 'picRecObj' ], staAppObj : StaAppTyp }; // What: Entry-Card-Component Props Type. Why: An entry card renders one Today row, a pick, day-off, charging, or tutorial card, with its check, skip, reroll, rename, and drag actions. How: This types EntCarCom's props, its entry and picker taken from the grouped row they come from.
 
 // #region EntCarCom
 
@@ -123,10 +123,10 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 		const neeAttBoo = !tutDonBoo && ONB_CHE_OBJ.reaPicFun( staAppObj ) === 0; // What: Needs Attention Boolean. Why: Only picker cards participate in the "at least one real picker" gate that blocks the closing Generate card, flagged with a visible cue rather than requiring a tap to discover. How: This is true only while this card is unresolved and no real picker exists yet.
 
 
-		const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this sample's own mini-tour. How: This checks for a click inside the actions area first, then dispatches to onUncTutFun or onPlaTutFun based on tutDonBoo.
+		const onRowCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this sample's own mini-tour. How: This checks for a click inside the actions area first, then dispatches to onUncTutFun or onPlaTutFun based on tutDonBoo.
 
 
-			if ( cliEveObj.target.closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside carActDiv.
+			if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside carActDiv. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on a card always lands on one.
 
 
 
@@ -328,14 +328,14 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 		const daoTitStr = entRecObj.pickerName ? `${ entRecObj.pickerName } · ${ entRecObj.condName || 'Day off' }` : 'Day off'; // What: Day-Off Title String. Why: The truncatable title tooltip needs the full "{picker} · {conditional}" text even when the visible row itself wraps or truncates it. How: This combines entRecObj's own pickerName/condName, falling back to a plain "Day off" when no picker name is recorded.
 
 
-		const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the row (other than its own actions area) should toggle done, but only outside Edit Mode and while not mid-removal. How: This checks both exclusion conditions first, then calls onTogDonFun.
+		const onRowCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Row Click Function. Why: Clicking anywhere on the row (other than its own actions area) should toggle done, but only outside Edit Mode and while not mid-removal. How: This checks both exclusion conditions first, then calls onTogDonFun.
 
 
 			if ( ediModBoo || isaRmvBoo ) return; // What: Busy Row Guard. Why: A row being dragged in Edit Mode, or already animating out, must not toggle. How: This bails out while ediModBoo or isaRmvBoo is true.
 
 
 
-			if ( cliEveObj.target.closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside carActDiv.
+			if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside carActDiv. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on a card always lands on one.
 
 
 
@@ -565,14 +565,14 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 		const disTipStr = 'This action is disabled for this type of item.'; // What: Disabled Tip String. Why: Every disabled action icon on this row shares the exact same explanation. How: This is passed as every InfTipCom's own label below.
 
 
-		const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the row (other than its own actions area) should toggle done, but only outside Edit Mode and while not mid-removal. How: This checks both exclusion conditions first, then calls onTogDonFun.
+		const onRowCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Row Click Function. Why: Clicking anywhere on the row (other than its own actions area) should toggle done, but only outside Edit Mode and while not mid-removal. How: This checks both exclusion conditions first, then calls onTogDonFun.
 
 
 			if ( ediModBoo || isaRmvBoo ) return; // What: Busy Row Guard. Why: A row being dragged in Edit Mode, or already animating out, must not toggle. How: This bails out while ediModBoo or isaRmvBoo is true.
 
 
 
-			if ( cliEveObj.target.closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside carActDiv.
+			if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside carActDiv. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on a card always lands on one.
 
 
 
@@ -847,18 +847,18 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 	// #endregion Completed Row Lockout
 
 
-	const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area or the name field) should toggle done, but only outside Edit Mode and while not mid-removal/mid-reroll. How: This checks all 3 exclusion conditions first, then calls onTogDonFun.
+	const onRowCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area or the name field) should toggle done, but only outside Edit Mode and while not mid-removal/mid-reroll. How: This checks all 3 exclusion conditions first, then calls onTogDonFun.
 
 
 		if ( ediModBoo || isaRmvBoo || isaRolBoo ) return; // What: Busy Row Guard. Why: A row being dragged in Edit Mode, or mid removal or reroll animation, must not toggle. How: This bails out while any of those three flags is true.
 
 
 
-		if ( cliEveObj.target.closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside carActDiv.
+		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside carActDiv. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on a card always lands on one.
 
 
 
-		if ( cliEveObj.target.closest( '[data-element-name-hook~="entNamInp"]' ) ) return; // What: Name Input Guard. Why: Clicking into the inline rename field must not toggle the row. How: This bails out when the click landed inside .entNamInp.
+		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="entNamInp"]' ) ) return; // What: Name Input Guard. Why: Clicking into the inline rename field must not toggle the row. How: This bails out when the click landed inside .entNamInp. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on a card always lands on one.
 
 
 

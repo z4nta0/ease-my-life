@@ -391,7 +391,7 @@ const ONB_EXA_OBJ : PicArgTyp = { // What: Onboarding Example Object. Why: This 
  *
 */
 
-const ONB_PCT_OBJ = { // What: Onboarding Picker-Card-Time Object. Why: This is the manually-timed card estimate table described above, keyed by sample picker id. How: This is read by whatever component renders a still-hidden sample picker's own mini-tour launcher card.
+const ONB_PCT_OBJ : Record< string, string > = { // What: Onboarding Picker-Card-Time Object. Why: This is the manually-timed card estimate table described above, keyed by sample picker id. How: This is read by whatever component renders a still-hidden sample picker's own mini-tour launcher card.
 
 
 	pkr_ob_coffee   : '2.5 min', // What: Picker Onboarding Coffee Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
@@ -445,7 +445,7 @@ const ONB_PCT_OBJ = { // What: Onboarding Picker-Card-Time Object. Why: This is 
  *
 */
 
-const ONB_RCT_OBJ = { // What: Onboarding Reminder-Card-Text Object. Why: This is the mini-tour launcher card copy override table described above, keyed by sample task id. How: This is read by reminders-section.tsx wherever a still-hidden sample task's own launcher card is rendered.
+const ONB_RCT_OBJ : Record< string, { kicStr? : string, namStr : string, timStr : string } > = { // What: Onboarding Reminder-Card-Text Object. Why: This is the mini-tour launcher card copy override table described above, keyed by sample task id. How: This is read by reminders-section.tsx wherever a still-hidden sample task's own launcher card is rendered.
 
 
 	tk_ob_meds  : { kicStr : 'One-Time',                    namStr : 'Set up a one time reminder', timStr : '< 1 min' }, // What: One-Time Reminder Entry. Why: This is the one-time sample reminder's own launcher-card copy. How: This is looked up by reminders-section.tsx keyed by tk_ob_meds, this sample task's own id.
