@@ -659,7 +659,7 @@ function isaStaFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : bo
 
 
 	const isaOncBoo = tasRcdObj.repeat === 'once';                   // What: Is-A Once Boolean. Why: Only a one-time task can go stale; a recurring one keeps coming back. How: This is true when tasRcdObj's own repeat is 'once'.
-	const lasDonBoo = tasRcdObj.lastDone;                            // What: Last Done Boolean. Why: A one-time task that was never completed hasn't served its purpose yet. How: This reads tasRcdObj's own lastDone date, truthy once the task has been completed.
+	const lasDonBoo = !!tasRcdObj.lastDone;                          // What: Last Done Boolean. Why: A one-time task that was never completed hasn't served its purpose yet. How: This is true once tasRcdObj has a lastDone date, meaning the task has been completed.
 	const othDayBoo = tasRcdObj.lastDone !== isoDayFun( cheDatObj ); // What: Other Day Boolean. Why: A task completed today must stay visible for the rest of the day. How: This is true when tasRcdObj's own lastDone differs from cheDatObj's own date key.
 
 	const isaStaBoo = isaOncBoo && lasDonBoo && othDayBoo; // What: Is-A Stale Boolean. Why: migrate.ts's own migStaFun() calls this to drop one-time tasks that have already served their purpose. How: This combines the three checks above, true only for a 'once' task completed on some other day.

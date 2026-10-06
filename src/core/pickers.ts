@@ -747,7 +747,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 
 			const forIdeStr = optConObj && optConObj.forceItemId; // What: Force Identifier String. Why: A manual send targets one specific item directly. How: This reads optConObj's own forceItemId, if any was given.
-			const picResObj = ( forIdeStr && itePooArr.find( ( curIteObj ) => curIteObj.id === forIdeStr ) ) || weiPicFun( itePooArr, ( curIteObj ) => Math.max( 0.0001, curIteObj.weight + curIteObj.value ) ); // What: Picked Result Object. Why: The forced item wins outright when given and actually found; otherwise the weighted draw picks proportionally to weight plus drift. How: This tries the forced lookup first, falling back to weiPicFun with a floored weight-plus-drift value.
+			const picResObj = ( ( forIdeStr && itePooArr.find( ( curIteObj ) => curIteObj.id === forIdeStr ) ) || weiPicFun( itePooArr, ( curIteObj ) => Math.max( 0.0001, curIteObj.weight + curIteObj.value ) ) )!; // What: Picked Result Object. Why: The forced item wins outright when given and actually found; otherwise the weighted draw picks proportionally to weight plus drift. How: This tries the forced lookup first, falling back to weiPicFun with a floored weight-plus-drift value. // What: Non-Null Note. Why: weiPicFun returns null only for an empty pool. How: The empty-pool guard above already returned, so the weighted draw always lands on an item.
 			const updIteArr = [];                                 // What: Update Item Array. Why: Every eligible item's own drift value changes as a side effect of this one pick, whether picked or not. How: This starts empty and is pushed to once per item in the loop below.
 
 
@@ -879,7 +879,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 			const getTimFun = ( curIteObj : IteRcdTyp ) => curIteObj.lastPicked ? Date.parse( curIteObj.lastPicked ) : 0; // What: Get Time Function. Why: A tie between equally-overdue items must break on whichever waited longest. How: This resolves an item's own lastPicked into a comparable timestamp, treating a never-picked item as the oldest possible (0).
 
 
-			const picResObj = forIteObj || eliIteArr.reduce( ( besIteObj, curIteObj ) => { // What: Picked Result Object. Why: A forced target wins outright; otherwise the most overdue eligible item (by value, ties broken by oldest lastPicked) is picked. How: This reduces eliIteArr, keeping whichever of besIteObj/curIteObj is more overdue by the rules in its own body.
+			const picResObj = ( forIteObj || eliIteArr.reduce< IteRcdTyp | null >( ( besIteObj, curIteObj ) => { // What: Picked Result Object. Why: A forced target wins outright; otherwise the most overdue eligible item (by value, ties broken by oldest lastPicked) is picked. How: This reduces eliIteArr, keeping whichever of besIteObj/curIteObj is more overdue by the rules in its own body. // What: Non-Null Note. Why: The reduce starts from null. How: The no-eligible guard above already returned unless an item is eligible or forced, so a pick always exists here.
 
 
 				if ( !besIteObj ) return curIteObj; // What: First Candidate Guard. Why: The very first item walked by the reduce has nothing yet to compare against. How: This seeds besIteObj with curIteObj on that first iteration.
@@ -893,7 +893,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 				return getTimFun( curIteObj ) < getTimFun( besIteObj ) ? curIteObj : besIteObj; // What: Oldest Timestamp Tiebreak Return. Why: Two equally-overdue items must break their tie on whichever has waited longest. How: This compares both items' own resolved timestamps via getTimFun, keeping the older one.
 
 
-			}, null );
+			}, null ) )!;
 
 
 
@@ -1121,7 +1121,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 
 
-			const choIteObj = ( forIdeStr && itePooArr.find( ( curIteObj ) => curIteObj.id === forIdeStr ) ) || weiPicFun( canIteArr, ( curIteObj ) => Math.max( 0, curIteObj.weight ?? 1 ) ); // What: Chosen Item Object. Why: A forced target wins outright when given and actually found; otherwise the new streak draws weighted by fairness weight. How: This tries the forced lookup first, falling back to weiPicFun against canIteArr.
+			const choIteObj = ( ( forIdeStr && itePooArr.find( ( curIteObj ) => curIteObj.id === forIdeStr ) ) || weiPicFun( canIteArr, ( curIteObj ) => Math.max( 0, curIteObj.weight ?? 1 ) ) )!; // What: Chosen Item Object. Why: A forced target wins outright when given and actually found; otherwise the new streak draws weighted by fairness weight. How: This tries the forced lookup first, falling back to weiPicFun against canIteArr. // What: Non-Null Note. Why: weiPicFun returns null only for an empty pool. How: canIteArr falls back to the whole non-empty pool, so the weighted draw always lands on an item.
 
 
 			for ( const curIteObj of updPooArr ) { // What: Fairness Bookkeeping Loop. Why: Every OTHER item's own fairness weight must climb by 1, including one skipped only for its name, and this happens only here, on a new-streak draw. How: This walks updPooArr, skipping the chosen item and pushing a weight+1 update for every other one.

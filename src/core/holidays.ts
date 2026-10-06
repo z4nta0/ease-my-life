@@ -372,7 +372,7 @@ function comYeaFun ( yeaValNum : number, couCodStr : string = 'US' ) : HolRcdTyp
 	return curRegObj.defArr.map( ( holDefObj ) => { // What: Holiday Record Map. Why: Every definition in the resolved region's table needs converting into one resolved holiday record. How: This maps curRegObj.defArr, computing each entry's actual and observed dates below.
 
 
-		const actDatObj = datDefFun( holDefObj, yeaValNum );                     // What: Actual Date Object. Why: Every record needs its true, un-shifted calendar date before any observed-day adjustment. How: This resolves holDefObj's own fixed/nth/last rule for yeaValNum via datDefFun.
+		const actDatObj = datDefFun( holDefObj, yeaValNum )!;                    // What: Actual Date Object. Why: Every record needs its true, un-shifted calendar date before any observed-day adjustment. How: This resolves holDefObj's own fixed/nth/last rule for yeaValNum via datDefFun. // What: Non-Null Note. Why: datDefFun returns null for a definition with no date rule. How: Every built-in definition carries exactly one of the three rules, so it always resolves.
 		const obsDatObj = holDefObj.fixArr ? obsDatFun( actDatObj ) : actDatObj; // What: Observed Date Object. Why: Only a fixed-date holiday can ever fall on a weekend and need the federal observed-day shift; a weekday-based rule never lands there. How: This applies obsDatFun only when holDefObj carries a fixArr rule, otherwise reuses actDatObj unshifted.
 
 

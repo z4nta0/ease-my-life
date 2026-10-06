@@ -107,7 +107,7 @@ const modProFun = ( modKeyStr : string ) => modKeyStr === 'random' || modKeyStr 
  *
 */
 
-const modValFun = ( modKeyStr : string ) : boolean => [ 'dynamic', 'ease-down', 'ease-up' ].includes( modKeyStr ); // What: Mode Value Function. Why: advValFun below, day-log.tsx, and store.ts all need to know whether a conditional's own mode is completion-driven instead of rolled. How: This is true for exactly the three value-family modes, ease-up, ease-down, and dynamic.
+const modValFun = ( modKeyStr : string | undefined ) : boolean => !!modKeyStr && [ 'dynamic', 'ease-down', 'ease-up' ].includes( modKeyStr ); // What: Mode Value Function. Why: advValFun below, day-log.tsx, and store.ts all need to know whether a conditional's own mode is completion-driven instead of rolled. How: This is true for exactly the three value-family modes, ease-up, ease-down, and dynamic.
 
 // #endregion modValFun
 

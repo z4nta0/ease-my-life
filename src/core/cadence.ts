@@ -3,10 +3,11 @@
 
 // #region Imports
 
-import { dimCouFun } from '../utils/date.ts'; // What: Days-In-Month Count Function. Why: Monthly and yearly anchors clamp to the month's real length. How: This is called with a year and 1-based month.
-import { isoDayFun } from '../utils/date.ts'; // What: Iso Day Function. Why: Period keys and generated log rows are local-calendar YYYY-MM-DD strings. How: This formats a Date as that key.
-import { nwmDayFun } from '../utils/date.ts'; // What: Nth-Weekday-Month Day Function. Why: An nth-weekday cadence needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
-import { ordSufFun } from '../utils/date.ts'; // What: Ordinal Suffix Function. Why: Cadence summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
+import { dimCouFun } from '../utils/date.ts';  // What: Days-In-Month Count Function. Why: Monthly and yearly anchors clamp to the month's real length. How: This is called with a year and 1-based month.
+import { isaIntFun } from '../utils/guard.ts'; // What: Is-An Integer Function. Why: Saved anchor fields may be missing, and normalizing them needs TypeScript to know a passing value is a number. How: This replaces Number.isInteger in every anchor check.
+import { isoDayFun } from '../utils/date.ts';  // What: Iso Day Function. Why: Period keys and generated log rows are local-calendar YYYY-MM-DD strings. How: This formats a Date as that key.
+import { nwmDayFun } from '../utils/date.ts';  // What: Nth-Weekday-Month Day Function. Why: An nth-weekday cadence needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
+import { ordSufFun } from '../utils/date.ts';  // What: Ordinal Suffix Function. Why: Cadence summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
 
 
 import type { CadNamTyp } from './data-model.ts'; // What: Cadence Name Type. Why: isaCadFun narrows a checked string to a real cadence. How: This is its type guard's target.
@@ -146,7 +147,7 @@ const midDatFun = ( inpDatObj : Date ) => new Date( inpDatObj.getFullYear(), inp
 function enfWeeFun ( picCadObj : CadFieTyp | null | undefined ) : number[] {
 
 
-	const dowSetArr = Array.isArray( picCadObj && picCadObj.daysOfWeek ) ? picCadObj.daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ]; // What: Day-Of-Week Set Array. Why: A missing or malformed daysOfWeek must still fall back to every day allowed. How: This keeps picCadObj's own daysOfWeek only when it's a real array, defaulting to all 7 days otherwise.
+	const dowSetArr = picCadObj && Array.isArray( picCadObj.daysOfWeek ) ? picCadObj.daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ]; // What: Day-Of-Week Set Array. Why: A missing or malformed daysOfWeek must still fall back to every day allowed. How: This keeps picCadObj's own daysOfWeek only when it's a real array, defaulting to all 7 days otherwise.
 
 
 
@@ -154,7 +155,7 @@ function enfWeeFun ( picCadObj : CadFieTyp | null | undefined ) : number[] {
 
 
 
-	const ancDowNum = Number.isInteger( picCadObj.anchorDow ) ? picCadObj.anchorDow : null; // What: Anchor Day-Of-Week Number. Why: The check below needs a real anchor day to compare against, not a possibly-missing one. How: This reads picCadObj's own anchorDow only when it's a real integer, null otherwise.
+	const ancDowNum = isaIntFun( picCadObj.anchorDow ) ? picCadObj.anchorDow : null; // What: Anchor Day-Of-Week Number. Why: The check below needs a real anchor day to compare against, not a possibly-missing one. How: This reads picCadObj's own anchorDow only when it's a real integer, null otherwise.
 
 
 	if ( ancDowNum === null || dowSetArr.includes( ancDowNum ) ) return dowSetArr; // What: Already-Included Guard. Why: With no real anchor day, or one already inside dowSetArr, there is nothing to add. How: This returns dowSetArr unchanged in either case.
@@ -193,7 +194,7 @@ function enfWeeFun ( picCadObj : CadFieTyp | null | undefined ) : number[] {
  *
 */
 
-const isaCadFun   = ( cadValStr : string ) : cadValStr is CadNamTyp => CAD_STR_ARR.includes( cadValStr ); // What: Is-A Cadence Function. Why: norCadFun needs to tell a real, already-valid cadence value apart from a missing or corrupted one. How: This checks cadValStr against CAD_STR_ARR.
+const isaCadFun   = ( cadValStr : string | undefined ) : cadValStr is CadNamTyp => !!cadValStr && CAD_STR_ARR.includes( cadValStr ); // What: Is-A Cadence Function. Why: norCadFun needs to tell a real, already-valid cadence value apart from a missing or corrupted one. How: This checks cadValStr against CAD_STR_ARR.
 
 // #endregion isaCadFun
 
@@ -238,14 +239,14 @@ function norCadFun ( picLikObj : CadFieTyp = {} ) : CadNorTyp {
 	return { // What: Normalized Cadence Object Return. Why: Every caller of norCadFun needs this exact same full set of fields back, whatever picLikObj did or didn't already have. How: This builds the object below from curCadStr, curDatObj, and picLikObj's own existing fields.
 
 
-		anchorDay   : Number.isInteger( picLikObj.anchorDay ) ? picLikObj.anchorDay : curDatObj.getDate(),          // What: Anchor Day. Why: A yearly cadence also needs its own chosen day within anchorMonth, defaulted to today's when not yet set. How: This keeps picLikObj's own anchorDay when it's a real integer, curDatObj's own date otherwise.
-		anchorDom   : Number.isInteger( picLikObj.anchorDom ) ? picLikObj.anchorDom : curDatObj.getDate(),          // What: Anchor Day-Of-Month. Why: A monthly cadence needs its own chosen day-of-month, defaulted to today's when not yet set. How: This keeps picLikObj's own anchorDom when it's a real integer, curDatObj's own date otherwise.
-		anchorDow   : Number.isInteger( picLikObj.anchorDow ) ? picLikObj.anchorDow : curDatObj.getDay(),           // What: Anchor Day-Of-Week. Why: A weekly cadence needs its own chosen weekday, defaulted to today's when not yet set. How: This keeps picLikObj's own anchorDow when it's a real integer, curDatObj's own weekday otherwise.
-		anchorMonth : Number.isInteger( picLikObj.anchorMonth ) ? picLikObj.anchorMonth : curDatObj.getMonth() + 1, // What: Anchor Month. Why: A yearly cadence needs its own chosen month, defaulted to today's when not yet set. How: This keeps picLikObj's own anchorMonth when it's a real integer, curDatObj's own 1-indexed month otherwise.
-		cadence     : curCadStr,                                                                                    // What: Cadence. Why: This is the already-validated/defaulted cadence value computed above. How: This is just curCadStr, computed above via isaCadFun.
-		dateMode    : picLikObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date',                                  // What: Date Mode. Why: Monthly/yearly cadences need to know whether a plain date or an nth-weekday rule decides the anchor day. How: This keeps 'nthWeekday' only when picLikObj already says so, 'date' otherwise.
-		nthOrdinal  : Number.isInteger( picLikObj.nthOrdinal ) ? picLikObj.nthOrdinal : 1,                          // What: Nth Ordinal. Why: Nth-weekday mode needs which occurrence (1st through 5th) to target. How: This keeps picLikObj's own nthOrdinal when it's a real integer, 1 otherwise.
-		nthWeekday  : Number.isInteger( picLikObj.nthWeekday ) ? picLikObj.nthWeekday : curDatObj.getDay()          // What: Nth Weekday. Why: Nth-weekday mode also needs which weekday to target. How: This keeps picLikObj's own nthWeekday when it's a real integer, curDatObj's own weekday otherwise.
+		anchorDay   : isaIntFun( picLikObj.anchorDay ) ? picLikObj.anchorDay : curDatObj.getDate(),          // What: Anchor Day. Why: A yearly cadence also needs its own chosen day within anchorMonth, defaulted to today's when not yet set. How: This keeps picLikObj's own anchorDay when it's a real integer, curDatObj's own date otherwise.
+		anchorDom   : isaIntFun( picLikObj.anchorDom ) ? picLikObj.anchorDom : curDatObj.getDate(),          // What: Anchor Day-Of-Month. Why: A monthly cadence needs its own chosen day-of-month, defaulted to today's when not yet set. How: This keeps picLikObj's own anchorDom when it's a real integer, curDatObj's own date otherwise.
+		anchorDow   : isaIntFun( picLikObj.anchorDow ) ? picLikObj.anchorDow : curDatObj.getDay(),           // What: Anchor Day-Of-Week. Why: A weekly cadence needs its own chosen weekday, defaulted to today's when not yet set. How: This keeps picLikObj's own anchorDow when it's a real integer, curDatObj's own weekday otherwise.
+		anchorMonth : isaIntFun( picLikObj.anchorMonth ) ? picLikObj.anchorMonth : curDatObj.getMonth() + 1, // What: Anchor Month. Why: A yearly cadence needs its own chosen month, defaulted to today's when not yet set. How: This keeps picLikObj's own anchorMonth when it's a real integer, curDatObj's own 1-indexed month otherwise.
+		cadence     : curCadStr,                                                                             // What: Cadence. Why: This is the already-validated/defaulted cadence value computed above. How: This is just curCadStr, computed above via isaCadFun.
+		dateMode    : picLikObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date',                           // What: Date Mode. Why: Monthly/yearly cadences need to know whether a plain date or an nth-weekday rule decides the anchor day. How: This keeps 'nthWeekday' only when picLikObj already says so, 'date' otherwise.
+		nthOrdinal  : isaIntFun( picLikObj.nthOrdinal ) ? picLikObj.nthOrdinal : 1,                          // What: Nth Ordinal. Why: Nth-weekday mode needs which occurrence (1st through 5th) to target. How: This keeps picLikObj's own nthOrdinal when it's a real integer, 1 otherwise.
+		nthWeekday  : isaIntFun( picLikObj.nthWeekday ) ? picLikObj.nthWeekday : curDatObj.getDay()          // What: Nth Weekday. Why: Nth-weekday mode also needs which weekday to target. How: This keeps picLikObj's own nthWeekday when it's a real integer, curDatObj's own weekday otherwise.
 
 
 	};
