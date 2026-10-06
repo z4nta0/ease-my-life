@@ -1,18 +1,29 @@
 
 
 
+// #region Imports
+
+import type { PicUpdTyp } from './pickers.ts'; // What: Pick Update Type. Why: A pending Today entry stores the pick's item updates as is. How: This types EntPenTyp's updates field.
+
+// #endregion Imports
+
+
+
 /**
  * data-model.ts = Data Model
  *
  * @summary
- * The TypeScript types for the records the app saves: items, pickers,
- * conditionals, reminders (tasks) and their options, holiday settings, and
- * pick-log rows, plus the fixed value sets several of their fields draw from.
- * They live in core/ because core/ is the lowest layer that reads these
- * records, and nothing below it may import from state/. Every field name is
- * the one saved in user data, so none of them follow the naming rule; renaming
- * them waits for the persisted-name migration. Fields only some records carry,
- * such as the ease band on items outside the ease modes, are optional.
+ * The TypeScript types for the app's saved state: StaAppTyp, the whole state
+ * object store.ts holds and storage.ts saves, and every record inside it, from
+ * items, pickers, conditionals, and reminders to Today's entries, the five
+ * history logs, and the settings for appearance, the daily generator,
+ * holidays, reminders, onboarding, and the UI, plus the fixed value sets
+ * several fields draw from. They live in core/ because core/ is the lowest
+ * layer that reads these records, and nothing below it may import from state/.
+ * Every field name is the one saved in user data, so none of them follow the
+ * naming rule; renaming them waits for the persisted-name migration. Fields
+ * only some records carry, such as the ease band on items outside the ease
+ * modes, are optional.
  *
  * Sections:
  *  - Types
@@ -26,12 +37,30 @@
 
 // #region Types
 
-type CadNamTyp = 'daily' | 'monthly' | 'weekly' | 'yearly';                    // What: Cadence Name Type. Why: A picker surfaces on one of four schedules. How: This lists every cadence a picker's own cadence field can hold.
-type DatModTyp = 'date' | 'nthWeekday';                                         // What: Date Mode Type. Why: A monthly or yearly schedule falls either on a day of the month or on the Nth weekday. How: This lists both dateMode values.
+type CadNamTyp = 'daily' | 'monthly' | 'weekly' | 'yearly';                   // What: Cadence Name Type. Why: A picker surfaces on one of four schedules. How: This lists every cadence a picker's own cadence field can hold.
+type CheStaTyp = 'cancelled' | 'finished' | 'pending' | 'skipped';            // What: Checklist Status Type. Why: Each onboarding step and App Features tutorial ends one of a few ways. How: This lists every status onboarding records.
+type DatModTyp = 'date' | 'nthWeekday';                                       // What: Date Mode Type. Why: A monthly or yearly schedule falls either on a day of the month or on the Nth weekday. How: This lists both dateMode values.
+type EntKinTyp = 'charging' | 'dayoff';                                       // What: Entry Kind Type. Why: Two kinds of Today card aren't ordinary picks. How: This lists them; an ordinary pick has no kind.
 type ModNamTyp = 'dynamic' | 'ease-down' | 'ease-up' | 'random' | 'weighted'; // What: Mode Name Type. Why: Pickers and conditionals share the same five ways of choosing. How: This lists every mode either one's own mode field can hold.
-type PclOutTyp = 'rejected' | 'skipped';                                        // What: Pick-Log Outcome Type. Why: A pick that never counted as done records why. How: This lists both values a pick-log row's own optional outcome can hold.
-type PclSouTyp = 'auto' | 'manual' | 'reroll';                                  // What: Pick-Log Source Type. Why: Stats breaks picks down by how each one was made. How: This lists every source a pick-log row records.
-type RepNamTyp = 'annual' | 'interval' | 'monthly' | 'once' | 'weekly';         // What: Repeat Name Type. Why: A reminder either happens once or repeats on one of four patterns. How: This lists every value a task's own repeat field can hold.
+type PclOutTyp = 'rejected' | 'skipped';                                      // What: Pick-Log Outcome Type. Why: A pick that never counted as done records why. How: This lists both values a pick-log row's own optional outcome can hold.
+type PclSouTyp = 'auto' | 'manual' | 'reroll';                                // What: Pick-Log Source Type. Why: Stats breaks picks down by how each one was made. How: This lists every source a pick-log row records.
+type RemKinTyp = 'once' | 'recurring';                                        // What: Reminder Kind Type. Why: Reminder logs split one-time from recurring reminders. How: This lists both classes.
+type RepNamTyp = 'annual' | 'interval' | 'monthly' | 'once' | 'weekly';       // What: Repeat Name Type. Why: A reminder either happens once or repeats on one of four patterns. How: This lists every value a task's own repeat field can hold.
+
+
+
+type CdlRowTyp = { // What: Conditional-Log Row Type. Why: Stats charts how often each conditional triggered. How: This describes one entry of state.conditionalLog.
+
+
+	condId    : string;    // What: Conditional Id. Why: A row belongs to one conditional. How: This is its id.
+	date      : string;    // What: Date. Why: Stats groups rows by day. How: This is the 'YYYY-MM-DD' day it was resolved for.
+	id        : string;    // What: Id. Why: Every row needs its own identity. How: This is its unique identifier.
+	mode      : ModNamTyp; // What: Mode. Why: The row has to read correctly after the conditional changes mode. How: This copies its mode at the time.
+	name      : string;    // What: Name. Why: The row has to read correctly after a rename or delete. How: This copies the conditional's name at the time.
+	triggered : boolean;   // What: Triggered. Why: Stats counts days off. How: This is true when the conditional triggered that day.
+
+
+};
 
 
 
@@ -54,6 +83,48 @@ type ConRcdTyp = { // What: Conditional Record Type. Why: A conditional is the d
 	triggered    : boolean;                                                                               // What: Triggered. Why: Today's generation needs to know whether the gate is closed. How: This is true while the conditional suppresses its pickers.
 	value        : number;                                                                                // What: Value. Why: The ease and dynamic modes track their own drifting charge. How: This holds that charge.
 	weight       : number;                                                                                // What: Weight. Why: The weighted modes scale the trigger chance. How: This is that weight.
+
+
+};
+
+
+
+type CusPalTyp = { // What: Custom Palette Type. Why: A custom theme is built from three chosen colors. How: This describes appearance.customLight or appearance.customDark.
+
+
+	accent  : string;  // What: Accent. Why: Actions and selection use the accent color. How: This is that color as hex.
+	bg      : string;  // What: Background. Why: The page sits on the background color. How: This is that color as hex.
+	derived : boolean; // What: Derived. Why: Editing one custom theme fills in the other by inverting it. How: This is true on the filled-in one, until edited directly.
+	name?   : string;  // What: Name. Why: A user can rename their custom theme. How: This is the name, absent until renamed.
+	text    : string;  // What: Text. Why: Body text uses the text color. How: This is that color as hex.
+
+
+};
+
+
+
+type AppSetTyp = { // What: Appearance Settings Type. Why: The theme, animations, and tab bar placement are the user's to choose. How: This describes state.appearance.
+
+
+	autoSystem      : boolean;          // What: Auto System. Why: The theme can follow the device's light or dark mode. How: This is true while it does.
+	completionStyle : string;           // What: Completion Style. Why: Finishing the day plays the celebration the user picked. How: This names it, e.g. 'confetti'.
+	customDark      : CusPalTyp | null; // What: Custom Dark. Why: A user can build their own dark theme. How: This holds it, or null until set up.
+	customLight     : CusPalTyp | null; // What: Custom Light. Why: A user can build their own light theme. How: This holds it, or null until set up.
+	pickAnim        : string;           // What: Pick Animation. Why: A pick plays the animation the user picked. How: This names it, e.g. 'reel'.
+	tabPlacement    : string;           // What: Tab Placement. Why: The tab bar can sit at the bottom, top, or side. How: This names where.
+	theme           : string;           // What: Theme. Why: The app is drawn in the user's chosen palette. How: This names it, e.g. 'ink' or 'customDark'.
+
+
+};
+
+
+
+type DaiSetTyp = { // What: Daily Settings Type. Why: The daily generator runs chosen pickers at a chosen time. How: This describes state.daily.
+
+
+	mode      : string;   // What: Mode. Why: The list can generate automatically or only on request. How: This names which, e.g. 'auto'.
+	pickerIds : string[]; // What: Picker Ids. Why: Only chosen pickers join the daily list. How: This lists their ids.
+	runTime   : string;   // What: Run Time. Why: The automatic run happens at a set time. How: This is that time as 'HH:MM'.
 
 
 };
@@ -90,6 +161,39 @@ type IteRcdTyp = { // What: Item Record Type. Why: An item is one choice in a pi
 	vacation    : boolean;       // What: Vacation. Why: A deactivated item stays saved but is never picked. How: This is true while the item is switched off.
 	value       : number;        // What: Value. Why: The dynamic and ease modes track a drifting charge per item. How: This holds that charge.
 	weight      : number;        // What: Weight. Why: The weighted modes favor heavier items. How: This is the item's own weight.
+
+
+};
+
+
+
+type EntRevTyp = { // What: Entry Revert Type. Why: Unchecking a completed entry has to undo exactly what completing it did. How: This describes the snapshot taken when entry.pending was applied, entry.revert.
+
+
+	activeItemId?  : string | null;                                                                          // What: Active Item Id. Why: An applied picker patch may have moved the active item. How: This holds the picker's previous one.
+	items          : Pick< IteRcdTyp, 'chargeStep' | 'id' | 'lastPicked' | 'picks' | 'value' | 'weight' >[]; // What: Items. Why: Every touched item needs its old values back. How: This holds each one's fields as they were.
+	lastRunPeriod? : string | null;                                                                          // What: Last Run Period. Why: A non-daily run records its period on completion. How: This holds the picker's previous one.
+	pickerId       : string | null;                                                                          // What: Picker Id. Why: The undo has to know which picker to restore. How: This is the entry's picker id.
+
+
+};
+
+
+
+type OnbStaTyp = { // What: Onboarding State Type. Why: The tours and setup checklist remember where the user is. How: This describes state.onboarding.
+
+
+	activeTour                 : { id : string, step : number } | null;    // What: Active Tour. Why: A reload resumes a running tour. How: This holds its id and step, or null.
+	appFeatures                : Record< string, { status : CheStaTyp } >; // What: App Features. Why: Each App Features tutorial is done, skipped, or still open. How: This maps each feature id to its status.
+	appFeaturesEverCompleted   : boolean;                                  // What: App Features Ever Completed. Why: The section's celebration plays only once. How: This is true once every feature has been resolved.
+	appFeaturesIntroSeen       : boolean;                                  // What: App Features Intro Seen. Why: The section's intro shows only once. How: This is true once seen.
+	appFeaturesSectionResolved : boolean;                                  // What: App Features Section Resolved. Why: A finished section leaves Today. How: This is true once it has.
+	checklist                  : Record< string, { status : CheStaTyp } >; // What: Checklist. Why: Each setup step and sample is done, skipped, or still open. How: This maps each step id to its status.
+	checklistDone              : boolean;                                  // What: Checklist Done. Why: A finished checklist leaves Today. How: This is true once it has.
+	dismissed                  : boolean;                                  // What: Dismissed. Why: The user can wave onboarding away. How: This is true once they have.
+	generateScrollPending      : boolean;                                  // What: Generate Scroll Pending. Why: The first generated list scrolls into view once. How: This is true until it has.
+	pageToursName              : string;                                   // What: Page Tours Name. Why: The page tours' group shows under a name. How: This is that name.
+	welcomed                   : boolean;                                  // What: Welcomed. Why: The welcome modal shows only to a new user. How: This is true once shown.
 
 
 };
@@ -150,6 +254,20 @@ type PicRcdTyp = { // What: Picker Record Type. Why: A picker is a pool of items
 
 
 
+type EntPenTyp = { // What: Entry Pending Type. Why: A pick's effects wait until its entry is checked off, so nothing changes for a pick the user never does. How: This describes an entry's staged effects, entry.pending.
+
+
+	bumpPick?    : boolean;              // What: Bump Pick. Why: A completed pick counts toward its item's picks and lastPicked. How: This is true when completing should bump them.
+	depletedEnd? : boolean;              // What: Depleted End. Why: An Ease Down streak that runs out is marked on its log row. How: This is true when completing ends one.
+	pickedId?    : string;               // What: Picked Id. Why: The bump applies to the item actually picked. How: This is that item's id.
+	pickerPatch? : Partial< PicRcdTyp >; // What: Picker Patch. Why: Ease Down tracks its active item on the picker. How: This holds that picker update.
+	updates      : PicUpdTyp[];          // What: Updates. Why: A pick can change other items' charge or weight. How: This lists every change to apply on completion.
+
+
+};
+
+
+
 type RemClaTyp = { // What: Reminder Class Type. Why: One-time and recurring reminders each have their own switches. How: This describes one class's options, state.reminderOpts.once or .recurring.
 
 
@@ -165,6 +283,34 @@ type RemClaTyp = { // What: Reminder Class Type. Why: One-time and recurring rem
 
 
 type RemOptTyp = { once : RemClaTyp, recurring : RemClaTyp }; // What: Reminder Options Type. Why: Reminders follow per-class switches set in Settings. How: This describes state.reminderOpts, one RemClaTyp per class.
+
+
+
+type RmlRowTyp = { // What: Reminder-Log Row Type. Why: Stats counts completed reminders. How: This describes one entry of state.reminderLog, with the name copied in so it survives a rename or delete.
+
+
+	completedAt : string;    // What: Completed At. Why: Stats places a completion in time. How: This is its ISO timestamp.
+	name        : string;    // What: Name. Why: The row has to read correctly after a rename or delete. How: This copies the reminder's name at the time.
+	rowId       : string;    // What: Row Id. Why: Every row needs its own identity. How: This is its unique identifier.
+	taskId      : string;    // What: Task Id. Why: A row belongs to one reminder. How: This is its id.
+	type        : RemKinTyp; // What: Type. Why: Stats splits one-time from recurring reminders. How: This names which.
+
+
+};
+
+
+
+type RslRowTyp = { // What: Reminder-Skip-Log Row Type. Why: Stats counts skipped reminders. How: This describes one entry of state.reminderSkipLog.
+
+
+	name      : string;    // What: Name. Why: The row has to read correctly after a rename or delete. How: This copies the reminder's name at the time.
+	rowId     : string;    // What: Row Id. Why: Every row needs its own identity. How: This is its unique identifier.
+	skippedAt : string;    // What: Skipped At. Why: Stats places a skip in time. How: This is its ISO timestamp.
+	taskId    : string;    // What: Task Id. Why: A row belongs to one reminder. How: This is its id.
+	type      : RemKinTyp; // What: Type. Why: Stats splits one-time from recurring reminders. How: This names which.
+
+
+};
 
 
 
@@ -193,13 +339,105 @@ type TasRcdTyp = { // What: Task Record Type. Why: A reminder is a scheduled tas
 
 };
 
+
+
+type TodEntTyp = { // What: Today Entry Type. Why: Each card on Today is one entry, a pick or a day-off card. How: This describes one entry of state.today.entries.
+
+
+	cardText?      : string;           // What: Card Text. Why: A day-off card shows its conditional's text. How: This is that text, day-off cards only.
+	condName?      : string;           // What: Conditional Name. Why: A day-off card names its conditional. How: This copies the name, day-off cards only.
+	conditionalId? : string;           // What: Conditional Id. Why: Completing a day-off card resets its conditional. How: This is its id, day-off cards only.
+	done           : boolean;          // What: Done. Why: The card can be checked off. How: This is true once it is.
+	eid            : string;           // What: Entry Identifier. Why: Log rows and edits refer to an entry by it. How: This is its unique id.
+	group?         : string;           // What: Group. Why: A card without a picked item still sits in its picker's group. How: This copies the group, on charging and day-off cards.
+	itemId         : string | null;    // What: Item Id. Why: A pick card shows its item. How: This is the item's id, or null on a card without one.
+	kind?          : EntKinTyp;        // What: Kind. Why: Charging and day-off cards render differently from picks. How: This names the kind, absent on an ordinary pick.
+	pending        : EntPenTyp | null; // What: Pending. Why: A pick's effects wait until it's checked off. How: This holds them, or null.
+	periodKey?     : string;           // What: Period Key. Why: A non-daily pick belongs to one period. How: This is that period's start day.
+	pickerId       : string | null;    // What: Picker Id. Why: A card belongs to one picker. How: This is its id, or null on a card without one.
+	pickerName?    : string;           // What: Picker Name. Why: A day-off card names its picker. How: This copies the name, day-off cards only.
+	revert         : EntRevTyp | null; // What: Revert. Why: Unchecking undoes what checking applied. How: This holds that snapshot, or null.
+	skipped        : boolean;          // What: Skipped. Why: A card can be skipped for the day. How: This is true once it is.
+
+
+};
+
+
+
+type TodStaTyp = { // What: Today State Type. Why: Today's list is generated once per day and kept. How: This describes state.today.
+
+
+	date          : string;                                                                               // What: Date. Why: A new day starts a new list. How: This is the day the list belongs to.
+	entries       : TodEntTyp[];                                                                          // What: Entries. Why: The list is made of cards. How: This lists them in order.
+	generatedAt   : string | null;                                                                        // What: Generated At. Why: The list is generated at most once a day. How: This is the last generation's ISO timestamp.
+	genLog?       : { conds : Record< string, Partial< ConRcdTyp > >, items : Record< string, number > }; // What: Generation Log. Why: The Day Log shows each item's and conditional's state at generation. How: This snapshots them, keyed by id.
+	streakClaimed : boolean;                                                                              // What: Streak Claimed. Why: A finished day counts toward the streak once. How: This is true once today has.
+
+
+};
+
+
+
+type UiStaTyp = { // What: UI State Type. Why: A few display choices persist between visits. How: This describes state.ui.
+
+
+	controlsCollapsed : Record< string, boolean >; // What: Controls Collapsed. Why: Data tab sections stay as the user left them. How: This maps each section key to whether it's collapsed.
+	dataSort?         : Record< string, string >;  // What: Data Sort. Why: Each Data tab list keeps its chosen sort. How: This maps each list to its sort key.
+
+
+};
+
+
+
+type VclRowTyp = { // What: Vacation-Log Row Type. Why: Stats leaves days an item was deactivated out of its numbers. How: This describes one entry of state.vacationLog.
+
+
+	date   : string;  // What: Date. Why: A switch happens on a day. How: This is that 'YYYY-MM-DD' day.
+	itemId : string;  // What: Item Id. Why: A row belongs to one item. How: This is its id.
+	on     : boolean; // What: On. Why: An item can be switched off and back on. How: This is true when it was deactivated.
+
+
+};
+
+
+
+type StaAppTyp = { // What: State App Type. Why: The whole app runs on one saved state object. How: This describes it, as store.ts holds it and storage.ts saves it.
+
+
+	_easeDownWeightsInit? : boolean;     // What: Ease Down Weights Init. Why: A one-time migration seeded Ease Down's fairness weights. How: This is true once it has run.
+	_remStatsDefaultOn?   : boolean;     // What: Reminder Stats Default On. Why: A one-time migration turned reminder stats on. How: This is true once it has run.
+	_taskIntervalReset?   : boolean;     // What: Task Interval Reset. Why: A one-time migration reset stale reminder intervals. How: This is true once it has run.
+	appearance            : AppSetTyp;   // What: Appearance. Why: The user's theme and display choices. How: This holds them.
+	conditionalLog        : CdlRowTyp[]; // What: Conditional Log. Why: Stats charts conditionals over time. How: This holds every row.
+	conditionals          : ConRcdTyp[]; // What: Conditionals. Why: Day-off gates suppress pickers. How: This lists them.
+	daily                 : DaiSetTyp;   // What: Daily. Why: The generator runs on a schedule. How: This holds its settings.
+	groupOrder            : string[];    // What: Group Order. Why: Today shows groups in the user's order. How: This lists group names in order.
+	holidays              : HolStaTyp;   // What: Holidays. Why: Holiday skipping needs the user's holiday settings. How: This holds them.
+	items                 : IteRcdTyp[]; // What: Items. Why: Every picker's pool lives here. How: This lists every item.
+	onboarding            : OnbStaTyp;   // What: Onboarding. Why: Tours and the checklist remember progress. How: This holds it.
+	pickerOrder           : string[];    // What: Picker Order. Why: Pickers show in the user's order. How: This lists them in order.
+	pickers               : PicRcdTyp[]; // What: Pickers. Why: Pickers choose what to do. How: This lists them.
+	pickLog               : PclRowTyp[]; // What: Pick Log. Why: Stats charts picks over time. How: This holds every row.
+	reminderLog           : RmlRowTyp[]; // What: Reminder Log. Why: Stats counts completed reminders. How: This holds every row.
+	reminderOpts          : RemOptTyp;   // What: Reminder Options. Why: Reminders follow per-class switches. How: This holds them.
+	reminderSkipLog       : RslRowTyp[]; // What: Reminder Skip Log. Why: Stats counts skipped reminders. How: This holds every row.
+	streak                : number;      // What: Streak. Why: Finishing days in a row builds a streak. How: This is its length in days.
+	tasks                 : TasRcdTyp[]; // What: Tasks. Why: Reminders are scheduled tasks. How: This lists them.
+	today                 : TodStaTyp;   // What: Today. Why: Today's list is kept for the day. How: This holds it.
+	ui                    : UiStaTyp;    // What: UI. Why: A few display choices persist. How: This holds them.
+	v                     : number;      // What: Version. Why: The saved shape changes over time. How: This is the save format's version.
+	vacationLog           : VclRowTyp[]; // What: Vacation Log. Why: Stats leaves deactivated days out. How: This holds every row.
+
+
+};
+
 // #endregion Types
 
 
 
 // #region Exports
 
-export { type CadNamTyp, type ConRcdTyp, type DatModTyp, type HolCusTyp, type HolStaTyp, type IteRcdTyp, type ModNamTyp, type PclOutTyp, type PclRowTyp, type PclSouTyp, type PicRcdTyp, type RemClaTyp, type RemOptTyp, type RepNamTyp, type TasRcdTyp }; // What: Named Type Exports. Why: core/, state/, and the UI all read the same saved records. How: This exports every record type and value set by name, each marked type so it disappears from the build.
+export { type AppSetTyp, type CadNamTyp, type CdlRowTyp, type CheStaTyp, type ConRcdTyp, type CusPalTyp, type DaiSetTyp, type DatModTyp, type EntKinTyp, type EntPenTyp, type EntRevTyp, type HolCusTyp, type HolStaTyp, type IteRcdTyp, type ModNamTyp, type OnbStaTyp, type PclOutTyp, type PclRowTyp, type PclSouTyp, type PicRcdTyp, type RemClaTyp, type RemKinTyp, type RemOptTyp, type RepNamTyp, type RmlRowTyp, type RslRowTyp, type StaAppTyp, type TasRcdTyp, type TodEntTyp, type TodStaTyp, type UiStaTyp, type VclRowTyp }; // What: Named Type Exports. Why: core/, state/, and the UI all read the same saved records. How: This exports every record type and value set by name, each marked type so it disappears from the build.
 
 // #endregion Exports
 
