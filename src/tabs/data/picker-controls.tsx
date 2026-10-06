@@ -909,7 +909,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 									checked={ modSelBoo }
 									type='radio'
 
-									onChange={ () => patPicFun( { mode : modKeyStr as ModNamTyp } ) } // What: On Change Handler. Why: Choosing a mode radio selects that mode on the draft. How: This patches mode with modKeyStr, asserted as a mode name since Object.entries types its keys as plain strings.
+									onChange={ () => patPicFun( { mode : modKeyStr as ModNamTyp } ) } // What: On Change Handler. Why: Choosing a mode radio selects that mode on the draft. How: This patches mode with modKeyStr. // What: Type Assertion Note. Why: Object.entries types its keys as plain strings. How: modKeyStr is read as a mode name, since it comes from the mode table's own keys.
 								/>{ /* What: Mode Option Input Element. Why: This is the actual selectable control for this mode. How: This is checked when modSelBoo is true and commits modKeyStr as the picker's own mode on change. */ }
 
 								<span
@@ -1258,7 +1258,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 									aria-label='Cadence'
 
-									onChange={ ( chaEveObj ) => patPicFun( { cadence : chaEveObj.target.value as CadNamTyp } ) } // What: On Change Handler. Why: Choosing a cadence option sets the draft's cadence. How: This patches cadence with the select's value, asserted as a cadence name since a select's value is a plain string.
+									onChange={ ( chaEveObj ) => patPicFun( { cadence : chaEveObj.target.value as CadNamTyp } ) } // What: On Change Handler. Why: Choosing a cadence option sets the draft's cadence. How: This patches cadence with the select's value. // What: Type Assertion Note. Why: A select's value is typed as a plain string. How: It's read as a cadence name, since every option the select offers is one.
 								>{ /* What: Cadence Select Element. Why: This is the top-level "how often" choice. How: This commits its own value directly as the picker's own cadence field. */ }
 
 
@@ -1315,7 +1315,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 										aria-label='Day selection'
 
-										onChange={ ( chaEveObj ) => patPicFun( { dateMode : chaEveObj.target.value as DatModTyp } ) } // What: On Change Handler. Why: Choosing a date mode sets how the draft's day is counted. How: This patches dateMode with the select's value, asserted as a date mode since a select's value is a plain string.
+										onChange={ ( chaEveObj ) => patPicFun( { dateMode : chaEveObj.target.value as DatModTyp } ) } // What: On Change Handler. Why: Choosing a date mode sets how the draft's day is counted. How: This patches dateMode with the select's value. // What: Type Assertion Note. Why: A select's value is typed as a plain string. How: It's read as a date mode, since every option the select offers is one.
 									>{ /* What: Date Mode Select Element. Why: This is the switch between anchoring to a fixed date vs. an nth weekday. How: This commits its own value directly as the picker's own dateMode field. */ }
 
 

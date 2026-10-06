@@ -287,7 +287,7 @@ function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >
 		const patValObj : Record< string, unknown > = {}; // What: Patch Value Object. Why: Every changed field other than the name commits through one updTasFun call. How: This starts empty and gains each changed field below.
 
 
-		( Object.keys( draRcdObj ) as ( keyof TasRcdTyp )[] ).forEach( ( fieKeyStr ) => { if ( fieKeyStr !== 'name' && JSON.stringify( draRcdObj[ fieKeyStr ] ) !== JSON.stringify( oriRcdObj[ fieKeyStr ] ) ) patValObj[ fieKeyStr ] = draRcdObj[ fieKeyStr ]; } ); // What: Changed Fields Loop. Why: Only fields the user actually changed may be written, leaving any the app changed meanwhile alone. How: This copies each differing field (arrays such as the weekdays compared by value) into patValObj, reading the draft's keys as reminder keys since Object.keys types them as plain strings.
+		( Object.keys( draRcdObj ) as ( keyof TasRcdTyp )[] ).forEach( ( fieKeyStr ) => { if ( fieKeyStr !== 'name' && JSON.stringify( draRcdObj[ fieKeyStr ] ) !== JSON.stringify( oriRcdObj[ fieKeyStr ] ) ) patValObj[ fieKeyStr ] = draRcdObj[ fieKeyStr ]; } ); // What: Changed Fields Loop. Why: Only fields the user actually changed may be written, leaving any the app changed meanwhile alone. How: This copies each differing field (arrays such as the weekdays compared by value) into patValObj. // What: Type Assertion Note. Why: Object.keys types its keys as plain strings. How: The draft's keys are read as reminder keys, since the draft is a reminder record.
 
 
 
@@ -295,7 +295,7 @@ function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >
 
 
 
-		if ( Object.keys( patValObj ).length ) tarActObj.updTasFun( oriRcdObj.id, patValObj as Partial< TasRcdTyp > ); // What: Changed Fields Guard. Why: The schedule edits must be written together. How: This calls updTasFun only when patValObj holds something, passing it as a reminder patch since it was copied field by field from the draft.
+		if ( Object.keys( patValObj ).length ) tarActObj.updTasFun( oriRcdObj.id, patValObj as Partial< TasRcdTyp > ); // What: Changed Fields Guard. Why: The schedule edits must be written together. How: This calls updTasFun only when patValObj holds something. // What: Type Assertion Note. Why: patValObj is built up as a loose object. How: It's passed as a reminder patch, since every field in it was copied from the reminder draft.
 
 
 	};

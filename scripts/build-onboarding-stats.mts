@@ -356,7 +356,7 @@ const buiRemFun = ( todDatObj : Date ) : { remLogArr : RawStaTyp[ 'reminderLog' 
 const simDatFun = () : RawStaTyp => { // What: Simulate Data Function. Why: A normal run writes freshly simulated history. How: This builds the records, runs the simulator, and assembles the three logs.
 
 
-	const { hisRowArr } = SED_NAM_OBJ.picLogFun( buiIteFun() as IteRcdTyp[], buiPicFun() as PicRcdTyp[], () => false, 365 ); // What: History Row Array. Why: This is the simulated year of pick-log rows, still dated. How: This runs the simulator over 365 days, with a vacation check that always says no, passing the rebuilt records as whole ones since it reads only the fields they carry.
+	const { hisRowArr } = SED_NAM_OBJ.picLogFun( buiIteFun() as IteRcdTyp[], buiPicFun() as PicRcdTyp[], () => false, 365 ); // What: History Row Array. Why: This is the simulated year of pick-log rows, still dated. How: This runs the simulator over 365 days, with a vacation check that always says no. // What: Type Assertion Note. Why: The rebuilt items and pickers are typed as partial records. How: They're read as whole ones, since the simulator only reads the fields they carry.
 
 	const todDatObj = new Date(); // What: Today Date Object. Why: Every day offset is measured from today. How: This reads now, floored to midnight on the next line.
 

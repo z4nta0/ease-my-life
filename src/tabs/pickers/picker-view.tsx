@@ -434,7 +434,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 		const newIdeStr = 'it_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: New Identifier String. Why: The new draft item needs a stable, unique-enough id before it's ever committed to the store. How: This builds a short random suffix onto the conventional 'it_' item-id prefix.
 
 
-		setNewDraObj( { // What: New Draft Seed Call. Why: The freshly-opened editor needs a complete, sensible default item shape to start from. How: This seeds a full charge default for Ease Down (matching addPicFun's own iniValNum) and a zeroed one otherwise, asserted as an item since the store fills in its saved-only fields when the draft is committed.
+		setNewDraObj( { // What: New Draft Seed Call. Why: The freshly-opened editor needs a complete, sensible default item shape to start from. How: This seeds a full charge default for Ease Down (matching addPicFun's own iniValNum) and a zeroed one otherwise. // What: Type Assertion Note. Why: The draft lacks the fields only a saved item has. How: It's read as an item, since the store fills those in when the draft is committed.
 
 
 			easeMax  : 14,                                                                  // What: Ease Max. Why: Ease items start with a default latest end. How: This is 14.

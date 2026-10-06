@@ -963,7 +963,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 			try { // What: Backup Parse Try. Why: Arbitrary file contents may not be valid JSON, or may not be a real backup. How: This wraps parsing and validation so the catch below can report either failure.
 
 
-				const impDatObj = JSON.parse( filReaObj.result as string ); // What: Import Data Object. Why: A backup file's own contents must be valid JSON before anything else can happen. How: This parses filReaObj's own result string.
+				const impDatObj = JSON.parse( filReaObj.result as string ); // What: Import Data Object. Why: A backup file's own contents must be valid JSON before anything else can happen. How: This parses filReaObj's own result string. // What: Type Assertion Note. Why: A FileReader's result is typed as a string or an ArrayBuffer. How: It's read as a string, since the file is read with readAsText.
 
 
 				if ( !impDatObj || !Array.isArray( impDatObj.pickers ) ) throw new Error( 'Not an Ease My Life backup.' ); // What: Shape Validation Guard. Why: Arbitrary JSON that merely parses is not necessarily a real backup. How: This throws, routing to the catch below, whenever the parsed object is missing or has no real pickers array.

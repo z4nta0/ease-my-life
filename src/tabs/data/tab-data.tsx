@@ -735,7 +735,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 			group           : filGroStr !== 'all' ? filGroStr : '',                // What: Group. Why: An active Group filter pre-fills the group. How: This uses filGroStr unless it's 'all'.
 			id              : 'pkr_' + Math.random().toString( 36 ).slice( 2, 8 ), // What: Id. Why: The draft's card and its items need a stable id, kept when the picker is created. How: This mints a random 'pkr_' id.
 			includeInDaily  : true,                                                // What: Include In Daily. Why: A new picker joins the daily generator unless told otherwise. How: This is true.
-			mode            : isaReaBoo ? filTypStr as ModNamTyp : 'random',       // What: Mode. Why: An active Type filter pre-fills the mode when it's a real picker mode. How: This uses filTypStr when isaReaBoo, otherwise 'random'. // What: Mode Name Note. Why: filTypStr is a plain filter string. How: It's read as a mode name only once isaReaBoo has confirmed it is one.
+			mode            : isaReaBoo ? filTypStr as ModNamTyp : 'random',       // What: Mode. Why: An active Type filter pre-fills the mode when it's a real picker mode. How: This uses filTypStr when isaReaBoo, otherwise 'random'. // What: Type Assertion Note. Why: filTypStr is a plain filter string. How: It's read as a mode name only once isaReaBoo has confirmed it is one.
 			name            : '',                                                  // What: Name. Why: The draft's name is typed in its own card. How: This starts empty.
 			skipHolidays    : false,                                               // What: Skip Holidays. Why: A new picker runs on holidays until told otherwise. How: This is false.
 			threshold       : 100,                                                 // What: Threshold. Why: Ease items charge toward this full value. How: This is 100.
@@ -2115,7 +2115,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 									const notDraBoo = !isaDraBoo;                                           // What: Not Draft Boolean. Why: A draft card is always expanded. How: This negates isaDraBoo.
 									const notDetBoo = !detPicBoo;                                           // What: Not Disable-Edit-Tour Boolean. Why: The Edit Items tour guards the header during some steps. How: This negates detPicBoo.
-									const notButBoo = !( cliEveObj.target as Element ).closest( 'button' ); // What: Not Button Boolean. Why: A click on a real button inside the header has its own action. How: This checks the click target isn't inside a button.
+									const notButBoo = !( cliEveObj.target as Element ).closest( 'button' ); // What: Not Button Boolean. Why: A click on a real button inside the header has its own action. How: This checks the click target isn't inside a button. // What: Type Assertion Note. Why: An event's target is typed as any EventTarget. How: It's read as an element, since a click always lands on one.
 
 									const togSecBoo = notDraBoo && notDetBoo && notButBoo; // What: Toggle Section Boolean. Why: The header only toggles when all 3 checks pass. How: This ANDs them.
 

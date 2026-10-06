@@ -452,7 +452,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 											onChange={ () => patSetFun({ // What: Mode Change Handler. Why: Switching mode must also reset the fields whose meaning depends on the mode. How: This patches the new mode plus a matching triggered/value starting point.
 
 
-												mode      : modKeyStr as ModNamTyp,                   // What: Mode. Why: This is the newly selected mode. How: This is modKeyStr, asserted as a mode name since Object.entries types its keys as plain strings.
+												mode      : modKeyStr as ModNamTyp,                   // What: Mode. Why: This is the newly selected mode. How: This is modKeyStr. // What: Type Assertion Note. Why: Object.entries types its keys as plain strings. How: modKeyStr is read as a mode name, since it comes from the mode table's own keys.
 												triggered : modKeyStr === 'ease-down',                // What: Triggered. Why: Ease-down starts charged and so triggered, every other mode starts untriggered. How: This is true only for 'ease-down'.
 												value     : modKeyStr === 'ease-down' ? thrValNum : 0 // What: Value. Why: Ease-down starts fully charged at its threshold, every other mode starts empty. How: This is thrValNum for 'ease-down', else 0.
 

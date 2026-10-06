@@ -377,7 +377,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 	// #region Item Pool And Step Advance
 
-	const [ pooIteArr, setPooIteArr ] = React.useState< IteRcdTyp[] >( ( ( iniForObj && iniForObj.items ) || [] ) as IteRcdTyp[] ); // What: Pool Item Array And Setter. Why: Step 2's own pool; each item is { name, weight }, weight only mattering for weighted/dynamic modes and only editable inline then. How: This is a fresh pool (Option B, not a pick-from-library), starting from a prefilled items list, or empty; other defaults (drift value, ease knobs) are applied at commit time; it's asserted as items since the shared item editors read only the fields every pool item already carries.
+	const [ pooIteArr, setPooIteArr ] = React.useState< IteRcdTyp[] >( ( ( iniForObj && iniForObj.items ) || [] ) as IteRcdTyp[] ); // What: Pool Item Array And Setter. Why: Step 2's own pool; each item is { name, weight }, weight only mattering for weighted/dynamic modes and only editable inline then. How: This is a fresh pool (Option B, not a pick-from-library), starting from a prefilled items list, or empty; other defaults (drift value, ease knobs) are applied at commit time. // What: Type Assertion Note. Why: A prefilled form item may lack fields a stored item has. How: The pool is read as items, since the shared item editors read only the fields every pool item already carries.
 
 	const forWraRef = React.useRef< HTMLDivElement | null >( null ); // What: Form Wrap Reference. Why: advSteFun needs a handle on this form's own root so it can walk up to whichever ancestor actually scrolls. How: This is attached to the form's own root div, below.
 
@@ -671,7 +671,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 			...preIteArr, // What: Previous Items Spread. Why: Every item already in the pool stays where it is. How: This spreads preIteArr ahead of the new item.
 
-			{ // What: New Item Object. Why: The new item needs every field resolved above. How: This builds the item the editor opens on, asserted as an item since the store fills in its saved-only fields when the picker is created.
+			{ // What: New Item Object. Why: The new item needs every field resolved above. How: This builds the item the editor opens on. // What: Type Assertion Note. Why: The new item lacks the fields only a saved item has. How: It's read as an item, since the store fills those in when the picker is created.
 
 
 				id     : newIdeStr,                 // What: Id. Why: The pool item needs its own id. How: This uses newIdeStr.
@@ -1364,7 +1364,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											checked={ selModStr === modKeyStr }
 											type='radio'
 
-											onChange={ () => setSelModStr( modKeyStr as ModNamTyp ) } // What: On Change Handler. Why: Choosing a mode radio selects that mode. How: This sets selModStr to modKeyStr, asserted as a mode name since Object.entries types its keys as plain strings.
+											onChange={ () => setSelModStr( modKeyStr as ModNamTyp ) } // What: On Change Handler. Why: Choosing a mode radio selects that mode. How: This sets selModStr to modKeyStr. // What: Type Assertion Note. Why: Object.entries types its keys as plain strings. How: modKeyStr is read as a mode name, since it comes from the mode table's own keys.
 										/>{ /* What: Mode Radio Input Element. Why: This is the actual selectable control. How: This is checked when selModStr matches modKeyStr, and selects it on change. */ }
 
 										<div>{ /* What: Mode Text Div Element. Why: The mode's own name and hint text need to sit beside the radio input. How: This wraps modNamDiv and modHinDiv. */ }

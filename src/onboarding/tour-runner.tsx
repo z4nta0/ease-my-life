@@ -1084,7 +1084,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-		return !!( livSteObj && livSteObj.cptSelStr && finTarFun( livSteObj.cptSelStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ); // What: Pass-Through Check Return. Why: The caller needs a plain boolean answer. How: This checks that a live step exists, that it names a cptSelStr, and that one of its matched elements contains the event's own target. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A click always involves a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
+		return !!( livSteObj && livSteObj.cptSelStr && finTarFun( livSteObj.cptSelStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ); // What: Pass-Through Check Return. Why: The caller needs a plain boolean answer. How: This checks that a live step exists, that it names a cptSelStr, and that one of its matched elements contains the event's own target. // What: Type Assertion Note. Why: A click always involves a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
 
 
 	};
@@ -1127,7 +1127,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return false; // What: Coach Exemption Guard. Why: A click anywhere inside the coach card (Skip/Back/Next, or just its own body text) is always legitimate. How: This returns false whenever the event's own target has a .coaCarDiv ancestor. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A click always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
+		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return false; // What: Coach Exemption Guard. Why: A click anywhere inside the coach card (Skip/Back/Next, or just its own body text) is always legitimate. How: This returns false whenever the event's own target has a .coaCarDiv ancestor. // What: Type Assertion Note. Why: A click always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
 
 
 
@@ -1139,7 +1139,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-		return !( livSteObj && finTarFun( livSteObj.cliSelStr || livSteObj.selStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ); // What: Off-Target Check Return. Why: The caller needs a plain boolean answer. How: This is true whenever there is no live step, or the event's own target does not sit inside any element the step's own cliSelStr/selStr currently matches. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A click always involves a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
+		return !( livSteObj && finTarFun( livSteObj.cliSelStr || livSteObj.selStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ); // What: Off-Target Check Return. Why: The caller needs a plain boolean answer. How: This is true whenever there is no live step, or the event's own target does not sit inside any element the step's own cliSelStr/selStr currently matches. // What: Type Assertion Note. Why: A click always involves a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
 
 
 	};
@@ -1177,11 +1177,11 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return; // What: Coach Exemption Guard. Why: A click anywhere inside the coach card is always legitimate and needs no further handling here. How: This returns whenever the event's own target has a .coaCarDiv ancestor. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A click always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
+			if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return; // What: Coach Exemption Guard. Why: A click anywhere inside the coach card is always legitimate and needs no further handling here. How: This returns whenever the event's own target has a .coaCarDiv ancestor. // What: Type Assertion Note. Why: A click always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
 
 
 
-			if ( livSteObj && livSteObj.advCliStr && finTarFun( livSteObj.advCliStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ) { // What: Advance-On Check. Why: See advCliStr's own doc comment in GuiTouCom's own JSDoc above, an optional real-action shortcut, NOT a cirBoo step (Next keeps working normally too): the real target's click just also counts as clicking Next. How: This runs the primary action when the click lands inside an advCliStr match, then returns. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A click always involves a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
+			if ( livSteObj && livSteObj.advCliStr && finTarFun( livSteObj.advCliStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ) { // What: Advance-On Check. Why: See advCliStr's own doc comment in GuiTouCom's own JSDoc above, an optional real-action shortcut, NOT a cirBoo step (Next keeps working normally too): the real target's click just also counts as clicking Next. How: This runs the primary action when the click lands inside an advCliStr match, then returns. // What: Type Assertion Note. Why: A click always involves a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
 
 
 				priActRef.current(); // What: Primary Action Trigger. Why: An advCliStr click must run the exact same priActFun logic a real Next click would. How: This calls the latest priActFun via its own ref.
@@ -1195,7 +1195,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			if ( livSteObj && finTarFun( livSteObj.cliSelStr || livSteObj.selStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ) { // What: Target Click Check. Why: A cirBoo step's target click IS its primary action, since the Next button is disabled, so this is the only way forward. How: This runs the primary action for a cirBoo step, then returns so the target click itself goes through. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A click always involves a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
+			if ( livSteObj && finTarFun( livSteObj.cliSelStr || livSteObj.selStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target as Node ) ) ) { // What: Target Click Check. Why: A cirBoo step's target click IS its primary action, since the Next button is disabled, so this is the only way forward. How: This runs the primary action for a cirBoo step, then returns so the target click itself goes through. // What: Type Assertion Note. Why: A click always involves a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
 
 
 				if ( livSteObj.cirBoo ) priActRef.current(); // What: Require-Click Trigger. Why: Only a cirBoo step treats its own target click as the advancing action. How: This calls the latest priActFun only when the live step actually requires it.
@@ -1235,11 +1235,11 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			if ( focEveObj.relatedTarget && ( focEveObj.relatedTarget as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return; // What: Coach Move Exemption. Why: A focus move into the coach card is a legitimate, deliberate way to leave the target. How: This returns whenever the event's own relatedTarget has a .coaCarDiv ancestor. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A focus move always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
+			if ( focEveObj.relatedTarget && ( focEveObj.relatedTarget as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return; // What: Coach Move Exemption. Why: A focus move into the coach card is a legitimate, deliberate way to leave the target. How: This returns whenever the event's own relatedTarget has a .coaCarDiv ancestor. // What: Type Assertion Note. Why: A focus move always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
 
 
 
-			if ( !finTarFun( livSteObj.cliSelStr || livSteObj.selStr ).some( ( curIteEle ) => curIteEle.contains( focEveObj.target as Node ) ) ) return; // What: On-Target Guard. Why: Only a focus loss FROM the current step's own target needs protecting. How: This returns whenever the event's own target does not sit inside any element the step's own cliSelStr/selStr currently matches. // What: Event Target Note. Why: An event's target is typed as a plain EventTarget. How: It's read as a DOM node here, since every target these guards see is a page element. // What: Type Assertion Note. Why: A focus move always involves a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
+			if ( !finTarFun( livSteObj.cliSelStr || livSteObj.selStr ).some( ( curIteEle ) => curIteEle.contains( focEveObj.target as Node ) ) ) return; // What: On-Target Guard. Why: Only a focus loss FROM the current step's own target needs protecting. How: This returns whenever the event's own target does not sit inside any element the step's own cliSelStr/selStr currently matches. // What: Type Assertion Note. Why: A focus move always involves a node in the page, while the event types its target as any EventTarget. How: The as Node lets it be read as one.
 
 
 

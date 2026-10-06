@@ -873,7 +873,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 				const rmpOrdObj : Record< string, string[] > = {}; // What: Remapped Order Object And Guard. Why: The loop below needs somewhere to accumulate the re-keyed pickerOrder. How: This starts empty and is filled by the loop directly below.
 
 
-				for ( const [ curGroStr, picIdeArr ] of Object.entries( curStaObj.pickerOrder as Record< string, string[] > ) ) { // What: Picker-Order Remap Loop. Why: Every old group key must be normalized and merged into rmpOrdObj before it replaces curStaObj's own pickerOrder. How: This iterates curStaObj.pickerOrder's own entries, concatenating each onto its own normalized key's bucket. // What: Saved Shape Note. Why: A raw save types pickerOrder loosely. How: The entries are read as group names mapped to picker id lists, the shape every save has stored.
+				for ( const [ curGroStr, picIdeArr ] of Object.entries( curStaObj.pickerOrder as Record< string, string[] > ) ) { // What: Picker-Order Remap Loop. Why: Every old group key must be normalized and merged into rmpOrdObj before it replaces curStaObj's own pickerOrder. How: This iterates curStaObj.pickerOrder's own entries, concatenating each onto its own normalized key's bucket. // What: Type Assertion Note. Why: A raw save types pickerOrder loosely. How: The entries are read as group names mapped to picker id lists, the shape every save has stored.
 
 
 					const norKeyStr = norGroFun( curGroStr ) || curGroStr; // What: Normalized Key String. Why: The new pickerOrder must be keyed the same way groupOrder now is. How: This normalizes curGroStr, falling back to itself when the normalizer declines.

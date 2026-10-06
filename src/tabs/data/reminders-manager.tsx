@@ -360,7 +360,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 
 
 
-		( [ 'once', 'recurring' ] as const ).forEach( ( tasClaStr ) => ( Object.keys( draOptObj[ tasClaStr ] ) as ( keyof RemClaTyp )[] ).forEach( ( optKeyStr ) => { if ( !!draOptObj[ tasClaStr ][ optKeyStr ] !== !!remOptObj[ tasClaStr ][ optKeyStr ] ) actStoObj.setOptFun( tasClaStr, optKeyStr, draOptObj[ tasClaStr ][ optKeyStr ] ); } ) ); // What: Changed Toggles Loop. Why: Only toggles the user actually changed are written. How: This calls setOptFun for every class/setting pair whose draft differs from the live setting, with the class names held as literals and each setting key read as a RemClaTyp key, since Object.keys types keys as plain strings.
+		( [ 'once', 'recurring' ] as const ).forEach( ( tasClaStr ) => ( Object.keys( draOptObj[ tasClaStr ] ) as ( keyof RemClaTyp )[] ).forEach( ( optKeyStr ) => { if ( !!draOptObj[ tasClaStr ][ optKeyStr ] !== !!remOptObj[ tasClaStr ][ optKeyStr ] ) actStoObj.setOptFun( tasClaStr, optKeyStr, draOptObj[ tasClaStr ][ optKeyStr ] ); } ) ); // What: Changed Toggles Loop. Why: Only toggles the user actually changed are written. How: This calls setOptFun for every class/setting pair whose draft differs from the live setting. // What: Type Assertion Note. Why: A plain list of names, and the keys Object.keys returns, are both typed as plain strings. How: The class names are held as a constant tuple and each setting key is read as a RemClaTyp key, since both come straight from the reminder options' own shape.
 
 
 	};
@@ -437,7 +437,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 
 					</span>
 
-					{ ( [ 'once', 'recurring' ] as const ).map( ( tasClaStr ) => { // What: Switch Cell List Render. Why: Every row needs exactly 2 switch cells, one per participation class. How: This maps the 2 literal class keys to one switch cell each. // What: Class Tuple Note. Why: Each class name indexes the draft options. How: The two names are read as a constant tuple so each one is a real class key.
+					{ ( [ 'once', 'recurring' ] as const ).map( ( tasClaStr ) => { // What: Switch Cell List Render. Why: Every row needs exactly 2 switch cells, one per participation class. How: This maps the 2 literal class keys to one switch cell each. // What: Type Assertion Note. Why: Each class name indexes the draft options. How: The two names are read as a constant tuple so each one is a real class key.
 
 
 						const swtEnaBoo = !!draOptObj[ tasClaStr ][ optDefObj.keyStr ]; // What: Switch Enabled Boolean. Why: Each cell's own switch needs to know whether this specific class/setting pair is currently on. How: This reads draOptObj indexed first by tasClaStr, then by optDefObj's own keyStr.
