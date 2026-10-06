@@ -14,6 +14,10 @@ import { norConFun   } from '../core/pickers.ts';   // What: Normalize Condition
 import { NumSteCom   } from './number-stepper.tsx'; // What: Numeric Stepper Component. Why: The ease-up and ease-down modes both need a plain increment/decrement control for their own Soonest/Latest day counts. How: This is rendered once per bound in the ease-mode settings block below.
 import { SED_NAM_OBJ } from '../state/seed.ts';     // What: Seed Namespace Object. Why: The mode radio below must offer the exact same options and labels as the picker editor's own mode radio. How: This is walked (MOD_DEF_OBJ) via Object.entries to render one radio option per mode.
 
+
+import type { ConRcdTyp } from '../core/data-model.ts'; // What: Conditional Record Type. Why: The editor builds and edits a conditional draft. How: This types conDraFun's draft and CocProTyp's draft and patches.
+import type { ModNamTyp } from '../core/data-model.ts'; // What: Mode Name Type. Why: A conditional's mode is one of the fixed mode names. How: This asserts the mode option's key as one.
+
 // #endregion Imports
 
 
@@ -103,7 +107,7 @@ const THR_DEF_NUM = 100; // What: Threshold Default Number. Why: The Soonest/Lat
  *
 */
 
-const conDraFun = ( picNamStr, exiNamArr = [] ) => { // What: Conditional Draft Function Body. Why: A brand-new conditional needs a sensible starting draft rather than a blank one. How: This resolves a free "{Picker} Conditional N" name, then returns it alongside every other field's own default value.
+const conDraFun = ( picNamStr : string, exiNamArr : string[] = [] ) : Partial< ConRcdTyp > => { // What: Conditional Draft Function Body. Why: A brand-new conditional needs a sensible starting draft rather than a blank one. How: This resolves a free "{Picker} Conditional N" name, then returns it alongside every other field's own default value.
 
 
 	const norPicStr = ( norConFun( picNamStr ) || '' ).trim();                                               // What: Normalize Picker String. Why: The default name's own picker-name prefix should be tidied the same way a typed name is. How: This calls norConFun against picNamStr, falling back to an empty string when it returns nothing.
@@ -142,14 +146,16 @@ const conDraFun = ( picNamStr, exiNamArr = [] ) => { // What: Conditional Draft 
 
 
 
-const dayEasFun = ( dayCouNum ) => THR_DEF_NUM / Math.max( 1, dayCouNum );                        // What: Day Ease Function. Why: Editing either stepper needs to convert a plain day count back into the per-day drift amount easeMin/easeMax actually store. How: This divides THR_DEF_NUM by dayCouNum, floored at 1 day, with no rounding since this feeds a stored drift amount rather than a displayed count.
-const easDayFun = ( easAmoNum ) => Math.max( 1, Math.round( THR_DEF_NUM / ( easAmoNum || 1 ) ) ); // What: Ease Day Function. Why: Both steppers need a plain day count, not the raw per-day drift amount (easeMax for Soonest/Shortest, easeMin for Latest/Longest) it is derived from. How: This divides THR_DEF_NUM by easAmoNum, rounds, and floors the result at 1 day; dayEasFun above is its own inverse.
+const dayEasFun = ( dayCouNum : number ) => THR_DEF_NUM / Math.max( 1, dayCouNum );                        // What: Day Ease Function. Why: Editing either stepper needs to convert a plain day count back into the per-day drift amount easeMin/easeMax actually store. How: This divides THR_DEF_NUM by dayCouNum, floored at 1 day, with no rounding since this feeds a stored drift amount rather than a displayed count.
+const easDayFun = ( easAmoNum : number ) => Math.max( 1, Math.round( THR_DEF_NUM / ( easAmoNum || 1 ) ) ); // What: Ease Day Function. Why: Both steppers need a plain day count, not the raw per-day drift amount (easeMax for Soonest/Shortest, easeMin for Latest/Longest) it is derived from. How: This divides THR_DEF_NUM by easAmoNum, rounds, and floors the result at 1 day; dayEasFun above is its own inverse.
 
 // #endregion Helpers
 
 
 
 // #region Components
+
+type CocProTyp = { conDraObj : Partial< ConRcdTyp >, hidNamBoo? : boolean, layVarStr? : string, namErrStr? : string, onChange : ( nexDraObj : Partial< ConRcdTyp > ) => void }; // What: Conditional-Control-Component Props Type. Why: The editor shows a conditional draft in one of two layouts, optionally without its name field or with a name error, and hands back the whole next draft. How: This types CodConCom's props.
 
 // #region CodConCom
 
@@ -191,14 +197,14 @@ const easDayFun = ( easAmoNum ) => Math.max( 1, Math.round( THR_DEF_NUM / ( easA
  *
 */
 
-function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrStr, onChange } ) {
+function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrStr, onChange } : CocProTyp ) : React.JSX.Element {
 
 
 	const insIdeStr = React.useId(); // What: Instance Identifier String. Why: This component is reused in more than one place at once (see the file header comment), so its own field ids and the mode radio's own name must never collide across instances. How: This calls React.useId() once per mount, prefixed onto every id/name below.
 
 
 
-	const patSetFun = ( patValObj ) => onChange( { ...conDraObj, ...patValObj } ); // What: Patch Set Function. Why: Every field editor below needs one shared way to merge a partial change into the caller-owned conDraObj. How: This spreads conDraObj and then patValObj on top of it, passing the merged result to onChange.
+	const patSetFun = ( patValObj : Partial< ConRcdTyp > ) => onChange( { ...conDraObj, ...patValObj } ); // What: Patch Set Function. Why: Every field editor below needs one shared way to merge a partial change into the caller-owned conDraObj. How: This spreads conDraObj and then patValObj on top of it, passing the merged result to onChange.
 
 
 
@@ -223,7 +229,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 	const latDayNum = easDayFun( easMinNum );  // What: Latest Day Number. Why: The Latest/Longest stepper below needs a plain day count, not the raw drift amount it is derived from. How: This calls easDayFun against easMinNum.
 
 
-	const appSooFun = ( dayCouNum ) => { // What: Apply Soonest Function. Why: Editing the Soonest/Shortest stepper must convert its own day count back into a drift amount and commit it. How: This clamps dayCouNum to [1, 100], converts it via dayEasFun, and patches easeMax, raising easeMin to match if it would otherwise fall below it.
+	const appSooFun = ( dayCouNum : number ) => { // What: Apply Soonest Function. Why: Editing the Soonest/Shortest stepper must convert its own day count back into a drift amount and commit it. How: This clamps dayCouNum to [1, 100], converts it via dayEasFun, and patches easeMax, raising easeMin to match if it would otherwise fall below it.
 
 
 		const newAmoNum = dayEasFun( Math.max( 1, Math.min( 100, dayCouNum ) ) ); // What: New Amount Number. Why: The clamped day count must be converted back into the drift amount easeMax actually stores. How: This calls dayEasFun against dayCouNum, clamped to [1, 100] first.
@@ -242,7 +248,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 	};
 
 
-	const appLatFun = ( dayCouNum ) => { // What: Apply Latest Function. Why: Editing the Latest/Longest stepper must convert its own day count back into a drift amount and commit it. How: This clamps dayCouNum to [1, 100], converts it via dayEasFun, and patches easeMin, lowering easeMax to match if it would otherwise fall below it.
+	const appLatFun = ( dayCouNum : number ) => { // What: Apply Latest Function. Why: Editing the Latest/Longest stepper must convert its own day count back into a drift amount and commit it. How: This clamps dayCouNum to [1, 100], converts it via dayEasFun, and patches easeMin, lowering easeMax to match if it would otherwise fall below it.
 
 
 		const newAmoNum = dayEasFun( Math.max( 1, Math.min( 100, dayCouNum ) ) ); // What: New Amount Number. Why: The clamped day count must be converted back into the drift amount easeMin actually stores. How: This calls dayEasFun against dayCouNum, clamped to [1, 100] first.
@@ -446,7 +452,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 											onChange={ () => patSetFun({ // What: Mode Change Handler. Why: Switching mode must also reset the fields whose meaning depends on the mode. How: This patches the new mode plus a matching triggered/value starting point.
 
 
-												mode      : modKeyStr,                                // What: Mode. Why: This is the newly selected mode. How: This is modKeyStr.
+												mode      : modKeyStr as ModNamTyp,                   // What: Mode. Why: This is the newly selected mode. How: This is modKeyStr, asserted as a mode name since Object.entries types its keys as plain strings.
 												triggered : modKeyStr === 'ease-down',                // What: Triggered. Why: Ease-down starts charged and so triggered, every other mode starts untriggered. How: This is true only for 'ease-down'.
 												value     : modKeyStr === 'ease-down' ? thrValNum : 0 // What: Value. Why: Ease-down starts fully charged at its threshold, every other mode starts empty. How: This is thrValNum for 'ease-down', else 0.
 
