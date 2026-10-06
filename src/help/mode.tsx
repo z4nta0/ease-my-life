@@ -20,6 +20,10 @@ import { rhyPxlFun    } from '../utils/rhythm.ts'; // What: Rhythm Pixel Functio
 import { shaRadFun    } from './geometry.ts';      // What: Shape Radius Function. Why: Each highlight cutout roughly matches its own target's border radius. How: This is called once per highlighted target.
 import { uniRecFun    } from './geometry.ts';      // What: Union Rect Function. Why: A help item covering several elements highlights them as one box. How: This is called once per multi-element help item.
 
+
+import type { HelIteTyp } from './content.tsx'; // What: Help Item Type. Why: The overlay renders its page's catalog items plus the shared nav and rail handle items. How: This types those items and HocProTyp's catalog.
+import type { HelRecTyp } from './geometry.ts'; // What: Help Rect Type. Why: Every measured item is stored as one help rect. How: This types the rect map.
+
 // #endregion Imports
 
 
@@ -101,7 +105,7 @@ const NAV_TAB_ARR = [ // What: Nav Tab Array. Why: The shared nav tip describes 
  *
 */
 
-const NAV_HEL_OBJ = { // What: Nav Help Object. Why: Every page shares the same nav, so its own help item is defined once here. How: HelOveCom prepends this ahead of every page's own catalog.
+const NAV_HEL_OBJ : HelIteTyp = { // What: Nav Help Object. Why: Every page shares the same nav, so its own help item is defined once here. How: HelOveCom prepends this ahead of every page's own catalog.
 
 
 	absStr    : ':is([data-placement="side"], [data-placement="top"]) > [data-element-name-hook~="appTabNav"]', // What: Always-Below-Selector String. Why: On 'side' placement the target can span most of the viewport's height, and on 'top' the fits-below check can flip to above on a short viewport and cover the navbar entirely. How: HelOveCom sets alwBelBoo whenever this selector matches, so plaTipFun always places the tip below.
@@ -184,7 +188,7 @@ const NAV_HEL_OBJ = { // What: Nav Help Object. Why: Every page shares the same 
  *
 */
 
-const RAI_HAN_OBJ = { // What: Rail Handle Object. Why: The side rail's own pull handle needs its own help item on every page. How: HelOveCom prepends this ahead of every page's own catalog, right after NAV_HEL_OBJ.
+const RAI_HAN_OBJ : HelIteTyp = { // What: Rail Handle Object. Why: The side rail's own pull handle needs its own help item on every page. How: HelOveCom prepends this ahead of every page's own catalog, right after NAV_HEL_OBJ.
 
 
 	ideStr : '__railHandle',                          // What: Identifier String. Why: This is the item's own unique key. How: HelOveCom compares it against its own open-id state to track which tip is open.
@@ -203,6 +207,8 @@ const RAI_HAN_OBJ = { // What: Rail Handle Object. Why: The side rail's own pull
 
 
 // #region Components
+
+type HocProTyp = { actModBoo : boolean, helIteArr : HelIteTyp[], onCloAllFun : () => void }; // What: Help-Overlay-Component Props Type. Why: The overlay highlights its page's catalog items while help mode is on and turns itself off. How: This types HelOveCom's props.
 
 // #region HelOveCom
 
@@ -242,20 +248,20 @@ const RAI_HAN_OBJ = { // What: Rail Handle Object. Why: The side rail's own pull
  *
 */
 
-function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
+function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React.JSX.Element | null {
 
 
 	const allIteArr                   = React.useMemo( () => [ NAV_HEL_OBJ, RAI_HAN_OBJ, ...helIteArr ], [ helIteArr ] ); // What: All Items Array And Memo. Why: The nav item and rail handle item are shared by every page, ahead of whatever page-specific items the caller passed. How: This concatenates the 2 shared items ahead of helIteArr, recomputed only when helIteArr itself changes.
-	const [ recMapObj, setRecMapObj ] = React.useState( {} );                                                             // What: Rect Map Object And Setter. Why: Every tagged element's own current rect (keyed by its own catalog id) drives the whole rendered overlay. How: This starts empty and is written wholesale by recTarFun below on every animation frame while actModBoo.
-	const [ opeIdeStr, setOpeIdeStr ] = React.useState( null );                                                           // What: Open Identifier String And Setter. Why: At most one tip can be open at a time, tracked by its own (possibly mulBoo-suffixed) id. How: This starts null (no tip open) and is toggled by a badge's own onClick below.
-	const [ togRecObj, setTogRecObj ] = React.useState( null );                                                           // What: Toggle Rect Object And Setter. Why: The page's own help toggle button needs a mask cutout too, even though it is never one of allIteArr. How: This is written by recTarFun below whenever a .helTogBut is found on the page.
+	const [ recMapObj, setRecMapObj ] = React.useState< Record< string, HelRecTyp > >( {} );                                                             // What: Rect Map Object And Setter. Why: Every tagged element's own current rect (keyed by its own catalog id) drives the whole rendered overlay. How: This starts empty and is written wholesale by recTarFun below on every animation frame while actModBoo.
+	const [ opeIdeStr, setOpeIdeStr ] = React.useState< string | null >( null );                                                           // What: Open Identifier String And Setter. Why: At most one tip can be open at a time, tracked by its own (possibly mulBoo-suffixed) id. How: This starts null (no tip open) and is toggled by a badge's own onClick below.
+	const [ togRecObj, setTogRecObj ] = React.useState< { height : number, left : number, top : number, width : number } | null >( null );                                                           // What: Toggle Rect Object And Setter. Why: The page's own help toggle button needs a mask cutout too, even though it is never one of allIteArr. How: This is written by recTarFun below whenever a .helTogBut is found on the page.
 
 
 
 	const recTarFun = React.useCallback( () => { // What: Recompute Target Function. Why: Every tagged element's own rect must be recomputed every frame while active, to stay correct under scrolling/reflow, and also right after a click that could have changed the DOM. How: This rebuilds the whole rect map from scratch and writes it via setRecMapObj.
 
 
-		const nexMapObj = {}; // What: Next Map Object. Why: The whole rect map is rebuilt from scratch every call rather than patched incrementally. How: This starts empty and is filled in by the loops below before being committed via setRecMapObj.
+		const nexMapObj : Record< string, HelRecTyp > = {}; // What: Next Map Object. Why: The whole rect map is rebuilt from scratch every call rather than patched incrementally. How: This starts empty and is filled in by the loops below before being committed via setRecMapObj.
 
 
 		const chrSelArr = [ // What: Chrome Selector Array. Why: These are the only pieces of always-on-top chrome any highlight ever needs clipping against; the tab bar alone varies its own edge at runtime. How: This is mapped into real chrome items below.
@@ -275,7 +281,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 			.map( ( [ chrSelStr, chrSidStr ] ) => { // What: Chrome Lookup Callback. Why: Each chrome selector needs its own live element found before it can be measured. How: This queries chrSelStr once and wraps the result with its own selector and side, or null when nothing matched.
 
 
-				const chrDomEle = document.querySelector( chrSelStr ); // What: Chrome Document-Object-Model Element. Why: The chrome item's own live element is what later gets measured and compared against targets. How: This queries chrSelStr once.
+				const chrDomEle = document.querySelector< HTMLElement >( chrSelStr ); // What: Chrome Document-Object-Model Element. Why: The chrome item's own live element is what later gets measured and compared against targets. How: This queries chrSelStr once.
 
 
 
@@ -349,10 +355,10 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 
 
-					const shaRadObj = shaRadFun( curTarEle, eleWidNum + rhyPxlFun( 'm02' ) * 2, eleHeiNum + rhyPxlFun( 'm02' ) * 2, curIteObj.shaStr ); // What: Shape Radius Object. Why: Each mulBoo instance reads its own border-radius independently. How: This calls shaRadFun with curTarEle's own padded box size. // Vertical Rhythm Base Minus 2 ~= 8.304px
+					const shaRadObj = shaRadFun( curTarEle, eleWidNum + rhyPxlFun( 'm02' ) * 2, eleHeiNum + rhyPxlFun( 'm02' ) * 2, typeof curIteObj.shaStr === 'string' ? curIteObj.shaStr : undefined ); // What: Shape Radius Object. Why: Each mulBoo instance reads its own border-radius independently. How: This calls shaRadFun with curTarEle's own padded box size, passing shaStr only when it's a string, since a shape function is only used for unions. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 					const curLabStr = curIteObj.labStr // What: Current Label String. Why: A mulBoo conditional/reminder/item row's own title should read as "{its own name} Conditional" rather than one generic title shared by every instance. How: This reads text (or an input's own value, for a row currently open/editing) from within curTarEle only, when curIteObj.labStr is set.
-						? ( curTarEle.querySelector( curIteObj.labStr )?.textContent || curTarEle.querySelector( curIteObj.labStr )?.value ) // What: Live Label Read. Why: A row's own name is its text, or an input's value while it is being edited. How: This queries labStr inside curTarEle and reads either.
+						? ( curTarEle.querySelector( curIteObj.labStr )?.textContent || curTarEle.querySelector< HTMLInputElement >( curIteObj.labStr )?.value ) // What: Live Label Read. Why: A row's own name is its text, or an input's value while it is being edited. How: This queries labStr inside curTarEle and reads either.
 						: undefined; // What: No Label Fallback. Why: An item without labStr has no per-row name. How: This leaves the label undefined.
 
 					const padSurObj = claPadFun( tarRecObj, curIteObj.padXcoNum ?? rhyPxlFun( 'm02' ), curIteObj.padYcoNum ?? rhyPxlFun( 'm02' ), chrIteArr, [ curTarEle ] ); // What: Pad Surviving Object. Why: This element's own surviving per-side padding must be computed the same way as the ordinary single-union case below. How: This calls claPadFun with curIteObj's own padXcoNum/padYcoNum override, or the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
@@ -453,7 +459,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 
 
-		const groMapObj = {}; // What: Group Map Object. Why: column group items (the Day Log panel's per-column highlights) need their own siblings gathered together before they can be snapped edge-to-edge below. How: This starts empty and is filled by the loop directly below.
+		const groMapObj : Record< string, string[] > = {}; // What: Group Map Object. Why: column group items (the Day Log panel's per-column highlights) need their own siblings gathered together before they can be snapped edge-to-edge below. How: This starts empty and is filled by the loop directly below.
 
 
 		allIteArr.forEach( ( curIteObj ) => { // What: Group Gather Loop. Why: Only an item that both declares a column group AND actually has a rect this frame belongs in a group. How: This pushes curIteObj's own ideStr into groMapObj under its own groStr key.
@@ -637,21 +643,21 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 
 
-		const hitTarFun = ( cliEveObj ) => { // What: Hit Target Function. Why: A click is allowed through only when it lands on something help mode itself recognizes. How: This checks the app's own always-exempt chrome first, then falls back to checking every catalog item's own matched elements.
+		const hitTarFun = ( cliEveObj : MouseEvent ) => { // What: Hit Target Function. Why: A click is allowed through only when it lands on something help mode itself recognizes. How: This checks the app's own always-exempt chrome first, then falls back to checking every catalog item's own matched elements.
 
 
-			if ( cliEveObj.target.closest( '[data-element-name-hook~="helBadBut"], [data-element-name-hook~="helTipDiv"], [data-element-name-hook~="helTogBut"], [data-element-name-hook~="appTabNav"], [data-element-name-hook~="touOveDiv"], [data-element-name-hook~="legBacDiv"]' ) ) return true; // What: Exempt Chrome Guard. Why: Navigating away (the tab bar) must still work while help mode is up, a guided tour walking through this exact feature owns its own clicks already, and a legal document modal opened over help mode must still close and scroll. How: This allows the click through once it lands inside any of these 6 always-exempt regions.
+			if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="helBadBut"], [data-element-name-hook~="helTipDiv"], [data-element-name-hook~="helTogBut"], [data-element-name-hook~="appTabNav"], [data-element-name-hook~="touOveDiv"], [data-element-name-hook~="legBacDiv"]' ) ) return true; // What: Exempt Chrome Guard. Why: Navigating away (the tab bar) must still work while help mode is up, a guided tour walking through this exact feature owns its own clicks already, and a legal document modal opened over help mode must still close and scroll. How: This allows the click through once it lands inside any of these 6 always-exempt regions, reading the event's target as the Element a click always lands on.
 
 
 
-			return allIteArr.some( ( curIteObj ) => finTarFun( curIteObj.selStr ).some( ( curTarEle ) => curTarEle.contains( cliEveObj.target ) ) ); // What: Tagged Element Check. Why: A click on any currently-highlighted target itself must also be allowed through. How: This checks whether the click's own target falls inside any catalog item's own currently-matched elements.
+			return allIteArr.some( ( curIteObj ) => finTarFun( curIteObj.selStr ).some( ( curTarEle ) => curTarEle.contains( cliEveObj.target as Node ) ) ); // What: Tagged Element Check. Why: A click on any currently-highlighted target itself must also be allowed through. How: This checks whether the click's own target falls inside any catalog item's own currently-matched elements.
 
 
 		};
 
 
 
-		const cliCapFun = ( cliEveObj ) => { // What: Click Capture Function. Why: This is the actual capture-phase guard blocking every untagged click. How: This lets a genuine target click through (re-measuring shortly after), otherwise swallows the click and closes whatever tip is open.
+		const cliCapFun = ( cliEveObj : MouseEvent ) => { // What: Click Capture Function. Why: This is the actual capture-phase guard blocking every untagged click. How: This lets a genuine target click through (re-measuring shortly after), otherwise swallows the click and closes whatever tip is open.
 
 
 			if ( hitTarFun( cliEveObj ) ) { // What: On Target Branch. Why: A click that lands on a real target (e.g. Save/Cancel/Delete closing an editor) must not be blocked, just re-measured. How: This defers to a macrotask so the resulting DOM/React commit has already landed before recomputing.
@@ -679,7 +685,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 
 
-		const keyDowFun = ( keyDowObj ) => { // What: Key Down Function. Why: Escape closes one thing at a time, a tip first if one is open, then help mode itself on a second press. How: This checks the key, then which of the 2 close targets currently applies.
+		const keyDowFun = ( keyDowObj : KeyboardEvent ) => { // What: Key Down Function. Why: Escape closes one thing at a time, a tip first if one is open, then help mode itself on a second press. How: This checks the key, then which of the 2 close targets currently applies.
 
 
 			if ( keyDowObj.key !== 'Escape' || keyDowObj.defaultPrevented ) return; // What: Non Escape Guard. Why: Only an Escape nothing else already handled (such as one that just closed a legal document modal) is meaningful here. How: This ignores every other key and any already-handled Escape.

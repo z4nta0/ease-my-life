@@ -45,7 +45,7 @@ type BoxRecTyp = EdgRecTyp & { height : number, width : number }; // What: Box R
 
 
 
-type HelRecTyp = BoxRecTyp & Partial< PadSidTyp > & { alwBelBoo? : boolean, badAncNum? : number, labStr? : string, tipWidNum? : number | null }; // What: Help Rect Type. Why: Help mode measures each catalog item into one rect that its badge, tip, and title all read. How: This is a box rect plus its surviving pads, the always-below flag, a column group's badge anchor, a live label, and a matched tip width.
+type HelRecTyp = BoxRecTyp & Partial< PadSidTyp > & { alwBelBoo? : boolean, badAncNum? : number, labStr? : string, shaObj? : ShaRadTyp | null, tipWidNum? : number | null }; // What: Help Rect Type. Why: Help mode measures each catalog item into one rect that its badge, tip, mask, and title all read. How: This is a box rect plus its surviving pads, the always-below flag, a column group's badge anchor, a live label, its cutout shape, and a matched tip width.
 
 // #endregion Types
 
@@ -855,7 +855,7 @@ function shaRadFun ( tarDomEle : HTMLElement, padWidNum : number, padHeiNum : nu
 
 // #region Exports
 
-export { badRecFun, claPadFun, cliChrFun, cliHorFun, detEdgFun, finTarFun, shaRadFun, type HelRecTyp, type ShaRadTyp, uniRecFun }; // What: Named Exports. Why: HelOveCom measures, clips, and shapes every highlight with these, and the catalog and tip type their rects and shapes with HelRecTyp and ShaRadTyp. How: This exports every helper the overlay reads and both types by name; CHR_PRI_OBJ stays private to this file.
+export { badRecFun, type ChrIteTyp, claPadFun, cliChrFun, cliHorFun, detEdgFun, finTarFun, type HelRecTyp, shaRadFun, type ShaRadTyp, uniRecFun }; // What: Named Exports. Why: HelOveCom measures, clips, and shapes every highlight with these, and the overlay, catalog, and tip type their chrome items, rects, and shapes with the three types. How: This exports every helper the overlay reads and the three types by name; CHR_PRI_OBJ stays private to this file.
 
 // #endregion Exports
 
