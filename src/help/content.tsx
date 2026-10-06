@@ -8,6 +8,11 @@ import cssModObj from './content.module.css'; // What: CSS Module Object. Why: T
 
 import { IcoSvgCom } from '../ui/icon.tsx'; // What: Icon Svg Component. Why: Several items' own body copy renders a small inline icon next to a button's own label, so a reader can match the tip back to the real control. How: This is rendered inside body JSX throughout this file's own catalogs (e.g. Card Actions, Picker Items).
 
+
+import type { HelRecTyp } from './geometry.ts'; // What: Help Rect Type. Why: A title function receives its item's measured rect. How: This types HelIteTyp's titStr function.
+import type { ReactNode } from 'react';         // What: React Node. Why: A tip's body is renderable content. How: This types HelIteTyp's bodEle.
+import type { ShaRadTyp } from './geometry.ts'; // What: Shape Radius Type. Why: A shape function computes a cutout's radius. How: This types HelIteTyp's shaStr function's return.
+
 // #endregion Imports
 
 
@@ -33,12 +38,41 @@ import { IcoSvgCom } from '../ui/icon.tsx'; // What: Icon Svg Component. Why: Se
  * each tab file.
  *
  * Sections:
+ *  - Types
  *  - Constants
  *  - Exports
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Types
+
+type HelIteTyp = { // What: Help Item Type. Why: Every help catalog item, on every page, shares one shape that HelOveCom and HelTipCom read. How: This describes one item.
+
+
+	absStr?    : string;                                                               // What: Always-Below Selector String. Why: On some pages a tall target leaves no room above it for the tip. How: When this selector matches anything, the tip always opens below its target.
+	bodEle     : ReactNode | ( () => ReactNode );                                      // What: Body Element. Why: The tip's body copy can bold phrases or carry an inline icon, and sometimes depends on live page state. How: This is JSX, or a function HelTipCom calls when the tip opens.
+	feoBoo?    : boolean;                                                              // What: First-Element-Only Boolean. Why: Some selectors match one element per section where only the first should be highlighted. How: This keeps just the first match.
+	groStr?    : string;                                                               // What: Group String. Why: The columns of one table-style row are highlighted flush together. How: HelOveCom groups every item sharing this value and snaps their highlights edge to edge.
+	ideStr     : string;                                                               // What: Identifier String. Why: HelOveCom tracks which item is open. How: This is the item's unique key, also used in its badge and tip's React keys.
+	labStr?    : string;                                                               // What: Label String. Why: A title can name the specific thing highlighted. How: This selector is read within the matched element for a live label, which the title function receives on its rect.
+	mtwBoo?    : boolean;                                                              // What: Match-Target-Width Boolean. Why: A long tip reads better at its target's own width. How: HelTipCom sizes the tip to the rect's tipWidNum when this is set.
+	mulBoo?    : boolean;                                                              // What: Multiple Boolean. Why: A selector can match several elements at once that each deserve a badge. How: This renders one badge per match instead of one union.
+	mwsStr?    : string;                                                               // What: Match-Width Selector String. Why: A tip can match the width of a different element than the one highlighted. How: HelOveCom measures this selector's element for the tip's width.
+	padXcoNum? : number;                                                               // What: Pad X-Coordinate Number. Why: Some targets' highlights would otherwise overlap a neighbor horizontally. How: This overrides the default horizontal padding, read by claPadFun and badRecFun.
+	padYcoNum? : number;                                                               // What: Pad Y-Coordinate Number. Why: Some targets' highlights would otherwise overlap a neighbor vertically. How: This overrides the default vertical padding, read by claPadFun and badRecFun.
+	scrBoo?    : boolean;                                                              // What: Scroll Boolean. Why: A long body could overflow past its target on a short viewport. How: This caps the tip's height and scrolls its content instead.
+	selStr     : string;                                                               // What: Selector String. Why: Each item highlights on-page elements. How: This selector list is passed to finTarFun, which tries each alternative in turn.
+	shaStr?    : string | ( ( padWidNum : number, padHeiNum : number ) => ShaRadTyp ); // What: Shape String. Why: Some targets look round for a reason CSS can't report, or are a union with no single element to read. How: This is 'circle', passed to shaRadFun, or a function computing the radius from the padded size.
+	titStr     : string | ( ( tarRecObj : HelRecTyp ) => string );                     // What: Title String. Why: A heading can depend on something only known when the tip opens. How: This is the heading, or a function called with the item's own measured rect.
+
+
+};
+
+// #endregion Types
 
 
 
@@ -51,63 +85,12 @@ import { IcoSvgCom } from '../ui/icon.tsx'; // What: Icon Svg Component. Why: Se
  *
  * @summary
  * Every item in the 5 catalogs below (DAT_HEL_ARR, PIC_HEL_ARR, SET_HEL_ARR,
- * STA_HEL_ARR, TOD_HEL_ARR) shares this exact shape, and none of the 210 items
- * repeat these same fields' own boilerplate comments on their own lines (see
- * the "Repeated-shape object literals" comment exception in CLAUDE.md); each
- * item's own opening line carries its identity comment instead, and a note
- * about one specific item follows that comment on the same line:
- *
- * - `bodEle` (Element or Function): Body Element is the tip's own body copy,
- *   rendered as JSX so specific phrases can be bolded or carry an inline
- *   icon; a function is used when the body depends on live page state at open
- *   time, called by help/tooltip.tsx's HelTipCom.
- *
- * - `groStr` (String, optional): Group String marks this item as one column of
- *   a shared table-style row; HelOveCom groups every item sharing the same
- *   groStr and snaps their highlights flush edge-to-edge, with no gap or
- *   overlap between them.
- *
- * - `ideStr` (String): Identifier String is this item's own unique key,
- *   letting HelOveCom (help/mode.tsx) track which one is currently open;
- *   read back as part of the React key when rendering this item's own
- *   badge/tip, and compared against its own open-id state.
- *
- * - `labStr` (String, optional): Label String is a secondary selector read
- *   within the matched element to pull a live label (its own text, or an
- *   input's own value) into this item's own title function, rather than using
- *   one fixed string.
- *
- * - `mulBoo` (Boolean, optional): Multiple Boolean renders one badge per
- *   matched element instead of unioning them into a single highlight, for a
- *   selector that can match more than one element on the page at once.
- *
- * - `padXcoNum` / `padYcoNum` (Number, optional): Pad X-Coordinate Number
- *   and Pad Y-Coordinate Number override the default highlight padding on
- *   one axis, for a specific target whose highlight would otherwise overlap
- *   a neighboring element (see that item's own leading comment for the
- *   exact reasoning); read by help/geometry.ts's claPadFun/badRecFun.
- *
- * - `scrBoo` (Boolean, optional): Scroll Boolean caps the open tip's own
- *   height and scrolls its content internally instead of overflowing past the
- *   target, for a body tall enough to overlap it on a short viewport; read by
- *   help/tooltip.tsx's own placement math (plaTipFun).
- *
- * - `selStr` (String): Selector String determines which on-page element(s)
- *   this item highlights; passed through help/geometry.ts's own finTarFun, a
- *   comma-separated-fallback matcher tried left to right until one alternative
- *   matches a visible element.
- *
- * - `shaStr` (String or Function, optional): Shape String overrides the
- *   default CSS-border-radius shape detection, for a target whose round
- *   appearance comes from something else (an inner SVG shape, or a computed
- *   union with no single source element of its own); passed to
- *   help/geometry.ts's own shaRadFun, or called directly when it is a
- *   function.
- *
- * - `titStr` (String or Function): Title String is the tip's own heading; a
- *   function is used when the heading depends on something only known at open
- *   time (a live DOM value, or a matched element's own name), called by
- *   help/tooltip.tsx's HelTipCom with the item's own target rect.
+ * STA_HEL_ARR, TOD_HEL_ARR) is a HelIteTyp, whose fields are documented on
+ * the type itself, and none of the 210 items repeat those fields' own
+ * boilerplate comments on their own lines (see the "Repeated-shape object
+ * literals" comment exception in CLAUDE.md); each item's own opening line
+ * carries its identity comment instead, and a note about one specific item
+ * follows that comment on the same line.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -115,7 +98,7 @@ import { IcoSvgCom } from '../ui/icon.tsx'; // What: Icon Svg Component. Why: Se
 
 
 
-const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help catalog for the Data tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-data.tsx and passed to HelOveCom as its own helIteArr prop.
+const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the on-demand help catalog for the Data tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-data.tsx and passed to HelOveCom as its own helIteArr prop.
 
 
 	// #region Data Header
@@ -1164,7 +1147,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 
 
-const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand help catalog for the Pickers tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-picker.tsx and passed to HelOveCom as its own helIteArr prop.
+const PIC_HEL_ARR : HelIteTyp[] = [ // What: Picker Help Array. Why: This is the on-demand help catalog for the Pickers tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-picker.tsx and passed to HelOveCom as its own helIteArr prop.
 
 
 	// #region Pickers Header
@@ -1857,7 +1840,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 
 
-const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand help catalog for the Settings tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-settings.tsx and passed to HelOveCom as its own helIteArr prop.
+const SET_HEL_ARR : HelIteTyp[] = [ // What: Settings Help Array. Why: This is the on-demand help catalog for the Settings tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-settings.tsx and passed to HelOveCom as its own helIteArr prop.
 
 
 	// #region Settings Header
@@ -2245,7 +2228,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 
 
-const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help catalog for the Stats tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-stats.tsx and passed to HelOveCom as its own helIteArr prop.
+const STA_HEL_ARR : HelIteTyp[] = [ // What: Stats Help Array. Why: This is the on-demand help catalog for the Stats tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-stats.tsx and passed to HelOveCom as its own helIteArr prop.
 
 
 	// #region Stats Header
@@ -2703,7 +2686,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 
 
-const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help catalog for the Today tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-today.tsx and passed to HelOveCom as its own helIteArr prop, prepended there with the shared nav/rail items every page gets.
+const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the on-demand help catalog for the Today tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-today.tsx and passed to HelOveCom as its own helIteArr prop, prepended there with the shared nav/rail items every page gets.
 
 
 	// #region Today Header
@@ -3596,7 +3579,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 // #region Exports
 
-export { DAT_HEL_ARR, PIC_HEL_ARR, SET_HEL_ARR, STA_HEL_ARR, TOD_HEL_ARR }; // What: Named Exports. Why: Every tab file that renders its own help toggle imports its own one of these by name. How: This re-exports the 5 catalogs declared above; nothing else in this file is used outside it.
+export { DAT_HEL_ARR, type HelIteTyp, PIC_HEL_ARR, SET_HEL_ARR, STA_HEL_ARR, TOD_HEL_ARR }; // What: Named Exports. Why: Every tab file that renders its own help toggle imports its own catalog by name, and help mode and its tip type each item with HelIteTyp. How: This exports the five catalogs and the item type by name.
 
 // #endregion Exports
 

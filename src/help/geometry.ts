@@ -37,10 +37,15 @@ type BadRecTyp = { bottom : number, height : number, left : number, top : number
 type ChrIteTyp = { chrDomEle : HTMLElement, chrRecObj : DOMRect, chrSelStr : string, chrSidStr : string }; // What: Chrome Item Type. Why: Highlights are clipped against each piece of fixed app chrome on the page. How: This describes one chrome element, its rect, its selector, and the side it sits on.
 type EdgRecTyp = { bottom : number, left : number, right : number, top : number };                         // What: Edge Rect Type. Why: Clipping only ever moves a rect's four edges. How: This describes a rect by those edges.
 type PadSidTyp = { padBotNum : number, padLefNum : number, padRigNum : number, padTopNum : number };       // What: Pad Sides Type. Why: A highlight's padding can be cut short on each side separately. How: This describes how much survived on each side.
+type ShaRadTyp = { radXcoNum : number, radYcoNum : number };                                               // What: Shape Radius Type. Why: A highlight cutout's corners follow its target's rounding on each axis. How: This holds the horizontal and vertical radius, in pixels.
 
 
 
 type BoxRecTyp = EdgRecTyp & { height : number, width : number }; // What: Box Rect Type. Why: A unioned target also carries its size. How: This is an edge rect plus its height and width.
+
+
+
+type HelRecTyp = BoxRecTyp & Partial< PadSidTyp > & { alwBelBoo? : boolean, badAncNum? : number, labStr? : string, tipWidNum? : number | null }; // What: Help Rect Type. Why: Help mode measures each catalog item into one rect that its badge, tip, and title all read. How: This is a box rect plus its surviving pads, the always-below flag, a column group's badge anchor, a live label, and a matched tip width.
 
 // #endregion Types
 
@@ -738,7 +743,7 @@ function badRecFun ( tarRecObj : BoxRecTyp & Partial< PadSidTyp >, cenBadBoo : b
  *
 */
 
-function shaRadFun ( tarDomEle : HTMLElement, padWidNum : number, padHeiNum : number, shaOveStr? : string ) : { radXcoNum : number, radYcoNum : number } {
+function shaRadFun ( tarDomEle : HTMLElement, padWidNum : number, padHeiNum : number, shaOveStr? : string ) : ShaRadTyp {
 
 
 	if ( shaOveStr === 'circle' ) { // What: Circle Override Guard. Why: A target whose round appearance comes from an inner SVG shape rather than its own border-radius has nothing for getComputedStyle to read. How: This forces a perfect ellipse matching the padded box's own half-width/half-height.
@@ -850,7 +855,7 @@ function shaRadFun ( tarDomEle : HTMLElement, padWidNum : number, padHeiNum : nu
 
 // #region Exports
 
-export { badRecFun, claPadFun, cliChrFun, cliHorFun, detEdgFun, finTarFun, shaRadFun, uniRecFun }; // What: Named Exports. Why: HelOveCom measures, clips, and shapes every highlight with these. How: This exports every helper the overlay reads by name; CHR_PRI_OBJ stays private to this file.
+export { badRecFun, claPadFun, cliChrFun, cliHorFun, detEdgFun, finTarFun, shaRadFun, type HelRecTyp, type ShaRadTyp, uniRecFun }; // What: Named Exports. Why: HelOveCom measures, clips, and shapes every highlight with these, and the catalog and tip type their rects and shapes with HelRecTyp and ShaRadTyp. How: This exports every helper the overlay reads and both types by name; CHR_PRI_OBJ stays private to this file.
 
 // #endregion Exports
 

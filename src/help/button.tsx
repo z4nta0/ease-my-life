@@ -5,6 +5,9 @@
 
 import cssModObj from './button.module.css'; // What: CSS Module Object. Why: The help toggle is styled from its own module. How: This maps each class name in button.module.css to its hashed module class.
 
+
+import type { JSX } from 'react'; // What: JSX. Why: The component declares the element it returns. How: This types its return as a JSX element.
+
 // #endregion Imports
 
 
@@ -28,6 +31,8 @@ import cssModObj from './button.module.css'; // What: CSS Module Object. Why: Th
 
 
 // #region Components
+
+type HbcProTyp = { actModBoo : boolean, onTogModFun : () => void }; // What: Help-Button-Component Props Type. Why: The toggle shows whether help mode is on and flips it. How: This types HelButCom's props.
 
 // #region HelButCom
 
@@ -58,7 +63,7 @@ import cssModObj from './button.module.css'; // What: CSS Module Object. Why: Th
  *
 */
 
-function HelButCom ( { actModBoo, onTogModFun } ) {
+function HelButCom ( { actModBoo, onTogModFun } : HbcProTyp ) : JSX.Element {
 
 
 	return (

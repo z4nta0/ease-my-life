@@ -9,6 +9,10 @@ import React     from 'react';                // What: React. Why: HelTipCom is 
 
 import { rhyPxlFun } from '../utils/rhythm.ts'; // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 
+
+import type { HelIteTyp } from './content.tsx'; // What: Help Item Type. Why: The tip renders one catalog item's title and body. How: This types HtcProTyp's item.
+import type { HelRecTyp } from './geometry.ts'; // What: Help Rect Type. Why: The tip is placed against its item's measured rect. How: This types plaTipFun's and HtcProTyp's rect.
+
 // #endregion Imports
 
 
@@ -77,7 +81,7 @@ import { rhyPxlFun } from '../utils/rhythm.ts'; // What: Rhythm Pixel Function. 
  *
 */
 
-function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum ) {
+function plaTipFun ( tarRecObj : HelRecTyp, tipWidNum : number, tipHeiNum : number ) : { arrHorNum : number, lefTipNum : number, maxHeiNum : number | null, tipClaStr : string, topTipNum : number } {
 
 
 	const vieWidNum = window.innerWidth;  // What: Viewport Width Number. Why: Every clamp below needs the current viewport's own width. How: This is read once from window.innerWidth and reused throughout.
@@ -154,6 +158,8 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum ) {
 
 // #region Components
 
+type HtcProTyp = { tarRecObj : HelRecTyp, tipIteObj : HelIteTyp }; // What: Help-Tip-Component Props Type. Why: A tip renders its catalog item's copy anchored to that item's measured rect. How: This types HelTipCom's props.
+
 // #region HelTipCom
 
 /**
@@ -190,7 +196,7 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum ) {
  *
 */
 
-function HelTipCom ( { tarRecObj, tipIteObj } ) {
+function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element {
 
 
 	const tipEleRef                   = React.useRef( null );              // What: Tip Element Reference. Why: The layout effect below needs a handle on the real tip DOM node to measure and position it. How: This is attached to the root coach div's own ref prop below.
@@ -233,7 +239,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } ) {
 
 
 
-	const innStyObj = scrMaxNum != null ? { maxHeight : scrMaxNum, overflowY : 'auto' } : null; // What: Inner Style Object. Why: Only a scrollable item's own inner wrapper needs a capped height and its own scrollbar. How: This builds the style object only while scrMaxNum holds a real cap.
+	const innStyObj : React.CSSProperties | null = scrMaxNum != null ? { maxHeight : scrMaxNum, overflowY : 'auto' } : null; // What: Inner Style Object. Why: Only a scrollable item's own inner wrapper needs a capped height and its own scrollbar. How: This builds the style object only while scrMaxNum holds a real cap.
 
 
 
