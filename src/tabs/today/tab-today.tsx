@@ -917,7 +917,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		preFulRef.current = fulNowBoo; // What: Previous Complete Update. Why: Same reasoning as preDonRef just above, for the completion state. How: This overwrites preFulRef with the current fulNowBoo.
 
 
-	}, [ donCouNum, totCouNum ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when the ring's own numerator or denominator changes. How: donCouNum/totCouNum are exactly what preDonRef/preFulRef are compared against.
+	}, [ celStyStr, donCouNum, totCouNum ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when the ring's own numerator or denominator changes. How: donCouNum/totCouNum are exactly what preDonRef/preFulRef are compared against, and a re-run from a celebration style change finds no rise and only refreshes the refs.
 
 	// #endregion Completion Celebration
 
@@ -1816,6 +1816,12 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	};
 
 
+	const cloModRef = React.useRef( cloModFun ); // What: Close Mode Reference. Why: The Escape listener below lives for a whole Edit Mode session, so the cloModFun it closed over would read that session's first-render state, including a stale closing guard. How: This holds the newest cloModFun, kept current by the sync effect below.
+
+
+	React.useLayoutEffect( () => { cloModRef.current = cloModFun; } ); // What: Close Mode Sync Effect. Why: The Escape listener must always call the current render's cloModFun. How: This copies the newest cloModFun into cloModRef after every render.
+
+
 	const togModFun = () => { ediModBoo ? cloModFun( true ) : opeModFun(); }; // What: Toggle Mode Function. Why: The rail's own Edit Mode button needs one handler that does the right thing either direction. How: This calls cloModFun(true) (treated as a commit) while already on, otherwise opeModFun.
 
 
@@ -1827,7 +1833,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		const onKeyEscFun = ( keyEveObj ) => { if ( keyEveObj.key === 'Escape' ) cloModFun( false ); }; // What: On Key Escape Function. Why: This is the actual Escape handler. How: This calls cloModFun(false) (a discard) on the Escape key.
+		const onKeyEscFun = ( keyEveObj : KeyboardEvent ) => { if ( keyEveObj.key === 'Escape' ) cloModRef.current( false ); }; // What: On Key Escape Function. Why: This is the actual Escape handler. How: This calls the current cloModFun(false) (a discard) through cloModRef on the Escape key.
 
 
 		window.addEventListener( 'keydown', onKeyEscFun ); // What: Keydown Subscribe Call. Why: Escape must be caught anywhere on the page while Edit Mode is on. How: This registers onKeyEscFun on window.
@@ -1837,7 +1843,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		return () => window.removeEventListener( 'keydown', onKeyEscFun ); // What: Effect Cleanup Return. Why: The listener must not outlive this effect run. How: This removes the same onKeyEscFun reference that was added above.
 
 
-	}, [ ediModBoo ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when ediModBoo itself changes. How: ediModBoo is exactly what gates whether the listener should even be subscribed.
+	}, [ ediModBoo ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when ediModBoo itself changes. How: ediModBoo is exactly what gates whether the listener should even be subscribed, and the listener reaches the current cloModFun through cloModRef.
 
 
 	// #region groDraFun
@@ -2659,6 +2665,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
+	const picLenNum = staAppObj.pickers.length; // What: Picker Length Number. Why: The auto-generator only runs with at least one picker, and has to recheck when the count changes. How: This reads how many pickers exist, so the effect below can read and list one plain number.
+
+
 	React.useEffect( () => { // What: Daily Auto-Generator Effect. Why: See the doc comment just above. How: This checks the run-time boundary immediately and then once a minute, generating a fresh list whenever the last generation predates it.
 
 
@@ -2676,7 +2685,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-			if ( !staAppObj.pickers || !staAppObj.pickers.length ) return; // What: No Pickers Guard. Why: Nothing runs daily at all without at least one picker. How: This bails out early when staAppObj.pickers is empty or missing.
+			if ( !picLenNum ) return; // What: No Pickers Guard. Why: Nothing runs daily at all without at least one picker. How: This bails out early when picLenNum is 0.
 
 
 
@@ -2693,7 +2702,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-			const genDatObj = staAppObj.today && staAppObj.today.generatedAt ? new Date( staAppObj.today.generatedAt ) : null; // What: Generated Date Object. Why: The already-generated check below needs the last real generation as a comparable Date. How: This reads staAppObj.today.generatedAt, or null when it has never been set.
+			const genDatObj = genTimStr ? new Date( genTimStr ) : null; // What: Generated Date Object. Why: The already-generated check below needs the last real generation as a comparable Date. How: This reads staAppObj.today.generatedAt, or null when it has never been set.
 
 
 			if ( genDatObj && genDatObj >= bouDatObj ) return; // What: Already Generated Guard. Why: A generation already at or after the current boundary means this period is already satisfied. How: This bails out early when genDatObj exists and is not older than bouDatObj.
@@ -2727,7 +2736,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		return () => clearInterval( cheIntNum ); // What: Effect Cleanup Return. Why: The interval must not outlive this effect run. How: This clears cheIntNum.
 
 
-	}, [ staAppObj.daily, staAppObj.today && staAppObj.today.generatedAt, staAppObj.pickers.length ] ); // What: Effect Dependency Array. Why: A changed daily-generator config, a fresh generation, or the picker count itself all need this effect to re-evaluate. How: Each of these 3 can change whether/when the next auto-run should fire.
+	}, [ genTimStr, picLenNum, staAppObj.daily ] ); // What: Effect Dependency Array. Why: A changed daily-generator config, a fresh generation, or the picker count itself all need this effect to re-evaluate. How: Each of these 3 can change whether/when the next auto-run should fire, and each is a plain value so the effect only re-runs when one actually changes.
 
 	// #endregion Daily Auto-Generator Effect
 
@@ -3203,7 +3212,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		};
 
 
-	}, [ scrPenBoo ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when scrPenBoo itself flips. How: scrPenBoo is exactly the flag this whole effect reacts to.
+	}, [ actStoObj, scrPenBoo ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when scrPenBoo itself flips. How: scrPenBoo is exactly the flag this whole effect reacts to, and actStoObj never changes identity.
 
 	// #endregion Generate Card Auto-Scroll
 
@@ -3336,6 +3345,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		preResRef.current = genResBoo; // What: Previous Generate Resolved Update. Why: Even a non-transition still needs preResRef to track the latest value for next time. How: This overwrites preResRef with the current genResBoo.
 
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: A re-run from any picker or task change would run the cleanup, cancelling the scheduled conclusion, and the ref guard would never schedule it again. How: actStoObj, staAppObj.pickers, and staAppObj.tasks are read from the render where the checklist resolved, which already holds every item it unhides.
 	}, [ genResBoo ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when genResBoo itself changes. How: genResBoo is exactly what preResRef is compared against.
 
 	// #endregion Checklist Conclusion

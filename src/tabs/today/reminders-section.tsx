@@ -879,13 +879,16 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 	const patAddFun = ( patValObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, ...patValObj } ) ); // What: Patch Add Function. Why: The quick-add form's schedule editor changes a field or two of its draft task. How: This merges patValObj into draTasObj.
 
 
+	const draRepStr = draTasObj ? draTasObj.repeat : null; // What: Draft Repeat String. Why: The effect below publishes only the draft's repeat field, so it should depend on that one value. How: This reads draTasObj's repeat, or null while no draft exists.
+
+
 	React.useEffect( () => { // What: Draft Repeat Publish Effect. Why: A reminder mini-tour's later steps need to show copy matching whichever schedule type is currently selected in this draft, without lifting this local state anywhere else. How: This republishes draTasObj's own repeat field onto the shared tour bus.
 
 
-		emlTouObj.set( { draRepStr : draTasObj ? draTasObj.repeat : null } ); // What: Draft Repeat Publish Call. Why: A running mini-tour reads this field to decide which copy variant to show next. How: This writes draTasObj's own repeat (or null while no draft exists) onto the shared tour bus.
+		emlTouObj.set( { draRepStr : draRepStr } ); // What: Draft Repeat Publish Call. Why: A running mini-tour reads this field to decide which copy variant to show next. How: This writes draRepStr onto the shared tour bus.
 
 
-	}, [ draTasObj && draTasObj.repeat ] ); // What: Effect Dependency Array. Why: Only the draft's own repeat field is published, so only a change to that specific field needs to re-run this effect. How: draTasObj && draTasObj.repeat is the exact value being published.
+	}, [ draRepStr ] ); // What: Effect Dependency Array. Why: Only the draft's own repeat field is published, so only a change to that specific field needs to re-run this effect. How: draRepStr is the exact value being published.
 
 
 
