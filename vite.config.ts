@@ -29,6 +29,8 @@ import type { Plugin } from 'vite'; // What: Plugin. Why: The shipped-files mini
  * generates the PWA's service worker around the hand-written manifest, and,
  * for production builds only, minifies the files Vite ships as written:
  * index.html and the copied public/boot-splash.js and public/sw-notify.js.
+ * It also raises the chunk size warning to 1000 kB, since the main bundle is
+ * past Vite's default 500 kB.
  *
  * Sections:
  *  - Constants
@@ -176,6 +178,7 @@ const minShiFun = () : Plugin => { // What: Minify Shipped Function. Why: index.
 const vitConObj = defineConfig({ // What: Vite Config Object. Why: Vite reads its whole configuration from this file's default export. How: This builds the config, including the minShiFun plugin above.
 
 
+	build  : { chunkSizeWarningLimit : 1000 },                          // What: Build. Why: The main bundle (about 917 kB before gzip) is past Vite's default 500 kB chunk warning, which would otherwise fire on every build. How: This raises the warning threshold to 1000 kB.
 	css    : { modules : { localsConvention : 'camelCaseOnly' } },      // What: Css. Why: CSS modules expose their kebab-case class names as camelCase keys only, so .prog--warm is read as cssModObj.progWarm, per CLAUDE.md's "CSS modules and JS hooks" rules. How: This sets the locals convention.
 	define : { __APP_VERSION__ : JSON.stringify( pacJsoObj.version ) }, // What: Define. Why: The app reports its own version without a hardcoded string. How: This replaces __APP_VERSION__ with the package version at build time.
 
