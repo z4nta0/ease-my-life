@@ -671,10 +671,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		else hidHisFun( actStoObj ); // What: Hide Samples Call. Why: Leaving help mode must not leave the borrowed samples permanently visible. How: This re-hides them.
 
 
-	}, [ helModBoo, staTouBoo ] ); // What: Effect Dependency Array. Why: This must re-run whenever help mode itself toggles, or whenever tour ownership of the samples changes. How: helModBoo drives the actual show/hide, staTouBoo gates whether this effect is allowed to act at all.
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: Un-hiding the samples changes the app state, so re-running on every state change would un-hide them again in a loop. How: staAppObj is read from the render where help mode or tour ownership changed.
+	}, [ actStoObj, helModBoo, staTouBoo ] ); // What: Effect Dependency Array. Why: This must re-run whenever help mode itself toggles, or whenever tour ownership of the samples changes. How: helModBoo drives the actual show/hide, staTouBoo gates whether this effect is allowed to act at all, and actStoObj never changes identity.
 
 
-	React.useEffect( () => () => hidHisFun( actStoObj ), [] ); // What: Unmount Cleanup Effect. Why: The borrowed samples must not stay revealed if this page unmounts while help mode happens to still be on. How: This registers a cleanup-only effect that hides the samples on unmount, with no setup of its own.
+	React.useEffect( () => () => hidHisFun( actStoObj ), [ actStoObj ] ); // What: Unmount Cleanup Effect. Why: The borrowed samples must not stay revealed if this page unmounts while help mode happens to still be on. How: This registers a cleanup-only effect that hides the samples on unmount, with no setup of its own, listing actStoObj, which never changes identity, so it still runs only once.
 
 	// #endregion Page Tour And Help Mode
 
@@ -752,8 +753,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-	const picLogArr = staAppObj.pickLog || []; // What: Pick Log Array. Why: Every pick-related card on this page derives from this one flat, append-only log. How: This falls back to an empty array for a fresh install with no history yet.
-	const picLisArr = staAppObj.pickers || []; // What: Picker List Array. Why: The Show/Group/Type filter rows and every picker lookup below need the live picker list. How: This falls back to an empty array for a fresh install with no pickers yet.
+	const picLogArr = staAppObj.pickLog; // What: Pick Log Array. Why: Every pick-related card on this page derives from this one flat, append-only log. How: This reads staAppObj.pickLog, which migStaFun guarantees, so it stays the same array until the log changes.
+	const picLisArr = staAppObj.pickers; // What: Picker List Array. Why: The Show/Group/Type filter rows and every picker lookup below need the live picker list. How: This reads staAppObj.pickers, which every state carries, so it stays the same array until a picker changes.
 
 
 	const hidPicSet = React.useMemo( () => ( // What: Hidden Picker Set Memo. Why: Excluding a hidden picker's own rows from every rollup needs a fast id lookup, not a repeated array scan. How: This collects every picker flagged hidden into a Set of ids. // Hidden pickers/tasks (see store.ts's own hidden flag) keep their history rows in picLogArr/reminderLog/reminderSkipLog (nothing here is ever deleted), but every rollup below excludes them by id so the numbers reflect only what's currently visible, same as Today/Pickers/ Data.
@@ -777,8 +778,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	// #region Conditionals Scope Data
 
-	const conDefArr = staAppObj.conditionals || [];                 // What: Conditional Definition Array. Why: The Conditionals scope needs the live definitions to join against their own trigger history. How: This falls back to an empty array for a fresh install with no conditionals yet.
-	const conLogArr = staAppObj.conditionalLog || [];               // What: Conditional Log Array. Why: This flat, append-only log holds every historical trigger evaluation, including ones for now-deleted conditionals. How: This falls back to an empty array when nothing has ever fired.
+	const conDefArr = staAppObj.conditionals;                       // What: Conditional Definition Array. Why: The Conditionals scope needs the live definitions to join against their own trigger history. How: This reads staAppObj.conditionals, which migStaFun guarantees, so it stays the same array until a conditional changes.
+	const conLogArr = staAppObj.conditionalLog;                     // What: Conditional Log Array. Why: This flat, append-only log holds every historical trigger evaluation, including ones for now-deleted conditionals. How: This reads staAppObj.conditionalLog, which migStaFun guarantees, so it stays the same array until the log changes.
 	const hasConBoo = conDefArr.length > 0 || conLogArr.length > 0; // What: Has Conditional Boolean. Why: The Type filter row and the whole Conditionals scope should only appear at all once there's something to show. How: This is true when either a live definition or a logged history row exists.
 	const isaConBoo = scoValStr === 'conditionals';                 // What: Is-A Conditional Boolean. Why: Several blocks below need a quick check for whether the Conditionals scope is the active one. How: This compares scoValStr against the 'conditionals' sentinel value.
 
@@ -1071,9 +1072,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	// #region Reminder Availability
 
-	const remOptObj = TAS_NAM_OBJ.norOptFun( staAppObj.reminderOpts );                                 // What: Reminder Options Object. Why: Which reminder types opt into Stats is a persisted setting that may be missing/partial on an older save. How: This normalizes the raw persisted reminderOpts via TAS_NAM_OBJ' own helper.
-	const enaTypArr = [ 'once', 'recurring' ].filter( ( typCurStr ) => remOptObj[ typCurStr ].stats ); // What: Enabled Type Array. Why: Every reminder-scoped query below needs to know exactly which of the two types are opted into Stats. How: This keeps whichever of 'once'/'recurring' has its own stats flag turned on.
-	const remEnaBoo = enaTypArr.length > 0;                                                            // What: Reminder Enabled Boolean. Why: The whole Reminders scope, and its Type-row pill, should only exist once at least one reminder type opts in. How: This is true when enaTypArr isn't empty.
+	const remOptObj = React.useMemo( () => TAS_NAM_OBJ.norOptFun( staAppObj.reminderOpts ), [ staAppObj.reminderOpts ] );                    // What: Reminder Options Object. Why: Which reminder types opt into Stats is a persisted setting that may be missing/partial on an older save. How: This normalizes the raw persisted reminderOpts via TAS_NAM_OBJ' own helper. It's memoized on the saved options, so it keeps one identity until they change.
+	const enaTypArr = React.useMemo( () => [ 'once', 'recurring' ].filter( ( typCurStr ) => remOptObj[ typCurStr ].stats ), [ remOptObj ] ); // What: Enabled Type Array. Why: Every reminder-scoped query below needs to know exactly which of the two types are opted into Stats. How: This keeps whichever of 'once'/'recurring' has its own stats flag turned on, memoized on remOptObj so the dependency arrays below see one stable array until the options change.
+	const remEnaBoo = enaTypArr.length > 0;                                                                                                  // What: Reminder Enabled Boolean. Why: The whole Reminders scope, and its Type-row pill, should only exist once at least one reminder type opts in. How: This is true when enaTypArr isn't empty.
 
 
 	React.useEffect( () => { // What: Reminder Scope Guard Effect. Why: Turning off every reminder type's own Stats opt-in while the Reminders scope is active would otherwise leave the page showing a now-unreachable scope. How: This falls back to 'all' whenever scoValStr is 'reminders' but remEnaBoo has gone false. // Don't strand the view on a Reminders scope that's just been turned off.
@@ -1331,7 +1332,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 			.filter( ( rowCurObj ) => !cutIsoStr || isoDayFun( new Date( rowCurObj.completedAt ) ) >= cutIsoStr ) // What: Range Filter. Why: Only completions inside the active range count. How: This keeps rows completed on or after cutIsoStr, or every row with no cutoff.
 
 
-	), [ staAppObj.reminderLog, enaTypArr.join( ',' ), cutIsoStr, hidTasSet ] ); // What: Memo Dependency Array. Why: This filtered view only ever needs recomputing when the raw log, the enabled-types set, the range cutoff, or the hidden-task set changes. How: enaTypArr is joined to a stable string since a fresh array identity would otherwise re-trigger this every render.
+	), [ cutIsoStr, enaTypArr, hidTasSet, staAppObj.reminderLog ] ); // What: Memo Dependency Array. Why: This filtered view only ever needs recomputing when the raw log, the enabled-types set, the range cutoff, or the hidden-task set changes. How: enaTypArr is memoized on its two flags, so it only gets a new identity when the enabled set really changes.
 
 
 	const dayAggMap = React.useMemo( () => { // What: Day Aggregate Map Memo. Why: The heatmap, streak, and full-days count all need one shared per-day rollup, built once instead of separately per card. How: This walks either remRowArr or picRowArr (whichever scope is active) into a Map keyed by calendar day. // Per-day aggregation, one { donNum, iteArr, totNum } entry per calendar day, each iteArr entry a { donBoo, namStr } pair. A pick day counts every logged row toward totNum and only completed ones toward donNum; a reminder day counts every completion toward both.
@@ -2446,7 +2447,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		return [ ...remTotMap.values() ].sort( ( remOneObj, remTwoObj ) => sorDirNum * ( remOneObj.couNum - remTwoObj.couNum ) || remOneObj.namStr.localeCompare( remTwoObj.namStr ) ); // What: Skip Totals Return. Why: This is the finished, sorted per-reminder skip list the Skipped pivot renders. How: This sorts the grouped totals by couNum, tie-breaking alphabetically.
 
 
-	}, [ isaRemBoo, staAppObj.reminderSkipLog, enaTypArr.join( ',' ), cutIsoStr, remSorStr, hidTasSet ] ); // What: Memo Dependency Array. Why: This list only ever needs rebuilding when the Reminders-scope flag, the raw skip log, the enabled types, the range cutoff, the sort direction, or the hidden-task set changes. How: Each feeds one part of the filter/grouping/sorting above.
+	}, [ cutIsoStr, enaTypArr, hidTasSet, isaRemBoo, remSorStr, staAppObj.reminderSkipLog ] ); // What: Memo Dependency Array. Why: This list only ever needs rebuilding when the Reminders-scope flag, the raw skip log, the enabled types, the range cutoff, the sort direction, or the hidden-task set changes. How: Each feeds one part of the filter/grouping/sorting above.
 
 
 
@@ -2468,7 +2469,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const remSafNum = Math.min( remIndNum, remPagNum - 1 );                                                      // What: Reminder Safe Number. Why: remIndNum can go stale if the underlying list shrinks (e.g. switching metric pivots), landing past the new last page. How: This clamps remIndNum down to the highest valid page index.
 	const remIteArr = remBreArr.slice( remSafNum * REM_SIZ_NUM, ( remSafNum + 1 ) * REM_SIZ_NUM );               // What: Reminder Item Array. Why: Only the current page's own slice of remBreArr should actually render. How: This slices remBreArr from the safe page's own start to its own end.
 
-	React.useEffect( () => setRemIndNum( 0 ), [ remMetStr, remSorStr, scoValStr, cutIsoStr, enaTypArr.join( ',' ) ] ); // What: Reminder Page Reset Effect. Why: Changing what the card even shows should always land back on its own first page rather than an arbitrary stale one. How: This resets remIndNum to 0 whenever any of these five values changes. // Reset to page 1 whenever the metric, sort, scope, or range filter changes.
+	React.useEffect( () => setRemIndNum( 0 ), [ cutIsoStr, enaTypArr, remMetStr, remSorStr, scoValStr ] ); // What: Reminder Page Reset Effect. Why: Changing what the card even shows should always land back on its own first page rather than an arbitrary stale one. How: This resets remIndNum to 0 whenever any of these five values changes. // Reset to page 1 whenever the metric, sort, scope, or range filter changes.
 
 	const shoRemBoo = scoValStr === 'all' && remEnaBoo; // What: Show Reminder Boolean. Why: The "Reminders completed" summary card only belongs on the combined All view, and only while reminders are enabled at all. How: This checks both conditions together. // Reminders summary card shown on the combined "All" view.
 
