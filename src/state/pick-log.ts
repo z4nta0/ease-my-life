@@ -5,6 +5,11 @@
 
 import { isoDayFun } from '../utils/date.ts'; // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 
+
+import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: logRowFun builds one pick-log row. How: This types its return.
+import type { PclSouTyp } from '../core/data-model.ts'; // What: Pick-Log Source Type. Why: A row records how its pick was made. How: This types logFieObj's source.
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: logRowFun looks the item and picker up in the current state. How: This types curStaObj.
+
 // #endregion Imports
 
 
@@ -71,7 +76,7 @@ let __pclSeqNum = 0; // What: Pick-Log Sequence Number. Why: newLogFun below nee
  *
 */
 
-function newLogFun () {
+function newLogFun () : string {
 
 
 	return 'pl_' + Date.now().toString( 36 ) + ( __pclSeqNum++ ).toString( 36 ); // What: Pick-Log Id Return. Why: The caller needs a short, sortable, collision-resistant id. How: This concatenates a fixed prefix, the current time base-36, and the incrementing counter base-36.
@@ -121,7 +126,7 @@ function newLogFun () {
  *
 */
 
-function logRowFun ( curStaObj, logFieObj ) {
+function logRowFun ( curStaObj : StaAppTyp, logFieObj : { date? : string, depletedEnd? : boolean, eid? : string | null, itemId : string, pickerId : string, source : PclSouTyp } ) : PclRowTyp {
 
 
 	const curIteObj = curStaObj.items.find( ( iteFinObj ) => iteFinObj.id === logFieObj.itemId );     // What: Current Item Object And Guard. Why: The row below needs the item's own live name, or a removed-item fallback. How: This looks up logFieObj.itemId in curStaObj.items, undefined once removed.

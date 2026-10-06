@@ -6,6 +6,10 @@
 import { PIC_NAM_OBJ } from '../core/pickers.ts'; // What: Pickers Namespace Object. Why: An ease-mode item is stamped with its picker's average drift band. How: This is called via PIC_NAM_OBJ.aveEasFun.
 import { uniNamFun   } from '../utils/format.ts'; // What: Unique Name Function. Why: Two items in the same picker can't share a name. How: This de-duplicates the new item's name against its siblings.
 
+
+import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: Both functions build or reset item fields. How: This types the new item and the sibling items.
+import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record Type. Why: A new item takes its owning picker's mode and threshold. How: This types curPicObj.
+
 // #endregion Imports
 
 
@@ -68,7 +72,7 @@ import { uniNamFun   } from '../utils/format.ts'; // What: Unique Name Function.
  *
 */
 
-function buiIteFun ( curPicObj, sibIteArr, newNamStr, optIdeStr ) {
+function buiIteFun ( curPicObj : PicRcdTyp, sibIteArr : IteRcdTyp[], newNamStr : string, optIdeStr? : string ) : IteRcdTyp {
 
 
 	const isaDowBoo = curPicObj && curPicObj.mode === 'ease-down';                                     // What: Is-A Down Boolean. Why: Only Ease Down needs the special charged-value/fairness-weight treatment below. How: This is true only when curPicObj exists and its own mode is 'ease-down'.
@@ -152,7 +156,7 @@ function buiIteFun ( curPicObj, sibIteArr, newNamStr, optIdeStr ) {
  *
 */
 
-function modDefFun ( newModStr, thrValNum ) {
+function modDefFun ( newModStr : string, thrValNum : number ) : Partial< IteRcdTyp > {
 
 
 	if ( newModStr === 'ease-down' ) return { easeMax : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax, easeMin : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, value : thrValNum, weight : 1 }; // What: Ease Down Defaults Guard. Why: Ease Down items start fully charged. How: This returns the default drift band with value at the threshold.
