@@ -33,7 +33,7 @@ import type { ConRcdTyp } from '../../core/data-model.ts'; // What: Conditional 
 import type { DatModTyp } from '../../core/data-model.ts'; // What: Date Mode Type. Why: The date mode select sets one of the saved date modes. How: This types its value.
 import type { IteRcdTyp } from '../../core/data-model.ts'; // What: Item Record Type. Why: The Controls body reads the picker's own items. How: This types PccProTyp's item list.
 import type { ModNamTyp } from '../../core/data-model.ts'; // What: Mode Name Type. Why: The mode radios set one of the five modes. How: This types the chosen mode.
-import type { PicArgTyp } from '../../core/data-model.ts'; // What: Picker Argument Type. Why: A draft picker's changes and save carry its form fields. How: This types the draft patch and save callbacks.
+import type { PicForTyp } from '../../core/data-model.ts'; // What: Picker Form Type. Why: A draft picker's changes and save carry its form fields, and a brand-new draft is created as a complete picker. How: This types the draft patch and save callbacks.
 import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Record Type. Why: The Controls body edits one picker. How: This types PccProTyp's picker.
 
 // #endregion Imports
@@ -62,7 +62,7 @@ import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Recor
 
 // #region Components
 
-type PccProTyp = { actStoObj : ActStoTyp, allGroArr : string[], conIteArr? : ConRcdTyp[], hasNewBoo? : boolean, incDaiBoo : boolean, isaNewBoo? : boolean, iteSecBoo? : boolean, onCanNewFun? : () => void, onColConFun : () => void, onOpeSecFun? : () => void, onPatNewFun? : ( patPicObj : PicArgTyp ) => void, onReqDelFun? : () => void, onSavNewFun? : ( draPicObj : PicArgTyp, filAllBoo : boolean ) => void, picDatObj : PicRcdTyp, picIteArr : IteRcdTyp[] }; // What: Picker-Controls-Component Props Type. Why: A picker's Controls body edits one picker, real or a brand-new draft, and hands a draft's changes, save, and cancel to its card. How: This types PicConCom's props.
+type PccProTyp = { actStoObj : ActStoTyp, allGroArr : string[], conIteArr? : ConRcdTyp[], hasNewBoo? : boolean, incDaiBoo : boolean, isaNewBoo? : boolean, iteSecBoo? : boolean, onCanNewFun? : () => void, onColConFun : () => void, onOpeSecFun? : () => void, onPatNewFun? : ( patPicObj : Partial< PicForTyp > ) => void, onReqDelFun? : () => void, onSavNewFun? : ( draPicObj : PicForTyp, filAllBoo : boolean ) => void, picDatObj : PicRcdTyp, picIteArr : IteRcdTyp[] }; // What: Picker-Controls-Component Props Type. Why: A picker's Controls body edits one picker, real or a brand-new draft, and hands a draft's changes, save, and cancel to its card. How: This types PicConCom's props.
 
 // #region PicConCom
 
@@ -166,7 +166,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	 *
 	*/
 
-	const patPicFun = ( patPicObj : PicArgTyp ) => { // What: Patch Picker Function. Why: Every Controls field changes a field or two of the draft, and a brand-new picker's card also shows its draft as it's typed. How: This merges patPicObj into the draft, passing it up to onPatNewFun for a new picker.
+	const patPicFun = ( patPicObj : Partial< PicForTyp > ) => { // What: Patch Picker Function. Why: Every Controls field changes a field or two of the draft, and a brand-new picker's card also shows its draft as it's typed. How: This merges patPicObj into the draft, passing it up to onPatNewFun for a new picker.
 
 
 		setDraPicObj( ( preDraObj ) => ( { ...preDraObj, ...patPicObj } ) ); // What: Draft Merge Call. Why: The field change lands in the draft. How: This merges patPicObj into draPicObj.

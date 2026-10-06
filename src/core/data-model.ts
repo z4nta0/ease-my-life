@@ -242,7 +242,7 @@ type PicRcdTyp = { // What: Picker Record Type. Why: A picker is a pool of items
 	group              : string;        // What: Group. Why: Today clusters pickers into groups. How: This is the group's label.
 	hidden             : boolean;       // What: Hidden. Why: Sample pickers stay saved but out of sight until a tour shows them. How: This is true while hidden.
 	id                 : string;        // What: Id. Why: Items, entries, and log rows refer to a picker by it. How: This is its stable identifier.
-	lastRunPeriod?     : string;        // What: Last Run Period. Why: A non-daily picker counts as run for its period once its card is completed. How: This is the completed period's start date, absent until one completes.
+	lastRunPeriod?     : string | null; // What: Last Run Period. Why: A non-daily picker counts as run for its period once its card is completed. How: This is the completed period's start date, absent until one completes, and null once an undo restores a picker that had never run.
 	mode               : ModNamTyp;     // What: Mode. Why: A picker chooses in one of five ways. How: This names which.
 	name               : string;        // What: Name. Why: The picker is shown by name. How: This is the user's own label for it.
 	nthOrdinal?        : number;        // What: Nth Ordinal. Why: An Nth-weekday schedule needs which occurrence. How: This is 1 through 5.
@@ -256,6 +256,11 @@ type PicRcdTyp = { // What: Picker Record Type. Why: A picker is a pool of items
 
 
 type PicArgTyp = Partial< PicRcdTyp > & { includeInDaily? : boolean, items? : Partial< IteRcdTyp >[], newConditional? : Partial< ConRcdTyp > | null, replaceId? : string, step? : number }; // What: Picker Argument Type. Why: Adding, editing, or prefilling a picker passes the form's fields, its items, and any new conditional together. How: This is a partial picker plus whether it joins the daily list, its items, a new conditional, the id of a sample it replaces, and the create form step a tour prefill opens on.
+
+
+
+type PicForTyp = Omit< PicArgTyp, 'items' > & Pick< PicRcdTyp, 'group' | 'mode' | 'name' > & { items? : ( Partial< IteRcdTyp > & Pick< IteRcdTyp, 'name' > )[] }; // What: Picker Form Type. Why: Adding or saving a picker builds a real picker from the form, which always names it, groups it, and picks its mode. How: This is a picker argument whose group, mode, name, and item names are required.
+
 
 
 type EntPenTyp = { // What: Entry Pending Type. Why: A pick's effects wait until its entry is checked off, so nothing changes for a pick the user never does. How: This describes an entry's staged effects, entry.pending.
@@ -348,12 +353,13 @@ type TasRcdTyp = { // What: Task Record Type. Why: A reminder is a scheduled tas
 type TasArgTyp = Partial< TasRcdTyp > & { replaceId? : string }; // What: Task Argument Type. Why: Adding a reminder passes the editor's fields. How: This is a partial reminder plus the id of a sample it replaces.
 
 
+
 type TodEntTyp = { // What: Today Entry Type. Why: Each card on Today is one entry, a pick or a day-off card. How: This describes one entry of state.today.entries.
 
 
 	cardText?      : string;           // What: Card Text. Why: A day-off card shows its conditional's text. How: This is that text, day-off cards only.
 	condName?      : string;           // What: Conditional Name. Why: A day-off card names its conditional. How: This copies the name, day-off cards only.
-	conditionalId? : string;           // What: Conditional Id. Why: Completing a day-off card resets its conditional. How: This is its id, day-off cards only.
+	conditionalId? : string | null;    // What: Conditional Id. Why: Completing a day-off card resets its conditional. How: This is its id, day-off cards only, or null when the generator gave none.
 	done           : boolean;          // What: Done. Why: The card can be checked off. How: This is true once it is.
 	eid            : string;           // What: Entry Identifier. Why: Log rows and edits refer to an entry by it. How: This is its unique id.
 	group?         : string;           // What: Group. Why: A card without a picked item still sits in its picker's group. How: This copies the group, on charging and day-off cards.
@@ -443,7 +449,7 @@ type StaAppTyp = { // What: State App Type. Why: The whole app runs on one saved
 
 // #region Exports
 
-export { type AppSetTyp, type CadNamTyp, type CdlRowTyp, type CheStaTyp, type ConRcdTyp, type CusPalTyp, type DaiSetTyp, type DatModTyp, type EntKinTyp, type EntPenTyp, type EntRevTyp, type HolCusTyp, type HolStaTyp, type IteRcdTyp, type ModNamTyp, type OnbStaTyp, type PclOutTyp, type PclRowTyp, type PclSouTyp, type PicArgTyp, type PicRcdTyp, type RemClaTyp, type RemKinTyp, type RemOptTyp, type RepNamTyp, type RmlRowTyp, type RslRowTyp, type StaAppTyp, type TasArgTyp, type TasRcdTyp, type TodEntTyp, type TodStaTyp, type UiStaTyp, type VclRowTyp }; // What: Named Type Exports. Why: core/, state/, and the UI all read the same saved records. How: This exports every record type and value set by name, each marked type so it disappears from the build.
+export { type AppSetTyp, type CadNamTyp, type CdlRowTyp, type CheStaTyp, type ConRcdTyp, type CusPalTyp, type DaiSetTyp, type DatModTyp, type EntKinTyp, type EntPenTyp, type EntRevTyp, type HolCusTyp, type HolStaTyp, type IteRcdTyp, type ModNamTyp, type OnbStaTyp, type PclOutTyp, type PclRowTyp, type PclSouTyp, type PicArgTyp, type PicForTyp, type PicRcdTyp, type RemClaTyp, type RemKinTyp, type RemOptTyp, type RepNamTyp, type RmlRowTyp, type RslRowTyp, type StaAppTyp, type TasArgTyp, type TasRcdTyp, type TodEntTyp, type TodStaTyp, type UiStaTyp, type VclRowTyp }; // What: Named Type Exports. Why: core/, state/, and the UI all read the same saved records. How: This exports every record type and value set by name, each marked type so it disappears from the build.
 
 // #endregion Exports
 

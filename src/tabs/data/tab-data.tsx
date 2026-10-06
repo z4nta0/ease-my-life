@@ -41,7 +41,7 @@ import { useIteDraFun } from '../../ui/record-draft.ts';            // What: Use
 import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The component changes state through the store's actions. How: This types its actStoObj.
 import type { IteRcdTyp } from '../../core/data-model.ts'; // What: Item Record Type. Why: The item lists and the sort entries read items. How: This types iteEntFun's item.
 import type { ModNamTyp } from '../../core/data-model.ts'; // What: Mode Name Type. Why: A draft picker starts in the filtered mode when it's a real one. How: This types that mode.
-import type { PicArgTyp } from '../../core/data-model.ts'; // What: Picker Argument Type. Why: The draft picker is patched and saved as a picker argument. How: This types patNewFun's patch and savNewFun's draft.
+import type { PicForTyp } from '../../core/data-model.ts'; // What: Picker Form Type. Why: The draft picker always has a name, group, and mode, and is created as a complete picker. How: This types the draft state, patNewFun's patch, and savNewFun's argument.
 import type { SorRowTyp } from './list-sorting.ts';        // What: Sort Row Type. Why: Sections and items are sorted as comparable rows. How: This types the collected section entries and each item's entry.
 import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The component reads the current app state. How: This types its staAppObj.
 
@@ -345,7 +345,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 	// #region Draft Picker State
 
-	const [ newPicObj, setNewPicObj ] = React.useState< ( PicArgTyp & { id : string } ) | null >( null ); // What: New Picker Object And Setter. Why: The "Create Picker" trigger starts a local draft picker, out of the store and storage, until its own Save creates it. How: This holds that draft, built from the active filters, or null when none is in progress.
+	const [ newPicObj, setNewPicObj ] = React.useState< ( PicForTyp & { id : string } ) | null >( null ); // What: New Picker Object And Setter. Why: The "Create Picker" trigger starts a local draft picker, out of the store and storage, until its own Save creates it. How: This holds that draft, built from the active filters, or null when none is in progress.
 	const [ draIteArr, setDraIteArr ] = React.useState( [] );                                             // What: Draft Item Array And Setter. Why: The draft picker's items stay local along with it until its Save creates them together. How: This holds every item already kept in the draft.
 	const [ draIteBoo, setDraIteBoo ] = React.useState( false );                                          // What: Draft Items Boolean And Setter. Why: The draft's own Items section starts closed, unlike a real picker's default-open one, since there's nothing to add to yet. How: This is toggled by the footer's "Add Items" button or the Items section's own header.
 	const [ penAutBoo, setPenAutBoo ] = React.useState( false );                                          // What: Pending Auto Boolean And Setter. Why: The footer's first "Add Items" click should ALSO land straight in a ready-to-type new-item form, but PicConCom's own Items ColDisCom only starts mounting children one render after draIteBoo flips, so this defers the auto-add by one effect tick. How: This is flagged true by onOpeSecFun and consumed by the effect below.
@@ -675,7 +675,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	 *
 	*/
 
-	const patNewFun = ( patPicObj : PicArgTyp ) => { // What: Patch New Function. Why: The draft card follows its Controls draft, and a type change resets its items. How: This merges patPicObj into newPicObj, resetting draIteArr on a type change.
+	const patNewFun = ( patPicObj : Partial< PicForTyp > ) => { // What: Patch New Function. Why: The draft card follows its Controls draft, and a type change resets its items. How: This merges patPicObj into newPicObj, resetting draIteArr on a type change.
 
 
 		setNewPicObj( ( prePicObj ) => prePicObj ? { ...prePicObj, ...patPicObj } : prePicObj ); // What: Draft Merge Call. Why: The draft card shows the picker as it's being edited. How: This merges patPicObj into newPicObj while a draft exists.
@@ -828,7 +828,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	 *
 	*/
 
-	const savNewFun = ( picArgObj : PicArgTyp, filAllBoo : boolean ) => { // What: Save New Function. Why: Save creates the draft picker and its items for real, in one step. How: This folds in any open draft row, applies a pending Fill all, then calls addPicFun.
+	const savNewFun = ( picArgObj : PicForTyp, filAllBoo : boolean ) => { // What: Save New Function. Why: Save creates the draft picker and its items for real, in one step. How: This folds in any open draft row, applies a pending Fill all, then calls addPicFun.
 
 
 		const draExiBoo = !!draIteObj;                       // What: Draft Existing Boolean. Why: Only an open row has a draft that could still need keeping. How: This is true whenever an item row is open.

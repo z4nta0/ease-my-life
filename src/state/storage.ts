@@ -255,7 +255,7 @@ const reqProFun = < T >( idbReqObj : IDBRequest< T > ) : Promise< T > => new Pro
  *
 */
 
-function traStoFun ( stoNamStr : string, modValStr : IDBTransactionMode ) : IDBObjectStore { return datConObj.transaction( stoNamStr, modValStr ).objectStore( stoNamStr ); } // What: Transaction Store Body. Why: Every IndexedDB read/write elsewhere in this file needs a freshly-opened store to call get/put/clear on. How: This opens one transaction on datConObj in the given mode and returns its own named object store.
+function traStoFun ( stoNamStr : string, modValStr : IDBTransactionMode ) : IDBObjectStore { return datConObj!.transaction( stoNamStr, modValStr ).objectStore( stoNamStr ); } // What: Transaction Store Body. Why: Every IndexedDB read/write elsewhere in this file needs a freshly-opened store to call get/put/clear on. How: This opens one transaction on datConObj in the given mode and returns its own named object store. // What: Non-Null Note. Why: Every caller checks that IndexedDB is the engine and its connection is open first. How: The ! tells TypeScript datConObj is set here.
 
 // #endregion traStoFun
 
@@ -701,7 +701,7 @@ async function iniStoFun () : Promise< any > {
 			if ( legStaObj ) { // What: Legacy State Check. Why: The migration below must only run when there is actually something in localStorage worth migrating. How: This gates the whole migration attempt on legStaObj being non-null.
 
 
-				try { if ( !localStorage.getItem( MIG_SNA_STR ) ) localStorage.setItem( MIG_SNA_STR, localStorage.getItem( MIR_KEY_STR ) ); } // What: Snapshot Set Try. Why: A rollback copy must be taken before the migration below touches anything, in case the new IDB store turns out not to read back correctly. How: This writes the current MIR_KEY_STR contents under MIG_SNA_STR, but only if no snapshot already exists there.
+				try { if ( !localStorage.getItem( MIG_SNA_STR ) ) localStorage.setItem( MIG_SNA_STR, localStorage.getItem( MIR_KEY_STR )! ); } // What: Snapshot Set Try. Why: A rollback copy must be taken before the migration below touches anything, in case the new IDB store turns out not to read back correctly. How: This writes the current MIR_KEY_STR contents under MIG_SNA_STR, but only if no snapshot already exists there. // What: Non-Null Note. Why: legStaObj was just parsed from this same key, so it holds text. How: The ! tells TypeScript the mirror read is set here.
 
 				catch ( errCatObj ) {} // What: Snapshot Set Guard. Why: The snapshot is a nicety, not a requirement, so a failure to write it must not abort the migration itself. How: This silently ignores any error from the inner setItem call above.
 
@@ -762,7 +762,7 @@ async function iniStoFun () : Promise< any > {
 		try { // What: Boot Count Try. Why: Reading and writing the boot counter can itself throw (a blocked origin), and that must not abort boot. How: This wraps the counting and sweeping sequence below, silently giving up in its own catch.
 
 
-			const booCouNum = ( parseInt( localStorage.getItem( BOO_KEY_STR ), 10 ) || 0 ) + 1; // What: Boot Count Number. Why: This is how many clean IDB boots in a row have now happened, one more than whatever was already recorded. How: This parses the existing BOO_KEY_STR value (0 if missing or unparseable) and adds 1.
+			const booCouNum = ( parseInt( localStorage.getItem( BOO_KEY_STR ) ?? '', 10 ) || 0 ) + 1; // What: Boot Count Number. Why: This is how many clean IDB boots in a row have now happened, one more than whatever was already recorded. How: This parses the existing BOO_KEY_STR value (0 if missing or unparseable) and adds 1.
 
 			localStorage.setItem( BOO_KEY_STR, String( booCouNum ) ); // What: Boot Count Set Call. Why: The freshly-incremented count must actually be persisted for the next boot to read. How: This writes booCouNum back under BOO_KEY_STR as a string.
 
@@ -1204,8 +1204,8 @@ async function staRepFun () : Promise< StoRepTyp > {
 
 			const estResObj = await navigator.storage.estimate(); // What: Estimate Result Object. Why: Both usage and quota come from the same single estimate() call. How: This awaits navigator.storage.estimate() once and reuses its result for both assignments below.
 
-			outStaObj.usage = estResObj.usage; // What: Output Usage Assignment. Why: This figure needs to reach the final report even though only headroom, not exact size, should ever be read from it. How: This copies estResObj's own usage straight onto outStaObj.
-			outStaObj.quota = estResObj.quota; // What: Output Quota Assignment. Why: This figure needs to reach the final report even though only headroom, not exact size, should ever be read from it. How: This copies estResObj's own quota straight onto outStaObj.
+			outStaObj.usage = estResObj.usage ?? null; // What: Output Usage Assignment. Why: This figure needs to reach the final report even though only headroom, not exact size, should ever be read from it. How: This copies estResObj's own usage onto outStaObj, or null when the browser leaves it out.
+			outStaObj.quota = estResObj.quota ?? null; // What: Output Quota Assignment. Why: This figure needs to reach the final report even though only headroom, not exact size, should ever be read from it. How: This copies estResObj's own quota onto outStaObj, or null when the browser leaves it out.
 
 
 		}

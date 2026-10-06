@@ -9,7 +9,7 @@ import { ONB_EXA_OBJ } from '../state/onboarding-seed-data.ts'; // What: Onboard
 
 import type { ActStoTyp } from '../state/store.ts';     // What: Action Store Type. Why: Seeding and clearing go through the store's actions. How: This types each actStoObj parameter.
 import type { ConRcdTyp } from '../core/data-model.ts'; // What: Conditional Record Type. Why: The gated example's conditional is added through addConFun. How: This types CON_GAT_OBJ as a partial conditional.
-import type { PicArgTyp } from '../core/data-model.ts'; // What: Picker Argument Type. Why: The sample pickers are added through addPicFun. How: This types them as its argument.
+import type { PicForTyp } from '../core/data-model.ts'; // What: Picker Form Type. Why: The sample pickers are added through addPicFun. How: This types them as its argument.
 import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: Seeding checks what already exists in state. How: This types each staAppObj parameter.
 import type { TasArgTyp } from '../core/data-model.ts'; // What: Task Argument Type. Why: The sample reminders are added through addTasFun. How: This types them as its argument.
 
@@ -80,7 +80,7 @@ const CON_GAT_OBJ : Partial< ConRcdTyp > = { // What: Conditional Gate Object. W
 
 
 
-const PIC_GAT_OBJ : PicArgTyp = { // What: Picker Gate Object. Why: This is the picker that depends on CON_GAT_OBJ in the day-off gate example described above. How: This is added by sedPicFun/removed by clePicFun exactly like any real, user-created picker.
+const PIC_GAT_OBJ : PicForTyp = { // What: Picker Gate Object. Why: This is the picker that depends on CON_GAT_OBJ in the day-off gate example described above. How: This is added by sedPicFun/removed by clePicFun exactly like any real, user-created picker.
 
 
 	conditionalId : CON_GAT_STR,        // What: Conditional Identifier String. Why: This is what actually gates this picker off on the conditional's own down days. How: This is CON_GAT_STR, matching CON_GAT_OBJ's own id.
@@ -122,7 +122,7 @@ const PIC_GAT_OBJ : PicArgTyp = { // What: Picker Gate Object. Why: This is the 
  *
 */
 
-const EXT_PIC_ARR : PicArgTyp[] = [ // What: Extra Picker Array. Why: This is the extra sample-picker pool described above, seeded/removed alongside every other help-only picker. How: This is read by sedPicFun to add each entry (guarded by existing id) and by clePicFun to remove each by id.
+const EXT_PIC_ARR : PicForTyp[] = [ // What: Extra Picker Array. Why: This is the extra sample-picker pool described above, seeded/removed alongside every other help-only picker. How: This is read by sedPicFun to add each entry (guarded by existing id) and by clePicFun to remove each by id.
 
 
 	{ // What: Extra Picker Object. Why: This is one of the extra picker-mode examples described in the comment above this array, rounding out all 5 picker modes. How: This is read by the picker engine exactly like any real, user-created picker.

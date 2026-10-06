@@ -497,7 +497,7 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 			const depEndBoo = chaValNum <= 0; // What: Depleted End Boolean. Why: The row logged below needs to know whether this simulated day completed a full depletion cycle. How: This is true exactly when chaValNum has reached 0.
 
 
-			logPicFun( curDatObj, curPicObj, actIteObj, Math.random() < 0.82, 'auto', null, depEndBoo ); // What: Ease Down Pick Log Call. Why: Every simulated day of an Ease Down streak still needs its own logged row. How: This logs actIteObj, rolling its own done state independently of the charge simulation.
+			logPicFun( curDatObj, curPicObj, actIteObj, Math.random() < 0.82, 'auto', undefined, depEndBoo ); // What: Ease Down Pick Log Call. Why: Every simulated day of an Ease Down streak still needs its own logged row. How: This logs actIteObj, rolling its own done state independently of the charge simulation.
 
 
 			if ( depEndBoo ) actIteObj = null; // What: Depleted Release Guard. Why: A fully depleted item must release so the next day can choose a fresh one. How: This clears actIteObj once depEndBoo is true.

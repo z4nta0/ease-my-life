@@ -34,7 +34,8 @@ import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store
 import type { ConRcdTyp } from '../../core/data-model.ts'; // What: Conditional Record Type. Why: The form offers every existing conditional for attachment. How: This types PfcProTyp's conObjArr.
 import type { IteRcdTyp } from '../../core/data-model.ts'; // What: Item Record Type. Why: The new picker's pool is built from items. How: This types the pool the item editors read.
 import type { ModNamTyp } from '../../core/data-model.ts'; // What: Mode Name Type. Why: The mode radios pick one of the five modes. How: This types the chosen mode.
-import type { PicArgTyp } from '../../core/data-model.ts'; // What: Picker Argument Type. Why: The form starts from an optional prefill and hands back a finished payload. How: This types both, and the payload it builds.
+import type { PicArgTyp } from '../../core/data-model.ts'; // What: Picker Argument Type. Why: The form can start from an optional prefill. How: This types the prefill.
+import type { PicForTyp } from '../../core/data-model.ts'; // What: Picker Form Type. Why: The form hands back a finished picker with its name, group, and mode. How: This types the payload it builds and the callbacks that receive it.
 
 // #endregion Imports
 
@@ -63,7 +64,7 @@ import type { PicArgTyp } from '../../core/data-model.ts'; // What: Picker Argum
 
 // #region Components
 
-type PfcProTyp = { conObjArr? : ConRcdTyp[], exiGroArr : string[], iniForObj? : ( PicArgTyp & { focusName? : boolean } ) | null, iniGroStr? : string, isaEdiBoo? : boolean, onCanForFun : () => void, onCrePicFun? : ( payForObj : PicArgTyp ) => void, onSavEdiFun? : ( payForObj : PicArgTyp ) => void }; // What: Picker-Form-Component Props Type. Why: The form creates a new picker or edits an existing one's details, starting from an optional prefill. How: This types PicForCom's props, with the create and save callbacks both taking the finished payload.
+type PfcProTyp = { conObjArr? : ConRcdTyp[], exiGroArr : string[], iniForObj? : ( PicArgTyp & { focusName? : boolean } ) | null, iniGroStr? : string, isaEdiBoo? : boolean, onCanForFun : () => void, onCrePicFun? : ( payForObj : PicForTyp ) => void, onSavEdiFun? : ( payForObj : PicForTyp ) => void }; // What: Picker-Form-Component Props Type. Why: The form creates a new picker or edits an existing one's details, starting from an optional prefill. How: This types PicForCom's props, with the create and save callbacks both taking the finished payload.
 
 // #region PicForCom
 
@@ -972,7 +973,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-		const payForObj : PicArgTyp = { // What: Payload Form Object. Why: Both onCrePicFun and onSavEdiFun expect this exact shared shape. How: This gathers every Step 1 field that both flows always send, typed as a picker argument so the optional fields attached below are allowed.
+		const payForObj : PicForTyp = { // What: Payload Form Object. Why: Both onCrePicFun and onSavEdiFun expect this exact shared shape. How: This gathers every Step 1 field that both flows always send, typed as a picker argument so the optional fields attached below are allowed.
 
 
 			avoidDuplicates : avoDupBoo,                     // What: Avoid Duplicates. Why: The picker saves the duplicates toggle. How: This passes avoDupBoo.

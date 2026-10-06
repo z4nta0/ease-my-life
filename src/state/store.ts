@@ -34,14 +34,14 @@ import { uniNamFun   } from '../utils/format.ts';        // What: Unique Name Fu
 
 
 import type { CheStaTyp } from '../core/data-model.ts'; // What: Checklist Status Type. Why: Checklist and App Features cards resolve to a status. How: This types setCarFun's and setFeaFun's resolution.
-import type { ConRcdTyp } from '../core/data-model.ts'; // What: Conditional Record Type. Why: Several actions take or return conditionals. How: This types them in ActStoTyp and PicArgTyp.
+import type { ConRcdTyp } from '../core/data-model.ts'; // What: Conditional Record Type. Why: Several actions take or return conditionals. How: This types them in ActStoTyp.
 import type { CusPalTyp } from '../core/data-model.ts'; // What: Custom Palette Type. Why: A custom theme saves three colors. How: This types setCusFun's colors.
 import type { EntPenTyp } from '../core/data-model.ts'; // What: Entry Pending Type. Why: Sending and re-rolling stage a pick's consequences. How: This types addEntFun's and swaIteFun's staged pending.
-import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: Item actions patch items. How: This types updIteFun's patch and PicArgTyp's items.
+import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: Item actions patch items. How: This types updIteFun's patch.
 import type { OnbStaTyp } from '../core/data-model.ts'; // What: Onboarding State Type. Why: The tours flip onboarding flags. How: This types setOnbFun's patch.
 import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: A re-roll marks the rolled-away row rejected. How: This types swaIteFun's rejected log so its outcome stays a known value.
-import type { PicArgTyp } from '../core/data-model.ts'; // What: Picker Argument Type. Why: Adding and editing a picker take the form's fields. How: This types addPicFun's and savEdiFun's argument.
-import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record Type. Why: Picker actions take picker fields. How: This types updPicFun's patch and PicArgTyp's base.
+import type { PicForTyp } from '../core/data-model.ts'; // What: Picker Form Type. Why: Adding and editing a picker take the form's fields. How: This types addPicFun's and savEdiFun's argument.
+import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record Type. Why: Picker actions take picker fields. How: This types updPicFun's patch.
 import type { RemClaTyp } from '../core/data-model.ts'; // What: Reminder Class Type. Why: Each reminder class has its own switches. How: This types setOptFun's switch key.
 import type { RemKinTyp } from '../core/data-model.ts'; // What: Reminder Kind Type. Why: Switches belong to one-time or recurring reminders. How: This types setOptFun's class.
 import type { RslRowTyp } from '../core/data-model.ts'; // What: Reminder-Skip-Log Row Type. Why: Skipping a reminder logs a row. How: This types skiTasFun's skip row so its type stays a known value.
@@ -99,7 +99,7 @@ type ActStoTyp = { // What: Action Store Type. Why: Every tab changes state only
 	addEntFun : ( picIdeStr : string, iteIdeStr : string, penArgObj? : EntPenTyp | null ) => void;        // What: Add Entry Function. Why: The Pickers tab sends a chosen item to Today. How: This takes the picker and item ids and the pick's staged consequences, if computed.
 	addHolFun : ( holArgObj : { day : number, month : number, name : string } ) => void;                  // What: Add Holiday Function. Why: A user can add their own holidays. How: This takes the holiday's day, month, and name.
 	addIteFun : ( picIdeStr : string, newNamStr : string, optIdeStr? : string ) => void;                  // What: Add Item Function. Why: A picker's pool gains new items. How: This takes the picker id, the item's name, and an optional id to use.
-	addPicFun : ( picArgObj : PicArgTyp ) => string;                                                      // What: Add Picker Function. Why: The Add-Picker flow creates a picker, its items, and any new conditional at once. How: This takes the form's fields and returns the picker's id.
+	addPicFun : ( picArgObj : PicForTyp ) => string;                                                      // What: Add Picker Function. Why: The Add-Picker flow creates a picker, its items, and any new conditional at once. How: This takes the form's fields and returns the picker's id.
 	addTasFun : ( tasArgObj : TasArgTyp ) => void;                                                        // What: Add Task Function. Why: Reminders are created from the editors and the tours. How: This takes the reminder's fields.
 	cleEntFun : () => void;                                                                               // What: Clear Entries Function. Why: The Welcome Tour backs up to its Generate step. How: This takes nothing.
 	daiModFun : ( daiModStr : string ) => void;                                                           // What: Daily Mode Function. Why: The daily list can generate automatically or on request. How: This takes 'auto' or 'manual'.
@@ -123,8 +123,8 @@ type ActStoTyp = { // What: Action Store Type. Why: Every tab changes state only
 	renTouFun : ( rawNamStr : string ) => void;                                                           // What: Rename Tours Function. Why: The Page Tours group can be renamed. How: This takes the name as typed.
 	reoGroFun : ( ordGroArr : string[] ) => void;                                                         // What: Reorder Groups Function. Why: Edit Mode saves a new group order. How: This takes the group names in order.
 	reoPicFun : ( groNamStr : string, picIdeArr : string[] ) => void;                                     // What: Reorder Pickers Function. Why: Edit Mode saves a new picker order within a group. How: This takes the group name and its picker ids in order.
-	resConFun : () => ConRcdTyp[];                                                                        // What: Resolve Conditionals Function. Why: Generating first settles which day-off gates are active. How: This takes nothing and returns the resolved conditionals.
-	savEdiFun : ( picIdeStr : string, picArgObj : PicArgTyp ) => void;                                    // What: Save Edit Function. Why: The Pickers tab's Edit saves a picker's details in place. How: This takes the picker's id and the form's fields.
+	resConFun : () => ConRcdTyp[] | null;                                                                 // What: Resolve Conditionals Function. Why: Generating first settles which day-off gates are active. How: This takes nothing and returns the resolved conditionals, or null when React defers the update.
+	savEdiFun : ( picIdeStr : string, picArgObj : PicForTyp ) => void;                                    // What: Save Edit Function. Why: The Pickers tab's Edit saves a picker's details in place. How: This takes the picker's id and the form's fields.
 	sedHisFun : ( hisLogObj : Pick< StaAppTyp, 'pickLog' | 'reminderLog' | 'reminderSkipLog' > ) => void; // What: Seed History Function. Why: The tours seed a year of sample history into Stats. How: This takes the three hydrated logs.
 	setAniFun : ( picAniStr : string ) => void;                                                           // What: Set Animation Function. Why: The user picks the pick-reveal animation. How: This takes its name.
 	setCarFun : ( iteIdeStr : string, patValObj : { status : CheStaTyp } | null ) => void;                // What: Set Card Function. Why: Each checklist card is resolved or reopened. How: This takes the card's id and its resolution, or null to reopen it.
@@ -478,7 +478,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 	latStaRef.current = appStaObj; // What: Latest State Reference Sync. Why: Every render must re-point latStaRef at whatever appStaObj currently is. How: This assigns appStaObj onto latStaRef.current directly in the render body.
 
 
-	const idlTimRef = React.useRef( null ); // What: Idle Timeout Reference And Guard. Why: The debounced save effect below needs to remember its own pending idle-callback/timeout handle so a later update can cancel it. How: This starts at null and is set/cleared by canPenFun and the save effect below.
+	const idlTimRef = React.useRef< number | null >( null ); // What: Idle Timeout Reference And Guard. Why: The debounced save effect below needs to remember its own pending idle-callback/timeout handle so a later update can cancel it. How: This starts at null and is set/cleared by canPenFun and the save effect below.
 
 	const canPenFun = React.useCallback( () => { // What: Cancel Pending Function. Why: Both the debounced save effect and the flush effect need to cancel any still-pending idle-callback/timeout before scheduling or flushing again. How: This cancels whatever idlTimRef currently holds and clears the ref.
 
@@ -1103,7 +1103,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 *
 		 * @param void - This function takes no parameters.
 		 *
-		 * @returns The conditionals resolved for this Generate pass.
+		 * @returns The conditionals resolved for this Generate pass, or null when
+		 *          React defers the update and the caller falls back to state.
 		 * @see {@link resConArr}
 		 *
 		 * @example
@@ -1116,7 +1117,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		resConFun : () => { // What: Resolve Conditionals Function. Why: Phase A of Generate: rolls probability/dynamic modes and carries persisted active for ease modes, clearing the per-day charge guard, so the generator can gate pickers off fresh values in the same pass. How: This calls CON_NAM_OBJ.resDayFun, applies its own per-conditional patch, and returns the resolved array directly (not just via setAppStaObj).
 
 
-			let resConArr = null; // What: Resolved Conditionals Array. Why: The caller needs the resolved array back directly, not only via the next render's own state. How: This starts null and is captured inside the setAppStaObj updater below.
+			let resConArr : ConRcdTyp[] | null = null; // What: Resolved Conditionals Array. Why: The caller needs the resolved array back directly, not only via the next render's own state. How: This starts null and is captured inside the setAppStaObj updater below.
 
 
 			setAppStaObj( ( curStaObj ) => { // What: State Update Call. Why: The per-day patches must be computed from, and merged into, the latest state rather than a stale closure copy. How: This runs an updater that resolves every conditional's own patch, captures the result in resConArr, and returns the patched state.
@@ -2710,7 +2711,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 				 *
 				*/
 
-				const finNamStr = ONB_SPI_ARR.includes( picArgObj.id ) ? ( norPicFun( picArgObj.name ) || picArgObj.name ) : uniNamFun( // What: Final Name String. Why: Onboarding sample pickers keep their exact names; every other picker needs a unique name. How: This tidies the name for a sample picker, else de-duplicates it against the other visible pickers.
+				const finNamStr = !!picArgObj.id && ONB_SPI_ARR.includes( picArgObj.id ) ? ( norPicFun( picArgObj.name ) || picArgObj.name ) : uniNamFun( // What: Final Name String. Why: Onboarding sample pickers keep their exact names; every other picker needs a unique name. How: This tidies the name for a sample picker, else de-duplicates it against the other visible pickers.
 					norPicFun( picArgObj.name ) || picArgObj.name,                                                                                      // What: Tidied Name Argument. Why: The de-duplication starts from the tidied name. How: This normalizes picArgObj.name, falling back to the raw name.
 					curStaObj.pickers.filter( ( curPicObj ) => !curPicObj.hidden && curPicObj.id !== picIdeStr ).map( ( curPicObj ) => curPicObj.name ) // What: Sibling Names Argument. Why: The new name must not collide with another visible picker. How: This lists every other visible picker's own name.
 				);
@@ -3400,8 +3401,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 			const curDayStr = isoDayFun(); // What: Current Day String. Why: The fresh-row and pick-log-purge logic below both need today's own calendar day. How: This reads isoDayFun().
 
-			const carEntArr = lisEntArr.filter( ( curDesObj ) => curDesObj._carry ).map( ( curDesObj ) => curDesObj.entry ); // What: Carried Entry Array. Why: A carried descriptor's own already-formed entry must be kept verbatim, unwrapped from its own _carry marker. How: This filters lisEntArr to _carry descriptors and unwraps each one's own entry.
-			const carEidSet = new Set( carEntArr.map( ( curEntObj ) => curEntObj.eid ) );                                    // What: Carried Eid Set. Why: The pick-log purge below must never drop a carried entry's own still-live row. How: This collects every carried entry's own eid.
+			const carEntArr = lisEntArr.filter( ( curDesObj ) => curDesObj._carry ).map( ( curDesObj ) => curDesObj.entry! ); // What: Carried Entry Array. Why: A carried descriptor's own already-formed entry must be kept verbatim, unwrapped from its own _carry marker. How: This filters lisEntArr to _carry descriptors and unwraps each one's own entry. // What: Non-Null Note. Why: The generator only flags a descriptor _carry when it wraps an existing entry. How: The ! tells TypeScript entry is set here.
+			const carEidSet = new Set< string | null >( carEntArr.map( ( curEntObj ) => curEntObj.eid ) );                    // What: Carried Eid Set. Why: The pick-log purge below must never drop a carried entry's own still-live row. How: This collects every carried entry's own eid.
 
 			const freEntArr = lisEntArr.filter( ( curDesObj ) => !curDesObj._carry ).map( ( curDesObj ) : TodEntTyp => ( { // What: Fresh Entry Array. Why: Every non-carried descriptor becomes a brand-new Today entry with its own fresh eid. How: This maps each descriptor into a full entry, spreading in periodKey/day-off-card fields only when present.
 
@@ -3435,7 +3436,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			const nexEntArr = [ ...carEntArr, ...freEntArr ]; // What: Next Entry Array. Why: The new today.entries list is exactly the carried entries plus the freshly-built ones. How: This concatenates carEntArr and freEntArr.
 
 			const newRowArr = freEntArr.filter( ( curEntObj ) => !curEntObj.kind && curEntObj.pickerId ).map( ( curEntObj ) => // What: New Row Array. Why: Only a real (non-day-off-card) fresh entry needs its own auto pick-log row; depletedEnd is deliberately NOT written here, since it's a value consequence recorded only on completion. How: This builds one logRowFun row per qualifying fresh entry, source:'auto'.
-				logRowFun( curStaObj, { date : curDayStr, eid : curEntObj.eid, itemId : curEntObj.itemId, pickerId : curEntObj.pickerId, source : 'auto' } ) ); // What: Auto Row Build. Why: Every fresh entry logs as an automatic pick. How: This builds the row from the entry's own eid, item and picker.
+				logRowFun( curStaObj, { date : curDayStr, eid : curEntObj.eid, itemId : curEntObj.itemId!, pickerId : curEntObj.pickerId!, source : 'auto' } ) ); // What: Auto Row Build. Why: Every fresh entry logs as an automatic pick. How: This builds the row from the entry's own eid, item and picker. // What: Non-Null Note. Why: The filter above keeps only ordinary picks with a picker, and an ordinary pick always holds its item. How: The ! tells TypeScript itemId and pickerId are set here.
 
 			const nexLogArr = ( curStaObj.pickLog || [] ).filter( ( curRowObj ) => curRowObj.date !== curDayStr || carEidSet.has( curRowObj.eid ) ).concat( newRowArr ); // What: Next Log Array. Why: The generator owns today, so every OTHER row logged today (auto or manual) must be dropped, except a carried entry's own still-live row. How: This keeps every row not dated today (or belonging to a carried eid), then appends newRowArr.
 

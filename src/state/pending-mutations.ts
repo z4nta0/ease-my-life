@@ -160,7 +160,7 @@ function spuDroFun ( todEntArr : TodEntTyp[], iteIdeArr : string[] ) : TodEntTyp
 
 
 
-		if ( iteIdeSet.has( curEntObj.itemId ) ) return curEntObj; // What: Own-Entry Guard. Why: An item's OWN entry must keep its designed completion effect regardless of an interim Fill (see the design-rationale comment above). How: This returns curEntObj unchanged when its own itemId is one of the touched ids.
+		if ( curEntObj.itemId && iteIdeSet.has( curEntObj.itemId ) ) return curEntObj; // What: Own-Entry Guard. Why: An item's OWN entry must keep its designed completion effect regardless of an interim Fill (see the design-rationale comment above). How: This returns curEntObj unchanged when its own itemId is one of the touched ids.
 
 
 
@@ -285,11 +285,11 @@ function enpAplFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 		if ( matUpdObj ) { // What: Staged Patch Application. Why: Only the fields actually present on matUpdObj are meant to change. How: This conditionally overwrites value/weight/chargeStep on nexIteObj when each key is present on matUpdObj.
 
 
-			if ( 'value' in matUpdObj ) nexIteObj.value = matUpdObj.value;                // What: Value Patch. Why: An updates row only sometimes carries a new value. How: This applies matUpdObj's own value only when the key is present.
+			if ( 'value' in matUpdObj ) nexIteObj.value = matUpdObj.value!;               // What: Value Patch. Why: An updates row only sometimes carries a new value. How: This applies matUpdObj's own value only when the key is present. // What: Non-Null Note. Why: The pickers only add a value key to an updates row along with a real number. How: The ! tells TypeScript the value is set once the key is present.
 
 
 
-			if ( 'weight' in matUpdObj ) nexIteObj.weight = matUpdObj.weight;             // What: Weight Patch. Why: An updates row only sometimes carries a new weight. How: This applies matUpdObj's own weight only when the key is present.
+			if ( 'weight' in matUpdObj ) nexIteObj.weight = matUpdObj.weight!;            // What: Weight Patch. Why: An updates row only sometimes carries a new weight. How: This applies matUpdObj's own weight only when the key is present. // What: Non-Null Note. Why: The pickers only add a weight key to an updates row along with a real number. How: The ! tells TypeScript the weight is set once the key is present.
 
 
 
@@ -620,9 +620,9 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 
-		const nowUndBoo = !nowDonBoo;            // What: Now Undone Boolean. Why: Only an un-done toggle can revert an earlier charge. How: This negates nowDonBoo.
-		const depZerBoo = depDonNum === 0;       // What: Dependents Zero Boolean. Why: The charge only reverts once the LAST dependent completion of the day is un-done. How: This is true when depDonNum is 0.
-		const hasPreBoo = curConObj._chargePrev; // What: Has Previous Boolean. Why: There's nothing to restore unless the charge left its own snapshot. How: This reads curConObj's own _chargePrev, truthy when a snapshot exists.
+		const nowUndBoo = !nowDonBoo;              // What: Now Undone Boolean. Why: Only an un-done toggle can revert an earlier charge. How: This negates nowDonBoo.
+		const depZerBoo = depDonNum === 0;         // What: Dependents Zero Boolean. Why: The charge only reverts once the LAST dependent completion of the day is un-done. How: This is true when depDonNum is 0.
+		const hasPreBoo = !!curConObj._chargePrev; // What: Has Previous Boolean. Why: There's nothing to restore unless the charge left its own snapshot. How: This is true when curConObj carries its own _chargePrev.
 
 		const revEdgBoo = nowUndBoo && depZerBoo && hasPreBoo; // What: Reverting Edge Boolean. Why: The earlier charge must be undone only when all three checks above hold at once. How: This combines nowUndBoo, depZerBoo and hasPreBoo.
 
@@ -630,7 +630,7 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 		if ( revEdgBoo ) { // What: Reverting-Edge Branch. Why: Once the LAST dependent completion of the day is un-done, the earlier charge must be undone too. How: This restores curConObj's own pre-charge fields from _chargePrev.
 
 
-			const preSnaObj = curConObj._chargePrev; // What: Previous Snapshot Object. Why: The restoration below needs the exact pre-charge fields recorded earlier. How: This reads curConObj's own _chargePrev field.
+			const preSnaObj = curConObj._chargePrev!; // What: Previous Snapshot Object. Why: The restoration below needs the exact pre-charge fields recorded earlier. How: This reads curConObj's own _chargePrev field. // What: Non-Null Note. Why: This branch only runs when hasPreBoo found a snapshot. How: The ! tells TypeScript _chargePrev is set here.
 
 			const { _chargePrev : chrPreObj, ...remFieObj } = curConObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _chargePrev snapshot. How: This destructures _chargePrev off curConObj as chrPreObj, which goes unused, keeping every other field in remFieObj.
 
@@ -703,8 +703,8 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 
-	let conIdeStr = null; // What: Conditional Identifier String And Guard. Why: Both branches below need somewhere to record which conditional (if any) this toggle concerns. How: This starts null and is set by whichever branch below actually matches.
-	let trgValBoo = null; // What: Triggered Value Boolean And Guard. Why: Both branches below need somewhere to record whether this toggle counts as triggered. How: This starts null and is set alongside conIdeStr by whichever branch below actually matches.
+	let conIdeStr = null;  // What: Conditional Identifier String And Guard. Why: Both branches below need somewhere to record which conditional (if any) this toggle concerns. How: This starts null and is set by whichever branch below actually matches.
+	let trgValBoo = false; // What: Triggered Value Boolean And Guard. Why: Both branches below need somewhere to record whether this toggle counts as triggered. How: This starts false and is set alongside conIdeStr by whichever branch below actually matches, so it's always a real boolean once conIdeStr is.
 
 
 	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card's own completion always logs as triggered. How: This sets conIdeStr/trgValBoo directly from togEntObj.

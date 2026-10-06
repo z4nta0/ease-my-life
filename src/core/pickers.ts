@@ -149,7 +149,7 @@ const EAS_TOL_NUM = 0.5; // What: Ease Tolerance Number. Why: A threshold/N char
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param rawNamStr - Raw Name String: The raw, possibly messy, user-typed name
- *                    to tidy.
+ *                    to tidy, or undefined when none was given.
  *
  * @returns The tidied, Title Cased name, or an empty string when
  * rawNamStr had no alphanumeric content at all to tidy.
@@ -161,7 +161,7 @@ const EAS_TOL_NUM = 0.5; // What: Ease Tolerance Number. Why: A threshold/N char
  *
 */
 
-function titCasFun ( rawNamStr : string ) : string {
+function titCasFun ( rawNamStr : string | undefined ) : string {
 
 
 	const cleNamStr = String( rawNamStr || '' ).replace( /[^a-z0-9'’&]+/gi, ' ' ).trim().replace( /\s+/g, ' ' ); // What: Cleaned Name String. Why: A messy user-typed name needs every separator run collapsed to plain single spacing before it can be split into words. How: This coerces rawNamStr to a string, turns every run of characters other than letters, digits, apostrophes, and ampersands into one space, trims the ends, then collapses any remaining space run to one.
@@ -195,7 +195,7 @@ function titCasFun ( rawNamStr : string ) : string {
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param rawNamStr - Raw Name String: The raw, possibly messy, user-typed
- *                    conditional name.
+ *                    conditional name, or undefined when none was given.
  *
  * @returns The tidied, Title Cased conditional name, or an empty string
  * when rawNamStr had no alphanumeric content at all.
@@ -207,7 +207,7 @@ function titCasFun ( rawNamStr : string ) : string {
  *
 */
 
-function norConFun ( rawNamStr : string ) : string { return titCasFun( rawNamStr ); } // What: Tidied Conditional Name Body. Why: A conditional name only ever needs the shared Title Case tidy-up; collision reuse happens at the call site instead. How: This is a thin wrapper straight over titCasFun.
+function norConFun ( rawNamStr : string | undefined ) : string { return titCasFun( rawNamStr ); } // What: Tidied Conditional Name Body. Why: A conditional name only ever needs the shared Title Case tidy-up; collision reuse happens at the call site instead. How: This is a thin wrapper straight over titCasFun.
 
 // #endregion norConFun
 
@@ -292,7 +292,7 @@ function norGroFun ( rawNamStr : string, exiGroArr? : string[] ) : string {
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param rawNamStr - Raw Name String: The raw, possibly messy, user-typed
- *                    picker name.
+ *                    picker name, or undefined when none was given.
  *
  * @returns The tidied, Title Cased picker name, or an empty string when
  * rawNamStr had no alphanumeric content at all.
@@ -304,7 +304,7 @@ function norGroFun ( rawNamStr : string, exiGroArr? : string[] ) : string {
  *
 */
 
-function norPicFun ( rawNamStr : string ) : string { return titCasFun( rawNamStr ); } // What: Tidied Picker Name Body. Why: A picker name only ever needs the shared Title Case tidy-up, with no collision-reuse step. How: This is a thin wrapper straight over titCasFun.
+function norPicFun ( rawNamStr : string | undefined ) : string { return titCasFun( rawNamStr ); } // What: Tidied Picker Name Body. Why: A picker name only ever needs the shared Title Case tidy-up, with no collision-reuse step. How: This is a thin wrapper straight over titCasFun.
 
 // #endregion norPicFun
 
