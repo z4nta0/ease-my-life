@@ -32,6 +32,22 @@ import { STG_NAM_OBJ } from './storage.ts';              // What: Storage Namesp
 import { TAS_NAM_OBJ } from '../core/tasks.ts';          // What: Tasks Namespace Object. Why: The reminders engine's own scheduling/eligibility/normalization logic lives here, not in this file. How: This is called throughout stkSynFun and the task actions below.
 import { uniNamFun   } from '../utils/format.ts';        // What: Unique Name Function. Why: Two entries in the same scope can't share a name the user can't tell apart. How: This is called whenever an item, reminder, or picker is added or renamed.
 
+
+import type { CheStaTyp } from '../core/data-model.ts'; // What: Checklist Status Type. Why: Checklist and App Features cards resolve to a status. How: This types setCarFun's and setFeaFun's resolution.
+import type { ConRcdTyp } from '../core/data-model.ts'; // What: Conditional Record Type. Why: Several actions take or return conditionals. How: This types them in ActStoTyp and PicArgTyp.
+import type { CusPalTyp } from '../core/data-model.ts'; // What: Custom Palette Type. Why: A custom theme saves three colors. How: This types setCusFun's colors.
+import type { EntPenTyp } from '../core/data-model.ts'; // What: Entry Pending Type. Why: Sending and re-rolling stage a pick's consequences. How: This types addEntFun's and swaIteFun's staged pending.
+import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: Item actions patch items. How: This types updIteFun's patch and PicArgTyp's items.
+import type { OnbStaTyp } from '../core/data-model.ts'; // What: Onboarding State Type. Why: The tours flip onboarding flags. How: This types setOnbFun's patch.
+import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: A re-roll marks the rolled-away row rejected. How: This types swaIteFun's rejected log so its outcome stays a known value.
+import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record Type. Why: Picker actions take picker fields. How: This types updPicFun's patch and PicArgTyp's base.
+import type { RemClaTyp } from '../core/data-model.ts'; // What: Reminder Class Type. Why: Each reminder class has its own switches. How: This types setOptFun's switch key.
+import type { RemKinTyp } from '../core/data-model.ts'; // What: Reminder Kind Type. Why: Switches belong to one-time or recurring reminders. How: This types setOptFun's class.
+import type { RslRowTyp } from '../core/data-model.ts'; // What: Reminder-Skip-Log Row Type. Why: Skipping a reminder logs a row. How: This types skiTasFun's skip row so its type stays a known value.
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The hook holds the whole app state. How: This types useAppStaFun's returned state and sedHisFun's logs.
+import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Type. Why: Reminder actions take reminder fields. How: This types updTasFun's patch and TasArgTyp's base.
+import type { TodEntTyp } from '../core/data-model.ts'; // What: Today Entry Type. Why: Generating carries Today entries forward. How: This types EntDesTyp's entry fields.
+
 // #endregion Imports
 
 
@@ -56,6 +72,7 @@ import { uniNamFun   } from '../utils/format.ts';        // What: Unique Name Fu
  * an entry's own done/pending/revert fields must preserve this staging.
  *
  * Sections:
+ *  - Types
  *  - Constants
  *  - Helpers
  *  - Hooks
@@ -64,6 +81,83 @@ import { uniNamFun   } from '../utils/format.ts';        // What: Unique Name Fu
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Types
+
+type EntDesTyp = Partial< TodEntTyp > & { _carry? : boolean, entry? : TodEntTyp };                                                                                          // What: Entry Descriptor Type. Why: Generating hands setEntFun both carried entries and fresh picks. How: A carried one is flagged _carry and wraps its existing entry, and a fresh one holds the new entry's fields.
+type PicArgTyp = Partial< PicRcdTyp > & { includeInDaily? : boolean, items? : Partial< IteRcdTyp >[], newConditional? : Partial< ConRcdTyp > | null, replaceId? : string }; // What: Picker Argument Type. Why: Adding or editing a picker passes the form's fields, its items, and any new conditional together. How: This is a partial picker plus whether it joins the daily list, its items, a new conditional, and the id of a sample it replaces.
+type TasArgTyp = Partial< TasRcdTyp > & { replaceId? : string };                                                                                                            // What: Task Argument Type. Why: Adding a reminder passes the editor's fields. How: This is a partial reminder plus the id of a sample it replaces.
+
+
+
+type ActStoTyp = { // What: Action Store Type. Why: Every tab changes state only through the actions useAppStaFun hands back, so their signatures are the app's own state API. How: This lists every action with its parameters and return.
+
+
+	addConFun : ( conArgObj : Partial< ConRcdTyp > ) => void;                                             // What: Add Conditional Function. Why: The Data tab creates day-off gates. How: This takes the authoring form's fields.
+	addEntFun : ( picIdeStr : string, iteIdeStr : string, penArgObj? : EntPenTyp | null ) => void;        // What: Add Entry Function. Why: The Pickers tab sends a chosen item to Today. How: This takes the picker and item ids and the pick's staged consequences, if computed.
+	addHolFun : ( holArgObj : { day : number, month : number, name : string } ) => void;                  // What: Add Holiday Function. Why: A user can add their own holidays. How: This takes the holiday's day, month, and name.
+	addIteFun : ( picIdeStr : string, newNamStr : string, optIdeStr? : string ) => void;                  // What: Add Item Function. Why: A picker's pool gains new items. How: This takes the picker id, the item's name, and an optional id to use.
+	addPicFun : ( picArgObj : PicArgTyp ) => string;                                                      // What: Add Picker Function. Why: The Add-Picker flow creates a picker, its items, and any new conditional at once. How: This takes the form's fields and returns the picker's id.
+	addTasFun : ( tasArgObj : TasArgTyp ) => void;                                                        // What: Add Task Function. Why: Reminders are created from the editors and the tours. How: This takes the reminder's fields.
+	cleEntFun : () => void;                                                                               // What: Clear Entries Function. Why: The Welcome Tour backs up to its Generate step. How: This takes nothing.
+	daiModFun : ( daiModStr : string ) => void;                                                           // What: Daily Mode Function. Why: The daily list can generate automatically or on request. How: This takes 'auto' or 'manual'.
+	daiPicFun : ( picIdeArr : string[] ) => void;                                                         // What: Daily Pickers Function. Why: The user chooses which pickers join the daily list. How: This takes their ids.
+	daiTimFun : ( runTimStr : string ) => void;                                                           // What: Daily Time Function. Why: The automatic run happens at a chosen time. How: This takes it as 'HH:MM'.
+	delConFun : ( conIdeStr : string ) => void;                                                           // What: Delete Conditional Function. Why: Conditionals can be deleted. How: This takes the conditional's id.
+	delHolFun : ( tarIdeStr : string ) => void;                                                           // What: Delete Holiday Function. Why: A user's own holidays can be removed. How: This takes the holiday's id.
+	delIteFun : ( tarIdeStr : string ) => void;                                                           // What: Delete Item Function. Why: Items can be deleted. How: This takes the item's id.
+	delPicFun : ( picIdeStr : string ) => void;                                                           // What: Delete Picker Function. Why: Pickers can be deleted with their items. How: This takes the picker's id.
+	delTasFun : ( tarIdeStr : string ) => void;                                                           // What: Delete Task Function. Why: Reminders can be deleted. How: This takes the reminder's id.
+	filPicFun : ( picIdeStr : string ) => void;                                                           // What: Fill Picker Function. Why: Fill and Refill bring a picker's items back to full charge. How: This takes the picker's id.
+	finCheFun : ( donValBoo? : boolean ) => void;                                                         // What: Finish Checklist Function. Why: The setup checklist ends with its Generate card. How: This takes whether it's finished, true by default.
+	impDatFun : ( impRawObj : any ) => void;                                                              // What: Import Data Function. Why: Settings imports a backup file. How: This takes the parsed file, of any age.
+	marGenFun : () => void;                                                                               // What: Mark Generated Function. Why: Generating stamps the time and snapshots values for the Day Log. How: This takes nothing.
+	movIteFun : ( tarIdeStr : string ) => void;                                                           // What: Move Item Function. Why: A just-saved item lands at the bottom of its picker's list. How: This takes the item's id.
+	renCusFun : ( theModStr : string, newNamStr : string ) => void;                                       // What: Rename Custom Function. Why: A custom theme can be renamed. How: This takes 'light' or 'dark' and the new name.
+	renGroFun : ( oldNamStr : string, rawNamStr : string ) => void;                                       // What: Rename Group Function. Why: A group can be renamed everywhere at once. How: This takes the current name and the new one as typed.
+	renIteFun : ( tarIdeStr : string, newNamStr : string ) => void;                                       // What: Rename Item Function. Why: Items can be renamed. How: This takes the item's id and the name as typed.
+	renPicFun : ( picIdeStr : string, newNamStr : string ) => void;                                       // What: Rename Picker Function. Why: Pickers can be renamed. How: This takes the picker's id and the name as typed.
+	renTasFun : ( tarIdeStr : string, newNamStr : string ) => void;                                       // What: Rename Task Function. Why: Reminders can be renamed. How: This takes the reminder's id and the name as typed.
+	renTouFun : ( rawNamStr : string ) => void;                                                           // What: Rename Tours Function. Why: The Page Tours group can be renamed. How: This takes the name as typed.
+	reoGroFun : ( ordGroArr : string[] ) => void;                                                         // What: Reorder Groups Function. Why: Edit Mode saves a new group order. How: This takes the group names in order.
+	reoPicFun : ( groNamStr : string, picIdeArr : string[] ) => void;                                     // What: Reorder Pickers Function. Why: Edit Mode saves a new picker order within a group. How: This takes the group name and its picker ids in order.
+	resConFun : () => ConRcdTyp[];                                                                        // What: Resolve Conditionals Function. Why: Generating first settles which day-off gates are active. How: This takes nothing and returns the resolved conditionals.
+	savEdiFun : ( picIdeStr : string, picArgObj : PicArgTyp ) => void;                                    // What: Save Edit Function. Why: The Pickers tab's Edit saves a picker's details in place. How: This takes the picker's id and the form's fields.
+	sedHisFun : ( hisLogObj : Pick< StaAppTyp, 'pickLog' | 'reminderLog' | 'reminderSkipLog' > ) => void; // What: Seed History Function. Why: The tours seed a year of sample history into Stats. How: This takes the three hydrated logs.
+	setAniFun : ( picAniStr : string ) => void;                                                           // What: Set Animation Function. Why: The user picks the pick-reveal animation. How: This takes its name.
+	setCarFun : ( iteIdeStr : string, patValObj : { status : CheStaTyp } | null ) => void;                // What: Set Card Function. Why: Each checklist card is resolved or reopened. How: This takes the card's id and its resolution, or null to reopen it.
+	setCelFun : ( celStyStr : string ) => void;                                                           // What: Set Celebration Function. Why: The user picks the completion celebration. How: This takes its name.
+	setCusFun : ( theModStr : string, cusColObj : Pick< CusPalTyp, 'accent' | 'bg' | 'text' > ) => void;  // What: Set Custom Function. Why: A custom theme's colors can be saved. How: This takes 'light' or 'dark' and the three colors.
+	setEntFun : ( lisEntArr : EntDesTyp[], optArgObj? : { resetStreak? : boolean } ) => void;             // What: Set Entries Function. Why: Generating rebuilds the Today list. How: This takes the new entries and whether to reset the streak claim.
+	setFeaFun : ( iteIdeStr : string, patValObj : { status : CheStaTyp } | null ) => void;                // What: Set Feature Function. Why: Each App Features tutorial is resolved or reopened. How: This takes the feature's id and its resolution, or null to reopen it.
+	setOnbFun : ( patValObj : Partial< OnbStaTyp > ) => void;                                             // What: Set Onboarding Function. Why: The tours flip individual onboarding flags. How: This takes the flags to change.
+	setOptFun : ( tasTypStr : RemKinTyp, optKeyStr : keyof RemClaTyp, optValBoo : boolean ) => void;      // What: Set Option Function. Why: Each reminder class has its own switches. How: This takes the class, the switch, and its new value.
+	setOrdFun : ( ordGroArr : string[], ordPicObj : Record< string, string[] > ) => void;                 // What: Set Order Function. Why: Edit Mode's Cancel restores both orders at once. How: This takes the group order and each group's picker order.
+	setPlaFun : ( tabPlaStr : string ) => void;                                                           // What: Set Placement Function. Why: The tab bar can sit at the bottom, side, or top. How: This takes the placement's name.
+	setSorFun : ( sorScoStr : string, sorKeyStr : string ) => void;                                       // What: Set Sort Function. Why: Each Data tab list keeps its chosen sort. How: This takes the list's key and the sort key.
+	setSysFun : ( autSysBoo : boolean ) => void;                                                          // What: Set System Function. Why: The theme can follow the device's light or dark mode. How: This takes whether it should.
+	setTheFun : ( theKeyStr : string ) => void;                                                           // What: Set Theme Function. Why: The user picks a theme. How: This takes its key.
+	setWeiFun : ( tarIdeStr : string, weiValNum : number ) => void;                                       // What: Set Weight Function. Why: The Data tab sets an item's weight directly. How: This takes the item's id and its new weight.
+	skiEntFun : ( entIdeStr : string ) => void;                                                           // What: Skip Entry Function. Why: A Today entry can be skipped. How: This takes the entry's id.
+	skiTasFun : ( tarIdeStr : string, untIsoStr : string ) => void;                                       // What: Skip Task Function. Why: A reminder can be skipped until its next eligible day. How: This takes the reminder's id and that day as YYYY-MM-DD.
+	swaIteFun : ( entIdeStr : string, iteIdeStr : string, penArgObj : EntPenTyp ) => void;                // What: Swap Item Function. Why: Re-roll swaps the item a Today entry shows. How: This takes the entry's id, the new item's id, and its staged consequences.
+	togColFun : ( secIdeStr : string, defColBoo? : boolean ) => void;                                     // What: Toggle Collapsed Function. Why: The Data tab's sections stay open or closed as left. How: This takes the section's key and its default, false unless given.
+	togDonFun : ( entIdeStr : string ) => void;                                                           // What: Toggle Done Function. Why: Checking a Today entry applies or reverts its consequences. How: This takes the entry's id.
+	togHolFun : ( holKeyStr : string ) => void;                                                           // What: Toggle Holiday Function. Why: Each built-in holiday can be switched off and on. How: This takes its key.
+	togTasFun : ( tarIdeStr : string ) => void;                                                           // What: Toggle Task Function. Why: Checking a reminder updates its log and the streak. How: This takes the reminder's id.
+	togVacFun : ( tarIdeStr : string, tarKinStr : string ) => void;                                       // What: Toggle Vacation Function. Why: Items can be set inactive one at a time or by picker. How: This takes the id and 'item', or anything else for every item of that picker.
+	updConFun : ( conIdeStr : string, patValObj : Partial< ConRcdTyp > ) => void;                         // What: Update Conditional Function. Why: A conditional's fields can be patched. How: This takes its id and the fields to change.
+	updIteFun : ( tarIdeStr : string, patValObj : Partial< IteRcdTyp > ) => void;                         // What: Update Item Function. Why: An item's fields can be patched. How: This takes its id and the fields to change.
+	updPicFun : ( picIdeStr : string, patValObj : Partial< PicRcdTyp > ) => void;                         // What: Update Picker Function. Why: A picker's fields can be patched. How: This takes its id and the fields to change.
+	updTasFun : ( tarIdeStr : string, patValObj : Partial< TasRcdTyp > ) => void;                         // What: Update Task Function. Why: A reminder's fields can be patched. How: This takes its id and the fields to change.
+	wipAppFun : () => Promise< void >;                                                                    // What: Wipe App Function. Why: Settings can delete all data. How: This takes nothing and settles once storage is cleared.
+
+
+};
+
+// #endregion Types
 
 
 
@@ -371,7 +465,7 @@ function stkSynFun ( curStaObj, entArgArr, tasArgArr ) {
  *
 */
 
-function useAppStaFun ( optArgObj ) {
+function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } ) : [ StaAppTyp, ActStoTyp ] {
 
 
 	const [ appStaObj, setAppStaObj ] = React.useState( () => ( optArgObj && optArgObj.initial ? migStaFun( optArgObj.initial ) : loaStaFun() ) ); // What: App State Object And Setter. Why: This one useState is the entire app's own persisted state. How: This lazily seeds from optArgObj.initial when given, else from loaStaFun()'s own migrated result.
@@ -468,7 +562,7 @@ function useAppStaFun ( optArgObj ) {
 	}, [ perActBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run only when perActBoo itself changes, since that's the only thing that could turn persistence on or off. How: perActBoo changing means the listeners themselves need re-wiring (or tearing down) under the new persistence setting.
 
 
-	const actStoObj = React.useMemo( () => ( { // What: Action Store Object. Why: This is the entire mutation surface of the app's own state: a tab reads/calls these exact keys by name, so every key here is a real, load-bearing external contract. How: This builds a memoized object of state-transition functions, computed once (empty dependency array below).
+	const actStoObj = React.useMemo< ActStoTyp >( () => ( { // What: Action Store Object. Why: This is the entire mutation surface of the app's own state: a tab reads/calls these exact keys by name, so every key here is a real, load-bearing external contract. How: This builds a memoized object of state-transition functions, computed once (empty dependency array below).
 
 
 		// #region App Data
@@ -634,8 +728,7 @@ function useAppStaFun ( optArgObj ) {
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
 		 * @param theModStr - Theme Mode String: 'light' or 'dark', picking the
-		 *                    custom
-		 *                    slot to rename.
+		 *                    custom slot to rename.
 		 * @param newNamStr - New Name String: The name typed for that slot.
 		 *
 		 * @returns This function does not return anything.
@@ -657,14 +750,14 @@ function useAppStaFun ( optArgObj ) {
 				? { accent : '#3360a8', bg : '#fcfbf9', text : '#242629' }  // What: Light Seed Branch. Why: A light slot starts from light colors. How: This is the default light palette.
 				: { accent : '#7da4ff', bg : '#1e2230', text : '#f2f3f6' }; // What: Dark Seed Branch. Why: A dark slot starts from dark colors. How: This is the default dark palette.
 
-			const curColObj = ( curStaObj.appearance || {} )[ keyNamStr ] || ( theModStr === 'dark' // What: Current Colors Object. Why: The rename below must preserve this slot's own existing colors, falling back to plausible defaults when it has none yet. How: This reads curStaObj's own appearance[keyNamStr], else a dark/light default shape matching mode.
+			const curColObj = curStaObj.appearance[ keyNamStr ] || ( theModStr === 'dark' // What: Current Colors Object. Why: The rename below must preserve this slot's own existing colors, falling back to plausible defaults when it has none yet. How: This reads curStaObj's own appearance[keyNamStr], else a dark/light default shape matching mode.
 				? { accent : '#7da4ff', bg : '#1e2230', text : '#f2f3f6' }    // What: Dark Default Branch. Why: A dark slot with no colors of its own falls back to dark colors. How: This is the default dark palette.
 				: { accent : '#3360a8', bg : '#fcfbf9', text : '#242629' } ); // What: Light Default Branch. Why: A light slot with no colors of its own falls back to light colors. How: This is the default light palette.
 
 			const nexAppObj = { // What: Next Appearance Object. Why: This slot's own colors are kept, but its name is now explicitly set (nameDerived:false, since a direct rename is never itself derived). How: This spreads curStaObj's own appearance, writing the renamed slot under keyNamStr.
 
 
-				...( curStaObj.appearance || {} ), // What: Current Appearance Spread. Why: Every other appearance setting must carry over unchanged. How: This spreads curStaObj.appearance, defaulting to {} for state that predates it.
+				...curStaObj.appearance, // What: Current Appearance Spread. Why: Every other appearance setting must carry over unchanged. How: This spreads curStaObj.appearance.
 
 				[ keyNamStr ] : { ...curColObj, name : newNamStr, nameDerived : false } // What: Renamed Slot. Why: This slot keeps its own colors but takes the new name, flagged as set directly. How: This spreads curColObj, writing newNamStr as name and nameDerived:false.
 
@@ -710,7 +803,7 @@ function useAppStaFun ( optArgObj ) {
 			appearance : { // What: Appearance. Why: Only one appearance setting changes, every other one must survive. How: This rebuilds appearance from its own current settings plus the one override below.
 
 
-				...( curStaObj.appearance || {} ), // What: Current Appearance Spread. Why: Every other appearance setting must carry over unchanged. How: This spreads curStaObj.appearance, defaulting to {} for state that predates it.
+				...curStaObj.appearance, // What: Current Appearance Spread. Why: Every other appearance setting must carry over unchanged. How: This spreads curStaObj.appearance.
 
 				pickAnim : picAniStr // What: Pick Animation. Why: This is the Today tab's own pick-reveal animation style. How: This is picAniStr.
 
@@ -730,7 +823,7 @@ function useAppStaFun ( optArgObj ) {
 			appearance : { // What: Appearance. Why: Only one appearance setting changes, every other one must survive. How: This rebuilds appearance from its own current settings plus the one override below.
 
 
-				...( curStaObj.appearance || {} ), // What: Current Appearance Spread. Why: Every other appearance setting must carry over unchanged. How: This spreads curStaObj.appearance, defaulting to {} for state that predates it.
+				...curStaObj.appearance, // What: Current Appearance Spread. Why: Every other appearance setting must carry over unchanged. How: This spreads curStaObj.appearance.
 
 				completionStyle : celStyStr // What: Completion Style. Why: This is the Today tab's own ring-fill celebration style. How: This is celStyStr.
 
@@ -760,11 +853,9 @@ function useAppStaFun ( optArgObj ) {
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
 		 * @param theModStr - Theme Mode String: 'light' or 'dark', picking the
-		 *                    custom
-		 *                    slot to save.
+		 *                    custom slot to save.
 		 * @param cusColObj - Custom Color Object: The picked colors to save into
-		 *                    that
-		 *                    slot.
+		 *                    that slot.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -786,7 +877,7 @@ function useAppStaFun ( optArgObj ) {
 			const nexAppObj = { // What: Next Appearance Object. Why: The caller needs this slot saved and immediately activated as the live theme. How: This spreads curStaObj's own appearance, writing savColObj under keyNamStr and setting theme to keyNamStr.
 
 
-				...( curStaObj.appearance || {} ), // What: Current Appearance Spread. Why: Every other appearance setting must carry over unchanged. How: This spreads curStaObj.appearance, defaulting to {} for state that predates it.
+				...curStaObj.appearance, // What: Current Appearance Spread. Why: Every other appearance setting must carry over unchanged. How: This spreads curStaObj.appearance.
 
 				[ keyNamStr ] : savColObj, // What: Saved Slot. Why: The chosen custom slot must hold the colors just picked. How: This writes savColObj under keyNamStr.
 
@@ -836,7 +927,7 @@ function useAppStaFun ( optArgObj ) {
 			appearance : { // What: Appearance. Why: Only one appearance setting changes, every other one must survive. How: This rebuilds appearance from its own current settings plus the one override below.
 
 
-				...( curStaObj.appearance || {} ), // What: Current Appearance Spread. Why: Every other appearance setting must carry over unchanged. How: This spreads curStaObj.appearance, defaulting to {} for state that predates it.
+				...curStaObj.appearance, // What: Current Appearance Spread. Why: Every other appearance setting must carry over unchanged. How: This spreads curStaObj.appearance.
 
 				tabPlacement : tabPlaStr // What: Tab Placement. Why: This is where the tab bar sits. How: This is tabPlaStr.
 
@@ -856,7 +947,7 @@ function useAppStaFun ( optArgObj ) {
 			appearance : { // What: Appearance. Why: Only one appearance setting changes, every other one must survive. How: This rebuilds appearance from its own current settings plus the one override below.
 
 
-				...( curStaObj.appearance || {} ), // What: Current Appearance Spread. Why: Every other appearance setting must carry over unchanged. How: This spreads curStaObj.appearance, defaulting to {} for state that predates it.
+				...curStaObj.appearance, // What: Current Appearance Spread. Why: Every other appearance setting must carry over unchanged. How: This spreads curStaObj.appearance.
 
 				autoSystem : autSysBoo // What: Auto System. Why: This decides whether the app follows the OS's own light/dark preference. How: This is autSysBoo.
 
@@ -876,7 +967,7 @@ function useAppStaFun ( optArgObj ) {
 			appearance : { // What: Appearance. Why: Only one appearance setting changes, every other one must survive. How: This rebuilds appearance from its own current settings plus the one override below.
 
 
-				...( curStaObj.appearance || {} ), // What: Current Appearance Spread. Why: Every other appearance setting must carry over unchanged. How: This spreads curStaObj.appearance, defaulting to {} for state that predates it.
+				...curStaObj.appearance, // What: Current Appearance Spread. Why: Every other appearance setting must carry over unchanged. How: This spreads curStaObj.appearance.
 
 				theme : theKeyStr // What: Theme. Why: This is the active built-in or custom theme's own key. How: This is theKeyStr.
 
@@ -1185,7 +1276,7 @@ function useAppStaFun ( optArgObj ) {
 			ui : { // What: UI. Why: Only the sort-preference map inside ui changes, every other ui field must survive. How: This rebuilds ui from its own current fields plus the updated map.
 
 
-				...( curStaObj.ui || {} ), // What: Current UI Spread. Why: Every other ui field (controlsCollapsed, ...) must carry over unchanged. How: This spreads curStaObj.ui, defaulting to {} for state that predates it.
+				...curStaObj.ui, // What: Current UI Spread. Why: Every other ui field (controlsCollapsed, ...) must carry over unchanged. How: This spreads curStaObj.ui.
 
 				dataSort : { // What: Data Sort. Why: Only this one scope's own sort key changes, every other scope's must survive. How: This rebuilds dataSort from its own current entries plus the one override below.
 
@@ -1232,7 +1323,7 @@ function useAppStaFun ( optArgObj ) {
 				ui : { // What: UI. Why: Only the collapse-state map inside ui changes, every other ui field must survive. How: This rebuilds ui from its own current fields plus the new map.
 
 
-					...( curStaObj.ui || {} ), // What: Current UI Spread. Why: Every other ui field (dataSort, ...) must carry over unchanged. How: This spreads curStaObj.ui, defaulting to {} for state that predates it.
+					...curStaObj.ui, // What: Current UI Spread. Why: Every other ui field (dataSort, ...) must carry over unchanged. How: This spreads curStaObj.ui.
 
 					controlsCollapsed : nexColObj // What: Controls Collapsed. Why: This is the Data tab's own per-section collapse-state map. How: This is nexColObj.
 
@@ -1339,7 +1430,7 @@ function useAppStaFun ( optArgObj ) {
 				onboarding : { // What: Onboarding Override. Why: Only the Page Tours group label changes, every other onboarding field must survive. How: This rebuilds onboarding from its own current fields plus the new label.
 
 
-					...( curStaObj.onboarding || {} ), // What: Current Onboarding Spread. Why: Every other onboarding field must carry over unchanged. How: This spreads curStaObj.onboarding, defaulting to {} for state that predates it.
+					...curStaObj.onboarding, // What: Current Onboarding Spread. Why: Every other onboarding field must carry over unchanged. How: This spreads curStaObj.onboarding.
 
 					pageToursName : nexNamStr // What: Page Tours Name. Why: This is the display label for the Page Tours group. How: This is nexNamStr.
 
@@ -2079,7 +2170,7 @@ function useAppStaFun ( optArgObj ) {
 
 			const curTasObj = curStaObj.tasks.find( ( tasFinObj ) => tasFinObj.id === tarIdeStr ); // What: Current Task Object And Guard. Why: The skip row below needs this task's own name and recurrence type, when it still exists. How: This looks up tarIdeStr in curStaObj.tasks.
 
-			const skiRowArr = curTasObj ? [ // What: Skip Row Array. Why: A stale tarIdeStr (already removed) must log no row at all. How: This builds one reminderSkipLog row when curTasObj was found, else stays empty.
+			const skiRowArr : RslRowTyp[] = curTasObj ? [ // What: Skip Row Array. Why: A stale tarIdeStr (already removed) must log no row at all. How: This builds one reminderSkipLog row when curTasObj was found, else stays empty.
 
 
 				{ // What: Skip Row Object. Why: This is the one reminderSkipLog row recording this skip. How: This bundles the task's own id/name/type with a fresh row id and timestamp.
@@ -2253,7 +2344,7 @@ function useAppStaFun ( optArgObj ) {
 			onboarding : { // What: Onboarding Override. Why: Only the checklistDone flag inside onboarding changes, every sibling onboarding field must survive. How: This rebuilds onboarding from its own current fields plus the new flag.
 
 
-				...( curStaObj.onboarding || {} ), // What: Current Onboarding Spread. Why: Every other onboarding field must carry over unchanged. How: This spreads curStaObj.onboarding, defaulting to {} for state that predates it.
+				...curStaObj.onboarding, // What: Current Onboarding Spread. Why: Every other onboarding field must carry over unchanged. How: This spreads curStaObj.onboarding.
 
 				checklistDone : donValBoo // What: Checklist Done. Why: This is the flag every checklist card checks before rendering. How: This is donValBoo.
 
@@ -2300,8 +2391,7 @@ function useAppStaFun ( optArgObj ) {
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
 		 * @param iteIdeStr - Item Identifier String: The checklist card to resolve
-		 *                    or
-		 *                    unresolve.
+		 *                    or unresolve.
 		 * @param patValObj - Patch Value Object: The value to resolve the card with,
 		 *                    or null to unresolve it.
 		 *
@@ -2334,7 +2424,7 @@ function useAppStaFun ( optArgObj ) {
 				onboarding : { // What: Onboarding Override. Why: Only the checklist map inside onboarding changes, every sibling onboarding field must survive. How: This rebuilds onboarding from its own current fields plus the patched checklist.
 
 
-					...( curStaObj.onboarding || {} ), // What: Current Onboarding Spread. Why: Every other onboarding field (welcome/tour flags, appFeatures, ...) must carry over unchanged. How: This spreads curStaObj.onboarding, defaulting to {} for state that predates it.
+					...curStaObj.onboarding, // What: Current Onboarding Spread. Why: Every other onboarding field (welcome/tour flags, appFeatures, ...) must carry over unchanged. How: This spreads curStaObj.onboarding.
 
 					checklist : curCheObj // What: Checklist. Why: The resolve/unresolve above must land in state. How: This is curCheObj.
 
@@ -2384,7 +2474,7 @@ function useAppStaFun ( optArgObj ) {
 				onboarding : { // What: Onboarding Override. Why: Only the appFeatures map inside onboarding changes, every sibling onboarding field must survive. How: This rebuilds onboarding from its own current fields plus the patched appFeatures.
 
 
-					...( curStaObj.onboarding || {} ), // What: Current Onboarding Spread. Why: Every other onboarding field (checklist, welcome/tour flags, ...) must carry over unchanged. How: This spreads curStaObj.onboarding, defaulting to {} for state that predates it.
+					...curStaObj.onboarding, // What: Current Onboarding Spread. Why: Every other onboarding field (checklist, welcome/tour flags, ...) must carry over unchanged. How: This spreads curStaObj.onboarding.
 
 					appFeatures : appFeaObj // What: App Features. Why: The resolve/unresolve above must land in state. How: This is appFeaObj.
 
@@ -2407,7 +2497,7 @@ function useAppStaFun ( optArgObj ) {
 			onboarding : { // What: Onboarding. Why: Only the flags in patValObj change, every other onboarding field must survive. How: This rebuilds onboarding from its own current fields with patValObj merged on top.
 
 
-				...( curStaObj.onboarding || {} ), // What: Current Onboarding Spread. Why: Every onboarding flag the patch doesn't mention must carry over unchanged. How: This spreads curStaObj.onboarding, defaulting to {} for state that predates it.
+				...curStaObj.onboarding, // What: Current Onboarding Spread. Why: Every onboarding flag the patch doesn't mention must carry over unchanged. How: This spreads curStaObj.onboarding.
 				...patValObj                       // What: Patch Spread. Why: The caller's own flags must override the current ones. How: This spreads patValObj last, so its keys win.
 
 
@@ -3519,7 +3609,7 @@ function useAppStaFun ( optArgObj ) {
 			const picIdeStr = curRowObj ? curRowObj.pickerId // What: Picker Identifier String. Why: The fresh reroll log row below needs a pickerId, preferring the live log row's own, falling back to the live entry's own. How: This reads curRowObj's own pickerId, else the matching today.entries row's own pickerId.
 				: ( curStaObj.today.entries.find( ( entFinObj ) => entFinObj.eid === entIdeStr ) || {} ).pickerId; // What: Entry Picker Fallback. Why: With no live row, the entry itself still knows its picker. How: This reads the matching entry's own pickerId.
 
-			let rejLogArr = nexLogArr.map( ( logMapObj ) => // What: Rejected Log Array. Why: The rolled-away row must be marked rejected, keeping its own itemId, before the fresh reroll row is appended. How: This flags the live row sharing entIdeStr as outcome:'rejected'.
+			let rejLogArr : PclRowTyp[] = nexLogArr.map( ( logMapObj ) => // What: Rejected Log Array. Why: The rolled-away row must be marked rejected, keeping its own itemId, before the fresh reroll row is appended. How: This flags the live row sharing entIdeStr as outcome:'rejected'.
 				( logMapObj.eid === entIdeStr && !logMapObj.outcome ) ? { ...logMapObj, outcome : 'rejected' } : logMapObj ); // What: Reject Row Patch. Why: Only this entry's live row is rolled away. How: This marks it rejected and passes every other row through.
 
 
@@ -3682,7 +3772,7 @@ function useAppStaFun ( optArgObj ) {
 
 // #region Exports
 
-export { useAppStaFun }; // What: Use App State Function Export. Why: This hook is the entire app's own state layer, imported by app.tsx (and nowhere else). How: This re-exports the useAppStaFun function declared above by name.
+export { type ActStoTyp, useAppStaFun }; // What: Named Exports. Why: useAppStaFun is the entire app's own state layer, imported by app.tsx, and the tabs type the actions they receive with ActStoTyp. How: This exports the hook and the action type by name.
 
 // #endregion Exports
 

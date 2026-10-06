@@ -56,7 +56,8 @@ import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record T
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param curPicObj - Current Picker Object: The picker gaining the item,
- *                    read for its id, mode, and threshold.
+ *                    read for its id, mode, and threshold, or just its id
+ *                    when the picker is gone.
  * @param sibIteArr - Sibling Item Array: The picker's existing items.
  * @param newNamStr - New Name String: The item's name.
  * @param optIdeStr - Optional Identifier String: An id to use instead of
@@ -72,7 +73,7 @@ import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record T
  *
 */
 
-function buiIteFun ( curPicObj : PicRcdTyp, sibIteArr : IteRcdTyp[], newNamStr : string, optIdeStr? : string ) : IteRcdTyp {
+function buiIteFun ( curPicObj : Pick< PicRcdTyp, 'id' > & Partial< PicRcdTyp >, sibIteArr : IteRcdTyp[], newNamStr : string, optIdeStr? : string ) : IteRcdTyp {
 
 
 	const isaDowBoo = curPicObj && curPicObj.mode === 'ease-down';                                     // What: Is-A Down Boolean. Why: Only Ease Down needs the special charged-value/fairness-weight treatment below. How: This is true only when curPicObj exists and its own mode is 'ease-down'.

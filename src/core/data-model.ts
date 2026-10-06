@@ -92,11 +92,12 @@ type ConRcdTyp = { // What: Conditional Record Type. Why: A conditional is the d
 type CusPalTyp = { // What: Custom Palette Type. Why: A custom theme is built from three chosen colors. How: This describes appearance.customLight or appearance.customDark.
 
 
-	accent  : string;  // What: Accent. Why: Actions and selection use the accent color. How: This is that color as hex.
-	bg      : string;  // What: Background. Why: The page sits on the background color. How: This is that color as hex.
-	derived : boolean; // What: Derived. Why: Editing one custom theme fills in the other by inverting it. How: This is true on the filled-in one, until edited directly.
-	name?   : string;  // What: Name. Why: A user can rename their custom theme. How: This is the name, absent until renamed.
-	text    : string;  // What: Text. Why: Body text uses the text color. How: This is that color as hex.
+	accent       : string;  // What: Accent. Why: Actions and selection use the accent color. How: This is that color as hex.
+	bg           : string;  // What: Background. Why: The page sits on the background color. How: This is that color as hex.
+	derived?     : boolean; // What: Derived. Why: Editing one custom theme fills in the other by inverting it. How: This is true on the filled-in one until edited directly, and absent on a slot that has only been renamed.
+	name?        : string;  // What: Name. Why: A user can rename their custom theme. How: This is the name, absent until renamed.
+	nameDerived? : boolean; // What: Name Derived. Why: Renaming one custom theme also names the other, unless that one was named directly. How: This is true on a copied name and false on a direct one.
+	text         : string;  // What: Text. Why: Body text uses the text color. How: This is that color as hex.
 
 
 };
@@ -183,17 +184,17 @@ type EntRevTyp = { // What: Entry Revert Type. Why: Unchecking a completed entry
 type OnbStaTyp = { // What: Onboarding State Type. Why: The tours and setup checklist remember where the user is. How: This describes state.onboarding.
 
 
-	activeTour                 : { id : string, step : number } | null;    // What: Active Tour. Why: A reload resumes a running tour. How: This holds its id and step, or null.
-	appFeatures                : Record< string, { status : CheStaTyp } >; // What: App Features. Why: Each App Features tutorial is done, skipped, or still open. How: This maps each feature id to its status.
-	appFeaturesEverCompleted   : boolean;                                  // What: App Features Ever Completed. Why: The section's celebration plays only once. How: This is true once every feature has been resolved.
-	appFeaturesIntroSeen       : boolean;                                  // What: App Features Intro Seen. Why: The section's intro shows only once. How: This is true once seen.
-	appFeaturesSectionResolved : boolean;                                  // What: App Features Section Resolved. Why: A finished section leaves Today. How: This is true once it has.
-	checklist                  : Record< string, { status : CheStaTyp } >; // What: Checklist. Why: Each setup step and sample is done, skipped, or still open. How: This maps each step id to its status.
-	checklistDone              : boolean;                                  // What: Checklist Done. Why: A finished checklist leaves Today. How: This is true once it has.
-	dismissed                  : boolean;                                  // What: Dismissed. Why: The user can wave onboarding away. How: This is true once they have.
-	generateScrollPending      : boolean;                                  // What: Generate Scroll Pending. Why: The first generated list scrolls into view once. How: This is true until it has.
-	pageToursName              : string;                                   // What: Page Tours Name. Why: The page tours' group shows under a name. How: This is that name.
-	welcomed                   : boolean;                                  // What: Welcomed. Why: The welcome modal shows only to a new user. How: This is true once shown.
+	activeTour                  : { id : string, step : number } | null;    // What: Active Tour. Why: A reload resumes a running tour. How: This holds its id and step, or null.
+	appFeatures                 : Record< string, { status : CheStaTyp } >; // What: App Features. Why: Each App Features tutorial is done, skipped, or still open. How: This maps each feature id to its status.
+	appFeaturesEverCompleted?   : boolean;                                  // What: App Features Ever Completed. Why: The section's celebration plays only once. How: This is true once every feature has been resolved.
+	appFeaturesIntroSeen        : boolean;                                  // What: App Features Intro Seen. Why: The section's intro shows only once. How: This is true once seen.
+	appFeaturesSectionResolved? : boolean;                                  // What: App Features Section Resolved. Why: A finished section leaves Today. How: This is true once it has.
+	checklist                   : Record< string, { status : CheStaTyp } >; // What: Checklist. Why: Each setup step and sample is done, skipped, or still open. How: This maps each step id to its status.
+	checklistDone               : boolean;                                  // What: Checklist Done. Why: A finished checklist leaves Today. How: This is true once it has.
+	dismissed                   : boolean;                                  // What: Dismissed. Why: The user can wave onboarding away. How: This is true once they have.
+	generateScrollPending       : boolean;                                  // What: Generate Scroll Pending. Why: The first generated list scrolls into view once. How: This is true until it has.
+	pageToursName               : string;                                   // What: Page Tours Name. Why: The page tours' group shows under a name. How: This is that name.
+	welcomed                    : boolean;                                  // What: Welcomed. Why: The welcome modal shows only to a new user. How: This is true once shown.
 
 
 };
@@ -403,29 +404,29 @@ type VclRowTyp = { // What: Vacation-Log Row Type. Why: Stats leaves days an ite
 type StaAppTyp = { // What: State App Type. Why: The whole app runs on one saved state object. How: This describes it, as store.ts holds it and storage.ts saves it.
 
 
-	_easeDownWeightsInit? : boolean;     // What: Ease Down Weights Init. Why: A one-time migration seeded Ease Down's fairness weights. How: This is true once it has run.
-	_remStatsDefaultOn?   : boolean;     // What: Reminder Stats Default On. Why: A one-time migration turned reminder stats on. How: This is true once it has run.
-	_taskIntervalReset?   : boolean;     // What: Task Interval Reset. Why: A one-time migration reset stale reminder intervals. How: This is true once it has run.
-	appearance            : AppSetTyp;   // What: Appearance. Why: The user's theme and display choices. How: This holds them.
-	conditionalLog        : CdlRowTyp[]; // What: Conditional Log. Why: Stats charts conditionals over time. How: This holds every row.
-	conditionals          : ConRcdTyp[]; // What: Conditionals. Why: Day-off gates suppress pickers. How: This lists them.
-	daily                 : DaiSetTyp;   // What: Daily. Why: The generator runs on a schedule. How: This holds its settings.
-	groupOrder            : string[];    // What: Group Order. Why: Today shows groups in the user's order. How: This lists group names in order.
-	holidays              : HolStaTyp;   // What: Holidays. Why: Holiday skipping needs the user's holiday settings. How: This holds them.
-	items                 : IteRcdTyp[]; // What: Items. Why: Every picker's pool lives here. How: This lists every item.
-	onboarding            : OnbStaTyp;   // What: Onboarding. Why: Tours and the checklist remember progress. How: This holds it.
-	pickerOrder           : string[];    // What: Picker Order. Why: Pickers show in the user's order. How: This lists them in order.
-	pickers               : PicRcdTyp[]; // What: Pickers. Why: Pickers choose what to do. How: This lists them.
-	pickLog               : PclRowTyp[]; // What: Pick Log. Why: Stats charts picks over time. How: This holds every row.
-	reminderLog           : RmlRowTyp[]; // What: Reminder Log. Why: Stats counts completed reminders. How: This holds every row.
-	reminderOpts          : RemOptTyp;   // What: Reminder Options. Why: Reminders follow per-class switches. How: This holds them.
-	reminderSkipLog       : RslRowTyp[]; // What: Reminder Skip Log. Why: Stats counts skipped reminders. How: This holds every row.
-	streak                : number;      // What: Streak. Why: Finishing days in a row builds a streak. How: This is its length in days.
-	tasks                 : TasRcdTyp[]; // What: Tasks. Why: Reminders are scheduled tasks. How: This lists them.
-	today                 : TodStaTyp;   // What: Today. Why: Today's list is kept for the day. How: This holds it.
-	ui                    : UiStaTyp;    // What: UI. Why: A few display choices persist. How: This holds them.
-	v                     : number;      // What: Version. Why: The saved shape changes over time. How: This is the save format's version.
-	vacationLog           : VclRowTyp[]; // What: Vacation Log. Why: Stats leaves deactivated days out. How: This holds every row.
+	_easeDownWeightsInit? : boolean;                    // What: Ease Down Weights Init. Why: A one-time migration seeded Ease Down's fairness weights. How: This is true once it has run.
+	_remStatsDefaultOn?   : boolean;                    // What: Reminder Stats Default On. Why: A one-time migration turned reminder stats on. How: This is true once it has run.
+	_taskIntervalReset?   : boolean;                    // What: Task Interval Reset. Why: A one-time migration reset stale reminder intervals. How: This is true once it has run.
+	appearance            : AppSetTyp;                  // What: Appearance. Why: The user's theme and display choices. How: This holds them.
+	conditionalLog        : CdlRowTyp[];                // What: Conditional Log. Why: Stats charts conditionals over time. How: This holds every row.
+	conditionals          : ConRcdTyp[];                // What: Conditionals. Why: Day-off gates suppress pickers. How: This lists them.
+	daily                 : DaiSetTyp;                  // What: Daily. Why: The generator runs on a schedule. How: This holds its settings.
+	groupOrder            : string[];                   // What: Group Order. Why: Today shows groups in the user's order. How: This lists group names in order.
+	holidays              : HolStaTyp;                  // What: Holidays. Why: Holiday skipping needs the user's holiday settings. How: This holds them.
+	items                 : IteRcdTyp[];                // What: Items. Why: Every picker's pool lives here. How: This lists every item.
+	onboarding            : OnbStaTyp;                  // What: Onboarding. Why: Tours and the checklist remember progress. How: This holds it.
+	pickerOrder           : Record< string, string[] >; // What: Picker Order. Why: Pickers show in the user's order within each group. How: This maps each group name to its picker ids in order.
+	pickers               : PicRcdTyp[];                // What: Pickers. Why: Pickers choose what to do. How: This lists them.
+	pickLog               : PclRowTyp[];                // What: Pick Log. Why: Stats charts picks over time. How: This holds every row.
+	reminderLog           : RmlRowTyp[];                // What: Reminder Log. Why: Stats counts completed reminders. How: This holds every row.
+	reminderOpts          : RemOptTyp;                  // What: Reminder Options. Why: Reminders follow per-class switches. How: This holds them.
+	reminderSkipLog       : RslRowTyp[];                // What: Reminder Skip Log. Why: Stats counts skipped reminders. How: This holds every row.
+	streak                : number;                     // What: Streak. Why: Finishing days in a row builds a streak. How: This is its length in days.
+	tasks                 : TasRcdTyp[];                // What: Tasks. Why: Reminders are scheduled tasks. How: This lists them.
+	today                 : TodStaTyp;                  // What: Today. Why: Today's list is kept for the day. How: This holds it.
+	ui                    : UiStaTyp;                   // What: UI. Why: A few display choices persist. How: This holds them.
+	v                     : number;                     // What: Version. Why: The saved shape changes over time. How: This is the save format's version.
+	vacationLog           : VclRowTyp[];                // What: Vacation Log. Why: Stats leaves deactivated days out. How: This holds every row.
 
 
 };
