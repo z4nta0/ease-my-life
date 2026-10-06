@@ -79,6 +79,8 @@ const TAB_OBJ_ARR = [ // What: Tab Object Array. Why: This defines the fixed set
 
 // #region Components
 
+type TbcProTyp = { actIdeStr : string, className? : string, onChange : ( tabIdeStr : string ) => void, onTogRaiFun : () => void, raiOpeBoo : boolean, tabPlaStr : string, tbcGhoBoo? : boolean }; // What: Tab-Bar-Component Props Type. Why: The tab bar shows the active tab, switches tabs, and opens its rail, and a ghost copy plays the placement switch. How: This types TabBarCom's props.
+
 // #region TabBarCom
 
 /**
@@ -118,7 +120,7 @@ const TAB_OBJ_ARR = [ // What: Tab Object Array. Why: This defines the fixed set
  *
 */
 
-function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeBoo, tabPlaStr, tbcGhoBoo = false } ) {
+function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeBoo, tabPlaStr, tbcGhoBoo = false } : TbcProTyp ) : React.JSX.Element {
 
 
 	// #region Active Tab Indicator
@@ -412,7 +414,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
  *
 */
 
-function AppRooCom () {
+function AppRooCom () : React.JSX.Element {
 
 
 	// #region App State Setup
@@ -451,7 +453,7 @@ function AppRooCom () {
 	const [ actPicStr, setActPicStr ] = React.useState( () => { // What: Active Picker String And Setter. Why: Tracks which sample picker's mini-tour is running, kept here (not in TabTodCom) since Step 1 navigates away to the Pickers tab and would unmount TabTodCom. How: This seeds itself from a persisted activeTour on first mount so a reload resumes the tour instead of losing it.
 
 
-		const actTouObj = staAppObj.onboarding && staAppObj.onboarding.activeTour; // What: Active Tour Object. Why: This is the persisted record of whichever onboarding tour (if any) was mid-progress on last save. How: This is read from the app's own onboarding state and checked below for a "picker-" prefixed id.
+		const actTouObj = staAppObj.onboarding.activeTour; // What: Active Tour Object. Why: This is the persisted record of whichever onboarding tour (if any) was mid-progress on last save. How: This is read from the app's own onboarding state and checked below for a "picker-" prefixed id.
 
 
 
@@ -464,7 +466,7 @@ function AppRooCom () {
 	const [ actPagStr, setActPagStr ] = React.useState( () => { // What: Active Page String And Setter. Why: Tracks which "Explore the {page}" page tour is running, kept here for the same reason as actPicStr: some page tours navigate away from Today and would unmount it. How: This seeds itself from a persisted activeTour on first mount so a reload resumes the tour instead of losing it.
 
 
-		const actTouObj = staAppObj.onboarding && staAppObj.onboarding.activeTour; // What: Active Tour Object. Why: This is the persisted record of whichever onboarding tour (if any) was mid-progress on last save. How: This is read from the app's own onboarding state and checked below for a "page-" prefixed id.
+		const actTouObj = staAppObj.onboarding.activeTour; // What: Active Tour Object. Why: This is the persisted record of whichever onboarding tour (if any) was mid-progress on last save. How: This is read from the app's own onboarding state and checked below for a "page-" prefixed id.
 
 
 
@@ -477,7 +479,7 @@ function AppRooCom () {
 	const [ actFeaStr, setActFeaStr ] = React.useState( () => { // What: Active Feature String And Setter. Why: Tracks which App Features tutorial is running, kept here since most of these live on Pickers/Settings, not Today. How: This seeds itself from a persisted activeTour on first mount so a reload resumes the tour instead of losing it.
 
 
-		const actTouObj = staAppObj.onboarding && staAppObj.onboarding.activeTour; // What: Active Tour Object. Why: This is the persisted record of whichever onboarding tour (if any) was mid-progress on last save. How: This is read from the app's own onboarding state and checked below for an "appfeature-" prefixed id.
+		const actTouObj = staAppObj.onboarding.activeTour; // What: Active Tour Object. Why: This is the persisted record of whichever onboarding tour (if any) was mid-progress on last save. How: This is read from the app's own onboarding state and checked below for an "appfeature-" prefixed id.
 
 
 
@@ -513,9 +515,9 @@ function AppRooCom () {
 
 	// #region Placement Switch State
 
-	const [ exiPlaStr, setExiPlaStr ] = React.useState( null );                                                                    // What: Exiting Placement String And Setter. Why: The old nav bar's ghost copy needs to know which placement it's animating away from. How: This is set to the previous placement when tabPlaStr changes, then cleared after the exit keyframe finishes.
-	const [ navEntBoo, setNavEntBoo ] = React.useState( false );                                                                   // What: Nav Entering Boolean And Setter. Why: The real nav bar needs to know when it's mid-entrance so it can play its staggered enter-from-edge keyframe. How: This is set true when tabPlaStr changes and cleared after the enter keyframe finishes.
-	const prePlaRef                   = React.useRef( ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' ); // What: Previous Placement Reference. Why: The layout-switch effect needs to remember the last placement across renders to detect an actual change. How: This starts at the current persisted placement and is updated by the effect below whenever tabPlaStr changes.
+	const [ exiPlaStr, setExiPlaStr ] = React.useState( null );                            // What: Exiting Placement String And Setter. Why: The old nav bar's ghost copy needs to know which placement it's animating away from. How: This is set to the previous placement when tabPlaStr changes, then cleared after the exit keyframe finishes.
+	const [ navEntBoo, setNavEntBoo ] = React.useState( false );                           // What: Nav Entering Boolean And Setter. Why: The real nav bar needs to know when it's mid-entrance so it can play its staggered enter-from-edge keyframe. How: This is set true when tabPlaStr changes and cleared after the enter keyframe finishes.
+	const prePlaRef                   = React.useRef( staAppObj.appearance.tabPlacement ); // What: Previous Placement Reference. Why: The layout-switch effect needs to remember the last placement across renders to detect an actual change. How: This starts at the current persisted placement and is updated by the effect below whenever tabPlaStr changes.
 
 	// #endregion Placement Switch State
 
@@ -570,7 +572,7 @@ function AppRooCom () {
 	React.useEffect( () => { // What: Theme Application Effect. Why: The active palette must be recalculated and applied whenever the persisted appearance settings or the system's dark-mode state change. How: This resolves the active theme key, picks the matching palette (built-in or custom), and applies it to the document.
 
 
-		const appCurObj = staAppObj.appearance || { theme : 'ink' };     // What: Appearance Current Object. Why: Very old/incomplete persisted states might not have an appearance object at all. How: This falls back to a default theme:'ink' object when appearance is missing.
+		const appCurObj = staAppObj.appearance;                          // What: Appearance Current Object. Why: Every branch below reads the persisted appearance settings. How: This reads staAppObj.appearance, which migStaFun guarantees on every load.
 		const theKeyStr = APP_NAM_OBJ.resTheFun( appCurObj, sysDarBoo ); // What: Theme Key String. Why: The actual palette to apply depends on the user's theme choice combined with the current system dark-mode state. How: This resolves both into a single concrete theme key, such as 'ink' or 'customLight'.
 
 		let palResObj; // What: Palette Resolved Object. Why: The concrete color palette to apply isn't known yet, since it depends on which branch below resolves it. How: This is declared here and assigned in exactly one of the branches that follow.
@@ -590,25 +592,25 @@ function AppRooCom () {
 	}, [ staAppObj.appearance, sysDarBoo ] ); // What: Effect Dependency Array. Why: The applied palette only ever needs to change when the persisted appearance settings or the system dark-mode state change. How: staAppObj.appearance covers the user's own theme choice/custom colors; sysDarBoo covers the OS-level light/dark toggle.
 
 
-	React.useEffect( () => { // What: Placement Dataset Effect. Why: CSS elsewhere in the app selects on document.body's own data attributes to react to the current tab placement. How: This mirrors the persisted tabPlacement (or its 'bottom' default) onto body.dataset.placement.
+	React.useEffect( () => { // What: Placement Dataset Effect. Why: CSS elsewhere in the app selects on document.body's own data attributes to react to the current tab placement. How: This mirrors the persisted tabPlacement onto body.dataset.placement.
 
 
-		document.body.dataset.placement = ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom'; // What: Placement Dataset Write. Why: This is the actual value CSS reads to lay out the tab bar differently per placement. How: This writes the persisted tabPlacement, or 'bottom' if none is set, onto the body element.
+		document.body.dataset.placement = staAppObj.appearance.tabPlacement; // What: Placement Dataset Write. Why: This is the actual value CSS reads to lay out the tab bar differently per placement. How: This writes the persisted tabPlacement onto the body element.
 
 
-	}, [ staAppObj.appearance && staAppObj.appearance.tabPlacement ] ); // What: Effect Dependency Array. Why: The dataset only needs rewriting when the persisted placement itself actually changes. How: This depends on the specific tabPlacement field rather than the whole appearance object, so unrelated appearance changes don't trigger it.
+	}, [ staAppObj.appearance.tabPlacement ] ); // What: Effect Dependency Array. Why: The dataset only needs rewriting when the persisted placement itself actually changes. How: This depends on the specific tabPlacement field rather than the whole appearance object, so unrelated appearance changes don't trigger it.
 
 
-	React.useEffect( () => { // What: Completion Style Dataset Effect. Why: CSS elsewhere in the app selects on document.body's own data attributes to pick the completion celebration's visual style. How: This mirrors the persisted completionStyle (or its 'confetti' default) onto body.dataset.completionStyle.
+	React.useEffect( () => { // What: Completion Style Dataset Effect. Why: CSS elsewhere in the app selects on document.body's own data attributes to pick the completion celebration's visual style. How: This mirrors the persisted completionStyle onto body.dataset.completionStyle.
 
 
-		document.body.dataset.completionStyle = ( staAppObj.appearance && staAppObj.appearance.completionStyle ) || 'confetti'; // What: Completion Style Dataset Write. Why: This is the actual value CSS reads to choose which celebration animation plays. How: This writes the persisted completionStyle, or 'confetti' if none is set, onto the body element.
+		document.body.dataset.completionStyle = staAppObj.appearance.completionStyle; // What: Completion Style Dataset Write. Why: This is the actual value CSS reads to choose which celebration animation plays. How: This writes the persisted completionStyle onto the body element.
 
 
-	}, [ staAppObj.appearance && staAppObj.appearance.completionStyle ] ); // What: Effect Dependency Array. Why: The dataset only needs rewriting when the persisted completion style itself actually changes. How: This depends on the specific completionStyle field rather than the whole appearance object, so unrelated appearance changes don't trigger it.
+	}, [ staAppObj.appearance.completionStyle ] ); // What: Effect Dependency Array. Why: The dataset only needs rewriting when the persisted completion style itself actually changes. How: This depends on the specific completionStyle field rather than the whole appearance object, so unrelated appearance changes don't trigger it.
 
 
-	const tabPlaStr = ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom'; // What: Tab Placement String. Why: Both the JSX below and the layout-switch effect need the current resolved placement as a plain value, not buried in staAppObj. How: This resolves the persisted tabPlacement, or 'bottom' if none is set, same computation as the dataset effect above.
+	const tabPlaStr = staAppObj.appearance.tabPlacement; // What: Tab Placement String. Why: Both the JSX below and the layout-switch effect need the current resolved placement as a plain value, not buried in staAppObj. How: This reads the persisted tabPlacement, the same value the dataset effect above writes.
 
 
 	React.useLayoutEffect( () => { // What: Layout Switch Animation Effect. Why: Moving the tab bar to a new placement needs a ghost of the old bar to play an exit keyframe while the real bar enters from its new edge. How: This detects an actual placement change, stages the ghost's exit and the real bar's enter flags, then clears them after their keyframes finish.
@@ -775,7 +777,7 @@ function AppRooCom () {
 
 							<TabPicCom
 								actStoObj={ actStoObj }
-								aniStyStr={ (staAppObj.appearance && staAppObj.appearance.pickAnim) || 'reel' }
+								aniStyStr={ staAppObj.appearance.pickAnim }
 								staAppObj={ staAppObj }
 
 								onNavHomFun={ () => selTabFun( 'today' ) }
