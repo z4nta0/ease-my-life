@@ -665,6 +665,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: The hidden coach clone's height can change on any render, not only when coaHeiNum does, so this measures after every render. How: It only sets state when the measured height differs, so a matching render stops the chain.
 	React.useLayoutEffect( () => { // What: Coach Measure Effect. Why: The hidden measurer's real rendered height is only known after paint, and only needs feeding back into state when it actually changed. How: This runs after every render (no deps) but only calls setCoaHeiNum when the measured height differs, so it settles instead of looping.
 
 
@@ -716,6 +717,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		actStoObj.setOnbFun( { activeTour : { id : touIdeStr, step : curSteNum } } ); // What: Checkpoint Write. Why: This is the actual persisted resume checkpoint a future mount reads back as resSteNum. How: This writes the tour's own id alongside the literal step field, both required by the shared activeTour shape.
 
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: A checkpoint should be written only when the step moves, while a caller can rebuild steObjArr every render and actStoObj and touIdeStr never change. How: The step array is read from the render where the step changed.
 	}, [ curSteNum ] ); // What: Effect Dependency Array. Why: A new checkpoint only needs writing when the step index itself has actually moved. How: curSteNum is the value gating whether this step should be persisted at all.
 
 	// #endregion Bus And Resume Publishing Effects
@@ -748,6 +750,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		if ( curSteObj && curSteObj.tabStr && actIdeStr !== curSteObj.tabStr ) selTabFun( curSteObj.tabStr ); // What: Tab Switch. Why: The step's own target may live on a different tab than whatever is currently active. How: This only calls selTabFun when the current step names a tab and it does not already match.
 
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: The tour should switch tabs only when a new step needs it, never pull the user back whenever they change tabs themselves. How: The active tab, the step, and selTabFun are read from the render where the step changed.
 	}, [ curSteNum ] ); // What: Effect Dependency Array. Why: This should re-check whenever the step index moves, since a different step can name a different tab. How: curSteNum is what curSteObj itself is derived from.
 
 
@@ -758,6 +761,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		emlTouObj.set( { wanRaiBoo : !!( curSteObj && curSteObj.selStr.includes( '[data-tab=' ) ) } ); // What: Rail Open Publish. Why: This is published unconditionally, not just when opening, so it also closes the drawer again once the tour moves to a step that does not need it, rather than leaving it open to cover a content target. How: This is a no-op at desktop widths, where the rail is never collapsed to begin with, and is keyed off the selector string itself (not resolved elements), since resolving would need the rail already open, which is exactly what this is for.
 
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: The rail state should be republished only when the step moves, while curSteObj gets a new identity whenever the caller rebuilds its step array. How: The step is read from the render where the step changed.
 	}, [ curSteNum ] ); // What: Effect Dependency Array. Why: This should republish whenever the step index moves, since a different step's own selector decides the answer. How: curSteNum is what curSteObj itself is derived from.
 
 	// #endregion Current Step Sync
@@ -1262,6 +1266,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		};
 
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: The three document listeners are registered once, and isaOffFun and isaPasFun read only refs and module helpers, so the mount-time copies stay current. How: Listing the two would re-register every listener on every render.
 	}, [] ); // What: Effect Dependency Array. Why: This listener setup should only ever run once for this component's own mounted lifetime; every closure inside reads live state via refs instead of depending on it directly. How: An empty array means there is no dependency that could ever change to trigger a re-run.
 
 	// #endregion Click Guard Machinery
@@ -1307,7 +1312,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		todTopFun( actIdeStr, selTabFun ); // What: Today Landing. Why: A finished tour should always end on a pristine Today, regardless of which tab/scroll position its last step left things in. How: This calls the shared todTopFun helper with the current actIdeStr tab and selTabFun.
 
 
-	}, [ onFinTouFun, actIdeStr, selTabFun ] ); // What: Callback Dependency Array. Why: This callback must re-close over a fresh onFinTouFun whenever the prop itself changes, and over fresh actIdeStr/selTabFun so the landing logic always targets the current tab state. How: onFinTouFun is the completion hook being called, actIdeStr is read to decide whether a tab switch is needed, and selTabFun is the function that performs it.
+	}, [ actIdeStr, actStoObj, onFinTouFun, selTabFun ] ); // What: Callback Dependency Array. Why: This callback must re-close over a fresh onFinTouFun whenever the prop itself changes, and over fresh actIdeStr/selTabFun so the landing logic always targets the current tab state. How: actStoObj clears the checkpoint and never changes identity, onFinTouFun is the completion hook being called, actIdeStr is read to decide whether a tab switch is needed, and selTabFun is the function that performs it.
 
 	// #endregion finTouFun
 
@@ -1546,6 +1551,9 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 	// #endregion Step Navigation Actions
 
+
+
+	const curSelStr = curSteObj && curSteObj.selStr; // What: Current Selector String. Why: The position tracking effect below re-runs when the current step's selector changes, and a dependency array needs a plain value to compare. How: This reads the current step's selStr, or null without a step.
 
 
 	React.useEffect( () => { // What: Position Tracking Effect. Why: This follows the target every frame while a step is up: scrolling it into view once, clamping the spotlight/coach against chrome, deciding reserve space, and watchdog-skipping a step whose target never resolves. How: This resets the previous step's rect and reserve, then runs a requestAnimationFrame loop that brings the target into view and repositions everything each frame.
@@ -2396,7 +2404,8 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		// #endregion Live Position And Watchdog Loop
 
 
-	}, [ curSteNum, curSteObj && curSteObj.selStr ] ); // What: Effect Dependency Array. Why: This must re-run whenever the step index moves (a genuinely new step to track) or, for the very same step, whenever its own selStr changes identity (steps are rebuilt as fresh objects on every render, so this is really just watching the one field that actually decides what to track). How: curSteNum is the step position itself, and curSteObj && curSteObj.selStr is the specific selector that drives everything inside this effect.
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: curSteObj, skiTouFun, and uniRecFun all get new identities on every render, so listing them would restart the frame loop and the not-found watchdog every render. How: Each is read from the render where the step or its selector changed.
+	}, [ curSelStr, curSteNum ] ); // What: Effect Dependency Array. Why: This must re-run whenever the step index moves (a genuinely new step to track) or, for the very same step, whenever its own selStr changes (steps are rebuilt as fresh objects on every render, so this watches the one field that actually decides what to track). How: curSteNum is the step position itself, and curSelStr is the selector that drives everything inside this effect.
 
 
 
