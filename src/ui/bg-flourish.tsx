@@ -40,6 +40,7 @@ import React     from 'react';                    // What: React. Why: This is t
  * same session.
  *
  * Sections:
+ *  - Types
  *  - Constants
  *  - Module State
  *  - Helpers
@@ -50,6 +51,31 @@ import React     from 'react';                    // What: React. Why: This is t
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Types
+
+type FloIteTyp = { // What: Flourish Item Type. Why: genSidFun builds each decorative glyph and FloColCom renders it. How: This describes one placed glyph.
+
+
+	bigBoo : boolean; // What: Big Boolean. Why: A big glyph fills a 2x2 footprint. How: This is true for one.
+	ideStr : string;  // What: Identifier String. Why: Each glyph needs a stable React key. How: This is its row, column, and index joined.
+	insNum : number;  // What: Inset Number. Why: Each glyph sits at its own horizontal offset. How: This is its distance from the content edge, in pixels.
+	opaNum : number;  // What: Opacity Number. Why: Glyphs stay subtle behind the content. How: This is its opacity.
+	rotNum : number;  // What: Rotate Number. Why: Each glyph is tilted for variety. How: This is its angle, in degrees.
+	sizStr : string;  // What: Size String. Why: Glyphs vary in size along the font scale. How: This is its font size step.
+	symStr : string;  // What: Symbol String. Why: Each glyph shows one symbol. How: This is that character.
+	topNum : number;  // What: Top Number. Why: Each glyph sits at its own vertical offset. How: This is its distance from the gutter's top, in pixels.
+
+
+};
+
+
+
+type FloSidTyp = { left : FloIteTyp[], right : FloIteTyp[] }; // What: Flourish Sides Type. Why: Each tab's glyphs are generated once per gutter and cached. How: This holds the left and right gutters' glyphs.
+
+// #endregion Types
 
 
 
@@ -115,7 +141,7 @@ const MIN_COL_NUM = 2; // What: Minimum Column Number. Why: A gutter too narrow 
 
 // #region Module State
 
-const floCacMap = new Map(); // What: Flourish Cache Map. Why: Every generated side must survive switching tabs back and forth within the same session, without regenerating on every visit. How: This is read/written by useFloIteFun below, keyed by tab id.
+const floCacMap = new Map< string, FloSidTyp >(); // What: Flourish Cache Map. Why: Every generated side must survive switching tabs back and forth within the same session, without regenerating on every visit. How: This is read/written by useFloIteFun below, keyed by tab id.
 
 // #endregion Module State
 
@@ -149,7 +175,7 @@ const floCacMap = new Map(); // What: Flourish Cache Map. Why: Every generated s
  *
 */
 
-function shuArrFun ( souEleArr ) {
+function shuArrFun< T > ( souEleArr : T[] ) : T[] {
 
 
 	const copSouArr = souEleArr.slice(); // What: Copy Source Array. Why: The caller's own array must not be mutated by the shuffle below. How: This makes a shallow copy that the loop below shuffles in place instead.
@@ -199,7 +225,7 @@ function shuArrFun ( souEleArr ) {
  *
 */
 
-function ranArrFun ( lenValNum ) { return Array.from( Array( lenValNum ).keys() ); } // What: Range Array Body. Why: A plain sequential-integer array is needed repeatedly throughout this file to drive shuffled row/column walks. How: This spreads the keys() iterator of an empty array of that length, whose keys are exactly those indices.
+function ranArrFun ( lenValNum : number ) : number[] { return Array.from( Array( lenValNum ).keys() ); } // What: Range Array Body. Why: A plain sequential-integer array is needed repeatedly throughout this file to drive shuffled row/column walks. How: This spreads the keys() iterator of an empty array of that length, whose keys are exactly those indices.
 
 // #endregion ranArrFun
 
@@ -232,7 +258,7 @@ function ranArrFun ( lenValNum ) { return Array.from( Array( lenValNum ).keys() 
  *
 */
 
-function makCycFun ( pooFacFun ) {
+function makCycFun< T > ( pooFacFun : () => T[] ) : () => T {
 
 
 	let curPooArr = []; // What: Current Pool Array. Why: This is the shuffled pool values are currently being handed out from. How: This starts empty so the very first call below immediately triggers a fresh pool.
@@ -294,7 +320,7 @@ function makCycFun ( pooFacFun ) {
  *
 */
 
-function eveSpaFun ( minValNum, maxValNum, couValNum ) {
+function eveSpaFun ( minValNum : number, maxValNum : number, couValNum : number ) : number[] {
 
 
 	if ( couValNum <= 1 ) return [ minValNum ]; // What: Single Value Guard. Why: A step can't be computed with fewer than 2 points, and a single point should just be the minimum. How: This returns a one-element array early when couValNum doesn't call for a real spread.
@@ -345,7 +371,7 @@ function eveSpaFun ( minValNum, maxValNum, couValNum ) {
  *
 */
 
-function bloAroFun ( bloGriArr, rowIndNum, colIndNum, heiSpaNum, widSpaNum ) {
+function bloAroFun ( bloGriArr : boolean[][], rowIndNum : number, colIndNum : number, heiSpaNum : number, widSpaNum : number ) : void {
 
 
 	const rowCouNum = bloGriArr.length;      // What: Row Count Number. Why: The neighborhood walk below must not read or write past the grid's own real bounds. How: This is read once from the grid's own outer length and reused in the guard below.
@@ -410,7 +436,7 @@ function bloAroFun ( bloGriArr, rowIndNum, colIndNum, heiSpaNum, widSpaNum ) {
  *
 */
 
-function plaGriFun ( colCouNum, rowCouNum ) {
+function plaGriFun ( colCouNum : number, rowCouNum : number ) : { colIndNum : number, isaBigBoo : boolean, rowIndNum : number }[] {
 
 
 	const bloGriArr = ranArrFun( rowCouNum ).map( () => new Array( colCouNum ).fill( false ) ); // What: Blocked Grid Array. Why: This is the excluded-cells grid every placement below both reads from and writes into. How: This builds a rowCouNum by colCouNum grid, starting with every cell unexcluded.
@@ -503,7 +529,7 @@ function plaGriFun ( colCouNum, rowCouNum ) {
  *
 */
 
-function genSidFun ( gutWidNum, conHeiNum ) {
+function genSidFun ( gutWidNum : number, conHeiNum : number ) : FloIteTyp[] {
 
 
 	const fulColNum = Math.max( 0, Math.floor( gutWidNum / COL_WID_NUM - 0.3 ) ); // What: Full Column Number. Why: This is how many complete, fixed-width columns actually fit in the measured gutter. How: This divides the gutter width by the fixed column width, nudged down slightly so a column that just barely fits isn't counted.
@@ -600,10 +626,10 @@ function genSidFun ( gutWidNum, conHeiNum ) {
  *
 */
 
-function useFloIteFun ( tabIdeStr, meaEleRef ) {
+function useFloIteFun ( tabIdeStr : string, meaEleRef : React.RefObject< HTMLElement | null > ) : FloSidTyp | null {
 
 
-	const [ floIteObj, setFloIteObj ] = React.useState( () => floCacMap.get( tabIdeStr ) || null ); // What: Flourish Item Object And Setter. Why: A tab already generated earlier in this session should render immediately, without waiting on the effect below. How: This seeds itself from floCacMap if this tab's own entry already exists, null otherwise.
+	const [ floIteObj, setFloIteObj ] = React.useState< FloSidTyp | null >( () => floCacMap.get( tabIdeStr ) || null ); // What: Flourish Item Object And Setter. Why: A tab already generated earlier in this session should render immediately, without waiting on the effect below. How: This seeds itself from floCacMap if this tab's own entry already exists, null otherwise.
 
 
 	React.useEffect( () => { // What: Generate Effect. Why: A tab not already cached needs its own gutters measured and generated exactly once. How: This checks the cache first, then measures meaEleRef's own parent .main and generates both sides if nothing was cached.
@@ -660,6 +686,8 @@ function useFloIteFun ( tabIdeStr, meaEleRef ) {
 
 // #region Components
 
+type FccProTyp = { floIteArr : FloIteTyp[], sidKeyStr : string }; // What: Flourish-Column-Component Props Type. Why: A column renders one gutter's glyphs on its own side. How: This types FloColCom's props.
+
 // #region FloColCom
 
 /**
@@ -687,7 +715,7 @@ function useFloIteFun ( tabIdeStr, meaEleRef ) {
  *
 */
 
-function FloColCom ( { floIteArr, sidKeyStr } ) {
+function FloColCom ( { floIteArr, sidKeyStr } : FccProTyp ) : React.JSX.Element | null {
 
 
 	if ( !floIteArr.length ) return null; // What: No Items Guard. Why: An empty side has nothing decorative to render at all. How: This returns null early rather than rendering an empty wrapper div.
@@ -744,6 +772,8 @@ function FloColCom ( { floIteArr, sidKeyStr } ) {
 
 
 
+type BfcProTyp = { meaEleRef : React.RefObject< HTMLElement | null >, tabIdeStr : string }; // What: Background-Flourish-Component Props Type. Why: The flourish measures its tab's content column and caches its glyphs per tab. How: This types BacFloCom's props.
+
 // #region BacFloCom
 
 /**
@@ -773,7 +803,7 @@ function FloColCom ( { floIteArr, sidKeyStr } ) {
  *
 */
 
-function BacFloCom ( { meaEleRef, tabIdeStr } ) {
+function BacFloCom ( { meaEleRef, tabIdeStr } : BfcProTyp ) : React.JSX.Element | null {
 
 
 	const floIteObj = useFloIteFun( tabIdeStr, meaEleRef ); // What: Flourish Item Object. Why: Both gutters below need this tab's own already-generated (or not-yet-generated) items. How: This calls the hook above, which returns null until the first measurement completes.
