@@ -23,6 +23,12 @@ import { TAS_NAM_OBJ  } from '../../core/tasks.ts';                 // What: Tas
 import { UnmWatCom    } from '../../ui/unmount-watcher.ts';         // What: Unmount Watcher Component. Why: An open reminder row or the settings matrix that disappears without its own Save still keeps its edits. How: This is rendered inside each, reporting its unmount.
 import { useTasDraFun } from '../../ui/record-draft.ts';            // What: Use Task Draft Function. Why: The open reminder row edits a local draft, committed when the row closes. How: This is called once inside RemManCom with the open reminder.
 
+
+import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The component changes state through the store's actions. How: This types its actStoObj.
+import type { RemClaTyp } from '../../core/data-model.ts'; // What: Reminder Class Type. Why: Each changed setting is written by its key. How: This types the setting keys read from the draft.
+import type { RemOptTyp } from '../../core/data-model.ts'; // What: Reminder Options Type. Why: The matrix edits both classes' switches. How: This types OmcProTyp's options.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The component reads the current app state. How: This types its staAppObj.
+
 // #endregion Imports
 
 
@@ -140,7 +146,7 @@ const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list 
  *
 */
 
-function paiSubFun ( verTexStr, neiConStr = 'and' ) {
+function paiSubFun ( verTexStr : string, neiConStr : string = 'and' ) : ( oncEnaBoo : boolean, reuEnaBoo : boolean ) => React.JSX.Element {
 
 
 	return ( oncEnaBoo, reuEnaBoo ) => ( // What: Pair Sub Return. Why: The caller (each REM_MAT_ARR entry's own dynFun) needs a function it can call with the live once/recurring toggle states. How: This renders one of the 4 mutually-exclusive phrases below.
@@ -270,6 +276,8 @@ const REM_MAT_ARR = [ // What: Reminder Matrix Array. Why: OptMatCom needs one r
 
 // #region Components
 
+type OmcProTyp = { actStoObj : ActStoTyp, onCloConFun : () => void, remOptObj : RemOptTyp }; // What: Option-Matrix-Component Props Type. Why: The participation matrix edits both reminder classes' switches and closes its Controls body. How: This types OptMatCom's props.
+
 // #region OptMatCom
 
 /**
@@ -301,7 +309,7 @@ const REM_MAT_ARR = [ // What: Reminder Matrix Array. Why: OptMatCom needs one r
  *
 */
 
-function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
+function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React.JSX.Element {
 
 
 	const [ draOptObj, setDraOptObj ] = React.useState( () => ( { // What: Draft Options Object And Setter. Why: Every toggle edits this local copy, so nothing reaches the settings until the matrix is saved or closed. How: This starts as a copy of both classes' options.
@@ -351,7 +359,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 
 
 
-		[ 'once', 'recurring' ].forEach( ( tasClaStr ) => Object.keys( draOptObj[ tasClaStr ] ).forEach( ( optKeyStr ) => { if ( !!draOptObj[ tasClaStr ][ optKeyStr ] !== !!remOptObj[ tasClaStr ][ optKeyStr ] ) actStoObj.setOptFun( tasClaStr, optKeyStr, draOptObj[ tasClaStr ][ optKeyStr ] ); } ) ); // What: Changed Toggles Loop. Why: Only toggles the user actually changed are written. How: This calls setOptFun for every class/setting pair whose draft differs from the live setting.
+		( [ 'once', 'recurring' ] as const ).forEach( ( tasClaStr ) => ( Object.keys( draOptObj[ tasClaStr ] ) as ( keyof RemClaTyp )[] ).forEach( ( optKeyStr ) => { if ( !!draOptObj[ tasClaStr ][ optKeyStr ] !== !!remOptObj[ tasClaStr ][ optKeyStr ] ) actStoObj.setOptFun( tasClaStr, optKeyStr, draOptObj[ tasClaStr ][ optKeyStr ] ); } ) ); // What: Changed Toggles Loop. Why: Only toggles the user actually changed are written. How: This calls setOptFun for every class/setting pair whose draft differs from the live setting, with the class names held as literals and each setting key read as a RemClaTyp key, since Object.keys types keys as plain strings.
 
 
 	};
@@ -543,6 +551,8 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 
 
 
+type RmcProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Reminder-Manager-Component Props Type. Why: The Reminders section reads the saved reminders and changes them through the store. How: This types RemManCom's props.
+
 // #region RemManCom
 
 /**
@@ -573,7 +583,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
  *
 */
 
-function RemManCom ( { actStoObj, staAppObj } ) {
+function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element {
 
 
 	// #region Open Row Tracking

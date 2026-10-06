@@ -37,6 +37,10 @@ import { UnmWatCom    } from '../../ui/unmount-watcher.ts';         // What: Unm
 import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use Ease My Life Tour Function. Why: Several controls in this file must disable themselves or highlight during specific onboarding tour steps. How: This is called once to read the shared tour event bus's touPhaStr/touIdeStr/touSteNum fields.
 import { useIteDraFun } from '../../ui/record-draft.ts';            // What: Use Item Draft Function. Why: The open item row edits a local draft, committed when the row closes. How: This is called once with whichever item's row is open.
 
+
+import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The component changes state through the store's actions. How: This types its actStoObj.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The component reads the current app state. How: This types its staAppObj.
+
 // #endregion Imports
 
 
@@ -167,7 +171,7 @@ const SEC_SOR_ARR = [ // What: Section Sort Array. Why: The top-level Conditiona
  *
 */
 
-function pisOptFun ( picModStr ) {
+function pisOptFun ( picModStr : string ) : { keyStr : string, labStr : string }[] {
 
 
 	const sorOptArr = [ // What: Sort Options Array. Why: Every mode shares at least the Name sort. How: This starts with the 2 Name entries every mode gets, then more are pushed below depending on picModStr.
@@ -222,6 +226,9 @@ function pisOptFun ( picModStr ) {
 
 // #region Components
 
+type DatScoTyp = { cliFun : () => void, ideStr? : string, keyStr : string, labStr : string, namStr : string, selBoo : boolean };             // What: Data Scope Type. Why: The Show row mixes the Conditionals and Reminders boxes with one box per picker, and only a picker box carries a picker id. How: This describes one scope box entry.
+type TdcProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Data-Component Props Type. Why: The Data tab reads and edits the whole app state and can navigate to other tabs. How: This types TabDatCom's props.
+
 // #region TabDatCom
 
 /**
@@ -254,7 +261,7 @@ function pisOptFun ( picModStr ) {
  *
 */
 
-function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
+function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcProTyp ) : React.JSX.Element {
 
 
 	// #region Tour Gating
@@ -938,7 +945,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	const exiModArr = React.useMemo( () => { // What: Existing Mode Array. Why: The Type filter row needs every distinct mode actually in use, alphabetical by its own display label. How: This walks allPicArr once, collecting each mode the first time it's seen.
 
 
-		const seeModSet = new Set(); // What: Seen Mode Set. Why: A Set naturally de-duplicates modes without a manual includes() check. How: This starts empty and is added to below.
+		const seeModSet = new Set< string >(); // What: Seen Mode Set. Why: A Set naturally de-duplicates modes without a manual includes() check. How: This starts empty and is added to below.
 
 
 		for ( const picCurObj of allPicArr ) if ( !picCurObj.hidden ) seeModSet.add( picCurObj.mode ); // What: Mode Collect Loop. Why: Every non-hidden picker's own mode needs collecting. How: This adds picCurObj.mode to seeModSet whenever the picker isn't hidden.
@@ -1822,7 +1829,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 						]
 							.sort( ( entOneObj, entTwoObj ) => entOneObj.namStr.localeCompare( entTwoObj.namStr ) ) // What: Entry Sort Call. Why: The boxes list alphabetically by name. How: This sorts the entries with localeCompare.
-							.map( ( filEntObj, filIndNum ) => (                                                     // What: Show Box Map. Why: Every entry renders as one box, staggered by its index. How: This maps each sorted entry and its index to a button.
+							.map( ( filEntObj : DatScoTyp, filIndNum ) => (                                         // What: Show Box Map. Why: Every entry renders as one box, staggered by its index. How: This maps each sorted entry and its index to a button.
 
 
 								<button
@@ -2093,7 +2100,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									const notDraBoo = !isaDraBoo;                            // What: Not Draft Boolean. Why: A draft card is always expanded. How: This negates isaDraBoo.
 									const notDetBoo = !detPicBoo;                            // What: Not Disable-Edit-Tour Boolean. Why: The Edit Items tour guards the header during some steps. How: This negates detPicBoo.
-									const notButBoo = !cliEveObj.target.closest( 'button' ); // What: Not Button Boolean. Why: A click on a real button inside the header has its own action. How: This checks the click target isn't inside a button.
+									const notButBoo = !( cliEveObj.target as Element ).closest( 'button' ); // What: Not Button Boolean. Why: A click on a real button inside the header has its own action. How: This checks the click target isn't inside a button.
 
 									const togSecBoo = notDraBoo && notDetBoo && notButBoo; // What: Toggle Section Boolean. Why: The header only toggles when all 3 checks pass. How: This ANDs them.
 

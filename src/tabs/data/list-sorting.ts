@@ -1,6 +1,14 @@
 
 
 
+// #region Imports
+
+import type { RefObject } from 'react'; // What: Ref Object. Why: The frozen row's position persists across renders in the caller's ref. How: This types freEdiFun's froRowRef.
+
+// #endregion Imports
+
+
+
 /**
  * list-sorting.ts = List Sorting
  *
@@ -20,6 +28,8 @@
 
 
 // #region Helpers
+
+type SorRowTyp = { name : string } & Record< string, any >; // What: Sort Row Type. Why: The Data tab sorts items, conditionals, reminders, and pickers with one comparator, each carrying different fields. How: This is any row with a name, its other fields read by whichever sort key applies.
 
 // #region sorEntFun
 
@@ -69,7 +79,7 @@
  *
 */
 
-function sorEntFun ( rowOneObj, rowTwoObj, sorKeyStr ) {
+function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : string ) : number {
 
 
 	const [ fieNamStr, sorDirStr ] = sorKeyStr.split( '-' ); // What: Field Name String And Direction String. Why: Every sort key packs both which field to compare and which way, joined by a dash. How: This splits sorKeyStr once into the two pieces every branch below reads.
@@ -311,7 +321,7 @@ function sorEntFun ( rowOneObj, rowTwoObj, sorKeyStr ) {
  *
 */
 
-function freEdiFun ( sorLisArr, opeIdeVal, newIdeVal, froRowRef ) {
+function freEdiFun< T extends { id : string } > ( sorLisArr : T[], opeIdeVal : string | null | undefined, newIdeVal : string | null | undefined, froRowRef : RefObject< { ideVal : string, indNum : number } | null > ) : T[] {
 
 
 	if ( opeIdeVal == null ) { // What: No Open Row Guard. Why: With nothing currently open for editing, there is no frozen position to maintain at all. How: This clears any stale frozen record and returns the live sorted list completely unmodified.

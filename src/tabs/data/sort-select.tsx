@@ -5,6 +5,9 @@
 
 import cssModObj from './sort-select.module.css'; // What: CSS Module Object. Why: The sort control's row, label, and select styles live in its own module. How: This maps each class name in sort-select.module.css to its hashed module class.
 
+
+import type { JSX } from 'react'; // What: JSX. Why: The component declares the element it returns. How: This types its return as a JSX element.
+
 // #endregion Imports
 
 
@@ -27,6 +30,8 @@ import cssModObj from './sort-select.module.css'; // What: CSS Module Object. Wh
 
 
 // #region Components
+
+type SscProTyp = { labTexStr : string, onChange : ( keyStr : string ) => void, optLisArr : { keyStr : string, labStr : string }[], selIdeStr : string, value : string }; // What: Sort-Select-Component Props Type. Why: A sort control picks one of its options by key under a visible label. How: This types SorSelCom's props.
 
 // #region SorSelCom
 
@@ -57,7 +62,7 @@ import cssModObj from './sort-select.module.css'; // What: CSS Module Object. Wh
  *
 */
 
-function SorSelCom ( { labTexStr, onChange, optLisArr, selIdeStr, value } ) {
+function SorSelCom ( { labTexStr, onChange, optLisArr, selIdeStr, value } : SscProTyp ) : JSX.Element {
 
 
 	return (

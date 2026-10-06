@@ -26,6 +26,13 @@ import { UnmWatCom    } from '../../ui/unmount-watcher.ts';  // What: Unmount Wa
 import { useFliRaiFun } from '../../ui/flip-rail.ts';        // What: Use Flip Rail Function. Why: The conditional rail's pinned pill should glide to the front instead of snapping. How: This is called once with the rail ref and a trigger key.
 import { WeeChiCom    } from '../../ui/weekday-chips.tsx';   // What: Weekday Chip Component. Why: PicConCom's own Days control needs the same weekday multi-select every other schedule editor uses. How: This is rendered inside PicConCom's "When it runs" group.
 
+
+import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The Controls body changes the picker through the store's actions. How: This types PccProTyp's actStoObj.
+import type { ConRcdTyp } from '../../core/data-model.ts'; // What: Conditional Record Type. Why: A picker can attach one of the existing conditionals. How: This types PccProTyp's conditional list.
+import type { IteRcdTyp } from '../../core/data-model.ts'; // What: Item Record Type. Why: The Controls body reads the picker's own items. How: This types PccProTyp's item list.
+import type { PicArgTyp } from '../../core/data-model.ts'; // What: Picker Argument Type. Why: A draft picker's changes and save carry its form fields. How: This types the draft patch and save callbacks.
+import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Record Type. Why: The Controls body edits one picker. How: This types PccProTyp's picker.
+
 // #endregion Imports
 
 
@@ -51,6 +58,8 @@ import { WeeChiCom    } from '../../ui/weekday-chips.tsx';   // What: Weekday Ch
 
 
 // #region Components
+
+type PccProTyp = { actStoObj : ActStoTyp, allGroArr : string[], conIteArr? : ConRcdTyp[], hasNewBoo? : boolean, incDaiBoo : boolean, isaNewBoo? : boolean, iteSecBoo? : boolean, onCanNewFun? : () => void, onColConFun : () => void, onOpeSecFun? : () => void, onPatNewFun? : ( patPicObj : PicArgTyp ) => void, onReqDelFun? : () => void, onSavNewFun? : ( draPicObj : PicArgTyp, filAllBoo : boolean ) => void, picDatObj : PicRcdTyp, picIteArr : IteRcdTyp[] }; // What: Picker-Controls-Component Props Type. Why: A picker's Controls body edits one picker, real or a brand-new draft, and hands a draft's changes, save, and cancel to its card. How: This types PicConCom's props.
 
 // #region PicConCom
 
@@ -116,7 +125,7 @@ import { WeeChiCom    } from '../../ui/weekday-chips.tsx';   // What: Weekday Ch
  *
 */
 
-function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBoo, isaNewBoo, iteSecBoo, onCanNewFun, onColConFun, onOpeSecFun, onPatNewFun, onReqDelFun, onSavNewFun, picDatObj, picIteArr } ) {
+function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBoo, isaNewBoo, iteSecBoo, onCanNewFun, onColConFun, onOpeSecFun, onPatNewFun, onReqDelFun, onSavNewFun, picDatObj, picIteArr } : PccProTyp ) : React.JSX.Element {
 
 
 	// #region Picker Draft

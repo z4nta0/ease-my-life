@@ -22,6 +22,11 @@ import { sorEntFun    } from './list-sorting.ts';                   // What: Sor
 import { SorSelCom    } from './sort-select.tsx';                   // What: Sort Select Component. Why: The conditional list needs the same sort control every other list uses. How: This is rendered in ConManCom's header with CIS_OPT_ARR as its options.
 import { useEscCanFun } from '../../ui/escape-cancel.ts';           // What: Use Escape Cancel Function. Why: ConEdiCom's Escape key must cancel the current edit (or back out of a delete confirm) the same way every other editor in the app does. How: This is called once inside ConEdiCom.
 
+
+import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The component changes state through the store's actions. How: This types its actStoObj.
+import type { ConRcdTyp } from '../../core/data-model.ts'; // What: Conditional Record Type. Why: The component edits conditionals and their drafts. How: This types them.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The component reads the current app state. How: This types its staAppObj.
+
 // #endregion Imports
 
 
@@ -114,6 +119,8 @@ const CIS_OPT_ARR = [ // What: Conditional-Item-Sort Options Array. Why: ConManC
 
 // #region Components
 
+type CecProTyp = { actStoObj : ActStoTyp, conDraObj : Partial< ConRcdTyp >, curConObj : ConRcdTyp | null, isaNewBoo : boolean, namErrStr : string | null, onCloEdiFun : () => void, onDelConFun : () => void, onDisDraFun : () => void, onSavNewFun? : () => void, setConDraObj : ( nexDraObj : Partial< ConRcdTyp > | null ) => void, tidNamStr : string }; // What: Conditional-Editor-Component Props Type. Why: A conditional row edits a draft of one conditional, new or existing, and hands every save, close, discard, and delete to its section. How: This types ConEdiCom's props.
+
 // #region ConEdiCom
 
 /**
@@ -167,7 +174,7 @@ const CIS_OPT_ARR = [ // What: Conditional-Item-Sort Options Array. Why: ConManC
  *
 */
 
-function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, onCloEdiFun, onDelConFun, onDisDraFun, onSavNewFun, setConDraObj, tidNamStr } ) {
+function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, onCloEdiFun, onDelConFun, onDisDraFun, onSavNewFun, setConDraObj, tidNamStr } : CecProTyp ) : React.JSX.Element {
 
 
 	const [ conDelBoo, setConDelBoo ] = React.useState( false ); // What: Confirm Delete Boolean And Setter. Why: Deleting an existing conditional needs an inline confirm step before it actually happens. How: This is flipped true by the Delete button and read below to swap in the confirm row.
@@ -365,6 +372,8 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
 
 
 
+type CmcProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Conditional-Manager-Component Props Type. Why: The Conditionals section reads the saved conditionals and changes them through the store. How: This types ConManCom's props.
+
 // #region ConManCom
 
 /**
@@ -396,7 +405,7 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
  *
 */
 
-function ConManCom ( { actStoObj, staAppObj } ) {
+function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element {
 
 
 	// #region List Data
