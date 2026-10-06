@@ -23,7 +23,7 @@
 
 // #region Module State
 
-let annStaFun; // What: Announce Status Function. Why: The real implementation is only built once the setup IIFE just below runs, but the exported binding must already exist for it to assign into. How: This starts undefined and is overwritten inside that IIFE.
+let annStaFun : ( mesTexStr : string, mesOptObj? : { assertive? : boolean } ) => void; // What: Announce Status Function. Why: The real implementation is only built once the setup IIFE just below runs, but the exported binding must already exist for it to assign into. How: This starts undefined and is overwritten inside that IIFE.
 
 // #endregion Module State
 

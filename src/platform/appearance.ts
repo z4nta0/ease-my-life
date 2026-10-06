@@ -703,7 +703,7 @@ const APP_NAM_OBJ = { // What: Appearance Namespace Object. Why: app.tsx and the
 
 
 
-export { APP_NAM_OBJ }; // What: Appearance Namespace Object Export. Why: Every consumer reaches this file's palettes and theme functions through the one namespace object. How: This exports APP_NAM_OBJ by name at the very end of the file.
+export { APP_NAM_OBJ, type PalTokTyp }; // What: Named Exports. Why: Every consumer reaches this file's palettes and theme functions through the one namespace object, and the theme picker types a previewed palette with PalTokTyp. How: This exports both by name at the very end of the file.
 
 // #endregion Exports
 

@@ -33,6 +33,10 @@ import { TheSecCom    } from './theme-picker.tsx';                  // What: The
 import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { useEscCanFun } from '../../ui/escape-cancel.ts';           // What: Use Escape Cancel Function. Why: Both the pending-import and pending-reset confirmations need Escape to back out, like every other confirm in the app. How: This is called once per confirmation, gated on that confirmation's own open boolean.
 
+
+import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The component changes state through the store's actions. How: This types its actStoObj.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The component reads the current app state. How: This types its staAppObj.
+
 // #endregion Imports
 
 
@@ -135,7 +139,7 @@ const SET_SEC_ARR = [ // What: Settings Section Array. Why: This drives both the
  *
 */
 
-function forRunFun ( runTimStr ) {
+function forRunFun ( runTimStr : string ) : string {
 
 
 	const [ houValNum, minValNum ] = ( runTimStr || '04:00' ).split( ':' ).map( Number ); // What: Hour Value Number And Minute Value Number. Why: The raw "HH:MM" string must be split into numeric parts before it can be reformatted. How: This splits runTimStr (or the '04:00' default) on ':' and maps both halves through Number.
@@ -157,6 +161,8 @@ function forRunFun ( runTimStr ) {
 
 
 // #region Components
+
+type TecProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Settings-Component Props Type. Why: The Settings tab reads and changes the whole app state and can navigate to other tabs. How: This types TabSetCom's props, named Tec since Tsc already belongs to TheSecCom.
 
 // #region TabSetCom
 
@@ -191,7 +197,7 @@ function forRunFun ( runTimStr ) {
  *
 */
 
-function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
+function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecProTyp ) : React.JSX.Element {
 
 
 	const appCurObj = staAppObj.appearance || { autoSystem : false, customDark : null, customLight : null, theme : 'ink' }; // What: Appearance Current Object. Why: A very old/incomplete persisted state might not carry an appearance object at all. How: This falls back to a default ink/no-custom-themes/no-auto-system object when staAppObj.appearance is missing.
@@ -793,9 +799,8 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	const hasTasBoo = ( staAppObj.tasks || [] ).length > 0;          // What: Has Task Boolean. Why: Export and Reset only make sense once any reminder exists. How: This checks staAppObj.tasks for at least 1 entry, treating a missing array as empty.
 	const hasPclBoo = ( staAppObj.pickLog || [] ).length > 0;        // What: Has Pick-Log Boolean. Why: Export and Reset only make sense once any pick history has accrued. How: This checks staAppObj.pickLog for at least 1 entry, treating a missing array as empty.
 	const hasCdlBoo = ( staAppObj.conditionalLog || [] ).length > 0; // What: Has Conditional-Log Boolean. Why: Export and Reset only make sense once any conditional history has accrued. How: This checks staAppObj.conditionalLog for at least 1 entry, treating a missing array as empty.
-	const hasGroBoo = ( staAppObj.groups || [] ).length > 0;         // What: Has Group Boolean. Why: Export and Reset only make sense once any group exists. How: This checks staAppObj.groups for at least 1 entry, treating a missing array as empty.
 
-	const hasDatBoo = hasPicBoo || hasIteBoo || hasConBoo || hasTasBoo || hasPclBoo || hasCdlBoo || hasGroBoo; // What: Has Data Boolean. Why: Both the Export and Reset rows need to know whether there is actually anything to export/reset at all. How: This is true whenever any one of the 7 collections above is non-empty. // Something to reset? True if the user has created any pickers, items, conditionals, reminders, groups, or accrued any pick/completion history.
+	const hasDatBoo = hasPicBoo || hasIteBoo || hasConBoo || hasTasBoo || hasPclBoo || hasCdlBoo; // What: Has Data Boolean. Why: Both the Export and Reset rows need to know whether there is actually anything to export/reset at all. How: This is true whenever any one of the 6 collections above is non-empty. // Something to reset? True if the user has created any pickers, items, conditionals, or reminders, or accrued any pick/completion history; groups exist only through pickers, so hasPicBoo covers them.
 
 
 	const cloResFun = () => { // What: Close Reset Function. Why: Backing out of the reset confirmation (via Cancel or Escape) needs the same leave-then-unmount handling as every other confirm here. How: This flags focus for restoration, then either closes immediately (reduced motion) or plays the leave animation first.
@@ -937,7 +942,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 			try { // What: Backup Parse Try. Why: Arbitrary file contents may not be valid JSON, or may not be a real backup. How: This wraps parsing and validation so the catch below can report either failure.
 
 
-				const impDatObj = JSON.parse( filReaObj.result ); // What: Import Data Object. Why: A backup file's own contents must be valid JSON before anything else can happen. How: This parses filReaObj's own result string.
+				const impDatObj = JSON.parse( filReaObj.result as string ); // What: Import Data Object. Why: A backup file's own contents must be valid JSON before anything else can happen. How: This parses filReaObj's own result string.
 
 
 				if ( !impDatObj || !Array.isArray( impDatObj.pickers ) ) throw new Error( 'Not an Ease My Life backup.' ); // What: Shape Validation Guard. Why: Arbitrary JSON that merely parses is not necessarily a real backup. How: This throws, routing to the catch below, whenever the parsed object is missing or has no real pickers array.

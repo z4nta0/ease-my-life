@@ -12,6 +12,10 @@ import { durMilFun   } from '../../utils/rhythm.ts';  // What: Duration Millisec
 import { HOL_NAM_OBJ } from '../../core/holidays.ts'; // What: Holidays Namespace Object. Why: The Holidays section needs both a default holidays-state shape and the computed U.S. holiday list for the current year. How: This is called via HOL_NAM_OBJ.defStaFun() and HOL_NAM_OBJ.comYeaFun() inside HolEdiCom.
 import { IcoSvgCom   } from '../../ui/icon.tsx';      // What: Icon Svg Component. Why: The custom-holiday delete button needs a small trash glyph. How: This is rendered with a specific name/size prop.
 
+
+import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The component changes state through the store's actions. How: This types its actStoObj.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The component reads the current app state. How: This types its staAppObj.
+
 // #endregion Imports
 
 
@@ -36,6 +40,8 @@ import { IcoSvgCom   } from '../../ui/icon.tsx';      // What: Icon Svg Componen
 
 
 // #region Components
+
+type HecProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Holiday-Editor-Component Props Type. Why: The holiday list reads the saved holidays and changes them through the store. How: This types HolEdiCom's props.
 
 // #region HolEdiCom
 
@@ -64,7 +70,7 @@ import { IcoSvgCom   } from '../../ui/icon.tsx';      // What: Icon Svg Componen
  *
 */
 
-function HolEdiCom ( { actStoObj, staAppObj } ) {
+function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element {
 
 
 	// #region Holiday Data

@@ -67,7 +67,7 @@ import { redMotFun    } from '../../utils/motion.ts'; // What: Reduce Motion Fun
  *
 */
 
-function PriPolCom () {
+function PriPolCom () : React.JSX.Element {
 
 
 	return (
@@ -680,7 +680,7 @@ function PriPolCom () {
  *
 */
 
-function TerSerCom () {
+function TerSerCom () : React.JSX.Element {
 
 
 	return (
@@ -911,6 +911,8 @@ function TerSerCom () {
 
 
 
+type LmcProTyp = { legDocStr : 'privacy' | 'terms' | null, onCloModFun : () => void }; // What: Legal-Modal-Component Props Type. Why: The modal shows one legal document, or nothing, and reports when it has closed. How: This types LegModCom's props.
+
 // #region LegModCom
 
 /**
@@ -946,7 +948,7 @@ function TerSerCom () {
  *
 */
 
-function LegModCom ( { legDocStr, onCloModFun } ) {
+function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPortal | null {
 
 
 	const panEleRef                   = React.useRef( null );    // What: Panel Element Reference. Why: This gives the effect below a handle on the panel so it can be focused on open. How: This is attached via the panel div's ref prop and read inside the open/close effect.
@@ -1036,7 +1038,7 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 
 
 
-		const maiScrEle = document.querySelector( '[data-element-name-hook~="appConMai"]' ); // What: Main Scroll Element. Why: The app scrolls inside this element, not the document body, so this is what actually needs locking. How: This is queried once and reused for both the lock below and the cleanup's own restore.
+		const maiScrEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="appConMai"]' ); // What: Main Scroll Element. Why: The app scrolls inside this element, not the document body, so this is what actually needs locking. How: This is queried once and reused for both the lock below and the cleanup's own restore.
 		const scrTopNum = maiScrEle ? maiScrEle.scrollTop : 0;                               // What: Scroll Top Number. Why: The scroller's exact offset at open time must be restored on close, even past the panel's own top/bottom. How: This is read once here and reused in the cleanup's own restore below.
 		const preOveStr = maiScrEle ? maiScrEle.style.overflow : '';                         // What: Previous Overflow String. Why: The scroller's own prior inline overflow value must be restored exactly, not just cleared. How: This is read once here and reused in the cleanup's own restore below.
 

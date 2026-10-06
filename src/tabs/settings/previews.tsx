@@ -144,6 +144,8 @@ const PRE_CAR_ARR = [ // What: Preview Card Array. Why: The celebration preview 
 
 // #region Components
 
+type CpcProTyp = { repTokNum : number, styKeyStr : string }; // What: Celebration-Preview-Component Props Type. Why: The preview replays one celebration style each time its token changes. How: This types CelPreCom's props.
+
 // #region CelPreCom
 
 /**
@@ -172,7 +174,7 @@ const PRE_CAR_ARR = [ // What: Preview Card Array. Why: The celebration preview 
  *
 */
 
-function CelPreCom ( { repTokNum, styKeyStr } ) {
+function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element {
 
 
 	const carConRef = React.useRef( null ); // What: Card Container Reference. Why: The ripple style animates the real DOM card elements directly, so it needs a stable handle on their shared wrapper to query into. How: This is attached via the mock cards row's own ref prop below and read inside the replay effect.
@@ -443,6 +445,8 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 
 
 
+type PacProTyp = { repTokNum : number, styKeyStr : string }; // What: Pick-Animation-Component Props Type. Why: The preview replays one pick animation style each time its token changes. How: This types PicAniCom's props.
+
 // #region PicAniCom
 
 /**
@@ -475,7 +479,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
  *
 */
 
-function PicAniCom ( { repTokNum, styKeyStr } ) {
+function PicAniCom ( { repTokNum, styKeyStr } : PacProTyp ) : React.JSX.Element {
 
 
 	const picCanObj = PRE_CAN_ARR[ 2 ]; // What: Picked Candidate Object. Why: The preview always needs to land on the same predictable candidate so its own copy stays truthful regardless of which run this is. How: This reads the 3rd mock candidate from PRE_CAN_ARR as a fixed, deterministic landing spot.

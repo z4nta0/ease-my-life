@@ -10,6 +10,12 @@ import React     from 'react';                     // What: React. Why: Every co
 import { APP_NAM_OBJ } from '../../platform/appearance.ts'; // What: Appearance Namespace Object. Why: The Theme section needs to look up each built-in theme's own preview colors. How: This is read as APP_NAM_OBJ.PAL_SET_OBJ[key] when rendering each preset theme row.
 import { CarSurCom   } from '../../ui/card-surface.tsx';    // What: Card Surface Component. Why: The Light and Dark theme cards sit inside the shared bordered container. How: This wraps each card in TheSecCom.
 
+
+import type { ActStoTyp } from '../../state/store.ts';         // What: Action Store Type. Why: The component changes state through the store's actions. How: This types its actStoObj.
+import type { CusPalTyp } from '../../core/data-model.ts';     // What: Custom Palette Type. Why: A custom theme row edits one saved palette. How: This types TccProTyp's colors.
+import type { PalTokTyp } from '../../platform/appearance.ts'; // What: Palette Tokens Type. Why: A theme row previews a resolved palette. How: This types TrcProTyp's palette.
+import type { StaAppTyp } from '../../core/data-model.ts';     // What: State App Type. Why: The component reads the current app state. How: This types its staAppObj.
+
 // #endregion Imports
 
 
@@ -51,6 +57,8 @@ const LIG_THE_ARR = [ 'ink', 'sage', 'sand' ]; // What: Light Theme Array. Why: 
 
 // #region Components
 
+type TccProTyp = { actStoObj : ActStoTyp, actTheBoo : boolean, cusColObj : CusPalTyp | null, darModBoo? : boolean, theModStr : string }; // What: Theme-Custom-Component Props Type. Why: A custom theme row edits one mode's saved colors and name. How: This types TheCusCom's props.
+
 // #region TheCusCom
 
 /**
@@ -89,7 +97,7 @@ const LIG_THE_ARR = [ 'ink', 'sage', 'sand' ]; // What: Light Theme Array. Why: 
  *
 */
 
-function TheCusCom ( { actStoObj, actTheBoo, cusColObj, darModBoo, theModStr } ) {
+function TheCusCom ( { actStoObj, actTheBoo, cusColObj, darModBoo, theModStr } : TccProTyp ) : React.JSX.Element {
 
 
 	const draColObj = cusColObj || ( darModBoo // What: Draft Color Object. Why: A row with no saved custom colors yet still needs sane starting values for its own 3 live swatches. How: This falls back to a fixed dark or light starting palette when cusColObj is null.
@@ -197,6 +205,8 @@ function TheCusCom ( { actStoObj, actTheBoo, cusColObj, darModBoo, theModStr } )
 
 
 
+type TrcProTyp = { actTheBoo : boolean, darModBoo? : boolean, onActTheFun : () => void, thePalObj : PalTokTyp }; // What: Theme-Row-Component Props Type. Why: A theme row previews one palette and activates it when chosen. How: This types TheRowCom's props.
+
 // #region TheRowCom
 
 /**
@@ -230,7 +240,7 @@ function TheCusCom ( { actStoObj, actTheBoo, cusColObj, darModBoo, theModStr } )
  *
 */
 
-function TheRowCom ( { actTheBoo, darModBoo, onActTheFun, thePalObj } ) {
+function TheRowCom ( { actTheBoo, darModBoo, onActTheFun, thePalObj } : TrcProTyp ) : React.JSX.Element {
 
 
 	return (
@@ -315,6 +325,8 @@ function TheRowCom ( { actTheBoo, darModBoo, onActTheFun, thePalObj } ) {
 
 
 
+type TscProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Theme-Section-Component Props Type. Why: The theme cards read the saved appearance and change it through the store. How: This types TheSecCom's props.
+
 // #region TheSecCom
 
 /**
@@ -339,7 +351,7 @@ function TheRowCom ( { actTheBoo, darModBoo, onActTheFun, thePalObj } ) {
  *
 */
 
-function TheSecCom ( { actStoObj, staAppObj } ) {
+function TheSecCom ( { actStoObj, staAppObj } : TscProTyp ) : React.JSX.Element {
 
 
 	const appCurObj = staAppObj.appearance || { customDark : null, customLight : null, theme : 'ink' }; // What: Appearance Current Object. Why: A very old/incomplete persisted state might not carry an appearance object at all. How: This falls back to a default ink/no-custom-themes object when staAppObj.appearance is missing.

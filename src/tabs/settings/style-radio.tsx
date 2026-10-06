@@ -5,6 +5,9 @@
 
 import cssModObj from './style-radio.module.css'; // What: CSS Module Object. Why: The style radio list is styled from its own module. How: This maps each class name in style-radio.module.css to its hashed module class.
 
+
+import type { JSX } from 'react'; // What: JSX. Why: The component declares the element it returns. How: This types its return as a JSX element.
+
 // #endregion Imports
 
 
@@ -30,6 +33,8 @@ import cssModObj from './style-radio.module.css'; // What: CSS Module Object. Wh
 
 
 // #region Components
+
+type SrcProTyp = { groLabStr : string, groNamStr : string, onChange : ( valStr : string ) => void, onPreStyFun? : ( valStr : string ) => void, radOptArr : { hinStr : string, labStr : string, valStr : string }[], value : string }; // What: Style-Radio-Component Props Type. Why: A style list picks one option, with an optional live preview per row. How: This types StyRadCom's props.
 
 // #region StyRadCom
 
@@ -75,7 +80,7 @@ import cssModObj from './style-radio.module.css'; // What: CSS Module Object. Wh
  *
 */
 
-function StyRadCom ( { groLabStr, groNamStr, onChange, onPreStyFun, radOptArr, value } ) {
+function StyRadCom ( { groLabStr, groNamStr, onChange, onPreStyFun, radOptArr, value } : SrcProTyp ) : JSX.Element {
 
 
 	return (

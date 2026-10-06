@@ -121,7 +121,7 @@ const SUP_EMA_STR = 'support@easemylife.app'; // What: Support Email String. Why
  *
 */
 
-function detBroFun () {
+function detBroFun () : string {
 
 
 	const useAgeStr = navigator.userAgent; // What: User Agent String. Why: Every pattern below is matched against the browser's own real user-agent string. How: This reads navigator.userAgent once, reused by every pattern check below.
@@ -191,7 +191,7 @@ function detBroFun () {
  *
 */
 
-function ConSupCom () {
+function ConSupCom () : React.JSX.Element {
 
 
 	// #region Form State
