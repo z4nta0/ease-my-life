@@ -26,7 +26,7 @@
  *
  * @summary
  * Finds the splash, works out when its equation has finished assembling, and
- * registers window.__dismissBootSplash for main.jsx to call once the app has
+ * registers window.__dismissBootSplash for main.tsx to call once the app has
  * mounted. Whichever of the two conditions arrives last starts the fade, and
  * the splash removes itself just after the fade ends. Under reduced motion the
  * splash shows the equation already assembled, so only the mount is waited on.
@@ -71,7 +71,7 @@
 	// #region Dismissal State
 
 	let disDonBoo = false; // What: Dismissal Done Boolean. Why: The fade must start only once, whichever path reaches it. How: This is set the first time hidSplFun runs.
-	let appMouBoo = false; // What: App Mounted Boolean. Why: The splash waits for the app to mount. How: This is set when main.jsx calls window.__dismissBootSplash.
+	let appMouBoo = false; // What: App Mounted Boolean. Why: The splash waits for the app to mount. How: This is set when main.tsx calls window.__dismissBootSplash.
 	let cycDonBoo = false; // What: Cycle Done Boolean. Why: The splash waits for the equation to finish assembling. How: This is set once assMilNum has passed, or at once under reduced motion.
 
 	// #endregion Dismissal State
@@ -154,7 +154,7 @@
 
 
 
-	window.__dismissBootSplash = () => { // What: Dismiss Boot Splash Global. Why: main.jsx has to tell this script when the app has mounted, and this script loads outside the bundle. How: This registers a global main.jsx calls, which marks the app mounted and tries the fade.
+	window.__dismissBootSplash = () => { // What: Dismiss Boot Splash Global. Why: main.tsx has to tell this script when the app has mounted, and this script loads outside the bundle. How: This registers a global main.tsx calls, which marks the app mounted and tries the fade.
 
 
 		appMouBoo = true; // What: App Mounted Set. Why: The app has now mounted. How: This flips the flag the fade waits on.

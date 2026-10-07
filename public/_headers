@@ -11,7 +11,7 @@
 # only, with no backend, API, or accounts, and loads nothing from a third
 # party: every script, style, font, and icon is self-hosted, and its only
 # network write is the support form's Netlify Forms POST
-# (tabs/settings/contact-support.jsx), which goes to this same origin. That
+# (tabs/settings/contact-support.tsx), which goes to this same origin. That
 # lets the Content-Security-Policy be genuinely strict rather than needing
 # broad allowances.
 #
@@ -26,7 +26,7 @@
 # critical CSS in index.html is inline on purpose, since an external
 # stylesheet would add a network round trip before it can paint, and React
 # renders many components' dynamic sizing and positioning through inline
-# style attributes (e.g. src/ui/bg-flourish.jsx). Both fall under style-src,
+# style attributes (e.g. src/ui/bg-flourish.tsx). Both fall under style-src,
 # not script-src, so this doesn't weaken protection against inline scripts.
 # The boot splash's dismiss script is its own file (public/boot-splash.js)
 # precisely so script-src needs no such allowance.

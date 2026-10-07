@@ -14,25 +14,79 @@ localStorage fallback/mirror); there is no server component to this app at all.
 
 ```
 npm run dev       # vite dev server (PWA service worker also active via devOptions)
-npm run build     # production build to dist/
+npm run build     # type check (tsc -b), then production build to dist/
+npm run lint      # eslint across the whole repo
 npm run preview   # serve the production build locally
+npm run test      # every Playwright suite (see "Test suites" below)
+npm run typecheck # tsc -b across the app, node, and test tsconfigs
 ```
 
-There is no test suite and no type checker wired up
-(`change-later-tsconfig.json` / `tsconfig.node.json` exist but are not
-referenced by any script). ESLint is installed and configured
-(`eslint.config.js`, with `eslint-plugin-react-hooks`' recommended rules for
-`.jsx` files, plus `no-undef` and `react/jsx-no-undef` with browser globals
-for everything under `src/`, which catch a reference a rename missed; its
+TypeScript is being adopted (decided 2026-10-05, on the `integrate-typescript`
+branch). `tsconfig.json` only references `tsconfig.app.json` (everything in
+`src/`, browser and JSX) and `tsconfig.node.json` (`vite.config`,
+`eslint.config`, and `scripts/`, with Node's types), plus `tsconfig.test.json`
+for `tests/`. All run with `strict`
+on (since 2026-10-05). Where the code guarantees something TypeScript can't
+see, it says so with a `!` or `as` and a merged `Non-Null Note` or `Type
+Assertion Note` comment; checks that don't narrow go through
+`utils/guard.ts`. `build` runs `tsc -b` first, so a type error fails the
+build and blocks a deploy. `public/boot-splash.js` and `public/sw-notify.js` stay
+JavaScript, since the browser and service worker load them by fixed URL
+outside the build. ESLint is installed and configured
+(`eslint.config.ts`, loaded through `jiti`, reading every file through
+`typescript-eslint`'s parser, with `typescript-eslint`'s recommended rules
+for every file (`no-unused-vars` letting a binding beside a rest element go
+unread, and `prefer-const` only flagging a destructuring whose every binding
+could be `const`), `eslint-plugin-react-hooks`' recommended rules for
+`.tsx` files, minus its four React Compiler readiness
+rules, plus `react/jsx-no-undef` for everything under `src/`, which catches
+a component reference a rename missed. ESLint's own `no-undef` is off, as
+`typescript-eslint` recommends: `tsc` already reports every undefined name,
+and `no-undef` can't see TypeScript's type-only names. The one deliberate
+`any` is `RawSavTyp` in `core/data-model.ts`, which types a save that
+`migStaFun` hasn't migrated yet. Its
 `files` globs avoid `{a,b}` braces, since the `brace-expansion` override in
-`package.json` breaks ESLint's brace matching), but no npm script runs it, so
-it only runs when invoked by hand
-(`npx eslint <file>`) or through an editor integration; don't assume `tsc` or
-ESLint gate anything. Verify changes by running `npm run dev` and exercising
-the app in a browser.
+`package.json` breaks ESLint's brace matching). `npm run lint` checks the
+whole repo, but nothing runs it automatically, so ESLint doesn't gate a
+deploy the way `tsc` does. Verify changes by running `npm run dev` and exercising
+the app in a browser, and run the test suites below before merging a big
+branch.
+
+### Test suites
+
+Added 2026-10-06. Four Playwright suites live in `tests/`, one project each
+in `tests/playwright.config.ts`, which starts its own dev server on port 5190
+(never the usual 5173) and stops it afterwards. Every page runs in Chicago
+time with service workers blocked, and results, screenshots, and simulation
+traces go to `tests/output/` (git-ignored); `npx playwright show-report
+tests/output/report` opens the HTML report.
+- `npm run test:simulation`: loads the real-data backup plus a few "Sim"
+  pickers and reminders (`tests/simulation/scenario.ts`), fakes the clock,
+  and runs about 53 days (Oct 5 to Nov 8, 2026, and Dec 27, 2026 to Jan 13,
+  2027), checking every generated list, check-off, undo, reminder, skip,
+  re-roll, and streak against an independent copy of the rules
+  (`check-*.ts`, `schedule.ts`, `holidays.ts`), then the Stats tab and each
+  probability conditional's odds. About 20 minutes. Scheduling draws in
+  `src/core/` and `src/state/` are seeded, so the same seed repeats the same
+  picks: `EML_SIM_BASELINE=<path to an earlier trace.json>` compares a run
+  against an earlier one (e.g. from `main`) and reports every day that
+  differs. `EML_SIM_SEED` and `EML_SIM_SEGMENTS` override the seed and days.
+- `npm run test:interaction`: drives every tab's controls and editors on
+  real data, checking each change in IndexedDB and that its animation fired.
+- `npm run test:onboarding`: runs the whole onboarding from an empty install
+  (Welcome, every checklist launcher, Generate, every App Features tour, and
+  Replay) at 375px and 1280px.
+- `npm run test:responsive`: measures every tab at 375 to 1280px for
+  sideways scrolling, off-screen or spilling content, and overlapping
+  controls, saving a screenshot of each.
+
+The real-data backup is personal and never enters the repo: the suites read
+`EML_TEST_FIXTURE`, or the newest `.json` export in an
+`ease-my-life-testdata` folder beside the repo. Every suite fails on any page
+or console error.
 
 `__APP_VERSION__` is injected at build time from `package.json`'s `version`
-field (see `vite.config.js`) and surfaces in Settings → About and in the
+field (see `vite.config.ts`) and surfaces in Settings → About and in the
 support form's diagnostic field.
 
 ### Release convention
@@ -49,17 +103,17 @@ if asked to cut a release.
 
 ### No router, no build-time code splitting of routes
 
-`src/main.jsx` boots by racing `STG_NAM_OBJ.iniStoFun()` against a timeout,
-then mounts `<AppRooCom />` (`src/app.jsx`). `AppRooCom` owns a single
+`src/main.tsx` boots by racing `STG_NAM_OBJ.iniStoFun()` against a timeout,
+then mounts `<AppRooCom />` (`src/app.tsx`). `AppRooCom` owns a single
 active-tab-id in React state and renders one of five tabs directly; there's
 no react-router. Each tab lives in its own folder under `src/tabs/`
 (`today/`, `pickers/`, `stats/`, `data/`, `settings/`): a main
-`tab-*.jsx` component plus the sub-component files only that tab uses. Every
+`tab-*.tsx` component plus the sub-component files only that tab uses. Every
 tab gets the shared state/actions passed down as props.
 
 ### State: one big object, one hook, no context/redux
 
-`src/state/store.js`'s `useAppStaFun()` hook is the entire state layer: a
+`src/state/store.ts`'s `useAppStaFun()` hook is the entire state layer: a
 single `useState` holding the whole app state object, plus a
 `React.useMemo`'d `actions` object of state-transition functions
 (`togDonFun`, `addPicFun`, `skiEntFun`, `resConFun`, ...). `AppRooCom` calls
@@ -67,10 +121,10 @@ single `useState` holding the whole app state object, plus a
 props; there is no context provider and no global store singleton reachable
 from arbitrary files. Persistence is debounced via `requestIdleCallback` and
 flushed synchronously on `pagehide`/tab-hide so nothing is lost. The store's
-own helpers live beside it in `src/state/` (`ids.js`, `pick-log.js`,
-`pending-mutations.js`, `migrate.js`).
+own helpers live beside it in `src/state/` (`ids.ts`, `pick-log.ts`,
+`pending-mutations.ts`, `migrate.ts`).
 
-`migStaFun(s)` in `src/state/migrate.js` is the schema-evolution point:
+`migStaFun(s)` in `src/state/migrate.ts` is the schema-evolution point:
 every persisted state passes through it on load (and on import), and it
 backfills missing fields for old saves one `if` block at a time. When adding
 a new persisted field, add a backfill there rather than assuming fresh
@@ -78,14 +132,14 @@ shape.
 
 ### Storage: IndexedDB primary, localStorage fallback + warm mirror
 
-`src/state/storage.js` is a separate concern from `store.js`: it's the
+`src/state/storage.ts` is a separate concern from `store.ts`: it's the
 actual persistence engine (`STG_NAM_OBJ.iniStoFun/savStaFun/fluSynFun/
 wipDatFun/staRepFun/...`). Highlights worth knowing before touching it:
 - The pick log (large, append-only) lives in its own IDB object store,
   separate from the rest of state, specifically so writing it isn't on the
   hot path of every other save.
 - `STG_NAM_OBJ.iniStoFun()` runs and resolves *before* React mounts
-  (`main.jsx`), so `store.js`'s `loaStaFun()` can stay synchronous.
+  (`main.tsx`), so `store.ts`'s `loaStaFun()` can stay synchronous.
 - A `localStorage` "warm mirror" (minus the pick log) exists purely as a
   same-tick fallback if IDB fails later; it is not the source of truth.
 - `wipDatFun()` (Settings → "Delete all data") must clear every key this
@@ -97,17 +151,17 @@ wipDatFun/staRepFun/...`). Highlights worth knowing before touching it:
 These live in `src/core/`, encapsulate specific pieces of the
 scheduling/picking model, and are imported by both the state layer and the
 relevant tabs:
-- `src/core/pickers.js`: picker selection algorithms (random / weighted /
+- `src/core/pickers.ts`: picker selection algorithms (random / weighted /
   dynamic / ease-up / ease-down); pure functions over an items snapshot.
-- `src/core/cadence.js`: per-picker "when do I surface" gating (daily /
+- `src/core/cadence.ts`: per-picker "when do I surface" gating (daily /
   weekly / monthly / yearly) and period/anchor math.
-- `src/core/conditionals.js`: day-off gates that suppress dependent pickers
+- `src/core/conditionals.ts`: day-off gates that suppress dependent pickers
   for a day (probability / ease-up / ease-down / dynamic modes).
-- `src/core/tasks.js`: the reminders engine (statically-scheduled one-time
+- `src/core/tasks.ts`: the reminders engine (statically-scheduled one-time
   or recurring tasks, distinct from randomly-picked items).
-- `src/core/holidays.js`: rule-based US holiday computation, fully offline.
+- `src/core/holidays.ts`: rule-based US holiday computation, fully offline.
 
-`src/state/seed.js` holds the canonical data model comment block,
+`src/state/seed.ts` holds the canonical data model comment block,
 `buiCleFun()` (what a fresh install starts from), and `MOD_DEF_OBJ` (the
 picker modes). Read its top comment first when working on the data model;
 it's the closest thing to a schema doc.
@@ -122,9 +176,9 @@ etc.) is non-obvious from the code alone.
 Picking/re-rolling/sending an item to Today stages its value/weight
 consequences as `entry.pending`; they are **not** applied to the
 picker/item state until the entry is marked done (`enpAplFun` / `enpRevFun`
-in `src/state/pending-mutations.js`). Unchecking a done entry must exactly
+in `src/state/pending-mutations.ts`). Unchecking a done entry must exactly
 revert via the `entry.revert` snapshot. If you touch `togDonFun`,
-`swaIteFun`, `addEntFun`, or `skiEntFun` in `store.js`, preserve this
+`swaIteFun`, `addEntFun`, or `skiEntFun` in `store.ts`, preserve this
 staging: directly mutating item state on pick (instead of on completion)
 breaks the "nothing changes until you actually do it" contract the whole
 ease-up/ease-down/dynamic system relies on.
@@ -141,36 +195,37 @@ lookups without preserving that survivability property.
 ### UI support modules
 
 - `src/ui/`: shared primitives and editors used by 2 or more features, one
-  component or helper family per file (`icon.jsx`, `button.jsx`,
-  `card-surface.jsx`, `collapse.jsx`, `info-tip.jsx`, `escape-cancel.js`,
-  `edge-fade.js`, ...), plus the shared editors reused across tabs
-  (`schedule-editor.jsx`, `cadence-control.jsx`,
-  `conditional-controls.jsx`, `entry-editor.jsx`).
-- `src/platform/appearance.js`: palette tokens + theme application;
-  deliberately split out of `app.jsx` to avoid an import cycle with
-  `tab-settings.jsx`.
-- `src/tabs/today/reorder.js`: hand-rolled pointer drag-to-reorder for
+  component or helper family per file (`icon.tsx`, `button.tsx`,
+  `card-surface.tsx`, `collapse.tsx`, `info-tip.tsx`, `escape-cancel.ts`,
+  `edge-fade.ts`, ...), plus the shared editors reused across tabs
+  (`schedule-editor.tsx`, `cadence-control.tsx`,
+  `conditional-controls.tsx`, `entry-editor.tsx`).
+- `src/platform/appearance.ts`: palette tokens + theme application;
+  deliberately split out of `app.tsx` to avoid an import cycle with
+  `tab-settings.tsx`.
+- `src/tabs/today/reorder.ts`: hand-rolled pointer drag-to-reorder for
   Today's Edit Mode (no external DnD library).
-- `src/tabs/today/day-log.jsx`: per-group "what did the generator do today"
+- `src/tabs/today/day-log.tsx`: per-group "what did the generator do today"
   audit panel, derived from the pick log.
 - `src/onboarding/`: the first-run welcome modal and tour
-  (`welcome-tour.jsx`), the tour engine (`tour-runner.jsx`), and the page,
+  (`welcome-tour.tsx`), the tour engine (`tour-runner.tsx`), and the page,
   picker, reminder, and feature mini-tours. The tours drive the real app
   (not a mock overlay) and coordinate with other modules via a small event
-  bus (`emlTouObj` in `src/state/tour-bus.js`) and a couple of deliberate
+  bus (`emlTouObj` in `src/state/tour-bus.ts`) and a couple of deliberate
   `window.__eml*` globals (see "Runtime globals on `window`" below).
-- `src/help/`: the on-demand help mode (`mode.jsx`, plus its toggle, tip,
+- `src/help/`: the on-demand help mode (`mode.tsx`, plus its toggle, tip,
   geometry, catalog, and sample data).
 
 ### Runtime globals on `window`
 
 A handful of `__`-prefixed globals (`__escStack`, `__escBound`,
-`__emlGenerate`, `__emlPickerCreated`, `__dismissBootSplash`) are deliberate
+`__emlGenerate`, `__dismissBootSplash`) are deliberate
 cross-module registration channels (e.g. a component registers a callback on
 mount so `index.html`'s boot script or the onboarding tour can call it
 later), not accidental leaks. Leave them as globals rather than "fixing" them
 into imports; the components that set them are meant to be reachable before/
-outside the normal React import graph.
+outside the normal React import graph. Their types live in `src/globals.d.ts`
+(along with `__APP_VERSION__`); a new global gets declared there too.
 
 ### PWA / deploy details
 
@@ -178,7 +233,7 @@ outside the normal React import graph.
   fixes the manifest's Content-Type. `index.html` contains a hidden static
   `<form name="support">` purely so Netlify's build-time form parser detects
   it; keep its field names in sync with `ConSupCom`'s submit logic in
-  `tabs/settings/contact-support.jsx`, or submissions will be rejected.
+  `tabs/settings/contact-support.tsx`, or submissions will be rejected.
 - `vite-plugin-pwa` is configured with `manifest: false`; `public/manifest.webmanifest`
   is hand-written and linked from `index.html`; the plugin only precaches and
   injects the notification-click handler (`public/sw-notify.js`).
@@ -214,29 +269,29 @@ codebase, so it applies here and nowhere else.
   `trgEleRef`/`trgCurEle`/`trgRecObj` to `tri`). `tri` had become
   overloaded with three unrelated words at once: Trigger (the tooltip's
   own `triEleRef`/`triCurEle`/`triRecObj` in `ui.jsx`, `triValBoo` in
-  `store.js`/`seed.js`/`conditionals.js`, `triFlaBoo`), Trimmed
+  `store.ts`/`seed.ts`/`conditionals.ts`, `triFlaBoo`), Trimmed
   (`namTriStr`), and Try. Per the user's own choice, Trigger takes its
   consonant skeleton `trg` (the same style as `rcd`/`rmn`/`rmv`),
-  Trimmed keeps the literal `tri` (e.g. `tab-today.jsx`'s own
+  Trimmed keeps the literal `tri` (e.g. `tab-today.tsx`'s own
   `triValStr`), and Try uses its own complete 3-letter word `try` (e.g.
-  `onboarding/app-features.jsx`'s own `tryCouNum`/`tryColFun`). Being
+  `onboarding/app-features.tsx`'s own `tryCouNum`/`tryColFun`). Being
   applied file by file as each file is next reviewed, not in one sweep.
   Scoped to ease-my-life ONLY, for the same reason as `rmn`/`rmv`.
 - **Weekend uses `wkd`, not `wee`** (a project-scoped decision): the
   literal `wee` already means Week heavily throughout this codebase,
   and Phase A's own first candidate `wek` was a documented Week
   miscorrection, so per the user's own choice Weekend keeps its
-  consonant skeleton `wkd` (e.g. `tasks.js`'s own `isaWkdBoo`).
+  consonant skeleton `wkd` (e.g. `tasks.ts`'s own `isaWkdBoo`).
   Scoped to ease-my-life ONLY, for the same reason as `rmn`/`rmv`.
 - **Truncated uses `trn`, not `tru`** (a project-scoped decision): the
   literal `tru` reads as "true" and already means True in this
-  codebase (`conditionals.js`'s own `truOddFun`, True Odds Function),
+  codebase (`conditionals.ts`'s own `truOddFun`, True Odds Function),
   so per the user's own choice Truncated takes its consonant skeleton
   `trn` (e.g. `ui.jsx`'s own `texTrnBoo`/`cheTrnFun`, and InfTipCom's
   `trnOnlBoo` prop). Scoped to ease-my-life ONLY, for the same reason
   as `rmn`/`rmv`.
 - **A project-scoped override, requested by the user, when Phase A/B
-  escalation itself keeps colliding**: `onboarding-checklist.js`'s own
+  escalation itself keeps colliding**: `onboarding-checklist.ts`'s own
   `cheStaFun` returns a `remaining` count that would normally truncate
   to `rem`, but `rem` is used dozens of times for "Reminder" throughout
   THIS project specifically (`remActRef`, `remAncObj`, `remCouNum`,
@@ -258,7 +313,7 @@ codebase, so it applies here and nowhere else.
   user**: `rem` = Reminder blocks "Remove" and "Removing" the same way
   it blocks "Remaining", so both use their consonant skeleton `rmv`
   instead of the literal `rem` or Phase A's own `reo`, which reads far
-  less clearly. E.g. `tab-data.jsx`'s own `rmvIdeStr` (Remove
+  less clearly. E.g. `tab-data.tsx`'s own `rmvIdeStr` (Remove
   Identifier String, the id passed to `delIteFun`/`delConFun`) and
   `rmvPicStr`/`setRmvPicStr` (Removing Picker String, the card playing
   its removal animation). This is separate from the store actions'
@@ -269,7 +324,7 @@ codebase, so it applies here and nowhere else.
   file's own review.
 - **A second project-scoped override, requested by the user, this
   time keeping the ORIGINAL unescalated abbreviation rather than
-  accepting a genuinely clean escalated candidate**: `reorder.js`'s
+  accepting a genuinely clean escalated candidate**: `reorder.ts`'s
   own `cmpTarFun` (Compute Target Function) keeps its literal `cmp`
   for "Compute" instead of the normal first-3-letters truncation
   `com`, even though `cmp` doesn't match any real word's own literal
@@ -293,7 +348,7 @@ codebase, so it applies here and nowhere else.
   literal first-3-letters form, with no such conflict and no reason
   to keep `cmp` unescalated.
 - **A third project-scoped override, the same shape as `cmp`**:
-  `picker-controls.jsx`'s own `cmtGroFun` (Commit Group Function) keeps `cmt`
+  `picker-controls.tsx`'s own `cmtGroFun` (Commit Group Function) keeps `cmt`
   for "Commit", per the user's own explicit preference. The literal
   first-3-letters `com` is Component (the same heavy overload as the
   `cmp` case), and Phase A's own first clean candidate would have been
@@ -311,10 +366,10 @@ codebase, so it applies here and nowhere else.
   not in one sweep: `curRecObj` and `tarRecObj` hold a record in some
   files and a rect in others, so every instance is checked by hand.
   Where a better word than Record exists, use it instead (e.g.
-  `group-entries.js`'s own `groBucObj`, a bucket pulled from
+  `group-entries.ts`'s own `groBucObj`, a bucket pulled from
   `groBucMap`). Recurring, whose literal first 3 letters are also
   `rec`, takes Phase A's `reu` instead (Recurring's 4th letter), e.g.
-  `tasks.js`'s own `isaReuFun`. Reconcile, whose Phase A letters all
+  `tasks.ts`'s own `isaReuFun`. Reconcile, whose Phase A letters all
   collide (`reo` is Reopen, `ren` is Rename), uses its synonym Sync
-  instead, e.g. `store.js`'s own `stkSynFun`. Scoped to ease-my-life
+  instead, e.g. `store.ts`'s own `stkSynFun`. Scoped to ease-my-life
   ONLY, for the same reason as `rmn`/`rmv`.

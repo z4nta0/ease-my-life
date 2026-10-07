@@ -601,7 +601,7 @@
 
 
 
-		<div id='appMouDiv'></div><!-- What: App Mount Div Element. Why: The app needs one element to mount into. How: main.jsx renders AppRooCom into this id. -->
+		<div id='appMouDiv'></div><!-- What: App Mount Div Element. Why: The app needs one element to mount into. How: main.tsx renders AppRooCom into this id. -->
 
 		<form
 			name='support'
@@ -609,7 +609,7 @@
 			netlify-honeypot='bot-field'
 
 			hidden
-		><!-- What: Support Form Element. Why: Netlify registers a site's forms by parsing the built HTML, and the app's own support form only exists once React runs. How: This static, hidden copy carries the form and field names Netlify needs. --><!-- Netlify finds forms by parsing the built HTML at deploy time, never running the app, so the React form in tabs/settings/contact-support.jsx is invisible to it. This copy registers the form and its fields, and the app then POSTs to '/' with a matching form-name. Keep the name and every field name in sync with ConSupCom's submit logic, or submissions are rejected. hidden keeps it off the page, and Netlify still parses it. -->
+		><!-- What: Support Form Element. Why: Netlify registers a site's forms by parsing the built HTML, and the app's own support form only exists once React runs. How: This static, hidden copy carries the form and field names Netlify needs. --><!-- Netlify finds forms by parsing the built HTML at deploy time, never running the app, so the React form in tabs/settings/contact-support.tsx is invisible to it. This copy registers the form and its fields, and the app then POSTs to '/' with a matching form-name. Keep the name and every field name in sync with ConSupCom's submit logic, or submissions are rejected. hidden keeps it off the page, and Netlify still parses it. -->
 
 
 			<label for='supSubInp'>Subject</label><!-- What: Subject Label Element. Why: The subject field needs a label for Netlify's form record. How: This labels supSubInp. -->
@@ -664,7 +664,7 @@
 		</form>
 
 		<script
-			src='/src/main.jsx'
+			src='/src/main.tsx'
 			type='module'
 		>/* What: App Module Script Element. Why: This loads the app itself. How: Vite replaces it with the built, hashed bundle at build time. */</script>
 

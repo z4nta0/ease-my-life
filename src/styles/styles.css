@@ -143,7 +143,7 @@
 	 * The completion celebration's "Ripple" style is the pure-CSS default:
 	 * every card on Today exhales once, sized and timed by these values, which
 	 * the cardCelebrateSwell keyframes and the card modules read. "Confetti" and
-	 * "Sparkle" are separate particle effects rendered in tab-today.jsx. The
+	 * "Sparkle" are separate particle effects rendered in tab-today.tsx. The
 	 * ring number pulse and the title text swap stay the same across all three
 	 * styles, since they aren't part of the ripple itself.
 	 *
@@ -450,7 +450,7 @@ html { /* What: Root Font Size. Why: One rem should equal the 11px base font siz
  *
  * @summary
  * overflow-x is hidden so the background flourish's outermost glyphs
- * (ui/bg-flourish.jsx) can be pushed half past the edge of the gutter and get
+ * (ui/bg-flourish.tsx) can be pushed half past the edge of the gutter and get
  * clipped flush at the viewport edge, rather than causing a horizontal
  * scrollbar.
  *
@@ -547,7 +547,7 @@ ol { /* What: List Reset. Why: Lists are used for layout, not bullets. How: This
  *
  * @summary
  * A one-shot theme cross-fade: while data-theme-fade-active is on <html>
- * (added by appearance.js's appPalFun on a user theme swap, for one p04
+ * (added by appearance.ts's appPalFun on a user theme swap, for one p04
  * duration step, about 486ms), the themable properties ease so the palette
  * change glides instead of snapping. It's scoped to the swap window so it
  * never interferes with normal interaction transitions.
