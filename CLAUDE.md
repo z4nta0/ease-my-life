@@ -242,6 +242,26 @@ outside the normal React import graph. Their types live in `src/globals.d.ts`
   own loop, stagger, and fade timings: see the Boot Splash Styles summary
   there before changing the animation timing.
 
+### Hosting and DNS
+
+Updated 2026-10-14. easemylife.app is registered at name.com and uses
+Cloudflare's nameservers, on the Free plan, in front of Netlify.
+- **Records**: `@` and `www` are proxied CNAMEs to `ease-my-life.netlify.app`
+  (Cloudflare flattens the one on the bare domain), which replaced fixed A
+  addresses that were no longer Netlify's current ones. Titan's MX records,
+  SPF, the `titan1._domainkey` DKIM key, and DMARC (`p=none`, reports to
+  support@easemylife.app) are DNS only.
+- **Settings**: SSL/TLS Full (strict), Automatic HTTPS Rewrites on, Always
+  Use HTTPS and HSTS off, and a minimum of TLS 1.2.
+- **Redirects and HSTS come from Netlify, not Cloudflare**: Netlify sends
+  `http` to `https` and `www` to the bare domain, and `public/_headers` sends
+  HSTS. Cloudflare passes all of it through, so it has no rules of its own.
+- **Changing the site records later**: they can stay proxied, since
+  Cloudflare's certificate already covers the domain. A domain newly added
+  to Cloudflare needs its site records set to DNS only until its certificate
+  is active, or visitors meet a certificate error in between (TechGeek.dev's
+  move on 2026-10-14 did it that way).
+
 ## Project-specific rules
 
 Every formatting, naming, comment, copy, and commit rule lives in the
