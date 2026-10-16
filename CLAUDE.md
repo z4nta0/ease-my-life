@@ -261,6 +261,20 @@ Cloudflare's nameservers, on the Free plan, in front of Netlify.
   to Cloudflare needs its site records set to DNS only until its certificate
   is active, or visitors meet a certificate error in between (TechGeek.dev's
   move on 2026-10-14 did it that way).
+- **DNSSEC** (turned on with the user 2026-10-16, with techgeek.dev and
+  techgeek.cards): Cloudflare signs the zone, and its DS record (key tag
+  2371, algorithm 13, digest type 2) is entered at name.com, with Max Sig
+  Life left blank. Netlify's old DNS zone for the domain was deleted first,
+  since Netlify's nameservers keep answering unsigned for resolvers that
+  still remember them. Before ever moving the domain off Cloudflare, turn
+  DNSSEC off there and remove the DS record at name.com, then wait a day
+  before changing nameservers.
+- **Netlify's certificate**: Netlify still issues the site's own
+  certificate, which Full (strict) requires, and renews it without its DNS
+  zone. The current one runs to December 23, 2026, so check the project's
+  Domain management, HTTPS section after its renewal (about late November
+  2026). If renewal fails, set `@` and `www` to DNS only for a few minutes,
+  renew, and proxy them again.
 
 ## Project-specific rules
 
