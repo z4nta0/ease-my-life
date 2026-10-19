@@ -72,7 +72,8 @@ tests/output/report` opens the HTML report.
   against an earlier one (e.g. from `main`) and reports every day that
   differs. `EML_SIM_SEED` and `EML_SIM_SEGMENTS` override the seed and days.
 - `npm run test:interaction`: drives every tab's controls and editors on
-  real data, checking each change in IndexedDB and that its animation fired.
+  real data, checking each change in IndexedDB and that its animation fired,
+  and checks that a launch with a hung or slow IndexedDB loses nothing.
 - `npm run test:onboarding`: runs the whole onboarding from an empty install
   (Welcome, every checklist launcher, Generate, every App Features tour, and
   Replay) at 375px and 1280px.
@@ -103,8 +104,8 @@ if asked to cut a release.
 
 ### No router, no build-time code splitting of routes
 
-`src/main.tsx` boots by racing `STG_NAM_OBJ.iniStoFun()` against a timeout,
-then mounts `<AppRooCom />` (`src/app.tsx`). `AppRooCom` owns a single
+`src/main.tsx` awaits `STG_NAM_OBJ.iniStoFun()`, which gives up on a slow
+IndexedDB by itself (see Storage below), then mounts `<AppRooCom />` (`src/app.tsx`). `AppRooCom` owns a single
 active-tab-id in React state and renders one of five tabs directly; there's
 no react-router. Each tab lives in its own folder under `src/tabs/`
 (`today/`, `pickers/`, `stats/`, `data/`, `settings/`): a main
@@ -140,8 +141,15 @@ wipDatFun/staRepFun/...`). Highlights worth knowing before touching it:
   hot path of every other save.
 - `STG_NAM_OBJ.iniStoFun()` runs and resolves *before* React mounts
   (`main.tsx`), so `store.ts`'s `loaStaFun()` can stay synchronous.
-- A `localStorage` "warm mirror" (minus the pick log) exists purely as a
-  same-tick fallback if IDB fails later; it is not the source of truth.
+- A `localStorage` "warm mirror" (minus the pick log) is written whenever
+  the tab hides, and on every save in a session running on localStorage.
+- `iniStoFun` gives IndexedDB 3.5s (`BOO_DEA_NUM`) to open and read. A boot
+  that misses it runs the whole session on localStorage, never switching to
+  IndexedDB midway. Both copies carry a `__savedAt` stamp, and on the next
+  boot a mirror newer than IndexedDB is adopted (`mirAdoFun`), keeping
+  IndexedDB's pick log whenever the mirror's is missing or partial. Before
+  this (fixed 2026-10-19), changes made in such a session, custom holidays
+  most visibly, were rolled back on the next launch.
 - `wipDatFun()` (Settings → "Delete all data") must clear every key this
   layer has ever written, across legacy naming generations (see
   `OWN_KEY_REG`).

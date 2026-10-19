@@ -3,6 +3,7 @@
 
 // #region Imports
 
+import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: Merging a partial mirror's pick log reads each row's date. How: This types the rows mirAdoFun filters.
 import type { RawSavTyp } from '../core/data-model.ts'; // What: Raw Save Type. Why: A save read back from storage hasn't been migrated yet. How: This types the cached state and every read that returns one.
 import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: Every write persists the current app state. How: This types each appStaObj parameter.
 
@@ -49,6 +50,7 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
 
 // #region Constants
 
+const BOO_DEA_NUM = 3500;                          // What: Boot Deadline Number. Why: A slow IndexedDB must never hold up the app's first paint, and the whole session must then run on localStorage rather than switch engines midway. How: iniStoFun gives up on IndexedDB this many milliseconds after boot starts.
 const BOO_KEY_STR = 'easemylife.idbboots';         // What: Boots Key String. Why: This is the localStorage key counting how many times IDB has booted cleanly in a row. How: This is read and incremented inside iniStoFun to decide when the migration snapshot and dead pre-IDB generations can be safely swept.
 const DAT_NAM_STR = 'easemylife';                  // What: Database Name String. Why: This is the fixed IndexedDB database name every browser profile opens under. How: This is passed as the first argument to indexedDB.open inside opeDatFun.
 const DAT_VER_NUM = 1;                             // What: Database Version Number. Why: This is the fixed IndexedDB schema version, structural only, tracking which object stores exist rather than their contents. How: This is passed as the second argument to indexedDB.open inside opeDatFun.
@@ -102,6 +104,7 @@ const SNA_KEE_NUM = 3; // What: Snapshot Keep Number. Why: This is how many clea
 
 // #region Module State
 
+let booAbaBoo : boolean               = false;     // What: Boot Abandoned Boolean. Why: An IndexedDB boot that runs past the deadline must not open or use a connection afterward. How: This is set by iniStoFun's fallback and checked by idbBooFun once its open settles.
 let cacStaObj : RawSavTyp             = null;      // What: Cached State Object. Why: This is the state iniStoFun loaded, held in memory so later synchronous reads (like STG_NAM_OBJ.cacStaFun()) do not need to touch storage again. How: This starts null (a fresh install) and is assigned inside iniStoFun.
 let curEngStr : string                = 'memory';  // What: Current Engine String. Why: Every read/write in this file needs to know which backend is actually of record right now: 'idb', 'localStorage', or the fallback 'memory'. How: This starts at 'memory' and is updated by iniStoFun/savStaFun whenever the active engine changes.
 let datConObj : IDBDatabase | null    = null;      // What: Database Connection Object. Why: Every other function in this file that talks to IndexedDB needs the same open connection. How: This starts null (no connection yet) and is assigned by iniStoFun once opeDatFun resolves.
@@ -127,7 +130,7 @@ let mirWriBoo : boolean               = true;      // What: Mirror Write Boolean
  *
 */
 
-let logSusBoo = false; // What: Log Suspect Boolean. Why: wriDatFun must refuse to let a suspect empty pickLog overwrite real history in IDB. How: This is computed in iniStoFun from the loaded state's own __mirrorNoLog marker, checked in wriDatFun, and cleared by logAutFun.
+let logSusBoo = false; // What: Log Suspect Boolean. Why: wriDatFun must refuse to let a suspect empty pickLog overwrite real history in IDB. How: This is computed in iniStoFun from the loaded state's own __mirrorNoLog or __logPartial marker, checked in wriDatFun, read by wriLocFun to mark a full write's pick log partial, and cleared by logAutFun.
 
 // #endregion Module State
 
@@ -353,6 +356,9 @@ async function wriDatFun ( appStaObj : StaAppTyp ) : Promise< void > {
 
 
 	delete cloStaObj.__mirrorNoLog; // What: Mirror Marker Strip. Why: The marker only describes one warm-mirror copy whose pickLog was left out, so IndexedDB must never keep it, not even when that copy is migrated in after a wipe. How: This deletes it from the clone before the write below.
+	delete cloStaObj.__logPartial;  // What: Partial Log Marker Strip. Why: The marker only describes a localStorage copy whose pick log may be incomplete, so IndexedDB must never keep it. How: This deletes it from the clone before the write below.
+
+	cloStaObj.__savedAt = Date.now(); // What: Saved At Stamp. Why: iniStoFun compares this against the localStorage mirror's own stamp to boot from whichever copy was saved last. How: This stamps the clone with the current time in milliseconds.
 
 
 	await reqProFun( traStoFun( STA_STO_STR, 'readwrite' ).put( cloStaObj, 'main' ) ); // What: State Store Put Call. Why: This is the actual write of the non-pickLog portion of state into its own object store. How: This awaits reqProFun wrapping a put(cloStaObj, 'main') request against the state object store.
@@ -552,7 +558,20 @@ function wriLocFun ( appStaObj : StaAppTyp, fulWriBoo : boolean ) : boolean {
 
 
 
-		localStorage.setItem( MIR_KEY_STR, JSON.stringify( payDatObj ) ); // What: Local Storage Set Call. Why: This is the actual mirror write every caller of wriLocFun exists to perform. How: This serializes payDatObj to JSON text and writes it under MIR_KEY_STR.
+		const staDatObj = { // What: Stamped Data Object. Why: iniStoFun needs to know when this copy was saved, and whether its pick log is complete, to decide whether it should replace an older IndexedDB copy. How: This adds the save time, plus a partial-log marker on a full write whose pick log started from the warm mirror.
+
+
+			...payDatObj,                                                // What: Payload Data Spread. Why: Every field being written carries over unchanged. How: This spreads payDatObj before the markers below.
+			...( fulWriBoo && logSusBoo ? { __logPartial : true } : {} ), // What: Partial Log Marker Spread. Why: A localStorage session that booted from the warm mirror only holds the picks made since, so its pick log must never replace the full history in IndexedDB. How: This adds __logPartial to a full write while logSusBoo still holds.
+
+			__savedAt : Date.now() // What: Saved At. Why: iniStoFun compares this against IndexedDB's own stamp. How: This is the current time in milliseconds.
+
+
+		};
+
+
+
+		localStorage.setItem( MIR_KEY_STR, JSON.stringify( staDatObj ) ); // What: Local Storage Set Call. Why: This is the actual mirror write every caller of wriLocFun exists to perform. How: This serializes staDatObj to JSON text and writes it under MIR_KEY_STR.
 
 		mirWriBoo = true; // What: Mirror Write Boolean Update. Why: A successful write here means the mirror is now trustworthy again after any earlier failure. How: This sets mirWriBoo true unconditionally, reached only once setItem above has not thrown.
 
@@ -664,21 +683,211 @@ function fluSynFun ( appStaObj : StaAppTyp ) : void {
 
 
 
+// #region mirAdoFun
+
+/**
+ * mirAdoFun = Mirror Adopt Function
+ *
+ * @summary
+ * Decides whether the localStorage copy is newer than IndexedDB's, and if so
+ * builds the state to boot from. Both copies carry a __savedAt stamp, and the
+ * mirror can end up newer in two ways: a whole session ran on localStorage
+ * because IndexedDB hung at boot, or the async IndexedDB write fired as the
+ * tab hid never finished. Before this check, IndexedDB always won, so every
+ * change in such a session (custom holidays included) was silently rolled
+ * back on the next launch and then overwritten in the mirror too.
+ *
+ * The pick log needs care, since the mirror's may not be the whole history.
+ * A warm mirror (__mirrorNoLog) has none at all, so IndexedDB's is kept. A
+ * full write marked __logPartial came from a session that booted from the
+ * warm mirror, so it only holds that session's picks: IndexedDB's history is
+ * kept, plus the session's rows for any day IndexedDB has none for. Any
+ * other full write is the complete log and is adopted as is. A copy without
+ * a stamp (one written before stamps existed) never replaces IndexedDB.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param idbStaObj - IndexedDB State Object: The state read back from
+ *                    IndexedDB.
+ * @param mirStaObj - Mirror State Object: The state read back from the
+ *                    localStorage mirror, or null when there is none.
+ *
+ * @returns The state to adopt in place of IndexedDB's, or null when
+ * IndexedDB's copy should be kept.
+ * @see {@link adoStaObj}
+ *
+ * @example
+ * ```ts
+ * mirAdoFun(idbStaObj, reaLocFun()) // => adopted state or null
+ * ```
+ *
+*/
+
+function mirAdoFun ( idbStaObj : RawSavTyp, mirStaObj : RawSavTyp ) : RawSavTyp {
+
+
+	const idbTimNum = idbStaObj.__savedAt;                                            // What: IndexedDB Time Number. Why: IndexedDB's copy is kept unless the mirror was saved after it. How: This is IndexedDB's own save stamp, undefined for a copy saved before stamps existed.
+	const mirTimNum = mirStaObj ? mirStaObj.__savedAt : null;                         // What: Mirror Time Number. Why: The mirror only wins when it was saved later. How: This is the mirror's own save stamp, or null when there is no mirror.
+	const bthStaBoo = typeof idbTimNum === 'number' && typeof mirTimNum === 'number'; // What: Both Stamped Boolean. Why: Two copies can only be compared when both carry a stamp. How: This is true when both stamps are numbers.
+
+
+	if ( !bthStaBoo || mirTimNum <= idbTimNum ) return null; // What: Keep IndexedDB Guard. Why: An unstamped or older mirror must never replace IndexedDB's copy. How: This returns null so the caller keeps IndexedDB's state.
+
+
+
+	const idbLogArr = idbStaObj.pickLog || [];                                                                             // What: IndexedDB Log Array. Why: IndexedDB's pick log is the full history whenever the mirror's isn't. How: This reads it, defaulting to an empty array.
+	const idbDatSet = new Set( idbLogArr.map( ( logRowObj : PclRowTyp ) => logRowObj.date ) );                             // What: IndexedDB Date Set. Why: A partial mirror only adds rows for days IndexedDB has none for, so a day is never counted twice. How: This collects every date IndexedDB's log covers.
+	const newLogArr = ( mirStaObj.pickLog || [] ).filter( ( logRowObj : PclRowTyp ) => !idbDatSet.has( logRowObj.date ) ); // What: New Log Array. Why: A partial mirror's rows for days IndexedDB never saw are the fallback session's own history. How: This keeps the mirror rows whose date isn't in idbDatSet.
+
+	const adoLogArr = mirStaObj.__mirrorNoLog // What: Adopted Log Array. Why: The adopted state needs the most complete pick log available. How: This picks IndexedDB's log, IndexedDB's log plus the new days, or the mirror's own log.
+		? idbLogArr                         // What: Warm Mirror Branch. Why: A warm mirror holds no pick log at all. How: This keeps IndexedDB's.
+		: mirStaObj.__logPartial           // What: Partial Log Check. Why: A partial log only holds one fallback session's picks. How: This branches on the marker.
+			? [ ...idbLogArr, ...newLogArr ] // What: Partial Log Branch. Why: The full history must survive, with the session's new days added. How: This appends newLogArr to IndexedDB's log.
+			: mirStaObj.pickLog;             // What: Full Log Branch. Why: An unmarked full write holds the complete log. How: This adopts the mirror's own.
+
+	const adoStaObj = { ...mirStaObj, pickLog : adoLogArr }; // What: Adopted State Object. Why: This is the newer state the app boots from. How: This spreads the mirror and sets the chosen pick log.
+
+
+
+	delete adoStaObj.__logPartial;  // What: Partial Log Marker Strip. Why: The adopted pick log is now complete. How: This deletes the marker.
+	delete adoStaObj.__mirrorNoLog; // What: Mirror Marker Strip. Why: The adopted pick log is now complete. How: This deletes the marker.
+
+
+
+	return adoStaObj; // What: Adopted State Return. Why: The caller boots from the newer copy. How: This returns adoStaObj.
+
+
+}
+
+// #endregion mirAdoFun
+
+
+
+// #region idbBooFun
+
+/**
+ * idbBooFun = IndexedDB Boot Function
+ *
+ * @summary
+ * Opens IndexedDB and loads the state iniStoFun should boot from: the stored
+ * copy, the localStorage mirror when mirAdoFun finds it newer (written back
+ * to IndexedDB at once), or, on a first IndexedDB run, the migrated legacy
+ * localStorage data, keeping an untouched rollback snapshot until the new
+ * store has proven it can read its own data back. It never sets curEngStr
+ * or cacStaObj itself: iniStoFun races it against BOO_DEA_NUM and commits
+ * the result only when it wins, so a boot that runs late can't switch an
+ * app already running on localStorage over to IndexedDB. A connection that
+ * opens after the deadline is closed again.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns A Promise resolving to the state to boot from, or null for a
+ * fresh install. It rejects when IndexedDB can't be opened or read, or a
+ * first migration can't be verified.
+ *
+ * @example
+ * ```ts
+ * idbBooFun() // => Promise<state or null>
+ * ```
+ *
+*/
+
+async function idbBooFun () : Promise< RawSavTyp > {
+
+
+	const opeConObj = await opeDatFun(); // What: Open Connection Object. Why: Every read and write below needs an open connection. How: This awaits opeDatFun.
+
+
+	if ( booAbaBoo ) { // What: Abandoned Boot Check. Why: A connection that opens after iniStoFun gave up must not be used or left open. How: This closes it and rejects.
+
+
+		opeConObj.close(); // What: Connection Close Call. Why: Nothing will use this connection. How: This closes it.
+
+		throw new Error( 'idb boot abandoned' ); // What: Abandoned Boot Error. Why: The caller has already moved on to localStorage. How: This rejects the boot.
+
+
+	}
+
+
+
+	datConObj = opeConObj; // What: Database Connection Object Assignment. Why: Every IndexedDB read and write in this file goes through datConObj. How: This stores the open connection.
+
+
+
+	const idbStaObj = await reaDatFun(); // What: IndexedDB State Object. Why: An install that already moved to IndexedDB has its state stored there. How: This awaits reaDatFun, null for an empty store.
+
+
+	if ( !idbStaObj ) { // What: Empty Store Check. Why: An empty store is either a fresh install or one whose localStorage data still waits to be migrated. How: This runs the one-time migration below.
+
+
+		const legStaObj = reaLocFun(); // What: Legacy State Object. Why: A pre-IDB install keeps its data in localStorage under MIR_KEY_STR. How: This calls reaLocFun, null for a fresh install.
+
+
+		if ( !legStaObj ) return null; // What: Fresh Install Guard. Why: There is nothing to migrate. How: This resolves null.
+
+
+
+		try { if ( !localStorage.getItem( MIG_SNA_STR ) ) localStorage.setItem( MIG_SNA_STR, localStorage.getItem( MIR_KEY_STR )! ); } // What: Snapshot Set Try. Why: A rollback copy must be taken before the migration below touches anything, in case the new IDB store turns out not to read back correctly. How: This writes the current MIR_KEY_STR contents under MIG_SNA_STR, but only if no snapshot already exists there. // What: Non-Null Note. Why: legStaObj was just parsed from this same key, so it holds text. How: The ! tells TypeScript the mirror read is set here.
+
+		catch {} // What: Snapshot Set Guard. Why: The snapshot is a nicety, not a requirement, so a failure to write it must not abort the migration itself. How: This silently ignores any error from the inner setItem call above.
+
+
+
+		await wriDatFun( legStaObj ); // What: Legacy State Write Call. Why: This is the actual migration write, moving the legacy data into the new IDB stores. How: This awaits wriDatFun with legStaObj as the state to persist.
+
+		const verStaObj = await reaDatFun(); // What: Verify State Object. Why: The migration must be confirmed by reading the data back, not merely assumed to have worked because the write call did not throw. How: This awaits reaDatFun again, immediately after the migration write above.
+
+
+
+		if ( !verStaObj || !Array.isArray( verStaObj.pickers ) ) throw new Error( 'idb migration unverified' ); // What: Verify State Guard. Why: A migration that didn't stick must not be trusted, so the session stays on localStorage. How: This rejects, sending iniStoFun to its localStorage fallback.
+
+
+
+		return verStaObj; // What: Verified State Return. Why: The migrated data is now IndexedDB's own. How: This returns the state read back.
+
+
+	}
+
+
+
+	const adoStaObj = mirAdoFun( idbStaObj, reaLocFun() ); // What: Adopted State Object. Why: A newer localStorage copy must win over IndexedDB's. How: This calls mirAdoFun with the mirror, null when IndexedDB's copy should be kept.
+
+
+	if ( !adoStaObj ) return idbStaObj; // What: Keep IndexedDB Guard. Why: IndexedDB's copy is the newest. How: This resolves it.
+
+
+
+	await wriDatFun( adoStaObj ); // What: Adopted State Write Call. Why: The newer copy must be in IndexedDB before anything else reads it. How: This awaits wriDatFun with adoStaObj.
+
+
+
+	return adoStaObj; // What: Adopted State Return. Why: The newer copy is now IndexedDB's own. How: This returns adoStaObj.
+
+
+}
+
+// #endregion idbBooFun
+
+
+
 // #region iniStoFun
 
 /**
  * iniStoFun = Init Storage Function
  *
  * @summary
- * Boots the whole storage layer: opens IndexedDB, migrates any existing
- * localStorage data into it on a first run (keeping an untouched
- * rollback snapshot until the new store has proven it can read its own
- * data back), and falls back to localStorage entirely when IndexedDB is
- * unavailable, private-mode-restricted, or hangs. Also retires the
- * migration snapshot and sweeps dead pre-IDB localStorage generations
- * once IDB has booted cleanly SNA_KEE_NUM times in a row. This is
- * awaited in main.tsx before React ever mounts, which is what lets
- * store.ts's own loaStaFun() stay synchronous.
+ * Boots the whole storage layer: loads state through idbBooFun, and falls
+ * back to localStorage entirely when IndexedDB is unavailable,
+ * private-mode-restricted, fails, or hasn't finished within BOO_DEA_NUM.
+ * The deadline belongs here rather than in main.tsx, so the whole session
+ * runs on one engine: a late IndexedDB boot is abandoned instead of taking
+ * over after the app has already mounted from the mirror. Also retires the
+ * migration snapshot and sweeps dead pre-IDB localStorage generations once
+ * IDB has booted cleanly SNA_KEE_NUM times in a row. This is awaited in
+ * main.tsx before React ever mounts, which is what lets store.ts's own
+ * loaStaFun() stay synchronous, and it always settles within BOO_DEA_NUM.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -698,59 +907,34 @@ function fluSynFun ( appStaObj : StaAppTyp ) : void {
 async function iniStoFun () : Promise< RawSavTyp > {
 
 
-	try { // What: Storage Boot Try. Why: Opening IndexedDB at all can fail outright (private mode, an opaque origin, a blocked/hanging open), and that whole path must fall back to localStorage instead of crashing boot. How: This wraps the full IDB-open-and-migrate sequence below, falling back in the catch beneath it.
+	try { // What: Storage Boot Try. Why: IndexedDB can fail outright, hang, or run past the deadline, and every one of those must fall back to localStorage instead of crashing or splitting the session across engines. How: This races idbBooFun against BOO_DEA_NUM, falling back in the catch beneath it.
 
 
-		datConObj = await opeDatFun(); // What: Database Connection Object Assignment. Why: Every later IDB read/write in this boot sequence (and in every other function in this file) needs this same open connection. How: This awaits opeDatFun and stores its resolved IDBDatabase.
-		curEngStr = 'idb';             // What: Current Engine String Assignment. Why: A successful open means IndexedDB is now the engine of record for the rest of this session. How: This sets curEngStr to 'idb'.
-		cacStaObj = await reaDatFun(); // What: Cached State Object Assignment. Why: An already-migrated install has its real state sitting in IDB already, which must be loaded before any migration logic below even considers running. How: This awaits reaDatFun and stores whatever it resolves, including null for a fresh IDB.
+		cacStaObj = await Promise.race( [ // What: IndexedDB Boot Race. Why: A slow IndexedDB must never hold up the app's first paint. How: This adopts idbBooFun's state if it settles first, and rejects once BOO_DEA_NUM passes.
 
 
-		if ( !cacStaObj ) { // What: No Cached State Check. Why: A null cacStaObj means this is either a genuinely fresh install, or one with existing localStorage data still waiting to be migrated into the new IDB store. How: This gates the whole migration block below so it only ever runs once, on that first IDB boot.
+			idbBooFun(),                                                                                                           // What: IndexedDB Boot Call. Why: This is the real boot. How: This resolves with the state to boot from.
+			new Promise( ( resValFun ) => setTimeout( resValFun, BOO_DEA_NUM ) ).then( () => { throw new Error( 'idb boot timeout' ); } ) // What: Boot Deadline Promise. Why: The boot must give up on IndexedDB in time. How: This rejects BOO_DEA_NUM milliseconds after boot starts.
 
 
-			const legStaObj = reaLocFun(); // What: Legacy State Object. Why: Any pre-IDB installation would have its real data sitting in localStorage under MIR_KEY_STR, which must be found before it can be migrated. How: This calls reaLocFun, resolving to null for a genuinely fresh install.
+		] );
 
-
-			if ( legStaObj ) { // What: Legacy State Check. Why: The migration below must only run when there is actually something in localStorage worth migrating. How: This gates the whole migration attempt on legStaObj being non-null.
-
-
-				try { if ( !localStorage.getItem( MIG_SNA_STR ) ) localStorage.setItem( MIG_SNA_STR, localStorage.getItem( MIR_KEY_STR )! ); } // What: Snapshot Set Try. Why: A rollback copy must be taken before the migration below touches anything, in case the new IDB store turns out not to read back correctly. How: This writes the current MIR_KEY_STR contents under MIG_SNA_STR, but only if no snapshot already exists there. // What: Non-Null Note. Why: legStaObj was just parsed from this same key, so it holds text. How: The ! tells TypeScript the mirror read is set here.
-
-				catch {} // What: Snapshot Set Guard. Why: The snapshot is a nicety, not a requirement, so a failure to write it must not abort the migration itself. How: This silently ignores any error from the inner setItem call above.
-
-
-
-				await wriDatFun( legStaObj ); // What: Legacy State Write Call. Why: This is the actual migration write, moving the legacy data into the new IDB stores. How: This awaits wriDatFun with legStaObj as the state to persist.
-
-				const verStaObj = await reaDatFun(); // What: Verify State Object. Why: The migration must be confirmed by reading the data back, not merely assumed to have worked because the write call did not throw. How: This awaits reaDatFun again, immediately after the migration write above.
-
-
-				if ( verStaObj && Array.isArray( verStaObj.pickers ) ) { cacStaObj = verStaObj; } // What: Verify State Success Check. Why: A readable pickers array is the concrete evidence that the migration actually stuck. How: This adopts verStaObj as the live cacStaObj once that check passes.
-
-				else { // What: Verify State Failure Fallback. Why: A migration that did not stick must not be trusted, so this session stays on localStorage rather than risk it. How: This reverts curEngStr/datConObj and adopts the original legStaObj as cacStaObj instead.
-
-
-					curEngStr = 'localStorage'; // What: Current Engine String Revert. Why: An unverified migration must not leave this session trusting the new IDB store. How: This demotes curEngStr back to 'localStorage'.
-					datConObj = null;           // What: Database Connection Object Clear. Why: An unverified connection must not be reused by any later read/write in this session. How: This clears datConObj back to null.
-					cacStaObj = legStaObj;      // What: Cached State Object Fallback Adoption. Why: The original, still-intact legacy data is the only trustworthy state left once the migration itself could not be verified. How: This adopts legStaObj as the live cacStaObj instead of the unverified verStaObj.
-
-
-				}
-
-
-			}
-
-
-		}
+		curEngStr = 'idb'; // What: Current Engine String Assignment. Why: A boot that won the race makes IndexedDB the engine of record for the rest of this session. How: This sets curEngStr to 'idb'.
 
 
 	}
 
-	catch ( errCatObj ) { // What: Storage Boot Guard. Why: Private mode, an opaque origin, or a blocked/hanging open must still leave the app able to boot. How: This falls all the way back to the localStorage engine and whatever reaLocFun can read.
+	catch ( errCatObj ) { // What: Storage Boot Guard. Why: Private mode, an opaque origin, a blocked, hanging, or late open, or an unverified migration must still leave the app able to boot. How: This falls all the way back to the localStorage engine and whatever reaLocFun can read.
 
 
 		console.warn( errCatObj ); // What: Error Warning Call. Why: A real failure here should stay visible to anyone debugging. How: This logs the caught error as a console warning.
+
+
+
+		booAbaBoo = true; // What: Boot Abandoned Boolean Assignment. Why: An idbBooFun still running must not use a connection that opens later. How: This flags the boot as abandoned.
+
+		if ( datConObj ) datConObj.close(); // What: Connection Close Check. Why: A connection idbBooFun already opened must not stay open, or let it write after this session moved to localStorage. How: This closes it when there is one.
+
 
 
 		datConObj = null;           // What: Database Connection Object Clear. Why: Whatever partial connection state the failed boot sequence above may have left behind must not be reused. How: This clears datConObj back to null.
@@ -766,10 +950,19 @@ async function iniStoFun () : Promise< RawSavTyp > {
 
 
 
-	logSusBoo = !!( cacStaObj && cacStaObj.__mirrorNoLog && !( cacStaObj.pickLog || [] ).length ); // What: Log Suspect Boolean Seed. Why: A state adopted from the warm mirror with an empty pickLog must be flagged before the very first save could otherwise let that empty array overwrite real IDB history. How: This is true only when cacStaObj carries the __mirrorNoLog marker and its own pickLog is empty.
+	logSusBoo = !!( cacStaObj && ( cacStaObj.__logPartial || ( cacStaObj.__mirrorNoLog && !( cacStaObj.pickLog || [] ).length ) ) ); // What: Log Suspect Boolean Seed. Why: A state adopted from localStorage whose pick log is a stand-in must be flagged, so it never overwrites real IDB history and its own full writes stay marked partial. How: This is true for a partial-log copy, or for a warm mirror copy with an empty pickLog.
 
 
-	if ( cacStaObj ) delete cacStaObj.__mirrorNoLog; // What: Mirror Marker Clear Guard. Why: Once read into logSusBoo, the marker has done its job and must not ride along into the app's own state. How: This deletes it from cacStaObj when there is one.
+
+	if ( cacStaObj ) { // What: Storage Marker Strip Check. Why: Once read, the storage layer's own markers have done their job and must not ride along into the app's own state. How: This deletes each of them from cacStaObj when there is one.
+
+
+		delete cacStaObj.__logPartial;  // What: Partial Log Marker Strip. Why: logSusBoo now carries what it said. How: This deletes it.
+		delete cacStaObj.__mirrorNoLog; // What: Mirror Marker Strip. Why: logSusBoo now carries what it said. How: This deletes it.
+		delete cacStaObj.__savedAt;     // What: Saved At Strip. Why: Each write stamps its own copy afresh. How: This deletes it.
+
+
+	}
 
 
 
