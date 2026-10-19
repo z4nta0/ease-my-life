@@ -29,7 +29,7 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * been generated and saved. selTabFun switches tabs through the real
  * navigation buttons, and opeFixFun opens the real-data backup on a fixed
  * day for the suites that need realistic content. TIP_URL_STR is the
- * placeholder tip checkout address the test server builds the app with.
+ * placeholder tip page address the test server builds the app with.
  *
  * Sections:
  *  - Constants
@@ -44,7 +44,7 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
 
 // #region Constants
 
-const TIP_URL_STR = '/robots.txt?tip-checkout'; // What: Tip URL String. Why: The Buy Me a Coffee button needs a checkout address in tests, and a real one would leave the test server. How: This same-origin placeholder is the test server's VITE_TIP_URL, and the Settings suite expects the button to open it.
+const TIP_URL_STR = '/robots.txt?tip-page'; // What: Tip URL String. Why: The Buy Me a Coffee button needs a tip page address in tests, and a real one would leave the test server. How: This same-origin placeholder is the test server's VITE_TIP_URL, and the Settings suite expects the button to open it.
 
 // #endregion Constants
 

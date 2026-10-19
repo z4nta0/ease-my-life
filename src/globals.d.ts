@@ -41,7 +41,7 @@ type RelAppTyp = { id? : string, platform : string, url? : string }; // What: Re
 interface ImportMetaEnv { // What: Import Meta Env Interface. Why: Vite's own types don't know this app's build settings. How: This merges them into ImportMetaEnv, each optional since a build may leave it unset.
 
 
-	readonly VITE_TIP_URL? : string; // What: Vite Tip URL. Why: The Buy Me a Coffee button opens a hosted checkout whose address is set per build. How: This is the checkout's address, read by constants.ts.
+	readonly VITE_TIP_URL? : string; // What: Vite Tip URL. Why: The Buy Me a Coffee button opens a Ko-fi tip page whose address is set per build. How: This is the page's address, read by constants.ts.
 
 
 }

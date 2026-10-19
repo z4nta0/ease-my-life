@@ -2123,7 +2123,7 @@ const SET_HEL_ARR : HelIteTyp[] = [ // What: Settings Help Array. Why: This is t
 	{ // What: Support the Project Help Item. Why: This is the on-demand help tip for the Support the Project element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
-		bodEle : <>A way to support the app's development with a one-time tip of any amount. The button opens a secure checkout in a new tab, and no account is needed.</>,
+		bodEle : <>A way to support the app's development with a one-time tip of any amount through Ko-fi, which opens in a new tab. No account is needed.</>,
 		ideStr : 'aboutSupportProject',
 		selStr : '[data-element-name-hook~="supProDiv"]',
 		titStr : 'Support the Project'

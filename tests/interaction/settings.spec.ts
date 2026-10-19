@@ -10,7 +10,7 @@ import { recAniFun   } from '../support/watch.ts';   // What: Record Animations 
 import { seeAniFun   } from '../support/watch.ts';   // What: Seen Animation Function. Why: Flows confirm their animations played. How: This checks the record.
 import { selTabFun   } from '../support/app.ts';     // What: Select Tab Function. Why: Every flow runs on the Settings tab. How: This switches to it.
 import { test        } from '@playwright/test';      // What: Test. Why: Each flow is its own test. How: This declares them.
-import { TIP_URL_STR } from '../support/app.ts';     // What: Tip URL String. Why: The tip button must open the test server's placeholder checkout. How: The new tab's address is checked against it.
+import { TIP_URL_STR } from '../support/app.ts';     // What: Tip URL String. Why: The tip button must open the test server's placeholder tip page. How: The new tab's address is checked against it.
 import { waiStaFun   } from '../support/storage.ts'; // What: Wait State Function. Why: Saves land a moment after each action. How: This waits for them.
 import { watErrFun   } from '../support/watch.ts';   // What: Watch Errors Function. Why: A flow fails on any page error. How: This collects them.
 
@@ -27,7 +27,7 @@ import { watErrFun   } from '../support/watch.ts';   // What: Watch Errors Funct
  * the tab bar moves when its placement changes; the daily generator switch and
  * run time save; a built-in holiday can be turned off, and a custom one added
  * and removed with its exit animation; a backup exported here imports back
- * cleanly; the Buy Me a Coffee button opens its checkout in a new tab; the
+ * cleanly; the Buy Me a Coffee button opens its tip page in a new tab; the
  * legal panels open and close with their closing animation; and cancelling a
  * reset leaves the data alone. Every flow checks the saved state in IndexedDB,
  * and fails on any page or console error.
@@ -243,18 +243,18 @@ test( 'an exported backup imports back', async ( { page : curPagObj }, tesInfObj
 
 
 
-test( 'the Buy Me a Coffee button opens the tip checkout in a new tab', async ( { page : curPagObj } ) => { // What: Tip Checkout Test. Why: The tip button must reach the checkout without leaving the app. How: This clicks it and checks the new tab and the app's own page.
+test( 'the Buy Me a Coffee button opens the tip page in a new tab', async ( { page : curPagObj } ) => { // What: Tip Page Test. Why: The tip button must reach the tip page without leaving the app. How: This clicks it and checks the new tab and the app's own page.
 
 
 	const tipButLoc = curPagObj.locator( '[data-element-name-hook~="tipCofBut"]' ); // What: Tip Button Locator. Why: The test clicks the About section's tip button. How: This finds it by its hook.
 
 
 
-	await expect( tipButLoc, 'tip button enabled' ).toBeEnabled(); // What: Enabled Assertion. Why: A build with a checkout address enables the button. How: This checks it isn't disabled.
+	await expect( tipButLoc, 'tip button enabled' ).toBeEnabled(); // What: Enabled Assertion. Why: A build with a tip page address enables the button. How: This checks it isn't disabled.
 
 
 
-	const [ tipPagObj ] = await Promise.all( [ curPagObj.context().waitForEvent( 'page' ), tipButLoc.click() ] ); // What: Tip Page Object. Why: The checkout opens in a new tab. How: This clicks the button and catches the tab it opens.
+	const [ tipPagObj ] = await Promise.all( [ curPagObj.context().waitForEvent( 'page' ), tipButLoc.click() ] ); // What: Tip Page Object. Why: The tip page opens in a new tab. How: This clicks the button and catches the tab it opens.
 
 
 
@@ -262,7 +262,7 @@ test( 'the Buy Me a Coffee button opens the tip checkout in a new tab', async ( 
 
 
 
-	expect( tipPagObj.url(), 'checkout address' ).toContain( TIP_URL_STR );          // What: Checkout Address Assertion. Why: The tab must open the configured checkout. How: This checks its address.
+	expect( tipPagObj.url(), 'tip page address' ).toContain( TIP_URL_STR );          // What: Tip Page Address Assertion. Why: The tab must open the configured tip page. How: This checks its address.
 	await expect( curPagObj, 'app stays put' ).toHaveURL( /^[^?]*\/(#settings)?$/ ); // What: App Address Assertion. Why: The app's own tab must not navigate away. How: This checks it's still on the app's root.
 
 

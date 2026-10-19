@@ -6,7 +6,7 @@
 import { defineConfig  } from '@playwright/test';   // What: Define Config. Why: Playwright's config helper passes the config through with its types. How: This wraps the exported config object.
 import { fileURLToPath } from 'node:url';           // What: File URL To Path. Why: The dev server has to start from the repo root, one folder above this file. How: This turns that folder's URL into a path for webServer.cwd.
 import { TIM_ZON_STR   } from './support/clock.ts'; // What: Time Zone String. Why: The pages and the clock helpers must agree on the timezone. How: This sets every page's timezoneId.
-import { TIP_URL_STR   } from './support/app.ts';   // What: Tip URL String. Why: The app needs a tip checkout address to enable its Buy Me a Coffee button. How: This becomes the test server's VITE_TIP_URL.
+import { TIP_URL_STR   } from './support/app.ts';   // What: Tip URL String. Why: The app needs a tip page address to enable its Buy Me a Coffee button. How: This becomes the test server's VITE_TIP_URL.
 
 // #endregion Imports
 
@@ -91,7 +91,7 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 
 		command             : 'npx vite --port 5190 --strictPort', // What: Command. Why: A strict port fails loudly instead of drifting onto another server's port. How: This starts the Vite dev server on 5190.
 		cwd                 : ROO_DIR_STR,                         // What: Current Working Directory. Why: Vite reads its config from the repo root. How: This starts the command there.
-		env                 : { VITE_TIP_URL : TIP_URL_STR },      // What: Environment. Why: The Settings suite checks the Buy Me a Coffee button opens its checkout. How: This builds the app with the placeholder checkout address, merged over the shell's own environment.
+		env                 : { VITE_TIP_URL : TIP_URL_STR },      // What: Environment. Why: The Settings suite checks the Buy Me a Coffee button opens its tip page. How: This builds the app with the placeholder tip page address, merged over the shell's own environment.
 		reuseExistingServer : false,                               // What: Reuse Existing Server. Why: A leftover server could be running other code. How: This always starts a fresh one.
 		timeout             : 60000,                               // What: Timeout. Why: The first start can take a while on a cold cache. How: This waits up to a minute for the server to answer.
 		url                 : SER_URL_STR                          // What: URL. Why: Playwright starts the tests only once the app answers. How: This is the address it polls.

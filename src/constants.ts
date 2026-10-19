@@ -52,18 +52,18 @@ const THR_VAL_NUM = 100; // What: Threshold Value Number. Why: Every ease drift/
  * TIP_URL_STR = Tip URL String
  *
  * @summary
- * The address of the hosted Polar checkout behind the About section's Buy
- * Me a Coffee button. It's read from the VITE_TIP_URL build setting rather
- * than written here, so the button can ship before the checkout exists and
- * the address can change without a code change. Netlify supplies it to the
- * production build, the test suites supply a placeholder, and a build
- * without it shows the button disabled as Coming Soon.
+ * The address of the Ko-fi page behind the About section's Buy Me a Coffee
+ * button. It's read from the VITE_TIP_URL build setting rather than written
+ * here, so the button can ship before the page exists and the address can
+ * change without a code change. Netlify supplies it to the production build,
+ * the test suites supply a placeholder, and a build without it shows the
+ * button disabled as Coming Soon.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const TIP_URL_STR = import.meta.env.VITE_TIP_URL || null; // What: Tip URL String. Why: The Buy Me a Coffee button opens the tip checkout. How: This reads the VITE_TIP_URL build setting, falling back to null when it isn't set.
+const TIP_URL_STR = import.meta.env.VITE_TIP_URL || null; // What: Tip URL String. Why: The Buy Me a Coffee button opens the Ko-fi tip page. How: This reads the VITE_TIP_URL build setting, falling back to null when it isn't set.
 
 // #endregion Constants
 
@@ -71,7 +71,7 @@ const TIP_URL_STR = import.meta.env.VITE_TIP_URL || null; // What: Tip URL Strin
 
 // #region Exports
 
-export { APP_VER_STR, EUR_WAR_STR, THR_VAL_NUM, TIP_URL_STR }; // What: Named Exports. Why: Settings shows the build version and links the tip checkout, the Today tab's ease tips share the warning copy, and every ease day-range calculation shares the threshold value. How: This exports all four constants by name for any file to import.
+export { APP_VER_STR, EUR_WAR_STR, THR_VAL_NUM, TIP_URL_STR }; // What: Named Exports. Why: Settings shows the build version and links the Ko-fi tip page, the Today tab's ease tips share the warning copy, and every ease day-range calculation shares the threshold value. How: This exports all four constants by name for any file to import.
 
 // #endregion Exports
 

@@ -30,7 +30,7 @@ import { SET_HEL_ARR  } from '../../help/content.tsx';              // What: Set
 import { STG_NAM_OBJ  } from '../../state/storage.ts';              // What: Storage Namespace Object. Why: The Data Control section reports where data lives and reads the true persisted pick log before exporting. How: This is called via its own staRepFun()/reaPerFun() methods.
 import { StyRadCom    } from './style-radio.tsx';                   // What: Style Radio Component. Why: Appearance's Picker animation and Completion celebration pickers share one radio list. How: This is rendered twice in TabSetCom's Appearance section.
 import { TheSecCom    } from './theme-picker.tsx';                  // What: Theme Section Component. Why: Appearance's own Light and Dark theme cards live in their own file. How: This is rendered once in TabSetCom's Appearance section.
-import { TIP_URL_STR  } from '../../constants.ts';                  // What: Tip URL String. Why: The About section's Buy Me a Coffee button opens the tip checkout. How: This is opened in a new tab when the button is clicked, and disables the button while unset.
+import { TIP_URL_STR  } from '../../constants.ts';                  // What: Tip URL String. Why: The About section's Buy Me a Coffee button opens the Ko-fi tip page. How: This is opened in a new tab when the button is clicked, and disables the button while unset.
 import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { useEscCanFun } from '../../ui/escape-cancel.ts';           // What: Use Escape Cancel Function. Why: Both the pending-import and pending-reset confirmations need Escape to back out, like every other confirm in the app. How: This is called once per confirmation, gated on that confirmation's own open boolean.
 
@@ -2678,7 +2678,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 									<span className={ cssModObj.setNamSpa }>Support the project</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Support the project". */ }
 
-									<span className={ cssModObj.setSubSpa }>{ TIP_URL_STR ? 'Enjoying Ease My Life? Consider buying me a coffee, any amount you like, through a secure checkout that opens in a new tab.' : 'Enjoying Ease My Life? Consider buying me a coffee.' }</span>{ /* What: Set Data Sub Span Element. Why: The row needs a short, friendly ask, and should say where the button goes once it works. How: This renders the checkout note only while TIP_URL_STR is set. */ }
+									<span className={ cssModObj.setSubSpa }>{ TIP_URL_STR ? 'Enjoying Ease My Life? Consider buying me a coffee on Ko-fi, any amount you like. It opens in a new tab.' : 'Enjoying Ease My Life? Consider buying me a coffee.' }</span>{ /* What: Set Data Sub Span Element. Why: The row needs a short, friendly ask, and should say where the button goes once it works. How: This renders the Ko-fi note only while TIP_URL_STR is set. */ }
 
 
 								</div>
@@ -2692,8 +2692,8 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 									kinValStr='secondary'
 									sizValStr='sm'
 
-									onClick={ () => { if ( TIP_URL_STR ) window.open( TIP_URL_STR, '_blank', 'noopener,noreferrer' ); } } // What: Tip Click Handler. Why: The tip checkout is a separate site, and leaving the app for it would lose the user's place. How: This opens TIP_URL_STR in a new tab, cut off from this page, only while it is set.
-								>{ TIP_URL_STR ? 'Buy Me a Coffee' : 'Coming Soon' }</ButBasCom>{ /* What: Button Base Component. Why: This opens the tip checkout, or stands in disabled while a build has none. How: This reads Buy Me a Coffee while TIP_URL_STR is set, and Coming Soon otherwise. Its data-element-name-hook is read by the interaction suite. */ }
+									onClick={ () => { if ( TIP_URL_STR ) window.open( TIP_URL_STR, '_blank', 'noopener,noreferrer' ); } } // What: Tip Click Handler. Why: The Ko-fi tip page is a separate site, and leaving the app for it would lose the user's place. How: This opens TIP_URL_STR in a new tab, cut off from this page, only while it is set.
+								>{ TIP_URL_STR ? 'Buy Me a Coffee' : 'Coming Soon' }</ButBasCom>{ /* What: Button Base Component. Why: This opens the Ko-fi tip page, or stands in disabled while a build has none. How: This reads Buy Me a Coffee while TIP_URL_STR is set, and Coming Soon otherwise. Its data-element-name-hook is read by the interaction suite. */ }
 
 
 							</div>
