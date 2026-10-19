@@ -5,16 +5,16 @@
  * globals.d.ts = Globals
  *
  * @summary
- * Type declarations for the values the app creates outside the module
- * graph, which TypeScript can't otherwise see: the version number Vite
- * injects at build time, the deliberate window.__ globals that let a
- * module or index.html's boot script reach a component (see CLAUDE.md's
- * "Runtime globals on window"), and the browser features pwa.ts uses that
- * TypeScript's DOM types don't include yet: iOS Safari's standalone flag,
- * getInstalledRelatedApps, and Chromium's beforeinstallprompt event. This
- * file has no imports or exports, so TypeScript reads it as a global
- * script: each interface below merges into the built-in one of the same
- * name, and nothing here ends up in the build.
+ * Type declarations for the values the app creates outside the module graph,
+ * which TypeScript can't otherwise see: the version number Vite injects at
+ * build time, the build settings read from import.meta.env, the deliberate
+ * window.__ globals that let a module or index.html's boot script reach a
+ * component (see CLAUDE.md's "Runtime globals on window"), and the browser
+ * features pwa.ts uses that TypeScript's DOM types don't include yet: iOS
+ * Safari's standalone flag, getInstalledRelatedApps, and Chromium's
+ * beforeinstallprompt event. This file has no imports or exports, so
+ * TypeScript reads it as a global script: each interface below merges into the
+ * built-in one of the same name, and nothing here ends up in the build.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -35,6 +35,16 @@ type EscEntTyp = { runFun : () => void }; // What: Escape Entry Type. Why: Every
 
 
 type RelAppTyp = { id? : string, platform : string, url? : string }; // What: Related App Type. Why: getInstalledRelatedApps reports each installed copy of the app it finds. How: This describes one of them.
+
+
+
+interface ImportMetaEnv { // What: Import Meta Env Interface. Why: Vite's own types don't know this app's build settings. How: This merges them into ImportMetaEnv, each optional since a build may leave it unset.
+
+
+	readonly VITE_TIP_URL? : string; // What: Vite Tip URL. Why: The Buy Me a Coffee button opens a hosted checkout whose address is set per build. How: This is the checkout's address, read by constants.ts.
+
+
+}
 
 
 

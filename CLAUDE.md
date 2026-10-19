@@ -242,6 +242,11 @@ outside the normal React import graph. Their types live in `src/globals.d.ts`
   `<form name="support">` purely so Netlify's build-time form parser detects
   it; keep its field names in sync with `ConSupCom`'s submit logic in
   `tabs/settings/contact-support.tsx`, or submissions will be rejected.
+- `VITE_TIP_URL` (set in Netlify's environment variables) is the Polar
+  checkout the About section's Buy Me a Coffee button opens in a new tab. A
+  build without it shows that button disabled as Coming Soon, and the test
+  server sets a same-origin placeholder (`TIP_URL_STR` in
+  `tests/support/app.ts`).
 - `vite-plugin-pwa` is configured with `manifest: false`; `public/manifest.webmanifest`
   is hand-written and linked from `index.html`; the plugin only precaches and
   injects the notification-click handler (`public/sw-notify.js`).

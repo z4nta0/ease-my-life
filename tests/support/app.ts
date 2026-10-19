@@ -28,15 +28,25 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * runs its own check for a new day, and waits until that day's list has
  * been generated and saved. selTabFun switches tabs through the real
  * navigation buttons, and opeFixFun opens the real-data backup on a fixed
- * day for the suites that need realistic content.
+ * day for the suites that need realistic content. TIP_URL_STR is the
+ * placeholder tip checkout address the test server builds the app with.
  *
  * Sections:
+ *  - Constants
  *  - Helpers
  *  - Exports
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Constants
+
+const TIP_URL_STR = '/robots.txt?tip-checkout'; // What: Tip URL String. Why: The Buy Me a Coffee button needs a checkout address in tests, and a real one would leave the test server. How: This same-origin placeholder is the test server's VITE_TIP_URL, and the Settings suite expects the button to open it.
+
+// #endregion Constants
 
 
 
@@ -189,7 +199,7 @@ const selTabFun = async ( curPagObj : Page, tabIdeStr : string ) : Promise< void
 
 // #region Exports
 
-export { opeDayFun, opeFixFun, selTabFun }; // What: Named Exports. Why: The suites open days, open the backup, and switch tabs through these. How: This exports opeDayFun, opeFixFun, and selTabFun by name.
+export { opeDayFun, opeFixFun, selTabFun, TIP_URL_STR }; // What: Named Exports. Why: The suites open days, open the backup, and switch tabs through these, and the config and the Settings suite share the tip placeholder. How: This exports opeDayFun, opeFixFun, selTabFun, and TIP_URL_STR by name.
 
 // #endregion Exports
 
