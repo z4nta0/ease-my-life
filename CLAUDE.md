@@ -54,8 +54,8 @@ branch.
 
 ### Test suites
 
-Added 2026-10-06. Four Playwright suites live in `tests/`, one project each
-in `tests/playwright.config.ts`, which starts its own dev server on port 5190
+Added 2026-10-06. Five Playwright suites live in `tests/`, one project each
+in `tests/playwright.config.ts` (the accessibility suite one per engine), which starts its own dev server on port 5190
 (never the usual 5173) and stops it afterwards. Every page runs in Chicago
 time with service workers blocked, and results, screenshots, and simulation
 traces go to `tests/output/` (git-ignored); `npx playwright show-report
@@ -71,6 +71,15 @@ tests/output/report` opens the HTML report.
   picks: `EML_SIM_BASELINE=<path to an earlier trace.json>` compares a run
   against an earlier one (e.g. from `main`) and reports every day that
   differs. `EML_SIM_SEED` and `EML_SIM_SEGMENTS` override the seed and days.
+- `npm run test:accessibility`: the pre-commit accessibility scan, in
+  Chromium, Firefox, and WebKit. Every tab at 375 and 1,280px, help mode,
+  the Privacy panel, and the welcome modal (`tests/support/states.ts`) get
+  an axe-core scan (WCAG 2.2 AA plus best practices, zero violations) and
+  scripted checks axe can't make: every link and button named without a
+  decorative glyph, a Tab walk (order, nothing off screen or covered, a
+  visible focus ring, no trap), no sideways scroll at 320px, and no motion
+  under reduced motion. Anything axe can't decide is printed as needing
+  review. About 10 minutes.
 - `npm run test:interaction`: drives every tab's controls and editors on
   real data, checking each change in IndexedDB and that its animation fired,
   and checks that a launch with a hung or slow IndexedDB loses nothing.

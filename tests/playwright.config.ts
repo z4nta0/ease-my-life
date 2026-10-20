@@ -44,6 +44,18 @@ const SER_URL_STR = 'http://localhost:5190';                           // What: 
 
 
 
+const ENG_NAM_ARR = [ // What: Engine Name Array. Why: The accessibility scan runs in all three engines. How: Each entry is a Playwright browser name, given one accessibility project apiece.
+
+
+	'chromium', // What: Chromium Engine. Why: Chrome and Edge render with it. How: This is Playwright's Chromium build.
+	'firefox',  // What: Firefox Engine. Why: Firefox renders with its own engine, Gecko. How: This is Playwright's Firefox build.
+	'webkit'    // What: WebKit Engine. Why: Safari, and every browser on iOS, renders with it. How: This is Playwright's WebKit build.
+
+
+] as const;
+
+
+
 const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playwright reads its whole setup from this file's default export. How: This holds the shared page settings, the four suite projects, the reporters, and the dev server.
 
 
@@ -55,6 +67,25 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 
 	projects : [ // What: Projects. Why: Each suite runs on its own, and the simulation needs far more time than the rest. How: This lists one project per suite folder, each runnable with --project.
 
+
+		...ENG_NAM_ARR.map( ( engNamStr ) => ({ // What: Accessibility Projects. Why: The pre-commit accessibility scan runs in every engine, since a check that passes in one proves nothing about the others. How: This adds one accessibility project per engine.
+
+
+			name      : `accessibility-${ engNamStr }`, // What: Name. Why: A failure has to say which engine it came from. How: This names the project after it.
+			testMatch : 'accessibility/**/*.spec.ts',   // What: Test Match. Why: The scan's specs live in their own folder. How: This runs every spec in tests/accessibility.
+			timeout   : 300000,                         // What: Timeout. Why: The keyboard walk visits every stop of a full real-data tab. How: This gives each test five minutes.
+
+			use : { // What: Use. Why: The project has to launch its own engine. How: This sets the browser it runs in, and which build of it.
+
+
+				browserName : engNamStr,                                        // What: Browser Name. Why: Each project runs in one engine. How: This names that engine's Playwright browser.
+				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium's default headless shell sometimes loses track of a tab a click opens, while the full headless mode doesn't. How: This runs Chromium as full headless Chrome.
+
+
+			}
+
+
+		})),
 
 		{ name : 'interaction', testMatch : 'interaction/**/*.spec.ts', timeout : 300000  }, // What: Interaction Project. Why: Every control and editor is driven against IndexedDB. How: This runs tests/interaction with five minutes per test.
 		{ name : 'onboarding',  testMatch : 'onboarding/**/*.spec.ts',  timeout : 600000  }, // What: Onboarding Project. Why: Each tour is walked step by step at three widths. How: This runs tests/onboarding with ten minutes per test.

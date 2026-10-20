@@ -9,6 +9,7 @@
 		"lint": "eslint .",
 		"preview": "vite preview",
 		"test": "playwright test --config tests/playwright.config.ts",
+		"test:accessibility": "playwright test --config tests/playwright.config.ts --project 'accessibility-*'",
 		"test:interaction": "playwright test --config tests/playwright.config.ts --project interaction",
 		"test:onboarding": "playwright test --config tests/playwright.config.ts --project onboarding",
 		"test:responsive": "playwright test --config tests/playwright.config.ts --project responsive",
@@ -20,6 +21,7 @@
 		"react-dom": "19.3.0"
 	},
 	"devDependencies": {
+		"@axe-core/playwright": "^4.14.0",
 		"@playwright/test": "1.62.0",
 		"@types/node": "^26.6.4",
 		"@types/react": "^19.3.0",
