@@ -972,7 +972,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 // #region Exports
 
-export { migStaFun }; // What: Named Export. Why: The store runs every loaded or imported state through it. How: This exports migStaFun by name.
+export { migStaFun, SCH_VER_NUM }; // What: Named Exports. Why: The store runs every loaded or imported state through migStaFun, and sync refuses a cloud copy saved by a newer schema than SCH_VER_NUM. How: This exports both by name.
 
 // #endregion Exports
 

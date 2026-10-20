@@ -54,7 +54,7 @@ branch.
 
 ### Test suites
 
-Added 2026-10-06. Five Playwright suites live in `tests/`, one project each
+Added 2026-10-06. Six Playwright suites live in `tests/`, one project each
 in `tests/playwright.config.ts` (the accessibility suite one per engine), which starts its own dev server on port 5190
 (never the usual 5173) and stops it afterwards. Every page runs in Chicago
 time with service workers blocked, and results, screenshots, and simulation
@@ -89,6 +89,12 @@ tests/output/report` opens the HTML report.
 - `npm run test:responsive`: measures every tab at 375 to 1280px for
   sideways scrolling, off-screen or spilling content, and overlapping
   controls, saving a screenshot of each.
+- `npm run test:sync`: checks the sync engine in Node, with no browser,
+  against an in-memory cloud copy (`tests/sync/fake-backend.ts`): the real
+  backup splits into documents under Firestore's size limit and joins back
+  whole, a sync uploads only changed documents, a first sync adopts the
+  account's data, two devices' changes merge, and lost upload races retry.
+  A few seconds.
 
 The real-data backup is personal and never enters the repo: the suites read
 `EML_TEST_FIXTURE`, or the newest `.json` export in an

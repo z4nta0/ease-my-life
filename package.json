@@ -14,6 +14,7 @@
 		"test:onboarding": "playwright test --config tests/playwright.config.ts --project onboarding",
 		"test:responsive": "playwright test --config tests/playwright.config.ts --project responsive",
 		"test:simulation": "playwright test --config tests/playwright.config.ts --project simulation",
+		"test:sync": "playwright test --config tests/playwright.config.ts --project sync",
 		"typecheck": "tsc -b"
 	},
 	"dependencies": {
