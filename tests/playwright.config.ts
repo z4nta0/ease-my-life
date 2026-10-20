@@ -16,13 +16,14 @@ import { TIP_URL_STR   } from './support/app.ts';   // What: Tip URL String. Why
  * playwright.config.ts = Playwright Config
  *
  * @summary
- * The config behind npm test and its six suites, each a Playwright project:
+ * The config behind npm test and its seven suites, each a Playwright project:
  * simulation (a faked-clock run through weeks of days on a copy of real
  * data), accessibility (the pre-commit scan, one project per engine),
  * interaction (every control, editor, and animation), onboarding (every tour
- * and Replay), responsive (layout at phone to desktop widths), and sync (the
- * sync engine in Node, against a fake cloud copy, with no browser). All but
- * sync run against the real app. Playwright starts the Vite dev server on port
+ * and Replay), responsive (layout at phone to desktop widths), rules (the
+ * Firestore security rules, in the local emulator), and sync (the sync engine
+ * in Node, against a fake cloud copy). All but rules and sync run against
+ * the real app in a browser. Playwright starts the Vite dev server on port
  * 5190 for the run and stops it afterwards, so a dev server already running
  * on the usual 5173 is never touched. Every page runs in Chicago time with
  * service workers blocked, so dates and caching match from run to run, and
@@ -58,7 +59,7 @@ const ENG_NAM_ARR = [ // What: Engine Name Array. Why: The accessibility scan ru
 
 
 
-const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playwright reads its whole setup from this file's default export. How: This holds the shared page settings, the six suites' projects, the reporters, and the dev server.
+const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playwright reads its whole setup from this file's default export. How: This holds the shared page settings, the seven suites' projects, the reporters, and the dev server.
 
 
 	expect        : { timeout : 10000 }, // What: Expect. Why: Some assertions wait on animations and debounced saves. How: This gives each expect up to 10 seconds.
@@ -92,6 +93,7 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 		{ name : 'interaction', testMatch : 'interaction/**/*.spec.ts', timeout : 300000  }, // What: Interaction Project. Why: Every control and editor is driven against IndexedDB. How: This runs tests/interaction with five minutes per test.
 		{ name : 'onboarding',  testMatch : 'onboarding/**/*.spec.ts',  timeout : 600000  }, // What: Onboarding Project. Why: Each tour is walked step by step at three widths. How: This runs tests/onboarding with ten minutes per test.
 		{ name : 'responsive',  testMatch : 'responsive/**/*.spec.ts',  timeout : 600000  }, // What: Responsive Project. Why: Every page is measured at several widths. How: This runs tests/responsive with ten minutes per test.
+		{ name : 'rules',       testMatch : 'rules/**/*.spec.ts',       timeout : 60000   }, // What: Rules Project. Why: The Firestore security rules are checked in the local emulator, which test:rules starts around it. How: This runs tests/rules with a minute per test.
 		{ name : 'simulation',  testMatch : 'simulation/**/*.spec.ts',  timeout : 7200000 }, // What: Simulation Project. Why: Weeks of simulated days take a long time on real data. How: This runs tests/simulation with two hours per test.
 		{ name : 'sync',        testMatch : 'sync/**/*.spec.ts',        timeout : 60000   }  // What: Sync Project. Why: The sync engine is checked in Node against a fake cloud copy, with no browser. How: This runs tests/sync with a minute per test.
 

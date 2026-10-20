@@ -54,7 +54,7 @@ branch.
 
 ### Test suites
 
-Added 2026-10-06. Six Playwright suites live in `tests/`, one project each
+Added 2026-10-06. Seven Playwright suites live in `tests/`, one project each
 in `tests/playwright.config.ts` (the accessibility suite one per engine), which starts its own dev server on port 5190
 (never the usual 5173) and stops it afterwards. Every page runs in Chicago
 time with service workers blocked, and results, screenshots, and simulation
@@ -89,6 +89,10 @@ tests/output/report` opens the HTML report.
 - `npm run test:responsive`: measures every tab at 375 to 1280px for
   sideways scrolling, off-screen or spilling content, and overlapping
   controls, saving a screenshot of each.
+- `npm run test:rules`: checks `firestore.rules` in the Firebase Emulator,
+  which it starts and stops around the suite (it needs Java 21): a paid,
+  verified owner reads and writes its own copy one revision at a time, and
+  every other account, field, or revision is refused. A few seconds.
 - `npm run test:sync`: checks the sync engine in Node, with no browser,
   against an in-memory cloud copy (`tests/sync/fake-backend.ts`): the real
   backup splits into documents under Firestore's size limit and joins back
@@ -270,6 +274,27 @@ outside the normal React import graph. Their types live in `src/globals.d.ts`
   `public/boot-splash.js` (no framework), whose constants mirror the splash's
   own loop, stagger, and fade timings: see the Boot Splash Styles summary
   there before changing the animation timing.
+
+### Paid sync
+
+Added 2026-10-20, on the `paid-sync-accounts` branch (in progress). A
+one-time purchase lets an account sync the whole state between devices,
+local first: the app still runs entirely on-device, and syncs in the
+background.
+- **Engine**: `state/sync-docs.ts` splits the state into a core document
+  and one document per log per month (leaving out `appearance` and `ui`,
+  which stay per device), `state/sync-merge.ts` merges a document both sides
+  changed, and `state/sync-engine.ts` runs one sync against any backend.
+- **Firebase**: project `ease-my-life-4ce18` on the free Spark plan, Firestore
+  in `nam5`, with Google and email-link sign-in. `platform/firebase.ts` holds
+  its public config and sign-in calls, and `platform/cloud-backend.ts` stores
+  the cloud copy (see its summary for the layout). Both load only for
+  someone using an account. A build with `VITE_FIREBASE_EMULATOR` set talks
+  to the local emulator under the `demo-ease-my-life` project instead.
+- **Rules**: `firestore.rules` gives each account its own copy, and needs a
+  verified email and the `paid` custom claim, which only the payment webhook
+  sets. They're published by pasting into the console's Firestore Rules tab
+  (or `npx firebase deploy --only firestore:rules`).
 
 ### Hosting and DNS
 

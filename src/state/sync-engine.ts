@@ -60,7 +60,7 @@ type SynMetTyp = { docs : Record< string, string >, rev : number };             
 type SynBacTyp = { // What: Sync Backend Type. Why: The engine works against any store with these three calls. How: This types them.
 
 
-	getDocFun : ( docIdeArr : string[] ) => Promise< Record< string, string > >,                                                 // What: Get Document Function. Why: Changed documents are downloaded by id. How: This resolves with each document's JSON text by id.
+	getDocFun : ( docHasObj : Record< string, string > ) => Promise< Record< string, string > >,                                 // What: Get Document Function. Why: Changed documents are downloaded by id, and each id's hash names the exact version the manifest lists. How: This takes each id with its hash and resolves with each document's JSON text by id.
 	getManFun : () => Promise< SynManTyp | null >,                                                                               // What: Get Manifest Function. Why: Every sync starts from the cloud's manifest. How: This resolves with it, or null before the first upload.
 	putDocFun : ( basRevNum : number, docTexObj : Record< string, string | null >, manNewObj : SynManTyp ) => Promise< boolean > // What: Put Document Function. Why: An upload has to land whole, and only on the revision it was built from. How: This writes each document's JSON text (null deletes it) and the new manifest together if the cloud is still at basRevNum, resolving false otherwise.
 
@@ -176,7 +176,7 @@ async function synRunFun ( synBacObj : SynBacTyp, locStaObj : StaAppTyp, locSavN
 
 		// #region Document Merge
 
-		const remTexObj = fetIdeArr.length ? await synBacObj.getDocFun( fetIdeArr ) : {}; // What: Remote Text Object. Why: Changed cloud documents are needed to adopt or merge them. How: This downloads their JSON text, or skips the call when nothing changed.
+		const remTexObj = fetIdeArr.length ? await synBacObj.getDocFun( Object.fromEntries( fetIdeArr.map( ( docIdeStr ) => [ docIdeStr, remHasObj[ docIdeStr ] ] ) ) ) : {}; // What: Remote Text Object. Why: Changed cloud documents are needed to adopt or merge them. How: This downloads the versions the manifest lists as JSON text, or skips the call when nothing changed.
 
 		const merDocObj : SynDocTyp = {}; // What: Merged Document Object. Why: The merge result is collected by id. How: The loop below fills it.
 

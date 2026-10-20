@@ -1,0 +1,120 @@
+
+
+
+// #region Rules Version
+
+rules_version = '2'; // What: Rules Version. Why: Version 2 allows functions with let bindings and recursive wildcards. How: This selects it.
+
+// #endregion Rules Version
+
+
+
+/**
+ * firestore.rules = Firestore Security Rules
+ *
+ * @summary
+ * Decides who may read and write the paid sync's cloud copies. Each account
+ * owns users/{uid}, its manifest, and the document versions under
+ * users/{uid}/docs, and nobody else can touch them. Reading or writing a
+ * copy also needs a verified email address, which Google and emailed-link
+ * sign-ins always have and a bare password account doesn't, and the paid
+ * claim, which only the payment webhook can set. Deleting needs only the
+ * account itself, so anyone can always remove their own data, paid or not.
+ *
+ * A manifest write must hold exactly the fields the sync engine writes, and
+ * its revision must be exactly one more than the one it replaces (1 for the
+ * first), so the revision check holds on the server too, not only in the
+ * app's transaction. A version holds a single text field.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+// #region Firestore Service
+
+service cloud.firestore { // What: Firestore Service. Why: These rules cover the Firestore database. How: This scopes them to it.
+
+
+	match /databases/{database}/documents { // What: Documents Match. Why: Every rule applies inside the project's database. How: This matches its documents.
+
+
+		// #region isaOwnFun
+
+		function isaOwnFun ( uidValStr ) { // What: Is-An Owner Function. Why: Only the account itself may delete its copy. How: This is true for a signed-in account with that id and a verified email.
+
+
+			return request.auth != null && request.auth.uid == uidValStr && request.auth.token.email_verified == true; // What: Owner Return. Why: A sign-in without a verified email could belong to anyone. How: This checks the account, its id, and its verified email.
+
+
+		}
+
+		// #endregion isaOwnFun
+
+
+
+		// #region isaPaiFun
+
+		function isaPaiFun ( uidValStr ) { // What: Is-A Paid Function. Why: Only a paid owner may read or write a copy. How: This adds the paid claim to the owner check.
+
+
+			return isaOwnFun( uidValStr ) && request.auth.token.get( 'paid', false ) == true; // What: Paid Return. Why: The paid claim is set only by the payment webhook. How: This checks it, treating a missing claim as unpaid.
+
+
+		}
+
+		// #endregion isaPaiFun
+
+
+
+		// #region isaManFun
+
+		function isaManFun ( revNexNum ) { // What: Is-A Manifest Function. Why: A manifest must keep the shape the sync engine reads. How: This checks its fields and its next revision.
+
+
+			let manNewObj = request.resource.data; // What: Manifest New Object. Why: The check reads the incoming manifest. How: This names it.
+
+
+
+			return manNewObj.keys().hasOnly( [ 'docs', 'prior', 'rev', 'savedAt', 'v' ] ) && manNewObj.docs is map && manNewObj.prior is map && manNewObj.rev == revNexNum && manNewObj.savedAt is number && manNewObj.v is int; // What: Manifest Return. Why: An unexpected field or revision would break the next sync. How: This checks each field's type and the revision.
+
+
+		}
+
+		// #endregion isaManFun
+
+
+
+		match /users/{uidValStr} { // What: Manifest Match. Why: Each account's manifest is its own document. How: This matches users/{uid}.
+
+
+			allow read : if isaPaiFun( uidValStr );                                         // What: Manifest Read Rule. Why: Only a paid owner syncs. How: This allows reads for one.
+			allow create : if isaPaiFun( uidValStr ) && isaManFun( 1 );                     // What: Manifest Create Rule. Why: The first upload starts at revision 1. How: This allows it for a paid owner.
+			allow update : if isaPaiFun( uidValStr ) && isaManFun( resource.data.rev + 1 ); // What: Manifest Update Rule. Why: Each commit moves exactly one revision on. How: This allows it for a paid owner.
+			allow delete : if isaOwnFun( uidValStr );                                       // What: Manifest Delete Rule. Why: Anyone can delete their own copy. How: This allows it for the owner.
+
+
+
+			match /docs/{verKeyStr} { // What: Version Match. Why: Each document version is stored under its account. How: This matches users/{uid}/docs/{id}~{hash}.
+
+
+				allow read : if isaPaiFun( uidValStr );   // What: Version Read Rule. Why: Only a paid owner syncs. How: This allows reads for one.
+				allow create, update : if isaPaiFun( uidValStr ) && request.resource.data.keys().hasOnly( [ 'text' ] ) && request.resource.data.text is string; // What: Version Write Rule. Why: A version is only ever its JSON text. How: This allows a paid owner to write that one field.
+				allow delete : if isaOwnFun( uidValStr ); // What: Version Delete Rule. Why: Anyone can delete their own copy, and sync cleans up old versions. How: This allows it for the owner.
+
+
+			}
+
+
+		}
+
+
+	}
+
+
+}
+
+// #endregion Firestore Service
+
+

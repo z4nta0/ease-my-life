@@ -99,7 +99,10 @@ function fakBacFun () : FakBacTyp {
 		putIdeArr,                                                         // What: Put Identifier Array. Why: Tests read the uploads. How: This shares the record.
 		rejCouObj,                                                         // What: Reject Count Object. Why: Tests fake a lost race through it. How: This shares the counter.
 
-		getDocFun : async ( docIdeArr ) => { // What: Get Document Function. Why: A sync downloads the documents it needs. How: This records the ids and returns each stored text.
+		getDocFun : async ( docHasObj ) => { // What: Get Document Function. Why: A sync downloads the documents it needs. How: This records the ids and returns each stored text.
+
+
+			const docIdeArr = Object.keys( docHasObj ); // What: Document Identifier Array. Why: The fake keeps one version per id, so only the ids matter. How: This lists them.
 
 
 			getIdeArr.push( docIdeArr ); // What: Download Record. Why: Tests check what was downloaded. How: This adds the ids.
