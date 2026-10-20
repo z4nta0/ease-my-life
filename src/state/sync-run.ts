@@ -71,10 +71,12 @@ type AccSynTyp = { // What: Account Sync Type. Why: The account screen shows the
 	accErrStr : string | null;                                       // What: Account Error String. Why: A failed sign-in or sync says what went wrong. How: This is a sentence for the account screen, or null.
 	accLoaBoo : boolean;                                             // What: Account Loading Boolean. Why: The account screen waits while Firebase loads. How: This is true until the signed-in account is known.
 	accUseObj : AccUseTyp | null;                                    // What: Account User Object. Why: The screen shows who is signed in. How: This is the account, or null.
+	buySynFun : () => Promise< void >;                               // What: Buy Sync Function. Why: An unpaid account can buy sync. How: This starts a checkout and sends the person to it.
 	choAccFun : () => void;                                          // What: Choose Account Function. Why: A first sync can keep the account's data. How: This runs it that way.
 	choDevFun : () => void;                                          // What: Choose Device Function. Why: A first sync can keep this device's data instead. How: This runs it, replacing the account's copy.
 	finLinFun : ( emaAdrStr : string, linUrlStr? : string ) => void; // What: Finish Link Function. Why: A link opened in another browser, or pasted, still signs in. How: This finishes it with the given address and link, or the one the app was opened from.
 	linNeeBoo : boolean;                                             // What: Link Needs Boolean. Why: A link opened where it wasn't requested needs its address typed in. How: This is true while one waits.
+	purPenBoo : boolean;                                             // What: Purchase Pending Boolean. Why: Returning from the checkout, the paid claim can take a few seconds to arrive. How: This is true while the hook waits for it.
 	senLinFun : ( emaAdrStr : string ) => Promise< boolean >;        // What: Send Link Function. Why: Email sign-in sends a link, and the screen confirms only one that went out. How: This sends one, remembers the address, and resolves true once it's sent.
 	sigGooFun : () => void;                                          // What: Sign Google Function. Why: Google is the other way in. How: This opens Google's sign-in window.
 	sigOutFun : () => void;                                          // What: Sign Out Function. Why: A device can leave its account and keep its data. How: This signs out and forgets the sync record.
@@ -92,6 +94,8 @@ type AccSynTyp = { // What: Account Sync Type. Why: The account screen shows the
 // #region Constants
 
 const IDL_MIL_NUM = 120000; // What: Idle Milliseconds Number. Why: Syncing on every change would spend the free tier's writes on half-finished edits. How: This waits two minutes after the last change.
+const PUR_GAP_NUM = 3000;   // What: Purchase Gap Number. Why: After a purchase, the paid claim lands once Polar's webhook runs. How: This checks for it every three seconds.
+const PUR_TRY_NUM = 20;     // What: Purchase Try Number. Why: A webhook that hasn't landed in a minute won't by waiting longer here. How: This stops after 20 checks.
 const RET_MIL_NUM = 30000;  // What: Retry Milliseconds Number. Why: A sync that lost every race to another device should try again soon, not wait for the next change. How: This retries after 30 seconds.
 
 // #endregion Constants
@@ -220,6 +224,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	const [ accLoaBoo, setAccLoaBoo ] = React.useState( false );                    // What: Account Loading Boolean And Setter. Why: The screen waits while Firebase loads. How: This is true until the account is known.
 	const [ accUseObj, setAccUseObj ] = React.useState< AccUseTyp | null >( null ); // What: Account User Object And Setter. Why: The screen and sync follow the account. How: This holds it.
 	const [ linUrlStr, setLinUrlStr ] = React.useState< string | null >( null );    // What: Link URL String And Setter. Why: A link opened without its remembered address waits for one. How: This holds the link.
+	const [ purPenBoo, setPurPenBoo ] = React.useState( false );                    // What: Purchase Pending Boolean And Setter. Why: The screen shows the purchase finishing. How: This is true from the return until the claim arrives.
 	const [ synLasNum, setSynLasNum ] = React.useState< number | null >( null );    // What: Sync Last Number And Setter. Why: The screen says when it last synced. How: This holds that time.
 	const [ synRawStr, setSynRawStr ] = React.useState< SynStaTyp >( null );        // What: Sync Raw String And Setter. Why: The status of the last sync, before the account decides what it means. How: This holds it.
 
@@ -399,6 +404,18 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 		if ( !synActBoo ) return; // What: Demo Guard. Why: The onboarding demo never touches the account. How: This returns.
+
+
+
+		if ( new URLSearchParams( window.location.search ).get( 'purchase' ) === 'sync' ) { // What: Purchase Return Check. Why: The checkout sends the buyer back marked as a purchase. How: This cleans the address and starts waiting for the claim.
+
+
+			window.history.replaceState( null, '', window.location.pathname ); // What: Address Clean Call. Why: A reload or bookmark shouldn't repeat the wait. How: This removes the mark.
+
+			setPurPenBoo( true ); // What: Pending Mark. Why: The claim is on its way. How: This starts the wait.
+
+
+		}
 
 
 
@@ -623,6 +640,65 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
+	const paiNowBoo = !!accUseObj && accUseObj.paiBoo; // What: Paid Now Boolean. Why: The purchase wait follows whether the account is paid, not each renewed token. How: This is true for a paid account.
+	const sigNowBoo = !!accUseObj;                     // What: Signed Now Boolean. Why: The wait needs someone signed in. How: This is true while one is.
+
+
+
+	React.useEffect( () => { // What: Purchase Wait Effect. Why: The paid claim reaches the device only when its token is renewed, which normally happens hourly. How: This renews it every PUR_GAP_NUM until the account is paid, giving up after PUR_TRY_NUM tries.
+
+
+		if ( !purPenBoo || !sigNowBoo ) return; // What: Not Waiting Guard. Why: Only a returning buyer waits. How: This returns.
+
+
+
+		if ( paiNowBoo ) { setPurPenBoo( false ); return; } // What: Arrived Guard. Why: The claim is here, and the paid start effect syncs. How: This ends the wait.
+
+
+
+		let tryCouNum = 0; // What: Try Count Number. Why: The wait gives up eventually. How: This counts the renewals.
+
+
+
+		const purTimNum = window.setInterval( () => { // What: Purchase Timer Number. Why: Each tick renews the token, which reports a new claim. How: This renews it, or gives up after PUR_TRY_NUM.
+
+
+			tryCouNum += 1; // What: Try Count. Why: The wait is bounded. How: This counts one more.
+
+
+
+			if ( tryCouNum > PUR_TRY_NUM ) { // What: Give Up Check. Why: A minute is long enough to tell something's wrong. How: This stops and explains.
+
+
+				window.clearInterval( purTimNum ); // What: Timer Stop. Why: No more renewals. How: This clears it.
+
+				setPurPenBoo( false ); // What: Pending Clear. Why: The wait is over. How: This ends it.
+
+				setAccErrStr( "Your purchase hasn't come through yet. It can take a few minutes, so reload the app to check again, or contact support if it doesn't." ); // What: Delay Message. Why: The person paid and deserves to know what's next. How: This explains.
+
+
+
+				return;
+
+
+			}
+
+
+
+			void lodFirFun().then( ( firModObj ) => firModObj.refTokFun() ); // What: Token Renewal Call. Why: A renewed token carries a newly set claim. How: This forces one.
+
+
+		}, PUR_GAP_NUM );
+
+
+
+		return () => window.clearInterval( purTimNum ); // What: Timer Cleanup. Why: The wait ends with the effect. How: This clears the timer.
+
+
+	}, [ paiNowBoo, purPenBoo, sigNowBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the wait starts or ends. How: purPenBoo starts it, and paiNowBoo or sigNowBoo changing ends or restarts it.
+
+
+
 	React.useEffect( () => { // What: Page Event Effect. Why: Coming back into view or online pulls, and being hidden with a change waiting pushes. How: This listens for those page events.
 
 
@@ -679,6 +755,49 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 	// #region Account Actions
+
+	const buySynFun = async () : Promise< void > => { // What: Buy Sync Function. Why: An unpaid account buys sync through Polar. How: This asks the checkout function for a checkout and sends the person to it, explaining a failure.
+
+
+		try { // What: Checkout Try. Why: A network or setup failure must explain itself. How: This proves who is buying and opens the checkout.
+
+
+			const ideTokStr = await ( await staWatFun() ).tokGetFun(); // What: Identity Token String. Why: The checkout function verifies the buyer. How: This gets the account's token.
+
+
+
+			if ( !ideTokStr ) { setAccErrStr( 'Sign in first.' ); return; } // What: Signed Out Guard. Why: Only a signed-in account can buy. How: This explains and stops.
+
+
+
+			const cheResObj = await fetch( '/.netlify/functions/checkout', { headers : { 'Authorization' : `Bearer ${ ideTokStr }` }, method : 'POST' } ); // What: Checkout Response Object. Why: The function creates the checkout. How: This posts the token to it.
+			const cheBodObj = await cheResObj.json().catch( () => ( {} ) ) as { error? : string, url? : string };                                          // What: Checkout Body Object. Why: The reply holds the address or a sentence. How: This parses it, or nothing when it isn't JSON. // What: Type Assertion Note. Why: The function always answers with url or error. How: The as types its reply.
+
+
+
+			if ( !cheResObj.ok || !cheBodObj.url ) { setAccErrStr( cheBodObj.error || "The checkout couldn't be started. Try again in a moment." ); return; } // What: Refused Guard. Why: The function explains its refusals. How: This shows its sentence and stops.
+
+
+
+			window.location.assign( cheBodObj.url ); // What: Checkout Navigation. Why: Payment happens on Polar's page, which returns here after. How: This opens it.
+
+
+		}
+
+		catch ( errCatObj ) { // What: Checkout Catch. Why: The checkout couldn't be reached. How: This logs and explains.
+
+
+			console.warn( errCatObj ); // What: Failure Log. Why: The cause stays visible to anyone debugging. How: This logs it.
+
+			setAccErrStr( "The checkout couldn't be started. Check your connection, then try again." ); // What: Failure Message. Why: A connection problem is the usual cause. How: This says so.
+
+
+		}
+
+
+	};
+
+
 
 	const sigGooFun = async () => { // What: Sign Google Function. Why: Google is one way in. How: This opens its window and explains a failure.
 
@@ -790,10 +909,12 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 		accErrStr,                                                                      // What: Account Error String. Why: The screen shows the last failure. How: This passes it.
 		accLoaBoo,                                                                      // What: Account Loading Boolean. Why: The screen waits for the account. How: This passes it.
 		accUseObj,                                                                      // What: Account User Object. Why: The screen shows who is signed in. How: This passes it.
+		buySynFun,                                                                      // What: Buy Sync Function. Why: The screen starts a purchase. How: This passes the action.
 		choAccFun : () => void synRunRef.current( 'account' ),                          // What: Choose Account Function. Why: The person kept the account's data. How: This runs the first sync that way.
 		choDevFun : () => void synRunRef.current( 'device' ),                           // What: Choose Device Function. Why: The person kept this device's data. How: This runs the first sync that way.
 		finLinFun : ( emaAdrStr, linUrlStr ) => void finLinFun( emaAdrStr, linUrlStr ), // What: Finish Link Function. Why: The screen finishes a waiting or pasted link. How: This calls the finisher.
 		linNeeBoo : !!linUrlStr && !accUseObj,                                          // What: Link Needs Boolean. Why: A waiting link needs an address only until someone is signed in. How: This is true while one waits.
+		purPenBoo,                                                                      // What: Purchase Pending Boolean. Why: The screen shows the purchase finishing. How: This passes it.
 		senLinFun,                                                                      // What: Send Link Function. Why: The screen sends links and confirms them. How: This passes the sender.
 		sigGooFun : () => void sigGooFun(),                                             // What: Sign Google Function. Why: The screen signs in with Google. How: This calls it.
 		sigOutFun : () => void sigOutFun(),                                             // What: Sign Out Function. Why: The screen signs out. How: This calls it.

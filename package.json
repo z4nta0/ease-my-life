@@ -8,11 +8,12 @@
 		"dev": "vite",
 		"lint": "eslint .",
 		"preview": "vite preview",
-		"test": "firebase emulators:exec --only auth,firestore --project demo-ease-my-life \"playwright test --config tests/playwright.config.ts\"",
+		"test": "firebase emulators:exec --only auth,firestore --project demo-ease-my-life \"node --test tests/payments/functions.test.ts && playwright test --config tests/playwright.config.ts\"",
 		"test:account": "firebase emulators:exec --only auth,firestore --project demo-ease-my-life \"playwright test --config tests/playwright.config.ts --project 'account-*'\"",
 		"test:accessibility": "playwright test --config tests/playwright.config.ts --project 'accessibility-*'",
 		"test:interaction": "playwright test --config tests/playwright.config.ts --project interaction",
 		"test:onboarding": "playwright test --config tests/playwright.config.ts --project onboarding",
+		"test:payments": "firebase emulators:exec --only auth --project demo-ease-my-life \"node --test tests/payments/functions.test.ts\"",
 		"test:responsive": "playwright test --config tests/playwright.config.ts --project responsive",
 		"test:rules": "firebase emulators:exec --only firestore --project demo-ease-my-life \"playwright test --config tests/playwright.config.ts --project rules\"",
 		"test:simulation": "playwright test --config tests/playwright.config.ts --project simulation",
@@ -21,6 +22,7 @@
 	},
 	"dependencies": {
 		"firebase": "12.19.0",
+		"firebase-admin": "14.5.0",
 		"react": "19.3.0",
 		"react-dom": "19.3.0"
 	},

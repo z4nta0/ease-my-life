@@ -76,7 +76,13 @@ tests/output/report` opens the HTML report.
   the suite, in Chromium, Firefox, and WebKit: the first signs in with an
   emailed link (read back from the emulator) and uploads the real backup,
   the second, a fresh install, adopts it, and a holiday added on the second
-  syncs back to the first. `npm test` runs every suite inside the emulator.
+  syncs back to the first. `npm test` runs every suite, payments included, inside the emulator.
+- `npm run test:payments`: checks the checkout and webhook functions in
+  Node's own test runner (Playwright's loader can't load `firebase-admin`)
+  against the auth emulator: only a signed, fresh `order.paid` for the sync
+  product sets the paid claim, an untagged order is matched by email, only a
+  full refund clears it, and the checkout refuses a missing or unverified
+  sign-in and sends Polar the account's tags. A few seconds.
 - `npm run test:accessibility`: the pre-commit accessibility scan, in
   Chromium, Firefox, and WebKit. Every tab at 375 and 1,280px, help mode,
   the Privacy panel, and the welcome modal (`tests/support/states.ts`) get
@@ -301,6 +307,17 @@ background.
   verified email and the `paid` custom claim, which only the payment webhook
   sets. They're published by pasting into the console's Firestore Rules tab
   (or `npx firebase deploy --only firestore:rules`).
+- **Payments**: Polar sells the one-time upgrade. `netlify/functions/
+  checkout.mts` verifies the buyer's ID token and asks Polar for a checkout
+  of the private Ease My Life Sync product, tagged with the account's id, and
+  `netlify/functions/polar-webhook.mts` checks Polar's signature and sets the
+  `paid` claim on `order.paid` (clearing it on a full refund). The production
+  site uses live Polar and every other deploy the sandbox (`netlify/lib/
+  polar.mts` holds both products, the sandbox one empty until it's set up).
+  Netlify holds `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`,
+  `POLAR_ACCESS_TOKEN`, and `POLAR_WEBHOOK_SECRET` as secrets, the Polar ones
+  per deploy context. Back from the checkout (`?purchase=sync`), the app
+  renews its token every few seconds until the claim arrives.
 - **Running it**: `state/sync-run.ts`'s `useSynRunFun`, called once in
   `app.tsx`, follows the account and syncs on launch, on focus or coming
   online, two minutes after the last change, and on hide with a change

@@ -103,9 +103,10 @@ if ( EMU_HOS_STR ) { // What: Emulator Check. Why: Tests run against the local e
 // #region Helpers
 
 const finLinFun = ( emaAdrStr : string, linUrlStr : string ) => signInWithEmailLink( firAutObj, emaAdrStr, linUrlStr ); // What: Finish Link Function. Why: Opening the emailed link finishes signing in, given the address it was sent to. How: This signs in with the link's code.
-const isaLinFun = ( linUrlStr : string ) => isSignInWithEmailLink( firAutObj, linUrlStr );                           // What: Is-A Link Function. Why: The app has to notice it was opened from a sign-in email. How: This checks the address for the link's code.
-const sigGooFun = () => signInWithPopup( firAutObj, new GoogleAuthProvider() );                                       // What: Sign Google Function. Why: Google is one way to sign in. How: This opens Google's sign-in window and waits.
-const sigOutFun = () => signOut( firAutObj );                                                                          // What: Sign Out Function. Why: A device can leave its account. How: This ends the session.
+const isaLinFun = ( linUrlStr : string ) => isSignInWithEmailLink( firAutObj, linUrlStr );                              // What: Is-A Link Function. Why: The app has to notice it was opened from a sign-in email. How: This checks the address for the link's code.
+const sigGooFun = () => signInWithPopup( firAutObj, new GoogleAuthProvider() );                                         // What: Sign Google Function. Why: Google is one way to sign in. How: This opens Google's sign-in window and waits.
+const sigOutFun = () => signOut( firAutObj );                                                                           // What: Sign Out Function. Why: A device can leave its account. How: This ends the session.
+const tokGetFun = () => firAutObj.currentUser ? firAutObj.currentUser.getIdToken() : Promise.resolve( null );           // What: Token Get Function. Why: The checkout function verifies who is buying. How: This resolves with the signed-in account's ID token, or null.
 
 
 
@@ -247,7 +248,7 @@ function watUseFun ( useCalFun : ( accUseObj : AccUseTyp | null ) => void ) : ()
 
 // #region Exports
 
-export { type AccUseTyp, finLinFun, firStoObj, isaLinFun, refTokFun, senLinFun, sigGooFun, sigOutFun, watUseFun }; // What: Named Exports. Why: The account screen signs in and out through these, and the cloud backend uses firStoObj. How: This exports them by name.
+export { type AccUseTyp, finLinFun, firStoObj, isaLinFun, refTokFun, senLinFun, sigGooFun, sigOutFun, tokGetFun, watUseFun }; // What: Named Exports. Why: The account screen signs in and out through these, and the cloud backend uses firStoObj. How: This exports them by name, tokGetFun for the purchase.
 
 // #endregion Exports
 

@@ -144,6 +144,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 
 	const [ emaAdrStr, setEmaAdrStr ] = React.useState( '' ); // What: Email Address String And Setter. Why: The email field is controlled. How: This holds its text.
+	const [ buyActBoo, setBuyActBoo ] = React.useState( false ); // What: Buy Active Boolean And Setter. Why: The Unlock button waits while the checkout opens. How: This is true from the click until the checkout opens or fails.
 	const [ linSenStr, setLinSenStr ] = React.useState( '' ); // What: Link Sent String And Setter. Why: After sending, the section says where the link went. How: This holds that address.
 	const [ pasUrlStr, setPasUrlStr ] = React.useState( '' ); // What: Pasted URL String And Setter. Why: The paste field is controlled. How: This holds its text.
 
@@ -166,6 +167,19 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 
 		void accSynObj.senLinFun( senAdrStr ).then( ( senOkaBoo ) => { if ( senOkaBoo ) setLinSenStr( senAdrStr ); } ); // What: Link Send Call. Why: The section confirms only a link that went out. How: This sends it and keeps the address once it's sent.
+
+
+	};
+
+
+
+	const buySynFun = () => { // What: Buy Sync Function. Why: The Unlock button starts the purchase. How: This marks the button busy and starts the checkout, clearing the mark if it fails to open.
+
+
+		setBuyActBoo( true ); // What: Busy Mark. Why: A second click mustn't open a second checkout. How: This disables the button.
+
+
+		void accSynObj.buySynFun().finally( () => setBuyActBoo( false ) ); // What: Checkout Start Call. Why: The checkout opens on Polar's page, or fails with a message. How: This starts it and clears the mark once it settles.
 
 
 	};
@@ -500,7 +514,11 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 									<span className={ cssModObj.setNamSpa }>Sync across devices</span>{ /* What: Settings Name Span Element. Why: The row names the upgrade. How: This renders its name. */ }
 
-									<span className={ cssModObj.setSubSpa }>A one-time purchase, not a subscription. Once it's unlocked, this account keeps your data the same on every device you sign in to.</span>{ /* What: Settings Sub Span Element. Why: The price model matters to the decision. How: This states it. */ }
+									<span
+										key={ String( accSynObj.purPenBoo ) }
+
+										className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
+									>{ accSynObj.purPenBoo ? 'Finishing your purchase. This usually takes a few seconds.' : "A one-time purchase, not a subscription. Once it's unlocked, this account keeps your data the same on every device you sign in to." }</span>{ /* What: Settings Sub Span Element. Why: The price model matters to the decision, and a returning buyer should know the unlock is on its way. How: This states the model, or the wait, fading between them. */ }
 
 
 								</div>
@@ -508,10 +526,14 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 
 								<ButBasCom
-									disabled
+									data-element-name-hook='accBuyBut'
+
+									disabled={ buyActBoo || accSynObj.purPenBoo }
 									kinValStr='primary'
 									sizValStr='sm'
-								>Coming Soon</ButBasCom>{ /* What: Button Base Component. Why: The purchase isn't open yet. How: This stands in disabled. */ }
+
+									onClick={ buySynFun }
+								>{ buyActBoo ? 'Opening checkout…' : 'Unlock sync' }</ButBasCom>{ /* What: Button Base Component. Why: This starts the purchase. How: This opens Polar's checkout, disabled and relabeled while it opens or while a purchase finishes. */ }
 
 
 							</div>
@@ -636,7 +658,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 				data-element-name-hook='accStaPar'
 
 				role='status'
-			>{ accUseObj ? `Signed in as ${ accUseObj.emaStr || 'your account' }.` : linSenStr ? `Sign-in link sent to ${ linSenStr }.` : '' }</p>{ /* What: Account Status Paragraph Element. Why: Signing in and sending a link change the section without moving focus, so screen readers need to hear it. How: This visually hidden status region is in the page and empty from the first render, gaining each result's sentence. */ }
+			>{ accSynObj.purPenBoo ? 'Finishing your purchase.' : accUseObj ? `Signed in as ${ accUseObj.emaStr || 'your account' }.` : linSenStr ? `Sign-in link sent to ${ linSenStr }.` : '' }</p>{ /* What: Account Status Paragraph Element. Why: Signing in and sending a link change the section without moving focus, so screen readers need to hear it. How: This visually hidden status region is in the page and empty from the first render, gaining each result's sentence, the purchase finishing included. */ }
 
 
 		</>
