@@ -23,6 +23,7 @@ import { TabStaCom    } from './tabs/stats/tab-stats.tsx';       // What: Tab St
 import { TabTodCom    } from './tabs/today/tab-today.tsx';       // What: Tab Today Component. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
 import { useAppStaFun } from './state/store.ts';                 // What: Use App State Function. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
 import { useEmlTouFun } from './state/tour-bus.ts';              // What: Use Ease My Life Tour Function. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's touPhaStr/wanRaiBoo/touSteNum fields.
+import { useRaiFocFun } from './ui/rail-focus.ts';               // What: Use Rail Focus Function. Why: A keyboard-focused pill at a rail's edge would stay half clipped. How: This is called once below to keep focused rail controls in view.
 import { useRaiWheFun } from './ui/rail-wheel.ts';               // What: Use Rail Wheel Function. Why: The pill rails scroll sideways, which a mouse wheel can't do on its own. How: This is called once in AppRooCom.
 import { WelTouCom    } from './onboarding/welcome-tour.tsx';    // What: Welcome Tour Component. Why: The first-run welcome modal and its driven tour need to run above every tab. How: This is rendered once, passed the shared state/actions plus the active tab and the tab-switching function.
 
@@ -318,6 +319,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 					data-tab={ tabConObj.ideStr }
 
 					aria-current={ tabConObj.ideStr === actIdeStr ? 'page' : undefined }
+					aria-label={ tabConObj.labStr } // What: ARIA Label. Why: At phone widths the tab's label is hidden and the button shows only its icon, which leaves it nameless to screen readers. How: This names the button with the same text as its label, so it reads the same at every width.
 
 					onClick={ () => onChange( tabConObj.ideStr ) }
 				>{ /* What: Tab Button Element. Why: This is the clickable control for switching to this specific tab. How: This marks itself current via aria-current when its own ideStr matches actIdeStr, and calls onChange with its ideStr when clicked. Its data-element-name-hook is read by app.tsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator. */ }
@@ -427,6 +429,7 @@ function AppRooCom () : React.JSX.Element {
 
 
 
+	useRaiFocFun(); // What: Use Rail Focus Function Call. Why: Every tab's pill rails should keep a keyboard-focused control in view. How: This attaches the shared focus listener for as long as the app is mounted.
 	useRaiWheFun(); // What: Use Rail Wheel Function Call. Why: Every tab's pill rails should scroll with a mouse wheel. How: This attaches the shared wheel listener for as long as the app is mounted.
 
 

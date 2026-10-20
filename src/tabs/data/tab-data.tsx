@@ -2213,7 +2213,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 									<button
 										className={ cssModObj.vacTogBut }
 
-										aria-label={ `${ allVacBoo ? 'Activate' : 'Deactivate' } all items in ${ picCurObj.name }` }
+										aria-label={ `${ allVacBoo ? 'Inactive' : 'Active' }: all items in ${ picCurObj.name }` } // What: ARIA Label. Why: Speech control users say the words they see, so the name has to start with the visible Active or Inactive, while still saying which picker it covers. How: This leads with the visible word and names the picker after it.
 										aria-pressed={ !!allVacBoo }
 										title='Active toggle for all items in this picker'
 

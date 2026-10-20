@@ -193,7 +193,7 @@ test( 'the vacation button switches a whole picker off', async ( { page : curPag
 
 
 
-	await carSecLoc.locator( '[aria-label^="Deactivate all items in"]' ).click(); // What: Vacation Click Call. Why: The button deactivates every item. How: This clicks it.
+	await carSecLoc.locator( '[aria-label^="Active: all items in"]' ).click(); // What: Vacation Click Call. Why: The button deactivates every item. How: This clicks it while it still reads Active, the name its visible label leads.
 
 
 

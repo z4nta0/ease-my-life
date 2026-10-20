@@ -601,6 +601,14 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
+[data-rail-wheel-scroll] { /* What: Pill Rail. Why: A keyboard-focused pill is scrolled into view by ui/rail-focus.ts, and it should land clear of the rail's edge fade. How: This sets the rail's inline scroll padding to its own fade width, which each faded rail's module sets as --fad-edg-off, falling back to none. */
+
+
+	scroll-padding-inline : var( --fad-edg-off, 0 ); /* Fade Edge Offset, set by each faded rail's module, falling back to 0 */
+
+
+}
+
 .livRegDiv { /* What: Live Region Div. Why: Status changes must be announced reliably, so the region exists from load and stays in the accessibility tree. How: This clips it to one invisible pixel instead of hiding it with display none. */
 
 

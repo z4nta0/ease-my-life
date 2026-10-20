@@ -184,10 +184,10 @@
 
 }
 
-.groTotSpa { /* What: Group Total Span. Why: The "of total" part should sit quieter than the done count. How: This fades it. */
+.groTotSpa { /* What: Group Total Span. Why: The "of total" part should sit quieter than the done count, while still meeting text contrast. How: This keeps it in the muted text color, against the done count's main text color, rather than fading it. */
 
 
-	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+	color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }

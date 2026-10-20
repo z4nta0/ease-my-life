@@ -7,8 +7,9 @@ import cssModObj from './intro-modal.module.css'; // What: CSS Module Object. Wh
 import React     from 'react';                    // What: React. Why: This is the UI library IntModCom is built on. How: This is used directly (React.useRef, React.useEffect) inside the component below.
 
 
-import { createPortal } from 'react-dom';          // What: Create Portal. Why: The modal must render into <body> so it lays over the whole app instead of being clipped by an ancestor's own overflow/stacking context. How: This is called with the modal's own JSX and document.body inside IntModCom's return.
-import { redMotFun    } from '../utils/motion.ts'; // What: Reduce Motion Function. Why: A user who prefers reduced motion should not see the card's own slide-in entrance animation. How: This is called below to decide whether the rise entrance modifier class is applied.
+import { createPortal } from 'react-dom';            // What: Create Portal. Why: The modal must render into <body> so it lays over the whole app instead of being clipped by an ancestor's own overflow/stacking context. How: This is called with the modal's own JSX and document.body inside IntModCom's return.
+import { redMotFun    } from '../utils/motion.ts';   // What: Reduce Motion Function. Why: A user who prefers reduced motion should not see the card's own slide-in entrance animation. How: This is called below to decide whether the rise entrance modifier class is applied.
+import { useModIneFun } from '../ui/modal-inert.ts'; // What: Use Modal Inert Function. Why: Tab must not leave the open modal for the page behind it. How: This is called with the primary button's ref, making everything outside the modal inert while it's open.
 
 // #endregion Imports
 
@@ -102,6 +103,10 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onSkiT
 
 
 	React.useEffect( () => { if ( priButRef.current ) priButRef.current.focus( { preventScroll : true } ); }, [] ); // What: Primary Focus Effect. Why: The primary button should be focused immediately on mount so pressing Enter submits right away, but a plain autoFocus's default scroll-into-view would land the page scrolled down to this button near the bottom of the modal instead of showing its own top (icon, title) first, now that .intScrDiv can be a scroll container. How: This focuses priButRef's current button with preventScroll, once, on mount only, guarded so it no-ops if the ref isn't attached yet.
+
+
+
+	useModIneFun( priButRef, true ); // What: Modal Inert Call. Why: Tab must stay inside the modal instead of reaching the app behind it. How: This makes everything outside the modal inert for as long as it's mounted, which is only while it's open.
 
 
 

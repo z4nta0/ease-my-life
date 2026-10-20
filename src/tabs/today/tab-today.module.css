@@ -1552,25 +1552,16 @@
 
 /* #region raiCouSpa */
 
-.raiCouSpa { /* What: Rail Count Span. Why: The done and total counts read as a quiet mono cluster. How: This sets them on one baseline in faded tabular mono type. */
+.raiCouSpa { /* What: Rail Count Span. Why: The done and total counts read as a quiet mono cluster, while still meeting text contrast. How: This sets them on one baseline in small tabular mono type, in the button's own muted color rather than faded. */
 
 
 	align-items          : baseline;
 	color                : inherit;
 	display              : inline-flex;
-	font-family          : var( --fon-fam-sec );     /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size            : var( --fon-siz-bas );     /* Font Size Base = 11px */
+	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-bas ); /* Font Size Base = 11px */
 	font-variant-numeric : tabular-nums;
-	gap                  : var( --spa-hor-m09 );     /* Spacing Horizontal Base Minus 9 ~= 1.160px */
-	opacity              : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
-
-
-}
-
-.raiTotSpa { /* What: Rail Total Span. Why: The total reads quieter than the done count. How: This fades it further. */
-
-
-	opacity : var( --cdn-pow-002-rec ); /* Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
+	gap                  : var( --spa-hor-m09 ); /* Spacing Horizontal Base Minus 9 ~= 1.160px */
 
 
 }

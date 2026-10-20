@@ -3804,8 +3804,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 												) );
 
 
-											const titTexStr = namTexArr.length ? `${ hedTexStr }\n${ namTexArr.join( '\n' ) }` : hedTexStr; // What: Title Text String. Why: The cell's own native tooltip needs the head line plus every bullet line joined together, or just the head line when nothing was logged. How: This joins hedTexStr and namTexArr with newlines, or falls back to hedTexStr alone.
-											const selDayBoo = heaSelStr === dayCurObj.datStr;                                               // What: Selected Day Boolean. Why: A tapped cell needs its own distinct styling. How: This compares heaSelStr against this cell's own date.
+											const titTexStr = namTexArr.length ? `${ hedTexStr }\n${ namTexArr.join( '\n' ) }` : hedTexStr;                                                                   // What: Title Text String. Why: The cell's own native tooltip needs the head line plus every bullet line joined together, or just the head line when nothing was logged. How: This joins hedTexStr and namTexArr with newlines, or falls back to hedTexStr alone.
+											const selDayBoo = heaSelStr === dayCurObj.datStr; // What: Selected Day Boolean. Why: A tapped cell needs its own distinct styling. How: This compares heaSelStr against this cell's own date.
+											const ariHedStr = isaRemBoo ? `${ dayCurObj.datStr }, ${ dayCurObj.donNum } done` : `${ dayCurObj.datStr }, ${ dayCurObj.donNum } of ${ dayCurObj.totNum } done`; // What: ARIA Head String. Why: A screen reader should hear the day and its count in words rather than the tooltip's dot and slash. How: This phrases a done count for a Reminders day and done of total for a pick day.
+											const ariNamArr = ( dayCurObj.iteArr || [] ).map( ( iteCurObj ) => !isaRemBoo && iteCurObj.donBoo ? `${ iteCurObj.namStr }, done` : iteCurObj.namStr );           // What: ARIA Name Array. Why: Each logged item should be named, with a done item said as done rather than shown with a check mark. How: This maps each item to its name, adding done for a completed pick.
+											const ariLabStr = ariNamArr.length ? `${ ariHedStr }: ${ ariNamArr.join( '; ' ) }` : ariHedStr;                                                                   // What: ARIA Label String. Why: The cell's screen-reader name carries the same facts as its tooltip, in words. How: This joins the head and the item names, or uses the head alone on an empty day.
 
 
 
@@ -3821,7 +3824,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 													type='button'
 
-													aria-label={ titTexStr }
+													aria-label={ ariLabStr }
 													title={ titTexStr }
 
 													onClick={ () => setHeaSelStr( selDayBoo ? null : dayCurObj.datStr ) }

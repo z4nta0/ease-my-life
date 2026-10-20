@@ -889,15 +889,16 @@
 .appConMai { /* What: Main Area. Why: The active tab scrolls in its own area, with side padding each layout can change, clipped horizontally so the background flourish's edge glyphs never scroll it sideways. How: This fills the remaining space, pads it from --mai-hor-pad, scrolls vertically, and eases padding changes between layouts. */
 
 
-	flex           : 1;
-	min-height     : 0;
-	min-width      : 0;
-	overflow-x     : hidden;                                            /* What: Explicit Horizontal Clip. Why: Setting overflow-y alone makes overflow-x compute to auto, giving main its own sideways scroll that the flourish's edge glyphs would push. How: This sets it to hidden explicitly. */
-	overflow-y     : auto;
-	padding-bottom : var( --spa-ver-p07 );                              /* Spacing Vertical Base Plus 7 ~= 104.323px */
-	padding-left   : var( --mai-hor-pad, var( --spa-hor-p01 ) );        /* Main Horizontal Padding, set by its layout rules, falling back to Spacing Horizontal Base Plus 1 ~= 19.304px */
-	padding-right  : var( --mai-hor-pad, var( --spa-hor-p01 ) );        /* Main Horizontal Padding, set by its layout rules, falling back to Spacing Horizontal Base Plus 1 ~= 19.304px */
-	transition     : padding var( --dur-tra-p04 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 4 ~= 486.1ms, Motion Standard Easing = ease */ /* What: Layout Padding Transition. Why: The content has to reflow as the padding changes between layouts, which a transform can't do. How: This animates the padding itself. */
+	flex                  : 1;
+	min-height            : 0;
+	min-width             : 0;
+	overflow-x            : hidden;                                            /* What: Explicit Horizontal Clip. Why: Setting overflow-y alone makes overflow-x compute to auto, giving main its own sideways scroll that the flourish's edge glyphs would push. How: This sets it to hidden explicitly. */
+	overflow-y            : auto;
+	padding-bottom        : var( --spa-ver-p07 );                              /* Spacing Vertical Base Plus 7 ~= 104.323px */
+	padding-left          : var( --mai-hor-pad, var( --spa-hor-p01 ) );        /* Main Horizontal Padding, set by its layout rules, falling back to Spacing Horizontal Base Plus 1 ~= 19.304px */
+	padding-right         : var( --mai-hor-pad, var( --spa-hor-p01 ) );        /* Main Horizontal Padding, set by its layout rules, falling back to Spacing Horizontal Base Plus 1 ~= 19.304px */
+	scroll-padding-bottom : var( --spa-ver-p07 );                              /* Spacing Vertical Base Plus 7 ~= 104.323px */ /* What: Focus Scroll Clearance. Why: The floating tab bar covers the bottom of this area, and a control focused by keyboard was scrolled just into view right underneath it. How: This keeps keyboard and scrollIntoView scrolling clear of the same space the bottom padding reserves. */
+	transition            : padding var( --dur-tra-p04 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 4 ~= 486.1ms, Motion Standard Easing = ease */ /* What: Layout Padding Transition. Why: The content has to reflow as the padding changes between layouts, which a transform can't do. How: This animates the padding itself. */
 
 
 }

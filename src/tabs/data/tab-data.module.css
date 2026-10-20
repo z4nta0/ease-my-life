@@ -446,8 +446,8 @@
 .filPilBut[aria-selected='true'] .filCouSpa { /* What: Selected Pill Count. Why: The count follows its pill's accent. How: This tints the capsule in the accent color. */
 
 
-	background : oklch( from var( --acc-mai-col ) l c h / 0.16 ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	color      : var( --acc-mai-col );                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	background : oklch( from var( --acc-mai-col ) l c h / 0.16 );            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color      : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ), darkened by 0.1 */ /* What: Darkened Accent Text. Why: The plain accent on its own tint falls just short of text contrast at this small size. How: This darkens it by the same step the app's link hover uses. */
 
 
 }

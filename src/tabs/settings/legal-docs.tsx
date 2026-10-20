@@ -7,10 +7,11 @@ import cssModObj from './legal-docs.module.css'; // What: CSS Module Object. Why
 import React     from 'react';                   // What: React. Why: This is the UI library both legal-document components and LegModCom are built on. How: This is used directly (React.Fragment, React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
 
 
-import { createPortal } from 'react-dom';             // What: Create Portal. Why: The modal must render into <body> so help mode's overlay and any ancestor's stacking can't bury it. How: This is called by LegModCom's own return.
-import { durMilFun    } from '../../utils/rhythm.ts'; // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { IcoSvgCom    } from '../../ui/icon.tsx';     // What: Icon Svg Component. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'x'.
-import { redMotFun    } from '../../utils/motion.ts'; // What: Reduce Motion Function. Why: A user who prefers reduced motion should dismiss the modal instantly instead of playing its own closing animation. How: This is checked inside LegModCom's modDisFun to skip the animated delay.
+import { createPortal } from 'react-dom';               // What: Create Portal. Why: The modal must render into <body> so help mode's overlay and any ancestor's stacking can't bury it. How: This is called by LegModCom's own return.
+import { durMilFun    } from '../../utils/rhythm.ts';   // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
+import { IcoSvgCom    } from '../../ui/icon.tsx';       // What: Icon Svg Component. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'x'.
+import { redMotFun    } from '../../utils/motion.ts';   // What: Reduce Motion Function. Why: A user who prefers reduced motion should dismiss the modal instantly instead of playing its own closing animation. How: This is checked inside LegModCom's modDisFun to skip the animated delay.
+import { useModIneFun } from '../../ui/modal-inert.ts'; // What: Use Modal Inert Function. Why: Tab must not leave the open panel for the page behind it. How: This is called with the panel's ref, making everything outside the modal inert while it's open.
 
 // #endregion Imports
 
@@ -1075,6 +1076,10 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: modDisFun is recreated every render, and listing it would re-lock the scroller and re-move focus each time. How: The open-time copy stays correct, since it only calls the parent's close handler, which just clears the open document.
 	}, [ legDocStr ] ); // What: Effect Dependency Array. Why: This effect must re-run every time a different document (or no document) is requested. How: legDocStr changes both whether the modal is shown at all and which document's own title/body renders inside it.
+
+
+
+	useModIneFun( panEleRef, !!legDocStr ); // What: Modal Inert Call. Why: Tab must stay inside the open panel instead of reaching the page behind it. How: This makes everything outside the modal inert while a document is showing.
 
 
 
