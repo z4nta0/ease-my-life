@@ -30,6 +30,7 @@ import { SET_HEL_ARR  } from '../../help/content.tsx';              // What: Set
 import { STG_NAM_OBJ  } from '../../state/storage.ts';              // What: Storage Namespace Object. Why: The Data Control section reports where data lives and reads the true persisted pick log before exporting. How: This is called via its own staRepFun()/reaPerFun() methods.
 import { StyRadCom    } from './style-radio.tsx';                   // What: Style Radio Component. Why: Appearance's Picker animation and Completion celebration pickers share one radio list. How: This is rendered twice in TabSetCom's Appearance section.
 import { TheSecCom    } from './theme-picker.tsx';                  // What: Theme Section Component. Why: Appearance's own Light and Dark theme cards live in their own file. How: This is rendered once in TabSetCom's Appearance section.
+import { TIP_URL_STR  } from '../../constants.ts';                  // What: Tip URL String. Why: The About section's Buy Me a Coffee button opens the Ko-fi tip page. How: This is opened in a new tab when the button is clicked, and disables the button while unset.
 import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { useEscCanFun } from '../../ui/escape-cancel.ts';           // What: Use Escape Cancel Function. Why: Both the pending-import and pending-reset confirmations need Escape to back out, like every other confirm in the app. How: This is called once per confirmation, gated on that confirmation's own open boolean.
 
@@ -2613,7 +2614,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 						className={ cssModObj.setSecSec }
 
 						data-element-name-hook='setAboSec'
-					>{ /* What: About Section Element. Why: This is the About section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy plus 4 Cards: the app identity, the support-the-project row, the replay-tour row, and ConSupCom. Its data-element-name-hook is read by the Settings page tour. */ }
+					>{ /* What: About Section Element. Why: This is the About section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy plus 4 Cards: the app identity, the Buy Me a Coffee row, the replay-tour row, and ConSupCom. Its data-element-name-hook is read by the Settings page tour. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -2669,7 +2670,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 								className={ cssModObj.setRowDiv }
 
 								data-element-name-hook='supProDiv'
-							>{ /* What: Support Project Row Div Element. Why: The label/description and the disabled placeholder button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the disabled ButBasCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+							>{ /* What: Support Project Row Div Element. Why: The label/description and the Buy Me a Coffee button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the ButBasCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className={ cssModObj.setInfDiv }>{ /* What: Support Project Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
@@ -2677,7 +2678,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 									<span className={ cssModObj.setNamSpa }>Support the project</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Support the project". */ }
 
-									<span className={ cssModObj.setSubSpa }>Enjoying Ease My Life? Consider buying me a coffee.</span>{ /* What: Set Data Sub Span Element. Why: The row needs a short, friendly ask. How: This renders the fixed description. */ }
+									<span className={ cssModObj.setSubSpa }>{ TIP_URL_STR ? 'Enjoying Ease My Life? Consider buying me a coffee on Ko-fi, any amount you like. It opens in a new tab.' : 'Enjoying Ease My Life? Consider buying me a coffee.' }</span>{ /* What: Set Data Sub Span Element. Why: The row needs a short, friendly ask, and should say where the button goes once it works. How: This renders the Ko-fi note only while TIP_URL_STR is set. */ }
 
 
 								</div>
@@ -2685,10 +2686,14 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 
 								<ButBasCom
-									disabled
+									data-element-name-hook='tipCofBut'
+
+									disabled={ !TIP_URL_STR }
 									kinValStr='secondary'
 									sizValStr='sm'
-								>Buy Me a Coffee</ButBasCom>{ /* What: Button Base Component. Why: A disabled placeholder communicates the feature exists without implying it works today. How: This renders with no onClick at all, since it is always disabled. */ }
+
+									onClick={ () => { if ( TIP_URL_STR ) window.open( TIP_URL_STR, '_blank', 'noopener,noreferrer' ); } } // What: Tip Click Handler. Why: The Ko-fi tip page is a separate site, and leaving the app for it would lose the user's place. How: This opens TIP_URL_STR in a new tab, cut off from this page, only while it is set.
+								>{ TIP_URL_STR ? 'Buy Me a Coffee' : 'Coming Soon' }</ButBasCom>{ /* What: Button Base Component. Why: This opens the Ko-fi tip page, or stands in disabled while a build has none. How: This reads Buy Me a Coffee while TIP_URL_STR is set, and Coming Soon otherwise. Its data-element-name-hook is read by the interaction suite. */ }
 
 
 							</div>
