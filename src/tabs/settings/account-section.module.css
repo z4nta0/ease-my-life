@@ -1,0 +1,258 @@
+
+
+
+/**
+ * account-section.module.css = Account Section Module
+ *
+ * @summary
+ * Styles for the Settings tab's Account section: its intro, its rows of
+ * name, description, and control (an email or link field joining the text
+ * where one is needed), the two first-sync choices, the failure note, and
+ * the visually hidden status region. The rows and fields share their look
+ * with the rest of the Settings tab and its support form, so their
+ * declarations are copied here from those modules until the design-system
+ * pass merges them.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+.secSubPar { /* What: Section Sub Paragraph. Why: The section explains itself in muted copy, like every other section. How: This sets it muted at the large font size with no margin. */
+
+
+	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	margin    : 0;
+
+
+}
+
+
+
+/* #region setRowDiv */
+
+.setRowDiv { /* What: Settings Row Div. Why: Each account row puts its text on the left and its control on the right, divided from the next row. How: This spreads them across a centered row under a hairline, and keeps the buttons from shrinking or wrapping. */
+
+
+	--but-bas-fle : 0 0 auto; /* What: Button Base Flex. Why: A row's button should keep its size. How: ButBasCom reads this for its own flex. */
+	--but-bas-whi : nowrap;   /* What: Button Base White Space. Why: A row's button label should stay on one line. How: ButBasCom reads this for its own white-space. */
+
+	align-items     : center;
+	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display         : flex;
+	gap             : var( --spa-hor-bas );                            /* Spacing Horizontal Base ~= 14.572px */
+	justify-content : space-between;
+	margin          : 0;
+	padding         : var( --spa-ver-bas ) 0;                          /* Spacing Vertical Base ~= 14.572px */
+
+
+}
+.setRowDiv:first-child { /* What: First Settings Row. Why: The top row shouldn't add extra space under its card's edge. How: This trims its top padding. */
+
+
+	padding-top : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+
+
+}
+.setRowDiv:last-child { /* What: Last Settings Row. Why: The bottom row needs no divider. How: This drops its border and trims its bottom padding. */
+
+
+	border-bottom  : 0;
+	padding-bottom : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+
+
+}
+.setRowDiv--stack { /* What: Settings Row Div Stack. Why: The first-sync choice explains two options at length, which needs the row's full width. How: This stacks the text above the buttons. */
+
+
+	align-items    : flex-start;
+	flex-direction : column;
+
+
+}
+@container app ( max-width : 500px ) { /* What: Narrow Settings Row. Why: A field and its button squeeze the text into a narrow column on a phone. How: This applies only when the app is 500px wide or less. */
+
+
+	.setRowDiv { /* What: Stacked Settings Row Div. Why: The text and field should get the row's full width, with the button underneath. How: This stacks them, keeping the button at its natural width on the left. */
+
+
+		align-items    : flex-start;
+		flex-direction : column;
+
+
+	}
+
+
+}
+
+
+/* #region setInfDiv */
+
+.setInfDiv { /* What: Settings Info Div. Why: The row's name, description, and any field stack together and take the space the control leaves. How: This stacks them in a tight column that grows but can shrink. */
+
+
+	align-self     : stretch;
+	display        : flex;
+	flex           : 1 1 auto;
+	flex-direction : column;
+	gap            : var( --spa-ver-m06 ); /* Spacing Vertical Base Minus 6 ~= 2.696px */
+	min-width      : 0;
+
+
+}
+
+.setNamSpa,
+.setNamLab { /* What: Settings Name Label. Why: The row's name leads it, whether it names the row or a field. How: This sets it in bold body text. */
+
+
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight : 600;
+
+
+}
+
+.setSubSpa { /* What: Settings Sub Span. Why: The explanation should read as quieter supporting text. How: This sets it small and muted with balanced line breaks. */
+
+
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
+	text-wrap   : pretty;
+
+
+}
+.setSubSpa--fade { /* What: Settings Sub Span Fade. Why: A description that changes after an action should fade in its new wording. How: This plays the shared fade each time the keyed element remounts. */
+
+
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Live Description. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.setSubSpa--fade { /* What: Still Settings Sub Span Fade. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.accEmaInp { /* What: Account Email Input. Why: The account fields should look like the app's other form fields. How: This gives them the shared field border, radius, padding, and type, with a border fade on focus. */
+
+
+	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	margin-top    : var( --spa-ver-m03 );                            /* Spacing Vertical Base Minus 3 ~= 6.268px */
+	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );             /* Vertical Rhythm Base Plus 11 ~= 321.273px */
+	outline       : none;
+	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width         : 100%;
+
+
+}
+.accEmaInp:focus { /* What: Focused Account Email Input. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
+
+
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Account Field. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.accEmaInp { /* What: Still Account Email Input. Why: The focus border should simply switch. How: This turns the border fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion setInfDiv */
+
+.accChoDiv { /* What: Account Choice Div. Why: The two first-sync choices sit side by side, wrapping onto two lines when there isn't room. How: This lays them out in a wrapping row. */
+
+
+	display   : flex;
+	flex-wrap : wrap;
+	gap       : var( --spa-ver-m02 ) var( --spa-hor-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+
+
+}
+
+/* #endregion setRowDiv */
+
+
+
+.accErrPar { /* What: Account Error Paragraph. Why: A failed sign-in or sync explains itself under the card. How: This sets the alert region in small red text, with room above it only when it holds a message. */
+
+
+	color     : var( --err-dar-col ); /* Error Dark Color = oklch( 0.5 0.18 25 ) */
+	font-size : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	margin    : 0;
+
+
+}
+.accErrPar:not( :empty ) { /* What: Filled Account Error Paragraph. Why: An empty region shouldn't push the next section down. How: This adds room above only when a message shows. */
+
+
+	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+
+.accErrSpa { /* What: Account Error Span. Why: A new failure should pop in so it's noticed. How: This plays the shared bounce each time the keyed message remounts. */
+
+
+	animation : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	display   : inline-block;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Account Error. Why: Someone who asked for less motion shouldn't see the note pop. How: This applies only when the reduced-motion preference is set. */
+
+
+	.accErrSpa { /* What: Still Account Error Span. Why: The note should simply appear. How: This turns the pop off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.accStaPar { /* What: Account Status Paragraph. Why: The status region must stay in the accessibility tree without showing, since the section already shows each result. How: This clips it to one invisible pixel. */
+
+
+	border      : 0;
+	clip-path   : inset( 50% );
+	height      : 1px;
+	margin      : -1px;
+	overflow    : hidden;
+	padding     : 0;
+	position    : absolute;
+	white-space : nowrap;
+	width       : 1px;
+
+
+}
+
+

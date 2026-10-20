@@ -7,6 +7,7 @@ import cssModObj from './tab-settings.module.css'; // What: CSS Module Object. W
 import React     from 'react';                     // What: React. Why: TabSetCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
+import { AccSecCom    } from './account-section.tsx';               // What: Account Section Component. Why: The Account section's sign-in and sync live in their own component. How: This renders them.
 import { annStaFun    } from './announce.ts';                       // What: Announce Status Function. Why: Several actions here (export, import, reset) need to speak a transient status to screen readers once they finish. How: This is called after each of those actions completes, sometimes assertively so it is not dropped by a focus move.
 import { APP_VER_STR  } from '../../constants.ts';                  // What: App Version String. Why: The About section shows the real build version. How: This is rendered in the About section's version row.
 import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: Nearly every action in this tab (install, export/import/reset, replay tour, view legal docs) is triggered from this shared button component. How: This is rendered throughout the tab with varying kind/size/icon props.
@@ -35,6 +36,7 @@ import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Tog
 import { useEscCanFun } from '../../ui/escape-cancel.ts';           // What: Use Escape Cancel Function. Why: Both the pending-import and pending-reset confirmations need Escape to back out, like every other confirm in the app. How: This is called once per confirmation, gated on that confirmation's own open boolean.
 
 
+import type { AccSynTyp } from '../../state/sync-run.ts';  // What: Account Sync Type. Why: The Account section shows and acts on the account and its sync. How: This types its prop.
 import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The component changes state through the store's actions. How: This types its actStoObj.
 import type { RawSavTyp } from '../../core/data-model.ts'; // What: Raw Save Type. Why: A chosen backup file is parsed before it's known to be a valid save. How: This types the pending import's data.
 import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The component reads the current app state. How: This types its staAppObj.
@@ -174,7 +176,7 @@ function forRunFun ( runTimStr : string ) : string {
 
 // #region Components
 
-type TecProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Settings-Component Props Type. Why: The Settings tab reads and changes the whole app state and can navigate to other tabs. How: This types TabSetCom's props, named Tec since Tsc already belongs to TheSecCom.
+type TecProTyp = { accSynObj : AccSynTyp, actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Settings-Component Props Type. Why: The Settings tab reads and changes the whole app state and can navigate to other tabs. How: This types TabSetCom's props, named Tec since Tsc already belongs to TheSecCom.
 
 // #region TabSetCom
 
@@ -192,6 +194,7 @@ type TecProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
+ * @param props.accSynObj   - Account Sync Object: {@link useSynRunFun}
  * @param props.actStoObj   - Actions Store Object: {@link useAppStaFun}
  * @param props.onNavHomFun - On Navigate Home Function: Navigates back to the
  *                            Today tab.
@@ -204,12 +207,12 @@ type TecProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
  *
  * @example
  * ```tsx
- * TabSetCom({ actStoObj, onNavHomFun, ... }) // => <TabSetCom />
+ * TabSetCom({ accSynObj, actStoObj, onNavHomFun, ... }) // => <TabSetCom />
  * ```
  *
 */
 
-function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecProTyp ) : React.JSX.Element {
+function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecProTyp ) : React.JSX.Element {
 
 
 	const appCurObj = staAppObj.appearance; // What: Appearance Current Object. Why: The appearance rows read the persisted appearance settings. How: This reads staAppObj.appearance, which migStaFun guarantees on every load.
@@ -2555,7 +2558,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 						className={ cssModObj.setSecSec }
 
 						data-element-name-hook='setAccSec'
-					>{ /* What: Account Section Element. Why: This is the Account section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the sync-placeholder CarSurCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+					>{ /* What: Account Section Element. Why: This is the Account section's own root, registering itself for scroll-spy/jump-to. How: This wraps the section's heading and AccSecCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -2566,43 +2569,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 						</div>
 
-						<p className={ cssModObj.secSubPar }>Ease My Life runs entirely on this device, with no account required. Sign in to sync across devices is planned for a future release as a paid feature (one time fee only).</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Account. */ }
-
-
-
-						<CarSurCom>{ /* What: Card Surface Component. Why: The sync-placeholder row needs the same bordered container as every other row in this tab. How: This wraps the sync row below. */ }
-
-
-							<div
-								className={ cssModObj.setRowDiv }
-
-								data-element-name-hook='setRowDiv'
-							>{ /* What: Sync Row Div Element. Why: The label/description and the disabled placeholder button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the disabled ButBasCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
-
-
-								<div className={ cssModObj.setInfDiv }>{ /* What: Sync Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
-
-
-									<span className={ cssModObj.setNamSpa }>Sync across devices</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Sync across devices". */ }
-
-									<span className={ cssModObj.setSubSpa }>This feature will keep all of your Ease My Life data synced across every device that you sign in to.</span>{ /* What: Set Data Sub Span Element. Why: The row needs to explain what this not-yet-shipped feature will actually do. How: This renders the fixed description. */ }
-
-
-								</div>
-
-
-
-								<ButBasCom
-									disabled
-									kinValStr='secondary'
-									sizValStr='sm'
-								>Coming Soon</ButBasCom>{ /* What: Button Base Component. Why: A disabled placeholder communicates the feature exists without implying it works today. How: This renders with no onClick at all, since it is always disabled. */ }
-
-
-							</div>
-
-
-						</CarSurCom>
+						<AccSecCom accSynObj={ accSynObj } />{ /* What: Account Section Component. Why: Signing in and sync have their own component, since they hold their own state and forms. How: This renders the section's intro, rows, and announcement regions from the account and its sync. */ }
 
 
 					</section>

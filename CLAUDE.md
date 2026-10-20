@@ -54,7 +54,7 @@ branch.
 
 ### Test suites
 
-Added 2026-10-06. Seven Playwright suites live in `tests/`, one project each
+Added 2026-10-06. Eight Playwright suites live in `tests/`, one project each
 in `tests/playwright.config.ts` (the accessibility suite one per engine), which starts its own dev server on port 5190
 (never the usual 5173) and stops it afterwards. Every page runs in Chicago
 time with service workers blocked, and results, screenshots, and simulation
@@ -71,6 +71,12 @@ tests/output/report` opens the HTML report.
   picks: `EML_SIM_BASELINE=<path to an earlier trace.json>` compares a run
   against an earlier one (e.g. from `main`) and reports every day that
   differs. `EML_SIM_SEED` and `EML_SIM_SEGMENTS` override the seed and days.
+- `npm run test:account`: two browser contexts act as two devices on one
+  paid account in the Firebase Emulator, which it starts and stops around
+  the suite, in Chromium, Firefox, and WebKit: the first signs in with an
+  emailed link (read back from the emulator) and uploads the real backup,
+  the second, a fresh install, adopts it, and a holiday added on the second
+  syncs back to the first. `npm test` runs every suite inside the emulator.
 - `npm run test:accessibility`: the pre-commit accessibility scan, in
   Chromium, Firefox, and WebKit. Every tab at 375 and 1,280px, help mode,
   the Privacy panel, and the welcome modal (`tests/support/states.ts`) get
@@ -295,6 +301,18 @@ background.
   verified email and the `paid` custom claim, which only the payment webhook
   sets. They're published by pasting into the console's Firestore Rules tab
   (or `npx firebase deploy --only firestore:rules`).
+- **Running it**: `state/sync-run.ts`'s `useSynRunFun`, called once in
+  `app.tsx`, follows the account and syncs on launch, on focus or coming
+  online, two minutes after the last change, and on hide with a change
+  waiting. Its keys (`ACC_SIG_STR`, `SIG_EMA_STR`, `SYN_MET_STR`) live in
+  `storage.ts`'s `LIV_KEY_ARR`, which the boot sweep keeps. The Settings
+  Account section is `tabs/settings/account-section.tsx`.
+- **Headers**: `public/_headers`' Content-Security-Policy names Firebase's
+  addresses. Vite's dev server doesn't apply that file, so a change to it is
+  only proven on a Netlify deploy preview.
+- **WebKit and the emulator**: Playwright's WebKit stalls on Firestore's
+  streaming connection to the plain-HTTP emulator, so emulator builds force
+  long polling. Real Safari against the real project is checked by hand.
 
 ### Hosting and DNS
 

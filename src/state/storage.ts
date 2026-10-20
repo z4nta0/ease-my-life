@@ -50,6 +50,7 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
 
 // #region Constants
 
+const ACC_SIG_STR = 'easemylife.signedin';         // What: Account Signed-In String. Why: The app loads Firebase only for a device that has signed in, so it needs to know that before loading it. How: The sync hook sets this localStorage key on sign-in and removes it on sign-out.
 const BOO_DEA_NUM = 3500;                          // What: Boot Deadline Number. Why: A slow IndexedDB must never hold up the app's first paint, and the whole session must then run on localStorage rather than switch engines midway. How: iniStoFun gives up on IndexedDB this many milliseconds after boot starts.
 const BOO_KEY_STR = 'easemylife.idbboots';         // What: Boots Key String. Why: This is the localStorage key counting how many times IDB has booted cleanly in a row. How: This is read and incremented inside iniStoFun to decide when the migration snapshot and dead pre-IDB generations can be safely swept.
 const DAT_NAM_STR = 'easemylife';                  // What: Database Name String. Why: This is the fixed IndexedDB database name every browser profile opens under. How: This is passed as the first argument to indexedDB.open inside opeDatFun.
@@ -57,13 +58,15 @@ const DAT_VER_NUM = 1;                             // What: Database Version Num
 const MIG_SNA_STR = 'easemylife.snapshot.pre-idb'; // What: Migration Snapshot String. Why: This is the bounded-lifetime rollback copy taken right before the very first IDB migration attempt. How: This is written once in iniStoFun and re-exported as-is on the STG_NAM_OBJ object below.
 const MIR_KEY_STR = 'easemylife.v2';               // What: Mirror Key String. Why: This is the legacy live localStorage key that also doubles as the warm mirror's own key, read by every fallback-engine caller of this file. How: This is written by wriLocFun and read by reaLocFun, and re-exported as-is on the STG_NAM_OBJ object below.
 const MIR_TIM_STR = 'easemylife.mirrorat';         // What: Mirror Time String. Why: Mirror freshness must survive a reload, not just live in memory, since the Settings storage panel reports it on a cold load before any tab-hide has happened this session. How: This is written by wriLocFun and read by staRepFun.
-const PER_ASK_STR = 'easemylife.persistasked'; // What: Persist Ask String. Why: This is the localStorage key recording whether this device has already been asked for persistent storage once, so a denial is not re-requested on every later launch (browsers ignore a repeat request anyway). How: pwa.ts reads and writes it through STG_NAM_OBJ, and the boot sweep keeps it.
+const PER_ASK_STR = 'easemylife.persistasked';     // What: Persist Ask String. Why: This is the localStorage key recording whether this device has already been asked for persistent storage once, so a denial is not re-requested on every later launch (browsers ignore a repeat request anyway). How: pwa.ts reads and writes it through STG_NAM_OBJ, and the boot sweep keeps it.
 const PIC_LOG_STR = 'picklog';                     // What: Pick Log String. Why: This is the object store name holding the pick log alone, under key 'main', kept separate so writing it is not on the hot path of every other save. How: This is passed to traStoFun everywhere the pick log alone is read or written.
+const SIG_EMA_STR = 'easemylife.signinemail';      // What: Sign-In Email String. Why: Finishing an emailed-link sign-in needs the address the link was sent to. How: The sync hook stores the address here when it sends a link and removes it once the link is used.
 const STA_STO_STR = 'state';                       // What: State Store String. Why: This is the object store name holding everything except the pick log, under key 'main'. How: This is passed to traStoFun everywhere the non-log portion of state is read or written.
+const SYN_MET_STR = 'easemylife.syncmeta';         // What: Sync Meta String. Why: Each sync compares against what this device last synced, and conflicts need the time of its last change. How: The sync hook keeps that record here as JSON.
 
 
 
-const LIV_KEY_ARR = [ BOO_KEY_STR, MIR_KEY_STR, MIR_TIM_STR, PER_ASK_STR ]; // What: Live Key Array. Why: The boot sweep deletes every owned localStorage key from a dead generation, so every key still in use has to be named here or it's deleted too (the persistence prompt's key once was, so the app asked again). How: The sweep keeps every key in this list.
+const LIV_KEY_ARR = [ ACC_SIG_STR, BOO_KEY_STR, MIR_KEY_STR, MIR_TIM_STR, PER_ASK_STR, SIG_EMA_STR, SYN_MET_STR ]; // What: Live Key Array. Why: The boot sweep deletes every owned localStorage key from a dead generation, so every key still in use has to be named here or it's deleted too (the persistence prompt's key once was, so the app asked again). How: The sweep keeps every key in this list.
 
 
 
@@ -1456,6 +1459,7 @@ async function staRepFun () : Promise< StoRepTyp > {
 const STG_NAM_OBJ = { // What: Storage Namespace Object. Why: This is the single public entry point every other file in this app imports by name. How: This maps each of this file's own internal function/variable names onto an external property name matching it exactly.
 
 
+	ACC_SIG_STR : ACC_SIG_STR, // What: Account Signed-In String. Why: The sync hook records whether this device has signed in under a key the boot sweep keeps. How: This re-exports ACC_SIG_STR under its own matching name.
 	cacStaFun   : cacStaFun,   // What: Cached State Function. Why: store.ts's own loaStaFun() reads this synchronously to seed React state before any save has happened yet. How: This re-exports cacStaFun under its own matching name.
 	fluSynFun   : fluSynFun,   // What: Flush Sync Function. Why: store.ts calls this synchronously on pagehide/tab-hide, where an async save could be lost. How: This re-exports fluSynFun under its own matching name.
 	iniStoFun   : iniStoFun,   // What: Init Storage Function. Why: main.tsx awaits this before React ever mounts, and store.ts's own loaStaFun() reads its result back synchronously afterward. How: This re-exports iniStoFun under its own matching name.
@@ -1464,7 +1468,9 @@ const STG_NAM_OBJ = { // What: Storage Namespace Object. Why: This is the single
 	reaPerFun   : reaPerFun,   // What: Read Persisted Function. Why: tab-settings.tsx calls this so an export can never inherit a truncated in-memory pickLog. How: This re-exports reaPerFun under its own matching name.
 	reqPerFun   : reqPerFun,   // What: Request Persist Function. Why: pwa.ts calls this after real user engagement to request eviction-exempt storage. How: This re-exports reqPerFun under its own matching name.
 	savStaFun   : savStaFun,   // What: Save State Function. Why: store.ts calls this on every debounced state change. How: This re-exports savStaFun under its own matching name.
+	SIG_EMA_STR : SIG_EMA_STR, // What: Sign-In Email String. Why: The sync hook remembers a link's address under a key the boot sweep keeps. How: This re-exports SIG_EMA_STR under its own matching name.
 	staRepFun   : staRepFun,   // What: Status Report Function. Why: tab-settings.tsx polls this to render the storage panel. How: This re-exports staRepFun under its own matching name.
+	SYN_MET_STR : SYN_MET_STR, // What: Sync Meta String. Why: The sync hook keeps its record under a key the boot sweep keeps. How: This re-exports SYN_MET_STR under its own matching name.
 	wipDatFun   : wipDatFun    // What: Wipe Data Function. Why: store.ts calls this from the Settings "Delete all data" flow. How: This re-exports wipDatFun under its own matching name.
 
 

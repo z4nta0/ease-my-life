@@ -80,9 +80,9 @@ const FIR_CON_OBJ = { // What: Firebase Config Object. Why: The SDK has to know 
 
 // #region Module Init
 
-const firAppObj = initializeApp( EMU_HOS_STR ? { ...FIR_CON_OBJ, projectId : EMU_PRO_STR } : FIR_CON_OBJ ); // What: Firebase App Object. Why: Auth and Firestore share it. How: This creates it, under the demo project when testing.
-const firAutObj = getAuth( firAppObj );                                                                     // What: Firebase Auth Object. Why: Every sign-in call goes through it. How: This creates it.
-const firStoObj = initializeFirestore( firAppObj, {} );                                                     // What: Firebase Store Object. Why: The cloud backend reads and writes through it. How: This creates it with the default memory cache, since this device's own storage already holds the state.
+const firAppObj = initializeApp( EMU_HOS_STR ? { ...FIR_CON_OBJ, projectId : EMU_PRO_STR } : FIR_CON_OBJ );     // What: Firebase App Object. Why: Auth and Firestore share it. How: This creates it, under the demo project when testing.
+const firAutObj = getAuth( firAppObj );                                                                         // What: Firebase Auth Object. Why: Every sign-in call goes through it. How: This creates it.
+const firStoObj = initializeFirestore( firAppObj, EMU_HOS_STR ? { experimentalForceLongPolling : true } : {} ); // What: Firebase Store Object. Why: The cloud backend reads and writes through it. How: This creates it with the default memory cache, since this device's own storage already holds the state. // What: Emulator Long Polling Note. Why: Playwright's WebKit stalls on Firestore's streaming connection to the plain-HTTP emulator, while Chromium and Firefox don't. How: Tests force long polling, and production keeps Firestore's default, which switches to long polling by itself where a browser needs it.
 
 
 

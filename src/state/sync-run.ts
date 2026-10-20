@@ -1,0 +1,822 @@
+
+
+
+// #region Imports
+
+import React from 'react'; // What: React. Why: Sync runs as a hook beside the store. How: This is used directly (React.useState, React.useRef, React.useEffect).
+
+
+import { isoDayFun   } from '../utils/date.ts';          // What: ISO Day Function. Why: The merge needs today's local date. How: This formats it as 'YYYY-MM-DD'.
+import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: The onboarding's sample pickers aren't the person's data. How: This lists their ids.
+import { ONB_STI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Ids Array. Why: The onboarding's sample reminders aren't the person's data. How: This lists their ids.
+import { STG_NAM_OBJ } from './storage.ts';              // What: Storage Namespace Object. Why: The sync's own localStorage keys live in storage, beside the sweep that keeps them. How: This reads their names.
+import { synRunFun   } from './sync-engine.ts';          // What: Sync Run Function. Why: Each sync runs through the engine. How: This runs one.
+
+
+import type { AccUseTyp } from '../platform/firebase.ts'; // What: Account User Type. Why: The hook follows who is signed in. How: This types that account.
+import type { ActStoTyp } from './store.ts';              // What: Action Store Type. Why: A merged state is applied through the store's import action. How: This types the actions.
+import type { StaAppTyp } from '../core/data-model.ts';   // What: State App Type. Why: Sync reads and replaces the app state. How: This types it.
+import type { SynMetTyp } from './sync-engine.ts';        // What: Sync Meta Type. Why: The engine compares against the last sync. How: This types that record.
+
+// #endregion Imports
+
+
+
+/**
+ * sync-run.ts = Sync Runner
+ *
+ * @summary
+ * Runs paid sync from inside the app: follows the account, and decides when
+ * to sync. Firebase loads only for a device that has signed in before (a
+ * localStorage flag says so), or that was opened from a sign-in email, or
+ * when someone starts signing in, so it never loads for anyone else.
+ *
+ * A paid account syncs on launch, when the app comes back into view or
+ * online, two minutes after the last change, and right away when the app is
+ * hidden with a change still waiting. One sync runs at a time, and a request
+ * during a sync runs once it ends. A sync that started from a state the
+ * person has since changed never replaces their newer state: when it found
+ * changes from another device, it's thrown away and run again, so the
+ * newer state is merged instead.
+ *
+ * A device's first sync, when the account already holds data and this
+ * device has some too, waits for the person to choose which to keep: the
+ * account's (the engine's first-sync rule, which keeps this device's past
+ * history), or this device's, which replaces the account's copy entirely.
+ *
+ * Sections:
+ *  - Types
+ *  - Constants
+ *  - Helpers
+ *  - Hooks
+ *  - Exports
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+// #region Types
+
+type SynRcdTyp = { changedAt : number, docs? : Record< string, string >, rev? : number, uid? : string }; // What: Sync Record Type. Why: A device keeps what it last synced and when it last changed. How: This is the JSON stored under SYN_MET_STR, with docs and rev only after a first sync.
+
+type SynStaTyp = 'choose' | 'error' | 'newer' | 'offline' | 'synced' | 'syncing' | 'unpaid' | null; // What: Sync Status Type. Why: The account screen says how sync is going. How: This is null while signed out, unpaid before purchase, and one of the sync states after.
+
+
+
+type AccSynTyp = { // What: Account Sync Type. Why: The account screen shows the account and sync, and acts on both. How: This is what useSynRunFun returns.
+
+
+	accErrStr : string | null;                                       // What: Account Error String. Why: A failed sign-in or sync says what went wrong. How: This is a sentence for the account screen, or null.
+	accLoaBoo : boolean;                                             // What: Account Loading Boolean. Why: The account screen waits while Firebase loads. How: This is true until the signed-in account is known.
+	accUseObj : AccUseTyp | null;                                    // What: Account User Object. Why: The screen shows who is signed in. How: This is the account, or null.
+	choAccFun : () => void;                                          // What: Choose Account Function. Why: A first sync can keep the account's data. How: This runs it that way.
+	choDevFun : () => void;                                          // What: Choose Device Function. Why: A first sync can keep this device's data instead. How: This runs it, replacing the account's copy.
+	finLinFun : ( emaAdrStr : string, linUrlStr? : string ) => void; // What: Finish Link Function. Why: A link opened in another browser, or pasted, still signs in. How: This finishes it with the given address and link, or the one the app was opened from.
+	linNeeBoo : boolean;                                             // What: Link Needs Boolean. Why: A link opened where it wasn't requested needs its address typed in. How: This is true while one waits.
+	senLinFun : ( emaAdrStr : string ) => Promise< boolean >;        // What: Send Link Function. Why: Email sign-in sends a link, and the screen confirms only one that went out. How: This sends one, remembers the address, and resolves true once it's sent.
+	sigGooFun : () => void;                                          // What: Sign Google Function. Why: Google is the other way in. How: This opens Google's sign-in window.
+	sigOutFun : () => void;                                          // What: Sign Out Function. Why: A device can leave its account and keep its data. How: This signs out and forgets the sync record.
+	synLasNum : number | null;                                       // What: Sync Last Number. Why: The screen says when it last synced. How: This is that time in milliseconds, or null.
+	synNowFun : () => void;                                          // What: Sync Now Function. Why: A person can sync without waiting. How: This runs a sync.
+	synStaStr : SynStaTyp;                                           // What: Sync Status String. Why: The screen shows how sync is going. How: This is the current status.
+
+
+};
+
+// #endregion Types
+
+
+
+// #region Constants
+
+const IDL_MIL_NUM = 120000; // What: Idle Milliseconds Number. Why: Syncing on every change would spend the free tier's writes on half-finished edits. How: This waits two minutes after the last change.
+const RET_MIL_NUM = 30000;  // What: Retry Milliseconds Number. Why: A sync that lost every race to another device should try again soon, not wait for the next change. How: This retries after 30 seconds.
+
+// #endregion Constants
+
+
+
+// #region Helpers
+
+const hasDatFun = ( staAppObj : StaAppTyp ) => ( staAppObj.pickers || [] ).some( ( picCurObj ) => !ONB_SPI_ARR.includes( picCurObj.id ) ) || ( staAppObj.tasks || [] ).some( ( tasCurObj ) => !ONB_STI_ARR.includes( tasCurObj.id ) ); // What: Has Data Function. Why: A first sync only asks which copy to keep when this device has something worth keeping, and the onboarding's hidden samples aren't. How: This is true when it holds any picker or reminder of the person's own.
+
+
+
+const isaLinFun = ( locUrlStr : string ) => /[?&]oobCode=/.test( locUrlStr ) && /[?&]mode=signIn(&|$)/.test( locUrlStr ); // What: Is-A Link Function. Why: The app has to spot a sign-in email's link before loading Firebase to check it properly. How: This looks for the link's code and sign-in mode in the address.
+
+
+
+const reaKeyFun = ( keyNamStr : string ) => { // What: Read Key Function. Why: Blocked storage must read as nothing rather than throw. How: This reads a localStorage key, or null.
+
+
+	try { return localStorage.getItem( keyNamStr ); } // What: Key Read Try. Why: The key may hold a value. How: This returns it.
+
+	catch { return null; } // What: Key Read Catch. Why: Blocked storage holds nothing readable. How: This returns null.
+
+
+};
+
+
+
+const wriMetFun = ( synRcdObj : SynRcdTyp ) => { // What: Write Meta Function. Why: The record has to outlast a reload. How: This stores it as JSON, logging a failure.
+
+
+	try { localStorage.setItem( STG_NAM_OBJ.SYN_MET_STR, JSON.stringify( synRcdObj ) ); } // What: Record Write Try. Why: The next sync reads it back. How: This stores it.
+
+	catch ( errCatObj ) { console.warn( errCatObj ); } // What: Record Write Catch. Why: Blocked storage only costs a fuller next sync. How: This logs it.
+
+
+};
+
+
+
+// #region reaMetFun
+
+/**
+ * reaMetFun = Read Meta Function
+ *
+ * @summary
+ * Reads this device's sync record for an account. A record saved for a
+ * different account, or one that can't be read, counts as none, so the next
+ * sync is that account's first.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param uidValStr - User Identifier Value String: The signed-in account's
+ *                    id.
+ *
+ * @returns The record, with changedAt 0 and no docs when there is none.
+ *
+ * @example
+ * ```ts
+ * reaMetFun(uidValStr) // => { changedAt, docs, rev, uid }
+ * ```
+ *
+*/
+
+function reaMetFun ( uidValStr : string ) : SynRcdTyp {
+
+
+	try { // What: Record Read Try. Why: Blocked storage or a damaged record must not stop sync. How: This parses the record, falling back to none.
+
+
+		const synRcdObj : SynRcdTyp = JSON.parse( reaKeyFun( STG_NAM_OBJ.SYN_MET_STR ) || 'null' ) || { changedAt : 0 }; // What: Sync Record Object. Why: The record is stored as JSON. How: This parses it, or starts an empty one.
+
+
+
+		return synRcdObj.uid && synRcdObj.uid !== uidValStr ? { changedAt : 0 } : synRcdObj; // What: Record Return. Why: Another account's record says nothing about this one. How: This returns an empty record for a different account.
+
+
+	}
+
+	catch { return { changedAt : 0 }; } // What: Record Read Catch. Why: An unreadable record is the same as none. How: This returns an empty one.
+
+
+}
+
+// #endregion reaMetFun
+
+// #endregion Helpers
+
+
+
+// #region Hooks
+
+// #region useSynRunFun
+
+/**
+ * useSynRunFun = Use Sync Run Function
+ *
+ * @summary
+ * Follows the account and runs paid sync for the app (see the file
+ * summary for when). A merged state from the cloud is applied through the
+ * store's import action, which migrates it and makes the next save
+ * authoritative, since a merge can drop rows (today's, when another device
+ * regenerated). A change the hook applied itself doesn't count as a change
+ * to sync.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param actStoObj - Action Store Object: {@link useAppStaFun}'s actions.
+ * @param staAppObj - State App Object: {@link useAppStaFun}'s state.
+ * @param synActBoo - Sync Active Boolean: False while the onboarding demo
+ *                    runs on a state that must never sync.
+ *
+ * @returns The account, the sync status, and their actions.
+ *
+ * @example
+ * ```ts
+ * useSynRunFun(actStoObj, staAppObj, !onbDemBoo) // => accSynObj
+ * ```
+ *
+*/
+
+function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo : boolean ) : AccSynTyp {
+
+
+	const [ accErrStr, setAccErrStr ] = React.useState< string | null >( null );    // What: Account Error String And Setter. Why: The screen shows the last failure. How: This holds its sentence.
+	const [ accLoaBoo, setAccLoaBoo ] = React.useState( false );                    // What: Account Loading Boolean And Setter. Why: The screen waits while Firebase loads. How: This is true until the account is known.
+	const [ accUseObj, setAccUseObj ] = React.useState< AccUseTyp | null >( null ); // What: Account User Object And Setter. Why: The screen and sync follow the account. How: This holds it.
+	const [ linUrlStr, setLinUrlStr ] = React.useState< string | null >( null );    // What: Link URL String And Setter. Why: A link opened without its remembered address waits for one. How: This holds the link.
+	const [ synLasNum, setSynLasNum ] = React.useState< number | null >( null );    // What: Sync Last Number And Setter. Why: The screen says when it last synced. How: This holds that time.
+	const [ synRawStr, setSynRawStr ] = React.useState< SynStaTyp >( null );        // What: Sync Raw String And Setter. Why: The status of the last sync, before the account decides what it means. How: This holds it.
+
+	const accCurRef = React.useRef< AccUseTyp | null >( null );                                                   // What: Account Current Reference. Why: Listeners and timers read the latest account. How: This mirrors accUseObj.
+	const aplPenRef = React.useRef( false );                                                                      // What: Apply Pending Reference. Why: A state the hook applied isn't a change to sync. How: This marks the next state change as the hook's own.
+	const firModRef = React.useRef< Promise< typeof import( '../platform/firebase.ts' ) > | null >( null );       // What: Firebase Module Reference. Why: Firebase loads at most once, and only when needed. How: This holds the import's promise.
+	const idlTimRef = React.useRef< number | null >( null );                                                      // What: Idle Timer Reference. Why: The two-minute wait restarts on each change, and hiding the app cuts it short. How: This holds the pending timer.
+	const preStaRef = React.useRef( staAppObj );                                                                  // What: Previous State Reference. Why: Only a real change starts the wait, not the first render. How: This holds the last state seen.
+	const runAgaRef = React.useRef( false );                                                                      // What: Run Again Reference. Why: A request during a sync runs once it ends. How: This marks one.
+	const runActRef = React.useRef( false );                                                                      // What: Run Active Reference. Why: Only one sync runs at a time. How: This is true during one.
+	const staCurRef = React.useRef( staAppObj );                                                                  // What: State Current Reference. Why: A sync reads, and later compares against, the latest state. How: This mirrors staAppObj.
+	const synRunRef = React.useRef< ( choValStr? : 'account' | 'device' ) => Promise< void > >( async () => {} ); // What: Sync Run Reference. Why: Listeners, timers, and a rerun need the latest sync function. How: This holds it, refreshed every render.
+	const watActRef = React.useRef( false );                                                                      // What: Watch Active Reference. Why: The account is watched once. How: This is true once watching starts.
+
+
+
+	accCurRef.current = accUseObj; // What: Account Mirror. Why: Callbacks read the latest account. How: This copies it each render.
+	staCurRef.current = staAppObj; // What: State Mirror. Why: A sync reads the latest state. How: This copies it each render.
+
+
+
+	// #region Account Watching
+
+	const lodFirFun = () => ( firModRef.current ??= import( '../platform/firebase.ts' ) ); // What: Load Firebase Function. Why: Firebase loads only for someone using an account. How: This imports it once, sharing the promise.
+
+
+
+	// #region staWatFun
+
+	/**
+	 * staWatFun = Start Watch Function
+	 *
+	 * @summary
+	 * Loads Firebase, the first time it's called, and starts following the
+	 * account: each change updates the screen and the signed-in flag that
+	 * tells the next launch to load Firebase. Later calls return the same
+	 * module without watching twice.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns A promise that settles with the Firebase module.
+	 *
+	 * @example
+	 * ```ts
+	 * const firModObj = await staWatFun() // => Promise<module>
+	 * ```
+	 *
+	*/
+
+	const staWatFun = async () => {
+
+
+		const firModObj = await lodFirFun(); // What: Firebase Module Object. Why: Every account call goes through it. How: This loads it.
+
+
+
+		if ( watActRef.current ) return firModObj; // What: Already Watching Guard. Why: The account is watched once. How: This returns the module.
+
+
+
+		watActRef.current = true; // What: Watch Mark. Why: Later calls must not watch again. How: This records that watching started.
+		setAccLoaBoo( true );     // What: Loading Mark. Why: The account isn't known until the first callback. How: This shows loading.
+
+
+		firModObj.watUseFun( ( nexUseObj ) => { // What: Account Watch Call. Why: Sign-ins, sign-outs, and the paid claim all arrive here. How: This updates the screen and the signed-in flag.
+
+
+			setAccUseObj( nexUseObj ); // What: Account Update. Why: The screen and sync follow it. How: This stores it.
+
+			setAccLoaBoo( false ); // What: Loading Clear. Why: The account is known now. How: This ends loading.
+
+
+			try { // What: Signed-In Flag Try. Why: The next launch loads Firebase only when this device is signed in. How: This sets or clears the flag.
+
+
+				if ( nexUseObj ) localStorage.setItem( STG_NAM_OBJ.ACC_SIG_STR, '1' ); // What: Flag Set Branch. Why: Someone is signed in. How: This sets the flag.
+
+				else localStorage.removeItem( STG_NAM_OBJ.ACC_SIG_STR ); // What: Flag Clear Branch. Why: Nobody is. How: This clears it.
+
+
+			}
+
+			catch ( errCatObj ) { console.warn( errCatObj ); } // What: Signed-In Flag Catch. Why: Blocked storage only costs the next launch a sign-in. How: This logs it.
+
+
+		} );
+
+
+
+		return firModObj; // What: Module Return. Why: The caller signs in through it. How: This returns it.
+
+
+	};
+
+	// #endregion staWatFun
+
+
+
+	// #region finLinFun
+
+	/**
+	 * finLinFun = Finish Link Function
+	 *
+	 * @summary
+	 * Finishes an emailed-link sign-in with the address it was sent to, using
+	 * the given link (a pasted one) or the one the app was opened from. A
+	 * failure, such as an expired or already used link, is shown on the
+	 * account screen.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param emaAdrStr - Email Address String: The address the link was sent
+	 *                    to.
+	 * @param pasUrlStr - Pasted URL String: A link pasted from the email, or
+	 *                    undefined for the one waiting in linUrlStr.
+	 *
+	 * @returns A promise that settles once signing in ends, with no value.
+	 *
+	 * @example
+	 * ```ts
+	 * await finLinFun('you@example.com') // => Promise<void>
+	 * ```
+	 *
+	*/
+
+	const finLinFun = async ( emaAdrStr : string, pasUrlStr? : string ) => {
+
+
+		const linCurStr = pasUrlStr || linUrlStr; // What: Link Current String. Why: A pasted link wins over the one the app opened with. How: This picks it.
+
+
+
+		if ( !linCurStr ) return; // What: No Link Guard. Why: There's nothing to finish. How: This returns.
+
+
+
+		try { // What: Link Finish Try. Why: An expired or wrong link must explain itself. How: This signs in and forgets the remembered address.
+
+
+			const firModObj = await staWatFun(); // What: Firebase Module Object. Why: The sign-in goes through Firebase. How: This loads and watches.
+
+
+			if ( !firModObj.isaLinFun( linCurStr ) ) { setAccErrStr( "That isn't a sign-in link from Ease My Life." ); return; } // What: Wrong Link Guard. Why: A pasted address might not be a sign-in link at all. How: This explains and stops.
+
+
+
+			await firModObj.finLinFun( emaAdrStr.trim(), linCurStr ); // What: Link Sign-In Call. Why: The link's code signs the address in. How: This finishes it.
+
+
+			localStorage.removeItem( STG_NAM_OBJ.SIG_EMA_STR ); // What: Address Forget. Why: The address was only needed until the link was used. How: This removes it.
+			setAccErrStr( null );                               // What: Error Clear. Why: The sign-in worked. How: This clears any old failure.
+			setLinUrlStr( null );                               // What: Link Clear. Why: Nothing waits anymore. How: This clears the link.
+
+
+		}
+
+		catch ( errCatObj ) { // What: Link Finish Catch. Why: The person needs to know to request a new link. How: This logs and explains.
+
+
+			console.warn( errCatObj ); // What: Failure Log. Why: The cause stays visible to anyone debugging. How: This logs it.
+
+			setAccErrStr( 'That sign-in link has expired or was already used. Request a new one.' ); // What: Failure Message. Why: A new link is the fix. How: This says so.
+
+
+		}
+
+
+	};
+
+	// #endregion finLinFun
+
+
+
+	React.useEffect( () => { // What: Launch Watch Effect. Why: A device that signed in before, or was opened from a sign-in email, follows its account from launch. How: This starts watching in those cases and finishes a link whose address is remembered.
+
+
+		if ( !synActBoo ) return; // What: Demo Guard. Why: The onboarding demo never touches the account. How: This returns.
+
+
+
+		const linOpeBoo = isaLinFun( window.location.href );      // What: Link Opened Boolean. Why: The app was opened from a sign-in email. How: This checks the address.
+		const sigPreBoo = !!reaKeyFun( STG_NAM_OBJ.ACC_SIG_STR ); // What: Signed-In Previously Boolean. Why: A device that signed in before loads Firebase at launch. How: This reads the flag.
+
+
+
+		if ( !linOpeBoo && !sigPreBoo ) return; // What: Nothing To Watch Guard. Why: Firebase must not load for anyone else. How: This returns.
+
+
+
+		void staWatFun(); // What: Watch Start Call. Why: The account is followed from launch. How: This loads Firebase and watches.
+
+
+
+		if ( linOpeBoo ) { // What: Link Arrival Check. Why: A sign-in link has to be finished, and its code removed from the address. How: This hands it on and cleans the address.
+
+
+			const linHreStr = window.location.href;                 // What: Link Address String. Why: The code is read before the address is cleaned. How: This keeps it.
+			const remAdrStr = reaKeyFun( STG_NAM_OBJ.SIG_EMA_STR ); // What: Remembered Address String. Why: The link finishes at once when this browser requested it. How: This reads the remembered address.
+
+
+			window.history.replaceState( null, '', window.location.pathname ); // What: Address Clean Call. Why: The one-time code must not stay in the address bar, a bookmark, or the history. How: This replaces the address with the bare path.
+
+			setLinUrlStr( linHreStr ); // What: Link Store. Why: Without a remembered address, the screen asks for one. How: This holds the link.
+
+
+			if ( remAdrStr ) void finLinFun( remAdrStr, linHreStr ); // What: Remembered Finish Call. Why: The same browser that asked can finish without typing. How: This finishes with the remembered address.
+
+
+		}
+
+
+	}, [ synActBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever syncing is switched on or off. How: synActBoo is false during the onboarding demo.
+
+	// #endregion Account Watching
+
+
+
+	// #region Sync Running
+
+	synRunRef.current = async ( choValStr ) => { // What: Sync Run Assignment. Why: Every caller runs the latest version of the sync. How: This defines one run, from the account check to applying the result.
+
+
+		const accRunObj = accCurRef.current; // What: Account Run Object. Why: Only a paid account syncs. How: This reads the account.
+
+
+
+		if ( !accRunObj || !accRunObj.paiBoo ) return; // What: Unpaid Guard. Why: Sync is the paid feature. How: This returns.
+
+
+
+		if ( runActRef.current ) { runAgaRef.current = true; return; } // What: Busy Guard. Why: One sync runs at a time. How: This asks for another once it ends.
+
+
+
+		runActRef.current = true;  // What: Run Mark. Why: Other requests wait for this sync. How: This marks it running.
+		setSynRawStr( 'syncing' ); // What: Syncing Status. Why: The screen shows the sync. How: This sets the status.
+
+
+
+		try { // What: Sync Try. Why: A network failure must leave the app working and try again later. How: This runs the sync and applies its result.
+
+
+			const bacModObj = await import( '../platform/cloud-backend.ts' ); // What: Backend Module Object. Why: The Firestore backend loads only for a paid account. How: This imports it.
+			const begStaObj = staCurRef.current;                              // What: Begin State Object. Why: The result is applied only if the state hasn't moved since. How: This keeps the state the sync starts from.
+			const metRcdObj = reaMetFun( accRunObj.uidStr );                  // What: Meta Record Object. Why: The engine compares against the last sync. How: This reads this device's record.
+			const synBacObj = bacModObj.cloBacFun( accRunObj.uidStr );        // What: Sync Backend Object. Why: The sync reads and writes this account's copy. How: This builds its backend.
+
+			let synMetObj : SynMetTyp | null = metRcdObj.docs ? { docs : metRcdObj.docs, rev : metRcdObj.rev || 0 } : null; // What: Sync Meta Object. Why: A device that synced before compares against that sync. How: This reads its hashes and revision, or null before a first sync.
+
+
+
+			if ( !synMetObj ) { // What: First Sync Check. Why: A first sync onto an account that already has data may need the person's choice. How: This reads the account's manifest and asks or follows the choice.
+
+
+				const remManObj = await synBacObj.getManFun(); // What: Remote Manifest Object. Why: Only an account that already holds data needs a choice. How: This reads its manifest.
+
+
+
+				if ( remManObj && hasDatFun( begStaObj ) && !choValStr ) { setSynRawStr( 'choose' ); return; } // What: Choice Guard. Why: Both copies hold data, and only the person knows which to keep. How: This waits for their choice.
+
+
+
+				if ( remManObj && choValStr === 'device' ) synMetObj = { docs : remManObj.docs, rev : remManObj.rev }; // What: Device Choice. Why: Keeping this device means the account's copy counts as unchanged, so this device's documents replace it entirely. How: This uses the account's hashes as the last sync.
+
+
+			}
+
+
+
+			const resSynObj = await synRunFun( synBacObj, begStaObj, metRcdObj.changedAt, synMetObj, isoDayFun( new Date() ) ); // What: Result Sync Object. Why: The engine does the sync. How: This runs it from begStaObj.
+
+
+
+			if ( resSynObj.synStaStr === 'newer' ) { setSynRawStr( 'newer' ); return; } // What: Newer Schema Guard. Why: This version of the app can't read the account's copy. How: This shows the status and stops.
+
+
+
+			if ( resSynObj.synStaStr === 'busy' ) { // What: Busy Check. Why: Another device kept committing first, so this one tries again shortly. How: This schedules a retry and stops.
+
+
+				window.setTimeout( () => void synRunRef.current(), RET_MIL_NUM ); // What: Retry Schedule. Why: The other device will finish soon. How: This syncs again after RET_MIL_NUM.
+
+				setSynRawStr( 'synced' ); // What: Busy Status. Why: Nothing is wrong, the cloud is just busy. How: This keeps the status calm.
+
+
+
+				return;
+
+
+			}
+
+
+
+			const staMovBoo = staCurRef.current !== begStaObj; // What: State Moved Boolean. Why: A newer local state must never be replaced by a merge of an older one. How: This is true when the state changed during the sync.
+
+
+
+			if ( staMovBoo && resSynObj.merStaObj ) { runAgaRef.current = true; return; } // What: Stale Merge Guard. Why: The merge was built from an older state, so applying it would lose the newer change. How: This throws the result away and runs again, keeping the last sync's record so the change is merged instead.
+
+
+
+			wriMetFun( { changedAt : metRcdObj.changedAt, docs : resSynObj.synMetObj!.docs, rev : resSynObj.synMetObj!.rev, uid : accRunObj.uidStr } ); // What: Record Save. Why: The next sync compares against this one. How: This stores its hashes and revision under this account. // What: Non-Null Note. Why: A synced result always carries the meta it synced to. How: The ! tells TypeScript it exists.
+
+
+
+			if ( resSynObj.merStaObj ) { // What: Merge Apply Check. Why: Changes from another device land here. How: This replaces the state through the import action, marked as the hook's own change.
+
+
+				aplPenRef.current = true; // What: Own Change Mark. Why: The change effect must not treat this as a local edit. How: This marks it.
+
+				actStoObj.impDatFun( resSynObj.merStaObj ); // What: State Replace Call. Why: The merged state becomes the app's. How: This imports it.
+
+
+			}
+
+
+
+			runAgaRef.current ||= staMovBoo; // What: Rerun Mark. Why: A change made during the sync still has to be uploaded. How: This asks for another sync when the state moved.
+			setAccErrStr( null );            // What: Error Clear. Why: The sync worked. How: This clears any old failure.
+			setSynLasNum( Date.now() );      // What: Last Sync Time. Why: The screen says when it last synced. How: This records now.
+			setSynRawStr( 'synced' );        // What: Synced Status. Why: The screen shows the sync finished. How: This sets the status.
+
+
+		}
+
+		catch ( errCatObj ) { // What: Sync Catch. Why: A failed sync must explain itself and leave the app working. How: This logs and shows it.
+
+
+			console.warn( errCatObj ); // What: Failure Log. Why: The cause stays visible to anyone debugging. How: This logs it.
+
+			setSynRawStr( navigator.onLine ? 'error' : 'offline' ); // What: Failure Status. Why: Being offline is normal, and any other failure isn't. How: This picks the status by connection.
+
+
+		}
+
+		finally { // What: Sync Finally. Why: Every sync has to release the lock and honor a waiting request. How: This clears the mark and runs again when asked.
+
+
+			runActRef.current = false; // What: Run Clear. Why: The next request may run. How: This clears the mark.
+
+
+			if ( runAgaRef.current ) { // What: Rerun Check. Why: A request arrived during the sync. How: This runs again once this one has unwound.
+
+
+				runAgaRef.current = false; // What: Rerun Clear. Why: The request is being honored. How: This clears it.
+
+				window.setTimeout( () => void synRunRef.current(), 0 ); // What: Rerun Schedule. Why: The lock is released only after this block. How: This runs on the next tick.
+
+
+			}
+
+
+		}
+
+
+	};
+
+
+
+	React.useEffect( () => { // What: Change Wait Effect. Why: Changes sync two minutes after the last one, so a burst of edits costs one upload. How: This records the change time and restarts the wait on every real change.
+
+
+		if ( preStaRef.current === staAppObj ) return; // What: Same State Guard. Why: The first render, or a rerender without a change, isn't a change. How: This returns.
+
+
+
+		preStaRef.current = staAppObj; // What: Previous State Update. Why: The next change compares against this one. How: This stores it.
+
+
+
+		if ( aplPenRef.current ) { aplPenRef.current = false; return; } // What: Own Change Guard. Why: A state the hook applied came from the cloud. How: This clears the mark and returns.
+
+
+
+		if ( !accCurRef.current || !accCurRef.current.paiBoo ) return; // What: Unpaid Guard. Why: Only a paid account tracks changes. How: This returns.
+
+
+
+		wriMetFun( { ...reaMetFun( accCurRef.current.uidStr ), changedAt : Date.now(), uid : accCurRef.current.uidStr } ); // What: Change Time Save. Why: A conflict goes to the side that changed last. How: This records now as this device's last change.
+
+
+		if ( idlTimRef.current ) window.clearTimeout( idlTimRef.current ); // What: Wait Restart. Why: Each change restarts the two minutes. How: This clears the pending wait.
+
+
+		idlTimRef.current = window.setTimeout( () => { idlTimRef.current = null; void synRunRef.current(); }, IDL_MIL_NUM ); // What: Wait Start. Why: The sync runs once changes stop. How: This syncs two minutes from now.
+
+
+	}, [ staAppObj ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the state changes. How: staAppObj is the state.
+
+
+
+	React.useEffect( () => { // What: Paid Start Effect. Why: A paid account syncs as soon as it's known, which is the launch pull. How: This runs a sync when the account or its paid claim changes.
+
+
+		if ( accUseObj && accUseObj.paiBoo ) void synRunRef.current(); // What: Paid Sync Call. Why: The account is ready to sync. How: This runs one.
+
+
+	}, [ accUseObj ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the account changes. How: accUseObj changes on sign-in, sign-out, and a renewed token.
+
+
+
+	React.useEffect( () => { // What: Page Event Effect. Why: Coming back into view or online pulls, and being hidden with a change waiting pushes. How: This listens for those page events.
+
+
+		if ( !synActBoo ) return; // What: Demo Guard. Why: The onboarding demo never syncs. How: This returns.
+
+
+
+		const visChaFun = () => { // What: Visibility Change Function. Why: Hiding and showing the app are the moments to push and pull. How: This syncs on show, and on hide when a change is waiting.
+
+
+			if ( document.visibilityState === 'visible' ) { void synRunRef.current(); return; } // What: Shown Branch. Why: Another device may have synced meanwhile. How: This pulls.
+
+
+
+			if ( !idlTimRef.current ) return; // What: Nothing Waiting Guard. Why: Hiding without a change needs no upload. How: This returns.
+
+
+
+			window.clearTimeout( idlTimRef.current ); // What: Wait Cancel. Why: The app may never come back, so the change goes up now. How: This cancels the wait.
+
+			idlTimRef.current = null; // What: Wait Clear. Why: Nothing waits anymore. How: This clears it.
+
+
+			void synRunRef.current(); // What: Hidden Sync Call. Why: The waiting change has to reach the cloud. How: This syncs now.
+
+
+		};
+
+		const onlRunFun = () => void synRunRef.current(); // What: Online Run Function. Why: Coming back online is the moment to catch up. How: This syncs.
+
+
+
+		document.addEventListener( 'visibilitychange', visChaFun ); // What: Visibility Listener. Why: Showing and hiding the app trigger syncs. How: This listens.
+		window.addEventListener( 'focus', onlRunFun );              // What: Focus Listener. Why: Returning to the window pulls. How: This listens.
+		window.addEventListener( 'online', onlRunFun );             // What: Online Listener. Why: Reconnecting catches up. How: This listens.
+
+
+
+		return () => { // What: Listener Cleanup. Why: The listeners end with the app. How: This removes all three.
+
+
+			document.removeEventListener( 'visibilitychange', visChaFun ); // What: Visibility Removal. Why: The listener ends. How: This removes it.
+			window.removeEventListener( 'focus', onlRunFun );              // What: Focus Removal. Why: The listener ends. How: This removes it.
+			window.removeEventListener( 'online', onlRunFun );             // What: Online Removal. Why: The listener ends. How: This removes it.
+
+
+		};
+
+
+	}, [ synActBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever syncing is switched on or off. How: synActBoo is false during the onboarding demo.
+
+	// #endregion Sync Running
+
+
+
+	// #region Account Actions
+
+	const sigGooFun = async () => { // What: Sign Google Function. Why: Google is one way in. How: This opens its window and explains a failure.
+
+
+		try { // What: Google Sign-In Try. Why: The window can be closed or blocked. How: This signs in and clears any old failure.
+
+
+			await ( await staWatFun() ).sigGooFun(); // What: Google Sign-In Call. Why: Google's window does the sign-in. How: This opens it and waits.
+
+			setAccErrStr( null ); // What: Error Clear. Why: The sign-in worked. How: This clears any old failure.
+
+
+		}
+
+		catch ( errCatObj ) { // What: Google Sign-In Catch. Why: A closed or blocked window is the usual cause. How: This logs and explains it.
+
+
+			console.warn( errCatObj ); // What: Failure Log. Why: The cause stays visible to anyone debugging. How: This logs it.
+
+			setAccErrStr( "Google sign-in didn't finish. Check that pop-ups are allowed, then try again." ); // What: Failure Message. Why: Pop-ups are the usual cause. How: This says so.
+
+
+		}
+
+
+	};
+
+
+
+	const senLinFun = async ( emaAdrStr : string ) : Promise< boolean > => { // What: Send Link Function. Why: Email sign-in sends a link. How: This remembers the address, sends the link, and explains a failure, resolving whether it went out.
+
+
+		try { // What: Link Send Try. Why: A bad address or a network failure must explain itself. How: This remembers the address and sends the link.
+
+
+			localStorage.setItem( STG_NAM_OBJ.SIG_EMA_STR, emaAdrStr.trim() ); // What: Address Remember. Why: Opening the link in this browser finishes without typing it again. How: This stores the address.
+
+
+			await ( await staWatFun() ).senLinFun( emaAdrStr.trim(), `${ window.location.origin }/` ); // What: Link Send Call. Why: The link leads back to this app. How: This sends it with the app's address.
+
+
+			setAccErrStr( null ); // What: Error Clear. Why: The link went out. How: This clears any old failure.
+
+
+
+			return true; // What: Sent Return. Why: The screen confirms the link. How: This reports it went out.
+
+
+		}
+
+		catch ( errCatObj ) { // What: Link Send Catch. Why: The person needs to know it didn't go out. How: This logs and explains it.
+
+
+			console.warn( errCatObj ); // What: Failure Log. Why: The cause stays visible to anyone debugging. How: This logs it.
+
+			setAccErrStr( "The sign-in link couldn't be sent. Check the address, then try again." ); // What: Failure Message. Why: A mistyped address is the usual cause. How: This says so.
+
+
+
+			return false; // What: Failed Return. Why: The screen must not claim a link went out. How: This reports the failure.
+
+
+		}
+
+
+	};
+
+
+
+	const sigOutFun = async () => { // What: Sign Out Function. Why: A device can leave its account and keep its data. How: This signs out and forgets the sync record, so signing in again is a first sync.
+
+
+		try { // What: Sign-Out Try. Why: The record belongs to the account being left. How: This signs out, forgets the record, and clears the status.
+
+
+			await ( await staWatFun() ).sigOutFun(); // What: Sign-Out Call. Why: The session ends. How: This signs out.
+
+
+			localStorage.removeItem( STG_NAM_OBJ.SYN_MET_STR ); // What: Record Forget. Why: Signing in again starts a first sync. How: This removes the record.
+			setSynRawStr( null );                               // What: Status Clear. Why: Nothing syncs now. How: This clears the status.
+
+
+		}
+
+		catch ( errCatObj ) { // What: Sign-Out Catch. Why: The person needs to know they're still signed in. How: This logs and explains it.
+
+
+			console.warn( errCatObj ); // What: Failure Log. Why: The cause stays visible to anyone debugging. How: This logs it.
+
+			setAccErrStr( "Signing out didn't finish. Try again." ); // What: Failure Message. Why: Trying again usually works. How: This says so.
+
+
+		}
+
+
+	};
+
+	// #endregion Account Actions
+
+
+
+	const synStaStr : SynStaTyp = !accUseObj ? null : accUseObj.paiBoo ? synRawStr : 'unpaid'; // What: Sync Status String. Why: The status means nothing while signed out, and sync waits for a purchase. How: This derives it from the account and the last sync.
+
+
+
+	return { // What: Account Sync Return. Why: The account screen shows and acts on all of it. How: This returns the account, the status, and the actions.
+
+
+		accErrStr,                                                                      // What: Account Error String. Why: The screen shows the last failure. How: This passes it.
+		accLoaBoo,                                                                      // What: Account Loading Boolean. Why: The screen waits for the account. How: This passes it.
+		accUseObj,                                                                      // What: Account User Object. Why: The screen shows who is signed in. How: This passes it.
+		choAccFun : () => void synRunRef.current( 'account' ),                          // What: Choose Account Function. Why: The person kept the account's data. How: This runs the first sync that way.
+		choDevFun : () => void synRunRef.current( 'device' ),                           // What: Choose Device Function. Why: The person kept this device's data. How: This runs the first sync that way.
+		finLinFun : ( emaAdrStr, linUrlStr ) => void finLinFun( emaAdrStr, linUrlStr ), // What: Finish Link Function. Why: The screen finishes a waiting or pasted link. How: This calls the finisher.
+		linNeeBoo : !!linUrlStr && !accUseObj,                                          // What: Link Needs Boolean. Why: A waiting link needs an address only until someone is signed in. How: This is true while one waits.
+		senLinFun,                                                                      // What: Send Link Function. Why: The screen sends links and confirms them. How: This passes the sender.
+		sigGooFun : () => void sigGooFun(),                                             // What: Sign Google Function. Why: The screen signs in with Google. How: This calls it.
+		sigOutFun : () => void sigOutFun(),                                             // What: Sign Out Function. Why: The screen signs out. How: This calls it.
+		synLasNum,                                                                      // What: Sync Last Number. Why: The screen says when it last synced. How: This passes it.
+		synNowFun : () => void synRunRef.current(),                                     // What: Sync Now Function. Why: The screen can sync at once. How: This runs one.
+		synStaStr                                                                       // What: Sync Status String. Why: The screen shows the status. How: This passes it.
+
+
+	};
+
+
+}
+
+// #endregion useSynRunFun
+
+// #endregion Hooks
+
+
+
+// #region Exports
+
+export { type AccSynTyp, type SynStaTyp, useSynRunFun }; // What: Named Exports. Why: app.tsx runs sync through the hook, and the Settings tab types its account props. How: This exports them by name.
+
+// #endregion Exports
+
+
