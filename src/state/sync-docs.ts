@@ -52,7 +52,11 @@ type SynDocTyp = Record< string, RawSavTyp >; // What: Sync Document Type. Why: 
 
 // #region Constants
 
-const COR_DOC_STR = 'core'; // What: Core Document String. Why: Everything except the history logs travels together in one document. How: This is its id.
+const COR_DOC_STR = 'core'; // What: Core Document String. Why: Everything except the history logs and the per-device settings travels together in one document. How: This is its id.
+
+
+
+const DEV_KEY_ARR : ( keyof StaAppTyp )[] = [ 'appearance', 'ui' ]; // What: Device Key Array. Why: Theme, animations, tab bar placement, and how the Data tab is collapsed and sorted suit one screen, so each device keeps its own. How: This names the state fields that never sync.
 
 
 
@@ -212,9 +216,10 @@ function hasDocFun ( docAnyObj : RawSavTyp ) : string {
  *
  * @summary
  * Splits the app state into its cloud documents: core, holding every field
- * except the five history logs and storage's own __ markers, and one
- * document per log per month, holding that month's rows in their original
- * order. A log with no rows in a month has no document for it.
+ * except the five history logs, the per-device settings in DEV_KEY_ARR, and
+ * storage's own __ markers, and one document per log per month, holding
+ * that month's rows in their original order. A log with no rows in a month
+ * has no document for it.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -232,7 +237,7 @@ function hasDocFun ( docAnyObj : RawSavTyp ) : string {
 function splStaFun ( staAppObj : StaAppTyp ) : SynDocTyp {
 
 
-	const corDocObj : RawSavTyp = Object.fromEntries( Object.entries( staAppObj ).filter( ( [ keyNamStr ] ) => !keyNamStr.startsWith( '__' ) ) ); // What: Core Document Object. Why: Core is the state minus its logs, and minus storage's own markers (__savedAt changes on every save, so it would make core look changed when nothing was). How: This copies every field without a __ prefix, and the loop below removes each log.
+	const corDocObj : RawSavTyp = Object.fromEntries( Object.entries( staAppObj ).filter( ( [ keyNamStr ] ) => !keyNamStr.startsWith( '__' ) && !DEV_KEY_ARR.includes( keyNamStr as keyof StaAppTyp ) ) ); // What: Core Document Object. Why: Core is the state minus its logs, its per-device settings, and storage's own markers (__savedAt changes on every save, so it would make core look changed when nothing was). How: This copies every field except those, and the loop below removes each log. // What: Type Assertion Note. Why: includes only accepts a state key, and a key that isn't one simply isn't found. How: The as lets any key be checked.
 
 	const docMapObj : SynDocTyp = { [ COR_DOC_STR ] : corDocObj }; // What: Document Map Object. Why: Every document is collected under its id. How: This starts with core.
 
@@ -327,7 +332,7 @@ function joiDocFun ( docMapObj : SynDocTyp ) : StaAppTyp {
 
 // #region Exports
 
-export { canJsoFun, COR_DOC_STR, hasDocFun, joiDocFun, LOG_SPE_ARR, type LogKeyTyp, splStaFun, type SynDocTyp }; // What: Named Exports. Why: The merge and sync engine split, fingerprint, and join documents through these. How: This exports them by name.
+export { canJsoFun, COR_DOC_STR, DEV_KEY_ARR, hasDocFun, joiDocFun, LOG_SPE_ARR, type LogKeyTyp, splStaFun, type SynDocTyp }; // What: Named Exports. Why: The merge and sync engine split, fingerprint, and join documents through these. How: This exports them by name.
 
 // #endregion Exports
 

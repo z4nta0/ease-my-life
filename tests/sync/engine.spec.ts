@@ -196,6 +196,26 @@ test( 'two devices that changed the same month merge it, with the later save dec
 
 
 
+test( 'display settings stay on each device and never upload', async () => { // What: Device Settings Test. Why: Theme, tab bar placement, and the Data tab's layout suit one screen. How: This changes them on one device and merges a change from another.
+
+
+	const fakBacObj = fakBacFun(); // What: Fake Backend Object. Why: Two devices share one cloud copy. How: This creates one.
+	const oneStaObj = { ...staBuiFun( 'Dishes', [] ), appearance : { theme : 'ink' }, ui : { dataSort : {} } };                                  // What: One State Object. Why: The first device has its own settings. How: This adds them to a small state.
+	const oneResObj = await synRunFun( fakBacObj, oneStaObj, 1000, null, TOD_DAY_STR );                                                          // What: One Result Object. Why: The first device uploads. How: This syncs it.
+	const thmResObj = await synRunFun( fakBacObj, { ...oneStaObj, appearance : { theme : 'sage' } }, 2000, oneResObj.synMetObj, TOD_DAY_STR );   // What: Theme Result Object. Why: A theme change alone must not upload. How: This syncs a new theme.
+	const twoResObj = await synRunFun( fakBacObj, { ...staBuiFun( 'Laundry', [] ), appearance : { theme : 'dusk' } }, 3000, null, TOD_DAY_STR ); // What: Two Result Object. Why: A second device with its own theme joins the account. How: This syncs it for the first time.
+
+
+
+	expect( thmResObj.pusNeeBoo ).toBe( false );                               // What: No Upload Assertion. Why: Settings stay local. How: This expects no upload.
+	expect( fakBacObj.docTexMap.get( 'core' ) ).not.toContain( 'appearance' ); // What: Cloud Core Assertion. Why: The cloud never holds settings. How: This checks core's text.
+	expect( twoResObj.merStaObj?.appearance ).toEqual( { theme : 'dusk' } );   // What: Kept Theme Assertion. Why: Adopting the account keeps this device's theme. How: This reads the merged state's appearance, failing when there's none.
+
+
+} );
+
+
+
 test( 'an upload that loses the race starts over, and gives up as busy after four tries', async () => { // What: Race Retry Test. Why: Two devices syncing at once must not overwrite each other. How: This makes uploads lose the race.
 
 

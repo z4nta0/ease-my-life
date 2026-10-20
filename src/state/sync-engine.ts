@@ -4,6 +4,7 @@
 // #region Imports
 
 import { canJsoFun   } from './sync-docs.ts';  // What: Canonical JSON Function. Why: Hashes and uploads both need one fixed text per document. How: This serializes a document with its keys sorted.
+import { DEV_KEY_ARR } from './sync-docs.ts';  // What: Device Key Array. Why: A merged state keeps this device's own settings. How: This names those fields.
 import { hasDocFun   } from './sync-docs.ts';  // What: Hash Document Function. Why: Documents are compared by fingerprint, not content. How: This hashes a document's canonical JSON.
 import { joiDocFun   } from './sync-docs.ts';  // What: Join Documents Function. Why: A merged set of documents has to become app state again. How: This rebuilds the state from them.
 import { merDocFun   } from './sync-merge.ts'; // What: Merge Document Function. Why: A document both sides changed has to be merged. How: This merges one such document.
@@ -209,9 +210,9 @@ async function synRunFun ( synBacObj : SynBacTyp, locStaObj : StaAppTyp, locSavN
 
 		// #region Upload
 
-		const merHasObj = hasMapFun( merDocObj );                                                            // What: Merged Hash Object. Why: The merged documents are compared with both sides. How: This hashes them.
-		const merStaObj = canJsoFun( merHasObj ) === canJsoFun( locHasObj ) ? null : joiDocFun( merDocObj ); // What: Merged State Object. Why: The caller only saves a state when the merge changed something here. How: This joins the merged documents when their hashes differ from the local ones, and is null otherwise.
-		const basRevNum = remManObj ? remManObj.rev : 0;                                                     // What: Base Revision Number. Why: The upload only commits on the revision it was built from. How: This reads the cloud's revision, 0 before the first upload.
+		const merHasObj = hasMapFun( merDocObj );        // What: Merged Hash Object. Why: The merged documents are compared with both sides. How: This hashes them.
+		const merStaObj = canJsoFun( merHasObj ) === canJsoFun( locHasObj ) ? null : { ...joiDocFun( merDocObj ), ...Object.fromEntries( DEV_KEY_ARR.map( ( keyNamStr ) => [ keyNamStr, locStaObj[ keyNamStr ] ] ) ) }; // What: Merged State Object. Why: The caller only saves a state when the merge changed something here, and this device keeps its own settings. How: This joins the merged documents when their hashes differ from the local ones, adding back this device's DEV_KEY_ARR fields, and is null otherwise.
+		const basRevNum = remManObj ? remManObj.rev : 0; // What: Base Revision Number. Why: The upload only commits on the revision it was built from. How: This reads the cloud's revision, 0 before the first upload.
 
 
 
