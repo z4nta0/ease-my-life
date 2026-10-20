@@ -57,8 +57,13 @@ const DAT_VER_NUM = 1;                             // What: Database Version Num
 const MIG_SNA_STR = 'easemylife.snapshot.pre-idb'; // What: Migration Snapshot String. Why: This is the bounded-lifetime rollback copy taken right before the very first IDB migration attempt. How: This is written once in iniStoFun and re-exported as-is on the STG_NAM_OBJ object below.
 const MIR_KEY_STR = 'easemylife.v2';               // What: Mirror Key String. Why: This is the legacy live localStorage key that also doubles as the warm mirror's own key, read by every fallback-engine caller of this file. How: This is written by wriLocFun and read by reaLocFun, and re-exported as-is on the STG_NAM_OBJ object below.
 const MIR_TIM_STR = 'easemylife.mirrorat';         // What: Mirror Time String. Why: Mirror freshness must survive a reload, not just live in memory, since the Settings storage panel reports it on a cold load before any tab-hide has happened this session. How: This is written by wriLocFun and read by staRepFun.
+const PER_ASK_STR = 'easemylife.persistasked'; // What: Persist Ask String. Why: This is the localStorage key recording whether this device has already been asked for persistent storage once, so a denial is not re-requested on every later launch (browsers ignore a repeat request anyway). How: pwa.ts reads and writes it through STG_NAM_OBJ, and the boot sweep keeps it.
 const PIC_LOG_STR = 'picklog';                     // What: Pick Log String. Why: This is the object store name holding the pick log alone, under key 'main', kept separate so writing it is not on the hot path of every other save. How: This is passed to traStoFun everywhere the pick log alone is read or written.
 const STA_STO_STR = 'state';                       // What: State Store String. Why: This is the object store name holding everything except the pick log, under key 'main'. How: This is passed to traStoFun everywhere the non-log portion of state is read or written.
+
+
+
+const LIV_KEY_ARR = [ BOO_KEY_STR, MIR_KEY_STR, MIR_TIM_STR, PER_ASK_STR ]; // What: Live Key Array. Why: The boot sweep deletes every owned localStorage key from a dead generation, so every key still in use has to be named here or it's deleted too (the persistence prompt's key once was, so the app asked again). How: The sweep keeps every key in this list.
 
 
 
@@ -984,17 +989,13 @@ async function iniStoFun () : Promise< RawSavTyp > {
 			if ( booCouNum >= SNA_KEE_NUM ) { // What: Dead Generation Sweep Check. Why: Every pre-IDB localStorage generation is a full plaintext copy of user data that the current layer never reads again once IDB is proven. How: This sweeps them, gated on the same booCouNum threshold as the snapshot retirement above.
 
 
-				for ( const curKeyStr of ownKeyFun() ) { // What: Owned Key Sweep Loop. Why: Every owned key must be checked individually, since some (the live mirror, the boot counter, the mirror timestamp) must survive this sweep. How: This iterates every key ownKeyFun finds.
+				for ( const curKeyStr of ownKeyFun() ) { // What: Owned Key Sweep Loop. Why: Every owned key must be checked individually, since some (the keys in LIV_KEY_ARR) must survive this sweep. How: This iterates every key ownKeyFun finds.
 
 
-					const notMirBoo = curKeyStr !== MIR_KEY_STR; // What: Not Mirror Boolean. Why: The live warm mirror must survive this sweep. How: This is true when curKeyStr isn't MIR_KEY_STR.
-					const notBooBoo = curKeyStr !== BOO_KEY_STR; // What: Not Boot Boolean. Why: The boot counter must survive this sweep, since it gates the sweep itself. How: This is true when curKeyStr isn't BOO_KEY_STR.
-					const notTimBoo = curKeyStr !== MIR_TIM_STR; // What: Not Timestamp Boolean. Why: The mirror timestamp must survive this sweep alongside the mirror it dates. How: This is true when curKeyStr isn't MIR_TIM_STR.
-
-					const isaDeaBoo = notMirBoo && notBooBoo && notTimBoo; // What: Is-A Dead Boolean. Why: Only a key that is none of the three survivors is a genuinely dead pre-IDB generation. How: This combines notMirBoo, notBooBoo and notTimBoo.
+					const isaDeaBoo = !LIV_KEY_ARR.includes( curKeyStr ); // What: Is-A Dead Boolean. Why: Only a key nothing still uses is a genuinely dead generation. How: This is true when curKeyStr isn't in LIV_KEY_ARR.
 
 
-					if ( isaDeaBoo ) localStorage.removeItem( curKeyStr ); // What: Dead Generation Removal Check. Why: Only a genuinely dead pre-IDB key should be removed, never the three keys this layer still actively reads and writes. How: This removes curKeyStr unless it matches one of those three survivors.
+					if ( isaDeaBoo ) localStorage.removeItem( curKeyStr ); // What: Dead Generation Removal Check. Why: Only a genuinely dead pre-IDB key should be removed, never a key in LIV_KEY_ARR that this app still actively reads and writes. How: This removes curKeyStr unless it matches one of those three survivors.
 
 
 				}
@@ -1455,15 +1456,16 @@ async function staRepFun () : Promise< StoRepTyp > {
 const STG_NAM_OBJ = { // What: Storage Namespace Object. Why: This is the single public entry point every other file in this app imports by name. How: This maps each of this file's own internal function/variable names onto an external property name matching it exactly.
 
 
-	cacStaFun : cacStaFun, // What: Cached State Function. Why: store.ts's own loaStaFun() reads this synchronously to seed React state before any save has happened yet. How: This re-exports cacStaFun under its own matching name.
-	fluSynFun : fluSynFun, // What: Flush Sync Function. Why: store.ts calls this synchronously on pagehide/tab-hide, where an async save could be lost. How: This re-exports fluSynFun under its own matching name.
-	iniStoFun : iniStoFun, // What: Init Storage Function. Why: main.tsx awaits this before React ever mounts, and store.ts's own loaStaFun() reads its result back synchronously afterward. How: This re-exports iniStoFun under its own matching name.
-	logAutFun : logAutFun, // What: Log Authoritative Function. Why: store.ts calls this right after an import or a reset, before the next save writes the fresh pickLog. How: This re-exports logAutFun under its own matching name.
-	reaPerFun : reaPerFun, // What: Read Persisted Function. Why: tab-settings.tsx calls this so an export can never inherit a truncated in-memory pickLog. How: This re-exports reaPerFun under its own matching name.
-	reqPerFun : reqPerFun, // What: Request Persist Function. Why: pwa.ts calls this after real user engagement to request eviction-exempt storage. How: This re-exports reqPerFun under its own matching name.
-	savStaFun : savStaFun, // What: Save State Function. Why: store.ts calls this on every debounced state change. How: This re-exports savStaFun under its own matching name.
-	staRepFun : staRepFun, // What: Status Report Function. Why: tab-settings.tsx polls this to render the storage panel. How: This re-exports staRepFun under its own matching name.
-	wipDatFun : wipDatFun  // What: Wipe Data Function. Why: store.ts calls this from the Settings "Delete all data" flow. How: This re-exports wipDatFun under its own matching name.
+	cacStaFun   : cacStaFun,   // What: Cached State Function. Why: store.ts's own loaStaFun() reads this synchronously to seed React state before any save has happened yet. How: This re-exports cacStaFun under its own matching name.
+	fluSynFun   : fluSynFun,   // What: Flush Sync Function. Why: store.ts calls this synchronously on pagehide/tab-hide, where an async save could be lost. How: This re-exports fluSynFun under its own matching name.
+	iniStoFun   : iniStoFun,   // What: Init Storage Function. Why: main.tsx awaits this before React ever mounts, and store.ts's own loaStaFun() reads its result back synchronously afterward. How: This re-exports iniStoFun under its own matching name.
+	logAutFun   : logAutFun,   // What: Log Authoritative Function. Why: store.ts calls this right after an import or a reset, before the next save writes the fresh pickLog. How: This re-exports logAutFun under its own matching name.
+	PER_ASK_STR : PER_ASK_STR, // What: Persist Ask String. Why: pwa.ts records the persistence prompt under a key the boot sweep must keep, so the key lives here beside LIV_KEY_ARR. How: This re-exports PER_ASK_STR under its own matching name.
+	reaPerFun   : reaPerFun,   // What: Read Persisted Function. Why: tab-settings.tsx calls this so an export can never inherit a truncated in-memory pickLog. How: This re-exports reaPerFun under its own matching name.
+	reqPerFun   : reqPerFun,   // What: Request Persist Function. Why: pwa.ts calls this after real user engagement to request eviction-exempt storage. How: This re-exports reqPerFun under its own matching name.
+	savStaFun   : savStaFun,   // What: Save State Function. Why: store.ts calls this on every debounced state change. How: This re-exports savStaFun under its own matching name.
+	staRepFun   : staRepFun,   // What: Status Report Function. Why: tab-settings.tsx polls this to render the storage panel. How: This re-exports staRepFun under its own matching name.
+	wipDatFun   : wipDatFun    // What: Wipe Data Function. Why: store.ts calls this from the Settings "Delete all data" flow. How: This re-exports wipDatFun under its own matching name.
 
 
 };
