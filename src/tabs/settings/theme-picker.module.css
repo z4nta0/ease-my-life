@@ -247,19 +247,21 @@
 
 
 }
-.cusSwaInp::-webkit-color-swatch { /* What: WebKit Custom Theme Swatch Color. Why: The color should fill its segment without a border and ease when it changes. How: This drops WebKit's swatch border and fades its color. */
+.cusSwaInp::-webkit-color-swatch { /* What: WebKit Custom Theme Swatch Color. Why: The color should fill its segment without a border or rounding and ease when it changes. How: This drops WebKit's swatch border and corner rounding and fades its color. */
 
 
-	border     : none;
-	transition : background-color var( --dur-tra-p03 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
+	border        : none;
+	border-radius : 0;    /* What: Square Swatch Corners. Why: Safari on iPhone and iPad rounds the swatch itself, which stretches into an oval across a wide segment. How: This squares it, leaving the row's own rounded edge to shape it like a preset. */
+	transition    : background-color var( --dur-tra-p03 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
 
 
 }
-.cusSwaInp::-moz-color-swatch { /* What: Firefox Custom Theme Swatch Color. Why: The color should fill its segment without a border and ease when it changes. How: This drops Firefox's swatch border and fades its color. */
+.cusSwaInp::-moz-color-swatch { /* What: Firefox Custom Theme Swatch Color. Why: The color should fill its segment without a border or rounding and ease when it changes. How: This drops Firefox's swatch border and corner rounding and fades its color. */
 
 
-	border     : none;
-	transition : background-color var( --dur-tra-p03 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
+	border        : none;
+	border-radius : 0;
+	transition    : background-color var( --dur-tra-p03 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
 
 
 }
