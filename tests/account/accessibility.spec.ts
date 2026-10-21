@@ -67,8 +67,8 @@ const AXE_TAG_ARR = [ 'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'b
  * Checks the screen showing on a page at each width: an axe-core scan at
  * 1,280px and 375px of what signing in changes (the Account section and the
  * reset row), which must find no violations, and at 320px a check that the
- * page doesn't scroll sideways, measured as the main suite measures it. It reports
- * the violations by rule and target, so a failure says what to fix.
+ * page doesn't scroll sideways, measured as the main suite measures it. It
+ * reports the violations by rule and target, so a failure says what to fix.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

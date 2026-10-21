@@ -59,11 +59,11 @@ const claSetFun = ( uidValStr : string ) => admPosFun( `/identitytoolkit.googlea
  * creAccFun = Create Account Function
  *
  * @summary
- * Creates the account in the auth emulator and, unless told otherwise,
- * gives it the paid claim before anyone signs in, so the first token either device receives already
- * carries it, as it would after a purchase and a token refresh. The account
- * starts with a throwaway password that nothing uses, and the emailed link
- * then signs in to the same account and verifies its address.
+ * Creates the account in the auth emulator and, unless told otherwise, gives
+ * it the paid claim before anyone signs in, so the first token either device
+ * receives already carries it, as it would after a purchase and a token
+ * refresh. The account starts with a throwaway password that nothing uses, and
+ * the emailed link then signs in to the same account and verifies its address.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
