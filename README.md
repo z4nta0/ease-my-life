@@ -103,7 +103,7 @@ Emulator.
   check-off, undo, reminder, skip, re-roll, and streak against an independent
   copy of the rules, then the Stats figures and each conditional's odds.
   Picks are seeded, so a run repeats exactly and can be compared with an
-  earlier one. About 20 minutes.
+  earlier one. About 30 minutes.
 - `npm run test:interaction` drives every tab's controls and forms, checking
   that each change is saved and its animation plays.
 - `npm run test:onboarding` runs the whole onboarding from an empty install,

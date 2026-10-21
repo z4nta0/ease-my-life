@@ -69,7 +69,7 @@ tests/output/report` opens the HTML report.
   2027), checking every generated list, check-off, undo, reminder, skip,
   re-roll, and streak against an independent copy of the rules
   (`check-*.ts`, `schedule.ts`, `holidays.ts`), then the Stats tab and each
-  probability conditional's odds. About 20 minutes. Scheduling draws in
+  probability conditional's odds. About 30 minutes. Scheduling draws in
   `src/core/` and `src/state/` are seeded, so the same seed repeats the same
   picks: `EML_SIM_BASELINE=<path to an earlier trace.json>` compares a run
   against an earlier one (e.g. from `main`) and reports every day that

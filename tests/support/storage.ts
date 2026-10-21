@@ -39,6 +39,7 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
 
 const POL_GAP_NUM = 100;   // What: Poll Gap Number. Why: A debounced save usually lands within a few hundred milliseconds. How: This is the wait between reads, in milliseconds.
 const POL_MAX_NUM = 10000; // What: Poll Maximum Number. Why: A save that never lands is a failure, not something to wait on forever. How: This is the longest waiStaFun keeps polling, in milliseconds.
+const SET_GAP_NUM = 300;   // What: Settle Gap Number. Why: The app writes the pick log just after the rest of the state, and a read in between is inconsistent. How: This is how long waiStaFun waits before its confirming read, in milliseconds.
 
 // #endregion Constants
 
@@ -123,7 +124,10 @@ const reaStaFun = async ( curPagObj : Page ) : Promise< StaAppTyp | null > => cu
  * state. The app saves on an idle callback after each change, so a check
  * made straight after a click can see the old state; waiting on the
  * condition the click should cause avoids racing the save. Throws with the
- * label when the condition still fails after ten seconds.
+ * label when the condition still fails after ten seconds. Once the condition
+ * holds, it waits SET_GAP_NUM and reads again, since the app writes the pick
+ * log just after the rest of the state, and a read between the two writes
+ * shows a state whose pick log hasn't caught up yet.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -133,8 +137,8 @@ const reaStaFun = async ( curPagObj : Page ) : Promise< StaAppTyp | null > => cu
  * @param conLabStr - Condition Label String: Names the condition in the error
  *                    when it never holds.
  *
- * @returns The first saved state that met the condition.
- * @see {@link curStaObj}
+ * @returns The first settled saved state that met the condition.
+ * @see {@link setStaObj}
  *
  * @example
  * ```ts
@@ -158,7 +162,20 @@ const waiStaFun = async ( curPagObj : Page, conTesFun : ( staAppObj : StaAppTyp 
 
 
 
-		if ( curStaObj && conTesFun( curStaObj ) ) return curStaObj; // What: Condition Met Return. Why: The caller needs the state that satisfied the condition. How: This returns it as soon as the test passes.
+		if ( curStaObj && conTesFun( curStaObj ) ) { // What: Condition Met Check. Why: The app saves the pick log in a second write just after the rest of the state, so a read can land between the two. How: This waits for that write and reads once more before returning.
+
+
+			await curPagObj.waitForTimeout( SET_GAP_NUM ); // What: Settle Wait. Why: The pick log's write follows the state's within milliseconds. How: This waits SET_GAP_NUM.
+
+
+			const setStaObj = await reaStaFun( curPagObj ); // What: Settled State Object. Why: The second read holds both writes. How: This reads the saved state again.
+
+
+
+			if ( setStaObj && conTesFun( setStaObj ) ) return setStaObj; // What: Settled Return. Why: The caller needs a state whose pick log has caught up, and that still meets the condition. How: This returns the second read, or keeps polling if it no longer meets it.
+
+
+		}
 
 
 
