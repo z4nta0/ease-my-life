@@ -149,7 +149,21 @@ async function webSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 
 
 
-	if ( !verWebFun( bodTexStr, reqCurObj.headers, webSecStr ) ) return new Response( 'Bad signature.', { status : 403 } ); // What: Signature Guard. Why: Only Polar may change an account's claim. How: This refuses anything it didn't sign.
+	const verFaiStr = verWebFun( bodTexStr, reqCurObj.headers, webSecStr ); // What: Verify Failure String. Why: Only Polar may change an account's claim. How: This checks the signature, giving the reason it failed or null.
+
+
+
+	if ( verFaiStr ) { // What: Signature Check. Why: A refused webhook should say why, in Polar's delivery log and Netlify's. How: This logs the reason with the secret's length, never the secret, and refuses.
+
+
+		console.warn( `Webhook refused: ${ verFaiStr } (secret length ${ webSecStr.length })` ); // What: Refusal Log. Why: The length helps spot a wrong or padded secret without exposing it. How: This logs the reason and length.
+
+
+
+		return new Response( `Webhook refused: ${ verFaiStr }.`, { status : 403 } ); // What: Refusal Return. Why: Polar shows the reply in its delivery log. How: This answers 403 with the reason.
+
+
+	}
 
 
 

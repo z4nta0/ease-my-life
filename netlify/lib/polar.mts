@@ -20,7 +20,8 @@ import { timingSafeEqual } from 'node:crypto'; // What: Timing Safe Equal. Why: 
  * charge anyone. Each has its own product, API address, and secrets.
  *
  * Polar signs each webhook the Standard Webhooks way: an HMAC-SHA256 of the
- * message id, its timestamp, and its body, keyed by the endpoint's secret,
+ * message id, its timestamp, and its body, keyed by the endpoint's secret
+ * (its base64-decoded bytes, for a secret written that way),
  * sent base64-encoded in the webhook-signature header. A webhook whose
  * signature doesn't match, or whose timestamp is more than five minutes
  * off, is refused, so nobody else can mark an account as paid.
@@ -70,9 +71,11 @@ const isaLivFun = ( depCotStr : string ) => depCotStr === 'production'; // What:
  *
  * @summary
  * Checks a webhook's signature and timestamp the Standard Webhooks way (see
- * the file summary). Polar's secret is used as is, as the HMAC key's bytes,
- * the same as Polar's own SDK does. The signature header can list several
- * signatures (during a secret rotation), and any one matching is enough.
+ * the file summary), matching Polar's own SDK: the HMAC key is tried both as
+ * the secret's own bytes and, when the secret (minus any whsec_ prefix) is
+ * valid base64, as the bytes it decodes to, which is how Polar's current
+ * secrets are meant. The signature header can list several v1 signatures
+ * (during a secret rotation), and any one matching either key is enough.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -82,16 +85,17 @@ const isaLivFun = ( depCotStr : string ) => depCotStr === 'production'; // What:
  * @param nowSecNum - Now Seconds Number: The current time in seconds,
  *                    defaulting to the clock, which tests can replace.
  *
- * @returns Whether the webhook is genuine and fresh.
+ * @returns Null for a genuine, fresh webhook, or else which check failed:
+ *          'missing headers', 'stale timestamp', or 'signature mismatch'.
  *
  * @example
  * ```ts
- * verWebFun(bodTexStr, reqCurObj.headers, webSecStr) // => true
+ * verWebFun(bodTexStr, reqCurObj.headers, webSecStr) // => null
  * ```
  *
 */
 
-function verWebFun ( bodTexStr : string, reqHeaObj : Headers, webSecStr : string, nowSecNum : number = Math.floor( Date.now() / 1000 ) ) : boolean {
+function verWebFun ( bodTexStr : string, reqHeaObj : Headers, webSecStr : string, nowSecNum : number = Math.floor( Date.now() / 1000 ) ) : string | null {
 
 
 	const msgIdeStr = reqHeaObj.get( 'webhook-id' );        // What: Message Identifier String. Why: The id is part of what's signed. How: This reads its header.
@@ -100,29 +104,45 @@ function verWebFun ( bodTexStr : string, reqHeaObj : Headers, webSecStr : string
 
 
 
-	if ( !msgIdeStr || !msgSigStr || !msgTimStr ) return false; // What: Missing Header Guard. Why: An unsigned request isn't from Polar. How: This refuses it.
+	if ( !msgIdeStr || !msgSigStr || !msgTimStr ) return 'missing headers'; // What: Missing Header Guard. Why: An unsigned request isn't from Polar. How: This refuses it.
 
 
 
-	if ( Math.abs( nowSecNum - Number( msgTimStr ) ) > TIM_TOL_NUM ) return false; // What: Stale Timestamp Guard. Why: An old webhook could be replayed. How: This refuses one more than five minutes off.
+	if ( !( Math.abs( nowSecNum - Number( msgTimStr ) ) <= TIM_TOL_NUM ) ) return 'stale timestamp'; // What: Stale Timestamp Guard. Why: An old webhook could be replayed, and a timestamp that isn't a number is no better. How: This refuses one more than five minutes off, or unreadable.
 
 
 
-	const expSigBuf = createHmac( 'sha256', Buffer.from( webSecStr, 'utf8' ) ).update( `${ msgIdeStr }.${ msgTimStr }.${ bodTexStr }` ).digest(); // What: Expected Signature Buffer. Why: A genuine webhook's signature matches this. How: This signs the id, timestamp, and body with the secret.
+	const b64RemStr = webSecStr.startsWith( 'whsec_' ) ? webSecStr.slice( 6 ) : webSecStr;                                  // What: Base64 Remainder String. Why: A Standard Webhooks secret may carry a whsec_ prefix before its base64 key. How: This drops it.
+	const b64ValBoo = b64RemStr.length > 0 && b64RemStr.length % 4 === 0 && /^[A-Za-z0-9+/]*={0,2}$/.test( b64RemStr );     // What: Base64 Valid Boolean. Why: Only a real base64 string means a decoded key, the same test Polar's SDK makes with atob. How: This checks its length and characters.
+	const keyBufArr = [ Buffer.from( webSecStr, 'utf8' ), ...( b64ValBoo ? [ Buffer.from( b64RemStr, 'base64' ) ] : [] ) ]; // What: Key Buffer Array. Why: Polar's SDK accepts a signature made with either key. How: This lists the secret's own bytes and, when valid, its decoded bytes.
+	const sigConStr = `${ msgIdeStr }.${ Math.floor( Number( msgTimStr ) ) }.${ bodTexStr }`;                               // What: Signed Content String. Why: Polar signs the id, the timestamp, and the body joined by dots. How: This builds the same text.
+	const expSigArr = keyBufArr.map( ( keyCurBuf ) => createHmac( 'sha256', keyCurBuf ).update( sigConStr ).digest() );     // What: Expected Signature Array. Why: A genuine signature matches one of these. How: This signs the content with each key.
 
 
 
-	return msgSigStr.split( ' ' ).some( ( sigEntStr ) => { // What: Signature Match Return. Why: Any listed signature matching proves the webhook genuine. How: This compares each one in constant time.
+	const sigMatBoo = msgSigStr.split( ' ' ).some( ( sigEntStr ) => { // What: Signature Match Boolean. Why: Any listed v1 signature matching proves the webhook genuine. How: This compares each against every expected one in constant time.
 
 
-		const sigValBuf = Buffer.from( sigEntStr.split( ',' )[ 1 ] || '', 'base64' ); // What: Signature Value Buffer. Why: Each entry is a version, a comma, and the base64 signature. How: This decodes the signature part.
+		const [ sigVerStr, sigB64Str ] = sigEntStr.split( ',', 2 ); // What: Signature Version And Value. Why: Each entry is a version, a comma, and the base64 signature. How: This splits them.
 
 
 
-		return sigValBuf.length === expSigBuf.length && timingSafeEqual( sigValBuf, expSigBuf ); // What: Entry Match Return. Why: Lengths must match before a constant-time compare. How: This checks both.
+		if ( sigVerStr !== 'v1' || !sigB64Str ) return false; // What: Unknown Version Guard. Why: Only v1 signatures are HMAC-SHA256. How: This skips any other entry.
+
+
+
+		const sigValBuf = Buffer.from( sigB64Str, 'base64' ); // What: Signature Value Buffer. Why: The signature is compared as bytes. How: This decodes it.
+
+
+
+		return expSigArr.some( ( expSigBuf ) => sigValBuf.length === expSigBuf.length && timingSafeEqual( sigValBuf, expSigBuf ) ); // What: Entry Match Return. Why: Lengths must match before a constant-time compare. How: This checks each expected signature.
 
 
 	} );
+
+
+
+	return sigMatBoo ? null : 'signature mismatch'; // What: Result Return. Why: The caller refuses anything but a match, and logs why. How: This returns null for a match, or the reason.
 
 
 }

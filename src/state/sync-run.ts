@@ -233,6 +233,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	const firModRef = React.useRef< Promise< typeof import( '../platform/firebase.ts' ) > | null >( null );       // What: Firebase Module Reference. Why: Firebase loads at most once, and only when needed. How: This holds the import's promise.
 	const idlTimRef = React.useRef< number | null >( null );                                                      // What: Idle Timer Reference. Why: The two-minute wait restarts on each change, and hiding the app cuts it short. How: This holds the pending timer.
 	const preStaRef = React.useRef( staAppObj );                                                                  // What: Previous State Reference. Why: Only a real change starts the wait, not the first render. How: This holds the last state seen.
+	const refOncRef = React.useRef( false );                                                                      // What: Refresh Once Reference. Why: An unpaid account renews its token once per launch, to catch a purchase that landed while the app was closed. How: This is true once that renewal ran.
 	const runAgaRef = React.useRef( false );                                                                      // What: Run Again Reference. Why: A request during a sync runs once it ends. How: This marks one.
 	const runActRef = React.useRef( false );                                                                      // What: Run Active Reference. Why: Only one sync runs at a time. How: This is true during one.
 	const staCurRef = React.useRef( staAppObj );                                                                  // What: State Current Reference. Why: A sync reads, and later compares against, the latest state. How: This mirrors staAppObj.
@@ -637,6 +638,23 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 	}, [ accUseObj ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the account changes. How: accUseObj changes on sign-in, sign-out, and a renewed token.
+
+
+
+	React.useEffect( () => { // What: Launch Renewal Effect. Why: The paid claim only reaches a device when its token is renewed, which otherwise happens hourly, so a purchase that landed late would wait. How: This renews an unpaid account's token once per launch.
+
+
+		if ( !accUseObj || accUseObj.paiBoo || refOncRef.current ) return; // What: Renewal Guard. Why: Only an unpaid account needs it, and only once. How: This returns otherwise.
+
+
+
+		refOncRef.current = true; // What: Renewal Mark. Why: The renewal reports a new token, which mustn't trigger another. How: This marks it done.
+
+
+		void lodFirFun().then( ( firModObj ) => firModObj.refTokFun() ); // What: Token Renewal Call. Why: A late purchase shows up on the next launch. How: This forces a fresh token.
+
+
+	}, [ accUseObj ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the account changes. How: accUseObj changes once the account is known.
 
 
 

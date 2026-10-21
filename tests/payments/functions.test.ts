@@ -127,8 +127,8 @@ async function accNewFun ( verEmaBoo : boolean, staClaObj : object = {} ) : Prom
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param webEveObj - Webhook Event Object: The event to send.
- * @param sigSecStr - Signing Secret String: The secret to sign with,
- *                    defaulting to the real one.
+ * @param sigSecStr - Signing Secret String: The secret to sign with, or the
+ *                    raw key bytes, defaulting to the real one.
  * @param ageSecNum - Age Seconds Number: How old the timestamp is,
  *                    defaulting to 0.
  *
@@ -141,14 +141,14 @@ async function accNewFun ( verEmaBoo : boolean, staClaObj : object = {} ) : Prom
  *
 */
 
-function webReqFun ( webEveObj : object, sigSecStr : string = WEB_SEC_STR, ageSecNum : number = 0 ) : Request {
+function webReqFun ( webEveObj : object, sigSecStr : string | Buffer = WEB_SEC_STR, ageSecNum : number = 0 ) : Request {
 
 
 	const bodTexStr = JSON.stringify( webEveObj );                           // What: Body Text String. Why: The signature covers the exact text. How: This serializes the event.
 	const msgIdeStr = `msg_${ Date.now() }`;                                 // What: Message Identifier String. Why: Each webhook has an id. How: This builds one.
 	const msgTimStr = String( Math.floor( Date.now() / 1000 ) - ageSecNum ); // What: Message Timestamp String. Why: The timestamp is signed and checked. How: This is now, minus the chosen age.
 
-	const sigValStr = createHmac( 'sha256', Buffer.from( sigSecStr, 'utf8' ) ).update( `${ msgIdeStr }.${ msgTimStr }.${ bodTexStr }` ).digest( 'base64' ); // What: Signature Value String. Why: The webhook is signed as Polar signs it. How: This signs the id, timestamp, and body.
+	const sigValStr = createHmac( 'sha256', typeof sigSecStr === 'string' ? Buffer.from( sigSecStr, 'utf8' ) : sigSecStr ).update( `${ msgIdeStr }.${ msgTimStr }.${ bodTexStr }` ).digest( 'base64' ); // What: Signature Value String. Why: The webhook is signed as Polar signs it. How: This signs the id, timestamp, and body.
 
 
 
@@ -204,6 +204,31 @@ test( 'a webhook with a bad signature or an old timestamp is refused and changes
 	assert.equal( ( await webSerFun( webReqFun( ordEveObj, 'wrong-secret' ), LIV_COT_OBJ ) ).status, 403 );   // What: Forged Assertion. Why: A wrong secret's signature is refused. How: This expects 403.
 	assert.equal( ( await webSerFun( webReqFun( ordEveObj, WEB_SEC_STR, 600 ), LIV_COT_OBJ ) ).status, 403 ); // What: Stale Assertion. Why: A ten-minute-old webhook is refused. How: This expects 403.
 	assert.deepEqual( await claReaFun( accNewObj.uidStr ), {} );                                              // What: Unchanged Assertion. Why: Neither attempt unlocked anything. How: This expects no claims.
+
+
+} );
+
+
+
+test( 'a whsec_ secret signs with its decoded key, as Polar signs', async () => { // What: Base64 Secret Test. Why: Polar's current secrets are base64 keys, which the first version of the check missed, refusing every real delivery. How: This sets a whsec_ secret and signs with its decoded bytes.
+
+
+	const keyRawBuf = Buffer.from( 'polar-test-signing-key-bytes-0001' ); // What: Key Raw Buffer. Why: The signature is made with the raw key. How: This is a known key.
+	const accNewObj = await accNewFun( true );                            // What: Account New Object. Why: The buyer's account. How: This creates it.
+
+
+	process.env.POLAR_WEBHOOK_SECRET = `whsec_${ keyRawBuf.toString( 'base64' ) }`; // What: Base64 Secret Setting. Why: This is the shape of a Polar secret. How: This writes the key as whsec_ plus base64.
+
+
+	const webResObj = await webSerFun( webReqFun( { data : { customer : { external_id : accNewObj.uidStr }, id : 'ord5', product_id : PRO_LIV_STR, status : 'paid' }, type : 'order.paid' }, keyRawBuf ), LIV_COT_OBJ ); // What: Webhook Response Object. Why: The order is signed with the decoded key. How: This delivers it.
+
+
+	process.env.POLAR_WEBHOOK_SECRET = WEB_SEC_STR; // What: Secret Restore. Why: Later cases sign with the plain secret. How: This puts it back.
+
+
+
+	assert.equal( webResObj.status, 200 );                                    // What: Status Assertion. Why: The decoded key's signature is genuine. How: This expects 200.
+	assert.deepEqual( await claReaFun( accNewObj.uidStr ), { paid : true } ); // What: Claim Assertion. Why: The account is unlocked. How: This expects it paid.
 
 
 } );
