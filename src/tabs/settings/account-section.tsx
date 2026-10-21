@@ -220,7 +220,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 		<>{ /* What: Account Section Fragment. Why: The intro, card, and regions sit directly in the section the Settings tab renders. How: This groups them without a wrapper. */ }
 
 
-			<p className={ cssModObj.secSubPar }>Ease My Life runs entirely on this device, with no account needed. Sync across devices is a one-time purchase that keeps your data the same on every device you sign in to. Your theme and display settings stay separate on each device.</p>{ /* What: Section Sub Paragraph Element. Why: The section explains what an account is for before offering one. How: This states that accounts are optional and what sync does. */ }
+			<p className={ cssModObj.secSubPar }>Ease My Life runs entirely on this device, with no account needed. Sync across devices is a one-time purchase that keeps your data the same on every device you sign in to. Your theme and display settings stay separate on each device. Restoring from a backup file instead? Use Import in Data control, just above.</p>{ /* What: Section Sub Paragraph Element. Why: The section explains what an account is for before offering one. How: This states that accounts are optional and what sync does, and points a returning person without an account at Import. */ }
 
 
 

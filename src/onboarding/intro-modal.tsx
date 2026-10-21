@@ -38,7 +38,7 @@ import { useModIneFun } from '../ui/modal-inert.ts'; // What: Use Modal Inert Fu
 
 // #region Components
 
-type ImcProTyp = { begLabStr? : string, icoTopEle : React.ReactNode, onBegTouFun : () => void, onSkiTouFun : () => void, parEleArr : React.ReactNode[], pilLabArr? : string[], skiLabStr? : string, titHeaStr : string }; // What: Intro-Modal-Component Props Type. Why: Every tour opens with the same intro modal, filled with its own icon, heading, paragraphs, pills, and button labels. How: This types IntModCom's props.
+type ImcProTyp = { begLabStr? : string, icoTopEle : React.ReactNode, onBegTouFun : () => void, onRetUseFun? : () => void, onSkiTouFun : () => void, parEleArr : React.ReactNode[], pilLabArr? : string[], retLabStr? : string, skiLabStr? : string, titHeaStr : string }; // What: Intro-Modal-Component Props Type. Why: Every tour opens with the same intro modal, filled with its own icon, heading, paragraphs, pills, and button labels. How: This types IntModCom's props.
 
 // #region IntModCom
 
@@ -50,7 +50,8 @@ type ImcProTyp = { begLabStr? : string, icoTopEle : React.ReactNode, onBegTouFun
  * Welcome Tour and every per-feature mini-tour built on the same
  * GuiTouCom engine alike (see onboarding/tour-runner.tsx). It renders
  * an icon, a title, one or more body paragraphs, and up to a few small
- * pills, then a primary "start" action above a secondary "skip" one.
+ * pills, then a primary "start" action above a secondary "skip" one, and,
+ * when the caller asks, a quieter third action for someone returning.
  * Every piece of visible content is passed in by the caller; only the
  * structure and the two buttons' own styling are meant to stay identical
  * across every tour that uses this component. See
@@ -67,6 +68,9 @@ type ImcProTyp = { begLabStr? : string, icoTopEle : React.ReactNode, onBegTouFun
  *                            inline <svg>.
  * @param props.onBegTouFun - On Begin Tour Function: Called when the primary
  *                            action button is activated.
+ * @param props.onRetUseFun - On Returning User Function: Called when the
+ *                            returning-user text button is activated; without
+ *                            it, that button isn't shown.
  * @param props.onSkiTouFun - On Skip Tour Function: Called when the secondary,
  *                            skip action button is activated.
  * @param props.parEleArr   - Paragraph Element Array: The body paragraphs
@@ -76,6 +80,9 @@ type ImcProTyp = { begLabStr? : string, icoTopEle : React.ReactNode, onBegTouFun
  *                            label strings rendered as small chips below the
  *                            paragraphs; omitted or empty renders no chip row
  *                            at all.
+ * @param props.retLabStr   - Returning Label String: The returning-user
+ *                            button's own visible text; defaults to "I've
+ *                            used Ease My Life before".
  * @param props.skiLabStr   - Skip Label String: The secondary button's own
  *                            visible text; defaults to 'Skip'.
  * @param props.titHeaStr   - Title Heading String: The modal's own heading
@@ -87,12 +94,12 @@ type ImcProTyp = { begLabStr? : string, icoTopEle : React.ReactNode, onBegTouFun
  *
  * @example
  * ```tsx
- * IntModCom({ begLabStr, icoTopEle, onBegTouFun, ... }) // => <IntModCom />
+ * IntModCom({ begLabStr, icoTopEle, onBegTouFun, onRetUseFun, ... }) // => <IntModCom />
  * ```
  *
 */
 
-function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onSkiTouFun, parEleArr, pilLabArr, skiLabStr = 'Skip', titHeaStr } : ImcProTyp ) : React.ReactPortal {
+function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetUseFun, onSkiTouFun, parEleArr, pilLabArr, retLabStr = "I've used Ease My Life before", skiLabStr = 'Skip', titHeaStr } : ImcProTyp ) : React.ReactPortal {
 
 
 	const redMotBoo = redMotFun(); // What: Reduced Motion Boolean. Why: The card's own slide-in entrance animation should be skipped when the user prefers reduced motion. How: This calls the shared redMotFun() check once per render.
@@ -183,6 +190,20 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onSkiT
 
 						onClick={ onSkiTouFun }
 					>{ skiLabStr }</button>{ /* What: Skip Action Button Element. Why: A user must always be able to decline a tour instead of taking it. How: This calls onSkiTouFun when clicked. */ }
+
+					{ onRetUseFun && ( // What: Returning User Check. Why: Only the Welcome Tour offers a way past onboarding for someone who has used the app before. How: This shows the text button when the caller passes its handler.
+
+
+						<button
+							className={` ${ cssModObj.intActBut }   ${ cssModObj.intActButLink } `}
+
+							data-element-name-hook='intRetBut'
+
+							onClick={ onRetUseFun }
+						>{ retLabStr }</button> // What: Returning User Button Element. Why: Someone restoring a backup or signing in to sync doesn't need onboarding. How: This calls onRetUseFun when clicked.
+
+
+					) }
 
 
 				</div>

@@ -16,6 +16,7 @@ import { ONB_EXA_OBJ } from '../state/onboarding-seed-data.ts'; // What: Onboard
 import { ONB_SPI_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: The tour needs to recognize its own sample pickers by id, to hide/unhide them without touching a user's real ones. How: This is read by the settings step's runFun and by bacSteFun below.
 import { ONB_STI_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Ids Array. Why: The tour needs to recognize its own sample reminders by id, so a Replay never seeds duplicates. How: This is checked before ever calling actStoObj.addTasFun below.
 import { ONB_TAS_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actStoObj.addTasFun by the Generate step's own runFun and by skiEndFun below.
+import { redMotFun   } from '../utils/motion.ts';               // What: Reduce Motion Function. Why: The returning-user scroll jumps instead of gliding for someone who asked for less motion. How: This reads the preference.
 import { todTopFun   } from './tour-runner.tsx';                // What: Today Top Function. Why: Skipping the Welcome Tour should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This is called from the intro modal's own onSkiTouFun handler below.
 
 
@@ -237,7 +238,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 			actStoObj.sedHisFun( hydStaFun( ONB_STA_OBJ ) ); // What: Seed History Call. Why: The Stats tab needs a full year of matching history for the sample pickers to look genuinely used, not brand new. How: This hydrates ONB_STA_OBJ's own day-offsets into real dates and persists them as pick/reminder log rows.
 
 
-		} );
+		} ).catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Import Failure Catch. Why: A reload, such as the one a reset ends with, can cut the load short, which WebKit reports as an error. How: This logs it instead, and the next launch seeds the history.
 
 
 	}, [ actStoObj, onbStaObj.welcomed, staAppObj.pickers ] ); // What: Effect Dependency Array. Why: This must re-run whenever the persisted welcomed flag flips, the same trigger the reopen effect above reacts to, and reads the actions and pickers too. How: actStoObj never changes identity, and a re-run caused by the pickers returns at the guard once the samples exist or welcomed is true.
@@ -601,6 +602,20 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 					welDonFun(); // What: Welcome Done Call. Why: Accepting the tour is also the point this welcome modal should never show again. How: This persists onboarding.welcomed as true.
 
 					setOnbPhaStr( 'tour' ); // What: Phase Set To Tour Call. Why: The modal itself must give way to the running guided tour. How: This flips onbPhaStr to 'tour', which the render logic below reads to switch from the modal to GuiTouCom.
+
+
+				} }
+				onRetUseFun={ () => { // What: On Returning User Handler. Why: Someone who has used the app before is restoring a backup or signing in to sync, and needs neither the tour nor the tutorials. How: This does everything a skip does, then opens Settings at the Account section, with Import just above it.
+
+
+					welDonFun(); // What: Welcome Done Call. Why: The welcome modal should never show again. How: This persists onboarding.welcomed as true.
+
+					skiEndFun(); // What: Skip End Call. Why: If the person changes their mind and imports nothing, Today still has its setup checklist, the same as after a skip, and an import or sync replaces all of it anyway. How: This seeds and hides the samples, then finishes the tour.
+
+					selTabFun( 'settings' ); // What: Settings Switch Call. Why: Signing in and importing both live on the Settings tab. How: This switches to it.
+
+
+					window.requestAnimationFrame( () => window.requestAnimationFrame( () => document.querySelector( '[data-element-name-hook~="setAccSec"]' )?.scrollIntoView( { behavior : redMotFun() ? 'auto' : 'smooth', block : 'start' } ) ) ); // What: Account Scroll Call. Why: The person lands on Sign in, with Import just above. How: This waits two frames for the tab to render, then scrolls the Account section into view, instantly under reduced motion.
 
 
 				} }
