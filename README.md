@@ -7,6 +7,8 @@ which chore to tackle, what to cook, which show to put on next. You build
 **pickers**, pools of items with their own rules for how one gets chosen, and
 the app puts together a short list for each day. Reminders cover the things
 that happen on a fixed schedule, and conditionals can give a picker a day off.
+It's built and maintained by [techgeek.dev](https://techgeek.dev/), whose
+portfolio links to it.
 
 ## How it works
 

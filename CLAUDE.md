@@ -4,11 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Ease My Life: "pick what to do today, without deciding." A client-only PWA
-(React 18 + Vite, no backend, no accounts). Users define "pickers" (weighted
-pools of items: chores, meals, etc.) that get chosen from on a schedule; the
-app builds a short daily list. All data lives on-device (IndexedDB, with a
-localStorage fallback/mirror); there is no server component to this app at all.
+Ease My Life: "pick what to do today, without deciding." A local-first PWA
+(React + Vite, deployed on Netlify at https://easemylife.app/). Users define
+"pickers" (weighted pools of items: chores, meals, etc.) that get chosen from
+on a schedule; the app builds a short daily list. All data lives on-device
+(IndexedDB, with a localStorage fallback/mirror), and the app needs no account.
+An optional one-time purchase syncs the state across devices through Firebase
+and two Netlify Functions (see "Paid sync" below), the only server-side parts.
+It's also a portfolio piece by techgeek.dev, linked from https://techgeek.dev.
 
 ## Commands
 
@@ -286,6 +289,54 @@ outside the normal React import graph. Their types live in `src/globals.d.ts`
   `public/boot-splash.js` (no framework), whose constants mirror the splash's
   own loop, stagger, and fade timings: see the Boot Splash Styles summary
   there before changing the animation timing.
+
+### Where data lives
+
+Added 2026-10-20. None of this is secret: the security is in
+`firestore.rules`, not in the layout.
+- **IndexedDB** (`storage.ts`): database `easemylife`, version 1, with two
+  object stores, each holding one record under the key `main`:
+  - `state`: the whole state except the pick log, stamped `__savedAt`.
+  - `picklog`: the pick log array alone, kept apart so other saves don't
+    rewrite it.
+- **localStorage**, every key starting `easemylife.` and kept by the boot
+  sweep's `LIV_KEY_ARR`:
+  - `v2`: the warm mirror, the state without its pick log, marked
+    `__mirrorNoLog`, or a full copy marked `__logPartial` in a fallback
+    session, and stamped `__savedAt`.
+  - `mirrorat`: when the mirror was written.
+  - `idbboots`: the count of clean IndexedDB boots, which gates the sweep.
+  - `snapshot.pre-idb`: a rollback copy from the first IndexedDB migration,
+    retired after a few clean boots.
+  - `persistasked`: whether the app already asked for persistent storage.
+  - `signedin`: `1` once this device has signed in, so Firebase loads at
+    launch.
+  - `signinemail`: the address an emailed link went to, until it's used.
+  - `syncmeta`: this device's sync record, JSON `{ changedAt, docs, rev, uid
+    }`: when it last changed, and the hashes and revision of its last sync,
+    for that account only.
+- **Firebase Auth** keeps its own session in the `firebaseLocalStorageDb`
+  IndexedDB database. An account's `paid: true` custom claim, set only by the
+  Polar webhook, is what unlocks sync.
+- **Firestore**, one tree per account:
+  - `users/{uid}`, the manifest: `docs` (document id to hash), `prior` (the
+    previous revision's `docs`, kept for cleanup), `rev` (one more per
+    commit), `savedAt` (the later side's save time, in milliseconds), and `v`
+    (the schema version).
+  - `users/{uid}/docs/{id}~{hash}`, one document version: `{ text }`, its
+    canonical JSON (keys sorted).
+  - The ids are `core` (the state without the logs, `appearance`, `ui`, and
+    the `__` markers) and `{log}-{YYYY-MM}` for each month of `pickLog`,
+    `conditionalLog`, `vacationLog` (by `date`), `reminderLog` (by
+    `completedAt`), and `reminderSkipLog` (by `skippedAt`). The hash is the
+    canonical JSON's FNV-1a, as 8 hex digits.
+  - An upload writes new versions beside the old ones, then commits the
+    manifest in a transaction only on the revision it was built from. Old
+    versions are deleted one revision late. A missing manifest reads as an
+    empty copy, never as everything deleted.
+- **Polar**: each checkout carries the account's id as the customer's
+  `external_customer_id` and as `metadata.firebaseUid`, and the webhook
+  matches an untagged order by email.
 
 ### Paid sync
 
