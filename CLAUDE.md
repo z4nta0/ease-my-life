@@ -79,7 +79,12 @@ tests/output/report` opens the HTML report.
   the suite, in Chromium, Firefox, and WebKit: the first signs in with an
   emailed link (read back from the emulator) and uploads the real backup,
   the second, a fresh install, adopts it, and a holiday added on the second
-  syncs back to the first. `npm test` runs every suite, payments included, inside the emulator.
+  syncs back to the first. It also buys sync with the checkout stubbed,
+  resets a device with its cloud copy, takes the returning-user option, and
+  scans the signed-in Account screens (unpaid, synced, the first-sync choice,
+  and the reset confirm) with axe and a 320px reflow check, which the main
+  accessibility suite can't reach. `npm test` runs every suite, payments
+  included, inside the emulator.
 - `npm run test:payments`: checks the checkout and webhook functions in
   Node's own test runner (Playwright's loader can't load `firebase-admin`)
   against the auth emulator: only a signed, fresh `order.paid` for the sync
@@ -369,6 +374,9 @@ background.
   `POLAR_ACCESS_TOKEN`, and `POLAR_WEBHOOK_SECRET` as secrets, the Polar ones
   per deploy context. Back from the checkout (`?purchase=sync`), the app
   renews its token every few seconds until the claim arrives.
+  The price ($9.99) lives in three places that must agree: the Polar
+  product, `SYN_PRI_STR` in `constants.ts` (shown on the Unlock row), and
+  the second offer in `index.html`'s JSON-LD.
 - **Function bundling**: the function sources live in `netlify/handlers/`,
   and `npm run build` ends with `build:functions`, which bundles each one with
   esbuild into `netlify/functions/` (git-ignored), where Netlify finds them.

@@ -115,8 +115,8 @@ Emulator.
   reflow, and reduced-motion checks.
 - `npm run test:account` signs two browser windows in to one account in the
   Firebase Emulator and syncs them with each other, buys sync with the
-  checkout stubbed, and resets a device along with its cloud copy, in all
-  three engines.
+  checkout stubbed, resets a device along with its cloud copy, and scans the
+  signed-in Account screens for accessibility, in all three engines.
 - `npm run test:rules` checks the Firestore security rules in the emulator.
 - `npm run test:payments` checks the checkout and webhook functions against
   the emulator, with Polar stubbed.
