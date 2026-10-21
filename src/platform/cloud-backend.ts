@@ -3,10 +3,13 @@
 
 // #region Imports
 
+import { collection       } from 'firebase/firestore'; // What: Collection. Why: Deleting the copy lists every stored version. How: This names the account's versions collection.
+import { deleteDoc        } from 'firebase/firestore'; // What: Delete Doc. Why: Deleting the copy removes its manifest. How: This deletes one document.
 import { doc              } from 'firebase/firestore'; // What: Doc. Why: Every read and write names a document. How: This builds a reference to one.
 import { firStoObj        } from './firebase.ts';      // What: Firebase Store Object. Why: The cloud copy lives in this database. How: This is its instance.
 import { getDoc           } from 'firebase/firestore'; // What: Get Doc. Why: A document version never changes once written, so it can be read from anywhere. How: This reads one.
 import { getDocFromServer } from 'firebase/firestore'; // What: Get Doc From Server. Why: A sync must compare against the cloud's current manifest, never a cached one. How: This reads it from the server.
+import { getDocs          } from 'firebase/firestore'; // What: Get Docs. Why: Deleting the copy needs every stored version, listed or left over. How: This reads the whole collection.
 import { runTransaction   } from 'firebase/firestore'; // What: Run Transaction. Why: The manifest only changes when it's still at the revision an upload was built on. How: This reads and writes it atomically.
 import { writeBatch       } from 'firebase/firestore'; // What: Write Batch. Why: Versions are uploaded and cleaned up many at a time. How: This groups writes into one request.
 
@@ -291,13 +294,57 @@ function cloBacFun ( uidValStr : string ) : SynBacTyp {
 
 // #endregion cloBacFun
 
+
+
+// #region delCloFun
+
+/**
+ * delCloFun = Delete Cloud Function
+ *
+ * @summary
+ * Deletes an account's whole cloud copy: its manifest first, so no device
+ * ever reads a manifest listing versions that are gone, then every version
+ * stored under it, including any leftover from an interrupted upload. Only
+ * the copy goes. The account itself, and its purchase, stay. A device still
+ * signed in to the account uploads its own data again on its next sync.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param uidValStr - User Identifier Value String: The account's id.
+ *
+ * @returns A promise that settles once the copy is gone, with no value.
+ *
+ * @example
+ * ```ts
+ * await delCloFun(uidValStr) // => Promise<void>
+ * ```
+ *
+*/
+
+async function delCloFun ( uidValStr : string ) : Promise< void > {
+
+
+	await deleteDoc( doc( firStoObj, 'users', uidValStr ) ); // What: Manifest Delete Call. Why: Without a manifest, no device reads the copy as present. How: This deletes it.
+
+
+
+	const verSnaObj = await getDocs( collection( firStoObj, 'users', uidValStr, 'docs' ) ); // What: Version Snapshot Object. Why: Every stored version has to go. How: This lists them.
+
+
+	await wriBatFun( uidValStr, verSnaObj.docs.map( ( verCurObj ) : [ string, null ] => [ verCurObj.id, null ] ) ); // What: Version Delete Call. Why: The copy's content goes with it. How: This deletes every version in batches.
+
+
+}
+
+// #endregion delCloFun
+
 // #endregion Helpers
 
 
 
 // #region Exports
 
-export { cloBacFun }; // What: Named Export. Why: The sync scheduler gets an account's backend through it. How: This exports cloBacFun by name.
+export { cloBacFun, delCloFun }; // What: Named Exports. Why: The sync hook gets an account's backend through cloBacFun, and deletes its copy through delCloFun. How: This exports both by name.
 
 // #endregion Exports
 

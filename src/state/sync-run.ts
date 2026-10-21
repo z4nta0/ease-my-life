@@ -83,6 +83,7 @@ type AccSynTyp = { // What: Account Sync Type. Why: The account screen shows the
 	synLasNum : number | null;                                       // What: Sync Last Number. Why: The screen says when it last synced. How: This is that time in milliseconds, or null.
 	synNowFun : () => void;                                          // What: Sync Now Function. Why: A person can sync without waiting. How: This runs a sync.
 	synStaStr : SynStaTyp;                                           // What: Sync Status String. Why: The screen shows how sync is going. How: This is the current status.
+	wipAccFun : ( cloDelBoo : boolean ) => Promise< boolean >; // What: Wipe Account Function. Why: Resetting a signed-in device signs out first, and may delete the cloud copy too. How: This does both, resolving false when it failed and nothing should be wiped.
 
 
 };
@@ -239,6 +240,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	const staCurRef = React.useRef( staAppObj );                                                                  // What: State Current Reference. Why: A sync reads, and later compares against, the latest state. How: This mirrors staAppObj.
 	const synRunRef = React.useRef< ( choValStr? : 'account' | 'device' ) => Promise< void > >( async () => {} ); // What: Sync Run Reference. Why: Listeners, timers, and a rerun need the latest sync function. How: This holds it, refreshed every render.
 	const watActRef = React.useRef( false );                                                                      // What: Watch Active Reference. Why: The account is watched once. How: This is true once watching starts.
+	const wipActRef = React.useRef( false ); // What: Wipe Active Reference. Why: A reset must not be undone by a sync uploading the copy again. How: This is true while a reset runs, and blocks new syncs.
 
 
 
@@ -429,7 +431,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
-		void staWatFun(); // What: Watch Start Call. Why: The account is followed from launch. How: This loads Firebase and watches.
+		staWatFun().catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Watch Start Call. Why: The account is followed from launch. How: This loads Firebase and watches, logging a load cut short by a reload or a lost connection rather than leaving it unhandled.
 
 
 
@@ -466,7 +468,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
-		if ( !accRunObj || !accRunObj.paiBoo ) return; // What: Unpaid Guard. Why: Sync is the paid feature. How: This returns.
+		if ( !accRunObj || !accRunObj.paiBoo || wipActRef.current ) return; // What: Unpaid Guard. Why: Sync is the paid feature, and never runs during a reset. How: This returns.
 
 
 
@@ -651,7 +653,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 		refOncRef.current = true; // What: Renewal Mark. Why: The renewal reports a new token, which mustn't trigger another. How: This marks it done.
 
 
-		void lodFirFun().then( ( firModObj ) => firModObj.refTokFun() ); // What: Token Renewal Call. Why: A late purchase shows up on the next launch. How: This forces a fresh token.
+		lodFirFun().then( ( firModObj ) => firModObj.refTokFun() ).catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Token Renewal Call. Why: A late purchase shows up on the next launch. How: This forces a fresh token, logging a failure rather than leaving it unhandled.
 
 
 	}, [ accUseObj ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the account changes. How: accUseObj changes once the account is known.
@@ -703,7 +705,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
-			void lodFirFun().then( ( firModObj ) => firModObj.refTokFun() ); // What: Token Renewal Call. Why: A renewed token carries a newly set claim. How: This forces one.
+			lodFirFun().then( ( firModObj ) => firModObj.refTokFun() ).catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Token Renewal Call. Why: A renewed token carries a newly set claim. How: This forces one, logging a failure rather than leaving it unhandled.
 
 
 		}, PUR_GAP_NUM );
@@ -814,6 +816,93 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 	};
+
+
+
+	// #region wipAccFun
+
+	/**
+	 * wipAccFun = Wipe Account Function
+	 *
+	 * @summary
+	 * Handles the account's part of a device reset: signs out when someone is
+	 * signed in, deleting the cloud copy first when asked. It blocks new syncs
+	 * and waits for one in progress to finish, so nothing uploads the copy
+	 * again between the deletion and the sign-out, and syncing stays blocked
+	 * until the caller wipes the device and the app reloads. If the deletion
+	 * or the sign-out fails, it reports that, so the caller wipes nothing and
+	 * the person can try again with nothing lost.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param cloDelBoo - Cloud Delete Boolean: Whether to delete the cloud
+	 *                    copy too.
+	 *
+	 * @returns A promise that settles true when the device may be wiped, or
+	 *          false when the account part failed.
+	 *
+	 * @example
+	 * ```ts
+	 * await wipAccFun(true) // => Promise<boolean>
+	 * ```
+	 *
+	*/
+
+	const wipAccFun = async ( cloDelBoo : boolean ) : Promise< boolean > => {
+
+
+		const accWipObj = accCurRef.current; // What: Account Wipe Object. Why: The account in use when the reset began is the one signed out. How: This reads it.
+
+
+
+		if ( accWipObj ) { // What: Signed In Check. Why: A signed-out device only needs wiping. How: This handles the account first.
+
+
+			wipActRef.current = true; // What: Sync Block. Why: No sync may start during the reset. How: This marks the reset running.
+
+
+			for ( let waiCouNum = 0; runActRef.current && waiCouNum < 100; waiCouNum++ ) await new Promise( ( resFunObj ) => window.setTimeout( resFunObj, 100 ) ); // What: Running Sync Wait. Why: A sync in progress could upload the copy again after it's deleted. How: This waits up to ten seconds for it to finish.
+
+
+
+			try { // What: Account Reset Try. Why: A failed deletion or sign-out must leave everything as it was. How: This deletes the copy when asked, then signs out.
+
+
+				if ( cloDelBoo ) await ( await import( '../platform/cloud-backend.ts' ) ).delCloFun( accWipObj.uidStr ); // What: Cloud Delete Call. Why: The person asked for their cloud copy to go too. How: This deletes it.
+
+
+				await ( await staWatFun() ).sigOutFun(); // What: Sign-Out Call. Why: A reset device shouldn't stay signed in. How: This ends the session.
+
+
+			}
+
+			catch ( errCatObj ) { // What: Account Reset Catch. Why: The person needs to know nothing was reset. How: This logs, explains, and stops.
+
+
+				console.warn( errCatObj ); // What: Failure Log. Why: The cause stays visible to anyone debugging. How: This logs it.
+
+				wipActRef.current = false; // What: Sync Unblock. Why: The reset didn't happen, so syncing carries on. How: This clears the mark.
+
+				setAccErrStr( cloDelBoo ? "Your cloud copy couldn't be deleted, so nothing was reset. Check your connection, then try again." : "Signing out didn't finish, so nothing was reset. Try again." ); // What: Failure Message. Why: The person can simply retry. How: This says what failed.
+
+
+
+				return false;
+
+
+			}
+
+
+		}
+
+
+
+		return true; // What: Ready Return. Why: The caller wipes the device once the account part is done. How: This reports it may.
+
+
+	};
+
+	// #endregion wipAccFun
 
 
 
@@ -938,7 +1027,8 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 		sigOutFun : () => void sigOutFun(),                                             // What: Sign Out Function. Why: The screen signs out. How: This calls it.
 		synLasNum,                                                                      // What: Sync Last Number. Why: The screen says when it last synced. How: This passes it.
 		synNowFun : () => void synRunRef.current(),                                     // What: Sync Now Function. Why: The screen can sync at once. How: This runs one.
-		synStaStr                                                                       // What: Sync Status String. Why: The screen shows the status. How: This passes it.
+		synStaStr,                                                                      // What: Sync Status String. Why: The screen shows the status. How: This passes it.
+		wipAccFun                                                    // What: Wipe Account Function. Why: The Settings reset signs out and may delete the cloud copy before wiping. How: This passes the action.
 
 
 	};

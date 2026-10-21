@@ -20,7 +20,8 @@ import type { SynManTyp } from '../../src/state/sync-engine.ts'; // What: Sync M
  * upload was built from, as the real backend's transaction will, and counts
  * every call, so a test can check what a sync downloaded and uploaded. A
  * test can also make the next uploads lose the race, as if another device
- * had committed first.
+ * had committed first, or delete the manifest, as if another device had
+ * deleted the cloud copy.
  *
  * Sections:
  *  - Types
@@ -41,6 +42,7 @@ type FakBacTyp = SynBacTyp & { // What: Fake Backend Type. Why: Tests read what 
 	docTexMap : Map< string, string >,  // What: Document Text Map. Why: Tests read the stored documents. How: This holds each document's JSON text by id.
 	getIdeArr : string[][],             // What: Get Identifier Array. Why: Tests check which documents a sync downloaded. How: This records the ids of each download.
 	manCurFun : () => SynManTyp | null, // What: Manifest Current Function. Why: Tests read the stored manifest. How: This returns it.
+	manDelFun : () => void,             // What: Manifest Delete Function. Why: A test can delete the cloud copy from another device. How: This removes the stored manifest.
 	putIdeArr : string[][],             // What: Put Identifier Array. Why: Tests check which documents a sync uploaded. How: This records the ids of each committed upload.
 	rejCouObj : { couNum : number }     // What: Reject Count Object. Why: A test can make uploads lose the race. How: This counts how many of the next uploads are refused.
 
@@ -96,6 +98,7 @@ function fakBacFun () : FakBacTyp {
 		getIdeArr,                                                         // What: Get Identifier Array. Why: Tests read the downloads. How: This shares the record.
 		getManFun : async () => manCurObj && structuredClone( manCurObj ), // What: Get Manifest Function. Why: A sync starts from the manifest. How: This returns a copy, so the engine can't change the stored one.
 		manCurFun : () => manCurObj,                                       // What: Manifest Current Function. Why: Tests read the stored manifest. How: This returns it.
+		manDelFun : () => { manCurObj = null; },                           // What: Manifest Delete Function. Why: Tests delete the cloud copy. How: This removes the manifest.
 		putIdeArr,                                                         // What: Put Identifier Array. Why: Tests read the uploads. How: This shares the record.
 		rejCouObj,                                                         // What: Reject Count Object. Why: Tests fake a lost race through it. How: This shares the counter.
 

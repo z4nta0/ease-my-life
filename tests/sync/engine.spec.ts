@@ -216,6 +216,31 @@ test( 'display settings stay on each device and never upload', async () => { // 
 
 
 
+test( 'a device finding its cloud copy deleted uploads its data again rather than wiping itself', async () => { // What: Deleted Copy Test. Why: Deleting the cloud copy from one device must never delete another device's data. How: This syncs, empties the cloud, and syncs again.
+
+
+	const fakBacObj = fakBacFun();                                                      // What: Fake Backend Object. Why: The flow deletes the cloud copy. How: This creates one.
+	const locStaObj = staBuiFun( 'Dishes', [ rowBuiFun( 'p1', '2026-10-19' ) ] );       // What: Local State Object. Why: The device holds data. How: This builds it.
+	const firResObj = await synRunFun( fakBacObj, locStaObj, 1000, null, TOD_DAY_STR ); // What: First Result Object. Why: The copy exists before it's deleted. How: This uploads it.
+
+
+	fakBacObj.docTexMap.clear(); // What: Document Clear. Why: Another device deleted the cloud copy. How: This empties the stored documents.
+
+	fakBacObj.manDelFun(); // What: Manifest Delete. Why: A deleted copy has no manifest either. How: This removes it.
+
+
+	const secResObj = await synRunFun( fakBacObj, locStaObj, 2000, firResObj.synMetObj, TOD_DAY_STR ); // What: Second Result Object. Why: The device syncs after the deletion. How: This runs it.
+
+
+
+	expect( secResObj.merStaObj ).toBeNull();                                                // What: Kept State Assertion. Why: The device's data is untouched. How: This expects no new state.
+	expect( fakBacObj.putIdeArr.at( -1 )?.sort() ).toEqual( [ 'core', 'pickLog-2026-10' ] ); // What: Upload Assertion. Why: The device's data goes back up. How: This expects every document uploaded.
+
+
+} );
+
+
+
 test( 'an upload that loses the race starts over, and gives up as busy after four tries', async () => { // What: Race Retry Test. Why: Two devices syncing at once must not overwrite each other. How: This makes uploads lose the race.
 
 

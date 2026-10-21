@@ -699,7 +699,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 
-			window.location.reload(); // What: Hard Reload. Why: Only a real reload clears stale module-level singletons left behind by an in-memory-only reset. How: This calls window.location.reload().
+			window.location.replace( `${ window.location.origin }${ window.location.pathname }` ); // What: Hard Reload. Why: Only a real reload clears stale module-level singletons left behind by an in-memory-only reset, and it must land on the bare address, since WebKit can reload a query the app already cleaned (a used sign-in link's code). How: This loads the app's path afresh, with no query or hash.
 
 
 		},

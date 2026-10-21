@@ -813,6 +813,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	const [ impLeaBoo, setImpLeaBoo ] = React.useState( false );                                                  // What: Import Leaving Boolean And Setter. Why: Closing the import confirmation should play its own leave animation before actually unmounting. How: This flags the confirm row as leaving for the duration of that animation.
 	const [ expMesObj, setExpMesObj ] = React.useState< { entNum : number, timNum : number } | null >( null );    // What: Export Message Object And Setter. Why: A completed export needs somewhere to report how many history entries it actually included. How: This is rendered as a status line below the export row.
 	const [ conResBoo, setConResBoo ] = React.useState( false );                                                  // What: Confirm Reset Boolean And Setter. Why: The Reset row needs to know whether its own confirm pair is currently showing. How: This swaps the Reset button for the confirm pair below.
+	const [ resBusBoo, setResBusBoo ] = React.useState( false );                                                  // What: Reset Busy Boolean And Setter. Why: Deleting the cloud copy and signing out take a moment, and the buttons mustn't be pressed twice. How: This is true while a signed-in reset runs.
 	const [ resLeaBoo, setResLeaBoo ] = React.useState( false );                                                  // What: Reset Leaving Boolean And Setter. Why: Closing the reset confirmation should play its own leave animation before actually unmounting. How: This flags the confirm row as leaving for the duration of that animation.
 	const [ resMesStr, setResMesStr ] = React.useState< string | null >( null );                                  // What: Reset Message String And Setter. Why: A completed reset needs somewhere to report its own outcome, once the row's own Reset button has gone away. How: This is rendered as a status line below the reset row.
 
@@ -855,6 +856,72 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 	useEscCanFun( conResBoo && !resLeaBoo, cloResFun ); // What: Escape Cancel Function. Why: Every confirmation in this tab backs out on Escape, and the reset confirm is no exception. How: This calls useEscCanFun, active only while the confirm is open and not already leaving, invoking cloResFun. // Escape backs out of the reset confirmation, like the other confirms.
+
+
+	// #region resRunFun
+
+	/**
+	 * resRunFun = Reset Run Function
+	 *
+	 * @summary
+	 * Runs a confirmed reset. Signed out, it wipes the device as before.
+	 * Signed in, it signs out first, deleting the cloud copy too when asked,
+	 * and wipes the device only once that succeeded, so a failure leaves
+	 * everything in place, with the reason shown in the Account section. The
+	 * wipe navigates home first, since the welcome modal that follows needs
+	 * the Today tab.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param cloDelBoo - Cloud Delete Boolean: Whether to delete the cloud
+	 *                    copy too.
+	 *
+	 * @returns A promise that settles once the reset starts or fails, with
+	 *          no value.
+	 *
+	 * @example
+	 * ```ts
+	 * await resRunFun(false) // => Promise<void>
+	 * ```
+	 *
+	*/
+
+	const resRunFun = async ( cloDelBoo : boolean ) : Promise< void > => {
+
+
+		setResBusBoo( true ); // What: Busy Mark. Why: The buttons wait while the account part runs. How: This disables them.
+
+
+
+		const accOkaBoo = await accSynObj.wipAccFun( cloDelBoo ); // What: Account Okay Boolean. Why: A failed sign-out or deletion means nothing should be reset. How: This runs the account part and reads whether it worked.
+
+
+		setResBusBoo( false ); // What: Busy Clear. Why: The buttons can be used again. How: This re-enables them.
+
+
+
+		if ( !accOkaBoo ) return; // What: Failed Reset Guard. Why: Nothing was reset, and the Account section explains why. How: This stops here.
+
+
+
+		if ( onNavHomFun ) onNavHomFun(); // What: Navigate Home Call. Why: The post-reset welcome modal's own tour anchors only exist on the Today tab. How: This calls onNavHomFun, if provided, before the wipe itself.
+
+		actStoObj.wipAppFun(); // What: Wipe App Call. Why: This is the actual store mutation that resets every piece of data. How: This clears storage and reloads the app.
+
+
+
+
+		setConResBoo( false );             // What: Confirm Close. Why: The confirm pair's job is done. How: This flips conResBoo back to false.
+		setResLeaBoo( false );             // What: Reset Leaving Clear. Why: No leave animation should linger after a real reset. How: This flips resLeaBoo back to false.
+		setResMesStr( 'All data reset.' ); // What: Reset Message Set. Why: The row should confirm the reset on screen. How: This writes a fixed confirmation into resMesStr.
+
+		annStaFun( 'All data reset.' ); // What: Reset Announce Call. Why: A screen-reader user needs to hear the reset happened too. How: This announces a fixed confirmation.
+
+
+	};
+
+	// #endregion resRunFun
+
 
 
 	React.useEffect( () => { // What: Reset Focus Effect. Why: Focus must follow the swap between the Reset button and the confirm pair in both directions, since the element under it is unmounted/remounted each time. How: This focuses the confirm's own Reset button on open, or restores focus to the row's own Reset button on a deliberate close.
@@ -2428,7 +2495,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 										id='set-reset-confirm-msg'
 
 										className={ cssModObj.setSubSpa }
-									>Wipes everything and restores the app to a clean state. <strong>This can&rsquo;t be undone.</strong></span>{ /* What: Set Data Sub Span Element. Why: The destructive and irreversible nature of reset needs to be stated plainly up front, and is also referenced by the confirm button's own aria-describedby below. How: This renders the fixed description. */ }
+									>{ accSynObj.accUseObj ? <>Wipes everything on this device and signs you out. Your cloud copy stays, so signing back in restores it, unless you delete it too. A device still signed in uploads its own copy again when it next syncs. <strong>This can't be undone.</strong></> : <>Wipes everything and restores the app to a clean state. <strong>This can't be undone.</strong></> }</span>{ /* What: Set Data Sub Span Element. Why: The destructive and irreversible nature of reset needs to be stated plainly up front, and is also referenced by the confirm button's own aria-describedby below. How: This renders the fixed description. */ }
 
 									{ resMesStr && ( // What: Reset Message Check. Why: A message should only exist right after an actual reset just happened. How: This renders the message span only while resMesStr holds a value.
 
@@ -2463,30 +2530,37 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 											kinValStr='danger'
 											sizValStr='sm'
 
+											disabled={ resBusBoo }
+
 											aria-describedby='set-reset-confirm-msg'
 
-											onClick={ () => { // What: Reset Confirm Click Handler. Why: Confirming wipes every piece of data, so it also has to land the user somewhere sensible and report what happened. How: This navigates home, wipes the store, closes the confirm pair, and announces the outcome.
-
-
-												if ( onNavHomFun ) onNavHomFun(); // What: Navigate Home Call. Why: The post-reset welcome modal's own tour anchors only exist on the Today tab. How: This calls onNavHomFun, if provided, before the reset itself actually runs. // Land on Today FIRST: the clean state re-opens the welcome modal, and its tour anchors only exist on the Today tab. Starting the tour from Settings left it dimmed with no coach.
+											onClick={ () => void resRunFun( false ) } // What: Reset Confirm Click Handler. Why: Confirming wipes this device, and signs it out first when an account is signed in. How: This runs the reset without deleting the cloud copy.
+										>{ accSynObj.accUseObj ? 'Reset this device' : 'Reset' }</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final confirmation that wipes this device's data. How: This runs the reset, its label naming the device when an account's cloud copy would stay. */ }
 
 
 
-												actStoObj.wipAppFun(); // What: Wipe App Call. Why: This is the actual store mutation that resets every piece of data. How: This calls actStoObj.wipAppFun.
-
-												setConResBoo( false );             // What: Confirm Close. Why: The confirm pair's job is done. How: This flips conResBoo back to false.
-												setResLeaBoo( false );             // What: Reset Leaving Clear. Why: No leave animation should linger after a real reset. How: This flips resLeaBoo back to false.
-												setResMesStr( 'All data reset.' ); // What: Reset Message Set. Why: The row should confirm the reset on screen. How: This writes a fixed confirmation into resMesStr.
-
-												annStaFun( 'All data reset.' ); // What: Reset Announce Call. Why: A screen-reader user needs to hear the reset happened too, especially since no focus target remains here to imply it visually. How: This announces a fixed confirmation message. // Nothing here to return focus to (the row's own Reset button becomes disabled with no data), and the welcome modal takes focus on the Today tab, so just say what happened.
+										{ accSynObj.accUseObj && ( // What: Cloud Delete Check. Why: Only a signed-in account has a cloud copy to delete. How: This offers the second reset then.
 
 
-											} }
-										>Reset</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final confirmation that wipes all data. How: This navigates home, resets the store, closes the confirm, and announces the outcome when clicked. */ }
+											<ButBasCom
+												data-element-name-hook='resCloBut'
+
+												disabled={ resBusBoo }
+												kinValStr='danger'
+												sizValStr='sm'
+
+												aria-describedby='set-reset-confirm-msg'
+
+												onClick={ () => void resRunFun( true ) } // What: Cloud Reset Click Handler. Why: The person wants the cloud copy gone too. How: This deletes it, signs out, and wipes the device.
+											>Reset and delete cloud copy</ButBasCom>
+
+
+										) }
 
 
 
 										<ButBasCom
+											disabled={ resBusBoo }
 											kinValStr='ghost'
 											sizValStr='sm'
 

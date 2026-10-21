@@ -3,16 +3,16 @@
 
 // #region Imports
 
-import { assertFails              } from '@firebase/rules-unit-testing'; // What: Assert Fails. Why: Forbidden reads and writes must be refused. How: This expects a request to be denied.
-import { assertSucceeds           } from '@firebase/rules-unit-testing'; // What: Assert Succeeds. Why: An allowed request must go through. How: This expects it to succeed.
-import { deleteDoc                } from 'firebase/firestore';           // What: Delete Doc. Why: Deletion rules are checked. How: This deletes a document.
-import { doc                      } from 'firebase/firestore';           // What: Doc. Why: Every request names a document. How: This builds a reference.
-import { getDoc                   } from 'firebase/firestore';           // What: Get Doc. Why: Read rules are checked. How: This reads a document.
+import { assertFails              } from '@firebase/rules-unit-testing';  // What: Assert Fails. Why: Forbidden reads and writes must be refused. How: This expects a request to be denied.
+import { assertSucceeds           } from '@firebase/rules-unit-testing';  // What: Assert Succeeds. Why: An allowed request must go through. How: This expects it to succeed.
+import { deleteDoc                } from 'firebase/firestore';            // What: Delete Doc. Why: Deletion rules are checked. How: This deletes a document.
+import { doc                      } from 'firebase/firestore';            // What: Doc. Why: Every request names a document. How: This builds a reference.
+import { getDoc                   } from 'firebase/firestore';            // What: Get Doc. Why: Read rules are checked. How: This reads a document.
 import { initializeTestEnvironment } from '@firebase/rules-unit-testing'; // What: Initialize Test Environment. Why: The rules run in the local emulator. How: This connects to it with the project's rules.
-import { readFileSync             } from 'node:fs';                      // What: Read File Sync. Why: The emulator is given the real rules file. How: This reads it.
-import { setDoc                   } from 'firebase/firestore';           // What: Set Doc. Why: Write rules are checked. How: This writes a document.
-import { setLogLevel              } from 'firebase/firestore';           // What: Set Log Level. Why: Every refusal a test expects would otherwise print as a warning. How: This silences the SDK's logging.
-import { test                     } from '@playwright/test';             // What: Test. Why: Each rule is its own test. How: This declares them.
+import { readFileSync             } from 'node:fs';                       // What: Read File Sync. Why: The emulator is given the real rules file. How: This reads it.
+import { setDoc                   } from 'firebase/firestore';            // What: Set Doc. Why: Write rules are checked. How: This writes a document.
+import { setLogLevel              } from 'firebase/firestore';            // What: Set Log Level. Why: Every refusal a test expects would otherwise print as a warning. How: This silences the SDK's logging.
+import { test                     } from '@playwright/test';              // What: Test. Why: Each rule is its own test. How: This declares them.
 
 
 import type { RulesTestEnvironment } from '@firebase/rules-unit-testing'; // What: Rules Test Environment. Why: Every test reads and writes through it. How: This types it.
@@ -31,8 +31,8 @@ import type { TokenOptions         } from '@firebase/rules-unit-testing'; // Wha
  * verified email can create its manifest at revision 1, move it on one
  * revision at a time, and read and write its document versions. Anything
  * else is refused: a skipped or repeated revision, an unexpected field,
- * another account's copy, an unpaid or unverified account, or nobody signed
- * in. An unpaid account can still delete its own copy.
+ * another account's copy, an unverified account, or nobody signed in. An
+ * unpaid owner can still read and delete its own copy, but not write it.
  *
  * Sections:
  *  - Constants
@@ -139,19 +139,18 @@ test( 'a manifest or version with an unexpected field is refused', async () => {
 
 
 
-test( "nobody else, and no unpaid, unverified, or signed-out account, can read or write a copy", async () => { // What: Access Test. Why: A copy belongs to its paid owner alone. How: This tries every other kind of account.
+test( "nobody else, and no unverified or signed-out account, can read or write a copy", async () => { // What: Access Test. Why: A copy belongs to its owner alone. How: This tries every other kind of account.
 
 
 	await seeManFun(); // What: Manifest Seed. Why: Reads need a copy to read. How: This writes alice's manifest.
 
 
 	const bobStoObj = accStoFun( 'bob', PAI_TOK_OBJ );                               // What: Bob Store Object. Why: Bob is a paid stranger to alice's copy. How: This acts as him.
-	const unpStoObj = accStoFun( 'alice', { email_verified : true } );               // What: Unpaid Store Object. Why: Alice before paying. How: This acts as her without the paid claim.
 	const unvStoObj = accStoFun( 'alice', { email_verified : false, paid : true } ); // What: Unverified Store Object. Why: A paid claim on an unverified email. How: This acts as that account.
 	const anoStoObj = tesEnvObj.unauthenticatedContext().firestore();                // What: Anonymous Store Object. Why: Nobody signed in. How: This acts as no account.
 
 
-	for ( const curStoObj of [ bobStoObj, unpStoObj, unvStoObj, anoStoObj ] ) { // What: Refused Account Loop. Why: Each of these is refused the same way. How: This tries a read and both writes as each.
+	for ( const curStoObj of [ bobStoObj, unvStoObj, anoStoObj ] ) { // What: Refused Account Loop. Why: Each of these is refused the same way. How: This tries a read and both writes as each.
 
 
 		await assertFails( getDoc( doc( curStoObj, 'users/alice' ) ) );                                     // What: Refused Read. Why: The copy isn't theirs to read. How: This expects the read refused.
@@ -166,15 +165,21 @@ test( "nobody else, and no unpaid, unverified, or signed-out account, can read o
 
 
 
-test( 'an unpaid owner can still delete its own copy, and a stranger cannot', async () => { // What: Delete Test. Why: Anyone can always remove their own data. How: This deletes as a stranger and as the unpaid owner.
+test( 'an unpaid owner can read and delete its own copy but not write it, and a stranger cannot delete it', async () => { // What: Unpaid Owner Test. Why: Anyone can always find and remove their own data, while writing is the paid feature. How: This deletes as a stranger and as the unpaid owner.
 
 
 	await seeManFun(); // What: Manifest Seed. Why: There has to be a copy to delete. How: This writes alice's manifest.
 
 
 
-	await assertFails( deleteDoc( doc( accStoFun( 'bob', PAI_TOK_OBJ ), 'users/alice' ) ) );                    // What: Stranger Delete. Why: Bob can't delete alice's copy. How: This expects it refused.
-	await assertSucceeds( deleteDoc( doc( accStoFun( 'alice', { email_verified : true } ), 'users/alice' ) ) ); // What: Owner Delete. Why: Alice can delete her own copy without paying. How: This expects it allowed.
+	const unpStoObj = accStoFun( 'alice', { email_verified : true } ); // What: Unpaid Store Object. Why: Alice before paying, or after a refund. How: This acts as her without the paid claim.
+
+
+
+	await assertSucceeds( getDoc( doc( unpStoObj, 'users/alice' ) ) );                           // What: Unpaid Read. Why: Alice can see her own copy. How: This expects the read allowed.
+	await assertFails( setDoc( doc( unpStoObj, 'users/alice' ), { ...MAN_ONE_OBJ, rev : 2 } ) ); // What: Unpaid Write. Why: Writing is the paid feature. How: This expects the write refused.
+	await assertFails( deleteDoc( doc( accStoFun( 'bob', PAI_TOK_OBJ ), 'users/alice' ) ) );     // What: Stranger Delete. Why: Bob can't delete alice's copy. How: This expects it refused.
+	await assertSucceeds( deleteDoc( doc( unpStoObj, 'users/alice' ) ) );                        // What: Owner Delete. Why: Alice can delete her own copy without paying. How: This expects it allowed.
 
 
 } );

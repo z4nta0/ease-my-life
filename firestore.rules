@@ -15,11 +15,12 @@ rules_version = '2'; // What: Rules Version. Why: Version 2 allows functions wit
  * @summary
  * Decides who may read and write the paid sync's cloud copies. Each account
  * owns users/{uid}, its manifest, and the document versions under
- * users/{uid}/docs, and nobody else can touch them. Reading or writing a
- * copy also needs a verified email address, which Google and emailed-link
- * sign-ins always have and a bare password account doesn't, and the paid
- * claim, which only the payment webhook can set. Deleting needs only the
- * account itself, so anyone can always remove their own data, paid or not.
+ * users/{uid}/docs, and nobody else can touch them. Every access needs a
+ * verified email address, which Google and emailed-link sign-ins always have
+ * and a bare password account doesn't. Writing a copy also needs the paid
+ * claim, which only the payment webhook can set. Reading and deleting need
+ * only the account itself, so anyone can always find and remove their own
+ * data, paid or not.
  *
  * A manifest write must hold exactly the fields the sync engine writes, and
  * its revision must be exactly one more than the one it replaces (1 for the
@@ -42,7 +43,7 @@ service cloud.firestore { // What: Firestore Service. Why: These rules cover the
 
 		// #region isaOwnFun
 
-		function isaOwnFun ( uidValStr ) { // What: Is-An Owner Function. Why: Only the account itself may delete its copy. How: This is true for a signed-in account with that id and a verified email.
+		function isaOwnFun ( uidValStr ) { // What: Is-An Owner Function. Why: Only the account itself may read or delete its copy. How: This is true for a signed-in account with that id and a verified email.
 
 
 			return request.auth != null && request.auth.uid == uidValStr && request.auth.token.email_verified == true; // What: Owner Return. Why: A sign-in without a verified email could belong to anyone. How: This checks the account, its id, and its verified email.
@@ -56,7 +57,7 @@ service cloud.firestore { // What: Firestore Service. Why: These rules cover the
 
 		// #region isaPaiFun
 
-		function isaPaiFun ( uidValStr ) { // What: Is-A Paid Function. Why: Only a paid owner may read or write a copy. How: This adds the paid claim to the owner check.
+		function isaPaiFun ( uidValStr ) { // What: Is-A Paid Function. Why: Only a paid owner may write a copy. How: This adds the paid claim to the owner check.
 
 
 			return isaOwnFun( uidValStr ) && request.auth.token.get( 'paid', false ) == true; // What: Paid Return. Why: The paid claim is set only by the payment webhook. How: This checks it, treating a missing claim as unpaid.
@@ -89,7 +90,7 @@ service cloud.firestore { // What: Firestore Service. Why: These rules cover the
 		match /users/{uidValStr} { // What: Manifest Match. Why: Each account's manifest is its own document. How: This matches users/{uid}.
 
 
-			allow read : if isaPaiFun( uidValStr );                                         // What: Manifest Read Rule. Why: Only a paid owner syncs. How: This allows reads for one.
+			allow read : if isaOwnFun( uidValStr );                                         // What: Manifest Read Rule. Why: An owner can always see their own copy, so an unpaid or refunded one can still find it to delete it. How: This allows reads for the owner.
 			allow create : if isaPaiFun( uidValStr ) && isaManFun( 1 );                     // What: Manifest Create Rule. Why: The first upload starts at revision 1. How: This allows it for a paid owner.
 			allow update : if isaPaiFun( uidValStr ) && isaManFun( resource.data.rev + 1 ); // What: Manifest Update Rule. Why: Each commit moves exactly one revision on. How: This allows it for a paid owner.
 			allow delete : if isaOwnFun( uidValStr );                                       // What: Manifest Delete Rule. Why: Anyone can delete their own copy. How: This allows it for the owner.
@@ -99,7 +100,7 @@ service cloud.firestore { // What: Firestore Service. Why: These rules cover the
 			match /docs/{verKeyStr} { // What: Version Match. Why: Each document version is stored under its account. How: This matches users/{uid}/docs/{id}~{hash}.
 
 
-				allow read : if isaPaiFun( uidValStr );   // What: Version Read Rule. Why: Only a paid owner syncs. How: This allows reads for one.
+				allow read : if isaOwnFun( uidValStr );   // What: Version Read Rule. Why: An owner can always see their own copy, and deleting it means listing it first. How: This allows reads for the owner.
 				allow create, update : if isaPaiFun( uidValStr ) && request.resource.data.keys().hasOnly( [ 'text' ] ) && request.resource.data.text is string; // What: Version Write Rule. Why: A version is only ever its JSON text. How: This allows a paid owner to write that one field.
 				allow delete : if isaOwnFun( uidValStr ); // What: Version Delete Rule. Why: Anyone can delete their own copy, and sync cleans up old versions. How: This allows it for the owner.
 

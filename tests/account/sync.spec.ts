@@ -294,6 +294,75 @@ test( 'an unpaid account buys sync, and the app picks up the paid claim on its o
 
 
 
+test( "a returning user skips onboarding and lands on Settings' Account section", async ( { page : curPagObj } ) => { // What: Returning User Test. Why: Someone restoring a backup or signing in to sync shouldn't sit through onboarding. How: This picks the returning-user option on a fresh install and checks where it lands.
+
+
+	const errMesArr = watErrFun( curPagObj ); // What: Error Message Array. Why: The flow fails on any page error. How: This starts watching.
+
+
+
+	await curPagObj.goto( '/' ); // What: App Load. Why: The option is on a fresh install's welcome modal. How: This opens the app.
+
+	await curPagObj.locator( '[data-element-name-hook~="intRetBut"]' ).click(); // What: Returning Click. Why: This is the option under test. How: This clicks it.
+
+
+
+	await expect( curPagObj.locator( '[data-tab="settings"]' ) ).toHaveAttribute( 'aria-current', 'page' );                 // What: Settings Assertion. Why: Signing in and importing live there. How: This expects the Settings tab current.
+	await expect( curPagObj.locator( '[data-element-name-hook~="setAccSec"]' ) ).toBeInViewport();                          // What: Account Section Assertion. Why: The person lands on Sign in. How: This expects the section on screen.
+	await expect( curPagObj.getByRole( 'dialog', { name : 'Welcome to Ease My Life' } ) ).toHaveCount( 0 );                 // What: Modal Gone Assertion. Why: Onboarding is out of the way. How: This expects no welcome modal.
+	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.onboarding.welcomed === true, 'the welcome modal marked done' ); // What: Welcomed Wait. Why: The modal must not come back on the next launch. How: This waits for the saved flag.
+
+	expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] ); // What: Error Assertion. Why: A flow that logged an error failed even if it finished. How: This expects no errors.
+
+
+} );
+
+
+
+test( 'resetting a signed-in device can delete the cloud copy too, and signs the device out', async ( { page : curPagObj } ) => { // What: Cloud Reset Test. Why: Someone must be able to remove their cloud copy along with the device's data. How: This syncs a copy, resets with the cloud option, and checks both.
+
+
+	const emaAdrStr = `wipe-${ Date.now() }@example.com`;                                                                      // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address.
+	const errMesArr = watErrFun( curPagObj );                                                                                  // What: Error Message Array. Why: The flow fails on any page error. How: This starts watching.
+	const uidValStr = await creAccFun( emaAdrStr );                                                                            // What: User Identifier Value String. Why: The cloud copy is checked by the account's id. How: This creates the paid account.
+	const manUrlStr = `http://127.0.0.1:8080/v1/projects/${ EMU_PRO_STR }/databases/(default)/documents/users/${ uidValStr }`; // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
+
+
+	await wriStaFun( curPagObj, reaFixFun() ); // What: Backup Load Call. Why: The device has data to upload and then wipe. How: This writes the backup.
+
+	await curPagObj.goto( '/' ); // What: App Load. Why: The app boots on the backup. How: This opens it.
+
+	await sigLinFun( curPagObj, emaAdrStr ); // What: Sign-In Call. Why: Only a signed-in device has a cloud copy. How: This signs in.
+
+	await synWaiFun( curPagObj ); // What: Upload Wait. Why: The copy must exist before it's deleted. How: This waits for the sync.
+
+
+	expect( ( await fetch( manUrlStr, { headers : { 'Authorization' : 'Bearer owner' } } ) ).status ).toBe( 200 ); // What: Copy Exists Assertion. Why: The deletion has something to delete. How: This expects the manifest found.
+
+
+	await curPagObj.locator( '[data-element-name-hook~="resRowDiv"]' ).getByRole( 'button', { exact : true, name : 'Reset' } ).click(); // What: Reset Open Click. Why: The reset asks for confirmation first. How: This opens it.
+
+	await curPagObj.locator( '[data-element-name-hook~="resCloBut"]' ).click(); // What: Cloud Reset Click. Why: This is the option under test. How: This resets and deletes the cloud copy.
+
+	await curPagObj.getByRole( 'dialog', { name : 'Welcome to Ease My Life' } ).waitFor(); // What: Reload Wait. Why: A reset reloads the app onto its welcome modal. How: This waits for it.
+
+
+	expect( ( await fetch( manUrlStr, { headers : { 'Authorization' : 'Bearer owner' } } ) ).status ).toBe( 404 ); // What: Copy Gone Assertion. Why: The cloud copy was deleted. How: This expects the manifest missing.
+
+
+	await curPagObj.getByRole( 'button', { name : /explore myself/ } ).click(); // What: Welcome Skip Click. Why: The reset device opens on the welcome modal. How: This skips it.
+
+	await selTabFun( curPagObj, 'settings' ); // What: Tab Switch Call. Why: The account shows on the Settings tab. How: This switches to it.
+
+	await expect( curPagObj.locator( '[data-element-name-hook~="accGooBut"]' ) ).toBeVisible(); // What: Signed Out Assertion. Why: The reset signed the device out. How: This expects the sign-in button back.
+
+	expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] ); // What: Error Assertion. Why: A flow that logged an error failed even if it finished. How: This expects no errors.
+
+
+} );
+
+
+
 // #endregion Module Init
 
 

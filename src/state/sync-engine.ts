@@ -38,7 +38,10 @@ import type { SynDocTyp } from './sync-docs.ts';        // What: Sync Document T
  * other: the one that loses the race starts over from the newer copy. A
  * device syncing for the first time adopts the cloud's copy as the winner,
  * keeping only its own history from before today, so signing in on a fresh
- * install never replaces an account's data with an empty one.
+ * install never replaces an account's data with an empty one. A cloud copy
+ * that has gone (deleted from another device) counts as empty, never as every
+ * document deleted, so a device still signed in uploads its data again rather
+ * than wiping itself.
  *
  * Sections:
  *  - Types
@@ -164,7 +167,7 @@ async function synRunFun ( synBacObj : SynBacTyp, locStaObj : StaAppTyp, locSavN
 
 		const locDocObj = splStaFun( locStaObj );                                                         // What: Local Document Object. Why: Local state is compared document by document. How: This splits it.
 		const locHasObj = hasMapFun( locDocObj );                                                         // What: Local Hash Object. Why: Each local document's fingerprint is compared. How: This hashes them.
-		const basHasObj = synMetObj ? synMetObj.docs : {};                                                // What: Base Hash Object. Why: A document that still matches the last sync wasn't changed on that side. How: This reads the last sync's hashes, or none before the first.
+		const basHasObj = synMetObj && remManObj ? synMetObj.docs : {};                                   // What: Base Hash Object. Why: A document that still matches the last sync wasn't changed on that side, but a cloud copy that's gone (deleted from another device) must not read as every document deleted, which would wipe this device too. How: This reads the last sync's hashes, or none before the first sync or when the cloud holds nothing, so this device's documents upload again.
 		const remHasObj = remManObj ? remManObj.docs : {};                                                // What: Remote Hash Object. Why: Each cloud document's fingerprint is compared. How: This reads the manifest's hashes, or none before the first upload.
 		const locWinBoo = !!synMetObj && ( !remManObj || locSavNum >= remManObj.savedAt );                // What: Local Winner Boolean. Why: A document both sides changed follows the side that saved last, and a first sync follows the cloud. How: This is true when this device has synced before and saved no earlier than the cloud.
 		const docIdeArr = [ ...new Set( [ ...Object.keys( locHasObj ), ...Object.keys( remHasObj ) ] ) ]; // What: Document Identifier Array. Why: Every document either side holds is compared. How: This lists both sides' ids once each.
@@ -192,7 +195,7 @@ async function synRunFun ( synBacObj : SynBacTyp, locStaObj : StaAppTyp, locSavN
 
 
 
-			const merCurObj = remHasStr === locHasStr || remHasStr === basHasStr // What: Merged Current Object. Why: A document only one side changed is taken from that side, and one both changed is merged. How: This picks the local copy when the cloud didn't change it, the cloud's when only it did, and merges otherwise.
+			const merCurObj = remHasStr === locHasStr || remHasStr === basHasStr                       // What: Merged Current Object. Why: A document only one side changed is taken from that side, and one both changed is merged. How: This picks the local copy when the cloud didn't change it, the cloud's when only it did, and merges otherwise.
 				? locDocObj[ docIdeStr ]                                                               // What: Local Branch. Why: The cloud matches this device or hasn't changed since the last sync. How: This keeps the local copy, undefined when this device deleted it.
 				: locHasStr === basHasStr                                                              // What: Remote Only Check. Why: A document this device left alone follows the cloud. How: This checks whether the local copy still matches the last sync.
 					? remDocObj                                                                        // What: Remote Branch. Why: Only the cloud changed it. How: This takes the cloud's copy, undefined when the cloud deleted it.
