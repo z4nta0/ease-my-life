@@ -519,7 +519,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		}, { timeout : 2000 } ); // What: Idle Callback Options. Why: A save must still happen soon even on a page that never goes idle. How: This caps the idle wait at 2 seconds.
 
 
-	}, [ appStaObj, perActBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever a change to one of these values could need a fresh save scheduled. How: appStaObj changing means there's new state to eventually persist, and perActBoo changing means persistence itself was just turned on or off.
+	}, [ appStaObj, canPenFun, perActBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever a change to one of these values could need a fresh save scheduled. How: appStaObj changing means there's new state to eventually persist, canPenFun never changes since its own callback has no dependencies, and perActBoo changing means persistence itself was just turned on or off.
 
 
 	React.useEffect( () => { // What: Flush-On-Hide Effect. Why: An async IDB write scheduled by the debounced effect above may not survive the page actually going away, so a synchronous flush must run on pagehide, tab-hide, and unmount. How: This wires pagehide/visibilitychange listeners that flush, and returns a cleanup that flushes once more.
@@ -560,7 +560,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		};
 
 
-	}, [ perActBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run only when perActBoo itself changes, since that's the only thing that could turn persistence on or off. How: perActBoo changing means the listeners themselves need re-wiring (or tearing down) under the new persistence setting.
+	}, [ canPenFun, perActBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run only when persistence is turned on or off, the one change that needs its listeners re-wired. How: canPenFun never changes since its own callback has no dependencies, and perActBoo changing means the listeners need re-wiring (or tearing down) under the new persistence setting.
 
 
 	const actStoObj = React.useMemo< ActStoTyp >( () => ( { // What: Action Store Object. Why: This is the entire mutation surface of the app's own state: a tab reads/calls these exact keys by name, so every key here is a real, load-bearing external contract. How: This builds a memoized object of state-transition functions, computed once (empty dependency array below).

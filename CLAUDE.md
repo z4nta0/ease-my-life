@@ -41,7 +41,8 @@ outside the build. ESLint is installed and configured
 for every file (`no-unused-vars` letting a binding beside a rest element go
 unread, and `prefer-const` only flagging a destructuring whose every binding
 could be `const`), `eslint-plugin-react-hooks`' recommended rules for
-`.tsx` files, minus its four React Compiler readiness
+`.tsx` files and the `.ts` files under `src/` (custom hooks without JSX,
+while tests stay out), minus its four React Compiler readiness
 rules, plus `react/jsx-no-undef` for everything under `src/`, which catches
 a component reference a rename missed. ESLint's own `no-undef` is off, as
 `typescript-eslint` recommends: `tsc` already reports every undefined name,
