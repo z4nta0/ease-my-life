@@ -1,0 +1,3 @@
+# What: Functions Block. Why: Netlify's function runtime can't require() an ES module, which firebase-admin does when it loads jose, so the unbundled functions crashed on load. How: esbuild bundles each function with its dependencies at deploy time, folding jose into the function's own code.
+[functions]
+	node_bundler = "esbuild"

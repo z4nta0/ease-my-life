@@ -318,6 +318,13 @@ background.
   `POLAR_ACCESS_TOKEN`, and `POLAR_WEBHOOK_SECRET` as secrets, the Polar ones
   per deploy context. Back from the checkout (`?purchase=sync`), the app
   renews its token every few seconds until the claim arrives.
+- **Function bundling**: `netlify.toml` has Netlify bundle the functions
+  with esbuild. Netlify's function runtime can't `require()` an ES module,
+  which `firebase-admin` does when it loads `jose`, so unbundled functions
+  crashed on load with `ERR_REQUIRE_ESM` (found 2026-10-20; setting
+  `AWS_LAMBDA_JS_RUNTIME` didn't help). Checked locally by bundling a
+  function with esbuild and loading it under `node
+  --no-experimental-require-module`.
 - **Running it**: `state/sync-run.ts`'s `useSynRunFun`, called once in
   `app.tsx`, follows the account and syncs on launch, on focus or coming
   online, two minutes after the last change, and on hide with a change
