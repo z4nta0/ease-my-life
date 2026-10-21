@@ -307,10 +307,10 @@ background.
   verified email and the `paid` custom claim, which only the payment webhook
   sets. They're published by pasting into the console's Firestore Rules tab
   (or `npx firebase deploy --only firestore:rules`).
-- **Payments**: Polar sells the one-time upgrade. `netlify/functions/
+- **Payments**: Polar sells the one-time upgrade. `netlify/handlers/
   checkout.mts` verifies the buyer's ID token and asks Polar for a checkout
   of the private Ease My Life Sync product, tagged with the account's id, and
-  `netlify/functions/polar-webhook.mts` checks Polar's signature and sets the
+  `netlify/handlers/polar-webhook.mts` checks Polar's signature and sets the
   `paid` claim on `order.paid` (clearing it on a full refund). The production
   site uses live Polar and every other deploy the sandbox (`netlify/lib/
   polar.mts` holds both products).
@@ -318,12 +318,15 @@ background.
   `POLAR_ACCESS_TOKEN`, and `POLAR_WEBHOOK_SECRET` as secrets, the Polar ones
   per deploy context. Back from the checkout (`?purchase=sync`), the app
   renews its token every few seconds until the claim arrives.
-- **Function bundling**: `netlify.toml` has Netlify bundle the functions
-  with esbuild. Netlify's function runtime can't `require()` an ES module,
-  which `firebase-admin` does when it loads `jose`, so unbundled functions
-  crashed on load with `ERR_REQUIRE_ESM` (found 2026-10-20; setting
-  `AWS_LAMBDA_JS_RUNTIME` didn't help). Checked locally by bundling a
-  function with esbuild and loading it under `node
+- **Function bundling**: the function sources live in `netlify/handlers/`,
+  and `npm run build` ends with `build:functions`, which bundles each one with
+  esbuild into `netlify/functions/` (git-ignored), where Netlify finds them.
+  Netlify's function runtime can't `require()` an ES module, which
+  `firebase-admin` does when it loads `jose`, so unbundled functions crashed
+  on load with `ERR_REQUIRE_ESM` (found 2026-10-20; neither
+  `AWS_LAMBDA_JS_RUNTIME` nor a `netlify.toml` bundler setting fixed it, and
+  the user's projects keep Netlify config in `_headers` and `_redirects`, not
+  `netlify.toml`). A bundle can be checked locally by loading it under `node
   --no-experimental-require-module`.
 - **Running it**: `state/sync-run.ts`'s `useSynRunFun`, called once in
   `app.tsx`, follows the account and syncs on launch, on focus or coming

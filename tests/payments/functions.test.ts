@@ -3,9 +3,9 @@
 
 // #region Imports
 
-import assert    from 'node:assert/strict';                        // What: Assert. Why: Every case checks a response or a claim. How: This makes strict assertions.
-import cheSerFun from '../../netlify/functions/checkout.mts';      // What: Checkout Serve Function. Why: The checkout function is tested directly. How: This is its handler.
-import webSerFun from '../../netlify/functions/polar-webhook.mts'; // What: Webhook Serve Function. Why: The webhook function is tested directly. How: This is its handler.
+import assert    from 'node:assert/strict';                       // What: Assert. Why: Every case checks a response or a claim. How: This makes strict assertions.
+import cheSerFun from '../../netlify/handlers/checkout.mts';      // What: Checkout Serve Function. Why: The checkout function is tested directly. How: This is its handler.
+import webSerFun from '../../netlify/handlers/polar-webhook.mts'; // What: Webhook Serve Function. Why: The webhook function is tested directly. How: This is its handler.
 
 
 import { before      } from 'node:test';                   // What: Before. Why: The handlers' setup is set once for every case. How: This runs it first.
