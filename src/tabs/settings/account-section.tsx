@@ -7,8 +7,9 @@ import cssModObj from './account-section.module.css'; // What: CSS Module Object
 import React     from 'react';                          // What: React. Why: The section keeps its own form state. How: This is used directly (React.useState).
 
 
-import { ButBasCom } from '../../ui/button.tsx';       // What: Button Base Component. Why: Every action here is a shared button. How: This renders them.
-import { CarSurCom } from '../../ui/card-surface.tsx'; // What: Card Surface Component. Why: The section's rows sit on a card like every other section's. How: This wraps them.
+import { ButBasCom   } from '../../ui/button.tsx';       // What: Button Base Component. Why: Every action here is a shared button. How: This renders them.
+import { CarSurCom   } from '../../ui/card-surface.tsx'; // What: Card Surface Component. Why: The section's rows sit on a card like every other section's. How: This wraps them.
+import { SYN_PRI_STR } from '../../constants.ts';        // What: Sync Price String. Why: The upgrade row names its price. How: This is the one-time price.
 
 
 import type { AccSynTyp } from '../../state/sync-run.ts'; // What: Account Sync Type. Why: The section shows and acts on the account and its sync. How: This types its prop.
@@ -540,7 +541,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 										key={ String( accSynObj.purPenBoo ) }
 
 										className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
-									>{ accSynObj.purPenBoo ? 'Finishing your purchase. This usually takes a few seconds.' : "A one-time purchase, not a subscription. Once it's unlocked, this account keeps your data the same on every device you sign in to." }</span>{ /* What: Settings Sub Span Element. Why: The price model matters to the decision, and a returning buyer should know the unlock is on its way. How: This states the model, or the wait, fading between them. */ }
+									>{ accSynObj.purPenBoo ? 'Finishing your purchase. This usually takes a few seconds.' : `A one-time purchase of ${ SYN_PRI_STR }, not a subscription. Once it's unlocked, this account keeps your data the same on every device you sign in to.` }</span>{ /* What: Settings Sub Span Element. Why: The price model matters to the decision, and a returning buyer should know the unlock is on its way. How: This states the price and model, or the wait, fading between them. */ }
 
 
 								</div>

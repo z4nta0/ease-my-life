@@ -44,6 +44,10 @@ const EUR_WAR_STR = 'WARNING: If this picker contains a lot of items then any gi
 
 
 
+const SYN_PRI_STR = '$9.99'; // What: Sync Price String. Why: The Account section names the sync upgrade's price before anyone opens the checkout. How: This is the one-time price, which must match the Polar product and index.html's structured data.
+
+
+
 const THR_VAL_NUM = 100; // What: Threshold Value Number. Why: Every ease drift/day conversion and full-charge check across the app shares this one fixed ceiling value. How: This is divided by an item's own easeMin/easeMax to get a day count, and compared against an item's own charge value.
 
 
@@ -71,7 +75,7 @@ const TIP_URL_STR = import.meta.env.VITE_TIP_URL || null; // What: Tip URL Strin
 
 // #region Exports
 
-export { APP_VER_STR, EUR_WAR_STR, THR_VAL_NUM, TIP_URL_STR }; // What: Named Exports. Why: Settings shows the build version and links the Ko-fi tip page, the Today tab's ease tips share the warning copy, and every ease day-range calculation shares the threshold value. How: This exports all four constants by name for any file to import.
+export { APP_VER_STR, EUR_WAR_STR, SYN_PRI_STR, THR_VAL_NUM, TIP_URL_STR }; // What: Named Exports. Why: Settings shows the build version, links the Ko-fi tip page, and names the sync price, the Today tab's ease tips share the warning copy, and every ease day-range calculation shares the threshold value. How: This exports all four constants by name for any file to import.
 
 // #endregion Exports
 
