@@ -453,6 +453,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 		}
 
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: staWatFun and finLinFun are rebuilt on every render, so listing them would rerun this launch-only effect each render, reloading Firebase and finishing a sign-in link twice. How: The effect lists only synActBoo, and the first render's copies stay correct, since staWatFun keeps its watch flag in a ref and finLinFun is handed the link directly.
 	}, [ synActBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever syncing is switched on or off. How: synActBoo is false during the onboarding demo.
 
 	// #endregion Account Watching
