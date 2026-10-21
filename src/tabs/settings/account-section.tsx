@@ -270,30 +270,38 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 								className={ cssModObj.setSubSpa }
 							>Enter the email address the sign-in link was sent to.</span>{ /* What: Settings Sub Span Element. Why: The link alone doesn't say whose it is. How: This asks for the address, and describes the field. */ }
 
-							<input
-								id='accFinInp'
 
-								className={ cssModObj.accEmaInp }
+							<div className={ cssModObj.accFieDiv }>{ /* What: Account Field Div Element. Why: A field and its button belong on one line, so the button lines up with the field rather than with the whole row. How: This holds them side by side, wrapping the button under the field when there isn't room. */ }
 
-								autoComplete='email'
-								required
-								type='email'
-								value={ emaAdrStr }
 
-								aria-describedby='accFinSpa'
+								<input
+									id='accFinInp'
 
-								onChange={ ( chaEveObj ) => setEmaAdrStr( chaEveObj.target.value ) }
-							/>{ /* What: Account Email Input Element. Why: The address finishes the sign-in. How: This holds it. */ }
+									className={ cssModObj.accEmaInp }
+
+									autoComplete='email'
+									required
+									type='email'
+									value={ emaAdrStr }
+
+									aria-describedby='accFinSpa'
+
+									onChange={ ( chaEveObj ) => setEmaAdrStr( chaEveObj.target.value ) }
+								/>{ /* What: Account Email Input Element. Why: The address finishes the sign-in. How: This holds it. */ }
+
+
+
+								<ButBasCom
+									kinValStr='primary'
+									sizValStr='sm'
+									type='submit'
+								>Finish sign in</ButBasCom>{ /* What: Button Base Component. Why: The form needs its action. How: This submits it. */ }
+
+
+							</div>
 
 
 						</div>
-
-
-						<ButBasCom
-							kinValStr='primary'
-							sizValStr='sm'
-							type='submit'
-						>Finish sign in</ButBasCom>{ /* What: Button Base Component. Why: The form needs its action. How: This submits it. */ }
 
 
 					</form>
@@ -366,33 +374,40 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 										className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
 									>{ linSenStr ? `A sign-in link is on its way to ${ linSenStr }. Open it on this device to finish.` : "We'll email you a link that signs you in, with no password to remember." }</span>{ /* What: Settings Sub Span Element. Why: The row explains the link before sending it and where it went after. How: This picks its sentence by whether a link was sent, and describes the field. */ }
 
-									<input
-										id='accEmaInp'
 
-										className={ cssModObj.accEmaInp }
+									<div className={ cssModObj.accFieDiv }>{ /* What: Account Field Div Element. Why: A field and its button belong on one line, so the button lines up with the field rather than with the whole row. How: This holds them side by side, wrapping the button under the field when there isn't room. */ }
 
-										data-element-name-hook='accEmaInp'
 
-										autoComplete='email'
-										required
-										type='email'
-										value={ emaAdrStr }
+										<input
+											id='accEmaInp'
 
-										aria-describedby='accEmaSpa'
+											className={ cssModObj.accEmaInp }
 
-										onChange={ ( chaEveObj ) => setEmaAdrStr( chaEveObj.target.value ) }
-									/>{ /* What: Account Email Input Element. Why: The link needs an address. How: This holds it. */ }
+											data-element-name-hook='accEmaInp'
+
+											autoComplete='email'
+											required
+											type='email'
+											value={ emaAdrStr }
+
+											aria-describedby='accEmaSpa'
+
+											onChange={ ( chaEveObj ) => setEmaAdrStr( chaEveObj.target.value ) }
+										/>{ /* What: Account Email Input Element. Why: The link needs an address. How: This holds it. */ }
+
+
+
+										<ButBasCom
+											kinValStr='secondary'
+											sizValStr='sm'
+											type='submit'
+										>{ linSenStr ? 'Send another link' : 'Email me a link' }</ButBasCom>{ /* What: Button Base Component. Why: The form needs its action, which can resend. How: This submits it, its label saying whether a link already went. */ }
+
+
+									</div>
 
 
 								</div>
-
-
-
-								<ButBasCom
-									kinValStr='secondary'
-									sizValStr='sm'
-									type='submit'
-								>{ linSenStr ? 'Send another link' : 'Email me a link' }</ButBasCom>{ /* What: Button Base Component. Why: The form needs its action, which can resend. How: This submits it, its label saying whether a link already went. */ }
 
 
 							</form>
@@ -428,32 +443,39 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 										className={ cssModObj.setSubSpa }
 									>Using the installed app? If the link opened in your browser instead, copy that page's address and paste it here.</span>{ /* What: Settings Sub Span Element. Why: The link opening elsewhere is the usual snag on a phone. How: This explains the workaround, and describes the field. */ }
 
-									<input
-										id='accPasInp'
 
-										className={ cssModObj.accEmaInp }
+									<div className={ cssModObj.accFieDiv }>{ /* What: Account Field Div Element. Why: A field and its button belong on one line, so the button lines up with the field rather than with the whole row. How: This holds them side by side, wrapping the button under the field when there isn't room. */ }
 
-										data-element-name-hook='accPasInp'
 
-										required
-										type='url'
-										value={ pasUrlStr }
+										<input
+											id='accPasInp'
 
-										aria-describedby='accPasSpa'
+											className={ cssModObj.accEmaInp }
 
-										onChange={ ( chaEveObj ) => setPasUrlStr( chaEveObj.target.value ) }
-									/>{ /* What: Account Email Input Element. Why: The pasted link holds the sign-in code. How: This holds it. */ }
+											data-element-name-hook='accPasInp'
+
+											required
+											type='url'
+											value={ pasUrlStr }
+
+											aria-describedby='accPasSpa'
+
+											onChange={ ( chaEveObj ) => setPasUrlStr( chaEveObj.target.value ) }
+										/>{ /* What: Account Email Input Element. Why: The pasted link holds the sign-in code. How: This holds it. */ }
+
+
+
+										<ButBasCom
+											kinValStr='secondary'
+											sizValStr='sm'
+											type='submit'
+										>Finish sign in</ButBasCom>{ /* What: Button Base Component. Why: The form needs its action. How: This submits it. */ }
+
+
+									</div>
 
 
 								</div>
-
-
-
-								<ButBasCom
-									kinValStr='secondary'
-									sizValStr='sm'
-									type='submit'
-								>Finish sign in</ButBasCom>{ /* What: Button Base Component. Why: The form needs its action. How: This submits it. */ }
 
 
 							</form>

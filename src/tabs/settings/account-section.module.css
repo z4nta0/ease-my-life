@@ -144,18 +144,35 @@
 
 }
 
-.accEmaInp { /* What: Account Email Input. Why: The account fields should look like the app's other form fields. How: This gives them the shared field border, radius, padding, and type, with a border fade on focus. */
+/* #region accFieDiv */
+
+.accFieDiv { /* What: Account Field Div. Why: A field and its button share one line, the button centered against the field rather than the whole row. How: This lays them out in a wrapping, vertically centered row below the row's text. */
+
+
+	--but-bas-fle : 0 0 auto; /* What: Button Base Flex. Why: The button should keep its size beside a growing field. How: ButBasCom reads this for its own flex. */
+
+	align-items : center;
+	display     : flex;
+	flex-wrap   : wrap;
+	gap         : var( --spa-ver-m02 ) var( --spa-hor-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+	margin-top  : var( --spa-ver-m03 );                       /* Spacing Vertical Base Minus 3 ~= 6.268px */
+
+
+}
+
+.accEmaInp { /* What: Account Email Input. Why: The account fields should look like the app's other form fields. How: This gives them the shared field border, radius, padding, and type, with a border fade on focus, growing beside its button. */
 
 
 	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
 	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
 	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	flex          : 1 1 auto;
 	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
 	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
 	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
-	margin-top    : var( --spa-ver-m03 );                            /* Spacing Vertical Base Minus 3 ~= 6.268px */
 	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );             /* Vertical Rhythm Base Plus 11 ~= 321.273px */
+	min-width     : 0;
 	outline       : none;
 	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
 	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
@@ -183,6 +200,8 @@
 
 
 }
+
+/* #endregion accFieDiv */
 
 /* #endregion setInfDiv */
 
