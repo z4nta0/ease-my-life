@@ -17,6 +17,7 @@ import { finTarFun    } from './geometry.ts';      // What: Find Target Function
 import { HelTipCom    } from './tooltip.tsx';      // What: Help Tip Component. Why: A clicked badge reveals its own target's tip. How: This is rendered once for the open help item, given its target rect and item.
 import { IcoSvgCom    } from '../ui/icon.tsx';     // What: Icon Svg Component. Why: The navigation help item's own bodEle renders each tab's real nav icon next to its label. How: This is rendered once per tab entry inside NAV_HEL_OBJ's own bodEle JSX.
 import { isaTruFun    } from '../utils/guard.ts';  // What: Is-A Truthy Function. Why: The chrome matches drop their misses before being measured. How: This filters them so the rest read as real matches.
+import { redMotFun    } from '../utils/motion.ts'; // What: Reduce Motion Function. Why: Scrolling a focused badge's target into view should jump rather than glide for someone who asked for less motion. How: This picks the scroll behavior in the badge focus handler.
 import { rhyPxlFun    } from '../utils/rhythm.ts'; // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { shaRadFun    } from './geometry.ts';      // What: Shape Radius Function. Why: Each highlight cutout roughly matches its own target's border radius. How: This is called once per highlighted target.
 import { uniRecFun    } from './geometry.ts';      // What: Union Rect Function. Why: A help item covering several elements highlights them as one box. How: This is called once per multi-element help item.
@@ -930,6 +931,29 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 								cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The capture-phase guard already let this click through; bubbling on would count as an outside click. How: This stops the click from bubbling further.
 
 								setOpeIdeStr( ( preIdeStr ) => preIdeStr === curIdeStr ? null : curIdeStr ); // What: Open Toggle. Why: Clicking an open badge closes its tip, clicking any other badge opens its own. How: This compares the previous open id against curIdeStr.
+
+
+							} }
+							onFocus={ () => { // What: Badge Focus Handler. Why: Badges float beside their targets even when those targets have scrolled out of view, so tabbing could land on a badge off screen. How: When the focused badge sits outside the viewport, this scrolls the main area by its offset, which brings its target into view and lets the overlay re-place the badge beside it.
+
+
+								const offTopBoo = badRecObj.top < 0;                                     // What: Off Top Boolean. Why: A badge above the viewport can't be seen. How: This checks its top edge.
+								const offBotBoo = badRecObj.top + badRecObj.height > window.innerHeight; // What: Off Bottom Boolean. Why: A badge below the viewport can't be seen either. How: This checks its bottom edge.
+
+
+
+								if ( !offTopBoo && !offBotBoo ) return; // What: On Screen Guard. Why: A visible badge needs no scrolling. How: This returns early.
+
+
+
+								document.querySelector( '[data-element-name-hook~="appConMai"]' )?.scrollBy({ // What: Main Scroll Call. Why: The badge's target has to come into view. How: This scrolls the main area so the badge lands mid-screen, jumping instead of gliding under reduced motion.
+
+
+									behavior : redMotFun() ? 'auto' : 'smooth',       // What: Behavior. Why: The scroll should glide unless less motion was asked for. How: This jumps under reduced motion and glides otherwise.
+									top      : badRecObj.top - window.innerHeight / 2 // What: Top. Why: The badge should land mid-screen. How: This is its distance from the viewport's middle.
+
+
+								});
 
 
 							} }

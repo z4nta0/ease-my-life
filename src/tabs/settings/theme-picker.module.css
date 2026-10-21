@@ -82,10 +82,12 @@
 
 
 }
-.theRowDiv:focus-visible { /* What: Focused Theme Row. Why: A keyboard user needs to see which row has focus. How: This colors the frame with the accent. */
+.theRowDiv:focus-visible { /* What: Focused Theme Row. Why: A keyboard user needs to see which row has focus, including the selected row, whose own frame color wins over the focus one. How: This colors the frame with the accent and draws the accent outline just outside it. */
 
 
-	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-color   : var( --acc-mai-col );                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col ); /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset : var( --bor-wid-lar );                            /* Border Width Large ~= 2.035px */
 
 
 }
@@ -140,7 +142,7 @@
 
 
 	bottom         : var( --spa-ver-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
-	color          : rgba( 0, 0, 0, .45 );
+	color          : rgba( 0, 0, 0, .6 );
 	cursor         : pointer;
 	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
 	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
@@ -245,19 +247,21 @@
 
 
 }
-.cusSwaInp::-webkit-color-swatch { /* What: WebKit Custom Theme Swatch Color. Why: The color should fill its segment without a border and ease when it changes. How: This drops WebKit's swatch border and fades its color. */
+.cusSwaInp::-webkit-color-swatch { /* What: WebKit Custom Theme Swatch Color. Why: The color should fill its segment without a border or rounding and ease when it changes. How: This drops WebKit's swatch border and corner rounding and fades its color. */
 
 
-	border     : none;
-	transition : background-color var( --dur-tra-p03 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
+	border        : none;
+	border-radius : 0;    /* What: Square Swatch Corners. Why: Safari on iPhone and iPad rounds the swatch itself, which stretches into an oval across a wide segment. How: This squares it, leaving the row's own rounded edge to shape it like a preset. */
+	transition    : background-color var( --dur-tra-p03 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
 
 
 }
-.cusSwaInp::-moz-color-swatch { /* What: Firefox Custom Theme Swatch Color. Why: The color should fill its segment without a border and ease when it changes. How: This drops Firefox's swatch border and fades its color. */
+.cusSwaInp::-moz-color-swatch { /* What: Firefox Custom Theme Swatch Color. Why: The color should fill its segment without a border or rounding and ease when it changes. How: This drops Firefox's swatch border and corner rounding and fades its color. */
 
 
-	border     : none;
-	transition : background-color var( --dur-tra-p03 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
+	border        : none;
+	border-radius : 0;
+	transition    : background-color var( --dur-tra-p03 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
 
 
 }

@@ -24,6 +24,7 @@
 	},
 	"include": [
 		"eslint.config.ts",
+		"netlify",
 		"scripts",
 		"vite.config.ts"
 	]

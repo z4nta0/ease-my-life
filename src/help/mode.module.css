@@ -107,7 +107,7 @@
 
 }
 
-.helBadBut { /* What: Help Badge Button. Why: Each target gets a small "i" marker that opens its tip. How: This draws a round outlined button at a fixed spot that takes the pointer back from the overlay. */
+.helBadBut { /* What: Help Badge Button. Why: Each target gets a small "i" marker that opens its tip, large enough to meet the 24px minimum touch target. How: This draws a round outlined button at a fixed spot that takes the pointer back from the overlay. */
 
 
 	align-items     : center;
@@ -119,13 +119,13 @@
 	display         : inline-flex;
 	font-size       : var( --fon-siz-bas );                            /* Font Size Base = 11px */
 	font-weight     : 700;
-	height          : calc( var( --ver-rhy-p01 ) * 1rem );             /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content : center;
 	line-height     : var( --ver-rhy-m01 );                            /* Vertical Rhythm Base Minus 1 = 1 */
 	pointer-events  : auto;
 	position        : fixed;
 	transition      : border-color var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
-	width           : calc( var( --ver-rhy-p01 ) * 1rem );             /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
 }

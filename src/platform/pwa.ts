@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { STG_NAM_OBJ } from '../state/storage.ts'; // What: Storage Namespace Object. Why: The persistence request below needs to reach the real storage engine to actually call navigator.storage.persist(). How: This is called inside askPerFun via STG_NAM_OBJ.reqPerFun().
+import { STG_NAM_OBJ } from '../state/storage.ts'; // What: Storage Namespace Object. Why: The persistence request below needs to reach the real storage engine to actually call navigator.storage.persist(), and storage owns the key recording that it asked. How: askPerFun calls STG_NAM_OBJ.reqPerFun() and reads STG_NAM_OBJ.PER_ASK_STR.
 
 // #endregion Imports
 
@@ -27,7 +27,6 @@ import { STG_NAM_OBJ } from '../state/storage.ts'; // What: Storage Namespace Ob
  * install, work in this app's favor instead of against it.
  *
  * Sections:
- *  - Constants
  *  - Module State
  *  - Helpers
  *  - Module Init
@@ -36,14 +35,6 @@ import { STG_NAM_OBJ } from '../state/storage.ts'; // What: Storage Namespace Ob
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
-
-
-
-// #region Constants
-
-const PER_ASK_STR = 'easemylife.persistasked'; // What: Persist Ask String. Why: This is the localStorage key recording whether this device has already been asked once, so a denial is not re-requested on every later launch (browsers ignore a repeat request anyway). How: This is read and written inside askPerFun.
-
-// #endregion Constants
 
 
 
@@ -598,11 +589,11 @@ async function askPerFun ( forAskBoo : boolean ) : Promise< boolean > {
 	try { // What: Ask Persist Try. Why: localStorage.getItem/setItem can both throw in private mode, and either failure should still let the actual persistence request below proceed. How: This wraps the ask-once bookkeeping below, silently giving up in its own catch.
 
 
-		if ( !forAskBoo && localStorage.getItem( PER_ASK_STR ) ) return false; // What: Already Asked Guard. Why: A device that has already been asked once, and was not forced, must not be asked again on every later launch. How: This returns false immediately when forAskBoo is falsy and PER_ASK_STR is already set.
+		if ( !forAskBoo && localStorage.getItem( STG_NAM_OBJ.PER_ASK_STR ) ) return false; // What: Already Asked Guard. Why: A device that has already been asked once, and was not forced, must not be asked again on every later launch. How: This returns false immediately when forAskBoo is falsy and PER_ASK_STR is already set.
 
 
 
-		localStorage.setItem( PER_ASK_STR, '1' ); // What: Persist Ask Key Set Call. Why: The very next unforced call on this device must see PER_ASK_STR already set. How: This writes '1' under PER_ASK_STR.
+		localStorage.setItem( STG_NAM_OBJ.PER_ASK_STR, '1' ); // What: Persist Ask Key Set Call. Why: The very next unforced call on this device must see STG_NAM_OBJ.PER_ASK_STR already set. How: This writes '1' under PER_ASK_STR.
 
 
 	}

@@ -7,10 +7,11 @@ import cssModObj from './legal-docs.module.css'; // What: CSS Module Object. Why
 import React     from 'react';                   // What: React. Why: This is the UI library both legal-document components and LegModCom are built on. How: This is used directly (React.Fragment, React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
 
 
-import { createPortal } from 'react-dom';             // What: Create Portal. Why: The modal must render into <body> so help mode's overlay and any ancestor's stacking can't bury it. How: This is called by LegModCom's own return.
-import { durMilFun    } from '../../utils/rhythm.ts'; // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { IcoSvgCom    } from '../../ui/icon.tsx';     // What: Icon Svg Component. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'x'.
-import { redMotFun    } from '../../utils/motion.ts'; // What: Reduce Motion Function. Why: A user who prefers reduced motion should dismiss the modal instantly instead of playing its own closing animation. How: This is checked inside LegModCom's modDisFun to skip the animated delay.
+import { createPortal } from 'react-dom';               // What: Create Portal. Why: The modal must render into <body> so help mode's overlay and any ancestor's stacking can't bury it. How: This is called by LegModCom's own return.
+import { durMilFun    } from '../../utils/rhythm.ts';   // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
+import { IcoSvgCom    } from '../../ui/icon.tsx';       // What: Icon Svg Component. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'x'.
+import { redMotFun    } from '../../utils/motion.ts';   // What: Reduce Motion Function. Why: A user who prefers reduced motion should dismiss the modal instantly instead of playing its own closing animation. How: This is checked inside LegModCom's modDisFun to skip the animated delay.
+import { useModIneFun } from '../../ui/modal-inert.ts'; // What: Use Modal Inert Function. Why: Tab must not leave the open panel for the page behind it. How: This is called with the panel's ref, making everything outside the modal inert while it's open.
 
 // #endregion Imports
 
@@ -78,7 +79,7 @@ function PriPolCom () : React.JSX.Element {
 
 			<h1>Privacy Policy</h1>{ /* What: Document Title Heading Element. Why: This is the document's own top-level heading naming which legal document this is. How: This renders as a plain h1 at the top of the document body. */ }
 
-			<p>Last updated: July 26, 2026</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
+			<p>Last updated: October 20, 2026</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
 
 			<p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
 
@@ -608,6 +609,30 @@ function PriPolCom () : React.JSX.Element {
 
 			<p>The security of Your Personal Data is important to Us, but remember that no method of transmission over the Internet, or method of electronic storage, is 100% secure. While We strive to use commercially reasonable means to protect Your Personal Data, We cannot guarantee its absolute security.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
 
+			<h2>Accounts, Sync, and Payments</h2>{ /* What: Top-Level Section Heading Element. Why: This marks the start of one of the document's own major sections. How: This renders as a plain h2, styled by the surrounding panBodDiv CSS. */ }
+
+			<p>Ease My Life works without an account. Everything You create is stored on Your own device, and none of it is sent to Us unless You sign in and buy sync across devices.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
+
+			<h3>Your Account</h3>{ /* What: Subsection Heading Element. Why: This marks the start of a subsection under the section above it. How: This renders as a plain h3, styled by the surrounding panBodDiv CSS. */ }
+
+			<p>If You sign in, Your Account is managed by Google Firebase Authentication. It stores Your email address and, if You sign in with Google, the basic profile details Google shares, such as Your name. It also records whether You have bought sync. Signing in on its own sends none of Your Ease My Life data anywhere.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
+
+			<h3>Your Cloud Copy</h3>{ /* What: Subsection Heading Element. Why: This marks the start of a subsection under the section above it. How: This renders as a plain h3, styled by the surrounding panBodDiv CSS. */ }
+
+			<p>If You buy sync, a copy of Your Ease My Life data (Your pickers, items, reminders, conditionals, Today list, holidays, and history) is stored in Google Cloud Firestore, in data centers in the United States, so that Your other signed-in devices can download it. Your theme and display settings are not uploaded, and stay separate on each device.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
+
+			<p>Your cloud copy is encrypted while it travels between Your devices and Google, and Google encrypts it where it is stored. It is not end-to-end encrypted, so it is protected by Google's security and by access rules that let only Your own signed-in Account read or change it. We do not read, sell, or share Your data, and We use it only to keep Your devices in sync.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
+
+			<p>We keep Your cloud copy for as long as Your Account has one, until You delete it.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
+
+			<h3>Payments and Tips</h3>{ /* What: Subsection Heading Element. Why: This marks the start of a subsection under the section above it. How: This renders as a plain h3, styled by the surrounding panBodDiv CSS. */ }
+
+			<p>Purchases are handled by Polar (polar.sh), which acts as the seller of record and processes payment through Stripe. We never see or store Your card details. Polar shares with Us the email address and order details needed to unlock sync for Your Account. Optional tips are handled by Ko-fi (ko-fi.com). The information You give Polar or Ko-fi is covered by their own privacy policies.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
+
+			<h3>Deleting Your Cloud Copy</h3>{ /* What: Subsection Heading Element. Why: This marks the start of a subsection under the section above it. How: This renders as a plain h3, styled by the surrounding panBodDiv CSS. */ }
+
+			<p>You can delete Your cloud copy at any time in Settings, under Data control, by choosing Reset and then Reset and delete cloud copy. That removes Your data from Firestore and signs the device out. A device that is still signed in to Your Account will upload its own data again the next time it syncs, so sign out of Your other devices first, or reset them too. Signing out keeps everything on the device. To delete Your Account itself, contact Us.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
+
 			<h2>Children's and Minors' Privacy</h2>{ /* What: Top-Level Section Heading Element. Why: This marks the start of one of the document's own major sections. How: This renders as a plain h2, styled by the surrounding panBodDiv CSS. */ }
 
 			<p>The Service is not directed to, and We do not knowingly collect Personal Information from, anyone under the age of 16.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
@@ -691,7 +716,7 @@ function TerSerCom () : React.JSX.Element {
 
 			<h1>Terms and Conditions</h1>{ /* What: Document Title Heading Element. Why: This is the document's own top-level heading naming which legal document this is. How: This renders as a plain h1 at the top of the document body. */ }
 
-			<p>Last updated: July 26, 2026</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
+			<p>Last updated: October 20, 2026</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
 
 			<p>Please read these terms and conditions carefully before using Our Service.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
 
@@ -827,6 +852,14 @@ function TerSerCom () : React.JSX.Element {
 			<p>The Service may display, include, make available, or link to content or services provided by a Third-Party Social Media Service. A Third-Party Social Media Service is not owned or controlled by the Company, and the Company does not endorse or assume responsibility for any Third-Party Social Media Service.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
 
 			<p>You acknowledge and agree that the Company shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with Your access to or use of any Third-Party Social Media Service, including any content, goods, or services made available through them. Your use of any Third-Party Social Media Service is governed by that Third-Party Social Media Service's terms and privacy policies.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
+
+			<h2>Paid Sync</h2>{ /* What: Top-Level Section Heading Element. Why: This marks the start of one of the document's own major sections. How: This renders as a plain h2, styled by the surrounding panBodDiv CSS. */ }
+
+			<p>Sync across devices is an optional, one-time purchase, not a subscription. It unlocks sync for the Account You are signed in with when You buy it, for as long as We offer the Service.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
+
+			<p>Purchases are sold and processed by Polar, and refunds are handled through Polar under its refund terms. If a purchase is refunded, sync is turned off for that Account. The data on Your devices is not affected.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
+
+			<p>Sync relies on services run by others, including Google Firebase and Polar, and We cannot promise it will always be available or free of errors. Keep a backup by exporting Your data from Settings from time to time. If We ever stop offering sync, Ease My Life will keep working on Your devices, and You will still be able to export Your data.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text pending the real, final legal document. */ }
 
 			<h2>Termination</h2>{ /* What: Top-Level Section Heading Element. Why: This marks the start of one of the document's own major sections. How: This renders as a plain h2, styled by the surrounding panBodDiv CSS. */ }
 
@@ -1075,6 +1108,10 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: modDisFun is recreated every render, and listing it would re-lock the scroller and re-move focus each time. How: The open-time copy stays correct, since it only calls the parent's close handler, which just clears the open document.
 	}, [ legDocStr ] ); // What: Effect Dependency Array. Why: This effect must re-run every time a different document (or no document) is requested. How: legDocStr changes both whether the modal is shown at all and which document's own title/body renders inside it.
+
+
+
+	useModIneFun( panEleRef, !!legDocStr ); // What: Modal Inert Call. Why: Tab must stay inside the open panel instead of reaching the page behind it. How: This makes everything outside the modal inert while a document is showing.
 
 
 

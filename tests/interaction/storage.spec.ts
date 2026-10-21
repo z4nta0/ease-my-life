@@ -339,6 +339,36 @@ test( 'a holiday added while IndexedDB is slow survives the next launches', asyn
 
 } );
 
+test( 'the persistence prompt key survives the boot sweep of old storage', async ( { page : curPagObj } ) => { // What: Sweep Survival Test. Why: The sweep of dead storage keys used to delete the key recording that the app asked for persistent storage, so it asked again. How: This sets the key and a dead one, relaunches past the sweep's boot count, and checks which remain.
+
+
+	await curPagObj.evaluate( () => { // What: Key Seed Call. Why: The sweep runs once enough clean boots have passed, and needs a dead key to prove it ran. How: This sets the prompt key, a dead pre-IndexedDB copy, and a boot count past the threshold.
+
+
+		localStorage.setItem( 'easemylife.idbboots', '5' );     // What: Boot Count Seed. Why: The sweep only runs after three clean boots. How: This starts the count past them.
+		localStorage.setItem( 'easemylife.persistasked', '1' ); // What: Prompt Key Seed. Why: This is the key that must survive. How: This marks the prompt as asked.
+		localStorage.setItem( 'easemylife.v1', '{}' );          // What: Dead Key Seed. Why: The sweep has to be seen removing something. How: This writes an old generation's key.
+
+
+	} );
+
+
+
+	await relAppFun( curPagObj, null ); // What: Healthy Relaunch Call. Why: The sweep runs on a clean IndexedDB boot. How: This relaunches with no fault.
+
+
+
+	const keyValArr = await curPagObj.evaluate( () => [ localStorage.getItem( 'easemylife.persistasked' ), localStorage.getItem( 'easemylife.v1' ) ] ); // What: Key Value Array. Why: Both keys are checked after the sweep. How: This reads the prompt key and the dead key.
+
+
+
+	expect( keyValArr ).toEqual( [ '1', null ] ); // What: Sweep Assertion. Why: The sweep must remove the dead key and keep the prompt key. How: This expects the prompt key kept and the dead key gone.
+
+
+} );
+
+
+
 // #endregion Module Init
 
 

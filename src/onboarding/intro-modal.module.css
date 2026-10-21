@@ -250,6 +250,47 @@
 
 }
 
+.intActBut--link { /* What: Intro Action Button Link. Why: The returning-user option is for a few people, so it reads quieter than both buttons. How: This drops the border, sets it muted and smaller, and fades its color and press. */
+
+
+	border-color : transparent;
+	color        : var( --tex-mut-col );                                                                               /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size    : var( --fon-siz-bas );                                                                               /* Font Size Base = 11px */
+	font-weight  : 500;
+	height       : auto;
+	padding      : var( --spa-ver-m03 ) var( --spa-hor-bas );                                                          /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base ~= 14.572px */
+	transition   : color var( --dur-tra-m01 ) var( --mot-sta-eas ), opacity var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+
+
+}
+.intActBut--link:hover { /* What: Hovered Intro Action Button Link. Why: A text button shifts color on hover, as every text link does. How: This turns it the accent color. */
+
+
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.intActBut--link:active { /* What: Pressed Intro Action Button Link. Why: A text button dims when pressed, as text links do. How: This lowers its opacity. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Intro Link. Why: Someone who asked for less motion shouldn't see the fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.intActBut--link { /* What: Still Intro Action Button Link. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
 /* #endregion actStaDiv */
 
 /* #endregion welCarDiv */

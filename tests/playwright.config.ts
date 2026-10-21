@@ -16,16 +16,20 @@ import { TIP_URL_STR   } from './support/app.ts';   // What: Tip URL String. Why
  * playwright.config.ts = Playwright Config
  *
  * @summary
- * The config behind npm test and its four suites, each a Playwright project
- * run against the real app: simulation (a faked-clock run through weeks of
- * days on a copy of real data), interaction (every control, editor, and
- * animation), onboarding (every tour and Replay), and responsive (layout at
- * phone to desktop widths). Playwright starts the Vite dev server on port
- * 5190 for the run and stops it afterwards, so a dev server already running
- * on the usual 5173 is never touched. Every page runs in Chicago time with
- * service workers blocked, so dates and caching match from run to run, and
- * reports, screenshots, and simulation traces land in tests/output, which git
- * ignores.
+ * The config behind npm test and its eight suites, each one or more Playwright
+ * projects: simulation (a faked-clock run through weeks of days on a copy of
+ * real data), accessibility (the pre-commit scan, one project per engine),
+ * account (two devices signing in and syncing against the Firebase Emulator,
+ * one project per engine), interaction (every control, editor, and animation),
+ * onboarding (every tour and Replay), responsive (layout at phone to desktop
+ * widths), rules (the Firestore security rules, in the local emulator), and
+ * sync (the sync engine in Node, against a fake cloud copy). All but rules and
+ * sync run against the real app in a browser. Playwright starts the Vite dev
+ * server on port 5190 for the run and stops it afterwards, so a dev server
+ * already running on the usual 5173 is never touched. Every page runs in
+ * Chicago time with service workers blocked, so dates and caching match from
+ * run to run, and reports, screenshots, and simulation traces land in
+ * tests/output, which git ignores.
  *
  * Sections:
  *  - Constants
@@ -44,7 +48,19 @@ const SER_URL_STR = 'http://localhost:5190';                           // What: 
 
 
 
-const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playwright reads its whole setup from this file's default export. How: This holds the shared page settings, the four suite projects, the reporters, and the dev server.
+const ENG_NAM_ARR = [ // What: Engine Name Array. Why: The accessibility scan runs in all three engines. How: Each entry is a Playwright browser name, given one accessibility project apiece.
+
+
+	'chromium', // What: Chromium Engine. Why: Chrome and Edge render with it. How: This is Playwright's Chromium build.
+	'firefox',  // What: Firefox Engine. Why: Firefox renders with its own engine, Gecko. How: This is Playwright's Firefox build.
+	'webkit'    // What: WebKit Engine. Why: Safari, and every browser on iOS, renders with it. How: This is Playwright's WebKit build.
+
+
+] as const;
+
+
+
+const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playwright reads its whole setup from this file's default export. How: This holds the shared page settings, the eight suites' projects, the reporters, and the dev server.
 
 
 	expect        : { timeout : 10000 }, // What: Expect. Why: Some assertions wait on animations and debounced saves. How: This gives each expect up to 10 seconds.
@@ -56,10 +72,50 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 	projects : [ // What: Projects. Why: Each suite runs on its own, and the simulation needs far more time than the rest. How: This lists one project per suite folder, each runnable with --project.
 
 
+		...ENG_NAM_ARR.map( ( engNamStr ) => ({ // What: Accessibility Projects. Why: The pre-commit accessibility scan runs in every engine, since a check that passes in one proves nothing about the others. How: This adds one accessibility project per engine.
+
+
+			name      : `accessibility-${ engNamStr }`, // What: Name. Why: A failure has to say which engine it came from. How: This names the project after it.
+			testMatch : 'accessibility/**/*.spec.ts',   // What: Test Match. Why: The scan's specs live in their own folder. How: This runs every spec in tests/accessibility.
+			timeout   : 300000,                         // What: Timeout. Why: The keyboard walk visits every stop of a full real-data tab. How: This gives each test five minutes.
+
+			use : { // What: Use. Why: The project has to launch its own engine. How: This sets the browser it runs in, and which build of it.
+
+
+				browserName : engNamStr,                                        // What: Browser Name. Why: Each project runs in one engine. How: This names that engine's Playwright browser.
+				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium's default headless shell sometimes loses track of a tab a click opens, while the full headless mode doesn't. How: This runs Chromium as full headless Chrome.
+
+
+			}
+
+
+		})),
+
+		...ENG_NAM_ARR.map( ( engNamStr ) => ({ // What: Account Projects. Why: Signing in and syncing between two devices runs in every engine, against the Firebase Emulator that test:account starts around it. How: This adds one account project per engine.
+
+
+			name      : `account-${ engNamStr }`, // What: Name. Why: A failure has to say which engine it came from. How: This names the project after it.
+			testMatch : 'account/**/*.spec.ts',   // What: Test Match. Why: The account specs live in their own folder. How: This runs every spec in tests/account.
+			timeout   : 120000,                   // What: Timeout. Why: Two devices sign in and sync on real data. How: This gives each test two minutes.
+
+			use : { // What: Use. Why: The project has to launch its own engine. How: This sets the browser it runs in, and which build of it.
+
+
+				browserName : engNamStr,                                        // What: Browser Name. Why: Each project runs in one engine. How: This names that engine's Playwright browser.
+				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every project does. How: This picks it for Chromium only.
+
+
+			}
+
+
+		})),
+
 		{ name : 'interaction', testMatch : 'interaction/**/*.spec.ts', timeout : 300000  }, // What: Interaction Project. Why: Every control and editor is driven against IndexedDB. How: This runs tests/interaction with five minutes per test.
 		{ name : 'onboarding',  testMatch : 'onboarding/**/*.spec.ts',  timeout : 600000  }, // What: Onboarding Project. Why: Each tour is walked step by step at three widths. How: This runs tests/onboarding with ten minutes per test.
 		{ name : 'responsive',  testMatch : 'responsive/**/*.spec.ts',  timeout : 600000  }, // What: Responsive Project. Why: Every page is measured at several widths. How: This runs tests/responsive with ten minutes per test.
-		{ name : 'simulation',  testMatch : 'simulation/**/*.spec.ts',  timeout : 7200000 }  // What: Simulation Project. Why: Weeks of simulated days take a long time on real data. How: This runs tests/simulation with two hours per test.
+		{ name : 'rules',       testMatch : 'rules/**/*.spec.ts',       timeout : 60000   }, // What: Rules Project. Why: The Firestore security rules are checked in the local emulator, which test:rules starts around it. How: This runs tests/rules with a minute per test.
+		{ name : 'simulation',  testMatch : 'simulation/**/*.spec.ts',  timeout : 7200000 }, // What: Simulation Project. Why: Weeks of simulated days take a long time on real data. How: This runs tests/simulation with two hours per test.
+		{ name : 'sync',        testMatch : 'sync/**/*.spec.ts',        timeout : 60000   }  // What: Sync Project. Why: The sync engine is checked in Node against a fake cloud copy, with no browser. How: This runs tests/sync with a minute per test.
 
 
 	],
@@ -91,7 +147,7 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 
 		command             : 'npx vite --port 5190 --strictPort', // What: Command. Why: A strict port fails loudly instead of drifting onto another server's port. How: This starts the Vite dev server on 5190.
 		cwd                 : ROO_DIR_STR,                         // What: Current Working Directory. Why: Vite reads its config from the repo root. How: This starts the command there.
-		env                 : { VITE_TIP_URL : TIP_URL_STR },      // What: Environment. Why: The Settings suite checks the Buy Me a Coffee button opens its tip page. How: This builds the app with the placeholder tip page address, merged over the shell's own environment.
+		env                 : { VITE_FIREBASE_EMULATOR : '127.0.0.1', VITE_TIP_URL : TIP_URL_STR }, // What: Environment. Why: The Settings suite checks the Buy Me a Coffee button opens its tip page, and the account suite must reach the Firebase Emulator, never the real project. How: This builds the app with the tip placeholder and the emulator's host.
 		reuseExistingServer : false,                               // What: Reuse Existing Server. Why: A leftover server could be running other code. How: This always starts a fresh one.
 		timeout             : 60000,                               // What: Timeout. Why: The first start can take a while on a cold cache. How: This waits up to a minute for the server to answer.
 		url                 : SER_URL_STR                          // What: URL. Why: Playwright starts the tests only once the app answers. How: This is the address it polls.

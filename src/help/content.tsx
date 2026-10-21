@@ -2095,7 +2095,7 @@ const SET_HEL_ARR : HelIteTyp[] = [ // What: Settings Help Array. Why: This is t
 	{ // What: Your Account Help Item. Why: This is the on-demand help tip for the Your Account element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
-		bodEle : <>Ease My Life runs entirely on this device with no account required. Syncing your data across devices is planned as a future paid feature (a one-time fee, not a subscription).</>,
+		bodEle : <>Ease My Life runs entirely on this device with no account required. Signing in, with Google or an emailed link, is optional and changes nothing on its own. Syncing your data across devices is a one-time purchase, not a subscription, and your theme and display settings stay separate on each device.</>,
 		ideStr : 'account',
 		selStr : '[data-element-name-hook~="setAccSec"]',
 		titStr : 'Your Account'

@@ -7,6 +7,7 @@ import cssModObj from './tab-settings.module.css'; // What: CSS Module Object. W
 import React     from 'react';                     // What: React. Why: TabSetCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
+import { AccSecCom    } from './account-section.tsx';               // What: Account Section Component. Why: The Account section's sign-in and sync live in their own component. How: This renders them.
 import { annStaFun    } from './announce.ts';                       // What: Announce Status Function. Why: Several actions here (export, import, reset) need to speak a transient status to screen readers once they finish. How: This is called after each of those actions completes, sometimes assertively so it is not dropped by a focus move.
 import { APP_VER_STR  } from '../../constants.ts';                  // What: App Version String. Why: The About section shows the real build version. How: This is rendered in the About section's version row.
 import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: Nearly every action in this tab (install, export/import/reset, replay tour, view legal docs) is triggered from this shared button component. How: This is rendered throughout the tab with varying kind/size/icon props.
@@ -35,6 +36,7 @@ import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Tog
 import { useEscCanFun } from '../../ui/escape-cancel.ts';           // What: Use Escape Cancel Function. Why: Both the pending-import and pending-reset confirmations need Escape to back out, like every other confirm in the app. How: This is called once per confirmation, gated on that confirmation's own open boolean.
 
 
+import type { AccSynTyp } from '../../state/sync-run.ts';  // What: Account Sync Type. Why: The Account section shows and acts on the account and its sync. How: This types its prop.
 import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The component changes state through the store's actions. How: This types its actStoObj.
 import type { RawSavTyp } from '../../core/data-model.ts'; // What: Raw Save Type. Why: A chosen backup file is parsed before it's known to be a valid save. How: This types the pending import's data.
 import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The component reads the current app state. How: This types its staAppObj.
@@ -174,7 +176,7 @@ function forRunFun ( runTimStr : string ) : string {
 
 // #region Components
 
-type TecProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Settings-Component Props Type. Why: The Settings tab reads and changes the whole app state and can navigate to other tabs. How: This types TabSetCom's props, named Tec since Tsc already belongs to TheSecCom.
+type TecProTyp = { accSynObj : AccSynTyp, actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Settings-Component Props Type. Why: The Settings tab reads and changes the whole app state and can navigate to other tabs. How: This types TabSetCom's props, named Tec since Tsc already belongs to TheSecCom.
 
 // #region TabSetCom
 
@@ -192,6 +194,7 @@ type TecProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
+ * @param props.accSynObj   - Account Sync Object: {@link useSynRunFun}
  * @param props.actStoObj   - Actions Store Object: {@link useAppStaFun}
  * @param props.onNavHomFun - On Navigate Home Function: Navigates back to the
  *                            Today tab.
@@ -204,12 +207,12 @@ type TecProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
  *
  * @example
  * ```tsx
- * TabSetCom({ actStoObj, onNavHomFun, ... }) // => <TabSetCom />
+ * TabSetCom({ accSynObj, actStoObj, onNavHomFun, ... }) // => <TabSetCom />
  * ```
  *
 */
 
-function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecProTyp ) : React.JSX.Element {
+function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecProTyp ) : React.JSX.Element {
 
 
 	const appCurObj = staAppObj.appearance; // What: Appearance Current Object. Why: The appearance rows read the persisted appearance settings. How: This reads staAppObj.appearance, which migStaFun guarantees on every load.
@@ -810,6 +813,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 	const [ impLeaBoo, setImpLeaBoo ] = React.useState( false );                                                  // What: Import Leaving Boolean And Setter. Why: Closing the import confirmation should play its own leave animation before actually unmounting. How: This flags the confirm row as leaving for the duration of that animation.
 	const [ expMesObj, setExpMesObj ] = React.useState< { entNum : number, timNum : number } | null >( null );    // What: Export Message Object And Setter. Why: A completed export needs somewhere to report how many history entries it actually included. How: This is rendered as a status line below the export row.
 	const [ conResBoo, setConResBoo ] = React.useState( false );                                                  // What: Confirm Reset Boolean And Setter. Why: The Reset row needs to know whether its own confirm pair is currently showing. How: This swaps the Reset button for the confirm pair below.
+	const [ resBusBoo, setResBusBoo ] = React.useState( false );                                                  // What: Reset Busy Boolean And Setter. Why: Deleting the cloud copy and signing out take a moment, and the buttons mustn't be pressed twice. How: This is true while a signed-in reset runs.
 	const [ resLeaBoo, setResLeaBoo ] = React.useState( false );                                                  // What: Reset Leaving Boolean And Setter. Why: Closing the reset confirmation should play its own leave animation before actually unmounting. How: This flags the confirm row as leaving for the duration of that animation.
 	const [ resMesStr, setResMesStr ] = React.useState< string | null >( null );                                  // What: Reset Message String And Setter. Why: A completed reset needs somewhere to report its own outcome, once the row's own Reset button has gone away. How: This is rendered as a status line below the reset row.
 
@@ -852,6 +856,72 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 
 	useEscCanFun( conResBoo && !resLeaBoo, cloResFun ); // What: Escape Cancel Function. Why: Every confirmation in this tab backs out on Escape, and the reset confirm is no exception. How: This calls useEscCanFun, active only while the confirm is open and not already leaving, invoking cloResFun. // Escape backs out of the reset confirmation, like the other confirms.
+
+
+	// #region resRunFun
+
+	/**
+	 * resRunFun = Reset Run Function
+	 *
+	 * @summary
+	 * Runs a confirmed reset. Signed out, it wipes the device as before.
+	 * Signed in, it signs out first, deleting the cloud copy too when asked,
+	 * and wipes the device only once that succeeded, so a failure leaves
+	 * everything in place, with the reason shown in the Account section. The
+	 * wipe navigates home first, since the welcome modal that follows needs
+	 * the Today tab.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param cloDelBoo - Cloud Delete Boolean: Whether to delete the cloud
+	 *                    copy too.
+	 *
+	 * @returns A promise that settles once the reset starts or fails, with
+	 *          no value.
+	 *
+	 * @example
+	 * ```ts
+	 * await resRunFun(false) // => Promise<void>
+	 * ```
+	 *
+	*/
+
+	const resRunFun = async ( cloDelBoo : boolean ) : Promise< void > => {
+
+
+		setResBusBoo( true ); // What: Busy Mark. Why: The buttons wait while the account part runs. How: This disables them.
+
+
+
+		const accOkaBoo = await accSynObj.wipAccFun( cloDelBoo ); // What: Account Okay Boolean. Why: A failed sign-out or deletion means nothing should be reset. How: This runs the account part and reads whether it worked.
+
+
+		setResBusBoo( false ); // What: Busy Clear. Why: The buttons can be used again. How: This re-enables them.
+
+
+
+		if ( !accOkaBoo ) return; // What: Failed Reset Guard. Why: Nothing was reset, and the Account section explains why. How: This stops here.
+
+
+
+		if ( onNavHomFun ) onNavHomFun(); // What: Navigate Home Call. Why: The post-reset welcome modal's own tour anchors only exist on the Today tab. How: This calls onNavHomFun, if provided, before the wipe itself.
+
+		actStoObj.wipAppFun(); // What: Wipe App Call. Why: This is the actual store mutation that resets every piece of data. How: This clears storage and reloads the app.
+
+
+
+
+		setConResBoo( false );             // What: Confirm Close. Why: The confirm pair's job is done. How: This flips conResBoo back to false.
+		setResLeaBoo( false );             // What: Reset Leaving Clear. Why: No leave animation should linger after a real reset. How: This flips resLeaBoo back to false.
+		setResMesStr( 'All data reset.' ); // What: Reset Message Set. Why: The row should confirm the reset on screen. How: This writes a fixed confirmation into resMesStr.
+
+		annStaFun( 'All data reset.' ); // What: Reset Announce Call. Why: A screen-reader user needs to hear the reset happened too. How: This announces a fixed confirmation.
+
+
+	};
+
+	// #endregion resRunFun
+
 
 
 	React.useEffect( () => { // What: Reset Focus Effect. Why: Focus must follow the swap between the Reset button and the confirm pair in both directions, since the element under it is unmounted/remounted each time. How: This focuses the confirm's own Reset button on open, or restores focus to the row's own Reset button on a deliberate close.
@@ -2425,7 +2495,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 										id='set-reset-confirm-msg'
 
 										className={ cssModObj.setSubSpa }
-									>Wipes everything and restores the app to a clean state. <strong>This can&rsquo;t be undone.</strong></span>{ /* What: Set Data Sub Span Element. Why: The destructive and irreversible nature of reset needs to be stated plainly up front, and is also referenced by the confirm button's own aria-describedby below. How: This renders the fixed description. */ }
+									>{ accSynObj.accUseObj ? <>Wipes everything on this device and signs you out. Your cloud copy stays, so signing back in restores it, unless you delete it too. A device still signed in uploads its own copy again when it next syncs. <strong>This can't be undone.</strong></> : <>Wipes everything and restores the app to a clean state. <strong>This can't be undone.</strong></> }</span>{ /* What: Set Data Sub Span Element. Why: The destructive and irreversible nature of reset needs to be stated plainly up front, and is also referenced by the confirm button's own aria-describedby below. How: This renders the fixed description. */ }
 
 									{ resMesStr && ( // What: Reset Message Check. Why: A message should only exist right after an actual reset just happened. How: This renders the message span only while resMesStr holds a value.
 
@@ -2460,30 +2530,37 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 											kinValStr='danger'
 											sizValStr='sm'
 
+											disabled={ resBusBoo }
+
 											aria-describedby='set-reset-confirm-msg'
 
-											onClick={ () => { // What: Reset Confirm Click Handler. Why: Confirming wipes every piece of data, so it also has to land the user somewhere sensible and report what happened. How: This navigates home, wipes the store, closes the confirm pair, and announces the outcome.
-
-
-												if ( onNavHomFun ) onNavHomFun(); // What: Navigate Home Call. Why: The post-reset welcome modal's own tour anchors only exist on the Today tab. How: This calls onNavHomFun, if provided, before the reset itself actually runs. // Land on Today FIRST: the clean state re-opens the welcome modal, and its tour anchors only exist on the Today tab. Starting the tour from Settings left it dimmed with no coach.
+											onClick={ () => void resRunFun( false ) } // What: Reset Confirm Click Handler. Why: Confirming wipes this device, and signs it out first when an account is signed in. How: This runs the reset without deleting the cloud copy.
+										>{ accSynObj.accUseObj ? 'Reset this device' : 'Reset' }</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final confirmation that wipes this device's data. How: This runs the reset, its label naming the device when an account's cloud copy would stay. */ }
 
 
 
-												actStoObj.wipAppFun(); // What: Wipe App Call. Why: This is the actual store mutation that resets every piece of data. How: This calls actStoObj.wipAppFun.
-
-												setConResBoo( false );             // What: Confirm Close. Why: The confirm pair's job is done. How: This flips conResBoo back to false.
-												setResLeaBoo( false );             // What: Reset Leaving Clear. Why: No leave animation should linger after a real reset. How: This flips resLeaBoo back to false.
-												setResMesStr( 'All data reset.' ); // What: Reset Message Set. Why: The row should confirm the reset on screen. How: This writes a fixed confirmation into resMesStr.
-
-												annStaFun( 'All data reset.' ); // What: Reset Announce Call. Why: A screen-reader user needs to hear the reset happened too, especially since no focus target remains here to imply it visually. How: This announces a fixed confirmation message. // Nothing here to return focus to (the row's own Reset button becomes disabled with no data), and the welcome modal takes focus on the Today tab, so just say what happened.
+										{ accSynObj.accUseObj && ( // What: Cloud Delete Check. Why: Only a signed-in account has a cloud copy to delete. How: This offers the second reset then.
 
 
-											} }
-										>Reset</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final confirmation that wipes all data. How: This navigates home, resets the store, closes the confirm, and announces the outcome when clicked. */ }
+											<ButBasCom
+												data-element-name-hook='resCloBut'
+
+												disabled={ resBusBoo }
+												kinValStr='danger'
+												sizValStr='sm'
+
+												aria-describedby='set-reset-confirm-msg'
+
+												onClick={ () => void resRunFun( true ) } // What: Cloud Reset Click Handler. Why: The person wants the cloud copy gone too. How: This deletes it, signs out, and wipes the device.
+											>Reset and delete cloud copy</ButBasCom>
+
+
+										) }
 
 
 
 										<ButBasCom
+											disabled={ resBusBoo }
 											kinValStr='ghost'
 											sizValStr='sm'
 
@@ -2555,7 +2632,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 						className={ cssModObj.setSecSec }
 
 						data-element-name-hook='setAccSec'
-					>{ /* What: Account Section Element. Why: This is the Account section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the sync-placeholder CarSurCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+					>{ /* What: Account Section Element. Why: This is the Account section's own root, registering itself for scroll-spy/jump-to. How: This wraps the section's heading and AccSecCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -2566,43 +2643,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecPro
 
 						</div>
 
-						<p className={ cssModObj.secSubPar }>Ease My Life runs entirely on this device, with no account required. Sign in to sync across devices is planned for a future release as a paid feature (one time fee only).</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Account. */ }
-
-
-
-						<CarSurCom>{ /* What: Card Surface Component. Why: The sync-placeholder row needs the same bordered container as every other row in this tab. How: This wraps the sync row below. */ }
-
-
-							<div
-								className={ cssModObj.setRowDiv }
-
-								data-element-name-hook='setRowDiv'
-							>{ /* What: Sync Row Div Element. Why: The label/description and the disabled placeholder button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the disabled ButBasCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
-
-
-								<div className={ cssModObj.setInfDiv }>{ /* What: Sync Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
-
-
-									<span className={ cssModObj.setNamSpa }>Sync across devices</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Sync across devices". */ }
-
-									<span className={ cssModObj.setSubSpa }>This feature will keep all of your Ease My Life data synced across every device that you sign in to.</span>{ /* What: Set Data Sub Span Element. Why: The row needs to explain what this not-yet-shipped feature will actually do. How: This renders the fixed description. */ }
-
-
-								</div>
-
-
-
-								<ButBasCom
-									disabled
-									kinValStr='secondary'
-									sizValStr='sm'
-								>Coming Soon</ButBasCom>{ /* What: Button Base Component. Why: A disabled placeholder communicates the feature exists without implying it works today. How: This renders with no onClick at all, since it is always disabled. */ }
-
-
-							</div>
-
-
-						</CarSurCom>
+						<AccSecCom accSynObj={ accSynObj } />{ /* What: Account Section Component. Why: Signing in and sync have their own component, since they hold their own state and forms. How: This renders the section's intro, rows, and announcement regions from the account and its sync. */ }
 
 
 					</section>

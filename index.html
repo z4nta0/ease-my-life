@@ -131,18 +131,22 @@
 				"operatingSystem": "Any (modern web browser)",
 				"browserRequirements": "Requires JavaScript and a modern browser",
 				"isAccessibleForFree": true,
-				"offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+				"offers": [
+					{ "@type": "Offer", "name": "Ease My Life", "price": "0", "priceCurrency": "USD" },
+					{ "@type": "Offer", "name": "Ease My Life Sync", "description": "An optional one-time purchase that syncs your data across devices", "price": "9.99", "priceCurrency": "USD" }
+				],
 				"featureList": [
 					"Installable as a progressive web app",
 					"No account required",
 					"All data stored on your own device",
 					"Weighted, random, and self-adjusting item pickers",
 					"Daily, weekly, monthly, and yearly schedules",
-					"Reminders and day-off conditionals"
+					"Reminders and day-off conditionals",
+					"Optional one-time purchase to sync across devices"
 				]
 			}
 
-		</script><!-- What: Structured Data Script. Why: Search engines read the app's name, purpose, price, and features as structured data. How: This describes the page as a free schema.org WebApplication in JSON-LD, which the build minifies. -->
+		</script><!-- What: Structured Data Script. Why: Search engines read the app's name, purpose, price, and features as structured data. How: This describes the page as a free schema.org WebApplication in JSON-LD, with the optional sync purchase as a second offer whose price must match SYN_PRI_STR in constants.ts and the Polar product, and the build minifies it. -->
 
 		<!-- #endregion Structured Data -->
 

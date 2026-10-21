@@ -3818,7 +3818,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 												<span className={ cssModObj.raiCouSpa }>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
 
 
-													<span>{ visDonNum + tasDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.raiTotSpa }>/{ dueTasArr.length + tasCarNum }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via raiTotSpa. */ }
+													<span>{ visDonNum + tasDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span>/{ dueTasArr.length + tasCarNum }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, in the count's muted color. */ }
 
 
 												</span>
@@ -3868,7 +3868,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 												<span className={ cssModObj.raiCouSpa }>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
 
 
-													<span>{ touDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.raiTotSpa }>/{ ONB_EPT_ARR.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via raiTotSpa. */ }
+													<span>{ touDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span>/{ ONB_EPT_ARR.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, in the count's muted color. */ }
 
 
 												</span>
@@ -3918,7 +3918,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											<span className={ cssModObj.raiCouSpa }>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
 
 
-												<span>{ curDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.raiTotSpa }>/{ curGroObj.entArr.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via raiTotSpa. */ }
+												<span>{ curDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span>/{ curGroObj.entArr.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, in the count's muted color. */ }
 
 
 											</span>
@@ -3956,7 +3956,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										<span className={ cssModObj.raiCouSpa }>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
 
 
-											<span>{ APP_FEA_ARR.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.ideStr ] ).length }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.raiTotSpa }>/{ APP_FEA_ARR.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via raiTotSpa. */ }
+											<span>{ APP_FEA_ARR.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.ideStr ] ).length }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span>/{ APP_FEA_ARR.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, in the count's muted color. */ }
 
 
 										</span>

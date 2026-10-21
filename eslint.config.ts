@@ -45,7 +45,7 @@ import tseslint   from 'typescript-eslint';         // What: TypeScript ESLint. 
 const ESL_CON_ARR = [ // What: ESLint Config Array. Why: ESLint reads its flat config as an array of objects, each scoped to the files it lists. How: This holds the generated-output ignores, typescript-eslint's recommended configs and two rule overrides, the src/ undefined-component config, and the .tsx hooks config.
 
 
-	{ ignores : [ 'dev-dist/**', 'dist/**', 'tests/output/**' ] }, // What: Ignores Object. Why: The build output, the PWA plugin's dev service worker, and the test suites' reports are generated, not hand-written, so their lint results mean nothing. How: This global ignores entry skips all three folders for every config below; one glob each, since braces break ESLint's matching here.
+	{ ignores : [ 'dev-dist/**', 'dist/**', 'netlify/functions/**', 'tests/output/**' ] }, // What: Ignores Object. Why: The build output, the bundled Netlify Functions, the PWA plugin's dev service worker, and the test suites' reports are generated, not hand-written, so their lint results mean nothing. How: This global ignores entry skips all three folders for every config below; one glob each, since braces break ESLint's matching here.
 
 	...tseslint.configs.recommended, // What: Recommended Configs Spread. Why: typescript-eslint's recommended rules catch TypeScript mistakes the compiler allows, such as an any or an unused variable. How: This spreads its recommended configs in, which apply to every file ESLint lints and switch off the core rules TypeScript already covers.
 

@@ -608,7 +608,7 @@ function detEdgFun ( chrRecObj : EdgRecTyp ) : string {
  *
  * @summary
  * Badge geometry, shared between where it is actually drawn and where
- * an open tip anchored to it should point: a p01-step circle overlapping
+ * an open tip anchored to it should point: a p02-step circle overlapping
  * the highlighted box's own top-right corner (matching the "small
  * corner marker" design, distinct from InfTipCom's own inline-trigger
  * placement). This falls back to the top-LEFT corner instead when the
@@ -645,25 +645,25 @@ function badRecFun ( tarRecObj : BoxRecTyp & Partial< PadSidTyp >, cenBadBoo : b
 
 
 	const padTopNum = tarRecObj.padTopNum ?? rhyPxlFun( 'm02' );                                               // What: Pad Top Number. Why: The badge's own vertical anchor must match whatever pad actually survived clipping on this target's own top side, not the flat default. How: This reads tarRecObj's own padTopNum, falling back to the flat pad margin. // Vertical Rhythm Base Minus 2 ~= 8.304px
-	const rawTopNum = tarRecObj.top - padTopNum - rhyPxlFun( 'p01' ) / 2;                                      // What: Raw Top Number. Why: The badge's own natural vertical position overlaps up into the highlight box's own top-right corner. How: This subtracts the pad and half the badge's own size from the target's own top edge. // Vertical Rhythm Base Plus 1 ~= 19.304px
-	const topBadNum = rawTopNum < -rhyPxlFun( 'p01' ) ? rawTopNum : Math.max( rhyPxlFun( 'm05' ), rawTopNum ); // What: Top Badge Number. Why: A badge only ALMOST on screen (within one badge-height of the top edge) should nudge down to stay visible, but a badge genuinely scrolled far above the viewport must not get dragged all the way down to that same floor. How: This only applies the 4px floor once rawTopNum is no further than one badge-height above 0. // Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base Minus 5 ~= 3.571px
+	const rawTopNum = tarRecObj.top - padTopNum - rhyPxlFun( 'p02' ) / 2;                                      // What: Raw Top Number. Why: The badge's own natural vertical position overlaps up into the highlight box's own top-right corner. How: This subtracts the pad and half the badge's own size from the target's own top edge. // Vertical Rhythm Base Plus 2 ~= 25.572px
+	const topBadNum = rawTopNum < -rhyPxlFun( 'p02' ) ? rawTopNum : Math.max( rhyPxlFun( 'm05' ), rawTopNum ); // What: Top Badge Number. Why: A badge only ALMOST on screen (within one badge-height of the top edge) should nudge down to stay visible, but a badge genuinely scrolled far above the viewport must not get dragged all the way down to that same floor. How: This only applies the 4px floor once rawTopNum is no further than one badge-height above 0. // Vertical Rhythm Base Plus 2 ~= 25.572px, Vertical Rhythm Base Minus 5 ~= 3.571px
 
 
 	if ( cenBadBoo ) { // What: Center Mode Branch. Why: A column group member's own badge centers over its column's top edge instead of using the usual corner placement. How: This returns early with a horizontally-centered badge rect.
 
 
-		const lefBadNum = tarRecObj.left + tarRecObj.width / 2 - rhyPxlFun( 'p01' ) / 2; // What: Left Badge Number. Why: The badge must sit centered on the column's own horizontal midpoint. How: This computes the target's own midpoint and subtracts half the badge's own size. // Vertical Rhythm Base Plus 1 ~= 19.304px
+		const lefBadNum = tarRecObj.left + tarRecObj.width / 2 - rhyPxlFun( 'p02' ) / 2; // What: Left Badge Number. Why: The badge must sit centered on the column's own horizontal midpoint. How: This computes the target's own midpoint and subtracts half the badge's own size. // Vertical Rhythm Base Plus 2 ~= 25.572px
 
 
 
 		return { // What: Centered Badge Return. Why: A column group member's own badge is complete once centered. How: This builds the badge rect around the centered left position.
 
 
-			bottom : topBadNum + rhyPxlFun( 'p01' ), // What: Badge Bottom. Why: plaTipFun and hit tests read the badge's own bottom edge. How: This adds the badge size to topBadNum. // Vertical Rhythm Base Plus 1 ~= 19.304px
-			height : rhyPxlFun( 'p01' ),             // What: Badge Height. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 1 ~= 19.304px
+			bottom : topBadNum + rhyPxlFun( 'p02' ), // What: Badge Bottom. Why: plaTipFun and hit tests read the badge's own bottom edge. How: This adds the badge size to topBadNum. // Vertical Rhythm Base Plus 2 ~= 25.572px
+			height : rhyPxlFun( 'p02' ),             // What: Badge Height. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 2 ~= 25.572px
 			left   : lefBadNum,                      // What: Badge Left. Why: This is where the badge is drawn horizontally. How: This is the left position computed above.
 			top    : topBadNum,                      // What: Top. Why: This is where the badge is drawn vertically. How: This is the top position computed above.
-			width  : rhyPxlFun( 'p01' )              // What: Badge Width. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 1 ~= 19.304px
+			width  : rhyPxlFun( 'p02' )              // What: Badge Width. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 2 ~= 25.572px
 
 
 		};
@@ -675,20 +675,20 @@ function badRecFun ( tarRecObj : BoxRecTyp & Partial< PadSidTyp >, cenBadBoo : b
 
 	const padRigNum = tarRecObj.padRigNum ?? rhyPxlFun( 'm02' );                                   // What: Pad Right Number. Why: The right-corner placement below needs whichever pad actually survived clipping on its own right side. How: This reads tarRecObj's own padRigNum, falling back to the flat pad margin. // Vertical Rhythm Base Minus 2 ~= 8.304px
 	const padLefNum = tarRecObj.padLefNum ?? rhyPxlFun( 'm02' );                                   // What: Pad Left Number. Why: The left-corner fallback below needs whichever pad actually survived clipping on its own left side. How: This reads tarRecObj's own padLefNum, falling back to the flat pad margin. // Vertical Rhythm Base Minus 2 ~= 8.304px
-	const rigLefNum = tarRecObj.right + padRigNum - rhyPxlFun( 'p01' ) / 2;                        // What: Right Left Number. Why: This is the badge's own candidate left position for the usual top-right corner placement. How: This adds the surviving right pad to the target's own right edge, then centers the badge on that point. // Vertical Rhythm Base Plus 1 ~= 19.304px
-	const oveRigBoo = rigLefNum + rhyPxlFun( 'p01' ) > window.innerWidth;                          // What: Overflows Right Boolean. Why: A target rect already clipped flush to the viewport can still overflow once the badge's own pad gap and half-width are added on top. How: This checks whether the right-corner candidate's own far edge would cross the viewport's own width. // Vertical Rhythm Base Plus 1 ~= 19.304px
-	const lefBadNum = oveRigBoo ? tarRecObj.left - padLefNum - rhyPxlFun( 'p01' ) / 2 : rigLefNum; // What: Left Badge Number. Why: The badge must fall back to the target's own top-LEFT corner whenever the right corner would overflow. How: This picks the left-corner candidate when oveRigBoo is true, otherwise the right-corner candidate. // Vertical Rhythm Base Plus 1 ~= 19.304px
+	const rigLefNum = tarRecObj.right + padRigNum - rhyPxlFun( 'p02' ) / 2;                        // What: Right Left Number. Why: This is the badge's own candidate left position for the usual top-right corner placement. How: This adds the surviving right pad to the target's own right edge, then centers the badge on that point. // Vertical Rhythm Base Plus 2 ~= 25.572px
+	const oveRigBoo = rigLefNum + rhyPxlFun( 'p02' ) > window.innerWidth;                          // What: Overflows Right Boolean. Why: A target rect already clipped flush to the viewport can still overflow once the badge's own pad gap and half-width are added on top. How: This checks whether the right-corner candidate's own far edge would cross the viewport's own width. // Vertical Rhythm Base Plus 2 ~= 25.572px
+	const lefBadNum = oveRigBoo ? tarRecObj.left - padLefNum - rhyPxlFun( 'p02' ) / 2 : rigLefNum; // What: Left Badge Number. Why: The badge must fall back to the target's own top-LEFT corner whenever the right corner would overflow. How: This picks the left-corner candidate when oveRigBoo is true, otherwise the right-corner candidate. // Vertical Rhythm Base Plus 2 ~= 25.572px
 
 
 
 	return { // What: Badge Rect Return. Why: The caller needs the final fixed-position badge rect back. How: This builds the shape both the rendered badge button and plaTipFun's own anchoring read.
 
 
-		bottom : topBadNum + rhyPxlFun( 'p01' ), // What: Badge Bottom. Why: plaTipFun and hit tests read the badge's own bottom edge. How: This adds the badge size to topBadNum. // Vertical Rhythm Base Plus 1 ~= 19.304px
-		height : rhyPxlFun( 'p01' ),             // What: Badge Height. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 1 ~= 19.304px
+		bottom : topBadNum + rhyPxlFun( 'p02' ), // What: Badge Bottom. Why: plaTipFun and hit tests read the badge's own bottom edge. How: This adds the badge size to topBadNum. // Vertical Rhythm Base Plus 2 ~= 25.572px
+		height : rhyPxlFun( 'p02' ),             // What: Badge Height. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 2 ~= 25.572px
 		left   : lefBadNum,                      // What: Badge Left. Why: This is where the badge is drawn horizontally. How: This is the left position computed above.
 		top    : topBadNum,                      // What: Top. Why: This is where the badge is drawn vertically. How: This is the top position computed above.
-		width  : rhyPxlFun( 'p01' )              // What: Badge Width. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 1 ~= 19.304px
+		width  : rhyPxlFun( 'p02' )              // What: Badge Width. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 2 ~= 25.572px
 
 
 	};

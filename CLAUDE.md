@@ -4,11 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Ease My Life: "pick what to do today, without deciding." A client-only PWA
-(React 18 + Vite, no backend, no accounts). Users define "pickers" (weighted
-pools of items: chores, meals, etc.) that get chosen from on a schedule; the
-app builds a short daily list. All data lives on-device (IndexedDB, with a
-localStorage fallback/mirror); there is no server component to this app at all.
+Ease My Life: "pick what to do today, without deciding." A local-first PWA
+(React + Vite, deployed on Netlify at https://easemylife.app/). Users define
+"pickers" (weighted pools of items: chores, meals, etc.) that get chosen from
+on a schedule; the app builds a short daily list. All data lives on-device
+(IndexedDB, with a localStorage fallback/mirror), and the app needs no account.
+An optional one-time purchase syncs the state across devices through Firebase
+and two Netlify Functions (see "Paid sync" below), the only server-side parts.
+It's also a portfolio piece by techgeek.dev, linked from https://techgeek.dev.
 
 ## Commands
 
@@ -54,8 +57,8 @@ branch.
 
 ### Test suites
 
-Added 2026-10-06. Four Playwright suites live in `tests/`, one project each
-in `tests/playwright.config.ts`, which starts its own dev server on port 5190
+Added 2026-10-06. Eight Playwright suites live in `tests/`, one project each
+in `tests/playwright.config.ts` (the accessibility suite one per engine), which starts its own dev server on port 5190
 (never the usual 5173) and stops it afterwards. Every page runs in Chicago
 time with service workers blocked, and results, screenshots, and simulation
 traces go to `tests/output/` (git-ignored); `npx playwright show-report
@@ -66,11 +69,37 @@ tests/output/report` opens the HTML report.
   2027), checking every generated list, check-off, undo, reminder, skip,
   re-roll, and streak against an independent copy of the rules
   (`check-*.ts`, `schedule.ts`, `holidays.ts`), then the Stats tab and each
-  probability conditional's odds. About 20 minutes. Scheduling draws in
+  probability conditional's odds. About 30 minutes. Scheduling draws in
   `src/core/` and `src/state/` are seeded, so the same seed repeats the same
   picks: `EML_SIM_BASELINE=<path to an earlier trace.json>` compares a run
   against an earlier one (e.g. from `main`) and reports every day that
   differs. `EML_SIM_SEED` and `EML_SIM_SEGMENTS` override the seed and days.
+- `npm run test:account`: two browser contexts act as two devices on one
+  paid account in the Firebase Emulator, which it starts and stops around
+  the suite, in Chromium, Firefox, and WebKit: the first signs in with an
+  emailed link (read back from the emulator) and uploads the real backup,
+  the second, a fresh install, adopts it, and a holiday added on the second
+  syncs back to the first. It also buys sync with the checkout stubbed,
+  resets a device with its cloud copy, takes the returning-user option, and
+  scans the signed-in Account screens (unpaid, synced, the first-sync choice,
+  and the reset confirm) with axe and a 320px reflow check, which the main
+  accessibility suite can't reach. `npm test` runs every suite, payments
+  included, inside the emulator.
+- `npm run test:payments`: checks the checkout and webhook functions in
+  Node's own test runner (Playwright's loader can't load `firebase-admin`)
+  against the auth emulator: only a signed, fresh `order.paid` for the sync
+  product sets the paid claim, an untagged order is matched by email, only a
+  full refund clears it, and the checkout refuses a missing or unverified
+  sign-in and sends Polar the account's tags. A few seconds.
+- `npm run test:accessibility`: the pre-commit accessibility scan, in
+  Chromium, Firefox, and WebKit. Every tab at 375 and 1,280px, help mode,
+  the Privacy panel, and the welcome modal (`tests/support/states.ts`) get
+  an axe-core scan (WCAG 2.2 AA plus best practices, zero violations) and
+  scripted checks axe can't make: every link and button named without a
+  decorative glyph, a Tab walk (order, nothing off screen or covered, a
+  visible focus ring, no trap), no sideways scroll at 320px, and no motion
+  under reduced motion. Anything axe can't decide is printed as needing
+  review. About 10 minutes.
 - `npm run test:interaction`: drives every tab's controls and editors on
   real data, checking each change in IndexedDB and that its animation fired,
   and checks that a launch with a hung or slow IndexedDB loses nothing.
@@ -80,6 +109,16 @@ tests/output/report` opens the HTML report.
 - `npm run test:responsive`: measures every tab at 375 to 1280px for
   sideways scrolling, off-screen or spilling content, and overlapping
   controls, saving a screenshot of each.
+- `npm run test:rules`: checks `firestore.rules` in the Firebase Emulator,
+  which it starts and stops around the suite (it needs Java 21): a paid,
+  verified owner reads and writes its own copy one revision at a time, and
+  every other account, field, or revision is refused. A few seconds.
+- `npm run test:sync`: checks the sync engine in Node, with no browser,
+  against an in-memory cloud copy (`tests/sync/fake-backend.ts`): the real
+  backup splits into documents under Firestore's size limit and joins back
+  whole, a sync uploads only changed documents, a first sync adopts the
+  account's data, two devices' changes merge, and lost upload races retry.
+  A few seconds.
 
 The real-data backup is personal and never enters the repo: the suites read
 `EML_TEST_FIXTURE`, or the newest `.json` export in an
@@ -255,6 +294,111 @@ outside the normal React import graph. Their types live in `src/globals.d.ts`
   `public/boot-splash.js` (no framework), whose constants mirror the splash's
   own loop, stagger, and fade timings: see the Boot Splash Styles summary
   there before changing the animation timing.
+
+### Where data lives
+
+Added 2026-10-20. None of this is secret: the security is in
+`firestore.rules`, not in the layout.
+- **IndexedDB** (`storage.ts`): database `easemylife`, version 1, with two
+  object stores, each holding one record under the key `main`:
+  - `state`: the whole state except the pick log, stamped `__savedAt`.
+  - `picklog`: the pick log array alone, kept apart so other saves don't
+    rewrite it.
+- **localStorage**, every key starting `easemylife.` and kept by the boot
+  sweep's `LIV_KEY_ARR`:
+  - `v2`: the warm mirror, the state without its pick log, marked
+    `__mirrorNoLog`, or a full copy marked `__logPartial` in a fallback
+    session, and stamped `__savedAt`.
+  - `mirrorat`: when the mirror was written.
+  - `idbboots`: the count of clean IndexedDB boots, which gates the sweep.
+  - `snapshot.pre-idb`: a rollback copy from the first IndexedDB migration,
+    retired after a few clean boots.
+  - `persistasked`: whether the app already asked for persistent storage.
+  - `signedin`: `1` once this device has signed in, so Firebase loads at
+    launch.
+  - `signinemail`: the address an emailed link went to, until it's used.
+  - `syncmeta`: this device's sync record, JSON `{ changedAt, docs, rev, uid
+    }`: when it last changed, and the hashes and revision of its last sync,
+    for that account only.
+- **Firebase Auth** keeps its own session in the `firebaseLocalStorageDb`
+  IndexedDB database. An account's `paid: true` custom claim, set only by the
+  Polar webhook, is what unlocks sync.
+- **Firestore**, one tree per account:
+  - `users/{uid}`, the manifest: `docs` (document id to hash), `prior` (the
+    previous revision's `docs`, kept for cleanup), `rev` (one more per
+    commit), `savedAt` (the later side's save time, in milliseconds), and `v`
+    (the schema version).
+  - `users/{uid}/docs/{id}~{hash}`, one document version: `{ text }`, its
+    canonical JSON (keys sorted).
+  - The ids are `core` (the state without the logs, `appearance`, `ui`, and
+    the `__` markers) and `{log}-{YYYY-MM}` for each month of `pickLog`,
+    `conditionalLog`, `vacationLog` (by `date`), `reminderLog` (by
+    `completedAt`), and `reminderSkipLog` (by `skippedAt`). The hash is the
+    canonical JSON's FNV-1a, as 8 hex digits.
+  - An upload writes new versions beside the old ones, then commits the
+    manifest in a transaction only on the revision it was built from. Old
+    versions are deleted one revision late. A missing manifest reads as an
+    empty copy, never as everything deleted.
+- **Polar**: each checkout carries the account's id as the customer's
+  `external_customer_id` and as `metadata.firebaseUid`, and the webhook
+  matches an untagged order by email.
+
+### Paid sync
+
+Added 2026-10-20, on the `paid-sync-accounts` branch (in progress). A
+one-time purchase lets an account sync the whole state between devices,
+local first: the app still runs entirely on-device, and syncs in the
+background.
+- **Engine**: `state/sync-docs.ts` splits the state into a core document
+  and one document per log per month (leaving out `appearance` and `ui`,
+  which stay per device), `state/sync-merge.ts` merges a document both sides
+  changed, and `state/sync-engine.ts` runs one sync against any backend.
+- **Firebase**: project `ease-my-life-4ce18` on the free Spark plan, Firestore
+  in `nam5`, with Google and email-link sign-in. `platform/firebase.ts` holds
+  its public config and sign-in calls, and `platform/cloud-backend.ts` stores
+  the cloud copy (see its summary for the layout). Both load only for
+  someone using an account. A build with `VITE_FIREBASE_EMULATOR` set talks
+  to the local emulator under the `demo-ease-my-life` project instead.
+- **Rules**: `firestore.rules` gives each account its own copy, and needs a
+  verified email and the `paid` custom claim, which only the payment webhook
+  sets. They're published by pasting into the console's Firestore Rules tab
+  (or `npx firebase deploy --only firestore:rules`).
+- **Payments**: Polar sells the one-time upgrade. `netlify/handlers/
+  checkout.mts` verifies the buyer's ID token and asks Polar for a checkout
+  of the private Ease My Life Sync product, tagged with the account's id, and
+  `netlify/handlers/polar-webhook.mts` checks Polar's signature and sets the
+  `paid` claim on `order.paid` (clearing it on a full refund). The production
+  site uses live Polar and every other deploy the sandbox (`netlify/lib/
+  polar.mts` holds both products).
+  Netlify holds `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`,
+  `POLAR_ACCESS_TOKEN`, and `POLAR_WEBHOOK_SECRET` as secrets, the Polar ones
+  per deploy context. Back from the checkout (`?purchase=sync`), the app
+  renews its token every few seconds until the claim arrives.
+  The price ($9.99) lives in three places that must agree: the Polar
+  product, `SYN_PRI_STR` in `constants.ts` (shown on the Unlock row), and
+  the second offer in `index.html`'s JSON-LD.
+- **Function bundling**: the function sources live in `netlify/handlers/`,
+  and `npm run build` ends with `build:functions`, which bundles each one with
+  esbuild into `netlify/functions/` (git-ignored), where Netlify finds them.
+  Netlify's function runtime can't `require()` an ES module, which
+  `firebase-admin` does when it loads `jose`, so unbundled functions crashed
+  on load with `ERR_REQUIRE_ESM` (found 2026-10-20; neither
+  `AWS_LAMBDA_JS_RUNTIME` nor a `netlify.toml` bundler setting fixed it, and
+  the user's projects keep Netlify config in `_headers` and `_redirects`, not
+  `netlify.toml`). A bundle can be checked locally by loading it under `node
+  --no-experimental-require-module`.
+- **Running it**: `state/sync-run.ts`'s `useSynRunFun`, called once in
+  `app.tsx`, follows the account and syncs on launch, on focus or coming
+  online, two minutes after the last change, and on hide with a change
+  waiting. Its keys (`ACC_SIG_STR`, `SIG_EMA_STR`, `SYN_MET_STR`) live in
+  `storage.ts`'s `LIV_KEY_ARR`, which the boot sweep keeps. The Settings
+  Account section is `tabs/settings/account-section.tsx`.
+- **Headers**: `public/_headers`' Content-Security-Policy names Firebase's
+  addresses. Vite's dev server doesn't apply that file, so a change to it is
+  only proven on a Netlify deploy preview.
+- **WebKit and the emulator**: Playwright's WebKit stalls on Firestore's
+  streaming connection to the plain-HTTP emulator, so emulator builds force
+  long polling. Real Safari against the real project is checked by hand.
 
 ### Hosting and DNS
 

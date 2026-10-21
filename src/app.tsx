@@ -23,7 +23,9 @@ import { TabStaCom    } from './tabs/stats/tab-stats.tsx';       // What: Tab St
 import { TabTodCom    } from './tabs/today/tab-today.tsx';       // What: Tab Today Component. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
 import { useAppStaFun } from './state/store.ts';                 // What: Use App State Function. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
 import { useEmlTouFun } from './state/tour-bus.ts';              // What: Use Ease My Life Tour Function. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's touPhaStr/wanRaiBoo/touSteNum fields.
+import { useRaiFocFun } from './ui/rail-focus.ts';               // What: Use Rail Focus Function. Why: A keyboard-focused pill at a rail's edge would stay half clipped. How: This is called once below to keep focused rail controls in view.
 import { useRaiWheFun } from './ui/rail-wheel.ts';               // What: Use Rail Wheel Function. Why: The pill rails scroll sideways, which a mouse wheel can't do on its own. How: This is called once in AppRooCom.
+import { useSynRunFun } from './state/sync-run.ts';              // What: Use Sync Run Function. Why: Paid sync runs from the app root, beside the state it syncs. How: This is called once, after useAppStaFun.
 import { WelTouCom    } from './onboarding/welcome-tour.tsx';    // What: Welcome Tour Component. Why: The first-run welcome modal and its driven tour need to run above every tab. How: This is rendered once, passed the shared state/actions plus the active tab and the tab-switching function.
 
 // #endregion Imports
@@ -318,6 +320,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 					data-tab={ tabConObj.ideStr }
 
 					aria-current={ tabConObj.ideStr === actIdeStr ? 'page' : undefined }
+					aria-label={ tabConObj.labStr } // What: ARIA Label. Why: At phone widths the tab's label is hidden and the button shows only its icon, which leaves it nameless to screen readers. How: This names the button with the same text as its label, so it reads the same at every width.
 
 					onClick={ () => onChange( tabConObj.ideStr ) }
 				>{ /* What: Tab Button Element. Why: This is the clickable control for switching to this specific tab. How: This marks itself current via aria-current when its own ideStr matches actIdeStr, and calls onChange with its ideStr when clicked. Its data-element-name-hook is read by app.tsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator. */ }
@@ -423,10 +426,13 @@ function AppRooCom () : React.JSX.Element {
 	const onbDemBoo                = typeof location !== 'undefined' && location.hash.indexOf( 'onboard' ) !== -1;                   // What: Onboard Demo Boolean. Why: This lets #onboard-demo/#onboard run the app against a fresh clean state without touching the user's real saved data. How: This checks the URL hash for the "onboard" substring.
 	const [ staAppObj, actStoObj ] = useAppStaFun( onbDemBoo ? { initial : SED_NAM_OBJ.buiCleFun(), persist : false } : undefined ); // What: State App Object And Action Store Object. Why: This is the entire app's persisted state and the actions that mutate it. How: This calls useAppStaFun, seeded with a clean, non-persisted state when the onboarding demo flag is set, otherwise loading the real persisted state normally.
 
+	const accSynObj = useSynRunFun( actStoObj, staAppObj, !onbDemBoo ); // What: Account Sync Object. Why: Paid sync follows the account and syncs the state from the app root, where both live. How: This runs the sync hook, switched off for the onboarding demo, whose state must never sync.
+
 	// #endregion App State Setup
 
 
 
+	useRaiFocFun(); // What: Use Rail Focus Function Call. Why: Every tab's pill rails should keep a keyboard-focused control in view. How: This attaches the shared focus listener for as long as the app is mounted.
 	useRaiWheFun(); // What: Use Rail Wheel Function Call. Why: Every tab's pill rails should scroll with a mouse wheel. How: This attaches the shared wheel listener for as long as the app is mounted.
 
 
@@ -830,6 +836,7 @@ function AppRooCom () : React.JSX.Element {
 
 
 							<TabSetCom
+								accSynObj={ accSynObj }
 								actStoObj={ actStoObj }
 								staAppObj={ staAppObj }
 

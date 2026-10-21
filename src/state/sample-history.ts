@@ -122,7 +122,7 @@ const unhHisFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 			actStoObj.sedHisFun( hydStaFun( ONB_STA_OBJ ) ); // What: Seed History Call. Why: The static template needs converting into real pickLog rows before it means anything to the Stats tab. How: This calls actStoObj.sedHisFun with hydStaFun's own converted result.
 
 
-		} );
+		} ).catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Import Failure Catch. Why: A reload, such as the one a reset ends with, can cut the load short, which WebKit reports as an error. How: This logs it instead, and the next launch seeds the history.
 
 
 	}
