@@ -10,9 +10,15 @@ that happen on a fixed schedule, and conditionals can give a picker a day off.
 
 ## How it works
 
-- **No accounts, no server.** Everything is stored on your own device
-  (IndexedDB, with a localStorage fallback). Settings can export a backup file
-  and import it again on another device.
+- **Local first, no account needed.** Everything is stored on your own device
+  (IndexedDB, with a localStorage fallback), and the app works fully without
+  signing in. Settings can export a backup file and import it again on
+  another device.
+- **Optional sync.** A one-time purchase lets an account (Google sign-in or an
+  emailed link) keep its data the same across devices. The device stays the
+  source of truth: changes sync in the background, a few at a time, through
+  Firebase, and the theme and display settings stay separate on each device.
+  Payment goes through Polar, and Settings can delete the cloud copy.
 - **Installable.** It's a Progressive Web App, so it can be added to a home
   screen or dock and works offline.
 - **Pickers choose in different ways:** truly random, weighted, dynamic (an
@@ -66,7 +72,8 @@ it on and tap anything to see what it does.
 
 ## Running it locally
 
-Requires Node.js 20.19+ or 22.12+ and npm.
+Requires Node.js 20.19+ or 22.12+ and npm. The account, rules, and payments
+suites also need Java 21, for the Firebase Emulator.
 
 ```
 npm install
@@ -83,9 +90,11 @@ first, so a type error stops a build.
 
 ## Tests
 
-Four [Playwright](https://playwright.dev/) suites live in `tests/` and are run
-before merging a large change. Each starts its own development server on port
-5190, so run them one at a time.
+Seven [Playwright](https://playwright.dev/) suites live in `tests/`, plus one
+for Node's own test runner, and they're run before merging a large change.
+The browser suites each start their own development server on port 5190, so
+run them one at a time. `npm run test` runs them all inside the Firebase
+Emulator.
 
 - `npm run test:simulation` fakes the clock and plays out about 53 days, from
   October 2026 through the new year, checking every generated list,
@@ -99,6 +108,17 @@ before merging a large change. Each starts its own development server on port
   then the replay, on a phone width and a desktop width.
 - `npm run test:responsive` measures every tab from 375 to 1280px wide for
   sideways scrolling, spilling text, and overlapping controls.
+- `npm run test:accessibility` scans every tab, help mode, and the welcome
+  modal with axe-core in Chromium, Firefox, and WebKit, plus keyboard, focus,
+  reflow, and reduced-motion checks.
+- `npm run test:account` signs two browser windows in to one account in the
+  Firebase Emulator and syncs them with each other, buys sync with the
+  checkout stubbed, and resets a device along with its cloud copy, in all
+  three engines.
+- `npm run test:rules` checks the Firestore security rules in the emulator.
+- `npm run test:payments` checks the checkout and webhook functions against
+  the emulator, with Polar stubbed.
+- `npm run test:sync` checks the sync engine against an in-memory cloud copy.
 
 The suites run against a real data backup, which is personal and never part
 of the repo: set `EML_TEST_FIXTURE` to an exported backup file, or put one in
@@ -120,8 +140,10 @@ src/
   help/          the on-demand help mode
   utils/         small app-agnostic helpers (dates, formatting, motion)
   styles/        global CSS (fonts, tokens, base styles, shared animations)
-tests/           the Playwright suites and their helpers
+tests/           the test suites and their helpers
+netlify/         the checkout and payment webhook functions
 public/          files served at fixed URLs (icons, manifest, hosting rules)
+firestore.rules  who may read and write each account's cloud copy
 scripts/         build helpers
 design/          design notes, not shipped
 ```
