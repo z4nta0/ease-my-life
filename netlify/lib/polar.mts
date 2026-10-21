@@ -50,7 +50,7 @@ type PolOrdTyp = { customer? : { email? : string, external_id? : string | null }
 const API_LIV_STR = 'https://api.polar.sh';                 // What: API Live String. Why: Production checkouts are created on live Polar. How: This is its API address.
 const API_SAN_STR = 'https://sandbox-api.polar.sh';         // What: API Sandbox String. Why: Previews create checkouts in Polar's sandbox. How: This is its API address.
 const PRO_LIV_STR = '84f9df3f-576a-49be-a989-f7a75fb6b91e'; // What: Product Live String. Why: Production sells the live Ease My Life Sync product. How: This is its id.
-const PRO_SAN_STR = '';                                     // What: Product Sandbox String. Why: Previews sell the sandbox copy of the product, once it exists. How: This is its id, empty until the sandbox is set up.
+const PRO_SAN_STR = '16fd9863-be3a-4968-8423-53002acaba2f'; // What: Product Sandbox String. Why: Previews sell the sandbox copy of the product. How: This is its id.
 const TIM_TOL_NUM = 300;                                    // What: Time Tolerance Number. Why: A replayed old webhook must be refused. How: This allows five minutes, in seconds, between Polar's timestamp and now.
 
 // #endregion Constants

@@ -313,7 +313,7 @@ background.
   `netlify/functions/polar-webhook.mts` checks Polar's signature and sets the
   `paid` claim on `order.paid` (clearing it on a full refund). The production
   site uses live Polar and every other deploy the sandbox (`netlify/lib/
-  polar.mts` holds both products, the sandbox one empty until it's set up).
+  polar.mts` holds both products).
   Netlify holds `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`,
   `POLAR_ACCESS_TOKEN`, and `POLAR_WEBHOOK_SECRET` as secrets, the Polar ones
   per deploy context. Back from the checkout (`?purchase=sync`), the app
