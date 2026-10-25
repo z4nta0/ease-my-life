@@ -401,6 +401,17 @@ background.
   streaming connection to the plain-HTTP emulator, so emulator builds force
   long polling. Real Safari against the real project is checked by hand.
 
+### Legal pages (to-do)
+
+Added 2026-10-25. The privacy policy and terms show only in the Settings
+modal (`tabs/settings/legal-docs.tsx`), with no address of their own, while
+the app offers Google sign-in. Google's OAuth verification asks for a
+homepage and a privacy policy URL on a verified domain, and app listings
+link to one too, so the same text gets fixed addresses, `/privacy` and
+`/terms`, as static pages in `public/`, which Netlify serves ahead of the
+`/*` rewrite. The modal stays as it is. Do this the next time the project is
+worked on, the same way come-hang publishes its legal pages.
+
 ### Hosting and DNS
 
 Updated 2026-10-14. easemylife.app is registered at name.com and uses
