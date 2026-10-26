@@ -100,7 +100,8 @@ tests/output/report` opens the HTML report.
   decorative glyph, a Tab walk (order, nothing off screen or covered, a
   visible focus ring, no trap), no sideways scroll at 320px, and no motion
   under reduced motion. Anything axe can't decide is printed as needing
-  review. About 10 minutes.
+  review. The standalone legal pages get their own spec
+  (`legal-pages.spec.ts`). About 10 minutes.
 - `npm run test:interaction`: drives every tab's controls and editors on
   real data, checking each change in IndexedDB and that its animation fired,
   and checks that a launch with a hung or slow IndexedDB loses nothing.
@@ -409,16 +410,35 @@ background.
   streaming connection to the plain-HTTP emulator, so emulator builds force
   long polling. Real Safari against the real project is checked by hand.
 
-### Legal pages (to-do)
+### Legal pages
 
-Added 2026-10-25. The privacy policy and terms show only in the Settings
-modal (`tabs/settings/legal-docs.tsx`), with no address of their own, while
-the app offers Google sign-in. Google's OAuth verification asks for a
-homepage and a privacy policy URL on a verified domain, and app listings
-link to one too, so the same text gets fixed addresses, `/privacy` and
-`/terms`, as static pages in `public/`, which Netlify serves ahead of the
-`/*` rewrite. The modal stays as it is. Do this the next time the project is
-worked on, the same way come-hang publishes its legal pages.
+Added 2026-10-26. The privacy policy and terms have fixed addresses,
+`/privacy` and `/terms`, which Google's OAuth verification and app listings
+ask for, beside the Settings modal that shows them in the app.
+- **One copy of the text**: the documents live in
+  `tabs/settings/legal-text.tsx`, which imports only React. The modal
+  (`legal-docs.tsx`) renders them, and so does the build.
+- **The pages**: `privacy.html` and `terms.html` sit beside `index.html` as
+  extra build inputs (`build.rolldownOptions.input`). Each holds an empty
+  article naming its document, which the `legPagFun` plugin in
+  `vite.config.ts` fills by loading `legal-text.tsx` through Vite's
+  `runnerImport` and rendering it with `renderToStaticMarkup`, in dev and in
+  builds, so the text is plain HTML that reads without JavaScript. They live
+  at the root rather than in `public/`, since Vite has to process them.
+- **Their script and styles**: `tabs/settings/legal-page.ts` loads the
+  global stylesheets and `legal-page.css`, a plain sheet since static HTML
+  can't read a module's hashed classes, and handles the skip link's click.
+  The pages' body class lets the window scroll, since a scrolling body is a
+  Tab stop in Firefox, ahead of the skip link.
+- **Serving them**: `public/_redirects` rewrites `/privacy` and `/terms` to
+  their files ahead of the app's catch-all, and the sitemap lists both. The
+  service worker precaches them, and Workbox's clean URL matching serves them
+  before its app fallback (checked in all three engines).
+- **Checked** by `tests/accessibility/legal-pages.spec.ts` in all three
+  engines: axe at 375 and 1,280px, the skip link, reflow at 320px, and no
+  motion under reduced motion.
+- **The text is still the generator's placeholder**, pending the real
+  documents. Edit `legal-text.tsx` and both the modal and the pages follow.
 
 ### Hosting and DNS
 

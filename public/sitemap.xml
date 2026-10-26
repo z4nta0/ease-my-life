@@ -2,7 +2,7 @@
 
 
 
-<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'><!-- What: Url Set Element. Why: A sitemap lists a site's pages inside one url set. How: This uses the sitemaps.org namespace crawlers recognize. --><!-- The app is one page, so the set holds one entry. -->
+<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'><!-- What: Url Set Element. Why: A sitemap lists a site's pages inside one url set. How: This uses the sitemaps.org namespace crawlers recognize. --><!-- The app is one page, and its legal documents each have a page of their own. -->
 
 
 	<url><!-- What: Home Url Element. Why: The app's only page is its root. How: This wraps the root's address and its crawl hints. -->
@@ -14,7 +14,35 @@
 
 		<changefreq>monthly</changefreq><!-- What: Change Frequency Element. Why: Crawlers pace their visits by how often a page changes. How: This hints at a monthly change. -->
 
-		<priority>1.0</priority><!-- What: Priority Element. Why: Crawlers weigh a site's pages against each other. How: This marks the only page as the most important. -->
+		<priority>1.0</priority><!-- What: Priority Element. Why: Crawlers weigh a site's pages against each other. How: This marks the app's page as the most important. -->
+
+
+	</url>
+
+	<url><!-- What: Privacy Url Element. Why: The privacy policy has a fixed page of its own. How: This wraps its address and its crawl hints. -->
+
+
+		<loc>https://easemylife.app/privacy</loc><!-- What: Location Element. Why: Every entry needs the page's address. How: This gives the policy's absolute URL. -->
+
+		<lastmod>2026-10-20</lastmod><!-- What: Last Modified Element. Why: Crawlers come back sooner to a page that changed recently. How: This dates the policy's own last update. -->
+
+		<changefreq>yearly</changefreq><!-- What: Change Frequency Element. Why: Crawlers pace their visits by how often a page changes. How: This hints that the policy rarely changes. -->
+
+		<priority>0.3</priority><!-- What: Priority Element. Why: Crawlers weigh a site's pages against each other. How: This ranks the policy below the app. -->
+
+
+	</url>
+
+	<url><!-- What: Terms Url Element. Why: The terms have a fixed page of their own. How: This wraps their address and their crawl hints. -->
+
+
+		<loc>https://easemylife.app/terms</loc><!-- What: Location Element. Why: Every entry needs the page's address. How: This gives the terms' absolute URL. -->
+
+		<lastmod>2026-10-20</lastmod><!-- What: Last Modified Element. Why: Crawlers come back sooner to a page that changed recently. How: This dates the terms' own last update. -->
+
+		<changefreq>yearly</changefreq><!-- What: Change Frequency Element. Why: Crawlers pace their visits by how often a page changes. How: This hints that the terms rarely change. -->
+
+		<priority>0.3</priority><!-- What: Priority Element. Why: Crawlers weigh a site's pages against each other. How: This ranks the terms below the app. -->
 
 
 	</url>

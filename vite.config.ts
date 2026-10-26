@@ -6,15 +6,20 @@
 import react from '@vitejs/plugin-react'; // What: React. Why: Vite needs the React plugin to compile JSX. How: This is called first in the plugins array.
 
 
-import { defineConfig           } from 'vite';            // What: Define Config. Why: Vite's config helper passes the config through with its types. How: This wraps vitConObj.
-import { minify                 } from 'vite';            // What: Minify. Why: The shipped boot-splash.js needs minifying with the same minifier Vite uses for the bundle. How: This is called in minShiFun's closeBundle step.
-import { readFileSync           } from 'node:fs';         // What: Read File Sync. Why: The config reads package.json, and the build step reads the copied boot-splash.js. How: This reads each file as UTF-8 text.
-import { transform as traCssFun } from 'lightningcss';    // What: Transform Css Function. Why: index.html's inline styles need minifying, and Vite already depends on lightningcss. How: This is called through minCssFun in minShiFun's index.html step.
-import { VitePWA                } from 'vite-plugin-pwa'; // What: Vite PWA. Why: The app installs and works offline through a generated service worker. How: This is called in the plugins array with its options.
-import { writeFileSync          } from 'node:fs';         // What: Write File Sync. Why: The minified boot-splash.js replaces the copy Vite wrote. How: This writes it back to the output folder.
+import { createElement          } from 'react';            // What: Create Element. Why: A legal document component has to become an element before it can be rendered to HTML. How: This is called in legPagFun's page step.
+import { defineConfig           } from 'vite';             // What: Define Config. Why: Vite's config helper passes the config through with its types. How: This wraps vitConObj.
+import { fileURLToPath          } from 'node:url';         // What: File URL To Path. Why: The legal documents' module has to be named by a file path. How: This turns its URL beside this config into one.
+import { minify                 } from 'vite';             // What: Minify. Why: The shipped boot-splash.js needs minifying with the same minifier Vite uses for the bundle. How: This is called in minShiFun's closeBundle step.
+import { readFileSync           } from 'node:fs';          // What: Read File Sync. Why: The config reads package.json, and the build step reads the copied boot-splash.js. How: This reads each file as UTF-8 text.
+import { renderToStaticMarkup   } from 'react-dom/server'; // What: Render To Static Markup. Why: The legal pages have to carry their document as plain HTML, readable without JavaScript. How: This is called in legPagFun's page step.
+import { runnerImport           } from 'vite';             // What: Runner Import. Why: The legal documents are TSX, which Node can't load on its own. How: This loads them through Vite's module runner in legPagFun's page step.
+import { transform as traCssFun } from 'lightningcss';     // What: Transform Css Function. Why: index.html's inline styles need minifying, and Vite already depends on lightningcss. How: This is called through minCssFun in minShiFun's index.html step.
+import { VitePWA                } from 'vite-plugin-pwa';  // What: Vite PWA. Why: The app installs and works offline through a generated service worker. How: This is called in the plugins array with its options.
+import { writeFileSync          } from 'node:fs';          // What: Write File Sync. Why: The minified boot-splash.js replaces the copy Vite wrote. How: This writes it back to the output folder.
 
 
-import type { Plugin } from 'vite'; // What: Plugin. Why: The shipped-files minifier is a Vite plugin. How: This types minShiFun's return, which types each of its hooks.
+import type { FunctionComponent } from 'react'; // What: Function Component. Why: The legal documents' module is loaded at run time, so its shape is declared here. How: This types each document in LegTexTyp.
+import type { Plugin            } from 'vite';  // What: Plugin. Why: The legal pages step and the shipped-files minifier are Vite plugins. How: This types the returns of legPagFun and minShiFun, which type each of their hooks.
 
 // #endregion Imports
 
@@ -26,13 +31,15 @@ import type { Plugin } from 'vite'; // What: Plugin. Why: The shipped-files mini
  * @summary
  * The build and dev server config. It injects the package version as
  * __APP_VERSION__, reads CSS module classes as camelCase keys, compiles React,
- * generates the PWA's service worker around the hand-written manifest, and,
- * for production builds only, minifies the files Vite ships as written:
- * index.html and the copied public/boot-splash.js and public/sw-notify.js.
- * It also raises the chunk size warning to 1000 kB, since the main bundle is
- * past Vite's default 500 kB.
+ * builds the standalone legal pages beside the app with their documents
+ * rendered in, generates the PWA's service worker around the hand-written
+ * manifest, and, for production builds only, minifies the files Vite ships as
+ * written, such as index.html and the copied public/ scripts. It also raises
+ * the chunk size warning to 1000 kB, since the main bundle is past Vite's
+ * default 500 kB.
  *
  * Sections:
+ *  - Types
  *  - Constants
  *  - Helpers
  *  - Exports
@@ -43,9 +50,19 @@ import type { Plugin } from 'vite'; // What: Plugin. Why: The shipped-files mini
 
 
 
+// #region Types
+
+type LegTexTyp = Record< 'PriPolCom' | 'TerSerCom', FunctionComponent >; // What: Legal Text Type. Why: legPagFun reads the two documents from the module it loads at run time. How: This types that module's exports.
+
+// #endregion Types
+
+
+
 // #region Constants
 
-const MIN_SCR_ARR = [ 'boot-splash.js', 'sw-notify.js' ]; // What: Minify Script Array. Why: Scripts in public/ ship exactly as written unless the build minifies them. How: This lists every public/ script minShiFun's closeBundle step minifies, by its name in the output folder.
+const LEG_DOC_REG = /data-legal-document-body='(privacy|terms)'\s*>(?=<\/article>)/;                         // What: Legal Document Regular Expression. Why: A legal page marks where its document goes. How: This matches the end of an empty article's opening tag that names a document, capturing the name.
+const LEG_TEX_PAT = fileURLToPath( new URL( './src/tabs/settings/legal-text.tsx', import.meta.url ) ); // What: Legal Text Path. Why: The documents live in one module the Settings modal shares. How: This is that module's absolute path, built from this config's own address.
+const MIN_SCR_ARR = [ 'boot-splash.js', 'sw-notify.js' ];                                            // What: Minify Script Array. Why: Scripts in public/ ship exactly as written unless the build minifies them. How: This lists every public/ script minShiFun's closeBundle step minifies, by its name in the output folder.
 
 
 
@@ -66,6 +83,67 @@ const minCssFun = ( styTexStr : string ) => traCssFun({ // What: Minify Css Func
 
 
 }).code.toString(); // What: Minified Code String. Why: The caller splices the minified CSS back into the page as text. How: This reads lightningcss's output buffer and converts it to a string.
+
+
+
+// #region legPagFun
+
+/**
+ * legPagFun = Legal Pages Function
+ *
+ * @summary
+ * Builds the Vite plugin that fills the standalone legal pages, privacy.html
+ * and terms.html, with their documents. Each page holds an empty article
+ * whose data-legal-document-body attribute names its document. For a page
+ * with one, in dev and in builds, the plugin loads legal-text.tsx through
+ * Vite's module runner, renders the named component to static HTML, and
+ * places it inside the article, so the pages carry the same text as the
+ * Settings modal, readable without JavaScript. Every other page passes
+ * through unchanged.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns The plugin object, for the config's plugins array.
+ *
+ * @example
+ * ```ts
+ * legPagFun() // => { name, transformIndexHtml }
+ * ```
+ *
+*/
+
+const legPagFun = () : Plugin => ({ // What: Legal Pages Function. Why: The legal pages' documents have to be rendered in from their shared module. How: This returns the plugin that does it.
+
+
+	name : 'legal-pages', // What: Name. Why: Vite reports a plugin's warnings and errors under its name. How: This names the plugin.
+
+	transformIndexHtml : async ( htmTexStr ) => { // What: Transform Index Html Hook. Why: Vite hands every page it serves or builds to this hook. How: This renders a legal page's document into it and returns the page.
+
+
+		const docMatArr = htmTexStr.match( LEG_DOC_REG ); // What: Document Match Array. Why: Only a page that names a document has one to render. How: This finds the article's marker and captures the document's name.
+
+
+		if ( !docMatArr ) return htmTexStr; // What: No Document Guard. Why: The app's own page holds no legal document. How: This returns any page without a marker unchanged.
+
+
+
+		const { module : legTexObj } = await runnerImport< LegTexTyp >( LEG_TEX_PAT, { configFile : false } ); // What: Legal Text Object. Why: The documents are TSX, which Node can't load on its own. How: This loads the module through Vite's runner, without loading this config again inside it.
+
+		const docComFun = docMatArr[ 1 ] === 'privacy' ? legTexObj.PriPolCom : legTexObj.TerSerCom; // What: Document Component Function. Why: Each page shows its own document. How: This picks the component the marker names.
+
+
+
+		return htmTexStr.replace( LEG_DOC_REG, ( matTexStr ) => matTexStr + renderToStaticMarkup( createElement( docComFun ) ) ); // What: Filled Page Return. Why: Vite serves or writes whatever this returns. How: This places the document's static HTML right after the article's opening tag.
+
+
+	}
+
+
+});
+
+// #endregion legPagFun
 
 
 
@@ -178,15 +256,24 @@ const minShiFun = () : Plugin => { // What: Minify Shipped Function. Why: index.
 const vitConObj = defineConfig({ // What: Vite Config Object. Why: Vite reads its whole configuration from this file's default export. How: This builds the config, including the minShiFun plugin above.
 
 
-	build  : { chunkSizeWarningLimit : 1000 },                          // What: Build. Why: The main bundle (about 917 kB before gzip) is past Vite's default 500 kB chunk warning, which would otherwise fire on every build. How: This raises the warning threshold to 1000 kB.
 	css    : { modules : { localsConvention : 'camelCaseOnly' } },      // What: Css. Why: CSS modules expose their kebab-case class names as camelCase keys only, so .prog--warm is read as cssModObj.progWarm, per CLAUDE.md's "CSS modules and JS hooks" rules. How: This sets the locals convention.
 	define : { __APP_VERSION__ : JSON.stringify( pacJsoObj.version ) }, // What: Define. Why: The app reports its own version without a hardcoded string. How: This replaces __APP_VERSION__ with the package version at build time.
 
-	plugins : [ // What: Plugins. Why: Vite builds the app through these plugins, in this order. How: This lists React, the minify step, and the PWA plugin.
+	build : { // What: Build. Why: The production build needs its pages and its warning threshold set. How: This lists both.
+
+
+		chunkSizeWarningLimit : 1000,                                                  // What: Chunk Size Warning Limit. Why: The main bundle (about 917 kB before gzip) is past Vite's default 500 kB chunk warning, which would otherwise fire on every build. How: This raises the warning threshold to 1000 kB.
+		rolldownOptions       : { input : [ 'index.html', 'privacy.html', 'terms.html' ] } // What: Rolldown Options. Why: The legal pages are built as pages of their own, beside the app. How: This lists every HTML page the build starts from.
+
+
+	},
+
+	plugins : [ // What: Plugins. Why: Vite builds the app through these plugins, in this order. How: This lists React, the legal pages step, the minify step, and the PWA plugin.
 
 
 		react(),     // What: React Plugin Call. Why: JSX has to compile. How: This adds the React plugin.
-		minShiFun(), // What: Minify Shipped Plugin Call. Why: The shipped page and splash script should be minified. How: This adds the build-only minify plugin.
+		legPagFun(), // What: Legal Pages Plugin Call. Why: The legal pages need their documents rendered in before the minify step compacts them. How: This adds the legal pages plugin ahead of it.
+		minShiFun(), // What: Minify Shipped Plugin Call. Why: The shipped pages and splash script should be minified. How: This adds the build-only minify plugin.
 
 		VitePWA({ // What: Vite PWA Plugin Call. Why: The app needs a service worker to install and work offline. How: This adds the PWA plugin with its options.
 
