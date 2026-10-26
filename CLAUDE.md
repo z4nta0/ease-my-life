@@ -233,6 +233,11 @@ revert via the `entry.revert` snapshot. If you touch `togDonFun`,
 staging: directly mutating item state on pick (instead of on completion)
 breaks the "nothing changes until you actually do it" contract the whole
 ease-up/ease-down/dynamic system relies on.
+The one rework is Ease Down's own entry after a direct value edit (a Refill):
+its staged decay was worked out from the value at pick time, so
+`rebPenFun` in `pending-mutations.ts` reworks it to decay from the new value,
+called from `updIteFun`. Before this (fixed 2026-10-26), an item refilled just
+before running out still ended its streak once checked off.
 
 ### Logs are append-only and denormalized
 

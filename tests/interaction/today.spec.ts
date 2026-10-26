@@ -4,6 +4,7 @@
 // #region Imports
 
 import { expect    } from '@playwright/test';      // What: Expect. Why: Every flow asserts what it changed. How: This makes the assertions.
+import { opeDayFun } from '../support/app.ts';     // What: Open Day Function. Why: The refill flow reopens the day on a staged state. How: This loads the app on the fixed day.
 import { opeFixFun } from '../support/app.ts';     // What: Open Fixture Function. Why: Each flow starts from real data. How: This opens the backup on a fixed day.
 import { reaStaFun } from '../support/storage.ts'; // What: Read State Function. Why: Flows compare saved state before and after. How: This reads it.
 import { recAniFun } from '../support/watch.ts';   // What: Record Animations Function. Why: Flows confirm their animations played. How: This starts recording.
@@ -12,6 +13,7 @@ import { selTabFun } from '../support/app.ts';     // What: Select Tab Function.
 import { test      } from '@playwright/test';      // What: Test. Why: Each flow is its own test. How: This declares them.
 import { waiStaFun } from '../support/storage.ts'; // What: Wait State Function. Why: Saves land a moment after each action. How: This waits for them.
 import { watErrFun } from '../support/watch.ts';   // What: Watch Errors Function. Why: A flow fails on any page error. How: This collects them.
+import { wriStaFun } from '../support/storage.ts'; // What: Write State Function. Why: The refill flow stages an item about to run out. How: This saves the staged state.
 
 
 import type { Page      } from '@playwright/test';             // What: Page. Why: Helpers drive the page. How: This types the page parameters.
@@ -32,11 +34,12 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * streak when that claims the day, and pushing an item onto the finished day
  * gives that streak point back and untints the badge. Re-rolling spins the
  * card and rejects its pick-log row; skipping slides it out and removes it.
- * The item editor writes only on Save. Reminders can be added, renamed, and
- * skipped. Edit Mode opens and its Cancel closes it without reordering
- * anything; Regenerate rebuilds the list; groups can be renamed in Edit Mode;
- * the day log opens; and an unknown address opens the app at its root. Every
- * flow also fails on any page or console error.
+ * The item editor writes only on Save, and refilling an Ease Down item about
+ * to run out keeps it active once checked off. Reminders can be added,
+ * renamed, and skipped. Edit Mode opens and its Cancel closes it without
+ * reordering anything; Regenerate rebuilds the list; groups can be renamed in
+ * Edit Mode; the day log opens; and an unknown address opens the app at its
+ * root. Every flow also fails on any page or console error.
  *
  * Sections:
  *  - Constants
@@ -604,6 +607,106 @@ test( 'the day log opens and closes', async ( { page : curPagObj } ) => { // Wha
 
 
 } );
+
+
+test( 'refilling an Ease Down item keeps its streak going', async ( { page : curPagObj } ) => { // What: Refill Streak Test. Why: An item refilled just before running out used to end its streak once checked off, so the next day picked a new item. How: This stages an Ease Down entry about to run out, refills its item in the editor, checks it off, and checks the item stays active.
+
+
+	const fixStaObj = ( await reaStaFun( curPagObj ) )!; // What: Fixture State Object. Why: The staged entry comes from the day's real list. How: This reads the saved state. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript the state is set.
+
+
+	const easEntObj = fixStaObj.today.entries.find( ( curEntObj ) => { // What: Ease Entry Object. Why: The flow needs an unchecked Ease Down pick that decays its own item. How: This finds the first entry whose pending holds a decay row for its item.
+
+
+		const decRowBoo = !!curEntObj.pending?.updates.some( ( curUpdObj ) => curUpdObj.id === curEntObj.itemId && ( curUpdObj.chargeStep ?? 0 ) > 0 ); // What: Decay Row Boolean. Why: Only a pick that decays its own item can run it out. How: This looks for the item's row carrying a chargeStep.
+		const easModBoo = fixStaObj.pickers.find( ( curPicObj ) => curPicObj.id === curEntObj.pickerId )?.mode === 'ease-down';                        // What: Ease Mode Boolean. Why: Only Ease Down plans a decay ahead. How: This checks the entry's picker mode.
+
+
+
+		return !curEntObj.done && decRowBoo && easModBoo; // What: Qualify Return. Why: The entry must still be unchecked. How: This combines the checks.
+
+
+	} );
+
+
+
+	test.skip( !easEntObj, 'the backup has no Ease Down pick on the fixed day' ); // What: No Ease Pick Skip. Why: The flow can't run without an Ease Down pick. How: This skips the test when none was found.
+
+
+
+	const decUpdObj = easEntObj!.pending!.updates.find( ( curUpdObj ) => curUpdObj.id === easEntObj!.itemId && ( curUpdObj.chargeStep ?? 0 ) > 0 )!; // What: Decay Update Object. Why: Its step sets how low the item is staged. How: This finds the entry's decay row. // What: Non-Null Note. Why: easEntObj was found only with a pending holding this row. How: The ! tells TypeScript the entry, its pending, and the row are set.
+	const easIteObj = fixStaObj.items.find( ( curIteObj ) => curIteObj.id === easEntObj!.itemId )!;                                                  // What: Ease Item Object. Why: Its card and saved value are checked. How: This finds the entry's item. // What: Non-Null Note. Why: Every entry's item is in the saved items. How: The ! tells TypeScript the item is found.
+	const easPicObj = fixStaObj.pickers.find( ( curPicObj ) => curPicObj.id === easEntObj!.pickerId )!;                                              // What: Ease Picker Object. Why: Its threshold and active item are checked. How: This finds the entry's picker. // What: Non-Null Note. Why: easEntObj was found only with its picker in the saved pickers. How: The ! tells TypeScript the picker is found.
+	const steValNum = decUpdObj.chargeStep!; // What: Step Value Number. Why: The staged item holds exactly one step, so this pick runs it out. How: This reads the row's step. // What: Non-Null Note. Why: decUpdObj was found only with a chargeStep. How: The ! tells TypeScript the step is set.
+	const thrValNum = easPicObj.threshold ?? 100;                                                                                                    // What: Threshold Value Number. Why: A refill fills the item to its picker's threshold. How: This reads it, defaulting to 100.
+
+
+	const staStaObj : StaAppTyp = { // What: Staged State Object. Why: The item has to be one step from running out, with its pick planned to end the streak, as it was when the bug showed. How: This lowers the item and stages a depleting pending on its entry.
+
+
+		...fixStaObj, // What: Fixture State Spread. Why: Everything else stays as the backup left it. How: This spreads the fixture state before the overrides below.
+
+		items : fixStaObj.items.map( ( curIteObj ) => curIteObj.id === easIteObj.id ? { ...curIteObj, value : steValNum } : curIteObj ), // What: Items. Why: The item has to hold exactly one step. How: This sets its value to steValNum.
+
+		today : { // What: Today. Why: The entry's pending has to plan the streak's end. How: This rebuilds today with the entry restaged.
+
+
+			...fixStaObj.today, // What: Fixture Today Spread. Why: Every other today field stays. How: This spreads today before the entries override.
+
+			entries : fixStaObj.today.entries.map( ( curEntObj ) => curEntObj.eid !== easEntObj!.eid ? curEntObj : { // What: Entries. Why: Only the chosen entry is restaged. How: This replaces its pending with one that ends the streak. // What: Non-Null Note. Why: The skip above ends the test when no entry was found. How: The ! tells TypeScript the entry is set.
+
+
+				...curEntObj, // What: Entry Spread. Why: Every field but pending stays. How: This spreads the entry before the pending override.
+
+				pending : { // What: Pending. Why: A pick of an item one step from empty plans the streak's end. How: This marks it depleting, releases the picker, and recharges the item.
+
+
+					...curEntObj.pending!, // What: Pending Spread. Why: Every other staged field stays. How: This spreads the entry's pending before the overrides below. // What: Non-Null Note. Why: The entry was found only with a pending. How: The ! tells TypeScript the pending is set.
+
+					depletedEnd : true,                                          // What: Depleted End. Why: The planned step empties the item. How: This marks the streak's end.
+					pickerPatch : { ...curEntObj.pending!.pickerPatch, activeItemId : null }, // What: Picker Patch. Why: An emptied item releases the picker. How: This clears its active item. // What: Non-Null Note. Why: The entry was found only with a pending. How: The ! tells TypeScript the pending is set.
+					updates     : curEntObj.pending!.updates.map( ( curUpdObj ) => curUpdObj === decUpdObj ? { ...curUpdObj, value : thrValNum } : curUpdObj ) // What: Updates. Why: An emptied item recharges to full. How: This sets the decay row's value to the threshold. // What: Non-Null Note. Why: The entry was found only with a pending. How: The ! tells TypeScript the pending is set.
+
+
+				}
+
+
+			} )
+
+
+		}
+
+
+	};
+
+
+	await wriStaFun( curPagObj, staStaObj ); // What: Staged State Write. Why: The flow starts from the item about to run out. How: This saves the staged state.
+
+	await opeDayFun( curPagObj, '2026-10-05' ); // What: Day Reopen Call. Why: The app has to load the staged state. How: This reopens the fixed day.
+
+
+	const easCarLoc = curPagObj.locator( ENT_CAR_STR ).filter( { has : curPagObj.locator( `[aria-label="Mark ${ easIteObj.name } complete"]` ) } ); // What: Ease Card Locator. Why: The refill and check-off happen on this item's card. How: This finds the card by its check button's name.
+
+
+	await easCarLoc.locator( '[aria-label="Edit"]' ).click();                                   // What: Editor Open Call. Why: Refill lives in the item editor. How: This opens it.
+	await curPagObj.getByRole( 'button', { name : 'Refill' } ).click();                         // What: Refill Click Call. Why: The refill fills the item before it runs out. How: This clicks the editor's Refill button by its name.
+	await curPagObj.locator( '[data-element-name-hook~="iteSavBut"]' ).first().click();         // What: Save Click Call. Why: The refill is a draft until saved. How: This clicks Save.
+
+	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.items.find( ( curIteObj ) => curIteObj.id === easIteObj.id )?.value === thrValNum, 'item refilled' ); // What: Refill Wait. Why: The check-off has to follow the saved refill. How: This waits for the item to reach the threshold.
+
+	await easCarLoc.locator( `[aria-label="Mark ${ easIteObj.name } complete"]` ).click(); // What: Check-Off Click Call. Why: Completing the entry applies its planned step. How: This checks the card off.
+
+
+	const donStaObj = await waiStaFun( curPagObj, ( staAppObj ) => !!staAppObj.today.entries.find( ( curEntObj ) => curEntObj.eid === easEntObj!.eid )?.done, 'entry checked off' ); // What: Done State Object. Why: The step's result is read once the check-off is saved. How: This waits for the entry to be done. // What: Non-Null Note. Why: The skip above ends the test when no entry was found. How: The ! tells TypeScript the entry is set.
+
+
+	expect( donStaObj.pickers.find( ( curPicObj ) => curPicObj.id === easPicObj.id )?.activeItemId, 'the item stays active' ).toBe( easIteObj.id );                         // What: Active Item Assertion. Why: A refilled item's streak goes on. How: This checks the picker still points at it.
+	expect( donStaObj.items.find( ( curIteObj ) => curIteObj.id === easIteObj.id )?.value, 'one step comes off the refill' ).toBeCloseTo( thrValNum - steValNum );          // What: Value Assertion. Why: The day's step decays the refilled item. How: This checks one step came off the threshold.
+	expect( donStaObj.pickLog.some( ( curRowObj ) => curRowObj.eid === easEntObj!.eid && curRowObj.depletedEnd ), 'the streak is not logged as ended' ).toBe( false ); // What: Depletion Log Assertion. Why: The day didn't empty the item. How: This checks the entry's log row isn't marked depleted. // What: Non-Null Note. Why: The skip above ends the test when no entry was found. How: The ! tells TypeScript the entry is set.
+
+
+} );
+
 
 
 test( 'an unknown address opens the app at its root', async ( { page : curPagObj } ) => { // What: Unknown Address Test. Why: The host serves the app at every address, which used to leave a mistyped one in the address bar. How: This opens a made-up path and checks the address becomes the root with its query and hash kept.
