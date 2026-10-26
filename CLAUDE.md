@@ -375,6 +375,24 @@ background.
   the cloud copy (see its summary for the layout). Both load only for
   someone using an account. A build with `VITE_FIREBASE_EMULATOR` set talks
   to the local emulator under the `demo-ease-my-life` project instead.
+- **App Check** (added 2026-10-26, monitoring only, not yet enforced):
+  `platform/firebase.ts` starts App Check with reCAPTCHA Enterprise right
+  after the app is created, before Auth or Firestore make a request, with
+  its token refreshed automatically and lasting a day (set in the Firebase
+  console). The site key is public, registered for `easemylife.app` only.
+  - **Emulator builds skip it**, since the emulator never checks App Check.
+  - **A dev server against the real project** uses App Check's debug mode:
+    set `VITE_APP_CHECK_DEBUG` in an untracked `.env.local` to a debug token
+    registered under App Check, Apps, Manage debug tokens. Without one, the
+    SDK prints a new token to the console to register.
+  - **reCAPTCHA's badge is hidden** by the SDK, so the Account section's
+    sign-in row carries Google's required notice, and the privacy policy
+    describes the check. reCAPTCHA's free Essentials tier allows 10,000
+    checks a month, and errors past that rather than charging.
+  - **Before enforcing**: watch App Check's request metrics in the Firebase
+    console until real traffic shows as verified. Deploy previews
+    (`deploy-preview-N--ease-my-life.netlify.app`) aren't on the key, so they
+    fail App Check once it's enforced, and need a decision first.
 - **Rules**: `firestore.rules` gives each account its own copy, and needs a
   verified email and the `paid` custom claim, which only the payment webhook
   sets. They're published by pasting into the console's Firestore Rules tab
@@ -410,8 +428,8 @@ background.
   `storage.ts`'s `LIV_KEY_ARR`, which the boot sweep keeps. The Settings
   Account section is `tabs/settings/account-section.tsx`.
 - **Headers**: `public/_headers`' Content-Security-Policy names Firebase's
-  addresses. Vite's dev server doesn't apply that file, so a change to it is
-  only proven on a Netlify deploy preview.
+  addresses, App Check's, and reCAPTCHA's. Vite's dev server doesn't apply
+  that file, so a change to it is only proven on a Netlify deploy preview.
 - **WebKit and the emulator**: Playwright's WebKit stalls on Firestore's
   streaming connection to the plain-HTTP emulator, so emulator builds force
   long polling. Real Safari against the real project is checked by hand.

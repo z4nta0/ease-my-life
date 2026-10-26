@@ -7,16 +7,19 @@
 # _headers = Security Headers Policy
 #
 # @summary
-# Hardening headers applied to every response. Every script, style, font,
-# and icon is self-hosted, the support form's Netlify Forms POST
+# Hardening headers applied to every response. Every script, style, font, and
+# icon is self-hosted, the support form's Netlify Forms POST
 # (tabs/settings/contact-support.tsx) goes to this same origin, and the only
-# third party is Firebase, for the optional paid sync. That lets the
-# Content-Security-Policy stay strict, naming each of Firebase's addresses
-# rather than allowing broad ones: Firestore, which holds the cloud copy,
-# and the two auth services that sign in and renew tokens (connect-src), the
-# project's own auth domain, whose hidden frame runs Google sign-in's
-# pop-up (frame-src), and Google's API loader that frame needs
-# (script-src). None of it loads unless someone uses an account.
+# third parties are Firebase and the reCAPTCHA Enterprise check its App Check
+# runs, for the optional paid sync. That lets the Content-Security-Policy stay
+# strict, naming each address rather than allowing broad ones: Firestore, which
+# holds the cloud copy, the two auth services that sign in and renew tokens,
+# App Check's token exchange, and reCAPTCHA's own requests (connect-src), the
+# project's own auth domain, whose hidden frame runs Google sign-in's pop-up,
+# and reCAPTCHA's frames (frame-src), and Google's API loader that the sign-in
+# frame needs, plus reCAPTCHA's scripts (script-src). The reCAPTCHA addresses
+# are the ones Google's reCAPTCHA FAQ lists for a CSP. None of it loads unless
+# someone uses an account.
 #
 # default-src 'self' is the fallback every unlisted directive inherits, so
 # font-src, img-src, manifest-src, and worker-src need no lines of their
@@ -49,7 +52,7 @@
 
 # What: Security Headers Rule. Why: Every response should refuse framing, sniffing, plain HTTP, unused browser features, and anything loaded from another origin. How: This applies the Content-Security-Policy, the permissions and referrer policies, HSTS, a nosniff content type, and a deny on framing to every path.
 /*
-	Content-Security-Policy: default-src 'self'; base-uri 'self'; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; form-action 'self'; frame-ancestors 'none'; frame-src https://ease-my-life-4ce18.firebaseapp.com; object-src 'none'; script-src 'self' https://apis.google.com; style-src 'self' 'unsafe-inline'
+	Content-Security-Policy: default-src 'self'; base-uri 'self'; connect-src 'self' https://content-firebaseappcheck.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.google.com/recaptcha/; form-action 'self'; frame-ancestors 'none'; frame-src https://ease-my-life-4ce18.firebaseapp.com https://recaptcha.google.com/recaptcha/ https://www.google.com/recaptcha/; object-src 'none'; script-src 'self' https://apis.google.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' 'unsafe-inline'
 	Permissions-Policy: accelerometer=(), autoplay=(), browsing-topics=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), hid=(), idle-detection=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), usb=(), xr-spatial-tracking=()
 	Referrer-Policy: same-origin
 	Strict-Transport-Security: max-age=63072000; includeSubDomains
