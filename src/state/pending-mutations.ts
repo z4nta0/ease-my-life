@@ -48,7 +48,10 @@ import type { TodEntTyp } from '../core/data-model.ts'; // What: Today Entry Typ
  * prevent (items looked like they "lost" a manual Fill/Refill/Reset). It
  * strips the touched item's own stale row from every OTHER entry's pending; an
  * item's OWN entry is left alone on purpose, since its completion is still
- * supposed to perform its designed effect regardless of an interim Fill.
+ * supposed to perform its designed effect regardless of an interim Fill. The
+ * one exception is Ease Down, whose designed effect is one decay step: its
+ * planned value was worked out from the value at pick time, so rebPenFun
+ * reworks it to start from the new value, keeping a refilled item active.
  *
  * Sections:
  *  - Types
@@ -206,6 +209,122 @@ function spuDroFun ( todEntArr : TodEntTyp[], iteIdeArr : string[] ) : TodEntTyp
 }
 
 // #endregion spuDroFun
+
+
+
+// #region rebPenFun
+
+/**
+ * rebPenFun = Rebase Pending Function
+ *
+ * @summary
+ * Reworks an Ease Down entry's own staged decay after a direct edit to its
+ * item's value (a Refill), so completing the entry decays the item from its
+ * new value rather than from the value it had when it was picked. Without
+ * it, an item refilled just before running out kept its old plan, so
+ * completing the entry ended the streak as depleted and the next day picked
+ * a new item. It reworks a not-yet-done entry only when the entry is for the
+ * edited item, its picker is in Ease Down, and its pending holds a decay row
+ * for the item (one carrying a chargeStep), so a manual send's recharge row
+ * is left alone.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param todEntArr - Today Entry Array: The today.entries array to scan.
+ * @param picRcdArr - Picker Record Array: The pickers, read for each entry's
+ *                    mode and threshold.
+ * @param iteIdeStr - Item Identifier String: The item whose value was set.
+ * @param newValNum - New Value Number: The value the item was just set to.
+ *
+ * @returns The same todEntArr reference when nothing changed, else a new
+ * array with the reworked entries.
+ *
+ * @example
+ * ```ts
+ * rebPenFun(state.today.entries, state.pickers, itemId, 100) // => entries
+ * ```
+ *
+*/
+
+function rebPenFun ( todEntArr : TodEntTyp[], picRcdArr : PicRcdTyp[], iteIdeStr : string, newValNum : number ) : TodEntTyp[] {
+
+
+	let entChaBoo = false; // What: Entry Changed Boolean And Guard. Why: The caller only wants a new array reference when something actually changed. How: This starts false and flips true the first time an entry is reworked.
+
+
+	const nexEntArr = todEntArr.map( ( curEntObj ) => { // What: Next Entries Array. Why: The edited item's own Ease Down entry has to decay from the item's new value. How: This maps todEntArr, returning each entry unchanged unless it's that entry.
+
+
+		if ( curEntObj.done || curEntObj.itemId !== iteIdeStr || !curEntObj.pending ) return curEntObj; // What: Other Entry Guard. Why: Only the edited item's own entry with a pending still waiting can need reworking. How: This returns curEntObj unchanged when it's done, is for another item, or has nothing staged.
+
+
+
+		const curPicObj = picRcdArr.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ); // What: Current Picker Object And Guard. Why: Only an Ease Down picker plans its items' decay ahead. How: This looks up the entry's own picker.
+
+
+		if ( !curPicObj || curPicObj.mode !== 'ease-down' ) return curEntObj; // What: Ease Down Guard. Why: Other modes keep their designed completion effect regardless of a direct edit. How: This returns curEntObj unchanged unless its picker is in Ease Down.
+
+
+
+		const decUpdObj = curEntObj.pending.updates.find( ( curUpdObj ) => curUpdObj.id === iteIdeStr && ( curUpdObj.chargeStep ?? 0 ) > 0 ); // What: Decay Update Object And Guard. Why: Only the row that decays the item by its step needs reworking. How: This finds the item's own row carrying a chargeStep.
+
+
+		if ( !decUpdObj ) return curEntObj; // What: No Decay Row Guard. Why: A manual send's pending only recharges or activates, with no decay to rework. How: This returns curEntObj unchanged when no decay row is staged.
+
+
+
+		const thrValNum = curPicObj.threshold ?? 100;                       // What: Threshold Value Number. Why: A depleted item recharges to its picker's own threshold. How: This reads the picker's threshold, defaulting to 100.
+		const basValNum = newValNum > 0 ? newValNum : thrValNum;            // What: Base Value Number. Why: The decay starts from the item's new value, the same way a new streak starts from a full one when the item is empty. How: This uses newValNum, or thrValNum when it's 0.
+		const remValNum = Math.max( 0, basValNum - decUpdObj.chargeStep! ); // What: Remaining Value Number. Why: Completing the entry takes one step off the new value. How: This subtracts the row's chargeStep, floored at 0. // What: Non-Null Note. Why: decUpdObj was found only when its chargeStep is above 0. How: The ! tells TypeScript the step is set.
+		const depEndBoo = remValNum <= 0.5;                                 // What: Depleted End Boolean. Why: The streak ends only when this step empties the item, with the same half-unit tolerance pickers.ts uses. How: This checks remValNum against 0.5.
+
+
+
+		entChaBoo = true; // What: Entry Changed Flag Set. Why: This entry's pending is about to be reworked. How: This flips entChaBoo to true.
+
+
+
+		return { // What: Reworked Entry Return. Why: The entry's decay row, depletion flag, and active item patch all follow from the new value. How: This spreads curEntObj and its pending, overriding those three.
+
+
+			...curEntObj, // What: Current Entry Spread. Why: Every field of this entry other than pending must carry over unchanged. How: This spreads curEntObj before the pending override below.
+
+			pending : { // What: Pending. Why: The staged decay has to start from the item's new value. How: This rebuilds pending from its own current fields plus the reworked ones.
+
+
+				...curEntObj.pending, // What: Current Pending Spread. Why: Every other staged field must carry over unchanged. How: This spreads curEntObj.pending before the overrides below.
+
+				depletedEnd : depEndBoo, // What: Depleted End. Why: The log marks the streak ended only when this step really empties the item. How: This is depEndBoo.
+
+				pickerPatch : { // What: Picker Patch. Why: The item stays the picker's active one unless this step empties it. How: This keeps any other staged picker change and sets activeItemId from depEndBoo.
+
+
+					...curEntObj.pending.pickerPatch, // What: Current Picker Patch Spread. Why: Any other staged picker change must carry over unchanged. How: This spreads the existing pickerPatch before activeItemId.
+
+					activeItemId : depEndBoo ? null : iteIdeStr // What: Active Item Id. Why: An emptied item releases the picker for a new streak, and any other keeps it. How: This is null when depEndBoo, else iteIdeStr.
+
+
+				},
+
+				updates : curEntObj.pending.updates.map( ( curUpdObj ) => curUpdObj === decUpdObj ? { ...curUpdObj, value : depEndBoo ? thrValNum : remValNum } : curUpdObj ) // What: Updates. Why: The decay row has to land on the reworked value. How: This replaces decUpdObj's value with thrValNum when depEndBoo, else remValNum, keeping every other row.
+
+
+			}
+
+
+		};
+
+
+	} );
+
+
+
+	return entChaBoo ? nexEntArr : todEntArr; // What: Conditional Array Return. Why: The caller relies on reference equality to know nothing changed. How: This returns nexEntArr only when entChaBoo is true.
+
+
+}
+
+// #endregion rebPenFun
 
 
 
@@ -834,7 +953,7 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 // #region Exports
 
-export { cdlAplFun, cotAplFun, enpAplFun, enpRevFun, spuDroFun }; // What: Named Exports. Why: The Today and item actions stage, apply, and revert pick consequences through these. How: This exports the 5 mechanism functions by name; the conditional-log id generator stays private to this file.
+export { cdlAplFun, cotAplFun, enpAplFun, enpRevFun, rebPenFun, spuDroFun }; // What: Named Exports. Why: The Today and item actions stage, apply, and revert pick consequences through these. How: This exports the mechanism functions by name; the conditional-log id generator stays private to this file.
 
 // #endregion Exports
 

@@ -150,7 +150,10 @@ active-tab-id in React state and renders one of five tabs directly; there's
 no react-router. Each tab lives in its own folder under `src/tabs/`
 (`today/`, `pickers/`, `stats/`, `data/`, `settings/`): a main
 `tab-*.tsx` component plus the sub-component files only that tab uses. Every
-tab gets the shared state/actions passed down as props.
+tab gets the shared state/actions passed down as props. The host serves the
+app at every path, so `main.tsx` first replaces any address but the root with
+the root (keeping its query and hash), and a mistyped address never stays in
+the address bar (decided 2026-10-26).
 
 ### State: one big object, one hook, no context/redux
 
@@ -230,6 +233,11 @@ revert via the `entry.revert` snapshot. If you touch `togDonFun`,
 staging: directly mutating item state on pick (instead of on completion)
 breaks the "nothing changes until you actually do it" contract the whole
 ease-up/ease-down/dynamic system relies on.
+The one rework is Ease Down's own entry after a direct value edit (a Refill):
+its staged decay was worked out from the value at pick time, so
+`rebPenFun` in `pending-mutations.ts` reworks it to decay from the new value,
+called from `updIteFun`. Before this (fixed 2026-10-26), an item refilled just
+before running out still ended its streak once checked off.
 
 ### Logs are append-only and denormalized
 
