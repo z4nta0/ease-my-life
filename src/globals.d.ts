@@ -9,12 +9,13 @@
  * which TypeScript can't otherwise see: the version number Vite injects at
  * build time, the build settings read from import.meta.env, the deliberate
  * window.__ globals that let a module or index.html's boot script reach a
- * component (see CLAUDE.md's "Runtime globals on window"), and the browser
- * features pwa.ts uses that TypeScript's DOM types don't include yet: iOS
- * Safari's standalone flag, getInstalledRelatedApps, and Chromium's
- * beforeinstallprompt event. This file has no imports or exports, so
- * TypeScript reads it as a global script: each interface below merges into the
- * built-in one of the same name, and nothing here ends up in the build.
+ * component (see CLAUDE.md's "Runtime globals on window"), the debug token the
+ * App Check SDK reads from window, and the browser features pwa.ts uses that
+ * TypeScript's DOM types don't include yet: iOS Safari's standalone flag,
+ * getInstalledRelatedApps, and Chromium's beforeinstallprompt event. This file
+ * has no imports or exports, so TypeScript reads it as a global script: each
+ * interface below merges into the built-in one of the same name, and nothing
+ * here ends up in the build.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -41,6 +42,7 @@ type RelAppTyp = { id? : string, platform : string, url? : string }; // What: Re
 interface ImportMetaEnv { // What: Import Meta Env Interface. Why: Vite's own types don't know this app's build settings. How: This merges them into ImportMetaEnv, each optional since a build may leave it unset.
 
 
+	readonly VITE_APP_CHECK_DEBUG? : string;   // What: Vite App Check Debug. Why: A dev server reaches the real project only with an App Check debug token registered in the Firebase console. How: This is that token, set in an untracked .env.local, and platform/firebase.ts reads it only in dev.
 	readonly VITE_FIREBASE_EMULATOR? : string; // What: Vite Firebase Emulator. Why: Tests run against the local Firebase Emulator, never the real project. How: This is the emulator's host, set only by the test server.
 	readonly VITE_TIP_URL? : string;           // What: Vite Tip URL. Why: The Buy Me a Coffee button opens a Ko-fi tip page whose address is set per build. How: This is the page's address, read by constants.ts.
 
@@ -60,13 +62,15 @@ interface Navigator { // What: Navigator Interface. Why: pwa.ts reads two naviga
 
 
 
-interface Window { // What: Window Interface. Why: TypeScript's built-in Window doesn't know the app's own window.__ globals, so every use of one is an error. How: This merges the four globals into Window, each optional since each exists only once its own code has run.
+interface Window { // What: Window Interface. Why: TypeScript's built-in Window doesn't know the app's own window.__ globals or the App Check debug token, so every use of one is an error. How: This merges them into Window, each optional since each exists only once its own code has run.
 
 
 	__dismissBootSplash? : () => void;  // What: Dismiss Boot Splash. Why: main.tsx fades out index.html's boot splash once the app has mounted. How: This is the function public/boot-splash.js assigns.
 	__emlGenerate?       : () => void;  // What: Ease My Life Generate. Why: The Welcome Tour runs the real list generator on a first run. How: This is the function the Today tab assigns while it's mounted.
 	__escBound?          : boolean;     // What: Escape Bound. Why: The document-level Escape listener must be attached only once, however many times its module loads. How: This is set true once ui/escape-cancel.ts attaches it.
 	__escStack?          : EscEntTyp[]; // What: Escape Stack. Why: Several editors can be open at once, and Escape should cancel only the most recent. How: This is the array ui/escape-cancel.ts pushes each open editor's entry onto.
+
+	FIREBASE_APPCHECK_DEBUG_TOKEN? : boolean | string; // What: Firebase App Check Debug Token. Why: The App Check SDK reads this global to switch to its debug provider, and its own declaration isn't part of its public types. How: platform/firebase.ts sets it on a dev server, before App Check starts.
 
 
 }

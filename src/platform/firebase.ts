@@ -3,18 +3,20 @@
 
 // #region Imports
 
-import { connectAuthEmulator      } from 'firebase/auth';      // What: Connect Auth Emulator. Why: Tests sign in against the local emulator, never the real project. How: This points the auth instance at it.
-import { connectFirestoreEmulator } from 'firebase/firestore'; // What: Connect Firestore Emulator. Why: Tests read and write the local emulator's database. How: This points Firestore at it.
-import { getAuth                  } from 'firebase/auth';      // What: Get Auth. Why: Every sign-in call needs the project's auth instance. How: This creates it, remembering the session in IndexedDB.
-import { GoogleAuthProvider       } from 'firebase/auth';      // What: Google Auth Provider. Why: Google is one of the two ways to sign in. How: This names it for the pop-up.
-import { initializeApp            } from 'firebase/app';       // What: Initialize App. Why: Auth and Firestore both hang off one app instance. How: This creates it from the project's config.
-import { initializeFirestore      } from 'firebase/firestore'; // What: Initialize Firestore. Why: The cloud copy lives in Firestore. How: This creates the database instance.
-import { isSignInWithEmailLink    } from 'firebase/auth';      // What: Is Sign In With Email Link. Why: The app has to notice when it was opened from a sign-in email. How: This checks an address for the link's code.
-import { onIdTokenChanged         } from 'firebase/auth';      // What: On ID Token Changed. Why: The app follows sign-ins, sign-outs, and a token gaining the paid claim. How: This calls back on each.
-import { sendSignInLinkToEmail    } from 'firebase/auth';      // What: Send Sign In Link To Email. Why: Email sign-in works without a password. How: This emails a one-time link.
-import { signInWithEmailLink      } from 'firebase/auth';      // What: Sign In With Email Link. Why: Opening the emailed link finishes signing in. How: This signs in with its code.
-import { signInWithPopup          } from 'firebase/auth';      // What: Sign In With Popup. Why: Google sign-in runs in its own window. How: This opens it and waits.
-import { signOut                  } from 'firebase/auth';      // What: Sign Out. Why: A device can leave its account. How: This ends the session.
+import { connectAuthEmulator         } from 'firebase/auth';      // What: Connect Auth Emulator. Why: Tests sign in against the local emulator, never the real project. How: This points the auth instance at it.
+import { connectFirestoreEmulator    } from 'firebase/firestore'; // What: Connect Firestore Emulator. Why: Tests read and write the local emulator's database. How: This points Firestore at it.
+import { getAuth                     } from 'firebase/auth';      // What: Get Auth. Why: Every sign-in call needs the project's auth instance. How: This creates it, remembering the session in IndexedDB.
+import { GoogleAuthProvider          } from 'firebase/auth';      // What: Google Auth Provider. Why: Google is one of the two ways to sign in. How: This names it for the pop-up.
+import { initializeApp               } from 'firebase/app';       // What: Initialize App. Why: Auth and Firestore both hang off one app instance. How: This creates it from the project's config.
+import { initializeAppCheck          } from 'firebase/app-check'; // What: Initialize App Check. Why: Firebase should serve only the real app, not a script reusing its public config. How: This starts App Check on the app instance before any request.
+import { initializeFirestore         } from 'firebase/firestore'; // What: Initialize Firestore. Why: The cloud copy lives in Firestore. How: This creates the database instance.
+import { isSignInWithEmailLink       } from 'firebase/auth';      // What: Is Sign In With Email Link. Why: The app has to notice when it was opened from a sign-in email. How: This checks an address for the link's code.
+import { onIdTokenChanged            } from 'firebase/auth';      // What: On ID Token Changed. Why: The app follows sign-ins, sign-outs, and a token gaining the paid claim. How: This calls back on each.
+import { ReCaptchaEnterpriseProvider } from 'firebase/app-check'; // What: ReCaptcha Enterprise Provider. Why: On the web, App Check proves the app is genuine through reCAPTCHA Enterprise. How: This is created with the project's site key and handed to initializeAppCheck.
+import { sendSignInLinkToEmail       } from 'firebase/auth';      // What: Send Sign In Link To Email. Why: Email sign-in works without a password. How: This emails a one-time link.
+import { signInWithEmailLink         } from 'firebase/auth';      // What: Sign In With Email Link. Why: Opening the emailed link finishes signing in. How: This signs in with its code.
+import { signInWithPopup             } from 'firebase/auth';      // What: Sign In With Popup. Why: Google sign-in runs in its own window. How: This opens it and waits.
+import { signOut                     } from 'firebase/auth';      // What: Sign Out. Why: A device can leave its account. How: This ends the session.
 
 
 // #endregion Imports
@@ -25,15 +27,16 @@ import { signOut                  } from 'firebase/auth';      // What: Sign Out
  * firebase.ts = Firebase Services
  *
  * @summary
- * Connects to the Firebase project behind paid sync: its sign-in, with
- * Google or an emailed link, and the Firestore database holding each
- * account's cloud copy. The app imports this file only when someone signs in
- * or already has, so the Firebase SDK never loads for anyone else. The
- * config values below are public by design (every visitor's browser
- * receives them), and Firestore's security rules are what keep each
- * account's copy to its owner. A build with VITE_FIREBASE_EMULATOR set talks
- * to the local Firebase Emulator instead of the real project, which is how
- * the tests run.
+ * Connects to the Firebase project behind paid sync: its sign-in, with Google
+ * or an emailed link, and the Firestore database holding each account's cloud
+ * copy. The app imports this file only when someone signs in or already has,
+ * so the Firebase SDK never loads for anyone else. The config values below are
+ * public by design (every visitor's browser receives them), and Firestore's
+ * security rules are what keep each account's copy to its owner. App Check,
+ * started before any request, proves to Firebase through reCAPTCHA Enterprise
+ * that each request comes from the real app, using its debug mode on a dev
+ * server. A build with VITE_FIREBASE_EMULATOR set talks to the local Firebase
+ * Emulator instead of the real project, which is how the tests run.
  *
  * Sections:
  *  - Types
@@ -58,8 +61,9 @@ type AccUseTyp = { emaStr : string | null, paiBoo : boolean, uidStr : string }; 
 
 // #region Constants
 
-const EMU_HOS_STR = import.meta.env.VITE_FIREBASE_EMULATOR; // What: Emulator Host String. Why: Tests must never touch the real project. How: This is the emulator's host when the build sets one, undefined otherwise.
-const EMU_PRO_STR = 'demo-ease-my-life';                    // What: Emulator Project String. Why: The emulator serves a demo project, which can never reach a real one. How: This is its id, whose demo- prefix the emulator requires for that.
+const EMU_HOS_STR = import.meta.env.VITE_FIREBASE_EMULATOR;   // What: Emulator Host String. Why: Tests must never touch the real project. How: This is the emulator's host when the build sets one, undefined otherwise.
+const EMU_PRO_STR = 'demo-ease-my-life';                      // What: Emulator Project String. Why: The emulator serves a demo project, which can never reach a real one. How: This is its id, whose demo- prefix the emulator requires for that.
+const REC_SIT_STR = '6Ld3-gEuAAAAAOjgeHsfUH17av5IeQqNXyZASjtz'; // What: ReCaptcha Site String. Why: App Check proves the app is genuine through the project's reCAPTCHA Enterprise key. How: This is the key's public site key, registered for easemylife.app.
 
 const FIR_CON_OBJ = { // What: Firebase Config Object. Why: The SDK has to know which project to connect to. How: These are the project's public web app settings.
 
@@ -80,7 +84,30 @@ const FIR_CON_OBJ = { // What: Firebase Config Object. Why: The SDK has to know 
 
 // #region Module Init
 
-const firAppObj = initializeApp( EMU_HOS_STR ? { ...FIR_CON_OBJ, projectId : EMU_PRO_STR } : FIR_CON_OBJ );     // What: Firebase App Object. Why: Auth and Firestore share it. How: This creates it, under the demo project when testing.
+const firAppObj = initializeApp( EMU_HOS_STR ? { ...FIR_CON_OBJ, projectId : EMU_PRO_STR } : FIR_CON_OBJ ); // What: Firebase App Object. Why: Auth and Firestore share it. How: This creates it, under the demo project when testing.
+
+
+if ( !EMU_HOS_STR ) { // What: App Check Start Check. Why: Firebase should serve only the real app, while the emulator never checks App Check tokens. How: This starts App Check for any build that talks to the real project, before Auth or Firestore make a request.
+
+
+	if ( import.meta.env.DEV ) self.FIREBASE_APPCHECK_DEBUG_TOKEN = import.meta.env.VITE_APP_CHECK_DEBUG || true; // What: Debug Token Set. Why: reCAPTCHA can't vouch for localhost, so a dev server needs App Check's debug mode to reach the real project. How: This hands the SDK a debug token registered in the Firebase console, or true, which makes it print a new one to register.
+
+
+
+	initializeAppCheck( firAppObj, { // What: App Check Start Call. Why: Every request to Auth and Firestore should carry proof the app is genuine. How: This starts App Check with the reCAPTCHA Enterprise provider and keeps its token fresh.
+
+
+		isTokenAutoRefreshEnabled : true,                                          // What: Is Token Auto Refresh Enabled. Why: The SDK doesn't refresh tokens unless told to. How: This renews the token before it expires, for as long as the app is open.
+		provider                  : new ReCaptchaEnterpriseProvider( REC_SIT_STR ) // What: Provider. Why: On the web, reCAPTCHA Enterprise checks the app is genuine. How: This creates the provider with the project's site key.
+
+
+	} );
+
+
+}
+
+
+
 const firAutObj = getAuth( firAppObj );                                                                         // What: Firebase Auth Object. Why: Every sign-in call goes through it. How: This creates it.
 const firStoObj = initializeFirestore( firAppObj, EMU_HOS_STR ? { experimentalForceLongPolling : true } : {} ); // What: Firebase Store Object. Why: The cloud backend reads and writes through it. How: This creates it with the default memory cache, since this device's own storage already holds the state. // What: Emulator Long Polling Note. Why: Playwright's WebKit stalls on Firestore's streaming connection to the plain-HTTP emulator, while Chromium and Firefox don't. How: Tests force long polling, and production keeps Firestore's default, which switches to long polling by itself where a browser needs it.
 

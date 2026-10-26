@@ -326,7 +326,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 								<span className={ cssModObj.setNamSpa }>Sign in</span>{ /* What: Settings Name Span Element. Why: The row names its job. How: This renders its name. */ }
 
-								<span className={ cssModObj.setSubSpa }>Use your Google account, or get a sign-in link by email below. Signing in on its own changes nothing on this device.</span>{ /* What: Settings Sub Span Element. Why: Someone deciding whether to sign in should know it's harmless. How: This says so. */ }
+								<span className={ cssModObj.setSubSpa }>Use your Google account, or get a sign-in link by email below. Signing in on its own changes nothing on this device. This site is protected by reCAPTCHA, and the Google <a className={ cssModObj.recLinAnc } href='https://policies.google.com/privacy' rel='noopener noreferrer' target='_blank'>Privacy Policy</a> and <a className={ cssModObj.recLinAnc } href='https://policies.google.com/terms' rel='noopener noreferrer' target='_blank'>Terms of Service</a> apply.</span>{ /* What: Settings Sub Span Element. Why: Someone deciding whether to sign in should know it's harmless, and Google's reCAPTCHA terms ask for this notice wherever its badge is hidden, as App Check hides it. How: This says both, linking Google's privacy policy and terms in new tabs. */ }
 
 
 							</div>

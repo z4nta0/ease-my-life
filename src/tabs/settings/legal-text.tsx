@@ -237,11 +237,11 @@ function PriPolCom () : React.JSX.Element {
 
 			<h4>Usage Data</h4>{ /* What: Sub-Subsection Heading Element. Why: This marks the start of a narrower subsection under the h3 above it. How: This renders as a plain h4, styled by the prose rules of whatever container it renders into. */ }
 
-			<p>The Service itself does not collect Usage Data. It contains no analytics, advertising, or tracking code. Like any website, the Website's hosting providers, Netlify and Cloudflare, receive technical information such as Your IP address and browser type when Your Device requests the Website's files, use it to deliver the Website and keep it secure, and may keep it in their server logs under their own policies.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text. */ }
+			<p>The Service itself does not collect Usage Data. It contains no analytics or advertising code, and the only check it runs on Your Device is the reCAPTCHA check described under Your Account, which runs only on a device that is signed in or signing in. Like any website, the Website's hosting providers, Netlify and Cloudflare, receive technical information such as Your IP address and browser type when Your Device requests the Website's files, use it to deliver the Website and keep it secure, and may keep it in their server logs under their own policies.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text. */ }
 
 			<h4>Cookies and Tracking</h4>{ /* What: Sub-Subsection Heading Element. Why: This marks the start of a narrower subsection under the h3 above it. How: This renders as a plain h4, styled by the prose rules of whatever container it renders into. */ }
 
-			<p>The Service does not use cookies, web beacons, or any other tracking technology, and shows no ads. If You sign in with Google, Google may set its own cookies during sign-in, under Google's own privacy policy.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text. */ }
+			<p>The Service does not use cookies, web beacons, or any other tracking technology, and shows no ads. If You sign in with Google, Google may set its own cookies during sign-in, and the reCAPTCHA check described under Your Account may set Google's own cookies too, each under Google's own privacy policy.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text. */ }
 
 			<h3>Use of Your Personal Data</h3>{ /* What: Subsection Heading Element. Why: This marks the start of a subsection under the section above it. How: This renders as a plain h3, styled by the prose rules of whatever container it renders into. */ }
 
@@ -263,7 +263,7 @@ function PriPolCom () : React.JSX.Element {
 
 			<p>We do not sell Your Personal Data, use it for advertising, or send marketing emails.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text. */ }
 
-			<p>We share Personal Data only with the Service Providers that run parts of the Service for Us, and only as far as each needs to do its job: Google Firebase for sign-in and the cloud copy, Polar for payments, which it processes through Stripe, and Netlify and Cloudflare for hosting and the support form. We may also disclose it with Your consent, or as described under Disclosure of Your Personal Data.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text. */ }
+			<p>We share Personal Data only with the Service Providers that run parts of the Service for Us, and only as far as each needs to do its job: Google Firebase for sign-in and the cloud copy, Google reCAPTCHA Enterprise for the sign-in and sync check, Polar for payments, which it processes through Stripe, and Netlify and Cloudflare for hosting and the support form. We may also disclose it with Your consent, or as described under Disclosure of Your Personal Data.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text. */ }
 
 			<h3>Retention of Your Personal Data</h3>{ /* What: Subsection Heading Element. Why: This marks the start of a subsection under the section above it. How: This renders as a plain h3, styled by the prose rules of whatever container it renders into. */ }
 
@@ -342,6 +342,8 @@ function PriPolCom () : React.JSX.Element {
 			<h3>Your Account</h3>{ /* What: Subsection Heading Element. Why: This marks the start of a subsection under the section above it. How: This renders as a plain h3, styled by the prose rules of whatever container it renders into. */ }
 
 			<p>If You sign in, Your Account is managed by Google Firebase Authentication. It stores Your email address and, if You sign in with Google, the basic profile details Google shares, such as Your name. It also records whether You have bought sync. Signing in on its own sends none of Your Ease My Life data anywhere.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text. */ }
+
+			<p>To keep automated scripts from misusing sign-in and sync, the Service uses Firebase App Check with Google reCAPTCHA Enterprise on any device that is signed in or signing in. reCAPTCHA collects information about Your Device and browser, such as Your IP address and browser settings, and sends it to Google to judge whether a request comes from the real app. Google's Privacy Policy and Terms of Service apply to that information. reCAPTCHA does not run for anyone who doesn't use an account.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text. */ }
 
 			<h3>Your Cloud Copy</h3>{ /* What: Subsection Heading Element. Why: This marks the start of a subsection under the section above it. How: This renders as a plain h3, styled by the prose rules of whatever container it renders into. */ }
 
