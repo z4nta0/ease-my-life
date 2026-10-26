@@ -1,0 +1,255 @@
+
+
+
+/**
+ * legal-page.css = Legal Page
+ *
+ * @summary
+ * Styles for the standalone /privacy and /terms pages: the skip link that
+ * slides in on focus, one centered reading column for the header, document,
+ * and footer, the document's own prose, and the eased feedback on the page's
+ * text links. It's a plain stylesheet rather than a CSS module, since the
+ * pages are static HTML that can't read a module's hashed class names, so
+ * its class names are written as they are.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region legPagBod */
+
+.legPagBod { /* What: Legal Page Body. Why: The global stylesheet makes the body its own scroll container, which Firefox adds to the Tab order ahead of the skip link. How: This lets the body grow with its content and stop clipping sideways, so the window scrolls instead, while the root still hides any sideways overflow. */
+
+
+	height     : auto;
+	overflow-x : visible;
+
+
+}
+
+.skiLinAnc { /* What: Skip Link Anchor. Why: A keyboard user's first Tab should offer a way straight to the document. How: This parks an accent button above the top edge, and eases its slide out, hover color, and focus ring, leaving on the accelerating curve. */
+
+
+	background      : var( --acc-mai-col );                               /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius   : var( --rad-bor-sma );                               /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-acc-col );                               /* Text Accent Color = oklch( 1 0 0 ) */
+	font-weight     : 600;
+	left            : var( --spa-hor-bas );                               /* Spacing Horizontal Base ~= 14.572px */
+	outline         : 0 solid var( --acc-mai-col );                       /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset  : var( --bor-wid-xla );                               /* Border Width Extra Large ~= 3.571px */
+	padding         : var( --spa-ver-m02 ) var( --spa-hor-bas );          /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base ~= 14.572px */
+	position        : absolute;
+	text-decoration : none;
+	top             : var( --spa-ver-bas );                               /* Spacing Vertical Base ~= 14.572px */
+	transform       : translateY( calc( -100% - var( --spa-ver-p01 ) ) ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
+	transition      : background-color var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-bas ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-p01 ) var( --mot-acc-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Duration Transition Base Plus 1 ~= 209.1ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */
+	z-index         : 1;                                                  /* What: Skip Link Stack Level. Why: The link has to show over the header it slides down onto. How: This lifts it one level above the page's own flow. */
+
+
+}
+.skiLinAnc:focus { /* What: Focused Skip Link Anchor. Why: The link has to come into view however focus arrives, keyboard or script. How: This slides it down to its spot on the decelerating curve. */
+
+
+	transform  : none;
+	transition : background-color var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-bas ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-p01 ) var( --mot-dec-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Duration Transition Base Plus 1 ~= 209.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+
+
+}
+.skiLinAnc:hover { /* What: Hovered Skip Link Anchor. Why: The link should answer the pointer like the app's other buttons. How: This darkens the accent a step and keeps its text light over the global link hover. */
+
+
+	background : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color      : var( --tex-acc-col );                                   /* Text Accent Color = oklch( 1 0 0 ) */
+
+
+}
+.skiLinAnc:focus:hover { /* What: Hovered Focused Skip Link Anchor. Why: A shown button lifts a little under the pointer. How: This raises it by the large border width. */
+
+
+	transform : translateY( calc( var( --bor-wid-lar ) * -1 ) ); /* Border Width Large ~= -2.035px */
+
+
+}
+.skiLinAnc:active { /* What: Pressed Skip Link Anchor. Why: A press should register before focus moves. How: This presses the button in slightly, undoing any hover lift. */
+
+
+	transform : scale( .97 );
+
+
+}
+.skiLinAnc:focus-visible { /* What: Focused Skip Link Anchor Ring. Why: A keyboard user needs to see the link has focus. How: This grows the accent ring in close around it. */
+
+
+	outline-offset : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
+	outline-width  : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Skip Link Anchor. Why: Someone who asked for less motion shouldn't see the link slide or its ring ease. How: This applies only when the reduced-motion preference is set. */
+
+
+	.skiLinAnc,
+	.skiLinAnc:focus { /* What: Motionless Skip Link Anchor. Why: The link should simply appear and disappear. How: This turns off its transitions in both states. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.legPagHed,
+.legPagMai,
+.legPagFoo { /* What: Page Columns. Why: The header, document, and footer read as one centered column. How: This caps each at the document's text width plus its side padding and centers it. */
+
+
+	margin    : 0 auto;
+	max-width : calc( var( --cdn-pow-012 ) * var( --fon-siz-p01 ) + var( --spa-hor-p02 ) * 2 ); /* Core-Design-Number to the Power of 12 ~= 29.207, Font Size Base Plus 1 ~= 14.572px, Spacing Horizontal Base Plus 2 ~= 25.572px */ /* What: Page Column Maximum Width. Why: The column should fit the document's paragraphs at the base text width rather than a free-standing number. How: This is the base text width at the paragraphs' font size plus the column's side padding, counted twice, since the box is border-box. */
+	padding   : 0 var( --spa-hor-p02 );                                                         /* Spacing Horizontal Base Plus 2 ~= 25.572px */
+
+
+}
+
+.braHomAnc,
+.legDocArt a,
+.legLinAnc { /* What: Page Text Links. Why: Every text link on the page should answer hover, press, and focus. How: This holds a hidden ring and eases its hover color, press dim, and focus ring. */
+
+
+	border-radius  : var( --rad-bor-xsm );         /* Radius Border Extra Small ~= 3.571px */
+	outline        : 0 solid var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset : var( --bor-wid-xla );         /* Border Width Extra Large ~= 3.571px */
+	transition     : color var( --dur-tra-bas ) var( --mot-sta-eas ), opacity var( --dur-tra-bas ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+
+
+}
+.braHomAnc:active,
+.legDocArt a:active,
+.legLinAnc:active { /* What: Pressed Page Text Links. Why: A text link can't press in while it sits in a line, so it answers a press another way. How: This dims it slightly. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+.braHomAnc:focus-visible,
+.legDocArt a:focus-visible,
+.legLinAnc:focus-visible { /* What: Focused Page Text Links. Why: A keyboard user needs to see which link has focus. How: This grows the accent ring in close around it. */
+
+
+	outline-offset : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
+	outline-width  : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Page Text Links. Why: Someone who asked for less motion shouldn't see the links' changes ease. How: This applies only when the reduced-motion preference is set. */
+
+
+	.braHomAnc,
+	.legDocArt a,
+	.legLinAnc { /* What: Motionless Page Text Links. Why: The links' changes should happen at once. How: This turns off their transitions. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+/* #region legPagHed */
+
+.legPagHed { /* What: Legal Page Header. Why: The page opens with the app's name, leading back to it. How: This spaces the header from the top of the page. */
+
+
+	padding-top : var( --spa-ver-p02 ); /* Spacing Vertical Base Plus 2 ~= 25.572px */
+
+
+}
+
+.braHomAnc { /* What: Brand Home Anchor. Why: The app's name should read as its wordmark and take the reader back to the app. How: This sets it in the brand face, larger and bold, in the main text color without an underline. */
+
+
+	color           : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family     : var( --fon-fam-br1 ); /* Font Family Brand 1 = 'Shantell Sans', var( --fon-fam-mai ) */
+	font-size       : var( --fon-siz-p02 ); /* Font Size Base Plus 2 ~= 19.304px */
+	font-weight     : 700;
+	text-decoration : none;
+
+
+}
+
+/* #endregion legPagHed */
+
+
+
+/* #region legPagMai */
+
+.legPagMai { /* What: Legal Page Main. Why: The document needs room below it before the footer. How: This pads the column's bottom. */
+
+
+	padding-bottom : var( --spa-ver-p03 ); /* Spacing Vertical Base Plus 3 ~= 33.876px */
+
+
+}
+
+
+/* #region legDocArt */
+
+.legDocArt h1 { /* What: Legal Document Title. Why: The document opens with its own name. How: This sets it large and tight. */
+
+
+	font-size      : var( --fon-siz-p03 );     /* Font Size Base Plus 3 ~= 25.572px */
+	letter-spacing : -0.02em;
+	margin         : var( --spa-ver-p02 ) 0 0; /* Spacing Vertical Base Plus 2 ~= 25.572px */
+
+
+}
+
+.legDocArt h2 { /* What: Legal Document Section Heading. Why: Section headings break the document into scannable parts. How: This sizes them and spaces them from the text around them. */
+
+
+	font-size : var( --fon-siz-p02 );                        /* Font Size Base Plus 2 ~= 19.304px */
+	margin    : var( --spa-ver-p03 ) 0 var( --spa-ver-m02 ); /* Spacing Vertical Base Plus 3 ~= 33.876px, Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+
+.legDocArt p,
+.legDocArt li { /* What: Legal Document Text. Why: Long legal prose needs a comfortable reading rhythm. How: This sets paragraphs and list items at a relaxed line height in slightly softened text. */
+
+
+	color       : oklch( from var( --tex-mai-col ) l c h / 0.88 ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-size   : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	line-height : var( --ver-rhy-bas );                            /* Vertical Rhythm Base ~= 1.325 */
+
+
+}
+
+/* #endregion legDocArt */
+
+/* #endregion legPagMai */
+
+
+
+.legPagFoo { /* What: Legal Page Footer. Why: The reader needs a way to the other legal document and back to the app. How: This sets a bordered row of links that wraps where it runs out of room. */
+
+
+	border-top     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	display        : flex;
+	flex-wrap      : wrap;
+	gap            : var( --spa-ver-m02 ) var( --spa-hor-p02 );       /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Plus 2 ~= 25.572px */
+	padding-bottom : var( --spa-ver-p03 );                            /* Spacing Vertical Base Plus 3 ~= 33.876px */
+	padding-top    : var( --spa-ver-p02 );                            /* Spacing Vertical Base Plus 2 ~= 25.572px */
+
+
+}
+
+/* #endregion legPagBod */
+
+

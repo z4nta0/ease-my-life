@@ -12,6 +12,7 @@ import { BacFloCom    } from './ui/bg-flourish.tsx';             // What: Backgr
 import { durMilFun    } from './utils/rhythm.ts';                // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { FeaTouCom    } from './onboarding/app-features.tsx';    // What: Feature Tour Component. Why: This drives the App Features tutorial overlay. How: This is rendered while actFeaStr holds a feature id, passed the shared state/actions and a close handler.
 import { IcoSvgCom    } from './ui/icon.tsx';                    // What: Icon Svg Component. Why: Every tab button needs a recognizable glyph alongside its label. How: This is rendered inside TabBarCom with the name from each tab's own icoStr.
+import { modCliFun    } from './utils/click.ts';                 // What: Modified Click Function. Why: The skip link leaves a modified click to the browser. How: This is checked first in the skip link's click handler.
 import { PagTouCom    } from './onboarding/page-tours.tsx';      // What: Page Tour Component. Why: This drives the currently-running "Explore the page" mini-tour. How: This is rendered while actPagStr holds a page id.
 import { PicTouCom    } from './onboarding/picker-tours.tsx';    // What: Picker Tour Component. Why: This drives the currently-running sample-picker mini-tour. How: This is rendered while actPicStr holds a picker id.
 import { redMotFun    } from './utils/motion.ts';                // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see the ghost/enter animation. How: This is checked inside the animation effect to bail out early when it reports true.
@@ -520,7 +521,7 @@ function AppRooCom () : React.JSX.Element {
 
 
 
-	const maiEleRef = React.useRef< HTMLElement | null >( null ); // What: Main Element Reference. Why: selTabFun needs a handle on the shared main scroller to reset its scroll position on tab switch. How: This is attached to main's own ref prop below.
+	const maiEleRef = React.useRef< HTMLElement | null >( null ); // What: Main Element Reference. Why: selTabFun resets the shared main scroller's position on tab switch, and the skip link moves focus to it. How: This is attached to main's own ref prop below.
 
 
 
@@ -677,7 +678,31 @@ function AppRooCom () : React.JSX.Element {
 			className={ cssModObj.appRooDiv }
 
 			data-placement={ tabPlaStr }
-		>{ /* What: App Div Element. Why: This is AppRooCom's own root element, holding the real and ghost nav bars, the rail scrim, the active tab's content, and every onboarding overlay. How: This renders as a plain div, tagged with the current tabPlaStr via a data attribute for CSS layout. */ }
+		>{ /* What: App Div Element. Why: This is AppRooCom's own root element, holding the skip link, the real and ghost nav bars, the rail scrim, the active tab's content, and every onboarding overlay. How: This renders as a plain div, tagged with the current tabPlaStr via a data attribute for CSS layout. */ }
+
+
+			<a
+				className={ cssModObj.skiLinAnc }
+
+				data-element-name-hook='skiLinAnc'
+
+				href='#main'
+
+				onClick={ ( cliEveObj ) => { // What: Skip Link Click Handler. Why: The skip link should move focus past the tab bar to the open tab without leaving a hash in the address. How: This leaves a modified click to the browser, then cancels the jump and focuses the main area.
+
+
+					if ( modCliFun( cliEveObj ) ) return; // What: Modified Click Guard. Why: A click with another button or a modifier key held should open the link the browser's usual way. How: This leaves any such click alone.
+
+
+
+					cliEveObj.preventDefault(); // What: Default Jump Cancel. Why: The default jump would add #main to the address. How: This stops the browser's own navigation.
+
+					maiEleRef.current?.focus(); // What: Main Focus Call. Why: The next Tab should continue into the open tab. How: This focuses the main area, which takes focus through its tabIndex of -1.
+
+
+				} }
+			>Skip to main content</a>{ /* What: Skip Link Anchor Element. Why: A keyboard user's first Tab should offer a way straight past the tab bar to the open tab. How: This sits above the screen until focused, then slides into view, and tests find it by its hook. */ }
+
 
 
 			<TabBarCom
@@ -731,11 +756,15 @@ function AppRooCom () : React.JSX.Element {
 			<main
 				ref={ maiEleRef }
 
+				id='main'
+
 				className={ cssModObj.appConMai }
 
 				data-element-name-hook='appConMai'
 				data-tab-today-active={ actIdeStr === 'today' || undefined } // What: Tab Today Active Attribute. Why: The Today tab runs edge to edge, so the main area drops its side padding while it shows. How: This sets the presence-only attribute while actIdeStr is 'today' and removes it otherwise.
-			>{ /* What: Content Main Element. Why: This is the single shared scroll container for whichever tab is currently active. How: This renders the Today tab directly, or wraps every other tab in a shared maiInnDiv div, based on actIdeStr. Its data-element-name-hook is read by every tab's, tour's, and help surface's own scroll-into-view code. */ }
+
+				tabIndex={ -1 } // What: Main Tab Index. Why: The skip link moves focus here, but the main area isn't a control. How: A tabIndex of -1 lets it take focus without joining the Tab order.
+			>{ /* What: Content Main Element. Why: This is the single shared scroll container for whichever tab is currently active, and the skip link's target. How: This renders the Today tab directly, or wraps every other tab in a shared maiInnDiv div, based on actIdeStr. Its id is kept plain as the skip link's target, and its data-element-name-hook is read by every tab's, tour's, and help surface's own scroll-into-view code. */ }
 
 
 				{ actIdeStr === 'today' && ( // What: Today Tab Visibility Check. Why: The Today tab is rendered directly, not through the shared maiInnDiv wrapper other tabs use. How: This renders TabTodCom, wrapped in its own fade/key transition div, only while actIdeStr is 'today'.

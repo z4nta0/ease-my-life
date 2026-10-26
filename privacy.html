@@ -1,0 +1,120 @@
+
+
+
+<!doctype html><!-- What: Document Type Declaration. Why: Browsers render the page in standards mode only with a doctype. How: This declares HTML5. -->
+
+
+
+<html lang='en'><!-- What: Root Html Element. Why: Screen readers and translation tools need the page's language. How: This marks the document as English. -->
+
+
+	<head><!-- What: Document Head Element. Why: The page's metadata and links load before the body paints. How: This holds them in the sections below. -->
+
+
+		<!-- #region Document -->
+
+		<meta charset='utf-8' />                                               <!-- What: Character Set Meta. Why: The browser has to decode the page as UTF-8 before it reads anything else. How: This sits first in the head, inside the first 1024 bytes the spec requires. -->
+		<meta name='viewport' content='width=device-width, initial-scale=1' /> <!-- What: Viewport Meta. Why: Phones should lay the page out at device width. How: This sets the layout width to the device's and starts unzoomed. -->
+		<title>Ease My Life Privacy Policy</title>                             <!-- What: Page Title Element. Why: The tab, bookmarks, and search results name the page by its title. How: This names the document and the app it belongs to. -->
+
+		<!-- #endregion Document -->
+
+
+		<!-- #region Search -->
+
+		<meta name='author' content='techgeek.dev' />                                                                                                                       <!-- What: Author Meta. Why: Search engines and readers can see who built the app. How: This names its developer. -->
+		<link href='https://easemylife.app/privacy' rel='canonical' />                                                                                                     <!-- What: Canonical Link. Why: Variants of this address, such as one with a trailing slash, should be indexed as one page. How: This names the one absolute URL search engines should index. -->
+		<meta name='description' content='The Ease My Life Privacy Policy: how the app collects, uses, shares, and protects your information, and the rights you hold.' /> <!-- What: Description Meta. Why: Search results show a short summary under the title. How: This sums up what the policy covers. -->
+
+		<!-- #endregion Search -->
+
+
+		<!-- #region Web App -->
+
+		<meta name='theme-color' content='#fafbfc' /> <!-- What: Theme Color Meta. Why: The browser's chrome around the page should match its page color. How: This gives the light page color, the only one the page has. -->
+
+		<!-- #endregion Web App -->
+
+
+		<!-- #region Icons -->
+
+		<link href='/assets/icon.svg' rel='icon' type='image/svg+xml' />                 <!-- What: Svg Icon Link. Why: Modern browsers prefer a vector favicon that stays sharp at any tab density. How: This lists the SVG first, the browser's order of preference. -->
+		<link href='/assets/favicon-32.png' rel='icon' sizes='32x32' type='image/png' /> <!-- What: Large Png Icon Link. Why: A browser without SVG favicons needs a raster fallback. How: This offers the 32px PNG. -->
+		<link href='/assets/favicon-16.png' rel='icon' sizes='16x16' type='image/png' /> <!-- What: Small Png Icon Link. Why: Small tab icons look crisper drawn at their own size. How: This offers the 16px PNG. -->
+		<link href='/favicon.ico' rel='icon' sizes='48x48 32x32 16x16' />                <!-- What: Ico Icon Link. Why: Older browsers read only a .ico favicon. How: This points at the root favicon.ico. -->
+
+		<!-- #endregion Icons -->
+
+
+	</head>
+
+
+
+	<body class='legPagBod'><!-- What: Legal Page Body Element. Why: This holds the skip link, the page's header, the document, and its footer. How: The build fills the document from the same component the Settings modal shows. -->
+
+
+		<a
+			class='skiLinAnc'
+
+			data-element-name-hook='skiLinAnc'
+
+			href='#main'
+		>Skip to main content</a><!-- What: Skip Link Anchor Element. Why: A keyboard user's first Tab should offer a way straight to the document. How: legal-page.ts finds it by its hook and focuses the main on a plain click, keeping the hash out of the address. -->
+
+		<header class='legPagHed'><!-- What: Legal Page Header Element. Why: The page opens with the app's name, leading back to it. How: This holds the brand link. -->
+
+
+			<a
+				class='braHomAnc'
+				href='/'
+			>Ease My Life</a><!-- What: Brand Home Anchor Element. Why: A reader who arrives here should be able to reach the app itself. How: This links to the app's root. -->
+
+
+		</header>
+
+		<main
+			id='main'
+
+			class='legPagMai'
+
+			tabindex='-1'
+		><!-- What: Legal Page Main Element. Why: The document is the page's main content and the skip link's landing spot. How: Its id is kept plain as the skip link's target, and its tabindex of -1 lets it take focus without joining the Tab order. -->
+
+
+			<article
+				class='legDocArt'
+
+				data-legal-document-body='privacy'
+			></article><!-- What: Legal Document Article Element. Why: The policy's text should live in one place, shared with the Settings modal. How: The legal pages plugin in vite.config.ts renders the Privacy Policy component into it, chosen by this attribute. -->
+
+
+		</main>
+
+		<footer class='legPagFoo'><!-- What: Legal Page Footer Element. Why: The reader needs a way to the other legal document and back to the app. How: This holds a row of links. -->
+
+
+			<a
+				class='legLinAnc'
+				href='/terms'
+			>Terms of Service</a><!-- What: Legal Link Anchor Element. Why: The terms sit beside the policy. How: This links to the terms' own page. -->
+
+			<a
+				class='legLinAnc'
+				href='/'
+			>Open Ease My Life</a><!-- What: Legal Link Anchor Element. Why: The footer ends with the way back to the app. How: This links to the app's root. -->
+
+
+		</footer>
+
+		<script
+			src='/src/tabs/settings/legal-page.ts'
+			type='module'
+		>/* What: Legal Page Script Element. Why: The page's stylesheets and skip link handler load through one module. How: Vite replaces it with the built, hashed bundle and its stylesheet at build time. */</script>
+
+
+	</body>
+
+
+</html>
+
+

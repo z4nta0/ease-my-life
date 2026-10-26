@@ -100,7 +100,8 @@ tests/output/report` opens the HTML report.
   decorative glyph, a Tab walk (order, nothing off screen or covered, a
   visible focus ring, no trap), no sideways scroll at 320px, and no motion
   under reduced motion. Anything axe can't decide is printed as needing
-  review. About 10 minutes.
+  review. The standalone legal pages get their own spec
+  (`legal-pages.spec.ts`). About 10 minutes.
 - `npm run test:interaction`: drives every tab's controls and editors on
   real data, checking each change in IndexedDB and that its animation fired,
   and checks that a launch with a hung or slow IndexedDB loses nothing.
@@ -154,6 +155,12 @@ tab gets the shared state/actions passed down as props. The host serves the
 app at every path, so `main.tsx` first replaces any address but the root with
 the root (keeping its query and hash), and a mistyped address never stays in
 the address bar (decided 2026-10-26).
+
+The app's main content, for the skip link, is the open tab: the `<main>`
+scroller past the tab bar, which carries `id='main'` and `tabIndex={ -1 }`.
+The skip link is `AppRooCom`'s first child, and `tests/accessibility/
+skip-link.spec.ts` checks it on every tab in all three engines (added
+2026-10-26).
 
 ### State: one big object, one hook, no context/redux
 
@@ -408,6 +415,36 @@ background.
 - **WebKit and the emulator**: Playwright's WebKit stalls on Firestore's
   streaming connection to the plain-HTTP emulator, so emulator builds force
   long polling. Real Safari against the real project is checked by hand.
+
+### Legal pages
+
+Added 2026-10-26. The privacy policy and terms have fixed addresses,
+`/privacy` and `/terms`, which Google's OAuth verification and app listings
+ask for, beside the Settings modal that shows them in the app.
+- **One copy of the text**: the documents live in
+  `tabs/settings/legal-text.tsx`, which imports only React. The modal
+  (`legal-docs.tsx`) renders them, and so does the build.
+- **The pages**: `privacy.html` and `terms.html` sit beside `index.html` as
+  extra build inputs (`build.rolldownOptions.input`). Each holds an empty
+  article naming its document, which the `legPagFun` plugin in
+  `vite.config.ts` fills by loading `legal-text.tsx` through Vite's
+  `runnerImport` and rendering it with `renderToStaticMarkup`, in dev and in
+  builds, so the text is plain HTML that reads without JavaScript. They live
+  at the root rather than in `public/`, since Vite has to process them.
+- **Their script and styles**: `tabs/settings/legal-page.ts` loads the
+  global stylesheets and `legal-page.css`, a plain sheet since static HTML
+  can't read a module's hashed classes, and handles the skip link's click.
+  The pages' body class lets the window scroll, since a scrolling body is a
+  Tab stop in Firefox, ahead of the skip link.
+- **Serving them**: `public/_redirects` rewrites `/privacy` and `/terms` to
+  their files ahead of the app's catch-all, and the sitemap lists both. The
+  service worker precaches them, and Workbox's clean URL matching serves them
+  before its app fallback (checked in all three engines).
+- **Checked** by `tests/accessibility/legal-pages.spec.ts` in all three
+  engines: axe at 375 and 1,280px, the skip link, reflow at 320px, and no
+  motion under reduced motion.
+- **Editing the text**: change `legal-text.tsx`, and the modal and both
+  pages follow.
 
 ### Hosting and DNS
 

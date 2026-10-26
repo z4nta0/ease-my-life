@@ -160,6 +160,13 @@ This codebase follows a detailed set of naming, formatting, and comment rules.
 less obvious parts of the domain logic, and the rules that apply to this
 project alone. Read it before changing code.
 
+## Support
+
+If this project is useful to you, you can support its development with a tip
+on Ko-fi. It's never required, and always appreciated.
+
+[![Support me on Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/techgeekdev)
+
 ## License
 
 MIT-style with a non-commercial clause: free to use, copy, and modify, but not

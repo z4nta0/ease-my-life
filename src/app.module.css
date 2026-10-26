@@ -6,14 +6,15 @@
  *
  * @summary
  * Styles for the app shell: AppRooCom's full-height root, which is also the
- * "app" size container every @container query in the app measures, the
- * scrolling main area, and TabBarCom's navigation bar in its three
- * placements. At the bottom it's a floating pill of tab buttons; at the side
- * it's a rail with the Ease My Life wordmark, which becomes an off-canvas
- * drawer with a pull handle and scrim on a narrow screen; at the top it's a
- * bar with the wordmark and tabs on one line. A single indicator pill slides
- * behind the active tab. When the placement changes, a ghost copy of the old
- * bar exits toward its edge while the real one enters from its new edge.
+ * "app" size container every @container query in the app measures, the skip
+ * link that slides in on focus, the scrolling main area, and TabBarCom's
+ * navigation bar in its three placements. At the bottom it's a floating pill
+ * of tab buttons; at the side it's a rail with the Ease My Life wordmark,
+ * which becomes an off-canvas drawer with a pull handle and scrim on a narrow
+ * screen; at the top it's a bar with the wordmark and tabs on one line. A
+ * single indicator pill slides behind the active tab. When the placement
+ * changes, a ghost copy of the old bar exits toward its edge while the real
+ * one enters from its new edge.
  *
  * The main area reads data-tab-today-active, set while the Today tab shows,
  * since Today runs edge to edge.
@@ -51,6 +52,81 @@
 
 
 }
+
+.skiLinAnc { /* What: Skip Link Anchor. Why: A keyboard user's first Tab should offer a way straight past the tab bar to the open tab. How: This parks an accent button above the root's top edge, where the root clips it, and eases its slide out, hover color, and focus ring, leaving on the accelerating curve. */
+
+
+	background      : var( --acc-mai-col );                               /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius   : var( --rad-bor-sma );                               /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-acc-col );                               /* Text Accent Color = oklch( 1 0 0 ) */
+	font-weight     : 600;
+	left            : var( --spa-hor-bas );                               /* Spacing Horizontal Base ~= 14.572px */
+	outline         : 0 solid var( --acc-mai-col );                       /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset  : var( --bor-wid-xla );                               /* Border Width Extra Large ~= 3.571px */
+	padding         : var( --spa-ver-m02 ) var( --spa-hor-bas );          /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base ~= 14.572px */
+	position        : absolute;
+	text-decoration : none;
+	top             : var( --spa-ver-bas );                               /* Spacing Vertical Base ~= 14.572px */
+	transform       : translateY( calc( -100% - var( --spa-ver-p01 ) ) ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
+	transition      : background-color var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-bas ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-p01 ) var( --mot-acc-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Duration Transition Base Plus 1 ~= 209.1ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */
+	z-index         : 16;                                                 /* What: Skip Link Stack Level. Why: The link has to show over the tab bars at 15 it slides down onto. How: 16 keeps it above them and below the rail scrim at 17, so an open drawer still covers it. */
+
+
+}
+.skiLinAnc:focus { /* What: Focused Skip Link Anchor. Why: The link has to come into view however focus arrives, keyboard or script. How: This slides it down to its spot on the decelerating curve. */
+
+
+	transform  : none;
+	transition : background-color var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-bas ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-p01 ) var( --mot-dec-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Duration Transition Base Plus 1 ~= 209.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+
+
+}
+.skiLinAnc:hover { /* What: Hovered Skip Link Anchor. Why: The link should answer the pointer like the app's other buttons. How: This darkens the accent a step and keeps its text light over the global link hover. */
+
+
+	background : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color      : var( --tex-acc-col );                                   /* Text Accent Color = oklch( 1 0 0 ) */
+
+
+}
+.skiLinAnc:focus:hover { /* What: Hovered Focused Skip Link Anchor. Why: A shown button lifts a little under the pointer. How: This raises it by the large border width. */
+
+
+	transform : translateY( calc( var( --bor-wid-lar ) * -1 ) ); /* Border Width Large ~= -2.035px */
+
+
+}
+.skiLinAnc:active { /* What: Pressed Skip Link Anchor. Why: A press should register before focus moves. How: This presses the button in slightly, undoing any hover lift. */
+
+
+	transform : scale( .97 );
+
+
+}
+.skiLinAnc:focus-visible { /* What: Focused Skip Link Anchor Ring. Why: A keyboard user needs to see the link has focus. How: This grows the accent ring in close around it. */
+
+
+	outline-offset : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
+	outline-width  : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Skip Link Anchor. Why: Someone who asked for less motion shouldn't see the link slide or its ring ease. How: This applies only when the reduced-motion preference is set. */
+
+
+	.skiLinAnc,
+	.skiLinAnc:focus { /* What: Motionless Skip Link Anchor. Why: The link should simply appear and disappear. How: This turns off its transitions in both states. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
 
 /* #region appTabNav */
 
