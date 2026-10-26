@@ -150,7 +150,10 @@ active-tab-id in React state and renders one of five tabs directly; there's
 no react-router. Each tab lives in its own folder under `src/tabs/`
 (`today/`, `pickers/`, `stats/`, `data/`, `settings/`): a main
 `tab-*.tsx` component plus the sub-component files only that tab uses. Every
-tab gets the shared state/actions passed down as props.
+tab gets the shared state/actions passed down as props. The host serves the
+app at every path, so `main.tsx` first replaces any address but the root with
+the root (keeping its query and hash), and a mistyped address never stays in
+the address bar (decided 2026-10-26).
 
 ### State: one big object, one hook, no context/redux
 

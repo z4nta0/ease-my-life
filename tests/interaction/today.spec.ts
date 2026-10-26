@@ -35,7 +35,8 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * The item editor writes only on Save. Reminders can be added, renamed, and
  * skipped. Edit Mode opens and its Cancel closes it without reordering
  * anything; Regenerate rebuilds the list; groups can be renamed in Edit Mode;
- * and the day log opens. Every flow also fails on any page or console error.
+ * the day log opens; and an unknown address opens the app at its root. Every
+ * flow also fails on any page or console error.
  *
  * Sections:
  *  - Constants
@@ -603,6 +604,20 @@ test( 'the day log opens and closes', async ( { page : curPagObj } ) => { // Wha
 
 
 } );
+
+
+test( 'an unknown address opens the app at its root', async ( { page : curPagObj } ) => { // What: Unknown Address Test. Why: The host serves the app at every address, which used to leave a mistyped one in the address bar. How: This opens a made-up path and checks the address becomes the root with its query and hash kept.
+
+
+	await curPagObj.goto( '/no-such-page?kepVal=1#here' ); // What: Unknown Address Navigation. Why: A mistyped address has to land on the app. How: This opens a made-up path with a query and a hash.
+
+	await curPagObj.locator( '[data-element-name-hook~="todTabDiv"]' ).waitFor(); // What: Today Mount Wait. Why: The app has to load before its address is checked. How: This waits for the Today tab's root.
+
+	await expect( curPagObj ).toHaveURL( /^https?:\/\/[^/]+\/\?kepVal=1#here$/ ); // What: Root Address Assertion. Why: The address bar has to show the root, keeping what a sign-in link or checkout return needs. How: This checks the path became the root with the query and hash intact.
+
+
+} );
+
 
 // #endregion Module Init
 

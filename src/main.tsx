@@ -19,7 +19,9 @@ import './styles/styles.css'; // What: Styles Stylesheet Import. Why: This is th
  * main.tsx = Main
  *
  * @summary
- * The app's real entry point, imported nowhere else. It awaits
+ * The app's real entry point, imported nowhere else. It first replaces any
+ * address but the root with the root, since the host serves the app at every
+ * path and the app answers only at its root. It then awaits
  * STG_NAM_OBJ.iniStoFun(), which gives up on a slow or hung IndexedDB by
  * itself and falls back to localStorage, then calls booAppFun either way.
  * The deadline lives in storage.ts rather than here, so the app can never
@@ -89,6 +91,10 @@ function booAppFun () : void {
 
 
 // #region Module Init
+
+if ( window.location.pathname !== '/' ) window.history.replaceState( null, '', `/${ window.location.search }${ window.location.hash }` ); // What: Unknown Path Cleanup. Why: The host serves the app at every address, so a mistyped or outdated one would otherwise stay in the address bar while the app shows its usual screen. How: This replaces any path but the root with the root before anything reads the address, keeping the query and hash a sign-in link or a checkout return carries, without adding a history entry.
+
+
 
 STG_NAM_OBJ.iniStoFun().then( booAppFun, booAppFun ); // What: Boot Promise Then Call. Why: The mount waits for storage so store.ts's own loaStaFun() can stay synchronous, and iniStoFun itself gives up on a slow IndexedDB in time, so the app boots on exactly one engine. How: This calls booAppFun once storage settles, as both the fulfillment and rejection handler.
 
