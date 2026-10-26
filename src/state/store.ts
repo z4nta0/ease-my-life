@@ -26,6 +26,7 @@ import { norPicFun   } from '../core/pickers.ts';        // What: Normalize Pick
 import { ONB_CHE_OBJ } from './onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Resolving a checklist item can flip the closing Generate card's own readiness. How: This is called (reaGenFun) from setCarFun below.
 import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicFun below.
 import { PWA_NAM_OBJ } from '../platform/pwa.ts';        // What: Progressive Web App Namespace Object. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (askFirFun) once, from inside addPicFun below.
+import { rebPenFun   } from './pending-mutations.ts';    // What: Rebase Pending Function. Why: A direct value edit to an Ease Down item must not leave its own entry decaying from the old value. How: This is called by updIteFun after spuDroFun.
 import { SED_NAM_OBJ } from './seed.ts';                 // What: Seed Namespace Object. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called (buiCleFun) by loaStaFun and by the reset action below.
 import { spuDroFun   } from './pending-mutations.ts';    // What: Stale-Pending-Updates Drop Function. Why: A direct item edit must not be overwritten by a sibling entry's stale pending row. How: This is called by the direct item-edit actions.
 import { STG_NAM_OBJ } from './storage.ts';              // What: Storage Namespace Object. Why: This is the actual persistence engine this file's own load/save/flush wrappers delegate to. How: This is called from loaStaFun, wriStaFun, fluStaFun, and the reset/impDatFun actions below.
@@ -1934,7 +1935,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * saves). When the patch touches value, it also strips any stale pending
 		 * update for this item from every other Today entry, since completing
 		 * one of those entries later would otherwise silently overwrite the
-		 * value just set.
+		 * value just set, and reworks the item's own Ease Down entry so its
+		 * decay starts from the new value.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -1950,7 +1952,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 *
 		*/
 
-		updIteFun : ( tarIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Update Item Function. Why: This is the general per-item field patch (Fill/Refill/Reset boost, editor saves, ...), which must ALSO strip any stale pending mutation a direct value edit would otherwise be silently overwritten by later (see spuDroFun above). How: This merges patValObj onto the one matching item, and when patValObj touches value, also drops stale pending rows for tarIdeStr from every other Today entry.
+		updIteFun : ( tarIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Update Item Function. Why: This is the general per-item field patch (Fill/Refill/Reset boost, editor saves, ...), which must ALSO strip any stale pending mutation a direct value edit would otherwise be silently overwritten by later (see spuDroFun above). How: This merges patValObj onto the one matching item, and when patValObj touches value, also drops stale pending rows for tarIdeStr from every other Today entry and reworks its own Ease Down entry's decay.
 
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -1965,7 +1967,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 					...curStaObj.today, // What: Current Today Spread. Why: Every other today field must carry over unchanged. How: This spreads curStaObj.today before the entries override below.
 
-					entries : spuDroFun( curStaObj.today.entries, [ tarIdeStr ] ) // What: Entries. Why: Any stale pending mutation targeting this item must be stripped. How: This calls spuDroFun with today's entries and tarIdeStr.
+					entries : rebPenFun( spuDroFun( curStaObj.today.entries, [ tarIdeStr ] ), curStaObj.pickers, tarIdeStr, patValObj.value! ) // What: Entries. Why: Any stale pending mutation targeting this item must be stripped, and the item's own Ease Down entry has to decay from its new value. How: This drops the stale rows with spuDroFun, then reworks the item's own entry with rebPenFun. // What: Non-Null Note. Why: This spread runs only when patValObj sets value, and every caller sets it to a number. How: The ! tells TypeScript the value is set.
 
 
 				}
