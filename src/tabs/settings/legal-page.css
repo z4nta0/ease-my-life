@@ -197,13 +197,6 @@
 
 
 }
-.legPagMai:focus { /* What: Focused Legal Page Main. Why: The main takes focus only as the skip link's landing spot, not as a control, so a ring around the whole document would only confuse. How: This removes its outline. */
-
-
-	outline : none;
-
-
-}
 
 
 /* #region legDocArt */

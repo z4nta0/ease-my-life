@@ -516,6 +516,14 @@ button { /* What: Button Reset. Why: Every button starts unstyled so its module 
 
 }
 
+main:focus { /* What: Focused Main. Why: The main area takes focus only as the skip link's landing spot, not as a control, so a ring around the whole page would only confuse. How: This removes its outline. */
+
+
+	outline : none;
+
+
+}
+
 input { /* What: Input Reset. Why: Text inputs should use the app's own font and color. How: This inherits both. */
 
 

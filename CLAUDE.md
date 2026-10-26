@@ -156,6 +156,12 @@ app at every path, so `main.tsx` first replaces any address but the root with
 the root (keeping its query and hash), and a mistyped address never stays in
 the address bar (decided 2026-10-26).
 
+The app's main content, for the skip link, is the open tab: the `<main>`
+scroller past the tab bar, which carries `id='main'` and `tabIndex={ -1 }`.
+The skip link is `AppRooCom`'s first child, and `tests/accessibility/
+skip-link.spec.ts` checks it on every tab in all three engines (added
+2026-10-26).
+
 ### State: one big object, one hook, no context/redux
 
 `src/state/store.ts`'s `useAppStaFun()` hook is the entire state layer: a
@@ -437,8 +443,8 @@ ask for, beside the Settings modal that shows them in the app.
 - **Checked** by `tests/accessibility/legal-pages.spec.ts` in all three
   engines: axe at 375 and 1,280px, the skip link, reflow at 320px, and no
   motion under reduced motion.
-- **The text is still the generator's placeholder**, pending the real
-  documents. Edit `legal-text.tsx` and both the modal and the pages follow.
+- **Editing the text**: change `legal-text.tsx`, and the modal and both
+  pages follow.
 
 ### Hosting and DNS
 
