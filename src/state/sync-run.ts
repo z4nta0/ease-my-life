@@ -37,7 +37,9 @@ import type { SynMetTyp } from './sync-engine.ts';        // What: Sync Meta Typ
  * during a sync runs once it ends. A sync that started from a state the
  * person has since changed never replaces their newer state: when it found
  * changes from another device, it's thrown away and run again, so the
- * newer state is merged instead.
+ * newer state is merged instead. Today asks it to bring the account's copy
+ * in before building a new day's list, so a device opened with an old list
+ * takes the one another device already built rather than replacing it.
  *
  * A device's first sync, when the account already holds data and this
  * device has some too, waits for the person to choose which to keep: the
@@ -80,6 +82,8 @@ type AccSynTyp = { // What: Account Sync Type. Why: The account screen shows the
 	senLinFun : ( emaAdrStr : string ) => Promise< boolean >;        // What: Send Link Function. Why: Email sign-in sends a link, and the screen confirms only one that went out. How: This sends one, remembers the address, and resolves true once it's sent.
 	sigGooFun : () => void;                                          // What: Sign Google Function. Why: Google is the other way in. How: This opens Google's sign-in window.
 	sigOutFun : () => void;                                          // What: Sign Out Function. Why: A device can leave its account and keep its data. How: This signs out and forgets the sync record.
+	synBefFun : () => Promise< void >;                               // What: Sync Before Function. Why: A new day's list must not replace one another device already built. How: This brings the account's copy in first.
+	synNeeFun : () => boolean;                                       // What: Sync Needed Function. Why: A device with no account to follow builds its list at once. How: This is true when a new day's list has to wait for sync.
 	synLasNum : number | null;                                       // What: Sync Last Number. Why: The screen says when it last synced. How: This is that time in milliseconds, or null.
 	synNowFun : () => void;                                          // What: Sync Now Function. Why: A person can sync without waiting. How: This runs a sync.
 	synStaStr : SynStaTyp;                                           // What: Sync Status String. Why: The screen shows how sync is going. How: This is the current status.
@@ -94,10 +98,12 @@ type AccSynTyp = { // What: Account Sync Type. Why: The account screen shows the
 
 // #region Constants
 
+const GEN_WAI_NUM = 10000;  // What: Generate Wait Number. Why: A new day's list waits for the launch sync, but an unreachable cloud mustn't hold it back for long. How: This caps the wait at ten seconds.
 const IDL_MIL_NUM = 120000; // What: Idle Milliseconds Number. Why: Syncing on every change would spend the free tier's writes on half-finished edits. How: This waits two minutes after the last change.
 const PUR_GAP_NUM = 3000;   // What: Purchase Gap Number. Why: After a purchase, the paid claim lands once Polar's webhook runs. How: This checks for it every three seconds.
 const PUR_TRY_NUM = 20;     // What: Purchase Try Number. Why: A webhook that hasn't landed in a minute won't by waiting longer here. How: This stops after 20 checks.
 const RET_MIL_NUM = 30000;  // What: Retry Milliseconds Number. Why: A sync that lost every race to another device should try again soon, not wait for the next change. How: This retries after 30 seconds.
+const SYN_FRE_NUM = 15000;  // What: Sync Fresh Number. Why: A sync that just finished already brought the cloud's list, so a new day's list needn't wait for another. How: This counts a sync as fresh for 15 seconds.
 
 // #endregion Constants
 
@@ -122,6 +128,44 @@ const reaKeyFun = ( keyNamStr : string ) => { // What: Read Key Function. Why: B
 
 
 };
+
+
+
+// #region waiConFun
+
+/**
+ * waiConFun = Wait Condition Function
+ *
+ * @summary
+ * Waits until a condition holds or a deadline passes, whichever comes first,
+ * checking every 100 milliseconds. The deadline is a moment in time rather
+ * than a length, so several waits in a row can share one overall limit.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param conTesFun - Condition Test Function: True once the wait is over.
+ * @param endTimNum - End Time Number: The deadline, in milliseconds since
+ *                    the epoch.
+ *
+ * @returns A promise that settles once the condition holds or the deadline
+ *          passes, with no value.
+ *
+ * @example
+ * ```ts
+ * waiConFun(conTesFun, endTimNum) // => Promise<void>
+ * ```
+ *
+*/
+
+const waiConFun = async ( conTesFun : () => boolean, endTimNum : number ) : Promise< void > => {
+
+
+	while ( !conTesFun() && Date.now() < endTimNum ) await new Promise( ( resFunObj ) => window.setTimeout( resFunObj, 100 ) ); // What: Condition Poll Loop. Why: Neither the account nor a running sync announces when it's done. How: This sleeps 100 milliseconds at a time until the condition holds or the deadline passes.
+
+
+};
+
+// #endregion waiConFun
 
 
 
@@ -230,6 +274,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	const [ synRawStr, setSynRawStr ] = React.useState< SynStaTyp >( null );        // What: Sync Raw String And Setter. Why: The status of the last sync, before the account decides what it means. How: This holds it.
 
 	const accCurRef = React.useRef< AccUseTyp | null >( null );                                                   // What: Account Current Reference. Why: Listeners and timers read the latest account. How: This mirrors accUseObj.
+	const accKnoRef = React.useRef( false );                                                                      // What: Account Known Reference. Why: A new day's list waits until the account is known, which arrives in a callback. How: This is true once the first account callback has run.
 	const aplPenRef = React.useRef( false );                                                                      // What: Apply Pending Reference. Why: A state the hook applied isn't a change to sync. How: This marks the next state change as the hook's own.
 	const firModRef = React.useRef< Promise< typeof import( '../platform/firebase.ts' ) > | null >( null );       // What: Firebase Module Reference. Why: Firebase loads at most once, and only when needed. How: This holds the import's promise.
 	const idlTimRef = React.useRef< number | null >( null );                                                      // What: Idle Timer Reference. Why: The two-minute wait restarts on each change, and hiding the app cuts it short. How: This holds the pending timer.
@@ -238,6 +283,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	const runAgaRef = React.useRef( false );                                                                      // What: Run Again Reference. Why: A request during a sync runs once it ends. How: This marks one.
 	const runActRef = React.useRef( false );                                                                      // What: Run Active Reference. Why: Only one sync runs at a time. How: This is true during one.
 	const staCurRef = React.useRef( staAppObj );                                                                  // What: State Current Reference. Why: A sync reads, and later compares against, the latest state. How: This mirrors staAppObj.
+	const synEndRef = React.useRef( 0 );                                                                          // What: Sync End Reference. Why: A sync that just finished needn't be repeated before a new day's list. How: This holds when the last sync ended, in milliseconds.
 	const synRunRef = React.useRef< ( choValStr? : 'account' | 'device' ) => Promise< void > >( async () => {} ); // What: Sync Run Reference. Why: Listeners, timers, and a rerun need the latest sync function. How: This holds it, refreshed every render.
 	const watActRef = React.useRef( false );                                                                      // What: Watch Active Reference. Why: The account is watched once. How: This is true once watching starts.
 	const wipActRef = React.useRef( false ); // What: Wipe Active Reference. Why: A reset must not be undone by a sync uploading the copy again. How: This is true while a reset runs, and blocks new syncs.
@@ -295,6 +341,9 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 		firModObj.watUseFun( ( nexUseObj ) => { // What: Account Watch Call. Why: Sign-ins, sign-outs, and the paid claim all arrive here. How: This updates the screen and the signed-in flag.
+
+
+			accKnoRef.current = true; // What: Account Known Mark. Why: A new day's list waiting on the account can go on. How: This records that the account is known, signed in or not.
 
 
 			setAccUseObj( nexUseObj ); // What: Account Update. Why: The screen and sync follow it. How: This stores it.
@@ -583,6 +632,8 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 			runActRef.current = false; // What: Run Clear. Why: The next request may run. How: This clears the mark.
 
+			synEndRef.current = Date.now(); // What: Sync End Mark. Why: A new day's list needn't wait for another sync right after this one. How: This records when it ended.
+
 
 			if ( runAgaRef.current ) { // What: Rerun Check. Why: A request arrived during the sync. How: This runs again once this one has unwound.
 
@@ -770,6 +821,65 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 	}, [ synActBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever syncing is switched on or off. How: synActBoo is false during the onboarding demo.
+
+
+
+	const synNeeFun = () => synActBoo && ( watActRef.current || !!reaKeyFun( STG_NAM_OBJ.ACC_SIG_STR ) ); // What: Sync Needed Function. Why: Only a device following an account has a copy to bring in before a new day's list, and the demo never syncs. How: This is true outside the demo when this device is following an account or was signed in last time.
+
+
+
+	// #region synBefFun
+
+	/**
+	 * synBefFun = Sync Before Function
+	 *
+	 * @summary
+	 * Brings the account's copy in before Today builds a new day's list, so a
+	 * device opened with an old list takes the list another device already
+	 * built and checked off, rather than building its own and replacing that
+	 * one. It waits for the account to be known and for any running sync to
+	 * end, then runs a sync of its own unless one finished moments ago. The
+	 * whole wait stops after GEN_WAI_NUM, so a cloud that can't be reached only
+	 * delays the list. It assumes synNeeFun is true, and does no check of its
+	 * own.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns A promise that settles once the wait is over, with no value.
+	 *
+	 * @example
+	 * ```ts
+	 * await synBefFun() // => Promise<void>
+	 * ```
+	 *
+	*/
+
+	const synBefFun = async () : Promise< void > => { // What: Sync Before Function. Why: See the summary above. How: This waits for the account and a sync, bounded by GEN_WAI_NUM.
+
+
+		const endTimNum = Date.now() + GEN_WAI_NUM; // What: End Time Number. Why: Every wait below shares one limit. How: This is the deadline.
+
+
+		await waiConFun( () => accKnoRef.current, endTimNum ); // What: Account Wait. Why: Only a paid account syncs, and the account loads after launch. How: This waits until it's known.
+
+
+
+		if ( !accCurRef.current || !accCurRef.current.paiBoo ) return; // What: Unpaid Guard. Why: A signed-out or unpaid device has no copy to bring in. How: This returns.
+
+
+
+		await waiConFun( () => !runActRef.current, endTimNum ); // What: Running Sync Wait. Why: The launch sync may already be underway. How: This waits for it to end.
+
+
+
+		if ( Date.now() - synEndRef.current > SYN_FRE_NUM ) await Promise.race( [ synRunRef.current(), waiConFun( () => false, endTimNum ) ] ); // What: Fresh Sync Call. Why: The cloud's list has to be checked unless a sync just did. How: This runs a sync, giving up on waiting for it at the deadline.
+
+
+	};
+
+	// #endregion synBefFun
 
 	// #endregion Sync Running
 
@@ -1026,6 +1136,8 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 		senLinFun,                                                                      // What: Send Link Function. Why: The screen sends links and confirms them. How: This passes the sender.
 		sigGooFun : () => void sigGooFun(),                                             // What: Sign Google Function. Why: The screen signs in with Google. How: This calls it.
 		sigOutFun : () => void sigOutFun(),                                             // What: Sign Out Function. Why: The screen signs out. How: This calls it.
+		synBefFun,                                                                        // What: Sync Before Function. Why: Today brings the account's copy in before building a new day's list. How: This passes the wait.
+		synNeeFun,                                                                        // What: Sync Needed Function. Why: Today waits for sync only when it applies. How: This passes the check.
 		synLasNum,                                                                      // What: Sync Last Number. Why: The screen says when it last synced. How: This passes it.
 		synNowFun : () => void synRunRef.current(),                                     // What: Sync Now Function. Why: The screen can sync at once. How: This runs one.
 		synStaStr,                                                                      // What: Sync Status String. Why: The screen shows the status. How: This passes it.

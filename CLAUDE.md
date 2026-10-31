@@ -427,6 +427,15 @@ background.
   waiting. Its keys (`ACC_SIG_STR`, `SIG_EMA_STR`, `SYN_MET_STR`) live in
   `storage.ts`'s `LIV_KEY_ARR`, which the boot sweep keeps. The Settings
   Account section is `tabs/settings/account-section.tsx`.
+- **A new day's list waits for sync** (fixed 2026-10-31): on a device
+  following an account (`synNeeFun`), Today's daily auto-generator first
+  calls the hook's `synBefFun`, which waits up to 10 seconds for the account
+  and a sync, then reruns its check on the synced state. Building always
+  happens inside the effect itself: building after the wait used a stale
+  closure, which the simulation caught. Before this, a device opened with an
+  old list built its own before its launch sync, saved last, and won the
+  conflict, replacing the list another device had already checked off.
+  `tests/account/sync.spec.ts` covers it.
 - **Headers**: `public/_headers`' Content-Security-Policy names Firebase's
   addresses, App Check's, and reCAPTCHA's. Vite's dev server doesn't apply
   that file, so a change to it is only proven on a Netlify deploy preview.
