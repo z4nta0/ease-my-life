@@ -780,6 +780,8 @@ function AppRooCom () : React.JSX.Element {
 						<TabTodCom
 							actStoObj={ actStoObj }
 							staAppObj={ staAppObj }
+							synBefFun={ accSynObj.synBefFun }
+							synNeeFun={ accSynObj.synNeeFun }
 
 							onNavHomFun={ () => selTabFun( 'today' ) }
 							onNavTabFun={ selTabFun }

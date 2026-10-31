@@ -101,7 +101,7 @@ import type { TodRowTyp } from './group-entries.ts';        // What: Today Row T
 // #region Components
 
 type CelParTyp = { angNum? : number, delNum : number, disNum? : number, ideNum : number, opaStr? : string, posXcoNum? : number, posYcoNum? : number, rotNum? : number }; // What: Celebration Particle Type. Why: The confetti and sparkle celebrations each roll a batch of pieces into one list, read by whichever style is playing. How: Every piece has a delay and a key, a confetti piece adds its angle, distance, opacity, and spin, and a sparkle adds its position.
-type TocProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, onStaFeaFun : ( ideStr : string ) => void, onStaPagFun : ( ideStr : string ) => void, onStaPicFun : ( ideStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Today-Component Props Type. Why: The Today tab reads and edits the whole app state, navigates to other tabs, and starts tours that run at the app level. How: This types TabTodCom's props, named Ttd since Ttc already belongs to TabStaCom.
+type TocProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, onStaFeaFun : ( ideStr : string ) => void, onStaPagFun : ( ideStr : string ) => void, onStaPicFun : ( ideStr : string ) => void, staAppObj : StaAppTyp, synBefFun : () => Promise< void >, synNeeFun : () => boolean }; // What: Tab-Today-Component Props Type. Why: The Today tab reads and edits the whole app state, navigates to other tabs, starts tours that run at the app level, and waits for sync before building a new day's list. How: This types TabTodCom's props, named Ttd since Ttc already belongs to TabStaCom.
 
 // #region TabTodCom
 
@@ -131,6 +131,11 @@ type TocProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
  *                            mini-tour at the app level (some steps navigate
  *                            away from Today).
  * @param props.staAppObj   - State App Object: {@link useAppStaFun}
+ * @param props.synBefFun   - Sync Before Function: {@link useSynRunFun}'s
+ *                            wait for the account's copy before a new day's
+ *                            list.
+ * @param props.synNeeFun   - Sync Needed Function: {@link useSynRunFun}'s
+ *                            check for whether that wait applies.
  *
  * @returns The Today tab's entire rendered content: its header, its
  * grouped list (or empty-state CTAs), and any reminder mini-tour/App
@@ -143,7 +148,7 @@ type TocProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
  *
 */
 
-function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPagFun, onStaPicFun, staAppObj } : TocProTyp ) : React.JSX.Element {
+function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPagFun, onStaPicFun, staAppObj, synBefFun, synNeeFun } : TocProTyp ) : React.JSX.Element {
 
 
 	const todBodRef = React.useRef< HTMLDivElement | null >( null ); // What: Today Body Reference. Why: Today does not share app.tsx's shared .maiInnDiv wrapper (see .todBodDiv's own comment below), so it measures/caches its own flourish instance instead of reusing a ref threaded down from there. How: This is attached to the .todBodDiv div's own ref prop below and read by BacFloCom to measure it.
@@ -2673,6 +2678,16 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * fires. genBusRef's own guard (set synchronously at the top of
 	 * genLisFun) plus the boundary check prevent any double run.
 	 *
+	 * On a device following an account, it first waits for synBefFun to
+	 * bring the account's copy in. A device opened with an old list would
+	 * otherwise build its own, save last, and win the sync, replacing the
+	 * list another device had already built and checked off that day. Once
+	 * the wait ends, it notes the period as synced and reruns, so the
+	 * check runs again on the newest state, which usually holds that
+	 * period's list already. Building always happens inside the effect
+	 * itself, never after a wait, since a wait's closure would build from
+	 * state other updates have since replaced.
+	 *
 	 * The period boundary is the RUN TIME, not midnight. That distinction
 	 * matters: comparing calendar days meant a generation between
 	 * midnight and the run time (the onboarding tour at 1am, say) marked
@@ -2684,7 +2699,17 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const picLenNum = staAppObj.pickers.length; // What: Picker Length Number. Why: The auto-generator only runs with at least one picker, and has to recheck when the count changes. How: This reads how many pickers exist, so the effect below can read and list one plain number.
+	const [ synChkNum, setSynChkNum ] = React.useState( 0 ); // What: Sync Check Number And Setter. Why: Once the wait for sync ends, the boundary has to be checked again on the newest state. How: Bumping this reruns the effect below.
+
+	const picLenNum = staAppObj.pickers.length;  // What: Picker Length Number. Why: The auto-generator only runs with at least one picker, and has to recheck when the count changes. How: This reads how many pickers exist, so the effect below can read and list one plain number.
+	const synBefRef = React.useRef( synBefFun ); // What: Sync Before Reference. Why: The effect below calls the newest wait without rerunning each render, since the hook rebuilds it every render. How: This holds synBefFun, kept current by the line below.
+	const synDonRef = React.useRef( 0 );         // What: Sync Done Reference. Why: A period whose wait for sync already ended builds without waiting again. How: This holds the boundary, in milliseconds, of the last period synced.
+	const synNeeRef = React.useRef( synNeeFun ); // What: Sync Needed Reference. Why: The effect below reads the newest check without rerunning each render. How: This holds synNeeFun, kept current below.
+	const synWaiRef = React.useRef( false );     // What: Sync Wait Reference. Why: The minute check mustn't start a second wait while one is underway. How: This is true while the wait for sync runs.
+
+
+	synBefRef.current = synBefFun; // What: Sync Before Reference Update. Why: The wait reads the newest account and sync state. How: This stores this render's synBefFun.
+	synNeeRef.current = synNeeFun; // What: Sync Needed Reference Update. Why: The check reads the newest account state. How: This stores this render's synNeeFun.
 
 
 	React.useEffect( () => { // What: Daily Auto-Generator Effect. Why: See the doc comment just above. How: This checks the run-time boundary immediately and then once a minute, generating a fresh list whenever the last generation predates it.
@@ -2700,7 +2725,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const cheGenFun = () => { // What: Check Generate Function. Why: This is the actual boundary check, run both immediately and on a recurring interval below. How: This resolves the most recent run-time boundary and calls genRefObj's own current function only when this period hasn't been generated yet.
 
 
-			if ( genBusRef.current ) return; // What: Already Generating Guard. Why: A cascade already in flight must not be double-triggered. How: This bails out early while genBusRef is already true.
+			if ( genBusRef.current || synWaiRef.current ) return; // What: Already Generating Guard. Why: A cascade already in flight, or a list already waiting on sync, must not be double-triggered. How: This bails out early while genBusRef or synWaiRef is true.
 
 
 
@@ -2725,6 +2750,37 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 			if ( genDatObj && genDatObj >= bouDatObj ) return; // What: Already Generated Guard. Why: A generation already at or after the current boundary means this period is already satisfied. How: This bails out early when genDatObj exists and is not older than bouDatObj.
+
+
+
+			const bouTimNum = bouDatObj.getTime(); // What: Boundary Time Number. Why: A finished wait is recorded against this period. How: This reads the boundary in milliseconds.
+
+
+			if ( synDonRef.current !== bouTimNum && synNeeRef.current() ) { // What: Sync Wait Branch. Why: Another device may already have built and checked off this period's list, which a list built here would replace once it synced. How: This brings the account's copy in first, then reruns the effect instead of building.
+
+
+				synWaiRef.current = true; // What: Sync Wait Mark. Why: The minute check mustn't start a second wait. How: This marks one underway.
+
+
+				void synBefRef.current().finally( () => { // What: Sync Before Call. Why: The check has to run again once the account's copy is in. How: This waits, then marks the period synced and reruns the effect.
+
+
+					synDonRef.current = bouTimNum; // What: Sync Done Mark. Why: The rerun builds without waiting again. How: This records the period.
+
+					synWaiRef.current = false; // What: Sync Wait Clear. Why: The wait is over. How: This lets the next check run.
+
+
+					setSynChkNum( ( curChkNum ) => curChkNum + 1 ); // What: Sync Check Bump. Why: The rerun sees the newest state, which may already hold this period's list. How: This reruns the effect.
+
+
+				} );
+
+
+
+				return;
+
+
+			}
 
 
 
@@ -2755,7 +2811,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		return () => clearInterval( cheIntNum ); // What: Effect Cleanup Return. Why: The interval must not outlive this effect run. How: This clears cheIntNum.
 
 
-	}, [ genTimStr, picLenNum, staAppObj.daily ] ); // What: Effect Dependency Array. Why: A changed daily-generator config, a fresh generation, or the picker count itself all need this effect to re-evaluate. How: Each of these 3 can change whether/when the next auto-run should fire, and each is a plain value so the effect only re-runs when one actually changes.
+	}, [ genTimStr, picLenNum, staAppObj.daily, synChkNum ] ); // What: Effect Dependency Array. Why: A changed daily-generator config, a fresh generation, the picker count itself, or a finished wait for sync all need this effect to re-evaluate. How: Each of these 4 can change whether/when the next auto-run should fire, and each is a plain value so the effect only re-runs when one actually changes.
 
 	// #endregion Daily Auto-Generator Effect
 
