@@ -375,7 +375,7 @@ background.
   the cloud copy (see its summary for the layout). Both load only for
   someone using an account. A build with `VITE_FIREBASE_EMULATOR` set talks
   to the local emulator under the `demo-ease-my-life` project instead.
-- **App Check** (added 2026-10-26, monitoring only, not yet enforced):
+- **App Check** (added 2026-10-26, enforced on Firestore 2026-10-31):
   `platform/firebase.ts` starts App Check with reCAPTCHA Enterprise right
   after the app is created, before Auth or Firestore make a request, with
   its token refreshed automatically and lasting a day (set in the Firebase
@@ -389,10 +389,18 @@ background.
     sign-in row carries Google's required notice, and the privacy policy
     describes the check. reCAPTCHA's free Essentials tier allows 10,000
     checks a month, and errors past that rather than charging.
-  - **Before enforcing**: watch App Check's request metrics in the Firebase
-    console until real traffic shows as verified. Deploy previews
-    (`deploy-preview-N--ease-my-life.netlify.app`) aren't on the key, so they
-    fail App Check once it's enforced, and need a decision first.
+  - **Enforcement**: Cloud Firestore has been enforced since 2026-10-31,
+    after its requests and Authentication's showed 100% verified from
+    2026-10-29, and sync was checked by hand on Windows Firefox and Android.
+    Authentication comes next, a few days later, and needs a sign-out and
+    sign-in checked right after. Un-enforcing in the console's App Check
+    APIs tab undoes either, with no deploy.
+  - **Deploy previews can't sync** (decided 2026-10-31):
+    `deploy-preview-N--ease-my-life.netlify.app` isn't on the reCAPTCHA key,
+    so its requests fail App Check, which is accepted, since sync is covered
+    by the emulator suites and checked by hand on the live site.
+  - **An app version without App Check can't sync** once enforced, until it
+    updates, though it keeps working on the device.
 - **Rules**: `firestore.rules` gives each account its own copy, and needs a
   verified email and the `paid` custom claim, which only the payment webhook
   sets. They're published by pasting into the console's Firestore Rules tab
