@@ -169,5 +169,7 @@ on Ko-fi. It's never required, and always appreciated.
 
 ## License
 
-MIT-style with a non-commercial clause: free to use, copy, and modify, but not
-for commercial purposes. See [LICENSE.md](LICENSE.md) for the full terms.
+Source available under the [PolyForm Noncommercial License 1.0.0](LICENSE.md):
+free to use, copy, and change for any noncommercial purpose. The written
+content, images, and Ease My Life name and marks aren't covered, and remain
+all rights reserved.
