@@ -218,19 +218,20 @@
 
 }
 
-.intActBut { /* What: Intro Action Button. Why: Both actions are full-width, tappable buttons. How: This gives them the shared outlined button look. */
+.intActBut { /* What: Intro Action Button. Why: Both actions are full-width, tappable buttons. How: This gives them the shared outlined button look, easing their hover tint. */
 
 
 	background    : transparent;
-	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius : var( --rad-bor-med );                            /* Radius Border Medium = 11px */
-	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );      /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-med );                                 /* Radius Border Medium = 11px */
+	color         : var( --tex-mai-col );                                 /* Text Main Color = oklch( 0.17 0.012 250 ) */
 	cursor        : pointer;
 	font-family   : inherit;
-	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	font-size     : var( --fon-siz-p01 );                                 /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight   : 600;
-	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
-	padding       : 0 var( --spa-hor-bas );                          /* Spacing Horizontal Base ~= 14.572px */
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );                  /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	padding       : 0 var( --spa-hor-bas );                               /* Spacing Horizontal Base ~= 14.572px */
+	transition    : background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 
 
 }
@@ -247,6 +248,19 @@
 
 
 	background : var( --bac-hov-col ); /* Background Hover Color = oklch( 0 0 0 / 0.05 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Intro Action Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.intActBut { /* What: Still Intro Action Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }

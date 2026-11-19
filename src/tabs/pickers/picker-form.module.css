@@ -980,16 +980,17 @@
 
 }
 
-.dayPreBut { /* What: Day Preset Button. Why: Each preset reads as a quiet accent text button. How: This strips the button chrome down to small accent text. */
+.dayPreBut { /* What: Day Preset Button. Why: Each preset reads as a quiet accent text button. How: This strips the button chrome down to small accent text, and eases its hover tint. */
 
 
 	background    : none;
 	border        : none;
-	border-radius : var( --rad-bor-sma );                      /* Radius Border Small ~= 8.304px */
-	color         : var( --acc-mai-col );                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius : var( --rad-bor-sma );                                 /* Radius Border Small ~= 8.304px */
+	color         : var( --acc-mai-col );                                 /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	cursor        : pointer;
-	font-size     : var( --fon-siz-bas );                      /* Font Size Base = 11px */
-	padding       : var( --spa-ver-m05 ) var( --spa-hor-m03 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+	font-size     : var( --fon-siz-bas );                                 /* Font Size Base = 11px */
+	padding       : var( --spa-ver-m05 ) var( --spa-hor-m03 );            /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+	transition    : background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 
 
 }
@@ -997,6 +998,19 @@
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Day Preset. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.dayPreBut { /* What: Still Day Preset Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }

@@ -660,16 +660,17 @@
 
 }
 
-.weiSteBut { /* What: Weight Step Button. Why: Each end of the pill is a small step button. How: This sizes a square hit area with a muted glyph. */
+.weiSteBut { /* What: Weight Step Button. Why: Each end of the pill is a small step button. How: This sizes a square hit area with a muted glyph, easing its hover color. */
 
 
 	align-items     : center;
-	color           : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : inline-flex;
-	font-size       : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
-	height          : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	font-size       : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content : center;
-	width           : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	transition      : color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
 }
@@ -685,6 +686,19 @@
 
 	cursor  : default;
 	opacity : var( --cdn-pow-004-rec ); /* Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Weight Step Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.weiSteBut { /* What: Still Weight Step Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }

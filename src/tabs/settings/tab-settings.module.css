@@ -1150,7 +1150,7 @@
 	height         : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	letter-spacing : -0.005em;
 	padding        : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
-	transition     : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-m02 ) var( --mot-dec-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	transition     : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-m02 ) var( --mot-dec-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	white-space    : nowrap;
 
 
@@ -1244,10 +1244,11 @@
 
 
 }
-.aboLinAnc { /* What: About Link Anchor. Why: The link should read as a link. How: This colors it in the accent. */
+.aboLinAnc { /* What: About Link Anchor. Why: The link should read as a link. How: This colors it in the accent, and eases its hover color. */
 
 
-	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color      : var( --acc-mai-col );                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	transition : color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 
 
 }
@@ -1255,6 +1256,19 @@
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion About Link. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.aboLinAnc { /* What: Still About Link Anchor. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }

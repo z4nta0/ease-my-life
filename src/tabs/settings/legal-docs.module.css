@@ -215,20 +215,21 @@
 
 }
 
-.panCloBut { /* What: Panel Close Button. Why: Closing should be a quiet but easy target. How: This styles a borderless square icon button in the muted color. */
+.panCloBut { /* What: Panel Close Button. Why: Closing should be a quiet but easy target. How: This styles a borderless square icon button in the muted color, and eases its hover tint and color. */
 
 
 	align-items     : center;
 	background      : transparent;
 	border          : 0;
-	border-radius   : var( --rad-bor-sma );                /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border-radius   : var( --rad-bor-sma );                                                                                  /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                                                                  /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
-	width           : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition      : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
@@ -237,6 +238,19 @@
 
 	background : var( --bac-hov-col ); /* Background Hover Color = oklch( 0 0 0 / 0.05 ) */
 	color      : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Legal Modal Close Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.panCloBut { /* What: Still Panel Close Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }

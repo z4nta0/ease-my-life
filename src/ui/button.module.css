@@ -32,7 +32,7 @@
 	height               : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	letter-spacing       : -0.005em;
 	padding              : 0 var( --spa-hor-bas );              /* Spacing Horizontal Base ~= 14.572px */
-	transition           : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-m02 ) var( --mot-dec-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	transition           : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-m02 ) var( --mot-dec-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	white-space          : var( --but-bas-whi, inherit );       /* Button Base White Space, set by its parent, falling back to inherit */ /* What: Button Wrapping. Why: A button in a tight row shouldn't wrap its label. How: A parent sets --but-bas-whi to nowrap, otherwise the button inherits as usual. */
 
 
