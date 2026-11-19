@@ -198,6 +198,8 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
+	// #region Appearance Backfills
+
 	if ( curStaObj && !curStaObj.appearance ) curStaObj.appearance = { autoSystem : false, completionStyle : 'ripple', customDark : null, customLight : null, pickAnim : 'reel', tabPlacement : 'bottom', theme : 'ink' }; // What: Appearance Backfill. Why: The Settings tab's real persisted theme choice was added later, replacing a design-time-only palette default. How: This backfills curStaObj.appearance to a full default object when it's entirely missing.
 
 
@@ -215,6 +217,8 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 	if ( curStaObj && curStaObj.appearance && !curStaObj.appearance.tabPlacement ) curStaObj.appearance.tabPlacement = 'bottom'; // What: Appearance Tab-Placement Backfill. Why: The tab bar placement option was added after appearance itself existed for some users. How: This backfills tabPlacement to 'bottom' when curStaObj.appearance exists but lacks it.
+
+	// #endregion Appearance Backfills
 
 
 
@@ -605,6 +609,8 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
+	// #region Empty Array Backfills
+
 	if ( curStaObj && !Array.isArray( curStaObj.reminderLog ) ) curStaObj.reminderLog = []; // What: Reminder-Log Backfill. Why: The reminder completion log (append-only history of check-offs) was added later. How: This backfills reminderLog to [] when it isn't already an array.
 
 
@@ -618,6 +624,8 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 	if ( curStaObj && !Array.isArray( curStaObj.conditionals ) ) curStaObj.conditionals = []; // What: Conditionals-Array Backfill. Why: Conditionals (per-day picker gates) were added later. How: This backfills conditionals to [] when it isn't already an array.
+
+	// #endregion Empty Array Backfills
 
 
 
@@ -689,11 +697,15 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
+	// #region Pick And Conditional Log Backfills
+
 	if ( curStaObj && !Array.isArray( curStaObj.pickLog ) ) curStaObj.pickLog = []; // What: Pick-Log Backfill. Why: The per-pick history log was added later; old state has none, while a fresh seed ships a full year of rows via seed.ts instead. How: This backfills pickLog to [] when it isn't already an array.
 
 
 
 	if ( curStaObj && !Array.isArray( curStaObj.conditionalLog ) ) curStaObj.conditionalLog = []; // What: Conditional-Log Backfill. Why: The conditional history log (append-only, one row per conditional per completed cycle) was added later. How: This backfills conditionalLog to [] when it isn't already an array.
+
+	// #endregion Pick And Conditional Log Backfills
 
 
 

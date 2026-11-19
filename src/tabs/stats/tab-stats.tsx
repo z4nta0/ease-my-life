@@ -711,6 +711,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
+	// #region Range And Date Derivation
+
 	const ranDefObj = STA_RAN_ARR.find( ( ranCurObj ) => ranCurObj.keyStr === ranValStr ) || STA_RAN_ARR[ 0 ]; // What: Range Definition Object. Why: Every card below needs the active range's own label and day count, not just its key. How: This looks up ranValStr in STA_RAN_ARR, falling back to "All Time".
 	const ranNouStr = ranValStr === 'all' ? 'all time' : `the last ${ ranDefObj.labStr.toLowerCase() }`;       // What: Range Noun String. Why: Several empty-state and explanatory sentences need the active range phrased as a noun clause. How: This special-cases "all time" and otherwise lowercases ranDefObj's own label into a "the last X" phrase.
 	const ranKicStr = ranValStr === 'all' ? 'All time' : `Last ${ ranDefObj.labStr.toLowerCase() }`;           // What: Range Kicker String. Why: The heatmap card's own kicker needs the active range phrased as a short heading instead of a noun clause. How: This special-cases "All time" and otherwise capitalizes a "Last X" phrase from ranDefObj's own label.
@@ -754,7 +756,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	}, [ ranDefObj, todDatObj ] ); // What: Memo Dependency Array. Why: The cutoff only ever needs recomputing when the active range definition or today's own date changes. How: ranDefObj changes the day-count subtracted, todDatObj changes the date it's subtracted from.
 
+	// #endregion Range And Date Derivation
 
+
+
+	// #region Pick Log And Hidden Sets
 
 	const picLogArr = staAppObj.pickLog; // What: Pick Log Array. Why: Every pick-related card on this page derives from this one flat, append-only log. How: This reads staAppObj.pickLog, which migStaFun guarantees, so it stays the same array until the log changes.
 	const picLisArr = staAppObj.pickers; // What: Picker List Array. Why: The Show/Group/Type filter rows and every picker lookup below need the live picker list. How: This reads staAppObj.pickers, which every state carries, so it stays the same array until a picker changes.
@@ -776,6 +782,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 	), [ staAppObj.tasks ] ); // What: Memo Dependency Array. Why: This set only ever needs rebuilding when the persisted task list itself changes. How: staAppObj.tasks is the sole source the filter/map above reads from.
+
+	// #endregion Pick Log And Hidden Sets
 
 
 
@@ -1101,6 +1109,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
+	// #region Scope Repair
+
 	const sorVisArr = React.useMemo( () => ( // What: Sorted Visible Array Memo. Why: The scope-repair effect below needs to know which picker the Show row would render first. How: This sorts a copy of visPicArr by each picker's own name. // Same alphabetical order the Show row itself renders its pickers in (below), reused so "jump to the first card" always agrees with what's actually shown first, not visPicArr's own storage-array order.
 
 
@@ -1143,6 +1153,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 	}, [ hasConBoo, remEnaBoo, scoValStr, sorVisArr, staGroStr, typFilStr, visPicArr ] ); // What: Effect Dependency Array. Why: This must re-run whenever either filter, the resulting visible/sorted lists, the Conditionals and Reminders tabs' availability, or the scope itself changes. How: staGroStr/typFilStr detect a filter change, visPicArr/sorVisArr supply the picker checks and fallback, hasConBoo/remEnaBoo decide whether those two tabs exist, and scoValStr is what's being validated.
+
+	// #endregion Scope Repair
 
 
 

@@ -405,6 +405,9 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to wire up its own listeners once, on mount. How: An empty array means it never re-subscribes; every value it reads (refs, SET_SEC_ARR) is stable across renders anyway.
 
 
+
+	// #region Rail Fade
+
 	React.useEffect( () => { // What: Rail Fade Effect. Why: The mobile pill bar's own start/end fade edges need to reflect real scroll position, toggled on the non-scrolling outer rail. How: This reads scroll position from the inner scroller but writes the resulting classes onto the outer rail, resubscribing on both scroll and resize. // Scroll-edge fades on the mobile rail (horizontal pill bar), the same affordance as the Data/Stats filter rows. The fade itself (setRaiAsi::before/::after, tab-settings.module.css) lives on the STICKY outer rail, not on the element that actually scrolls (raiScrRef, the inner wrapper around <ul>); an earlier version put overflow-x AND the fade pseudo-elements on the same (outer) element, which meant the fade (a position:absolute child of that scrolling element) scrolled away WITH the pills instead of staying pinned to the visible edges (confirmed on real devices, not a Chromium-sandbox-only quirk: reproduced in both Firefox and Chrome emulation). Reading scroll state from the inner wrapper but toggling the state classes on the outer (non-scrolling) rail keeps the fade itself immobile while still tracking real scroll position.
 
 
@@ -444,6 +447,11 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to wire up its own listener/observer once, on mount. How: An empty array means it never re-subscribes; both refs it reads are stable across renders.
 
+	// #endregion Rail Fade
+
+
+
+	// #region Legal Spacer
 
 	React.useEffect( () => { // What: Legal Spacer Effect. Why: Legal is the last section, so the page used to run out of scroll before its own top could reach the spy's base line, leaving it impossible to highlight by scrolling (or to stay highlighted after a jump). How: This measures how tall Legal must be for its own top to scroll up to the sticky offset, re-measuring whenever the scroll container resizes, and stores that in legMinNum.
 
@@ -484,6 +492,8 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to wire up its own observer once, on mount. How: An empty array means it never re-subscribes; the refs it reads are stable, and stiOffFun, though recreated every render, only ever reads those same refs, so the first render's copy always measures correctly.
+
+	// #endregion Legal Spacer
 
 
 
@@ -637,7 +647,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-	// #region Storage And Installation
+	// #region Storage Status
 
 	const [ stoStaObj, setStoStaObj ] = React.useState< StoRepTyp | null >( null ); // What: Storage Status Object And Setter. Why: The Data Control section's "Where your data lives" row needs the real, live storage status to render at all. How: This is populated by the effect below and read throughout the Data Control section. // Reports where the data actually lives, whether the browser has promised not to evict it, and how fresh the fallback copy is. Refreshed on mount and whenever the PWA layer changes (install, persistence grant).
 	const [ , setPwaTicNum ]          = React.useState( 0 );                        // What: Progressive-Web-App Tick Number Setter. Why: A PWA-layer change (install, persistence grant) needs to force a re-render even though it doesn't directly change any other piece of state here. How: This is incremented by the effect below whenever PWA_NAM_OBJ.subscribe fires; the tick value itself is never read, so only the setter is bound.
@@ -696,6 +706,11 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to wire up its own subscription once, on mount. How: An empty array means it never re-subscribes; STG_NAM_OBJ and PWA_NAM_OBJ are stable module-level imports.
 
+	// #endregion Storage Status
+
+
+
+	// #region App Installation State
 
 	const isaStaBoo = !!( PWA_NAM_OBJ && PWA_NAM_OBJ.isaStaFun() );                                   // What: Is-A Standalone Boolean. Why: Several install-related rows below need to know whether the app is already running installed/standalone. How: This calls PWA_NAM_OBJ.isaStaFun(), guarded against PWA_NAM_OBJ itself being unavailable.
 	const canInsBoo = !!( PWA_NAM_OBJ && PWA_NAM_OBJ.canInsFun() );                                   // What: Can Install Boolean. Why: The Install button itself should only render while an install prompt is actually available. How: This calls PWA_NAM_OBJ.canInsFun(), guarded against PWA_NAM_OBJ itself being unavailable.
@@ -703,7 +718,11 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	const macInsBoo = !!( PWA_NAM_OBJ && PWA_NAM_OBJ.isaMacBoo && !isaStaBoo );                       // What: Mac Install Boolean. Why: macOS Safari needs its own "Add to Dock" instructions instead of the native install prompt. How: This is true only when PWA_NAM_OBJ reports isaMacBoo and the app is not already standalone.
 	const insStaStr = ( PWA_NAM_OBJ && PWA_NAM_OBJ.insStaFun ) ? PWA_NAM_OBJ.insStaFun() : 'pending'; // What: Install State String. Why: The Data Control section's own install-related messaging branches on this exact value. How: This calls PWA_NAM_OBJ.insStaFun(), falling back to 'pending' when that method itself is unavailable. // Feature-detected rather than named-browser: 'unsupported' covers Firefox and anything else without the install prompt, and stays 'pending' until we have actually waited long enough to know.
 
+	// #endregion App Installation State
 
+
+
+	// #region Storage Row Formatting
 
 	const forBytFun = ( bytCouNum : number | null ) => { // What: Format Byte Function. Why: The storage row needs a human-readable size, not a raw byte count. How: This picks whichever of B/KB/MB unit reads most naturally for bytCouNum's own magnitude.
 
@@ -754,7 +773,11 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	};
 
+	// #endregion Storage Row Formatting
 
+
+
+	// #region Install And Protect Actions
 
 	const onInsAppFun = async () => { // What: On Install App Function. Why: The Install button's own click handler needs to run the real install prompt and report its outcome. How: This awaits PWA_NAM_OBJ.askInsFun() and sets perMesObj based on whether the user accepted or dismissed it.
 
@@ -790,11 +813,11 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	React.useEffect( () => { if ( perMesObj ) annStaFun( perMesObj.texStr ); }, [ perMesObj ] ); // What: Persist Message Announce Effect. Why: An install or protect result has to reach screen reader users, and the app's live region is in the page from load, unlike the message span. How: This announces each new result message once it's set, re-running whenever perMesObj changes.
 
-	// #endregion Storage And Installation
+	// #endregion Install And Protect Actions
 
 
 
-	// #region Data Control Export Import And Reset
+	// #region Data Control State
 
 	const filInpRef = React.useRef< HTMLInputElement | null >( null );  // What: File Input Reference. Why: The Import button itself is not the real file input; it needs a handle on the real (visually hidden) one to trigger its own click. How: This is attached to the hidden file input's own ref prop below.
 	const expButRef = React.useRef< HTMLButtonElement | null >( null ); // What: Export Button Reference. Why: expDatFun needs a handle on the Export button to restore focus to it after the download link is clicked. How: This is attached to the Export ButBasCom's own ref prop below. // Both actions hand focus away (export clicks a download link, import opens the file dialog), leaving focus on <body> where a screen reader starts reading the browser and page title. Refocus the button that was used and annStaFun through the app-level live region.
@@ -825,6 +848,11 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	const hasDatBoo = hasPicBoo || hasIteBoo || hasConBoo || hasTasBoo || hasPclBoo || hasCdlBoo; // What: Has Data Boolean. Why: Both the Export and Reset rows need to know whether there is actually anything to export/reset at all. How: This is true whenever any one of the 6 collections above is non-empty. // Something to reset? True if the user has created any pickers, items, conditionals, or reminders, or accrued any pick/completion history; groups exist only through pickers, so hasPicBoo covers them.
 
+	// #endregion Data Control State
+
+
+
+	// #region Reset
 
 	const cloResFun = () => { // What: Close Reset Function. Why: Backing out of the reset confirmation (via Cancel or Escape) needs the same leave-then-unmount handling as every other confirm here. How: This flags focus for restoration, then either closes immediately (reduced motion) or plays the leave animation first.
 
@@ -939,7 +967,11 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	}, [ conResBoo ] ); // What: Effect Dependency Array. Why: This must re-run every time the confirm pair opens or closes, since each direction needs its own focus move. How: conResBoo is the single value both directions of this effect are built around.
 
+	// #endregion Reset
 
+
+
+	// #region Export
 
 	const expDatFun = async () => { // What: Export Data Function. Why: The Export button needs to build and download a full backup, sourced from the true persisted state rather than only in-memory state. How: This reads the freshest available pick log, builds a JSON blob, announces the result, then triggers the download.
 
@@ -1007,7 +1039,11 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	};
 
+	// #endregion Export
 
+
+
+	// #region Import
 
 	const onImpFilFun = ( chaEveObj : React.ChangeEvent< HTMLInputElement > ) => { // What: On Import File Function. Why: Choosing a backup file needs to be parsed and held for in-app confirmation before it can actually replace all data. How: This reads the chosen file as text, parses it as JSON, and either stages it as penImpObj or reports a read failure.
 
@@ -1165,7 +1201,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	}, [ penImpObj ] ); // What: Effect Dependency Array. Why: This must re-run every time the pending import is set or cleared, since the restore can only happen once the button has actually remounted. How: penImpObj is the single value this effect's own change-detection is built around.
 
-	// #endregion Data Control Export Import And Reset
+	// #endregion Import
 
 
 

@@ -1556,6 +1556,8 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
+	// #region Position Tracking
+
 	const curSelStr = curSteObj && curSteObj.selStr; // What: Current Selector String. Why: The position tracking effect below re-runs when the current step's selector changes, and a dependency array needs a plain value to compare. How: This reads the current step's selStr, or null without a step.
 
 
@@ -2421,6 +2423,8 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: curSteObj, skiTouFun, and uniRecFun all get new identities on every render, so listing them would restart the frame loop and the not-found watchdog every render. How: Each is read from the render where the step or its selector changed.
 	}, [ curSelStr, curSteNum ] ); // What: Effect Dependency Array. Why: This must re-run whenever the step index moves (a genuinely new step to track) or, for the very same step, whenever its own selStr changes (steps are rebuilt as fresh objects on every render, so this watches the one field that actually decides what to track). How: curSteNum is the step position itself, and curSelStr is the selector that drives everything inside this effect.
 
+	// #endregion Position Tracking
+
 
 
 	const porBodFun = ( porNodEle : React.ReactNode ) => createPortal( porNodEle, document.body ); // What: Portal Body Function. Why: Every branch of this component's own render needs to portal its JSX onto document.body rather than wherever GuiTouCom happens to be mounted in the tree. How: This forwards porNodEle straight into React's own createPortal.
@@ -2454,6 +2458,8 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	}
 
 
+
+	// #region Render Values
 
 	const totSteNum = steObjArr.length;                                                                                // What: Total Step Number. Why: The progress line below needs the total step count. How: This reads steObjArr.length once per render.
 	const vieWidNum = window.innerWidth;                                                                               // What: Viewport Width Number. Why: The coach's own sizing below needs the current viewport width. How: This is read fresh from window on every render.
@@ -2528,6 +2534,8 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 	);
 
+	// #endregion Render Values
+
 
 
 	if ( !curRecObj ) { // What: No Rect Render Guard. Why: The target has not resolved yet (mid-navigation). How: This shows only the dim; the visible coach appears once its target resolves, so no stale/centered flash, but the hidden measurer still needs to be here so its height is ready by the time the target IS found.
@@ -2562,9 +2570,13 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
+	// #region Coach Layout Values
+
 	const spoPadNum = curSteObj.cirBoo ? 0 : rhyPxlFun( 'm02' );                          // What: Spotlight Pad Number. Why: See plaTarFun's own spoPadNum comment above, this is the render-time twin of that same value. How: This is 0 for a cirBoo step, otherwise the normal m02 step. // Vertical Rhythm Base Minus 2 ~= 8.304px
 	const coaLayObj = coaLayFun( curRecObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ); // What: Coach Layout Object. Why: This is the same shared math plaTarFun uses imperatively every frame, kept here too as the coach's own first-paint value each step and the eventual React-driven fallback once it catches up. How: This calls coaLayFun with the current curRecObj, coaHeiNum, and the current viewport/coach sizes; catBoo needs no special branch here at all any more, letting it fall through to the exact same below/above logic every other step already uses is what lets the coach flip to sit BELOW the target (arrow up) once there is room, instead of only ever attaching above it, since catBoo's own remaining job is upstream of this (skipping decResFun's own padding and giving briTarFun a precise initial scroll target).
 	const arrHorNum = arrHorFun( curRecObj, coaLayObj.left, coaWidNum );                  // What: Arrow Horizontal Number. Why: The real, visible coach's own render-time arrow position needs the same math plaTarFun uses imperatively. How: This calls arrHorFun with the current curRecObj and coaLayObj's own left.
+
+	// #endregion Coach Layout Values
 
 
 
