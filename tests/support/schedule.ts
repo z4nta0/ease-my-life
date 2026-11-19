@@ -351,7 +351,7 @@ const comPerFun = ( picRcdObj : PicRcdTyp, picLogArr : PclRowTyp[], dayIsoStr : 
 
 // #region Exports
 
-export { comPerFun, perStaFun, remDueFun, remVisFun }; // What: Named Exports. Why: The generation and reminder checks predict schedules through these. How: This exports the schedule helpers by name.
+export { comPerFun, perStaFun, remVisFun }; // What: Named Exports. Why: The generation and reminder checks predict schedules through these. How: This exports the schedule helpers by name.
 
 // #endregion Exports
 

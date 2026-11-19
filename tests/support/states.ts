@@ -470,7 +470,7 @@ async function opeStaFun ( curPagObj : Page, staRecObj : StaRecTyp ) : Promise< 
 
 // #region Exports
 
-export { ALL_STA_ARR, EXT_STA_ARR, LEG_PAT_ARR, opeStaFun, REA_STA_ARR, STA_REC_ARR, type StaRecTyp }; // What: Named Exports. Why: The accessibility, feedback, and security specs share these states, the legal pages' addresses, and the state opener. How: This exports the state lists, the legal paths, the opener, and the state type by name.
+export { ALL_STA_ARR, EXT_STA_ARR, LEG_PAT_ARR, opeStaFun, STA_REC_ARR }; // What: Named Exports. Why: The accessibility, feedback, and security specs share these states, the legal pages' addresses, and the state opener. How: This exports the state lists, the legal paths, and the opener by name.
 
 // #endregion Exports
 
