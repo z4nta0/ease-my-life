@@ -27,6 +27,7 @@ import { rhyPxlFun    } from '../../utils/rhythm.ts';             // What: Rhyth
 import { SED_NAM_OBJ  } from '../../state/seed.ts';               // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) throughout to show the active mode's label/hint and to render the mode-choice radio list.
 import { selAllFun    } from '../../utils/input.ts';              // What: Select All Function. Why: A new pool item opens with a default name that typing should replace outright. How: This is the name field's ref callback, selecting its text once as it mounts.
 import { togFadFun    } from '../../ui/edge-fade.ts';             // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
+import { useDelConFun } from './delete-confirm.ts';               // What: Use Delete Confirm Function. Why: A pool row's inline delete confirmation is shared with the other pool on this tab. How: This is called once for the confirm state and its Cancel handler.
 import { useEmlTouFun } from '../../state/tour-bus.ts';           // What: Use Ease My Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
 import { useFliRaiFun } from '../../ui/flip-rail.ts';             // What: Use Flip Rail Function. Why: The conditional rail's selected pill should glide to the front instead of snapping, matching the Data tab. How: This is called once with the rail ref and a trigger key.
 import { useIteDraFun } from '../../ui/record-draft.ts';          // What: Use Item Draft Function. Why: An added pool item's editor edits a local draft, committed into the pool only on Save. How: This is called once with whichever pool item's editor is open.
@@ -482,57 +483,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const [ actNewStr, setActNewStr ] = React.useState< string | null >( null );              // What: Active New String And Setter. Why: This holds the id of whichever draft item is currently being newly added (as opposed to an already-committed row being edited). How: This is set by addDraFun and cleared once its own closing animation finishes. // What: Reused Item Editor Design Note. Why: This is the same UI as the live Pickers-tab add flow; draft items carry a stable id so the shared EntEdiCom plus a synthetic actions object (backed by the draft array, not the store) can key off it. How: Adding opens the editor inline at the bottom; Save/Cancel play the same fade animations as the live flow.
 	const [ actCloStr, setActCloStr ] = React.useState< false | 'cancel' | 'save' >( false ); // What: Active Closing String And Setter. Why: The new-item draft's own editor needs to play a closing animation before it's actually torn down. How: This holds 'save', 'cancel', or false, consumed by the draft wrap's own onAnimationEnd handler below. // What: Closing Values Note. Why: The close reason decides whether the draft is kept. How: It is false while open, otherwise 'save' or 'cancel'.
 	const [ insDraStr, setInsDraStr ] = React.useState< string | null >( null );              // What: Insert Draft String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set once a new-item draft's own closing animation reports 'save'.
-	const [ conDelStr, setConDelStr ] = React.useState< string | null >( null );              // What: Confirm Delete String And Setter. Why: Deleting a pool item asks for confirmation inline. How: This holds the id currently showing its own delete-confirm row.
-	const [ conLeaStr, setConLeaStr ] = React.useState< string | null >( null );              // What: Confirm Leaving String And Setter. Why: Cancelling a delete confirmation needs its own out-animation before the row reverts to normal. How: This holds the id currently playing that leaving animation, cleared once it finishes.
 
-
-	// #region canConFun
-
-	/**
-	 * canConFun = Cancel Confirm Function
-	 *
-	 * @summary
-	 * Backs out of a pending item delete. Under reduced motion it clears the
-	 * confirm state at once; otherwise it flags the confirm row as leaving so
-	 * it plays its exit animation, then clears both once its exit's base
-	 * duration step has passed.
-	 *
-	 * @author z4nta0 <https://github.com/z4nta0>
-	 *
-	 * @param void - This function takes no parameters.
-	 *
-	 * @returns This function does not return anything.
-	 *
-	 * @example
-	 * ```ts
-	 * canConFun() // => void
-	 * ```
-	 *
-	*/
-
-	const canConFun = () => { // What: Cancel Confirm Function. Why: Cancelling a pending delete needs to play the same leaving animation as everywhere else in this file, unless reduced motion applies. How: This either clears conDelStr immediately, or stages conLeaStr for 150ms first.
-
-
-		if ( redMotFun() ) { setConDelStr( null ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped animation. How: This clears the confirm state immediately and returns.
-
-
-
-		setConLeaStr( conDelStr ); // What: Leaving Stage Call. Why: The confirm row needs to actually play its own out-animation now. How: This copies the current conDelStr into conLeaStr.
-
-		setTimeout( () => { // What: Delayed Clear Call. Why: The confirm row must not fully disappear until its own out-animation has had time to actually play. How: This clears both conLeaStr and conDelStr once the exit's base duration step has passed.
-
-
-			setConLeaStr( null ); // What: Leaving Clear Call. Why: The confirm row has finished its exit animation. How: This resets conLeaStr to null.
-			setConDelStr( null ); // What: Confirm Clear Call. Why: No row stays in its delete-confirm state. How: This resets conDelStr to null.
-
-
-		}, durMilFun( 'bas' ) ); // What: Leaving Animation Delay. Why: The confirm row must finish leaving before it clears. How: This waits the same base duration step its leaving keyframes play over. // Duration Base ~= 157.8ms
-
-
-	};
-
-	// #endregion canConFun
-
+	const { canConFun, conDelStr, conLeaStr, setConDelStr } = useDelConFun(); // What: Cancel Confirm Function. Why: Cancel backs out of a pending delete. How: This plays the confirm row's leaving animation, then clears it. // What: Confirm Delete String. Why: A pool row asks before deleting, in place of its normal content. How: This holds the id showing its delete-confirm row. // What: Confirm Leaving String. Why: The confirm row plays an out-animation after Cancel. How: This holds the id playing it. // What: Set Confirm Delete String. Why: The delete button starts a row's confirmation, and the confirmed delete ends it. How: This sets conDelStr.
 
 	const [ rmvIdeStr, setRmvIdeStr ] = React.useState< string | null >( null ); // What: Removing Identifier String And Setter. Why: A deleted pool row needs its own removal animation to finish before it's actually taken out of pooIteArr. How: This holds the id currently playing that removal animation.
 
