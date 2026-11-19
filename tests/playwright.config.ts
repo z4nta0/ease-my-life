@@ -3,10 +3,11 @@
 
 // #region Imports
 
-import { defineConfig  } from '@playwright/test';   // What: Define Config. Why: Playwright's config helper passes the config through with its types. How: This wraps the exported config object.
-import { fileURLToPath } from 'node:url';           // What: File URL To Path. Why: The servers have to start from the repo root, one folder above this file. How: This turns that folder's URL into a path for each server's cwd.
-import { TIM_ZON_STR   } from './support/clock.ts'; // What: Time Zone String. Why: The pages and the clock helpers must agree on the timezone. How: This sets every page's timezoneId.
-import { TIP_URL_STR   } from './support/app.ts';   // What: Tip URL String. Why: The app needs a tip page address to enable its Buy Me a Coffee button. How: This becomes the test server's VITE_TIP_URL.
+import { defineConfig } from '@playwright/test';     // What: Define Config. Why: Playwright's config helper passes the config through with its types. How: This wraps the exported config object.
+import { PRE_URL_STR  } from './support/servers.ts'; // What: Preview URL String. Why: The security suite loads the production build, since the dev server injects inline scripts the security policy would block. How: This is the security projects' baseURL and the address Playwright waits on for the preview server.
+import { ROO_DIR_STR  } from './support/servers.ts'; // What: Root Directory String. Why: Both servers must run from the repo root, where vite.config.ts lives. How: This is each server's cwd.
+import { TIM_ZON_STR  } from './support/clock.ts';   // What: Time Zone String. Why: The pages and the clock helpers must agree on the timezone. How: This sets every page's timezoneId.
+import { TIP_URL_STR  } from './support/app.ts';     // What: Tip URL String. Why: The app needs a tip page address to enable its Buy Me a Coffee button. How: This becomes the test server's VITE_TIP_URL.
 
 // #endregion Imports
 
@@ -58,9 +59,7 @@ const ENG_NAM_ARR = [ // What: Engine Name Array. Why: The accessibility, accoun
 
 
 
-const PRE_URL_STR = 'http://localhost:5191';                           // What: Preview URL String. Why: The security suite loads the production build, since the dev server injects inline scripts the security policy would block, and the SEO suite reads the raw pages that ship. How: This is the address the preview server answers on, the security projects' baseURL.
-const ROO_DIR_STR = fileURLToPath( new URL( '..', import.meta.url ) ); // What: Root Directory String. Why: Both servers must run from the repo root, where vite.config.ts lives. How: This resolves the folder above tests/.
-const SER_URL_STR = 'http://localhost:5190';                           // What: Server URL String. Why: Every suite but security opens the app from the dev server. How: This is the address Playwright waits on and the baseURL of every project but the security ones.
+const SER_URL_STR = 'http://localhost:5190'; // What: Server URL String. Why: Every suite but security opens the app from the dev server. How: This is the address Playwright waits on and the baseURL of every project but the security ones.
 
 
 

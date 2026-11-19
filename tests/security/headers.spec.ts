@@ -11,6 +11,7 @@ import { join          } from 'node:path';             // What: Join. Why: A bui
 import { readdirSync   } from 'node:fs';               // What: Read Directory Sync. Why: Every built text file is searched for secrets. How: This lists the build folder's entries, recursively.
 import { readFileSync  } from 'node:fs';               // What: Read File Sync. Why: Each built file's text is searched, and the browser keys are read from their source. How: This reads a file.
 import { relative      } from 'node:path';             // What: Relative. Why: A match is reported by its path inside the build. How: This trims the build folder off a file's path.
+import { ROO_DIR_STR   } from '../support/servers.ts'; // What: Root Directory String. Why: npm audit reads the repo's lockfile. How: This is the repo root it runs from.
 import { test          } from '@playwright/test';      // What: Test. Why: Each part of the policy is its own test. How: This declares them.
 
 // #endregion Imports
@@ -67,7 +68,6 @@ const BIN_EXT_REG = /\.(ico|png|webp|woff2)$/;                                  
 const DIS_DIR_STR = fileURLToPath( new URL( '../../dist/', import.meta.url ) );                    // What: Distribution Directory String. Why: The secret search reads what visitors download. How: This resolves the build folder, dist/.
 const FIR_PAT_STR = fileURLToPath( new URL( '../../src/platform/firebase.ts', import.meta.url ) ); // What: Firebase Path String. Why: The browser keys the secret search allows are read from the one file that holds them. How: This resolves src/platform/firebase.ts.
 const RED_FIL_STR = fileURLToPath( new URL( '../../dist/_redirects', import.meta.url ) );          // What: Redirects File String. Why: The legal pages and the app are reached on the live site only through the host's rules, and the built copy is what Netlify reads. How: This resolves the built dist/_redirects.
-const ROO_DIR_STR = fileURLToPath( new URL( '../..', import.meta.url ) );                          // What: Root Directory String. Why: npm audit reads the repo's lockfile. How: This resolves the repo root.
 
 const SEC_PAT_ARR = [ // What: Secret Pattern Array. Why: A key pasted into the source would ship to every visitor. How: Each entry matches one well-known kind of private key or provider token.
 

@@ -7,6 +7,7 @@ import { expect        } from '@playwright/test';      // What: Expect. Why: Eac
 import { fileURLToPath } from 'node:url';              // What: File URL To Path. Why: The sync price is read from its source two folders above this file. How: This turns that file's URL into a path.
 import { heaPatFun     } from '../support/headers.ts'; // What: Headers Path Function. Why: A header could keep a page out of search as surely as a tag. How: This reads the headers the built dist/_headers sends with one path.
 import { opeStaFun     } from '../support/states.ts';  // What: Open State Function. Why: Each app state is opened the way the accessibility suite opens it. How: This loads the state and waits until it's settled.
+import { PRE_URL_STR   } from '../support/servers.ts'; // What: Preview URL String. Why: Link scrapers read the shipped page, which the build minifies, so the raw pages are read from the build rather than the dev server. How: This is the address the preview server answers on.
 import { readFileSync  } from 'node:fs';               // What: Read File Sync. Why: The structured data's price is checked against the app's own. How: This reads src/constants.ts.
 import { STA_REC_ARR   } from '../support/states.ts';  // What: State Record Array. Why: Every state's document has to keep one description. How: This lists the states to load.
 import { test          } from '@playwright/test';      // What: Test. Why: Each page and each file is its own test. How: This declares them.
@@ -120,10 +121,6 @@ const PAG_HEA_ARR = [ // What: Page Head Array. Why: Every indexed page's head i
 ];
 
 // #endregion PAG_HEA_ARR
-
-
-
-const PRE_URL_STR = 'http://localhost:5191'; // What: Preview URL String. Why: Link scrapers read the shipped page, which the build minifies, so the raw pages are read from the build rather than the dev server. How: This is the address the preview server answers on.
 
 
 
