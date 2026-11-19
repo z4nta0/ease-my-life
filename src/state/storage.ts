@@ -700,6 +700,36 @@ function fluSynFun ( appStaObj : StaAppTyp ) : void {
 
 
 
+// #region logAutFun
+
+/**
+ * logAutFun = Log Authoritative Function
+ *
+ * @summary
+ * Declares that the caller's own pickLog is intentional, whether empty
+ * or not (an import, or a reset). Clears the mirror-artefact suspicion
+ * so the very next wriDatFun call is allowed to actually write it,
+ * even if it happens to be empty.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns This function does not return anything.
+ *
+ * @example
+ * ```ts
+ * logAutFun() // => void
+ * ```
+ *
+*/
+
+function logAutFun () : void { logSusBoo = false; } // What: Log Authoritative Body. Why: A caller that just imported or reset the pick log knows its own emptiness (or non-emptiness) is real, not a mirror artefact. How: This clears logSusBoo unconditionally.
+
+// #endregion logAutFun
+
+
+
 // #region mirAdoFun
 
 /**
@@ -1031,36 +1061,6 @@ async function iniStoFun () : Promise< RawSavTyp > {
 }
 
 // #endregion iniStoFun
-
-
-
-// #region logAutFun
-
-/**
- * logAutFun = Log Authoritative Function
- *
- * @summary
- * Declares that the caller's own pickLog is intentional, whether empty
- * or not (an import, or a reset). Clears the mirror-artefact suspicion
- * so the very next wriDatFun call is allowed to actually write it,
- * even if it happens to be empty.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param void - This function takes no parameters.
- *
- * @returns This function does not return anything.
- *
- * @example
- * ```ts
- * logAutFun() // => void
- * ```
- *
-*/
-
-function logAutFun () : void { logSusBoo = false; } // What: Log Authoritative Body. Why: A caller that just imported or reset the pick log knows its own emptiness (or non-emptiness) is real, not a mirror artefact. How: This clears logSusBoo unconditionally.
-
-// #endregion logAutFun
 
 
 
