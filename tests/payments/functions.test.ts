@@ -62,10 +62,6 @@ const admPosFun = ( adrPatStr : string, posBodObj : object ) => fetch( `${ AUT_E
 
 
 
-const claReaFun = async ( uidValStr : string ) => JSON.parse( ( await admPosFun( `/identitytoolkit.googleapis.com/v1/projects/${ EMU_PRO_STR }/accounts:lookup`, { localId : [ uidValStr ] } ) ).users[ 0 ].customAttributes || '{}' ); // What: Claim Read Function. Why: Each webhook case checks the account's claims afterwards. How: This looks the account up and parses its custom claims.
-
-
-
 // #region accNewFun
 
 /**
@@ -111,6 +107,10 @@ async function accNewFun ( verEmaBoo : boolean, staClaObj : object = {} ) : Prom
 }
 
 // #endregion accNewFun
+
+
+
+const claReaFun = async ( uidValStr : string ) => JSON.parse( ( await admPosFun( `/identitytoolkit.googleapis.com/v1/projects/${ EMU_PRO_STR }/accounts:lookup`, { localId : [ uidValStr ] } ) ).users[ 0 ].customAttributes || '{}' ); // What: Claim Read Function. Why: Each webhook case checks the account's claims afterwards. How: This looks the account up and parses its custom claims.
 
 
 

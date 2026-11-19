@@ -52,7 +52,6 @@ const CON_PAT_STR = fileURLToPath( new URL( '../../src/constants.ts', import.met
 const HOM_DES_STR = 'Pick what to do today, without deciding. Your pickers choose for you, on the schedule you set and entirely on your device.'; // What: Home Description String. Why: The raw home page and every app state carry this one description. How: This is the exact text it should hold.
 const HOM_TIT_STR = 'Ease My Life: pick what to do today, without deciding';                                                                      // What: Home Title String. Why: The app keeps index.html's title on every screen. How: This is the exact text it should hold.
 const LIV_URL_STR = 'https://easemylife.app/';                                                                                                    // What: Live URL String. Why: The addresses the checks expect start from the live site's. How: This is its address.
-const PRE_URL_STR = 'http://localhost:5191'; // What: Preview URL String. Why: Link scrapers read the shipped page, which the build minifies, so the raw pages are read from the build rather than the dev server. How: This is the address the preview server answers on.
 
 
 
@@ -121,6 +120,10 @@ const PAG_HEA_ARR = [ // What: Page Head Array. Why: Every indexed page's head i
 ];
 
 // #endregion PAG_HEA_ARR
+
+
+
+const PRE_URL_STR = 'http://localhost:5191'; // What: Preview URL String. Why: Link scrapers read the shipped page, which the build minifies, so the raw pages are read from the build rather than the dev server. How: This is the address the preview server answers on.
 
 
 

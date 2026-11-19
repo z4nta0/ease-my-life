@@ -58,7 +58,6 @@ import type { Page          } from '@playwright/test'; // What: Page. Why: The h
  * TechGeek.support's own.
  *
  * Sections:
- *  - Types
  *  - Constants
  *  - Helpers
  *  - Module Init
@@ -69,7 +68,23 @@ import type { Page          } from '@playwright/test'; // What: Page. Why: The h
 
 
 
-// #region Types
+// #region Constants
+
+const ALL_STA_ARR = [ ...STA_REC_ARR, ...EXT_STA_ARR ]; // What: All State Array. Why: Every shared state is checked, and so is each opened one, since each holds controls the plain tabs don't. How: This lists the shared states first, then the opened ones.
+const CON_SEL_STR = 'a[href], button, input:not([type="hidden"]), select, textarea, [role="button"], [role="radio"], [role="switch"], [role="tab"], [tabindex="0"]'; // What: Control Selector String. Why: Every element a person can press or focus is an interaction, the theme rows' radios and the info tips' trigger spans included. How: This matches the links, buttons, form fields, and focusable roles.
+const FIE_SEL_STR = 'input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select, textarea';                                                         // What: Field Selector String. Why: A text field has no hover or press look of its own, since pressing one only focuses it. How: This matches the fields, which the probe reads for focus alone.
+const HOV_TAR_STR = '[class*="todCarArt"], [class*="todCarDiv"], [class*="lisRowDiv"]';                                                                              // What: Hover Target String. Why: Today's cards and the Data tab's item rows respond to hover without being controls, so the control probe never reaches them. How: This matches each by its CSS module class, whose name Vite keeps inside the hashed class.
+const IDE_LIS_ARR = ALL_STA_ARR.map( ( staRecObj ) => staRecObj.ideStr );                                                                                            // What: Identifier List Array. Why: Each toggle row names the states it has to be found in, and most rows name every state of a tab. How: This lists every checked state's name, for the tab lists below.
+const DAT_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'data-' ) );                                                                          // What: Data Identifier Array. Why: The Data tab's chevrons, scope tabs, and vacation buttons show on its states. How: This lists the Data states' names.
+const PIC_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'picker' ) );                                                                         // What: Pickers Identifier Array. Why: The Pickers tab's picker tabs and add button show on its states, the form's included. How: This lists the Pickers states' names.
+const PIL_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => /^(data|picker|stats)-?/.test( ideCurStr ) );                                                               // What: Pill Identifier Array. Why: The filter rails' pills show on the Data, Pickers, and Stats states. How: This lists those states' names.
+const SET_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'settings-' ) );                                                                      // What: Settings Identifier Array. Why: The Settings rail, theme rows, and switches show on its states. How: This lists the Settings states' names.
+const SKI_STA_ARR = [ 'today-desktop', 'today-phone', 'pickers-desktop', 'pickers-phone', 'stats-desktop', 'stats-phone', 'data-desktop', 'data-phone', 'settings-desktop', 'settings-phone' ]; // What: Skip State Array. Why: The skip link waits above the screen on every plain tab, while an open modal or help mode makes it unreachable. How: This names the states where the probe has to find it.
+const STA_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'stats-' ) );                                                                         // What: Stats Identifier Array. Why: The Stats tab's range pills and heat cells show on its states. How: This lists the Stats states' names.
+const TAB_IDE_ARR = ALL_STA_ARR.filter( ( staRecObj ) => staRecObj.fixBoo && !staRecObj.ideStr.startsWith( 'privacy' ) ).map( ( staRecObj ) => staRecObj.ideStr );   // What: Tab Bar Identifier Array. Why: The tab bar and its help button show on every state with the backup loaded, except under the Privacy panel, which covers them. How: This lists those states' names.
+const TOD_IDE_ARR = ALL_STA_ARR.filter( ( staRecObj ) => staRecObj.fixBoo && staRecObj.tabStr === 'today' ).map( ( staRecObj ) => staRecObj.ideStr );                // What: Today Identifier Array. Why: Today's cards, rail, and log chips show on every Today state with the backup loaded. How: This lists those states' names.
+
+
 
 type TogTarTyp = { // What: Toggle Target Type. Why: Each kind of element with a state that switches on and off is flipped the same way. How: This holds what to find, which attribute marks the state, its two values, and the states it has to be found in.
 
@@ -82,31 +97,6 @@ type TogTarTyp = { // What: Toggle Target Type. Why: Each kind of element with a
 
 
 };
-
-// #endregion Types
-
-
-
-// #region Constants
-
-const CON_SEL_STR = 'a[href], button, input:not([type="hidden"]), select, textarea, [role="button"], [role="radio"], [role="switch"], [role="tab"], [tabindex="0"]';                            // What: Control Selector String. Why: Every element a person can press or focus is an interaction, the theme rows' radios and the info tips' trigger spans included. How: This matches the links, buttons, form fields, and focusable roles.
-const FIE_SEL_STR = 'input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select, textarea';                                                                                    // What: Field Selector String. Why: A text field has no hover or press look of its own, since pressing one only focuses it. How: This matches the fields, which the probe reads for focus alone.
-const HOV_TAR_STR = '[class*="todCarArt"], [class*="todCarDiv"], [class*="lisRowDiv"]'; // What: Hover Target String. Why: Today's cards and the Data tab's item rows respond to hover without being controls, so the control probe never reaches them. How: This matches each by its CSS module class, whose name Vite keeps inside the hashed class.
-const SKI_STA_ARR = [ 'today-desktop', 'today-phone', 'pickers-desktop', 'pickers-phone', 'stats-desktop', 'stats-phone', 'data-desktop', 'data-phone', 'settings-desktop', 'settings-phone' ]; // What: Skip State Array. Why: The skip link waits above the screen on every plain tab, while an open modal or help mode makes it unreachable. How: This names the states where the probe has to find it.
-
-
-
-const ALL_STA_ARR = [ ...STA_REC_ARR, ...EXT_STA_ARR ]; // What: All State Array. Why: Every shared state is checked, and so is each opened one, since each holds controls the plain tabs don't. How: This lists the shared states first, then the opened ones.
-const IDE_LIS_ARR = ALL_STA_ARR.map( ( staRecObj ) => staRecObj.ideStr );                                                                                          // What: Identifier List Array. Why: Each toggle row names the states it has to be found in, and most rows name every state of a tab. How: This lists every checked state's name, for the tab lists below.
-const DAT_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'data-' ) );                                                                        // What: Data Identifier Array. Why: The Data tab's chevrons, scope tabs, and vacation buttons show on its states. How: This lists the Data states' names.
-const PIC_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'picker' ) );                                                                       // What: Pickers Identifier Array. Why: The Pickers tab's picker tabs and add button show on its states, the form's included. How: This lists the Pickers states' names.
-const PIL_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => /^(data|picker|stats)-?/.test( ideCurStr ) );                                                             // What: Pill Identifier Array. Why: The filter rails' pills show on the Data, Pickers, and Stats states. How: This lists those states' names.
-const SET_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'settings-' ) );                                                                    // What: Settings Identifier Array. Why: The Settings rail, theme rows, and switches show on its states. How: This lists the Settings states' names.
-const STA_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'stats-' ) );                                                                       // What: Stats Identifier Array. Why: The Stats tab's range pills and heat cells show on its states. How: This lists the Stats states' names.
-const TAB_IDE_ARR = ALL_STA_ARR.filter( ( staRecObj ) => staRecObj.fixBoo && !staRecObj.ideStr.startsWith( 'privacy' ) ).map( ( staRecObj ) => staRecObj.ideStr ); // What: Tab Bar Identifier Array. Why: The tab bar and its help button show on every state with the backup loaded, except under the Privacy panel, which covers them. How: This lists those states' names.
-const TOD_IDE_ARR = ALL_STA_ARR.filter( ( staRecObj ) => staRecObj.fixBoo && staRecObj.tabStr === 'today' ).map( ( staRecObj ) => staRecObj.ideStr );              // What: Today Identifier Array. Why: Today's cards, rail, and log chips show on every Today state with the backup loaded. How: This lists those states' names.
-
-
 
 // #region TOG_TAR_ARR
 

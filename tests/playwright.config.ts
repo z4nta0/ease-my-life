@@ -46,12 +46,6 @@ import { TIP_URL_STR   } from './support/app.ts';   // What: Tip URL String. Why
 
 // #region Constants
 
-const PRE_URL_STR = 'http://localhost:5191';                           // What: Preview URL String. Why: The security suite loads the production build, since the dev server injects inline scripts the security policy would block, and the SEO suite reads the raw pages that ship. How: This is the address the preview server answers on, the security projects' baseURL.
-const ROO_DIR_STR = fileURLToPath( new URL( '..', import.meta.url ) ); // What: Root Directory String. Why: Both servers must run from the repo root, where vite.config.ts lives. How: This resolves the folder above tests/.
-const SER_URL_STR = 'http://localhost:5190';                           // What: Server URL String. Why: Every suite but security opens the app from the dev server. How: This is the address Playwright waits on and the baseURL of every project but the security ones.
-
-
-
 const ENG_NAM_ARR = [ // What: Engine Name Array. Why: The accessibility, account, security, and SEO suites run in all three engines. How: Each entry is a Playwright browser name, given one project apiece in each of those suites.
 
 
@@ -61,6 +55,12 @@ const ENG_NAM_ARR = [ // What: Engine Name Array. Why: The accessibility, accoun
 
 
 ] as const;
+
+
+
+const PRE_URL_STR = 'http://localhost:5191';                           // What: Preview URL String. Why: The security suite loads the production build, since the dev server injects inline scripts the security policy would block, and the SEO suite reads the raw pages that ship. How: This is the address the preview server answers on, the security projects' baseURL.
+const ROO_DIR_STR = fileURLToPath( new URL( '..', import.meta.url ) ); // What: Root Directory String. Why: Both servers must run from the repo root, where vite.config.ts lives. How: This resolves the folder above tests/.
+const SER_URL_STR = 'http://localhost:5190';                           // What: Server URL String. Why: Every suite but security opens the app from the dev server. How: This is the address Playwright waits on and the baseURL of every project but the security ones.
 
 
 

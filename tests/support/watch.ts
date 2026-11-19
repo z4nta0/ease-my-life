@@ -35,55 +35,6 @@ import type { Page } from '@playwright/test'; // What: Page. Why: Every watcher 
 
 // #region Helpers
 
-// #region watErrFun
-
-/**
- * watErrFun = Watch Errors Function
- *
- * @summary
- * Starts collecting a page's uncaught errors and console errors into an
- * array the caller keeps, so the test can assert it stayed empty. The
- * service worker block's own warning is a console warning, not an error,
- * so it never lands here.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param curPagObj - Current Page Object: The page to watch.
- *
- * @returns The array the errors collect into.
- * @see {@link errMesArr}
- *
- * @example
- * ```ts
- * const errMesArr = watErrFun(curPagObj) // => [] until something goes wrong
- * ```
- *
-*/
-
-const watErrFun = ( curPagObj : Page ) : string[] => { // What: Watch Errors Function. Why: A page error during a flow is a failure even when the flow finishes. How: This collects page and console errors.
-
-
-	const errMesArr : string[] = []; // What: Error Message Array. Why: The caller asserts it stays empty. How: This collects the errors.
-
-
-
-	curPagObj.on( 'pageerror', ( errPagObj ) => errMesArr.push( `page error: ${ errPagObj.message }` ) ); // What: Page Error Listener. Why: An uncaught exception breaks the app. How: This records its message.
-
-
-
-	curPagObj.on( 'console', ( conMesObj ) => { if ( conMesObj.type() === 'error' ) errMesArr.push( `console error: ${ conMesObj.text().slice( 0, 300 ) }` ); } ); // What: Console Error Listener. Why: React reports problems like duplicate keys as console errors. How: This records every console error.
-
-
-
-	return errMesArr; // What: Errors Return. Why: The caller asserts on it later. How: This returns the live array.
-
-
-};
-
-// #endregion watErrFun
-
-
-
 // #region recAniFun
 
 /**
@@ -150,6 +101,55 @@ const recAniFun = async ( curPagObj : Page ) : Promise< void > => curPagObj.eval
 } );
 
 // #endregion recAniFun
+
+
+
+// #region watErrFun
+
+/**
+ * watErrFun = Watch Errors Function
+ *
+ * @summary
+ * Starts collecting a page's uncaught errors and console errors into an
+ * array the caller keeps, so the test can assert it stayed empty. The
+ * service worker block's own warning is a console warning, not an error,
+ * so it never lands here.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curPagObj - Current Page Object: The page to watch.
+ *
+ * @returns The array the errors collect into.
+ * @see {@link errMesArr}
+ *
+ * @example
+ * ```ts
+ * const errMesArr = watErrFun(curPagObj) // => [] until something goes wrong
+ * ```
+ *
+*/
+
+const watErrFun = ( curPagObj : Page ) : string[] => { // What: Watch Errors Function. Why: A page error during a flow is a failure even when the flow finishes. How: This collects page and console errors.
+
+
+	const errMesArr : string[] = []; // What: Error Message Array. Why: The caller asserts it stays empty. How: This collects the errors.
+
+
+
+	curPagObj.on( 'pageerror', ( errPagObj ) => errMesArr.push( `page error: ${ errPagObj.message }` ) ); // What: Page Error Listener. Why: An uncaught exception breaks the app. How: This records its message.
+
+
+
+	curPagObj.on( 'console', ( conMesObj ) => { if ( conMesObj.type() === 'error' ) errMesArr.push( `console error: ${ conMesObj.text().slice( 0, 300 ) }` ); } ); // What: Console Error Listener. Why: React reports problems like duplicate keys as console errors. How: This records every console error.
+
+
+
+	return errMesArr; // What: Errors Return. Why: The caller asserts on it later. How: This returns the live array.
+
+
+};
+
+// #endregion watErrFun
 
 
 

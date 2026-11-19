@@ -62,14 +62,6 @@ type IssAddTyp = ( issMesStr : string ) => void; // What: Issue Add Type. Why: E
 
 // #region Helpers
 
-const jsoStrFun = ( valAny : unknown ) : string => JSON.stringify( valAny ); // What: JSON String Function. Why: Saved records compare most simply as JSON, which drops undefined fields the same way the app's saves do. How: This serializes a value.
-
-
-
-const unpConFun = ( conRcdObj : ConRcdTyp ) : string => { const { _cardPrev : carPreObj, _chargePrev : chrPreObj, ...resConObj } = conRcdObj; return jsoStrFun( resConObj ); }; // What: Unsnapshotted Conditional Function. Why: Undo snapshots linger from earlier days and aren't part of what a check-off restores. How: This serializes a conditional without them.
-
-
-
 // #region expConFun
 
 /**
@@ -277,6 +269,14 @@ const expConFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, curEntObj : To
 };
 
 // #endregion expConFun
+
+
+
+const jsoStrFun = ( valAny : unknown ) : string => JSON.stringify( valAny ); // What: JSON String Function. Why: Saved records compare most simply as JSON, which drops undefined fields the same way the app's saves do. How: This serializes a value.
+
+
+
+const unpConFun = ( conRcdObj : ConRcdTyp ) : string => { const { _cardPrev : carPreObj, _chargePrev : chrPreObj, ...resConObj } = conRcdObj; return jsoStrFun( resConObj ); }; // What: Unsnapshotted Conditional Function. Why: Undo snapshots linger from earlier days and aren't part of what a check-off restores. How: This serializes a conditional without them.
 
 
 

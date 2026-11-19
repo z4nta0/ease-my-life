@@ -47,6 +47,7 @@ import type { TodEntTyp } from '../../src/core/data-model.ts'; // What: Today En
  *
  * Sections:
  *  - Types
+ *  - Constants
  *  - Helpers
  *  - Exports
  *
@@ -64,15 +65,15 @@ type IssAddTyp = ( issMesStr : string ) => void; // What: Issue Add Type. Why: E
 
 
 
-// #region Helpers
+// #region Constants
 
 const EPS_VAL_NUM = 1e-6; // What: Epsilon Value Number. Why: Ease values are floats built from repeated division and addition. How: This is the tolerance for comparing them.
 
+// #endregion Constants
 
 
-const neaEquFun = ( oneValNum : number | undefined, twoValNum : number | undefined ) : boolean => typeof oneValNum === 'number' && typeof twoValNum === 'number' && Math.abs( oneValNum - twoValNum ) < EPS_VAL_NUM; // What: Near Equal Function. Why: Float results can differ in their last bits. How: This compares two numbers within the tolerance.
 
-
+// #region Helpers
 
 // #region aveEasFun
 
@@ -122,6 +123,10 @@ const aveEasFun = ( iteRcdArr : IteRcdTyp[] ) : { easMaxNum : number, easMinNum 
 };
 
 // #endregion aveEasFun
+
+
+
+const neaEquFun = ( oneValNum : number | undefined, twoValNum : number | undefined ) : boolean => typeof oneValNum === 'number' && typeof twoValNum === 'number' && Math.abs( oneValNum - twoValNum ) < EPS_VAL_NUM; // What: Near Equal Function. Why: Float results can differ in their last bits. How: This compares two numbers within the tolerance.
 
 
 

@@ -155,52 +155,6 @@ async function aniFinFun ( eleCurEle : Element ) : Promise< void > {
 
 
 
-// #region cliBloFun
-
-/**
- * cliBloFun = Click Block Function
- *
- * @summary
- * Runs inside the page and cancels every click before the app handles it, so
- * pressing a control during a check never runs its action, such as checking
- * off a card or switching tabs. It listens on the document in the capture
- * phase, ahead of React's own listener on the app's root, and both prevents
- * the click's default and stops it from going any further. Passed to
- * Playwright's evaluate, so it can't read anything from this file.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param void - This function takes no parameters.
- *
- * @returns This function does not return anything.
- *
- * @example
- * ```ts
- * page.evaluate(cliBloFun) // => void
- * ```
- *
-*/
-
-function cliBloFun () : void {
-
-
-	document.addEventListener( 'click', ( cliEveObj ) => { // What: Click Block Listener. Why: A press during a check shouldn't do anything. How: This cancels every click in the capture phase, before the page or React sees it.
-
-
-		cliEveObj.preventDefault(); // What: Default Prevention Call. Why: A link shouldn't navigate mid-check. How: This cancels the click's default.
-
-		cliEveObj.stopPropagation(); // What: Propagation Stop Call. Why: React's handlers, such as a tab button switching tabs, shouldn't run either. How: This keeps the click from reaching the app's root.
-
-
-	}, true ); // What: Capture Phase Flag. Why: The block has to run ahead of the app's own handlers. How: This registers the listener for the capture phase.
-
-
-}
-
-// #endregion cliBloFun
-
-
-
 // #region chaValFun
 
 /**
@@ -252,6 +206,52 @@ function chaValFun ( proNamStr : string, froValStr : string, tarValStr : string 
 }
 
 // #endregion chaValFun
+
+
+
+// #region cliBloFun
+
+/**
+ * cliBloFun = Click Block Function
+ *
+ * @summary
+ * Runs inside the page and cancels every click before the app handles it, so
+ * pressing a control during a check never runs its action, such as checking
+ * off a card or switching tabs. It listens on the document in the capture
+ * phase, ahead of React's own listener on the app's root, and both prevents
+ * the click's default and stops it from going any further. Passed to
+ * Playwright's evaluate, so it can't read anything from this file.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns This function does not return anything.
+ *
+ * @example
+ * ```ts
+ * page.evaluate(cliBloFun) // => void
+ * ```
+ *
+*/
+
+function cliBloFun () : void {
+
+
+	document.addEventListener( 'click', ( cliEveObj ) => { // What: Click Block Listener. Why: A press during a check shouldn't do anything. How: This cancels every click in the capture phase, before the page or React sees it.
+
+
+		cliEveObj.preventDefault(); // What: Default Prevention Call. Why: A link shouldn't navigate mid-check. How: This cancels the click's default.
+
+		cliEveObj.stopPropagation(); // What: Propagation Stop Call. Why: React's handlers, such as a tab button switching tabs, shouldn't run either. How: This keeps the click from reaching the app's root.
+
+
+	}, true ); // What: Capture Phase Flag. Why: The block has to run ahead of the app's own handlers. How: This registers the listener for the capture phase.
+
+
+}
+
+// #endregion cliBloFun
 
 
 

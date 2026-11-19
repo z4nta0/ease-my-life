@@ -32,7 +32,6 @@ import type { Page } from '@playwright/test'; // What: Page. Why: Every helper d
  * measurement catches everything that looks wrong.
  *
  * Sections:
- *  - Types
  *  - Constants
  *  - Helpers
  *  - Module Init
@@ -43,21 +42,14 @@ import type { Page } from '@playwright/test'; // What: Page. Why: Every helper d
 
 
 
-// #region Types
-
-type PagStaTyp = { namStr : string, preFun : ( curPagObj : Page ) => Promise< void >, tabStr : string }; // What: Page State Type. Why: Each measured state is a tab plus optional setup. How: This holds its name, tab, and setup.
-
-// #endregion Types
-
-
-
 // #region Constants
 
-const OUT_DIR_STR = new URL( '../output/responsive/', import.meta.url ); // What: Output Directory String. Why: Screenshots land where git ignores them. How: This is tests/output/responsive.
-const VIE_WID_ARR = [ 375, 414, 768, 1024, 1280 ];                       // What: Viewport Width Array. Why: Phones from 375 up, a tablet, and desktops. How: This lists the widths measured.
 const NOO_PRE_FUN = async () => {};                                      // What: No-Op Prepare Function. Why: Most states need no setup beyond the tab. How: This does nothing.
+const OUT_DIR_STR = new URL( '../output/responsive/', import.meta.url ); // What: Output Directory String. Why: Screenshots land where git ignores them. How: This is tests/output/responsive.
 
 
+
+type PagStaTyp = { namStr : string, preFun : ( curPagObj : Page ) => Promise< void >, tabStr : string }; // What: Page State Type. Why: Each measured state is a tab plus optional setup. How: This holds its name, tab, and setup.
 
 const PAG_STA_ARR : PagStaTyp[] = [ // What: Page State Array. Why: Each tab, and the expanded states most likely to crowd, are measured. How: Each row is one state.
 
@@ -87,6 +79,10 @@ const PAG_STA_ARR : PagStaTyp[] = [ // What: Page State Array. Why: Each tab, an
 
 
 ];
+
+
+
+const VIE_WID_ARR = [ 375, 414, 768, 1024, 1280 ]; // What: Viewport Width Array. Why: Phones from 375 up, a tablet, and desktops. How: This lists the widths measured.
 
 // #endregion Constants
 

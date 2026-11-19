@@ -42,7 +42,6 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The driver ste
  * never advances fails the test with its text.
  *
  * Sections:
- *  - Types
  *  - Constants
  *  - Helpers
  *  - Module Init
@@ -50,14 +49,6 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The driver ste
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
-
-
-
-// #region Types
-
-type RecBoxTyp = { height : number, width : number, x : number, y : number }; // What: Rect Box Type. Why: The driver clicks the middle of rects measured in the page. How: This describes a measured rect's position and size.
-
-// #endregion Types
 
 
 
@@ -76,7 +67,42 @@ const TOD_TAB_STR = '[data-element-name-hook~="todTabDiv"]';                    
 
 // #region Helpers
 
-const coaKeyFun = async ( curPagObj : Page ) : Promise< string > => curPagObj.evaluate( ( coaSelStr ) => document.querySelector< HTMLElement >( coaSelStr )?.innerText.slice( 0, 200 ) || '', COA_CAR_STR ); // What: Coach Key Function. Why: A step has advanced once its card's text changes. How: This reads the visible card's text, or empty when there's none.
+// #region begModFun
+
+/**
+ * begModFun = Begin Modal Function
+ *
+ * @summary
+ * Starts the tour behind an intro modal by clicking its primary button, the
+ * first in the dialog. Every tour opens on one, so the modal not opening
+ * within fifteen seconds fails the test.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curPagObj - Current Page Object: The page showing the modal.
+ *
+ * @returns A promise that settles once the button is clicked.
+ *
+ * @example
+ * ```ts
+ * await begModFun(curPagObj) // => void
+ * ```
+ *
+*/
+
+const begModFun = async ( curPagObj : Page ) : Promise< void > => { // What: Begin Modal Function. Why: Every tour starts from its intro modal. How: This waits for the modal and clicks its primary button.
+
+
+	await curPagObj.locator( INT_MOD_STR ).waitFor( { timeout : 15000 } ); // What: Modal Wait. Why: The modal opens a moment after the launcher. How: This waits for it.
+
+
+
+	await curPagObj.locator( INT_MOD_STR ).getByRole( 'button' ).first().click(); // What: Begin Click Call. Why: The primary button starts the tour. How: This clicks the dialog's first button.
+
+
+};
+
+// #endregion begModFun
 
 
 
@@ -113,6 +139,12 @@ const chaWaiFun = async ( curPagObj : Page, preKeyStr : string, waiMilNum : numb
 // #endregion chaWaiFun
 
 
+
+const coaKeyFun = async ( curPagObj : Page ) : Promise< string > => curPagObj.evaluate( ( coaSelStr ) => document.querySelector< HTMLElement >( coaSelStr )?.innerText.slice( 0, 200 ) || '', COA_CAR_STR ); // What: Coach Key Function. Why: A step has advanced once its card's text changes. How: This reads the visible card's text, or empty when there's none.
+
+
+
+type RecBoxTyp = { height : number, width : number, x : number, y : number }; // What: Rect Box Type. Why: The driver clicks the middle of rects measured in the page. How: This describes a measured rect's position and size.
 
 // #region advSteFun
 
@@ -293,45 +325,6 @@ const runTouFun = async ( curPagObj : Page, touNamStr : string ) : Promise< void
 };
 
 // #endregion runTouFun
-
-
-
-// #region begModFun
-
-/**
- * begModFun = Begin Modal Function
- *
- * @summary
- * Starts the tour behind an intro modal by clicking its primary button, the
- * first in the dialog. Every tour opens on one, so the modal not opening
- * within fifteen seconds fails the test.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param curPagObj - Current Page Object: The page showing the modal.
- *
- * @returns A promise that settles once the button is clicked.
- *
- * @example
- * ```ts
- * await begModFun(curPagObj) // => void
- * ```
- *
-*/
-
-const begModFun = async ( curPagObj : Page ) : Promise< void > => { // What: Begin Modal Function. Why: Every tour starts from its intro modal. How: This waits for the modal and clicks its primary button.
-
-
-	await curPagObj.locator( INT_MOD_STR ).waitFor( { timeout : 15000 } ); // What: Modal Wait. Why: The modal opens a moment after the launcher. How: This waits for it.
-
-
-
-	await curPagObj.locator( INT_MOD_STR ).getByRole( 'button' ).first().click(); // What: Begin Click Call. Why: The primary button starts the tour. How: This clicks the dialog's first button.
-
-
-};
-
-// #endregion begModFun
 
 
 

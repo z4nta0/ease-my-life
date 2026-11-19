@@ -60,6 +60,92 @@ const eveNthFun = ( intValNum : number, uniCouNum : number ) : boolean => intVal
 
 
 
+// #region remDueFun
+
+/**
+ * remDueFun = Reminder Due Function
+ *
+ * @summary
+ * Whether a reminder is due on a date by its repeat rule alone, before the
+ * hidden, skip, weekend, and holiday filters. A one-time reminder stays due
+ * from its date until it's done, and is still due, shown checked, on the
+ * day it was done.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param tasRcdObj - Task Record Object: The reminder to check.
+ * @param dayIsoStr - Day ISO String: The date, as YYYY-MM-DD.
+ *
+ * @returns Whether the reminder is due that day.
+ *
+ * @example
+ * ```ts
+ * remDueFun(weeklyReminder, '2026-10-06') // => true or false
+ * ```
+ *
+*/
+
+const remDueFun = ( tasRcdObj : TasRcdTyp, dayIsoStr : string ) : boolean => { // What: Reminder Due Function. Why: The checker predicts which reminders Today shows. How: This applies the reminder's repeat rule to the date.
+
+
+	const [ yeaValNum, monValNum, dayValNum ] = parIsoFun( dayIsoStr ); // What: Year Month Day Numbers. Why: Monthly and yearly rules read the date's parts. How: This splits the date.
+
+	const intValNum = Math.max( 1, tasRcdObj.interval || 1 );                     // What: Interval Value Number. Why: Every repeat can skip units. How: This reads N, at least 1.
+	const ancDayStr = ( tasRcdObj.anchor || tasRcdObj.createdAt ).slice( 0, 10 ); // What: Anchor Day String. Why: Every-N counts start from the anchor. How: This reads the anchor, falling back to the creation date.
+	const [ ancYeaNum, ancMonNum ] = parIsoFun( ancDayStr );                      // What: Anchor Year Month Numbers. Why: Monthly and yearly counts are in whole months and years. How: This splits the anchor.
+	const nthModBoo = tasRcdObj.dateMode === 'nthWeekday';                        // What: Nth Mode Boolean. Why: Monthly and yearly reminders can fall on an nth weekday. How: This reads the date mode.
+
+
+
+	if ( tasRcdObj.repeat === 'once' ) return !( tasRcdObj.onceDate && dayIsoStr < tasRcdObj.onceDate ) && ( !tasRcdObj.lastDone || tasRcdObj.lastDone === dayIsoStr ); // What: Once Return. Why: A one-time reminder is due from its date until it's done. How: This checks the date and lastDone.
+
+
+
+	if ( tasRcdObj.repeat === 'weekly' ) return ( tasRcdObj.daysOfWeek || [] ).includes( dowValFun( dayIsoStr ) ) && eveNthFun( intValNum, Math.floor( difDayFun( ancDayStr, dayIsoStr ) / 7 ) ); // What: Weekly Return. Why: A weekly reminder falls on its weekdays every N weeks. How: This checks the weekday and the 7-day block count.
+
+
+
+	if ( tasRcdObj.repeat === 'interval' ) return difDayFun( ancDayStr, dayIsoStr ) >= 0 && difDayFun( ancDayStr, dayIsoStr ) % intValNum === 0; // What: Interval Return. Why: An interval reminder falls every N days from its anchor. How: This checks the day count.
+
+
+
+	if ( tasRcdObj.repeat === 'monthly' ) { // What: Monthly Branch. Why: A monthly reminder falls on one day every N months. How: This checks the month count, then the day.
+
+
+		if ( !eveNthFun( intValNum, ( yeaValNum - ancYeaNum ) * 12 + ( monValNum - ancMonNum ) ) ) return false; // What: Month Count Guard. Why: Only every Nth month counts. How: This returns false on other months.
+
+
+
+		return dayValNum === ( nthModBoo ? nthDayFun( yeaValNum, monValNum, tasRcdObj.nthOrdinal || 1, tasRcdObj.nthWeekday ?? 0 ) : Math.min( tasRcdObj.dayOfMonth || 1, dimValFun( yeaValNum, monValNum ) ) ); // What: Monthly Due Return. Why: A monthly reminder falls on its nth weekday or its clamped date. How: This compares the day with whichever rule applies.
+
+
+	}
+
+
+
+	if ( tasRcdObj.repeat === 'annual' ) { // What: Annual Branch. Why: A yearly reminder falls on one day of its month every N years. How: This checks the month and year count, then the day.
+
+
+		if ( monValNum !== tasRcdObj.month || !eveNthFun( intValNum, yeaValNum - ancYeaNum ) ) return false; // What: Month And Year Guard. Why: Only its month in every Nth year counts. How: This returns false otherwise.
+
+
+
+		return dayValNum === ( nthModBoo ? nthDayFun( yeaValNum, tasRcdObj.month, tasRcdObj.nthOrdinal || 1, tasRcdObj.nthWeekday ?? 0 ) : Math.min( tasRcdObj.day || 1, dimValFun( yeaValNum, tasRcdObj.month ) ) ); // What: Yearly Due Return. Why: A yearly reminder falls in its month on its nth weekday or its clamped date. How: This compares the day with whichever rule applies.
+
+
+	}
+
+
+
+	return false; // What: Not Due Return. Why: Any other repeat never falls due. How: This returns false.
+
+
+};
+
+// #endregion remDueFun
+
+
+
 const tdmDayFun = ( picRcdObj : PicRcdTyp, yeaValNum : number, monValNum : number, fieNamStr : 'anchorDay' | 'anchorDom' ) : number => ( picRcdObj.dateMode === 'nthWeekday' // What: Target-Day-Month Day Function. Why: Monthly and yearly anchors are a day number or an nth weekday. How: This resolves the anchor day for a given month.
 	? nthDayFun( yeaValNum, monValNum, picRcdObj.nthOrdinal ?? 1, picRcdObj.nthWeekday ?? 0 )                                                                                // What: Nth Weekday Branch. Why: Nth-weekday mode anchors on a weekday. How: This finds that month's nth weekday.
 	: Math.min( picRcdObj[ fieNamStr ] ?? 1, dimValFun( yeaValNum, monValNum ) ) );                                                                                          // What: Date Branch. Why: A day past the month's end falls on its last day. How: This clamps the anchor day to the month.
@@ -205,92 +291,6 @@ const comPerFun = ( picRcdObj : PicRcdTyp, picLogArr : PclRowTyp[], dayIsoStr : 
 };
 
 // #endregion comPerFun
-
-
-
-// #region remDueFun
-
-/**
- * remDueFun = Reminder Due Function
- *
- * @summary
- * Whether a reminder is due on a date by its repeat rule alone, before the
- * hidden, skip, weekend, and holiday filters. A one-time reminder stays due
- * from its date until it's done, and is still due, shown checked, on the
- * day it was done.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param tasRcdObj - Task Record Object: The reminder to check.
- * @param dayIsoStr - Day ISO String: The date, as YYYY-MM-DD.
- *
- * @returns Whether the reminder is due that day.
- *
- * @example
- * ```ts
- * remDueFun(weeklyReminder, '2026-10-06') // => true or false
- * ```
- *
-*/
-
-const remDueFun = ( tasRcdObj : TasRcdTyp, dayIsoStr : string ) : boolean => { // What: Reminder Due Function. Why: The checker predicts which reminders Today shows. How: This applies the reminder's repeat rule to the date.
-
-
-	const [ yeaValNum, monValNum, dayValNum ] = parIsoFun( dayIsoStr ); // What: Year Month Day Numbers. Why: Monthly and yearly rules read the date's parts. How: This splits the date.
-
-	const intValNum = Math.max( 1, tasRcdObj.interval || 1 );                     // What: Interval Value Number. Why: Every repeat can skip units. How: This reads N, at least 1.
-	const ancDayStr = ( tasRcdObj.anchor || tasRcdObj.createdAt ).slice( 0, 10 ); // What: Anchor Day String. Why: Every-N counts start from the anchor. How: This reads the anchor, falling back to the creation date.
-	const [ ancYeaNum, ancMonNum ] = parIsoFun( ancDayStr );                      // What: Anchor Year Month Numbers. Why: Monthly and yearly counts are in whole months and years. How: This splits the anchor.
-	const nthModBoo = tasRcdObj.dateMode === 'nthWeekday';                        // What: Nth Mode Boolean. Why: Monthly and yearly reminders can fall on an nth weekday. How: This reads the date mode.
-
-
-
-	if ( tasRcdObj.repeat === 'once' ) return !( tasRcdObj.onceDate && dayIsoStr < tasRcdObj.onceDate ) && ( !tasRcdObj.lastDone || tasRcdObj.lastDone === dayIsoStr ); // What: Once Return. Why: A one-time reminder is due from its date until it's done. How: This checks the date and lastDone.
-
-
-
-	if ( tasRcdObj.repeat === 'weekly' ) return ( tasRcdObj.daysOfWeek || [] ).includes( dowValFun( dayIsoStr ) ) && eveNthFun( intValNum, Math.floor( difDayFun( ancDayStr, dayIsoStr ) / 7 ) ); // What: Weekly Return. Why: A weekly reminder falls on its weekdays every N weeks. How: This checks the weekday and the 7-day block count.
-
-
-
-	if ( tasRcdObj.repeat === 'interval' ) return difDayFun( ancDayStr, dayIsoStr ) >= 0 && difDayFun( ancDayStr, dayIsoStr ) % intValNum === 0; // What: Interval Return. Why: An interval reminder falls every N days from its anchor. How: This checks the day count.
-
-
-
-	if ( tasRcdObj.repeat === 'monthly' ) { // What: Monthly Branch. Why: A monthly reminder falls on one day every N months. How: This checks the month count, then the day.
-
-
-		if ( !eveNthFun( intValNum, ( yeaValNum - ancYeaNum ) * 12 + ( monValNum - ancMonNum ) ) ) return false; // What: Month Count Guard. Why: Only every Nth month counts. How: This returns false on other months.
-
-
-
-		return dayValNum === ( nthModBoo ? nthDayFun( yeaValNum, monValNum, tasRcdObj.nthOrdinal || 1, tasRcdObj.nthWeekday ?? 0 ) : Math.min( tasRcdObj.dayOfMonth || 1, dimValFun( yeaValNum, monValNum ) ) ); // What: Monthly Due Return. Why: A monthly reminder falls on its nth weekday or its clamped date. How: This compares the day with whichever rule applies.
-
-
-	}
-
-
-
-	if ( tasRcdObj.repeat === 'annual' ) { // What: Annual Branch. Why: A yearly reminder falls on one day of its month every N years. How: This checks the month and year count, then the day.
-
-
-		if ( monValNum !== tasRcdObj.month || !eveNthFun( intValNum, yeaValNum - ancYeaNum ) ) return false; // What: Month And Year Guard. Why: Only its month in every Nth year counts. How: This returns false otherwise.
-
-
-
-		return dayValNum === ( nthModBoo ? nthDayFun( yeaValNum, tasRcdObj.month, tasRcdObj.nthOrdinal || 1, tasRcdObj.nthWeekday ?? 0 ) : Math.min( tasRcdObj.day || 1, dimValFun( yeaValNum, tasRcdObj.month ) ) ); // What: Yearly Due Return. Why: A yearly reminder falls in its month on its nth weekday or its clamped date. How: This compares the day with whichever rule applies.
-
-
-	}
-
-
-
-	return false; // What: Not Due Return. Why: Any other repeat never falls due. How: This returns false.
-
-
-};
-
-// #endregion remDueFun
 
 
 

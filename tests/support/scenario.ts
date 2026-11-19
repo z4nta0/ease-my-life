@@ -48,20 +48,6 @@ const PIC_BAS_OBJ = { activeItemId : null, anchorDay : 1, anchorDom : 1, anchorD
 
 
 
-const SIM_PIC_ARR : Partial< PicRcdTyp >[] = [ // What: Sim Picker Array. Why: These pickers cover the schedules the real data may lack. How: Each row is one picker's own fields.
-
-
-	{ anchorDom : 31, cadence : 'monthly', id : 'pkr_sim_month', mode : 'ease-up', name : 'Sim Monthly' },                                       // What: Monthly Picker Row. Why: A 31st anchor must clamp in shorter months. How: This is a monthly Ease Up on the 31st.
-	{ anchorDay : 2, anchorMonth : 1, cadence : 'yearly', id : 'pkr_sim_year', mode : 'random', name : 'Sim Yearly' },                           // What: Yearly Picker Row. Why: A yearly date schedule must run once a year. How: This is a yearly random picker on January 2.
-	{ anchorDow : 3, cadence : 'weekly', daysOfWeek : [ 1, 3, 5 ], id : 'pkr_sim_week', mode : 'weighted', name : 'Sim Weekly' },                // What: Weekly Picker Row. Why: A weekly schedule limited to some weekdays must still run once a week. How: This is a weekly weighted picker anchored on Wednesday.
-	{ cadence : 'daily', id : 'pkr_sim_holiday', mode : 'dynamic', name : 'Sim Holiday', skipHolidays : true },                                  // What: Holiday Picker Row. Why: Holiday skipping must hold. How: This is a daily dynamic picker that skips holidays.
-	{ avoidDuplicates : true, cadence : 'daily', daysOfWeek : [ 1, 2, 3, 4, 5 ], id : 'pkr_sim_weekday', mode : 'random', name : 'Sim Weekday' } // What: Weekday Picker Row. Why: Weekday limits and duplicate avoidance must hold. How: This is a weekday random picker avoiding duplicates.
-
-
-];
-
-
-
 const SIM_ITE_ARR : [ string, string ][] = [ // What: Sim Item Array. Why: Each added picker needs items, some sharing names across pickers. How: Each row is a picker id and an item name.
 
 
@@ -76,6 +62,20 @@ const SIM_ITE_ARR : [ string, string ][] = [ // What: Sim Item Array. Why: Each 
 	[ 'pkr_sim_weekday', 'Sim Shared Walk' ],    // What: Weekday Item One. Why: Sharing a name exercises duplicate avoidance. How: This is the weekday picker's first item.
 	[ 'pkr_sim_weekday', 'Sim Shared Stretch' ], // What: Weekday Item Two. Why: Sharing a name exercises duplicate avoidance. How: This is the weekday picker's second item.
 	[ 'pkr_sim_weekday', 'Sim Journal' ]         // What: Weekday Item Three. Why: An unshared name lets duplicates be avoided. How: This is the weekday picker's third item.
+
+
+];
+
+
+
+const SIM_PIC_ARR : Partial< PicRcdTyp >[] = [ // What: Sim Picker Array. Why: These pickers cover the schedules the real data may lack. How: Each row is one picker's own fields.
+
+
+	{ anchorDom : 31, cadence : 'monthly', id : 'pkr_sim_month', mode : 'ease-up', name : 'Sim Monthly' },                                       // What: Monthly Picker Row. Why: A 31st anchor must clamp in shorter months. How: This is a monthly Ease Up on the 31st.
+	{ anchorDay : 2, anchorMonth : 1, cadence : 'yearly', id : 'pkr_sim_year', mode : 'random', name : 'Sim Yearly' },                           // What: Yearly Picker Row. Why: A yearly date schedule must run once a year. How: This is a yearly random picker on January 2.
+	{ anchorDow : 3, cadence : 'weekly', daysOfWeek : [ 1, 3, 5 ], id : 'pkr_sim_week', mode : 'weighted', name : 'Sim Weekly' },                // What: Weekly Picker Row. Why: A weekly schedule limited to some weekdays must still run once a week. How: This is a weekly weighted picker anchored on Wednesday.
+	{ cadence : 'daily', id : 'pkr_sim_holiday', mode : 'dynamic', name : 'Sim Holiday', skipHolidays : true },                                  // What: Holiday Picker Row. Why: Holiday skipping must hold. How: This is a daily dynamic picker that skips holidays.
+	{ avoidDuplicates : true, cadence : 'daily', daysOfWeek : [ 1, 2, 3, 4, 5 ], id : 'pkr_sim_weekday', mode : 'random', name : 'Sim Weekday' } // What: Weekday Picker Row. Why: Weekday limits and duplicate avoidance must hold. How: This is a weekday random picker avoiding duplicates.
 
 
 ];

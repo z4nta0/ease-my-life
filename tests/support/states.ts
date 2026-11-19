@@ -63,89 +63,6 @@ type StaRecTyp = { // What: State Record Type. Why: Every check reads the same d
 
 // #region Constants
 
-// #region STA_REC_ARR
-
-/**
- * STA_REC_ARR = State Record Array
- *
- * @summary
- * Every state the checks visit: each tab on the real-data backup at a phone
- * width (375px) and a desktop width (1,280px), help mode turned on over
- * Today, the Privacy Policy panel open over Settings, and the welcome modal a
- * fresh install opens with. Every row shares the {@link StaRecTyp} shape, so
- * its fields carry no comments of their own:
- *
- * - `actFun` (Function): Action Function, run after the tab shows to open
- *   something on it. Only the help mode and privacy rows have one.
- *
- * - `fixBoo` (Boolean): Fixture Boolean, true when the real-data backup is
- *   loaded, false for an empty install.
- *
- * - `heiNum` (Number): Height Number, the viewport height in CSS pixels.
- *
- * - `ideStr` (String): Identifier String, the state's name in test titles.
- *
- * - `popStr` (String): Pop-Up String, the selector matching an open pop-up
- *   the keyboard walk expects to close. None of these rows has one.
- *
- * - `tabStr` (String): Tab String, the tab's navigation id.
- *
- * - `widNum` (Number): Width Number, the viewport width in CSS pixels.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
-*/
-
-const STA_REC_ARR : StaRecTyp[] = [ // What: State Record Array. Why: Every check walks the same list of states, so a new state is added in one place. How: Each row names a state, its tab, its viewport, and whether it loads the backup, and the opened states add an action.
-
-
-	{ fixBoo : true,  heiNum : 800, ideStr : 'today-desktop',    tabStr : 'today',    widNum : 1280 }, // What: Today Desktop State. Why: The day's list is the app's main screen. How: This opens Today at 1,280px.
-	{ fixBoo : true,  heiNum : 812, ideStr : 'today-phone',      tabStr : 'today',    widNum : 375  }, // What: Today Phone State. Why: Most use is on a phone, where the tab bar sits at the bottom. How: This opens Today at 375px.
-	{ fixBoo : true,  heiNum : 800, ideStr : 'pickers-desktop',  tabStr : 'picker',   widNum : 1280 }, // What: Pickers Desktop State. Why: Pickers are spun and managed here. How: This opens Pickers at 1,280px.
-	{ fixBoo : true,  heiNum : 812, ideStr : 'pickers-phone',    tabStr : 'picker',   widNum : 375  }, // What: Pickers Phone State. Why: The picker rails scroll sideways on a phone. How: This opens Pickers at 375px.
-	{ fixBoo : true,  heiNum : 800, ideStr : 'stats-desktop',    tabStr : 'stats',    widNum : 1280 }, // What: Stats Desktop State. Why: The charts and tables carry the most text and color. How: This opens Stats at 1,280px.
-	{ fixBoo : true,  heiNum : 812, ideStr : 'stats-phone',      tabStr : 'stats',    widNum : 375  }, // What: Stats Phone State. Why: The tables reflow on a phone. How: This opens Stats at 375px.
-	{ fixBoo : true,  heiNum : 800, ideStr : 'data-desktop',     tabStr : 'data',     widNum : 1280 }, // What: Data Desktop State. Why: Every record is edited here. How: This opens Data at 1,280px.
-	{ fixBoo : true,  heiNum : 812, ideStr : 'data-phone',       tabStr : 'data',     widNum : 375  }, // What: Data Phone State. Why: The section cards stack on a phone. How: This opens Data at 375px.
-	{ fixBoo : true,  heiNum : 800, ideStr : 'settings-desktop', tabStr : 'settings', widNum : 1280 }, // What: Settings Desktop State. Why: Every setting and the support form live here. How: This opens Settings at 1,280px.
-	{ fixBoo : true,  heiNum : 812, ideStr : 'settings-phone',   tabStr : 'settings', widNum : 375  }, // What: Settings Phone State. Why: The section rail scrolls sideways on a phone. How: This opens Settings at 375px.
-	{ fixBoo : false, heiNum : 812, ideStr : 'welcome-phone',    tabStr : 'today',    widNum : 375  }, // What: Welcome Phone State. Why: A first visit opens with the welcome modal. How: This opens an empty install at 375px.
-
-	{ // What: Help Mode Phone State. Why: Help mode dims the tab and adds a badge to every explained control. How: This opens Today at 375px and turns help mode on.
-
-
-		fixBoo : true,
-		heiNum : 812,
-		ideStr : 'help-phone',
-		tabStr : 'today',
-		widNum : 375,
-
-		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="helTogBut"]' ).first().click(); }
-
-
-	},
-
-	{ // What: Privacy Panel Desktop State. Why: The legal panels are long modal documents. How: This opens Settings at 1,280px and opens the Privacy Policy.
-
-
-		fixBoo : true,
-		heiNum : 800,
-		ideStr : 'privacy-desktop',
-		tabStr : 'settings',
-		widNum : 1280,
-
-		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="priRowDiv"] button' ).first().click(); }
-
-
-	}
-
-
-];
-
-// #endregion STA_REC_ARR
-
-
-
 // #region EXT_STA_ARR
 
 /**
@@ -353,6 +270,89 @@ const REA_STA_ARR : StaRecTyp[] = [ // What: Reachable State Array. Why: A pop-u
 ];
 
 // #endregion REA_STA_ARR
+
+
+
+// #region STA_REC_ARR
+
+/**
+ * STA_REC_ARR = State Record Array
+ *
+ * @summary
+ * Every state the checks visit: each tab on the real-data backup at a phone
+ * width (375px) and a desktop width (1,280px), help mode turned on over
+ * Today, the Privacy Policy panel open over Settings, and the welcome modal a
+ * fresh install opens with. Every row shares the {@link StaRecTyp} shape, so
+ * its fields carry no comments of their own:
+ *
+ * - `actFun` (Function): Action Function, run after the tab shows to open
+ *   something on it. Only the help mode and privacy rows have one.
+ *
+ * - `fixBoo` (Boolean): Fixture Boolean, true when the real-data backup is
+ *   loaded, false for an empty install.
+ *
+ * - `heiNum` (Number): Height Number, the viewport height in CSS pixels.
+ *
+ * - `ideStr` (String): Identifier String, the state's name in test titles.
+ *
+ * - `popStr` (String): Pop-Up String, the selector matching an open pop-up
+ *   the keyboard walk expects to close. None of these rows has one.
+ *
+ * - `tabStr` (String): Tab String, the tab's navigation id.
+ *
+ * - `widNum` (Number): Width Number, the viewport width in CSS pixels.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const STA_REC_ARR : StaRecTyp[] = [ // What: State Record Array. Why: Every check walks the same list of states, so a new state is added in one place. How: Each row names a state, its tab, its viewport, and whether it loads the backup, and the opened states add an action.
+
+
+	{ fixBoo : true,  heiNum : 800, ideStr : 'today-desktop',    tabStr : 'today',    widNum : 1280 }, // What: Today Desktop State. Why: The day's list is the app's main screen. How: This opens Today at 1,280px.
+	{ fixBoo : true,  heiNum : 812, ideStr : 'today-phone',      tabStr : 'today',    widNum : 375  }, // What: Today Phone State. Why: Most use is on a phone, where the tab bar sits at the bottom. How: This opens Today at 375px.
+	{ fixBoo : true,  heiNum : 800, ideStr : 'pickers-desktop',  tabStr : 'picker',   widNum : 1280 }, // What: Pickers Desktop State. Why: Pickers are spun and managed here. How: This opens Pickers at 1,280px.
+	{ fixBoo : true,  heiNum : 812, ideStr : 'pickers-phone',    tabStr : 'picker',   widNum : 375  }, // What: Pickers Phone State. Why: The picker rails scroll sideways on a phone. How: This opens Pickers at 375px.
+	{ fixBoo : true,  heiNum : 800, ideStr : 'stats-desktop',    tabStr : 'stats',    widNum : 1280 }, // What: Stats Desktop State. Why: The charts and tables carry the most text and color. How: This opens Stats at 1,280px.
+	{ fixBoo : true,  heiNum : 812, ideStr : 'stats-phone',      tabStr : 'stats',    widNum : 375  }, // What: Stats Phone State. Why: The tables reflow on a phone. How: This opens Stats at 375px.
+	{ fixBoo : true,  heiNum : 800, ideStr : 'data-desktop',     tabStr : 'data',     widNum : 1280 }, // What: Data Desktop State. Why: Every record is edited here. How: This opens Data at 1,280px.
+	{ fixBoo : true,  heiNum : 812, ideStr : 'data-phone',       tabStr : 'data',     widNum : 375  }, // What: Data Phone State. Why: The section cards stack on a phone. How: This opens Data at 375px.
+	{ fixBoo : true,  heiNum : 800, ideStr : 'settings-desktop', tabStr : 'settings', widNum : 1280 }, // What: Settings Desktop State. Why: Every setting and the support form live here. How: This opens Settings at 1,280px.
+	{ fixBoo : true,  heiNum : 812, ideStr : 'settings-phone',   tabStr : 'settings', widNum : 375  }, // What: Settings Phone State. Why: The section rail scrolls sideways on a phone. How: This opens Settings at 375px.
+	{ fixBoo : false, heiNum : 812, ideStr : 'welcome-phone',    tabStr : 'today',    widNum : 375  }, // What: Welcome Phone State. Why: A first visit opens with the welcome modal. How: This opens an empty install at 375px.
+
+	{ // What: Help Mode Phone State. Why: Help mode dims the tab and adds a badge to every explained control. How: This opens Today at 375px and turns help mode on.
+
+
+		fixBoo : true,
+		heiNum : 812,
+		ideStr : 'help-phone',
+		tabStr : 'today',
+		widNum : 375,
+
+		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="helTogBut"]' ).first().click(); }
+
+
+	},
+
+	{ // What: Privacy Panel Desktop State. Why: The legal panels are long modal documents. How: This opens Settings at 1,280px and opens the Privacy Policy.
+
+
+		fixBoo : true,
+		heiNum : 800,
+		ideStr : 'privacy-desktop',
+		tabStr : 'settings',
+		widNum : 1280,
+
+		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="priRowDiv"] button' ).first().click(); }
+
+
+	}
+
+
+];
+
+// #endregion STA_REC_ARR
 
 // #endregion Constants
 

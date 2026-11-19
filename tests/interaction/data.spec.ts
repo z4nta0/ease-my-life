@@ -53,10 +53,6 @@ let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's pa
 
 // #region Helpers
 
-const picCarFun = ( curPagObj : Page ) => curPagObj.locator( '[data-element-name-hook~="datCatSec"][data-picker-id]' ).first(); // What: Picker Card Function. Why: Most flows use the first picker card. How: This finds it.
-
-
-
 // #region opeSecFun
 
 /**
@@ -107,6 +103,10 @@ const opeSecFun = async ( carSecLoc : Locator, secIndNum : number | null ) : Pro
 };
 
 // #endregion opeSecFun
+
+
+
+const picCarFun = ( curPagObj : Page ) => curPagObj.locator( '[data-element-name-hook~="datCatSec"][data-picker-id]' ).first(); // What: Picker Card Function. Why: Most flows use the first picker card. How: This finds it.
 
 // #endregion Helpers
 
