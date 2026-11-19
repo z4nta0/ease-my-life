@@ -29,9 +29,6 @@ const difDayFun = ( froIsoStr : string, toaIsoStr : string ) : number => daySerF
 const dimValFun = ( yeaValNum : number, monValNum : number ) : number => new Date( Date.UTC( yeaValNum, monValNum, 0 ) ).getUTCDate();                                                                 // What: Days-In-Month Value Function. Why: Day-of-month rules clamp to a month's length. How: This reads day 0 of the next month, the last day of this one.
 const dowValFun = ( dayIsoStr : string ) : number => new Date( `${ dayIsoStr }T00:00:00Z` ).getUTCDay();                                                                                               // What: Day-Of-Week Value Function. Why: Weekday rules read the weekday, 0 for Sunday. How: This reads it in UTC from the date's own parts.
 const isoParFun = ( yeaValNum : number, monValNum : number, dayValNum : number ) : string => `${ yeaValNum }-${ String( monValNum ).padStart( 2, '0' ) }-${ String( dayValNum ).padStart( 2, '0' ) }`; // What: ISO Parts Function. Why: Rules compute dates from a year, month, and day. How: This writes them as YYYY-MM-DD.
-const parIsoFun = ( dayIsoStr : string ) : number[] => dayIsoStr.split( '-' ).map( Number ); // What: Parts ISO Function. Why: Rules read a date's year, month, and day. How: This splits YYYY-MM-DD into numbers.
-const serDayFun = ( daySerNum : number ) : string => new Date( daySerNum * 86400000 ).toISOString().slice( 0, 10 );                                                                                    // What: Serial Day Function. Why: Arithmetic results have to become dates again. How: This turns a day count back into YYYY-MM-DD.
-const addDayFun = ( dayIsoStr : string, addValNum : number ) : string => serDayFun( daySerFun( dayIsoStr ) + addValNum );                                                                              // What: Add Day Function. Why: The simulation steps and looks back by whole days. How: This shifts a date by a number of days.
 
 
 
@@ -76,6 +73,12 @@ const nthDayFun = ( yeaValNum : number, monValNum : number, nthValNum : number, 
 };
 
 // #endregion nthDayFun
+
+
+
+const parIsoFun = ( dayIsoStr : string ) : number[] => dayIsoStr.split( '-' ).map( Number );                              // What: Parts ISO Function. Why: Rules read a date's year, month, and day. How: This splits YYYY-MM-DD into numbers.
+const serDayFun = ( daySerNum : number ) : string => new Date( daySerNum * 86400000 ).toISOString().slice( 0, 10 );       // What: Serial Day Function. Why: Arithmetic results have to become dates again. How: This turns a day count back into YYYY-MM-DD.
+const addDayFun = ( dayIsoStr : string, addValNum : number ) : string => serDayFun( daySerFun( dayIsoStr ) + addValNum ); // What: Add Day Function. Why: The simulation steps and looks back by whole days. How: This shifts a date by a number of days.
 
 // #endregion Helpers
 

@@ -44,45 +44,8 @@ import type { Page } from '@playwright/test'; // What: Page. Why: Every helper d
 
 // #region Constants
 
-const NOO_PRE_FUN = async () => {};                                      // What: No-Op Prepare Function. Why: Most states need no setup beyond the tab. How: This does nothing.
 const OUT_DIR_STR = new URL( '../output/responsive/', import.meta.url ); // What: Output Directory String. Why: Screenshots land where git ignores them. How: This is tests/output/responsive.
-
-
-
-type PagStaTyp = { namStr : string, preFun : ( curPagObj : Page ) => Promise< void >, tabStr : string }; // What: Page State Type. Why: Each measured state is a tab plus optional setup. How: This holds its name, tab, and setup.
-
-const PAG_STA_ARR : PagStaTyp[] = [ // What: Page State Array. Why: Each tab, and the expanded states most likely to crowd, are measured. How: Each row is one state.
-
-
-	{ namStr : 'today',        preFun : NOO_PRE_FUN, tabStr : 'today' },    // What: Today State. Why: The daily list is the main screen. How: This measures Today as it opens.
-	{ namStr : 'pickers',      preFun : NOO_PRE_FUN, tabStr : 'picker' },   // What: Pickers State. Why: The picker view packs controls and a pool. How: This measures Pickers as it opens.
-	{ namStr : 'stats',        preFun : NOO_PRE_FUN, tabStr : 'stats' },    // What: Stats State. Why: Stats holds wide cards and a heatmap. How: This measures Stats as it opens.
-	{ namStr : 'settings',     preFun : NOO_PRE_FUN, tabStr : 'settings' }, // What: Settings State. Why: Settings holds every option row. How: This measures Settings as it opens.
-
-	{ namStr : 'today-editor', tabStr : 'today', preFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="todCarArt"] [aria-label="Edit"]' ).first().click(); } }, // What: Today Editor State. Why: The inline item editor crowds a card. How: This opens the first card's editor.
-
-	{ namStr : 'data-expanded', tabStr : 'data', preFun : async ( curPagObj ) => { // What: Data Expanded State. Why: An open picker card shows its controls and items, the Data tab's densest view. How: This opens the first picker's card, controls, and items.
-
-
-		const carSecLoc = curPagObj.locator( '[data-element-name-hook~="datCatSec"][data-picker-id]' ).first(); // What: Card Section Locator. Why: The first picker card is opened. How: This finds it.
-
-
-
-		if ( await carSecLoc.locator( '[data-element-name-hook~="catHeaBut"][aria-expanded="false"]' ).count() ) await carSecLoc.locator( '[data-element-name-hook~="catHeaBut"]' ).click(); // What: Card Open Call. Why: A closed card hides its body. How: This opens it when closed.
-
-
-
-		for ( const togButLoc of await carSecLoc.locator( '[data-element-name-hook~="catTogBut"]' ).all() ) if ( await togButLoc.getAttribute( 'aria-expanded' ) !== 'true' ) await togButLoc.click(); // What: Section Open Loop. Why: Controls and items open separately. How: This opens each closed one.
-
-
-	} }
-
-
-];
-
-
-
-const VIE_WID_ARR = [ 375, 414, 768, 1024, 1280 ]; // What: Viewport Width Array. Why: Phones from 375 up, a tablet, and desktops. How: This lists the widths measured.
+const VIE_WID_ARR = [ 375, 414, 768, 1024, 1280 ];                       // What: Viewport Width Array. Why: Phones from 375 up, a tablet, and desktops. How: This lists the widths measured.
 
 // #endregion Constants
 
@@ -374,6 +337,42 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 } );
 
 // #endregion meaLayFun
+
+
+
+const nooPreFun = async () => {}; // What: No-Op Prepare Function. Why: Most states need no setup beyond the tab. How: This does nothing.
+
+
+type PagStaTyp = { namStr : string, preFun : ( curPagObj : Page ) => Promise< void >, tabStr : string }; // What: Page State Type. Why: Each measured state is a tab plus optional setup. How: This holds its name, tab, and setup.
+
+const PAG_STA_ARR : PagStaTyp[] = [ // What: Page State Array. Why: Each tab, and the expanded states most likely to crowd, are measured. How: Each row is one state.
+
+
+	{ namStr : 'today',        preFun : nooPreFun, tabStr : 'today' },    // What: Today State. Why: The daily list is the main screen. How: This measures Today as it opens.
+	{ namStr : 'pickers',      preFun : nooPreFun, tabStr : 'picker' },   // What: Pickers State. Why: The picker view packs controls and a pool. How: This measures Pickers as it opens.
+	{ namStr : 'stats',        preFun : nooPreFun, tabStr : 'stats' },    // What: Stats State. Why: Stats holds wide cards and a heatmap. How: This measures Stats as it opens.
+	{ namStr : 'settings',     preFun : nooPreFun, tabStr : 'settings' }, // What: Settings State. Why: Settings holds every option row. How: This measures Settings as it opens.
+
+	{ namStr : 'today-editor', tabStr : 'today', preFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="todCarArt"] [aria-label="Edit"]' ).first().click(); } }, // What: Today Editor State. Why: The inline item editor crowds a card. How: This opens the first card's editor.
+
+	{ namStr : 'data-expanded', tabStr : 'data', preFun : async ( curPagObj ) => { // What: Data Expanded State. Why: An open picker card shows its controls and items, the Data tab's densest view. How: This opens the first picker's card, controls, and items.
+
+
+		const carSecLoc = curPagObj.locator( '[data-element-name-hook~="datCatSec"][data-picker-id]' ).first(); // What: Card Section Locator. Why: The first picker card is opened. How: This finds it.
+
+
+
+		if ( await carSecLoc.locator( '[data-element-name-hook~="catHeaBut"][aria-expanded="false"]' ).count() ) await carSecLoc.locator( '[data-element-name-hook~="catHeaBut"]' ).click(); // What: Card Open Call. Why: A closed card hides its body. How: This opens it when closed.
+
+
+
+		for ( const togButLoc of await carSecLoc.locator( '[data-element-name-hook~="catTogBut"]' ).all() ) if ( await togButLoc.getAttribute( 'aria-expanded' ) !== 'true' ) await togButLoc.click(); // What: Section Open Loop. Why: Controls and items open separately. How: This opens each closed one.
+
+
+	} }
+
+
+];
 
 // #endregion Helpers
 

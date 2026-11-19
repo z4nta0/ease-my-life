@@ -284,6 +284,64 @@ const jsoStrFun = ( valAny : unknown ) : string => JSON.stringify( valAny ); // 
 
 
 
+// #region cheRemFun
+
+/**
+ * cheRemFun = Check Reminder Function
+ *
+ * @summary
+ * Checks one reminder check-off: its lastDone is the simulated day, the
+ * reminder log gained exactly one row for it, completed on that day with the
+ * reminder's name and class, and no other reminder changed.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param preStaObj - Previous State Object: The state just before the click.
+ * @param aftStaObj - After State Object: The state just after the click.
+ * @param tasIdeStr - Task Identifier String: The reminder checked off.
+ * @param dayIsoStr - Day ISO String: The simulated day, as YYYY-MM-DD.
+ *
+ * @returns Every problem found.
+ * @see {@link issMesArr}
+ *
+ * @example
+ * ```ts
+ * cheRemFun(preStaObj, aftStaObj, 'tk_abc', '2026-10-06') // => [] when right
+ * ```
+ *
+*/
+
+const cheRemFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, tasIdeStr : string, dayIsoStr : string ) : string[] => { // What: Check Reminder Function. Why: Every reminder check-off must record exactly one completion. How: This compares the reminders and their log around the click.
+
+
+	const issMesArr : string[] = [];                                                                                        // What: Issue Message Array. Why: Every problem is reported. How: This collects them.
+	const issAddFun = ( issMesStr : string ) => issMesArr.push( `${ dayIsoStr } reminder ${ tasIdeStr }: ${ issMesStr }` ); // What: Issue Add Function. Why: Every report names the day and reminder. How: This prefixes and stores a message.
+	const tasRcdObj = aftStaObj.tasks.find( ( curTasObj ) => curTasObj.id === tasIdeStr );                                  // What: Task Record Object. Why: The reminder after the click. How: This looks it up.
+	const newRowArr = aftStaObj.reminderLog.slice( preStaObj.reminderLog.length );                                          // What: New Row Array. Why: The click appends one row. How: This takes the rows added since before.
+
+
+
+	if ( !tasRcdObj || tasRcdObj.lastDone !== dayIsoStr ) issAddFun( `lastDone ${ tasRcdObj && tasRcdObj.lastDone }, expected ${ dayIsoStr }` ); // What: Last Done Check. Why: The reminder records today as done. How: This compares lastDone.
+
+
+
+	if ( newRowArr.length !== 1 || newRowArr[ 0 ].taskId !== tasIdeStr || locDayFun( newRowArr[ 0 ].completedAt ) !== dayIsoStr || newRowArr[ 0 ].type !== ( tasRcdObj && tasRcdObj.repeat === 'once' ? 'once' : 'recurring' ) ) issAddFun( `reminder log added ${ jsoStrFun( newRowArr ) }` ); // What: Log Row Check. Why: One row records today's completion with the reminder's class. How: This checks the added rows.
+
+
+
+	for ( const preTasObj of preStaObj.tasks ) if ( preTasObj.id !== tasIdeStr && jsoStrFun( preTasObj ) !== jsoStrFun( aftStaObj.tasks.find( ( curTasObj ) => curTasObj.id === preTasObj.id ) ) ) issAddFun( `other reminder ${ preTasObj.name } changed` ); // What: Other Reminder Loop. Why: A check-off touches only its reminder. How: This compares every other one.
+
+
+
+	return issMesArr; // What: Issues Return. Why: The caller collects every reminder's problems. How: This returns the list.
+
+
+};
+
+// #endregion cheRemFun
+
+
+
 const unpConFun = ( conRcdObj : ConRcdTyp ) : string => { const { _cardPrev : carPreObj, _chargePrev : chrPreObj, ...resConObj } = conRcdObj; return jsoStrFun( resConObj ); }; // What: Unsnapshotted Conditional Function. Why: Undo snapshots linger from earlier days and aren't part of what a check-off restores. How: This serializes a conditional without them.
 
 
@@ -577,64 +635,6 @@ const cheUndFun = ( preStaObj : StaAppTyp, undStaObj : StaAppTyp, entEidStr : st
 };
 
 // #endregion cheUndFun
-
-
-
-// #region cheRemFun
-
-/**
- * cheRemFun = Check Reminder Function
- *
- * @summary
- * Checks one reminder check-off: its lastDone is the simulated day, the
- * reminder log gained exactly one row for it, completed on that day with the
- * reminder's name and class, and no other reminder changed.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param preStaObj - Previous State Object: The state just before the click.
- * @param aftStaObj - After State Object: The state just after the click.
- * @param tasIdeStr - Task Identifier String: The reminder checked off.
- * @param dayIsoStr - Day ISO String: The simulated day, as YYYY-MM-DD.
- *
- * @returns Every problem found.
- * @see {@link issMesArr}
- *
- * @example
- * ```ts
- * cheRemFun(preStaObj, aftStaObj, 'tk_abc', '2026-10-06') // => [] when right
- * ```
- *
-*/
-
-const cheRemFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, tasIdeStr : string, dayIsoStr : string ) : string[] => { // What: Check Reminder Function. Why: Every reminder check-off must record exactly one completion. How: This compares the reminders and their log around the click.
-
-
-	const issMesArr : string[] = [];                                                                                        // What: Issue Message Array. Why: Every problem is reported. How: This collects them.
-	const issAddFun = ( issMesStr : string ) => issMesArr.push( `${ dayIsoStr } reminder ${ tasIdeStr }: ${ issMesStr }` ); // What: Issue Add Function. Why: Every report names the day and reminder. How: This prefixes and stores a message.
-	const tasRcdObj = aftStaObj.tasks.find( ( curTasObj ) => curTasObj.id === tasIdeStr );                                  // What: Task Record Object. Why: The reminder after the click. How: This looks it up.
-	const newRowArr = aftStaObj.reminderLog.slice( preStaObj.reminderLog.length );                                          // What: New Row Array. Why: The click appends one row. How: This takes the rows added since before.
-
-
-
-	if ( !tasRcdObj || tasRcdObj.lastDone !== dayIsoStr ) issAddFun( `lastDone ${ tasRcdObj && tasRcdObj.lastDone }, expected ${ dayIsoStr }` ); // What: Last Done Check. Why: The reminder records today as done. How: This compares lastDone.
-
-
-
-	if ( newRowArr.length !== 1 || newRowArr[ 0 ].taskId !== tasIdeStr || locDayFun( newRowArr[ 0 ].completedAt ) !== dayIsoStr || newRowArr[ 0 ].type !== ( tasRcdObj && tasRcdObj.repeat === 'once' ? 'once' : 'recurring' ) ) issAddFun( `reminder log added ${ jsoStrFun( newRowArr ) }` ); // What: Log Row Check. Why: One row records today's completion with the reminder's class. How: This checks the added rows.
-
-
-
-	for ( const preTasObj of preStaObj.tasks ) if ( preTasObj.id !== tasIdeStr && jsoStrFun( preTasObj ) !== jsoStrFun( aftStaObj.tasks.find( ( curTasObj ) => curTasObj.id === preTasObj.id ) ) ) issAddFun( `other reminder ${ preTasObj.name } changed` ); // What: Other Reminder Loop. Why: A check-off touches only its reminder. How: This compares every other one.
-
-
-
-	return issMesArr; // What: Issues Return. Why: The caller collects every reminder's problems. How: This returns the list.
-
-
-};
-
-// #endregion cheRemFun
 
 // #endregion Helpers
 

@@ -104,6 +104,37 @@ const recAniFun = async ( curPagObj : Page ) : Promise< void > => curPagObj.eval
 
 
 
+// #region seeAniFun
+
+/**
+ * seeAniFun = Seen Animation Function
+ *
+ * @summary
+ * Waits up to five seconds for a recorded class or attribute containing a
+ * name, and returns whether one appeared. Attributes are recorded in
+ * brackets, so asking for [data-pick-sent-active] matches the attribute.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curPagObj - Current Page Object: The page recording.
+ * @param aniNamStr - Animation Name String: The class or bracketed attribute
+ *                    name to look for.
+ *
+ * @returns Whether it appeared.
+ *
+ * @example
+ * ```ts
+ * await seeAniFun(curPagObj, 'proRinDiv--pulsing') // => true
+ * ```
+ *
+*/
+
+const seeAniFun = async ( curPagObj : Page, aniNamStr : string ) : Promise< boolean > => curPagObj.waitForFunction( ( wanNamStr ) => ( ( window as unknown as { __aniRecArr? : string[] } ).__aniRecArr || [] ).some( ( recNamStr ) => recNamStr.includes( wanNamStr ) ), aniNamStr, { timeout : 5000 } ).then( () => true, () => false ); // What: Seen Animation Function. Why: A test confirms an animation played. How: This waits for a matching recorded name and returns whether it came. // What: Type Assertion Note. Why: The record is a test-only window field. How: The window is read as holding it, since recAniFun sets it.
+
+// #endregion seeAniFun
+
+
+
 // #region watErrFun
 
 /**
@@ -150,37 +181,6 @@ const watErrFun = ( curPagObj : Page ) : string[] => { // What: Watch Errors Fun
 };
 
 // #endregion watErrFun
-
-
-
-// #region seeAniFun
-
-/**
- * seeAniFun = Seen Animation Function
- *
- * @summary
- * Waits up to five seconds for a recorded class or attribute containing a
- * name, and returns whether one appeared. Attributes are recorded in
- * brackets, so asking for [data-pick-sent-active] matches the attribute.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param curPagObj - Current Page Object: The page recording.
- * @param aniNamStr - Animation Name String: The class or bracketed attribute
- *                    name to look for.
- *
- * @returns Whether it appeared.
- *
- * @example
- * ```ts
- * await seeAniFun(curPagObj, 'proRinDiv--pulsing') // => true
- * ```
- *
-*/
-
-const seeAniFun = async ( curPagObj : Page, aniNamStr : string ) : Promise< boolean > => curPagObj.waitForFunction( ( wanNamStr ) => ( ( window as unknown as { __aniRecArr? : string[] } ).__aniRecArr || [] ).some( ( recNamStr ) => recNamStr.includes( wanNamStr ) ), aniNamStr, { timeout : 5000 } ).then( () => true, () => false ); // What: Seen Animation Function. Why: A test confirms an animation played. How: This waits for a matching recorded name and returns whether it came. // What: Type Assertion Note. Why: The record is a test-only window field. How: The window is read as holding it, since recAniFun sets it.
-
-// #endregion seeAniFun
 
 // #endregion Helpers
 

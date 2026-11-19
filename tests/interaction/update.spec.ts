@@ -72,6 +72,10 @@ const NOT_MES_STR = 'A new version of Ease My Life is ready.'; // What: Note Mes
 
 // #region Helpers
 
+const conChaFun = ( curPagObj : Page ) => curPagObj.evaluate( () => navigator.serviceWorker.dispatchEvent( new Event( 'controllerchange' ) ) ); // What: Controller Change Function. Why: A new version taking control is what starts the flow. How: This fires the container's controllerchange event.
+
+
+
 // #region fakWorFun
 
 /**
@@ -167,10 +171,6 @@ async function visSetFun ( curPagObj : Page, visStaStr : string ) : Promise< voi
 }
 
 // #endregion visSetFun
-
-
-
-const conChaFun = ( curPagObj : Page ) => curPagObj.evaluate( () => navigator.serviceWorker.dispatchEvent( new Event( 'controllerchange' ) ) ); // What: Controller Change Function. Why: A new version taking control is what starts the flow. How: This fires the container's controllerchange event.
 
 // #endregion Helpers
 

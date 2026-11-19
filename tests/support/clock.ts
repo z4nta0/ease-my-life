@@ -48,6 +48,35 @@ const HOU_FOR_OBJ = new Intl.DateTimeFormat( 'en-US', { hour : 'numeric', hourCy
 
 // #region Helpers
 
+// #region locDayFun
+
+/**
+ * locDayFun = Local Day Function
+ *
+ * @summary
+ * Returns the Chicago date an instant falls on, as YYYY-MM-DD. The app saves
+ * timestamps like generatedAt and completedAt in UTC, while every day the
+ * suites reason about is a Chicago date.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param timValStr - Time Value String: An ISO timestamp.
+ *
+ * @returns The Chicago date it falls on.
+ *
+ * @example
+ * ```ts
+ * locDayFun('2026-10-06T03:00:00.000Z') // => '2026-10-05'
+ * ```
+ *
+*/
+
+const locDayFun = ( timValStr : string ) : string => DAY_FOR_OBJ.format( new Date( timValStr ) ); // What: Local Day Function. Why: Saved timestamps are UTC but the suites reason in Chicago dates. How: This formats the instant as its Chicago date.
+
+// #endregion locDayFun
+
+
+
 // #region locTimFun
 
 /**
@@ -168,35 +197,6 @@ const insClcFun = async ( curPagObj : Page, dayIsoStr : string, houValNum : numb
 const setClcFun = async ( curPagObj : Page, dayIsoStr : string, houValNum : number ) : Promise< void > => curPagObj.clock.setSystemTime( locTimFun( dayIsoStr, houValNum ) ); // What: Set Clock Function. Why: Each simulated day starts at a chosen Chicago time. How: This jumps the fake clock there.
 
 // #endregion setClcFun
-
-
-
-// #region locDayFun
-
-/**
- * locDayFun = Local Day Function
- *
- * @summary
- * Returns the Chicago date an instant falls on, as YYYY-MM-DD. The app saves
- * timestamps like generatedAt and completedAt in UTC, while every day the
- * suites reason about is a Chicago date.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param timValStr - Time Value String: An ISO timestamp.
- *
- * @returns The Chicago date it falls on.
- *
- * @example
- * ```ts
- * locDayFun('2026-10-06T03:00:00.000Z') // => '2026-10-05'
- * ```
- *
-*/
-
-const locDayFun = ( timValStr : string ) : string => DAY_FOR_OBJ.format( new Date( timValStr ) ); // What: Local Day Function. Why: Saved timestamps are UTC but the suites reason in Chicago dates. How: This formats the instant as its Chicago date.
-
-// #endregion locDayFun
 
 // #endregion Helpers
 
