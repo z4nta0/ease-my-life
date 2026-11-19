@@ -18,6 +18,7 @@
 		"test:responsive": "playwright test --config tests/playwright.config.ts --project responsive",
 		"test:rules": "firebase emulators:exec --only firestore --project demo-ease-my-life \"playwright test --config tests/playwright.config.ts --project rules\"",
 		"test:security": "playwright test --config tests/playwright.config.ts --project 'security-*'",
+		"test:seo": "playwright test --config tests/playwright.config.ts --project 'seo-*'",
 		"test:simulation": "playwright test --config tests/playwright.config.ts --project simulation",
 		"test:sync": "playwright test --config tests/playwright.config.ts --project sync",
 		"typecheck": "tsc -b"

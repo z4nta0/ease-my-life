@@ -58,9 +58,9 @@ branch.
 
 ### Test suites
 
-Added 2026-10-06. Nine Playwright suites live in `tests/`, one project each
-in `tests/playwright.config.ts` (the accessibility, account, and security
-suites one per engine), which starts its own dev server on port 5190 and
+Added 2026-10-06. Ten Playwright suites live in `tests/`, one project each
+in `tests/playwright.config.ts` (the accessibility, account, security, and
+SEO suites one per engine), which starts its own dev server on port 5190 and
 a production build under `vite preview` on 5191 (never the usual 5173), and
 stops both afterwards. Every page runs in Chicago
 time with service workers blocked, and results, screenshots, and simulation
@@ -133,6 +133,14 @@ tests/output/report` opens the HTML report.
   "Where data lives" and no secret. Data access is checked by `test:rules`,
   the webhook's signatures by `test:payments`, and sign-out by
   `test:account`. The backend has no rate limits of its own to check.
+- `npm run test:seo`: in all three engines, the raw `/`, `/privacy`, and
+  `/terms` from the preview build each have one title and one description of
+  their own (120 to 125 characters), one canonical address, the author, and
+  no `noindex`; every app state keeps that one description; the home page
+  carries every link preview tag with absolute addresses and served icons;
+  the preview image is a 1,200x630 PNG under 300 KB; the JSON-LD's sync
+  offer matches `SYN_PRI_STR`; and robots.txt and the sitemap list exactly
+  the three pages.
 - `npm run test:sync`: checks the sync engine in Node, with no browser,
   against an in-memory cloud copy (`tests/sync/fake-backend.ts`): the real
   backup splits into documents under Firestore's size limit and joins back

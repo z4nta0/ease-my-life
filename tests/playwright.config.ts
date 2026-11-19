@@ -16,7 +16,7 @@ import { TIP_URL_STR   } from './support/app.ts';   // What: Tip URL String. Why
  * playwright.config.ts = Playwright Config
  *
  * @summary
- * The config behind npm test and its nine suites, each one or more Playwright
+ * The config behind npm test and its ten suites, each one or more Playwright
  * projects: simulation (a faked-clock run through weeks of days on a copy of
  * real data), accessibility (the pre-commit scan, one project per engine),
  * account (two devices signing in and syncing against the Firebase Emulator,
@@ -24,8 +24,9 @@ import { TIP_URL_STR   } from './support/app.ts';   // What: Tip URL String. Why
  * onboarding (every tour and Replay), responsive (layout at phone to desktop
  * widths), rules (the Firestore security rules, in the local emulator),
  * security (the security policy, the build, and the dependencies, one project
- * per engine), and sync (the sync engine in Node, against a fake cloud
- * copy). All but rules and sync run against the real app
+ * per engine), SEO (each page's head, the crawler files, and the link
+ * preview, one project per engine), and sync (the sync engine in Node,
+ * against a fake cloud copy). All but rules and sync run against the real app
  * in a browser. Playwright starts the Vite dev server on port 5190 for the
  * run, and a build served by vite preview on 5191 for checks of what ships,
  * and stops both afterwards, so a dev server already running on the usual
@@ -45,13 +46,13 @@ import { TIP_URL_STR   } from './support/app.ts';   // What: Tip URL String. Why
 
 // #region Constants
 
-const PRE_URL_STR = 'http://localhost:5191';                           // What: Preview URL String. Why: The security suite loads the production build, since the dev server injects inline scripts the security policy would block. How: This is the address the preview server answers on, the security projects' baseURL.
+const PRE_URL_STR = 'http://localhost:5191';                           // What: Preview URL String. Why: The security suite loads the production build, since the dev server injects inline scripts the security policy would block, and the SEO suite reads the raw pages that ship. How: This is the address the preview server answers on, the security projects' baseURL.
 const ROO_DIR_STR = fileURLToPath( new URL( '..', import.meta.url ) ); // What: Root Directory String. Why: Both servers must run from the repo root, where vite.config.ts lives. How: This resolves the folder above tests/.
 const SER_URL_STR = 'http://localhost:5190';                           // What: Server URL String. Why: Every suite but security opens the app from the dev server. How: This is the address Playwright waits on and the baseURL of every project but the security ones.
 
 
 
-const ENG_NAM_ARR = [ // What: Engine Name Array. Why: The accessibility, account, and security suites run in all three engines. How: Each entry is a Playwright browser name, given one project apiece in each of those suites.
+const ENG_NAM_ARR = [ // What: Engine Name Array. Why: The accessibility, account, security, and SEO suites run in all three engines. How: Each entry is a Playwright browser name, given one project apiece in each of those suites.
 
 
 	'chromium', // What: Chromium Engine. Why: Chrome and Edge render with it. How: This is Playwright's Chromium build.
@@ -133,6 +134,25 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 
 		})),
 
+		...ENG_NAM_ARR.map( ( engNamStr ) => ({ // What: SEO Projects. Why: Each page's head, the crawler files, and the social preview card are checked in every engine. How: This adds one SEO project per engine.
+
+
+			name      : `seo-${ engNamStr }`, // What: Name. Why: A failure has to say which engine it came from. How: This names the project after it.
+			testMatch : 'seo/**/*.spec.ts',   // What: Test Match. Why: The SEO specs live in their own folder. How: This runs every spec in tests/seo.
+			timeout   : 120000,               // What: Timeout. Why: Each state loads the real-data backup. How: This gives each test two minutes.
+
+			use : { // What: Use. Why: The project has to launch its own engine. How: This sets the browser it runs in, and which build of it.
+
+
+				browserName : engNamStr,                                        // What: Browser Name. Why: Each project runs in one engine. How: This names that engine's Playwright browser.
+				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every project does. How: This picks it for Chromium only.
+
+
+			}
+
+
+		})),
+
 		{ name : 'interaction', testMatch : 'interaction/**/*.spec.ts', timeout : 300000  }, // What: Interaction Project. Why: Every control and editor is driven against IndexedDB. How: This runs tests/interaction with five minutes per test.
 		{ name : 'onboarding',  testMatch : 'onboarding/**/*.spec.ts',  timeout : 600000  }, // What: Onboarding Project. Why: Each tour is walked step by step at three widths. How: This runs tests/onboarding with ten minutes per test.
 		{ name : 'responsive',  testMatch : 'responsive/**/*.spec.ts',  timeout : 600000  }, // What: Responsive Project. Why: Every page is measured at several widths. How: This runs tests/responsive with ten minutes per test.
@@ -181,7 +201,7 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 
 		},
 
-		{ // What: Preview Server. Why: The security suite reads what ships, and the dev server's inline scripts would break the strict policy. How: This builds the app and serves the build on 5191.
+		{ // What: Preview Server. Why: The security suite and the SEO suite's raw page checks read what ships, and the dev server's inline scripts would break the strict policy. How: This builds the app and serves the build on 5191.
 
 
 			command             : 'npm run build && npx vite preview --port 5191 --strictPort', // What: Command. Why: The preview serves only a fresh build, and a strict port fails loudly. How: This type checks and builds the app, then serves dist/ on 5191.
