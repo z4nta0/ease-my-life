@@ -22,15 +22,25 @@ import { VIT_URL_STR   } from '../render-kit.mts'; // What: Vite URL String. Why
  * app's own fonts, colors, and swoosh mark. Run it from the repo root with
  * `npx tsx design/sync-image/render.mts` after changing the card.
  *
+ * Sections:
+ *  - Constants
+ *  - Module Init
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
 
+// #region Constants
+
 const OUT_PAT_STR = fileURLToPath( new URL( './sync-image.png', import.meta.url ) ); // What: Output Path String. Why: The PNG is uploaded to Polar by hand. How: This writes it beside the card.
 
+// #endregion Constants
 
+
+
+// #region Module Init
 
 const vitSerObj = await staVitFun(); // What: Vite Server Object. Why: The card's stylesheet links need a server. How: This is the render server the kit started, already listening.
 
@@ -54,5 +64,7 @@ await vitSerObj.close(); // What: Server Close Call. Why: The render is done. Ho
 
 
 console.log( `Wrote ${ OUT_PAT_STR } (${ Math.round( statSync( OUT_PAT_STR ).size / 1024 ) } KB)` ); // What: Result Log Call. Why: The size is worth knowing before uploading. How: This prints the path and size in KB.
+
+// #endregion Module Init
 
 
