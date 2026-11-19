@@ -209,11 +209,12 @@ function cliBloFun () : void {
  * @summary
  * Says whether a probed property changed between two snapshots in a way that
  * shows. Most properties change whenever their values differ, but an
- * outline's color and offset read with a leading ~ while no outline is
- * drawn: the color counts only while the outline is drawn both times, since a
- * ring growing in from no width shows only its final color, and the offset
- * counts unless the outline is undrawn both times, since a ring that grows in
- * close has to ease its offset too.
+ * outline's color, offset, and width read with a leading ~ while no outline
+ * is drawn: the color counts only while the outline is drawn both times,
+ * since a ring growing in from no width shows only its final color, and the
+ * offset and width count unless the outline is undrawn both times, since a
+ * ring that grows in close has to ease both, while a field that draws no
+ * outline can change them unseen.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -245,7 +246,7 @@ function chaValFun ( proNamStr : string, froValStr : string, tarValStr : string 
 
 
 
-	return !( froUndBoo && tarUndBoo ); // What: Change Verdict Return. Why: Any other value shows when it changes, and an offset shows unless the ring is undrawn both times. How: This counts the change unless both values carry the undrawn mark, which only the offset's can.
+	return !( froUndBoo && tarUndBoo ); // What: Change Verdict Return. Why: Any other value shows when it changes, and an offset or width shows unless the ring is undrawn both times. How: This counts the change unless both values carry the undrawn mark, which only the offset's and width's can.
 
 
 }
@@ -340,19 +341,19 @@ function movProFun ( froRecArr : SnaRecTyp[], tarRecArr : SnaRecTyp[], proNamArr
  * snapshots line up place by place even when a state draws one. The border
  * color reads only the sides actually drawn, those with a width above zero, as
  * one color when they all share it, since an undrawn side's color can change
- * without anything showing, and the outline's color and offset carry a leading
- * ~ while no outline is drawn, for {@link chaValFun} to weigh. A record whose
- * color matches its parent's takes the longer of its own duration for it and
- * the parent's, since an inherited color eases with the parent's transition, a
- * pseudo-element's parent being the element drawing it, and a border color
- * matching the record's own color takes the longer of its own duration and the
- * color's, since an unset border color is currentColor and follows the color
- * as it eases. An identity matrix reads as none, since the two draw the same,
- * and a property an animation that repeats forever drives on the element
- * itself reads as looping, since the loop moves it whatever the state. Every
- * record but the element's own is labeled with its part, for a problem to
- * name. Passed to Playwright's evaluate, so it can't read anything from this
- * file.
+ * without anything showing, and the outline's color, offset, and width carry a
+ * leading ~ while no outline is drawn, for {@link chaValFun} to weigh. A
+ * record whose color matches its parent's takes the longer of its own duration
+ * for it and the parent's, since an inherited color eases with the parent's
+ * transition, a pseudo-element's parent being the element drawing it, and a
+ * border color matching the record's own color takes the longer of its own
+ * duration and the color's, since an unset border color is currentColor and
+ * follows the color as it eases. An identity matrix reads as none, since the
+ * two draw the same, and a property an animation that repeats forever drives
+ * on the element itself reads as looping, since the loop moves it whatever the
+ * state. Every record but the element's own is labeled with its part, for a
+ * problem to name. Passed to Playwright's evaluate, so it can't read anything
+ * from this file.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -412,7 +413,7 @@ function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
 			durArr : proNamArr.map( durProFun ), // What: Duration Array. Why: A property that changes has to ease rather than snap. How: This reads the duration of the transition covering each probed property, or 0 when none does.
 			labStr : '',                         // What: Label String. Why: Each record is named once the list is built, when its element is known. How: This starts it empty.
 
-			valArr : proNamArr.map( ( proNamStr ) => ( proNamStr === 'border-color' ? borValFun( styCurObj ) : `${ /^outline-(color|offset)$/.test( proNamStr ) && !outDraBoo ? '~' : '' }${ styCurObj.getPropertyValue( proNamStr ).replace( /^matrix\(1, 0, 0, 1, 0, 0\)$/, 'none' ) }` ) ) // What: Value Array. Why: Two moments are compared property by property. How: This reads each probed property's computed value, taking the border color from its drawn sides only, reading an identity matrix as none, since a transform settled at translateY( 0 ) draws the same as no transform, and marking the outline's color and offset with a leading ~ while no outline is drawn.
+			valArr : proNamArr.map( ( proNamStr ) => ( proNamStr === 'border-color' ? borValFun( styCurObj ) : `${ /^outline-(color|offset|width)$/.test( proNamStr ) && !outDraBoo ? '~' : '' }${ styCurObj.getPropertyValue( proNamStr ).replace( /^matrix\(1, 0, 0, 1, 0, 0\)$/, 'none' ) }` ) ) // What: Value Array. Why: Two moments are compared property by property. How: This reads each probed property's computed value, taking the border color from its drawn sides only, reading an identity matrix as none, since a transform settled at translateY( 0 ) draws the same as no transform, and marking the outline's color, offset, and width with a leading ~ while no outline is drawn.
 
 
 		};
