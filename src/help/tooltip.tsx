@@ -10,8 +10,8 @@ import React     from 'react';                // What: React. Why: HelTipCom is 
 import { rhyPxlFun } from '../utils/rhythm.ts'; // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 
 
-import type { HelIteTyp } from './content.tsx'; // What: Help Item Type. Why: The tip renders one catalog item's title and body. How: This types HtcProTyp's item.
-import type { HelRecTyp } from './geometry.ts'; // What: Help Rect Type. Why: The tip is placed against its item's measured rect. How: This types plaTipFun's and HtcProTyp's rect.
+import type { HelIteTyp } from './catalog-item.ts'; // What: Help Item Type. Why: The tip renders one catalog item's title and body. How: This types HtcProTyp's item.
+import type { HelRecTyp } from './geometry.ts';     // What: Help Rect Type. Why: The tip is placed against its item's measured rect. How: This types plaTipFun's and HtcProTyp's rect.
 
 // #endregion Imports
 

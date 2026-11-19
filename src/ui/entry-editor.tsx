@@ -278,7 +278,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 					 * @summary
 					 * data-ease-up-active/data-ease-down-active (on every
 					 * relevant row below) let help mode tell the two
-					 * directions apart (see help/content.tsx's
+					 * directions apart (see the help catalogs'
 					 * itemChargeRangeUp/Down), split by direction rather than
 					 * one shared marker, since Soonest/Latest/Fill (ease-up)
 					 * and Shortest/Longest/Refill (ease-down) get entirely

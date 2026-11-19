@@ -49,7 +49,7 @@ import { RemTouCom    } from '../../onboarding/reminder-tours.tsx'; // What: Rem
 import { REO_NAM_OBJ  } from './reorder.ts';                        // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REO_NAM_OBJ.staDraFun inside groDraFun/iteDraFun.
 import { rhyPxlFun    } from '../../utils/rhythm.ts';               // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { TAS_NAM_OBJ  } from '../../core/tasks.ts';                 // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for ancDatFun/visTodFun/isaDonFun/optForFun/isaComFun.
-import { TOD_HEL_ARR  } from '../../help/content.tsx';              // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
+import { TOD_HEL_ARR  } from '../../help/today-catalog.tsx';        // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
 import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use Ease My Life Tour Function. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
 import { useIteDraFun } from '../../ui/record-draft.ts';            // What: Use Item Draft Function. Why: The open item editor edits a local draft, committed only on Save. How: This is called once with whichever item's editor is open.
@@ -164,7 +164,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * Local, resets to off on every remount (tab switch), which is
 	 * exactly the "navigating away closes it, the page you land on
 	 * doesn't inherit it" behavior the design called for. Content lives
-	 * in help/content.tsx's TOD_HEL_ARR rather than inline here,
+	 * in help/today-catalog.tsx's TOD_HEL_ARR rather than inline here,
 	 * same as every other tab; Today needs no disposable sample data
 	 * seeded for it, since every target it points at either is always-
 	 * present UI chrome or gracefully renders no badge if the user has no

@@ -23,8 +23,8 @@ import { shaRadFun    } from './geometry.ts';      // What: Shape Radius Functio
 import { uniRecFun    } from './geometry.ts';      // What: Union Rect Function. Why: A help item covering several elements highlights them as one box. How: This is called once per multi-element help item.
 
 
-import type { HelIteTyp } from './content.tsx'; // What: Help Item Type. Why: The overlay renders its page's catalog items plus the shared nav and rail handle items. How: This types those items and HocProTyp's catalog.
-import type { HelRecTyp } from './geometry.ts'; // What: Help Rect Type. Why: Every measured item is stored as one help rect. How: This types the rect map.
+import type { HelIteTyp } from './catalog-item.ts'; // What: Help Item Type. Why: The overlay renders its page's catalog items plus the shared nav and rail handle items. How: This types those items and HocProTyp's catalog.
+import type { HelRecTyp } from './geometry.ts';     // What: Help Rect Type. Why: Every measured item is stored as one help rect. How: This types the rect map.
 
 // #endregion Imports
 

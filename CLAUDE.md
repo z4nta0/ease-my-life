@@ -308,7 +308,7 @@ lookups without preserving that survivability property.
   bus (`emlTouObj` in `src/state/tour-bus.ts`) and a couple of deliberate
   `window.__eml*` globals (see "Runtime globals on `window`" below).
 - `src/help/`: the on-demand help mode (`mode.tsx`, plus its toggle, tip,
-  geometry, catalog, and sample data).
+  geometry, per-page catalogs, and sample data).
 
 ### Runtime globals on `window`
 
