@@ -131,6 +131,54 @@ const reaKeyFun = ( keyNamStr : string ) => { // What: Read Key Function. Why: B
 
 
 
+// #region reaMetFun
+
+/**
+ * reaMetFun = Read Meta Function
+ *
+ * @summary
+ * Reads this device's sync record for an account. A record saved for a
+ * different account, or one that can't be read, counts as none, so the next
+ * sync is that account's first.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param uidValStr - User Identifier Value String: The signed-in account's
+ *                    id.
+ *
+ * @returns The record, with changedAt 0 and no docs when there is none.
+ *
+ * @example
+ * ```ts
+ * reaMetFun(uidValStr) // => { changedAt, docs, rev, uid }
+ * ```
+ *
+*/
+
+function reaMetFun ( uidValStr : string ) : SynRcdTyp {
+
+
+	try { // What: Record Read Try. Why: Blocked storage or a damaged record must not stop sync. How: This parses the record, falling back to none.
+
+
+		const synRcdObj : SynRcdTyp = JSON.parse( reaKeyFun( STG_NAM_OBJ.SYN_MET_STR ) || 'null' ) || { changedAt : 0 }; // What: Sync Record Object. Why: The record is stored as JSON. How: This parses it, or starts an empty one.
+
+
+
+		return synRcdObj.uid && synRcdObj.uid !== uidValStr ? { changedAt : 0 } : synRcdObj; // What: Record Return. Why: Another account's record says nothing about this one. How: This returns an empty record for a different account.
+
+
+	}
+
+	catch { return { changedAt : 0 }; } // What: Record Read Catch. Why: An unreadable record is the same as none. How: This returns an empty one.
+
+
+}
+
+// #endregion reaMetFun
+
+
+
 // #region waiConFun
 
 /**
@@ -178,54 +226,6 @@ const wriMetFun = ( synRcdObj : SynRcdTyp ) => { // What: Write Meta Function. W
 
 
 };
-
-
-
-// #region reaMetFun
-
-/**
- * reaMetFun = Read Meta Function
- *
- * @summary
- * Reads this device's sync record for an account. A record saved for a
- * different account, or one that can't be read, counts as none, so the next
- * sync is that account's first.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param uidValStr - User Identifier Value String: The signed-in account's
- *                    id.
- *
- * @returns The record, with changedAt 0 and no docs when there is none.
- *
- * @example
- * ```ts
- * reaMetFun(uidValStr) // => { changedAt, docs, rev, uid }
- * ```
- *
-*/
-
-function reaMetFun ( uidValStr : string ) : SynRcdTyp {
-
-
-	try { // What: Record Read Try. Why: Blocked storage or a damaged record must not stop sync. How: This parses the record, falling back to none.
-
-
-		const synRcdObj : SynRcdTyp = JSON.parse( reaKeyFun( STG_NAM_OBJ.SYN_MET_STR ) || 'null' ) || { changedAt : 0 }; // What: Sync Record Object. Why: The record is stored as JSON. How: This parses it, or starts an empty one.
-
-
-
-		return synRcdObj.uid && synRcdObj.uid !== uidValStr ? { changedAt : 0 } : synRcdObj; // What: Record Return. Why: Another account's record says nothing about this one. How: This returns an empty record for a different account.
-
-
-	}
-
-	catch { return { changedAt : 0 }; } // What: Record Read Catch. Why: An unreadable record is the same as none. How: This returns an empty one.
-
-
-}
-
-// #endregion reaMetFun
 
 // #endregion Helpers
 

@@ -149,85 +149,70 @@ const floCacMap = new Map< string, FloSidTyp >(); // What: Flourish Cache Map. W
 
 // #region Helpers
 
-// #region shuArrFun
+// #region bloAroFun
 
 /**
- * shuArrFun = Shuffle Array Function
+ * bloAroFun = Block Around Function
  *
  * @summary
- * Returns a shuffled copy of the given array, using an in-place
- * Fisher-Yates shuffle on a duplicate so the caller's own array is never
- * mutated.
+ * Marks every cell in the 3x3-or-larger neighborhood around a placed
+ * glyph (including diagonals, and the full footprint of a 2x2 "big"
+ * glyph) as excluded in the given grid, mutating it in place.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param souEleArr - Source Element Array: The array to shuffle. Left
- *                    untouched; a shuffled copy is returned instead.
+ * @param bloGriArr - Blocked Grid Array: The 2D excluded-cells grid to mutate.
+ * @param rowIndNum - Row Index Number: The row of the placed glyph's own
+ *                    top-left cell.
+ * @param colIndNum - Column Index Number: The column of the placed glyph's own
+ *                    top-left cell.
+ * @param heiSpaNum - Height Spacing Number: How many rows the placed glyph
+ *                    itself spans (1 for a normal glyph, 2 for a "big" one).
+ * @param widSpaNum - Width Spacing Number: How many columns the placed glyph
+ *                    itself spans (1 for a normal glyph, 2 for a "big" one).
  *
- * @returns A new array holding the same elements as souEleArr, in random
- * order.
- * @see {@link copSouArr}
+ * @returns This function does not return anything.
  *
  * @example
  * ```ts
- * shuArrFun(souEleArr) // => shuffled copy of souEleArr
+ * bloAroFun(bloGriArr, rowIndNum, colIndNum, heiSpaNum, widSpaNum) // => void
  * ```
  *
 */
 
-function shuArrFun< T > ( souEleArr : T[] ) : T[] {
+function bloAroFun ( bloGriArr : boolean[][], rowIndNum : number, colIndNum : number, heiSpaNum : number, widSpaNum : number ) : void {
 
 
-	const copSouArr = souEleArr.slice(); // What: Copy Source Array. Why: The caller's own array must not be mutated by the shuffle below. How: This makes a shallow copy that the loop below shuffles in place instead.
+	const rowCouNum = bloGriArr.length;      // What: Row Count Number. Why: The neighborhood walk below must not read or write past the grid's own real bounds. How: This is read once from the grid's own outer length and reused in the guard below.
+	const colCouNum = bloGriArr[ 0 ].length; // What: Column Count Number. Why: Same reasoning as rowCouNum, for the grid's own column bound. How: This is read once from the first row's own length and reused in the guard below.
 
 
-	for ( let curIndNum = copSouArr.length - 1; curIndNum > 0; curIndNum-- ) { // What: Fisher-Yates Loop. Why: This is the standard algorithm for an unbiased in-place shuffle. How: This walks the array backward, swapping each element with a randomly-chosen earlier (or same) one.
+	for ( let curRowNum = rowIndNum - 1; curRowNum <= rowIndNum + heiSpaNum; curRowNum++ ) { // What: Row Neighborhood Loop. Why: Every row from one above the glyph's own top edge to one below its own bottom edge must be excluded. How: This walks curRowNum across that full span.
 
 
-		const swaIndNum = Math.floor( Math.random() * ( curIndNum + 1 ) ); // What: Swap Index Number. Why: The element at curIndNum needs a random partner at or before its own position to swap with. How: This picks a uniform random integer in [0, curIndNum].
+		for ( let curColNum = colIndNum - 1; curColNum <= colIndNum + widSpaNum; curColNum++ ) { // What: Column Neighborhood Loop. Why: Every column from one left of the glyph's own left edge to one right of its own right edge must be excluded. How: This walks curColNum across that full span for each curRowNum above.
 
 
-		[ copSouArr[ curIndNum ], copSouArr[ swaIndNum ] ] = [ copSouArr[ swaIndNum ], copSouArr[ curIndNum ] ]; // What: Element Swap. Why: This is the actual shuffle step for this iteration. How: This swaps the two chosen positions via array destructuring.
+			const rowMinBoo = curRowNum >= 0;        // What: Row Min Boolean. Why: A neighborhood row above the glyph's own top edge can fall above the grid's own first row entirely. How: This checks that curRowNum hasn't gone negative.
+			const rowMaxBoo = curRowNum < rowCouNum; // What: Row Max Boolean. Why: A neighborhood row below the glyph's own bottom edge can fall past the grid's own last row entirely. How: This checks that curRowNum stays under rowCouNum.
+			const colMinBoo = curColNum >= 0;        // What: Column Min Boolean. Why: A neighborhood column left of the glyph's own left edge can fall before the grid's own first column entirely. How: This checks that curColNum hasn't gone negative.
+			const colMaxBoo = curColNum < colCouNum; // What: Column Max Boolean. Why: A neighborhood column right of the glyph's own right edge can fall past the grid's own last column entirely. How: This checks that curColNum stays under colCouNum.
+
+			const witBouBoo = rowMinBoo && rowMaxBoo && colMinBoo && colMaxBoo; // What: Within Bound Boolean. Why: A neighborhood cell that falls outside the grid's own real edges doesn't exist and must not be written to. How: This combines all 4 individual checks with &&, true only when both the row and column stay within the grid's own bounds.
+
+
+			if ( witBouBoo ) bloGriArr[ curRowNum ][ curColNum ] = true; // What: In Bounds Exclusion. Why: The cell just confirmed safe by witBouBoo needs to actually be marked excluded for later placements. How: This writes true into bloGriArr once witBouBoo allows it.
+
+
+		}
 
 
 	}
 
 
-
-	return copSouArr; // What: Copy Source Return. Why: The caller needs the shuffled result back. How: This returns the same array the loop above shuffled in place.
-
-
 }
 
-// #endregion shuArrFun
-
-
-
-// #region ranArrFun
-
-/**
- * ranArrFun = Range Array Function
- *
- * @summary
- * Builds a plain array of sequential integers from 0 up to (but not
- * including) the given length.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param lenValNum - Length Value Number: How many integers to produce.
- *
- * @returns An array [0, 1, 2, ..., lenValNum - 1].
- *
- * @example
- * ```ts
- * ranArrFun(lenValNum) // => [0, 1, ..., lenValNum - 1]
- * ```
- *
-*/
-
-function ranArrFun ( lenValNum : number ) : number[] { return Array.from( Array( lenValNum ).keys() ); } // What: Range Array Body. Why: A plain sequential-integer array is needed repeatedly throughout this file to drive shuffled row/column walks. How: This spreads the keys() iterator of an empty array of that length, whose keys are exactly those indices.
-
-// #endregion ranArrFun
+// #endregion bloAroFun
 
 
 
@@ -293,6 +278,34 @@ function makCycFun< T > ( pooFacFun : () => T[] ) : () => T {
 
 
 
+// #region ranArrFun
+
+/**
+ * ranArrFun = Range Array Function
+ *
+ * @summary
+ * Builds a plain array of sequential integers from 0 up to (but not
+ * including) the given length.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param lenValNum - Length Value Number: How many integers to produce.
+ *
+ * @returns An array [0, 1, 2, ..., lenValNum - 1].
+ *
+ * @example
+ * ```ts
+ * ranArrFun(lenValNum) // => [0, 1, ..., lenValNum - 1]
+ * ```
+ *
+*/
+
+function ranArrFun ( lenValNum : number ) : number[] { return Array.from( Array( lenValNum ).keys() ); } // What: Range Array Body. Why: A plain sequential-integer array is needed repeatedly throughout this file to drive shuffled row/column walks. How: This spreads the keys() iterator of an empty array of that length, whose keys are exactly those indices.
+
+// #endregion ranArrFun
+
+
+
 // #region eveSpaFun
 
 /**
@@ -340,70 +353,57 @@ function eveSpaFun ( minValNum : number, maxValNum : number, couValNum : number 
 
 
 
-// #region bloAroFun
+// #region shuArrFun
 
 /**
- * bloAroFun = Block Around Function
+ * shuArrFun = Shuffle Array Function
  *
  * @summary
- * Marks every cell in the 3x3-or-larger neighborhood around a placed
- * glyph (including diagonals, and the full footprint of a 2x2 "big"
- * glyph) as excluded in the given grid, mutating it in place.
+ * Returns a shuffled copy of the given array, using an in-place
+ * Fisher-Yates shuffle on a duplicate so the caller's own array is never
+ * mutated.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param bloGriArr - Blocked Grid Array: The 2D excluded-cells grid to mutate.
- * @param rowIndNum - Row Index Number: The row of the placed glyph's own
- *                    top-left cell.
- * @param colIndNum - Column Index Number: The column of the placed glyph's own
- *                    top-left cell.
- * @param heiSpaNum - Height Spacing Number: How many rows the placed glyph
- *                    itself spans (1 for a normal glyph, 2 for a "big" one).
- * @param widSpaNum - Width Spacing Number: How many columns the placed glyph
- *                    itself spans (1 for a normal glyph, 2 for a "big" one).
+ * @param souEleArr - Source Element Array: The array to shuffle. Left
+ *                    untouched; a shuffled copy is returned instead.
  *
- * @returns This function does not return anything.
+ * @returns A new array holding the same elements as souEleArr, in random
+ * order.
+ * @see {@link copSouArr}
  *
  * @example
  * ```ts
- * bloAroFun(bloGriArr, rowIndNum, colIndNum, heiSpaNum, widSpaNum) // => void
+ * shuArrFun(souEleArr) // => shuffled copy of souEleArr
  * ```
  *
 */
 
-function bloAroFun ( bloGriArr : boolean[][], rowIndNum : number, colIndNum : number, heiSpaNum : number, widSpaNum : number ) : void {
+function shuArrFun< T > ( souEleArr : T[] ) : T[] {
 
 
-	const rowCouNum = bloGriArr.length;      // What: Row Count Number. Why: The neighborhood walk below must not read or write past the grid's own real bounds. How: This is read once from the grid's own outer length and reused in the guard below.
-	const colCouNum = bloGriArr[ 0 ].length; // What: Column Count Number. Why: Same reasoning as rowCouNum, for the grid's own column bound. How: This is read once from the first row's own length and reused in the guard below.
+	const copSouArr = souEleArr.slice(); // What: Copy Source Array. Why: The caller's own array must not be mutated by the shuffle below. How: This makes a shallow copy that the loop below shuffles in place instead.
 
 
-	for ( let curRowNum = rowIndNum - 1; curRowNum <= rowIndNum + heiSpaNum; curRowNum++ ) { // What: Row Neighborhood Loop. Why: Every row from one above the glyph's own top edge to one below its own bottom edge must be excluded. How: This walks curRowNum across that full span.
+	for ( let curIndNum = copSouArr.length - 1; curIndNum > 0; curIndNum-- ) { // What: Fisher-Yates Loop. Why: This is the standard algorithm for an unbiased in-place shuffle. How: This walks the array backward, swapping each element with a randomly-chosen earlier (or same) one.
 
 
-		for ( let curColNum = colIndNum - 1; curColNum <= colIndNum + widSpaNum; curColNum++ ) { // What: Column Neighborhood Loop. Why: Every column from one left of the glyph's own left edge to one right of its own right edge must be excluded. How: This walks curColNum across that full span for each curRowNum above.
+		const swaIndNum = Math.floor( Math.random() * ( curIndNum + 1 ) ); // What: Swap Index Number. Why: The element at curIndNum needs a random partner at or before its own position to swap with. How: This picks a uniform random integer in [0, curIndNum].
 
 
-			const rowMinBoo = curRowNum >= 0;        // What: Row Min Boolean. Why: A neighborhood row above the glyph's own top edge can fall above the grid's own first row entirely. How: This checks that curRowNum hasn't gone negative.
-			const rowMaxBoo = curRowNum < rowCouNum; // What: Row Max Boolean. Why: A neighborhood row below the glyph's own bottom edge can fall past the grid's own last row entirely. How: This checks that curRowNum stays under rowCouNum.
-			const colMinBoo = curColNum >= 0;        // What: Column Min Boolean. Why: A neighborhood column left of the glyph's own left edge can fall before the grid's own first column entirely. How: This checks that curColNum hasn't gone negative.
-			const colMaxBoo = curColNum < colCouNum; // What: Column Max Boolean. Why: A neighborhood column right of the glyph's own right edge can fall past the grid's own last column entirely. How: This checks that curColNum stays under colCouNum.
-
-			const witBouBoo = rowMinBoo && rowMaxBoo && colMinBoo && colMaxBoo; // What: Within Bound Boolean. Why: A neighborhood cell that falls outside the grid's own real edges doesn't exist and must not be written to. How: This combines all 4 individual checks with &&, true only when both the row and column stay within the grid's own bounds.
-
-
-			if ( witBouBoo ) bloGriArr[ curRowNum ][ curColNum ] = true; // What: In Bounds Exclusion. Why: The cell just confirmed safe by witBouBoo needs to actually be marked excluded for later placements. How: This writes true into bloGriArr once witBouBoo allows it.
-
-
-		}
+		[ copSouArr[ curIndNum ], copSouArr[ swaIndNum ] ] = [ copSouArr[ swaIndNum ], copSouArr[ curIndNum ] ]; // What: Element Swap. Why: This is the actual shuffle step for this iteration. How: This swaps the two chosen positions via array destructuring.
 
 
 	}
 
 
+
+	return copSouArr; // What: Copy Source Return. Why: The caller needs the shuffled result back. How: This returns the same array the loop above shuffled in place.
+
+
 }
 
-// #endregion bloAroFun
+// #endregion shuArrFun
 
 
 

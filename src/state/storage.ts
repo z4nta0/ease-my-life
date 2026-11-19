@@ -58,15 +58,6 @@ const DAT_VER_NUM = 1;                             // What: Database Version Num
 const MIG_SNA_STR = 'easemylife.snapshot.pre-idb'; // What: Migration Snapshot String. Why: This is the bounded-lifetime rollback copy taken right before the very first IDB migration attempt. How: This is written once in iniStoFun and re-exported as-is on the STG_NAM_OBJ object below.
 const MIR_KEY_STR = 'easemylife.v2';               // What: Mirror Key String. Why: This is the legacy live localStorage key that also doubles as the warm mirror's own key, read by every fallback-engine caller of this file. How: This is written by wriLocFun and read by reaLocFun, and re-exported as-is on the STG_NAM_OBJ object below.
 const MIR_TIM_STR = 'easemylife.mirrorat';         // What: Mirror Time String. Why: Mirror freshness must survive a reload, not just live in memory, since the Settings storage panel reports it on a cold load before any tab-hide has happened this session. How: This is written by wriLocFun and read by staRepFun.
-const PER_ASK_STR = 'easemylife.persistasked';     // What: Persist Ask String. Why: This is the localStorage key recording whether this device has already been asked for persistent storage once, so a denial is not re-requested on every later launch (browsers ignore a repeat request anyway). How: pwa.ts reads and writes it through STG_NAM_OBJ, and the boot sweep keeps it.
-const PIC_LOG_STR = 'picklog';                     // What: Pick Log String. Why: This is the object store name holding the pick log alone, under key 'main', kept separate so writing it is not on the hot path of every other save. How: This is passed to traStoFun everywhere the pick log alone is read or written.
-const SIG_EMA_STR = 'easemylife.signinemail';      // What: Sign-In Email String. Why: Finishing an emailed-link sign-in needs the address the link was sent to. How: The sync hook stores the address here when it sends a link and removes it once the link is used.
-const STA_STO_STR = 'state';                       // What: State Store String. Why: This is the object store name holding everything except the pick log, under key 'main'. How: This is passed to traStoFun everywhere the non-log portion of state is read or written.
-const SYN_MET_STR = 'easemylife.syncmeta';         // What: Sync Meta String. Why: Each sync compares against what this device last synced, and conflicts need the time of its last change. How: The sync hook keeps that record here as JSON.
-
-
-
-const LIV_KEY_ARR = [ ACC_SIG_STR, BOO_KEY_STR, MIR_KEY_STR, MIR_TIM_STR, PER_ASK_STR, SIG_EMA_STR, SYN_MET_STR ]; // What: Live Key Array. Why: The boot sweep deletes every owned localStorage key from a dead generation, so every key still in use has to be named here or it's deleted too (the persistence prompt's key once was, so the app asked again). How: The sweep keeps every key in this list.
 
 
 
@@ -90,6 +81,12 @@ const OWN_KEY_REG = /^ease[-]?my[-]?life/i; // What: Own Key Regexp. Why: Every 
 
 
 
+const PER_ASK_STR = 'easemylife.persistasked'; // What: Persist Ask String. Why: This is the localStorage key recording whether this device has already been asked for persistent storage once, so a denial is not re-requested on every later launch (browsers ignore a repeat request anyway). How: pwa.ts reads and writes it through STG_NAM_OBJ, and the boot sweep keeps it.
+const PIC_LOG_STR = 'picklog';                 // What: Pick Log String. Why: This is the object store name holding the pick log alone, under key 'main', kept separate so writing it is not on the hot path of every other save. How: This is passed to traStoFun everywhere the pick log alone is read or written.
+const SIG_EMA_STR = 'easemylife.signinemail';  // What: Sign-In Email String. Why: Finishing an emailed-link sign-in needs the address the link was sent to. How: The sync hook stores the address here when it sends a link and removes it once the link is used.
+
+
+
 /**
  * SNA_KEE_NUM = Snapshot Keep Number
  *
@@ -105,6 +102,15 @@ const OWN_KEY_REG = /^ease[-]?my[-]?life/i; // What: Own Key Regexp. Why: Every 
 */
 
 const SNA_KEE_NUM = 3; // What: Snapshot Keep Number. Why: This is how many clean IDB boots in a row are required before the migration snapshot and every dead pre-IDB localStorage generation get swept. How: This is compared against BOO_KEY_STR's own stored count inside iniStoFun.
+
+
+
+const STA_STO_STR = 'state';               // What: State Store String. Why: This is the object store name holding everything except the pick log, under key 'main'. How: This is passed to traStoFun everywhere the non-log portion of state is read or written.
+const SYN_MET_STR = 'easemylife.syncmeta'; // What: Sync Meta String. Why: Each sync compares against what this device last synced, and conflicts need the time of its last change. How: The sync hook keeps that record here as JSON.
+
+
+
+const LIV_KEY_ARR = [ ACC_SIG_STR, BOO_KEY_STR, MIR_KEY_STR, MIR_TIM_STR, PER_ASK_STR, SIG_EMA_STR, SYN_MET_STR ]; // What: Live Key Array. Why: The boot sweep deletes every owned localStorage key from a dead generation, so every key still in use has to be named here or it's deleted too (the persistence prompt's key once was, so the app asked again). How: The sweep keeps every key in this list.
 
 // #endregion Constants
 

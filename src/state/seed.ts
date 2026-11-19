@@ -201,6 +201,66 @@ const MOD_DEF_OBJ : Record< string, { hinArr : string[], labStr : string } > = {
 
 // #region Helpers
 
+type CleStaTyp = Omit< StaAppTyp, 'groupOrder' | 'onboarding' | 'pickerOrder' | 'ui' | 'v' > & { onboarding : Pick< OnbStaTyp, 'dismissed' | 'welcomed' > }; // What: Clean State Type. Why: A fresh state is never used until migStaFun has run on it, which fills in the group and picker orders, the UI settings, the schema version, and the rest of onboarding. How: This is the full app state without those four fields, and with onboarding narrowed to the two flags a new user needs.
+
+// #region buiCleFun
+
+/**
+ * buiCleFun = Build Clean Function
+ *
+ * @summary
+ * Builds the canonical clean state: what a brand-new user sees, no
+ * pickers, no items, no reminders, and every app setting at its own
+ * default. A Reset restores exactly this. It leaves a few fields for
+ * migStaFun to fill in, which every caller runs on it before use.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns The clean app state, before migStaFun completes it.
+ *
+ * @example
+ * ```ts
+ * buiCleFun() // => full clean app state object
+ * ```
+ *
+*/
+
+function buiCleFun () : CleStaTyp {
+
+
+	return { // What: Clean State Return. Why: This is the full canonical empty app state, in state's own top-level shape. How: This builds every top-level field to its own genuinely empty/default value.
+
+
+		conditionalLog  : [],                                                          // What: Conditional Log. Why: A brand-new user has no conditional trigger history at all. How: This is an empty array.
+		conditionals    : [],                                                          // What: Conditionals. Why: A brand-new user has no conditionals at all. How: This is an empty array.
+		daily           : { mode : 'auto', pickerIds : [], runTime : '04:00' },        // What: Daily. Why: The Daily generator needs a valid, empty configuration to start from. How: This is an empty pickerIds list paired with the app's own default runTime/mode.
+		holidays        : HOL_NAM_OBJ.defStaFun(),                                     // What: Holidays. Why: A brand-new user still needs a real, canonical holidays-state shape. How: This calls HOL_NAM_OBJ's own defStaFun.
+		items           : [],                                                          // What: Items. Why: A brand-new user has no items at all. How: This is an empty array.
+		onboarding      : { dismissed : false, welcomed : false },                     // What: Onboarding. Why: A brand-new user must actually see onboarding (the welcome modal, tour, and checklist). How: This marks onboarding as neither welcomed nor dismissed.
+		pickers         : [],                                                          // What: Pickers. Why: A brand-new user has no pickers at all. How: This is an empty array.
+		pickLog         : [],                                                          // What: Pick Log. Why: A brand-new user has no pick history at all. How: This is an empty array.
+		reminderLog     : [],                                                          // What: Reminder Log. Why: A brand-new user has no reminder completion history at all. How: This is an empty array.
+		reminderOpts    : TAS_NAM_OBJ.defOptFun(),                                     // What: Reminder Opts. Why: A brand-new user still needs a full, valid reminder-options object. How: This calls TAS_NAM_OBJ's own defOptFun.
+		reminderSkipLog : [],                                                          // What: Reminder Skip Log. Why: A brand-new user has no reminder skip history at all. How: This is an empty array.
+		streak          : 0,                                                           // What: Streak. Why: A brand-new user has no streak yet. How: This is a fixed literal 0.
+		tasks           : [],                                                          // What: Tasks. Why: A brand-new user has no reminders at all. How: This is an empty array.
+		today           : { entries : [], generatedAt : null, streakClaimed : false }, // What: Today. Why: A brand-new user still needs a valid Today, just an entirely empty one. How: This is an empty entry list with no generation yet.
+		vacationLog     : [],                                                          // What: Vacation Log. Why: A brand-new user has no inactive-state history at all. How: This is an empty array.
+
+		appearance : { autoSystem : false, completionStyle : 'confetti', customDark : null, customLight : null, pickAnim : 'reel', tabPlacement : 'bottom', theme : 'ink' } // What: Appearance. Why: A brand-new user still needs a full, valid appearance settings object. How: This is the app's own default theme/animation/placement settings.
+
+
+	};
+
+
+}
+
+// #endregion buiCleFun
+
+
+
 // #region picWeiFun
 
 /**
@@ -519,66 +579,6 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 }
 
 // #endregion picLogFun
-
-
-
-type CleStaTyp = Omit< StaAppTyp, 'groupOrder' | 'onboarding' | 'pickerOrder' | 'ui' | 'v' > & { onboarding : Pick< OnbStaTyp, 'dismissed' | 'welcomed' > }; // What: Clean State Type. Why: A fresh state is never used until migStaFun has run on it, which fills in the group and picker orders, the UI settings, the schema version, and the rest of onboarding. How: This is the full app state without those four fields, and with onboarding narrowed to the two flags a new user needs.
-
-// #region buiCleFun
-
-/**
- * buiCleFun = Build Clean Function
- *
- * @summary
- * Builds the canonical clean state: what a brand-new user sees, no
- * pickers, no items, no reminders, and every app setting at its own
- * default. A Reset restores exactly this. It leaves a few fields for
- * migStaFun to fill in, which every caller runs on it before use.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param void - This function takes no parameters.
- *
- * @returns The clean app state, before migStaFun completes it.
- *
- * @example
- * ```ts
- * buiCleFun() // => full clean app state object
- * ```
- *
-*/
-
-function buiCleFun () : CleStaTyp {
-
-
-	return { // What: Clean State Return. Why: This is the full canonical empty app state, in state's own top-level shape. How: This builds every top-level field to its own genuinely empty/default value.
-
-
-		conditionalLog  : [],                                                          // What: Conditional Log. Why: A brand-new user has no conditional trigger history at all. How: This is an empty array.
-		conditionals    : [],                                                          // What: Conditionals. Why: A brand-new user has no conditionals at all. How: This is an empty array.
-		daily           : { mode : 'auto', pickerIds : [], runTime : '04:00' },        // What: Daily. Why: The Daily generator needs a valid, empty configuration to start from. How: This is an empty pickerIds list paired with the app's own default runTime/mode.
-		holidays        : HOL_NAM_OBJ.defStaFun(),                                     // What: Holidays. Why: A brand-new user still needs a real, canonical holidays-state shape. How: This calls HOL_NAM_OBJ's own defStaFun.
-		items           : [],                                                          // What: Items. Why: A brand-new user has no items at all. How: This is an empty array.
-		onboarding      : { dismissed : false, welcomed : false },                     // What: Onboarding. Why: A brand-new user must actually see onboarding (the welcome modal, tour, and checklist). How: This marks onboarding as neither welcomed nor dismissed.
-		pickers         : [],                                                          // What: Pickers. Why: A brand-new user has no pickers at all. How: This is an empty array.
-		pickLog         : [],                                                          // What: Pick Log. Why: A brand-new user has no pick history at all. How: This is an empty array.
-		reminderLog     : [],                                                          // What: Reminder Log. Why: A brand-new user has no reminder completion history at all. How: This is an empty array.
-		reminderOpts    : TAS_NAM_OBJ.defOptFun(),                                     // What: Reminder Opts. Why: A brand-new user still needs a full, valid reminder-options object. How: This calls TAS_NAM_OBJ's own defOptFun.
-		reminderSkipLog : [],                                                          // What: Reminder Skip Log. Why: A brand-new user has no reminder skip history at all. How: This is an empty array.
-		streak          : 0,                                                           // What: Streak. Why: A brand-new user has no streak yet. How: This is a fixed literal 0.
-		tasks           : [],                                                          // What: Tasks. Why: A brand-new user has no reminders at all. How: This is an empty array.
-		today           : { entries : [], generatedAt : null, streakClaimed : false }, // What: Today. Why: A brand-new user still needs a valid Today, just an entirely empty one. How: This is an empty entry list with no generation yet.
-		vacationLog     : [],                                                          // What: Vacation Log. Why: A brand-new user has no inactive-state history at all. How: This is an empty array.
-
-		appearance : { autoSystem : false, completionStyle : 'confetti', customDark : null, customLight : null, pickAnim : 'reel', tabPlacement : 'bottom', theme : 'ink' } // What: Appearance. Why: A brand-new user still needs a full, valid appearance settings object. How: This is the app's own default theme/animation/placement settings.
-
-
-	};
-
-
-}
-
-// #endregion buiCleFun
 
 // #endregion Helpers
 

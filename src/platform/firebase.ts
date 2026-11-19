@@ -61,9 +61,8 @@ type AccUseTyp = { emaStr : string | null, paiBoo : boolean, uidStr : string }; 
 
 // #region Constants
 
-const EMU_HOS_STR = import.meta.env.VITE_FIREBASE_EMULATOR;   // What: Emulator Host String. Why: Tests must never touch the real project. How: This is the emulator's host when the build sets one, undefined otherwise.
-const EMU_PRO_STR = 'demo-ease-my-life';                      // What: Emulator Project String. Why: The emulator serves a demo project, which can never reach a real one. How: This is its id, whose demo- prefix the emulator requires for that.
-const REC_SIT_STR = '6Ld3-gEuAAAAAOjgeHsfUH17av5IeQqNXyZASjtz'; // What: ReCaptcha Site String. Why: App Check proves the app is genuine through the project's reCAPTCHA Enterprise key. How: This is the key's public site key, registered for easemylife.app.
+const EMU_HOS_STR = import.meta.env.VITE_FIREBASE_EMULATOR; // What: Emulator Host String. Why: Tests must never touch the real project. How: This is the emulator's host when the build sets one, undefined otherwise.
+const EMU_PRO_STR = 'demo-ease-my-life';                    // What: Emulator Project String. Why: The emulator serves a demo project, which can never reach a real one. How: This is its id, whose demo- prefix the emulator requires for that.
 
 const FIR_CON_OBJ = { // What: Firebase Config Object. Why: The SDK has to know which project to connect to. How: These are the project's public web app settings.
 
@@ -77,6 +76,8 @@ const FIR_CON_OBJ = { // What: Firebase Config Object. Why: The SDK has to know 
 
 
 };
+
+const REC_SIT_STR = '6Ld3-gEuAAAAAOjgeHsfUH17av5IeQqNXyZASjtz'; // What: ReCaptcha Site String. Why: App Check proves the app is genuine through the project's reCAPTCHA Enterprise key. How: This is the key's public site key, registered for easemylife.app.
 
 // #endregion Constants
 

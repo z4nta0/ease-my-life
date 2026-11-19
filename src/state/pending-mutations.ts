@@ -83,248 +83,186 @@ let __cdlSeqNum = 0; // What: Conditional-Log Sequence Number. Why: nclIdeFun be
 
 // #region Helpers
 
-// #region nclIdeFun
+// #region cotAplFun
 
 /**
- * nclIdeFun = New-Conditional-Log Identifier Function
+ * cotAplFun = Conditional-Toggle Apply Function
  *
  * @summary
- * Mints a new, distinct id for one state.conditionalLog row, mirroring
- * newLogFun's own shape but with its own separate counter and prefix so
- * the two logs' ids can never collide with each other.
+ * Resolves the conditional consequences of toggling one Today entry
+ * done/undone. A day-off CARD entry (kind:'dayoff') drives its own
+ * conditional's carComFun (ease-up/dynamic reset, ease-down
+ * discharge) with an undo snapshot in _cardPrev. A dependent PICKER
+ * entry (whose own picker.conditionalId is set) advances its
+ * conditional's own value on the FIRST dependent completion of the day
+ * (the 0-to-1 count edge), and reverts when the count returns to 0,
+ * with an undo snapshot in _chargePrev. _cardPrev/_chargePrev are real
+ * persisted fields on the conditional, not local bookkeeping.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param void - This function takes no parameters.
+ * @param curStaObj - Current State Object: The current state, read (not
+ *                    mutated) for its own pickers/conditionals.
+ * @param nexEntArr - Next Entry Array: today.entries AFTER this toggle has
+ *                    already been applied to it, used to count dependent
+ *                    completions.
+ * @param togEntObj - Toggle Entry Object: The entry that was just toggled.
+ * @param nowDonBoo - Now Done Boolean: Whether togEntObj is now done (true)
+ *                     or was just un-done (false).
  *
- * @returns A new conditional-log row id string, prefixed 'cl_'.
+ * @returns The updated conditionals array, or the same reference when
+ * nothing about it actually changes.
  *
  * @example
  * ```ts
- * nclIdeFun() // => 'cl_abc123xy'
+ * cotAplFun(curStaObj, nexEntArr, togEntObj, true) // => conditionals
  * ```
  *
 */
 
-function nclIdeFun () : string {
+function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj : TodEntTyp, nowDonBoo : boolean ) : ConRcdTyp[] {
 
 
-	return 'cl_' + Date.now().toString( 36 ) + ( __cdlSeqNum++ ).toString( 36 ); // What: Conditional-Log Id Return. Why: The caller needs a short, sortable, collision-resistant id. How: This concatenates a fixed prefix, the current time base-36, and the incrementing counter base-36.
+	const curConArr = curStaObj.conditionals || []; // What: Current Conditionals Array And Guard. Why: Every branch below reads/maps over the live conditionals list. How: This reads curStaObj's own conditionals, defaulting to empty.
 
 
-}
-
-// #endregion nclIdeFun
-
-
-
-// #region spuDroFun
-
-/**
- * spuDroFun = Stale-Pending-Updates Drop Function
- *
- * @summary
- * Strips any stale updates row for the given item ids from every NOT-
- * YET-DONE entry's own pending, except an entry whose own itemId is one
- * of those ids (see the design-rationale comment above). See the
- * design-rationale comment above for why this exists at all.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param todEntArr - Today Entry Array: The today.entries array to scan.
- * @param iteIdeArr - Item Identifier Array: The item ids whose stale
- *                    pending rows should be dropped.
- *
- * @returns The same todEntArr reference when nothing changed, else a new
- * array with the affected entries' own pending.updates filtered.
- *
- * @example
- * ```ts
- * spuDroFun(state.today.entries, [itemId]) // => entries
- * ```
- *
-*/
-
-function spuDroFun ( todEntArr : TodEntTyp[], iteIdeArr : string[] ) : TodEntTyp[] {
-
-
-	const iteIdeSet = new Set( iteIdeArr ); // What: Item Identifier Set. Why: The scan below needs fast membership checks against the touched ids. How: This wraps iteIdeArr in a Set.
-
-
-	if ( !iteIdeSet.size ) return todEntArr; // What: No-Ids Guard. Why: Nothing was touched, so there's nothing stale to drop. How: This returns todEntArr unchanged when iteIdeSet is empty.
+	if ( !curConArr.length ) return curConArr; // What: No-Conditionals Guard. Why: An app with no conditionals at all has nothing to resolve. How: This returns curConArr unchanged when it's empty.
 
 
 
-	let entChaBoo = false; // What: Entry Changed Boolean And Guard. Why: The caller only wants a new array reference when something actually changed. How: This starts false and flips true the first time a pending.updates row is actually dropped below.
+	const conModObj = CON_NAM_OBJ; // What: Conditional Module Object. Why: Every branch below repeatedly calls into this module's own resolution helpers. How: This aliases the imported CON_NAM_OBJ namespace for brevity below.
 
 
-	const nexEntArr = todEntArr.map( ( curEntObj ) => { // What: Next Entries Array. Why: Every entry must be checked for a stale pending row belonging to one of the touched items. How: This maps todEntArr, returning each entry unchanged unless it needs its own pending.updates filtered.
+	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card entry's own completion drives its conditional's carComFun instead of the dependent-picker charging logic below. How: This maps curConArr, resolving only the one matching conditional.
 
 
-		if ( curEntObj.done || !curEntObj.pending || !curEntObj.pending.updates || !curEntObj.pending.updates.length ) return curEntObj; // What: Nothing-To-Strip Guard. Why: A done entry's pending no longer matters, and an entry with no pending.updates has nothing to filter. How: This returns curEntObj unchanged whenever any of those hold.
+		return curConArr.map( ( curConObj ) => { // What: Card Toggle Conditionals Map. Why: Every conditional except the one matching togEntObj.conditionalId must pass through untouched, while the matching one needs its own day-off completion/reversion resolved. How: This maps curConArr, guarding on id first, then branching on nowDonBoo to apply carComFun's own patch (completion) or restore the earlier _cardPrev snapshot (reversion).
 
 
-
-		if ( curEntObj.itemId && iteIdeSet.has( curEntObj.itemId ) ) return curEntObj; // What: Own-Entry Guard. Why: An item's OWN entry must keep its designed completion effect regardless of an interim Fill (see the design-rationale comment above). How: This returns curEntObj unchanged when its own itemId is one of the touched ids.
-
-
-
-		const filUpdArr = curEntObj.pending.updates.filter( ( curUpdObj ) => !iteIdeSet.has( curUpdObj.id ) ); // What: Filtered Updates Array. Why: Only rows for OTHER touched items are the actual stale ones to drop. How: This keeps every update row whose own id isn't in iteIdeSet.
-
-
-		if ( filUpdArr.length === curEntObj.pending.updates.length ) return curEntObj; // What: Unchanged-Length Guard. Why: Nothing was actually dropped for this entry, so its own reference can stay stable. How: This returns curEntObj unchanged when filUpdArr's own length matches the original.
+			if ( curConObj.id !== togEntObj.conditionalId ) return curConObj; // What: Non-Matching Guard. Why: Every other conditional is untouched by this card's own toggle. How: This returns curConObj unchanged when its own id doesn't match.
 
 
 
-		entChaBoo = true; // What: Entry Changed Flag Set. Why: At least one entry's own pending.updates was actually filtered. How: This flips entChaBoo to true.
+			if ( nowDonBoo ) { // What: Now-Done Branch. Why: Completing the card is what actually drives its own mode-specific completion effect. How: This calls carComFun and snapshots the pre-effect fields into _cardPrev before applying its own patch.
+
+
+				const patValObj = conModObj.carComFun( curConObj ); // What: Patch Value Object And Guard. Why: Some modes (probability) treat completion as informational only, returning no patch. How: This calls conModObj's own carComFun on curConObj.
+
+
+				if ( !patValObj ) return curConObj; // What: No-Patch Guard. Why: A probability-mode card has nothing to actually mutate on completion. How: This returns curConObj unchanged when patValObj is falsy.
 
 
 
-		return { // What: Filtered Entry Return. Why: The caller needs this entry's own pending.updates replaced with the stale rows stripped. How: This spreads curEntObj and its own pending, overriding just updates.
-
-
-			...curEntObj, // What: Current Entry Spread. Why: Every field of this entry other than pending must carry over unchanged. How: This spreads curEntObj before the pending override below.
-
-			pending : { // What: Pending. Why: Only the updates list inside pending changes, so every other staged field must survive. How: This rebuilds pending from its own current fields plus the filtered updates.
-
-
-				...curEntObj.pending, // What: Current Pending Spread. Why: Every other staged field (pickedId, ...) must carry over unchanged. How: This spreads curEntObj.pending before the updates override below.
-
-				updates : filUpdArr // What: Updates. Why: This is the entry's own staged update list with the stale rows removed. How: This is filUpdArr.
+				return { ...curConObj, _cardPrev : { chargeStep : curConObj.chargeStep, triggered : curConObj.triggered, value : curConObj.value }, ...patValObj }; // What: Applied Card Patch Return. Why: The caller needs curConObj patched, with its own pre-effect fields snapshotted for undo. How: This spreads curConObj, its own _cardPrev snapshot, then patValObj's own fields.
 
 
 			}
 
 
-		};
+
+			const preSnaObj = curConObj._cardPrev; // What: Previous Snapshot Object And Guard. Why: Un-completing the card only makes sense if it actually recorded a snapshot to restore. How: This reads curConObj's own _cardPrev field.
+
+
+			if ( !preSnaObj ) return curConObj; // What: No-Snapshot Guard. Why: A card that was never completed (or already reverted) has nothing to restore. How: This returns curConObj unchanged when preSnaObj is falsy.
+
+
+
+			const { _cardPrev : carPreObj, ...remFieObj } = curConObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _cardPrev snapshot. How: This destructures _cardPrev off curConObj as carPreObj, which goes unused, keeping every other field in remFieObj.
+
+
+
+			return { ...remFieObj, chargeStep : preSnaObj.chargeStep, triggered : preSnaObj.triggered, value : preSnaObj.value }; // What: Restored Card Return. Why: The caller needs curConObj's own pre-completion fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargeStep from preSnaObj.
+
+
+		} );
+
+
+	}
+
+
+
+	const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === togEntObj.pickerId ); // What: Current Picker Object And Guard. Why: A dependent entry's own conditional is looked up through its picker, not the entry itself. How: This looks up togEntObj's own pickerId in curStaObj.pickers.
+	const conIdeStr = curPicObj && curPicObj.conditionalId;                                           // What: Conditional Identifier String And Guard. Why: An entry whose picker has no conditionalId gates nothing. How: This reads curPicObj's own conditionalId, or stays falsy when curPicObj is missing.
+
+
+	if ( !conIdeStr ) return curConArr; // What: No-Conditional Guard. Why: An ungated picker's entry has no dependent conditional to charge. How: This returns curConArr unchanged when conIdeStr is falsy.
+
+
+
+	const depDonNum = nexEntArr.filter( ( curEntObj ) => { // What: Dependent Done Number. Why: The charging edge below only fires on the FIRST dependent completion of the day, so every OTHER done dependent entry for this same conditional must be counted. How: This counts entries (excluding day-off cards) whose own picker shares conIdeStr and are done.
+
+
+		if ( curEntObj.kind === 'dayoff' || !curEntObj.done ) return false; // What: Non-Dependent Guard. Why: A day-off card, or an entry that isn't done, never counts as a dependent completion. How: This excludes both cases from the count.
+
+
+
+		const matPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ); // What: Matched Picker Object And Guard. Why: Only an entry whose own picker shares this exact conditional counts. How: This looks up curEntObj's own pickerId in curStaObj.pickers.
+
+
+
+		return matPicObj && matPicObj.conditionalId === conIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPicObj exists and shares conIdeStr.
+
+
+	} ).length; // What: Match Count Read. Why: The caller only needs how many entries matched. How: This reads the filtered array's own length.
+
+
+
+	return curConArr.map( ( curConObj ) => { // What: Charged Conditionals Return. Why: Only the one matching value-mode conditional can advance or revert here. How: This maps curConArr, resolving the charging/reverting edges for the matching conditional only.
+
+
+		if ( curConObj.id !== conIdeStr || !conModObj.modValFun( curConObj.mode ) ) return curConObj; // What: Non-Matching Guard. Why: Every other conditional, and a non-value-mode match, is untouched here. How: This returns curConObj unchanged when either condition holds.
+
+
+
+		if ( nowDonBoo && depDonNum === 1 && !curConObj.chargedToday ) { // What: Charging-Edge Branch. Why: The FIRST dependent completion of an as-yet-uncharged day is what actually advances the conditional's own value. How: This calls advValFun and snapshots the pre-effect fields into _chargePrev before applying its own patch.
+
+
+			const patValObj = conModObj.advValFun( curConObj ); // What: Patch Value Object And Guard. Why: Some modes may decline to advance at all. How: This calls conModObj's own advValFun on curConObj.
+
+
+			if ( !patValObj ) return curConObj; // What: No-Patch Guard. Why: A decline to advance leaves curConObj with nothing to mutate. How: This returns curConObj unchanged when patValObj is falsy.
+
+
+
+			return { ...curConObj, _chargePrev : { chargedToday : curConObj.chargedToday, chargeStep : curConObj.chargeStep, triggered : curConObj.triggered, value : curConObj.value }, ...patValObj }; // What: Applied Charge Patch Return. Why: The caller needs curConObj patched, with its own pre-effect fields snapshotted for undo. How: This spreads curConObj, its own _chargePrev snapshot, then patValObj's own fields.
+
+
+		}
+
+
+
+		const nowUndBoo = !nowDonBoo;              // What: Now Undone Boolean. Why: Only an un-done toggle can revert an earlier charge. How: This negates nowDonBoo.
+		const depZerBoo = depDonNum === 0;         // What: Dependents Zero Boolean. Why: The charge only reverts once the LAST dependent completion of the day is un-done. How: This is true when depDonNum is 0.
+		const hasPreBoo = !!curConObj._chargePrev; // What: Has Previous Boolean. Why: There's nothing to restore unless the charge left its own snapshot. How: This is true when curConObj carries its own _chargePrev.
+
+		const revEdgBoo = nowUndBoo && depZerBoo && hasPreBoo; // What: Reverting Edge Boolean. Why: The earlier charge must be undone only when all three checks above hold at once. How: This combines nowUndBoo, depZerBoo and hasPreBoo.
+
+
+		if ( revEdgBoo ) { // What: Reverting-Edge Branch. Why: Once the LAST dependent completion of the day is un-done, the earlier charge must be undone too. How: This restores curConObj's own pre-charge fields from _chargePrev.
+
+
+			const preSnaObj = curConObj._chargePrev!; // What: Previous Snapshot Object. Why: The restoration below needs the exact pre-charge fields recorded earlier. How: This reads curConObj's own _chargePrev field. // What: Non-Null Note. Why: This branch only runs when hasPreBoo found a snapshot. How: The ! tells TypeScript _chargePrev is set here.
+
+			const { _chargePrev : chrPreObj, ...remFieObj } = curConObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _chargePrev snapshot. How: This destructures _chargePrev off curConObj as chrPreObj, which goes unused, keeping every other field in remFieObj.
+
+
+
+			return { ...remFieObj, chargedToday : preSnaObj.chargedToday, chargeStep : preSnaObj.chargeStep, triggered : preSnaObj.triggered, value : preSnaObj.value }; // What: Restored Charge Return. Why: The caller needs curConObj's own pre-charge fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargedToday/chargeStep from preSnaObj.
+
+
+		}
+
+
+
+		return curConObj; // What: Unchanged Conditional Return. Why: Neither edge condition applied, so curConObj passes through untouched. How: This returns curConObj as-is.
 
 
 	} );
 
 
-
-	return entChaBoo ? nexEntArr : todEntArr; // What: Conditional Array Return. Why: The caller relies on reference equality to know nothing changed. How: This returns nexEntArr only when entChaBoo is true, else the original todEntArr.
-
-
 }
 
-// #endregion spuDroFun
-
-
-
-// #region rebPenFun
-
-/**
- * rebPenFun = Rebase Pending Function
- *
- * @summary
- * Reworks an Ease Down entry's own staged decay after a direct edit to its
- * item's value (a Refill), so completing the entry decays the item from its
- * new value rather than from the value it had when it was picked. Without
- * it, an item refilled just before running out kept its old plan, so
- * completing the entry ended the streak as depleted and the next day picked
- * a new item. It reworks a not-yet-done entry only when the entry is for the
- * edited item, its picker is in Ease Down, and its pending holds a decay row
- * for the item (one carrying a chargeStep), so a manual send's recharge row
- * is left alone.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param todEntArr - Today Entry Array: The today.entries array to scan.
- * @param picRcdArr - Picker Record Array: The pickers, read for each entry's
- *                    mode and threshold.
- * @param iteIdeStr - Item Identifier String: The item whose value was set.
- * @param newValNum - New Value Number: The value the item was just set to.
- *
- * @returns The same todEntArr reference when nothing changed, else a new
- * array with the reworked entries.
- *
- * @example
- * ```ts
- * rebPenFun(state.today.entries, state.pickers, itemId, 100) // => entries
- * ```
- *
-*/
-
-function rebPenFun ( todEntArr : TodEntTyp[], picRcdArr : PicRcdTyp[], iteIdeStr : string, newValNum : number ) : TodEntTyp[] {
-
-
-	let entChaBoo = false; // What: Entry Changed Boolean And Guard. Why: The caller only wants a new array reference when something actually changed. How: This starts false and flips true the first time an entry is reworked.
-
-
-	const nexEntArr = todEntArr.map( ( curEntObj ) => { // What: Next Entries Array. Why: The edited item's own Ease Down entry has to decay from the item's new value. How: This maps todEntArr, returning each entry unchanged unless it's that entry.
-
-
-		if ( curEntObj.done || curEntObj.itemId !== iteIdeStr || !curEntObj.pending ) return curEntObj; // What: Other Entry Guard. Why: Only the edited item's own entry with a pending still waiting can need reworking. How: This returns curEntObj unchanged when it's done, is for another item, or has nothing staged.
-
-
-
-		const curPicObj = picRcdArr.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ); // What: Current Picker Object And Guard. Why: Only an Ease Down picker plans its items' decay ahead. How: This looks up the entry's own picker.
-
-
-		if ( !curPicObj || curPicObj.mode !== 'ease-down' ) return curEntObj; // What: Ease Down Guard. Why: Other modes keep their designed completion effect regardless of a direct edit. How: This returns curEntObj unchanged unless its picker is in Ease Down.
-
-
-
-		const decUpdObj = curEntObj.pending.updates.find( ( curUpdObj ) => curUpdObj.id === iteIdeStr && ( curUpdObj.chargeStep ?? 0 ) > 0 ); // What: Decay Update Object And Guard. Why: Only the row that decays the item by its step needs reworking. How: This finds the item's own row carrying a chargeStep.
-
-
-		if ( !decUpdObj ) return curEntObj; // What: No Decay Row Guard. Why: A manual send's pending only recharges or activates, with no decay to rework. How: This returns curEntObj unchanged when no decay row is staged.
-
-
-
-		const thrValNum = curPicObj.threshold ?? 100;                       // What: Threshold Value Number. Why: A depleted item recharges to its picker's own threshold. How: This reads the picker's threshold, defaulting to 100.
-		const basValNum = newValNum > 0 ? newValNum : thrValNum;            // What: Base Value Number. Why: The decay starts from the item's new value, the same way a new streak starts from a full one when the item is empty. How: This uses newValNum, or thrValNum when it's 0.
-		const remValNum = Math.max( 0, basValNum - decUpdObj.chargeStep! ); // What: Remaining Value Number. Why: Completing the entry takes one step off the new value. How: This subtracts the row's chargeStep, floored at 0. // What: Non-Null Note. Why: decUpdObj was found only when its chargeStep is above 0. How: The ! tells TypeScript the step is set.
-		const depEndBoo = remValNum <= 0.5;                                 // What: Depleted End Boolean. Why: The streak ends only when this step empties the item, with the same half-unit tolerance pickers.ts uses. How: This checks remValNum against 0.5.
-
-
-
-		entChaBoo = true; // What: Entry Changed Flag Set. Why: This entry's pending is about to be reworked. How: This flips entChaBoo to true.
-
-
-
-		return { // What: Reworked Entry Return. Why: The entry's decay row, depletion flag, and active item patch all follow from the new value. How: This spreads curEntObj and its pending, overriding those three.
-
-
-			...curEntObj, // What: Current Entry Spread. Why: Every field of this entry other than pending must carry over unchanged. How: This spreads curEntObj before the pending override below.
-
-			pending : { // What: Pending. Why: The staged decay has to start from the item's new value. How: This rebuilds pending from its own current fields plus the reworked ones.
-
-
-				...curEntObj.pending, // What: Current Pending Spread. Why: Every other staged field must carry over unchanged. How: This spreads curEntObj.pending before the overrides below.
-
-				depletedEnd : depEndBoo, // What: Depleted End. Why: The log marks the streak ended only when this step really empties the item. How: This is depEndBoo.
-
-				pickerPatch : { // What: Picker Patch. Why: The item stays the picker's active one unless this step empties it. How: This keeps any other staged picker change and sets activeItemId from depEndBoo.
-
-
-					...curEntObj.pending.pickerPatch, // What: Current Picker Patch Spread. Why: Any other staged picker change must carry over unchanged. How: This spreads the existing pickerPatch before activeItemId.
-
-					activeItemId : depEndBoo ? null : iteIdeStr // What: Active Item Id. Why: An emptied item releases the picker for a new streak, and any other keeps it. How: This is null when depEndBoo, else iteIdeStr.
-
-
-				},
-
-				updates : curEntObj.pending.updates.map( ( curUpdObj ) => curUpdObj === decUpdObj ? { ...curUpdObj, value : depEndBoo ? thrValNum : remValNum } : curUpdObj ) // What: Updates. Why: The decay row has to land on the reworked value. How: This replaces decUpdObj's value with thrValNum when depEndBoo, else remValNum, keeping every other row.
-
-
-			}
-
-
-		};
-
-
-	} );
-
-
-
-	return entChaBoo ? nexEntArr : todEntArr; // What: Conditional Array Return. Why: The caller relies on reference equality to know nothing changed. How: This returns nexEntArr only when entChaBoo is true.
-
-
-}
-
-// #endregion rebPenFun
+// #endregion cotAplFun
 
 
 
@@ -599,186 +537,38 @@ function enpRevFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 
 
 
-// #region cotAplFun
+// #region nclIdeFun
 
 /**
- * cotAplFun = Conditional-Toggle Apply Function
+ * nclIdeFun = New-Conditional-Log Identifier Function
  *
  * @summary
- * Resolves the conditional consequences of toggling one Today entry
- * done/undone. A day-off CARD entry (kind:'dayoff') drives its own
- * conditional's carComFun (ease-up/dynamic reset, ease-down
- * discharge) with an undo snapshot in _cardPrev. A dependent PICKER
- * entry (whose own picker.conditionalId is set) advances its
- * conditional's own value on the FIRST dependent completion of the day
- * (the 0-to-1 count edge), and reverts when the count returns to 0,
- * with an undo snapshot in _chargePrev. _cardPrev/_chargePrev are real
- * persisted fields on the conditional, not local bookkeeping.
+ * Mints a new, distinct id for one state.conditionalLog row, mirroring
+ * newLogFun's own shape but with its own separate counter and prefix so
+ * the two logs' ids can never collide with each other.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param curStaObj - Current State Object: The current state, read (not
- *                    mutated) for its own pickers/conditionals.
- * @param nexEntArr - Next Entry Array: today.entries AFTER this toggle has
- *                    already been applied to it, used to count dependent
- *                    completions.
- * @param togEntObj - Toggle Entry Object: The entry that was just toggled.
- * @param nowDonBoo - Now Done Boolean: Whether togEntObj is now done (true)
- *                     or was just un-done (false).
+ * @param void - This function takes no parameters.
  *
- * @returns The updated conditionals array, or the same reference when
- * nothing about it actually changes.
+ * @returns A new conditional-log row id string, prefixed 'cl_'.
  *
  * @example
  * ```ts
- * cotAplFun(curStaObj, nexEntArr, togEntObj, true) // => conditionals
+ * nclIdeFun() // => 'cl_abc123xy'
  * ```
  *
 */
 
-function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj : TodEntTyp, nowDonBoo : boolean ) : ConRcdTyp[] {
+function nclIdeFun () : string {
 
 
-	const curConArr = curStaObj.conditionals || []; // What: Current Conditionals Array And Guard. Why: Every branch below reads/maps over the live conditionals list. How: This reads curStaObj's own conditionals, defaulting to empty.
-
-
-	if ( !curConArr.length ) return curConArr; // What: No-Conditionals Guard. Why: An app with no conditionals at all has nothing to resolve. How: This returns curConArr unchanged when it's empty.
-
-
-
-	const conModObj = CON_NAM_OBJ; // What: Conditional Module Object. Why: Every branch below repeatedly calls into this module's own resolution helpers. How: This aliases the imported CON_NAM_OBJ namespace for brevity below.
-
-
-	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card entry's own completion drives its conditional's carComFun instead of the dependent-picker charging logic below. How: This maps curConArr, resolving only the one matching conditional.
-
-
-		return curConArr.map( ( curConObj ) => { // What: Card Toggle Conditionals Map. Why: Every conditional except the one matching togEntObj.conditionalId must pass through untouched, while the matching one needs its own day-off completion/reversion resolved. How: This maps curConArr, guarding on id first, then branching on nowDonBoo to apply carComFun's own patch (completion) or restore the earlier _cardPrev snapshot (reversion).
-
-
-			if ( curConObj.id !== togEntObj.conditionalId ) return curConObj; // What: Non-Matching Guard. Why: Every other conditional is untouched by this card's own toggle. How: This returns curConObj unchanged when its own id doesn't match.
-
-
-
-			if ( nowDonBoo ) { // What: Now-Done Branch. Why: Completing the card is what actually drives its own mode-specific completion effect. How: This calls carComFun and snapshots the pre-effect fields into _cardPrev before applying its own patch.
-
-
-				const patValObj = conModObj.carComFun( curConObj ); // What: Patch Value Object And Guard. Why: Some modes (probability) treat completion as informational only, returning no patch. How: This calls conModObj's own carComFun on curConObj.
-
-
-				if ( !patValObj ) return curConObj; // What: No-Patch Guard. Why: A probability-mode card has nothing to actually mutate on completion. How: This returns curConObj unchanged when patValObj is falsy.
-
-
-
-				return { ...curConObj, _cardPrev : { chargeStep : curConObj.chargeStep, triggered : curConObj.triggered, value : curConObj.value }, ...patValObj }; // What: Applied Card Patch Return. Why: The caller needs curConObj patched, with its own pre-effect fields snapshotted for undo. How: This spreads curConObj, its own _cardPrev snapshot, then patValObj's own fields.
-
-
-			}
-
-
-
-			const preSnaObj = curConObj._cardPrev; // What: Previous Snapshot Object And Guard. Why: Un-completing the card only makes sense if it actually recorded a snapshot to restore. How: This reads curConObj's own _cardPrev field.
-
-
-			if ( !preSnaObj ) return curConObj; // What: No-Snapshot Guard. Why: A card that was never completed (or already reverted) has nothing to restore. How: This returns curConObj unchanged when preSnaObj is falsy.
-
-
-
-			const { _cardPrev : carPreObj, ...remFieObj } = curConObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _cardPrev snapshot. How: This destructures _cardPrev off curConObj as carPreObj, which goes unused, keeping every other field in remFieObj.
-
-
-
-			return { ...remFieObj, chargeStep : preSnaObj.chargeStep, triggered : preSnaObj.triggered, value : preSnaObj.value }; // What: Restored Card Return. Why: The caller needs curConObj's own pre-completion fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargeStep from preSnaObj.
-
-
-		} );
-
-
-	}
-
-
-
-	const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === togEntObj.pickerId ); // What: Current Picker Object And Guard. Why: A dependent entry's own conditional is looked up through its picker, not the entry itself. How: This looks up togEntObj's own pickerId in curStaObj.pickers.
-	const conIdeStr = curPicObj && curPicObj.conditionalId;                                           // What: Conditional Identifier String And Guard. Why: An entry whose picker has no conditionalId gates nothing. How: This reads curPicObj's own conditionalId, or stays falsy when curPicObj is missing.
-
-
-	if ( !conIdeStr ) return curConArr; // What: No-Conditional Guard. Why: An ungated picker's entry has no dependent conditional to charge. How: This returns curConArr unchanged when conIdeStr is falsy.
-
-
-
-	const depDonNum = nexEntArr.filter( ( curEntObj ) => { // What: Dependent Done Number. Why: The charging edge below only fires on the FIRST dependent completion of the day, so every OTHER done dependent entry for this same conditional must be counted. How: This counts entries (excluding day-off cards) whose own picker shares conIdeStr and are done.
-
-
-		if ( curEntObj.kind === 'dayoff' || !curEntObj.done ) return false; // What: Non-Dependent Guard. Why: A day-off card, or an entry that isn't done, never counts as a dependent completion. How: This excludes both cases from the count.
-
-
-
-		const matPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ); // What: Matched Picker Object And Guard. Why: Only an entry whose own picker shares this exact conditional counts. How: This looks up curEntObj's own pickerId in curStaObj.pickers.
-
-
-
-		return matPicObj && matPicObj.conditionalId === conIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPicObj exists and shares conIdeStr.
-
-
-	} ).length; // What: Match Count Read. Why: The caller only needs how many entries matched. How: This reads the filtered array's own length.
-
-
-
-	return curConArr.map( ( curConObj ) => { // What: Charged Conditionals Return. Why: Only the one matching value-mode conditional can advance or revert here. How: This maps curConArr, resolving the charging/reverting edges for the matching conditional only.
-
-
-		if ( curConObj.id !== conIdeStr || !conModObj.modValFun( curConObj.mode ) ) return curConObj; // What: Non-Matching Guard. Why: Every other conditional, and a non-value-mode match, is untouched here. How: This returns curConObj unchanged when either condition holds.
-
-
-
-		if ( nowDonBoo && depDonNum === 1 && !curConObj.chargedToday ) { // What: Charging-Edge Branch. Why: The FIRST dependent completion of an as-yet-uncharged day is what actually advances the conditional's own value. How: This calls advValFun and snapshots the pre-effect fields into _chargePrev before applying its own patch.
-
-
-			const patValObj = conModObj.advValFun( curConObj ); // What: Patch Value Object And Guard. Why: Some modes may decline to advance at all. How: This calls conModObj's own advValFun on curConObj.
-
-
-			if ( !patValObj ) return curConObj; // What: No-Patch Guard. Why: A decline to advance leaves curConObj with nothing to mutate. How: This returns curConObj unchanged when patValObj is falsy.
-
-
-
-			return { ...curConObj, _chargePrev : { chargedToday : curConObj.chargedToday, chargeStep : curConObj.chargeStep, triggered : curConObj.triggered, value : curConObj.value }, ...patValObj }; // What: Applied Charge Patch Return. Why: The caller needs curConObj patched, with its own pre-effect fields snapshotted for undo. How: This spreads curConObj, its own _chargePrev snapshot, then patValObj's own fields.
-
-
-		}
-
-
-
-		const nowUndBoo = !nowDonBoo;              // What: Now Undone Boolean. Why: Only an un-done toggle can revert an earlier charge. How: This negates nowDonBoo.
-		const depZerBoo = depDonNum === 0;         // What: Dependents Zero Boolean. Why: The charge only reverts once the LAST dependent completion of the day is un-done. How: This is true when depDonNum is 0.
-		const hasPreBoo = !!curConObj._chargePrev; // What: Has Previous Boolean. Why: There's nothing to restore unless the charge left its own snapshot. How: This is true when curConObj carries its own _chargePrev.
-
-		const revEdgBoo = nowUndBoo && depZerBoo && hasPreBoo; // What: Reverting Edge Boolean. Why: The earlier charge must be undone only when all three checks above hold at once. How: This combines nowUndBoo, depZerBoo and hasPreBoo.
-
-
-		if ( revEdgBoo ) { // What: Reverting-Edge Branch. Why: Once the LAST dependent completion of the day is un-done, the earlier charge must be undone too. How: This restores curConObj's own pre-charge fields from _chargePrev.
-
-
-			const preSnaObj = curConObj._chargePrev!; // What: Previous Snapshot Object. Why: The restoration below needs the exact pre-charge fields recorded earlier. How: This reads curConObj's own _chargePrev field. // What: Non-Null Note. Why: This branch only runs when hasPreBoo found a snapshot. How: The ! tells TypeScript _chargePrev is set here.
-
-			const { _chargePrev : chrPreObj, ...remFieObj } = curConObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _chargePrev snapshot. How: This destructures _chargePrev off curConObj as chrPreObj, which goes unused, keeping every other field in remFieObj.
-
-
-
-			return { ...remFieObj, chargedToday : preSnaObj.chargedToday, chargeStep : preSnaObj.chargeStep, triggered : preSnaObj.triggered, value : preSnaObj.value }; // What: Restored Charge Return. Why: The caller needs curConObj's own pre-charge fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargedToday/chargeStep from preSnaObj.
-
-
-		}
-
-
-
-		return curConObj; // What: Unchanged Conditional Return. Why: Neither edge condition applied, so curConObj passes through untouched. How: This returns curConObj as-is.
-
-
-	} );
+	return 'cl_' + Date.now().toString( 36 ) + ( __cdlSeqNum++ ).toString( 36 ); // What: Conditional-Log Id Return. Why: The caller needs a short, sortable, collision-resistant id. How: This concatenates a fixed prefix, the current time base-36, and the incrementing counter base-36.
 
 
 }
 
-// #endregion cotAplFun
+// #endregion nclIdeFun
 
 
 
@@ -946,6 +736,216 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 }
 
 // #endregion cdlAplFun
+
+
+
+// #region rebPenFun
+
+/**
+ * rebPenFun = Rebase Pending Function
+ *
+ * @summary
+ * Reworks an Ease Down entry's own staged decay after a direct edit to its
+ * item's value (a Refill), so completing the entry decays the item from its
+ * new value rather than from the value it had when it was picked. Without
+ * it, an item refilled just before running out kept its old plan, so
+ * completing the entry ended the streak as depleted and the next day picked
+ * a new item. It reworks a not-yet-done entry only when the entry is for the
+ * edited item, its picker is in Ease Down, and its pending holds a decay row
+ * for the item (one carrying a chargeStep), so a manual send's recharge row
+ * is left alone.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param todEntArr - Today Entry Array: The today.entries array to scan.
+ * @param picRcdArr - Picker Record Array: The pickers, read for each entry's
+ *                    mode and threshold.
+ * @param iteIdeStr - Item Identifier String: The item whose value was set.
+ * @param newValNum - New Value Number: The value the item was just set to.
+ *
+ * @returns The same todEntArr reference when nothing changed, else a new
+ * array with the reworked entries.
+ *
+ * @example
+ * ```ts
+ * rebPenFun(state.today.entries, state.pickers, itemId, 100) // => entries
+ * ```
+ *
+*/
+
+function rebPenFun ( todEntArr : TodEntTyp[], picRcdArr : PicRcdTyp[], iteIdeStr : string, newValNum : number ) : TodEntTyp[] {
+
+
+	let entChaBoo = false; // What: Entry Changed Boolean And Guard. Why: The caller only wants a new array reference when something actually changed. How: This starts false and flips true the first time an entry is reworked.
+
+
+	const nexEntArr = todEntArr.map( ( curEntObj ) => { // What: Next Entries Array. Why: The edited item's own Ease Down entry has to decay from the item's new value. How: This maps todEntArr, returning each entry unchanged unless it's that entry.
+
+
+		if ( curEntObj.done || curEntObj.itemId !== iteIdeStr || !curEntObj.pending ) return curEntObj; // What: Other Entry Guard. Why: Only the edited item's own entry with a pending still waiting can need reworking. How: This returns curEntObj unchanged when it's done, is for another item, or has nothing staged.
+
+
+
+		const curPicObj = picRcdArr.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ); // What: Current Picker Object And Guard. Why: Only an Ease Down picker plans its items' decay ahead. How: This looks up the entry's own picker.
+
+
+		if ( !curPicObj || curPicObj.mode !== 'ease-down' ) return curEntObj; // What: Ease Down Guard. Why: Other modes keep their designed completion effect regardless of a direct edit. How: This returns curEntObj unchanged unless its picker is in Ease Down.
+
+
+
+		const decUpdObj = curEntObj.pending.updates.find( ( curUpdObj ) => curUpdObj.id === iteIdeStr && ( curUpdObj.chargeStep ?? 0 ) > 0 ); // What: Decay Update Object And Guard. Why: Only the row that decays the item by its step needs reworking. How: This finds the item's own row carrying a chargeStep.
+
+
+		if ( !decUpdObj ) return curEntObj; // What: No Decay Row Guard. Why: A manual send's pending only recharges or activates, with no decay to rework. How: This returns curEntObj unchanged when no decay row is staged.
+
+
+
+		const thrValNum = curPicObj.threshold ?? 100;                       // What: Threshold Value Number. Why: A depleted item recharges to its picker's own threshold. How: This reads the picker's threshold, defaulting to 100.
+		const basValNum = newValNum > 0 ? newValNum : thrValNum;            // What: Base Value Number. Why: The decay starts from the item's new value, the same way a new streak starts from a full one when the item is empty. How: This uses newValNum, or thrValNum when it's 0.
+		const remValNum = Math.max( 0, basValNum - decUpdObj.chargeStep! ); // What: Remaining Value Number. Why: Completing the entry takes one step off the new value. How: This subtracts the row's chargeStep, floored at 0. // What: Non-Null Note. Why: decUpdObj was found only when its chargeStep is above 0. How: The ! tells TypeScript the step is set.
+		const depEndBoo = remValNum <= 0.5;                                 // What: Depleted End Boolean. Why: The streak ends only when this step empties the item, with the same half-unit tolerance pickers.ts uses. How: This checks remValNum against 0.5.
+
+
+
+		entChaBoo = true; // What: Entry Changed Flag Set. Why: This entry's pending is about to be reworked. How: This flips entChaBoo to true.
+
+
+
+		return { // What: Reworked Entry Return. Why: The entry's decay row, depletion flag, and active item patch all follow from the new value. How: This spreads curEntObj and its pending, overriding those three.
+
+
+			...curEntObj, // What: Current Entry Spread. Why: Every field of this entry other than pending must carry over unchanged. How: This spreads curEntObj before the pending override below.
+
+			pending : { // What: Pending. Why: The staged decay has to start from the item's new value. How: This rebuilds pending from its own current fields plus the reworked ones.
+
+
+				...curEntObj.pending, // What: Current Pending Spread. Why: Every other staged field must carry over unchanged. How: This spreads curEntObj.pending before the overrides below.
+
+				depletedEnd : depEndBoo, // What: Depleted End. Why: The log marks the streak ended only when this step really empties the item. How: This is depEndBoo.
+
+				pickerPatch : { // What: Picker Patch. Why: The item stays the picker's active one unless this step empties it. How: This keeps any other staged picker change and sets activeItemId from depEndBoo.
+
+
+					...curEntObj.pending.pickerPatch, // What: Current Picker Patch Spread. Why: Any other staged picker change must carry over unchanged. How: This spreads the existing pickerPatch before activeItemId.
+
+					activeItemId : depEndBoo ? null : iteIdeStr // What: Active Item Id. Why: An emptied item releases the picker for a new streak, and any other keeps it. How: This is null when depEndBoo, else iteIdeStr.
+
+
+				},
+
+				updates : curEntObj.pending.updates.map( ( curUpdObj ) => curUpdObj === decUpdObj ? { ...curUpdObj, value : depEndBoo ? thrValNum : remValNum } : curUpdObj ) // What: Updates. Why: The decay row has to land on the reworked value. How: This replaces decUpdObj's value with thrValNum when depEndBoo, else remValNum, keeping every other row.
+
+
+			}
+
+
+		};
+
+
+	} );
+
+
+
+	return entChaBoo ? nexEntArr : todEntArr; // What: Conditional Array Return. Why: The caller relies on reference equality to know nothing changed. How: This returns nexEntArr only when entChaBoo is true.
+
+
+}
+
+// #endregion rebPenFun
+
+
+
+// #region spuDroFun
+
+/**
+ * spuDroFun = Stale-Pending-Updates Drop Function
+ *
+ * @summary
+ * Strips any stale updates row for the given item ids from every NOT-
+ * YET-DONE entry's own pending, except an entry whose own itemId is one
+ * of those ids (see the design-rationale comment above). See the
+ * design-rationale comment above for why this exists at all.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param todEntArr - Today Entry Array: The today.entries array to scan.
+ * @param iteIdeArr - Item Identifier Array: The item ids whose stale
+ *                    pending rows should be dropped.
+ *
+ * @returns The same todEntArr reference when nothing changed, else a new
+ * array with the affected entries' own pending.updates filtered.
+ *
+ * @example
+ * ```ts
+ * spuDroFun(state.today.entries, [itemId]) // => entries
+ * ```
+ *
+*/
+
+function spuDroFun ( todEntArr : TodEntTyp[], iteIdeArr : string[] ) : TodEntTyp[] {
+
+
+	const iteIdeSet = new Set( iteIdeArr ); // What: Item Identifier Set. Why: The scan below needs fast membership checks against the touched ids. How: This wraps iteIdeArr in a Set.
+
+
+	if ( !iteIdeSet.size ) return todEntArr; // What: No-Ids Guard. Why: Nothing was touched, so there's nothing stale to drop. How: This returns todEntArr unchanged when iteIdeSet is empty.
+
+
+
+	let entChaBoo = false; // What: Entry Changed Boolean And Guard. Why: The caller only wants a new array reference when something actually changed. How: This starts false and flips true the first time a pending.updates row is actually dropped below.
+
+
+	const nexEntArr = todEntArr.map( ( curEntObj ) => { // What: Next Entries Array. Why: Every entry must be checked for a stale pending row belonging to one of the touched items. How: This maps todEntArr, returning each entry unchanged unless it needs its own pending.updates filtered.
+
+
+		if ( curEntObj.done || !curEntObj.pending || !curEntObj.pending.updates || !curEntObj.pending.updates.length ) return curEntObj; // What: Nothing-To-Strip Guard. Why: A done entry's pending no longer matters, and an entry with no pending.updates has nothing to filter. How: This returns curEntObj unchanged whenever any of those hold.
+
+
+
+		if ( curEntObj.itemId && iteIdeSet.has( curEntObj.itemId ) ) return curEntObj; // What: Own-Entry Guard. Why: An item's OWN entry must keep its designed completion effect regardless of an interim Fill (see the design-rationale comment above). How: This returns curEntObj unchanged when its own itemId is one of the touched ids.
+
+
+
+		const filUpdArr = curEntObj.pending.updates.filter( ( curUpdObj ) => !iteIdeSet.has( curUpdObj.id ) ); // What: Filtered Updates Array. Why: Only rows for OTHER touched items are the actual stale ones to drop. How: This keeps every update row whose own id isn't in iteIdeSet.
+
+
+		if ( filUpdArr.length === curEntObj.pending.updates.length ) return curEntObj; // What: Unchanged-Length Guard. Why: Nothing was actually dropped for this entry, so its own reference can stay stable. How: This returns curEntObj unchanged when filUpdArr's own length matches the original.
+
+
+
+		entChaBoo = true; // What: Entry Changed Flag Set. Why: At least one entry's own pending.updates was actually filtered. How: This flips entChaBoo to true.
+
+
+
+		return { // What: Filtered Entry Return. Why: The caller needs this entry's own pending.updates replaced with the stale rows stripped. How: This spreads curEntObj and its own pending, overriding just updates.
+
+
+			...curEntObj, // What: Current Entry Spread. Why: Every field of this entry other than pending must carry over unchanged. How: This spreads curEntObj before the pending override below.
+
+			pending : { // What: Pending. Why: Only the updates list inside pending changes, so every other staged field must survive. How: This rebuilds pending from its own current fields plus the filtered updates.
+
+
+				...curEntObj.pending, // What: Current Pending Spread. Why: Every other staged field (pickedId, ...) must carry over unchanged. How: This spreads curEntObj.pending before the updates override below.
+
+				updates : filUpdArr // What: Updates. Why: This is the entry's own staged update list with the stale rows removed. How: This is filUpdArr.
+
+
+			}
+
+
+		};
+
+
+	} );
+
+
+
+	return entChaBoo ? nexEntArr : todEntArr; // What: Conditional Array Return. Why: The caller relies on reference equality to know nothing changed. How: This returns nexEntArr only when entChaBoo is true, else the original todEntArr.
+
+
+}
+
+// #endregion spuDroFun
 
 // #endregion Helpers
 

@@ -130,6 +130,38 @@ const arrHorFun = ( curRecObj : { left : number, width : number }, coaLefNum : n
 
 
 
+// #region coaWidFun
+
+/**
+ * coaWidFun = Coach Width Function
+ *
+ * @summary
+ * The coach card's width, sized the same way as help mode's tip: the small
+ * text width at the card's base body font size, plus its side padding and
+ * side border, each counted twice. On a viewport too narrow for that, it
+ * shrinks to the viewport less a small-step margin on each side. Shared by
+ * the render function's first paint and plaTarFun's per-frame placement, so
+ * the two always agree.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param vieWidNum - Viewport Width Number: The current viewport width, in px.
+ *
+ * @returns The coach card's width, in px.
+ *
+ * @example
+ * ```ts
+ * coaWidFun(1440) // => about 272.6 at an 11px root font size
+ * ```
+ *
+*/
+
+const coaWidFun = ( vieWidNum : number ) : number => Math.min( rhyPxlFun( 'p10' ) + ( rhyPxlFun( 'bas' ) + rhyPxlFun( 'm12' ) ) * 2, vieWidNum - rhyPxlFun( 'm01' ) * 2 ); // What: Coach Width Function. Why: The coach card should fit its body text like help mode's tip, without outgrowing a narrow viewport. How: This takes the smaller of the text width plus padding and borders, and the viewport less its edge margins. // Vertical Rhythm Base Plus 10 ~= 242.522px, Vertical Rhythm Base ~= 14.572px, Vertical Rhythm Base Minus 12 ~= 0.499px, Vertical Rhythm Base Minus 1 = 11px
+
+// #endregion coaWidFun
+
+
+
 // #region safBotFun
 
 /**
@@ -318,38 +350,6 @@ const coaLayFun = ( curRecObj : { height : number, left : number, top : number }
 };
 
 // #endregion coaLayFun
-
-
-
-// #region coaWidFun
-
-/**
- * coaWidFun = Coach Width Function
- *
- * @summary
- * The coach card's width, sized the same way as help mode's tip: the small
- * text width at the card's base body font size, plus its side padding and
- * side border, each counted twice. On a viewport too narrow for that, it
- * shrinks to the viewport less a small-step margin on each side. Shared by
- * the render function's first paint and plaTarFun's per-frame placement, so
- * the two always agree.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param vieWidNum - Viewport Width Number: The current viewport width, in px.
- *
- * @returns The coach card's width, in px.
- *
- * @example
- * ```ts
- * coaWidFun(1440) // => about 272.6 at an 11px root font size
- * ```
- *
-*/
-
-const coaWidFun = ( vieWidNum : number ) : number => Math.min( rhyPxlFun( 'p10' ) + ( rhyPxlFun( 'bas' ) + rhyPxlFun( 'm12' ) ) * 2, vieWidNum - rhyPxlFun( 'm01' ) * 2 ); // What: Coach Width Function. Why: The coach card should fit its body text like help mode's tip, without outgrowing a narrow viewport. How: This takes the smaller of the text width plus padding and borders, and the viewport less its edge margins. // Vertical Rhythm Base Plus 10 ~= 242.522px, Vertical Rhythm Base ~= 14.572px, Vertical Rhythm Base Minus 12 ~= 0.499px, Vertical Rhythm Base Minus 1 = 11px
-
-// #endregion coaWidFun
 
 
 

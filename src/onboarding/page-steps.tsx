@@ -39,10 +39,6 @@ import type { TouSteTyp } from './tour-runner.tsx'; // What: Tour Step Type. Why
 
 // #region Constants
 
-const PRE_PIC_STR = ONB_EXA_OBJ.id; // What: Preselect Picker String. Why: The Stats tour's own single-picker steps below pre-select this exact real sample, matched by [data-picker-id] on the tab button (tab-stats.tsx), not by its display name, since nothing stops a user from naming their own picker the same thing. How: This reads ONB_EXA_OBJ's own id straight through.
-
-
-
 // #region DAT_TAR_OBJ
 
 /**
@@ -301,6 +297,10 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 };
 
 // #endregion PIC_TAR_OBJ
+
+
+
+const PRE_PIC_STR = ONB_EXA_OBJ.id; // What: Preselect Picker String. Why: The Stats tour's own single-picker steps below pre-select this exact real sample, matched by [data-picker-id] on the tab button (tab-stats.tsx), not by its display name, since nothing stops a user from naming their own picker the same thing. How: This reads ONB_EXA_OBJ's own id straight through.
 
 
 
@@ -640,6 +640,84 @@ let pgtNamStr = 'Page Tours'; // What: Page-Tours Name String. Why: canRenFun/fo
 
 
 // #region Helpers
+
+// #region buiTs1Fun
+
+/**
+ * buiTs1Fun = Build Tour-Step-1 Function
+ *
+ * @summary
+ * Step 1 for every page tour: highlight that page's own navbar button, reusing
+ * the Welcome Tour's own copy for it verbatim (navTarObj already carries a
+ * selStr/titStr/bodEle written to stand alone). Unlike this file's own
+ * per-page catalogs (which deliberately write THEIR own copy instructing the
+ * click), this one is asked to match the Welcome Tour's wording exactly,
+ * cirBoo's own hover hint is what tells the user to click.
+ *
+ * tabStr: This property in the returned object uses 'today' in order to keep
+ * this from auto-navigating when the step opens (a page tour is launched from
+ * Today, and clicking the real nav icon is meant to be what does the
+ * navigating, not the step itself). priButStr defaults to 'Next' (every page
+ * tour has more steps after this one) but is overridable,
+ * onboarding/app-features.tsx's own App Features tours reuse this exact step
+ * verbatim as their OWN Step 1, currently still their only step, so theirs
+ * pass 'Done' instead. butLabStr names the actual nav button ("Today",
+ * "Pickers", ...) in the closing sentence instead of the generic "click it
+ * now", optional and only passed where a caller has explicitly asked for it,
+ * so other callers' wording is unaffected.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param pagKeyStr - Page Key String: The page's own NAV_TAR_OBJ key, e.g.
+ *                    'picker'.
+ * @param runSteFun - Run Step Function: An optional side effect fired with the
+ *                    step's own click, set as the step's runFun; omitted when
+ *                    not passed.
+ * @param priButStr - Primary Button String: The coach card's primary button
+ *                    label; defaults to 'Next'.
+ * @param butLabStr - Button Label String: The nav button's own name for the
+ *                    click sentence; defaults to null, which says "click it"
+ *                    instead.
+ *
+ * @returns A GuiTouCom step object highlighting that page's own nav button.
+ *
+ * @example
+ * ```ts
+ * buiTs1Fun(touRcdObj.pagStr, oneRunFun, 'Next', touRcdObj.labStr) // => step
+ * ```
+ *
+*/
+
+const buiTs1Fun = ( pagKeyStr : string, runSteFun? : () => void, priButStr : string = 'Next', butLabStr : string | null = null ) : TouSteTyp => { // What: Build Tour-Step-1 Function. Why: This builds every page tour's own shared Step 1, the real nav-button highlight. How: This looks up navTarObj by pagKeyStr, then spreads it with this step's own navigation flags.
+
+
+	const navTarObj = NAV_TAR_OBJ[ pagKeyStr ]; // What: Nav Target Object. Why: This step's own selStr/titStr/bodEle come from the shared nav-button catalog. How: This looks up NAV_TAR_OBJ by pagKeyStr.
+
+
+
+	return { // What: Step Object Return. Why: GuiTouCom needs this step's own selector, copy, and navigation flags. How: This spreads navTarObj, then overrides bodEle/tabStr/priStr/bacBoo/cirBoo/runFun.
+
+
+		...navTarObj, // What: Nav Target Spread. Why: This step's own selStr/titStr/bodEle default to navTarObj's own content, only some of which get overridden below. How: This spreads navTarObj first so the explicit properties below can still win.
+
+		bacBoo : false,     // What: Back Boolean. Why: This is every page tour's own very first step, so there is nothing to go back to. How: GuiTouCom hides its own Back button whenever this is false.
+		cirBoo : true,      // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuiTouCom disables Next and only advances once the real target is clicked.
+		priStr : priButStr, // What: Primary String. Why: This step's own coach card needs a label for its main action button, 'Next' by default but overridable by a caller like the App Features tours. How: GuiTouCom renders this as the button's own visible text.
+		tabStr : 'today',   // What: Tab String. Why: This step must stay on Today so the real nav click is what does the navigating, not this step itself. How: GuiTouCom's own tab-sync effect reads this.
+
+		bodEle : <>{ navTarObj.bodEle } Go ahead and click { butLabStr ? <>the "{ butLabStr }" page's button</> : 'it' } now.</>, // What: Body Element. Why: This step's own coach card needs navTarObj's own description plus an explicit click instruction. How: This appends a click sentence after navTarObj's own bodEle, naming the button when butLabStr is given.
+
+		...( runSteFun ? { runFun : runSteFun } : {} ) // What: Run Spread. Why: Only some callers (the Pickers/Data/Stats tours below) need a side effect fired alongside this step's own click. How: This spreads a runFun field in only when runSteFun was actually passed.
+
+
+	};
+
+
+};
+
+// #endregion buiTs1Fun
+
+
 
 // #region canRenFun
 
@@ -1311,84 +1389,6 @@ const buiTesFun = ( pagIdeStr : string, actStoObj : ActStoTyp ) : TouSteTyp[] =>
 };
 
 // #endregion buiTesFun
-
-
-
-// #region buiTs1Fun
-
-/**
- * buiTs1Fun = Build Tour-Step-1 Function
- *
- * @summary
- * Step 1 for every page tour: highlight that page's own navbar button, reusing
- * the Welcome Tour's own copy for it verbatim (navTarObj already carries a
- * selStr/titStr/bodEle written to stand alone). Unlike this file's own
- * per-page catalogs (which deliberately write THEIR own copy instructing the
- * click), this one is asked to match the Welcome Tour's wording exactly,
- * cirBoo's own hover hint is what tells the user to click.
- *
- * tabStr: This property in the returned object uses 'today' in order to keep
- * this from auto-navigating when the step opens (a page tour is launched from
- * Today, and clicking the real nav icon is meant to be what does the
- * navigating, not the step itself). priButStr defaults to 'Next' (every page
- * tour has more steps after this one) but is overridable,
- * onboarding/app-features.tsx's own App Features tours reuse this exact step
- * verbatim as their OWN Step 1, currently still their only step, so theirs
- * pass 'Done' instead. butLabStr names the actual nav button ("Today",
- * "Pickers", ...) in the closing sentence instead of the generic "click it
- * now", optional and only passed where a caller has explicitly asked for it,
- * so other callers' wording is unaffected.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param pagKeyStr - Page Key String: The page's own NAV_TAR_OBJ key, e.g.
- *                    'picker'.
- * @param runSteFun - Run Step Function: An optional side effect fired with the
- *                    step's own click, set as the step's runFun; omitted when
- *                    not passed.
- * @param priButStr - Primary Button String: The coach card's primary button
- *                    label; defaults to 'Next'.
- * @param butLabStr - Button Label String: The nav button's own name for the
- *                    click sentence; defaults to null, which says "click it"
- *                    instead.
- *
- * @returns A GuiTouCom step object highlighting that page's own nav button.
- *
- * @example
- * ```ts
- * buiTs1Fun(touRcdObj.pagStr, oneRunFun, 'Next', touRcdObj.labStr) // => step
- * ```
- *
-*/
-
-const buiTs1Fun = ( pagKeyStr : string, runSteFun? : () => void, priButStr : string = 'Next', butLabStr : string | null = null ) : TouSteTyp => { // What: Build Tour-Step-1 Function. Why: This builds every page tour's own shared Step 1, the real nav-button highlight. How: This looks up navTarObj by pagKeyStr, then spreads it with this step's own navigation flags.
-
-
-	const navTarObj = NAV_TAR_OBJ[ pagKeyStr ]; // What: Nav Target Object. Why: This step's own selStr/titStr/bodEle come from the shared nav-button catalog. How: This looks up NAV_TAR_OBJ by pagKeyStr.
-
-
-
-	return { // What: Step Object Return. Why: GuiTouCom needs this step's own selector, copy, and navigation flags. How: This spreads navTarObj, then overrides bodEle/tabStr/priStr/bacBoo/cirBoo/runFun.
-
-
-		...navTarObj, // What: Nav Target Spread. Why: This step's own selStr/titStr/bodEle default to navTarObj's own content, only some of which get overridden below. How: This spreads navTarObj first so the explicit properties below can still win.
-
-		bacBoo : false,     // What: Back Boolean. Why: This is every page tour's own very first step, so there is nothing to go back to. How: GuiTouCom hides its own Back button whenever this is false.
-		cirBoo : true,      // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuiTouCom disables Next and only advances once the real target is clicked.
-		priStr : priButStr, // What: Primary String. Why: This step's own coach card needs a label for its main action button, 'Next' by default but overridable by a caller like the App Features tours. How: GuiTouCom renders this as the button's own visible text.
-		tabStr : 'today',   // What: Tab String. Why: This step must stay on Today so the real nav click is what does the navigating, not this step itself. How: GuiTouCom's own tab-sync effect reads this.
-
-		bodEle : <>{ navTarObj.bodEle } Go ahead and click { butLabStr ? <>the "{ butLabStr }" page's button</> : 'it' } now.</>, // What: Body Element. Why: This step's own coach card needs navTarObj's own description plus an explicit click instruction. How: This appends a click sentence after navTarObj's own bodEle, naming the button when butLabStr is given.
-
-		...( runSteFun ? { runFun : runSteFun } : {} ) // What: Run Spread. Why: Only some callers (the Pickers/Data/Stats tours below) need a side effect fired alongside this step's own click. How: This spreads a runFun field in only when runSteFun was actually passed.
-
-
-	};
-
-
-};
-
-// #endregion buiTs1Fun
 
 // #endregion Helpers
 

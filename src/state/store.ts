@@ -288,53 +288,6 @@ function loaStaFun () {
 
 
 
-// #region wriStaFun
-
-/**
- * wriStaFun = Write State Function
- *
- * @summary
- * Persists curStaObj through STG_NAM_OBJ when it's available (the real,
- * debounced/idle-safe persistence engine), falling back to a plain
- * synchronous localStorage.setItem only when STG_NAM_OBJ itself is absent.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param curStaObj - Current State Object: The state to persist.
- *
- * @returns This function does not return anything.
- *
- * @example
- * ```ts
- * wriStaFun(state) // => undefined
- * ```
- *
-*/
-
-function wriStaFun ( curStaObj : StaAppTyp ) : void {
-
-
-	try { // What: Persist Attempt. Why: A storage failure (quota, disabled storage, ...) must never crash the caller. How: This delegates to STG_NAM_OBJ.savStaFun when available, else falls back to a raw localStorage write.
-
-
-		if ( STG_NAM_OBJ ) return STG_NAM_OBJ.savStaFun( curStaObj ); // What: Storage Delegate Return. Why: STG_NAM_OBJ is the real, debounced/idle-safe persistence engine and should always be preferred. How: This returns STG_NAM_OBJ.savStaFun(curStaObj) as soon as STG_NAM_OBJ exists.
-
-
-
-		localStorage.setItem( STO_KEY_STR, JSON.stringify( curStaObj ) ); // What: Localstorage Fallback Write. Why: This only runs when STG_NAM_OBJ itself failed to load at all. How: This writes curStaObj's own JSON string under STO_KEY_STR.
-
-
-	}
-
-	catch ( errCatObj ) { console.warn( errCatObj ); } // What: Persist Failure Guard. Why: A write failure must never propagate up to the caller. How: This swallows the error silently. It logs the error as a warning so the failure stays visible in the console.
-
-
-}
-
-// #endregion wriStaFun
-
-
-
 // #region stkSynFun
 
 /**
@@ -421,6 +374,53 @@ function stkSynFun ( curStaObj : StaAppTyp, entArgArr : TodEntTyp[], tasArgArr :
 }
 
 // #endregion stkSynFun
+
+
+
+// #region wriStaFun
+
+/**
+ * wriStaFun = Write State Function
+ *
+ * @summary
+ * Persists curStaObj through STG_NAM_OBJ when it's available (the real,
+ * debounced/idle-safe persistence engine), falling back to a plain
+ * synchronous localStorage.setItem only when STG_NAM_OBJ itself is absent.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curStaObj - Current State Object: The state to persist.
+ *
+ * @returns This function does not return anything.
+ *
+ * @example
+ * ```ts
+ * wriStaFun(state) // => undefined
+ * ```
+ *
+*/
+
+function wriStaFun ( curStaObj : StaAppTyp ) : void {
+
+
+	try { // What: Persist Attempt. Why: A storage failure (quota, disabled storage, ...) must never crash the caller. How: This delegates to STG_NAM_OBJ.savStaFun when available, else falls back to a raw localStorage write.
+
+
+		if ( STG_NAM_OBJ ) return STG_NAM_OBJ.savStaFun( curStaObj ); // What: Storage Delegate Return. Why: STG_NAM_OBJ is the real, debounced/idle-safe persistence engine and should always be preferred. How: This returns STG_NAM_OBJ.savStaFun(curStaObj) as soon as STG_NAM_OBJ exists.
+
+
+
+		localStorage.setItem( STO_KEY_STR, JSON.stringify( curStaObj ) ); // What: Localstorage Fallback Write. Why: This only runs when STG_NAM_OBJ itself failed to load at all. How: This writes curStaObj's own JSON string under STO_KEY_STR.
+
+
+	}
+
+	catch ( errCatObj ) { console.warn( errCatObj ); } // What: Persist Failure Guard. Why: A write failure must never propagate up to the caller. How: This swallows the error silently. It logs the error as a warning so the failure stays visible in the console.
+
+
+}
+
+// #endregion wriStaFun
 
 // #endregion Helpers
 

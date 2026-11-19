@@ -57,6 +57,86 @@ import type { TasRcdTyp } from '../../core/data-model.ts'; // What: Task Record 
 
 // #region Components
 
+type IdcProTyp = { draTasObj : TasRcdTyp, onCloEdiFun : () => void, onDelTasFun : () => void, onPatTasFun : ( patValObj : Partial< TasRcdTyp > ) => void, onSavTasFun : () => void, staAppObj : StaAppTyp }; // What: Inline-Editor-Component Props Type. Why: The inline editor edits a reminder's draft and runs its parent's Cancel, Delete, and Save. How: This types InlEdiCom's props, named Idc since Iec already belongs to IcoSetCom.
+
+// #region InlEdiCom
+
+/**
+ * InlEdiCom = Inline Edit Component
+ *
+ * @summary
+ * Today's inline editor for a SAVED reminder. Edits the section's own
+ * draft of the reminder (never the store directly), shared with the
+ * card's name input, so changing the schedule, e.g. moving a weekly
+ * reminder off today, doesn't immediately filter the row out of the live
+ * list; every change, the name included, only lands on Save.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.draTasObj   - Draft Task Object: The open reminder's draft.
+ * @param props.onCloEdiFun - On Close Edit Function: Closes this inline editor
+ *                            without saving, dropping the draft.
+ * @param props.onDelTasFun - On Delete Task Function: Deletes the underlying
+ *                            reminder outright.
+ * @param props.onPatTasFun - On Patch Task Function: Merges a changed field
+ *                            or two into the draft.
+ * @param props.onSavTasFun - On Save Task Function: Commits the draft onto the
+ *                            real reminder and closes this editor.
+ * @param props.staAppObj   - State App Object: The shared app state, passed
+ *                            through to {@link SchEdiCom}.
+ *
+ * @returns The inline editor's own schedule editor plus its footer.
+ *
+ * @example
+ * ```tsx
+ * InlEdiCom({ draTasObj, onCloEdiFun, ... }) // => <InlEdiCom />
+ * ```
+ *
+*/
+
+function InlEdiCom ( { draTasObj, onCloEdiFun, onDelTasFun, onPatTasFun, onSavTasFun, staAppObj } : IdcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<div
+			className={ cssModObj.inlEdiDiv }
+
+			data-element-name-hook='inlEdiDiv'
+		>{ /* What: Inline Editor Div Element. Why: This groups the schedule editor and its own footer as one visual unit. How: This renders SchEdiCom against draTasObj, then EdiFooCom below it. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
+
+
+			<SchEdiCom
+				aniExtBoo
+				layVarStr='stacked' // What: Layout Variant String. Why: Today's editor keeps each label above its control, with dividers between fields. How: SchEdiCom's own module applies its stacked layout class.
+				staAppObj={ staAppObj }
+				tasRcdObj={ draTasObj }
+
+				onPatTasFun={ onPatTasFun }
+			/>{ /* What: Schedule Editor Component. Why: This is the actual schedule editor, operating on the draft. How: This is passed the draft and its patch function, so every edit stays local until Save. */ }
+
+
+
+			<EdiFooCom
+				onCanTasFun={ onCloEdiFun }
+				onDelTasFun={ onDelTasFun }
+				onDonTasFun={ onSavTasFun }
+			/>{ /* What: Editor Footer Component. Why: This is the shared Cancel/Save/Delete footer. How: Cancel just closes, dropping the draft; Save commits it through onSavTasFun. */ }
+
+
+		</div>
+
+
+	);
+
+
+}
+
+// #endregion InlEdiCom
+
+
+
 type RccProTyp = { actStoObj : ActStoTyp, cheDatObj? : Date, draNamStr? : string, extClaStr? : string, isaOpeBoo? : boolean, isaTutBoo? : boolean, jusCheStr? : string | null, onAniEndFun? : ( aniEveObj : React.AnimationEvent ) => void, onEdiTasFun? : () => void, onPlaTutFun? : ( kinStr : string, ideStr : string ) => void, onRenTasFun? : ( renNamStr : string ) => void, onSkiTasFun? : () => void, onTogTasFun? : ( tasRcdObj : TasRcdTyp ) => void, onUncTutFun? : ( ideStr : string ) => void, tasRcdObj : TasRcdTyp, tutDonBoo? : boolean }; // What: Reminder-Card-Component Props Type. Why: A reminder card renders either a due reminder with its check, edit, rename, and skip actions, or a sample's tutorial launcher, which passes only a few of them. How: This types RemCarCom's props, with everything beyond the actions bag and the reminder optional.
 
 // #region RemCarCom
@@ -545,86 +625,6 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 }
 
 // #endregion RemCarCom
-
-
-
-type IdcProTyp = { draTasObj : TasRcdTyp, onCloEdiFun : () => void, onDelTasFun : () => void, onPatTasFun : ( patValObj : Partial< TasRcdTyp > ) => void, onSavTasFun : () => void, staAppObj : StaAppTyp }; // What: Inline-Editor-Component Props Type. Why: The inline editor edits a reminder's draft and runs its parent's Cancel, Delete, and Save. How: This types InlEdiCom's props, named Idc since Iec already belongs to IcoSetCom.
-
-// #region InlEdiCom
-
-/**
- * InlEdiCom = Inline Edit Component
- *
- * @summary
- * Today's inline editor for a SAVED reminder. Edits the section's own
- * draft of the reminder (never the store directly), shared with the
- * card's name input, so changing the schedule, e.g. moving a weekly
- * reminder off today, doesn't immediately filter the row out of the live
- * list; every change, the name included, only lands on Save.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param props.draTasObj   - Draft Task Object: The open reminder's draft.
- * @param props.onCloEdiFun - On Close Edit Function: Closes this inline editor
- *                            without saving, dropping the draft.
- * @param props.onDelTasFun - On Delete Task Function: Deletes the underlying
- *                            reminder outright.
- * @param props.onPatTasFun - On Patch Task Function: Merges a changed field
- *                            or two into the draft.
- * @param props.onSavTasFun - On Save Task Function: Commits the draft onto the
- *                            real reminder and closes this editor.
- * @param props.staAppObj   - State App Object: The shared app state, passed
- *                            through to {@link SchEdiCom}.
- *
- * @returns The inline editor's own schedule editor plus its footer.
- *
- * @example
- * ```tsx
- * InlEdiCom({ draTasObj, onCloEdiFun, ... }) // => <InlEdiCom />
- * ```
- *
-*/
-
-function InlEdiCom ( { draTasObj, onCloEdiFun, onDelTasFun, onPatTasFun, onSavTasFun, staAppObj } : IdcProTyp ) : React.JSX.Element {
-
-
-	return (
-
-
-		<div
-			className={ cssModObj.inlEdiDiv }
-
-			data-element-name-hook='inlEdiDiv'
-		>{ /* What: Inline Editor Div Element. Why: This groups the schedule editor and its own footer as one visual unit. How: This renders SchEdiCom against draTasObj, then EdiFooCom below it. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
-
-
-			<SchEdiCom
-				aniExtBoo
-				layVarStr='stacked' // What: Layout Variant String. Why: Today's editor keeps each label above its control, with dividers between fields. How: SchEdiCom's own module applies its stacked layout class.
-				staAppObj={ staAppObj }
-				tasRcdObj={ draTasObj }
-
-				onPatTasFun={ onPatTasFun }
-			/>{ /* What: Schedule Editor Component. Why: This is the actual schedule editor, operating on the draft. How: This is passed the draft and its patch function, so every edit stays local until Save. */ }
-
-
-
-			<EdiFooCom
-				onCanTasFun={ onCloEdiFun }
-				onDelTasFun={ onDelTasFun }
-				onDonTasFun={ onSavTasFun }
-			/>{ /* What: Editor Footer Component. Why: This is the shared Cancel/Save/Delete footer. How: Cancel just closes, dropping the draft; Save commits it through onSavTasFun. */ }
-
-
-		</div>
-
-
-	);
-
-
-}
-
-// #endregion InlEdiCom
 
 
 
