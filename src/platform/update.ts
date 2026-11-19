@@ -1,0 +1,176 @@
+
+
+
+/**
+ * update.ts = App Update Handling
+ *
+ * @summary
+ * Brings a newly deployed version into an open app without losing anything
+ * the person is doing. The service worker already takes over as soon as a new
+ * version installs (vite-plugin-pwa's autoUpdate calls skipWaiting and
+ * clientsClaim), but the page keeps running the old code until it reloads,
+ * and an installed app left open never reloads on its own. So this file asks
+ * the browser to look for a new version whenever the app comes back to the
+ * foreground, and once a new version has taken control, it reloads the app
+ * while it's hidden, but only when nothing is being edited: no inline editor
+ * or add form open, no support form open, no text field focused, and no tour
+ * running. While something is being edited, it marks the update ready
+ * instead, for the app to offer a Reload button, and tries again the next
+ * time the app is hidden. A first install, where no worker controlled the
+ * page at load, isn't an update and is ignored.
+ *
+ * Sections:
+ *  - Module State
+ *  - Helpers
+ *  - Module Init
+ *  - Exports
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+// #region Module State
+
+const subFunSet = new Set< () => void >(); // What: Subscriber Function Set. Why: The app's update note has to hear when an update becomes ready. How: Each subscriber is called once the state changes.
+
+let hadConBoo = !!( navigator.serviceWorker && navigator.serviceWorker.controller ); // What: Had Controller Boolean. Why: A worker taking control of a page that had none is a first install, not an update. How: This records whether a worker controlled the page at load.
+let updReaBoo = false;                                                                // What: Update Ready Boolean. Why: The app shows its Reload note only once a new version has taken over. How: This turns true when that happens.
+
+// #endregion Module State
+
+
+
+// #region Helpers
+
+// #region busNowFun
+
+/**
+ * busNowFun = Busy Now Function
+ *
+ * @summary
+ * Reports whether the person may be in the middle of something a reload would
+ * throw away: an inline editor or add form registered on the shared Escape
+ * stack, the Settings support form open, a text field or text area focused,
+ * or a tour running.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns True while any of those holds, false when a reload is safe.
+ *
+ * @example
+ * ```ts
+ * busNowFun() // => false
+ * ```
+ *
+*/
+
+function busNowFun () : boolean {
+
+
+	const actDomEle = document.activeElement; // What: Active DOM Element. Why: A focused text field means typing may be under way. How: This reads the focused element.
+
+	const ediOpeBoo = ( window.__escStack || [] ).length > 0;                              // What: Editor Open Boolean. Why: Every inline editor and add form registers on the Escape stack while open. How: This checks the stack holds an entry.
+	const supOpeBoo = !!document.querySelector( '[data-element-name-hook~="supForDiv"]' ); // What: Support Open Boolean. Why: The support form doesn't register on the Escape stack. How: This checks its form is in the page.
+	const texFocBoo = actDomEle instanceof HTMLTextAreaElement || ( actDomEle instanceof HTMLInputElement && /^(email|search|text|url)$/.test( actDomEle.type ) ); // What: Text Focus Boolean. Why: A field being typed in may hold text not yet saved. How: This checks the focused element is a text area or a text input.
+	const touActBoo = document.body.hasAttribute( 'data-tour-active' );                    // What: Tour Active Boolean. Why: A reload would end a running tour partway. How: This checks the body's tour attribute.
+
+	const busNowBoo = ediOpeBoo || supOpeBoo || texFocBoo || touActBoo; // What: Busy Now Boolean. Why: Any one of these makes a reload unsafe. How: This combines them.
+
+
+
+	return busNowBoo; // What: Busy Now Return. Why: The caller decides whether to reload. How: This hands back the combined answer.
+
+
+}
+
+// #endregion busNowFun
+
+
+
+const notSubFun = () => { for ( const curSubFun of subFunSet ) curSubFun(); }; // What: Notify Subscribers Function. Why: The update note has to rerender once an update is ready. How: This calls every subscriber.
+const relNowFun = () => window.location.reload();                              // What: Reload Now Function. Why: The new version runs only once the page reloads. How: This reloads the page, which the Reload note's button calls too.
+
+
+
+const relSafFun = () => { if ( updReaBoo && document.visibilityState === 'hidden' && !busNowFun() ) relNowFun(); }; // What: Reload Safe Function. Why: A quiet reload must happen only out of sight and with nothing being edited. How: This reloads once an update is ready, the app is hidden, and busNowFun finds nothing under way.
+
+
+
+const subAddFun = ( newSubFun : () => void ) : ( () => void ) => { // What: Subscribe Add Function. Why: The update note listens for an update becoming ready. How: This adds the subscriber and returns the function that removes it.
+
+
+	subFunSet.add( newSubFun ); // What: Subscriber Add Call. Why: The subscriber has to hear later changes. How: This adds it to the set.
+
+
+
+	return () => { subFunSet.delete( newSubFun ); }; // What: Unsubscribe Return. Why: A note that unmounts must stop listening. How: This returns a function that removes it.
+
+
+};
+
+
+
+const updReaFun = () : boolean => updReaBoo; // What: Update Ready Function. Why: The update note reads whether to show itself. How: This returns the current flag.
+
+// #endregion Helpers
+
+
+
+// #region Module Init
+
+if ( navigator.serviceWorker ) navigator.serviceWorker.addEventListener( 'controllerchange', () => { // What: Controller Change Listener. Why: A new version taking control of the page is the signal that an update is ready. How: This marks it ready and reloads at once when that's safe, or tells the note to show.
+
+
+	if ( !hadConBoo ) { hadConBoo = true; return; } // What: First Install Guard. Why: A first install's worker taking control isn't a new version. How: This records the controller and stops.
+
+
+
+	updReaBoo = true; // What: Update Ready Set. Why: A new version now controls the page. How: This marks the update ready.
+
+
+	notSubFun(); // What: Subscriber Notify Call. Why: The note should offer the reload. How: This tells every subscriber.
+
+	relSafFun(); // What: Safe Reload Call. Why: A hidden app with nothing being edited can take the new version at once. How: This reloads when that holds.
+
+
+} );
+
+
+
+document.addEventListener( 'visibilitychange', () => { // What: Visibility Change Listener. Why: Coming back is the moment to look for a new version, and leaving is the moment to apply one quietly. How: This asks for an update when the app shows, and tries a safe reload when it hides.
+
+
+	if ( document.visibilityState === 'visible' && navigator.serviceWorker ) navigator.serviceWorker.getRegistration().then( ( worRegObj ) => worRegObj?.update() ).catch( () => {} ); // What: Update Check Call. Why: An app left open never checks for a new version by itself. How: This asks the registration to look for one, ignoring a failed check, such as one made offline.
+
+	else relSafFun(); // What: Hidden Reload Call. Why: A hidden app with an update ready and nothing being edited can reload unseen. How: This tries the safe reload.
+
+
+} );
+
+// #endregion Module Init
+
+
+
+// #region Exports
+
+const UPD_NAM_OBJ = { // What: Update Namespace Object. Why: This is the single entry point the app's update note imports. How: This maps each name to the function it calls.
+
+
+	relNowFun : relNowFun, // What: Reload Now Function. Why: The note's Reload button applies the update. How: This re-exports relNowFun under its own name.
+	subAddFun : subAddFun, // What: Subscribe Add Function. Why: The note listens for an update becoming ready. How: This re-exports subAddFun under its own name.
+	updReaFun : updReaFun  // What: Update Ready Function. Why: The note reads whether an update is ready. How: This re-exports updReaFun under its own name.
+
+
+};
+
+
+
+export { UPD_NAM_OBJ }; // What: Named Export. Why: The app's update note reaches every update operation through this one object. How: This exports UPD_NAM_OBJ.
+
+// #endregion Exports
+
+

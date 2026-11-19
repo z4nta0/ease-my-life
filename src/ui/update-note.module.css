@@ -1,0 +1,84 @@
+
+
+
+/**
+ * update-note.module.css = Update Note Module
+ *
+ * @summary
+ * Styles for UpdNotCom: the status region at the top of the open tab, which
+ * takes no room while empty, and the note it shows once a new version is
+ * ready, a raised panel holding its message and Reload button that pops in.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region updNotDiv */
+
+.updNotDiv { /* What: Update Note Div. Why: The note has to reach screen reader users from a region in the page since its first render. How: This holds the note as a grid item. */
+
+
+	display : grid;
+
+
+}
+.updNotDiv:empty { /* What: Empty Update Note Div. Why: An empty region would still take room at the top of the tab. How: This takes it out of the layout until a note arrives. */
+
+
+	position : absolute;
+
+
+}
+
+
+/* #region updRowDiv */
+
+.updRowDiv { /* What: Update Row Div. Why: The note should be noticed without covering the tab bar in any placement. How: This draws a raised panel at the top of the tab, its message beside its Reload button, centered at the tabs' width, and pops it in. */
+
+
+	align-items     : center;
+	animation       : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the app's other result notes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference. */
+	background      : var( --bac-sur-col );                                                         /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                              /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-lar );                                                         /* Radius Border Large ~= 14.572px */
+	display         : flex;
+	flex-wrap       : wrap;
+	gap             : var( --spa-ver-m01 ) var( --spa-hor-bas );                                    /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
+	justify-content : space-between;
+	margin          : var( --spa-ver-p01 ) auto 0;                                                  /* Spacing Vertical Base Plus 1 ~= 19.304px */
+	max-width       : calc( var( --ver-rhy-p11 ) * 1rem );                                          /* Vertical Rhythm Base Plus 11 ~= 321.273px */
+	padding         : var( --spa-ver-bas ) var( --spa-hor-p01 );                                    /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
+	width           : calc( 100% - var( --spa-hor-p01 ) * 2 );                                      /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Update Note. Why: Someone who asked for less motion shouldn't see the note pop. How: This applies only when the reduced-motion preference is set. */
+
+
+	.updRowDiv { /* What: Still Update Row Div. Why: The note should simply appear. How: This turns the pop off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.updMesSpa { /* What: Update Message Span. Why: The message says what the button does. How: This sets it in the main text color at the body size. */
+
+
+	color     : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+
+
+}
+
+/* #endregion updRowDiv */
+
+/* #endregion updNotDiv */
+
+

@@ -22,6 +22,7 @@ import { TabPicCom    } from './tabs/pickers/tab-picker.tsx';    // What: Tab Pi
 import { TabSetCom    } from './tabs/settings/tab-settings.tsx'; // What: Tab Settings Component. Why: This is the actual Settings tab content. How: This is rendered while actIdeStr is 'settings', passed the shared state/actions.
 import { TabStaCom    } from './tabs/stats/tab-stats.tsx';       // What: Tab Stats Component. Why: This is the actual Stats tab content. How: This is rendered while actIdeStr is 'stats', passed the shared state/actions.
 import { TabTodCom    } from './tabs/today/tab-today.tsx';       // What: Tab Today Component. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
+import { UpdNotCom    } from './ui/update-note.tsx';             // What: Update Note Component. Why: A new version waiting on an open edit is offered at the top of the open tab. How: This renders the note inside the main area.
 import { useAppStaFun } from './state/store.ts';                 // What: Use App State Function. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
 import { useEmlTouFun } from './state/tour-bus.ts';              // What: Use Ease My Life Tour Function. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's touPhaStr/wanRaiBoo/touSteNum fields.
 import { useRaiFocFun } from './ui/rail-focus.ts';               // What: Use Rail Focus Function. Why: A keyboard-focused pill at a rail's edge would stay half clipped. How: This is called once below to keep focused rail controls in view.
@@ -765,6 +766,10 @@ function AppRooCom () : React.JSX.Element {
 
 				tabIndex={ -1 } // What: Main Tab Index. Why: The skip link moves focus here, but the main area isn't a control. How: A tabIndex of -1 lets it take focus without joining the Tab order.
 			>{ /* What: Content Main Element. Why: This is the single shared scroll container for whichever tab is currently active, and the skip link's target. How: This renders the Today tab directly, or wraps every other tab in a shared maiInnDiv div, based on actIdeStr. Its id is kept plain as the skip link's target, and its data-element-name-hook is read by every tab's, tour's, and help surface's own scroll-into-view code. */ }
+
+
+				<UpdNotCom />{ /* What: Update Note Component. Why: A new version that couldn't reload quietly, since something was being edited, is offered here. How: This renders the note's status region first in the main area, above whichever tab is open. */ }
+
 
 
 				{ actIdeStr === 'today' && ( // What: Today Tab Visibility Check. Why: The Today tab is rendered directly, not through the shared maiInnDiv wrapper other tabs use. How: This renders TabTodCom, wrapped in its own fade/key transition div, only while actIdeStr is 'today'.

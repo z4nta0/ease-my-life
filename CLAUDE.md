@@ -337,6 +337,15 @@ outside the normal React import graph. Their types live in `src/globals.d.ts`
 - `vite-plugin-pwa` is configured with `manifest: false`; `public/manifest.webmanifest`
   is hand-written and linked from `index.html`; the plugin only precaches and
   injects the notification-click handler (`public/sw-notify.js`).
+- **New versions** (added 2026-11-18): the generated worker takes over as
+  soon as it installs (`autoUpdate`'s `skipWaiting` and `clientsClaim`, the
+  same as come-hang's hand-written worker), and `platform/update.ts` brings
+  the page along. It asks for an update each time the app returns to the
+  foreground, and once a new version has taken control, it reloads while the
+  app is hidden if nothing is being edited (no editor on the Escape stack,
+  support form, focused text field, or tour), and otherwise shows
+  `ui/update-note.tsx`'s Reload note at the top of the open tab.
+  `tests/interaction/update.spec.ts` fakes the worker to check each case.
 - The boot splash in `index.html` is pure CSS, faded out by
   `public/boot-splash.js` (no framework), whose constants mirror the splash's
   own loop, stagger, and fade timings: see the Boot Splash Styles summary
