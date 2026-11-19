@@ -29,6 +29,109 @@ import type { RefObject } from 'react'; // What: Ref Object. Why: The frozen row
 
 // #region Helpers
 
+// #region freEdiFun
+
+/**
+ * freEdiFun = Freeze Edited Function
+ *
+ * @summary
+ * Keeps whichever row is currently open for editing from jumping
+ * around a live sort (picker items and reminders both write each
+ * keystroke straight to the store, so their sort key can change mid-
+ * edit): a brand-new row (still being named for the first time, id
+ * === newIdeVal) pins to the very top, matching where its own
+ * "+ Add" button sits, rather than wherever its still-default values
+ * would otherwise sort it; an existing row being edited freezes at
+ * whatever index it already occupied when editing began, instead of
+ * chasing its live-typed values through the sort in real time.
+ * froRowRef is a plain useRef({}) owned by the caller, persisted
+ * across renders for as long as opeIdeVal stays the same; the caller is
+ * responsible for replaying the row's entrance animation once its
+ * editor actually closes (opeIdeVal changes away), so it settles into
+ * its now-current live position with the same visual treatment a
+ * freshly-created row already gets, rather than silently snapping
+ * there.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param sorLisArr  - Sort List Array: The list, already sorted by the
+ *                     caller's own live sort key.
+ * @param opeIdeVal  - Open Identifier Value: The currently-open row's own id,
+ *                     or null/undefined when nothing is open.
+ * @param newIdeVal  - New Identifier Value: The id of a row that was just
+ *                     created (pins to the top instead of freezing at its live
+ *                     index).
+ * @param froRowRef  - Frozen Row Reference: A ref, owned by the caller, that
+ *                     persists the frozen { ideVal, indNum } record across
+ *                     renders.
+ *
+ * @returns sorLisArr unmodified when nothing is open or the open row
+ * isn't in this list, otherwise the same rows with the open one
+ * reinserted at its own frozen position.
+ *
+ * @example
+ * ```ts
+ * freEdiFun(sorLisArr, opeIdeVal, newIdeVal, froRowRef) // => reordered array
+ * ```
+ *
+*/
+
+function freEdiFun< T extends { id : string } > ( sorLisArr : T[], opeIdeVal : string | null | undefined, newIdeVal : string | null | undefined, froRowRef : RefObject< { ideVal : string, indNum : number } | null > ) : T[] {
+
+
+	if ( opeIdeVal == null ) { // What: No Open Row Guard. Why: With nothing currently open for editing, there is no frozen position to maintain at all. How: This clears any stale frozen record and returns the live sorted list completely unmodified.
+
+
+		froRowRef.current = null; // What: Frozen Row Reference Clear. Why: A stale frozen record from a previously-open row must not leak into a later editing session. How: This resets froRowRef back to null.
+
+
+
+		return sorLisArr; // What: Live List Return. Why: With nothing open, the caller's own live sort order is already correct. How: This returns sorLisArr unmodified.
+
+
+	}
+
+
+
+	const livIndNum = sorLisArr.findIndex( ( curRowObj ) => curRowObj.id === opeIdeVal ); // What: Live Index Number. Why: The frozen position logic below needs to know where the open row currently sits in the live sort. How: This searches sorLisArr for the row whose id matches opeIdeVal.
+
+
+	if ( livIndNum === -1 ) return sorLisArr; // What: Not Found Guard. Why: A list that doesn't contain the currently-open row has nothing to freeze at all. How: This returns sorLisArr unmodified when no matching row was found.
+
+
+
+	if ( !froRowRef.current || froRowRef.current.ideVal !== opeIdeVal ) { // What: Frozen Record Guard. Why: A frozen position must only be computed once per "this row became the open one" session, not recomputed on every render while it stays open. How: This (re)computes froRowRef only when there's no existing record or it belongs to a different row than the currently-open one.
+
+
+		froRowRef.current = { // What: Frozen Record Set. Why: A brand-new row pins to the very top matching its own "+ Add" button, while an existing row freezes at whatever index it already occupied. How: This records the open row's id plus its own starting index, 0 for a just-created row, livIndNum otherwise.
+
+
+			ideVal : opeIdeVal,                              // What: Identifier Value. Why: A later render must be able to tell whether this record still belongs to the open row. How: This stores opeIdeVal.
+			indNum : opeIdeVal === newIdeVal ? 0 : livIndNum // What: Index Number. Why: This is the position the open row stays frozen at. How: This is 0 for a just-created row, livIndNum otherwise.
+
+
+		};
+
+
+	}
+
+
+
+	const opeRowObj = sorLisArr[ livIndNum ];                                          // What: Open Row Object. Why: The final result needs the actual open row's own data to reinsert at its frozen position. How: This reads the row at livIndNum from sorLisArr.
+	const resRowArr = sorLisArr.filter( ( curRowObj ) => curRowObj.id !== opeIdeVal ); // What: Rest Row Array. Why: The open row must be pulled out before it can be reinserted at a fixed position rather than wherever it currently live-sorts to. How: This filters sorLisArr down to every row except the open one.
+	const insIndNum = Math.min( froRowRef.current.indNum, resRowArr.length );          // What: Insert Index Number. Why: A frozen index from an earlier, longer list must not run past the current (possibly shorter) rest array. How: This clamps froRowRef's own recorded index to resRowArr's own current length.
+
+
+
+	return [ ...resRowArr.slice( 0, insIndNum ), opeRowObj, ...resRowArr.slice( insIndNum ) ]; // What: Frozen Order Return. Why: The caller needs the open row reinserted at its own frozen position rather than wherever it currently live-sorts to. How: This splices opeRowObj back into resRowArr at insIndNum.
+
+
+}
+
+// #endregion freEdiFun
+
+
+
 type SorRowTyp = { boost? : number | null, count? : number | null, date? : number | null, group? : string | null, isActive? : boolean | null, name : string, odds? : number | null, range? : number | null, type? : string | null }; // What: Sort Row Type. Why: The Data tab sorts items, conditionals, reminders, and pickers with one comparator, each carrying different fields. How: This is any row with a name, its other fields read by whichever sort key applies.
 
 // #region sorEntFun
@@ -271,109 +374,6 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 }
 
 // #endregion sorEntFun
-
-
-
-// #region freEdiFun
-
-/**
- * freEdiFun = Freeze Edited Function
- *
- * @summary
- * Keeps whichever row is currently open for editing from jumping
- * around a live sort (picker items and reminders both write each
- * keystroke straight to the store, so their sort key can change mid-
- * edit): a brand-new row (still being named for the first time, id
- * === newIdeVal) pins to the very top, matching where its own
- * "+ Add" button sits, rather than wherever its still-default values
- * would otherwise sort it; an existing row being edited freezes at
- * whatever index it already occupied when editing began, instead of
- * chasing its live-typed values through the sort in real time.
- * froRowRef is a plain useRef({}) owned by the caller, persisted
- * across renders for as long as opeIdeVal stays the same; the caller is
- * responsible for replaying the row's entrance animation once its
- * editor actually closes (opeIdeVal changes away), so it settles into
- * its now-current live position with the same visual treatment a
- * freshly-created row already gets, rather than silently snapping
- * there.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param sorLisArr  - Sort List Array: The list, already sorted by the
- *                     caller's own live sort key.
- * @param opeIdeVal  - Open Identifier Value: The currently-open row's own id,
- *                     or null/undefined when nothing is open.
- * @param newIdeVal  - New Identifier Value: The id of a row that was just
- *                     created (pins to the top instead of freezing at its live
- *                     index).
- * @param froRowRef  - Frozen Row Reference: A ref, owned by the caller, that
- *                     persists the frozen { ideVal, indNum } record across
- *                     renders.
- *
- * @returns sorLisArr unmodified when nothing is open or the open row
- * isn't in this list, otherwise the same rows with the open one
- * reinserted at its own frozen position.
- *
- * @example
- * ```ts
- * freEdiFun(sorLisArr, opeIdeVal, newIdeVal, froRowRef) // => reordered array
- * ```
- *
-*/
-
-function freEdiFun< T extends { id : string } > ( sorLisArr : T[], opeIdeVal : string | null | undefined, newIdeVal : string | null | undefined, froRowRef : RefObject< { ideVal : string, indNum : number } | null > ) : T[] {
-
-
-	if ( opeIdeVal == null ) { // What: No Open Row Guard. Why: With nothing currently open for editing, there is no frozen position to maintain at all. How: This clears any stale frozen record and returns the live sorted list completely unmodified.
-
-
-		froRowRef.current = null; // What: Frozen Row Reference Clear. Why: A stale frozen record from a previously-open row must not leak into a later editing session. How: This resets froRowRef back to null.
-
-
-
-		return sorLisArr; // What: Live List Return. Why: With nothing open, the caller's own live sort order is already correct. How: This returns sorLisArr unmodified.
-
-
-	}
-
-
-
-	const livIndNum = sorLisArr.findIndex( ( curRowObj ) => curRowObj.id === opeIdeVal ); // What: Live Index Number. Why: The frozen position logic below needs to know where the open row currently sits in the live sort. How: This searches sorLisArr for the row whose id matches opeIdeVal.
-
-
-	if ( livIndNum === -1 ) return sorLisArr; // What: Not Found Guard. Why: A list that doesn't contain the currently-open row has nothing to freeze at all. How: This returns sorLisArr unmodified when no matching row was found.
-
-
-
-	if ( !froRowRef.current || froRowRef.current.ideVal !== opeIdeVal ) { // What: Frozen Record Guard. Why: A frozen position must only be computed once per "this row became the open one" session, not recomputed on every render while it stays open. How: This (re)computes froRowRef only when there's no existing record or it belongs to a different row than the currently-open one.
-
-
-		froRowRef.current = { // What: Frozen Record Set. Why: A brand-new row pins to the very top matching its own "+ Add" button, while an existing row freezes at whatever index it already occupied. How: This records the open row's id plus its own starting index, 0 for a just-created row, livIndNum otherwise.
-
-
-			ideVal : opeIdeVal,                              // What: Identifier Value. Why: A later render must be able to tell whether this record still belongs to the open row. How: This stores opeIdeVal.
-			indNum : opeIdeVal === newIdeVal ? 0 : livIndNum // What: Index Number. Why: This is the position the open row stays frozen at. How: This is 0 for a just-created row, livIndNum otherwise.
-
-
-		};
-
-
-	}
-
-
-
-	const opeRowObj = sorLisArr[ livIndNum ];                                          // What: Open Row Object. Why: The final result needs the actual open row's own data to reinsert at its frozen position. How: This reads the row at livIndNum from sorLisArr.
-	const resRowArr = sorLisArr.filter( ( curRowObj ) => curRowObj.id !== opeIdeVal ); // What: Rest Row Array. Why: The open row must be pulled out before it can be reinserted at a fixed position rather than wherever it currently live-sorts to. How: This filters sorLisArr down to every row except the open one.
-	const insIndNum = Math.min( froRowRef.current.indNum, resRowArr.length );          // What: Insert Index Number. Why: A frozen index from an earlier, longer list must not run past the current (possibly shorter) rest array. How: This clamps froRowRef's own recorded index to resRowArr's own current length.
-
-
-
-	return [ ...resRowArr.slice( 0, insIndNum ), opeRowObj, ...resRowArr.slice( insIndNum ) ]; // What: Frozen Order Return. Why: The caller needs the open row reinserted at its own frozen position rather than wherever it currently live-sorts to. How: This splices opeRowObj back into resRowArr at insIndNum.
-
-
-}
-
-// #endregion freEdiFun
 
 // #endregion Helpers
 

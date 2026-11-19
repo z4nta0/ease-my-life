@@ -65,6 +65,47 @@ const isaLivFun = ( depCotStr : string ) => depCotStr === 'production'; // What:
 
 
 
+// #region ordUidFun
+
+/**
+ * ordUidFun = Order User Identifier Function
+ *
+ * @summary
+ * Reads which Firebase account an order belongs to, from what the checkout
+ * function attached: the customer's external id, or the order's
+ * firebaseUid metadata. It returns null for an order made some other way
+ * (a checkout link), whose account the webhook then looks up by email.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param ordCurObj - Order Current Object: The webhook's order.
+ *
+ * @returns The account's id, or null.
+ *
+ * @example
+ * ```ts
+ * ordUidFun(ordCurObj) // => 'k3j...'
+ * ```
+ *
+*/
+
+function ordUidFun ( ordCurObj : PolOrdTyp ) : string | null {
+
+
+	const extIdeStr = ordCurObj.customer?.external_id; // What: External Identifier String. Why: The checkout tags its customer with the account's id. How: This reads it.
+	const metUidAny = ordCurObj.metadata?.firebaseUid; // What: Metadata User Identifier Any. Why: The checkout also copies the id into the order's metadata. How: This reads it.
+
+
+
+	return extIdeStr || ( typeof metUidAny === 'string' && metUidAny ) || null; // What: Identifier Return. Why: Either tag names the account. How: This returns the first present, or null.
+
+
+}
+
+// #endregion ordUidFun
+
+
+
 // #region verWebFun
 
 /**
@@ -149,47 +190,6 @@ function verWebFun ( bodTexStr : string, reqHeaObj : Headers, webSecStr : string
 }
 
 // #endregion verWebFun
-
-
-
-// #region ordUidFun
-
-/**
- * ordUidFun = Order User Identifier Function
- *
- * @summary
- * Reads which Firebase account an order belongs to, from what the checkout
- * function attached: the customer's external id, or the order's
- * firebaseUid metadata. It returns null for an order made some other way
- * (a checkout link), whose account the webhook then looks up by email.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param ordCurObj - Order Current Object: The webhook's order.
- *
- * @returns The account's id, or null.
- *
- * @example
- * ```ts
- * ordUidFun(ordCurObj) // => 'k3j...'
- * ```
- *
-*/
-
-function ordUidFun ( ordCurObj : PolOrdTyp ) : string | null {
-
-
-	const extIdeStr = ordCurObj.customer?.external_id; // What: External Identifier String. Why: The checkout tags its customer with the account's id. How: This reads it.
-	const metUidAny = ordCurObj.metadata?.firebaseUid; // What: Metadata User Identifier Any. Why: The checkout also copies the id into the order's metadata. How: This reads it.
-
-
-
-	return extIdeStr || ( typeof metUidAny === 'string' && metUidAny ) || null; // What: Identifier Return. Why: Either tag names the account. How: This returns the first present, or null.
-
-
-}
-
-// #endregion ordUidFun
 
 // #endregion Helpers
 

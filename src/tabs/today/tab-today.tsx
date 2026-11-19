@@ -661,6 +661,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
+	const maiScrRef = React.useRef< HTMLDivElement | null >( null ); // What: Main Scroll Reference. Why: Several handlers (scroll spy, generate's own scroll-to-top, jumGroFun) all need a handle on the shared scroll layout wrapper. How: This is attached to the .todLayDiv div's own ref prop further down.
+
+
+
 	// #region Completion Celebration
 
 	/**
@@ -1492,7 +1496,6 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const [ actGroStr, setActGroStr ] = React.useState( '__reminders' ); // What: Active Group String And Setter. Why: This is the single source of truth for which rail button is highlighted. How: This starts on the Reminders sentinel and is updated by the scroll-spy effect below.
 
 	const secRefObj = React.useRef< Record< string, HTMLElement | null > >( {} ); // What: Section Reference Object. Why: The scroll-spy effect below needs a live handle on every rendered group/Reminders/Page-Tours section element. How: This is populated by each section's own ref callback further down and read here.
-	const maiScrRef = React.useRef< HTMLDivElement | null >( null );              // What: Main Scroll Reference. Why: Several handlers (scroll spy, generate's own scroll-to-top, jumGroFun) all need a handle on the shared scroll layout wrapper. How: This is attached to the .todLayDiv div's own ref prop further down.
 	const skiSpyRef = React.useRef( false );                                      // What: Skip Spy Reference. Why: A programmatic scroll (jumGroFun, or generate's own scroll-to-top) must not have the scroll-spy effect immediately fight back and reassign actGroStr mid-animation. How: This is set true right before such a scroll starts and cleared shortly after it settles.
 	const pinGroRef = React.useRef< string | null >( null );                      // What: Pinned Group Reference. Why: See the doc comment just above. How: This is set by jumGroFun and read/cleared by the scroll-spy effect below.
 

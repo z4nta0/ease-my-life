@@ -209,6 +209,60 @@ function hasDocFun ( docAnyObj : RawSavTyp ) : string {
 
 
 
+// #region joiDocFun
+
+/**
+ * joiDocFun = Join Documents Function
+ *
+ * @summary
+ * Joins cloud documents back into one app state, the reverse of splStaFun:
+ * core's fields, plus each log rebuilt from its month documents in month
+ * order, each month's rows in their stored order. A log with no documents
+ * comes back empty.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param docMapObj - Document Map Object: The documents, keyed by id, core
+ *                    included.
+ *
+ * @returns The joined app state.
+ *
+ * @example
+ * ```ts
+ * joiDocFun(docMapObj) // => staAppObj
+ * ```
+ *
+*/
+
+function joiDocFun ( docMapObj : SynDocTyp ) : StaAppTyp {
+
+
+	const joiStaObj : RawSavTyp = { ...docMapObj[ COR_DOC_STR ] }; // What: Joined State Object. Why: The state starts from core's fields. How: This copies core.
+
+
+	for ( const logSpeObj of LOG_SPE_ARR ) { // What: Log Loop. Why: Each log is rebuilt from its months. How: This walks the five logs.
+
+
+		const logPreStr = `${ logSpeObj.keyStr }-`; // What: Log Prefix String. Why: A log's month documents share its name as a prefix. How: This is that prefix.
+
+
+
+		joiStaObj[ logSpeObj.keyStr ] = Object.keys( docMapObj ).filter( ( docIdeStr ) => docIdeStr.startsWith( logPreStr ) ).sort().flatMap( ( docIdeStr ) => docMapObj[ docIdeStr ] ); // What: Log Rebuild. Why: The log is its months' rows in month order. How: This sorts the log's document ids, which end in 'YYYY-MM', and concatenates their rows.
+
+
+	}
+
+
+
+	return joiStaObj; // What: Joined State Return. Why: The caller boots or merges this state. How: This returns it.
+
+
+}
+
+// #endregion joiDocFun
+
+
+
 // #region splStaFun
 
 /**
@@ -271,60 +325,6 @@ function splStaFun ( staAppObj : StaAppTyp ) : SynDocTyp {
 }
 
 // #endregion splStaFun
-
-
-
-// #region joiDocFun
-
-/**
- * joiDocFun = Join Documents Function
- *
- * @summary
- * Joins cloud documents back into one app state, the reverse of splStaFun:
- * core's fields, plus each log rebuilt from its month documents in month
- * order, each month's rows in their stored order. A log with no documents
- * comes back empty.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param docMapObj - Document Map Object: The documents, keyed by id, core
- *                    included.
- *
- * @returns The joined app state.
- *
- * @example
- * ```ts
- * joiDocFun(docMapObj) // => staAppObj
- * ```
- *
-*/
-
-function joiDocFun ( docMapObj : SynDocTyp ) : StaAppTyp {
-
-
-	const joiStaObj : RawSavTyp = { ...docMapObj[ COR_DOC_STR ] }; // What: Joined State Object. Why: The state starts from core's fields. How: This copies core.
-
-
-	for ( const logSpeObj of LOG_SPE_ARR ) { // What: Log Loop. Why: Each log is rebuilt from its months. How: This walks the five logs.
-
-
-		const logPreStr = `${ logSpeObj.keyStr }-`; // What: Log Prefix String. Why: A log's month documents share its name as a prefix. How: This is that prefix.
-
-
-
-		joiStaObj[ logSpeObj.keyStr ] = Object.keys( docMapObj ).filter( ( docIdeStr ) => docIdeStr.startsWith( logPreStr ) ).sort().flatMap( ( docIdeStr ) => docMapObj[ docIdeStr ] ); // What: Log Rebuild. Why: The log is its months' rows in month order. How: This sorts the log's document ids, which end in 'YYYY-MM', and concatenates their rows.
-
-
-	}
-
-
-
-	return joiStaObj; // What: Joined State Return. Why: The caller boots or merges this state. How: This returns it.
-
-
-}
-
-// #endregion joiDocFun
 
 // #endregion Helpers
 

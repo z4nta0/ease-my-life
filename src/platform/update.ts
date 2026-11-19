@@ -33,10 +33,11 @@
 
 // #region Module State
 
+let hadConBoo = !!( navigator.serviceWorker && navigator.serviceWorker.controller ); // What: Had Controller Boolean. Why: A worker taking control of a page that had none is a first install, not an update. How: This records whether a worker controlled the page at load.
+
 const subFunSet = new Set< () => void >(); // What: Subscriber Function Set. Why: The app's update note has to hear when an update becomes ready. How: Each subscriber is called once the state changes.
 
-let hadConBoo = !!( navigator.serviceWorker && navigator.serviceWorker.controller ); // What: Had Controller Boolean. Why: A worker taking control of a page that had none is a first install, not an update. How: This records whether a worker controlled the page at load.
-let updReaBoo = false;                                                                // What: Update Ready Boolean. Why: The app shows its Reload note only once a new version has taken over. How: This turns true when that happens.
+let updReaBoo = false; // What: Update Ready Boolean. Why: The app shows its Reload note only once a new version has taken over. How: This turns true when that happens.
 
 // #endregion Module State
 
