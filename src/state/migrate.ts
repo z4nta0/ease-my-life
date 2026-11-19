@@ -100,6 +100,8 @@ const SCH_VER_NUM = 1; // What: Schema Version Number. Why: migStaFun() stamps t
 function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
+	// #region Today Backfills
+
 	if ( curStaObj && curStaObj.today && !curStaObj.today.generatedAt ) { // What: Generated-At Backfill Guard. Why: Old state predates today.generatedAt entirely, and the footer needs SOME timestamp to read sensibly until the next regen. How: This backfills to "this morning" (7:12am) when today exists but generatedAt is missing.
 
 
@@ -131,6 +133,8 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 	}
+
+	// #endregion Today Backfills
 
 
 
@@ -225,6 +229,8 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	if ( curStaObj && curStaObj.daily && !curStaObj.daily.mode ) curStaObj.daily.mode = 'auto'; // What: Daily Mode Backfill. Why: Whether the Daily generator runs on its own or only manually was added later, defaulting to 'auto'. How: This backfills curStaObj.daily.mode when curStaObj.daily exists but lacks one.
 
 
+
+	// #region Task Backfills
 
 	if ( curStaObj && !Array.isArray( curStaObj.tasks ) ) curStaObj.tasks = []; // What: Tasks Array Backfill. Why: The manual reminders entity was added later; old state has no tasks array at all. How: This backfills curStaObj.tasks to an empty array when it isn't already one.
 
@@ -332,6 +338,8 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 	// #endregion Task Interval One-Shot Reset
 
+	// #endregion Task Backfills
+
 
 
 	if ( curStaObj && TAS_NAM_OBJ ) curStaObj.reminderOpts = TAS_NAM_OBJ.norOptFun( curStaObj.reminderOpts ); // What: Reminder Options Normalize. Why: Per-type reminder participation options were added later; partial or absent state must get the full default switch set. How: This calls TAS_NAM_OBJ.norOptFun on whatever curStaObj.reminderOpts currently holds.
@@ -418,6 +426,8 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	// #endregion Reminders Stats-Default Flip
 
 
+
+	// #region Onboarding State Backfills
 
 	// #region Onboarding Backfill
 
@@ -606,6 +616,8 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	}
 
 	// #endregion App-Features Intro-Seen Backfill
+
+	// #endregion Onboarding State Backfills
 
 
 
@@ -796,11 +808,15 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
+	// #region UI Backfills
+
 	if ( curStaObj && ( !curStaObj.ui || typeof curStaObj.ui !== 'object' ) ) curStaObj.ui = {}; // What: Ui Object Backfill. Why: Persisted UI prefs need a real object to build on. How: This backfills curStaObj.ui to {} when it's missing or not a plain object.
 
 
 
 	if ( curStaObj && ( !curStaObj.ui.controlsCollapsed || typeof curStaObj.ui.controlsCollapsed !== 'object' ) ) curStaObj.ui.controlsCollapsed = {}; // What: Controls-Collapsed Object Backfill. Why: controlsCollapsed maps a section id to whether its own Controls sub-panel is collapsed (absent/false means open) and was added later. How: This backfills curStaObj.ui.controlsCollapsed to {} when it's missing or not a plain object.
+
+	// #endregion UI Backfills
 
 
 
