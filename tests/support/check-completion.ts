@@ -9,6 +9,7 @@ import { steOkaFun } from './check-generation.ts'; // What: Step Okay Function. 
 
 
 import type { ConRcdTyp } from '../../src/core/data-model.ts'; // What: Conditional Record Type. Why: Completions can change conditionals. How: This types the conditional expectations.
+import type { IssAddTyp } from './check-generation.ts';        // What: Issue Add Type. Why: Every check reports through one callback. How: This types it.
 import type { PicUpdTyp } from '../../src/core/pickers.ts';    // What: Pick Update Type. Why: Staged rows for one item are merged. How: This types the merged map.
 import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State App Type. Why: Each check compares the state before and after a click. How: This types both states.
 import type { TodEntTyp } from '../../src/core/data-model.ts'; // What: Today Entry Type. Why: The checks read the toggled entry. How: This types it.
@@ -42,21 +43,12 @@ import type { TodEntTyp } from '../../src/core/data-model.ts'; // What: Today En
  * logs one completion, which cheRemFun checks.
  *
  * Sections:
- *  - Types
  *  - Helpers
  *  - Exports
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
-
-
-
-// #region Types
-
-type IssAddTyp = ( issMesStr : string ) => void; // What: Issue Add Type. Why: Every check reports through one callback. How: This types it.
-
-// #endregion Types
 
 
 

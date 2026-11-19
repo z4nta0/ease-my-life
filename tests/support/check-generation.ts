@@ -894,7 +894,7 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 // #region Exports
 
-export { cheGenFun, neaEquFun, steOkaFun }; // What: Named Exports. Why: The simulation checks each day's list with cheGenFun, and the completion checks reuse the float and step helpers. How: This exports them by name.
+export { cheGenFun, type IssAddTyp, neaEquFun, steOkaFun }; // What: Named Exports. Why: The simulation checks each day's list with cheGenFun, and the completion checks reuse the float and step helpers and the issue callback's type. How: This exports them by name.
 
 // #endregion Exports
 
