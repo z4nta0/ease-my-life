@@ -13,6 +13,7 @@ import { LEG_PAT_ARR } from '../support/states.ts';        // What: Legal Path A
 import { namProFun   } from '../support/scripted.ts';      // What: Name Problems Function. Why: Every link must be announced by a clean name, a new tab link's note included. How: This reads the accessibility tree and returns every badly named link or button.
 import { REF_WID_NUM } from '../support/accessibility.ts'; // What: Reflow Width Number. Why: WCAG's reflow criterion asks for no sideways scrolling at 320 CSS pixels. How: This is the width the reflow check opens each page at.
 import { test        } from '@playwright/test';            // What: Test. Why: Each check of each legal page is its own test. How: This declares them.
+import { vioLinFun   } from '../support/accessibility.ts'; // What: Violation Lines Function. Why: A failure should say what broke and where. How: This names each violation with its help text and the elements it found.
 
 
 import type { Page } from '@playwright/test'; // What: Page. Why: The open helper drives a Playwright page. How: This types its page parameter.
@@ -127,9 +128,9 @@ for ( const patStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages 
 			await opePagFun( curPagObj, patStr, widNum ); // What: Page Open Call. Why: The scan should see the page settled. How: This opens and settles it.
 
 
-			const axeResObj = await new AxeBuiCla( { page : curPagObj } ).withTags( AXE_TAG_ARR ).analyze();                                                                     // What: Axe Result Object. Why: Both the violations and the undecided results come from one scan. How: This scans the page with the chosen rule sets.
-			const revLinArr = axeResObj.incomplete.map( ( resCurObj ) => `${ resCurObj.id }: ${ resCurObj.help }` );                                                              // What: Review Line Array. Why: Results axe couldn't decide need a person's look. How: This names each one with its help text.
-			const vioLinArr = axeResObj.violations.map( ( resCurObj ) => `${ resCurObj.id }: ${ resCurObj.help } at ${ resCurObj.nodes.map( ( nodCurObj ) => nodCurObj.target.join( ' ' ) ).join( ', ' ) }` ); // What: Violation Line Array. Why: A failure should say what broke and where. How: This names each violation with its help text and the elements it found.
+			const axeResObj = await new AxeBuiCla( { page : curPagObj } ).withTags( AXE_TAG_ARR ).analyze();         // What: Axe Result Object. Why: Both the violations and the undecided results come from one scan. How: This scans the page with the chosen rule sets.
+			const revLinArr = axeResObj.incomplete.map( ( resCurObj ) => `${ resCurObj.id }: ${ resCurObj.help }` ); // What: Review Line Array. Why: Results axe couldn't decide need a person's look. How: This names each one with its help text.
+			const vioLinArr = vioLinFun( axeResObj.violations );                                                     // What: Violation Line Array. Why: A failure should say what broke and where. How: This names each violation with its help text and the elements it found.
 
 
 			if ( revLinArr.length ) console.log( `[${ tesInfObj.project.name }] ${ patStr } at ${ widNum }px needs review:\n  ${ revLinArr.join( '\n  ' ) }` ); // What: Review Log Call. Why: The run should show what needs a look. How: This prints the page's review lines under its project, address, and width.

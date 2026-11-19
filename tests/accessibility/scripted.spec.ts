@@ -9,6 +9,7 @@ import { keyProFun   } from '../support/scripted.ts';      // What: Keyboard Pro
 import { namProFun   } from '../support/scripted.ts';      // What: Name Problems Function. Why: Every control must be announced by a clean name. How: This reads the accessibility tree and returns every badly named link or button.
 import { opeStaFun   } from '../support/states.ts';        // What: Open State Function. Why: Each check opens and settles its state first. How: This loads it and waits for it.
 import { REF_WID_NUM } from '../support/accessibility.ts'; // What: Reflow Width Number. Why: WCAG's reflow criterion asks for no sideways scrolling at 320 CSS pixels. How: This is the width the reflow check opens each state at.
+import { sidOveFun   } from '../support/accessibility.ts'; // What: Sideways Overflow Function. Why: The reflow check reads how far the page reaches past the viewport. How: This measures the root element's scroll width less its visible width.
 import { test        } from '@playwright/test';            // What: Test. Why: Each check of each state is its own test. How: This declares them.
 
 // #endregion Imports
@@ -183,7 +184,7 @@ for ( const staRecObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every ch
 		await opeStaFun( curPagObj, { ...staRecObj, widNum : REF_WID_NUM } ); // What: Narrow State Open Call. Why: Reflow is judged at WCAG's narrowest width. How: This opens the state with its width replaced by the reflow width.
 
 
-		expect( await curPagObj.evaluate( () => document.documentElement.scrollWidth - document.documentElement.clientWidth ) ).toBeLessThanOrEqual( 0 ); // What: No Sideways Scroll Assertion. Why: The page passes only when nothing reaches past the viewport's width. How: This subtracts the visible width from the scrollable width, which stays at zero without sideways scrolling.
+		expect( await sidOveFun( curPagObj ) ).toBeLessThanOrEqual( 0 ); // What: No Sideways Scroll Assertion. Why: The page passes only when nothing reaches past the viewport's width. How: This expects the page's sideways overflow, its scroll width less its visible width, to stay at zero or below.
 
 
 	} );

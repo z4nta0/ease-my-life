@@ -12,9 +12,12 @@ import { EMU_PRO_STR } from '../../src/emulator-project.ts'; // What: Emulator P
 import { expect      } from '@playwright/test';              // What: Expect. Why: A screen passes only with no violations and no sideways scroll. How: This makes the assertions.
 import { FIR_EMU_STR } from '../support/emulator.ts';        // What: Firestore Emulator String. Why: The first-sync choice's cloud copy is written straight into the Firestore emulator. How: This is its address.
 import { reaFixFun   } from '../support/fixture.ts';         // What: Read Fixture Function. Why: The first-sync choice needs a device with its own data. How: This reads the backup.
+import { REF_WID_NUM } from '../support/accessibility.ts';   // What: Reflow Width Number. Why: WCAG's reflow criterion asks for no sideways scrolling at 320 CSS pixels, as the main suite checks. How: This is the width the reflow check opens each screen at.
+import { sidOveFun   } from '../support/accessibility.ts';   // What: Sideways Overflow Function. Why: The reflow check measures overflow the way the main suite does. How: This reads how far the page reaches past the viewport.
 import { sigLinFun   } from '../support/account.ts';         // What: Sign In Link Function. Why: Each screen is reached by signing in. How: This signs a device in with an emailed link.
 import { synWaiFun   } from '../support/account.ts';         // What: Sync Wait Function. Why: The paid screens are scanned once synced. How: This waits for the status to read Synced.
 import { test        } from '@playwright/test';              // What: Test. Why: Each screen is its own test. How: This declares them.
+import { vioLinFun   } from '../support/accessibility.ts';   // What: Violation Lines Function. Why: A failure should say what broke and where. How: This lists each violation by rule and target.
 import { watErrFun   } from '../support/watch.ts';           // What: Watch Errors Function. Why: A screen fails on any page error. How: This collects them.
 import { wriStaFun   } from '../support/storage.ts';         // What: Write State Function. Why: The first-sync choice starts from the backup. How: This writes it.
 
@@ -90,19 +93,19 @@ async function chePagFun ( curPagObj : Page ) : Promise< void > {
 		const axeResObj = await new AxeBuilder( { page : curPagObj } ).include( '[data-element-name-hook~="setAccSec"]' ).include( '[data-element-name-hook~="resRowDiv"]' ).withTags( AXE_TAG_ARR ).analyze(); // What: Axe Result Object. Why: The scan decides the test, and covers only what signing in changes, since the main suite scans the rest of Settings, and a section half scrolled out of view reads to axe as a clipped, undersized target. How: This runs axe-core with the suite's tags on the Account section and the reset row.
 
 
-		expect( axeResObj.violations.map( ( vioCurObj ) => `${ vioCurObj.id }: ${ vioCurObj.help } at ${ vioCurObj.nodes.map( ( nodCurObj ) => nodCurObj.target.join( ' ' ) ).join( ', ' ) }` ), `axe at ${ widValNum }px` ).toEqual( [] ); // What: Violation Assertion. Why: A screen passes only with none. How: This lists each by rule and target.
+		expect( vioLinFun( axeResObj.violations ), `axe at ${ widValNum }px` ).toEqual( [] ); // What: Violation Assertion. Why: A screen passes only with none. How: This lists each by rule and target.
 
 
 	}
 
 
 
-	await curPagObj.setViewportSize( { height : 900, width : 320 } ); // What: Reflow Width Set Call. Why: WCAG reflow allows no sideways scroll at 320px. How: This resizes the page.
+	await curPagObj.setViewportSize( { height : 900, width : REF_WID_NUM } ); // What: Reflow Width Set Call. Why: WCAG reflow allows no sideways scroll at 320px. How: This resizes the page.
 
 	await curPagObj.waitForTimeout( 400 ); // What: Settle Wait. Why: The layout settles after a resize. How: This waits a moment.
 
 
-	expect( await curPagObj.evaluate( () => document.documentElement.scrollWidth - document.documentElement.clientWidth ), 'sideways overflow at 320px' ).toBeLessThanOrEqual( 0 ); // What: Reflow Assertion. Why: The page passes only when nothing scrolls it sideways, measured the way the main suite does. How: This expects the page no wider than the window.
+	expect( await sidOveFun( curPagObj ), `sideways overflow at ${ REF_WID_NUM }px` ).toBeLessThanOrEqual( 0 ); // What: Reflow Assertion. Why: The page passes only when nothing scrolls it sideways, measured the way the main suite does. How: This expects the page no wider than the window.
 
 
 }
