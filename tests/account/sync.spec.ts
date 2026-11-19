@@ -15,6 +15,7 @@ import { reaFixFun   } from '../support/fixture.ts';         // What: Read Fixtu
 import { reaStaFun   } from '../support/storage.ts';         // What: Read State Function. Why: The new-day flow compares what each device saved. How: This reads a device's state.
 import { selTabFun   } from '../support/app.ts';             // What: Select Tab Function. Why: Sign-in and holidays are on the Settings tab. How: This switches to it.
 import { sigLinFun   } from '../support/account.ts';         // What: Sign In Link Function. Why: Devices sign in the way a person does. How: This signs one in with an emailed link.
+import { subHolFun   } from '../support/app.ts';             // What: Submit Holiday Function. Why: A custom holiday is added through the Settings form. How: This names, dates, and adds it.
 import { synWaiFun   } from '../support/account.ts';         // What: Sync Wait Function. Why: Steps wait for a finished sync. How: This waits for the status to read Synced.
 import { test        } from '@playwright/test';              // What: Test. Why: The flow is its own test. How: This declares it.
 import { waiStaFun   } from '../support/storage.ts';         // What: Wait State Function. Why: A synced change lands in IndexedDB a moment later. How: This waits for it.
@@ -105,12 +106,7 @@ test( 'two devices sign in to one paid account and sync each other', async ( { b
 
 
 
-	await twoPagObj.locator( '[aria-label="Name of the day off to add"]' ).fill( HOL_NAM_STR );                  // What: Holiday Name Fill. Why: The second device makes a change to carry back. How: This names a holiday.
-	await twoPagObj.locator( '[data-element-name-hook~="holAddDiv"] [aria-label="Date"]' ).fill( '2026-11-03' ); // What: Holiday Date Fill. Why: A holiday needs a date. How: This sets one.
-
-
-
-	await twoPagObj.locator( '[data-element-name-hook~="holAddDiv"]' ).getByRole( 'button', { exact : true, name : 'Add' } ).click(); // What: Holiday Add Click. Why: The change is made on click. How: This adds the holiday.
+	await subHolFun( twoPagObj, HOL_NAM_STR, '2026-11-03' ); // What: Holiday Submit Call. Why: The second device makes a change to carry back. How: This names, dates, and adds a holiday.
 
 	await waiStaFun( twoPagObj, ( staAppObj ) => staAppObj.holidays.custom.some( ( holCusObj ) => holCusObj.name === HOL_NAM_STR ), 'the holiday saved on the second device' ); // What: Holiday Save Wait. Why: The sync must read the saved change. How: This waits for the holiday in storage.
 

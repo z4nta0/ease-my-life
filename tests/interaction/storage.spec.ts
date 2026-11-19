@@ -7,6 +7,7 @@ import { expect    } from '@playwright/test';      // What: Expect. Why: Every f
 import { opeFixFun } from '../support/app.ts';     // What: Open Fixture Function. Why: Each flow starts from real data. How: This opens the backup on a fixed day.
 import { reaStaFun } from '../support/storage.ts'; // What: Read State Function. Why: Flows check what IndexedDB holds. How: This reads it.
 import { selTabFun } from '../support/app.ts';     // What: Select Tab Function. Why: Holidays are added on the Settings tab. How: This switches to it.
+import { subHolFun } from '../support/app.ts';     // What: Submit Holiday Function. Why: A custom holiday is added through the Settings form. How: This names, dates, and adds it.
 import { test      } from '@playwright/test';      // What: Test. Why: Each flow is its own test. How: This declares them.
 import { waiStaFun } from '../support/storage.ts'; // What: Wait State Function. Why: The recovered state lands in IndexedDB a moment after boot. How: This waits for it.
 import { watErrFun } from '../support/watch.ts';   // What: Watch Errors Function. Why: A flow fails on any page error. How: This collects them.
@@ -96,12 +97,7 @@ const addHolFun = async ( curPagObj : Page, holNamStr : string ) : Promise< void
 
 
 
-	await curPagObj.locator( '[aria-label="Name of the day off to add"]' ).fill( holNamStr );                    // What: Name Fill Call. Why: A custom holiday needs a name. How: This types holNamStr.
-	await curPagObj.locator( '[data-element-name-hook~="holAddDiv"] [aria-label="Date"]' ).fill( '2026-11-03' ); // What: Date Fill Call. Why: A custom holiday needs a date. How: This sets one.
-
-
-
-	await curPagObj.locator( '[data-element-name-hook~="holAddDiv"]' ).getByRole( 'button', { exact : true, name : 'Add' } ).click(); // What: Add Click Call. Why: The holiday is added on click. How: This clicks Add.
+	await subHolFun( curPagObj, holNamStr, '2026-11-03' ); // What: Holiday Submit Call. Why: A custom holiday is the change the relaunch must keep. How: This names, dates, and adds it.
 
 
 

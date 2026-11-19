@@ -9,6 +9,7 @@ import { reaStaFun   } from '../support/storage.ts'; // What: Read State Functio
 import { recAniFun   } from '../support/watch.ts';   // What: Record Animations Function. Why: Flows confirm their animations played. How: This starts recording.
 import { seeAniFun   } from '../support/watch.ts';   // What: Seen Animation Function. Why: Flows confirm their animations played. How: This checks the record.
 import { selTabFun   } from '../support/app.ts';     // What: Select Tab Function. Why: Every flow runs on the Settings tab. How: This switches to it.
+import { subHolFun   } from '../support/app.ts';     // What: Submit Holiday Function. Why: A custom holiday is added through the Settings form. How: This names, dates, and adds it.
 import { test        } from '@playwright/test';      // What: Test. Why: Each flow is its own test. How: This declares them.
 import { TIP_URL_STR } from '../support/app.ts';     // What: Tip URL String. Why: The tip button must open the test server's placeholder tip page. How: The new tab's address is checked against it.
 import { waiStaFun   } from '../support/storage.ts'; // What: Wait State Function. Why: Saves land a moment after each action. How: This waits for them.
@@ -174,15 +175,7 @@ test( 'holidays can be turned off, added, and removed', async ( { page : curPagO
 
 
 
-	await curPagObj.locator( '[aria-label="Name of the day off to add"]' ).fill( 'Test Holiday' ); // What: Name Fill Call. Why: A custom holiday needs a name. How: This types one.
-
-
-
-	await curPagObj.locator( '[data-element-name-hook~="holAddDiv"] [aria-label="Date"]' ).fill( '2026-11-03' ); // What: Date Fill Call. Why: A custom holiday needs a date. How: This sets one.
-
-
-
-	await curPagObj.locator( '[data-element-name-hook~="holAddDiv"]' ).getByRole( 'button', { exact : true, name : 'Add' } ).click(); // What: Add Click Call. Why: The holiday is added on click. How: This clicks Add.
+	await subHolFun( curPagObj, 'Test Holiday', '2026-11-03' ); // What: Holiday Submit Call. Why: A custom holiday is added through the form. How: This names, dates, and adds one.
 
 
 

@@ -8,6 +8,7 @@ import { opeFixFun } from '../support/app.ts';     // What: Open Fixture Functio
 import { polSetFun } from '../support/policy.ts';  // What: Policy Setup Function. Why: The fields are used under the headers Netlify really sends. How: This adds the headers and the violation listener.
 import { polVioFun } from '../support/policy.ts';  // What: Policy Violation Function. Why: Markup rendered as HTML would try to run its handler, which the policy refuses and reports. How: This reads the recorded violations.
 import { selTabFun } from '../support/app.ts';     // What: Select Tab Function. Why: Each field lives on its own tab. How: This switches to it through the navigation.
+import { subHolFun } from '../support/app.ts';     // What: Submit Holiday Function. Why: A custom holiday is added through the Settings form. How: This names, dates, and adds it.
 import { test      } from '@playwright/test';      // What: Test. Why: Each field is its own test. How: This declares them.
 import { waiStaFun } from '../support/storage.ts'; // What: Wait State Function. Why: The typed name is checked once it's saved and shown again. How: This waits for it in IndexedDB.
 import { watErrFun } from '../support/watch.ts';   // What: Watch Errors Function. Why: A page error during a check is a failure even when the check itself passes. How: This collects page and console errors.
@@ -185,11 +186,7 @@ test( 'a holiday name typed as markup shows as text', async ( { page : curPagObj
 
 	await selTabFun( curPagObj, 'settings' ); // What: Tab Switch Call. Why: Holidays are added on the Settings tab. How: This switches to it.
 
-	await curPagObj.locator( '[aria-label="Name of the day off to add"]' ).fill( PAY_LOA_STR ); // What: Name Fill Call. Why: The payload is typed where a name goes. How: This fills the name field.
-
-	await curPagObj.locator( '[data-element-name-hook~="holAddDiv"] [aria-label="Date"]' ).fill( '2026-11-03' ); // What: Date Fill Call. Why: A holiday needs a date. How: This sets one.
-
-	await curPagObj.locator( '[data-element-name-hook~="holAddDiv"]' ).getByRole( 'button', { exact : true, name : 'Add' } ).click(); // What: Add Click Call. Why: The holiday is added on click. How: This clicks Add.
+	await subHolFun( curPagObj, PAY_LOA_STR, '2026-11-03' ); // What: Holiday Submit Call. Why: The payload is typed where a holiday's name goes. How: This names, dates, and adds the holiday.
 
 	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.holidays.custom.some( ( holCusObj ) => holCusObj.name === PAY_LOA_STR ), 'holiday added' ); // What: Name Save Wait. Why: The name is checked once saved. How: This waits for it in IndexedDB.
 

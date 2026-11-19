@@ -15,6 +15,7 @@ import { locDayFun   } from '../support/clock.ts';           // What: Local Day 
 import { NOT_MES_STR } from '../support/update.ts';          // What: Note Message String. Why: The note is found by its message. How: This is the text it shows.
 import { reaFixFun   } from '../support/fixture.ts';         // What: Read Fixture Function. Why: The device starts on real data. How: This reads the backup.
 import { sigLinFun   } from '../support/account.ts';         // What: Sign In Link Function. Why: The device signs in the way a person does. How: This signs it in with an emailed link.
+import { subHolFun   } from '../support/app.ts';             // What: Submit Holiday Function. Why: A custom holiday is added through the Settings form. How: This names, dates, and adds it.
 import { synWaiFun   } from '../support/account.ts';         // What: Sync Wait Function. Why: The first upload has to finish before the change. How: This waits for the status to read Synced.
 import { test        } from '@playwright/test';              // What: Test. Why: The flow is its own test. How: This declares it.
 import { visSetFun   } from '../support/update.ts';          // What: Visibility Set Function. Why: Hiding the app is what starts both the upload and the quiet reload. How: This sets the faked visibility and fires its event.
@@ -156,10 +157,7 @@ async function devSetFun ( curPagObj : Page ) : Promise< { errMesArr : string[],
 async function holAddFun ( curPagObj : Page, holNamStr : string, holDatStr : string ) : Promise< void > {
 
 
-	await curPagObj.locator( '[aria-label="Name of the day off to add"]' ).fill( holNamStr );                  // What: Holiday Name Fill. Why: The device makes a change that waits to sync. How: This names a holiday.
-	await curPagObj.locator( '[data-element-name-hook~="holAddDiv"] [aria-label="Date"]' ).fill( holDatStr ); // What: Holiday Date Fill. Why: A holiday needs a date. How: This sets one.
-
-	await curPagObj.locator( '[data-element-name-hook~="holAddDiv"]' ).getByRole( 'button', { exact : true, name : 'Add' } ).click(); // What: Holiday Add Click. Why: The change is made on click, starting the two-minute wait before it syncs. How: This adds the holiday.
+	await subHolFun( curPagObj, holNamStr, holDatStr ); // What: Holiday Submit Call. Why: The device makes a change that waits to sync, starting the two-minute wait on click. How: This names, dates, and adds the holiday.
 
 	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.holidays.custom.some( ( holCusObj ) => holCusObj.name === holNamStr ), 'the holiday saved on the device' ); // What: Holiday Save Wait. Why: The change has to be saved and waiting. How: This waits for the holiday in storage.
 

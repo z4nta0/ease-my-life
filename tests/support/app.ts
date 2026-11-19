@@ -27,9 +27,10 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * moves the fake clock, loads the page fresh so the Today tab mounts and
  * runs its own check for a new day, and waits until that day's list has
  * been generated and saved. selTabFun switches tabs through the real
- * navigation buttons, and opeFixFun opens the real-data backup on a fixed
- * day for the suites that need realistic content. TIP_URL_STR is the
- * placeholder tip page address the test server builds the app with.
+ * navigation buttons, subHolFun adds a custom holiday through the Settings
+ * form, and opeFixFun opens the real-data backup on a fixed day for the
+ * suites that need realistic content. TIP_URL_STR is the placeholder tip
+ * page address the test server builds the app with.
  *
  * Sections:
  *  - Constants
@@ -193,13 +194,54 @@ const selTabFun = async ( curPagObj : Page, tabIdeStr : string ) : Promise< void
 
 // #endregion selTabFun
 
+
+
+// #region subHolFun
+
+/**
+ * subHolFun = Submit Holiday Function
+ *
+ * @summary
+ * Adds a custom holiday through the Settings tab's form the way a person
+ * does: it types the name, sets the date, and presses Add. It expects the
+ * Settings tab open, and returns once the click lands, without waiting for
+ * the holiday to be saved.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curPagObj - Current Page Object: The page running the app.
+ * @param holNamStr - Holiday Name String: The holiday's name.
+ * @param holDatStr - Holiday Date String: The holiday's ISO date.
+ *
+ * @returns A promise that settles once Add is clicked, with no value.
+ *
+ * @example
+ * ```ts
+ * await subHolFun(curPagObj, 'Test Holiday', '2026-11-03') // => Promise<void>
+ * ```
+ *
+*/
+
+const subHolFun = async ( curPagObj : Page, holNamStr : string, holDatStr : string ) : Promise< void > => { // What: Submit Holiday Function. Why: Several suites add a custom holiday as their change. How: This fills the add form and clicks Add.
+
+
+	await curPagObj.locator( '[aria-label="Name of the day off to add"]' ).fill( holNamStr );                  // What: Name Fill Call. Why: A custom holiday needs a name. How: This types holNamStr.
+	await curPagObj.locator( '[data-element-name-hook~="holAddDiv"] [aria-label="Date"]' ).fill( holDatStr ); // What: Date Fill Call. Why: A custom holiday needs a date. How: This sets holDatStr.
+
+	await curPagObj.locator( '[data-element-name-hook~="holAddDiv"]' ).getByRole( 'button', { exact : true, name : 'Add' } ).click(); // What: Add Click Call. Why: The holiday is added on click. How: This clicks Add.
+
+
+};
+
+// #endregion subHolFun
+
 // #endregion Helpers
 
 
 
 // #region Exports
 
-export { opeDayFun, opeFixFun, selTabFun, TIP_URL_STR }; // What: Named Exports. Why: The suites open days, open the backup, and switch tabs through these, and the config and the Settings suite share the tip placeholder. How: This exports opeDayFun, opeFixFun, selTabFun, and TIP_URL_STR by name.
+export { opeDayFun, opeFixFun, selTabFun, subHolFun, TIP_URL_STR }; // What: Named Exports. Why: The suites open days, open the backup, switch tabs, and add holidays through these, and the config and the Settings suite share the tip placeholder. How: This exports opeDayFun, opeFixFun, selTabFun, subHolFun, and TIP_URL_STR by name.
 
 // #endregion Exports
 
