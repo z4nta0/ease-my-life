@@ -1,0 +1,192 @@
+
+
+
+<!doctype html>
+
+
+
+<html lang='en'>
+
+
+	<head>
+
+		<meta charset='utf-8' />
+
+		<title>Buy Me a Coffee Card</title>
+
+		<link rel='stylesheet' href='/src/styles/fonts.css' />
+		<link rel='stylesheet' href='/src/styles/styles.css' />
+
+		<style>/* What: Card Styles. Why: The card is drawn from the app's own tokens so it looks like the app. How: This lays out the square card, its cup illustration, and its two lines of text. */
+
+
+			body { /* What: Page Body. Why: Only the card should render. How: This clears the page and centers nothing else. */
+
+
+				background : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+				margin     : 0;
+
+
+			}
+
+			.carSqaDiv { /* What: Card Square Div. Why: Polar shows the image square, so everything sits in one 1,200px square. How: This stacks the cup and the text in the center over the icon's own faint grid. */
+
+
+				align-items     : center;
+				background      : var( --bac-pag-col );                                                     /* Background Page Color = oklch( 0.985 0.003 240 ) */
+				box-sizing      : border-box;
+				display         : flex;
+				flex-direction  : column;
+				gap             : calc( var( --ver-rhy-p03 ) * 1rem );                                      /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+				height          : 1200px;
+				justify-content : center;
+				overflow        : hidden;
+				position        : relative;
+				width           : 1200px;
+
+
+			}
+
+			.griLinSvg { /* What: Grid Lines Svg. Why: The app icon sits on a faint grid, and the card echoes it. How: This fills the card behind everything else. */
+
+
+				inset    : 0;
+				position : absolute;
+
+
+			}
+
+			.cupIllSvg { /* What: Cup Illustration Svg. Why: The cup is the card's main image. How: This sizes it above the text. */
+
+
+				height   : 600px;
+				position : relative;
+				width    : 600px;
+
+
+			}
+
+			.titTexHea { /* What: Title Text Heading. Why: The ask is the main line, readable at thumbnail size. How: This sets it large in the main brand face. */
+
+
+				color       : var( --tex-mai-col );                /* Text Main Color = oklch( 0.17 0.012 250 ) */
+				font-family : var( --fon-fam-br1 );                /* Font Family Brand 1 = 'Shantell Sans' */
+				font-size   : calc( var( --ver-rhy-p07 ) * 1rem ); /* Vertical Rhythm Base Plus 7 ~= 104.324px */
+				font-weight : 700;
+				line-height : 1;
+				margin      : 0;
+				position    : relative;
+
+
+			}
+
+			.subTexPar { /* What: Subtitle Text Paragraph. Why: The card names what the tip supports. How: This sets it in the second brand face, muted. */
+
+
+				color       : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+				font-family : var( --fon-fam-br2 );                /* Font Family Brand 2 = 'Quicksand' */
+				font-size   : var( --fon-siz-p06 );                /* Font Size Base Plus 6 ~= 59.447px */
+				font-weight : 600;
+				line-height : 1;
+				margin      : 0;
+				position    : relative;
+
+
+			}
+
+
+		</style>
+
+	</head>
+
+
+
+	<body>
+
+
+		<div
+			id='carSqaDiv'
+
+			class='carSqaDiv'
+		><!-- What: Card Square Div Element. Why: This is the whole card the render script captures. How: Its id lets the script screenshot exactly this element. -->
+
+
+			<svg
+				class='griLinSvg'
+
+				viewBox='0 0 1200 1200'
+
+				aria-hidden='true'
+			><!-- What: Grid Lines Svg Element. Why: This echoes the app icon's faint grid. How: This draws evenly spaced lines in the accent tint. -->
+
+
+				<g
+					fill='none'
+					stroke='oklch( 0.95 0.025 250 )'
+					stroke-width='16'
+				><!-- What: Grid Line Group Element. Why: Every line shares the icon's tint and weight. How: The lines below inherit these. -->
+
+					<path d='M 0 240 H 1200 M 0 480 H 1200 M 0 720 H 1200 M 0 960 H 1200 M 240 0 V 1200 M 480 0 V 1200 M 720 0 V 1200 M 960 0 V 1200' /><!-- What: Grid Line Path Element. Why: This is the grid itself. How: Four horizontal and four vertical lines, 240px apart. -->
+
+				</g>
+
+
+			</svg>
+
+
+
+			<svg
+				class='cupIllSvg'
+
+				viewBox='0 0 600 600'
+
+				aria-hidden='true'
+			><!-- What: Cup Illustration Svg Element. Why: This is the coffee cup, in the app's accent outline style. How: This draws the steam, cup, handle, saucer, and the app's swoosh mark on the cup. -->
+
+
+				<g
+					fill='none'
+					stroke='oklch( 0.5 0.14 250 )'
+					stroke-linecap='round'
+					stroke-width='14'
+					opacity='0.55'
+				><!-- What: Steam Group Element. Why: Rising steam says the coffee is fresh. How: Three soft curls in a lighter accent. -->
+
+					<path d='M 230 160 C 200 120 260 100 230 50' /><!-- What: Steam Curl Element. Why: This is the left curl. How: An S-curve rising above the cup. -->
+
+					<path d='M 300 170 C 270 120 330 95 300 30' /><!-- What: Steam Curl Element. Why: This is the middle, tallest curl. How: An S-curve rising above the cup. -->
+
+					<path d='M 370 160 C 340 120 400 100 370 50' /><!-- What: Steam Curl Element. Why: This is the right curl. How: An S-curve rising above the cup. -->
+
+				</g>
+
+				<ellipse cx='300' cy='505' rx='230' ry='38' fill='oklch( 0.95 0.025 250 )' stroke='oklch( 0.5 0.14 250 )' stroke-width='14' /><!-- What: Saucer Ellipse Element. Why: The cup rests on a saucer. How: A flat ellipse in the accent tint. -->
+
+				<path d='M 455 270 C 565 270 565 420 440 425' fill='none' stroke='oklch( 0.5 0.14 250 )' stroke-linecap='round' stroke-width='22' /><!-- What: Handle Path Element. Why: The cup needs a handle. How: A thick loop off the cup's right side. -->
+
+				<path d='M 140 210 H 460 L 432 440 Q 426 485 380 485 H 220 Q 174 485 168 440 Z' fill='oklch( 0.975 0.004 240 )' stroke='oklch( 0.5 0.14 250 )' stroke-linejoin='round' stroke-width='16' /><!-- What: Cup Body Path Element. Why: This is the cup itself. How: A tapered shape with rounded bottom corners in the surface color. -->
+
+				<ellipse cx='300' cy='212' rx='158' ry='24' fill='oklch( 0.62 0.13 50 )' stroke='oklch( 0.5 0.14 250 )' stroke-width='14' /><!-- What: Coffee Surface Ellipse Element. Why: The cup is full. How: The rim's ellipse filled with the warm secondary accent. -->
+
+				<path transform='translate( 225 275 ) scale( 0.29 )' d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z' fill='oklch( 0.5 0.14 250 )' stroke='oklch( 0.5 0.14 250 )' stroke-linejoin='round' stroke-width='8' /><!-- What: Swoosh Mark Path Element. Why: The cup carries the app's own mark, tying the image to the app. How: The icon's swoosh path, scaled onto the cup's front. -->
+
+
+			</svg>
+
+
+
+			<h1 class='titTexHea'>Buy me a coffee</h1><!-- What: Title Text Heading Element. Why: This is the ask. How: It renders in the main brand face. -->
+
+			<p class='subTexPar'>Support Ease My Life</p><!-- What: Subtitle Text Paragraph Element. Why: This names what the tip supports. How: It renders muted in the second brand face. -->
+
+
+		</div>
+
+
+	</body>
+
+
+
+</html>
+
+

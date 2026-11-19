@@ -21,13 +21,13 @@ yarn-error.log*
 
 
 
-# What: Generated And Local Files Block. Why: Build output, dependencies, local secrets, and tool state are recreated or kept per machine. How: This ignores the build and dev output, the bundled Netlify Functions, node_modules, local env files, design sources, the Claude and Playwright working folders, and the test suites' reports and run output.
+# What: Generated And Local Files Block. Why: Build output, dependencies, local secrets, and tool state are recreated or kept per machine. How: This ignores the build and dev output, the bundled Netlify Functions, node_modules, local env files, the design folder's images and notes, the Claude and Playwright working folders, and the test suites' reports and run output.
 *.env
 *.local
 .claude
 .playwright
 .playwright-cli
-design/
+design/**
 dev-dist/
 dist
 dist-ssr
@@ -37,5 +37,8 @@ tests/output
 
 
 
-# What: Re-Include Block. Why: A shared file inside an ignored folder still belongs in the project, and a re-include only works after the pattern it overrides. How: This re-includes .vscode/extensions.json, so the editor's extension recommendations stay shared.
+# What: Re-Include Block. Why: A shared file inside an ignored folder still belongs in the project, and a re-include only works after the pattern it overrides. How: This re-includes .vscode/extensions.json, so the editor's extension recommendations stay shared, and the design folder's folders, card templates, and render scripts, so the icons and preview cards can be rebuilt on any machine.
 !.vscode/extensions.json
+!design/**/
+!design/**/*.html
+!design/**/*.mts

@@ -1,0 +1,377 @@
+
+
+
+<!doctype html><!-- What: Document Type Declaration. Why: Browsers render the page in standards mode only with a doctype. How: This declares HTML5. -->
+
+
+
+<html lang='en'><!-- What: Root HTML Element. Why: The card is set in English text. How: This marks the document as English. -->
+
+
+	<head><!-- What: Document Head Element. Why: The card's fonts and layout load before it's captured. How: This holds them in the sections below. -->
+
+
+		<!-- #region Document -->
+
+		<meta charset='UTF-8' />                         <!-- What: Character Set Meta. Why: The card's text has to decode as UTF-8. How: This sits first in the head. -->
+		<title>Ease My Life Social Preview Card</title> <!-- What: Page Title Element. Why: The file should say what it is when opened in a browser. How: This names it. -->
+
+		<!-- #endregion Document -->
+
+
+		<!-- #region Card Styles -->
+
+		<style>/* What: Card Style Element. Why: The card is one fixed-size image, styled here from the app's own fonts and tokens. How: This imports the app's font faces and global stylesheet, then lays the card out. */
+
+
+			@import url( '../../src/styles/fonts.css' );  /* What: Fonts Import. Why: The card should be set in the app's own typefaces. How: This loads its font faces. */
+			@import url( '../../src/styles/styles.css' ); /* What: Styles Import. Why: The card should read the app's colors and sizes, and its 11px root. How: This loads the global stylesheet and its tokens. */
+
+
+
+			/* #region carBodBod */
+
+			.carBodBod { /* What: Card Body Body. Why: The card fills the whole 1,200x630 capture on the app's page color. How: This sizes it in literal pixels, the image's own size, and centers its column. */
+
+
+				background  : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+				display     : grid;
+				height      : 630px;
+				margin      : 0;
+				overflow    : hidden;
+				place-items : center;
+				position    : relative;
+				width       : 1200px;
+
+
+			}
+
+
+
+			.griDecDiv { /* What: Grid Decoration Div. Why: The logo's grid, echoed faintly on the left, balances the Today panel on the right, outside the center square since it's decoration. How: This draws evenly spaced accent tint lines that fade out toward the center. */
+
+
+				background-image : repeating-linear-gradient( 0deg, var( --acc-tin-col ) 0 var( --bor-wid-xla ), transparent 0 calc( var( --ver-rhy-p05 ) * 1rem ) ), repeating-linear-gradient( 90deg, var( --acc-tin-col ) 0 var( --bor-wid-xla ), transparent 0 calc( var( --ver-rhy-p05 ) * 1rem ) ); /* Accent Tint Color = oklch( 0.95 0.025 250 ), Border Width Extra Large ~= 3.571px, Vertical Rhythm Base Plus 5 ~= 59.447px */
+				height           : 630px;
+				left             : 0;
+				mask-image       : linear-gradient( 90deg, black, transparent );
+				position         : absolute;
+				top              : 0;
+				width            : 300px;
+
+
+			}
+
+
+
+			/* #region carColDiv */
+
+			.carColDiv { /* What: Card Column Div. Why: Some apps crop the card to its center square, so everything that matters sits inside the middle 630px. How: This stacks the brand, the headline, and the closing line in one centered column 630px wide. */
+
+
+				display       : grid;
+				gap           : var( --spa-ver-p03 ); /* Spacing Vertical Base Plus 3 ~= 33.876px */
+				justify-items : center;
+				text-align    : center;
+				width         : 630px;
+
+
+			}
+
+
+			/* #region braRowDiv */
+
+			.braRowDiv { /* What: Brand Row Div. Why: The mark and the wordmark read together as the app's name. How: This sets them side by side, centered. */
+
+
+				align-items    : center;
+				display        : grid;
+				gap            : var( --spa-hor-p02 ); /* Spacing Horizontal Base Plus 2 ~= 25.572px */
+				grid-auto-flow : column;
+
+
+			}
+
+			.braMarIma { /* What: Brand Mark Image. Why: The app's checkmark logo leads the card. How: This sizes the mark at the p08 rhythm step. */
+
+
+				height : calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+				width  : calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+
+
+			}
+
+
+			/* #region worLinSpa */
+
+			.worLinSpa { /* What: Wordmark Lines. Why: "Ease" stacks over "My Life", as in the app's bar. How: This stacks the two lines left-aligned and uppercase. */
+
+
+				display        : grid;
+				justify-items  : start;
+				line-height    : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+				text-transform : uppercase;
+
+
+			}
+
+			.worEasSpa { /* What: Wordmark Ease Line. Why: "Ease" leads the wordmark in the brand's display face. How: This sets it large and bold in Shantell Sans, in the accent. */
+
+
+				color       : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+				font-family : var( --fon-fam-br1 ); /* Font Family Brand 1 = 'Shantell Sans', then the main font */
+				font-size   : var( --fon-siz-p06 ); /* Font Size Base Plus 6 ~= 59.447px */
+				font-weight : 600;
+
+
+			}
+
+			.worResSpa { /* What: Wordmark My Life Line. Why: "My Life" completes the wordmark in the brand's second face. How: This sets it bold in Quicksand, in the main text color. */
+
+
+				color       : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+				font-family : var( --fon-fam-br2 ); /* Font Family Brand 2 = 'Quicksand', then the main font */
+				font-size   : var( --fon-siz-p05 ); /* Font Size Base Plus 5 ~= 44.876px */
+				font-weight : 700;
+
+
+			}
+
+			/* #endregion worLinSpa */
+
+			/* #endregion braRowDiv */
+
+
+			.heaLinHea { /* What: Headline Heading. Why: The app's promise is the card's main line. How: This sets it bold at the p05 step in the main font, tight as headings are. */
+
+
+				color       : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+				font-family : var( --fon-fam-mai ); /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+				font-size   : var( --fon-siz-p05 ); /* Font Size Base Plus 5 ~= 44.876px */
+				font-weight : 700;
+				line-height : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+				margin      : 0;
+
+
+			}
+
+			.cloLinPar { /* What: Closing Line Paragraph. Why: The card ends on what the app never asks of you. How: This sets it in the muted color at 40px, which no font step comes within 10% of, so it stays literal. */
+
+
+				color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+				font-family : var( --fon-fam-mai ); /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+				font-size   : 40px;
+				font-weight : 500;
+				line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
+				margin      : 0;
+
+
+			}
+
+			/* #endregion carColDiv */
+
+
+
+			/* #region todCarDiv */
+
+			.todCarDiv { /* What: Today Card Div. Why: A glimpse of the Today list shows what the app does, outside the center square since it's decoration. How: This draws a raised panel past the column's right edge, running off the card. */
+
+
+				background    : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+				border        : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+				border-radius : var( --rad-bor-xla );                            /* Radius Border Extra Large ~= 19.304px */
+				box-shadow    : var( --ele-lar-sha );                            /* Elevation Large Shadow ~= 0 19.304px 44.876px -14.572px plus 0 6.268px 14.572px -3.572px */
+				display       : grid;
+				gap           : var( --spa-ver-p01 );                            /* Spacing Vertical Base Plus 1 ~= 19.304px */
+				left          : 945px;
+				padding       : var( --spa-ver-p02 ) var( --spa-hor-p02 );       /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 2 ~= 25.572px */
+				position      : absolute;
+				top           : 50%;
+				translate     : 0 -50%;
+				width         : 300px;
+
+
+			}
+
+			.todLabSpa { /* What: Today Label Span. Why: The panel names itself like the app's Today tab. How: This sets a small uppercase muted label. */
+
+
+				color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+				font-family    : var( --fon-fam-mai ); /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+				font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+				font-weight    : 600;
+				letter-spacing : 0.08em;
+				text-transform : uppercase;
+
+
+			}
+
+
+			/* #region todRowDiv */
+
+			.todRowDiv { /* What: Today Row Div. Why: Each picked item reads as one checkable row. How: This sets the box beside the item's name. */
+
+
+				align-items     : center;
+				display         : grid;
+				gap             : var( --spa-hor-bas ); /* Spacing Horizontal Base ~= 14.572px */
+				grid-auto-flow  : column;
+				justify-content : start;
+
+
+			}
+
+			.todBoxSpa { /* What: Today Box Span. Why: An empty box says the item is still to do. How: This draws a rounded square with the border color. */
+
+
+				border        : var( --bor-wid-lar ) solid var( --bor-mai-col ); /* Border Width Large ~= 2.035px, Border Main Color = oklch( 0.91 0.005 240 ) */
+				border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+				height        : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+				width         : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+			}
+			.todBoxSpa--done { /* What: Today Box Span Done. Why: A filled box says the item is done. How: This fills it with the accent and centers its check. */
+
+
+				background   : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+				border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+				display      : grid;
+				place-items  : center;
+
+
+			}
+
+			.todCheSvg { /* What: Today Check SVG. Why: A check inside the filled box reads as done at a glance. How: This draws a white tick at the p01 step. */
+
+
+				fill         : none;
+				height       : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+				stroke       : var( --bac-pag-col );                /* Background Page Color = oklch( 0.985 0.003 240 ) */
+				stroke-width : 3;                                   /* What: Check Stroke Width. Why: The tick should read clearly at its small size. How: This is 3 units of the 24-unit drawing space. */
+				width        : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+
+
+			}
+
+			.todNamSpa { /* What: Today Name Span. Why: The item's name reads beside its box. How: This sets it in the main font at the p02 step. */
+
+
+				color       : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+				font-family : var( --fon-fam-mai ); /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+				font-size   : var( --fon-siz-p02 ); /* Font Size Base Plus 2 ~= 19.304px */
+
+
+			}
+			.todNamSpa--done { /* What: Today Name Span Done. Why: A done item's name is struck through, as in the app. How: This mutes and strikes it. */
+
+
+				color           : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+				text-decoration : line-through;
+
+
+			}
+
+			/* #endregion todRowDiv */
+
+			/* #endregion todCarDiv */
+
+			/* #endregion carBodBod */
+
+
+		</style>
+
+		<!-- #endregion Card Styles -->
+
+
+	</head>
+
+
+
+	<body class='carBodBod'><!-- What: Card Body Body Element. Why: The card fills the capture. How: This holds the grid decoration, the center column, and the Today panel. -->
+
+
+		<div class='griDecDiv'></div><!-- What: Grid Decoration Div Element. Why: The logo's grid balances the Today panel. How: This draws the faded grid on the left. -->
+
+		<div class='carColDiv'><!-- What: Card Column Div Element. Why: The card's lines lead it in its center square. How: This stacks the brand, the headline, and the closing line in one centered column. -->
+
+
+			<div class='braRowDiv'><!-- What: Brand Row Div Element. Why: The mark and the wordmark read as the app's name. How: This sets them side by side. -->
+
+
+				<img
+					class='braMarIma'
+
+					src='../../public/assets/icon.svg'
+
+					alt=''
+				/><!-- What: Brand Mark Image Element. Why: The app's checkmark logo leads the card. How: This shows the app's icon, with an empty alt since the wordmark names the app, and the capture gives the image its own alt in the page's tags. -->
+
+				<span class='worLinSpa'><span class='worEasSpa'>Ease</span><span class='worResSpa'>My Life</span></span><!-- What: Wordmark Lines Span Element. Why: The app's name reads as its wordmark. How: This stacks "Ease" over "My Life" in the brand's two faces. -->
+
+
+			</div>
+
+			<h1 class='heaLinHea'>Pick what to do today, without deciding.</h1><!-- What: Headline Heading Element. Why: The app's promise is the card's main line. How: This sets it bold under the brand, wrapping onto two lines. -->
+
+			<p class='cloLinPar'>No account or cloud required.<br />No nagging.</p><!-- What: Closing Line Paragraph Element. Why: The card ends on what the app never asks of you. How: This sets it muted under the headline, one sentence to a line. -->
+
+
+		</div>
+
+		<div class='todCarDiv'><!-- What: Today Card Div Element. Why: A glimpse of the Today list shows what the app does. How: This draws a raised panel with three picked items, the first done. -->
+
+
+			<span class='todLabSpa'>Today</span><!-- What: Today Label Span Element. Why: The panel names itself like the app's tab. How: This renders the label. -->
+
+			<div class='todRowDiv'><!-- What: Today Row Div Element. Why: A done item shows the check-off. How: This draws a filled box beside a struck name. -->
+
+
+				<span class='todBoxSpa todBoxSpa--done'><!-- What: Today Box Span Done Element. Why: A filled box marks the item done. How: This draws the accent square around its check. -->
+
+
+					<svg
+						class='todCheSvg'
+
+						viewBox='0 0 24 24'
+					><polyline points='5 12 10 17 19 7' /></svg><!-- What: Today Check SVG Element. Why: The tick says the item is done. How: This draws a polyline check in the page color. -->
+
+
+				</span>
+
+				<span class='todNamSpa todNamSpa--done'>Caramel macchiato</span><!-- What: Today Name Span Done Element. Why: The done item's name is struck through. How: This renders the name. -->
+
+
+			</div>
+
+			<div class='todRowDiv'><!-- What: Today Row Div Element. Why: A picked chore shows what the app chooses. How: This draws an empty box beside its name. -->
+
+
+				<span class='todBoxSpa'></span><!-- What: Today Box Span Element. Why: An empty box marks the item still to do. How: This draws the bordered square. -->
+
+				<span class='todNamSpa'>Laundry</span><!-- What: Today Name Span Element. Why: The item reads beside its box. How: This renders the name. -->
+
+
+			</div>
+
+			<div class='todRowDiv'><!-- What: Today Row Div Element. Why: A picked pastime shows the app picks rest too. How: This draws an empty box beside its name. -->
+
+
+				<span class='todBoxSpa'></span><!-- What: Today Box Span Element. Why: An empty box marks the item still to do. How: This draws the bordered square. -->
+
+				<span class='todNamSpa'>Read a book</span><!-- What: Today Name Span Element. Why: The item reads beside its box. How: This renders the name. -->
+
+
+			</div>
+
+
+		</div>
+
+
+	</body>
+
+
+
+</html>
+
+

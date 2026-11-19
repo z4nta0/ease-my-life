@@ -1,0 +1,196 @@
+
+
+
+<!doctype html>
+
+
+
+<html lang='en'>
+
+
+	<head>
+
+		<meta charset='utf-8' />
+
+		<title>Sync Card</title>
+
+		<link rel='stylesheet' href='/src/styles/fonts.css' />
+		<link rel='stylesheet' href='/src/styles/styles.css' />
+
+		<style>/* What: Card Styles. Why: The card is drawn from the app's own tokens so it looks like the app. How: This lays out the square card, its devices illustration, and its two lines of text. */
+
+
+			body { /* What: Page Body. Why: Only the card should render. How: This clears the page and centers nothing else. */
+
+
+				background : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+				margin     : 0;
+
+
+			}
+
+			.carSqaDiv { /* What: Card Square Div. Why: Polar shows the image square, so everything sits in one 1,200px square. How: This stacks the devices and the text in the center over the icon's own faint grid. */
+
+
+				align-items     : center;
+				background      : var( --bac-pag-col );                                                     /* Background Page Color = oklch( 0.985 0.003 240 ) */
+				box-sizing      : border-box;
+				display         : flex;
+				flex-direction  : column;
+				gap             : calc( var( --ver-rhy-p03 ) * 1rem );                                      /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+				height          : 1200px;
+				justify-content : center;
+				overflow        : hidden;
+				position        : relative;
+				width           : 1200px;
+
+
+			}
+
+			.griLinSvg { /* What: Grid Lines Svg. Why: The app icon sits on a faint grid, and the card echoes it. How: This fills the card behind everything else. */
+
+
+				inset    : 0;
+				position : absolute;
+
+
+			}
+
+			.devIllSvg { /* What: Devices Illustration Svg. Why: The two devices are the card's main image. How: This sizes them above the text. */
+
+
+				height   : 600px;
+				position : relative;
+				width    : 600px;
+
+
+			}
+
+			.titTexHea { /* What: Title Text Heading. Why: The feature is the main line, readable at thumbnail size. How: This sets it large in the main brand face. */
+
+
+				color       : var( --tex-mai-col );                /* Text Main Color = oklch( 0.17 0.012 250 ) */
+				font-family : var( --fon-fam-br1 );                /* Font Family Brand 1 = 'Shantell Sans' */
+				font-size   : calc( var( --ver-rhy-p07 ) * 1rem ); /* Vertical Rhythm Base Plus 7 ~= 104.324px */
+				font-weight : 700;
+				line-height : 1;
+				margin      : 0;
+				position    : relative;
+
+
+			}
+
+			.subTexPar { /* What: Subtitle Text Paragraph. Why: The card names the product. How: This sets it in the second brand face, muted. */
+
+
+				color       : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+				font-family : var( --fon-fam-br2 );                /* Font Family Brand 2 = 'Quicksand' */
+				font-size   : var( --fon-siz-p06 );                /* Font Size Base Plus 6 ~= 59.447px */
+				font-weight : 600;
+				line-height : 1;
+				margin      : 0;
+				position    : relative;
+
+
+			}
+
+
+		</style>
+
+	</head>
+
+
+
+	<body>
+
+
+		<div
+			id='carSqaDiv'
+
+			class='carSqaDiv'
+		><!-- What: Card Square Div Element. Why: This is the whole card the render script captures. How: Its id lets the script screenshot exactly this element. -->
+
+
+			<svg
+				class='griLinSvg'
+
+				viewBox='0 0 1200 1200'
+
+				aria-hidden='true'
+			><!-- What: Grid Lines Svg Element. Why: This echoes the app icon's faint grid. How: This draws evenly spaced lines in the accent tint. -->
+
+
+				<g
+					fill='none'
+					stroke='oklch( 0.95 0.025 250 )'
+					stroke-width='16'
+				><!-- What: Grid Line Group Element. Why: Every line shares the icon's tint and weight. How: The lines below inherit these. -->
+
+					<path d='M 0 240 H 1200 M 0 480 H 1200 M 0 720 H 1200 M 0 960 H 1200 M 240 0 V 1200 M 480 0 V 1200 M 720 0 V 1200 M 960 0 V 1200' /><!-- What: Grid Line Path Element. Why: This is the grid itself. How: Four horizontal and four vertical lines, 240px apart. -->
+
+				</g>
+
+
+			</svg>
+
+
+
+			<svg
+				class='devIllSvg'
+
+				viewBox='0 0 600 600'
+
+				aria-hidden='true'
+			><!-- What: Devices Illustration Svg Element. Why: This is a laptop and a phone kept in sync, in the app's accent outline style. How: This draws both devices with the app's swoosh on their screens and two arrows circling between them. -->
+
+
+				<g
+					fill='none'
+					stroke='oklch( 0.62 0.13 50 )'
+					stroke-linecap='round'
+					stroke-linejoin='round'
+					stroke-width='18'
+				><!-- What: Sync Arrow Group Element. Why: The arrows say the two devices exchange changes. How: Two arcs with arrowheads in the warm secondary accent. -->
+
+					<path d='M 150 135 A 210 210 0 0 1 455 125' /><!-- What: Upper Arrow Arc Element. Why: This carries changes from the laptop to the phone. How: An arc over the top. -->
+
+					<path d='M 420 95 L 458 127 L 418 152' /><!-- What: Upper Arrowhead Element. Why: This points the upper arc at the phone. How: A chevron at the arc's end. -->
+
+					<path d='M 470 505 A 210 210 0 0 1 165 515' /><!-- What: Lower Arrow Arc Element. Why: This carries changes back from the phone to the laptop. How: An arc under the bottom. -->
+
+					<path d='M 200 545 L 162 513 L 202 488' /><!-- What: Lower Arrowhead Element. Why: This points the lower arc at the laptop. How: A chevron at the arc's end. -->
+
+				</g>
+
+				<rect x='40' y='190' width='310' height='200' rx='18' fill='oklch( 0.975 0.004 240 )' stroke='oklch( 0.5 0.14 250 )' stroke-width='16' /><!-- What: Laptop Screen Rect Element. Why: This is the laptop's screen. How: A rounded rectangle in the surface color. -->
+
+				<path d='M 10 405 H 380 L 358 438 Q 352 446 340 446 H 50 Q 38 446 32 438 Z' fill='oklch( 0.95 0.025 250 )' stroke='oklch( 0.5 0.14 250 )' stroke-linejoin='round' stroke-width='16' /><!-- What: Laptop Base Path Element. Why: The laptop needs its keyboard base. How: A flat tapered slab in the accent tint. -->
+
+				<path transform='translate( 118 214 ) scale( 0.28 )' d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z' fill='oklch( 0.5 0.14 250 )' /><!-- What: Laptop Swoosh Path Element. Why: The laptop shows the app. How: The icon's swoosh, scaled onto its screen. -->
+
+				<rect x='425' y='190' width='150' height='256' rx='26' fill='oklch( 0.975 0.004 240 )' stroke='oklch( 0.5 0.14 250 )' stroke-width='16' /><!-- What: Phone Body Rect Element. Why: This is the phone. How: A tall rounded rectangle in the surface color. -->
+
+				<path d='M 480 216 H 520' fill='none' stroke='oklch( 0.5 0.14 250 )' stroke-linecap='round' stroke-width='10' /><!-- What: Phone Speaker Path Element. Why: The slot makes the shape read as a phone. How: A short rounded line near the top. -->
+
+				<path transform='translate( 457 270 ) scale( 0.17 )' d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z' fill='oklch( 0.5 0.14 250 )' /><!-- What: Phone Swoosh Path Element. Why: The phone shows the same app. How: The icon's swoosh, scaled onto its screen. -->
+
+
+			</svg>
+
+
+
+			<h1 class='titTexHea'>Sync across devices</h1><!-- What: Title Text Heading Element. Why: This names the feature. How: It renders in the main brand face. -->
+
+			<p class='subTexPar'>Ease My Life Sync</p><!-- What: Subtitle Text Paragraph Element. Why: This names the product. How: It renders muted in the second brand face. -->
+
+
+		</div>
+
+
+	</body>
+
+
+
+</html>
+
+
