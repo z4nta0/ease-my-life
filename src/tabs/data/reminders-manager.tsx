@@ -20,7 +20,7 @@ import { SchEdiCom    } from '../../ui/schedule-editor.tsx';        // What: Sch
 import { sorEntFun    } from './list-sorting.ts';                   // What: Sort Entries Function. Why: The Data tab's reminder list needs the exact same sort vocabulary as the rest of the Data tab. How: This is called once per comparison inside RemManCom's own sorTasArr sort.
 import { SorSelCom    } from './sort-select.tsx';                   // What: Sort Select Component. Why: The Data tab's reminder Items list needs the same sort control as every other Data tab list. How: This is rendered in RemManCom, driven by ITE_SOR_ARR.
 import { TAS_NAM_OBJ  } from '../../core/tasks.ts';                 // What: Tasks Namespace Object. Why: Every reminder's own summary, next date, and default shape defer to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout RemManCom.
-import { UnmWatCom    } from '../../ui/unmount-watcher.ts';         // What: Unmount Watcher Component. Why: An open reminder row or the settings matrix that disappears without its own Save still keeps its edits. How: This is rendered inside each, reporting its unmount.
+import { UnmWatCom    } from './unmount-watcher.ts';                // What: Unmount Watcher Component. Why: An open reminder row or the settings matrix that disappears without its own Save still keeps its edits. How: This is rendered inside each, reporting its unmount.
 import { useTasDraFun } from '../../ui/record-draft.ts';            // What: Use Task Draft Function. Why: The open reminder row edits a local draft, committed when the row closes. How: This is called once inside RemManCom with the open reminder.
 
 

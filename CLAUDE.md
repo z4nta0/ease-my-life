@@ -67,18 +67,18 @@ time with service workers blocked, and results, screenshots, and simulation
 traces go to `tests/output/` (git-ignored); `npx playwright show-report
 tests/output/report` opens the HTML report.
 - `npm run test:simulation`: loads the real-data backup plus a few "Sim"
-  pickers and reminders (`tests/simulation/scenario.ts`), fakes the clock,
-  and runs about 53 days (Oct 5 to Nov 8, 2026, and Dec 27, 2026 to Jan 13,
+  pickers and reminders (`tests/support/scenario.ts`), fakes the clock, and
+  runs about 53 days (Oct 5 to Nov 8, 2026, and Dec 27, 2026 to Jan 13,
   2027), checking every generated list, check-off, undo, reminder, skip,
-  re-roll, and streak against an independent copy of the rules
-  (`check-*.ts`, `schedule.ts`, `holidays.ts`), then the Stats tab and each
-  probability conditional's odds. About 30 minutes. Scheduling draws in
-  `src/core/` and `src/state/` are seeded, so the same seed repeats the same
-  picks: `EML_SIM_BASELINE=<path to an earlier trace.json>` compares a run
-  against an earlier one (e.g. from `main`) and reports every day that
-  differs. `EML_SIM_SEED` and `EML_SIM_SEGMENTS` override the seed and days.
-  It runs in Chromium only, since it checks the scheduling rules the app
-  computes rather than how a page renders (decided 2026-11-18).
+  re-roll, and streak against an independent copy of the rules (the
+  `check-*.ts`, `schedule.ts`, and `holidays.ts` beside it), then the Stats
+  tab and each probability conditional's odds. About 30 minutes. Scheduling
+  draws in `src/core/` and `src/state/` are seeded, so the same seed repeats
+  the same picks: `EML_SIM_BASELINE=<path to an earlier trace.json>`
+  compares a run against an earlier one (e.g. from `main`) and reports every
+  day that differs. `EML_SIM_SEED` and `EML_SIM_SEGMENTS` override the seed
+  and days. It runs in Chromium only, since it checks the scheduling rules
+  the app computes rather than how a page renders (decided 2026-11-18).
 - `npm run test:account`: two browser contexts act as two devices on one
   paid account in the Firebase Emulator, which it starts and stops around
   the suite, in Chromium, Firefox, and WebKit: the first signs in with an
@@ -147,11 +147,11 @@ tests/output/report` opens the HTML report.
   offer matches `SYN_PRI_STR`; and robots.txt and the sitemap list exactly
   the three pages.
 - `npm run test:sync`: checks the sync engine in Node, with no browser,
-  against an in-memory cloud copy (`tests/sync/fake-backend.ts`): the real
-  backup splits into documents under Firestore's size limit and joins back
-  whole, a sync uploads only changed documents, a first sync adopts the
-  account's data, two devices' changes merge, and lost upload races retry.
-  A few seconds.
+  against an in-memory cloud copy (`tests/support/fake-backend.ts`): the
+  real backup splits into documents under Firestore's size limit and joins
+  back whole, a sync uploads only changed documents, a first sync adopts the
+  account's data, two devices' changes merge, and lost upload races retry. A
+  few seconds.
 
 The real-data backup is personal and never enters the repo: the suites read
 `EML_TEST_FIXTURE`, or the newest `.json` export in an

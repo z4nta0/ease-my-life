@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { locDayFun } from '../support/clock.ts';   // What: Local Day Function. Why: Completion timestamps must fall on the simulated day. How: This reads their Chicago date.
+import { locDayFun } from './clock.ts';            // What: Local Day Function. Why: Completion timestamps must fall on the simulated day. How: This reads their Chicago date.
 import { neaEquFun } from './check-generation.ts'; // What: Near Equal Function. Why: Ease values are floats. How: This compares them within float noise.
 import { steOkaFun } from './check-generation.ts'; // What: Step Okay Function. Why: Card and charge completions can roll a conditional's step. How: This checks a roll is legal.
 

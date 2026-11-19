@@ -3,8 +3,8 @@
 
 // #region Imports
 
-import { addDayFun } from './dates.ts';          // What: Add Day Function. Why: Ranges and streaks step back by days. How: This shifts a date.
-import { locDayFun } from '../support/clock.ts'; // What: Local Day Function. Why: Reminder completions are counted by their Chicago day. How: This reads a timestamp's date.
+import { addDayFun } from './dates.ts'; // What: Add Day Function. Why: Ranges and streaks step back by days. How: This shifts a date.
+import { locDayFun } from './clock.ts'; // What: Local Day Function. Why: Reminder completions are counted by their Chicago day. How: This reads a timestamp's date.
 
 
 import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State App Type. Why: Every figure is recomputed from the saved state. How: This types the state parameter.

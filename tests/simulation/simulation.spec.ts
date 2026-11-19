@@ -3,28 +3,28 @@
 
 // #region Imports
 
-import { addDayFun     } from './dates.ts';            // What: Add Day Function. Why: Each segment's days count up from its start. How: This shifts a date.
-import { addSimFun     } from './scenario.ts';         // What: Add Sim Function. Why: The run covers every schedule whatever the backup holds. How: This adds the scenario's records.
-import { cheDonFun     } from './check-completion.ts'; // What: Check Done Function. Why: Every check-off is verified. How: This checks one entry's completion.
-import { cheGenFun     } from './check-generation.ts'; // What: Check Generation Function. Why: Every generated day is verified. How: This checks the day's list.
-import { cheRemFun     } from './check-completion.ts'; // What: Check Reminder Function. Why: Every reminder check-off is verified. How: This checks one completion.
-import { cheUndFun     } from './check-completion.ts'; // What: Check Undo Function. Why: Unchecking must undo exactly. How: This checks one undo.
-import { expect        } from '@playwright/test';      // What: Expect. Why: The run passes only with no problems found. How: This asserts the collected list is empty.
-import { expStaFun     } from './check-stats.ts';      // What: Expected Stats Function. Why: The Stats tab is checked against the logs. How: This recomputes its figures.
-import { insClcFun     } from '../support/clock.ts';   // What: Install Clock Function. Why: The run starts on a fixed date. How: This installs the fake clock.
-import { insSeeFun     } from '../support/random.ts';  // What: Install Seed Function. Why: Picks must repeat run to run. How: This seeds the scheduling draws.
-import { mkdirSync     } from 'node:fs';               // What: Make Directory Sync. Why: The trace needs its output folder. How: This creates it.
-import { opeDayFun     } from '../support/app.ts';     // What: Open Day Function. Why: The run advances a day at a time. How: This opens the app on a day.
-import { readFileSync  } from 'node:fs';               // What: Read File Sync. Why: A baseline trace can be compared. How: This reads it.
-import { reaFixFun     } from '../support/fixture.ts'; // What: Read Fixture Function. Why: The run starts from real data. How: This reads the backup.
-import { reaStaFun     } from '../support/storage.ts'; // What: Read State Function. Why: Each check reads the saved state. How: This reads it.
-import { remVisFun     } from './schedule.ts';         // What: Reminder Visible Function. Why: Today's reminders are predicted. How: This decides which show.
-import { selTabFun     } from '../support/app.ts';     // What: Select Tab Function. Why: The run ends on the Stats tab. How: This switches tabs.
-import { test          } from '@playwright/test';      // What: Test. Why: The simulation is one long Playwright test. How: This declares it.
-import { waiStaFun     } from '../support/storage.ts'; // What: Wait State Function. Why: Every click's save lands a moment later. How: This waits for it.
-import { watErrFun     } from '../support/watch.ts';   // What: Watch Errors Function. Why: A page error anywhere in the run is a problem. How: This collects them.
-import { wriStaFun     } from '../support/storage.ts'; // What: Write State Function. Why: The run starts from the backup. How: This loads it into the page.
-import { writeFileSync } from 'node:fs';               // What: Write File Sync. Why: The run leaves a trace for later comparison. How: This writes it.
+import { addDayFun     } from '../support/dates.ts';            // What: Add Day Function. Why: Each segment's days count up from its start. How: This shifts a date.
+import { addSimFun     } from '../support/scenario.ts';         // What: Add Sim Function. Why: The run covers every schedule whatever the backup holds. How: This adds the scenario's records.
+import { cheDonFun     } from '../support/check-completion.ts'; // What: Check Done Function. Why: Every check-off is verified. How: This checks one entry's completion.
+import { cheGenFun     } from '../support/check-generation.ts'; // What: Check Generation Function. Why: Every generated day is verified. How: This checks the day's list.
+import { cheRemFun     } from '../support/check-completion.ts'; // What: Check Reminder Function. Why: Every reminder check-off is verified. How: This checks one completion.
+import { cheUndFun     } from '../support/check-completion.ts'; // What: Check Undo Function. Why: Unchecking must undo exactly. How: This checks one undo.
+import { expect        } from '@playwright/test';               // What: Expect. Why: The run passes only with no problems found. How: This asserts the collected list is empty.
+import { expStaFun     } from '../support/check-stats.ts';      // What: Expected Stats Function. Why: The Stats tab is checked against the logs. How: This recomputes its figures.
+import { insClcFun     } from '../support/clock.ts';            // What: Install Clock Function. Why: The run starts on a fixed date. How: This installs the fake clock.
+import { insSeeFun     } from '../support/random.ts';           // What: Install Seed Function. Why: Picks must repeat run to run. How: This seeds the scheduling draws.
+import { mkdirSync     } from 'node:fs';                        // What: Make Directory Sync. Why: The trace needs its output folder. How: This creates it.
+import { opeDayFun     } from '../support/app.ts';              // What: Open Day Function. Why: The run advances a day at a time. How: This opens the app on a day.
+import { readFileSync  } from 'node:fs';                        // What: Read File Sync. Why: A baseline trace can be compared. How: This reads it.
+import { reaFixFun     } from '../support/fixture.ts';          // What: Read Fixture Function. Why: The run starts from real data. How: This reads the backup.
+import { reaStaFun     } from '../support/storage.ts';          // What: Read State Function. Why: Each check reads the saved state. How: This reads it.
+import { remVisFun     } from '../support/schedule.ts';         // What: Reminder Visible Function. Why: Today's reminders are predicted. How: This decides which show.
+import { selTabFun     } from '../support/app.ts';              // What: Select Tab Function. Why: The run ends on the Stats tab. How: This switches tabs.
+import { test          } from '@playwright/test';               // What: Test. Why: The simulation is one long Playwright test. How: This declares it.
+import { waiStaFun     } from '../support/storage.ts';          // What: Wait State Function. Why: Every click's save lands a moment later. How: This waits for it.
+import { watErrFun     } from '../support/watch.ts';            // What: Watch Errors Function. Why: A page error anywhere in the run is a problem. How: This collects them.
+import { wriStaFun     } from '../support/storage.ts';          // What: Write State Function. Why: The run starts from the backup. How: This loads it into the page.
+import { writeFileSync } from 'node:fs';                        // What: Write File Sync. Why: The run leaves a trace for later comparison. How: This writes it.
 
 
 import type { Locator   } from '@playwright/test';             // What: Locator. Why: Clicks target cards on the page. How: This types the card locators.

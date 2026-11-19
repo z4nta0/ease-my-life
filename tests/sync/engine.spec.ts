@@ -5,7 +5,7 @@
 
 import { canJsoFun } from '../../src/state/sync-docs.ts';   // What: Canonical JSON Function. Why: States are compared by content, whatever their key order. How: This serializes with sorted keys.
 import { expect    } from '@playwright/test';               // What: Expect. Why: Every flow asserts what synced. How: This makes the assertions.
-import { fakBacFun } from './fake-backend.ts';              // What: Fake Backend Function. Why: Syncs run against an in-memory cloud copy. How: This creates one.
+import { fakBacFun } from '../support/fake-backend.ts';     // What: Fake Backend Function. Why: Syncs run against an in-memory cloud copy. How: This creates one.
 import { joiDocFun } from '../../src/state/sync-docs.ts';   // What: Join Documents Function. Why: The round trip rebuilds the state. How: This joins documents.
 import { reaFixFun } from '../support/fixture.ts';          // What: Read Fixture Function. Why: The round trip runs on real data. How: This reads the backup.
 import { splStaFun } from '../../src/state/sync-docs.ts';   // What: Split State Function. Why: States are compared document by document. How: This splits one.
