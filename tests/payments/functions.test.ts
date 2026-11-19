@@ -21,7 +21,7 @@ import { test        } from 'node:test';                   // What: Test. Why: E
 
 
 /**
- * functions.spec.ts = Payment Functions Spec
+ * functions.test.ts = Payment Functions Test
  *
  * @summary
  * Checks the two Netlify Functions behind the paid sync purchase, in Node's
