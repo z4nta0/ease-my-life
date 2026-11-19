@@ -98,14 +98,14 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 	 * rmvExiFun = Remove Exit Function
 	 *
 	 * @summary
-	 * Deletes a custom holiday after its row plays its exit animation: it flags
-	 * the row as exiting at once, then removes the holiday from the store 300ms
-	 * later.
+	 * Deletes a custom holiday after its row plays its exit animation: it
+	 * flags the row as exiting at once, then removes the holiday from the
+	 * store 300ms later.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param cusIdeStr - Custom Identifier String: The id of the custom holiday
-	 *                    to remove.
+	 * @param cusIdeStr - Custom Identifier String: The id of the custom
+	 *                    holiday to remove.
 	 *
 	 * @returns This function does not return anything.
 	 *

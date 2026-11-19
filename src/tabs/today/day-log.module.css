@@ -155,6 +155,7 @@
 /* #endregion panKicSpa */
 
 
+
 /* #region panCloBut */
 
 .panCloBut { /* What: Panel Close Button. Why: The panel closes from a small square button. How: This draws an outlined rounded square centering its icon, fading its colors. */
@@ -500,6 +501,7 @@
 /* #endregion bloChvSpa */
 
 
+
 /* #region namModSpa */
 
 .namModSpa { /* What: Name Mode Span. Why: The picker's name and mode pill sit together. How: This lines them up in a row that can shrink. */
@@ -842,6 +844,7 @@
 /* #endregion heaGenSpa */
 
 
+
 /* #region heaDelSpa */
 
 .heaDelSpa { /* What: Header Delta Span. Why: The change label centers over its column, like the changes below it. How: This centers it in its grid cell. */
@@ -854,6 +857,7 @@
 }
 
 /* #endregion heaDelSpa */
+
 
 
 /* #region heaAftSpa */
@@ -1093,6 +1097,7 @@
 }
 
 /* #endregion namRowSpa */
+
 
 
 /* #region rowSubSpa */

@@ -177,14 +177,15 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 	 *
 	 * @summary
 	 * Plays the out animation (groNamInp--closing) for its base duration step,
-	 * then unmounts the field and, for a real change, commits the rename. Guarded
-	 * so the blur that Enter triggers can't double-fire alongside an explicit
-	 * commit/cancel already in flight.
+	 * then unmounts the field and, for a real change, commits the rename.
+	 * Guarded so the blur that Enter triggers can't double-fire alongside an
+	 * explicit commit/cancel already in flight.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param chaValBoo - Change Value Boolean: True for a real, validated change
-	 *                    to commit, false for a cancel or a no-op close.
+	 * @param chaValBoo - Change Value Boolean: True for a real, validated
+	 *                    change to commit, false for a cancel or a no-op
+	 *                    close.
 	 * @param newValStr - New Value String: The validated group name to commit,
 	 *                    unused when chaValBoo is false.
 	 *

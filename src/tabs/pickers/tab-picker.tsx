@@ -352,10 +352,10 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 	 * canCreFun = Cancel Create Function
 	 *
 	 * @summary
-	 * Backs out of the create form. It scrolls the page to the top first, while
-	 * the tall form is still mounted so the scroll has real distance to glide,
-	 * then swaps back to the picker view 240ms later; under reduced motion it
-	 * scrolls and closes at once.
+	 * Backs out of the create form. It scrolls the page to the top first,
+	 * while the tall form is still mounted so the scroll has real distance to
+	 * glide, then swaps back to the picker view 240ms later; under reduced
+	 * motion it scrolls and closes at once.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -661,7 +661,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 									);
 
 
-								}) }
+								} ) }
 
 
 							</div>
@@ -760,7 +760,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 									);
 
 
-								}) }
+								} ) }
 
 
 							</div>

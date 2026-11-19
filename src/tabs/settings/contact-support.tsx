@@ -223,9 +223,9 @@ function ConSupCom () : React.JSX.Element {
 	 * opeForFun = Open Form Function
 	 *
 	 * @summary
-	 * Opens the Contact Support form and brings it into view. After ColDisCom's
-	 * expand animation finishes, it scrolls the form into view only when its
-	 * bottom would otherwise sit below the fold.
+	 * Opens the Contact Support form and brings it into view. After
+	 * ColDisCom's expand animation finishes, it scrolls the form into view
+	 * only when its bottom would otherwise sit below the fold.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -340,11 +340,11 @@ function ConSupCom () : React.JSX.Element {
 	 * senForFun = Send Form Function
 	 *
 	 * @summary
-	 * Submits the support form to Netlify Forms. It ignores a second press while
-	 * a request is in flight and shows the validation message when either field
-	 * is empty. On a successful response it clears both drafts, stamps the sent
-	 * confirmation and closes the form; on any failure it keeps the drafts and
-	 * shows the fallback email row instead.
+	 * Submits the support form to Netlify Forms. It ignores a second press
+	 * while a request is in flight and shows the validation message when
+	 * either field is empty. On a successful response it clears both drafts,
+	 * stamps the sent confirmation and closes the form; on any failure it
+	 * keeps the drafts and shows the fallback email row instead.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *

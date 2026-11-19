@@ -777,12 +777,12 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 * finTarFun = Find Targets Function
 	 *
 	 * @summary
-	 * Resolves a step selector to the visible elements it matches. The selector's
-	 * comma-separated alternatives are tried in order, and the first one matching
-	 * at least one element with a real, non-zero rect wins, so a display:none
-	 * half of a responsive pair never beats the visible half. Every element that
-	 * winning alternative matches is returned, which lets one step spotlight
-	 * several elements as a single combined highlight.
+	 * Resolves a step selector to the visible elements it matches. The
+	 * selector's comma-separated alternatives are tried in order, and the
+	 * first one matching at least one element with a real, non-zero rect wins,
+	 * so a display:none half of a responsive pair never beats the visible
+	 * half. Every element that winning alternative matches is returned, which
+	 * lets one step spotlight several elements as a single combined highlight.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -790,8 +790,8 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 *                   (selStr, cliSelStr, cptSelStr, advCliStr, or
 	 *                   advSelStr), comma-separated alternatives allowed.
 	 *
-	 * @returns The visible elements the first matching alternative found, or an
-	 * empty array when no alternative matched anything.
+	 * @returns The visible elements the first matching alternative found, or
+	 * an empty array when no alternative matched anything.
 	 * @see {@link curEleArr}
 	 *
 	 * @example
@@ -842,14 +842,15 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 * cliHorFun = Clip Horizontal Function
 	 *
 	 * @summary
-	 * Clips an element's rect horizontally against the element itself and every
-	 * ancestor that clips its own overflow-x, so the part of an element scrolled
-	 * past the edge of a scrollable row never counts toward a highlight. Without
-	 * this, a step matching several items in the same scrollable row would union
-	 * in the ones scrolled out of view, stretching the highlight into empty space
-	 * past the row's own edge. It is deliberately horizontal-only, since
-	 * briTarFun's own scroll already settles the vertical case, and clipping
-	 * vertically too would fight that scroll while it runs.
+	 * Clips an element's rect horizontally against the element itself and
+	 * every ancestor that clips its own overflow-x, so the part of an element
+	 * scrolled past the edge of a scrollable row never counts toward a
+	 * highlight. Without this, a step matching several items in the same
+	 * scrollable row would union in the ones scrolled out of view, stretching
+	 * the highlight into empty space past the row's own edge. It is
+	 * deliberately horizontal-only, since briTarFun's own scroll already
+	 * settles the vertical case, and clipping vertically too would fight that
+	 * scroll while it runs.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -962,8 +963,8 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 * @param curEleArr - Current Element Array: The elements finTarFun matched
 	 *                    for the current step.
 	 *
-	 * @returns A { bottom, height, left, right, top, width } rect, using the same
-	 * edge names a DOMRect does.
+	 * @returns A { bottom, height, left, right, top, width } rect, using the
+	 * same edge names a DOMRect does.
 	 *
 	 * @example
 	 * ```ts
@@ -1056,19 +1057,19 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 *
 	 * @summary
 	 * Reports whether a click lands on one of the current step's own cptSelStr
-	 * elements. A pass-through click reaches its own real handler untouched: the
-	 * click-guard neither blocks it nor treats it as the step's advancing click,
-	 * unlike cliSelStr. Built for App Features' own manual-pick tour, where
-	 * Re-roll must stay genuinely usable without also counting as the step's own
-	 * click.
+	 * elements. A pass-through click reaches its own real handler untouched:
+	 * the click-guard neither blocks it nor treats it as the step's advancing
+	 * click, unlike cliSelStr. Built for App Features' own manual-pick tour,
+	 * where Re-roll must stay genuinely usable without also counting as the
+	 * step's own click.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param cliEveObj - Click Event Object: The mousedown or click event being
-	 *                    guarded.
+	 * @param cliEveObj - Click Event Object: The mousedown or click event
+	 *                    being guarded.
 	 *
-	 * @returns True when the live step names a cptSelStr and one of its elements
-	 * contains the event's own target.
+	 * @returns True when the live step names a cptSelStr and one of its
+	 * elements contains the event's own target.
 	 *
 	 * @example
 	 * ```ts
@@ -1102,14 +1103,14 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 * Reports whether a mousedown or click lands off the current step's own
 	 * target, the check both of those guard listeners share. A click is never
 	 * off-target while the guard is suppressed for a caller's own synthetic
-	 * clicks, when it lands inside the coach card, or when it is a pass-through
-	 * click (see isaPasFun); otherwise it is off-target unless it lands inside an
-	 * element the step's own cliSelStr (or selStr) matches.
+	 * clicks, when it lands inside the coach card, or when it is a
+	 * pass-through click (see isaPasFun); otherwise it is off-target unless it
+	 * lands inside an element the step's own cliSelStr (or selStr) matches.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param cliEveObj - Click Event Object: The mousedown or click event being
-	 *                    guarded.
+	 * @param cliEveObj - Click Event Object: The mousedown or click event
+	 *                    being guarded.
 	 *
 	 * @returns True when the event should be blocked as off-target.
 	 *
@@ -1282,11 +1283,12 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 * finTouFun = Finish Tour Function
 	 *
 	 * @summary
-	 * Ends the tour as a genuine completion: the primary button on a step whose
-	 * priStr is 'Done', or the one button of a solo step. It clears the persisted
-	 * activeTour checkpoint, calls the caller's own onFinTouFun, then lands back
-	 * on a pristine, top-scrolled Today through todTopFun, so a caller's last
-	 * step never needs to also be sttBoo just to stick the landing.
+	 * Ends the tour as a genuine completion: the primary button on a step
+	 * whose priStr is 'Done', or the one button of a solo step. It clears the
+	 * persisted activeTour checkpoint, calls the caller's own onFinTouFun,
+	 * then lands back on a pristine, top-scrolled Today through todTopFun, so
+	 * a caller's last step never needs to also be sttBoo just to stick the
+	 * landing.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1325,12 +1327,12 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 * skiTouFun = Skip Tour Function
 	 *
 	 * @summary
-	 * Ends the tour as anything other than a genuine completion: the Skip button,
-	 * the not-found watchdog, or a step index past the end of steObjArr. It
-	 * clears the persisted activeTour checkpoint, calls the caller's own
-	 * onSkiTouFun (or onFinTouFun when onSkiTouFun was omitted) with the
-	 * click-guard suppressed so that callback's own synthetic clicks go through,
-	 * then lands back on a pristine Today through todTopFun.
+	 * Ends the tour as anything other than a genuine completion: the Skip
+	 * button, the not-found watchdog, or a step index past the end of
+	 * steObjArr. It clears the persisted activeTour checkpoint, calls the
+	 * caller's own onSkiTouFun (or onFinTouFun when onSkiTouFun was omitted)
+	 * with the click-guard suppressed so that callback's own synthetic clicks
+	 * go through, then lands back on a pristine Today through todTopFun.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1411,15 +1413,15 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 * @summary
 	 * Runs the current step's primary action: the Next/Done button, a cirBoo
 	 * step's target click, or an advCliStr click. The step's own runFun side
-	 * effect runs first, synchronously and with the click-guard suppressed, then
-	 * the tour either finishes or advances through advSteFun.
+	 * effect runs first, synchronously and with the click-guard suppressed,
+	 * then the tour either finishes or advances through advSteFun.
 	 *
 	 * How it advances depends on the step: a cirBoo step with advSelStr polls
-	 * every frame until that selector matches, one with advDelNum waits that many
-	 * milliseconds, and any other cirBoo step waits a single tick so the target's
-	 * own native click handler runs before the tour moves on; a step without
-	 * cirBoo advances immediately. Each wait bails out if the component unmounts
-	 * or the step changes in the meantime.
+	 * every frame until that selector matches, one with advDelNum waits that
+	 * many milliseconds, and any other cirBoo step waits a single tick so the
+	 * target's own native click handler runs before the tour moves on; a step
+	 * without cirBoo advances immediately. Each wait bails out if the
+	 * component unmounts or the step changes in the meantime.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1456,9 +1458,9 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		 * @summary
 		 * Moves the tour past the current step: a 'Done' step or a solo step
-		 * finishes the tour through finTouFun, and every other step moves to the
-		 * next step index. Solo steps finish whatever their button says, since their
-		 * label (e.g. "Dismiss") is never 'Done'.
+		 * finishes the tour through finTouFun, and every other step moves to
+		 * the next step index. Solo steps finish whatever their button says,
+		 * since their label (e.g. "Dismiss") is never 'Done'.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -1595,18 +1597,19 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 * getScrFun = Get Scroller Function
 		 *
 		 * @summary
-		 * Finds the element that actually scrolls a target vertically: the nearest
-		 * ancestor whose overflow-y allows scrolling and whose content genuinely
-		 * overflows it. On narrow layouts that is the page itself rather than .main,
-		 * so a hardcoded .main would leave the target below the fold.
+		 * Finds the element that actually scrolls a target vertically: the
+		 * nearest ancestor whose overflow-y allows scrolling and whose content
+		 * genuinely overflows it. On narrow layouts that is the page itself
+		 * rather than .main, so a hardcoded .main would leave the target below
+		 * the fold.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param curTarEle - Current Target Element: The element whose scroller is
-		 *                    needed.
+		 * @param curTarEle - Current Target Element: The element whose
+		 *                    scroller is needed.
 		 *
-		 * @returns The nearest scrolling ancestor, or the document's own scrolling
-		 * element when none qualifies.
+		 * @returns The nearest scrolling ancestor, or the document's own
+		 * scrolling element when none qualifies.
 		 *
 		 * @example
 		 * ```ts
@@ -1653,17 +1656,18 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 * scrAmoFun = Scroll Amount Function
 		 *
 		 * @summary
-		 * Scrolls a scroller by a vertical amount, smoothly unless the user prefers
-		 * reduced motion, so a step that jumps to a different part of the page reads
-		 * as the tour visibly navigating there. The document's own scroller is
-		 * scrolled through window, and any other scroller directly.
+		 * Scrolls a scroller by a vertical amount, smoothly unless the user
+		 * prefers reduced motion, so a step that jumps to a different part of
+		 * the page reads as the tour visibly navigating there. The document's
+		 * own scroller is scrolled through window, and any other scroller
+		 * directly.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param curScrEle - Current Scroll Element: The scroller getScrFun resolved
-		 *                    for the target.
-		 * @param delYcoNum - Delta Y-Coordinate Number: How far to scroll, in px;
-		 *                    positive scrolls down.
+		 * @param curScrEle - Current Scroll Element: The scroller getScrFun
+		 *                    resolved for the target.
+		 * @param delYcoNum - Delta Y-Coordinate Number: How far to scroll, in
+		 *                    px; positive scrolls down.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -1706,14 +1710,15 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 * Scrolls the current step's target into a comfortable spot on screen.
 		 * Depending on the step's own flags it reveals a horizontally scrolled
 		 * target (rhsBoo), scrolls all the way to the top (sttBoo) or bottom
-		 * (stbBoo), or lands the target right below the coach (catBoo); otherwise it
-		 * nudges the target just inside a padded window below the sticky chrome.
+		 * (stbBoo), or lands the target right below the coach (catBoo);
+		 * otherwise it nudges the target just inside a padded window below the
+		 * sticky chrome.
 		 *
-		 * Before that nudge it predicts where the target will land, and when neither
-		 * the below nor the above coach placement would fit there, it reserves top
-		 * space for the coach, then retries itself on the next frame once that
-		 * padding has rendered. It does nothing once the effect has been cancelled
-		 * or while the target is not found.
+		 * Before that nudge it predicts where the target will land, and when
+		 * neither the below nor the above coach placement would fit there, it
+		 * reserves top space for the coach, then retries itself on the next
+		 * frame once that padding has rendered. It does nothing once the
+		 * effect has been cancelled or while the target is not found.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -1892,22 +1897,23 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		 * @summary
 		 * Clamps the drawn highlight rect so the spotlight never reaches into
-		 * Today's own sticky chrome at the top or a bottom-placed tab bar, both of
-		 * which sit below this overlay and would otherwise show through the
-		 * spotlight's cutout as if they were part of the target. Only the drawn rect
-		 * is clamped, never the one briTarFun scrolls by. A target that lives inside
-		 * the tab bar, the group rail, or Today's own header is returned unclamped,
-		 * since clamping it against its own container would squash the highlight.
+		 * Today's own sticky chrome at the top or a bottom-placed tab bar,
+		 * both of which sit below this overlay and would otherwise show
+		 * through the spotlight's cutout as if they were part of the target.
+		 * Only the drawn rect is clamped, never the one briTarFun scrolls by.
+		 * A target that lives inside the tab bar, the group rail, or Today's
+		 * own header is returned unclamped, since clamping it against its own
+		 * container would squash the highlight.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
 		 * @param curRecObj - Current Rect Object: The unioned target rect from
 		 *                    uniRecFun.
-		 * @param curEleArr - Current Element Array: The matched elements, checked
-		 *                    for chrome membership.
+		 * @param curEleArr - Current Element Array: The matched elements,
+		 *                    checked for chrome membership.
 		 *
-		 * @returns The rect with its top, bottom, and height clamped to the safe
-		 * area, or curRecObj unchanged for a target inside the chrome.
+		 * @returns The rect with its top, bottom, and height clamped to the
+		 * safe area, or curRecObj unchanged for a target inside the chrome.
 		 *
 		 * @example
 		 * ```ts
@@ -1946,16 +1952,18 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 * claHorFun = Clamp Horizontal Function
 		 *
 		 * @summary
-		 * Pulls the drawn highlight rect in from the viewport's left and right edges
-		 * by the spotlight's own padding, so the padded spotlight never runs off
-		 * screen. A full-width target, such as the group rail on a phone, would
-		 * otherwise push the spotlight past the screen edge by its padding and cut
-		 * off its rounded corners. Unlike claChrFun this applies to every target,
-		 * chrome included, since the screen edge clips everything alike.
+		 * Pulls the drawn highlight rect in from the viewport's left and right
+		 * edges by the spotlight's own padding, so the padded spotlight never
+		 * runs off screen. A full-width target, such as the group rail on a
+		 * phone, would otherwise push the spotlight past the screen edge by
+		 * its padding and cut off its rounded corners. Unlike claChrFun this
+		 * applies to every target, chrome included, since the screen edge
+		 * clips everything alike.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param curRecObj - Current Rect Object: The rect returned by claChrFun.
+		 * @param curRecObj - Current Rect Object: The rect returned by
+		 *                    claChrFun.
 		 *
 		 * @returns The rect with its left, right, and width clamped to the
 		 * viewport, inset by spoPadNum.
@@ -1991,19 +1999,19 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 * plaTarFun = Place Target Function
 		 *
 		 * @summary
-		 * Positions the spotlight and the real coach imperatively, writing their
-		 * inline styles straight to the DOM on every call, so neither one lags
-		 * behind a smooth scroll the way React state alone would. The coach's own
-		 * position and arrow come from the same coaLayFun and arrHorFun math the
-		 * render uses.
+		 * Positions the spotlight and the real coach imperatively, writing
+		 * their inline styles straight to the DOM on every call, so neither
+		 * one lags behind a smooth scroll the way React state alone would. The
+		 * coach's own position and arrow come from the same coaLayFun and
+		 * arrHorFun math the render uses.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param curEleArr - Current Element Array: The elements finTarFun matched
-		 *                    for the current step.
+		 * @param curEleArr - Current Element Array: The elements finTarFun
+		 *                    matched for the current step.
 		 *
-		 * @returns The clamped rect it placed, for the caller to commit to React
-		 * state.
+		 * @returns The clamped rect it placed, for the caller to commit to
+		 * React state.
 		 * @see {@link tarRecObj}
 		 *
 		 * @example
@@ -2080,18 +2088,19 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 * decResFun = Decide Reserve Function
 		 *
 		 * @summary
-		 * Decides once per step, as soon as the target's geometry has held still for
-		 * 2 frames, whether the target needs top space reserved so the coach fits
-		 * beside it. When neither the below nor the above placement fits, it
-		 * publishes the reserve and, a frame later, scrolls the target to sit just
-		 * below where the coach will land. Deciding once keeps the layout from
-		 * jumping under the user mid-scroll on shorter pages. It does nothing for a
-		 * catBoo step or once the decision has been made.
+		 * Decides once per step, as soon as the target's geometry has held
+		 * still for 2 frames, whether the target needs top space reserved so
+		 * the coach fits beside it. When neither the below nor the above
+		 * placement fits, it publishes the reserve and, a frame later, scrolls
+		 * the target to sit just below where the coach will land. Deciding
+		 * once keeps the layout from jumping under the user mid-scroll on
+		 * shorter pages. It does nothing for a catBoo step or once the
+		 * decision has been made.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param curEleArr - Current Element Array: The elements finTarFun matched
-		 *                    for the current step.
+		 * @param curEleArr - Current Element Array: The elements finTarFun
+		 *                    matched for the current step.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -2230,13 +2239,14 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 * perFraFun = Per Frame Function
 		 *
 		 * @summary
-		 * The per-frame heartbeat of the position-tracking effect. While the target
-		 * exists it brings it into view the first time, re-brings it once the page
-		 * content settles at a new size or a pulSelStr target stops matching,
-		 * settles the reserve decision, places the spotlight and coach, and commits
-		 * the rect to React state. While the target is missing it clears the rect
-		 * and, after nftValNum milliseconds, skips the tour. It reschedules itself
-		 * every frame until the effect is cancelled.
+		 * The per-frame heartbeat of the position-tracking effect. While the
+		 * target exists it brings it into view the first time, re-brings it
+		 * once the page content settles at a new size or a pulSelStr target
+		 * stops matching, settles the reserve decision, places the spotlight
+		 * and coach, and commits the rect to React state. While the target is
+		 * missing it clears the rect and, after nftValNum milliseconds, skips
+		 * the tour. It reschedules itself every frame until the effect is
+		 * cancelled.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *

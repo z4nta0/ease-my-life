@@ -3,16 +3,16 @@
 
 // #region Imports
 
-import { assertFails              } from '@firebase/rules-unit-testing';  // What: Assert Fails. Why: Forbidden reads and writes must be refused. How: This expects a request to be denied.
-import { assertSucceeds           } from '@firebase/rules-unit-testing';  // What: Assert Succeeds. Why: An allowed request must go through. How: This expects it to succeed.
-import { deleteDoc                } from 'firebase/firestore';            // What: Delete Doc. Why: Deletion rules are checked. How: This deletes a document.
-import { doc                      } from 'firebase/firestore';            // What: Doc. Why: Every request names a document. How: This builds a reference.
-import { getDoc                   } from 'firebase/firestore';            // What: Get Doc. Why: Read rules are checked. How: This reads a document.
+import { assertFails               } from '@firebase/rules-unit-testing'; // What: Assert Fails. Why: Forbidden reads and writes must be refused. How: This expects a request to be denied.
+import { assertSucceeds            } from '@firebase/rules-unit-testing'; // What: Assert Succeeds. Why: An allowed request must go through. How: This expects it to succeed.
+import { deleteDoc                 } from 'firebase/firestore';           // What: Delete Doc. Why: Deletion rules are checked. How: This deletes a document.
+import { doc                       } from 'firebase/firestore';           // What: Doc. Why: Every request names a document. How: This builds a reference.
+import { getDoc                    } from 'firebase/firestore';           // What: Get Doc. Why: Read rules are checked. How: This reads a document.
 import { initializeTestEnvironment } from '@firebase/rules-unit-testing'; // What: Initialize Test Environment. Why: The rules run in the local emulator. How: This connects to it with the project's rules.
-import { readFileSync             } from 'node:fs';                       // What: Read File Sync. Why: The emulator is given the real rules file. How: This reads it.
-import { setDoc                   } from 'firebase/firestore';            // What: Set Doc. Why: Write rules are checked. How: This writes a document.
-import { setLogLevel              } from 'firebase/firestore';            // What: Set Log Level. Why: Every refusal a test expects would otherwise print as a warning. How: This silences the SDK's logging.
-import { test                     } from '@playwright/test';              // What: Test. Why: Each rule is its own test. How: This declares them.
+import { readFileSync              } from 'node:fs';                      // What: Read File Sync. Why: The emulator is given the real rules file. How: This reads it.
+import { setDoc                    } from 'firebase/firestore';           // What: Set Doc. Why: Write rules are checked. How: This writes a document.
+import { setLogLevel               } from 'firebase/firestore';           // What: Set Log Level. Why: Every refusal a test expects would otherwise print as a warning. How: This silences the SDK's logging.
+import { test                      } from '@playwright/test';             // What: Test. Why: Each rule is its own test. How: This declares them.
 
 
 import type { RulesTestEnvironment } from '@firebase/rules-unit-testing'; // What: Rules Test Environment. Why: Every test reads and writes through it. How: This types it.
@@ -105,7 +105,7 @@ test.beforeEach( () => tesEnvObj.clearFirestore() ); // What: Reset Hook. Why: E
 
 
 
-test( 'a paid owner creates its manifest at revision 1 and moves it one revision at a time', async () => { // What: Manifest Revision Test. Why: The server has to enforce the sync's revision check. How: This creates, updates, and tries bad revisions.
+test( 'a paid owner creates its manifest at revision 1 and moves it one revision at a time', async () => { // What: Manifest Revision Test. Why: The server has to enforce the sync's revision check. How: This creates, updates, and tries bad revisions, checking which writes the rules allow.
 
 
 	const aliStoObj = accStoFun( 'alice', PAI_TOK_OBJ ); // What: Alice Store Object. Why: Alice is a paid owner. How: This acts as her.
@@ -123,7 +123,7 @@ test( 'a paid owner creates its manifest at revision 1 and moves it one revision
 
 
 
-test( 'a manifest or version with an unexpected field is refused', async () => { // What: Shape Test. Why: A malformed copy would break the next sync. How: This writes extra fields.
+test( 'a manifest or version with an unexpected field is refused', async () => { // What: Shape Test. Why: A malformed copy would break the next sync. How: This writes extra fields and checks each write fails, while a clean version succeeds.
 
 
 	const aliStoObj = accStoFun( 'alice', PAI_TOK_OBJ ); // What: Alice Store Object. Why: Alice is a paid owner. How: This acts as her.
@@ -139,7 +139,7 @@ test( 'a manifest or version with an unexpected field is refused', async () => {
 
 
 
-test( "nobody else, and no unverified or signed-out account, can read or write a copy", async () => { // What: Access Test. Why: A copy belongs to its owner alone. How: This tries every other kind of account.
+test( 'nobody else, and no unverified or signed-out account, can read or write a copy', async () => { // What: Access Test. Why: A copy belongs to its owner alone. How: This tries every other kind of account and checks each read and write fails.
 
 
 	await seeManFun(); // What: Manifest Seed. Why: Reads need a copy to read. How: This writes alice's manifest.
@@ -165,7 +165,7 @@ test( "nobody else, and no unverified or signed-out account, can read or write a
 
 
 
-test( 'an unpaid owner can read and delete its own copy but not write it, and a stranger cannot delete it', async () => { // What: Unpaid Owner Test. Why: Anyone can always find and remove their own data, while writing is the paid feature. How: This deletes as a stranger and as the unpaid owner.
+test( 'an unpaid owner can read and delete its own copy but not write it, and a stranger cannot delete it', async () => { // What: Unpaid Owner Test. Why: Anyone can always find and remove their own data, while writing is the paid feature. How: This deletes as a stranger and as the unpaid owner, checking which reads, writes, and deletes the rules allow.
 
 
 	await seeManFun(); // What: Manifest Seed. Why: There has to be a copy to delete. How: This writes alice's manifest.

@@ -69,7 +69,7 @@ test.afterEach( () => { expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] 
 
 
 
-test( 'a theme choice saves and fades the page', async ( { page : curPagObj } ) => { // What: Theme Test. Why: Themes must save and cross-fade. How: This picks an unchosen light theme.
+test( 'a theme choice saves and fades the page', async ( { page : curPagObj } ) => { // What: Theme Test. Why: Themes must save and cross-fade. How: This picks an unchosen light theme, waits for it to save, and checks the page fade.
 
 
 	const preTheStr = ( await reaStaFun( curPagObj ) )!.appearance.theme; // What: Previous Theme String. Why: The new theme must differ. How: This reads the current one. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
@@ -95,7 +95,7 @@ test( 'a theme choice saves and fades the page', async ( { page : curPagObj } ) 
 
 
 
-test( 'celebration and pick animation choices save', async ( { page : curPagObj } ) => { // What: Animation Choice Test. Why: Both animation choices must save. How: This picks a different option in each.
+test( 'celebration and pick animation choices save', async ( { page : curPagObj } ) => { // What: Animation Choice Test. Why: Both animation choices must save. How: This picks a different option in each and waits for IndexedDB to hold both.
 
 
 	await curPagObj.locator( '[data-element-name-hook~="celStyDiv"]' ).getByText( 'Ripple', { exact : true } ).click(); // What: Celebration Choice Call. Why: Ripple replaces the backup's confetti, and its radio is hidden inside the row's label. How: This clicks the row's name, which checks the radio.
@@ -113,7 +113,7 @@ test( 'celebration and pick animation choices save', async ( { page : curPagObj 
 
 
 
-test( 'the tab bar moves to the side', async ( { page : curPagObj } ) => { // What: Placement Test. Why: The tab bar's placement must save and apply. How: This picks Side.
+test( 'the tab bar moves to the side', async ( { page : curPagObj } ) => { // What: Placement Test. Why: The tab bar's placement must save and apply. How: This picks Side and checks the body's placement and the saved setting.
 
 
 	await curPagObj.locator( '[data-element-name-hook~="segConDiv"][aria-label="Tab bar placement"]' ).getByRole( 'button', { exact : true, name : 'Side' } ).click(); // What: Side Click Call. Why: Side is a different placement. How: This clicks it.
@@ -131,7 +131,7 @@ test( 'the tab bar moves to the side', async ( { page : curPagObj } ) => { // Wh
 
 
 
-test( 'the daily generator switch and run time save', async ( { page : curPagObj } ) => { // What: Daily Generator Test. Why: Both generator settings must save. How: This changes the time, then the switch.
+test( 'the daily generator switch and run time save', async ( { page : curPagObj } ) => { // What: Daily Generator Test. Why: Both generator settings must save. How: This changes the time, then the switch, waiting for IndexedDB to hold each.
 
 
 	await curPagObj.locator( '[aria-label="Daily generator run time"]' ).fill( '07:30' ); // What: Time Fill Call. Why: A new run time is set. How: This types it.
@@ -157,7 +157,7 @@ test( 'the daily generator switch and run time save', async ( { page : curPagObj
 
 
 
-test( 'holidays can be turned off, added, and removed', async ( { page : curPagObj } ) => { // What: Holiday Test. Why: Every holiday action must save. How: This disables one, adds one, and removes it.
+test( 'holidays can be turned off, added, and removed', async ( { page : curPagObj } ) => { // What: Holiday Test. Why: Every holiday action must save. How: This disables one, adds one, and removes it, checking IndexedDB and the row animations at each step.
 
 
 	await curPagObj.locator( '[data-element-name-hook~="holLisUno"] [aria-label^="Disable "]' ).first().click(); // What: Disable Click Call. Why: A built-in holiday can be turned off. How: This clicks the first enabled one's switch.
@@ -270,7 +270,7 @@ test( 'the Buy Me a Coffee button opens the tip page in a new tab', async ( { pa
 
 
 
-test( 'the legal panels open and close', async ( { page : curPagObj } ) => { // What: Legal Panel Test. Why: The legal panels must open and close. How: This opens the privacy panel and closes it.
+test( 'the legal panels open and close', async ( { page : curPagObj } ) => { // What: Legal Panel Test. Why: The legal panels must open and close. How: This opens the privacy panel and closes it, checking it shows, animates out, and leaves the page.
 
 
 	const panDiaLoc = curPagObj.locator( '[data-element-name-hook~="legBacDiv"]' ).getByRole( 'dialog', { name : 'Privacy Policy' } ); // What: Panel Dialog Locator. Why: The panel sits in the modal's backdrop, which carries the modal's hook. How: This finds the privacy dialog inside it.

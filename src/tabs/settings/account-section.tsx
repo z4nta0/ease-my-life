@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './account-section.module.css'; // What: CSS Module Object. Why: AccSecCom's own styles live in its module. How: Each className reads its class from this object.
-import React     from 'react';                          // What: React. Why: The section keeps its own form state. How: This is used directly (React.useState).
+import React     from 'react';                        // What: React. Why: The section keeps its own form state. How: This is used directly (React.useState).
 
 
 import { ButBasCom   } from '../../ui/button.tsx';       // What: Button Base Component. Why: Every action here is a shared button. How: This renders them.

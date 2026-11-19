@@ -3,8 +3,8 @@
 
 // #region Imports
 
-import { expect    } from '@playwright/test';  // What: Expect. Why: Signing in waits for what the page shows. How: This makes the assertions.
-import { selTabFun } from './app.ts';           // What: Select Tab Function. Why: Sign-in happens on the Settings tab. How: This switches to it.
+import { expect    } from '@playwright/test'; // What: Expect. Why: Signing in waits for what the page shows. How: This makes the assertions.
+import { selTabFun } from './app.ts';         // What: Select Tab Function. Why: Sign-in happens on the Settings tab. How: This switches to it.
 
 
 import type { Page } from '@playwright/test'; // What: Page. Why: The helpers drive one device's page. How: This types their page parameter.

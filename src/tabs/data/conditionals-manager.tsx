@@ -579,16 +579,16 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 	 * delAniFun = Delete Animated Function
 	 *
 	 * @summary
-	 * Deletes an existing conditional after its row collapses: it marks the row
-	 * as closing so the editor stays mounted through its own collapse, then
-	 * removes the conditional from the store and clears every piece of open-row
-	 * state once the collapse has finished. Under reduced motion it removes it
-	 * immediately.
+	 * Deletes an existing conditional after its row collapses: it marks the
+	 * row as closing so the editor stays mounted through its own collapse,
+	 * then removes the conditional from the store and clears every piece of
+	 * open-row state once the collapse has finished. Under reduced motion it
+	 * removes it immediately.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param conIdeStr - Conditional Identifier String: The id of the conditional
-	 *                    to delete.
+	 * @param conIdeStr - Conditional Identifier String: The id of the
+	 *                    conditional to delete.
 	 *
 	 * @returns This function does not return anything.
 	 *
@@ -638,11 +638,11 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 	 * savAniFun = Save Animated Function
 	 *
 	 * @summary
-	 * Commits a brand-new conditional after its row collapses, so the row stays
-	 * in place with the same id and name rather than visibly jumping: it closes
-	 * the row at once, then adds the conditional to the store under its tidied
-	 * final name and clears the draft and pending state once the collapse has
-	 * finished. Under reduced motion it commits immediately.
+	 * Commits a brand-new conditional after its row collapses, so the row
+	 * stays in place with the same id and name rather than visibly jumping: it
+	 * closes the row at once, then adds the conditional to the store under its
+	 * tidied final name and clears the draft and pending state once the
+	 * collapse has finished. Under reduced motion it commits immediately.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *

@@ -253,8 +253,8 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param newStyStr - New Style String: The celebration style to preview, e.g.
-	 *                    'confetti'.
+	 * @param newStyStr - New Style String: The celebration style to preview,
+	 *                    e.g. 'confetti'.
 	 *
 	 * @returns This function does not return anything.
 	 *
@@ -283,14 +283,15 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	 * plaPicFun = Play Pick Function
 	 *
 	 * @summary
-	 * Plays a picker animation style in its preview stage. It holds newStyStr as
-	 * the previewed style, which the stage keeps showing after the animation
-	 * ends, and bumps the replay token so PicAniCom remounts and plays again.
+	 * Plays a picker animation style in its preview stage. It holds newStyStr
+	 * as the previewed style, which the stage keeps showing after the
+	 * animation ends, and bumps the replay token so PicAniCom remounts and
+	 * plays again.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param newStyStr - New Style String: The picker animation style to preview,
-	 *                    e.g. 'reel'.
+	 * @param newStyStr - New Style String: The picker animation style to
+	 *                    preview, e.g. 'reel'.
 	 *
 	 * @returns This function does not return anything.
 	 *

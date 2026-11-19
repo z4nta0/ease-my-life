@@ -839,9 +839,9 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	 * built and checked off, rather than building its own and replacing that
 	 * one. It waits for the account to be known and for any running sync to
 	 * end, then runs a sync of its own unless one finished moments ago. The
-	 * whole wait stops after GEN_WAI_NUM, so a cloud that can't be reached only
-	 * delays the list. It assumes synNeeFun is true, and does no check of its
-	 * own.
+	 * whole wait stops after GEN_WAI_NUM, so a cloud that can't be reached
+	 * only delays the list. It assumes synNeeFun is true, and does no check of
+	 * its own.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *

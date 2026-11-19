@@ -3462,7 +3462,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 												);
 
 
-											})}
+											} ) }
 
 
 										</ul>
@@ -3834,7 +3834,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 											);
 
 
-										})}
+										} ) }
 
 
 									</div>
@@ -4882,7 +4882,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 										);
 
 
-									})}
+									} ) }
 
 
 								</ul>

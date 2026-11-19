@@ -1043,9 +1043,9 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 	 * cloTouFun = Close Tour Function
 	 *
 	 * @summary
-	 * Ends this App Feature tour however it ends, recording how in this feature's
-	 * own entry in state.onboarding.appFeatures, then calls onCloTouFun so
-	 * app.tsx unmounts the tour.
+	 * Ends this App Feature tour however it ends, recording how in this
+	 * feature's own entry in state.onboarding.appFeatures, then calls
+	 * onCloTouFun so app.tsx unmounts the tour.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *

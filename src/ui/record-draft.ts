@@ -259,8 +259,8 @@ function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >
 	 * @summary
 	 * Writes the draft back to the real reminder: a changed, non-empty trimmed
 	 * name through renTasFun, then every other field that differs from the
-	 * reminder's starting copy together through updTasFun. Nothing is sent when
-	 * nothing changed.
+	 * reminder's starting copy together through updTasFun. Nothing is sent
+	 * when nothing changed.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *

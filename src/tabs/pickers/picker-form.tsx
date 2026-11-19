@@ -269,16 +269,16 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	 * @summary
 	 * The callback ref for the create form's conditional pill rail. ColDisCom
-	 * mounts the rail a render after the conditional toggle turns on, so a plain
-	 * effect would run while the ref is still empty; this ref runs exactly when
-	 * the node attaches. Every call first tears down the previous attachment's
-	 * listeners, records the new node in raiNodRef, and wires the rail's
-	 * edge-fade classes to its own scroll and a ResizeObserver.
+	 * mounts the rail a render after the conditional toggle turns on, so a
+	 * plain effect would run while the ref is still empty; this ref runs
+	 * exactly when the node attaches. Every call first tears down the previous
+	 * attachment's listeners, records the new node in raiNodRef, and wires the
+	 * rail's edge-fade classes to its own scroll and a ResizeObserver.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param raiCurEle - Rail Current Element: The rail's DOM node on attach, or
-	 *                    null on detach.
+	 * @param raiCurEle - Rail Current Element: The rail's DOM node on attach,
+	 *                    or null on detach.
 	 *
 	 * @returns This function does not return anything.
 	 *
@@ -497,9 +497,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	 * @summary
 	 * Backs out of a pending item delete. Under reduced motion it clears the
-	 * confirm state at once; otherwise it flags the confirm row as leaving so it
-	 * plays its exit animation, then clears both once its exit's base duration
-	 * step has passed.
+	 * confirm state at once; otherwise it flags the confirm row as leaving so
+	 * it plays its exit animation, then clears both once its exit's base
+	 * duration step has passed.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -587,9 +587,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	 * @summary
 	 * Opens a brand-new draft item in the create form's items step. It does
-	 * nothing while another editor is open; otherwise it creates a draft with a
-	 * fresh id and default values, applying any name and ease band a guided tour
-	 * has staged, then scrolls the new slot into view.
+	 * nothing while another editor is open; otherwise it creates a draft with
+	 * a fresh id and default values, applying any name and ease band a guided
+	 * tour has staged, then scrolls the new slot into view.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -727,9 +727,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 * opeDraFun = Open Draft Function
 	 *
 	 * @summary
-	 * Opens the editor for an item already added to the create form, which edits
-	 * a draft copy of the item (see useIteDraFun), and scrolls the editor into
-	 * view. It does nothing if the item is gone.
+	 * Opens the editor for an item already added to the create form, which
+	 * edits a draft copy of the item (see useIteDraFun), and scrolls the
+	 * editor into view. It does nothing if the item is gone.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -796,9 +796,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	 * @summary
 	 * Starts editing a create-form item from any state. When another item's
-	 * editor or the new-item form is open, it closes that one first (dropping its
-	 * unsaved draft) and stages tarIdeStr so the requested editor
-	 * opens once the closing animation finishes; otherwise it opens the editor
+	 * editor or the new-item form is open, it closes that one first (dropping
+	 * its unsaved draft) and stages tarIdeStr so the requested editor opens
+	 * once the closing animation finishes; otherwise it opens the editor
 	 * directly.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
@@ -898,7 +898,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	 * @summary
 	 * Returns the create form from its items step to its details step. It
-	 * discards any in-progress item first, so + Add Item still works afterward.
+	 * discards any in-progress item first, so + Add Item still works
+	 * afterward.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -944,9 +945,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 * subForFun = Submit Form Function
 	 *
 	 * @summary
-	 * Creates or saves the picker. It builds the shared payload from both steps,
-	 * attaches the chosen or newly named conditional (or detaches one when
-	 * editing), adds the ease summary fields on create only, then calls
+	 * Creates or saves the picker. It builds the shared payload from both
+	 * steps, attaches the chosen or newly named conditional (or detaches one
+	 * when editing), adds the ease summary fields on create only, then calls
 	 * onSavEdiFun in edit mode or onCrePicFun otherwise.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
@@ -2277,7 +2278,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									);
 
 
-								}) }
+								} ) }
 
 
 							</div>

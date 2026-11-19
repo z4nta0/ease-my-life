@@ -149,11 +149,12 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 * aftExiFun = After Exit Function
 	 *
 	 * @summary
-	 * The shared follow-through for Re-roll and Done. It runs runActFun straight
-	 * away under reduced motion; otherwise it flags the result buttons as leaving
-	 * so they play their exit animation, then clears that flag and runs runActFun
-	 * once the exit's own p01 duration step has passed. The buttons leave
-	 * together, since the entrance stagger only applies on the way in.
+	 * The shared follow-through for Re-roll and Done. It runs runActFun
+	 * straight away under reduced motion; otherwise it flags the result
+	 * buttons as leaving so they play their exit animation, then clears that
+	 * flag and runs runActFun once the exit's own p01 duration step has
+	 * passed. The buttons leave together, since the entrance stagger only
+	 * applies on the way in.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -216,9 +217,9 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 *
 	 * @summary
 	 * Backs out of a pending item delete. Under reduced motion it clears the
-	 * confirm state at once; otherwise it flags the confirm row as leaving so it
-	 * plays its exit animation, then clears both once its exit's base duration
-	 * step has passed.
+	 * confirm state at once; otherwise it flags the confirm row as leaving so
+	 * it plays its exit animation, then clears both once its exit's base
+	 * duration step has passed.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -273,15 +274,16 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 *
 	 * @summary
 	 * Sends one pool item straight to Today with the same consequence as a
-	 * natural pick: it runs the pick engine forced onto this exact item, stages
-	 * the identical pending drift, weight and pick-count change on a new Today
-	 * entry through addEntFun, and flags the row for its Sent confirmation.
-	 * Ease-down replaces the picker's single Today entry, while every other mode
-	 * adds one.
+	 * natural pick: it runs the pick engine forced onto this exact item,
+	 * stages the identical pending drift, weight and pick-count change on a
+	 * new Today entry through addEntFun, and flags the row for its Sent
+	 * confirmation. Ease-down replaces the picker's single Today entry, while
+	 * every other mode adds one.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param iteIdeStr - Item Identifier String: The id of the pool item to send.
+	 * @param iteIdeStr - Item Identifier String: The id of the pool item to
+	 *                    send.
 	 *
 	 * @returns This function does not return anything.
 	 *
@@ -346,9 +348,9 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 *
 	 * @summary
 	 * Saves the new-item draft as a real item: it creates the item through
-	 * addIteFun, patches in the vacation, weight and ease fields the draft editor
-	 * changed, moves the new item to the end of the pool, and flags it for its
-	 * insert animation.
+	 * addIteFun, patches in the vacation, weight and ease fields the draft
+	 * editor changed, moves the new item to the end of the pool, and flags it
+	 * for its insert animation.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -407,9 +409,9 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 *
 	 * @summary
 	 * Opens a brand-new pool item in the same slot the edit flow uses. It does
-	 * nothing while another editor is open; otherwise it creates a draft with a
-	 * fresh id and default values for this picker's mode, then scrolls the new
-	 * slot into view across two animation frames.
+	 * nothing while another editor is open; otherwise it creates a draft with
+	 * a fresh id and default values for this picker's mode, then scrolls the
+	 * new slot into view across two animation frames.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -516,9 +518,9 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 * opeEdiFun = Open Edit Function
 	 *
 	 * @summary
-	 * Opens an existing item's editor, which edits a draft copy of the item (see
-	 * useIteDraFun), and scrolls the editor into view. It does nothing if the
-	 * item has since been deleted.
+	 * Opens an existing item's editor, which edits a draft copy of the item
+	 * (see useIteDraFun), and scrolls the editor into view. It does nothing if
+	 * the item has since been deleted.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -585,8 +587,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 * @summary
 	 * Starts editing an item from any state. When another item's editor or the
 	 * new-item draft is open, it closes that one first (dropping its unsaved
-	 * draft) and stages tarIdeStr so the requested editor opens once the closing
-	 * animation finishes; otherwise it opens the editor directly.
+	 * draft) and stages tarIdeStr so the requested editor opens once the
+	 * closing animation finishes; otherwise it opens the editor directly.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -741,9 +743,9 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 *
 	 * @summary
 	 * Runs the Pick One button: it asks the pick engine for a forced-new pick
-	 * that skips items already on Today. An empty result shows the empty state;
-	 * otherwise it stores the result and starts the running cycle animation.
-	 * Nothing is written to the store here.
+	 * that skips items already on Today. An empty result shows the empty
+	 * state; otherwise it stores the result and starts the running cycle
+	 * animation. Nothing is written to the store here.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -804,9 +806,9 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 * onAniDonFun = On Animation Done Function
 	 *
 	 * @summary
-	 * PicStrCom calls this once its cycle settles on the decided pick. It clears
-	 * the busy flag and moves the view to its done phase, where Re-roll and Done
-	 * appear.
+	 * PicStrCom calls this once its cycle settles on the decided pick. It
+	 * clears the busy flag and moves the view to its done phase, where Re-roll
+	 * and Done appear.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -892,8 +894,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 * @summary
 	 * Confirms the settled pick. Unless the Pickers page tour is intercepting
 	 * this exact step, it adds the Today entry with the pick's staged pending
-	 * change through addEntFun; either way it shows the Sent! confirmation, then
-	 * resets the view to idle 1500ms later.
+	 * change through addEntFun; either way it shows the Sent! confirmation,
+	 * then resets the view to idle 1500ms later.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1679,7 +1681,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 							);
 
 
-						}) }
+						} ) }
 
 
 					</div>

@@ -513,14 +513,14 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 	 * Ends this reminder mini-tour however it ends after the intro modal,
 	 * recording how in the sample's own checklist entry. It clears the prefill
 	 * this tour published on the shared bus, updates this varKeyStr's own
-	 * launcher card status, then calls onCloTouFun so tab-today.tsx unmounts the
-	 * tour. It never touches the sample task itself, only the new draft built
-	 * from it.
+	 * launcher card status, then calls onCloTouFun so tab-today.tsx unmounts
+	 * the tour. It never touches the sample task itself, only the new draft
+	 * built from it.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param staValStr - Status Value String: How the tour ended, 'skipped' (the
-	 *                    coach card's Skip or the not-found watchdog) or
+	 * @param staValStr - Status Value String: How the tour ended, 'skipped'
+	 *                    (the coach card's Skip or the not-found watchdog) or
 	 *                    'finished'.
 	 *
 	 * @returns This function does not return anything.

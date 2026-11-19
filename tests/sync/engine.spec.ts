@@ -116,7 +116,7 @@ test( 'the real backup splits into documents under the size limit and joins back
 
 
 
-test( 'a second sync with nothing changed uploads nothing, and a change uploads only its document', async () => { // What: Upload Scope Test. Why: Syncing must spend writes only on what changed. How: This syncs a state three times, changing core before the third.
+test( 'a second sync with nothing changed uploads nothing, and a change uploads only its document', async () => { // What: Upload Scope Test. Why: Syncing must spend writes only on what changed. How: This syncs a state three times, changing core before the third, and checks which documents each sync uploads.
 
 
 	const fakBacObj = fakBacFun();                                                                                 // What: Fake Backend Object. Why: The flow syncs against an empty cloud copy. How: This creates one.
@@ -170,7 +170,7 @@ test( "a device's first sync adopts the account's data and keeps its own past hi
 
 
 
-test( 'two devices that changed the same month merge it, with the later save deciding today', async () => { // What: Conflict Merge Test. Why: Offline changes on two devices must both survive, without a removed row coming back. How: This changes one month on both devices and syncs each.
+test( 'two devices that changed the same month merge it, with the later save deciding today', async () => { // What: Conflict Merge Test. Why: Offline changes on two devices must both survive, without a removed row coming back. How: This changes one month on both devices, syncs each, and compares both merged states with the expected one.
 
 
 	const fakBacObj = fakBacFun(); // What: Fake Backend Object. Why: Both devices share one cloud copy. How: This creates one.
@@ -196,7 +196,7 @@ test( 'two devices that changed the same month merge it, with the later save dec
 
 
 
-test( 'display settings stay on each device and never upload', async () => { // What: Device Settings Test. Why: Theme, tab bar placement, and the Data tab's layout suit one screen. How: This changes them on one device and merges a change from another.
+test( 'display settings stay on each device and never upload', async () => { // What: Device Settings Test. Why: Theme, tab bar placement, and the Data tab's layout suit one screen. How: This changes them on one device, merges a change from another, and checks nothing uploads and each device keeps its own.
 
 
 	const fakBacObj = fakBacFun(); // What: Fake Backend Object. Why: Two devices share one cloud copy. How: This creates one.
@@ -216,7 +216,7 @@ test( 'display settings stay on each device and never upload', async () => { // 
 
 
 
-test( 'a device finding its cloud copy deleted uploads its data again rather than wiping itself', async () => { // What: Deleted Copy Test. Why: Deleting the cloud copy from one device must never delete another device's data. How: This syncs, empties the cloud, and syncs again.
+test( 'a device finding its cloud copy deleted uploads its data again rather than wiping itself', async () => { // What: Deleted Copy Test. Why: Deleting the cloud copy from one device must never delete another device's data. How: This syncs, empties the cloud, syncs again, and checks the second sync uploads the data instead of merging.
 
 
 	const fakBacObj = fakBacFun();                                                      // What: Fake Backend Object. Why: The flow deletes the cloud copy. How: This creates one.
@@ -241,7 +241,7 @@ test( 'a device finding its cloud copy deleted uploads its data again rather tha
 
 
 
-test( 'an upload that loses the race starts over, and gives up as busy after four tries', async () => { // What: Race Retry Test. Why: Two devices syncing at once must not overwrite each other. How: This makes uploads lose the race.
+test( 'an upload that loses the race starts over, and gives up as busy after four tries', async () => { // What: Race Retry Test. Why: Two devices syncing at once must not overwrite each other. How: This makes uploads lose the race and checks one retry succeeds while repeated losses end as busy.
 
 
 	const fakBacObj = fakBacFun(); // What: Fake Backend Object. Why: The flow controls the race. How: This creates one.
@@ -273,7 +273,7 @@ test( 'an upload that loses the race starts over, and gives up as busy after fou
 
 
 
-test( 'a cloud copy saved by a newer schema is left alone', async () => { // What: Newer Schema Test. Why: An older app must not merge a shape it doesn't know. How: This marks the cloud's manifest as newer and syncs.
+test( 'a cloud copy saved by a newer schema is left alone', async () => { // What: Newer Schema Test. Why: An older app must not merge a shape it doesn't know. How: This marks the cloud's manifest as newer, syncs, and checks the sync stops without merging or uploading.
 
 
 	const fakBacObj = fakBacFun(); // What: Fake Backend Object. Why: The flow edits the stored manifest. How: This creates one.

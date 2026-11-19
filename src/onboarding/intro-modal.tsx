@@ -94,7 +94,7 @@ type ImcProTyp = { begLabStr? : string, icoTopEle : React.ReactNode, onBegTouFun
  *
  * @example
  * ```tsx
- * IntModCom({ begLabStr, icoTopEle, onBegTouFun, onRetUseFun, ... }) // => <IntModCom />
+ * IntModCom({ begLabStr, icoTopEle, onBegTouFun, ... }) // => <IntModCom />
  * ```
  *
 */

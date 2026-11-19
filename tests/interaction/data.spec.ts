@@ -131,7 +131,7 @@ test.afterEach( () => { expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] 
 
 
 
-test( 'picker controls save a rename on Save', async ( { page : curPagObj } ) => { // What: Controls Rename Test. Why: Controls are a draft until saved. How: This renames a picker and saves.
+test( 'picker controls save a rename on Save', async ( { page : curPagObj } ) => { // What: Controls Rename Test. Why: Controls are a draft until saved. How: This renames a picker, saves, and waits for IndexedDB to hold the new name.
 
 
 	const carSecLoc = picCarFun( curPagObj ); // What: Card Section Locator. Why: The first picker is renamed. How: This finds its card.
@@ -157,7 +157,7 @@ test( 'picker controls save a rename on Save', async ( { page : curPagObj } ) =>
 
 
 
-test( 'closing the controls commits a toggle', async ( { page : curPagObj } ) => { // What: Controls Commit Test. Why: Closing the controls saves the draft too. How: This flips a toggle and collapses the controls.
+test( 'closing the controls commits a toggle', async ( { page : curPagObj } ) => { // What: Controls Commit Test. Why: Closing the controls saves the draft too. How: This flips a toggle, collapses the controls, and waits for IndexedDB to hold the change.
 
 
 	const carSecLoc = picCarFun( curPagObj );                                                                                      // What: Card Section Locator. Why: The first picker is changed. How: This finds its card.
@@ -185,7 +185,7 @@ test( 'closing the controls commits a toggle', async ( { page : curPagObj } ) =>
 
 
 
-test( 'the vacation button switches a whole picker off', async ( { page : curPagObj } ) => { // What: Vacation Test. Why: A picker's items can all be deactivated at once. How: This clicks the vacation button.
+test( 'the vacation button switches a whole picker off', async ( { page : curPagObj } ) => { // What: Vacation Test. Why: A picker's items can all be deactivated at once. How: This clicks the vacation button and waits for IndexedDB to show the picker switched off.
 
 
 	const carSecLoc = picCarFun( curPagObj );                                // What: Card Section Locator. Why: The first picker is switched off. How: This finds its card.
@@ -204,7 +204,7 @@ test( 'the vacation button switches a whole picker off', async ( { page : curPag
 
 
 
-test( 'an item row renames through its editor', async ( { page : curPagObj } ) => { // What: Item Row Test. Why: Item rows edit as drafts. How: This renames an item and saves.
+test( 'an item row renames through its editor', async ( { page : curPagObj } ) => { // What: Item Row Test. Why: Item rows edit as drafts. How: This renames an item, saves, and waits for IndexedDB to hold the new name.
 
 
 	const carSecLoc = picCarFun( curPagObj ); // What: Card Section Locator. Why: The first picker's first item is renamed. How: This finds its card.
@@ -234,7 +234,7 @@ test( 'an item row renames through its editor', async ( { page : curPagObj } ) =
 
 
 
-test( 'a new conditional saves', async ( { page : curPagObj } ) => { // What: Conditional Add Test. Why: Conditionals can be created from Data. How: This adds and saves one.
+test( 'a new conditional saves', async ( { page : curPagObj } ) => { // What: Conditional Add Test. Why: Conditionals can be created from Data. How: This adds and saves one, then waits for IndexedDB to hold it.
 
 
 	const conSecLoc = curPagObj.locator( '[data-element-name-hook~="conCatSec"]' ); // What: Conditional Section Locator. Why: Conditionals have their own card. How: This finds it.
@@ -265,7 +265,7 @@ test( 'a new conditional saves', async ( { page : curPagObj } ) => { // What: Co
 
 
 
-test( 'the reminder options matrix saves', async ( { page : curPagObj } ) => { // What: Reminder Options Test. Why: Reminder class options save from the matrix. How: This flips one option and saves.
+test( 'the reminder options matrix saves', async ( { page : curPagObj } ) => { // What: Reminder Options Test. Why: Reminder class options save from the matrix. How: This flips one option, saves, and waits for IndexedDB to hold the change.
 
 
 	const remSecLoc = curPagObj.locator( '[data-element-name-hook~="remCatSec"]' );     // What: Reminder Section Locator. Why: The matrix lives in the reminders card. How: This finds it.

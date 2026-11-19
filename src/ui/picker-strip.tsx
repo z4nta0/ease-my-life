@@ -420,7 +420,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 				);
 
 
-			}) }
+			} ) }
 
 
 		</div>

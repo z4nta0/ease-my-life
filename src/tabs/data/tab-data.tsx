@@ -462,11 +462,11 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	 * keeIteFun = Keep Item Function
 	 *
 	 * @summary
-	 * Commits the open row's draft, once. A brand-new item is first added to its
-	 * picker (the store, or a draft picker's own local items) with the same id
-	 * and defaults its draft started from, so the draft's changes then apply to
-	 * it like any other item's. Does nothing when no row is open or this exact
-	 * draft was already committed or cancelled.
+	 * Commits the open row's draft, once. A brand-new item is first added to
+	 * its picker (the store, or a draft picker's own local items) with the
+	 * same id and defaults its draft started from, so the draft's changes then
+	 * apply to it like any other item's. Does nothing when no row is open or
+	 * this exact draft was already committed or cancelled.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -660,10 +660,10 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	 *
 	 * @summary
 	 * Mirrors a change from the draft picker's Controls onto newPicObj, so the
-	 * draft card's header and the defaults of its new items follow what's being
-	 * typed. When the change switches the draft's type, every draft item resets
-	 * to that type's defaults (see modDefFun), the same reset an existing
-	 * picker's type change gets.
+	 * draft card's header and the defaults of its new items follow what's
+	 * being typed. When the change switches the draft's type, every draft item
+	 * resets to that type's defaults (see modDefFun), the same reset an
+	 * existing picker's type change gets.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -702,8 +702,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	 * Starts a new picker draft from the Create Picker button. The draft is a
 	 * local picker, kept out of the store until its own Save creates it,
 	 * pre-filled from whichever Group, Type, and Conditionals filters are
-	 * active (a Type filter only counts when it names a real picker mode), with
-	 * no items yet and its Items section closed.
+	 * active (a Type filter only counts when it names a real picker mode),
+	 * with no items yet and its Items section closed.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -760,9 +760,9 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	 * canNewFun = Cancel New Function
 	 *
 	 * @summary
-	 * Discards the in-progress picker draft. Since the draft and its items only
-	 * ever lived locally, it just drops them, along with any item row still
-	 * open inside the draft, so the draft card disappears.
+	 * Discards the in-progress picker draft. Since the draft and its items
+	 * only ever lived locally, it just drops them, along with any item row
+	 * still open inside the draft, so the draft card disappears.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *

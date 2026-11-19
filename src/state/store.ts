@@ -856,8 +856,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 *
 		 * @param theModStr - Theme Mode String: 'light' or 'dark', picking the
 		 *                    custom slot to save.
-		 * @param cusColObj - Custom Color Object: The picked colors to save into
-		 *                    that slot.
+		 * @param cusColObj - Custom Color Object: The picked colors to save
+		 *                    into that slot.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -991,10 +991,10 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * addConFun = Add Conditional Function
 		 *
 		 * @summary
-		 * Creates a brand-new conditional (a day-off gate) from the Data tab's own
-		 * authoring form and prepends it onto the conditionals list. Every field
-		 * the form leaves out gets its default, so a caller only needs to pass
-		 * what the user actually set.
+		 * Creates a brand-new conditional (a day-off gate) from the Data tab's
+		 * own authoring form and prepends it onto the conditionals list. Every
+		 * field the form leaves out gets its default, so a caller only needs
+		 * to pass what the user actually set.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -1095,18 +1095,20 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * resConFun = Resolve Conditionals Function
 		 *
 		 * @summary
-		 * Phase A of Generate. It rolls the probability and dynamic modes, carries
-		 * the persisted active flag for the ease modes, and clears each
-		 * conditional's per-day charge guard. Unlike most actions it also returns
-		 * the resolved array directly, so the generator can gate pickers off the
-		 * fresh values in the same pass instead of waiting for React state.
+		 * Phase A of Generate. It rolls the probability and dynamic modes,
+		 * carries the persisted active flag for the ease modes, and clears
+		 * each conditional's per-day charge guard. Unlike most actions it also
+		 * returns the resolved array directly, so the generator can gate
+		 * pickers off the fresh values in the same pass instead of waiting for
+		 * React state.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
 		 * @param void - This function takes no parameters.
 		 *
-		 * @returns The conditionals resolved for this Generate pass, or null when
-		 *          React defers the update and the caller falls back to state.
+		 * @returns The conditionals resolved for this Generate pass, or null
+		 *          when React defers the update and the caller falls back to
+		 *          state.
 		 * @see {@link resConArr}
 		 *
 		 * @example
@@ -1207,10 +1209,10 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 *
 		 * @summary
 		 * Stamps the generation time and snapshots every item's and
-		 * conditional's own value at that moment, so the Day Log can show "value
-		 * at generation, then after". It is Today-only and overwritten by every
-		 * Regenerate; because values are done-gated, the live values only drift
-		 * from this snapshot once entries are completed.
+		 * conditional's own value at that moment, so the Day Log can show
+		 * "value at generation, then after". It is Today-only and overwritten
+		 * by every Regenerate; because values are done-gated, the live values
+		 * only drift from this snapshot once entries are completed.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -1354,8 +1356,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * Renames a group everywhere: every member picker's own group, the
 		 * groupOrder slot and the pickerOrder key. If the new name matches an
 		 * existing group (case-insensitively), this becomes a merge that folds
-		 * the 2 groups together, so the caller (Edit Mode) must confirm a merge
-		 * before calling it.
+		 * the 2 groups together, so the caller (Edit Mode) must confirm a
+		 * merge before calling it.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -1605,10 +1607,11 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param picIdeStr - Picker Identifier String: The picker gaining the item.
+		 * @param picIdeStr - Picker Identifier String: The picker gaining the
+		 *                    item.
 		 * @param newNamStr - New Name String: The item's name.
-		 * @param optIdeStr - Optional Identifier String: An id to use instead of
-		 *                    minting a random one.
+		 * @param optIdeStr - Optional Identifier String: An id to use instead
+		 *                    of minting a random one.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -1653,7 +1656,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * Deletes an item along with every trace of it on Today: the entries
 		 * pointing at it, today's own live log rows for it, and any picker's
 		 * activeItemId pointer at it, then reconciles the streak as a removal
-		 * would. Historical log rows are kept, so Stats still counts past picks.
+		 * would. Historical log rows are kept, so Stats still counts past
+		 * picks.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -1735,10 +1739,10 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * renIteFun = Rename Item Function
 		 *
 		 * @summary
-		 * Commits an item rename (on blur, Enter or Save, never per keystroke).
-		 * The name is de-duplicated against the item's own siblings in the same
-		 * picker, so the saved name can differ from what was typed, e.g. gaining
-		 * a " (2)" suffix.
+		 * Commits an item rename (on blur, Enter or Save, never per
+		 * keystroke). The name is de-duplicated against the item's own
+		 * siblings in the same picker, so the saved name can differ from what
+		 * was typed, e.g. gaining a " (2)" suffix.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -1800,18 +1804,19 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * togVacFun = Toggle Vacation Function
 		 *
 		 * @summary
-		 * Flips one item's own vacation flag, or (tarKinStr:'picker') every item
-		 * owned by a picker at once. When an in-progress Ease Down item
-		 * (its own picker's activeItemId) is marked inactive, that streak
-		 * is abandoned: the picker's activeItemId is nulled and the item
-		 * recharges to full, since an abandoned streak never reached 0 and
-		 * so must never count toward Spent.
+		 * Flips one item's own vacation flag, or (tarKinStr:'picker') every
+		 * item owned by a picker at once. When an in-progress Ease Down item
+		 * (its own picker's activeItemId) is marked inactive, that streak is
+		 * abandoned: the picker's activeItemId is nulled and the item
+		 * recharges to full, since an abandoned streak never reached 0 and so
+		 * must never count toward Spent.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param tarIdeStr - Target Identifier String: The item or picker to toggle.
-		 * @param tarKinStr - Target Kind String: 'item' for one item, or anything
-		 *                    else for every item the picker owns.
+		 * @param tarIdeStr - Target Identifier String: The item or picker to
+		 *                    toggle.
+		 * @param tarKinStr - Target Kind String: 'item' for one item, or
+		 *                    anything else for every item the picker owns.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -1932,16 +1937,17 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 *
 		 * @summary
 		 * The general per-item field patch (Fill, Refill, Reset boost, editor
-		 * saves). When the patch touches value, it also strips any stale pending
-		 * update for this item from every other Today entry, since completing
-		 * one of those entries later would otherwise silently overwrite the
-		 * value just set, and reworks the item's own Ease Down entry so its
-		 * decay starts from the new value.
+		 * saves). When the patch touches value, it also strips any stale
+		 * pending update for this item from every other Today entry, since
+		 * completing one of those entries later would otherwise silently
+		 * overwrite the value just set, and reworks the item's own Ease Down
+		 * entry so its decay starts from the new value.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
 		 * @param tarIdeStr - Target Identifier String: The item to patch.
-		 * @param patValObj - Patch Value Object: The fields to merge onto the item.
+		 * @param patValObj - Patch Value Object: The fields to merge onto the
+		 *                    item.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -2003,8 +2009,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param tasArgObj - Task Argument Object: The reminder's fields; any field
-		 *                    left out gets its default.
+		 * @param tasArgObj - Task Argument Object: The reminder's fields; any
+		 *                    field left out gets its default.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -2166,14 +2172,14 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * @summary
 		 * Hides a reminder until its own next eligible day, which the caller
 		 * computes from the reminder's rules. It never marks the reminder done
-		 * or logs a completion, but it does append a skip row so Stats can tally
-		 * skips per reminder.
+		 * or logs a completion, but it does append a skip row so Stats can
+		 * tally skips per reminder.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
 		 * @param tarIdeStr - Target Identifier String: The reminder to skip.
-		 * @param untIsoStr - Until Iso String: The next eligible day, as YYYY-MM-DD,
-		 *                    computed by the caller.
+		 * @param untIsoStr - Until Iso String: The next eligible day, as
+		 *                    YYYY-MM-DD, computed by the caller.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -2234,20 +2240,20 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 *
 		 * @summary
 		 * Checks/un-checks today's own occurrence of a reminder. Completing
-		 * stamps lastDone with today AND appends a row to the completion
-		 * log; un-checking clears lastDone and voids today's own log row
-		 * for that reminder. Either way the streak is reconciled, since
-		 * reminders count toward the daily streak per their own type's
-		 * switch, but the Stats log itself is kept regardless of the
-		 * Stats toggle. Stamped against the generator's own day
-		 * (TAS_NAM_OBJ.ancDatFun), not live real time, since Today's own reminders
-		 * list is itself pinned to the last generation, so "done" must
-		 * agree with whatever day that list is currently showing.
+		 * stamps lastDone with today AND appends a row to the completion log;
+		 * un-checking clears lastDone and voids today's own log row for that
+		 * reminder. Either way the streak is reconciled, since reminders count
+		 * toward the daily streak per their own type's switch, but the Stats
+		 * log itself is kept regardless of the Stats toggle. Stamped against
+		 * the generator's own day (TAS_NAM_OBJ.ancDatFun), not live real time,
+		 * since Today's own reminders list is itself pinned to the last
+		 * generation, so "done" must agree with whatever day that list is
+		 * currently showing.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param tarIdeStr - Target Identifier String: The reminder to check or
-		 *                    uncheck.
+		 * @param tarIdeStr - Target Identifier String: The reminder to check
+		 *                    or uncheck.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -2409,10 +2415,10 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param iteIdeStr - Item Identifier String: The checklist card to resolve
-		 *                    or unresolve.
-		 * @param patValObj - Patch Value Object: The value to resolve the card with,
-		 *                    or null to unresolve it.
+		 * @param iteIdeStr - Item Identifier String: The checklist card to
+		 *                    resolve or unresolve.
+		 * @param patValObj - Patch Value Object: The value to resolve the card
+		 *                    with, or null to unresolve it.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -2552,8 +2558,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param picArgObj - Picker Argument Object: The new picker's fields, items
-		 *                    and options.
+		 * @param picArgObj - Picker Argument Object: The new picker's fields,
+		 *                    items and options.
 		 *
 		 * @returns The created (or replaced) picker's own id.
 		 * @see {@link picIdeStr}
@@ -2785,9 +2791,9 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * delPicFun = Delete Picker Function
 		 *
 		 * @summary
-		 * Deletes a picker together with every item it owns, and unhooks it from
-		 * the Daily generator and from Today. Only today's own live log rows are
-		 * purged, so the picker's history stays in Stats.
+		 * Deletes a picker together with every item it owns, and unhooks it
+		 * from the Daily generator and from Today. Only today's own live log
+		 * rows are purged, so the picker's history stays in Stats.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -2914,9 +2920,9 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * renPicFun = Rename Picker Function
 		 *
 		 * @summary
-		 * Commits a picker rename (on blur, Enter or Save). The name is tidied to
-		 * Title Case and de-duplicated against every other picker, so the saved
-		 * name can differ from what was typed.
+		 * Commits a picker rename (on blur, Enter or Save). The name is tidied
+		 * to Title Case and de-duplicated against every other picker, so the
+		 * saved name can differ from what was typed.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -2980,8 +2986,10 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param picIdeStr - Picker Identifier String: The picker being edited.
-		 * @param picArgObj - Picker Argument Object: The edited picker's fields.
+		 * @param picIdeStr - Picker Identifier String: The picker being
+		 *                    edited.
+		 * @param picArgObj - Picker Argument Object: The edited picker's
+		 *                    fields.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -3118,9 +3126,9 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * updPicFun = Update Picker Function
 		 *
 		 * @summary
-		 * Merges a patch onto one picker, then re-derives its daysOfWeek through
-		 * the weekly-day rule, so switching to Weekly (or changing its day)
-		 * selects that day in the Days control automatically.
+		 * Merges a patch onto one picker, then re-derives its daysOfWeek
+		 * through the weekly-day rule, so switching to Weekly (or changing its
+		 * day) selects that day in the Days control automatically.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -3186,8 +3194,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param ordGroArr - Order Group Array: The group names in their new display
-		 *                    order.
+		 * @param ordGroArr - Order Group Array: The group names in their new
+		 *                    display order.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -3274,11 +3282,12 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param picIdeStr - Picker Identifier String: The picker the item belongs
-		 *                    to.
-		 * @param iteIdeStr - Item Identifier String: The item to send to Today.
-		 * @param penArgObj - Pending Argument Object: The staged consequences to
-		 *                    apply once the entry is done.
+		 * @param picIdeStr - Picker Identifier String: The picker the item
+		 *                    belongs to.
+		 * @param iteIdeStr - Item Identifier String: The item to send to
+		 *                    Today.
+		 * @param penArgObj - Pending Argument Object: The staged consequences
+		 *                    to apply once the entry is done.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -3408,8 +3417,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 *
 		 * @param lisEntArr - List Entry Array: The fresh entries this Generate
 		 *                    produced.
-		 * @param optArgObj - Option Argument Object: Optional flags; resetStreak
-		 *                    starts the new period unclaimed.
+		 * @param optArgObj - Option Argument Object: Optional flags;
+		 *                    resetStreak starts the new period unclaimed.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -3592,7 +3601,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param entIdeStr - Entry Identifier String: The Today entry to re-roll.
+		 * @param entIdeStr - Entry Identifier String: The Today entry to
+		 *                    re-roll.
 		 * @param iteIdeStr - Item Identifier String: The item it swaps to.
 		 * @param penArgObj - Pending Argument Object: The new item's staged
 		 *                    consequences.
@@ -3678,15 +3688,15 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * togDonFun = Toggle Done Function
 		 *
 		 * @summary
-		 * The central done and undone mutation for a Today entry. From one toggle
-		 * it applies (or reverts) the entry's staged pending, resolves the
-		 * conditional consequences, updates the entry's live pick-log row and
-		 * reconciles the streak.
+		 * The central done and undone mutation for a Today entry. From one
+		 * toggle it applies (or reverts) the entry's staged pending, resolves
+		 * the conditional consequences, updates the entry's live pick-log row
+		 * and reconciles the streak.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param entIdeStr - Entry Identifier String: The Today entry to check or
-		 *                    uncheck.
+		 * @param entIdeStr - Entry Identifier String: The Today entry to check
+		 *                    or uncheck.
 		 *
 		 * @returns This function does not return anything.
 		 *

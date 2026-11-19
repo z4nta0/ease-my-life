@@ -148,9 +148,9 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	 *
 	 * @summary
 	 * Merges a field or two into the local draft, the one way every Controls
-	 * field writes. For a brand-new draft picker it also passes the same change
-	 * up through onPatNewFun, since that picker's card header and new items read
-	 * its draft from the parent.
+	 * field writes. For a brand-new draft picker it also passes the same
+	 * change up through onPatNewFun, since that picker's card header and new
+	 * items read its draft from the parent.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -247,15 +247,16 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	 *
 	 * @summary
 	 * The callback ref for the conditional pill rail. Every attach first tears
-	 * down whatever the previous attachment wired up, then records the new node
-	 * in raiNodRef for the FLIP effect and wires the rail's edge-fade classes to
-	 * its own scroll, a ResizeObserver, and window resizes, storing the teardown
-	 * in raiCleRef. A detach (null) only runs that teardown and clears the node.
+	 * down whatever the previous attachment wired up, then records the new
+	 * node in raiNodRef for the FLIP effect and wires the rail's edge-fade
+	 * classes to its own scroll, a ResizeObserver, and window resizes, storing
+	 * the teardown in raiCleRef. A detach (null) only runs that teardown and
+	 * clears the node.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param raiCurEle - Rail Current Element: The rail's DOM node on attach, or
-	 *                    null on detach.
+	 * @param raiCurEle - Rail Current Element: The rail's DOM node on attach,
+	 *                    or null on detach.
 	 *
 	 * @returns This function does not return anything.
 	 *
@@ -597,11 +598,12 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	 *
 	 * @summary
 	 * Commits an existing picker's draft, once, through the same savEdiFun the
-	 * Pickers tab's own edit form uses, so a type change resets the items to the
-	 * new type's defaults exactly as it does there. A pressed Fill all or Refill
-	 * all then charges the items. Does nothing for a brand-new draft picker
-	 * (its own Save creates it), for a Controls already saved, cancelled, or
-	 * deleted, or when nothing changed. An emptied name keeps the old one.
+	 * Pickers tab's own edit form uses, so a type change resets the items to
+	 * the new type's defaults exactly as it does there. A pressed Fill all or
+	 * Refill all then charges the items. Does nothing for a brand-new draft
+	 * picker (its own Save creates it), for a Controls already saved,
+	 * cancelled, or deleted, or when nothing changed. An emptied name keeps
+	 * the old one.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *

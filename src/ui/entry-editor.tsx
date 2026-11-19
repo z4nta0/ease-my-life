@@ -153,9 +153,9 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 	 * setSooFun = Set Soonest Function
 	 *
 	 * @summary
-	 * NumSteCom's handler for the Soonest (or Shortest) day count. It clamps the
-	 * typed count, converts it back to a drift value and writes it into the
-	 * draft's easeMax field through onPatIteFun.
+	 * NumSteCom's handler for the Soonest (or Shortest) day count. It clamps
+	 * the typed count, converts it back to a drift value and writes it into
+	 * the draft's easeMax field through onPatIteFun.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -276,15 +276,16 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 					 * entry-editor.tsx = Ease Direction Split
 					 *
 					 * @summary
-					 * data-ease-up-active/data-ease-down-active (on every relevant
-					 * row below) let help mode tell the two directions apart (see
-					 * help/content.tsx's itemChargeRangeUp/Down), split by
-					 * direction rather than one shared marker, since
-					 * Soonest/Latest/Fill (ease-up) and Shortest/Longest/Refill
-					 * (ease-down) get entirely different tip copy, not just
-					 * relabeled headings. FilButCom (ui.jsx) has no identity of its
-					 * own to distinguish it by, and it only renders for ONE
-					 * direction at a time, so nothing else marks exactly "this
+					 * data-ease-up-active/data-ease-down-active (on every
+					 * relevant row below) let help mode tell the two
+					 * directions apart (see help/content.tsx's
+					 * itemChargeRangeUp/Down), split by direction rather than
+					 * one shared marker, since Soonest/Latest/Fill (ease-up)
+					 * and Shortest/Longest/Refill (ease-down) get entirely
+					 * different tip copy, not just relabeled headings.
+					 * FilButCom (ui.jsx) has no identity of its own to
+					 * distinguish it by, and it only renders for ONE direction
+					 * at a time, so nothing else marks exactly "this
 					 * direction's ease rows".
 					 *
 					 * @author z4nta0 <https://github.com/z4nta0>

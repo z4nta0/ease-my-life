@@ -142,10 +142,10 @@
 	 * @summary
 	 * The completion celebration's "Ripple" style is the pure-CSS default:
 	 * every card on Today exhales once, sized and timed by these values, which
-	 * the cardCelebrateSwell keyframes and the card modules read. "Confetti" and
-	 * "Sparkle" are separate particle effects rendered in tab-today.tsx. The
-	 * ring number pulse and the title text swap stay the same across all three
-	 * styles, since they aren't part of the ripple itself.
+	 * the cardCelebrateSwell keyframes and the card modules read. "Confetti"
+	 * and "Sparkle" are separate particle effects rendered in tab-today.tsx.
+	 * The ring number pulse and the title text swap stay the same across all
+	 * three styles, since they aren't part of the ripple itself.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *

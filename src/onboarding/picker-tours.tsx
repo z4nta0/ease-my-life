@@ -993,9 +993,10 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 	 * cloTouFun = Close Tour Function
 	 *
 	 * @summary
-	 * Ends this picker mini-tour however it ends, recording how in the sample's
-	 * own checklist entry. It clears every prefill field this tour published on
-	 * the shared bus, since tab-picker.tsx prefills its create form from
+	 * Ends this picker mini-tour however it ends, recording how in the
+	 * sample's own checklist entry. It clears every prefill field this tour
+	 * published on the shared bus, since tab-picker.tsx prefills its create
+	 * form from
  * preFilObj whenever one is present, so a leftover value would fill the next
  * picker the user creates with stale sample data. It then updates this
  * sample's own launcher card status and calls onCloTouFun so app.tsx unmounts

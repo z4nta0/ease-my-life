@@ -332,9 +332,9 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 	 * comOptFun = Commit Options Function
 	 *
 	 * @summary
-	 * Commits the matrix's draft, once: every toggle that differs from the live
-	 * settings is written through setOptFun. Does nothing for a matrix already
-	 * saved or cancelled.
+	 * Commits the matrix's draft, once: every toggle that differs from the
+	 * live settings is written through setOptFun. Does nothing for a matrix
+	 * already saved or cancelled.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -668,10 +668,10 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 	 *
 	 * @summary
 	 * Commits the open row's draft, once. A brand-new reminder is added to the
-	 * store as drafted (addTasFun de-duplicates its name, an emptied one falling
-	 * back to the default), while any other reminder commits only its changed
-	 * fields. Does nothing when no row is open or this exact draft was already
-	 * committed or cancelled.
+	 * store as drafted (addTasFun de-duplicates its name, an emptied one
+	 * falling back to the default), while any other reminder commits only its
+	 * changed fields. Does nothing when no row is open or this exact draft was
+	 * already committed or cancelled.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *

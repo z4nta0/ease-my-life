@@ -806,6 +806,7 @@
 /* #endregion rinGraSvg */
 
 
+
 /* #region rinTexDiv */
 
 .rinTexDiv { /* What: Ring Text Div. Why: The done count sits centered over the ring. How: This centers the fraction in a tabular mono row over the whole ring. */
@@ -2169,6 +2170,7 @@
 }
 
 /* #endregion genConDiv */
+
 
 
 /* #region fooActDiv */

@@ -221,6 +221,7 @@
 /* #endregion staIdlDiv */
 
 
+
 /* #region staSenDiv */
 
 .staSenDiv { /* What: Stage Sent Div. Why: After Send to Today, the stage briefly confirms what was sent. How: This stacks the check, name, and label in a centered column that rises in. */
@@ -805,6 +806,7 @@
 /* #endregion delConDiv */
 
 
+
 /* #region pooNamDiv */
 
 .pooNamDiv { /* What: Pool Name Div. Why: The name and its status pill share the row's flexible column, which must be allowed to shrink or a long word pushes the buttons off the row on a narrow phone. How: This lines them up in a row that can shrink, and sizes the pill to a fixed, centered 80px so every row's pill lines up in one column. */
@@ -867,6 +869,7 @@
 /* #endregion pooNamDiv */
 
 
+
 /* #region pooMetDiv */
 
 .pooMetDiv { /* What: Pool Meta Div. Why: The progress and weight read as small mono figures at the row's end. How: This lines them up right-aligned in muted mono type. */
@@ -927,6 +930,7 @@
 }
 
 /* #endregion pooMetDiv */
+
 
 
 /* #region pooSenBut */

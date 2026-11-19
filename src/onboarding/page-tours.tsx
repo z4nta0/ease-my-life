@@ -237,12 +237,12 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 	 *
 	 * @summary
 	 * Ends this page tour however it ends, recording how in the page's own
-	 * checklist entry. It first discards whatever sample data this tour set up:
-	 * the disposable picker copies for Pickers/Data, the disposable reminder
-	 * copies for Data, or the borrowed real sample history for Stats. It then
-	 * updates this page's own launcher card status and calls onCloTouFun so
-	 * app.tsx unmounts the tour. Each cleanup is a harmless no-op when nothing
-	 * was seeded, e.g. a Skip from the intro modal.
+	 * checklist entry. It first discards whatever sample data this tour set
+	 * up: the disposable picker copies for Pickers/Data, the disposable
+	 * reminder copies for Data, or the borrowed real sample history for Stats.
+	 * It then updates this page's own launcher card status and calls
+	 * onCloTouFun so app.tsx unmounts the tour. Each cleanup is a harmless
+	 * no-op when nothing was seeded, e.g. a Skip from the intro modal.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -329,11 +329,11 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 	 *
 	 * @summary
 	 * Step 1's own side effect, fired with the real nav click, which prepares
-	 * what this page tour's later steps point at. The Pickers and Data tours seed
-	 * disposable picker copies, the Stats tour unhides the real samples and their
-	 * history, and the Data tour also seeds disposable reminder copies. Only
-	 * passed to buiTs1Fun for a page tour that needs one of these (see
-	 * seeNeeBoo), so Today and Settings get no Step 1 side effect at all.
+	 * what this page tour's later steps point at. The Pickers and Data tours
+	 * seed disposable picker copies, the Stats tour unhides the real samples
+	 * and their history, and the Data tour also seeds disposable reminder
+	 * copies. Only passed to buiTs1Fun for a page tour that needs one of these
+	 * (see seeNeeBoo), so Today and Settings get no Step 1 side effect at all.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *

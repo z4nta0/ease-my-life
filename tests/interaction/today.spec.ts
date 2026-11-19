@@ -309,7 +309,7 @@ test( 'pushing an item onto a finished day gives the streak back', async ( { pag
 
 
 
-test( 're-rolling and skipping animate and save', async ( { page : curPagObj } ) => { // What: Re-Roll And Skip Test. Why: Both card actions must work and animate. How: This re-rolls one card and skips another.
+test( 're-rolling and skipping animate and save', async ( { page : curPagObj } ) => { // What: Re-Roll And Skip Test. Why: Both card actions must work and animate. How: This re-rolls one card and skips another, waiting for each save and checking each animation.
 
 
 	const rolCarObj = ( await picCarFun( curPagObj, [ 'dynamic', 'random', 'weighted' ] ) )!; // What: Roll Card Object. Why: A draw-mode card can always re-roll. How: This finds one. // What: Non-Null Note. Why: The backup's fixed day always has a draw-mode pick. How: The ! tells TypeScript one was found.
@@ -355,7 +355,7 @@ test( 're-rolling and skipping animate and save', async ( { page : curPagObj } )
 
 
 
-test( 'the item editor saves only on Save', async ( { page : curPagObj } ) => { // What: Item Editor Test. Why: Edits are drafts until saved. How: This cancels one rename and saves another.
+test( 'the item editor saves only on Save', async ( { page : curPagObj } ) => { // What: Item Editor Test. Why: Edits are drafts until saved. How: This cancels one rename and saves another, checking the cancelled name never saves and no item is added or lost.
 
 
 	const ediCarLoc = curPagObj.locator( ENT_CAR_STR ).filter( { has : curPagObj.locator( '[aria-label="Edit"]' ) } ).first(); // What: Edit Card Locator. Why: The first editable card is used. How: This finds it.
@@ -406,7 +406,7 @@ test( 'the item editor saves only on Save', async ( { page : curPagObj } ) => { 
 
 
 
-test( 'reminders can be added, renamed, and skipped', async ( { page : curPagObj } ) => { // What: Reminder Test. Why: Every reminder action must save. How: This adds, renames, and skips a reminder.
+test( 'reminders can be added, renamed, and skipped', async ( { page : curPagObj } ) => { // What: Reminder Test. Why: Every reminder action must save. How: This adds, renames, and skips a reminder, checking IndexedDB after each step.
 
 
 	await curPagObj.locator( '[data-element-name-hook~="remAddBut"]' ).click(); // What: Add Open Call. Why: New reminders start from the add button. How: This opens the form.
@@ -469,7 +469,7 @@ test( 'reminders can be added, renamed, and skipped', async ( { page : curPagObj
 
 
 
-test( 'edit mode opens and cancels without reordering', async ( { page : curPagObj } ) => { // What: Edit Mode Test. Why: Cancelling Edit Mode must leave the order alone. How: This opens and cancels it.
+test( 'edit mode opens and cancels without reordering', async ( { page : curPagObj } ) => { // What: Edit Mode Test. Why: Cancelling Edit Mode must leave the order alone. How: This opens and cancels it, checking the banner and grips come and go and the order is unchanged.
 
 
 	const preStaObj = ( await reaStaFun( curPagObj ) )!; // What: Previous State Object. Why: The order must match afterwards. How: This reads it. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
@@ -580,7 +580,7 @@ test( 'a group can be renamed', async ( { page : curPagObj } ) => { // What: Gro
 
 
 
-test( 'the day log opens and closes', async ( { page : curPagObj } ) => { // What: Day Log Test. Why: The day log must open from its chip. How: This toggles it.
+test( 'the day log opens and closes', async ( { page : curPagObj } ) => { // What: Day Log Test. Why: The day log must open from its chip. How: This toggles it, checking the chip's pressed state and the log's blocks.
 
 
 	const chiButLoc = curPagObj.locator( `${ PIC_GRO_STR } [data-element-name-hook~="logChiBut"]` ).first(); // What: Chip Button Locator. Why: The first picker group's log chip is used, since the Reminders log shows reminder rows instead of picker blocks. How: This finds it.

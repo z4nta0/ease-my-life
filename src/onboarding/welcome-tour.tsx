@@ -251,11 +251,11 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 	 * finTouFun = Finish Tour Function
 	 *
 	 * @summary
-	 * Ends the Welcome Tour however it ends: Skip on the intro modal, the coach
-	 * card's own Done, or GuiTouCom's not-found watchdog. It flips the tour's own
-	 * phase to 'off', so nothing from this tour renders any more, and clears the
-	 * shared bus's preFilObj field, so a prefill staged by an earlier step can
-	 * never leak into the picker form afterward.
+	 * Ends the Welcome Tour however it ends: Skip on the intro modal, the
+	 * coach card's own Done, or GuiTouCom's not-found watchdog. It flips the
+	 * tour's own phase to 'off', so nothing from this tour renders any more,
+	 * and clears the shared bus's preFilObj field, so a prefill staged by an
+	 * earlier step can never leak into the picker form afterward.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -503,23 +503,23 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 	 *
 	 * @summary
 	 * Undoes the sample-data side effects of later steps before GuiTouCom
-	 * navigates back to an earlier one. Sample pickers/tasks only ever get hidden
-	 * once, at the Settings step's own runFun, so stepping back before that point
-	 * should show them exactly as they did the first time through, not whatever
-	 * the checklist phase (tutorial cards, Page Tours) left behind from having
-	 * reached the end. Going back to the Generate step also removes the sample
-	 * reminders and clears Today, since that step's own runFun adds them again on
-	 * its next Next.
+	 * navigates back to an earlier one. Sample pickers/tasks only ever get
+	 * hidden once, at the Settings step's own runFun, so stepping back before
+	 * that point should show them exactly as they did the first time through,
+	 * not whatever the checklist phase (tutorial cards, Page Tours) left
+	 * behind from having reached the end. Going back to the Generate step also
+	 * removes the sample reminders and clears Today, since that step's own
+	 * runFun adds them again on its next Next.
 	 *
-	 * Skipped entirely during a replay (onbStaObj.dismissed): those samples are
-	 * the ORIGINAL ones from the user's first-ever onboarding, already hidden
-	 * long before this session started, and un-hiding them would mix stale demo
-	 * pickers into the real, current Today list.
+	 * Skipped entirely during a replay (onbStaObj.dismissed): those samples
+	 * are the ORIGINAL ones from the user's first-ever onboarding, already
+	 * hidden long before this session started, and un-hiding them would mix
+	 * stale demo pickers into the real, current Today list.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param tarSteNum - Target Step Number: The step index GuiTouCom is about to
-	 *                    navigate back to.
+	 * @param tarSteNum - Target Step Number: The step index GuiTouCom is about
+	 *                    to navigate back to.
 	 *
 	 * @returns This function does not return anything.
 	 *

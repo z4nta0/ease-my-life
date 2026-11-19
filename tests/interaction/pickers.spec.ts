@@ -108,7 +108,7 @@ test( 'pick one and send it to Today', async ( { page : curPagObj } ) => { // Wh
 
 
 
-test( 'a pool item can be edited and deleted', async ( { page : curPagObj } ) => { // What: Pool Item Test. Why: Pool edits and deletes must save. How: This renames an item, then deletes it.
+test( 'a pool item can be edited and deleted', async ( { page : curPagObj } ) => { // What: Pool Item Test. Why: Pool edits and deletes must save. How: This renames an item, then deletes it, waiting for IndexedDB to show each change.
 
 
 	const ediButLoc = curPagObj.locator( `${ POO_DIV_STR } [aria-label^="Edit "]` ).first(); // What: Edit Button Locator. Why: The first pool item is edited. How: This finds its Edit button.
@@ -146,7 +146,7 @@ test( 'a pool item can be edited and deleted', async ( { page : curPagObj } ) =>
 
 
 
-test( 'the form creates a new picker with items', async ( { page : curPagObj } ) => { // What: Picker Form Test. Why: Building a picker is the main setup flow. How: This fills the form and creates a picker.
+test( 'the form creates a new picker with items', async ( { page : curPagObj } ) => { // What: Picker Form Test. Why: Building a picker is the main setup flow. How: This fills the form, creates a picker, and checks its mode and items in IndexedDB.
 
 
 	await curPagObj.locator( '[data-element-name-hook~="picAddBut"]' ).click(); // What: Form Open Call. Why: New pickers start from Add New Picker. How: This opens the form.

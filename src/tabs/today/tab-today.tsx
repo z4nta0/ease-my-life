@@ -446,17 +446,18 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * pagColFun = Page Collision Function
 	 *
 	 * @summary
-	 * GroHeaCom's rename validator for the Page Tours section. Page Tours has no
-	 * pickers to merge on a name collision, so a collision blocks the rename
-	 * outright: the trimmed, normalized name is checked case-insensitively
-	 * against every real group name and the fixed Reminders label.
+	 * GroHeaCom's rename validator for the Page Tours section. Page Tours has
+	 * no pickers to merge on a name collision, so a collision blocks the
+	 * rename outright: the trimmed, normalized name is checked
+	 * case-insensitively against every real group name and the fixed Reminders
+	 * label.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
 	 * @param rawValStr - Raw Value String: The typed rename.
 	 *
-	 * @returns An error message naming the colliding group, or null when the name
-	 * is empty or free.
+	 * @returns An error message naming the colliding group, or null when the
+	 * name is empty or free.
 	 *
 	 * @example
 	 * ```ts
@@ -1063,9 +1064,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * hanCheFun = Handle Check Function
 	 *
 	 * @summary
-	 * EntCarCom's done toggle. It toggles the entry through togDonFun and, only
-	 * when the entry goes from not done to done, stages the brief fresh cue on
-	 * that card; unchecking never shows it.
+	 * EntCarCom's done toggle. It toggles the entry through togDonFun and,
+	 * only when the entry goes from not done to done, stages the brief fresh
+	 * cue on that card; unchecking never shows it.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1131,9 +1132,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * hanSkiFun = Handle Skip Function
 	 *
 	 * @summary
-	 * EntCarCom's skip action. It flags the entry as removing so the card plays
-	 * its collapse animation, then skips the entry in the store once that
-	 * animation has finished.
+	 * EntCarCom's skip action. It flags the entry as removing so the card
+	 * plays its collapse animation, then skips the entry in the store once
+	 * that animation has finished.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1271,9 +1272,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @summary
 	 * EntCarCom's re-roll action. It flags the card as rolling so it plays its
-	 * flip, computes and stages a new pending pick at the flip's midpoint so the
-	 * new item rolls in mid-turn, then clears the rolling flag once the flip
-	 * finishes.
+	 * flip, computes and stages a new pending pick at the flip's midpoint so
+	 * the new item rolls in mid-turn, then clears the rolling flag once the
+	 * flip finishes.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1423,9 +1424,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @summary
 	 * Scroll-aware edge fades on the mobile group rail: toggles
-	 * data-scroll-start-active/data-scroll-end-active so the mask gradient only
-	 * fades the side that has more content, matching the Pickers tab's picTabDiv
-	 * behavior.
+	 * data-scroll-start-active/data-scroll-end-active so the mask gradient
+	 * only fades the side that has more content, matching the Pickers tab's
+	 * picTabDiv behavior.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1746,10 +1747,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * reqRenFun = Request Rename Function
 	 *
 	 * @summary
-	 * GroHeaCom's rename request for a real group. It normalizes the typed name;
-	 * when that resolves to a different existing group it stages a merge
-	 * confirmation instead of renaming, otherwise it renames the group straight
-	 * away.
+	 * GroHeaCom's rename request for a real group. It normalizes the typed
+	 * name; when that resolves to a different existing group it stages a merge
+	 * confirmation instead of renaming, otherwise it renames the group
+	 * straight away.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1875,9 +1876,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * groDraFun = Group Drag Function
 	 *
 	 * @summary
-	 * The pointerdown handler behind every group header's grip in Edit Mode. It
-	 * resolves the drag container and handle, then starts REO_NAM_OBJ.staDraFun
-	 * with a drop callback that merges the new group order into the saved one.
+	 * The pointerdown handler behind every group header's grip in Edit Mode.
+	 * It resolves the drag container and handle, then starts
+	 * REO_NAM_OBJ.staDraFun with a drop callback that merges the new group
+	 * order into the saved one.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1949,14 +1951,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * @summary
 	 * The pointerdown handler behind every card's grip within a group in Edit
 	 * Mode. It resolves the drag container and handle, then starts
-	 * REO_NAM_OBJ.staDraFun with a drop callback that merges the new card order
-	 * into that group's saved picker order.
+	 * REO_NAM_OBJ.staDraFun with a drop callback that merges the new card
+	 * order into that group's saved picker order.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
 	 * @param poiEveObj - Pointer Event Object: The grip's pointerdown event.
-	 * @param curGroObj - Current Group Object: The group the dragged card belongs
-	 *                    to.
+	 * @param curGroObj - Current Group Object: The group the dragged card
+	 *                    belongs to.
 	 *
 	 * @returns This function does not return anything.
 	 *
@@ -2052,8 +2054,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *                    default; its autBoo is true only for the scheduled
 	 *                    boundary-check run.
 	 *
-	 * @returns A promise that settles once the cascade has finished and today's
-	 * list is committed.
+	 * @returns A promise that settles once the cascade has finished and
+	 * today's list is committed.
 	 *
 	 * @example
 	 * ```ts
@@ -3064,8 +3066,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * @summary
 	 * The single dispatcher behind every launcher card's Play button and row
 	 * click. Picker, page and app-feature tours are started at the app level
-	 * through their own props; a reminder mini-tour is staged locally on this tab
-	 * instead.
+	 * through their own props; a reminder mini-tour is staged locally on this
+	 * tab instead.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -4083,13 +4085,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							 * tab-today.tsx = Celebration Portal Placement
 							 *
 							 * @summary
-							 * Portaled straight to document.body: the tab-switch fade
-							 * wrapper (.tabFadDiv) keeps a resolved (identity) transform
-							 * for the life of its own enter animation, which makes it a
-							 * containing block for any position:fixed descendant. Left
-							 * in place, this overlay would be fixed to that scrolled
-							 * ancestor instead of the viewport, so it would scroll out
-							 * of view.
+							 * Portaled straight to document.body: the
+							 * tab-switch fade wrapper (.tabFadDiv) keeps a
+							 * resolved (identity) transform for the life of
+							 * its own enter animation, which makes it a
+							 * containing block for any position:fixed
+							 * descendant. Left in place, this overlay would be
+							 * fixed to that scrolled ancestor instead of the
+							 * viewport, so it would scroll out of view.
 							 *
 							 * @author z4nta0 <https://github.com/z4nta0>
 							 *

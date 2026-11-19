@@ -64,7 +64,7 @@ const HOL_NAM_STR = 'Synced Holiday'; // What: Holiday Name String. Why: The sec
 
 // #region Module Init
 
-test( 'two devices sign in to one paid account and sync each other', async ( { browser } ) => { // What: Two Device Test. Why: Paid sync has to carry one device's data and changes to another. How: This signs two contexts in to one account and syncs each way.
+test( 'two devices sign in to one paid account and sync each other', async ( { browser } ) => { // What: Two Device Test. Why: Paid sync has to carry one device's data and changes to another. How: This signs two contexts in to one account, syncs each way, and waits for each device to hold the other's changes, with no page errors.
 
 
 	const emaAdrStr = `sync-${ Date.now() }@example.com`;                       // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address.

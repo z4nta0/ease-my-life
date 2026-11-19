@@ -195,7 +195,7 @@ async function refTokFun () : Promise< void > {
  *
  * @example
  * ```ts
- * await senLinFun('you@example.com', 'https://easemylife.app/') // => Promise<void>
+ * senLinFun('you@example.com', 'https://easemylife.app/') // => Promise<void>
  * ```
  *
 */

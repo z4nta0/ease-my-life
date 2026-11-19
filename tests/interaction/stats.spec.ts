@@ -61,7 +61,7 @@ test.afterEach( () => { expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] 
 
 
 
-test( 'every scope and range shows its cards', async ( { page : curPagObj } ) => { // What: Scope And Range Test. Why: Every combination of controls must render. How: This walks each scope and range.
+test( 'every scope and range shows its cards', async ( { page : curPagObj } ) => { // What: Scope And Range Test. Why: Every combination of controls must render. How: This walks each scope and range, checking each is selected and shows its headline cards.
 
 
 	const scoTabLoc = curPagObj.locator( '[data-element-name-hook~="scoTabBut"]' ); // What: Scope Tab Locator. Why: Each scope is selected in turn. How: This finds the scope tabs.
@@ -130,7 +130,7 @@ test( 'a heatmap day opens its detail', async ( { page : curPagObj } ) => { // W
 
 
 
-test( 'a rail scrolls sideways with the mouse wheel', async ( { page : curPagObj } ) => { // What: Rail Wheel Test. Why: A mouse wheel must move a pill rail sideways, then hand back to the page at the rail's end. How: This turns the wheel over the Type rail at its start and at its end.
+test( 'a rail scrolls sideways with the mouse wheel', async ( { page : curPagObj } ) => { // What: Rail Wheel Test. Why: A mouse wheel must move a pill rail sideways, then hand back to the page at the rail's end. How: This turns the wheel over the Type rail at its start and at its end, checking the rail scrolls while the page holds, then the page scrolls.
 
 
 	const raiDivLoc = curPagObj.locator( '[data-element-name-hook~="typFilDiv"]' );                                                   // What: Rail Div Locator. Why: The Type rail overflows on the fixed day's data. How: This finds it.

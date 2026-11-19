@@ -297,7 +297,7 @@ test.afterEach( () => { expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] 
 
 
 
-test( 'a holiday added while IndexedDB hangs survives the next launches', async ( { page : curPagObj } ) => { // What: Hung Boot Test. Why: A session that ran on localStorage must not lose its changes. How: This adds a holiday in a hung launch and relaunches normally.
+test( 'a holiday added while IndexedDB hangs survives the next launches', async ( { page : curPagObj } ) => { // What: Hung Boot Test. Why: A session that ran on localStorage must not lose its changes. How: This adds a holiday in a hung launch, relaunches normally, and checks the holiday and the pick log survive.
 
 
 	const logCouNum = ( await reaStaFun( curPagObj ) )!.pickLog.length; // What: Log Count Number. Why: The recovery must keep every Stats row. How: This counts the backup's pick log rows. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
@@ -317,7 +317,7 @@ test( 'a holiday added while IndexedDB hangs survives the next launches', async 
 
 
 
-test( 'a holiday added while IndexedDB is slow survives the next launches', async ( { page : curPagObj } ) => { // What: Slow Boot Test. Why: A boot that runs past the deadline must not mount on the mirror and then save as IndexedDB. How: This adds a holiday in a slow launch and relaunches normally.
+test( 'a holiday added while IndexedDB is slow survives the next launches', async ( { page : curPagObj } ) => { // What: Slow Boot Test. Why: A boot that runs past the deadline must not mount on the mirror and then save as IndexedDB. How: This adds a holiday in a slow launch, relaunches normally, and checks the holiday and the pick log survive.
 
 
 	const logCouNum = ( await reaStaFun( curPagObj ) )!.pickLog.length; // What: Log Count Number. Why: The slow launch must not save an empty pick log over the history. How: This counts the backup's pick log rows. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
