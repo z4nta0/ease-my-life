@@ -43,6 +43,7 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  *
  * Sections:
  *  - Constants
+ *  - Module State
  *  - Helpers
  *  - Module Init
  *
@@ -60,6 +61,14 @@ const REM_CAR_STR = '[data-element-name-hook~="remCarArt"]:not([data-element-nam
 const UNC_BUT_STR = '[data-element-name-hook~="carCheBut"][aria-pressed="false"]'; // What: Unchecked Button String. Why: Check-offs click unchecked buttons. How: This selects them.
 
 // #endregion Constants
+
+
+
+// #region Module State
+
+let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's page errors are checked when it ends. How: This holds the current test's list.
+
+// #endregion Module State
 
 
 
@@ -142,10 +151,6 @@ const picCarFun = async ( curPagObj : Page, modNamArr : string[] ) => { // What:
 
 
 // #region Module Init
-
-let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's page errors are checked when it ends. How: This holds the current test's list.
-
-
 
 test.beforeEach( async ( { page : curPagObj } ) => { // What: Setup Hook. Why: Every flow starts on real data with errors watched. How: This starts the watcher and opens the backup.
 

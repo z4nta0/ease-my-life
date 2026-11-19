@@ -66,6 +66,7 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * Sections:
  *  - Types
  *  - Constants
+ *  - Module State
  *  - Helpers
  *  - Module Init
  *
@@ -79,7 +80,6 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
 
 type DayTraTyp = { conMapObj : Record< string, [ boolean, number ] >, dayIsoStr : string, entKeyArr : string[], remIdeArr : string[] }; // What: Day Trace Type. Why: Two runs are compared day by day. How: This holds a day's entries, conditionals, and reminders.
 type ProRolTyp = { firNum : number, namStr : string, proSumNum : number, rolNum : number, varSumNum : number };                         // What: Probability Roll Type. Why: Each probability conditional's rolls are tallied. How: This holds its fires, expected fires, rolls, and variance.
-type SegDefTyp = { dayNum : number, staIsoStr : string };                                                                               // What: Segment Definition Type. Why: The run covers stretches of days. How: This holds a stretch's start and length.
 
 // #endregion Types
 
@@ -87,10 +87,22 @@ type SegDefTyp = { dayNum : number, staIsoStr : string };                       
 
 // #region Constants
 
-const OUT_DIR_STR = new URL( '../output/simulation/', import.meta.url ); // What: Output Directory String. Why: The trace lands where git ignores it. How: This is tests/output/simulation.
-const SEE_VAL_NUM = Number( process.env.EML_SIM_SEED || 20261004 );      // What: Seed Value Number. Why: The same seed repeats the same picks. How: This reads EML_SIM_SEED, defaulting to a fixed seed.
+const CHE_BUT_STR = '[data-element-name-hook~="carCheBut"]';                                                                                       // What: Check Button String. Why: Every card checks off through this button. How: This selects it.
+const ENT_CAR_STR = '[data-element-name-hook~="todCarArt"]:not([data-element-name-hook~="remCarArt"]):not([data-element-name-hook~="tutCarArt"])'; // What: Entry Card String. Why: Entry cards exclude reminders and tutorials. How: This selects real entry cards.
+const OUT_DIR_STR = new URL( '../output/simulation/', import.meta.url );                                                                           // What: Output Directory String. Why: The trace lands where git ignores it. How: This is tests/output/simulation.
+const REM_CAR_STR = '[data-element-name-hook~="remCarArt"]:not([data-element-name-hook~="tutCarArt"])';                                            // What: Reminder Card String. Why: Reminder cards exclude tutorials. How: This selects real reminder cards.
+
+// #endregion Constants
 
 
+
+// #region Module State
+
+const SEE_VAL_NUM = Number( process.env.EML_SIM_SEED || 20261004 ); // What: Seed Value Number. Why: The same seed repeats the same picks. How: This reads EML_SIM_SEED, defaulting to a fixed seed.
+
+
+
+type SegDefTyp = { dayNum : number, staIsoStr : string }; // What: Segment Definition Type. Why: The run covers stretches of days. How: This holds a stretch's start and length.
 
 const SEG_DEF_ARR : SegDefTyp[] = process.env.EML_SIM_SEGMENTS ? JSON.parse( process.env.EML_SIM_SEGMENTS ) : [ // What: Segment Definition Array. Why: The default stretches cover weekly, monthly, and year-end schedules. How: This reads EML_SIM_SEGMENTS or uses the defaults.
 
@@ -101,24 +113,11 @@ const SEG_DEF_ARR : SegDefTyp[] = process.env.EML_SIM_SEGMENTS ? JSON.parse( pro
 
 ];
 
-
-
-const ENT_CAR_STR = '[data-element-name-hook~="todCarArt"]:not([data-element-name-hook~="remCarArt"]):not([data-element-name-hook~="tutCarArt"])'; // What: Entry Card String. Why: Entry cards exclude reminders and tutorials. How: This selects real entry cards.
-const REM_CAR_STR = '[data-element-name-hook~="remCarArt"]:not([data-element-name-hook~="tutCarArt"])';                                            // What: Reminder Card String. Why: Reminder cards exclude tutorials. How: This selects real reminder cards.
-const CHE_BUT_STR = '[data-element-name-hook~="carCheBut"]';                                                                                       // What: Check Button String. Why: Every card checks off through this button. How: This selects it.
-
-// #endregion Constants
+// #endregion Module State
 
 
 
 // #region Helpers
-
-const visEntFun = ( staAppObj : StaAppTyp ) => staAppObj.today.entries.filter( ( curEntObj ) => !curEntObj.pickerId || !staAppObj.pickers.find( ( curPicObj ) => curPicObj.id === curEntObj.pickerId )?.hidden ); // What: Visible Entry Function. Why: The streak only counts entries Today shows. How: This drops entries of hidden pickers.
-const donCouFun = ( staAppObj : StaAppTyp ) => staAppObj.today.entries.filter( ( curEntObj ) => curEntObj.done ).length;                                                                                          // What: Done Count Function. Why: A check-off raises the done count by one. How: This counts done entries.
-const remDonFun = ( staAppObj : StaAppTyp, dayIsoStr : string ) => staAppObj.tasks.filter( ( curTasObj ) => curTasObj.lastDone === dayIsoStr ).length;                                                            // What: Reminder Done Function. Why: A reminder check-off raises today's done count by one. How: This counts reminders done today.
-const namLabFun = ( ariLabStr : string | null ) => ( ariLabStr || '' ).replace( /^(Un)?[Mm]ark /, '' ).replace( / complete$/, '' );                                                                               // What: Name Label Function. Why: Check buttons name their card in their label. How: This strips the label down to the name.
-
-
 
 // #region cliCheFun
 
@@ -179,6 +178,12 @@ const cliCheFun = async ( curPagObj : Page, carLisLoc : Locator, couFunObj : ( s
 };
 
 // #endregion cliCheFun
+
+
+
+const donCouFun = ( staAppObj : StaAppTyp ) => staAppObj.today.entries.filter( ( curEntObj ) => curEntObj.done ).length;                               // What: Done Count Function. Why: A check-off raises the done count by one. How: This counts done entries.
+const namLabFun = ( ariLabStr : string | null ) => ( ariLabStr || '' ).replace( /^(Un)?[Mm]ark /, '' ).replace( / complete$/, '' );                    // What: Name Label Function. Why: Check buttons name their card in their label. How: This strips the label down to the name.
+const remDonFun = ( staAppObj : StaAppTyp, dayIsoStr : string ) => staAppObj.tasks.filter( ( curTasObj ) => curTasObj.lastDone === dayIsoStr ).length; // What: Reminder Done Function. Why: A reminder check-off raises today's done count by one. How: This counts reminders done today.
 
 
 
@@ -254,6 +259,10 @@ const uniCarFun = async ( curPagObj : Page, staAppObj : StaAppTyp, conTesFun : (
 };
 
 // #endregion uniCarFun
+
+
+
+const visEntFun = ( staAppObj : StaAppTyp ) => staAppObj.today.entries.filter( ( curEntObj ) => !curEntObj.pickerId || !staAppObj.pickers.find( ( curPicObj ) => curPicObj.id === curEntObj.pickerId )?.hidden ); // What: Visible Entry Function. Why: The streak only counts entries Today shows. How: This drops entries of hidden pickers.
 
 
 

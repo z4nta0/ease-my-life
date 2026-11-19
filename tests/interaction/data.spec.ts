@@ -33,12 +33,21 @@ import type { Page    } from '@playwright/test'; // What: Page. Why: Helpers dri
  * any page or console error.
  *
  * Sections:
+ *  - Module State
  *  - Helpers
  *  - Module Init
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Module State
+
+let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's page errors are checked when it ends. How: This holds the current test's list.
+
+// #endregion Module State
 
 
 
@@ -104,10 +113,6 @@ const opeSecFun = async ( carSecLoc : Locator, secIndNum : number | null ) : Pro
 
 
 // #region Module Init
-
-let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's page errors are checked when it ends. How: This holds the current test's list.
-
-
 
 test.beforeEach( async ( { page : curPagObj } ) => { // What: Setup Hook. Why: Every flow starts on the Data tab with errors watched. How: This starts the watcher, opens the backup, and switches tabs.
 

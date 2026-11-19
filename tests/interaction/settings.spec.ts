@@ -33,6 +33,7 @@ import { watErrFun   } from '../support/watch.ts';   // What: Watch Errors Funct
  * and fails on any page or console error.
  *
  * Sections:
+ *  - Module State
  *  - Module Init
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -41,11 +42,15 @@ import { watErrFun   } from '../support/watch.ts';   // What: Watch Errors Funct
 
 
 
-// #region Module Init
+// #region Module State
 
 let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's page errors are checked when it ends. How: This holds the current test's list.
 
+// #endregion Module State
 
+
+
+// #region Module Init
 
 test.beforeEach( async ( { page : curPagObj } ) => { // What: Setup Hook. Why: Every flow starts on the Settings tab with errors watched. How: This starts the watcher, opens the backup, and switches tabs.
 

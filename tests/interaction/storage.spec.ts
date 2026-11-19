@@ -35,6 +35,7 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
  *
  * Sections:
  *  - Constants
+ *  - Module State
  *  - Helpers
  *  - Module Init
  *
@@ -50,6 +51,14 @@ const IDB_MOD_STR = 'emlTesIdbMod';  // What: IndexedDB Mode String. Why: The in
 const MIR_KEY_STR = 'easemylife.v2'; // What: Mirror Key String. Why: A fallback session saves only to the localStorage mirror. How: This is the key the app writes it under.
 
 // #endregion Constants
+
+
+
+// #region Module State
+
+let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's page errors are checked when it ends. How: This holds the current test's list.
+
+// #endregion Module State
 
 
 
@@ -214,10 +223,6 @@ const cheSurFun = async ( curPagObj : Page, holNamStr : string, logCouNum : numb
 
 
 // #region Module Init
-
-let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's page errors are checked when it ends. How: This holds the current test's list.
-
-
 
 test.beforeEach( async ( { page : curPagObj } ) => { // What: Setup Hook. Why: Every flow can fake an IndexedDB fault and starts on real data. How: This installs the fault script, starts the watcher, and opens the backup.
 

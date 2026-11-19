@@ -35,6 +35,7 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The text check
  *
  * Sections:
  *  - Constants
+ *  - Module State
  *  - Helpers
  *  - Module Init
  *
@@ -49,6 +50,14 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The text check
 const PAY_LOA_STR = '<img src=x onerror=__xssRanNum=1>'; // What: Payload String. Why: Markup rendered as HTML would add an image whose failed load runs its handler. How: This is an image tag with an inline error handler, short enough for the picker name field's 40-character limit.
 
 // #endregion Constants
+
+
+
+// #region Module State
+
+let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's page errors are checked when it ends. How: This holds the current test's list.
+
+// #endregion Module State
 
 
 
@@ -101,10 +110,6 @@ async function texCheFun ( curPagObj : Page, savNamStr : string ) : Promise< voi
 
 
 // #region Module Init
-
-let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's page errors are checked when it ends. How: This holds the current test's list.
-
-
 
 test.beforeEach( async ( { page : curPagObj } ) => { // What: Setup Hook. Why: Every field is typed into on real data under the policy, with errors watched. How: This starts the watcher, adds the headers and the violation listener, then opens the backup.
 
