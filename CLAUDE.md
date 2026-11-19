@@ -559,6 +559,18 @@ user-level `~/.claude/CLAUDE.md`, which applies to all projects. This repo
 is where those rules were developed, so its files are the examples cited
 there. This section holds only what applies to this project.
 
+### Select arrows: the browser's own
+
+Decided 2026-11-18, in the full audit. The user-level "Dropdown Arrows: An
+SVG File" rule draws each select's arrow from an SVG file with its color
+written out, since a file can't read a custom property. This app's themes,
+dark ones and user-made ones included, change every surface a select sits
+on, so no one written-out color matches them all. The 29 selects (the Data
+tab's cadence and sort selects, and the shared cadence and schedule editors'
+anchor selects) keep the browser's own arrow, which follows the page's color
+scheme. Vite's `assetsInlineLimit : 0` and the policy's lack of `data:` still
+apply.
+
 ### New persisted fields
 
 Decided 2026-10-04. A field newly added to persisted user data (state,
