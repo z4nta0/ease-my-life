@@ -81,6 +81,8 @@ import type { PicRcdTyp } from './data-model.ts'; // What: Picker Record Type. W
 
 // #region Types
 
+type PicUpdTyp = { chargeStep? : number, id : string, value? : number, weight? : number }; // What: Pick Update Type. Why: A pick can change other items' charge, weight, or step as a side effect. How: This describes one item's change, keyed by the saved field names, since the update is saved as is into a pending Today entry.
+
 type PicOptTyp = { // What: Pick Option Type. Why: A single pick can be steered by the caller. How: This describes picIteFun's options, every one optional.
 
 
@@ -91,10 +93,6 @@ type PicOptTyp = { // What: Pick Option Type. Why: A single pick can be steered 
 
 
 };
-
-
-
-type PicUpdTyp = { chargeStep? : number, id : string, value? : number, weight? : number }; // What: Pick Update Type. Why: A pick can change other items' charge, weight, or step as a side effect. How: This describes one item's change, keyed by the saved field names, since the update is saved as is into a pending Today entry.
 
 
 

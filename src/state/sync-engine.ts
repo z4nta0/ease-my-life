@@ -57,7 +57,9 @@ import type { SynDocTyp } from './sync-docs.ts';        // What: Sync Document T
 
 // #region Types
 
-type SynManTyp = { docs : Record< string, string >, rev : number, savedAt : number, v : number }; // What: Sync Manifest Type. Why: The cloud copy is described by one small record a sync reads first. How: This holds each document's hash, the revision, the last save time, and the schema version.
+type SynManTyp = { docs : Record< string, string >, rev : number, savedAt : number, v : number };                                              // What: Sync Manifest Type. Why: The cloud copy is described by one small record a sync reads first. How: This holds each document's hash, the revision, the last save time, and the schema version.
+type SynMetTyp = { docs : Record< string, string >, rev : number };                                                                            // What: Sync Meta Type. Why: A device has to know what it last synced to tell which side changed a document. How: This holds the hashes and revision of its last sync.
+type SynResTyp = { merStaObj : StaAppTyp | null, pusNeeBoo : boolean, synMetObj : SynMetTyp | null, synStaStr : 'busy' | 'newer' | 'synced' }; // What: Sync Result Type. Why: The caller needs the merged state, the new meta to save, and how the sync went. How: merStaObj is null when local state didn't change, and synStaStr is busy when every try lost the race, newer when the cloud's schema is too new.
 
 type SynBacTyp = { // What: Sync Backend Type. Why: The engine works against any store with these three calls. How: This types them.
 
@@ -68,9 +70,6 @@ type SynBacTyp = { // What: Sync Backend Type. Why: The engine works against any
 
 
 };
-
-type SynMetTyp = { docs : Record< string, string >, rev : number };                                                                            // What: Sync Meta Type. Why: A device has to know what it last synced to tell which side changed a document. How: This holds the hashes and revision of its last sync.
-type SynResTyp = { merStaObj : StaAppTyp | null, pusNeeBoo : boolean, synMetObj : SynMetTyp | null, synStaStr : 'busy' | 'newer' | 'synced' }; // What: Sync Result Type. Why: The caller needs the merged state, the new meta to save, and how the sync went. How: merStaObj is null when local state didn't change, and synStaStr is busy when every try lost the race, newer when the cloud's schema is too new.
 
 // #endregion Types
 

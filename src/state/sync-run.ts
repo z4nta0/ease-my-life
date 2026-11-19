@@ -65,11 +65,9 @@ import type { SynMetTyp } from './sync-engine.ts';        // What: Sync Meta Typ
 
 // #region Types
 
-type SynRcdTyp = { changedAt : number, docs? : Record< string, string >, rev? : number, uid? : string }; // What: Sync Record Type. Why: A device keeps what it last synced and when it last changed. How: This is the JSON stored under SYN_MET_STR, with docs and rev only after a first sync.
-
 type SynStaTyp = 'choose' | 'error' | 'newer' | 'offline' | 'synced' | 'syncing' | 'unpaid' | null; // What: Sync Status Type. Why: The account screen says how sync is going. How: This is null while signed out, unpaid before purchase, and one of the sync states after.
 
-
+type SynRcdTyp = { changedAt : number, docs? : Record< string, string >, rev? : number, uid? : string }; // What: Sync Record Type. Why: A device keeps what it last synced and when it last changed. How: This is the JSON stored under SYN_MET_STR, with docs and rev only after a first sync.
 
 type AccSynTyp = { // What: Account Sync Type. Why: The account screen shows the account and sync, and acts on both. How: This is what useSynRunFun returns.
 

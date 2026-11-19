@@ -83,8 +83,6 @@ import type { TasRcdTyp } from './data-model.ts'; // What: Task Record Type. Why
 
 type VisCauTyp = 'holidays' | 'schedule' | 'skipUntil' | 'weekends'; // What: Visibility Cause Type. Why: A due reminder can be hidden today for one of four reasons. How: This lists every reason todVisFun reports.
 
-
-
 type TodVisTyp = { // What: Today Visibility Type. Why: The schedule editor explains why a reminder isn't showing today. How: This describes what todVisFun returns.
 
 

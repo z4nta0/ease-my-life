@@ -48,7 +48,9 @@ type PclSouTyp = 'auto' | 'manual' | 'reroll';                                //
 type RemKinTyp = 'once' | 'recurring';                                        // What: Reminder Kind Type. Why: Reminder logs split one-time from recurring reminders. How: This lists both classes.
 type RepNamTyp = 'annual' | 'interval' | 'monthly' | 'once' | 'weekly';       // What: Repeat Name Type. Why: A reminder either happens once or repeats on one of four patterns. How: This lists every value a task's own repeat field can hold.
 
-
+type HolCusTyp = { day : number, id : string, month : number, name : string }; // What: Holiday Custom Type. Why: A user can add their own recurring days off. How: This describes one entry of state.holidays.custom, falling on day of month every year.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- What: Deliberate Any Type. Why: A save read back from storage or an import file can come from any earlier version of the app, or not be a save at all, so no fixed shape describes it. How: This allows any once here, so every other file names the case by type instead of writing any.
+type RawSavTyp = any;                                                          // What: Raw Save Type. Why: Saved state is read before migStaFun has brought it up to the current shape, and old saves carry fields and shapes StaAppTyp no longer has. How: This marks every value holding such an unmigrated save, which migStaFun turns into a StaAppTyp.
 
 type CdlRowTyp = { // What: Conditional-Log Row Type. Why: Stats charts how often each conditional triggered. How: This describes one entry of state.conditionalLog.
 
@@ -130,10 +132,6 @@ type DaiSetTyp = { // What: Daily Settings Type. Why: The daily generator runs c
 
 
 };
-
-
-
-type HolCusTyp = { day : number, id : string, month : number, name : string }; // What: Holiday Custom Type. Why: A user can add their own recurring days off. How: This describes one entry of state.holidays.custom, falling on day of month every year.
 
 
 
@@ -443,11 +441,6 @@ type StaAppTyp = { // What: State App Type. Why: The whole app runs on one saved
 
 
 };
-
-
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- What: Deliberate Any Type. Why: A save read back from storage or an import file can come from any earlier version of the app, or not be a save at all, so no fixed shape describes it. How: This allows any once here, so every other file names the case by type instead of writing any.
-type RawSavTyp = any; // What: Raw Save Type. Why: Saved state is read before migStaFun has brought it up to the current shape, and old saves carry fields and shapes StaAppTyp no longer has. How: This marks every value holding such an unmigrated save, which migStaFun turns into a StaAppTyp.
 
 // #endregion Types
 

@@ -93,8 +93,6 @@ import type { TodEntTyp } from '../core/data-model.ts'; // What: Today Entry Typ
 
 type EntDesTyp = Partial< TodEntTyp > & { _carry? : boolean, entry? : TodEntTyp }; // What: Entry Descriptor Type. Why: Generating hands setEntFun both carried entries and fresh picks. How: A carried one is flagged _carry and wraps its existing entry, and a fresh one holds the new entry's fields.
 
-
-
 type ActStoTyp = { // What: Action Store Type. Why: Every tab changes state only through the actions useAppStaFun hands back, so their signatures are the app's own state API. How: This lists every action with its parameters and return.
 
 

@@ -46,8 +46,6 @@ import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Typ
 
 type PreFilTyp = Partial< PicRcdTyp & TasRcdTyp > & { items? : Partial< IteRcdTyp >[], step? : number }; // What: Prefill Type. Why: A tour can prefill the real create form with a sample picker or reminder. How: This allows any picker or reminder field, plus a sample picker's items and the form step to open on.
 
-
-
 type TouBusTyp = { // What: Tour Bus Type. Why: The tours, the tour runner, and the tabs coordinate through one shared state. How: This describes it, every field optional since each is written by whichever module needs it.
 
 
