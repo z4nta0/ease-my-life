@@ -206,6 +206,8 @@ type WtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, selTabFun : ( tabI
 function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp ) : React.JSX.Element | null {
 
 
+	// #region Tour Setup
+
 	const onbStaObj = staAppObj.onboarding;                                                                       // What: Onboarding State Object. Why: Every check below reads the onboarding slice, which migStaFun guarantees on every state, a brand-new one included. How: This reads staAppObj.onboarding.
 	const resTouObj = onbStaObj.welcomed && onbStaObj.activeTour?.id === 'welcome' ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: A tour a reload interrupted should resume exactly where it left off instead of vanishing, since activeTour survives a reload (it's real persisted state) unlike GuiTouCom's own step state, but only once welcomed is already true, so the welcome modal (not yet dismissed) always takes priority. How: This reads onbStaObj.activeTour back out only when its own id matches 'welcome', otherwise null.
 
@@ -242,7 +244,11 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 
 	}, [ actStoObj, onbStaObj.welcomed, staAppObj.pickers ] ); // What: Effect Dependency Array. Why: This must re-run whenever the persisted welcomed flag flips, the same trigger the reopen effect above reacts to, and reads the actions and pickers too. How: actStoObj never changes identity, and a re-run caused by the pickers returns at the guard once the samples exist or welcomed is true.
 
+	// #endregion Tour Setup
 
+
+
+	// #region Tour Exits
 
 	// #region finTouFun
 
@@ -333,7 +339,11 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 
 	// #endregion skiEndFun
 
+	// #endregion Tour Exits
 
+
+
+	// #region Tour Steps
 
 	// #region steObjArr
 
@@ -562,6 +572,8 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 	};
 
 	// #endregion bacSteFun
+
+	// #endregion Tour Steps
 
 
 

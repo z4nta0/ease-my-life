@@ -217,6 +217,8 @@ type PocProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onCloTouFun : () =
 function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, staAppObj } : PocProTyp ) : React.JSX.Element {
 
 
+	// #region Tour Setup
+
 	const touRcdObj = ONB_EPT_ARR.find( ( curTouObj ) => curTouObj.ideStr === pagIdeStr )!; // What: Tour Record Object. Why: This page's own real page key/label are read off its own ONB_EPT_ARR manifest entry. How: This searches ONB_EPT_ARR for the entry whose own id matches pagIdeStr. // What: Non-Null Note. Why: A page tour is only opened with an id taken from ONB_EPT_ARR. How: The ! tells TypeScript the find returns its record.
 	const navTarObj = NAV_TAR_OBJ[ touRcdObj.pagStr ];                                      // What: Nav Target Object. Why: The intro modal's own fallback titStr/bodEle come from the shared nav-button catalog. How: This looks up NAV_TAR_OBJ by touRcdObj's own page.
 	const pagCopObj = PAG_COP_OBJ[ pagIdeStr ];                                             // What: Page Copy Object. Why: The intro modal's own title/body/pills prefer this page's own dedicated copy when it has one. How: This looks up PAG_COP_OBJ by pagIdeStr.
@@ -227,6 +229,8 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `page-${ pagIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding/tour-runner.tsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this page's own tour id, otherwise null.
 
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuiTouCom running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
+
+	// #endregion Tour Setup
 
 
 
@@ -322,6 +326,8 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 
 
 
+	// #region Step List Build
+
 	// #region oneRunFun
 
 	/**
@@ -377,6 +383,8 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 
 
 	];
+
+	// #endregion Step List Build
 
 
 

@@ -1006,6 +1006,8 @@ type FocProTyp = { actIdeStr : string, actStoObj : ActStoTyp, feaIdeStr : string
 function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, staAppObj } : FocProTyp ) : React.JSX.Element {
 
 
+	// #region Tour Setup
+
 	const feaRcdObj = APP_FEA_ARR.find( ( curFeaObj ) => curFeaObj.ideStr === feaIdeStr )!;                                          // What: Feature Record Object. Why: This feature's own pagStr/titStr/bodEle/pilArr/timStr are read off its own APP_FEA_ARR entry. How: This searches APP_FEA_ARR for the entry whose own id matches feaIdeStr. // What: Non-Null Note. Why: App only opens a feature tour with an id taken from APP_FEA_ARR. How: The ! tells TypeScript the find returns its record.
 	const onbStaObj = staAppObj.onboarding;                                                                                          // What: Onboarding State Object. Why: A reload lands here with tab-today.tsx's own actFeaStr already re-derived from this SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resBoo) step to land on. How: This reads staAppObj.onboarding, which migStaFun guarantees on every state.
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `appfeature-${ feaIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding/tour-runner.tsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this feature's own touIdeStr, otherwise null.
@@ -1034,6 +1036,8 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 
 
 	}, [ feaIdeStr ] ); // What: Effect Dependency Array. Why: This must re-run whenever feaIdeStr itself changes, so a fresh mount for a different feature re-checks fresh. How: feaIdeStr is the exact value this effect's own guard reads.
+
+	// #endregion Tour Setup
 
 
 
@@ -1119,6 +1123,8 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 
 
 
+	// #region Step List Build
+
 	const extSteArr = buiTesFun( feaIdeStr, actStoObj, alrProBoo ); // What: Extra Step Array. Why: GuiTouCom needs this feature's own full step array beyond Step 1. How: This calls buiTesFun with feaIdeStr, actStoObj, and alrProBoo.
 
 
@@ -1137,6 +1143,8 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 
 	const oneSteObj = buiTs1Fun( feaRcdObj.pagStr, feaIdeStr === 'feat_edit_item' ? colAllFun : undefined, extSteArr.length ? 'Next' : 'Done' ); // What: One Step Object. Why: Every feature but feat_highlights opens on the shared nav-button step. How: This builds it with colAllFun only for feat_edit_item, labeled Done when there are no further steps.
 	const steObjArr = feaIdeStr === 'feat_highlights' ? extSteArr : [ oneSteObj, ...extSteArr ];                                                 // What: Step Object Array. Why: feat_highlights' own target is already on screen, so it skips the shared step. How: This uses extSteArr alone for feat_highlights, otherwise puts oneSteObj first.
+
+	// #endregion Step List Build
 
 
 
