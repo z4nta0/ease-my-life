@@ -261,11 +261,16 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
+	// #region Rect Tracking
+
 	const recTarFun = React.useCallback( () => { // What: Recompute Target Function. Why: Every tagged element's own rect must be recomputed every frame while active, to stay correct under scrolling/reflow, and also right after a click that could have changed the DOM. How: This rebuilds the whole rect map from scratch and writes it via setRecMapObj.
 
 
 		const nexMapObj : Record< string, HelRecTyp > = {}; // What: Next Map Object. Why: The whole rect map is rebuilt from scratch every call rather than patched incrementally. How: This starts empty and is filled in by the loops below before being committed via setRecMapObj.
 
+
+
+		// #region Chrome Collection
 
 		const chrSelArr = [ // What: Chrome Selector Array. Why: These are the only pieces of always-on-top chrome any highlight ever needs clipping against; the tab bar alone varies its own edge at runtime. How: This is mapped into real chrome items below.
 
@@ -316,6 +321,8 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 			} )
 			.filter( ( chrIteObj ) => chrIteObj.chrSidStr ); // What: Sided Chrome Filter. Why: A chrome item with no resolved side has no direction to clip in. How: This keeps only items whose own chrSidStr is set.
+
+		// #endregion Chrome Collection
 
 
 
@@ -462,6 +469,8 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
+		// #region Column-Group Snapping
+
 		const groMapObj : Record< string, string[] > = {}; // What: Group Map Object. Why: column group items (the Day Log panel's per-column highlights) need their own siblings gathered together before they can be snapped edge-to-edge below. How: This starts empty and is filled by the loop directly below.
 
 
@@ -545,9 +554,15 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 		} );
 
+		// #endregion Column-Group Snapping
+
+
 
 		setRecMapObj( nexMapObj ); // What: Rect Map Commit. Why: The whole freshly-recomputed map must replace the previous one in one single state update. How: This writes nexMapObj into recMapObj via its own setter.
 
+
+
+		// #region Toggle Rect Handling
 
 		const togButEle = document.querySelector( '[data-element-name-hook~="helTogBut"]' ); // What: Toggle Button Element. Why: The page's own toggle button sits inside sticky/stacked chrome that traps its own z-index below the dim layer's, so it needs its own mask cutout even though it is never one of allIteArr. How: This looks up the one .helTogBut currently on the page.
 
@@ -562,6 +577,8 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 		}
+
+		// #endregion Toggle Rect Handling
 
 
 	}, [ allIteArr ] ); // What: Callback Dependency Array. Why: This callback's own identity only needs to change when the underlying catalog itself changes. How: allIteArr is read directly throughout the callback body above.
@@ -636,6 +653,8 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 	}, [ actModBoo, allIteArr, safRecFun ] ); // What: Effect Dependency Array. Why: This effect must restart whenever help mode itself toggles, and re-close over a fresh safRecFun/allIteArr whenever either changes identity. How: actModBoo gates whether the loop runs at all, and the other two are read directly inside looRafFun/safRecFun above.
+
+	// #endregion Rect Tracking
 
 
 
@@ -745,12 +764,16 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
+	// #region Derived Render Values
+
 	const vieWidNum  = window.innerWidth;                                                                   // What: Viewport Width Number. Why: The SVG mask below needs the current viewport width to fully cover the screen. How: This reads window.innerWidth once per render.
 	const vieHeiNum  = window.innerHeight;                                                                  // What: Viewport Height Number. Why: The SVG mask below needs the current viewport height to fully cover the screen. How: This reads window.innerHeight once per render.
 	const recEntArr = Object.entries( recMapObj );                                                          // What: Rect Entries Array. Why: Both the mask cutouts and the rendered highlight spots below need to walk every current [id, rect] pair. How: This converts recMapObj into a plain array via Object.entries.
 	const basIdeStr = opeIdeStr ? opeIdeStr.split( '::' )[ 0 ] : null;                                      // What: Base Identifier String. Why: opeIdeStr can be a mulBoo sub-id, so the catalog lookup below needs the id with any "::N" suffix stripped off. How: This splits opeIdeStr on '::' and keeps just the first segment.
 	const opeIteObj = basIdeStr ? allIteArr.find( ( curIteObj ) => curIteObj.ideStr === basIdeStr ) : null; // What: Open Item Object. Why: The open tip needs the catalog item whose titStr/bodEle every mulBoo instance shares. How: This finds the one entry in allIteArr whose own ideStr matches basIdeStr.
 	const opeRecObj = opeIdeStr ? recMapObj[ opeIdeStr ] : null;                                            // What: Open Rect Object. Why: The open tip needs the FULL id's own rect, not the base id's. How: This looks opeIdeStr straight up in recMapObj.
+
+	// #endregion Derived Render Values
 
 
 

@@ -114,8 +114,6 @@ type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : stri
 function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, isaEdiBoo, isaRmvBoo, isaRolBoo, jusCheStr, onGriDowFun, onPlaTutFun, onRenIteFun, onRerEntFun, onSkiEntFun, onTogDonFun, onTogEdiFun, onUncTutFun, picRecObj, staAppObj } : EccProTyp ) : React.JSX.Element | null {
 
 
-	// #region Tutorial Branch
-
 	if ( entRecObj.kind === 'tutorial' ) { // What: Tutorial Branch. Why: A mini-tour launcher card renders entirely differently from a real pick, with no item/reroll/skip of its own. How: This returns a dedicated article and skips every other branch below.
 
 
@@ -314,11 +312,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 	}
 
-	// #endregion Tutorial Branch
 
-
-
-	// #region Day-Off Branch
 
 	if ( entRecObj.kind === 'dayoff' ) { // What: Day-Off Branch. Why: A triggered conditional's own day-off card renders like a completable row, but with no item, no re-roll, and no editable name. How: This returns a dedicated article and skips every other branch below.
 
@@ -552,11 +546,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 	}
 
-	// #endregion Day-Off Branch
 
-
-
-	// #region Charging Branch
 
 	if ( entRecObj.kind === 'charging' ) { // What: Charging Branch. Why: An ease-up picker with nothing charged to its own threshold today still needs a completable placeholder row that applies the day's drift once checked. How: This returns a dedicated article and skips the real-pick branch below.
 
@@ -768,8 +758,6 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 	}
-
-	// #endregion Charging Branch
 
 
 
