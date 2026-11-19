@@ -8,8 +8,10 @@ import cheSerFun from '../../netlify/handlers/checkout.mts';      // What: Check
 import webSerFun from '../../netlify/handlers/polar-webhook.mts'; // What: Webhook Serve Function. Why: The webhook function is tested directly. How: This is its handler.
 
 
+import { admPosFun   } from '../support/emulator.ts';      // What: Admin Post Function. Why: The emulator's admin API creates and reads test accounts. How: This posts JSON as the emulator's owner and parses the reply.
 import { before      } from 'node:test';                   // What: Before. Why: The handlers' setup is set once for every case. How: This runs it first.
 import { createHmac  } from 'node:crypto';                 // What: Create HMAC. Why: Test webhooks are signed the way Polar signs them. How: This computes their signatures.
+import { EMU_PRO_STR } from '../support/emulator.ts';      // What: Emulator Project String. Why: Admin calls name the project. How: This is the demo project.
 import { PRO_LIV_STR } from '../../netlify/lib/polar.mts'; // What: Product Live String. Why: Test orders are for the sync product. How: This is its id.
 import { PRO_SAN_STR } from '../../netlify/lib/polar.mts'; // What: Product Sandbox String. Why: A preview's checkout sells the sandbox product. How: This is its id.
 import { test        } from 'node:test';                   // What: Test. Why: Each case is its own test. How: This declares them.
@@ -46,8 +48,6 @@ import { test        } from 'node:test';                   // What: Test. Why: E
 
 // #region Constants
 
-const AUT_EMU_STR = 'http://127.0.0.1:9099';                     // What: Auth Emulator String. Why: Admin calls reach the auth emulator. How: This is its address.
-const EMU_PRO_STR = 'demo-ease-my-life';                         // What: Emulator Project String. Why: Admin calls name the project. How: This is the demo project.
 const LIV_COT_OBJ = { deploy : { context : 'production' } };     // What: Live Context Object. Why: Most cases run as the production site. How: This stands in for Netlify's context there.
 const PRE_COT_OBJ = { deploy : { context : 'deploy-preview' } }; // What: Preview Context Object. Why: A preview must not sell before the sandbox exists. How: This stands in for Netlify's context there.
 const WEB_SEC_STR = 'test-webhook-secret';                       // What: Webhook Secret String. Why: Test webhooks are signed with a known secret. How: This is it.
@@ -57,10 +57,6 @@ const WEB_SEC_STR = 'test-webhook-secret';                       // What: Webhoo
 
 
 // #region Helpers
-
-const admPosFun = ( adrPatStr : string, posBodObj : object ) => fetch( `${ AUT_EMU_STR }${ adrPatStr }`, { body : JSON.stringify( posBodObj ), headers : { 'Authorization' : 'Bearer owner', 'Content-Type' : 'application/json' }, method : 'POST' } ).then( ( resCurObj ) => resCurObj.json() ); // What: Admin Post Function. Why: The emulator's admin API creates and reads test accounts. How: This posts JSON as the emulator's owner and parses the reply.
-
-
 
 // #region accNewFun
 

@@ -3,14 +3,13 @@
 
 // #region Imports
 
-import { expect      } from '@playwright/test';       // What: Expect. Why: Each check passes only with no problems found. How: This asserts each problem list is empty and the page reaches no wider than the viewport.
-import { EXT_STA_ARR } from '../support/states.ts';   // What: Extra State Array. Why: An opened editor or form holds controls the plain tabs don't. How: This lists those states, such as an item editor.
-import { keyProFun   } from '../support/scripted.ts'; // What: Keyboard Problems Function. Why: Everything has to be usable without a mouse. How: This walks the page with Tab and returns every problem it meets.
-import { namProFun   } from '../support/scripted.ts'; // What: Name Problems Function. Why: Every control must be announced by a clean name. How: This reads the accessibility tree and returns every badly named link or button.
-import { opeStaFun   } from '../support/states.ts';   // What: Open State Function. Why: Each check opens and settles its state first. How: This loads it and waits for it.
-import { REA_STA_ARR } from '../support/states.ts';   // What: Reachable State Array. Why: An open tip or form is a look a visitor can stay on. How: This lists those states, such as an open info tip.
-import { STA_REC_ARR } from '../support/states.ts';   // What: State Record Array. Why: Every shared app state is checked. How: This lists them.
-import { test        } from '@playwright/test';       // What: Test. Why: Each check of each state is its own test. How: This declares them.
+import { ALL_STA_ARR } from '../support/states.ts';        // What: All State Array. Why: Every shared state is checked, and so is each opened or reachable one, since each holds a look the plain tabs don't. How: This lists them.
+import { expect      } from '@playwright/test';            // What: Expect. Why: Each check passes only with no problems found. How: This asserts each problem list is empty and the page reaches no wider than the viewport.
+import { keyProFun   } from '../support/scripted.ts';      // What: Keyboard Problems Function. Why: Everything has to be usable without a mouse. How: This walks the page with Tab and returns every problem it meets.
+import { namProFun   } from '../support/scripted.ts';      // What: Name Problems Function. Why: Every control must be announced by a clean name. How: This reads the accessibility tree and returns every badly named link or button.
+import { opeStaFun   } from '../support/states.ts';        // What: Open State Function. Why: Each check opens and settles its state first. How: This loads it and waits for it.
+import { REF_WID_NUM } from '../support/accessibility.ts'; // What: Reflow Width Number. Why: WCAG's reflow criterion asks for no sideways scrolling at 320 CSS pixels. How: This is the width the reflow check opens each state at.
+import { test        } from '@playwright/test';            // What: Test. Why: Each check of each state is its own test. How: This declares them.
 
 // #endregion Imports
 
@@ -33,22 +32,12 @@ import { test        } from '@playwright/test';       // What: Test. Why: Each c
  * the viewport. Every test opens its own page, so they run in parallel.
  *
  * Sections:
- *  - Constants
  *  - Helpers
  *  - Module Init
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
-
-
-
-// #region Constants
-
-const ALL_STA_ARR = [ ...STA_REC_ARR, ...EXT_STA_ARR, ...REA_STA_ARR ]; // What: All State Array. Why: Every shared state is checked, and so is each opened or reachable one, since each holds a look the plain tabs don't. How: This lists the shared states first, then the opened ones, then the reachable ones.
-const REF_WID_NUM = 320;                                                // What: Reflow Width Number. Why: WCAG's reflow criterion asks for no sideways scrolling at 320 CSS pixels, the width of 1,280px at 400% zoom. How: This is the viewport width the reflow check opens each state at.
-
-// #endregion Constants
 
 
 

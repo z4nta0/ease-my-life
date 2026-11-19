@@ -4,6 +4,7 @@
 // #region Imports
 
 import { expect      } from '@playwright/test';     // What: Expect. Why: Each check passes only when the policy is enforced and the page breaks none of its rules. How: This asserts on what each check collects from the page.
+import { LEG_PAT_ARR } from '../support/states.ts'; // What: Legal Path Array. Why: The privacy policy and terms are static pages of their own, outside the app's states. How: This lists their addresses.
 import { opeStaFun   } from '../support/states.ts'; // What: Open State Function. Why: Each state is opened the way the accessibility suite opens it. How: This loads the state and waits until it's settled.
 import { polSetFun   } from '../support/policy.ts'; // What: Policy Setup Function. Why: Every page loads under the headers Netlify really sends. How: This adds the headers and the violation listener.
 import { polVioFun   } from '../support/policy.ts'; // What: Policy Violation Function. Why: Each check reads what the browser refused. How: This reads the recorded violations.
@@ -32,32 +33,11 @@ import { watErrFun   } from '../support/watch.ts';  // What: Watch Errors Functi
  * referrer. Last, an unknown address has to load the app and be replaced by
  * the root, keeping its query and hash, since the app answers at one address.
  *
- * Sections:
- *  - Constants
- *  - Module Init
- *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
-
-// #region Constants
-
-const LEG_PAT_ARR = [ // What: Legal Path Array. Why: The privacy policy and terms are static pages of their own, outside the app's states. How: Each entry is one page's address.
-
-
-	'/privacy', // What: Privacy Path. Why: The privacy policy has a fixed page. How: This is its address.
-	'/terms'    // What: Terms Path. Why: The terms have a fixed page. How: This is their address.
-
-
-];
-
-// #endregion Constants
-
-
-
-// #region Module Init
 
 test( 'the policy refuses an injected inline script', async ( { page : curPagObj } ) => { // What: Policy Live Test. Why: A clean run means nothing unless the policy was really applied and its violations really recorded. How: This loads the app under the policy, injects an inline script, and checks it didn't run and was reported.
 
@@ -171,7 +151,5 @@ test( 'an unknown address loads the app and is replaced by the root', async ( { 
 
 
 } );
-
-// #endregion Module Init
 
 

@@ -24,10 +24,11 @@ import type { Page } from '@playwright/test'; // What: Page. Why: Opening a stat
  * phone and desktop widths, help mode, the Privacy Policy panel, and the
  * welcome modal a fresh install opens with, and two more lists hold the
  * opened editors and forms, and the open tips and support form only the
- * accessibility suite visits. opeStaFun sizes the viewport, loads the backup
- * (or an empty install), switches tabs, waits for the fonts, runs the state's
- * own action, and then waits for running animations to settle so nothing is
- * measured mid-fade.
+ * accessibility suite visits. ALL_STA_ARR joins all three, and LEG_PAT_ARR
+ * lists the legal pages' addresses, which sit outside the app's states.
+ * opeStaFun sizes the viewport, loads the backup (or an empty install),
+ * switches tabs, waits for the fonts, runs the state's own action, and then
+ * waits for running animations to settle so nothing is measured mid-fade.
  *
  * Sections:
  *  - Types
@@ -181,6 +182,10 @@ const EXT_STA_ARR : StaRecTyp[] = [ // What: Extra State Array. Why: An editor o
 ];
 
 // #endregion EXT_STA_ARR
+
+
+
+const LEG_PAT_ARR = [ '/privacy', '/terms' ]; // What: Legal Path Array. Why: The privacy policy and terms are static pages of their own, outside the app's states, and get the same checks. How: This lists their addresses.
 
 
 
@@ -354,6 +359,10 @@ const STA_REC_ARR : StaRecTyp[] = [ // What: State Record Array. Why: Every chec
 
 // #endregion STA_REC_ARR
 
+
+
+const ALL_STA_ARR = [ ...STA_REC_ARR, ...EXT_STA_ARR, ...REA_STA_ARR ]; // What: All State Array. Why: Every shared state is checked, and so is each opened or reachable one, since each holds a look the plain tabs don't. How: This lists the shared states first, then the opened ones, then the reachable ones.
+
 // #endregion Constants
 
 
@@ -461,7 +470,7 @@ async function opeStaFun ( curPagObj : Page, staRecObj : StaRecTyp ) : Promise< 
 
 // #region Exports
 
-export { EXT_STA_ARR, opeStaFun, REA_STA_ARR, STA_REC_ARR, type StaRecTyp }; // What: Named Exports. Why: The accessibility and feedback specs share these states and their opener. How: This exports the state lists, the opener, and the state type by name.
+export { ALL_STA_ARR, EXT_STA_ARR, LEG_PAT_ARR, opeStaFun, REA_STA_ARR, STA_REC_ARR, type StaRecTyp }; // What: Named Exports. Why: The accessibility, feedback, and security specs share these states, the legal pages' addresses, and the state opener. How: This exports the state lists, the legal paths, the opener, and the state type by name.
 
 // #endregion Exports
 

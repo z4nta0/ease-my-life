@@ -9,6 +9,8 @@ import { cheDonFun     } from '../support/check-completion.ts'; // What: Check D
 import { cheGenFun     } from '../support/check-generation.ts'; // What: Check Generation Function. Why: Every generated day is verified. How: This checks the day's list.
 import { cheRemFun     } from '../support/check-completion.ts'; // What: Check Reminder Function. Why: Every reminder check-off is verified. How: This checks one completion.
 import { cheUndFun     } from '../support/check-completion.ts'; // What: Check Undo Function. Why: Unchecking must undo exactly. How: This checks one undo.
+import { donCouFun     } from '../support/today.ts';            // What: Done Count Function. Why: A check-off raises the done count by one. How: This counts done entries.
+import { ENT_CAR_STR   } from '../support/today.ts';            // What: Entry Card String. Why: Every entry card is checked off in turn. How: This selects real entry cards.
 import { expect        } from '@playwright/test';               // What: Expect. Why: The run passes only with no problems found. How: This asserts the collected list is empty.
 import { expStaFun     } from '../support/check-stats.ts';      // What: Expected Stats Function. Why: The Stats tab is checked against the logs. How: This recomputes its figures.
 import { insClcFun     } from '../support/clock.ts';            // What: Install Clock Function. Why: The run starts on a fixed date. How: This installs the fake clock.
@@ -18,6 +20,7 @@ import { opeDayFun     } from '../support/app.ts';              // What: Open Da
 import { readFileSync  } from 'node:fs';                        // What: Read File Sync. Why: A baseline trace can be compared. How: This reads it.
 import { reaFixFun     } from '../support/fixture.ts';          // What: Read Fixture Function. Why: The run starts from real data. How: This reads the backup.
 import { reaStaFun     } from '../support/storage.ts';          // What: Read State Function. Why: Each check reads the saved state. How: This reads it.
+import { REM_CAR_STR   } from '../support/today.ts';            // What: Reminder Card String. Why: Today's reminders are compared and checked off. How: This selects real reminder cards.
 import { remVisFun     } from '../support/schedule.ts';         // What: Reminder Visible Function. Why: Today's reminders are predicted. How: This decides which show.
 import { selTabFun     } from '../support/app.ts';              // What: Select Tab Function. Why: The run ends on the Stats tab. How: This switches tabs.
 import { test          } from '@playwright/test';               // What: Test. Why: The simulation is one long Playwright test. How: This declares it.
@@ -87,10 +90,8 @@ type ProRolTyp = { firNum : number, namStr : string, proSumNum : number, rolNum 
 
 // #region Constants
 
-const CHE_BUT_STR = '[data-element-name-hook~="carCheBut"]';                                                                                       // What: Check Button String. Why: Every card checks off through this button. How: This selects it.
-const ENT_CAR_STR = '[data-element-name-hook~="todCarArt"]:not([data-element-name-hook~="remCarArt"]):not([data-element-name-hook~="tutCarArt"])'; // What: Entry Card String. Why: Entry cards exclude reminders and tutorials. How: This selects real entry cards.
-const OUT_DIR_STR = new URL( '../output/simulation/', import.meta.url );                                                                           // What: Output Directory String. Why: The trace lands where git ignores it. How: This is tests/output/simulation.
-const REM_CAR_STR = '[data-element-name-hook~="remCarArt"]:not([data-element-name-hook~="tutCarArt"])';                                            // What: Reminder Card String. Why: Reminder cards exclude tutorials. How: This selects real reminder cards.
+const CHE_BUT_STR = '[data-element-name-hook~="carCheBut"]';             // What: Check Button String. Why: Every card checks off through this button. How: This selects it.
+const OUT_DIR_STR = new URL( '../output/simulation/', import.meta.url ); // What: Output Directory String. Why: The trace lands where git ignores it. How: This is tests/output/simulation.
 
 // #endregion Constants
 
@@ -181,7 +182,6 @@ const cliCheFun = async ( curPagObj : Page, carLisLoc : Locator, couFunObj : ( s
 
 
 
-const donCouFun = ( staAppObj : StaAppTyp ) => staAppObj.today.entries.filter( ( curEntObj ) => curEntObj.done ).length;                               // What: Done Count Function. Why: A check-off raises the done count by one. How: This counts done entries.
 const namLabFun = ( ariLabStr : string | null ) => ( ariLabStr || '' ).replace( /^(Un)?[Mm]ark /, '' ).replace( / complete$/, '' );                    // What: Name Label Function. Why: Check buttons name their card in their label. How: This strips the label down to the name.
 const remDonFun = ( staAppObj : StaAppTyp, dayIsoStr : string ) => staAppObj.tasks.filter( ( curTasObj ) => curTasObj.lastDone === dayIsoStr ).length; // What: Reminder Done Function. Why: A reminder check-off raises today's done count by one. How: This counts reminders done today.
 

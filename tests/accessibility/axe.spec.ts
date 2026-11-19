@@ -6,12 +6,11 @@
 import AxeBuilder from '@axe-core/playwright'; // What: Axe Builder. Why: axe-core finds the mechanical accessibility failures, such as low contrast, missing names, and misused ARIA. How: This runs its scan against a Playwright page.
 
 
-import { expect      } from '@playwright/test';     // What: Expect. Why: A state passes only with no violations. How: This asserts the violation list is empty.
-import { EXT_STA_ARR } from '../support/states.ts'; // What: Extra State Array. Why: An opened editor or form holds controls the plain tabs don't. How: This lists those states, such as an item editor.
-import { opeStaFun   } from '../support/states.ts'; // What: Open State Function. Why: Each state has to be opened and settled before it's scanned. How: This loads it and waits for it.
-import { REA_STA_ARR } from '../support/states.ts'; // What: Reachable State Array. Why: An open tip or form is a look a visitor can stay on. How: This lists those states, such as an open info tip.
-import { STA_REC_ARR } from '../support/states.ts'; // What: State Record Array. Why: Every shared app state is scanned. How: This lists them.
-import { test        } from '@playwright/test';     // What: Test. Why: Each state is its own test. How: This declares them.
+import { ALL_STA_ARR } from '../support/states.ts';        // What: All State Array. Why: Every shared state is scanned, and so is each opened or reachable one, since each holds a look the plain tabs don't. How: This lists them.
+import { AXE_TAG_ARR } from '../support/accessibility.ts'; // What: Axe Tag Array. Why: The app targets WCAG 2.2 AA plus axe's best practices. How: This limits the scan to those rule sets.
+import { expect      } from '@playwright/test';            // What: Expect. Why: A state passes only with no violations. How: This asserts the violation list is empty.
+import { opeStaFun   } from '../support/states.ts';        // What: Open State Function. Why: Each state has to be opened and settled before it's scanned. How: This loads it and waits for it.
+import { test        } from '@playwright/test';            // What: Test. Why: Each state is its own test. How: This declares them.
 
 
 import type { Page } from '@playwright/test'; // What: Page. Why: The scan helper drives a Playwright page. How: This types its page parameter.
@@ -35,7 +34,6 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The scan helpe
  *
  * Sections:
  *  - Types
- *  - Constants
  *  - Helpers
  *  - Module Init
  *
@@ -50,15 +48,6 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The scan helpe
 type AxeResTyp = Awaited< ReturnType< AxeBuilder[ 'analyze' ] > >; // What: Axe Results Type. Why: The scan's findings are summarized for the report, and axe-core itself is only a dependency of the Playwright integration. How: This reads the type from what AxeBuilder's analyze resolves to.
 
 // #endregion Types
-
-
-
-// #region Constants
-
-const ALL_STA_ARR = [ ...STA_REC_ARR, ...EXT_STA_ARR, ...REA_STA_ARR ];                          // What: All State Array. Why: Every shared state is scanned, and so is each opened or reachable one, since each holds a look the plain tabs don't. How: This lists the shared states first, then the opened ones, then the reachable ones.
-const AXE_TAG_ARR = [ 'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice' ]; // What: Axe Tag Array. Why: The app targets WCAG 2.2 AA, which includes every earlier A and AA rule, and axe's best practices catch common problems WCAG doesn't name. How: This limits the scan to those rule sets.
-
-// #endregion Constants
 
 
 

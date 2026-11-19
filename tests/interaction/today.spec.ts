@@ -3,17 +3,20 @@
 
 // #region Imports
 
-import { expect    } from '@playwright/test';      // What: Expect. Why: Every flow asserts what it changed. How: This makes the assertions.
-import { opeDayFun } from '../support/app.ts';     // What: Open Day Function. Why: The refill flow reopens the day on a staged state. How: This loads the app on the fixed day.
-import { opeFixFun } from '../support/app.ts';     // What: Open Fixture Function. Why: Each flow starts from real data. How: This opens the backup on a fixed day.
-import { reaStaFun } from '../support/storage.ts'; // What: Read State Function. Why: Flows compare saved state before and after. How: This reads it.
-import { recAniFun } from '../support/watch.ts';   // What: Record Animations Function. Why: Flows confirm their animations played. How: This starts recording.
-import { seeAniFun } from '../support/watch.ts';   // What: Seen Animation Function. Why: Flows confirm their animations played. How: This checks the record.
-import { selTabFun } from '../support/app.ts';     // What: Select Tab Function. Why: The streak test pushes an item from the Pickers tab. How: This switches tabs.
-import { test      } from '@playwright/test';      // What: Test. Why: Each flow is its own test. How: This declares them.
-import { waiStaFun } from '../support/storage.ts'; // What: Wait State Function. Why: Saves land a moment after each action. How: This waits for them.
-import { watErrFun } from '../support/watch.ts';   // What: Watch Errors Function. Why: A flow fails on any page error. How: This collects them.
-import { wriStaFun } from '../support/storage.ts'; // What: Write State Function. Why: The refill flow stages an item about to run out. How: This saves the staged state.
+import { donCouFun   } from '../support/today.ts';   // What: Done Count Function. Why: Check-offs are recognized by the done count. How: This counts done entries.
+import { ENT_CAR_STR } from '../support/today.ts';   // What: Entry Card String. Why: Most flows act on a real entry card. How: This selects them, leaving out reminders and tutorials.
+import { expect      } from '@playwright/test';      // What: Expect. Why: Every flow asserts what it changed. How: This makes the assertions.
+import { opeDayFun   } from '../support/app.ts';     // What: Open Day Function. Why: The refill flow reopens the day on a staged state. How: This loads the app on the fixed day.
+import { opeFixFun   } from '../support/app.ts';     // What: Open Fixture Function. Why: Each flow starts from real data. How: This opens the backup on a fixed day.
+import { reaStaFun   } from '../support/storage.ts'; // What: Read State Function. Why: Flows compare saved state before and after. How: This reads it.
+import { recAniFun   } from '../support/watch.ts';   // What: Record Animations Function. Why: Flows confirm their animations played. How: This starts recording.
+import { REM_CAR_STR } from '../support/today.ts';   // What: Reminder Card String. Why: The reminder flows act on a real reminder card. How: This selects them, leaving out tutorials.
+import { seeAniFun   } from '../support/watch.ts';   // What: Seen Animation Function. Why: Flows confirm their animations played. How: This checks the record.
+import { selTabFun   } from '../support/app.ts';     // What: Select Tab Function. Why: The streak test pushes an item from the Pickers tab. How: This switches tabs.
+import { test        } from '@playwright/test';      // What: Test. Why: Each flow is its own test. How: This declares them.
+import { waiStaFun   } from '../support/storage.ts'; // What: Wait State Function. Why: Saves land a moment after each action. How: This waits for them.
+import { watErrFun   } from '../support/watch.ts';   // What: Watch Errors Function. Why: A flow fails on any page error. How: This collects them.
+import { wriStaFun   } from '../support/storage.ts'; // What: Write State Function. Why: The refill flow stages an item about to run out. How: This saves the staged state.
 
 
 import type { Page      } from '@playwright/test';             // What: Page. Why: Helpers drive the page. How: This types the page parameters.
@@ -55,9 +58,7 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
 
 // #region Constants
 
-const ENT_CAR_STR = '[data-element-name-hook~="todCarArt"]:not([data-element-name-hook~="remCarArt"]):not([data-element-name-hook~="tutCarArt"])';                                            // What: Entry Card String. Why: Entry cards exclude reminders and tutorials. How: This selects real entry cards.
 const PIC_GRO_STR = '[data-element-name-hook~="todGroSec"]:not([data-element-name-hook~="appFeaSec"]):not([data-element-name-hook~="pagTouSec"]):not([data-element-name-hook~="remGroSec"])'; // What: Picker Group String. Why: Picker group sections exclude the Reminders, page tours, and app features groups. How: This selects real picker group sections.
-const REM_CAR_STR = '[data-element-name-hook~="remCarArt"]:not([data-element-name-hook~="tutCarArt"])';                                                                                       // What: Reminder Card String. Why: Reminder cards exclude tutorials. How: This selects real reminder cards.
 const UNC_BUT_STR = '[data-element-name-hook~="carCheBut"][aria-pressed="false"]'; // What: Unchecked Button String. Why: Check-offs click unchecked buttons. How: This selects them.
 
 // #endregion Constants
@@ -73,10 +74,6 @@ let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's pa
 
 
 // #region Helpers
-
-const donCouFun = ( staAppObj : StaAppTyp ) => staAppObj.today.entries.filter( ( curEntObj ) => curEntObj.done ).length; // What: Done Count Function. Why: Check-offs are recognized by the done count. How: This counts done entries.
-
-
 
 // #region picCarFun
 

@@ -6,10 +6,13 @@
 import AxeBuiCla from '@axe-core/playwright'; // What: Axe Builder Class. Why: axe-core finds the mechanical accessibility failures, such as low contrast and missing names. How: This runs its scan against a Playwright page.
 
 
-import { expect    } from '@playwright/test';       // What: Expect. Why: Each check asserts on what it reads from the page. How: This compares each reading with what the page should show.
-import { keyProFun } from '../support/scripted.ts'; // What: Keyboard Problems Function. Why: The pages have to be usable without a mouse, as the app is. How: This walks the page with Tab and returns every problem it meets.
-import { namProFun } from '../support/scripted.ts'; // What: Name Problems Function. Why: Every link must be announced by a clean name, a new tab link's note included. How: This reads the accessibility tree and returns every badly named link or button.
-import { test      } from '@playwright/test';       // What: Test. Why: Each check of each legal page is its own test. How: This declares them.
+import { AXE_TAG_ARR } from '../support/accessibility.ts'; // What: Axe Tag Array. Why: The pages target WCAG 2.2 AA, as the app does, plus axe's best practices. How: This limits the scan to those rule sets.
+import { expect      } from '@playwright/test';            // What: Expect. Why: Each check asserts on what it reads from the page. How: This compares each reading with what the page should show.
+import { keyProFun   } from '../support/scripted.ts';      // What: Keyboard Problems Function. Why: The pages have to be usable without a mouse, as the app is. How: This walks the page with Tab and returns every problem it meets.
+import { LEG_PAT_ARR } from '../support/states.ts';        // What: Legal Path Array. Why: Both legal pages get the same checks. How: This lists their addresses.
+import { namProFun   } from '../support/scripted.ts';      // What: Name Problems Function. Why: Every link must be announced by a clean name, a new tab link's note included. How: This reads the accessibility tree and returns every badly named link or button.
+import { REF_WID_NUM } from '../support/accessibility.ts'; // What: Reflow Width Number. Why: WCAG's reflow criterion asks for no sideways scrolling at 320 CSS pixels. How: This is the width the reflow check opens each page at.
+import { test        } from '@playwright/test';            // What: Test. Why: Each check of each legal page is its own test. How: This declares them.
 
 
 import type { Page } from '@playwright/test'; // What: Page. Why: The open helper drives a Playwright page. How: This types its page parameter.
@@ -45,10 +48,7 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The open helpe
 
 // #region Constants
 
-const AXE_TAG_ARR = [ 'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice' ]; // What: Axe Tag Array. Why: The pages target WCAG 2.2 AA, as the app does, plus axe's best practices. How: This limits the scan to those rule sets.
-const LEG_PAT_ARR = [ '/privacy', '/terms' ];                                                    // What: Legal Path Array. Why: Both legal pages get the same checks. How: This lists their addresses.
-const REF_WID_NUM = 320;                                                                         // What: Reflow Width Number. Why: WCAG's reflow criterion asks for no sideways scrolling at 320 CSS pixels. How: This is the width the reflow check opens each page at.
-const WID_NUM_ARR = [ 375, 1280 ];                                                               // What: Width Number Array. Why: The pages are scanned at a phone and a desktop width, as the app is. How: This lists the two viewport widths.
+const WID_NUM_ARR = [ 375, 1280 ]; // What: Width Number Array. Why: The pages are scanned at a phone and a desktop width, as the app is. How: This lists the two viewport widths.
 
 // #endregion Constants
 

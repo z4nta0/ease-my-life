@@ -3,11 +3,9 @@
 
 // #region Imports
 
+import { ALL_STA_ARR } from '../support/states.ts'; // What: All State Array. Why: The check runs on the app's plain, opened, and reachable states. How: This lists them, and the spec keeps the ones on the backup with no modal layer.
 import { expect      } from '@playwright/test';     // What: Expect. Why: Each check asserts on what it reads from the page. How: This compares each reading with what the app should show.
-import { EXT_STA_ARR } from '../support/states.ts'; // What: Extra State Array. Why: An opened editor or form leaves the skip link in place. How: This lists those states, such as an item editor.
 import { opeStaFun   } from '../support/states.ts'; // What: Open State Function. Why: Each state has to be opened and settled before its first Tab press. How: This loads it and waits for it.
-import { REA_STA_ARR } from '../support/states.ts'; // What: Reachable State Array. Why: An open tip or form leaves the skip link in place too. How: This lists those states, such as an open info tip.
-import { STA_REC_ARR } from '../support/states.ts'; // What: State Record Array. Why: The check runs on the app's plain tab states. How: This lists them, and the spec keeps the ones with the backup loaded.
 import { test        } from '@playwright/test';     // What: Test. Why: Each state's check is its own test. How: This declares them.
 
 // #endregion Imports
@@ -39,7 +37,7 @@ import { test        } from '@playwright/test';     // What: Test. Why: Each sta
 
 // #region Constants
 
-const SKI_STA_ARR = [ ...STA_REC_ARR, ...EXT_STA_ARR, ...REA_STA_ARR ].filter( ( staRecObj ) => staRecObj.fixBoo && !/^(help|privacy)-/.test( staRecObj.ideStr ) ); // What: Skip State Array. Why: The link is the first stop wherever nothing modal covers the tab, while the Privacy panel makes it inert and help mode's click guard blocks it. How: This keeps the states on real data, leaving out the Privacy panel and the help mode states by name.
+const SKI_STA_ARR = ALL_STA_ARR.filter( ( staRecObj ) => staRecObj.fixBoo && !/^(help|privacy)-/.test( staRecObj.ideStr ) ); // What: Skip State Array. Why: The link is the first stop wherever nothing modal covers the tab, while the Privacy panel makes it inert and help mode's click guard blocks it. How: This keeps the states on real data, leaving out the Privacy panel and the help mode states by name.
 
 // #endregion Constants
 

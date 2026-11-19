@@ -3,21 +3,21 @@
 
 // #region Imports
 
-import { claSetFun   } from '../support/account.ts'; // What: Claim Set Function. Why: The purchase test sets the paid claim as the webhook would. How: This sets it.
-import { creAccFun   } from '../support/account.ts'; // What: Create Account Function. Why: Each flow needs its own emulator account. How: This creates one.
-import { EMU_PRO_STR } from '../support/account.ts'; // What: Emulator Project String. Why: The emulator's addresses name the project. How: This is the demo project.
-import { expect      } from '@playwright/test';      // What: Expect. Why: Every step asserts what synced. How: This makes the assertions.
-import { insClcFun   } from '../support/clock.ts';   // What: Install Clock Function. Why: The new-day flow runs both devices on chosen days. How: This fakes a page's clock before it loads.
-import { locDayFun   } from '../support/clock.ts';   // What: Local Day Function. Why: The new-day flow checks which day a list was built on. How: This reads a timestamp's Chicago date.
-import { reaFixFun   } from '../support/fixture.ts'; // What: Read Fixture Function. Why: The first device starts on real data. How: This reads the backup.
-import { reaStaFun   } from '../support/storage.ts'; // What: Read State Function. Why: The new-day flow compares what each device saved. How: This reads a device's state.
-import { selTabFun   } from '../support/app.ts';     // What: Select Tab Function. Why: Sign-in and holidays are on the Settings tab. How: This switches to it.
-import { sigLinFun   } from '../support/account.ts'; // What: Sign In Link Function. Why: Devices sign in the way a person does. How: This signs one in with an emailed link.
-import { synWaiFun   } from '../support/account.ts'; // What: Sync Wait Function. Why: Steps wait for a finished sync. How: This waits for the status to read Synced.
-import { test        } from '@playwright/test';      // What: Test. Why: The flow is its own test. How: This declares it.
-import { waiStaFun   } from '../support/storage.ts'; // What: Wait State Function. Why: A synced change lands in IndexedDB a moment later. How: This waits for it.
-import { watErrFun   } from '../support/watch.ts';   // What: Watch Errors Function. Why: The flow fails on any page error. How: This collects them.
-import { wriStaFun   } from '../support/storage.ts'; // What: Write State Function. Why: The first device starts from the backup. How: This writes it.
+import { claSetFun   } from '../support/account.ts';  // What: Claim Set Function. Why: The purchase test sets the paid claim as the webhook would. How: This sets it.
+import { creAccFun   } from '../support/account.ts';  // What: Create Account Function. Why: Each flow needs its own emulator account. How: This creates one.
+import { EMU_PRO_STR } from '../support/emulator.ts'; // What: Emulator Project String. Why: The emulator's addresses name the project. How: This is the demo project.
+import { expect      } from '@playwright/test';       // What: Expect. Why: Every step asserts what synced. How: This makes the assertions.
+import { insClcFun   } from '../support/clock.ts';    // What: Install Clock Function. Why: The new-day flow runs both devices on chosen days. How: This fakes a page's clock before it loads.
+import { locDayFun   } from '../support/clock.ts';    // What: Local Day Function. Why: The new-day flow checks which day a list was built on. How: This reads a timestamp's Chicago date.
+import { reaFixFun   } from '../support/fixture.ts';  // What: Read Fixture Function. Why: The first device starts on real data. How: This reads the backup.
+import { reaStaFun   } from '../support/storage.ts';  // What: Read State Function. Why: The new-day flow compares what each device saved. How: This reads a device's state.
+import { selTabFun   } from '../support/app.ts';      // What: Select Tab Function. Why: Sign-in and holidays are on the Settings tab. How: This switches to it.
+import { sigLinFun   } from '../support/account.ts';  // What: Sign In Link Function. Why: Devices sign in the way a person does. How: This signs one in with an emailed link.
+import { synWaiFun   } from '../support/account.ts';  // What: Sync Wait Function. Why: Steps wait for a finished sync. How: This waits for the status to read Synced.
+import { test        } from '@playwright/test';       // What: Test. Why: The flow is its own test. How: This declares it.
+import { waiStaFun   } from '../support/storage.ts';  // What: Wait State Function. Why: A synced change lands in IndexedDB a moment later. How: This waits for it.
+import { watErrFun   } from '../support/watch.ts';    // What: Watch Errors Function. Why: The flow fails on any page error. How: This collects them.
+import { wriStaFun   } from '../support/storage.ts';  // What: Write State Function. Why: The first device starts from the backup. How: This writes it.
 
 // #endregion Imports
 

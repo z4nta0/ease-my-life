@@ -3,8 +3,11 @@
 
 // #region Imports
 
-import { expect    } from '@playwright/test'; // What: Expect. Why: Signing in waits for what the page shows. How: This makes the assertions.
-import { selTabFun } from './app.ts';         // What: Select Tab Function. Why: Sign-in happens on the Settings tab. How: This switches to it.
+import { admPosFun   } from './emulator.ts';    // What: Admin Post Function. Why: Accounts are created and given their claim through the emulator's admin API. How: This posts to it.
+import { AUT_EMU_STR } from './emulator.ts';    // What: Auth Emulator String. Why: Emailed sign-in links are read back from the auth emulator. How: This is its address.
+import { EMU_PRO_STR } from './emulator.ts';    // What: Emulator Project String. Why: Admin calls name the project. How: This is the demo project.
+import { expect      } from '@playwright/test'; // What: Expect. Why: Signing in waits for what the page shows. How: This makes the assertions.
+import { selTabFun   } from './app.ts';         // What: Select Tab Function. Why: Sign-in happens on the Settings tab. How: This switches to it.
 
 
 import type { Page } from '@playwright/test'; // What: Page. Why: The helpers drive one device's page. How: This types their page parameter.
@@ -24,7 +27,6 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
  * way a person would.
  *
  * Sections:
- *  - Constants
  *  - Helpers
  *  - Exports
  *
@@ -34,20 +36,7 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
 
 
 
-// #region Constants
-
-const AUT_EMU_STR = 'http://127.0.0.1:9099'; // What: Auth Emulator String. Why: The admin calls reach the auth emulator. How: This is its default address.
-const EMU_PRO_STR = 'demo-ease-my-life';     // What: Emulator Project String. Why: Admin calls name the project. How: This is the demo project the app uses under the emulator.
-
-// #endregion Constants
-
-
-
 // #region Helpers
-
-const admPosFun = ( adrPatStr : string, posBodObj : object ) => fetch( `${ AUT_EMU_STR }${ adrPatStr }`, { body : JSON.stringify( posBodObj ), headers : { 'Authorization' : 'Bearer owner', 'Content-Type' : 'application/json' }, method : 'POST' } ).then( ( resCurObj ) => resCurObj.json() ); // What: Admin Post Function. Why: The emulator's admin API creates the account and sets its claim. How: This posts JSON as the emulator's owner and parses the reply.
-
-
 
 const claSetFun = ( uidValStr : string ) => admPosFun( `/identitytoolkit.googleapis.com/v1/projects/${ EMU_PRO_STR }/accounts:update`, { customAttributes : JSON.stringify( { paid : true } ), localId : uidValStr } ); // What: Claim Set Function. Why: Tests stand in for the payment webhook. How: This sets an account's paid claim.
 
@@ -167,7 +156,7 @@ const synWaiFun = ( curPagObj : Page ) => expect( curPagObj.locator( '[data-elem
 
 // #region Exports
 
-export { admPosFun, AUT_EMU_STR, claSetFun, creAccFun, EMU_PRO_STR, sigLinFun, synWaiFun }; // What: Named Exports. Why: The account suites create accounts, sign devices in, and wait for syncs through these. How: This exports them by name.
+export { claSetFun, creAccFun, sigLinFun, synWaiFun }; // What: Named Exports. Why: The account suites create accounts, sign devices in, and wait for syncs through these. How: This exports them by name.
 
 // #endregion Exports
 
