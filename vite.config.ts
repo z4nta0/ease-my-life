@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import react from '@vitejs/plugin-react'; // What: React. Why: Vite needs the React plugin to compile JSX. How: This is called first in the plugins array.
+import reaPluFun from '@vitejs/plugin-react'; // What: React Plugin Function. Why: Vite needs the React plugin to compile JSX. How: This is called first in the plugins array.
 
 
 import { createElement          } from 'react';            // What: Create Element. Why: A legal document component has to become an element before it can be rendered to HTML. How: This is called in legPagFun's page step.
@@ -35,8 +35,9 @@ import type { Plugin            } from 'vite';  // What: Plugin. Why: The legal 
  * rendered in, generates the PWA's service worker around the hand-written
  * manifest, and, for production builds only, minifies the files Vite ships as
  * written, such as index.html and the copied public/ scripts. It also raises
- * the chunk size warning to 1000 kB, since the main bundle is past Vite's
- * default 500 kB.
+ * the chunk size warning to 1,000 kB, since the main bundle is past Vite's
+ * default 500 kB, and keeps the dev server's file watcher off logs, the build
+ * output, and the test output.
  *
  * Sections:
  *  - Types
@@ -256,8 +257,9 @@ const minShiFun = () : Plugin => { // What: Minify Shipped Function. Why: index.
 const vitConObj = defineConfig({ // What: Vite Config Object. Why: Vite reads its whole configuration from this file's default export. How: This builds the config, including the minShiFun plugin above.
 
 
-	css    : { modules : { localsConvention : 'camelCaseOnly' } },      // What: Css. Why: CSS modules expose their kebab-case class names as camelCase keys only, so .prog--warm is read as cssModObj.progWarm, per CLAUDE.md's "CSS modules and JS hooks" rules. How: This sets the locals convention.
-	define : { __APP_VERSION__ : JSON.stringify( pacJsoObj.version ) }, // What: Define. Why: The app reports its own version without a hardcoded string. How: This replaces __APP_VERSION__ with the package version at build time.
+	css    : { modules : { localsConvention : 'camelCaseOnly' } },                         // What: Css. Why: CSS modules expose their kebab-case class names as camelCase keys only, so .prog--warm is read as cssModObj.progWarm, per CLAUDE.md's "CSS modules and JS hooks" rules. How: This sets the locals convention.
+	define : { __APP_VERSION__ : JSON.stringify( pacJsoObj.version ) },                    // What: Define. Why: The app reports its own version without a hardcoded string. How: This replaces __APP_VERSION__ with the package version at build time.
+	server : { watch : { ignored : [ '**/*.log', '**/dist/**', '**/tests/output/**' ] } }, // What: Server. Why: A test run writes thousands of trace frames into the test output, which kept every dev server watching the project busy for hours (measured 2026-11-13 in tech-geek-cards), and none of those files is source. How: This keeps the dev server's file watcher off logs, the build output, and the test output.
 
 	build : { // What: Build. Why: The production build needs its pages and its warning threshold set. How: This lists both.
 
@@ -271,7 +273,7 @@ const vitConObj = defineConfig({ // What: Vite Config Object. Why: Vite reads it
 	plugins : [ // What: Plugins. Why: Vite builds the app through these plugins, in this order. How: This lists React, the legal pages step, the minify step, and the PWA plugin.
 
 
-		react(),     // What: React Plugin Call. Why: JSX has to compile. How: This adds the React plugin.
+		reaPluFun(), // What: React Plugin Call. Why: JSX has to compile. How: This adds the React plugin.
 		legPagFun(), // What: Legal Pages Plugin Call. Why: The legal pages need their documents rendered in before the minify step compacts them. How: This adds the legal pages plugin ahead of it.
 		minShiFun(), // What: Minify Shipped Plugin Call. Why: The shipped pages and splash script should be minified. How: This adds the build-only minify plugin.
 
