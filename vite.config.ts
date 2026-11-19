@@ -261,10 +261,11 @@ const vitConObj = defineConfig({ // What: Vite Config Object. Why: Vite reads it
 	define : { __APP_VERSION__ : JSON.stringify( pacJsoObj.version ) },                    // What: Define. Why: The app reports its own version without a hardcoded string. How: This replaces __APP_VERSION__ with the package version at build time.
 	server : { watch : { ignored : [ '**/*.log', '**/dist/**', '**/tests/output/**' ] } }, // What: Server. Why: A test run writes thousands of trace frames into the test output, which kept every dev server watching the project busy for hours (measured 2026-11-13 in tech-geek-cards), and none of those files is source. How: This keeps the dev server's file watcher off logs, the build output, and the test output.
 
-	build : { // What: Build. Why: The production build needs its pages and its warning threshold set. How: This lists both.
+	build : { // What: Build. Why: The production build needs its asset inlining, its pages, and its warning threshold set. How: This lists all three.
 
 
-		chunkSizeWarningLimit : 1000,                                                  // What: Chunk Size Warning Limit. Why: The main bundle (about 917 kB before gzip) is past Vite's default 500 kB chunk warning, which would otherwise fire on every build. How: This raises the warning threshold to 1000 kB.
+		assetsInlineLimit     : 0,                                                         // What: Assets Inline Limit. Why: Vite inlines any asset under 4 KB as a data: URI, which the Content-Security-Policy refuses as an image source. How: This turns inlining off, so every imported asset ships as its own file.
+		chunkSizeWarningLimit : 1000,                                                      // What: Chunk Size Warning Limit. Why: The main bundle (about 917 kB before gzip) is past Vite's default 500 kB chunk warning, which would otherwise fire on every build. How: This raises the warning threshold to 1000 kB.
 		rolldownOptions       : { input : [ 'index.html', 'privacy.html', 'terms.html' ] } // What: Rolldown Options. Why: The legal pages are built as pages of their own, beside the app. How: This lists every HTML page the build starts from.
 
 
