@@ -170,6 +170,9 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 	}, [ trnOnlBoo, labTexStr ] ); // What: Effect Dependency Array. Why: trnOnlBoo decides whether to measure at all, and labTexStr changing means the underlying text (and therefore its own overflow) may have changed too. How: Both are read directly inside the guards/effect above.
 
 
+
+	// #region Tip Positioning
+
 	const plaTipFun = React.useCallback( () => { // What: Place Tip Function. Why: The portaled tooltip needs its own absolute position recomputed from scratch every time it might have moved. How: This measures both the trigger and the tip, prefers placing above, flips below if that would clip, and clamps both axes to the viewport.
 
 
@@ -250,6 +253,11 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 
 	}, [ tipOpeBoo, plaTipFun ] ); // What: Effect Dependency Array. Why: tipOpeBoo decides whether to track at all, and plaTipFun is included per the exhaustive-deps convention even though it never actually changes identity. How: Both are read directly inside the guard/calls above.
 
+	// #endregion Tip Positioning
+
+
+
+	// #region Tip Closing
 
 	React.useEffect( () => { // What: Outside Close Effect. Why: An open tooltip must close when the user interacts outside of it, whether by pointer, by Escape, or by moving focus on, so it never covers the control a keyboard user reaches next. How: This registers a capture-phase pointerdown listener, a keydown listener, and a focusin listener while open, each clearing tipOpeBoo, cleaned up together.
 
@@ -297,6 +305,9 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 
 
 	React.useEffect( () => { if ( !actTipBoo ) setTipOpeBoo( false ); }, [ actTipBoo ] ); // What: Truncation Safety Effect. Why: A resize that un-truncates the text while its tip is open (trnOnlBoo only) should close it rather than leave a tooltip open on what just became an inert span. How: This closes the tooltip whenever actTipBoo itself goes false.
+
+	// #endregion Tip Closing
+
 
 
 	if ( !actTipBoo ) return ( // What: Inert Guard. Why: With nothing extra to reveal (untruncated text under trnOnlBoo), this must render as a totally inert, non-interactive span. How: This returns just the ref-and-className span, skipping every interactive attribute and the portal entirely.
