@@ -639,7 +639,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
-	React.useEffect( () => { // What: Click Guard Effect. Why: Anything NOT currently tagged (or part of help mode's own UI) must be blocked from interaction while active, the same capture-phase idea as the guided tour's own click-guard. How: This registers a capture-phase click listener plus a keydown listener while active, both cleaned up together.
+	React.useEffect( () => { // What: Click Guard Effect. Why: Anything NOT currently tagged (or part of help mode's own UI) must be blocked from interaction while active, the same capture-phase idea as the guided tour's own click-guard. How: This registers a capture-phase click listener, a keydown listener, and a focusin listener that closes an open tip once focus moves past its badge, all cleaned up together.
 
 
 		if ( !actModBoo ) return; // What: Inactive Guard. Why: There is nothing to guard while help mode itself is off. How: This skips registering either listener while actModBoo is false.
@@ -706,16 +706,32 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
+		const focMovFun = ( focEveObj : FocusEvent ) => { // What: Focus Move Function. Why: An open tip doesn't hold focus, so Tab could move on to a control the tip covers. How: This closes the tip when focus lands anywhere but its own open badge.
+
+
+			if ( opeIdeStr == null || !( focEveObj.target instanceof Element ) ) return; // What: Nothing Open Guard. Why: With no tip open, or focus landing on no element, there's nothing to close. How: This returns early.
+
+
+
+			if ( !focEveObj.target.closest( '[data-badge-open-active]' ) ) setOpeIdeStr( null ); // What: Tip Close Call. Why: Focus has moved past the open tip's badge. How: This clears opeIdeStr unless focus landed on that badge.
+
+
+		};
+
+
+
 		document.addEventListener( 'click', cliCapFun, true ); // What: Click Listener Add. Why: The capture phase ensures this guard runs before any inner element's own handler could otherwise fire. How: This registers cliCapFun for every click in the document.
 		document.addEventListener( 'keydown', keyDowFun );     // What: Keydown Listener Add. Why: Escape must close something regardless of which element currently has focus. How: This registers keyDowFun for every keydown in the document.
+		document.addEventListener( 'focusin', focMovFun );     // What: Focusin Listener Add. Why: Focus moving anywhere must be seen, and focusin bubbles from every focused element. How: This registers focMovFun on the document.
 
 
 
-		return () => { // What: Listener Cleanup Return. Why: Both listeners must stop the instant this effect re-runs or help mode turns off. How: This returns a cleanup function that removes both the click and keydown listeners.
+		return () => { // What: Listener Cleanup Return. Why: Every listener must stop the instant this effect re-runs or help mode turns off. How: This returns a cleanup function that removes the click, keydown, and focusin listeners.
 
 
 			document.removeEventListener( 'click', cliCapFun, true ); // What: Click Listener Remove. Why: The capture-phase guard must not keep intercepting clicks once this effect cleans up. How: This removes cliCapFun, matching the same phase/type it was added with.
 			document.removeEventListener( 'keydown', keyDowFun );     // What: Keydown Listener Remove. Why: Escape must stop being intercepted once this effect cleans up. How: This removes keyDowFun.
+			document.removeEventListener( 'focusin', focMovFun );     // What: Focusin Listener Remove. Why: A closed or inactive help mode has no tip to close. How: This removes focMovFun.
 
 
 		};

@@ -251,7 +251,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 	}, [ tipOpeBoo, plaTipFun ] ); // What: Effect Dependency Array. Why: tipOpeBoo decides whether to track at all, and plaTipFun is included per the exhaustive-deps convention even though it never actually changes identity. How: Both are read directly inside the guard/calls above.
 
 
-	React.useEffect( () => { // What: Outside Close Effect. Why: An open tooltip must close when the user interacts outside of it, whether by pointer or by Escape. How: This registers a capture-phase pointerdown listener and a keydown listener while open, both clearing tipOpeBoo, cleaned up together.
+	React.useEffect( () => { // What: Outside Close Effect. Why: An open tooltip must close when the user interacts outside of it, whether by pointer, by Escape, or by moving focus on, so it never covers the control a keyboard user reaches next. How: This registers a capture-phase pointerdown listener, a keydown listener, and a focusin listener while open, each clearing tipOpeBoo, cleaned up together.
 
 
 		if ( !tipOpeBoo ) return; // What: Not Open Guard. Why: There is nothing to guard against while the tooltip is already closed. How: This skips the rest of the effect entirely while tipOpeBoo is false.
@@ -271,19 +271,23 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 		};
 
 
-		const onKeyDowFun = ( keyDowObj : KeyboardEvent ) => { if ( keyDowObj.key === 'Escape' ) setTipOpeBoo( false ); }; // What: On Key Down Function. Why: Escape is a standard way to dismiss a transient overlay like this tooltip. How: This closes the tooltip only when the pressed key is exactly Escape.
+		const onKeyDowFun = ( keyDowObj : KeyboardEvent ) => { if ( keyDowObj.key === 'Escape' ) setTipOpeBoo( false ); };                                                // What: On Key Down Function. Why: Escape is a standard way to dismiss a transient overlay like this tooltip. How: This closes the tooltip only when the pressed key is exactly Escape.
+		const onFocMovFun = ( focEveObj : FocusEvent ) => { if ( trgEleRef.current && !trgEleRef.current.contains( focEveObj.target as Node ) ) setTipOpeBoo( false ); }; // What: On Focus Move Function. Why: A tip whose trigger focus has left, such as one opened by hovering while Tab moves on, could cover the next control. How: This closes the tip when focus lands anywhere outside the trigger. // What: Type Assertion Note. Why: A focusin event's target is always a node in the document. How: The cast lets contains read it.
+
 
 
 		document.addEventListener( 'pointerdown', onPoiDowFun, true ); // What: Pointer Down Listener Add Call. Why: The capture phase ensures this fires before an inner element's own stopPropagation could swallow it. How: This registers onPoiDowFun for every pointerdown in the document.
 		document.addEventListener( 'keydown', onKeyDowFun );           // What: Key Down Listener Add Call. Why: Escape must close the tooltip regardless of which element currently has focus. How: This registers onKeyDowFun for every keydown in the document.
+		document.addEventListener( 'focusin', onFocMovFun );           // What: Focus In Listener Add Call. Why: Focus moving anywhere must be seen, and focusin bubbles from every focused element. How: This registers onFocMovFun on the document.
 
 
 
-		return () => { // What: Effect Cleanup Function. Why: Neither listener may outlive this effect run. How: This removes both listeners registered above.
+		return () => { // What: Effect Cleanup Function. Why: None of the three listeners may outlive this effect run. How: This removes all three listeners registered above.
 
 
 			document.removeEventListener( 'pointerdown', onPoiDowFun, true ); // What: Pointer Down Listener Remove Call. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onPoiDowFun reference, matching the capture-phase flag.
 			document.removeEventListener( 'keydown', onKeyDowFun );           // What: Key Down Listener Remove Call. Why: Same reasoning as the pointerdown listener removal above. How: This removes the same onKeyDowFun reference.
+			document.removeEventListener( 'focusin', onFocMovFun );           // What: Focus In Listener Remove Call. Why: Same reasoning as the pointerdown listener removal above. How: This removes the same onFocMovFun reference.
 
 
 		};
