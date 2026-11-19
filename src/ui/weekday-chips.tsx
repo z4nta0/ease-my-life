@@ -6,7 +6,8 @@
 import cssModObj from './weekday-chips.module.css'; // What: CSS Module Object. Why: The chip row and its chips are styled from their own module. How: This maps each class name in weekday-chips.module.css to its hashed module class.
 
 
-import { InfTipCom } from './info-tip.tsx'; // What: Info Tip Component. Why: A weekly cadence's pinned anchor day explains why it can't be turned off. How: This wraps that locked chip with locTipStr as its tip.
+import { DAY_FUL_ARR } from '../utils/date.ts'; // What: Day Full Array. Why: Each chip's accessible name and title need the full weekday name. How: This is indexed by the chip's weekday number.
+import { InfTipCom   } from './info-tip.tsx';   // What: Info Tip Component. Why: A weekly cadence's pinned anchor day explains why it can't be turned off. How: This wraps that locked chip with locTipStr as its tip.
 
 
 import type { JSX } from 'react'; // What: JSX. Why: The component declares the element it returns. How: This types its return as a JSX element.
@@ -35,10 +36,6 @@ import type { JSX } from 'react'; // What: JSX. Why: The component declares the 
 
 
 // #region Constants
-
-const WEE_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]; // What: Week Full Array. Why: Each chip's own accessible name/title needs the full weekday name, not just its single-letter label. How: This is indexed by day number inside WeeChiCom below.
-
-
 
 const WEE_LAB_ARR = [ 'S', 'M', 'T', 'W', 'T', 'F', 'S' ]; // What: Week Label Array. Why: Each weekday chip needs a single-letter visible label. How: This is mapped over by WeeChiCom below, indexed by day number (0=Sun).
 
@@ -163,9 +160,9 @@ const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, siz
 						type='button'
 
 						aria-describedby={ desIdeStr }
-						aria-label={ WEE_FUL_ARR[ dayIndNum ] }
+						aria-label={ DAY_FUL_ARR[ dayIndNum ] }
 						aria-pressed={ daySelBoo }
-						title={ WEE_FUL_ARR[ dayIndNum ] }
+						title={ DAY_FUL_ARR[ dayIndNum ] }
 
 						onClick={ () => togDayFun( dayIndNum ) }
 					>{ labChrStr }</button> // What: Toggle Day Chip Element. Why: This is the actual clickable control for an unlocked day. How: This shows daySelBoo as its own aria-pressed state, which its module styles as selected, and calls togDayFun with dayIndNum when clicked.

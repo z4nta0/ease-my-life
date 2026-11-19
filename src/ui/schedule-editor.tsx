@@ -8,6 +8,11 @@ import React     from 'react';                        // What: React. Why: Every
 
 
 import { ColDisCom   } from './collapse.tsx';          // What: Collapse Disclosure Component. Why: The editor's own schedule subsections need to animate open and closed instead of snapping. How: This wraps the anchor hint and each repeat kind's own fields in SchEdiCom.
+import { DAT_MOD_ARR } from './cadence-control.tsx';   // What: Date Mode Array. Why: The monthly and annual subsections offer the same Date-vs-Weekday choice the cadence editor does. How: This is passed as each subsection's SegConCom optIteArr.
+import { DAY_ABB_ARR } from '../utils/date.ts';        // What: Day Abbreviation Array. Why: The weekly summary names a multi-day list in short form. How: This is indexed by each daysOfWeek entry.
+import { DAY_FUL_ARR } from '../utils/date.ts';        // What: Day Full Array. Why: The weekday selects and the single-day and nth-weekday summaries name a weekday in full. How: This is mapped to one option per weekday and indexed by a weekday number.
+import { MON_ABB_ARR } from '../utils/date.ts';        // What: Month Abbreviation Array. Why: The annual schedule's month selects need a short label per month. How: This is mapped to one option per month.
+import { MON_FUL_ARR } from '../utils/date.ts';        // What: Month Full Array. Why: The annual schedule's live summary names its month in full. How: This is indexed by tasRcdObj.month minus 1.
 import { nexDatFun   } from '../utils/date.ts';        // What: Next Date Function. Why: A reminder's next occurrence reads as a full prose date. How: This is called with the date and whether the year must always show.
 import { ordSufFun   } from '../utils/date.ts';        // What: Ordinal Suffix Function. Why: Monthly and yearly schedules read days as ordinals like 1st or 22nd. How: This is called with the day number.
 import { SegConCom   } from './segmented-control.tsx'; // What: Segment Control Component. Why: The schedule editor's own repeat choices use the shared segmented control. How: This is rendered wherever the editor offers mutually exclusive options.
@@ -15,7 +20,6 @@ import { TAS_NAM_OBJ } from '../core/tasks.ts';        // What: Tasks Namespace 
 import { WeeChiCom   } from './weekday-chips.tsx';     // What: Weekday Chip Component. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This is rendered inside SchEdiCom's own weekly schedule subsection.
 
 
-import type { DatModTyp } from '../core/data-model.ts'; // What: Date Mode Type. Why: Each date mode option's key is one of the fixed modes. How: This types datModArr's keys, so the mode picker hands back a real mode.
 import type { RepNamTyp } from '../core/data-model.ts'; // What: Repeat Name Type. Why: Each repeat option's key is one of the fixed repeat kinds. How: This types REP_OPT_ARR's keys, so the Repeat picker hands back a real kind.
 import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The visibility note reads the reminder options and holidays from app state. How: This types both components' staAppObj.
 import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Type. Why: The editor edits a draft reminder. How: This types both components' reminder and SchEdiCom's patches.
@@ -457,27 +461,6 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 
 
-	// #region Label Lists
-
-	const monAbbArr = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];                                       // What: Month Abbreviation Array. Why: The annual schedule's month select needs a short label per month. How: This is indexed by month number minus 1 in the annual subsection below.
-	const monFulArr = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]; // What: Month Full Array. Why: The annual schedule's own live summary needs the full month name to display. How: This is indexed by tasRcdObj.month minus 1 in the annual subsection below.
-	const dayAbbArr = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ];                                                                          // What: Day Abbreviation Array. Why: The weekly summary needs a short weekday name for a multi-day list. How: This is indexed by daysOfWeek entries in the weekly subsection below.
-	const dayFulArr = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];                                             // What: Day Full Array. Why: The weekly single-day and monthly/annual Nth-weekday summaries need the full weekday name. How: This is indexed by daysOfWeek/nthWeekday entries throughout this function.
-
-
-	const datModArr : { keyStr : DatModTyp, labStr : string }[] = [ // What: Date Mode Array. Why: The monthly and annual subsections both offer the same Date-vs-Weekday choice, driven by one shared SegConCom control. How: This is passed as that SegConCom's own optIteArr prop in both subsections below.
-
-
-		{ keyStr : 'date',       labStr : 'Date'    }, // What: Plain Date Option. Why: This is the default day-of-month/day targeting mode. How: SegConCom reads this entry the same way as any other options entry.
-		{ keyStr : 'nthWeekday', labStr : 'Weekday' }  // What: Nth-Weekday Option. Why: This lets the user target e.g. "the 2nd Tuesday" instead of a fixed day number. How: SegConCom reads this entry the same way as any other options entry.
-
-
-	];
-
-	// #endregion Label Lists
-
-
-
 	// #region Anchor Date Link
 
 	const [ ancEdiBoo, setAncEdiBoo ] = React.useState( false ); // What: Anchor Editing Boolean And Setter. Why: Interval reminders count from a start date the user can amend if they got it wrong; this tracks whether that inline date picker is open. How: This toggles between the plain date link and a native date input in ancHinEle below.
@@ -745,7 +728,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 
 								{ ( tasRcdObj.daysOfWeek && tasRcdObj.daysOfWeek.length ) // What: Days Chosen Check. Why: The summary can only name days once at least one is chosen. How: This picks the chosen-days phrase while daysOfWeek has entries, the prompt otherwise.
-									? <>shows on the Today page <strong>every { ( tasRcdObj.interval || 1 ) > 1 ? `${ tasRcdObj.interval } weeks on ` : '' }{ [ ...tasRcdObj.daysOfWeek ].sort( ( dowOneNum, dowTwoNum ) => dowOneNum - dowTwoNum ).map( ( dowIndNum ) => dayAbbArr[ dowIndNum ] ).join( ', ' ) }</strong></> // What: Chosen Days Phrase. Why: At least one day is selected, so the summary names every chosen weekday in order. How: This sorts a copy of daysOfWeek ascending, maps each to its abbreviation, and joins them, prefixed by the every-N-weeks clause when interval is above 1.
+									? <>shows on the Today page <strong>every { ( tasRcdObj.interval || 1 ) > 1 ? `${ tasRcdObj.interval } weeks on ` : '' }{ [ ...tasRcdObj.daysOfWeek ].sort( ( dowOneNum, dowTwoNum ) => dowOneNum - dowTwoNum ).map( ( dowIndNum ) => DAY_ABB_ARR[ dowIndNum ] ).join( ', ' ) }</strong></> // What: Chosen Days Phrase. Why: At least one day is selected, so the summary names every chosen weekday in order. How: This sorts a copy of daysOfWeek ascending, maps each to its abbreviation, and joins them, prefixed by the every-N-weeks clause when interval is above 1.
 									: 'pick at least one day' // What: No Days Fallback. Why: No day is selected yet, an invalid, incomplete configuration. How: This renders a plain prompt instead of a broken summary.
 								}
 
@@ -963,8 +946,8 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 								className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
 							>{ /* What: Flabel Sub Span Element. Why: This is the live summary of which day targeting mode is active, re-fading on mode switch. How: This renders one of the 2 branches below depending on tasRcdObj's own dateMode. */ }
 								shows on the Today page <strong>{ tasRcdObj.dateMode === 'nthWeekday' // What: Date Mode Check. Why: The monthly target reads differently for each date mode. How: This picks the nth-weekday or plain-date phrase below based on dateMode.
-									? <>on the { ordSufFun( tasRcdObj.nthOrdinal || 1 ) } { dayFulArr[ tasRcdObj.nthWeekday ?? 0 ] }</> // What: Nth-Weekday Summary Phrase. Why: In this mode the target reads as an ordinal weekday, e.g. "the 2nd Tuesday". How: This names tasRcdObj's own nthOrdinal and nthWeekday.
-									: <>every { ordSufFun( tasRcdObj.dayOfMonth || 1 ) }</>                                             // What: Plain Date Summary Phrase. Why: In the default mode the target reads as a plain ordinal day, e.g. "every 15th". How: This names tasRcdObj's own dayOfMonth.
+									? <>on the { ordSufFun( tasRcdObj.nthOrdinal || 1 ) } { DAY_FUL_ARR[ tasRcdObj.nthWeekday ?? 0 ] }</> // What: Nth-Weekday Summary Phrase. Why: In this mode the target reads as an ordinal weekday, e.g. "the 2nd Tuesday". How: This names tasRcdObj's own nthOrdinal and nthWeekday.
+									: <>every { ordSufFun( tasRcdObj.dayOfMonth || 1 ) }</>                                               // What: Plain Date Summary Phrase. Why: In the default mode the target reads as a plain ordinal day, e.g. "every 15th". How: This names tasRcdObj's own dayOfMonth.
 								} of the month</strong>
 							</span>
 
@@ -975,7 +958,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 						<SegConCom
 							layVarStr='snug' // What: Layout Variant String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
-							optIteArr={ datModArr }
+							optIteArr={ DAT_MOD_ARR }
 							value={ tasRcdObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' } // What: Date Mode Value. Why: An older task may carry no dateMode at all, which should read as the plain date mode. How: This maps anything other than 'nthWeekday' to 'date'.
 
 							ariLabStr='Day selection'
@@ -1033,7 +1016,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 								>{ /* What: Weekday Select Element. Why: This is the target-weekday picker for the Nth-weekday mode. How: This commits the chosen option's own numeric value as tasRcdObj's new nthWeekday. */ }
 
 
-									{ dayFulArr.map( ( dowNamStr, dowIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per weekday. How: This maps dayFulArr to one option per entry, keyed by its own dowNamStr, valued by its own dowIndNum.
+									{ DAY_FUL_ARR.map( ( dowNamStr, dowIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dowNamStr, valued by its own dowIndNum.
 
 
 										<option
@@ -1198,8 +1181,8 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 								className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
 							>{ /* What: Flabel Sub Span Element. Why: This is the live summary of which day targeting mode is active, re-fading on mode switch. How: This renders one of the 2 branches below depending on tasRcdObj's own dateMode. */ }
 								shows on the Today page <strong>{ tasRcdObj.dateMode === 'nthWeekday' // What: Date Mode Check. Why: The yearly target reads differently for each date mode. How: This picks the nth-weekday or plain-date phrase below based on dateMode.
-									? <>the { ordSufFun( tasRcdObj.nthOrdinal || 1 ) } { dayFulArr[ tasRcdObj.nthWeekday ?? 0 ] } of { monFulArr[ ( tasRcdObj.month || 1 ) - 1 ] }</> // What: Nth-Weekday Summary Phrase. Why: In this mode the target reads as an ordinal weekday within a named month, e.g. "the 2nd Tuesday of June". How: This names tasRcdObj's own nthOrdinal, nthWeekday, and month.
-									: <>{ monFulArr[ ( tasRcdObj.month || 1 ) - 1 ] } { tasRcdObj.day || 1 }</>                                                                       // What: Plain Date Summary Phrase. Why: In the default mode the target reads as a plain month/day, e.g. "June 15". How: This names tasRcdObj's own month and day.
+									? <>the { ordSufFun( tasRcdObj.nthOrdinal || 1 ) } { DAY_FUL_ARR[ tasRcdObj.nthWeekday ?? 0 ] } of { MON_FUL_ARR[ ( tasRcdObj.month || 1 ) - 1 ] }</> // What: Nth-Weekday Summary Phrase. Why: In this mode the target reads as an ordinal weekday within a named month, e.g. "the 2nd Tuesday of June". How: This names tasRcdObj's own nthOrdinal, nthWeekday, and month.
+									: <>{ MON_FUL_ARR[ ( tasRcdObj.month || 1 ) - 1 ] } { tasRcdObj.day || 1 }</>                                                                         // What: Plain Date Summary Phrase. Why: In the default mode the target reads as a plain month/day, e.g. "June 15". How: This names tasRcdObj's own month and day.
 								}</strong>
 							</span>
 
@@ -1210,7 +1193,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 						<SegConCom
 							layVarStr='snug' // What: Layout Variant String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
-							optIteArr={ datModArr }
+							optIteArr={ DAT_MOD_ARR }
 							value={ tasRcdObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' } // What: Date Mode Value. Why: An older task may carry no dateMode at all, which should read as the plain date mode. How: This maps anything other than 'nthWeekday' to 'date'.
 
 							ariLabStr='Day selection'
@@ -1266,7 +1249,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 								>{ /* What: Weekday Select Element. Why: This is the target-weekday picker for the Nth-weekday mode. How: This commits the chosen option's own numeric value as tasRcdObj's new nthWeekday. */ }
 
 
-									{ dayFulArr.map( ( dowNamStr, dowIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per weekday. How: This maps dayFulArr to one option per entry, keyed by its own dowNamStr, valued by its own dowIndNum.
+									{ DAY_FUL_ARR.map( ( dowNamStr, dowIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dowNamStr, valued by its own dowIndNum.
 
 
 										<option
@@ -1295,7 +1278,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 								>{ /* What: Month Select Element. Why: This is the target-month picker for the Nth-weekday mode. How: This commits the chosen option's own 1-indexed value as tasRcdObj's new month. */ }
 
 
-									{ monAbbArr.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per month. How: This maps monAbbArr to one option per entry, keyed by its own monNamStr, valued by its own 1-indexed monIndNum.
+									{ MON_ABB_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per month. How: This maps MON_ABB_ARR to one option per entry, keyed by its own monNamStr, valued by its own 1-indexed monIndNum.
 
 
 										<option
@@ -1332,7 +1315,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 								>{ /* What: Month Select Element. Why: This is the target-month picker for the default mode. How: This commits the chosen option's own 1-indexed value as tasRcdObj's new month. */ }
 
 
-									{ monAbbArr.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per month. How: This maps monAbbArr to one option per entry, keyed by its own monNamStr, valued by its own 1-indexed monIndNum.
+									{ MON_ABB_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per month. How: This maps MON_ABB_ARR to one option per entry, keyed by its own monNamStr, valued by its own 1-indexed monIndNum.
 
 
 										<option

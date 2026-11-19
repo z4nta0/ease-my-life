@@ -11,11 +11,15 @@ import { ButBasCom    } from '../../ui/button.tsx';          // What: Button Bas
 import { CAD_NAM_OBJ  } from '../../core/cadence.ts';        // What: Cadence Namespace Object. Why: PicConCom needs the shared cadence math/summary helpers to render its own "how often" tip and select options. How: This is called throughout PicConCom for tipMesFun/sumCadFun/dimCouFun/uniWorFun/locTipFun.
 import { CAD_OPT_ARR  } from '../../ui/cadence-control.tsx'; // What: Cadence Options Array. Why: PicConCom's own daily-cadence summary needs the same daily-cadence sub-explanation CadConCom itself uses. How: This is looked up by key 'daily' inside PicConCom's cadence-summary block.
 import { ColDisCom    } from '../../ui/collapse.tsx';        // What: Collapse Disclosure Component. Why: PicConCom's own sub-sections open and close with the same collapse-height animation as every other disclosure. How: This wraps each of those bodies, driven by the matching open boolean.
+import { DAY_ABB_ARR  } from '../../utils/date.ts';          // What: Day Abbreviation Array. Why: The Days summary lists the chosen weekdays in short form. How: This is indexed by each daysOfWeek entry.
+import { DAY_FUL_ARR  } from '../../utils/date.ts';          // What: Day Full Array. Why: The weekday selects and the cadence summary name a weekday in full. How: This is mapped to one option per weekday and indexed by a weekday number.
 import { dimCouFun    } from '../../utils/date.ts';          // What: Days-In-Month Count Function. Why: Monthly and yearly clamping need a month's real length. How: This is called with a year and 1-based month.
 import { durMilFun    } from '../../utils/rhythm.ts';        // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { FilButCom    } from '../../ui/fill-button.tsx';     // What: Fill Button Component. Why: An ease-up/ease-down picker's Item Controls need the same Fill/Refill-all control Today's own boost tools use. How: This is rendered inside PicConCom's Item Controls group.
 import { IcoSvgCom    } from '../../ui/icon.tsx';            // What: Icon Svg Component. Why: PicConCom's own buttons and rows need recognizable glyphs. How: This is rendered throughout PicConCom.
 import { InfTipCom    } from '../../ui/info-tip.tsx';        // What: Info Tip Component. Why: A disabled control or a truncated label still needs to explain itself on demand. How: This wraps those controls throughout PicConCom.
+import { MON_ABB_ARR  } from '../../utils/date.ts';          // What: Month Abbreviation Array. Why: The yearly month selects need a short label per month. How: This is mapped to one option per month.
+import { MON_FUL_ARR  } from '../../utils/date.ts';          // What: Month Full Array. Why: The yearly cadence summary names its month in full. How: This is indexed by anchorMonth minus 1.
 import { motEasFun    } from '../../utils/motion.ts';        // What: Motion Easing Function. Why: Element.animate curves should match the stylesheet. How: This reads a --mot-*-eas token as a CSS easing string.
 import { norGroFun    } from '../../core/pickers.ts';        // What: Normalize Group Function. Why: A newly-typed picker group needs the same tidy-casing rule picker names already use. How: This is called when committing PicConCom's own "+ New Group" inline input.
 import { ordSufFun    } from '../../utils/date.ts';          // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
@@ -1212,11 +1216,9 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 									{ ( () => { // What: Cadence Summary Function. Why: The summary depends on cadence, anchor and date mode, which is too much branching for one inline expression. How: This immediately invokes an arrow function that returns the matching phrase.
 
 
-										const curCadStr = draPicObj.cadence || 'daily';                                                                                                 // What: Current Cadence String. Why: Every branch below needs the picker's own resolved cadence. How: This reads draPicObj.cadence, defaulting to 'daily'.
-										const dayFulArr = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];                                             // What: Day Full Array. Why: The weekly/monthly/yearly branches below all need full weekday names. How: This is indexed by anchorDow/nthWeekday below.
-										const monFulArr = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]; // What: Month Full Array. Why: The yearly branch below needs the full month name. How: This is indexed by anchorMonth below.
-										const isaNthBoo = draPicObj.dateMode === 'nthWeekday';                                                                                          // What: Is-A Nth Boolean. Why: Monthly/yearly cadences can anchor either to a fixed date or to an "nth weekday", which read very differently. How: This checks draPicObj.dateMode.
-										const taiEndStr = ', and the pick will persist until marked as completed';                                                                      // What: Tail End String. Why: Every non-daily branch below ends with the same trailing clause. How: This is appended to each branch's own JSX below.
+										const curCadStr = draPicObj.cadence || 'daily';                            // What: Current Cadence String. Why: Every branch below needs the picker's own resolved cadence. How: This reads draPicObj.cadence, defaulting to 'daily'.
+										const isaNthBoo = draPicObj.dateMode === 'nthWeekday';                     // What: Is-A Nth Boolean. Why: Monthly/yearly cadences can anchor either to a fixed date or to an "nth weekday", which read very differently. How: This checks draPicObj.dateMode.
+										const taiEndStr = ', and the pick will persist until marked as completed'; // What: Tail End String. Why: Every non-daily branch below ends with the same trailing clause. How: This is appended to each branch's own JSX below.
 
 
 
@@ -1224,7 +1226,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 
-										if ( curCadStr === 'weekly' ) return <>surfaces once a week, <strong>every { dayFulArr[ draPicObj.anchorDow ?? 0 ] }</strong>{ taiEndStr }</>; // What: Weekly Branch Return. Why: A weekly cadence just needs its own anchor weekday named. How: This reads draPicObj.anchorDow into dayFulArr.
+										if ( curCadStr === 'weekly' ) return <>surfaces once a week, <strong>every { DAY_FUL_ARR[ draPicObj.anchorDow ?? 0 ] }</strong>{ taiEndStr }</>; // What: Weekly Branch Return. Why: A weekly cadence just needs its own anchor weekday named. How: This reads draPicObj.anchorDow into DAY_FUL_ARR.
 
 
 
@@ -1232,8 +1234,8 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 											return isaNthBoo // What: Monthly Summary Return. Why: A monthly cadence reads differently anchored to a date vs. an nth weekday. How: This returns one of the 2 summaries below based on isaNthBoo.
-												? <>surfaces once a month, <strong>on the { ordSufFun( draPicObj.nthOrdinal ?? 1 ) } { dayFulArr[ draPicObj.nthWeekday ?? 0 ] }</strong>{ taiEndStr }</> // What: Nth-Weekday Monthly Phrase. Why: An nth-weekday anchor names its ordinal and weekday, e.g. "the 2nd Tuesday". How: This reads nthOrdinal and nthWeekday.
-												: <>surfaces once a month, <strong>on the { ordSufFun( draPicObj.anchorDom ?? 1 ) }</strong>{ taiEndStr }</>;                                            // What: Date Monthly Phrase. Why: A date anchor names its day of the month, e.g. "the 15th". How: This reads anchorDom.
+												? <>surfaces once a month, <strong>on the { ordSufFun( draPicObj.nthOrdinal ?? 1 ) } { DAY_FUL_ARR[ draPicObj.nthWeekday ?? 0 ] }</strong>{ taiEndStr }</> // What: Nth-Weekday Monthly Phrase. Why: An nth-weekday anchor names its ordinal and weekday, e.g. "the 2nd Tuesday". How: This reads nthOrdinal and nthWeekday.
+												: <>surfaces once a month, <strong>on the { ordSufFun( draPicObj.anchorDom ?? 1 ) }</strong>{ taiEndStr }</>;                                              // What: Date Monthly Phrase. Why: A date anchor names its day of the month, e.g. "the 15th". How: This reads anchorDom.
 
 
 										}
@@ -1241,8 +1243,8 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 										return isaNthBoo // What: Yearly Branch Return. Why: The only remaining cadence is yearly, which also reads differently anchored to a date vs. an nth weekday. How: This returns one of 2 summaries based on isaNthBoo.
-											? <>surfaces once a year, <strong>on the { ordSufFun( draPicObj.nthOrdinal ?? 1 ) } { dayFulArr[ draPicObj.nthWeekday ?? 0 ] } of { monFulArr[ ( draPicObj.anchorMonth ?? 1 ) - 1 ] }</strong>{ taiEndStr }</> // What: Nth-Weekday Yearly Phrase. Why: An nth-weekday anchor names its ordinal, weekday and month, e.g. "the 2nd Tuesday of June". How: This reads nthOrdinal, nthWeekday and anchorMonth.
-											: <>surfaces once a year, <strong>on { monFulArr[ ( draPicObj.anchorMonth ?? 1 ) - 1 ] } { ordSufFun( draPicObj.anchorDay ?? 1 ) }</strong>{ taiEndStr }</>;                                                   // What: Date Yearly Phrase. Why: A date anchor names its month and day, e.g. "June 15th". How: This reads anchorMonth and anchorDay.
+											? <>surfaces once a year, <strong>on the { ordSufFun( draPicObj.nthOrdinal ?? 1 ) } { DAY_FUL_ARR[ draPicObj.nthWeekday ?? 0 ] } of { MON_FUL_ARR[ ( draPicObj.anchorMonth ?? 1 ) - 1 ] }</strong>{ taiEndStr }</> // What: Nth-Weekday Yearly Phrase. Why: An nth-weekday anchor names its ordinal, weekday and month, e.g. "the 2nd Tuesday of June". How: This reads nthOrdinal, nthWeekday and anchorMonth.
+											: <>surfaces once a year, <strong>on { MON_FUL_ARR[ ( draPicObj.anchorMonth ?? 1 ) - 1 ] } { ordSufFun( draPicObj.anchorDay ?? 1 ) }</strong>{ taiEndStr }</>;                                                     // What: Date Yearly Phrase. Why: A date anchor names its month and day, e.g. "June 15th". How: This reads anchorMonth and anchorDay.
 
 
 									} )() }
@@ -1292,7 +1294,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 									>{ /* What: Anchor Weekday Select Element. Why: A weekly cadence needs exactly one weekday to anchor to. How: This commits the chosen index as draPicObj.anchorDow. */ }
 
 
-										{ [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps the fixed weekday-name array to one option per entry, keyed by its own dayIndNum.
+										{ DAY_FUL_ARR.map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dayIndNum.
 
 
 											<option
@@ -1379,7 +1381,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 										>{ /* What: Nth Weekday Select Element. Why: An nth-weekday monthly cadence also needs its own target weekday. How: This commits the chosen index as draPicObj.nthWeekday. */ }
 
 
-											{ [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps the fixed weekday-name array to one option per entry, keyed by its own dayIndNum.
+											{ DAY_FUL_ARR.map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dayIndNum.
 
 
 												<option
@@ -1475,7 +1477,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 										>{ /* What: Nth Weekday Select Element. Why: An nth-weekday yearly cadence also needs its own target weekday. How: This commits the chosen index as draPicObj.nthWeekday. */ }
 
 
-											{ [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps the fixed weekday-name array to one option per entry, keyed by its own dayIndNum.
+											{ DAY_FUL_ARR.map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dayIndNum.
 
 
 												<option
@@ -1501,7 +1503,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 										>{ /* What: Anchor Month Select Element. Why: An nth-weekday yearly cadence also needs its own target month. How: This commits the chosen 1-based month number as draPicObj.anchorMonth. */ }
 
 
-											{ [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ].map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps the fixed month-abbreviation array to one option per entry, keyed by its own 1-indexed monIndNum.
+											{ MON_ABB_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps MON_ABB_ARR to one option per entry, keyed by its own 1-indexed monIndNum.
 
 
 												<option
@@ -1537,7 +1539,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 										>{ /* What: Anchor Month Select Element. Why: A date-anchored yearly cadence needs its own target month. How: This commits the chosen 1-based month number as draPicObj.anchorMonth. */ }
 
 
-											{ [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ].map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps the fixed month-abbreviation array to one option per entry, keyed by its own 1-indexed monIndNum.
+											{ MON_ABB_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps MON_ABB_ARR to one option per entry, keyed by its own 1-indexed monIndNum.
 
 
 												<option
@@ -1613,7 +1615,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 									{ ( draPicObj.daysOfWeek && draPicObj.daysOfWeek.length ) // What: Chosen Days Check. Why: The summary depends on whether any weekday is chosen. How: This picks one of the 2 phrases below based on daysOfWeek having entries.
 
 
-										? <>runs in the daily generator every <strong>{ [ ...draPicObj.daysOfWeek ].sort( ( dayOneNum, dayTwoNum ) => dayOneNum - dayTwoNum ).map( ( dayNumVal ) => [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ][ dayNumVal ] ).join( ', ' ) }</strong></> // What: Chosen Days Phrase. Why: At least one day is chosen, so the summary lists them in week order. How: This sorts a copy of daysOfWeek, maps each to its abbreviation, and joins them.
+										? <>runs in the daily generator every <strong>{ [ ...draPicObj.daysOfWeek ].sort( ( dayOneNum, dayTwoNum ) => dayOneNum - dayTwoNum ).map( ( dayNumVal ) => DAY_ABB_ARR[ dayNumVal ] ).join( ', ' ) }</strong></> // What: Chosen Days Phrase. Why: At least one day is chosen, so the summary lists them in week order. How: This sorts a copy of daysOfWeek, maps each to its abbreviation, and joins them.
 
 										: 'pick at least one day' // What: No Days Phrase. Why: With no day chosen the picker never runs, so the row prompts for one. How: This renders a fixed prompt.
 

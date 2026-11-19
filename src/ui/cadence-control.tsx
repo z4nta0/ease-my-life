@@ -8,7 +8,9 @@ import cssModObj from './cadence-control.module.css'; // What: CSS Module Object
 
 import { CAD_NAM_OBJ } from '../core/cadence.ts';      // What: Cadence Namespace Object. Why: Every cadence field this component reads or writes (mode, anchors, dateMode, nthOrdinal, nthWeekday) is normalized and summarized through this one domain namespace instead of duplicating that logic locally. How: This is called below for its own norCadFun and tipMesFun entries.
 import { ColDisCom   } from './collapse.tsx';          // What: Collapse Disclosure Component. Why: The anchor subsection needs to animate open and closed as the selected cadence changes, instead of snapping. How: This wraps the whole non-daily anchor block below, gated on the current cadence.
+import { DAY_FUL_ARR } from '../utils/date.ts';        // What: Day Full Array. Why: The weekday selects and live summaries name each weekday in full. How: This is mapped to one option per weekday and indexed by anchorDow or nthWeekday.
 import { InfTipCom   } from './info-tip.tsx';          // What: Info Tip Component. Why: Every cadence row's own "?" control needs an explanatory tooltip beside its label. How: This is rendered once per cadence row below, fed by CAD_NAM_OBJ's own tipMesFun copy.
+import { MON_FUL_ARR } from '../utils/date.ts';        // What: Month Full Array. Why: The yearly month selects and live summary name each month in full. How: This is mapped to one option per month and indexed by anchorMonth minus 1.
 import { ordSufFun   } from '../utils/date.ts';        // What: Ordinal Suffix Function. Why: Every day-of-month, week-ordinal, and weekday-of-month summary needs the correct English ordinal. How: This is called with the day number.
 import { SegConCom   } from './segmented-control.tsx'; // What: Segment Control Component. Why: The top-level cadence picker and the monthly/yearly Date-vs-Weekday picker both need the same animated segmented control. How: This is rendered once for the cadence choice and once more inside each of the monthly and yearly subsections.
 
@@ -138,11 +140,6 @@ const DAT_MOD_ARR : { keyStr : DatModTyp, labStr : string }[] = [ // What: Date 
 
 
 ];
-
-
-
-const DAY_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];                                             // What: Day Full Array. Why: The weekly, monthly, and yearly subsections below all need the full weekday name, in both their own select options and their own live summaries. How: This is indexed by anchorDow/nthWeekday throughout CadConCom below.
-const MON_FUL_ARR = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]; // What: Month Full Array. Why: The yearly subsection's own month select and live summary both need the full month name to display. How: This is indexed by anchorMonth (1-indexed, so minus 1) throughout the yearly subsection below.
 
 // #endregion Constants
 
@@ -762,7 +759,7 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 
 // #region Exports
 
-export { CadConCom, CAD_OPT_ARR }; // What: Named Exports. Why: tab-picker.tsx renders CadConCom for its own cadence editor, and tab-data.tsx reads CAD_OPT_ARR for its own daily-cadence summary text; every other binding in this file is internal-only. How: This re-exports the 2 declared above.
+export { CAD_OPT_ARR, CadConCom, DAT_MOD_ARR }; // What: Named Exports. Why: Other editors render this cadence editor or reuse its cadence and date mode option lists. How: This exports the component and both option arrays by name.
 
 // #endregion Exports
 

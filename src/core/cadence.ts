@@ -3,11 +3,13 @@
 
 // #region Imports
 
-import { dimCouFun } from '../utils/date.ts';  // What: Days-In-Month Count Function. Why: Monthly and yearly anchors clamp to the month's real length. How: This is called with a year and 1-based month.
-import { isaIntFun } from '../utils/guard.ts'; // What: Is-An Integer Function. Why: Saved anchor fields may be missing, and normalizing them needs TypeScript to know a passing value is a number. How: This replaces Number.isInteger in every anchor check.
-import { isoDayFun } from '../utils/date.ts';  // What: Iso Day Function. Why: Period keys and generated log rows are local-calendar YYYY-MM-DD strings. How: This formats a Date as that key.
-import { nwmDayFun } from '../utils/date.ts';  // What: Nth-Weekday-Month Day Function. Why: An nth-weekday cadence needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
-import { ordSufFun } from '../utils/date.ts';  // What: Ordinal Suffix Function. Why: Cadence summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
+import { DAY_FUL_ARR } from '../utils/date.ts';  // What: Day Full Array. Why: Cadence summaries and the locked-day tip name a weekday in full. How: This is indexed by a weekday number such as anchorDow or nthWeekday.
+import { dimCouFun   } from '../utils/date.ts';  // What: Days-In-Month Count Function. Why: Monthly and yearly anchors clamp to the month's real length. How: This is called with a year and 1-based month.
+import { isaIntFun   } from '../utils/guard.ts'; // What: Is-An Integer Function. Why: Saved anchor fields may be missing, and normalizing them needs TypeScript to know a passing value is a number. How: This replaces Number.isInteger in every anchor check.
+import { isoDayFun   } from '../utils/date.ts';  // What: Iso Day Function. Why: Period keys and generated log rows are local-calendar YYYY-MM-DD strings. How: This formats a Date as that key.
+import { MON_ABB_ARR } from '../utils/date.ts';  // What: Month Abbreviation Array. Why: A yearly nth-weekday summary names its month in short form. How: This is indexed by anchorMonth minus 1.
+import { nwmDayFun   } from '../utils/date.ts';  // What: Nth-Weekday-Month Day Function. Why: An nth-weekday cadence needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
+import { ordSufFun   } from '../utils/date.ts';  // What: Ordinal Suffix Function. Why: Cadence summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
 
 
 import type { CadNamTyp } from './data-model.ts'; // What: Cadence Name Type. Why: isaCadFun narrows a checked string to a real cadence. How: This is its type guard's target.
@@ -99,11 +101,6 @@ type CadNorTyp = Required< Pick< PicRcdTyp, 'anchorDay' | 'anchorDom' | 'anchorD
 // #region Constants
 
 const CAD_STR_ARR : string[] = [ 'daily', 'weekly', 'monthly', 'yearly' ]; // What: Cadence String Array. Why: This is the fixed set of valid cadence values every picker's own cadence field must fall back to one of. How: This is read by isaCadFun below.
-
-
-
-const DAY_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];       // What: Day Full Array. Why: sumCadFun's own weekly/monthly/yearly nth-weekday summaries need the full weekday name to display. How: This is indexed by anchorDow/nthWeekday throughout sumCadFun below.
-const MON_SHO_ARR = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]; // What: Month Short Array. Why: sumCadFun's own yearly nth-weekday summary needs a short month name to display. How: This is indexed by anchorMonth (0-based) inside sumCadFun below.
 
 // #endregion Constants
 
@@ -608,7 +605,7 @@ function sumCadFun ( picCadObj : CadFieTyp ) : string {
 	if ( curCadStr === 'yearly' ) { // What: Yearly Case Check. Why: A yearly cadence's own summary needs one of two entirely different string shapes depending on dateMode, unlike the other cadences' plain one-line returns. How: This branches into the nth-weekday-versus-plain-date summary below whenever curCadStr is 'yearly'.
 
 
-		if ( picCadObj.dateMode === 'nthWeekday' ) return `Yearly · ${ ordSufFun( picCadObj.nthOrdinal ?? 1 ) } ${ DAY_FUL_ARR[ picCadObj.nthWeekday ?? 0 ] } of ${ MON_SHO_ARR[ ( picCadObj.anchorMonth ?? 1 ) - 1 ] }`; // What: Yearly Nth-Weekday Case Return. Why: A yearly cadence in nth-weekday mode names its ordinal, weekday, and anchor month all at once. How: This builds the summary string from picCadObj's own nthOrdinal/nthWeekday/anchorMonth.
+		if ( picCadObj.dateMode === 'nthWeekday' ) return `Yearly · ${ ordSufFun( picCadObj.nthOrdinal ?? 1 ) } ${ DAY_FUL_ARR[ picCadObj.nthWeekday ?? 0 ] } of ${ MON_ABB_ARR[ ( picCadObj.anchorMonth ?? 1 ) - 1 ] }`; // What: Yearly Nth-Weekday Case Return. Why: A yearly cadence in nth-weekday mode names its ordinal, weekday, and anchor month all at once. How: This builds the summary string from picCadObj's own nthOrdinal/nthWeekday/anchorMonth.
 
 
 

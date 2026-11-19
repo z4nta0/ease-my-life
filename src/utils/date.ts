@@ -9,15 +9,28 @@
  * key every dated state field and log row is keyed by, the compact, long, and
  * time-of-day display formatters, and the calendar math behind monthly and
  * yearly schedules (days in a month, the nth weekday of a month, and ordinal
- * suffixes). Nothing here knows about pickers, tasks, or app state.
+ * suffixes), plus the weekday and month names those schedules are read
+ * by. Nothing here knows about pickers, tasks, or app state.
  *
  * Sections:
+ *  - Constants
  *  - Helpers
  *  - Exports
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Constants
+
+const DAY_ABB_ARR = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ];                                                                          // What: Day Abbreviation Array. Why: Compact schedule summaries name a weekday by its short form. How: This lists Sun through Sat in the order getDay numbers them, so a weekday number indexes it directly.
+const DAY_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];                                             // What: Day Full Array. Why: Schedule summaries and weekday controls name a weekday in full. How: This lists Sunday through Saturday in the order getDay numbers them, so a weekday number indexes it directly.
+const MON_ABB_ARR = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];                                       // What: Month Abbreviation Array. Why: Compact schedule summaries and month selects name a month by its short form. How: This lists Jan through Dec in the order getMonth numbers them, so a zero-based month indexes it directly.
+const MON_FUL_ARR = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]; // What: Month Full Array. Why: Schedule summaries and month selects name a month in full. How: This lists January through December in the order getMonth numbers them, so a zero-based month indexes it directly.
+
+// #endregion Constants
 
 
 
@@ -370,7 +383,7 @@ function ordSufFun ( ordValNum : number ) : string {
 
 // #region Exports
 
-export { dimCouFun, forDatFun, forLonFun, forTimFun, isoDayFun, nexDatFun, nwmDayFun, ordSufFun }; // What: Named Exports. Why: Core schedules, state, and UI all format and compute dates the same way. How: This exports every helper above by name.
+export { DAY_ABB_ARR, DAY_FUL_ARR, dimCouFun, forDatFun, forLonFun, forTimFun, isoDayFun, MON_ABB_ARR, MON_FUL_ARR, nexDatFun, nwmDayFun, ordSufFun }; // What: Named Exports. Why: Core schedules, state, and UI all format, compute, and name dates the same way. How: This exports every constant and helper above by name.
 
 // #endregion Exports
 

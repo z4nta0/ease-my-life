@@ -3,6 +3,8 @@
 
 // #region Imports
 
+import { DAY_ABB_ARR } from '../utils/date.ts'; // What: Day Abbreviation Array. Why: A weekly multi-day or yearly nth-weekday summary names its weekdays in short form. How: This is indexed by a weekday number from daysOfWeek or nthWeekday.
+import { DAY_FUL_ARR } from '../utils/date.ts'; // What: Day Full Array. Why: Single-day weekly and nth-weekday summaries name their weekday in full. How: This is indexed by a weekday number from daysOfWeek or nthWeekday.
 import { dimCouFun   } from '../utils/date.ts'; // What: Days-In-Month Count Function. Why: Monthly and yearly clamping need a month's real length. How: This is called with a year and 1-based month.
 import { HOL_NAM_OBJ } from './holidays.ts';    // What: Holidays Namespace Object. Why: A reminder's own weekend/holiday participation switches need to know whether a given date is an active day off. How: This is called (guarded, since it's an external module) inside visTodFun/todVisFun/nexEliFun below.
 import { isoDayFun   } from '../utils/date.ts'; // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
@@ -67,7 +69,6 @@ import type { TasRcdTyp } from './data-model.ts'; // What: Task Record Type. Why
  *
  * Sections:
  *  - Types
- *  - Constants
  *  - Helpers
  *  - Exports
  *
@@ -97,15 +98,6 @@ type TodVisTyp = { // What: Today Visibility Type. Why: The schedule editor expl
 };
 
 // #endregion Types
-
-
-
-// #region Constants
-
-const DAY_ABB_ARR = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ];                              // What: Day Abbreviation Array. Why: sumTasFun's own weekly multi-day and annual Nth-weekday summaries need a short weekday name to display. How: This is indexed by daysOfWeek/nthWeekday entries throughout sumTasFun below.
-const DAY_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]; // What: Day Full Array. Why: sumTasFun's own weekly/monthly/annual Nth-weekday summaries need the full weekday name to display. How: This is indexed by daysOfWeek/nthWeekday entries throughout sumTasFun below.
-
-// #endregion Constants
 
 
 
