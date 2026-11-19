@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import { STG_NAM_OBJ } from '../state/storage.ts'; // What: Storage Namespace Object. Why: The persistence request below needs to reach the real storage engine to actually call navigator.storage.persist(), and storage owns the key recording that it asked. How: askPerFun calls STG_NAM_OBJ.reqPerFun() and reads STG_NAM_OBJ.PER_ASK_STR.
+import { STG_NAM_OBJ } from '../state/storage.ts';     // What: Storage Namespace Object. Why: The persistence request below needs to reach the real storage engine to actually call navigator.storage.persist(), and storage owns the key recording that it asked. How: askPerFun calls STG_NAM_OBJ.reqPerFun() and reads STG_NAM_OBJ.PER_ASK_STR.
+import { subMakFun   } from '../utils/subscribers.ts'; // What: Subscriber Make Function. Why: Install and persistence changes reach this file's own subscribers. How: This makes the subscriber set once, in Module State.
 
 // #endregion Imports
 
@@ -87,7 +88,7 @@ let relInsBoo = false; // What: Related Installed Boolean. Why: insStaFun must b
 
 
 
-const subFunSet = new Set< () => void >(); // What: Subscriber Function Set. Why: More than one UI component (Settings, an install button) may want to know about install/persistence changes. How: This holds every callback added via the exported subscribe property, each invoked in turn by notSubFun.
+const { notSubFun, subAddFun } = subMakFun(); // What: Notify Subscribers Function. Why: Every subscriber must be told a moment after any state this file tracks (install availability, probe result, persistence) changes. How: This calls every subscriber, one throwing subscriber never stopping the rest. // What: Subscribe Add Function. Why: More than one UI component (Settings, an install button) may want to know about install and persistence changes without polling. How: This adds a subscriber and returns its own unsubscribe function, exported as the subscribe property.
 
 
 
@@ -110,69 +111,6 @@ const isaSafBoo = /^((?!chrome|android|crios|fxios).)*safari/i.test( navigator.u
 
 
 // #region Helpers
-
-// #region Subscribers
-
-const notSubFun = () => { // What: Notify Subscribers Function. Why: Every subscriber must be told a moment after any state this file tracks (install availability, probe result, persistence) changes. How: This calls every function currently in subFunSet, isolating each call in its own try/catch so one throwing subscriber cannot stop the rest from being notified.
-
-
-	for ( const curSubFun of subFunSet ) { // What: Subscriber Loop. Why: Every registered subscriber must hear about the change. How: This walks subFunSet in insertion order.
-
-
-		try { curSubFun(); } // What: Subscriber Call Try. Why: This is the actual notification. How: This calls the subscriber with no arguments.
-
-		catch {} // What: Subscriber Error Guard. Why: One throwing subscriber must not stop the rest from being notified. How: This swallows the error and moves on to the next subscriber.
-
-
-	}
-
-
-};
-
-
-
-// #region subAddFun
-
-/**
- * subAddFun = Subscribe Add Function
- *
- * @summary
- * Registers a callback to hear about every change this file tracks:
- * install availability, the install-support probe result, and
- * persistence. A callback that throws is swallowed by notSubFun, so one
- * broken listener never stops the others.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param newSubFun - New Subscriber Function: The callback to call, with no
- *                     arguments, after each change.
- *
- * @returns A cleanup function that unsubscribes newSubFun again.
- *
- * @example
- * ```ts
- * subAddFun(newSubFun) // => unsubscribe function
- * ```
- *
-*/
-
-const subAddFun = ( newSubFun : () => void ) : ( () => void ) => { // What: Subscribe Add Function. Why: A UI component needs to learn about install/persistence changes without polling. How: This adds newSubFun to subFunSet and returns its own unsubscribe function.
-
-
-	subFunSet.add( newSubFun ); // What: New Subscriber Add Call. Why: The freshly-added callback must actually be tracked so notSubFun can reach it later. How: This adds newSubFun to subFunSet.
-
-
-
-	return () => { subFunSet.delete( newSubFun ); }; // What: Unsubscribe Return. Why: The caller needs a way to stop receiving notifications later. How: This returns a closure that removes newSubFun from subFunSet when called.
-
-
-};
-
-// #endregion subAddFun
-
-// #endregion Subscribers
-
-
 
 // #region Install Detection
 

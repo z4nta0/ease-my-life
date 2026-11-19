@@ -1,6 +1,14 @@
 
 
 
+// #region Imports
+
+import { subMakFun } from '../utils/subscribers.ts'; // What: Subscriber Make Function. Why: Permission changes reach this module's own subscribers. How: This makes the subscriber set once, in Module State.
+
+// #endregion Imports
+
+
+
 /**
  * notify.ts = Local Notification Module
  *
@@ -54,77 +62,13 @@ const DAY_KEY_STR = 'easemylife.notifiedday'; // What: Day Key String. Why: This
 
 // #region Module State
 
-const subLisSet = new Set< () => void >(); // What: Subscriber Listener Set. Why: This holds every callback that wants to hear about a permission change, most notably the Settings page's own permission-state display. How: This is added to by subAddFun and iterated by broSubFun below.
+const { notSubFun, subAddFun } = subMakFun(); // What: Notify Subscribers Function. Why: Every subscriber needs to hear about a permission change the moment askOncFun/reqPerFun resolve one. How: This calls every subscriber, one throwing subscriber never stopping the rest. // What: Subscribe Add Function. Why: A caller (the Settings page's permission-state display) needs a way to register for permission-change broadcasts and later unregister again. How: This adds a subscriber and returns its own removal function.
 
 // #endregion Module State
 
 
 
 // #region Helpers
-
-// #region Permission Subscribers
-
-const broSubFun = () => { // What: Broadcast Subscriber Function. Why: Every subscriber needs to hear about a permission change the moment askOncFun/reqPerFun resolve one. How: This calls every function currently in subLisSet, swallowing any individual subscriber's own error so one bad listener can't block the rest.
-
-
-	for ( const lisCurFun of subLisSet ) { // What: Subscriber Loop. Why: Every current subscriber must be notified, not just the first one. How: This iterates subLisSet, calling each entry in its own guarded try/catch below.
-
-
-		try { lisCurFun(); } // What: Subscriber Call Try. Why: This is the actual notification each subscriber exists to receive. How: This invokes lisCurFun with no arguments.
-
-		catch {} // What: Subscriber Call Guard. Why: One bad listener throwing must not stop the rest of subLisSet from being notified. How: This silently swallows any error lisCurFun itself threw.
-
-
-	}
-
-
-};
-
-
-
-// #region subAddFun
-
-/**
- * subAddFun = Subscribe Add Function
- *
- * @summary
- * Registers a callback to hear about every permission change this module
- * makes (an ask, a request, or a grant), so a display like the Settings
- * page's notify-me row can re-read perCheFun and re-render. A callback
- * that throws is swallowed by broSubFun, so one broken listener never
- * stops the others.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param lisCalFun - Listener Callback Function: The callback to call, with no
- *                     arguments, after each permission change.
- *
- * @returns A cleanup function that unsubscribes lisCalFun again.
- *
- * @example
- * ```ts
- * subAddFun(lisCalFun) // => unsubscribe function
- * ```
- *
-*/
-
-const subAddFun = ( lisCalFun : () => void ) : ( () => void ) => { // What: Subscribe Add Function. Why: A caller (the Settings page) needs a way to register for permission-change broadcasts and later unregister again. How: This adds the given callback to subLisSet and hands back its own removal function.
-
-
-	subLisSet.add( lisCalFun ); // What: Listener Add. Why: The given callback must actually be reachable by broSubFun above in order to receive future broadcasts. How: This adds lisCalFun to subLisSet.
-
-
-
-	return () => { subLisSet.delete( lisCalFun ); }; // What: Unsubscribe Return. Why: The caller needs a way to stop receiving broadcasts later, most commonly on its own component unmount. How: This returns a fresh function that removes lisCalFun from subLisSet when called.
-
-
-};
-
-// #endregion subAddFun
-
-// #endregion Permission Subscribers
-
-
 
 // #region Storage Access
 
@@ -255,7 +199,7 @@ async function askOncFun () : Promise< PerStaTyp > {
 
 
 
-	broSubFun(); // What: Broadcast Subscriber Call. Why: Every subscriber (the Settings page's own permission-state display) needs to hear about this potential permission change. How: This calls broSubFun with no arguments, notifying every current subscriber.
+	notSubFun(); // What: Notify Subscribers Call. Why: Every subscriber (the Settings page's own permission-state display) needs to hear about this potential permission change. How: This calls notSubFun with no arguments, notifying every current subscriber.
 
 
 
@@ -317,7 +261,7 @@ async function reqPerFun () : Promise< PerStaTyp > {
 
 
 
-	broSubFun(); // What: Broadcast Subscriber Call. Why: Every subscriber (the Settings page's own permission-state display) needs to hear about this potential permission change. How: This calls broSubFun with no arguments, notifying every current subscriber.
+	notSubFun(); // What: Notify Subscribers Call. Why: Every subscriber (the Settings page's own permission-state display) needs to hear about this potential permission change. How: This calls notSubFun with no arguments, notifying every current subscriber.
 
 
 
