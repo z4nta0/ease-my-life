@@ -427,6 +427,8 @@ function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
 
 
 
+	// #region Snapshot Record List
+
 	const aniProMap = window.__aniProMap || new Map< Element, Record< string, number > >(); // What: Animation Property Map. Why: A property an animation moved during the last settle counts as eased. How: This reads the map the settle left, or an empty one before any settle.
 	const borIndNum = proNamArr.indexOf( 'border-color' );                                  // What: Border Index Number. Why: An unset border color follows the color, so its place is checked against color's. How: This finds its place, or -1 when it isn't probed.
 	const colIndNum = proNamArr.indexOf( 'color' );                                         // What: Color Index Number. Why: Only color is inherited among the probed properties. How: This finds its place, or -1 when it isn't probed.
@@ -437,6 +439,8 @@ function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
 
 
 	for ( const [ recIndNum, snaRecObj ] of snaRecArr.entries() ) if ( recIndNum ) snaRecObj.labStr = `${ eleLisArr[ Math.floor( recIndNum / 3 ) ].tagName.toLowerCase() } ${ ( eleLisArr[ Math.floor( recIndNum / 3 ) ].classList[ 0 ] || '' ).replace( /^_([A-Za-z]+(--[a-z]+)?)_.*$/, '$1' ) }${ [ '', '::before', '::after' ][ recIndNum % 3 ] }`.trim(); // What: Record Label Loop. Why: A problem inside a control should name the part that snapped, the way a reader of the stylesheet knows it. How: This names every record but the control's own by its tag, its first class with Vite's hash taken off, and its pseudo-element.
+
+	// #endregion Snapshot Record List
 
 
 

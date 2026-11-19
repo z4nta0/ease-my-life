@@ -398,6 +398,8 @@ for ( const vieWidNum of [ 375, 1280 ] ) test( `the whole onboarding at ${ vieWi
 
 
 
+	// #region Page Setup
+
 	await curPagObj.setViewportSize({ // What: Viewport Size Call. Why: Each test runs at one width. How: This sizes the page.
 
 
@@ -415,7 +417,11 @@ for ( const vieWidNum of [ 375, 1280 ] ) test( `the whole onboarding at ${ vieWi
 
 	await curPagObj.goto( '/' ); // What: App Load Call. Why: An empty install shows the Welcome modal. How: This opens the app.
 
+	// #endregion Page Setup
 
+
+
+	// #region Welcome Tour And Checklist
 
 	await begModFun( curPagObj ); // What: Welcome Begin Call. Why: The Welcome tour starts from its modal. How: This clicks Take the quick tour.
 
@@ -452,7 +458,11 @@ for ( const vieWidNum of [ 375, 1280 ] ) test( `the whole onboarding at ${ vieWi
 
 	await waiStaFun( curPagObj, ( staAppObj ) => !!staAppObj.onboarding.checklistDone, 'checklist done' ); // What: Checklist Wait. Why: The checklist closes once generated. How: This waits for checklistDone.
 
+	// #endregion Welcome Tour And Checklist
 
+
+
+	// #region App Features Tours
 
 	await runTouFun( curPagObj, 'app features intro' ); // What: Features Intro Run Call. Why: A one-time tip introduces App Features after the checklist closes. How: This waits for it and dismisses it.
 
@@ -496,7 +506,11 @@ for ( const vieWidNum of [ 375, 1280 ] ) test( `the whole onboarding at ${ vieWi
 
 	expect( onbStaObj.appFeaturesIntroSeen, 'App Features tip seen' ).toBe( true ); // What: Intro Seen Assertion. Why: Dismissing the tip records it as seen. How: This expects the flag.
 
+	// #endregion App Features Tours
 
+
+
+	// #region Replay From Settings
 
 	await selTabFun( curPagObj, 'settings' ); // What: Settings Switch Call. Why: Replay lives in Settings. How: This switches tabs.
 
@@ -515,6 +529,8 @@ for ( const vieWidNum of [ 375, 1280 ] ) test( `the whole onboarding at ${ vieWi
 
 
 	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.onboarding.welcomed && !staAppObj.onboarding.activeTour, 'replayed welcome saved' ); // What: Replay Saved Wait. Why: The replayed tour must leave onboarding welcomed with no tour active. How: This waits for both.
+
+	// #endregion Replay From Settings
 
 
 
