@@ -109,6 +109,173 @@ const nclIdeFun = ideMakFun( 'cl_' ); // What: New-Conditional-Log Identifier Fu
 
 // #region Helpers
 
+// #region cdlAplFun
+
+/**
+ * cdlAplFun = Conditional-Log Apply Function
+ *
+ * @summary
+ * Mirrors cotAplFun's own completion edges, but records ONE
+ * row per conditional per cycle (keyed condId + ISO day) in
+ * state.conditionalLog instead of mutating the conditional itself. A
+ * day-off CARD completion always logs triggered:true; the FIRST
+ * dependent completion of an untriggered cycle logs triggered:false
+ * (the "evaluated but didn't fire" denominator). An inactive
+ * conditional (active:false) logs nothing. Undo removes the cycle's own
+ * row once the confirming completion is gone. Rows denormalize name and
+ * mode so the log survives edits/deletes.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curStaObj - Current State Object: The current state, read (not
+ *                    mutated) for its own pickers/conditionals/conditionalLog.
+ * @param nexEntArr - Next Entry Array: today.entries AFTER this toggle has
+ *                    already been applied to it, used to count dependent
+ *                    completions.
+ * @param togEntObj - Toggle Entry Object: The entry that was just toggled.
+ * @param nowDonBoo - Now Done Boolean: Whether togEntObj is now done (true)
+ *                     or was just un-done (false).
+ *
+ * @returns The updated conditionalLog array, or the same reference when
+ * nothing about it actually changes.
+ *
+ * @example
+ * ```ts
+ * cdlAplFun(curStaObj, nexEntArr, togEntObj, true) // => conditionalLog
+ * ```
+ *
+*/
+
+function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj : TodEntTyp, nowDonBoo : boolean ) : CdlRowTyp[] {
+
+
+	const curLogArr = curStaObj.conditionalLog || []; // What: Current Log Array. Why: Every branch below either returns this untouched or derives a new array from it. How: This reads curStaObj's own conditionalLog, defaulting to empty.
+	const curConArr = curStaObj.conditionals || [];   // What: Current Conditionals Array And Guard. Why: The lookups below need the live conditionals list. How: This reads curStaObj's own conditionals, defaulting to empty.
+
+
+	if ( !curConArr.length ) return curLogArr; // What: No-Conditionals Guard. Why: An app with no conditionals at all has nothing to log. How: This returns curLogArr unchanged when curConArr is empty.
+
+
+
+	let conIdeStr = null;  // What: Conditional Identifier String And Guard. Why: Both branches below need somewhere to record which conditional (if any) this toggle concerns. How: This starts null and is set by whichever branch below actually matches.
+	let trgValBoo = false; // What: Triggered Value Boolean And Guard. Why: Both branches below need somewhere to record whether this toggle counts as triggered. How: This starts false and is set alongside conIdeStr by whichever branch below actually matches, so it's always a real boolean once conIdeStr is.
+
+
+	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card's own completion always logs as triggered. How: This sets conIdeStr/trgValBoo directly from togEntObj.
+
+
+		conIdeStr = togEntObj.conditionalId; // What: Conditional Id String Set. Why: A day-off card's own log entry names the exact conditional it belongs to. How: This sets conIdeStr to togEntObj's own conditionalId.
+		trgValBoo = true;                    // What: Trigger Value Boolean Set. Why: A day-off card's own completion always counts as triggered. How: This sets trgValBoo true.
+
+
+	}
+
+	else if ( togEntObj.pickerId ) { // What: Dependent Picker Branch. Why: A dependent entry's own conditional is looked up through its picker, and always logs as not-yet-triggered. How: This looks up the picker and, if gated, sets conIdeStr/trgValBoo.
+
+
+		const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === togEntObj.pickerId ); // What: Current Picker Object And Guard. Why: Only a gated picker's entry logs anything at all. How: This looks up togEntObj's own pickerId in curStaObj.pickers.
+
+
+		if ( curPicObj && curPicObj.conditionalId ) { // What: Gated-Picker Guard. Why: An ungated picker's entry logs nothing. How: This sets conIdeStr/trgValBoo only when curPicObj exists and carries a conditionalId.
+
+
+			conIdeStr = curPicObj.conditionalId; // What: Conditional Id String Set. Why: The log entry needs to know which conditional this dependent picker is actually gated by. How: This sets conIdeStr to curPicObj's own conditionalId.
+			trgValBoo = false;                   // What: Trigger Value Boolean Set. Why: A dependent entry always logs as not-yet-triggered. How: This sets trgValBoo false.
+
+
+		}
+
+
+	}
+
+
+
+	if ( !conIdeStr ) return curLogArr; // What: No-Match Guard. Why: Neither branch above found a conditional to log against. How: This returns curLogArr unchanged when conIdeStr is still null.
+
+
+
+	const curConObj = curConArr.find( ( conFinObj ) => conFinObj.id === conIdeStr ); // What: Current Conditional Object And Guard. Why: An inactive conditional must log nothing at all. How: This looks up conIdeStr in curConArr.
+
+
+	if ( !curConObj || curConObj.active === false ) return curLogArr; // What: Inactive Guard. Why: An inactive conditional (or one that vanished) runs no logic and logs nothing. How: This returns curLogArr unchanged when curConObj is missing or explicitly inactive.
+
+
+
+	const curDayStr = isoDayFun();                                                                                       // What: Current Day String. Why: A conditionalLog row is keyed by conditional id plus this exact calendar day. How: This reads today's own isoDayFun().
+	const exiRowObj = curLogArr.find( ( curRowObj ) => curRowObj.condId === conIdeStr && curRowObj.date === curDayStr ); // What: Existing Row Object And Guard. Why: Only one row per conditional per cycle is ever kept. How: This looks up an existing row sharing conIdeStr and curDayStr.
+
+
+	const depDonFun = () => nexEntArr.filter( ( curEntObj ) => { // What: Dependent Done Function. Why: Both branches below need to know how many dependent entries for this exact conditional are currently done. How: This counts entries (excluding day-off cards) whose own picker shares conIdeStr and are done.
+
+
+		if ( curEntObj.kind === 'dayoff' || !curEntObj.done ) return false; // What: Non-Dependent Guard. Why: A day-off card, or an entry that isn't done, never counts as a dependent completion. How: This excludes both cases from the count.
+
+
+
+		const matPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ); // What: Matched Picker Object And Guard. Why: Only an entry whose own picker shares this exact conditional counts. How: This looks up curEntObj's own pickerId in curStaObj.pickers.
+
+
+
+		return matPicObj && matPicObj.conditionalId === conIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPicObj exists and shares conIdeStr.
+
+
+	} ).length; // What: Match Count Read. Why: The caller only needs how many entries matched. How: This reads the filtered array's own length.
+
+
+	if ( nowDonBoo ) { // What: Now-Done Branch. Why: A completion may add a new row, subject to the one-row-per-cycle and first-dependent rules. How: This either returns curLogArr unchanged or appends one fresh row.
+
+
+		if ( exiRowObj ) return curLogArr; // What: One-Row-Per-Cycle Guard. Why: This cycle already has its own row; a second completion mustn't duplicate it. How: This returns curLogArr unchanged when exiRowObj already exists.
+
+
+
+		if ( !trgValBoo && depDonFun() !== 1 ) return curLogArr; // What: First-Dependent Guard. Why: An untriggered cycle only logs on its FIRST dependent completion, not every subsequent one. How: This returns curLogArr unchanged when trgValBoo is false and depDonFun() isn't exactly 1.
+
+
+
+		return [ // What: Appended Row Return. Why: The caller needs this cycle's own new row appended. How: This appends one row shaped to state.conditionalLog's own contract.
+
+
+			...curLogArr, // What: Current Log Spread. Why: Every earlier row must stay in place. How: This spreads curLogArr first.
+
+			{ // What: New Row Object. Why: This is the cycle's own new conditional-log row. How: Its fields below follow state.conditionalLog's contract.
+
+
+				condId    : conIdeStr,      // What: Conditional Identifier. Why: The row must name the conditional it belongs to. How: This is conIdeStr.
+				date      : curDayStr,      // What: Date. Why: The Stats tab groups conditional history by day. How: This is today's own ISO date.
+				id        : nclIdeFun(),    // What: Identifier. Why: Every log row needs its own unique id. How: This draws the next conditional-log id.
+				mode      : curConObj.mode, // What: Mode. Why: Log rows denormalize the mode so history survives a later mode change. How: This copies the conditional's own mode.
+				name      : curConObj.name, // What: Name. Why: Log rows denormalize the name so history survives a rename. How: This copies the conditional's own name.
+				triggered : trgValBoo       // What: Triggered. Why: This records whether the gate fired this cycle. How: This is trgValBoo.
+
+
+			}
+
+
+		];
+
+
+	}
+
+
+
+	if ( !exiRowObj ) return curLogArr; // What: No-Existing-Row Guard. Why: Un-doing a completion that never actually logged a row has nothing to remove. How: This returns curLogArr unchanged when exiRowObj is missing.
+
+
+
+	if ( !trgValBoo && depDonFun() > 0 ) return curLogArr; // What: Still-Confirmed Guard. Why: Another dependent completion still stands, so this cycle's own row must stay. How: This returns curLogArr unchanged when trgValBoo is false and depDonFun() is still above 0.
+
+
+
+	return curLogArr.filter( ( curRowObj ) => !( curRowObj.condId === conIdeStr && curRowObj.date === curDayStr ) ); // What: Row-Removed Return. Why: The confirming completion is gone, so this cycle's own row must be dropped. How: This filters out the one row sharing conIdeStr and curDayStr.
+
+
+}
+
+// #endregion cdlAplFun
+
+
+
 // #region cotAplFun
 
 /**
@@ -560,173 +727,6 @@ function enpRevFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 }
 
 // #endregion enpRevFun
-
-
-
-// #region cdlAplFun
-
-/**
- * cdlAplFun = Conditional-Log Apply Function
- *
- * @summary
- * Mirrors cotAplFun's own completion edges, but records ONE
- * row per conditional per cycle (keyed condId + ISO day) in
- * state.conditionalLog instead of mutating the conditional itself. A
- * day-off CARD completion always logs triggered:true; the FIRST
- * dependent completion of an untriggered cycle logs triggered:false
- * (the "evaluated but didn't fire" denominator). An inactive
- * conditional (active:false) logs nothing. Undo removes the cycle's own
- * row once the confirming completion is gone. Rows denormalize name and
- * mode so the log survives edits/deletes.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param curStaObj - Current State Object: The current state, read (not
- *                    mutated) for its own pickers/conditionals/conditionalLog.
- * @param nexEntArr - Next Entry Array: today.entries AFTER this toggle has
- *                    already been applied to it, used to count dependent
- *                    completions.
- * @param togEntObj - Toggle Entry Object: The entry that was just toggled.
- * @param nowDonBoo - Now Done Boolean: Whether togEntObj is now done (true)
- *                     or was just un-done (false).
- *
- * @returns The updated conditionalLog array, or the same reference when
- * nothing about it actually changes.
- *
- * @example
- * ```ts
- * cdlAplFun(curStaObj, nexEntArr, togEntObj, true) // => conditionalLog
- * ```
- *
-*/
-
-function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj : TodEntTyp, nowDonBoo : boolean ) : CdlRowTyp[] {
-
-
-	const curLogArr = curStaObj.conditionalLog || []; // What: Current Log Array. Why: Every branch below either returns this untouched or derives a new array from it. How: This reads curStaObj's own conditionalLog, defaulting to empty.
-	const curConArr = curStaObj.conditionals || [];   // What: Current Conditionals Array And Guard. Why: The lookups below need the live conditionals list. How: This reads curStaObj's own conditionals, defaulting to empty.
-
-
-	if ( !curConArr.length ) return curLogArr; // What: No-Conditionals Guard. Why: An app with no conditionals at all has nothing to log. How: This returns curLogArr unchanged when curConArr is empty.
-
-
-
-	let conIdeStr = null;  // What: Conditional Identifier String And Guard. Why: Both branches below need somewhere to record which conditional (if any) this toggle concerns. How: This starts null and is set by whichever branch below actually matches.
-	let trgValBoo = false; // What: Triggered Value Boolean And Guard. Why: Both branches below need somewhere to record whether this toggle counts as triggered. How: This starts false and is set alongside conIdeStr by whichever branch below actually matches, so it's always a real boolean once conIdeStr is.
-
-
-	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card's own completion always logs as triggered. How: This sets conIdeStr/trgValBoo directly from togEntObj.
-
-
-		conIdeStr = togEntObj.conditionalId; // What: Conditional Id String Set. Why: A day-off card's own log entry names the exact conditional it belongs to. How: This sets conIdeStr to togEntObj's own conditionalId.
-		trgValBoo = true;                    // What: Trigger Value Boolean Set. Why: A day-off card's own completion always counts as triggered. How: This sets trgValBoo true.
-
-
-	}
-
-	else if ( togEntObj.pickerId ) { // What: Dependent Picker Branch. Why: A dependent entry's own conditional is looked up through its picker, and always logs as not-yet-triggered. How: This looks up the picker and, if gated, sets conIdeStr/trgValBoo.
-
-
-		const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === togEntObj.pickerId ); // What: Current Picker Object And Guard. Why: Only a gated picker's entry logs anything at all. How: This looks up togEntObj's own pickerId in curStaObj.pickers.
-
-
-		if ( curPicObj && curPicObj.conditionalId ) { // What: Gated-Picker Guard. Why: An ungated picker's entry logs nothing. How: This sets conIdeStr/trgValBoo only when curPicObj exists and carries a conditionalId.
-
-
-			conIdeStr = curPicObj.conditionalId; // What: Conditional Id String Set. Why: The log entry needs to know which conditional this dependent picker is actually gated by. How: This sets conIdeStr to curPicObj's own conditionalId.
-			trgValBoo = false;                   // What: Trigger Value Boolean Set. Why: A dependent entry always logs as not-yet-triggered. How: This sets trgValBoo false.
-
-
-		}
-
-
-	}
-
-
-
-	if ( !conIdeStr ) return curLogArr; // What: No-Match Guard. Why: Neither branch above found a conditional to log against. How: This returns curLogArr unchanged when conIdeStr is still null.
-
-
-
-	const curConObj = curConArr.find( ( conFinObj ) => conFinObj.id === conIdeStr ); // What: Current Conditional Object And Guard. Why: An inactive conditional must log nothing at all. How: This looks up conIdeStr in curConArr.
-
-
-	if ( !curConObj || curConObj.active === false ) return curLogArr; // What: Inactive Guard. Why: An inactive conditional (or one that vanished) runs no logic and logs nothing. How: This returns curLogArr unchanged when curConObj is missing or explicitly inactive.
-
-
-
-	const curDayStr = isoDayFun();                                                                                       // What: Current Day String. Why: A conditionalLog row is keyed by conditional id plus this exact calendar day. How: This reads today's own isoDayFun().
-	const exiRowObj = curLogArr.find( ( curRowObj ) => curRowObj.condId === conIdeStr && curRowObj.date === curDayStr ); // What: Existing Row Object And Guard. Why: Only one row per conditional per cycle is ever kept. How: This looks up an existing row sharing conIdeStr and curDayStr.
-
-
-	const depDonFun = () => nexEntArr.filter( ( curEntObj ) => { // What: Dependent Done Function. Why: Both branches below need to know how many dependent entries for this exact conditional are currently done. How: This counts entries (excluding day-off cards) whose own picker shares conIdeStr and are done.
-
-
-		if ( curEntObj.kind === 'dayoff' || !curEntObj.done ) return false; // What: Non-Dependent Guard. Why: A day-off card, or an entry that isn't done, never counts as a dependent completion. How: This excludes both cases from the count.
-
-
-
-		const matPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ); // What: Matched Picker Object And Guard. Why: Only an entry whose own picker shares this exact conditional counts. How: This looks up curEntObj's own pickerId in curStaObj.pickers.
-
-
-
-		return matPicObj && matPicObj.conditionalId === conIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPicObj exists and shares conIdeStr.
-
-
-	} ).length; // What: Match Count Read. Why: The caller only needs how many entries matched. How: This reads the filtered array's own length.
-
-
-	if ( nowDonBoo ) { // What: Now-Done Branch. Why: A completion may add a new row, subject to the one-row-per-cycle and first-dependent rules. How: This either returns curLogArr unchanged or appends one fresh row.
-
-
-		if ( exiRowObj ) return curLogArr; // What: One-Row-Per-Cycle Guard. Why: This cycle already has its own row; a second completion mustn't duplicate it. How: This returns curLogArr unchanged when exiRowObj already exists.
-
-
-
-		if ( !trgValBoo && depDonFun() !== 1 ) return curLogArr; // What: First-Dependent Guard. Why: An untriggered cycle only logs on its FIRST dependent completion, not every subsequent one. How: This returns curLogArr unchanged when trgValBoo is false and depDonFun() isn't exactly 1.
-
-
-
-		return [ // What: Appended Row Return. Why: The caller needs this cycle's own new row appended. How: This appends one row shaped to state.conditionalLog's own contract.
-
-
-			...curLogArr, // What: Current Log Spread. Why: Every earlier row must stay in place. How: This spreads curLogArr first.
-
-			{ // What: New Row Object. Why: This is the cycle's own new conditional-log row. How: Its fields below follow state.conditionalLog's contract.
-
-
-				condId    : conIdeStr,      // What: Conditional Identifier. Why: The row must name the conditional it belongs to. How: This is conIdeStr.
-				date      : curDayStr,      // What: Date. Why: The Stats tab groups conditional history by day. How: This is today's own ISO date.
-				id        : nclIdeFun(),    // What: Identifier. Why: Every log row needs its own unique id. How: This draws the next conditional-log id.
-				mode      : curConObj.mode, // What: Mode. Why: Log rows denormalize the mode so history survives a later mode change. How: This copies the conditional's own mode.
-				name      : curConObj.name, // What: Name. Why: Log rows denormalize the name so history survives a rename. How: This copies the conditional's own name.
-				triggered : trgValBoo       // What: Triggered. Why: This records whether the gate fired this cycle. How: This is trgValBoo.
-
-
-			}
-
-
-		];
-
-
-	}
-
-
-
-	if ( !exiRowObj ) return curLogArr; // What: No-Existing-Row Guard. Why: Un-doing a completion that never actually logged a row has nothing to remove. How: This returns curLogArr unchanged when exiRowObj is missing.
-
-
-
-	if ( !trgValBoo && depDonFun() > 0 ) return curLogArr; // What: Still-Confirmed Guard. Why: Another dependent completion still stands, so this cycle's own row must stay. How: This returns curLogArr unchanged when trgValBoo is false and depDonFun() is still above 0.
-
-
-
-	return curLogArr.filter( ( curRowObj ) => !( curRowObj.condId === conIdeStr && curRowObj.date === curDayStr ) ); // What: Row-Removed Return. Why: The confirming completion is gone, so this cycle's own row must be dropped. How: This filters out the one row sharing conIdeStr and curDayStr.
-
-
-}
-
-// #endregion cdlAplFun
 
 
 
