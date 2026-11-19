@@ -18,6 +18,7 @@ import { invColFun   } from '../utils/color.ts';         // What: Invert Color F
 import { isoDayFun   } from '../utils/date.ts';          // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { logRowFun   } from './pick-log.ts';             // What: Log Row Function. Why: Every pick that lands on Today appends one pick-log row. How: This is called with the state and the pick's own fields.
 import { migStaFun   } from './migrate.ts';              // What: Migrate State Function. Why: Every loaded or imported state must be brought up to the current shape. How: This is called on load and on import.
+import { MIR_KEY_STR } from './storage.ts';              // What: Mirror Key String. Why: The fallback paths keep the warm mirror's own key when the storage engine can't be used. How: This is the localStorage key the fallback reads and writes under.
 import { modDefFun   } from './new-item.ts';             // What: Mode Defaults Function. Why: savEdiFun resets a picker's items to its new type's defaults the same way the Data tab's draft picker does. How: This is called with the new mode and threshold.
 import { newEidFun   } from './ids.ts';                  // What: New Entry-Id Function. Why: Migrated entries and new Today entries both need unique ids. How: This is called once per entry that needs one.
 import { norConFun   } from '../core/pickers.ts';        // What: Normalize Conditional Function. Why: A newly-authored inline conditional's own name needs the same tidy Title-Case treatment as a picker's. How: This is called from addPicFun and savEdiFun below.
@@ -78,7 +79,6 @@ import type { TodEntTyp } from '../core/data-model.ts'; // What: Today Entry Typ
  *
  * Sections:
  *  - Types
- *  - Constants
  *  - Helpers
  *  - Hooks
  *  - Exports
@@ -164,14 +164,6 @@ type ActStoTyp = { // What: Action Store Type. Why: Every tab changes state only
 
 
 
-// #region Constants
-
-const STO_KEY_STR = 'easemylife.v2'; // What: Storage Key String. Why: The localStorage fallback/mirror needs a fixed key to read/write under. How: This is read by loaStaFun, wriStaFun, and fluStaFun below.
-
-// #endregion Constants
-
-
-
 // #region Helpers
 
 // #region fluStaFun
@@ -207,7 +199,7 @@ function fluStaFun ( curStaObj : StaAppTyp ) : void {
 
 
 
-		localStorage.setItem( STO_KEY_STR, JSON.stringify( curStaObj ) ); // What: Localstorage Fallback Write. Why: This only runs when STG_NAM_OBJ itself failed to load at all. How: This writes curStaObj's own JSON string under STO_KEY_STR.
+		localStorage.setItem( MIR_KEY_STR, JSON.stringify( curStaObj ) ); // What: Localstorage Fallback Write. Why: This only runs when STG_NAM_OBJ itself failed to load at all. How: This writes curStaObj's own JSON string under MIR_KEY_STR.
 
 
 	}
@@ -268,7 +260,7 @@ function loaStaFun () {
 	try { // What: Localstorage Fallback Attempt. Why: This is the last-resort source when STG_NAM_OBJ itself failed to load at all. How: This returns migStaFun() of the parsed localStorage value, when there is one.
 
 
-		const rawJsoStr = localStorage.getItem( STO_KEY_STR ); // What: Raw Json String And Guard. Why: There may be nothing stored under this key yet. How: This reads STO_KEY_STR from localStorage, null when absent.
+		const rawJsoStr = localStorage.getItem( MIR_KEY_STR ); // What: Raw Json String And Guard. Why: There may be nothing stored under this key yet. How: This reads MIR_KEY_STR from localStorage, null when absent.
 
 
 		if ( rawJsoStr ) return migStaFun( JSON.parse( rawJsoStr ) ); // What: Localstorage-Hit Return. Why: A parsed localStorage value is the fallback path's own normal case. How: This returns migStaFun() of the JSON-parsed rawJsoStr as soon as one exists.
@@ -411,7 +403,7 @@ function wriStaFun ( curStaObj : StaAppTyp ) : void {
 
 
 
-		localStorage.setItem( STO_KEY_STR, JSON.stringify( curStaObj ) ); // What: Localstorage Fallback Write. Why: This only runs when STG_NAM_OBJ itself failed to load at all. How: This writes curStaObj's own JSON string under STO_KEY_STR.
+		localStorage.setItem( MIR_KEY_STR, JSON.stringify( curStaObj ) ); // What: Localstorage Fallback Write. Why: This only runs when STG_NAM_OBJ itself failed to load at all. How: This writes curStaObj's own JSON string under MIR_KEY_STR.
 
 
 	}

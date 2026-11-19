@@ -64,7 +64,7 @@ const BOO_DEA_NUM = 3500;                          // What: Boot Deadline Number
 const BOO_KEY_STR = 'easemylife.idbboots';         // What: Boots Key String. Why: This is the localStorage key counting how many times IDB has booted cleanly in a row. How: This is read and incremented inside iniStoFun to decide when the migration snapshot and dead pre-IDB generations can be safely swept.
 const DAT_NAM_STR = 'easemylife';                  // What: Database Name String. Why: This is the fixed IndexedDB database name every browser profile opens under. How: This is passed as the first argument to indexedDB.open inside opeDatFun.
 const DAT_VER_NUM = 1;                             // What: Database Version Number. Why: This is the fixed IndexedDB schema version, structural only, tracking which object stores exist rather than their contents. How: This is passed as the second argument to indexedDB.open inside opeDatFun.
-const MIG_SNA_STR = 'easemylife.snapshot.pre-idb'; // What: Migration Snapshot String. Why: This is the bounded-lifetime rollback copy taken right before the very first IDB migration attempt. How: This is written once in iniStoFun and re-exported as-is on the STG_NAM_OBJ object below.
+const MIG_SNA_STR = 'easemylife.snapshot.pre-idb'; // What: Migration Snapshot String. Why: This is the bounded-lifetime rollback copy taken right before the very first IDB migration attempt. How: This is written once in iniStoFun and exported by name for store.ts's fallback.
 const MIR_KEY_STR = 'easemylife.v2';               // What: Mirror Key String. Why: This is the legacy live localStorage key that also doubles as the warm mirror's own key, read by every fallback-engine caller of this file. How: This is written by wriLocFun and read by reaLocFun, and re-exported as-is on the STG_NAM_OBJ object below.
 const MIR_TIM_STR = 'easemylife.mirrorat';         // What: Mirror Time String. Why: Mirror freshness must survive a reload, not just live in memory, since the Settings storage panel reports it on a cold load before any tab-hide has happened this session. How: This is written by wriLocFun and read by staRepFun.
 
@@ -1494,7 +1494,7 @@ const STG_NAM_OBJ = { // What: Storage Namespace Object. Why: This is the single
 
 
 
-export { STG_NAM_OBJ, type StoRepTyp }; // What: Storage Namespace Object And Report Type Export. Why: main.tsx, store.ts, pwa.ts and tab-settings.tsx reach every persistence operation through the one namespace object, and Settings holds the storage report it returns. How: This exports STG_NAM_OBJ and StoRepTyp by name at the very end of the file.
+export { MIR_KEY_STR, STG_NAM_OBJ, type StoRepTyp }; // What: Named Exports. Why: main.tsx, store.ts, pwa.ts and tab-settings.tsx reach every persistence operation through the one namespace object, Settings holds the storage report it returns, and store.ts's fallback writes under the mirror's key. How: This exports STG_NAM_OBJ, StoRepTyp, and MIR_KEY_STR by name at the very end of the file.
 
 // #endregion Exports
 
