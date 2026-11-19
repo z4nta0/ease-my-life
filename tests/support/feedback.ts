@@ -373,6 +373,8 @@ function movProFun ( froRecArr : SnaRecTyp[], tarRecArr : SnaRecTyp[], proNamArr
 function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
 
 
+	// #region Snapshot Record Builders
+
 	const parNamObj : Record< string, string > = { 'background-color' : 'background', 'border-color' : 'border', 'outline-color' : 'outline', 'outline-offset' : 'outline-offset', 'outline-width' : 'outline', 'text-decoration-thickness' : 'text-decoration' }; // What: Parent Name Object. Why: A transition listed by a shorthand covers the longhands inside it. How: This maps each probed longhand that has a shorthand to it, and the outline's offset, which no shorthand holds, to itself. // What: Background Color Parent. Why: A background transition covers its color. How: This maps background-color to background. // What: Border Color Parent. Why: A border transition covers its color. How: This maps border-color to border. // What: Outline Color Parent. Why: An outline transition covers its color. How: This maps outline-color to outline. // What: Outline Offset Parent. Why: The outline shorthand doesn't hold the offset. How: This maps outline-offset to its own name. // What: Outline Width Parent. Why: An outline transition covers its width. How: This maps outline-width to outline. // What: Text Decoration Thickness Parent. Why: A text-decoration transition covers its thickness. How: This maps text-decoration-thickness to text-decoration.
 
 
@@ -421,6 +423,8 @@ function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
 
 	};
 
+	// #endregion Snapshot Record Builders
+
 
 
 	const aniProMap = window.__aniProMap || new Map< Element, Record< string, number > >(); // What: Animation Property Map. Why: A property an animation moved during the last settle counts as eased. How: This reads the map the settle left, or an empty one before any settle.
@@ -435,6 +439,8 @@ function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
 	for ( const [ recIndNum, snaRecObj ] of snaRecArr.entries() ) if ( recIndNum ) snaRecObj.labStr = `${ eleLisArr[ Math.floor( recIndNum / 3 ) ].tagName.toLowerCase() } ${ ( eleLisArr[ Math.floor( recIndNum / 3 ) ].classList[ 0 ] || '' ).replace( /^_([A-Za-z]+(--[a-z]+)?)_.*$/, '$1' ) }${ [ '', '::before', '::after' ][ recIndNum % 3 ] }`.trim(); // What: Record Label Loop. Why: A problem inside a control should name the part that snapped, the way a reader of the stylesheet knows it. How: This names every record but the control's own by its tag, its first class with Vite's hash taken off, and its pseudo-element.
 
 
+
+	// #region Duration Adjustments
 
 	for ( const [ lisIndNum, lisCurEle ] of eleLisArr.entries() ) { // What: Animated Property Loop. Why: A property an animation moved, or one an endless animation keeps moving, isn't read from the transition alone. How: This gives each animated property its animation's duration, and replaces each property an endless animation on an element drives with one fixed word in that element's record.
 
@@ -492,6 +498,8 @@ function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
 
 
 	for ( const snaRecObj of snaRecArr ) if ( borColBoo && snaRecObj.valArr[ borIndNum ] === snaRecObj.valArr[ colIndNum ] ) snaRecObj.durArr[ borIndNum ] = Math.max( snaRecObj.durArr[ borIndNum ], snaRecObj.durArr[ colIndNum ] ); // What: Current Color Border Loop. Why: A border color matching the record's own color is currentColor, which follows the color as it eases. How: This gives each such border color the longer of its own duration and the color's.
+
+	// #endregion Duration Adjustments
 
 
 

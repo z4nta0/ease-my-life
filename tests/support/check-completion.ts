@@ -172,6 +172,8 @@ const expConFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, curEntObj : To
 
 
 
+	// #region Charge Gate
+
 	const depDonNum = aftStaObj.today.entries.filter( ( depEntObj ) => { // What: Dependent Done Number. Why: Only the day's first dependent charges. How: This counts the conditional's done dependents after the click.
 
 
@@ -199,7 +201,11 @@ const expConFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, curEntObj : To
 
 	if ( skiChrBoo ) return null; // What: No Charge Return. Why: Only the first dependent of an active value conditional charges, once a day. How: This returns null otherwise.
 
+	// #endregion Charge Gate
 
+
+
+	// #region Charge Expectations
 
 	const chrPreObj = { chargedToday : preConObj.chargedToday, chargeStep : preConObj.chargeStep, triggered : preConObj.triggered, value : preConObj.value }; // What: Charge Previous Object. Why: The charge's undo snapshot is the conditional before it. How: This builds the expected snapshot.
 
@@ -260,6 +266,8 @@ const expConFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, curEntObj : To
 
 
 	if ( !rolOkaFun( aftConObj.chargeStep ) ) issAddFun( `conditional ${ preConObj.name } refill rolled an illegal step ${ aftConObj.chargeStep }` ); // What: Refill Roll Check. Why: A refill rolls a fresh step. How: This reports an illegal one.
+
+	// #endregion Charge Expectations
 
 
 
@@ -325,6 +333,8 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entEidStr : st
 
 
 
+	// #region Item Checks
+
 	const entPenObj = preEntObj.pending; // What: Entry Pending Object. Why: The staged effects drive every expectation. How: This reads them.
 	const updMapObj = ( ( entPenObj && entPenObj.updates ) || [] ).reduce( ( accMapObj, updRowObj ) => accMapObj.set( updRowObj.id, { ...accMapObj.get( updRowObj.id ), ...updRowObj } ), new Map< string, PicUpdTyp >() ); // What: Update Map Object. Why: An item can carry several rows, and each adds its own fields. How: This folds the staged rows by item, merging a later row over an earlier one.
 	const touIdeSet = new Set( [ ...updMapObj.keys(), ...( entPenObj && entPenObj.pickedId ? [ entPenObj.pickedId ] : [] ) ] );                                                                                             // What: Touched Identifier Set. Why: Only touched items may change. How: This is the updated ids plus the picked one.
@@ -374,6 +384,8 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entEidStr : st
 
 	}
 
+	// #endregion Item Checks
+
 
 
 	for ( const prePicObj of preStaObj.pickers ) { // What: Picker Loop. Why: Only the entry's picker may change, by its patch. How: This builds each expected picker and compares.
@@ -393,6 +405,8 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entEidStr : st
 
 
 
+	// #region Conditional Checks
+
 	const expConObj = expConFun( preStaObj, aftStaObj, preEntObj, issAddFun ); // What: Expected Conditional Object. Why: A card or first dependent moves one conditional. How: This builds the expectation, or null.
 
 
@@ -410,7 +424,11 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entEidStr : st
 
 	}
 
+	// #endregion Conditional Checks
 
+
+
+	// #region Conditional Log Checks
 
 	const picRcdObj = preStaObj.pickers.find( ( curPicObj ) => curPicObj.id === preEntObj.pickerId );                                   // What: Picker Record Object. Why: A dependent reaches its conditional through its picker. How: This looks the picker up.
 	const conIdeStr = preEntObj.kind === 'dayoff' ? preEntObj.conditionalId : picRcdObj && picRcdObj.conditionalId;                     // What: Conditional Identifier String. Why: The log row belongs to that conditional. How: This reads it.
@@ -459,13 +477,19 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entEidStr : st
 
 	}
 
+	// #endregion Conditional Log Checks
 
+
+
+	// #region Live Log Row Check
 
 	const livRowObj = aftStaObj.pickLog.find( ( logRowObj ) => logRowObj.eid === entEidStr && !logRowObj.outcome ); // What: Live Row Object. Why: A pick's live log row records its completion. How: This finds it.
 
 
 
 	if ( preEntObj.itemId && ( !livRowObj || !livRowObj.done || !livRowObj.completedAt || locDayFun( livRowObj.completedAt ) !== dayIsoStr || !!livRowObj.depletedEnd !== !!( entPenObj && entPenObj.depletedEnd ) ) ) issAddFun( `pick log row ${ jsoStrFun( livRowObj ) } isn't marked done today` ); // What: Live Row Check. Why: The pick's row is done today, flagged when it spent an item. How: This reports anything else.
+
+	// #endregion Live Log Row Check
 
 
 

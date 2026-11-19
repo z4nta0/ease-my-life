@@ -806,6 +806,8 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 
 
+	// #region Day-Off Card Checks
+
 	const daoEntArr = entRcdArr.filter( ( curEntObj ) => curEntObj.kind === 'dayoff' ); // What: Day-Off Entry Array. Why: Day-off cards are checked as a set. How: This collects them.
 
 
@@ -845,11 +847,15 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 	for ( const conIdeStr of expDaoSet ) if ( daoEntArr.filter( ( curEntObj ) => curEntObj.conditionalId === conIdeStr ).length !== 1 ) issAddFun( `expected exactly one day-off card for ${ conMapObj.get( conIdeStr )?.name }` ); // What: Card Count Loop. Why: Each triggered gate shows exactly one card. How: This counts each gate's cards.
 
+	// #endregion Day-Off Card Checks
+
 
 
 	for ( const curEntObj of entRcdArr ) if ( !accEidSet.has( curEntObj.eid ) ) issAddFun( `unexpected entry ${ curEntObj.kind || 'pick' } for picker ${ curEntObj.pickerId }` ); // What: Stray Entry Loop. Why: Every entry must come from a rule. How: This reports any that didn't.
 
 
+
+	// #region Pick Log Checks
 
 	const dayRowArr = genStaObj.pickLog.filter( ( logRowObj ) => logRowObj.date === dayIsoStr ); // What: Day Row Array. Why: Today's log rows must match the fresh picks. How: This collects rows dated today.
 
@@ -870,6 +876,8 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 
 	for ( const logRowObj of dayRowArr ) if ( !freEidSet.has( logRowObj.eid || '' ) && !accEidSet.has( logRowObj.eid || '' ) ) issAddFun( `stray log row ${ logRowObj.id } dated today` ); // What: Stray Row Loop. Why: Generation purges other rows dated today. How: This reports any left.
+
+	// #endregion Pick Log Checks
 
 
 

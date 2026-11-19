@@ -133,6 +133,8 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 
 
 
+	// #region Element Helpers
+
 	const cliRecFun = ( curDomEle : Element ) => { // What: Clipped Rect Function. Why: A clipping ancestor hides whatever falls outside it. How: This cuts the element's box down to every clipping ancestor's box.
 
 
@@ -256,7 +258,11 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 
 	};
 
+	// #endregion Element Helpers
 
+
+
+	// #region Sideways Scroll Checks
 
 	if ( document.documentElement.scrollWidth > vieWidNum + 1 ) issMesArr.push( `page scrolls sideways: ${ document.documentElement.scrollWidth } wide on a ${ vieWidNum } screen` ); // What: Page Scroll Check. Why: The page must never scroll sideways. How: This compares its width with the screen.
 
@@ -271,6 +277,8 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 
 
 	if ( maiConEle && !maiCliBoo && maiConEle.scrollWidth > maiConEle.clientWidth + 1 ) issMesArr.push( `main area scrolls sideways: ${ maiConEle.scrollWidth } wide in ${ maiConEle.clientWidth }` ); // What: Main Scroll Check. Why: The main area must not scroll sideways either. How: This compares its widths.
+
+	// #endregion Sideways Scroll Checks
 
 
 
@@ -309,6 +317,8 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 	}
 
 
+
+	// #region Control Overlap Checks
 
 	const conEleArr = Array.from( document.querySelectorAll( conSelStr ) ).filter( visEleFun ); // What: Control Element Array. Why: Overlap is checked between visible controls. How: This collects them.
 
@@ -353,6 +363,8 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 
 
 	}
+
+	// #endregion Control Overlap Checks
 
 
 
