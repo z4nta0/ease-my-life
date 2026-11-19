@@ -58,9 +58,11 @@ branch.
 
 ### Test suites
 
-Added 2026-10-06. Eight Playwright suites live in `tests/`, one project each
-in `tests/playwright.config.ts` (the accessibility suite one per engine), which starts its own dev server on port 5190
-(never the usual 5173) and stops it afterwards. Every page runs in Chicago
+Added 2026-10-06. Nine Playwright suites live in `tests/`, one project each
+in `tests/playwright.config.ts` (the accessibility, account, and security
+suites one per engine), which starts its own dev server on port 5190 and
+a production build under `vite preview` on 5191 (never the usual 5173), and
+stops both afterwards. Every page runs in Chicago
 time with service workers blocked, and results, screenshots, and simulation
 traces go to `tests/output/` (git-ignored); `npx playwright show-report
 tests/output/report` opens the HTML report.
@@ -117,6 +119,20 @@ tests/output/report` opens the HTML report.
   which it starts and stops around the suite (it needs Java 21): a paid,
   verified owner reads and writes its own copy one revision at a time, and
   every other account, field, or revision is refused. A few seconds.
+- `npm run test:security`: checks `public/_headers`' policy (only 'self',
+  'none', and the named Firebase and reCAPTCHA addresses, no `data:`, and
+  inline code for styles alone), the hardening headers, the legal pages'
+  rewrites ahead of the catch-all, the build for secrets (the Firebase web
+  config's API key and the reCAPTCHA site key are allowed, since both are
+  meant for the browser), and `npm audit` of the shipped dependencies, those
+  file checks in Chromium only. In all three engines, every accessibility
+  state and both legal pages load from the preview build under the headers
+  with no policy violation and every new tab link closed off, an unknown
+  address gives way to the root, markup typed into a picker, reminder, or
+  holiday name shows as text, and local storage holds only the keys under
+  "Where data lives" and no secret. Data access is checked by `test:rules`,
+  the webhook's signatures by `test:payments`, and sign-out by
+  `test:account`. The backend has no rate limits of its own to check.
 - `npm run test:sync`: checks the sync engine in Node, with no browser,
   against an in-memory cloud copy (`tests/sync/fake-backend.ts`): the real
   backup splits into documents under Firestore's size limit and joins back
@@ -449,7 +465,12 @@ background.
   `tests/account/sync.spec.ts` covers it.
 - **Headers**: `public/_headers`' Content-Security-Policy names Firebase's
   addresses, App Check's, and reCAPTCHA's. Vite's dev server doesn't apply
-  that file, so a change to it is only proven on a Netlify deploy preview.
+  that file, so the security suite applies it to the preview build, and a
+  change to it is proven for real on a Netlify deploy preview. Its
+  `style-src` keeps `'unsafe-inline'` (recorded 2026-11-18, per the security
+  rule): the boot splash's critical CSS is inline in `index.html` so it
+  paints before any request, and React sets many components' sizes and
+  positions through style attributes. `script-src` allows no inline code.
 - **WebKit and the emulator**: Playwright's WebKit stalls on Firestore's
   streaming connection to the plain-HTTP emulator, so emulator builds force
   long polling. Real Safari against the real project is checked by hand.
