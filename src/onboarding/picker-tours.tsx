@@ -12,6 +12,7 @@ import { IcoSvgCom   } from '../ui/icon.tsx';                   // What: Icon Sv
 import { IntModCom   } from './intro-modal.tsx';                // What: Intro Modal Component. Why: Each picker mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this picker's own icon/title/paragraphs/pills.
 import { ONB_ESP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Extra-Sample-Pickers Array. Why: This is every OTHER sample picker's own template, alongside ONB_EXA_OBJ the full set PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
 import { ONB_EXA_OBJ } from '../state/onboarding-seed-data.ts'; // What: Onboarding Example Object. Why: This is the "Daily Chores" sample picker's own template, one of the entries PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
+import { PIC_NAM_OBJ } from '../core/pickers.ts';               // What: Pickers Namespace Object. Why: A sample's day overrides become the drift values the item editor stores. How: This is called via PIC_NAM_OBJ.dayDriFun.
 import { SED_NAM_OBJ } from '../state/seed.ts';                 // What: Seed Namespace Object. Why: The intro modal's own pill needs this picker's own mode label, not its raw mode key. How: This is looked up (MOD_DEF_OBJ) by picRcdObj's own mode to resolve modLabStr below.
 
 
@@ -621,9 +622,9 @@ const buiAddFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Add Fu
 		emlTouObj.set({ // What: Item Prefill Publish Call. Why: tab-picker.tsx's own addDraFun reads this to prefill the real inline item editor. How: This builds the prefill shape from picCopObj above.
 
 
-			iteMaxNum : picCopObj.sooNum ? 100 / picCopObj.sooNum : null, // What: Item Maximum Number. Why: 100/days is the inverse of tab-picker.tsx's own covSooFun/covLatFun drift-to-days conversion, kept in sync manually since those are not exported. How: This converts picCopObj's own sooNum into a drift value, or null when this sample has no override.
-			iteMinNum : picCopObj.latNum ? 100 / picCopObj.latNum : null, // What: Item Minimum Number. Why: Same conversion as iteMaxNum, for the slow end of the drift band. How: This converts picCopObj's own latNum into a drift value, or null when this sample has no override.
-			itePreStr : picCopObj.preStr                                  // What: Item Prefill String. Why: The real editor's own name input needs this item's own prefilled name. How: This reads picCopObj's own preStr straight through.
+			iteMaxNum : picCopObj.sooNum ? PIC_NAM_OBJ.dayDriFun( picCopObj.sooNum ) : null, // What: Item Maximum Number. Why: The editor stores a drift value, the inverse of the drift-to-days conversion it shows. How: This converts picCopObj's own sooNum into a drift value through PIC_NAM_OBJ.dayDriFun, or null when this sample has no override.
+			iteMinNum : picCopObj.latNum ? PIC_NAM_OBJ.dayDriFun( picCopObj.latNum ) : null, // What: Item Minimum Number. Why: Same conversion as iteMaxNum, for the slow end of the drift band. How: This converts picCopObj's own latNum into a drift value, or null when this sample has no override.
+			itePreStr : picCopObj.preStr                                                     // What: Item Prefill String. Why: The real editor's own name input needs this item's own prefilled name. How: This reads picCopObj's own preStr straight through.
 
 
 		});

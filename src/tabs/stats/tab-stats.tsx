@@ -16,11 +16,11 @@ import { IcoSvgCom    } from '../../ui/icon.tsx';             // What: Icon Svg 
 import { InfTipCom    } from '../../ui/info-tip.tsx';         // What: Info Tip Component. Why: The Spent metric's "no completed cycle yet" case needs a small inline explanation. How: This renders a "?" bubble with its own label text next to that N/A value.
 import { isaTruFun    } from '../../utils/guard.ts';          // What: Is-A Truthy Function. Why: The scroll-fade rows drop any that aren't mounted. How: This filters them so the rest read as real elements.
 import { isoDayFun    } from '../../utils/date.ts';           // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
+import { PIC_NAM_OBJ  } from '../../core/pickers.ts';         // What: Pickers Namespace Object. Why: Ease ranges in this file read as soonest and latest days. How: This is called via PIC_NAM_OBJ.driDayFun wherever a drift-to-days conversion happens.
 import { PilTagCom    } from '../../ui/pill-tag.tsx';         // What: Pill Tag Component. Why: The single-picker header needs a small labelled pill showing the picker's own mode. How: This renders that pill, toned as 'mode'.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';           // What: Seed Namespace Object. Why: Every picker mode's own display label and hint text live in this shared table. How: This is looked up (MOD_DEF_OBJ) by a picker's own mode key throughout the page.
 import { STA_HEL_ARR  } from '../../help/stats-catalog.tsx';  // What: Stats Help Array. Why: Help mode needs this page's own tooltip copy, keyed to its elements. How: This is passed straight through to HelOveCom.
 import { TAS_NAM_OBJ  } from '../../core/tasks.ts';           // What: Tasks Namespace Object. Why: Which reminder types actually opt into Stats is a persisted, normalized setting. How: This is called via TAS_NAM_OBJ.norOptFun on the raw persisted reminderOpts.
-import { THR_VAL_NUM  } from '../../constants.ts';            // What: Threshold Value Number. Why: Ease day-range math in this file divides by the shared full-charge ceiling. How: This is divided by an item's own easeMin/easeMax wherever a drift-to-days conversion happens.
 import { togFadFun    } from '../../ui/edge-fade.ts';         // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { unhHisFun    } from '../../state/sample-history.ts'; // What: Unhide History Function. Why: Help mode borrows the real hidden sample pickers so the heatmap and breakdown have genuine history to show. How: This is called whenever helModBoo turns true, as long as the page tour doesn't already own the same samples.
 import { useEmlTouFun } from '../../state/tour-bus.ts';       // What: Use Ease My Life Tour Function. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's resTopNum field.
@@ -2248,10 +2248,10 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-		const easMinNum = iteCurObj.easeMin ?? scoPicObj.easeMin ?? 1;                   // What: Ease Min Number. Why: The band's own upper bound (latest) is derived from the smaller drift value. How: This reads the item's own easeMin, falling back to the picker's own default, then 1.
-		const easMaxNum = iteCurObj.easeMax ?? scoPicObj.easeMax ?? 1;                   // What: Ease Max Number. Why: The band's own lower bound (soonest) is derived from the larger drift value. How: This reads the item's own easeMax, falling back to the picker's own default, then 1.
-		const sooDayNum = Math.max( 1, Math.round( THR_VAL_NUM / ( easMaxNum || 1 ) ) ); // What: Soonest Day Number. Why: The fastest a full drift cycle can complete is governed by the larger (max) drift value. How: This divides the threshold by easMaxNum, floored at 1 day.
-		const latDayNum = Math.max( 1, Math.round( THR_VAL_NUM / ( easMinNum || 1 ) ) ); // What: Latest Day Number. Why: The slowest a full drift cycle can complete is governed by the smaller (min) drift value. How: This divides the threshold by easMinNum, floored at 1 day.
+		const easMinNum = iteCurObj.easeMin ?? scoPicObj.easeMin ?? 1; // What: Ease Min Number. Why: The band's own upper bound (latest) is derived from the smaller drift value. How: This reads the item's own easeMin, falling back to the picker's own default, then 1.
+		const easMaxNum = iteCurObj.easeMax ?? scoPicObj.easeMax ?? 1; // What: Ease Max Number. Why: The band's own lower bound (soonest) is derived from the larger drift value. How: This reads the item's own easeMax, falling back to the picker's own default, then 1.
+		const sooDayNum = PIC_NAM_OBJ.driDayFun( easMaxNum );          // What: Soonest Day Number. Why: The fastest a full drift cycle can complete is governed by the larger (max) drift value. How: This divides the threshold by easMaxNum, floored at 1 day.
+		const latDayNum = PIC_NAM_OBJ.driDayFun( easMinNum );          // What: Latest Day Number. Why: The slowest a full drift cycle can complete is governed by the smaller (min) drift value. How: This divides the threshold by easMinNum, floored at 1 day.
 
 
 		const uniWorStr = ( ( scoPicObj && scoPicObj.cadence ) || 'daily' ) !== 'daily' // What: Unit Word String. Why: A cadenced picker's own band suffix must relabel from raw days into its own period word. How: This asks CAD_NAM_OBJ.uniWorFun for latDayNum's own word, or falls back to the literal "days". // sooDayNum/latDayNum are period counts; relabel in the picker's own cadence unit.
@@ -3347,8 +3347,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 											{ conBreArr.map( ( conRowObj ) => { // What: Conditional Row Render. Why: Every conditional in the breakdown needs its own list item showing its name, mode-intrinsic target, and the active metric's own value. How: This computes that row's own target suffix, then returns the list item.
 
 
-												const sooDayNum = Math.max( 1, Math.round( THR_VAL_NUM / ( conRowObj.maxNum || 1 ) ) ); // What: Soonest Day Number. Why: The fastest a full drift cycle can complete is governed by the larger (max) drift value. How: This divides the fixed threshold by easeMax, floored at 1 day.
-												const latDayNum = Math.max( 1, Math.round( THR_VAL_NUM / ( conRowObj.minNum || 1 ) ) ); // What: Latest Day Number. Why: The slowest a full drift cycle can complete is governed by the smaller (min) drift value. How: This divides the fixed threshold by easeMin, floored at 1 day.
+												const sooDayNum = PIC_NAM_OBJ.driDayFun( conRowObj.maxNum ); // What: Soonest Day Number. Why: The fastest a full drift cycle can complete is governed by the larger (max) drift value. How: This divides the fixed threshold by easeMax, floored at 1 day.
+												const latDayNum = PIC_NAM_OBJ.driDayFun( conRowObj.minNum ); // What: Latest Day Number. Why: The slowest a full drift cycle can complete is governed by the smaller (min) drift value. How: This divides the fixed threshold by easeMin, floored at 1 day.
 
 
 												const conTarStr = conRowObj.delBoo // What: Conditional Target String. Why: Every non-deleted conditional's own configured target is worth surfacing alongside its measured rate. How: This branches on the conditional's own mode to phrase either a percentage or a day-band string. // Mode-intrinsic "target" (what you configured), shown as a suffix under the name like the Pickers breakdown does. Probability modes show a trigger %; ease modes show an interval band.

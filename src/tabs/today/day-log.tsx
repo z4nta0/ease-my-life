@@ -12,9 +12,9 @@ import { ColDisCom   } from '../../ui/collapse.tsx';      // What: Collapse Disc
 import { CON_NAM_OBJ } from '../../core/conditionals.ts'; // What: Conditional Namespace Object. Why: ConSecCom needs CON_NAM_OBJ.modValFun to know whether a given conditional's own mode even has a value to show. How: This is called once per conditional row inside ConSecCom below.
 import { InfTipCom   } from '../../ui/info-tip.tsx';      // What: Info Tip Component. Why: Every truncatable name/label in this file (item, conditional, reminder) needs the shared reveal-on-truncation tooltip. How: This wraps those names/labels throughout PicBloCom, ConSecCom and RemLogCom.
 import { isoDayFun   } from '../../utils/date.ts';        // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
+import { PIC_NAM_OBJ } from '../../core/pickers.ts';      // What: Pickers Namespace Object. Why: Ease day-range math in this file divides by the shared full-charge ceiling. How: This reads PIC_NAM_OBJ.THR_VAL_NUM wherever a drift-to-days conversion happens.
 import { SED_NAM_OBJ } from '../../state/seed.ts';        // What: Seed Namespace Object. Why: PicBloCom and ConSecCom label a mode with the same display names the mode radios use. How: This reads MOD_DEF_OBJ's own labStr for a picker's or conditional's mode.
 import { TAS_NAM_OBJ } from '../../core/tasks.ts';        // What: Tasks Namespace Object. Why: RemLogCom needs the reminders engine's own scheduling helpers (ancDatFun, visTodFun, isaDonFun, nexEliFun, sumTasFun). How: These are called throughout RemLogCom below.
-import { THR_VAL_NUM } from '../../constants.ts';         // What: Threshold Value Number. Why: Ease day-range math in this file divides by the shared full-charge ceiling. How: This is divided by an item's own easeMin/easeMax wherever a drift-to-days conversion happens.
 
 
 import type { ConRcdTyp } from '../../core/data-model.ts'; // What: Conditional Record Type. Why: The log describes each conditional gating a group. How: This types conSubFun's conRcdObj.
@@ -96,7 +96,7 @@ function conSubFun ( conRcdObj : ConRcdTyp ) : string {
 	if ( conRcdObj.mode === 'ease-up' || conRcdObj.mode === 'ease-down' ) { // What: Ease Mode Branch. Why: Both ease modes phrase their own subline as a soonest-latest day range. How: This computes that range from conRcdObj's own threshold/ease-min/ease-max.
 
 
-		const thrValNum = conRcdObj.threshold ?? THR_VAL_NUM;                                          // What: Threshold Value Number. Why: This conditional's own range is relative to its own threshold, falling back to the shared default. How: This reads conRcdObj's own threshold, or THR_VAL_NUM when it has none set.
+		const thrValNum = conRcdObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM;                              // What: Threshold Value Number. Why: This conditional's own range is relative to its own threshold, falling back to the shared default. How: This reads conRcdObj's own threshold, or THR_VAL_NUM when it has none set.
 		const sooDayNum = Math.max( 1, Math.round( thrValNum / ( conRcdObj.easeMax ?? 14 ) ) );        // What: Soonest Day Number. Why: This is the earliest day count the range can show. How: This divides thrValNum by conRcdObj's own easeMax (or 14), floored at 1 whole day.
 		const latDayNum = Math.max( sooDayNum, Math.round( thrValNum / ( conRcdObj.easeMin ?? 7 ) ) ); // What: Latest Day Number. Why: This is the latest day count the range can show, never earlier than sooDayNum. How: This divides thrValNum by conRcdObj's own easeMin (or 7), floored at sooDayNum itself.
 
@@ -396,8 +396,8 @@ function iteSubFun ( picRcdObj : PicRcdTyp, iteRcdObj : IteRcdTyp, booValNum : n
 
 		const easMinNum = iteRcdObj.easeMin ?? picRcdObj.easeMin ?? 1;                                                                             // What: Ease Min Number. Why: The range below needs this item's own effective ease-min, falling back to its picker's own. How: This reads iteRcdObj's own easeMin, then picRcdObj's own, then 1.
 		const easMaxNum = iteRcdObj.easeMax ?? picRcdObj.easeMax ?? 1;                                                                             // What: Ease Max Number. Why: The range below needs this item's own effective ease-max, falling back to its picker's own. How: This reads iteRcdObj's own easeMax, then picRcdObj's own, then 1.
-		const sooDayNum = Math.max( 1, Math.round( THR_VAL_NUM / easMaxNum ) );                                                                    // What: Soonest Day Number. Why: This is the earliest day count the range can show. How: This divides THR_VAL_NUM by easMaxNum, floored at 1 whole day.
-		const latDayNum = Math.max( sooDayNum, Math.round( THR_VAL_NUM / easMinNum ) );                                                            // What: Latest Day Number. Why: This is the latest day count the range can show, never earlier than sooDayNum. How: This divides THR_VAL_NUM by easMinNum, floored at sooDayNum itself.
+		const sooDayNum = Math.max( 1, Math.round( PIC_NAM_OBJ.THR_VAL_NUM / easMaxNum ) );                                                        // What: Soonest Day Number. Why: This is the earliest day count the range can show. How: This divides THR_VAL_NUM by easMaxNum, floored at 1 whole day.
+		const latDayNum = Math.max( sooDayNum, Math.round( PIC_NAM_OBJ.THR_VAL_NUM / easMinNum ) );                                                // What: Latest Day Number. Why: This is the latest day count the range can show, never earlier than sooDayNum. How: This divides THR_VAL_NUM by easMinNum, floored at sooDayNum itself.
 		const uniWorStr = ( picRcdObj.cadence && picRcdObj.cadence !== 'daily' ) ? CAD_NAM_OBJ.uniWorFun( picRcdObj.cadence, latDayNum ) : 'days'; // What: Unit Word String. Why: A non-daily cadence needs its own scaled unit word (e.g. "weeks") instead of always "days". How: This calls CAD_NAM_OBJ.uniWorFun for a real non-daily cadence, otherwise falls back to the literal word "days".
 
 

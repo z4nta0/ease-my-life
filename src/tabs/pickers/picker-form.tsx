@@ -20,7 +20,7 @@ import { IcoSvgCom    } from '../../ui/icon.tsx';                 // What: Icon 
 import { InfTipCom    } from '../../ui/info-tip.tsx';             // What: Info Tip Component. Why: A disabled Create button must explain that a picker needs at least 2 items. How: This wraps that button with the requirement as its tip.
 import { norConFun    } from '../../core/pickers.ts';             // What: Normalize Conditional Function. Why: A new inline conditional's name must be compared against existing ones the same way the store itself normalizes them. How: This is called on the conditional draft's own name before checking it for a collision.
 import { norGroFun    } from '../../core/pickers.ts';             // What: Normalize Group Function. Why: A newly-typed group name must be normalized the same way the store itself normalizes group names. How: This is called on the new-group input's value to compute the picker's effective group.
-import { PIC_NAM_OBJ  } from '../../core/pickers.ts';             // What: Pickers Namespace Object. Why: A newly added item takes the same default drift band the pickers module falls back to. How: This is read for DEF_EAS_OBJ.
+import { PIC_NAM_OBJ  } from '../../core/pickers.ts';             // What: Pickers Namespace Object. Why: A newly added item takes the same default drift band and full-charge ceiling the pickers module uses, and its ease band reads as days. How: This is read for DEF_EAS_OBJ and THR_VAL_NUM, and called via driDayFun.
 import { redMotFun    } from '../../utils/motion.ts';             // What: Reduce Motion Function. Why: Several exit/scroll animations must be skipped for a user who prefers reduced motion. How: This is checked before every animated scroll, exit delay, or the reel/spotlight/dissolve cycle itself.
 import { rhyPxlFun    } from '../../utils/rhythm.ts';             // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';               // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) throughout to show the active mode's label/hint and to render the mode-choice radio list.
@@ -468,10 +468,6 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const shoWeiBoo = selModStr === 'weighted' || selModStr === 'dynamic';       // What: Show Weight Boolean. Why: Weight is a lever only for these two modes; random/ease-* ignore it entirely, so the control stays hidden elsewhere to avoid asking for something irrelevant. How: This gates the weight column throughout Step 2.
 	const isaEasBoo = selModStr === 'ease-up' || selModStr === 'ease-down';      // What: Is-An Ease Boolean. Why: Only these two modes use the easeMin/easeMax drift band at all. How: This gates the ease controls throughout Step 2.
 
-	const easThrNum = 100; // What: Ease Threshold Number. Why: This is the fixed 0-100 scale every item's own drift value moves across. How: This is used throughout the conversion helpers right below. // What: Ease Cadence Design Note. Why: Ease cadence is PER-ITEM, since a fridge-clean and a counter-wipe want different rhythms; each item carries its own drift band { easeMin, easeMax }. How: Two human questions are asked per item and converted: soonest days (least time before it CAN come up) -> easeMax = 100/soonest; latest days (most time before it MUST come up) -> easeMin = 100/latest. The engine moves an item across the 0-100 threshold by random(easeMin, easeMax) each daily run, so maturing fastest (every roll = easeMax) takes 100/easeMax days = the soonest, and slowest (every roll = easeMin) takes 100/easeMin days = the latest; the gap between the two answers IS the randomness. Drift values are the source of truth on each item.
-
-	const covSooFun = ( easMaxNum : number | undefined ) => Math.max( 1, Math.round( easThrNum / ( easMaxNum || 1 ) ) ); // What: Convert Soonest Function. Why: The soonest-days question is really just easThrNum divided by an item's own easeMax, floored at 1 day. How: This rounds the division and clamps it to at least 1.
-	const covLatFun = ( easMinNum : number | undefined ) => Math.max( 1, Math.round( easThrNum / ( easMinNum || 1 ) ) ); // What: Convert Latest Function. Why: The latest-days question is really just easThrNum divided by an item's own easeMin, floored at 1 day. How: This rounds the division and clamps it to at least 1.
 
 	const capStrFun = ( souTexStr : string ) => souTexStr.length ? souTexStr[ 0 ].toUpperCase() + souTexStr.slice( 1 ) : souTexStr; // What: Capitalize String Function. Why: Every item/picker name this form commits should read with a capitalized first letter, regardless of how the user actually typed it. How: This upper-cases just the first character and leaves the rest untouched.
 
@@ -577,7 +573,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const { comDraFun, draIteObj, patDraFun } = useIteDraFun( draActObj, ediOpeObj ); // What: Item Draft Destructure. Why: An already-added pool item's editor edits its own local draft, committed into the pool only on Save, the same as every other item editor. How: This calls useIteDraFun with the open pool item and the pool's own actions.
 
 
-	const draPicObj = { cadence : cadCurObj.cadence, mode : selModStr, threshold : easThrNum }; // What: Draft Picker Object. Why: EntEdiCom still expects a picker-shaped object to read mode/threshold/cadence off of, even though the real picker doesn't exist yet. How: No `id` -- deliberately, since draft items carry no pickerId either (both undefined), so EntEdiCom's own PIC_NAM_OBJ.aveEasFun(items, picDatObj.id) fallback still matches every draft item against this pseudo-picker's undefined id and averages them correctly, not a coincidence to "fix" by inventing ids here. No easeMin/easeMax here either, since EntEdiCom no longer reads those off the picker directly.
+	const draPicObj = { cadence : cadCurObj.cadence, mode : selModStr, threshold : PIC_NAM_OBJ.THR_VAL_NUM }; // What: Draft Picker Object. Why: EntEdiCom still expects a picker-shaped object to read mode/threshold/cadence off of, even though the real picker doesn't exist yet. How: No `id` -- deliberately, since draft items carry no pickerId either (both undefined), so EntEdiCom's own PIC_NAM_OBJ.aveEasFun(items, picDatObj.id) fallback still matches every draft item against this pseudo-picker's undefined id and averages them correctly, not a coincidence to "fix" by inventing ids here. No easeMin/easeMax here either, since EntEdiCom no longer reads those off the picker directly.
 
 
 	// #region addDraFun
@@ -674,10 +670,10 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 			{ // What: New Item Object. Why: The new item needs every field resolved above. How: This builds the item the editor opens on. // What: Type Assertion Note. Why: The new item lacks the fields only a saved item has. How: It's read as an item, since the store fills those in when the picker is created.
 
 
-				id     : newIdeStr,                 // What: Id. Why: The pool item needs its own id. How: This uses newIdeStr.
-				name   : newNamStr,                 // What: Name. Why: The item starts with its de-duplicated name. How: This uses newNamStr.
-				value  : fulChaBoo ? easThrNum : 0, // What: Value. Why: An item that should start full begins at the threshold, otherwise at 0. How: This uses easThrNum when fulChaBoo, otherwise 0.
-				weight : 1,                         // What: Weight. Why: Every item starts at the baseline weight. How: This is 1.
+				id     : newIdeStr,                               // What: Id. Why: The pool item needs its own id. How: This uses newIdeStr.
+				name   : newNamStr,                               // What: Name. Why: The item starts with its de-duplicated name. How: This uses newNamStr.
+				value  : fulChaBoo ? PIC_NAM_OBJ.THR_VAL_NUM : 0, // What: Value. Why: An item that should start full begins at the threshold, otherwise at 0. How: This uses THR_VAL_NUM when fulChaBoo, otherwise 0.
+				weight : 1,                                       // What: Weight. Why: Every item starts at the baseline weight. How: This is 1.
 
 				...easBanObj // What: Ease Band Spread. Why: The item carries the tour's or the default drift band. How: This spreads in easeMin and easeMax.
 
@@ -2102,8 +2098,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								{ pooIteArr.filter( ( iteCurObj ) => iteCurObj.id !== actNewStr ).map( ( curIteObj ) => { // What: Pool Row List Render. Why: Every committed draft item needs its own row, showing its own cadence/weight summary. How: This maps the filtered list to one row per curIteObj.
 
 
-									const sooDayNum = covSooFun( curIteObj.easeMax ); // What: Soonest Day Number. Why: The row's own ease-meta text needs a human-readable soonest value. How: This converts curIteObj.easeMax back into days.
-									const latDayNum = covLatFun( curIteObj.easeMin ); // What: Latest Day Number. Why: The row's own ease-meta text needs a human-readable latest value. How: This converts curIteObj.easeMin back into days.
+									const sooDayNum = PIC_NAM_OBJ.driDayFun( curIteObj.easeMax ); // What: Soonest Day Number. Why: The row's own ease-meta text needs a human-readable soonest value. How: This converts curIteObj.easeMax back into days.
+									const latDayNum = PIC_NAM_OBJ.driDayFun( curIteObj.easeMin ); // What: Latest Day Number. Why: The row's own ease-meta text needs a human-readable latest value. How: This converts curIteObj.easeMin back into days.
 
 
 

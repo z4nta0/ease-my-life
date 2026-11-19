@@ -122,6 +122,10 @@ const DEF_EAS_OBJ = { easeMax : 14, easeMin : 7 }; // What: Default Ease Object.
 
 const EAS_TOL_NUM = 0.5; // What: Ease Tolerance Number. Why: A threshold/N charge step (100/3, say) can land a hair under thrValNum on the very cycle it was planned to become eligible, and this tolerance must be the ONE place that's decided, not re-derived per caller. How: This is read directly by easEliFun below, the single source every eligibility check in this file and its callers must use.
 
+
+
+const THR_VAL_NUM = 100; // What: Threshold Value Number. Why: Every ease drift/day conversion and full-charge check across the app shares this one fixed ceiling value. How: This is divided by an item's own easeMin/easeMax to get a day count, and compared against an item's own charge value.
+
 // #endregion Constants
 
 
@@ -377,6 +381,76 @@ function aveEasFun ( iteAllArr : IteRcdTyp[], picIdeStr : string | undefined ) :
 
 
 
+// #region dayDriFun
+
+/**
+ * dayDriFun = Day Drift Function
+ *
+ * @summary
+ * Converts a day count back into the per-day drift value an ease item
+ * stores, the inverse of driDayFun. A count below 1 is treated as 1, and
+ * the result isn't rounded, since it's a stored drift amount rather than a
+ * displayed count.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param dayCouNum - Day Count Number: The number of days to convert.
+ *
+ * @returns The drift value that takes that many days to cross the
+ * threshold.
+ *
+ * @example
+ * ```ts
+ * dayDriFun(7) // => 14.285714285714286
+ * ```
+ *
+*/
+
+const dayDriFun = ( dayCouNum : number ) : number => THR_VAL_NUM / Math.max( 1, dayCouNum ); // What: Day Drift Function. Why: Writing a typed day count back onto an item or conditional needs it converted into the drift value easeMin and easeMax store. How: This divides THR_VAL_NUM by dayCouNum, floored at 1 day.
+
+// #endregion dayDriFun
+
+
+
+// #region driDayFun
+
+/**
+ * driDayFun = Drift Day Function
+ *
+ * @summary
+ * Converts an ease drift value into the whole number of days it takes to
+ * cross the threshold, at least 1, treating a missing or zero drift as 1.
+ * Ease cadence is per item, since a fridge clean and a counter wipe want
+ * different rhythms, so each item carries its own drift band { easeMin,
+ * easeMax }, asked as two human questions: the soonest days (least time
+ * before it can come up) and the latest days (most time before it must).
+ * The engine moves an item across the threshold by random(easeMin,
+ * easeMax) each daily run, so maturing fastest (every roll easeMax) takes
+ * threshold/easeMax days, the soonest, and slowest takes threshold/easeMin
+ * days, the latest; the gap between the two answers is the randomness.
+ * The drift values stay the source of truth on each item, and dayDriFun
+ * is the inverse.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param driValNum - Drift Value Number: The drift value to convert, easeMax
+ *                    for the soonest day or easeMin for the latest.
+ *
+ * @returns The day count, rounded and at least 1.
+ *
+ * @example
+ * ```ts
+ * driDayFun(14) // => 7
+ * ```
+ *
+*/
+
+const driDayFun = ( driValNum : number | undefined ) : number => Math.max( 1, Math.round( THR_VAL_NUM / ( driValNum || 1 ) ) ); // What: Drift Day Function. Why: A soonest or latest day count is the human face of an ease drift value. How: This divides THR_VAL_NUM by driValNum (1 when missing or zero), rounds, and floors the result at 1 day.
+
+// #endregion driDayFun
+
+
+
 // #region easEliFun
 
 /**
@@ -394,7 +468,7 @@ function aveEasFun ( iteAllArr : IteRcdTyp[], picIdeStr : string | undefined ) :
  * @param iteRcdObj - Item Record Object: The item to check; a missing value
  *                    counts as 0.
  * @param thrValNum - Threshold Value Number: The picker's own threshold,
- *                    treated as 100 when missing.
+ *                    treated as THR_VAL_NUM when missing.
  *
  * @returns Whether the item is eligible to be picked.
  *
@@ -405,7 +479,7 @@ function aveEasFun ( iteAllArr : IteRcdTyp[], picIdeStr : string | undefined ) :
  *
 */
 
-const easEliFun = ( iteRcdObj : IteRcdTyp, thrValNum : number ) : boolean => ( iteRcdObj.value ?? 0 ) >= ( ( thrValNum ?? 100 ) - EAS_TOL_NUM ); // What: Ease Eligible Function. Why: Comparing an item's own value against its threshold directly (with no tolerance) can make an item at 99.7 invisible to a re-roll cycle count while still being eligible to the generator itself, a real inconsistency this file used to have. How: This treats iteRcdObj as eligible once its own value reaches thrValNum minus EAS_TOL_NUM, both defaulted the same way picIteFun defaults them.
+const easEliFun = ( iteRcdObj : IteRcdTyp, thrValNum : number ) : boolean => ( iteRcdObj.value ?? 0 ) >= ( ( thrValNum ?? THR_VAL_NUM ) - EAS_TOL_NUM ); // What: Ease Eligible Function. Why: Comparing an item's own value against its threshold directly (with no tolerance) can make an item at 99.7 invisible to a re-roll cycle count while still being eligible to the generator itself, a real inconsistency this file used to have. How: This treats iteRcdObj as eligible once its own value reaches thrValNum minus EAS_TOL_NUM, both defaulted the same way picIteFun defaults them.
 
 // #endregion easEliFun
 
@@ -507,8 +581,8 @@ const modEliFun = ( iteRcdObj : IteRcdTyp, picRcdObj : PicRcdTyp | null | undefi
  * @param iteRcdObj - Item Record Object: The item to compute readiness for.
  * @param modKeyStr - Mode Key String: The item's own picker's mode.
  * @param thrValNum - Threshold Value Number: The item's own picker's
- *                    threshold, defaulting to 100 to match every other
- *                    threshold default in this file.
+ *                    threshold, defaulting to THR_VAL_NUM to match
+ *                    every other threshold default in this file.
  *
  * @returns A 0-1 readiness number, or null when modKeyStr has no
  * meaningful readiness concept.
@@ -520,7 +594,7 @@ const modEliFun = ( iteRcdObj : IteRcdTyp, picRcdObj : PicRcdTyp | null | undefi
  *
 */
 
-function reaValFun ( iteRcdObj : IteRcdTyp, modKeyStr : string, thrValNum : number = 100 ) : number | null {
+function reaValFun ( iteRcdObj : IteRcdTyp, modKeyStr : string, thrValNum : number = THR_VAL_NUM ) : number | null {
 
 
 	if ( modKeyStr === 'ease-up' ) return Math.min( 1, iteRcdObj.value / thrValNum ); // What: Ease Up Readiness Check. Why: Ease Up's own readiness is how close the item's value has charged toward thrValNum. How: This divides iteRcdObj's own value by thrValNum, capped at 1.
@@ -810,7 +884,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 			// #region Charge Plan Setup
 
-			const thrValNum = picRcdObj.threshold ?? 100;           // What: Threshold Value Number. Why: Every charge/eligibility calculation below is relative to this picker's own threshold. How: This reads picRcdObj's own threshold, defaulting to 100 for older pickers with none set.
+			const thrValNum = picRcdObj.threshold ?? THR_VAL_NUM;   // What: Threshold Value Number. Why: Every charge/eligibility calculation below is relative to this picker's own threshold. How: This reads picRcdObj's own threshold, defaulting to THR_VAL_NUM for older pickers with none set.
 			const falEasObj = aveEasFun( updPooArr, picRcdObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a drift band to roll a target cycle count from. How: This computes the sibling-average fallback band via aveEasFun.
 
 
@@ -1007,7 +1081,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 			// #region Streak Setup
 
-			const thrValNum = picRcdObj.threshold ?? 100;           // What: Threshold Value Number. Why: Every charge/decay calculation below is relative to this picker's own threshold. How: This reads picRcdObj's own threshold, defaulting to 100 for older pickers with none set.
+			const thrValNum = picRcdObj.threshold ?? THR_VAL_NUM;   // What: Threshold Value Number. Why: Every charge/decay calculation below is relative to this picker's own threshold. How: This reads picRcdObj's own threshold, defaulting to THR_VAL_NUM for older pickers with none set.
 			const falEasObj = aveEasFun( updPooArr, picRcdObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a decay band to roll a target cycle count from. How: This computes the sibling-average fallback band via aveEasFun.
 
 
@@ -1205,11 +1279,14 @@ const PIC_NAM_OBJ = { // What: Pickers Namespace Object. Why: store.ts, tab-toda
 
 
 	aveEasFun   : aveEasFun,   // What: Average Ease Function. Why: store.ts, tab-today.tsx, and tab-picker.tsx all call this for a picker's own average ease-band value. How: This re-exports aveEasFun under its own matching name.
+	dayDriFun   : dayDriFun,   // What: Day Drift Function. Why: The item and conditional editors convert a typed day count back into a drift value. How: This re-exports dayDriFun under its own matching name.
 	DEF_EAS_OBJ : DEF_EAS_OBJ, // What: Default Ease Object. Why: store.ts reads this for a fresh item's own starting ease-band shape. How: This re-exports DEF_EAS_OBJ under its own matching name.
+	driDayFun   : driDayFun,   // What: Drift Day Function. Why: The editors and the Pickers, Data, and Stats tabs show an ease band as soonest and latest days. How: This re-exports driDayFun under its own matching name.
 	easEliFun   : easEliFun,   // What: Ease Eligible Function. Why: tab-today.tsx checks this to decide whether an ease-mode item is currently eligible to be picked. How: This re-exports easEliFun under its own matching name.
 	modEliFun   : modEliFun,   // What: Mode Eligible Function. Why: tab-picker.tsx checks this for a pool item's own mode-specific eligibility. How: This re-exports modEliFun under its own matching name.
 	picIteFun   : picIteFun,   // What: Pick Item Function. Why: tab-today.tsx and tab-picker.tsx both call this to actually pick a new item from a picker's own pool. How: This re-exports picIteFun under its own matching name.
-	reaValFun   : reaValFun    // What: Readiness Value Function. Why: tab-picker.tsx reads this for a pool item's own readiness value. How: This re-exports reaValFun under its own matching name.
+	reaValFun   : reaValFun,   // What: Readiness Value Function. Why: tab-picker.tsx reads this for a pool item's own readiness value. How: This re-exports reaValFun under its own matching name.
+	THR_VAL_NUM : THR_VAL_NUM  // What: Threshold Value Number. Why: The editors and the Pickers, Data, and Today tabs share the full-charge ceiling. How: This re-exports THR_VAL_NUM under its own matching name.
 
 
 };

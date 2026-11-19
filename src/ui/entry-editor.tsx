@@ -14,8 +14,7 @@ import { EUR_WAR_STR  } from '../constants.ts';      // What: Ease-Up-Range Warn
 import { FilButCom    } from './fill-button.tsx';    // What: Fill Button Component. Why: Ease-up and ease-down items each need a button that instantly fills the item to its threshold. How: This is rendered inside EntEdiCom's own Fill/Refill row, labeled per direction.
 import { InfTipCom    } from './info-tip.tsx';       // What: Info Tip Component. Why: The ease range rows need an inline explanation of what their values mean. How: This renders an info bubble carrying EUR_WAR_STR next to those rows.
 import { NumSteCom    } from './number-stepper.tsx'; // What: Numeric Stepper Component. Why: An ease-mode item's Soonest/Latest values need a shared plus/minus numeric control. How: This is rendered twice inside EntEdiCom's own ease rows.
-import { PIC_NAM_OBJ  } from '../core/pickers.ts';   // What: Pickers Namespace Object. Why: An item with no ease band of its own falls back to its picker's average band. How: This is called via PIC_NAM_OBJ.aveEasFun.
-import { THR_VAL_NUM  } from '../constants.ts';      // What: Threshold Value Number. Why: The ease day-range math divides by the shared full-charge ceiling. How: This is divided by an item's own easeMin/easeMax to get its Soonest/Latest day counts.
+import { PIC_NAM_OBJ  } from '../core/pickers.ts';   // What: Pickers Namespace Object. Why: An item with no ease band of its own falls back to its picker's average band, and the ease day range converts between drift values and days. How: This is called via PIC_NAM_OBJ.aveEasFun, driDayFun, and dayDriFun, and read for THR_VAL_NUM, the full-charge ceiling its subtitle checks.
 import { useEscCanFun } from './escape-cancel.ts';   // What: Use Escape Cancel Function. Why: EntEdiCom's own Escape key needs to cancel the edit (or back out of a delete confirm) exactly like every other inline editor in the app. How: This is called once inside EntEdiCom with a handler that checks conDelBoo first.
 
 
@@ -136,15 +135,11 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 
 	// #region Ease Band Resolution
 
-	const driSooFun = ( maxValNum : number ) => Math.max( 1, Math.round( THR_VAL_NUM / ( maxValNum || 1 ) ) ); // What: Drift Soonest Function. Why: A "Soonest" day count is the human face of an item's own ease-max drift value. How: This converts maxValNum into a day count, matching the exact conversion the new-picker form itself uses.
-	const driLatFun = ( minValNum : number ) => Math.max( 1, Math.round( THR_VAL_NUM / ( minValNum || 1 ) ) ); // What: Drift Latest Function. Why: A "Latest" day count is the human face of an item's own ease-min drift value. How: This converts minValNum into a day count, the same conversion as driSooFun, mirrored for the opposite bound.
-	const dayDriFun = ( dayCouNum : number ) => THR_VAL_NUM / Math.max( 1, dayCouNum );                        // What: Day Drift Function. Why: Writing a user-typed day count back onto the item requires converting it back into a drift value. How: This is the inverse of driSooFun/driLatFun.
-
 	const falEasObj = picDatObj ? PIC_NAM_OBJ.aveEasFun( picIteArr, picDatObj.id ) : null; // What: Fallback Ease Object. Why: An item with no ease band of its own (e.g. one added before per-item stamping existed, or from an old imported backup) needs the same fallback the picking engine itself uses. How: This calls PIC_NAM_OBJ.aveEasFun against this picker's own items.
 	const easMinNum = iteDatObj.easeMin ?? falEasObj?.easeMin ?? 10;                       // What: Ease Minimum Number. Why: This is the item's own resolved lower drift bound, read once and reused throughout this region. How: This reads item.easeMin, falling back to falEasObj's own easeMin, then a fixed 10.
 	const easMaxNum = iteDatObj.easeMax ?? falEasObj?.easeMax ?? 20;                       // What: Ease Maximum Number. Why: This is the item's own resolved upper drift bound, read once and reused throughout this region. How: This reads item.easeMax, falling back to falEasObj's own easeMax, then a fixed 20.
-	const sooDayNum = driSooFun( easMaxNum );                                              // What: Soonest Day Number. Why: The Soonest/Shortest row needs this as a plain day count to display and edit. How: This converts easMaxNum via driSooFun.
-	const latDayNum = driLatFun( easMinNum );                                              // What: Latest Day Number. Why: The Latest/Longest row needs this as a plain day count to display and edit. How: This converts easMinNum via driLatFun.
+	const sooDayNum = PIC_NAM_OBJ.driDayFun( easMaxNum );                                  // What: Soonest Day Number. Why: The Soonest/Shortest row needs this as a plain day count to display and edit. How: This converts easMaxNum via PIC_NAM_OBJ.driDayFun.
+	const latDayNum = PIC_NAM_OBJ.driDayFun( easMinNum );                                  // What: Latest Day Number. Why: The Latest/Longest row needs this as a plain day count to display and edit. How: This converts easMinNum via PIC_NAM_OBJ.driDayFun.
 
 
 	// #region setSooFun
@@ -173,7 +168,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 	const setSooFun = ( dayCouNum : number ) => { // What: Set Soonest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Soonest/Shortest day count back onto the item's own easeMax field. How: This clamps dayCouNum, converts it back to a drift value, and writes it into the draft via onPatIteFun.
 
 
-		const newMaxNum = dayDriFun( Math.max( 1, Math.min( 60, dayCouNum ) ) ); // What: New Maximum Number. Why: The typed day count needs converting back into the drift value item.easeMax actually stores. How: This clamps dayCouNum to [1, 60] then converts it via dayDriFun.
+		const newMaxNum = PIC_NAM_OBJ.dayDriFun( Math.max( 1, Math.min( 60, dayCouNum ) ) ); // What: New Maximum Number. Why: The typed day count needs converting back into the drift value item.easeMax actually stores. How: This clamps dayCouNum to [1, 60] then converts it via PIC_NAM_OBJ.dayDriFun.
 
 
 		onPatIteFun({ // What: Patch Item Call. Why: Raising easeMax can push it below the existing easeMin, which would invert the band. How: This writes the new easeMax into the draft, clamping easeMin down to match if it would otherwise exceed the new easeMax.
@@ -217,7 +212,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 	const setLatFun = ( dayCouNum : number ) => { // What: Set Latest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Latest/Longest day count back onto the item's own easeMin field. How: This clamps dayCouNum, converts it back to a drift value, and writes it into the draft via onPatIteFun.
 
 
-		const newMinNum = dayDriFun( Math.max( 1, Math.min( 90, dayCouNum ) ) ); // What: New Minimum Number. Why: The typed day count needs converting back into the drift value item.easeMin actually stores. How: This clamps dayCouNum to [1, 90] then converts it via dayDriFun.
+		const newMinNum = PIC_NAM_OBJ.dayDriFun( Math.max( 1, Math.min( 90, dayCouNum ) ) ); // What: New Minimum Number. Why: The typed day count needs converting back into the drift value item.easeMin actually stores. How: This clamps dayCouNum to [1, 90] then converts it via PIC_NAM_OBJ.dayDriFun.
 
 
 		onPatIteFun({ // What: Patch Item Call. Why: Lowering easeMin can push it above the existing easeMax, which would invert the band. How: This writes the new easeMin into the draft, clamping easeMax up to match if it would otherwise fall under the new easeMin.
@@ -454,10 +449,10 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 									<span className={ cssModObj.ediNamSpa }>Fill</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Fill". */ }
 
 									<span
-										key={ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? 'full' : 'part' }
+										key={ ( iteDatObj.value ?? 0 ) >= PIC_NAM_OBJ.THR_VAL_NUM ? 'full' : 'part' }
 
 										className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-									>{ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? <>item is <strong>fully charged</strong> at { Math.round( iteDatObj.value ?? 0 ) }</> : <>item at <strong>{ Math.round( iteDatObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached THR_VAL_NUM, keyed by which one is showing. */ }
+									>{ ( iteDatObj.value ?? 0 ) >= PIC_NAM_OBJ.THR_VAL_NUM ? <>item is <strong>fully charged</strong> at { Math.round( iteDatObj.value ?? 0 ) }</> : <>item at <strong>{ Math.round( iteDatObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached THR_VAL_NUM, keyed by which one is showing. */ }
 
 
 								</div>
@@ -495,10 +490,10 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 									<span className={ cssModObj.ediNamSpa }>Refill</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Refill". */ }
 
 									<span
-										key={ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? 'full' : 'part' }
+										key={ ( iteDatObj.value ?? 0 ) >= PIC_NAM_OBJ.THR_VAL_NUM ? 'full' : 'part' }
 
 										className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-									>{ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? <>item is <strong>fully charged</strong></> : <>item at <strong>{ Math.round( iteDatObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached THR_VAL_NUM, keyed by which one is showing. */ }
+									>{ ( iteDatObj.value ?? 0 ) >= PIC_NAM_OBJ.THR_VAL_NUM ? <>item is <strong>fully charged</strong></> : <>item at <strong>{ Math.round( iteDatObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached THR_VAL_NUM, keyed by which one is showing. */ }
 
 
 								</div>
