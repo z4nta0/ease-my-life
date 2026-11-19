@@ -434,8 +434,12 @@ function AppRooCom () : React.JSX.Element {
 
 
 
+	// #region Rail Scroll Hooks
+
 	useRaiFocFun(); // What: Use Rail Focus Function Call. Why: Every tab's pill rails should keep a keyboard-focused control in view. How: This attaches the shared focus listener for as long as the app is mounted.
 	useRaiWheFun(); // What: Use Rail Wheel Function Call. Why: Every tab's pill rails should scroll with a mouse wheel. How: This attaches the shared wheel listener for as long as the app is mounted.
+
+	// #endregion Rail Scroll Hooks
 
 
 
@@ -536,8 +540,6 @@ function AppRooCom () : React.JSX.Element {
 
 
 
-	// #region App Shell Behavior
-
 	const selTabFun = React.useCallback( ( tabIdeStr : string ) => { // What: Select Tab Function. Why: Switching tabs should always land at the top of the new tab, not keep the previous tab's scroll position. How: This sets the active tab, closes the rail, and resets the shared main scroller's scrollTop to 0.
 
 
@@ -552,6 +554,9 @@ function AppRooCom () : React.JSX.Element {
 
 	}, [] ); // What: Effect Dependency Array. Why: selTabFun only closes over stable setters and a ref, none of which ever change identity. How: An empty array means this callback is created once and never recreated.
 
+
+
+	// #region System Dark And Theme Application
 
 	const [ sysDarBoo, setSysDarBoo ] = React.useState( () => ( // What: System Dark Boolean And Setter. Why: When the user has "System preference" selected, the applied theme must track the OS's own light/dark setting. How: This starts from the current prefers-color-scheme media query result, then is kept in sync by the effect below.
 
@@ -604,6 +609,11 @@ function AppRooCom () : React.JSX.Element {
 
 	}, [ staAppObj.appearance, sysDarBoo ] ); // What: Effect Dependency Array. Why: The applied palette only ever needs to change when the persisted appearance settings or the system dark-mode state change. How: staAppObj.appearance covers the user's own theme choice/custom colors; sysDarBoo covers the OS-level light/dark toggle.
 
+	// #endregion System Dark And Theme Application
+
+
+
+	// #region Body Dataset Effects
 
 	React.useEffect( () => { // What: Placement Dataset Effect. Why: CSS elsewhere in the app selects on document.body's own data attributes to react to the current tab placement. How: This mirrors the persisted tabPlacement onto body.dataset.placement.
 
@@ -622,6 +632,11 @@ function AppRooCom () : React.JSX.Element {
 
 	}, [ staAppObj.appearance.completionStyle ] ); // What: Effect Dependency Array. Why: The dataset only needs rewriting when the persisted completion style itself actually changes. How: This depends on the specific completionStyle field rather than the whole appearance object, so unrelated appearance changes don't trigger it.
 
+	// #endregion Body Dataset Effects
+
+
+
+	// #region Placement Switch Animation
 
 	const tabPlaStr = staAppObj.appearance.tabPlacement; // What: Tab Placement String. Why: Both the JSX below and the layout-switch effect need the current resolved placement as a plain value, not buried in staAppObj. How: This reads the persisted tabPlacement, the same value the dataset effect above writes.
 
@@ -668,7 +683,7 @@ function AppRooCom () : React.JSX.Element {
 
 	}, [ tabPlaStr ] ); // What: Effect Dependency Array. Why: The whole ghost/enter animation sequence only needs to re-evaluate when the resolved placement itself changes. How: tabPlaStr is the single value this effect's own change-detection, via prePlaRef, is built around.
 
-	// #endregion App Shell Behavior
+	// #endregion Placement Switch Animation
 
 
 

@@ -137,6 +137,8 @@ type AscProTyp = { accSynObj : AccSynTyp }; // What: Account-Section-Component P
 function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 
+	// #region Form State
+
 	const [ emaAdrStr, setEmaAdrStr ] = React.useState( '' ); // What: Email Address String And Setter. Why: The email field is controlled. How: This holds its text.
 	const [ buyActBoo, setBuyActBoo ] = React.useState( false ); // What: Buy Active Boolean And Setter. Why: The Unlock button waits while the checkout opens. How: This is true from the click until the checkout opens or fails.
 	const [ linSenStr, setLinSenStr ] = React.useState( '' ); // What: Link Sent String And Setter. Why: After sending, the section says where the link went. How: This holds that address.
@@ -144,7 +146,11 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 	const accUseObj = accSynObj.accUseObj; // What: Account User Object. Why: Most rows depend on who is signed in. How: This reads the account.
 
+	// #endregion Form State
 
+
+
+	// #region Form Actions
 
 	const senLinFun = ( subEveObj : React.FormEvent ) => { // What: Send Link Function. Why: The email form sends a sign-in link. How: This stops the page reload, sends the link, and remembers where it went once it's sent.
 
@@ -205,6 +211,8 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 
 	};
+
+	// #endregion Form Actions
 
 
 
