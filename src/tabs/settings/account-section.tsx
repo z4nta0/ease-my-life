@@ -34,7 +34,6 @@ import type { AccSynTyp } from '../../state/sync-run.ts'; // What: Account Sync 
  * status region, both in the page and empty from the first render.
  *
  * Sections:
- *  - Types
  *  - Helpers
  *  - Components
  *  - Exports
@@ -42,14 +41,6 @@ import type { AccSynTyp } from '../../state/sync-run.ts'; // What: Account Sync 
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
-
-
-
-// #region Types
-
-type AscProTyp = { accSynObj : AccSynTyp }; // What: Account-Section-Component Props Type. Why: The section needs the account and its sync. How: This types AccSecCom's one prop.
-
-// #endregion Types
 
 
 
@@ -116,6 +107,8 @@ function synTexFun ( accSynObj : AccSynTyp ) : string {
 
 
 // #region Components
+
+type AscProTyp = { accSynObj : AccSynTyp }; // What: Account-Section-Component Props Type. Why: The section needs the account and its sync. How: This types AccSecCom's one prop.
 
 // #region AccSecCom
 

@@ -60,7 +60,6 @@ import type { StoRepTyp } from '../../state/storage.ts';   // What: Storage Repo
  * section rail tracks and drives scroll position across all of them.
  *
  * Sections:
- *  - Types
  *  - Constants
  *  - Helpers
  *  - Components
@@ -69,14 +68,6 @@ import type { StoRepTyp } from '../../state/storage.ts';   // What: Storage Repo
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
-
-
-
-// #region Types
-
-type StaMesTyp = { okaBoo : boolean, texStr : string }; // What: Status Message Type. Why: The install, protect, and import actions each report a short success or failure line. How: This holds whether it worked and the text to show.
-
-// #endregion Types
 
 
 
@@ -176,6 +167,7 @@ function forRunFun ( runTimStr : string ) : string {
 
 // #region Components
 
+type StaMesTyp = { okaBoo : boolean, texStr : string }; // What: Status Message Type. Why: The install, protect, and import actions each report a short success or failure line. How: This holds whether it worked and the text to show.
 type TecProTyp = { accSynObj : AccSynTyp, actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Settings-Component Props Type. Why: The Settings tab reads and changes the whole app state and can navigate to other tabs. How: This types TabSetCom's props, named Tec since Tsc already belongs to TheSecCom.
 
 // #region TabSetCom

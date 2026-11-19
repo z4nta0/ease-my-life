@@ -49,7 +49,6 @@ import type { VclRowTyp } from '../../core/data-model.ts'; // What: Vacation-Log
  * section together as the tab.
  *
  * Sections:
- *  - Types
  *  - Constants
  *  - Helpers
  *  - Components
@@ -58,14 +57,6 @@ import type { VclRowTyp } from '../../core/data-model.ts'; // What: Vacation-Log
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
-
-
-
-// #region Types
-
-type PibRowTyp = { autNum : number, couNum : number, delBoo : boolean, denNum : number, freNum : number, gapNum : number | null, ideStr : string, lasNum : number | null, manNum : number, namStr : string, rejNum : number, skiNum : number, speNum : number | null, vacBoo : boolean, wasBoo : boolean }; // What: Pick-Breakdown Row Type. Why: The Pick breakdown card renders, sorts, and labels one combined row per item, live or deleted. How: This types that row's identity flags and every metric it can show, with the gap, last-picked, and spent values null when an item has none.
-
-// #endregion Types
 
 
 
@@ -614,6 +605,7 @@ function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIte
 
 
 
+type PibRowTyp = { autNum : number, couNum : number, delBoo : boolean, denNum : number, freNum : number, gapNum : number | null, ideStr : string, lasNum : number | null, manNum : number, namStr : string, rejNum : number, skiNum : number, speNum : number | null, vacBoo : boolean, wasBoo : boolean }; // What: Pick-Breakdown Row Type. Why: The Pick breakdown card renders, sorts, and labels one combined row per item, live or deleted. How: This types that row's identity flags and every metric it can show, with the gap, last-picked, and spent values null when an item has none.
 type ScoTabTyp = { cliFun : () => void, keyStr : string, labStr : string, namStr : string, picStr? : string, selBoo : boolean };             // What: Scope Tab Type. Why: The Show row mixes the Conditionals and Reminders tabs with one tab per picker, and only a picker tab carries a picker id. How: This describes one scope tab entry.
 type TtcProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Stats-Component Props Type. Why: The Stats tab reads the whole app state, filters it, and can navigate to other tabs. How: This types TabStaCom's props, named Ttc since Tsc already belongs to TheSecCom.
 

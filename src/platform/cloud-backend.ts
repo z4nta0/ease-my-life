@@ -43,7 +43,6 @@ import type { SynManTyp } from '../state/sync-engine.ts'; // What: Sync Manifest
  * and nothing else.
  *
  * Sections:
- *  - Types
  *  - Constants
  *  - Helpers
  *  - Exports
@@ -51,14 +50,6 @@ import type { SynManTyp } from '../state/sync-engine.ts'; // What: Sync Manifest
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
-
-
-
-// #region Types
-
-type CloManTyp = SynManTyp & { prior : Record< string, string > }; // What: Cloud Manifest Type. Why: The stored manifest also lists the previous revision's hashes, for cleanup. How: This adds prior to the engine's manifest.
-
-// #endregion Types
 
 
 
@@ -156,6 +147,8 @@ async function wriBatFun ( uidValStr : string, verEntArr : [ string, string | nu
 // #endregion wriBatFun
 
 
+
+type CloManTyp = SynManTyp & { prior : Record< string, string > }; // What: Cloud Manifest Type. Why: The stored manifest also lists the previous revision's hashes, for cleanup. How: This adds prior to the engine's manifest.
 
 // #region cloBacFun
 
