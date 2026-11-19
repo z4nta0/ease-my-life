@@ -10,6 +10,7 @@ import { AXE_TAG_ARR } from '../support/accessibility.ts'; // What: Axe Tag Arra
 import { creAccFun   } from '../support/account.ts';       // What: Create Account Function. Why: Each screen needs its own emulator account. How: This creates one.
 import { EMU_PRO_STR } from '../support/emulator.ts';      // What: Emulator Project String. Why: The first-sync choice needs a cloud copy written into the emulator. How: This names its project.
 import { expect      } from '@playwright/test';            // What: Expect. Why: A screen passes only with no violations and no sideways scroll. How: This makes the assertions.
+import { FIR_EMU_STR } from '../support/emulator.ts';      // What: Firestore Emulator String. Why: The first-sync choice's cloud copy is written straight into the Firestore emulator. How: This is its address.
 import { reaFixFun   } from '../support/fixture.ts';       // What: Read Fixture Function. Why: The first-sync choice needs a device with its own data. How: This reads the backup.
 import { sigLinFun   } from '../support/account.ts';       // What: Sign In Link Function. Why: Each screen is reached by signing in. How: This signs a device in with an emailed link.
 import { synWaiFun   } from '../support/account.ts';       // What: Sync Wait Function. Why: The paid screens are scanned once synced. How: This waits for the status to read Synced.
@@ -176,7 +177,7 @@ test( 'the first-sync choice passes the accessibility checks', async ( { page : 
 	const uidValStr = await creAccFun( emaAdrStr );              // What: User Identifier Value String. Why: The cloud copy is written under the account's id. How: This creates the paid account.
 
 
-	await fetch( `http://127.0.0.1:8080/v1/projects/${ EMU_PRO_STR }/databases/(default)/documents/users/${ uidValStr }`, { body : JSON.stringify( { fields : { docs : { mapValue : { fields : {} } }, prior : { mapValue : { fields : {} } }, rev : { integerValue : '1' }, savedAt : { integerValue : '1' }, v : { integerValue : '1' } } } ), headers : { 'Authorization' : 'Bearer owner', 'Content-Type' : 'application/json' }, method : 'PATCH' } ); // What: Cloud Copy Write. Why: The choice only appears when the account already has a copy. How: This writes an empty manifest into the emulator as its owner.
+	await fetch( `${ FIR_EMU_STR }/v1/projects/${ EMU_PRO_STR }/databases/(default)/documents/users/${ uidValStr }`, { body : JSON.stringify( { fields : { docs : { mapValue : { fields : {} } }, prior : { mapValue : { fields : {} } }, rev : { integerValue : '1' }, savedAt : { integerValue : '1' }, v : { integerValue : '1' } } } ), headers : { 'Authorization' : 'Bearer owner', 'Content-Type' : 'application/json' }, method : 'PATCH' } ); // What: Cloud Copy Write. Why: The choice only appears when the account already has a copy. How: This writes an empty manifest into the emulator as its owner.
 
 
 

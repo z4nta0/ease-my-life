@@ -7,6 +7,7 @@ import { claSetFun   } from '../support/account.ts';  // What: Claim Set Functio
 import { creAccFun   } from '../support/account.ts';  // What: Create Account Function. Why: Each flow needs its own emulator account. How: This creates one.
 import { EMU_PRO_STR } from '../support/emulator.ts'; // What: Emulator Project String. Why: The emulator's addresses name the project. How: This is the demo project.
 import { expect      } from '@playwright/test';       // What: Expect. Why: Every step asserts what synced. How: This makes the assertions.
+import { FIR_EMU_STR } from '../support/emulator.ts'; // What: Firestore Emulator String. Why: The test reads the cloud copy straight from the Firestore emulator. How: This is its address.
 import { insClcFun   } from '../support/clock.ts';    // What: Install Clock Function. Why: The new-day flow runs both devices on chosen days. How: This fakes a page's clock before it loads.
 import { locDayFun   } from '../support/clock.ts';    // What: Local Day Function. Why: The new-day flow checks which day a list was built on. How: This reads a timestamp's Chicago date.
 import { reaFixFun   } from '../support/fixture.ts';  // What: Read Fixture Function. Why: The first device starts on real data. How: This reads the backup.
@@ -372,7 +373,7 @@ test( 'resetting a signed-in device can delete the cloud copy too, and signs the
 	const emaAdrStr = `wipe-${ Date.now() }@example.com`;                                                                      // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address.
 	const errMesArr = watErrFun( curPagObj );                                                                                  // What: Error Message Array. Why: The flow fails on any page error. How: This starts watching.
 	const uidValStr = await creAccFun( emaAdrStr );                                                                            // What: User Identifier Value String. Why: The cloud copy is checked by the account's id. How: This creates the paid account.
-	const manUrlStr = `http://127.0.0.1:8080/v1/projects/${ EMU_PRO_STR }/databases/(default)/documents/users/${ uidValStr }`; // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
+	const manUrlStr = `${ FIR_EMU_STR }/v1/projects/${ EMU_PRO_STR }/databases/(default)/documents/users/${ uidValStr }`; // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
 
 
 	await wriStaFun( curPagObj, reaFixFun() ); // What: Backup Load Call. Why: The device has data to upload and then wipe. How: This writes the backup.
