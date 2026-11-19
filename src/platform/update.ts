@@ -1,6 +1,14 @@
 
 
 
+// #region Imports
+
+import { subMakFun } from '../utils/subscribers.ts'; // What: Subscriber Make Function. Why: The update note's subscribers hear when an update becomes ready. How: This makes the subscriber set once, in Module State.
+
+// #endregion Imports
+
+
+
 /**
  * update.ts = App Update Handling
  *
@@ -35,7 +43,7 @@
 
 let hadConBoo = !!( navigator.serviceWorker && navigator.serviceWorker.controller ); // What: Had Controller Boolean. Why: A worker taking control of a page that had none is a first install, not an update. How: This records whether a worker controlled the page at load.
 
-const subFunSet = new Set< () => void >(); // What: Subscriber Function Set. Why: The app's update note has to hear when an update becomes ready. How: Each subscriber is called once the state changes.
+const { notSubFun, subAddFun } = subMakFun(); // What: Notify Subscribers Function. Why: The update note has to rerender once an update is ready. How: This calls every subscriber, one throwing subscriber never stopping the rest. // What: Subscribe Add Function. Why: The update note listens for an update becoming ready. How: This adds a subscriber and returns the function that removes it.
 
 let updReaBoo = false; // What: Update Ready Boolean. Why: The app shows its Reload note only once a new version has taken over. How: This turns true when that happens.
 
@@ -92,26 +100,11 @@ function busNowFun () : boolean {
 
 
 
-const notSubFun = () => { for ( const curSubFun of subFunSet ) curSubFun(); }; // What: Notify Subscribers Function. Why: The update note has to rerender once an update is ready. How: This calls every subscriber.
-const relNowFun = () => window.location.reload();                              // What: Reload Now Function. Why: The new version runs only once the page reloads. How: This reloads the page, which the Reload note's button calls too.
+const relNowFun = () => window.location.reload(); // What: Reload Now Function. Why: The new version runs only once the page reloads. How: This reloads the page, which the Reload note's button calls too.
 
 
 
 const relSafFun = () => { if ( updReaBoo && document.visibilityState === 'hidden' && !busNowFun() ) relNowFun(); }; // What: Reload Safe Function. Why: A quiet reload must happen only out of sight and with nothing being edited. How: This reloads once an update is ready, the app is hidden, and busNowFun finds nothing under way.
-
-
-
-const subAddFun = ( newSubFun : () => void ) : ( () => void ) => { // What: Subscribe Add Function. Why: The update note listens for an update becoming ready. How: This adds the subscriber and returns the function that removes it.
-
-
-	subFunSet.add( newSubFun ); // What: Subscriber Add Call. Why: The subscriber has to hear later changes. How: This adds it to the set.
-
-
-
-	return () => { subFunSet.delete( newSubFun ); }; // What: Unsubscribe Return. Why: A note that unmounts must stop listening. How: This returns a function that removes it.
-
-
-};
 
 
 
