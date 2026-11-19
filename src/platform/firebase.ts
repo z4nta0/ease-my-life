@@ -41,7 +41,7 @@ import { signOut                     } from 'firebase/auth';      // What: Sign 
  * Sections:
  *  - Types
  *  - Constants
- *  - Module Init
+ *  - Module State
  *  - Helpers
  *  - Exports
  *
@@ -83,7 +83,7 @@ const REC_SIT_STR = '6Ld3-gEuAAAAAOjgeHsfUH17av5IeQqNXyZASjtz'; // What: ReCaptc
 
 
 
-// #region Module Init
+// #region Module State
 
 const firAppObj = initializeApp( EMU_HOS_STR ? { ...FIR_CON_OBJ, projectId : EMU_PRO_STR } : FIR_CON_OBJ ); // What: Firebase App Object. Why: Auth and Firestore share it. How: This creates it, under the demo project when testing.
 
@@ -124,7 +124,7 @@ if ( EMU_HOS_STR ) { // What: Emulator Check. Why: Tests run against the local e
 
 }
 
-// #endregion Module Init
+// #endregion Module State
 
 
 
