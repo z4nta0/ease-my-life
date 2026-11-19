@@ -342,9 +342,11 @@ outside the normal React import graph. Their types live in `src/globals.d.ts`
   same as come-hang's hand-written worker), and `platform/update.ts` brings
   the page along. It asks for an update each time the app returns to the
   foreground, and once a new version has taken control, it reloads while the
-  app is hidden if nothing is being edited (no editor on the Escape stack,
-  support form, focused text field, or tour), and otherwise shows
-  `ui/update-note.tsx`'s Reload note at the top of the open tab.
+  app is hidden if nothing is under way (no editor on the Escape stack,
+  support form, focused text field, or tour, and no account sync running or
+  waiting to, which `state/sync-run.ts` reports through `synBusFun`), and
+  otherwise shows `ui/update-note.tsx`'s Reload note at the top of the open
+  tab, trying again when the app next hides or the sync ends.
   `tests/interaction/update.spec.ts` fakes the worker to check each case.
 - The boot splash in `index.html` is pure CSS, faded out by
   `public/boot-splash.js` (no framework), whose constants mirror the splash's

@@ -20,12 +20,13 @@ import { subMakFun } from '../utils/subscribers.ts'; // What: Subscriber Make Fu
  * and an installed app left open never reloads on its own. So this file asks
  * the browser to look for a new version whenever the app comes back to the
  * foreground, and once a new version has taken control, it reloads the app
- * while it's hidden, but only when nothing is being edited: no inline editor
- * or add form open, no support form open, no text field focused, and no tour
- * running. While something is being edited, it marks the update ready
- * instead, for the app to offer a Reload button, and tries again the next
- * time the app is hidden. A first install, where no worker controlled the
- * page at load, isn't an update and is ignored.
+ * while it's hidden, but only when nothing is under way: no inline editor or
+ * add form open, no support form open, no text field focused, no tour
+ * running, and no account sync uploading or waiting to. While something is
+ * under way, it marks the update ready instead, for the app to offer a
+ * Reload button, and tries again the next time the app is hidden or a sync
+ * finishes. A first install, where no worker controlled the page at load,
+ * isn't an update and is ignored.
  *
  * Sections:
  *  - Module State
@@ -45,6 +46,7 @@ let hadConBoo = !!( navigator.serviceWorker && navigator.serviceWorker.controlle
 
 const { notSubFun, subAddFun } = subMakFun(); // What: Notify Subscribers Function. Why: The update note has to rerender once an update is ready. How: This calls every subscriber, one throwing subscriber never stopping the rest. // What: Subscribe Add Function. Why: The update note listens for an update becoming ready. How: This adds a subscriber and returns the function that removes it.
 
+let synBusBoo = false; // What: Sync Busy Boolean. Why: A reload would cut off an account sync uploading, or about to upload, a change. How: Sync sets this through synBusFun while one runs or a change waits.
 let updReaBoo = false; // What: Update Ready Boolean. Why: The app shows its Reload note only once a new version has taken over. How: This turns true when that happens.
 
 // #endregion Module State
@@ -62,7 +64,7 @@ let updReaBoo = false; // What: Update Ready Boolean. Why: The app shows its Rel
  * Reports whether the person may be in the middle of something a reload would
  * throw away: an inline editor or add form registered on the shared Escape
  * stack, the Settings support form open, a text field or text area focused,
- * or a tour running.
+ * a tour running, or account sync uploading a change or waiting to.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -87,7 +89,7 @@ function busNowFun () : boolean {
 	const texFocBoo = actDomEle instanceof HTMLTextAreaElement || ( actDomEle instanceof HTMLInputElement && /^(email|search|text|url)$/.test( actDomEle.type ) ); // What: Text Focus Boolean. Why: A field being typed in may hold text not yet saved. How: This checks the focused element is a text area or a text input.
 	const touActBoo = document.body.hasAttribute( 'data-tour-active' );                    // What: Tour Active Boolean. Why: A reload would end a running tour partway. How: This checks the body's tour attribute.
 
-	const busNowBoo = ediOpeBoo || supOpeBoo || texFocBoo || touActBoo; // What: Busy Now Boolean. Why: Any one of these makes a reload unsafe. How: This combines them.
+	const busNowBoo = ediOpeBoo || supOpeBoo || synBusBoo || texFocBoo || touActBoo; // What: Busy Now Boolean. Why: Any one of these makes a reload unsafe. How: This combines them.
 
 
 
@@ -105,6 +107,46 @@ const relNowFun = () => window.location.reload(); // What: Reload Now Function. 
 
 
 const relSafFun = () => { if ( updReaBoo && document.visibilityState === 'hidden' && !busNowFun() ) relNowFun(); }; // What: Reload Safe Function. Why: A quiet reload must happen only out of sight and with nothing being edited. How: This reloads once an update is ready, the app is hidden, and busNowFun finds nothing under way.
+
+
+
+// #region synBusFun
+
+/**
+ * synBusFun = Sync Busy Function
+ *
+ * @summary
+ * Records whether account sync is uploading a change or has one waiting to
+ * go up, either of which a reload would cut off. Turning it off tries the
+ * safe reload again, so a hidden app that held an update back for a sync
+ * takes the new version once the sync is done.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param newBusBoo - New Busy Boolean: Whether a sync is running or a change
+ *                    is waiting to sync.
+ *
+ * @returns This function does not return anything.
+ *
+ * @example
+ * ```ts
+ * synBusFun(false) // => void
+ * ```
+ *
+*/
+
+const synBusFun = ( newBusBoo : boolean ) : void => { // What: Sync Busy Function. Why: Sync tells this file when a reload would interrupt it. How: This stores the flag and, once it clears, tries the safe reload.
+
+
+	synBusBoo = newBusBoo; // What: Sync Busy Assignment. Why: busNowFun reads it. How: This stores the new state.
+
+
+	if ( !newBusBoo ) relSafFun(); // What: Sync Done Reload Call. Why: An update held back for a sync should land once the sync ends. How: This tries the safe reload when the sync is no longer busy.
+
+
+};
+
+// #endregion synBusFun
 
 
 
@@ -151,11 +193,12 @@ document.addEventListener( 'visibilitychange', () => { // What: Visibility Chang
 
 // #region Exports
 
-const UPD_NAM_OBJ = { // What: Update Namespace Object. Why: This is the single entry point the app's update note imports. How: This maps each name to the function it calls.
+const UPD_NAM_OBJ = { // What: Update Namespace Object. Why: This is the single entry point the app's update note and the sync runner import. How: This maps each name to the function it calls.
 
 
 	relNowFun : relNowFun, // What: Reload Now Function. Why: The note's Reload button applies the update. How: This re-exports relNowFun under its own name.
 	subAddFun : subAddFun, // What: Subscribe Add Function. Why: The note listens for an update becoming ready. How: This re-exports subAddFun under its own name.
+	synBusFun : synBusFun, // What: Sync Busy Function. Why: Sync tells this file when a reload would interrupt it. How: This re-exports synBusFun under its own name.
 	updReaFun : updReaFun  // What: Update Ready Function. Why: The note reads whether an update is ready. How: This re-exports updReaFun under its own name.
 
 
@@ -163,7 +206,7 @@ const UPD_NAM_OBJ = { // What: Update Namespace Object. Why: This is the single 
 
 
 
-export { UPD_NAM_OBJ }; // What: Named Export. Why: The app's update note reaches every update operation through this one object. How: This exports UPD_NAM_OBJ.
+export { UPD_NAM_OBJ }; // What: Named Export. Why: The app's update note and the sync runner reach every update operation through this one object. How: This exports UPD_NAM_OBJ.
 
 // #endregion Exports
 

@@ -11,6 +11,7 @@ import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sam
 import { ONB_STI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Ids Array. Why: The onboarding's sample reminders aren't the person's data. How: This lists their ids.
 import { STG_NAM_OBJ } from './storage.ts';              // What: Storage Namespace Object. Why: The sync's own localStorage keys live in storage, beside the sweep that keeps them. How: This reads their names.
 import { synRunFun   } from './sync-engine.ts';          // What: Sync Run Function. Why: Each sync runs through the engine. How: This runs one.
+import { UPD_NAM_OBJ } from '../platform/update.ts';     // What: Update Namespace Object. Why: An app update must not reload over a sync uploading a change or waiting to. How: This tells the update handling when sync is busy.
 
 
 import type { AccUseTyp } from '../platform/firebase.ts'; // What: Account User Type. Why: The hook follows who is signed in. How: This types that account.
@@ -31,15 +32,16 @@ import type { SynMetTyp } from './sync-engine.ts';        // What: Sync Meta Typ
  * localStorage flag says so), or that was opened from a sign-in email, or
  * when someone starts signing in, so it never loads for anyone else.
  *
- * A paid account syncs on launch, when the app comes back into view or
- * online, two minutes after the last change, and right away when the app is
- * hidden with a change still waiting. One sync runs at a time, and a request
- * during a sync runs once it ends. A sync that started from a state the
- * person has since changed never replaces their newer state: when it found
- * changes from another device, it's thrown away and run again, so the
- * newer state is merged instead. Today asks it to bring the account's copy
- * in before building a new day's list, so a device opened with an old list
- * takes the one another device already built rather than replacing it.
+ * A paid account syncs on launch, when the app comes back into view or online,
+ * two minutes after the last change, and right away when the app is hidden
+ * with a change still waiting. One sync runs at a time, and a request during a
+ * sync runs once it ends. While one runs or a change waits, it holds back the
+ * quiet reload that brings in a new app version. A sync that started from a
+ * state the person has since changed never replaces their newer state: when it
+ * found changes from another device, it's thrown away and run again, so the
+ * newer state is merged instead. Today asks it to bring the account's copy in
+ * before building a new day's list, so a device opened with an old list takes
+ * the one another device already built rather than replacing it.
  *
  * A device's first sync, when the account already holds data and this
  * device has some too, waits for the person to choose which to keep: the
@@ -513,6 +515,23 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
+	const busRepFun = React.useCallback( () => UPD_NAM_OBJ.synBusFun( runActRef.current || idlTimRef.current !== null ), [] ); // What: Busy Report Function. Why: An app update must not reload over a sync uploading a change or one waiting to. How: This tells the update handling whether a sync is running or a change is waiting, reading only refs, so it is built once.
+
+
+
+	const synNowFun = React.useCallback( () => { // What: Sync Now Function. Why: A sync started by a timer may be refused, and the update handling has to hear either way. How: This runs a sync, then reports whether one is running or a change is waiting.
+
+
+		void synRunRef.current(); // What: Sync Start Call. Why: The timer's moment has come. How: This runs a sync, which marks itself running before its first wait.
+
+
+		busRepFun(); // What: Busy Report Call. Why: A refused start leaves nothing running. How: This reports the current state.
+
+
+	}, [ busRepFun ] ); // What: Callback Dependency Array. Why: This callback must be rebuilt whenever the report function changes. How: busRepFun is built once, so this one is too.
+
+
+
 	synRunRef.current = async ( choValStr ) => { // What: Sync Run Assignment. Why: Every caller runs the latest version of the sync. How: This defines one run, from the account check to applying the result.
 
 
@@ -530,6 +549,8 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 		runActRef.current = true;  // What: Run Mark. Why: Other requests wait for this sync. How: This marks it running.
 		setSynRawStr( 'syncing' ); // What: Syncing Status. Why: The screen shows the sync. How: This sets the status.
+
+		busRepFun(); // What: Busy Report Call. Why: A reload would cut off this sync. How: This reports it running.
 
 
 
@@ -642,10 +663,12 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 				runAgaRef.current = false; // What: Rerun Clear. Why: The request is being honored. How: This clears it.
 
-				window.setTimeout( () => void synRunRef.current(), 0 ); // What: Rerun Schedule. Why: The lock is released only after this block. How: This runs on the next tick.
+				window.setTimeout( synNowFun, 0 ); // What: Rerun Schedule. Why: The lock is released only after this block. How: This runs on the next tick, keeping the update handling waiting until then.
 
 
 			}
+
+			else busRepFun(); // What: Busy Report Call. Why: With no rerun asked for, the sync is done, so a held-back update may land. How: This reports whether a change is still waiting.
 
 
 		}
@@ -680,10 +703,23 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 		if ( idlTimRef.current ) window.clearTimeout( idlTimRef.current ); // What: Wait Restart. Why: Each change restarts the two minutes. How: This clears the pending wait.
 
 
-		idlTimRef.current = window.setTimeout( () => { idlTimRef.current = null; void synRunRef.current(); }, IDL_MIL_NUM ); // What: Wait Start. Why: The sync runs once changes stop. How: This syncs two minutes from now.
+		idlTimRef.current = window.setTimeout( () => { // What: Wait Start. Why: The sync runs once changes stop. How: This syncs two minutes from now.
 
 
-	}, [ staAppObj ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the state changes. How: staAppObj is the state.
+			idlTimRef.current = null; // What: Wait Clear. Why: Nothing waits once the timer fires. How: This clears it.
+
+
+			synNowFun(); // What: Waited Sync Call. Why: The change goes up now. How: This syncs and reports the result to the update handling.
+
+
+		}, IDL_MIL_NUM ); // What: Wait Length. Why: A burst of edits costs one upload. How: This waits IDL_MIL_NUM.
+
+
+
+		busRepFun(); // What: Busy Report Call. Why: A waiting change must hold back an app update. How: This reports the wait.
+
+
+	}, [ busRepFun, staAppObj, synNowFun ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the state changes. How: staAppObj is the state, while busRepFun and synNowFun are built once and never rerun it.
 
 
 
@@ -800,7 +836,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 			idlTimRef.current = null; // What: Wait Clear. Why: Nothing waits anymore. How: This clears it.
 
 
-			void synRunRef.current(); // What: Hidden Sync Call. Why: The waiting change has to reach the cloud. How: This syncs now.
+			synNowFun(); // What: Hidden Sync Call. Why: The waiting change has to reach the cloud. How: This syncs now and reports the result to the update handling.
 
 
 		};
@@ -826,7 +862,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 		};
 
 
-	}, [ synActBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever syncing is switched on or off. How: synActBoo is false during the onboarding demo.
+	}, [ synActBoo, synNowFun ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever syncing is switched on or off. How: synActBoo is false during the onboarding demo, while synNowFun is built once and never reruns it.
 
 
 

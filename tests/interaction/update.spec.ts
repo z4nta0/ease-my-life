@@ -25,8 +25,9 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
  * switches. A new version taking control of a visible page shows the update
  * note, whose Reload button reloads; one taking control of a hidden page with
  * nothing being edited reloads at once; one taking control while an editor is
- * open waits with the note instead; the app looks for a new version each time
- * it comes back to the foreground; and a first install shows nothing.
+ * open waits with the note instead; one taking control while account sync is
+ * busy waits until the sync ends; the app looks for a new version each time it
+ * comes back to the foreground; and a first install shows nothing.
  *
  * Sections:
  *  - Types
@@ -65,6 +66,7 @@ declare global { // What: Global Declaration. Why: The test's own window flags h
 // #region Constants
 
 const NOT_MES_STR = 'A new version of Ease My Life is ready.'; // What: Note Message String. Why: The note is found by its message. How: This is the text it shows.
+const UPD_MOD_STR = '/src/platform/update.ts';                 // What: Update Module String. Why: The sync test reaches the update handling the way the sync runner does. How: This is the module's address on the dev server, which hands the page the same module the app runs.
 
 // #endregion Constants
 
@@ -127,6 +129,51 @@ async function fakWorFun ( curPagObj : Page, conHasBoo : boolean ) : Promise< vo
 }
 
 // #endregion fakWorFun
+
+
+
+// #region synSetFun
+
+/**
+ * synSetFun = Sync Set Function
+ *
+ * @summary
+ * Tells the app's update handling whether account sync is busy, the way the
+ * sync runner does while a sync runs or a change waits, by calling its
+ * synBusFun through the module the app already loaded.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curPagObj - Current Page Object: The page whose app to tell.
+ * @param synBusBoo - Sync Busy Boolean: Whether sync is busy.
+ *
+ * @returns A promise that settles once the flag is set, with no value.
+ *
+ * @example
+ * ```ts
+ * await synSetFun(page, true) // => Promise<void>
+ * ```
+ *
+*/
+
+async function synSetFun ( curPagObj : Page, synBusBoo : boolean ) : Promise< void > {
+
+
+	await curPagObj.evaluate( async ( [ modUrlStr, newBusBoo ] ) => { // What: Sync Flag Call. Why: The app holds back a reload while sync is busy. How: This imports the update module and sets its flag.
+
+
+		const updModObj = await import( modUrlStr ); // What: Update Module Object. Why: The flag lives in the app's own module. How: This imports it from the dev server, which returns the instance the app already runs.
+
+
+		updModObj.UPD_NAM_OBJ.synBusFun( newBusBoo ); // What: Sync Busy Call. Why: The test stands in for the sync runner. How: This sets the flag.
+
+
+	}, [ UPD_MOD_STR, synBusBoo ] as const ); // What: Flag Arguments. Why: The page can't read this file's variables. How: This hands in the module's address and the new state. // What: Type Assertion Note. Why: The page function destructures a pair of a string and a boolean. How: The as const keeps each element's own type.
+
+
+}
+
+// #endregion synSetFun
 
 
 
@@ -236,6 +283,40 @@ test( 'a new version reaching a hidden app with an editor open waits and shows t
 	await expect( curPagObj.getByText( NOT_MES_STR ) ).toBeVisible(); // What: Note Shown Assertion. Why: The update waits for the person. How: This checks the note shows.
 
 	expect( await curPagObj.evaluate( () => !!window.__stiMarBoo ) ).toBe( true ); // What: No Reload Assertion. Why: The open form must survive. How: This checks the page's mark is still set.
+
+
+} );
+
+
+
+test( 'a new version reaching a hidden app waits while sync is busy, then reloads once it ends', async ( { page : curPagObj } ) => { // What: Sync Wait Test. Why: A reload would cut off a sync uploading a change or one waiting to. How: This marks sync busy, hides the app, fires a control change, checks no reload comes, then ends the sync while hidden and waits for the reload.
+
+
+	await fakWorFun( curPagObj, true ); // What: Worker Fake Call. Why: The flow needs a controlled page. How: This fakes one.
+
+	await opeFixFun( curPagObj ); // What: Fixture Open Call. Why: The app should hold real data. How: This loads the backup and opens the app.
+
+	await synSetFun( curPagObj, true ); // What: Sync Busy Call. Why: A sync is running or a change is waiting. How: This marks sync busy.
+
+	await curPagObj.evaluate( () => { window.__stiMarBoo = true; } ); // What: Still Mark Call. Why: A reload would clear anything the page set. How: This marks the page.
+
+	await visSetFun( curPagObj, 'hidden' ); // What: Hide Call. Why: The app would reload if sync weren't busy. How: This hides the app.
+
+	await conChaFun( curPagObj ); // What: Control Change Call. Why: A new version has taken over. How: This fires the event.
+
+	await visSetFun( curPagObj, 'visible' ); // What: Show Call. Why: The note confirms the update was held back. How: This shows the app again.
+
+
+	await expect( curPagObj.getByText( NOT_MES_STR ) ).toBeVisible(); // What: Note Shown Assertion. Why: The update waits for the sync. How: This checks the note shows.
+
+	expect( await curPagObj.evaluate( () => !!window.__stiMarBoo ) ).toBe( true ); // What: No Reload Assertion. Why: The sync must not be cut off. How: This checks the page's mark is still set.
+
+	await visSetFun( curPagObj, 'hidden' ); // What: Hide Again Call. Why: The sync ends while the app is out of sight. How: This hides the app, which still holds the reload back.
+
+	expect( await curPagObj.evaluate( () => !!window.__stiMarBoo ) ).toBe( true ); // What: Hidden No Reload Assertion. Why: Hiding again must not reload while sync is busy. How: This checks the mark is still set.
+
+
+	await Promise.all( [ curPagObj.waitForEvent( 'load' ), synSetFun( curPagObj, false ) ] ); // What: Sync End Reload Wait. Why: Once the sync ends, a hidden app takes the new version. How: This ends the sync and waits for the page to load again.
 
 
 } );
