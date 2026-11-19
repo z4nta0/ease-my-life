@@ -84,48 +84,6 @@ const refModBoo = process.argv.includes( '--reformat' ); // What: Reformat Mode 
 
 // #region Record Building
 
-// #region buiPicFun
-
-/**
- * buiPicFun = Build Picker Function
- *
- * @summary
- * Rebuilds every sample picker as the record store.ts's addPicFun creates
- * live, so the simulated history lines up with what the app actually seeds.
- * addPicFun in src/state/store.ts is the source of truth this mirrors.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param void - This function takes no parameters.
- *
- * @returns One picker record per PIC_DEF_ARR entry.
- *
- * @example
- * ```ts
- * buiPicFun() // => [ { daysOfWeek, easeMax, easeMin, group, id, ... } ]
- * ```
- *
-*/
-
-const buiPicFun = () : Partial< PicRcdTyp >[] => PIC_DEF_ARR.map( ( curPicObj ) => ( { // What: Build Picker Function. Why: The pick simulator needs real picker records, not their bare seed definitions. How: This maps each PIC_DEF_ARR entry to the record shape addPicFun builds.
-
-
-	daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ], // What: Days Of Week. Why: The sample pickers run every day. How: This lists all seven weekdays.
-	easeMax    : 20,                      // What: Ease Max. Why: Every new picker starts with the default latest drift. How: This mirrors addPicFun's default.
-	easeMin    : 10,                      // What: Ease Min. Why: Every new picker starts with the default soonest drift. How: This mirrors addPicFun's default.
-	group      : curPicObj.group,         // What: Group. Why: Each sample picker keeps its own group. How: This copies it from the definition.
-	id         : curPicObj.id,            // What: Id. Why: Each sample picker keeps its own id, which its items point at. How: This copies it from the definition.
-	mode       : curPicObj.mode,          // What: Mode. Why: Each sample picker keeps its own picking mode. How: This copies it from the definition.
-	name       : curPicObj.name,          // What: Name. Why: Each sample picker keeps its own name. How: This copies it from the definition.
-	threshold  : 100                      // What: Threshold. Why: Every new picker starts with the default charge threshold. How: This mirrors addPicFun's default.
-
-
-} ) );
-
-// #endregion buiPicFun
-
-
-
 // #region buiIteFun
 
 /**
@@ -184,11 +142,126 @@ const buiIteFun = () : Partial< IteRcdTyp >[] => PIC_DEF_ARR.flatMap( ( curPicOb
 
 // #endregion buiIteFun
 
+
+
+// #region buiPicFun
+
+/**
+ * buiPicFun = Build Picker Function
+ *
+ * @summary
+ * Rebuilds every sample picker as the record store.ts's addPicFun creates
+ * live, so the simulated history lines up with what the app actually seeds.
+ * addPicFun in src/state/store.ts is the source of truth this mirrors.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns One picker record per PIC_DEF_ARR entry.
+ *
+ * @example
+ * ```ts
+ * buiPicFun() // => [ { daysOfWeek, easeMax, easeMin, group, id, ... } ]
+ * ```
+ *
+*/
+
+const buiPicFun = () : Partial< PicRcdTyp >[] => PIC_DEF_ARR.map( ( curPicObj ) => ( { // What: Build Picker Function. Why: The pick simulator needs real picker records, not their bare seed definitions. How: This maps each PIC_DEF_ARR entry to the record shape addPicFun builds.
+
+
+	daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ], // What: Days Of Week. Why: The sample pickers run every day. How: This lists all seven weekdays.
+	easeMax    : 20,                      // What: Ease Max. Why: Every new picker starts with the default latest drift. How: This mirrors addPicFun's default.
+	easeMin    : 10,                      // What: Ease Min. Why: Every new picker starts with the default soonest drift. How: This mirrors addPicFun's default.
+	group      : curPicObj.group,         // What: Group. Why: Each sample picker keeps its own group. How: This copies it from the definition.
+	id         : curPicObj.id,            // What: Id. Why: Each sample picker keeps its own id, which its items point at. How: This copies it from the definition.
+	mode       : curPicObj.mode,          // What: Mode. Why: Each sample picker keeps its own picking mode. How: This copies it from the definition.
+	name       : curPicObj.name,          // What: Name. Why: Each sample picker keeps its own name. How: This copies it from the definition.
+	threshold  : 100                      // What: Threshold. Why: Every new picker starts with the default charge threshold. How: This mirrors addPicFun's default.
+
+
+} ) );
+
+// #endregion buiPicFun
+
 // #endregion Record Building
 
 
 
 // #region History Building
+
+// #region buiRemFun
+
+/**
+ * buiRemFun = Build Reminder Function
+ *
+ * @summary
+ * Builds the trash reminder's year of history: one row for every Monday in
+ * the last 370 days, about 88% of them completed between 8:10 and 8:49 in
+ * the morning, and the rest skipped at 7:45.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param todDatObj - Today Date Object: Today at midnight.
+ *
+ * @returns The completed and skipped reminder rows, as
+ *          { remLogArr, remSkiArr }.
+ *
+ * @example
+ * ```ts
+ * buiRemFun(todDatObj) // => { remLogArr, remSkiArr }
+ * ```
+ *
+*/
+
+const buiRemFun = ( todDatObj : Date ) : { remLogArr : RawStaTyp[ 'reminderLog' ], remSkiArr : RawStaTyp[ 'reminderSkipLog' ] } => { // What: Build Reminder Function. Why: Stats should show a realistic year of the weekly trash reminder. How: This finds every Monday in range and rolls each as completed or skipped.
+
+
+	const monBacArr : number[]                       = []; // What: Monday Back Array. Why: Each reminder row is one Monday's day offset. How: The loop below fills this with every Monday in the last 370 days.
+	const remLogArr : RawStaTyp[ 'reminderLog' ]     = []; // What: Reminder Log Array. Why: Completed Mondays become reminder log rows. How: The second loop below fills this.
+	const remSkiArr : RawStaTyp[ 'reminderSkipLog' ] = []; // What: Reminder Skip Array. Why: Skipped Mondays become skip log rows. How: The second loop below fills this.
+
+
+	for ( let bacDayNum = 1; bacDayNum <= 370; bacDayNum++ ) { // What: Monday Scan Loop. Why: Every day in range has to be checked for whether it's a Monday. How: This walks back one day at a time from yesterday.
+
+
+		const curDatObj = new Date( todDatObj ); // What: Current Date Object. Why: Today's date must not move while the loop offsets from it. How: This copies it.
+
+
+		curDatObj.setDate( todDatObj.getDate() - bacDayNum ); // What: Day Offset Call. Why: The copy has to land on the day being checked. How: This moves it back bacDayNum days.
+
+
+		if ( curDatObj.getDay() === 1 ) monBacArr.push( bacDayNum ); // What: Monday Push. Why: Only Mondays get a reminder row. How: This keeps the offset when the day is a Monday.
+
+
+	}
+
+
+
+	for ( const dayAgoNum of monBacArr ) { // What: Reminder Roll Loop. Why: Every Monday becomes either a completed or a skipped row. How: This rolls each one.
+
+
+		const houValNum = 8;                                     // What: Hour Value Number. Why: The reminder is done in the morning. How: This fixes the hour at 8.
+		const minValNum = 10 + Math.floor( Math.random() * 40 ); // What: Minute Value Number. Why: Completion times should vary a little. How: This picks a minute from 10 to 49.
+
+
+		if ( Math.random() < 0.88 ) remLogArr.push( { daysAgo : dayAgoNum, h : houValNum, m : minValNum, name : TRA_TAS_OBJ.name, taskId : TRA_TAS_OBJ.id, type : 'recurring' } ); // What: Completed Row Push. Why: Most Mondays read as completed. How: This adds a reminder log row 88% of the time.
+
+		else remSkiArr.push( { daysAgo : dayAgoNum, h : 7, m : 45, name : TRA_TAS_OBJ.name, taskId : TRA_TAS_OBJ.id, type : 'recurring' } ); // What: Skipped Row Push. Why: A handful of Mondays read as skipped, for realism. How: This adds a skip log row at a fixed 7:45 otherwise.
+
+
+	}
+
+
+
+	return { remLogArr, remSkiArr }; // What: Reminder Rows Return. Why: The caller stores the completed and skipped rows in separate logs. How: This returns both arrays.
+
+
+};
+
+// #endregion buiRemFun
+
+
 
 const isoIndFun = ( isoDayStr : string ) => { // What: Iso Index Function. Why: Day offsets need a comparable, timezone-safe day count rather than an ISO string. How: This parses the date's parts and converts them to whole UTC days since the epoch.
 
@@ -264,79 +337,6 @@ const conLogFun = ( hisRowArr : PclRowTyp[], todIndNum : number ) : RawStaTyp[ '
 
 
 
-// #region buiRemFun
-
-/**
- * buiRemFun = Build Reminder Function
- *
- * @summary
- * Builds the trash reminder's year of history: one row for every Monday in
- * the last 370 days, about 88% of them completed between 8:10 and 8:49 in
- * the morning, and the rest skipped at 7:45.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param todDatObj - Today Date Object: Today at midnight.
- *
- * @returns The completed and skipped reminder rows, as
- *          { remLogArr, remSkiArr }.
- *
- * @example
- * ```ts
- * buiRemFun(todDatObj) // => { remLogArr, remSkiArr }
- * ```
- *
-*/
-
-const buiRemFun = ( todDatObj : Date ) : { remLogArr : RawStaTyp[ 'reminderLog' ], remSkiArr : RawStaTyp[ 'reminderSkipLog' ] } => { // What: Build Reminder Function. Why: Stats should show a realistic year of the weekly trash reminder. How: This finds every Monday in range and rolls each as completed or skipped.
-
-
-	const monBacArr : number[]                       = []; // What: Monday Back Array. Why: Each reminder row is one Monday's day offset. How: The loop below fills this with every Monday in the last 370 days.
-	const remLogArr : RawStaTyp[ 'reminderLog' ]     = []; // What: Reminder Log Array. Why: Completed Mondays become reminder log rows. How: The second loop below fills this.
-	const remSkiArr : RawStaTyp[ 'reminderSkipLog' ] = []; // What: Reminder Skip Array. Why: Skipped Mondays become skip log rows. How: The second loop below fills this.
-
-
-	for ( let bacDayNum = 1; bacDayNum <= 370; bacDayNum++ ) { // What: Monday Scan Loop. Why: Every day in range has to be checked for whether it's a Monday. How: This walks back one day at a time from yesterday.
-
-
-		const curDatObj = new Date( todDatObj ); // What: Current Date Object. Why: Today's date must not move while the loop offsets from it. How: This copies it.
-
-
-		curDatObj.setDate( todDatObj.getDate() - bacDayNum ); // What: Day Offset Call. Why: The copy has to land on the day being checked. How: This moves it back bacDayNum days.
-
-
-		if ( curDatObj.getDay() === 1 ) monBacArr.push( bacDayNum ); // What: Monday Push. Why: Only Mondays get a reminder row. How: This keeps the offset when the day is a Monday.
-
-
-	}
-
-
-
-	for ( const dayAgoNum of monBacArr ) { // What: Reminder Roll Loop. Why: Every Monday becomes either a completed or a skipped row. How: This rolls each one.
-
-
-		const houValNum = 8;                                     // What: Hour Value Number. Why: The reminder is done in the morning. How: This fixes the hour at 8.
-		const minValNum = 10 + Math.floor( Math.random() * 40 ); // What: Minute Value Number. Why: Completion times should vary a little. How: This picks a minute from 10 to 49.
-
-
-		if ( Math.random() < 0.88 ) remLogArr.push( { daysAgo : dayAgoNum, h : houValNum, m : minValNum, name : TRA_TAS_OBJ.name, taskId : TRA_TAS_OBJ.id, type : 'recurring' } ); // What: Completed Row Push. Why: Most Mondays read as completed. How: This adds a reminder log row 88% of the time.
-
-		else remSkiArr.push( { daysAgo : dayAgoNum, h : 7, m : 45, name : TRA_TAS_OBJ.name, taskId : TRA_TAS_OBJ.id, type : 'recurring' } ); // What: Skipped Row Push. Why: A handful of Mondays read as skipped, for realism. How: This adds a skip log row at a fixed 7:45 otherwise.
-
-
-	}
-
-
-
-	return { remLogArr, remSkiArr }; // What: Reminder Rows Return. Why: The caller stores the completed and skipped rows in separate logs. How: This returns both arrays.
-
-
-};
-
-// #endregion buiRemFun
-
-
-
 // #region simDatFun
 
 /**
@@ -398,6 +398,10 @@ const simDatFun = () : RawStaTyp => { // What: Simulate Data Function. Why: A no
 
 // #region Output Formatting
 
+const forKeyFun = ( keyOneStr : string, keyTwoStr : string ) => keyOneStr.toLowerCase().localeCompare( keyTwoStr.toLowerCase() ); // What: Format Key Function. Why: Every row's keys are written alphabetically, compared case-insensitively. How: This is the comparator both key groups sort with.
+
+
+
 const forStrFun = ( rawValStr : unknown ) => `'${ String( rawValStr ).replace( /'/g, '\\\'' ) }'`; // What: Format String Function. Why: Every string in the generated file uses single quotes, per this repo's quote rule. How: This wraps the value in single quotes, escaping any inside it.
 
 
@@ -417,10 +421,6 @@ const forValFun = ( rawValAny : unknown ) => { // What: Format Value Function. W
 
 
 };
-
-
-
-const forKeyFun = ( keyOneStr : string, keyTwoStr : string ) => keyOneStr.toLowerCase().localeCompare( keyTwoStr.toLowerCase() ); // What: Format Key Function. Why: Every row's keys are written alphabetically, compared case-insensitively. How: This is the comparator both key groups sort with.
 
 
 

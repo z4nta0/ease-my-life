@@ -118,12 +118,10 @@ const LIV_KEY_ARR = [ ACC_SIG_STR, BOO_KEY_STR, MIR_KEY_STR, MIR_TIM_STR, PER_AS
 
 // #region Module State
 
-let booAbaBoo : boolean               = false;     // What: Boot Abandoned Boolean. Why: An IndexedDB boot that runs past the deadline must not open or use a connection afterward. How: This is set by iniStoFun's fallback and checked by idbBooFun once its open settles.
-let cacStaObj : RawSavTyp             = null;      // What: Cached State Object. Why: This is the state iniStoFun loaded, held in memory so later synchronous reads (like STG_NAM_OBJ.cacStaFun()) do not need to touch storage again. How: This starts null (a fresh install) and is assigned inside iniStoFun.
-let curEngStr : string                = 'memory';  // What: Current Engine String. Why: Every read/write in this file needs to know which backend is actually of record right now: 'idb', 'localStorage', or the fallback 'memory'. How: This starts at 'memory' and is updated by iniStoFun/savStaFun whenever the active engine changes.
-let datConObj : IDBDatabase | null    = null;      // What: Database Connection Object. Why: Every other function in this file that talks to IndexedDB needs the same open connection. How: This starts null (no connection yet) and is assigned by iniStoFun once opeDatFun resolves.
-let lplRefArr : unknown[] | undefined = undefined; // What: Last-Pick-Log Reference Array. Why: wriDatFun must know whether the pick log actually changed since the last write, to avoid re-serializing the largest and fastest-growing piece of state on every save. How: This holds the exact array reference last written, compared with !== inside wriDatFun.
-let mirWriBoo : boolean               = true;      // What: Mirror Write Boolean. Why: The Settings storage panel needs to know whether the last localStorage mirror write actually succeeded. How: This is flipped by wriLocFun on every call, true on success, false on a quota (or similar) failure.
+let booAbaBoo : boolean            = false;    // What: Boot Abandoned Boolean. Why: An IndexedDB boot that runs past the deadline must not open or use a connection afterward. How: This is set by iniStoFun's fallback and checked by idbBooFun once its open settles.
+let cacStaObj : RawSavTyp          = null;     // What: Cached State Object. Why: This is the state iniStoFun loaded, held in memory so later synchronous reads (like STG_NAM_OBJ.cacStaFun()) do not need to touch storage again. How: This starts null (a fresh install) and is assigned inside iniStoFun.
+let curEngStr : string             = 'memory'; // What: Current Engine String. Why: Every read/write in this file needs to know which backend is actually of record right now: 'idb', 'localStorage', or the fallback 'memory'. How: This starts at 'memory' and is updated by iniStoFun/savStaFun whenever the active engine changes.
+let datConObj : IDBDatabase | null = null;     // What: Database Connection Object. Why: Every other function in this file that talks to IndexedDB needs the same open connection. How: This starts null (no connection yet) and is assigned by iniStoFun once opeDatFun resolves.
 
 
 
@@ -145,6 +143,11 @@ let mirWriBoo : boolean               = true;      // What: Mirror Write Boolean
 */
 
 let logSusBoo = false; // What: Log Suspect Boolean. Why: wriDatFun must refuse to let a suspect empty pickLog overwrite real history in IDB. How: This is computed in iniStoFun from the loaded state's own __mirrorNoLog or __logPartial marker, checked in wriDatFun, read by wriLocFun to mark a full write's pick log partial, and cleared by logAutFun.
+
+
+
+let lplRefArr : unknown[] | undefined = undefined; // What: Last-Pick-Log Reference Array. Why: wriDatFun must know whether the pick log actually changed since the last write, to avoid re-serializing the largest and fastest-growing piece of state on every save. How: This holds the exact array reference last written, compared with !== inside wriDatFun.
+let mirWriBoo : boolean               = true;      // What: Mirror Write Boolean. Why: The Settings storage panel needs to know whether the last localStorage mirror write actually succeeded. How: This is flipped by wriLocFun on every call, true on success, false on a quota (or similar) failure.
 
 // #endregion Module State
 

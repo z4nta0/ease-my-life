@@ -41,6 +41,24 @@ service cloud.firestore { // What: Firestore Service. Why: These rules cover the
 	match /databases/{database}/documents { // What: Documents Match. Why: Every rule applies inside the project's database. How: This matches its documents.
 
 
+		// #region isaManFun
+
+		function isaManFun ( revNexNum ) { // What: Is-A Manifest Function. Why: A manifest must keep the shape the sync engine reads. How: This checks its fields and its next revision.
+
+
+			let manNewObj = request.resource.data; // What: Manifest New Object. Why: The check reads the incoming manifest. How: This names it.
+
+
+
+			return manNewObj.keys().hasOnly( [ 'docs', 'prior', 'rev', 'savedAt', 'v' ] ) && manNewObj.docs is map && manNewObj.prior is map && manNewObj.rev == revNexNum && manNewObj.savedAt is number && manNewObj.v is int; // What: Manifest Return. Why: An unexpected field or revision would break the next sync. How: This checks each field's type and the revision.
+
+
+		}
+
+		// #endregion isaManFun
+
+
+
 		// #region isaOwnFun
 
 		function isaOwnFun ( uidValStr ) { // What: Is-An Owner Function. Why: Only the account itself may read or delete its copy. How: This is true for a signed-in account with that id and a verified email.
@@ -66,24 +84,6 @@ service cloud.firestore { // What: Firestore Service. Why: These rules cover the
 		}
 
 		// #endregion isaPaiFun
-
-
-
-		// #region isaManFun
-
-		function isaManFun ( revNexNum ) { // What: Is-A Manifest Function. Why: A manifest must keep the shape the sync engine reads. How: This checks its fields and its next revision.
-
-
-			let manNewObj = request.resource.data; // What: Manifest New Object. Why: The check reads the incoming manifest. How: This names it.
-
-
-
-			return manNewObj.keys().hasOnly( [ 'docs', 'prior', 'rev', 'savedAt', 'v' ] ) && manNewObj.docs is map && manNewObj.prior is map && manNewObj.rev == revNexNum && manNewObj.savedAt is number && manNewObj.v is int; // What: Manifest Return. Why: An unexpected field or revision would break the next sync. How: This checks each field's type and the revision.
-
-
-		}
-
-		// #endregion isaManFun
 
 
 

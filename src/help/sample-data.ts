@@ -210,6 +210,41 @@ const TAS_SAM_ARR : ( TasArgTyp & { id : string } )[] = [ // What: Task Sample A
 
 // #region Helpers
 
+// #region cleTasFun
+
+/**
+ * cleTasFun = Clear Tasks Function
+ *
+ * @summary
+ * Tears down every reminder sedTasFun seeded the moment help mode turns off,
+ * removing each TAS_SAM_ARR entry by id. Removing one that was never seeded is
+ * a harmless no-op.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param actStoObj - Action Store Object: The shared app actions object.
+ *
+ * @returns This function does not return anything.
+ *
+ * @example
+ * ```ts
+ * cleTasFun(actStoObj) // => void
+ * ```
+ *
+*/
+
+const cleTasFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Tasks Function. Why: Every reminder seeded by sedTasFun must be torn back down the moment help mode turns off. How: This removes each TAS_SAM_ARR entry by id.
+
+
+	TAS_SAM_ARR.forEach( ( curTasObj ) => actStoObj.delTasFun( curTasObj.id ) ); // What: Task Sample Removal Loop. Why: Every reminder seeded by sedTasFun must be removed again. How: This removes each TAS_SAM_ARR entry directly by its own id.
+
+
+};
+
+// #endregion cleTasFun
+
+
+
 const helIdeFun = ( rawIdeStr : string ) => `hlp_${ rawIdeStr }`; // What: Help Identifier Function. Why: Every help-mode copy needs its own id, kept in a namespace that can never collide with a real onboarding or user picker. How: This prefixes the given rawIdeStr with the literal 'hlp_' string.
 
 
@@ -252,41 +287,6 @@ const clePicFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Pickers F
 };
 
 // #endregion clePicFun
-
-
-
-// #region cleTasFun
-
-/**
- * cleTasFun = Clear Tasks Function
- *
- * @summary
- * Tears down every reminder sedTasFun seeded the moment help mode turns off,
- * removing each TAS_SAM_ARR entry by id. Removing one that was never seeded is
- * a harmless no-op.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param actStoObj - Action Store Object: The shared app actions object.
- *
- * @returns This function does not return anything.
- *
- * @example
- * ```ts
- * cleTasFun(actStoObj) // => void
- * ```
- *
-*/
-
-const cleTasFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Tasks Function. Why: Every reminder seeded by sedTasFun must be torn back down the moment help mode turns off. How: This removes each TAS_SAM_ARR entry by id.
-
-
-	TAS_SAM_ARR.forEach( ( curTasObj ) => actStoObj.delTasFun( curTasObj.id ) ); // What: Task Sample Removal Loop. Why: Every reminder seeded by sedTasFun must be removed again. How: This removes each TAS_SAM_ARR entry directly by its own id.
-
-
-};
-
-// #endregion cleTasFun
 
 
 

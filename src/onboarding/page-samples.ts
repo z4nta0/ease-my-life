@@ -68,11 +68,37 @@ const PAG_SAM_ARR = [ ONB_EXA_OBJ, ...ONB_ESP_ARR ]; // What: Page Sample Array.
 
 // #region Helpers
 
+// #region neeCopFun
+
+/**
+ * neeCopFun = Needs Copies Function
+ *
+ * @summary
+ * Reports whether a page tour works on disposable sample copies. Only the
+ * Pickers and Data tours seed and clear picker copies, so PagTouCom asks this
+ * before seeding as a tour opens and before clearing as it closes.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param pagIdeStr - Page Identifier String: The page tour's own id, e.g.
+ *                    'explore_pickers'.
+ *
+ * @returns Whether the tour needs disposable picker copies.
+ *
+ * @example
+ * ```ts
+ * neeCopFun('explore_pickers') // => true
+ * ```
+ *
+*/
+
+const neeCopFun = ( pagIdeStr : string ) : boolean => pagIdeStr === 'explore_pickers' || pagIdeStr === 'explore_data'; // What: Needs Copies Function. Why: Only the Pickers/Data tours seed/clear disposable picker copies at all. How: This checks pagIdeStr against both of those page ids.
+
+// #endregion neeCopFun
+
+
+
 const picCopFun = ( samIdeStr : string ) => `pt_${ samIdeStr }`; // What: Picker Copy Function. Why: Every disposable picker copy's own id needs deriving from its real sample's id, consistently. How: This prefixes samIdeStr with 'pt_'.
-
-
-
-const tasCopFun = ( samIdeStr : string ) => `pt_${ samIdeStr }`; // What: Task Copy Function. Why: Every disposable reminder copy's own id needs deriving from its real sample's id, consistently. How: This prefixes samIdeStr with 'pt_'.
 
 
 
@@ -109,71 +135,6 @@ const clePicFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Picker Fu
 };
 
 // #endregion clePicFun
-
-
-
-// #region cleTasFun
-
-/**
- * cleTasFun = Clear Task Function
- *
- * @summary
- * Discards the reminder copies seeTasFun makes, called whenever the Data tour
- * ends (Skip or Done), so they never linger in the user's real reminder list.
- * Harmless no-op for any copy that was never actually seeded.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param actStoObj - Action Store Object: The shared app actions object.
- *
- * @returns This function does not return anything.
- *
- * @example
- * ```ts
- * cleTasFun(actStoObj) // => void
- * ```
- *
-*/
-
-const cleTasFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Task Function. Why: A disposable reminder copy must never linger in the user's real reminder list once its own tour ends. How: This removes every ONB_TAS_ARR entry's own copy id, a harmless no-op for one never seeded.
-
-
-	ONB_TAS_ARR.forEach( ( samTasObj ) => actStoObj.delTasFun( tasCopFun( samTasObj.id ) ) ); // What: Remove Task Call. Why: Every seeded copy must be discarded, not just some. How: This removes a task at tasCopFun's own derived id for each ONB_TAS_ARR entry.
-
-
-};
-
-// #endregion cleTasFun
-
-
-
-// #region neeCopFun
-
-/**
- * neeCopFun = Needs Copies Function
- *
- * @summary
- * Reports whether a page tour works on disposable sample copies. Only the
- * Pickers and Data tours seed and clear picker copies, so PagTouCom asks this
- * before seeding as a tour opens and before clearing as it closes.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param pagIdeStr - Page Identifier String: The page tour's own id, e.g.
- *                    'explore_pickers'.
- *
- * @returns Whether the tour needs disposable picker copies.
- *
- * @example
- * ```ts
- * neeCopFun('explore_pickers') // => true
- * ```
- *
-*/
-
-const neeCopFun = ( pagIdeStr : string ) : boolean => pagIdeStr === 'explore_pickers' || pagIdeStr === 'explore_data'; // What: Needs Copies Function. Why: Only the Pickers/Data tours seed/clear disposable picker copies at all. How: This checks pagIdeStr against both of those page ids.
-
-// #endregion neeCopFun
 
 
 
@@ -236,6 +197,45 @@ const seePicFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 };
 
 // #endregion seePicFun
+
+
+
+const tasCopFun = ( samIdeStr : string ) => `pt_${ samIdeStr }`; // What: Task Copy Function. Why: Every disposable reminder copy's own id needs deriving from its real sample's id, consistently. How: This prefixes samIdeStr with 'pt_'.
+
+
+
+// #region cleTasFun
+
+/**
+ * cleTasFun = Clear Task Function
+ *
+ * @summary
+ * Discards the reminder copies seeTasFun makes, called whenever the Data tour
+ * ends (Skip or Done), so they never linger in the user's real reminder list.
+ * Harmless no-op for any copy that was never actually seeded.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param actStoObj - Action Store Object: The shared app actions object.
+ *
+ * @returns This function does not return anything.
+ *
+ * @example
+ * ```ts
+ * cleTasFun(actStoObj) // => void
+ * ```
+ *
+*/
+
+const cleTasFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Task Function. Why: A disposable reminder copy must never linger in the user's real reminder list once its own tour ends. How: This removes every ONB_TAS_ARR entry's own copy id, a harmless no-op for one never seeded.
+
+
+	ONB_TAS_ARR.forEach( ( samTasObj ) => actStoObj.delTasFun( tasCopFun( samTasObj.id ) ) ); // What: Remove Task Call. Why: Every seeded copy must be discarded, not just some. How: This removes a task at tasCopFun's own derived id for each ONB_TAS_ARR entry.
+
+
+};
+
+// #endregion cleTasFun
 
 
 

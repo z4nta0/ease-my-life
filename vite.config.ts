@@ -80,18 +80,6 @@ const pacJsoObj = JSON.parse( readFileSync( new URL( './package.json', import.me
 
 // #region Helpers
 
-const minCssFun = ( styTexStr : string ) => traCssFun({ // What: Minify Css Function. Why: Each inline style in index.html is minified the same way. How: This runs lightningcss on the style's text and returns the result as a string.
-
-
-	code     : Buffer.from( styTexStr ), // What: Code. Why: lightningcss reads its input as bytes. How: This passes the style's text as a buffer.
-	filename : 'inline.css',             // What: Filename. Why: lightningcss names its input in any error it reports. How: This labels it as an inline style.
-	minify   : true                      // What: Minify. Why: The style should ship without its comments and whitespace. How: This turns minification on.
-
-
-}).code.toString(); // What: Minified Code String. Why: The caller splices the minified CSS back into the page as text. How: This reads lightningcss's output buffer and converts it to a string.
-
-
-
 // #region legPagFun
 
 /**
@@ -150,6 +138,18 @@ const legPagFun = () : Plugin => ({ // What: Legal Pages Function. Why: The lega
 });
 
 // #endregion legPagFun
+
+
+
+const minCssFun = ( styTexStr : string ) => traCssFun({ // What: Minify Css Function. Why: Each inline style in index.html is minified the same way. How: This runs lightningcss on the style's text and returns the result as a string.
+
+
+	code     : Buffer.from( styTexStr ), // What: Code. Why: lightningcss reads its input as bytes. How: This passes the style's text as a buffer.
+	filename : 'inline.css',             // What: Filename. Why: lightningcss names its input in any error it reports. How: This labels it as an inline style.
+	minify   : true                      // What: Minify. Why: The style should ship without its comments and whitespace. How: This turns minification on.
+
+
+}).code.toString(); // What: Minified Code String. Why: The caller splices the minified CSS back into the page as text. How: This reads lightningcss's output buffer and converts it to a string.
 
 
 
