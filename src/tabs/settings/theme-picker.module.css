@@ -60,18 +60,19 @@
 
 /* #region theRowDiv */
 
-.theRowDiv { /* What: Theme Row Div. Why: Each theme previews as a full-width strip of its colors that can be picked. How: This lays out a clipped rounded strip with a transparent frame that fades in when the row is focused or selected. */
+.theRowDiv { /* What: Theme Row Div. Why: Each theme previews as a full-width strip of its colors that can be picked. How: This lays out a clipped rounded strip with a transparent frame that fades in when the row is focused or selected, and eases its focus ring in. */
 
 
-	border        : var( --bor-wid-bas ) solid transparent;                 /* Border Width Base ~= 1.160px */
-	border-radius : var( --rad-bor-med );                                   /* Radius Border Medium = 11px */
-	cursor        : pointer;
-	display       : flex;
-	height        : calc( var( --ver-rhy-p05 ) * 1rem );                    /* Vertical Rhythm Base Plus 5 ~= 59.447px */
-	outline       : none;
-	overflow      : hidden;
-	position      : relative;
-	transition    : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+	border         : var( --bor-wid-bas ) solid transparent; /* Border Width Base ~= 1.160px */
+	border-radius  : var( --rad-bor-med );                   /* Radius Border Medium = 11px */
+	cursor         : pointer;
+	display        : flex;
+	height         : calc( var( --ver-rhy-p05 ) * 1rem );    /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	outline        : 0 solid var( --acc-mai-col );           /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset : var( --bor-wid-xla );                   /* Border Width Extra Large ~= 3.571px */
+	overflow       : hidden;
+	position       : relative;
+	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms */
 
 
 }
@@ -85,9 +86,9 @@
 .theRowDiv:focus-visible { /* What: Focused Theme Row. Why: A keyboard user needs to see which row has focus, including the selected row, whose own frame color wins over the focus one. How: This colors the frame with the accent and draws the accent outline just outside it. */
 
 
-	border-color   : var( --acc-mai-col );                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col ); /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
-	outline-offset : var( --bor-wid-lar );                            /* Border Width Large ~= 2.035px */
+	border-color   : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
+	outline-width  : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
 
 
 }
@@ -287,24 +288,25 @@
 
 }
 
-.cusNamInp { /* What: Custom Name Input. Why: The custom theme's name should sit where a preset's label does, but be editable. How: This pins a small translucent field in the bottom-left corner, styled like the preset labels. */
+.cusNamInp { /* What: Custom Name Input. Why: The custom theme's name should sit where a preset's label does, but be editable. How: This pins a small translucent field in the bottom-left corner, styled like the preset labels, and eases its focus fill. */
 
 
 	background     : rgba( 255, 255, 255, .55 );
 	border         : 0;
-	border-radius  : var( --rad-bor-xsm );                      /* Radius Border Extra Small ~= 3.571px */
-	bottom         : var( --spa-ver-m03 );                      /* Spacing Vertical Base Minus 3 ~= 6.268px */
+	border-radius  : var( --rad-bor-xsm );                                                                                  /* Radius Border Extra Small ~= 3.571px */
+	bottom         : var( --spa-ver-m03 );                                                                                  /* Spacing Vertical Base Minus 3 ~= 6.268px */
 	color          : rgba( 0, 0, 0, .5 );
-	font-family    : var( --fon-fam-sec );                      /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas );                      /* Font Size Base = 11px */
-	left           : var( --spa-hor-m01 );                      /* Spacing Horizontal Base Minus 1 = 11px */
+	font-family    : var( --fon-fam-sec );                                                                                  /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                                                                                  /* Font Size Base = 11px */
+	left           : var( --spa-hor-m01 );                                                                                  /* Spacing Horizontal Base Minus 1 = 11px */
 	letter-spacing : 0.05em;
-	max-width      : calc( 100% - var( --spa-hor-p01 ) );       /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+	max-width      : calc( 100% - var( --spa-hor-p01 ) );                                                                   /* Spacing Horizontal Base Plus 1 ~= 19.304px */
 	outline        : none;
-	padding        : var( --spa-ver-m09 ) var( --spa-hor-m05 ); /* Spacing Vertical Base Minus 9 ~= 1.160px, Spacing Horizontal Base Minus 5 ~= 3.571px */
+	padding        : var( --spa-ver-m09 ) var( --spa-hor-m05 );                                                             /* Spacing Vertical Base Minus 9 ~= 1.160px, Spacing Horizontal Base Minus 5 ~= 3.571px */
 	position       : absolute;
 	text-transform : uppercase;
-	width          : calc( var( --ver-rhy-p07 ) * 1rem );       /* Vertical Rhythm Base Plus 7 ~= 104.323px */
+	transition     : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width          : calc( var( --ver-rhy-p07 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 7 ~= 104.323px */
 
 
 }
@@ -343,6 +345,19 @@
 
 	background : #111;
 	color      : white;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Custom Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.cusNamInp { /* What: Still Custom Name Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }

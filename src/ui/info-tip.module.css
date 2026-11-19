@@ -15,19 +15,35 @@
 
 
 
-.infTriSpa { /* What: Info Trigger Span. Why: Whatever a tip is attached to should hint that it explains something. How: This shows the help cursor over the trigger. */
+.infTriSpa { /* What: Info Trigger Span. Why: Whatever a tip is attached to should hint that it explains something. How: This shows the help cursor over the trigger, and eases its focus ring in. */
 
 
-	cursor : help;
+	cursor         : help;
+	outline        : 0 solid var( --acc-mai-col );                                                                                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset : var( --bor-wid-xla );                                                                                              /* Border Width Extra Large ~= 3.571px */
+	transition     : outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
 
 
 }
 .infTriSpa:focus-visible { /* What: Focused Info Trigger Span. Why: A keyboard user needs to see which trigger has focus. How: This draws the accent outline around it. */
 
 
-	border-radius  : var( --rad-bor-xsm );                            /* Radius Border Extra Small ~= 3.571px */
-	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col ); /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
-	outline-offset : var( --bor-wid-lar );                            /* Border Width Large ~= 2.035px */
+	border-radius  : var( --rad-bor-xsm ); /* Radius Border Extra Small ~= 3.571px */
+	outline-offset : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
+	outline-width  : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Info Trigger Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.infTriSpa { /* What: Still Info Trigger Span. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }

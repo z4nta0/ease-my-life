@@ -82,21 +82,22 @@
 
 }
 
-.numSteInp { /* What: Number Stepper Input. Why: The number can also be typed directly, so it's a real input styled to look like plain text. How: This removes the input's own chrome and centers the number in the stepper's mono type. */
+.numSteInp { /* What: Number Stepper Input. Why: The number can also be typed directly, so it's a real input styled to look like plain text. How: This removes the input's own chrome and centers the number in the stepper's mono type, and eases its focus fill. */
 
 
-	-moz-appearance : textfield;                           /* What: Firefox Appearance. Why: Firefox only honors its own prefixed property for dropping a field's native styling. How: This resets the input to a plain text field in Firefox, the same as the standard appearance line below. */
+	-moz-appearance : textfield;                                            /* What: Firefox Appearance. Why: Firefox only honors its own prefixed property for dropping a field's native styling. How: This resets the input to a plain text field in Firefox, the same as the standard appearance line below. */
 	appearance      : textfield;
 	background      : transparent;
 	border          : 0;
-	color           : var( --tex-mai-col );                /* Text Main Color = oklch( 0.17 0.012 250 ) */
-	font-family     : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size       : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
+	color           : var( --tex-mai-col );                                 /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family     : var( --fon-fam-sec );                                 /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size       : var( --fon-siz-p01 );                                 /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight     : 600;
 	outline         : none;
 	padding         : 0;
 	text-align      : center;
-	width           : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition      : background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );                  /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
@@ -105,6 +106,19 @@
 
 	background    : var( --bac-sur-col ); /* Background Surface Color = oklch( 0.975 0.004 240 ) */
 	border-radius : var( --rad-bor-xsm ); /* Radius Border Extra Small ~= 3.571px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Number Stepper Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.numSteInp { /* What: Still Number Stepper Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }

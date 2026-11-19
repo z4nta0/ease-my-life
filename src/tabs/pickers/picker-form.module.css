@@ -510,18 +510,20 @@
 
 /* #region modOptLab */
 
-.modOptLab { /* What: Mode Option Label. Why: Each pick mode is a card with its radio beside its name and hints. How: This draws a rounded outlined card that fades between states. */
+.modOptLab { /* What: Mode Option Label. Why: Each pick mode is a card with its radio beside its name and hints. How: This draws a rounded outlined card that fades between states, and eases its focus ring in. */
 
 
-	align-items   : flex-start;
-	background    : var( --bac-sun-col );                            /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
-	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius : var( --rad-bor-med );                            /* Radius Border Medium = 11px */
-	cursor        : pointer;
-	display       : flex;
-	gap           : var( --spa-hor-m01 );                            /* Spacing Horizontal Base Minus 1 = 11px */
-	padding       : var( --spa-ver-m01 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
-	transition    : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	align-items    : flex-start;
+	background     : var( --bac-sun-col );                            /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : var( --rad-bor-med );                            /* Radius Border Medium = 11px */
+	cursor         : pointer;
+	display        : flex;
+	gap            : var( --spa-hor-m01 );                            /* Spacing Horizontal Base Minus 1 = 11px */
+	outline        : 0 solid var( --acc-mai-col );                    /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset : var( --bor-wid-xla );                            /* Border Width Extra Large ~= 3.571px */
+	padding        : var( --spa-ver-m01 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
+	transition     : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms */
 
 
 }
@@ -535,8 +537,8 @@
 .modOptLab:has( .modOptInp:focus-visible ) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus. How: This outlines the card while its radio has visible focus. */
 
 
-	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col ); /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
-	outline-offset : var( --bor-wid-lar );                            /* Border Width Large ~= 2.035px */
+	outline-offset : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
+	outline-width  : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
 
 
 }
