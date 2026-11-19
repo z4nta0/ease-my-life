@@ -8,8 +8,7 @@ import path from 'node:path'; // What: Path. Why: The output file's absolute pat
 
 import { fileURLToPath } from 'node:url';                             // What: File Url To Path. Why: ESM modules have no __dirname, so this script reconstructs its own folder. How: This converts import.meta.url for CUR_DIR_STR.
 import { isoDayFun     } from '../src/utils/date.ts';                 // What: Iso Day Function. Why: Today's day index needs the same local-calendar YYYY-MM-DD key the app stores. How: This formats today's date as that key in simDatFun.
-import { ONB_ESP_ARR   } from '../src/state/onboarding-seed-data.ts'; // What: Onboarding Extra-Sample-Pickers Array. Why: These are the Welcome Tour's remaining sample picker definitions. How: This is spread into PIC_DEF_ARR after ONB_EXA_OBJ.
-import { ONB_EXA_OBJ   } from '../src/state/onboarding-seed-data.ts'; // What: Onboarding Example Object. Why: This is the Welcome Tour's first sample picker definition. How: This leads PIC_DEF_ARR.
+import { ONB_ASP_ARR   } from '../src/state/onboarding-seed-data.ts'; // What: Onboarding All-Sample-Pickers Array. Why: These are the Welcome Tour's sample picker definitions, the first one leading. How: The picker and item records are both built from it.
 import { ONB_TAS_ARR   } from '../src/state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: The sample reminder history needs the real "Take trash out" task definition. How: This is searched by id for TRA_TAS_OBJ.
 import { SED_NAM_OBJ   } from '../src/state/seed.ts';                 // What: Seed Namespace Object. Why: The sample history should come from the same pick simulator the app's own seeding uses. How: Its picLogFun runs once in simDatFun over a 365-day span.
 import { writeFileSync } from 'node:fs';                              // What: Write File Sync. Why: The generated file has to land on disk. How: This writes buiOutFun's text to OUT_PAT_STR in the module init.
@@ -65,7 +64,6 @@ import type { RawStaTyp } from '../src/state/onboarding-seed-data.ts'; // What: 
 
 const CUR_DIR_STR = path.dirname( fileURLToPath( import.meta.url ) );                           // What: Current Directory String. Why: The output path is resolved from this script's own folder, not the folder it's run from. How: This converts import.meta.url to a file path and takes its directory.
 const OUT_PAT_STR = path.join( CUR_DIR_STR, '..', 'src', 'state', 'onboarding-stats-data.ts' ); // What: Output Path String. Why: The generated file always lands in the same place. How: This joins CUR_DIR_STR with the data file's path in src/state.
-const PIC_DEF_ARR = [ ONB_EXA_OBJ, ...ONB_ESP_ARR ];                                            // What: Picker Definition Array. Why: The picker and item records are both built from the same combined list of sample pickers. How: This puts ONB_EXA_OBJ ahead of every ONB_ESP_ARR entry.
 const TRA_TAS_OBJ = ONB_TAS_ARR.find( ( curTasObj ) => curTasObj.id === 'tk_ob_trash' )!;       // What: Trash Task Object. Why: Only the weekly "Take trash out for pickup" reminder gets history, since the one-time prescription reminder hasn't been completed on a fresh install. How: This finds its definition by id. // What: Non-Null Note. Why: The onboarding samples always include the weekly trash reminder. How: The ! tells TypeScript the find returns it.
 
 // #endregion Constants
@@ -99,7 +97,7 @@ const refModBoo = process.argv.includes( '--reformat' ); // What: Reformat Mode 
  *
  * @param void - This function takes no parameters.
  *
- * @returns One item record per item across every PIC_DEF_ARR entry.
+ * @returns One item record per item across every ONB_ASP_ARR entry.
  *
  * @example
  * ```ts
@@ -108,7 +106,7 @@ const refModBoo = process.argv.includes( '--reformat' ); // What: Reformat Mode 
  *
 */
 
-const buiIteFun = () : Partial< IteRcdTyp >[] => PIC_DEF_ARR.flatMap( ( curPicObj ) => curPicObj.items.map( ( curIteObj ) => { // What: Build Item Function. Why: The pick simulator needs real item records for every picker. How: This flat-maps every definition's items into the record shape addPicFun builds.
+const buiIteFun = () : Partial< IteRcdTyp >[] => ONB_ASP_ARR.flatMap( ( curPicObj ) => curPicObj.items.map( ( curIteObj ) => { // What: Build Item Function. Why: The pick simulator needs real item records for every picker. How: This flat-maps every definition's items into the record shape addPicFun builds.
 
 
 	const isaDowBoo = curPicObj.mode === 'ease-down';            // What: Is-A Down Boolean. Why: An ease-down item's weight and value defaults differ from every other mode's. How: This checks the picker's mode.
@@ -158,7 +156,7 @@ const buiIteFun = () : Partial< IteRcdTyp >[] => PIC_DEF_ARR.flatMap( ( curPicOb
  *
  * @param void - This function takes no parameters.
  *
- * @returns One picker record per PIC_DEF_ARR entry.
+ * @returns One picker record per ONB_ASP_ARR entry.
  *
  * @example
  * ```ts
@@ -167,7 +165,7 @@ const buiIteFun = () : Partial< IteRcdTyp >[] => PIC_DEF_ARR.flatMap( ( curPicOb
  *
 */
 
-const buiPicFun = () : Partial< PicRcdTyp >[] => PIC_DEF_ARR.map( ( curPicObj ) => ( { // What: Build Picker Function. Why: The pick simulator needs real picker records, not their bare seed definitions. How: This maps each PIC_DEF_ARR entry to the record shape addPicFun builds.
+const buiPicFun = () : Partial< PicRcdTyp >[] => ONB_ASP_ARR.map( ( curPicObj ) => ( { // What: Build Picker Function. Why: The pick simulator needs real picker records, not their bare seed definitions. How: This maps each ONB_ASP_ARR entry to the record shape addPicFun builds.
 
 
 	daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ], // What: Days Of Week. Why: The sample pickers run every day. How: This lists all seven weekdays.

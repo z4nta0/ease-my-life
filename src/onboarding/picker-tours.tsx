@@ -10,8 +10,7 @@ import { emlTouObj   } from '../state/tour-bus.ts';             // What: Ease My
 import { GuiTouCom   } from './tour-runner.tsx';                // What: Guided Tour Component. Why: This is the generic spotlight-tour engine that actually drives this picker mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-picker step array.
 import { IcoSvgCom   } from '../ui/icon.tsx';                   // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph identifying this as a picker tutorial. How: This is rendered inside the intro modal's icon prop below.
 import { IntModCom   } from './intro-modal.tsx';                // What: Intro Modal Component. Why: Each picker mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this picker's own icon/title/paragraphs/pills.
-import { ONB_ESP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Extra-Sample-Pickers Array. Why: This is every OTHER sample picker's own template, alongside ONB_EXA_OBJ the full set PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
-import { ONB_EXA_OBJ } from '../state/onboarding-seed-data.ts'; // What: Onboarding Example Object. Why: This is the "Daily Chores" sample picker's own template, one of the entries PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
+import { ONB_ASP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding All-Sample-Pickers Array. Why: This is every sample picker's own template, the full set PIC_SAM_OBJ below indexes by id. How: This is PIC_SAM_OBJ's own source array below.
 import { PIC_NAM_OBJ } from '../core/pickers.ts';               // What: Pickers Namespace Object. Why: A sample's day overrides become the drift values the item editor stores. How: This is called via PIC_NAM_OBJ.dayDriFun.
 import { SED_NAM_OBJ } from '../state/seed.ts';                 // What: Seed Namespace Object. Why: The intro modal's own pill needs this picker's own mode label, not its raw mode key. How: This is looked up (MOD_DEF_OBJ) by picRcdObj's own mode to resolve modLabStr below.
 
@@ -241,7 +240,7 @@ const PIC_ICO_ELE = ( // What: Picker Icon Element. Why: The intro modal's own i
  *
 */
 
-const PIC_SAM_OBJ = Object.fromEntries( [ ONB_EXA_OBJ, ...ONB_ESP_ARR ].map( ( curPicObj ) => [ curPicObj.id, curPicObj ] ) ); // What: Picker Sample Object. Why: Every step below that needs this sample's own template data (name/group/mode/items/step) reads it from here. How: This maps ONB_EXA_OBJ plus every ONB_ESP_ARR entry down to a [id, template] pair, then folds those pairs into one object.
+const PIC_SAM_OBJ = Object.fromEntries( ONB_ASP_ARR.map( ( curPicObj ) => [ curPicObj.id, curPicObj ] ) ); // What: Picker Sample Object. Why: Every step below that needs this sample's own template data (name/group/mode/items/step) reads it from here. How: This maps every ONB_ASP_ARR entry down to a [id, template] pair, then folds those pairs into one object.
 
 // #endregion Intro And Copy Content
 

@@ -3,8 +3,7 @@
 
 // #region Imports
 
-import { ONB_ESP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Extra-Sample-Pickers Array. Why: These are the real onboarding sample pickers, borrowed here so help mode's own copies of them look identical. How: This is read alongside ONB_EXA_OBJ by sedPicFun/clePicFun below.
-import { ONB_EXA_OBJ } from '../state/onboarding-seed-data.ts'; // What: Onboarding Example Object. Why: This is the real onboarding sample picker, borrowed here so help mode's own copy of it looks identical. How: This is read alongside ONB_ESP_ARR by sedPicFun/clePicFun below.
+import { ONB_ASP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding All-Sample-Pickers Array. Why: These are the real onboarding sample pickers, borrowed here so help mode's own copies of them look identical. How: This is iterated by sedPicFun/clePicFun below.
 
 
 import type { ActStoTyp } from '../state/store.ts';     // What: Action Store Type. Why: Seeding and clearing go through the store's actions. How: This types each actStoObj parameter.
@@ -27,7 +26,7 @@ import type { TasArgTyp } from '../core/data-model.ts'; // What: Task Argument T
  * picker, and reminders covering every recurrence type), and torn back down
  * the moment it turns off. Stats borrows the real sample pickers' own year of
  * history instead, through state/sample-history.ts. Same "real, interactive,
- * but disposable" idea as onboarding/page-samples.ts's own PAG_SAM_ARR, kept
+ * but disposable" idea as onboarding/page-samples.ts's own seePicFun, kept
  * as an entirely separate hlp_-prefixed id namespace (rather than reusing that
  * file's own pt_ copies) so the two features can never collide even if both
  * happened to be active at once.
@@ -276,7 +275,7 @@ const helIdeFun = ( rawIdeStr : string ) => `hlp_${ rawIdeStr }`; // What: Help 
 const clePicFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Pickers Function. Why: Every picker/conditional seeded by sedPicFun must be torn back down the moment help mode turns off. How: This removes each onboarding-sample copy and help-only picker by id, then removes the day-off conditional.
 
 
-	[ ONB_EXA_OBJ, ...ONB_ESP_ARR ].forEach( ( curPicObj ) => actStoObj.delPicFun( helIdeFun( curPicObj.id ) ) ); // What: Onboarding Sample Copy Removal Loop. Why: Every copy seeded by sedPicFun's own onboarding-sample loop must be removed again. How: This maps each entry's own id through helIdeFun to find its copy's id, then removes it.
+	ONB_ASP_ARR.forEach( ( curPicObj ) => actStoObj.delPicFun( helIdeFun( curPicObj.id ) ) ); // What: Onboarding Sample Copy Removal Loop. Why: Every copy seeded by sedPicFun's own onboarding-sample loop must be removed again. How: This maps each entry's own id through helIdeFun to find its copy's id, then removes it.
 
 	[ ...EXT_PIC_ARR, PIC_GAT_OBJ ].forEach( ( curPicObj ) => actStoObj.delPicFun( curPicObj.id ) ); // What: Help-Only Picker Removal Loop. Why: Every help-only picker seeded by sedPicFun's own second loop must be removed again. How: This removes each entry directly by its own already-hlp_-prefixed id.
 
@@ -325,7 +324,7 @@ const sedPicFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 
 
-	[ ONB_EXA_OBJ, ...ONB_ESP_ARR ].forEach( ( curPicObj ) => { // What: Onboarding Sample Copy Loop. Why: Every onboarding-sample picker needs its own disposable, hlp_-namespaced copy seeded alongside the help-only pickers below. How: This iterates ONB_EXA_OBJ plus every ONB_ESP_ARR entry, building and adding one copy per entry.
+	ONB_ASP_ARR.forEach( ( curPicObj ) => { // What: Onboarding Sample Copy Loop. Why: Every onboarding-sample picker needs its own disposable, hlp_-namespaced copy seeded alongside the help-only pickers below. How: This iterates every ONB_ASP_ARR entry, building and adding one copy per entry.
 
 
 		const copIdeStr = helIdeFun( curPicObj.id ); // What: Copy Identifier String. Why: The copy must live in help mode's own hlp_-prefixed id namespace, never the real onboarding sample's own id. How: This prefixes curPicObj's own id via helIdeFun.

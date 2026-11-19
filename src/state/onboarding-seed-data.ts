@@ -375,6 +375,10 @@ const ONB_EXA_OBJ : PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > = 
 
 
 
+const ONB_ASP_ARR = [ ONB_EXA_OBJ, ...ONB_ESP_ARR ]; // What: Onboarding All-Sample-Pickers Array. Why: The tours, help mode, and the onboarding stats script each work on every sample picker together. How: This lists ONB_EXA_OBJ first, then every ONB_ESP_ARR entry, in that order.
+
+
+
 // #region ONB_PCT_OBJ
 
 /**
@@ -526,8 +530,8 @@ const ONB_TAS_ARR : ( TasArgTyp & Required< Pick< TasArgTyp, 'id' | 'name' > > )
  *
 */
 
-const ONB_SPI_ARR = [ ONB_EXA_OBJ, ...ONB_ESP_ARR ].map( ( curPicObj ) => curPicObj.id ); // What: Onboarding Sample-Picker-Identifiers Array. Why: This is every seeded sample picker's own id, flattened into one array (see the comment above this declaration). How: This maps ONB_EXA_OBJ plus every ONB_ESP_ARR entry down to just its own id field.
-const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id );                     // What: Onboarding Sample-Task-Identifiers Array. Why: This is every seeded sample task's own id, flattened into one array (see the comment above ONB_SPI_ARR above). How: This maps every ONB_TAS_ARR entry down to just its own id field.
+const ONB_SPI_ARR = ONB_ASP_ARR.map( ( curPicObj ) => curPicObj.id ); // What: Onboarding Sample-Picker-Identifiers Array. Why: This is every seeded sample picker's own id, flattened into one array (see the comment above this declaration). How: This maps every ONB_ASP_ARR entry down to just its own id field.
+const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id ); // What: Onboarding Sample-Task-Identifiers Array. Why: This is every seeded sample task's own id, flattened into one array (see the comment above ONB_SPI_ARR above). How: This maps every ONB_TAS_ARR entry down to just its own id field.
 
 // #endregion Constants
 
@@ -724,7 +728,7 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 
 // #region Exports
 
-export { hydStaFun, ONB_ESP_ARR, ONB_EXA_OBJ, ONB_PCT_OBJ, ONB_RCT_OBJ, ONB_SPI_ARR, ONB_STI_ARR, ONB_TAS_ARR, type RawStaTyp }; // What: Named Exports. Why: The onboarding tours, help mode, store.ts, the Today and Settings tabs, and scripts/build-onboarding-stats.mts each read some of this sample data by name. How: This exports the sample pickers, tasks, id lists, card copy tables and the stats hydrator.
+export { hydStaFun, ONB_ASP_ARR, ONB_ESP_ARR, ONB_EXA_OBJ, ONB_PCT_OBJ, ONB_RCT_OBJ, ONB_SPI_ARR, ONB_STI_ARR, ONB_TAS_ARR, type RawStaTyp }; // What: Named Exports. Why: The onboarding tours, help mode, store.ts, the Today and Settings tabs, and scripts/build-onboarding-stats.mts each read some of this sample data by name. How: This exports the sample pickers, their combined list, tasks, id lists, card copy tables and the stats hydrator.
 
 // #endregion Exports
 

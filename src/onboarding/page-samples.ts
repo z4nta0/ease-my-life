@@ -3,9 +3,8 @@
 
 // #region Imports
 
-import { ONB_ESP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Extra-Sample-Pickers Array. Why: This is every OTHER sample picker's own template, alongside ONB_EXA_OBJ the full set PAG_SAM_ARR below carries. How: This is spread into PAG_SAM_ARR below.
-import { ONB_EXA_OBJ } from '../state/onboarding-seed-data.ts'; // What: Onboarding Example Object. Why: This is the "Daily Chores" sample picker's own template, one of the entries PAG_SAM_ARR carries. How: This is spread into PAG_SAM_ARR below.
-import { ONB_TAS_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: The Data tour needs real reminders to point at, seeded/cleared as disposable copies the same way PAG_SAM_ARR is for pickers. How: This is iterated by seeTasFun/cleTasFun below.
+import { ONB_ASP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding All-Sample-Pickers Array. Why: This is every sample picker's own template, the full set the page tours seed and clear disposable copies of. How: This is iterated by seePicFun and clePicFun below.
+import { ONB_TAS_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: The Data tour needs real reminders to point at, seeded/cleared as disposable copies the same way the sample pickers are. How: This is iterated by seeTasFun/cleTasFun below.
 
 
 import type { ActStoTyp } from '../state/store.ts';     // What: Action Store Type. Why: The seed and clear helpers change pickers and reminders through the store's actions. How: This types their actStoObj.
@@ -26,43 +25,12 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  * untouched.
  *
  * Sections:
- *  - Constants
  *  - Helpers
  *  - Exports
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
-
-
-
-// #region Constants
-
-/**
- * PAG_SAM_ARR = Page Sample Array
- *
- * @summary
- * The Pickers/Data tours need real pickers on screen to point at (e.g. the
- * group filter row doesn't even render with fewer than 2 groups), but both
- * expose real edit/delete controls on whatever picker they highlight, so
- * reusing the Welcome Tour's own hidden sample pickers directly (the same ones
- * the Today mini-tour launcher cards and Replay Tour depend on) would let the
- * user's own interaction here (deleting one, editing an item, re-selecting a
- * scope, etc.) corrupt that shared reference data. Seeded as full COPIES
- * instead, under their own `pt_`-prefixed ids (never colliding with the real
- * `pkr_ob_*`/`it_ob_*` ones), and cleaned up again the moment whichever tour
- * used them ends (see clePicFun): real, interactive, but disposable. Shared
- * between the two tours rather than each maintaining its own copy set. Stats
- * does NOT use this, see unhHisFun below for why it borrows the real samples
- * instead.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
-*/
-
-const PAG_SAM_ARR = [ ONB_EXA_OBJ, ...ONB_ESP_ARR ]; // What: Page Sample Array. Why: seePicFun/clePicFun below need every sample picker's own template to seed/clear a disposable copy of. How: This flattens ONB_EXA_OBJ and every ONB_ESP_ARR entry into one array.
-
-// #endregion Constants
 
 
 
@@ -126,10 +94,10 @@ const picCopFun = ( samIdeStr : string ) => `pt_${ samIdeStr }`; // What: Picker
  *
 */
 
-const clePicFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Picker Function. Why: A disposable copy must never linger in the user's real picker list once its own tour ends. How: This removes every PAG_SAM_ARR entry's own copy id, a harmless no-op for one never seeded.
+const clePicFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Picker Function. Why: A disposable copy must never linger in the user's real picker list once its own tour ends. How: This removes every ONB_ASP_ARR entry's own copy id, a harmless no-op for one never seeded.
 
 
-	PAG_SAM_ARR.forEach( ( samPicObj ) => actStoObj.delPicFun( picCopFun( samPicObj.id ) ) ); // What: Remove Picker Call. Why: Every seeded copy must be discarded, not just some. How: This removes a picker at picCopFun's own derived id for each PAG_SAM_ARR entry.
+	ONB_ASP_ARR.forEach( ( samPicObj ) => actStoObj.delPicFun( picCopFun( samPicObj.id ) ) ); // What: Remove Picker Call. Why: Every seeded copy must be discarded, not just some. How: This removes a picker at picCopFun's own derived id for each ONB_ASP_ARR entry.
 
 
 };
@@ -150,6 +118,20 @@ const clePicFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Picker Fu
  * 6's rename input). Guarded by existence so navigating back to Step 1 and
  * forward again (re-firing this runFun) can't create duplicate-id pickers.
  *
+ * The Pickers/Data tours need real pickers on screen to point at (e.g. the
+ * group filter row doesn't even render with fewer than 2 groups), but both
+ * expose real edit/delete controls on whatever picker they highlight, so
+ * reusing the Welcome Tour's own hidden sample pickers directly (the same ones
+ * the Today mini-tour launcher cards and Replay Tour depend on) would let the
+ * user's own interaction here (deleting one, editing an item, re-selecting a
+ * scope, etc.) corrupt that shared reference data. Seeded as full COPIES
+ * instead, under their own `pt_`-prefixed ids (never colliding with the real
+ * `pkr_ob_*`/`it_ob_*` ones), and cleaned up again the moment whichever tour
+ * used them ends (see clePicFun): real, interactive, but disposable. Shared
+ * between the two tours rather than each maintaining its own copy set. Stats
+ * does NOT use this, see state/sample-history.ts's unhHisFun for why it
+ * borrows the real samples instead.
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param staAppObj - State App Object: The entire app's own persisted state,
@@ -165,10 +147,10 @@ const clePicFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Picker Fu
  *
 */
 
-const seePicFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { // What: Seed Picker Function. Why: The Pickers/Data tours need real, disposable copies of every sample picker seeded before their own steps can point at them. How: This adds one copy per PAG_SAM_ARR entry, skipping any already seeded.
+const seePicFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { // What: Seed Picker Function. Why: The Pickers/Data tours need real, disposable copies of every sample picker seeded before their own steps can point at them. How: This adds one copy per ONB_ASP_ARR entry, skipping any already seeded.
 
 
-	PAG_SAM_ARR.forEach( ( samPicObj ) => { // What: Sample Picker Object Loop. Why: Every sample picker's own template needs its own disposable copy. How: This iterates PAG_SAM_ARR, seeding one copy per entry.
+	ONB_ASP_ARR.forEach( ( samPicObj ) => { // What: Sample Picker Object Loop. Why: Every sample picker's own template needs its own disposable copy. How: This iterates ONB_ASP_ARR, seeding one copy per entry.
 
 
 		const copIdeStr = picCopFun( samPicObj.id ); // What: Copy Identifier String. Why: This copy's own id must never collide with the real hidden picker's own id. How: This derives it from samPicObj's own id via picCopFun.
@@ -246,7 +228,7 @@ const cleTasFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Task Func
  *
  * @summary
  * The Data tour's own Reminders step needs real reminders to point at, same
- * reasoning as PAG_SAM_ARR above (real edit/delete controls are exposed there
+ * reasoning as seePicFun above (real edit/delete controls are exposed there
  * too, so a disposable copy protects the real hidden samples), just for
  * ONB_TAS_ARR instead of pickers. Data-only, the Pickers tour never touches
  * reminders at all.
@@ -310,7 +292,7 @@ const seeTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 // #region Exports
 
-export { clePicFun, cleTasFun, neeCopFun, seePicFun, seeTasFun }; // What: Named Exports. Why: PagTouCom seeds and clears the copies as a page tour opens and closes. How: This exports the seed, clear, and needs-copies functions by name; the id helpers and PAG_SAM_ARR stay private to this file.
+export { clePicFun, cleTasFun, neeCopFun, seePicFun, seeTasFun }; // What: Named Exports. Why: PagTouCom seeds and clears the copies as a page tour opens and closes. How: This exports the seed, clear, and needs-copies functions by name; the id helpers stay private to this file.
 
 // #endregion Exports
 
