@@ -3,9 +3,13 @@
 
 // #region Imports
 
-import { expect    } from '@playwright/test';  // What: Expect. Why: Each check asserts on the note, the reload, and the update check. How: This compares what each check reads with what it should be.
-import { opeFixFun } from '../support/app.ts'; // What: Open Fixture Function. Why: The app should hold real data, the way it's used. How: This loads the backup and opens the app.
-import { test      } from '@playwright/test';  // What: Test. Why: Each case of the update flow is its own test. How: This declares them.
+import { conChaFun   } from '../support/update.ts';  // What: Controller Change Function. Why: A new version taking control starts each flow. How: This fires the control change.
+import { expect      } from '@playwright/test';      // What: Expect. Why: Each check asserts on the note, the reload, and the update check. How: This compares what each check reads with what it should be.
+import { fakWorFun   } from '../support/update.ts';  // What: Fake Worker Function. Why: The suites block service workers, so the update flow's inputs are faked. How: This fakes the controller, the registration, and the visibility.
+import { NOT_MES_STR } from '../support/update.ts';  // What: Note Message String. Why: The note is found by its message. How: This is the text it shows.
+import { opeFixFun   } from '../support/app.ts';     // What: Open Fixture Function. Why: The app should hold real data, the way it's used. How: This loads the backup and opens the app.
+import { test        } from '@playwright/test';      // What: Test. Why: Each case of the update flow is its own test. How: This declares them.
+import { visSetFun   } from '../support/update.ts';  // What: Visibility Set Function. Why: Each case decides when the app counts as hidden. How: This sets the faked visibility and fires its event.
 
 
 import type { Page } from '@playwright/test'; // What: Page. Why: The helpers drive a Playwright page. How: This types their page parameter.
@@ -30,7 +34,6 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
  * comes back to the foreground; and a first install shows nothing.
  *
  * Sections:
- *  - Types
  *  - Constants
  *  - Helpers
  *  - Module Init
@@ -41,96 +44,15 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
 
 
 
-// #region Types
-
-declare global { // What: Global Declaration. Why: The test's own window flags have to type check in the page functions. How: This adds them to the browser's Window.
-
-
-	interface Window { // What: Window Interface. Why: Only an interface merges with the built-in Window. How: This declares the flags the init script and tests set.
-
-
-		__stiMarBoo? : boolean; // What: Still Mark Boolean. Why: A reload clears it, so its survival proves none came. How: The busy test sets it.
-		__updCheNum? : number;  // What: Update Check Number. Why: Each return to the app should ask for an update. How: The fake registration counts its update calls here.
-		__visStaStr? : string;  // What: Visibility State String. Why: The tests decide when the app counts as hidden. How: The faked visibility reads it.
-
-
-	}
-
-
-}
-
-// #endregion Types
-
-
-
 // #region Constants
 
-const NOT_MES_STR = 'A new version of Ease My Life is ready.'; // What: Note Message String. Why: The note is found by its message. How: This is the text it shows.
-const UPD_MOD_STR = '/src/platform/update.ts';                 // What: Update Module String. Why: The sync test reaches the update handling the way the sync runner does. How: This is the module's address on the dev server, which hands the page the same module the app runs.
+const UPD_MOD_STR = '/src/platform/update.ts'; // What: Update Module String. Why: The sync test reaches the update handling the way the sync runner does. How: This is the module's address on the dev server, which hands the page the same module the app runs.
 
 // #endregion Constants
 
 
 
 // #region Helpers
-
-const conChaFun = ( curPagObj : Page ) => curPagObj.evaluate( () => navigator.serviceWorker.dispatchEvent( new Event( 'controllerchange' ) ) ); // What: Controller Change Function. Why: A new version taking control is what starts the flow. How: This fires the container's controllerchange event.
-
-
-
-// #region fakWorFun
-
-/**
- * fakWorFun = Fake Worker Function
- *
- * @summary
- * Adds an init script, run before the app's own code on every load, that
- * gives the page a fake controlling worker when asked for one, a fake
- * registration whose update calls it counts in `__updCheNum`, and a
- * visibility state read from `__visStaStr`, defaulting to visible.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param curPagObj - Current Page Object: The page to fake the worker on.
- * @param conHasBoo - Controller Has Boolean: Whether a worker controls the
- *                    page at load, false for a first install.
- *
- * @returns A promise that settles once the script is added, with no value.
- *
- * @example
- * ```ts
- * await fakWorFun(page, true) // => Promise<void>
- * ```
- *
-*/
-
-async function fakWorFun ( curPagObj : Page, conHasBoo : boolean ) : Promise< void > {
-
-
-	await curPagObj.addInitScript( ( iniConBoo ) => { // What: Fake Worker Script. Why: Service workers are blocked in the suites, so the update flow's inputs are faked. How: This replaces the controller, the registration lookup, and the visibility state before the app loads.
-
-
-		const worConObj = navigator.serviceWorker; // What: Worker Container Object. Why: The app listens for control changes on it. How: This reads the page's container.
-
-
-
-		if ( !worConObj ) return; // What: No Container Guard. Why: A page without the container can't run the flow. How: This stops.
-
-
-
-		Object.defineProperty( worConObj, 'controller', { configurable : true, get : () => ( iniConBoo ? {} : null ) } );                                                                           // What: Controller Fake. Why: An update is a new worker replacing one that already controlled the page. How: This reports a controller, or none for a first install.
-		Object.defineProperty( worConObj, 'getRegistration', { configurable : true, value : async () => ( { update : async () => { window.__updCheNum = ( window.__updCheNum || 0 ) + 1; } } ) } ); // What: Registration Fake. Why: The update check asks the registration to look for a new version. How: This returns one whose update call adds one to __updCheNum.
-		Object.defineProperty( document, 'visibilityState', { configurable : true, get : () => window.__visStaStr || 'visible' } );                                                                 // What: Visibility Fake. Why: Each test decides when the app counts as hidden. How: This reports __visStaStr, defaulting to visible.
-
-
-	}, conHasBoo ); // What: Script Argument. Why: The page can't read this file's variables. How: This hands in whether a worker controls the page at load.
-
-
-}
-
-// #endregion fakWorFun
-
-
 
 // #region synSetFun
 
@@ -174,50 +96,6 @@ async function synSetFun ( curPagObj : Page, synBusBoo : boolean ) : Promise< vo
 }
 
 // #endregion synSetFun
-
-
-
-// #region visSetFun
-
-/**
- * visSetFun = Visibility Set Function
- *
- * @summary
- * Sets the faked visibility state and fires the page's visibilitychange
- * event, the way switching away from the app or back to it does.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param curPagObj - Current Page Object: The page to switch.
- * @param visStaStr - Visibility State String: 'hidden' or 'visible'.
- *
- * @returns A promise that settles once the event is fired, with no value.
- *
- * @example
- * ```ts
- * await visSetFun(page, 'hidden') // => Promise<void>
- * ```
- *
-*/
-
-async function visSetFun ( curPagObj : Page, visStaStr : string ) : Promise< void > {
-
-
-	await curPagObj.evaluate( ( newStaStr ) => { // What: Visibility Switch Call. Why: The app reacts to the page being hidden or shown. How: This sets the faked state and fires the event.
-
-
-		window.__visStaStr = newStaStr; // What: Visibility State Assignment. Why: The faked visibility reads it. How: This stores the new state.
-
-
-		document.dispatchEvent( new Event( 'visibilitychange' ) ); // What: Visibility Event Dispatch. Why: The app listens for this event. How: This fires it on the document.
-
-
-	}, visStaStr ); // What: Visibility Argument. Why: The page can't read this file's variables. How: This hands in the new state.
-
-
-}
-
-// #endregion visSetFun
 
 // #endregion Helpers
 
