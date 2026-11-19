@@ -263,6 +263,8 @@ type StoInfTyp = { // What: Stop Information Type. Why: The keyboard walk judges
 function stoInfFun () : StoInfTyp | null {
 
 
+	// #region Active Element Reading
+
 	const actCurEle = document.activeElement as HTMLElement | null; // What: Active Current Element. Why: The stop is whatever holds focus after the press. How: This reads the focused element. // What: Type Assertion Note. Why: activeElement types as Element, which has no blur or focus. How: Every element that can hold focus in this app is an HTMLElement.
 
 	const actBodBoo = actCurEle === document.body || actCurEle === document.documentElement; // What: Active Body Boolean. Why: Focus resting on the body, or in Firefox on the root a state's opener focused to reset the Tab start, means no stop holds it. How: This compares the focused element with the body and the root.
@@ -271,10 +273,14 @@ function stoInfFun () : StoInfTyp | null {
 
 	const walDonBoo = actMisBoo || actBodBoo || docBluBoo; // What: Walk Done Boolean. Why: Any of the three means the walk has left the page. How: This combines them.
 
+	// #endregion Active Element Reading
+
 
 	if ( walDonBoo ) return null; // What: Walk End Guard. Why: Focus on the body, nowhere, or outside the document means the walk has left the page. How: This returns null to end the walk.
 
 
+
+	// #region Shown Element
 
 	const actRecObj = actCurEle.getBoundingClientRect();                   // What: Active Rect Object. Why: A native control can be hidden at no size while its label stands in for it. How: This measures the focused element itself.
 	const labCurEle = ( actCurEle as HTMLInputElement ).labels?.[ 0 ] || null; // What: Label Current Element. Why: A hidden radio or checkbox is drawn and shows its focus through its label. How: This reads the control's first label, or null. // What: Type Assertion Note. Why: Only form controls have labels. How: Any other element reads as having none.
@@ -283,7 +289,11 @@ function stoInfFun () : StoInfTyp | null {
 
 	const shoCurEle = hidConBoo ? labCurEle! : actCurEle; // What: Shown Current Element. Why: Visibility, coverage, and the focus indicator are judged on what a person actually sees. How: This is the label for a hidden control and the stop itself otherwise. // What: Non-Null Note. Why: hidConBoo is only true when a label was found. How: The ! tells TypeScript it's set here.
 
+	// #endregion Shown Element
 
+
+
+	// #region Focus And Blurred Signatures
 
 	const sigStyFun = () => { // What: Signature Style Function. Why: A focus indicator is any visible change between focused and unfocused. How: This reads the stop's styles as one string to compare.
 
@@ -324,13 +334,21 @@ function stoInfFun () : StoInfTyp | null {
 
 	const bluSigStr = newStoBoo ? bluSigFun() : ''; // What: Blurred Signature String. Why: Focus is judged once per stop, when the walk first reaches it, which leaves a date or time field free to move through its parts. How: This reads the unfocused look for a new stop, and is empty, never matching the focused look, for a stop met again.
 
+	// #endregion Focus And Blurred Signatures
 
+
+
+	// #region Stop Rect And Coverage
 
 	const recCurObj = shoCurEle.getBoundingClientRect();                                                                       // What: Rect Current Object. Why: A focused stop has to be on screen and uncovered. How: This measures the stop, or its label for a hidden control.
 	const fraRecObj = shoCurEle.getClientRects()[ 0 ] || recCurObj;                                                            // What: Fragment Rect Object. Why: A link that wraps onto two lines has a bounding box whose center can fall between its lines, on the text around it. How: This measures the stop's first line box, falling back to its whole box.
 	const topCurEle = document.elementFromPoint( fraRecObj.left + fraRecObj.width / 2, fraRecObj.top + fraRecObj.height / 2 ); // What: Top Current Element. Why: Whatever is drawn on top at the stop's center is what a person sees there. How: This asks the page which element sits at the center of the stop's first line box.
 
+	// #endregion Stop Rect And Coverage
 
+
+
+	// #region Stop Label
 
 	const ariLabStr = actCurEle.getAttribute( 'aria-label' ); // What: ARIA Label String. Why: A stop's own label names it best. How: This reads its aria-label, or null.
 	const eleIdeStr = actCurEle.id;                           // What: Element Identifier String. Why: A form field without a label is still recognizable by its id. How: This reads the stop's id, empty when it has none.
@@ -338,6 +356,11 @@ function stoInfFun () : StoInfTyp | null {
 
 	const stoLabStr = ariLabStr || eleIdeStr || eleTexStr || ''; // What: Stop Label String. Why: A problem should name the stop the way a person would recognize it. How: This takes the label, then the id, then the text, then nothing.
 
+	// #endregion Stop Label
+
+
+
+	// #region Visibility Geometry
 
 	const botBelBoo = recCurObj.bottom > 0;        // What: Bottom Below Boolean. Why: A stop entirely above the viewport is off screen. How: This is true when its bottom edge sits below the viewport's top.
 	const heiPosBoo = recCurObj.height > 0;        // What: Height Positive Boolean. Why: A stop with no height can't be seen. How: This is true when it has some height.
@@ -348,7 +371,11 @@ function stoInfFun () : StoInfTyp | null {
 
 	const visStoBoo = botBelBoo && heiPosBoo && lefInsBoo && rigInsBoo && topAboBoo && widPosBoo; // What: Visible Stop Boolean. Why: A focused stop has to be on screen. How: This is true when it has a size and overlaps the viewport.
 
+	// #endregion Visibility Geometry
 
+
+
+	// #region Stop Tracking
 
 	const firStoEle = Reflect.get( window, 'firStoEle' ) as Element | undefined; // What: First Stop Element. Why: The walk ends when focus comes back to its first stop. How: This reads the first stop the page remembered, if any. // What: Type Assertion Note. Why: Reflect.get types the global as unknown. How: This function only ever stores an element there.
 	const preStoEle = Reflect.get( window, 'preStoEle' ) as Element | undefined; // What: Previous Stop Element. Why: Each stop is compared with the one before it. How: This reads the previous stop the page remembered, if any. // What: Type Assertion Note. Why: Reflect.get types the global as unknown. How: This function only ever stores an element there.
@@ -366,6 +393,8 @@ function stoInfFun () : StoInfTyp | null {
 	Reflect.set( window, 'preStoEle', actCurEle );                                                                                   // What: Previous Stop Record. Why: The next stop is compared with this one. How: This remembers it.
 	Reflect.set( window, 'reaStoArr', [ ...( ( Reflect.get( window, 'reaStoArr' ) as Element[] | undefined ) || [] ), actCurEle ] ); // What: Reached Stops Record. Why: A trap that cycles back to the first stop or holds focus on one ends the walk the way an ordinary end does, leaving later stops unreached, which only a list of where the walk has been can show. How: This adds the stop to the list the page keeps of every stop reached. // What: Type Assertion Note. Why: Reflect.get types the global as unknown. How: This function only ever stores an array of elements there.
 	Reflect.set( window, 'samCouNum', samCouNum );                                                                                   // What: Same Count Record. Why: The next press's count builds on this one. How: This remembers it.
+
+	// #endregion Stop Tracking
 
 
 

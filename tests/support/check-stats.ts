@@ -99,6 +99,8 @@ type ExpStaTyp = { // What: Expected Stats Type. Why: The simulation compares ea
 const expStaFun = ( staAppObj : StaAppTyp, todIsoStr : string, ranDayNum : number | null ) : ExpStaTyp => { // What: Expected Stats Function. Why: The Stats tab's figures must match the logs. How: This recomputes each one for the range.
 
 
+	// #region Range Filters And Day Aggregates
+
 	const cutIsoStr = ranDayNum === null ? '' : addDayFun( todIsoStr, -( ranDayNum - 1 ) );                                          // What: Cut ISO String. Why: A range keeps rows from its first day on. How: This is that day, or empty for All Time.
 	const hidPicSet = new Set( staAppObj.pickers.filter( ( curPicObj ) => curPicObj.hidden ).map( ( curPicObj ) => curPicObj.id ) ); // What: Hidden Picker Set. Why: Hidden pickers' rows don't count. How: This collects their ids.
 	const hidTasSet = new Set( staAppObj.tasks.filter( ( curTasObj ) => curTasObj.hidden ).map( ( curTasObj ) => curTasObj.id ) );   // What: Hidden Task Set. Why: Hidden reminders' completions don't count. How: This collects their ids.
@@ -142,7 +144,11 @@ const expStaFun = ( staAppObj : StaAppTyp, todIsoStr : string, ranDayNum : numbe
 
 	}
 
+	// #endregion Range Filters And Day Aggregates
 
+
+
+	// #region Streak Walk
 
 	let walDayStr = dayAggMap.has( todIsoStr ) ? todIsoStr : addDayFun( todIsoStr, -1 ); // What: Walk Day String. Why: The streak counts back from today, or yesterday when today has nothing yet. How: This picks the starting day.
 	let strDayNum = 0;                                                                   // What: Streak Day Number. Why: The streak's running count. How: This starts at zero.
@@ -151,7 +157,11 @@ const expStaFun = ( staAppObj : StaAppTyp, todIsoStr : string, ranDayNum : numbe
 
 	while ( ( dayAggMap.get( walDayStr )?.donNum ?? 0 ) > 0 ) { strDayNum++; walDayStr = addDayFun( walDayStr, -1 ); } // What: Streak Walk Loop. Why: The streak is the run of days with something done. How: This counts back until a day without.
 
+	// #endregion Streak Walk
 
+
+
+	// #region Item Counts
 
 	const couMapObj = new Map< string, { couNum : number, namStr : string } >(); // What: Count Map Object. Why: Most picked counts rows per item, in first-seen order. How: This tallies each item's rows and keeps its latest name.
 
@@ -172,7 +182,11 @@ const expStaFun = ( staAppObj : StaAppTyp, todIsoStr : string, ranDayNum : numbe
 
 	}
 
+	// #endregion Item Counts
 
+
+
+	// #region Reminder Days
 
 	const remDayMap = new Map< string, number >(); // What: Reminder Day Map. Why: Active and busiest days are per-day figures. How: This counts completions per day.
 
@@ -198,11 +212,17 @@ const expStaFun = ( staAppObj : StaAppTyp, todIsoStr : string, ranDayNum : numbe
 
 	for ( const logRowObj of remRowArr ) remDayMap.set( locDayFun( logRowObj.completedAt ), ( remDayMap.get( locDayFun( logRowObj.completedAt ) ) ?? 0 ) + 1 ); // What: Reminder Day Loop. Why: Each completion counts for its day. How: This raises the day's count.
 
+	// #endregion Reminder Days
 
+
+
+	// #region Conditional And Total Counts
 
 	const conRowArr = staAppObj.conditionalLog.filter( ( logRowObj ) => logRowObj.date >= cutIsoStr ); // What: Conditional Row Array. Why: Conditional figures count rows in range. How: This filters the conditional log.
 	const conFirNum = conRowArr.filter( ( logRowObj ) => logRowObj.triggered ).length;                 // What: Conditional Fired Number. Why: Triggered rows are fires. How: This counts them.
 	const totDonNum = picRowArr.filter( ( logRowObj ) => logRowObj.done ).length;                      // What: Total Done Number. Why: Items done counts done rows. How: This counts them.
+
+	// #endregion Conditional And Total Counts
 
 
 
