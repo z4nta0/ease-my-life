@@ -26,6 +26,7 @@ import { modDefFun    } from '../../state/new-item.ts';             // What: Mod
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Several add/edit controls in this tab must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutProFun throughout TabDatCom.
 import { PIC_NAM_OBJ  } from '../../core/pickers.ts';               // What: Pickers Namespace Object. Why: An ease-mode picker's item list needs the same fallback ease-band math the picking engine itself uses. How: This is called once per picker via PIC_NAM_OBJ.aveEasFun, through driDayFun for each ease item's days, and read for THR_VAL_NUM, a draft's full-charge ceiling.
 import { PicConCom    } from './picker-controls.tsx';               // What: Picker Controls Component. Why: Each picker card's Controls disclosure needs its own how-it-picks/when-it-runs/item-controls body. How: This is rendered inside TabDatCom's picker card whenever that card's Controls disclosure is open.
+import { ranIdeFun    } from '../../utils/random-id.ts';            // What: Random Identifier Function. Why: A new draft picker needs a stable id before it's created. How: This mints a 'pkr_' id.
 import { redMotFun    } from '../../utils/motion.ts';               // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see any of this tab's own FLIP, scroll, or collapse animations. How: This is checked before every animation in TabDatCom.
 import { RemManCom    } from './reminders-manager.tsx';             // What: Reminder Manager Component. Why: The Reminders section of this tab is a full, separately-maintained editor. How: This is rendered once, in place of a picker card, whenever the Reminders scope is shown.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';                 // What: Seed Namespace Object. Why: Every picker mode's own label and hint text comes from this shared catalog. How: This is read (MOD_DEF_OBJ) in TabDatCom for mode labels and the new-picker mode radio group.
@@ -727,18 +728,18 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 		setNewPicObj({ // What: New Picker Set Call. Why: The draft picker starts locally, pre-filled from the active filters, with the same fields a created picker has. How: This stores a fresh draft picker in newPicObj.
 
 
-			avoidDuplicates : false,                                               // What: Avoid Duplicates. Why: A new picker allows duplicates until told otherwise. How: This is false.
-			conditionalId   : filConStr !== 'all' ? filConStr : null,              // What: Conditional Id. Why: An active Conditionals filter pre-attaches that conditional. How: This uses filConStr unless it's 'all'.
-			daysOfWeek      : [ 0, 1, 2, 3, 4, 5, 6 ],                             // What: Days Of Week. Why: A new picker runs every day until narrowed. How: This lists all 7 weekdays.
-			easeMax         : 20,                                                  // What: Ease Max. Why: The picker-level drift band is only its items' fallback span. How: This is addPicFun's own default, 20.
-			easeMin         : 10,                                                  // What: Ease Min. Why: The picker-level drift band is only its items' fallback span. How: This is addPicFun's own default, 10.
-			group           : filGroStr !== 'all' ? filGroStr : '',                // What: Group. Why: An active Group filter pre-fills the group. How: This uses filGroStr unless it's 'all'.
-			id              : 'pkr_' + Math.random().toString( 36 ).slice( 2, 8 ), // What: Id. Why: The draft's card and its items need a stable id, kept when the picker is created. How: This mints a random 'pkr_' id.
-			includeInDaily  : true,                                                // What: Include In Daily. Why: A new picker joins the daily generator unless told otherwise. How: This is true.
-			mode            : isaReaBoo ? filTypStr as ModNamTyp : 'random',       // What: Mode. Why: An active Type filter pre-fills the mode when it's a real picker mode. How: This uses filTypStr when isaReaBoo, otherwise 'random'. // What: Type Assertion Note. Why: filTypStr is a plain filter string. How: It's read as a mode name only once isaReaBoo has confirmed it is one.
-			name            : '',                                                  // What: Name. Why: The draft's name is typed in its own card. How: This starts empty.
-			skipHolidays    : false,                                               // What: Skip Holidays. Why: A new picker runs on holidays until told otherwise. How: This is false.
-			threshold       : PIC_NAM_OBJ.THR_VAL_NUM,                             // What: Threshold. Why: Ease items charge toward this full value. How: This is the shared full-charge value, THR_VAL_NUM.
+			avoidDuplicates : false,                                         // What: Avoid Duplicates. Why: A new picker allows duplicates until told otherwise. How: This is false.
+			conditionalId   : filConStr !== 'all' ? filConStr : null,        // What: Conditional Id. Why: An active Conditionals filter pre-attaches that conditional. How: This uses filConStr unless it's 'all'.
+			daysOfWeek      : [ 0, 1, 2, 3, 4, 5, 6 ],                       // What: Days Of Week. Why: A new picker runs every day until narrowed. How: This lists all 7 weekdays.
+			easeMax         : 20,                                            // What: Ease Max. Why: The picker-level drift band is only its items' fallback span. How: This is addPicFun's own default, 20.
+			easeMin         : 10,                                            // What: Ease Min. Why: The picker-level drift band is only its items' fallback span. How: This is addPicFun's own default, 10.
+			group           : filGroStr !== 'all' ? filGroStr : '',          // What: Group. Why: An active Group filter pre-fills the group. How: This uses filGroStr unless it's 'all'.
+			id              : ranIdeFun( 'pkr_' ),                           // What: Id. Why: The draft's card and its items need a stable id, kept when the picker is created. How: This mints a random 'pkr_' id.
+			includeInDaily  : true,                                          // What: Include In Daily. Why: A new picker joins the daily generator unless told otherwise. How: This is true.
+			mode            : isaReaBoo ? filTypStr as ModNamTyp : 'random', // What: Mode. Why: An active Type filter pre-fills the mode when it's a real picker mode. How: This uses filTypStr when isaReaBoo, otherwise 'random'. // What: Type Assertion Note. Why: filTypStr is a plain filter string. How: It's read as a mode name only once isaReaBoo has confirmed it is one.
+			name            : '',                                            // What: Name. Why: The draft's name is typed in its own card. How: This starts empty.
+			skipHolidays    : false,                                         // What: Skip Holidays. Why: A new picker runs on holidays until told otherwise. How: This is false.
+			threshold       : PIC_NAM_OBJ.THR_VAL_NUM,                       // What: Threshold. Why: Ease items charge toward this full value. How: This is the shared full-charge value, THR_VAL_NUM.
 
 			...CAD_NAM_OBJ.norCadFun( {} ) // What: Cadence Defaults Spread. Why: The draft needs every cadence field a created picker has. How: This spreads norCadFun's own daily defaults.
 

@@ -26,6 +26,7 @@ import { norPicFun   } from '../core/pickers.ts';        // What: Normalize Pick
 import { ONB_CHE_OBJ } from './onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Resolving a checklist item can flip the closing Generate card's own readiness. How: This is called (reaGenFun) from setCarFun below.
 import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicFun below.
 import { PWA_NAM_OBJ } from '../platform/pwa.ts';        // What: Progressive Web App Namespace Object. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (askFirFun) once, from inside addPicFun below.
+import { ranIdeFun   } from '../utils/random-id.ts';     // What: Random Identifier Function. Why: New pickers, items, conditionals, holidays, and log rows each need a fresh id. How: This mints one from each kind's own prefix.
 import { rebPenFun   } from './pending-mutations.ts';    // What: Rebase Pending Function. Why: A direct value edit to an Ease Down item must not leave its own entry decaying from the old value. How: This is called by updIteFun after spuDroFun.
 import { SED_NAM_OBJ } from './seed.ts';                 // What: Seed Namespace Object. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called (buiCleFun) by loaStaFun and by the reset action below.
 import { spuDroFun   } from './pending-mutations.ts';    // What: Stale-Pending-Updates Drop Function. Why: A direct item edit must not be overwritten by a sibling entry's stale pending row. How: This is called by the direct item-edit actions.
@@ -1026,7 +1027,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 					chargedToday : false,                                                                                        // What: Charged Today. Why: A brand-new conditional hasn't charged yet today, so its per-day charge guard starts clear. How: This is false.
 					easeMax      : conArgObj.easeMax ?? 14,                                                                      // What: Ease Max. Why: An ease-mode conditional needs the upper end of its own drift band. How: This reads conArgObj.easeMax, defaulting to 14.
 					easeMin      : conArgObj.easeMin ?? 7,                                                                       // What: Ease Min. Why: An ease-mode conditional needs the lower end of its own drift band. How: This reads conArgObj.easeMin, defaulting to 7.
-					id           : conArgObj.id || ( 'cnd_' + Math.random().toString( 36 ).slice( 2, 8 ) ),                      // What: Id. Why: Every conditional needs a stable id pickers can link to. How: This uses conArgObj.id when given, else mints a random 'cnd_' id.
+					id           : conArgObj.id || ranIdeFun( 'cnd_' ),                                                          // What: Id. Why: Every conditional needs a stable id pickers can link to. How: This uses conArgObj.id when given, else mints a random 'cnd_' id.
 					mode         : conArgObj.mode || 'ease-up',                                                                  // What: Mode. Why: The mode decides how this conditional rolls or charges each day. How: This reads conArgObj.mode, defaulting to 'ease-up'.
 					name         : conArgObj.name || 'Conditional',                                                              // What: Name. Why: The conditional needs a display name across the Data tab and its own day-off card. How: This reads conArgObj.name, defaulting to 'Conditional'.
 					oddsPct      : conArgObj.oddsPct ?? 50,                                                                      // What: Odds Percent. Why: A probability-mode conditional needs its own daily firing odds. How: This reads conArgObj.oddsPct, defaulting to 50.
@@ -1490,10 +1491,10 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			const newHolObj = { // What: New Holiday Object. Why: This is the actual custom-holiday row being added. How: This bundles a fresh id with holNamStr/monValNum/dayValNum.
 
 
-				day   : dayValNum,                                         // What: Day. Why: The holiday recurs on this day of the month every year. How: This is dayValNum.
-				id    : 'h_' + Math.random().toString( 36 ).slice( 2, 7 ), // What: Id. Why: A custom holiday must be removable by its own unique id. How: This mints a random 'h_' id.
-				month : monValNum,                                         // What: Month. Why: The holiday recurs in this month every year. How: This is monValNum.
-				name  : holNamStr                                          // What: Name. Why: The holiday list shows the user's own name for it. How: This is holNamStr.
+				day   : dayValNum,            // What: Day. Why: The holiday recurs on this day of the month every year. How: This is dayValNum.
+				id    : ranIdeFun( 'h_', 5 ), // What: Id. Why: A custom holiday must be removable by its own unique id. How: This mints a random 'h_' id.
+				month : monValNum,            // What: Month. Why: The holiday recurs in this month every year. How: This is monValNum.
+				name  : holNamStr             // What: Name. Why: The holiday list shows the user's own name for it. How: This is holNamStr.
 
 
 			};
@@ -2202,7 +2203,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 					name      : curTasObj.name,                                           // What: Name. Why: The skip row keeps the reminder's own name, denormalized so history survives a later rename or delete. How: This is curTasObj.name.
-					rowId     : 'rs_' + Math.random().toString( 36 ).slice( 2, 9 ),       // What: Row Id. Why: Every log row needs its own unique id. How: This mints a random 'rs_' id.
+					rowId     : ranIdeFun( 'rs_', 7 ),                                    // What: Row Id. Why: Every log row needs its own unique id. How: This mints a random 'rs_' id.
 					skippedAt : new Date().toISOString(),                                 // What: Skipped At. Why: Stats needs the exact moment of the skip. How: This stamps the current time as an ISO string.
 					taskId    : tarIdeStr,                                                // What: Task Id. Why: The row must point back at the reminder it belongs to. How: This is tarIdeStr.
 					type      : TAS_NAM_OBJ.isaReuFun( curTasObj ) ? 'recurring' : 'once' // What: Type. Why: Stats tallies skips separately for one-time and recurring reminders. How: This is 'recurring' when TAS_NAM_OBJ.isaReuFun says so, else 'once'.
@@ -2306,7 +2307,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 						completedAt : new Date().toISOString(),                                 // What: Completed At. Why: Stats needs the exact moment of the completion. How: This stamps the current time as an ISO string.
 						name        : curTasObj.name,                                           // What: Name. Why: The row keeps the reminder's own name, denormalized so history survives a later rename or delete. How: This is curTasObj.name.
-						rowId       : 'rl_' + Math.random().toString( 36 ).slice( 2, 9 ),       // What: Row Id. Why: Every log row needs its own unique id. How: This mints a random 'rl_' id.
+						rowId       : ranIdeFun( 'rl_', 7 ),                                    // What: Row Id. Why: Every log row needs its own unique id. How: This mints a random 'rl_' id.
 						taskId      : tarIdeStr,                                                // What: Task Id. Why: The row must point back at the reminder it belongs to. How: This is tarIdeStr.
 						type        : TAS_NAM_OBJ.isaReuFun( curTasObj ) ? 'recurring' : 'once' // What: Type. Why: Stats tallies completions separately for one-time and recurring reminders. How: This is 'recurring' when TAS_NAM_OBJ.isaReuFun says so, else 'once'.
 
@@ -2589,9 +2590,9 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 
-			const exiIdeStr = picArgObj.replaceId;                                 // What: Existing Identifier String. Why: A replace must keep the existing picker's own id alive. How: This reads picArgObj.replaceId, undefined on an ordinary add.
-			const givIdeStr = picArgObj.id;                                        // What: Given Identifier String. Why: Onboarding's own sample pickers pass an explicit id so it matches the one baked into precomputed Stats history. How: This reads picArgObj.id, undefined for every other caller.
-			const newIdeStr = 'pkr_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: New Identifier String. Why: Every other caller needs a fresh random id. How: This mints a 'pkr_' id from 6 random base-36 characters.
+			const exiIdeStr = picArgObj.replaceId; // What: Existing Identifier String. Why: A replace must keep the existing picker's own id alive. How: This reads picArgObj.replaceId, undefined on an ordinary add.
+			const givIdeStr = picArgObj.id;        // What: Given Identifier String. Why: Onboarding's own sample pickers pass an explicit id so it matches the one baked into precomputed Stats history. How: This reads picArgObj.id, undefined for every other caller.
+			const newIdeStr = ranIdeFun( 'pkr_' ); // What: New Identifier String. Why: Every other caller needs a fresh random id. How: This mints a 'pkr_' id from 6 random base-36 characters.
 
 			const picIdeStr = exiIdeStr || givIdeStr || newIdeStr; // What: Picker Identifier String. Why: An explicit id (onboarding's own sample pickers only, so their ids match the ones baked into precomputed Stats history) must win; every other caller gets a fresh random one. How: This prefers exiIdeStr, then givIdeStr, else newIdeStr.
 
@@ -2605,14 +2606,14 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			const newIteArr = ( picArgObj.items || [] ).map( ( curIteObj ) : IteRcdTyp => ( { // What: New Item Array. Why: Every typed item in the create form becomes a real item object owned by this picker. How: This maps each raw item into state.items' own shape, honoring a form-set value/vacation and defaulting the rest per mode.
 
 
-				id         : curIteObj.id || ( 'it_' + Math.random().toString( 36 ).slice( 2, 8 ) ), // What: Id. Why: Every item needs a stable id. How: This keeps curIteObj.id when given, else mints a random 'it_' id.
-				lastPicked : null,                                                                   // What: Last Picked. Why: A brand-new item has never been picked. How: This is null.
-				name       : curIteObj.name,                                                         // What: Name. Why: The item keeps whatever name was typed into the create form. How: This is curIteObj.name.
-				pickerId   : picIdeStr,                                                              // What: Picker Id. Why: Every item belongs to exactly this picker. How: This is picIdeStr.
-				picks      : 0,                                                                      // What: Picks. Why: A brand-new item has never been picked. How: This is 0.
-				vacation   : !!curIteObj.vacation,                                                   // What: Vacation. Why: A form-set vacation flag must be honored. How: This coerces curIteObj.vacation to a real boolean.
-				value      : curIteObj.value != null ? curIteObj.value : iniValNum,                  // What: Value Honor-Or-Default. Why: A value the create form already set (e.g. Fill/Refill charging an ease item to threshold) must be honored; otherwise the mode's own default applies. How: This uses curIteObj.value when it isn't null/undefined, else iniValNum.
-				weight     : isaDowBoo ? 1 : ( curIteObj.weight || 1 ),                              // What: Weight. Why: Ease Down forces every item to a uniform starting weight while other modes honor a form-set one. How: This is 1 for ease-down, else curIteObj.weight defaulting to 1.
+				id         : curIteObj.id || ranIdeFun( 'it_' ),                    // What: Id. Why: Every item needs a stable id. How: This keeps curIteObj.id when given, else mints a random 'it_' id.
+				lastPicked : null,                                                  // What: Last Picked. Why: A brand-new item has never been picked. How: This is null.
+				name       : curIteObj.name,                                        // What: Name. Why: The item keeps whatever name was typed into the create form. How: This is curIteObj.name.
+				pickerId   : picIdeStr,                                             // What: Picker Id. Why: Every item belongs to exactly this picker. How: This is picIdeStr.
+				picks      : 0,                                                     // What: Picks. Why: A brand-new item has never been picked. How: This is 0.
+				vacation   : !!curIteObj.vacation,                                  // What: Vacation. Why: A form-set vacation flag must be honored. How: This coerces curIteObj.vacation to a real boolean.
+				value      : curIteObj.value != null ? curIteObj.value : iniValNum, // What: Value Honor-Or-Default. Why: A value the create form already set (e.g. Fill/Refill charging an ease item to threshold) must be honored; otherwise the mode's own default applies. How: This uses curIteObj.value when it isn't null/undefined, else iniValNum.
+				weight     : isaDowBoo ? 1 : ( curIteObj.weight || 1 ),             // What: Weight. Why: Ease Down forces every item to a uniform starting weight while other modes honor a form-set one. How: This is 1 for ease-down, else curIteObj.weight defaulting to 1.
 
 				...( isaEasBoo ? { // What: Drift Band Spread. Why: Only an ease-mode item carries its own per-item drift band. How: This adds easeMin/easeMax (defaulting to 7/14) only when isaEasBoo is true.
 
@@ -2634,7 +2635,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 				chargedToday : false,                                                                                        // What: Charged Today. Why: A brand-new conditional hasn't charged yet today, so its per-day charge guard starts clear. How: This is false.
 				easeMax      : newConObj.easeMax ?? 14,                                                                      // What: Ease Max. Why: An ease-mode conditional needs the upper end of its own drift band. How: This reads newConObj.easeMax, defaulting to 14.
 				easeMin      : newConObj.easeMin ?? 7,                                                                       // What: Ease Min. Why: An ease-mode conditional needs the lower end of its own drift band. How: This reads newConObj.easeMin, defaulting to 7.
-				id           : 'cnd_' + Math.random().toString( 36 ).slice( 2, 8 ),                                          // What: Id. Why: The picker below attaches to this conditional by id, so it must exist before the picker is built. How: This mints a random 'cnd_' id.
+				id           : ranIdeFun( 'cnd_' ),                                                                          // What: Id. Why: The picker below attaches to this conditional by id, so it must exist before the picker is built. How: This mints a random 'cnd_' id.
 				mode         : newConObj.mode || 'random',                                                                   // What: Mode. Why: The mode decides how this conditional rolls or charges each day. How: This reads newConObj.mode, defaulting to 'random'.
 				name         : ( norConFun && norConFun( newConObj.name ) ) || newConObj.name || 'Conditional',              // What: Name. Why: The conditional needs a tidied display name. How: This title-cases newConObj.name via norConFun, falling back to the raw name, then 'Conditional'.
 				oddsPct      : newConObj.oddsPct ?? 50,                                                                      // What: Odds Percent. Why: A probability-mode conditional needs its own daily firing odds. How: This reads newConObj.oddsPct, defaulting to 50.
@@ -3028,7 +3029,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 				chargedToday : false,                                                                                        // What: Charged Today. Why: A brand-new conditional hasn't charged yet today, so its per-day charge guard starts clear. How: This is false.
 				easeMax      : newConObj.easeMax ?? 14,                                                                      // What: Ease Max. Why: An ease-mode conditional needs the upper end of its own drift band. How: This reads newConObj.easeMax, defaulting to 14.
 				easeMin      : newConObj.easeMin ?? 7,                                                                       // What: Ease Min. Why: An ease-mode conditional needs the lower end of its own drift band. How: This reads newConObj.easeMin, defaulting to 7.
-				id           : 'cnd_' + Math.random().toString( 36 ).slice( 2, 8 ),                                          // What: Id. Why: The picker below attaches to this conditional by id, so it must exist before the picker is built. How: This mints a random 'cnd_' id.
+				id           : ranIdeFun( 'cnd_' ),                                                                          // What: Id. Why: The picker below attaches to this conditional by id, so it must exist before the picker is built. How: This mints a random 'cnd_' id.
 				mode         : newConObj.mode || 'random',                                                                   // What: Mode. Why: The mode decides how this conditional rolls or charges each day. How: This reads newConObj.mode, defaulting to 'random'.
 				name         : norConFun( newConObj.name ) || newConObj.name || 'Conditional',                               // What: Name. Why: The conditional needs a tidied display name. How: This title-cases newConObj.name via norConFun, falling back to the raw name, then 'Conditional'.
 				oddsPct      : newConObj.oddsPct ?? 50,                                                                      // What: Odds Percent. Why: A probability-mode conditional needs its own daily firing odds. How: This reads newConObj.oddsPct, defaulting to 50.

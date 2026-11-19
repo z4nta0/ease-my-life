@@ -3,13 +3,14 @@
 
 // #region Imports
 
-import { DAY_ABB_ARR } from '../utils/date.ts'; // What: Day Abbreviation Array. Why: A weekly multi-day or yearly nth-weekday summary names its weekdays in short form. How: This is indexed by a weekday number from daysOfWeek or nthWeekday.
-import { DAY_FUL_ARR } from '../utils/date.ts'; // What: Day Full Array. Why: Single-day weekly and nth-weekday summaries name their weekday in full. How: This is indexed by a weekday number from daysOfWeek or nthWeekday.
-import { dimCouFun   } from '../utils/date.ts'; // What: Days-In-Month Count Function. Why: Monthly and yearly clamping need a month's real length. How: This is called with a year and 1-based month.
-import { HOL_NAM_OBJ } from './holidays.ts';    // What: Holidays Namespace Object. Why: A reminder's own weekend/holiday participation switches need to know whether a given date is an active day off. How: This is called (guarded, since it's an external module) inside visTodFun/todVisFun/nexEliFun below.
-import { isoDayFun   } from '../utils/date.ts'; // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
-import { nwmDayFun   } from '../utils/date.ts'; // What: Nth-Weekday-Month Day Function. Why: An nth-weekday schedule needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
-import { ordSufFun   } from '../utils/date.ts'; // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
+import { DAY_ABB_ARR } from '../utils/date.ts';      // What: Day Abbreviation Array. Why: A weekly multi-day or yearly nth-weekday summary names its weekdays in short form. How: This is indexed by a weekday number from daysOfWeek or nthWeekday.
+import { DAY_FUL_ARR } from '../utils/date.ts';      // What: Day Full Array. Why: Single-day weekly and nth-weekday summaries name their weekday in full. How: This is indexed by a weekday number from daysOfWeek or nthWeekday.
+import { dimCouFun   } from '../utils/date.ts';      // What: Days-In-Month Count Function. Why: Monthly and yearly clamping need a month's real length. How: This is called with a year and 1-based month.
+import { HOL_NAM_OBJ } from './holidays.ts';         // What: Holidays Namespace Object. Why: A reminder's own weekend/holiday participation switches need to know whether a given date is an active day off. How: This is called (guarded, since it's an external module) inside visTodFun/todVisFun/nexEliFun below.
+import { isoDayFun   } from '../utils/date.ts';      // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
+import { nwmDayFun   } from '../utils/date.ts';      // What: Nth-Weekday-Month Day Function. Why: An nth-weekday schedule needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
+import { ordSufFun   } from '../utils/date.ts';      // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
+import { ranIdeFun   } from '../utils/random-id.ts'; // What: Random Identifier Function. Why: A new reminder with no id of its own needs a fresh one. How: This mints a 'tk_' id.
 
 
 import type { HolStaTyp } from './data-model.ts'; // What: Holiday State Type. Why: Holiday exclusions read the saved holiday settings. How: This types every holStaObj parameter.
@@ -308,7 +309,7 @@ function defTasFun ( tasInpObj : Partial< TasRcdTyp > = {} ) : TasRcdTyp {
 		dayOfMonth : tasInpObj.dayOfMonth || curDatObj.getDate(),                                           // What: Day Of Month. Why: A monthly task in plain-date mode needs a target day-of-month. How: This keeps tasInpObj's own dayOfMonth when given, otherwise defaults to today's own date.
 		daysOfWeek : Array.isArray( tasInpObj.daysOfWeek ) ? tasInpObj.daysOfWeek : [ curDatObj.getDay() ], // What: Days Of Week. Why: A weekly task needs at least one selected weekday to start from. How: This keeps tasInpObj's own daysOfWeek only when it's a real array, defaulting to today's own weekday otherwise.
 		hidden     : !!tasInpObj.hidden,                                                                    // What: Hidden. Why: A task created mid-mini-tour-checklist needs to stay out of dueTodFun's own list until the checklist's own closing Generate step. How: This coerces tasInpObj's own hidden to a real boolean.
-		id         : tasInpObj.id || 'tk_' + Math.random().toString( 36 ).slice( 2, 8 ),                    // What: Id. Why: Every task needs a stable identifier, generated fresh when tasInpObj carries none of its own. How: This keeps tasInpObj's own id when given, otherwise mints a random 'tk_' prefixed one.
+		id         : tasInpObj.id || ranIdeFun( 'tk_' ),                                                    // What: Id. Why: Every task needs a stable identifier, generated fresh when tasInpObj carries none of its own. How: This keeps tasInpObj's own id when given, otherwise mints a random 'tk_' prefixed one.
 		interval   : tasInpObj.interval || ( tasInpObj.repeat === 'interval' ? 2 : 1 ),                     // What: Interval. Why: Shared by interval/weekly/monthly/annual, each its own "every N ___"; only 'interval' itself defaults to 2, every other kind to 1 (see this function's own @summary above). How: This keeps tasInpObj's own interval when given, otherwise picks 2 or 1 based on tasInpObj's own repeat.
 		lastDone   : tasInpObj.lastDone ?? null,                                                            // What: Last Done. Why: Every task needs a defined (if empty) completion marker for isaDueFun/isaDonFun to read. How: This keeps tasInpObj's own lastDone when given, otherwise defaults to null.
 		month      : tasInpObj.month || curDatObj.getMonth() + 1,                                           // What: Month. Why: An annual task needs its own target month. How: This keeps tasInpObj's own month when given, otherwise defaults to today's own 1-indexed month.

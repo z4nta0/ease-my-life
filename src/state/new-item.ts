@@ -3,8 +3,9 @@
 
 // #region Imports
 
-import { PIC_NAM_OBJ } from '../core/pickers.ts'; // What: Pickers Namespace Object. Why: An ease-mode item is stamped with its picker's average drift band. How: This is called via PIC_NAM_OBJ.aveEasFun.
-import { uniNamFun   } from '../utils/format.ts'; // What: Unique Name Function. Why: Two items in the same picker can't share a name. How: This de-duplicates the new item's name against its siblings.
+import { PIC_NAM_OBJ } from '../core/pickers.ts';    // What: Pickers Namespace Object. Why: An ease-mode item is stamped with its picker's average drift band. How: This is called via PIC_NAM_OBJ.aveEasFun.
+import { ranIdeFun   } from '../utils/random-id.ts'; // What: Random Identifier Function. Why: A new item with no id of its own needs a fresh one. How: This mints an 'it_' id.
+import { uniNamFun   } from '../utils/format.ts';    // What: Unique Name Function. Why: Two items in the same picker can't share a name. How: This de-duplicates the new item's name against its siblings.
 
 
 import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: Both functions build or reset item fields. How: This types the new item and the sibling items.
@@ -103,7 +104,7 @@ function buiIteFun ( curPicObj : Pick< PicRcdTyp, 'id' > & Partial< PicRcdTyp >,
 	const newIteObj : IteRcdTyp = { // What: New Item Object. Why: This is the actual item being added, in state.items' own shape. How: This bundles a fresh id, the de-duplicated name, pickerId, the resolved weight/value, and (for ease modes) a fresh drift band.
 
 
-		id         : optIdeStr || ( 'it_' + Math.random().toString( 36 ).slice( 2, 8 ) ),      // What: Id. Why: Every item needs a stable id. How: This uses optIdeStr when given, else mints a random 'it_' id.
+		id         : optIdeStr || ranIdeFun( 'it_' ),                                          // What: Id. Why: Every item needs a stable id. How: This uses optIdeStr when given, else mints a random 'it_' id.
 		lastPicked : null,                                                                     // What: Last Picked. Why: A brand-new item has never been picked. How: This is null.
 		name       : uniNamFun( newNamStr, sibIteArr.map( ( curIteObj ) => curIteObj.name ) ), // What: Name. Why: Two items in the same picker can't share a name. How: This de-duplicates newNamStr against every sibling item's own name via uniNamFun.
 		pickerId   : curPicObj.id,                                                             // What: Picker Id. Why: Every item belongs to exactly one picker. How: This is curPicObj's own id.

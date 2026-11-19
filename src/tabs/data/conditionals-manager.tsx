@@ -16,6 +16,7 @@ import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Ico
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled add button or a truncated type label still needs to explain itself on demand. How: This wraps those controls in ConManCom.
 import { norConFun    } from '../../core/pickers.ts';               // What: Normalize Conditional Function. Why: A newly-typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on ConManCom's own in-progress draft name.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Adding a conditional must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutProFun in ConManCom.
+import { ranIdeFun    } from '../../utils/random-id.ts';            // What: Random Identifier Function. Why: A brand-new conditional draft needs its own id at once. How: This mints a 'cnd_' id.
 import { redMotFun    } from '../../utils/motion.ts';               // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see this section's own row open, close, save, or delete animations. How: This is checked before each of those animations in ConManCom.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';                 // What: Seed Namespace Object. Why: Each conditional mode's own label comes from this shared catalog. How: This is read (MOD_DEF_OBJ) in ConManCom for each row's type label.
 import { sorEntFun    } from './list-sorting.ts';                   // What: Sort Entries Function. Why: The conditional list shares the app's own sort-key vocabulary. How: This is called once per comparison inside ConManCom's own sort.
@@ -900,7 +901,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 
 								const basDraObj = conDraFun( '', conIteArr.map( ( conCurObj ) => conCurObj.name ) ); // What: Base Draft Object. Why: A brand-new conditional needs a sensible starting draft, with a name that won't collide with any existing one. How: This calls the shared conDraFun helper.
-								const nexIdeStr = 'cnd_' + Math.random().toString( 36 ).slice( 2, 8 );               // What: Next Identifier String. Why: The brand-new draft needs its own id immediately, even before it's ever written to the store. How: This generates a short random id with a 'cnd_' prefix.
+								const nexIdeStr = ranIdeFun( 'cnd_' );                                               // What: Next Identifier String. Why: The brand-new draft needs its own id immediately, even before it's ever written to the store. How: This generates a short random id with a 'cnd_' prefix.
 								const nexDraObj = { ...basDraObj, id : nexIdeStr };                                  // What: Next Draft Object. Why: The draft object itself needs to carry its own freshly-generated id. How: This spreads basDraObj with id set to nexIdeStr.
 
 
