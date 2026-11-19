@@ -50,20 +50,20 @@
 
 }
 
-.groGriSpa { /* What: Group Grip Span. Why: In Edit Mode a handle lets the whole group be dragged to a new spot. How: This draws a small muted square handle with a grab cursor that owns the touch gesture and tints on hover. */
+.groGriSpa { /* What: Group Grip Span. Why: In Edit Mode a handle lets the whole group be dragged to a new spot. How: This draws a small muted square handle with a grab cursor that owns the touch gesture and tints on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
-	border-radius   : var( --rad-bor-sma );                                                                                  /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                                                                  /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border-radius   : var( --rad-bor-sma );                /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : grab;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p02 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	height          : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content : center;
-	margin-left     : calc( var( --spa-hor-m05 ) * -1 );                                                                     /* Spacing Horizontal Base Minus 5 ~= 3.571px */
-	touch-action    : none;                                                                                                  /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
-	transition      : color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
-	width           : calc( var( --ver-rhy-p02 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	margin-left     : calc( var( --spa-hor-m05 ) * -1 );   /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+	touch-action    : none;                                /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
+	transition      : color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	width           : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
 }
@@ -92,6 +92,13 @@
 
 
 	}
+
+
+}
+.groGriSpa:active { /* What: Pressed Group Grip Span. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -197,25 +204,25 @@
 
 /* #region groNamBut */
 
-.groNamBut { /* What: Group Name Button. Why: In Edit Mode the name is a button that opens the rename field, and should look like the name with a hint of interactivity. How: This resets the button to the name's type, pads it without shifting the layout, and tints it on hover. */
+.groNamBut { /* What: Group Name Button. Why: In Edit Mode the name is a button that opens the rename field, and should look like the name with a hint of interactivity. How: This resets the button to the name's type, pads it without shifting the layout, and tints it on hover, and eases its press and focus ring. */
 
 
 	align-items    : center;
 	background     : none;
 	border         : 0;
-	border-radius  : var( --rad-bor-sma );                                                                                  /* Radius Border Small ~= 8.304px */
-	color          : var( --tex-mai-col );                                                                                  /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	border-radius  : var( --rad-bor-sma );                                                /* Radius Border Small ~= 8.304px */
+	color          : var( --tex-mai-col );                                                /* Text Main Color = oklch( 0.17 0.012 250 ) */
 	cursor         : text;
 	display        : inline-flex;
 	font-family    : inherit;
-	font-size      : var( --fon-siz-p02 );                                                                                  /* Font Size Base Plus 2 ~= 19.304px */
+	font-size      : var( --fon-siz-p02 );                                                /* Font Size Base Plus 2 ~= 19.304px */
 	font-weight    : 500;
-	gap            : var( --spa-hor-m03 );                                                                                  /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	gap            : var( --spa-hor-m03 );                                                /* Spacing Horizontal Base Minus 3 ~= 6.268px */
 	letter-spacing : -0.015em;
-	margin         : calc( var( --spa-ver-m07 ) * -1 ) calc( var( --spa-hor-m03 ) * -1 );                                   /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 3 ~= 6.268px */
-	padding        : var( --spa-ver-m07 ) var( --spa-hor-m03 );                                                             /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+	margin         : calc( var( --spa-ver-m07 ) * -1 ) calc( var( --spa-hor-m03 ) * -1 ); /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+	padding        : var( --spa-ver-m07 ) var( --spa-hor-m03 );                           /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 3 ~= 6.268px */
 	text-wrap      : pretty;
-	transition     : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	transition     : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Duration Transition Base ~= 157.8ms */
 
 
 }
@@ -236,6 +243,13 @@
 
 
 	}
+
+
+}
+.groNamBut:active { /* What: Pressed Group Name Button. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
 
 
 }

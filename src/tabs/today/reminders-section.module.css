@@ -100,20 +100,20 @@
 
 }
 
-.groGriSpa { /* What: Group Grip Span. Why: In Edit Mode a handle lets the whole group be dragged to a new spot. How: This draws a small muted square handle with a grab cursor that owns the touch gesture and tints on hover. */
+.groGriSpa { /* What: Group Grip Span. Why: In Edit Mode a handle lets the whole group be dragged to a new spot. How: This draws a small muted square handle with a grab cursor that owns the touch gesture and tints on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
-	border-radius   : var( --rad-bor-sma );                                                                                  /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                                                                  /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border-radius   : var( --rad-bor-sma );                /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : grab;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p02 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	height          : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content : center;
-	margin-left     : calc( var( --spa-hor-m05 ) * -1 );                                                                     /* Spacing Horizontal Base Minus 5 ~= 3.571px */
-	touch-action    : none;                                                                                                  /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
-	transition      : color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
-	width           : calc( var( --ver-rhy-p02 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	margin-left     : calc( var( --spa-hor-m05 ) * -1 );   /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+	touch-action    : none;                                /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
+	transition      : color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	width           : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
 }
@@ -142,6 +142,13 @@
 
 
 	}
+
+
+}
+.groGriSpa:active { /* What: Pressed Group Grip Span. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -293,7 +300,7 @@
 /* #region remAddBut */
 
 .remAddBut,
-.remAddSpa { /* What: Reminder Add Button And Span. Why: A small round button beside the dashes opens the quick-add form. How: This draws an outlined circle that tints on hover. */
+.remAddSpa { /* What: Reminder Add Button And Span. Why: A small round button beside the dashes opens the quick-add form. How: This draws an outlined circle that tints on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
@@ -306,7 +313,7 @@
 	flex            : 0 0 auto;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
-	transition      : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	transition      : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
@@ -340,6 +347,13 @@
 
 
 	}
+
+
+}
+.remAddBut:active { /* What: Pressed Reminder Add Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -810,7 +824,7 @@
 
 /* #region carCheBut */
 
-.carCheBut { /* What: Card Check Button. Why: The card's primary action is a real button styled as a checkbox. How: This strips the button chrome down to a small rounded box that fades between states, and eases its focus ring in. */
+.carCheBut { /* What: Card Check Button. Why: The card's primary action is a real button styled as a checkbox. How: This strips the button chrome down to a small rounded box that fades between states, and eases its focus ring in, and eases its press and focus ring. */
 
 
 	-webkit-appearance : none;
@@ -831,7 +845,7 @@
 	outline-offset     : calc( var( --ver-rhy-m03 ) * 1rem );             /* Vertical Rhythm Base Minus 3 ~= 6.268px */
 	padding            : 0;
 	position           : relative;
-	transition         : background var( --dur-tra-m01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), box-shadow var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms */
+	transition         : background var( --dur-tra-m01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), box-shadow var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width              : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
@@ -878,6 +892,13 @@
 
 
 	}
+
+
+}
+.carCheBut:active { /* What: Pressed Card Check Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -1098,17 +1119,17 @@
 
 }
 
-.actIcoBut { /* What: Action Icon Button. Why: Each action is a small icon button. How: This draws a square hit area that tints on hover. */
+.actIcoBut { /* What: Action Icon Button. Why: Each action is a small icon button. How: This draws a square hit area that tints on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
-	border-radius   : var( --rad-bor-sma );                                                                                  /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                                                                  /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border-radius   : var( --rad-bor-sma );                /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	height          : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
-	transition      : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
-	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition      : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
@@ -1130,6 +1151,13 @@
 
 
 	}
+
+
+}
+.actIcoBut:active { /* What: Pressed Action Icon Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }

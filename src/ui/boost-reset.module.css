@@ -26,16 +26,16 @@
 
 }
 
-.booResBut { /* What: Boost Reset Button. Why: Resetting the boost is a small secondary action beside the value. How: This styles it as a compact outlined button in muted text. */
+.booResBut { /* What: Boost Reset Button. Why: Resetting the boost is a small secondary action beside the value. How: This styles it as a compact outlined button in muted text, and eases its press and focus ring. */
 
 
-	background    : var( --bac-sur-col );                                                                                    /* Background Surface Color = oklch( 0.975 0.004 240 ) */
-	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                         /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius : var( --rad-bor-sma );                                                                                    /* Radius Border Small ~= 8.304px */
-	color         : var( --tex-mut-col );                                                                                    /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-size     : var( --fon-siz-bas );                                                                                    /* Font Size Base = 11px */
-	padding       : var( --spa-ver-m05 ) var( --spa-hor-m02 );                                                               /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 2 ~= 8.304px */
-	transition    : color var( --dur-tra-m01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	background    : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size     : var( --fon-siz-bas );                            /* Font Size Base = 11px */
+	padding       : var( --spa-ver-m05 ) var( --spa-hor-m02 );       /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+	transition    : color var( --dur-tra-m01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
@@ -65,6 +65,13 @@
 
 
 	}
+
+
+}
+.booResBut:active { /* What: Pressed Boost Reset Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }

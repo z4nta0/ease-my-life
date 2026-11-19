@@ -76,7 +76,7 @@
 
 }
 
-.helBubSpa { /* What: Help Bubble Span. Why: A small circled "?" beside the label opens its explanation without competing with the label. How: This draws a muted round badge that brightens on hover. */
+.helBubSpa { /* What: Help Bubble Span. Why: A small circled "?" beside the label opens its explanation without competing with the label. How: This draws a muted round badge that brightens on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
@@ -91,7 +91,7 @@
 	height          : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
 	justify-content : center;
 	line-height     : var( --ver-rhy-m01 );                            /* Vertical Rhythm Base Minus 1 = 1 */
-	transition      : border-color var( --dur-tra-p01 ) var( --mot-sta-eas ), color var( --dur-tra-p01 ) var( --mot-sta-eas ), background var( --dur-tra-p01 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+	transition      : border-color var( --dur-tra-p01 ) var( --mot-sta-eas ), color var( --dur-tra-p01 ) var( --mot-sta-eas ), background var( --dur-tra-p01 ) var( --mot-sta-eas ), opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Duration Transition Base ~= 157.8ms */
 	width           : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
 
 
@@ -123,6 +123,13 @@
 
 
 	}
+
+
+}
+.helBubSpa:active { /* What: Pressed Help Bubble Span. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
 
 
 }

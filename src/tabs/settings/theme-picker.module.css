@@ -60,7 +60,7 @@
 
 /* #region theRowDiv */
 
-.theRowDiv { /* What: Theme Row Div. Why: Each theme previews as a full-width strip of its colors that can be picked. How: This lays out a clipped rounded strip with a transparent frame that fades in when the row is focused or selected, and eases its focus ring in. */
+.theRowDiv { /* What: Theme Row Div. Why: Each theme previews as a full-width strip of its colors that can be picked. How: This lays out a clipped rounded strip with a transparent frame that fades in when the row is focused or selected, and eases its focus ring in, and eases its press and focus ring. */
 
 
 	border         : var( --bor-wid-bas ) solid transparent; /* Border Width Base ~= 1.160px */
@@ -72,7 +72,7 @@
 	outline-offset : var( --bor-wid-xla );                   /* Border Width Extra Large ~= 3.571px */
 	overflow       : hidden;
 	position       : relative;
-	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms */
+	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
@@ -80,6 +80,13 @@
 
 
 	border : var( --bor-wid-bas ) dashed var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+
+
+}
+.theRowDiv:hover:not( :focus-visible ):not( [aria-checked='true'] ):not( [data-option-select-active] ) { /* What: Hovered Theme Row. Why: A theme that isn't chosen should respond to the pointer, while a focused or chosen row keeps its own frame. How: This shows its frame in the hover border color. */
+
+
+	border-color : var( --bor-hov-col ); /* Border Hover Color = oklch( 0.83 0.005 240 ) */
 
 
 }
@@ -125,6 +132,13 @@
 
 
 	}
+
+
+}
+.theRowDiv:active { /* What: Pressed Theme Row Div. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }

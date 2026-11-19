@@ -215,21 +215,21 @@
 
 }
 
-.panCloBut { /* What: Panel Close Button. Why: Closing should be a quiet but easy target. How: This styles a borderless square icon button in the muted color, and eases its hover tint and color. */
+.panCloBut { /* What: Panel Close Button. Why: Closing should be a quiet but easy target. How: This styles a borderless square icon button in the muted color, and eases its hover tint and color, and eases its press and focus ring. */
 
 
 	align-items     : center;
 	background      : transparent;
 	border          : 0;
-	border-radius   : var( --rad-bor-sma );                                                                                  /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                                                                  /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border-radius   : var( --rad-bor-sma );                /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	height          : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
-	transition      : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
-	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition      : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
@@ -251,6 +251,13 @@
 
 
 	}
+
+
+}
+.panCloBut:active { /* What: Pressed Panel Close Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }

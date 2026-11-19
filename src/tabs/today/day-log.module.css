@@ -28,7 +28,7 @@
 
 /* #region logChiBut */
 
-.logChiBut { /* What: Log Chip Button. Why: The Log toggle sits in a group header as a small mono pill. How: This draws an outlined pill with its icon and label that fades between colors. */
+.logChiBut { /* What: Log Chip Button. Why: The Log toggle sits in a group header as a small mono pill. How: This draws an outlined pill with its icon and label that fades between colors, and eases its press and focus ring. */
 
 
 	align-items    : center;
@@ -46,7 +46,7 @@
 	letter-spacing : 0.05em;
 	padding        : 0 var( --spa-hor-m02 );                          /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 	text-transform : uppercase;
-	transition     : background var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	transition     : background var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
@@ -77,6 +77,13 @@
 
 
 	}
+
+
+}
+.logChiBut:active { /* What: Pressed Log Chip Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -158,21 +165,21 @@
 
 /* #region panCloBut */
 
-.panCloBut { /* What: Panel Close Button. Why: The panel closes from a small square button. How: This draws an outlined rounded square centering its icon, fading its colors. */
+.panCloBut { /* What: Panel Close Button. Why: The panel closes from a small square button. How: This draws an outlined rounded square centering its icon, fading its colors, and eases its press and focus ring. */
 
 
 	align-items     : center;
-	background      : var( --bac-sur-col );                                                                                    /* Background Surface Color = oklch( 0.975 0.004 240 ) */
-	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                         /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius   : var( --rad-bor-sma );                                                                                    /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                                                                    /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	background      : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : flex;
 	flex            : none;
-	height          : calc( var( --ver-rhy-p02 ) * 1rem );                                                                     /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content : center;
-	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
-	width           : calc( var( --ver-rhy-p02 ) * 1rem );                                                                     /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
 }
@@ -194,6 +201,13 @@
 
 
 	}
+
+
+}
+.panCloBut:active { /* What: Pressed Panel Close Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }

@@ -79,22 +79,22 @@
 
 }
 
-.segConBut { /* What: Segment Control Button. Why: Each option is a borderless pill above the thumb. How: This sets it in muted text over a transparent background, raised above the thumb, with a color fade. */
+.segConBut { /* What: Segment Control Button. Why: Each option is a borderless pill above the thumb. How: This sets it in muted text over a transparent background, raised above the thumb, with a color fade, and eases its press and focus ring. */
 
 
 	background    : none;
 	border        : none;
 	border-radius : 999px;
-	color         : var( --tex-mut-col );                                                                                  /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color         : var( --tex-mut-col );                      /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor        : pointer;
-	font-family   : var( --fon-fam-mai );                                                                                  /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
-	font-size     : var( --fon-siz-p01 );                                                                                  /* Font Size Base Plus 1 ~= 14.572px */
+	font-family   : var( --fon-fam-mai );                      /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                      /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight   : 500;
-	min-height    : calc( var( --ver-rhy-p03 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 3 ~= 33.876px */
-	padding       : var( --spa-ver-m03 ) var( --spa-hor-bas );                                                             /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base ~= 14.572px */
+	min-height    : calc( var( --ver-rhy-p03 ) * 1rem );       /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	padding       : var( --spa-ver-m03 ) var( --spa-hor-bas ); /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base ~= 14.572px */
 	position      : relative;
-	transition    : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
-	z-index       : 1;                                                                                                     /* What: Button Stack Level. Why: The option buttons have to sit above the sliding thumb at 0. How: This raises them one level. */
+	transition    : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	z-index       : 1;                                         /* What: Button Stack Level. Why: The option buttons have to sit above the sliding thumb at 0. How: This raises them one level. */
 
 
 }
@@ -136,6 +136,13 @@
 
 
 	}
+
+
+}
+.segConBut:active { /* What: Pressed Segment Control Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }

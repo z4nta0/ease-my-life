@@ -115,7 +115,7 @@
 
 /* #region braMarBut */
 
-.braMarBut { /* What: Brand Mark Button. Why: The logo beside the title is also a button back to Today. How: This strips the button chrome and sizes the mark as a square that lifts on hover. */
+.braMarBut { /* What: Brand Mark Button. Why: The logo beside the title is also a button back to Today. How: This strips the button chrome and sizes the mark as a square that lifts on hover, and eases its press and focus ring. */
 
 
 	-webkit-appearance : none;
@@ -124,17 +124,17 @@
 	aspect-ratio       : auto;
 	background         : none;
 	border             : 0;
-	border-radius      : var( --rad-bor-med );                                /* Radius Border Medium = 11px */
-	color              : var( --acc-mai-col );                                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius      : var( --rad-bor-med );                /* Radius Border Medium = 11px */
+	color              : var( --acc-mai-col );                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	cursor             : pointer;
 	display            : block;
 	flex               : 0 0 auto;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-p06 ) * 1rem );                 /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	height             : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 	padding            : 0;
 	text-decoration    : none;
-	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
-	width              : calc( var( --ver-rhy-p06 ) * 1rem );                 /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms */
+	width              : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 
 
 }
@@ -169,6 +169,13 @@
 
 
 	}
+
+
+}
+.braMarBut:active { /* What: Pressed Brand Mark Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -258,17 +265,19 @@
 
 }
 
-.subLinBut { /* What: Sub Link Button. Why: The intro links to other tabs inline. How: This strips the button chrome down to underlined accent text. */
+.subLinBut { /* What: Sub Link Button. Why: The intro links to other tabs inline. How: This strips the button chrome down to underlined accent text, and eases its underline, press, and focus ring. */
 
 
-	background            : none;
-	border                : 0;
-	color                 : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	cursor                : pointer;
-	font                  : inherit;
-	padding               : 0;
-	text-decoration       : underline;
-	text-underline-offset : 2px;
+	background                : none;
+	border                    : 0;
+	color                     : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	cursor                    : pointer;
+	font                      : inherit;
+	padding                   : 0;
+	text-decoration           : underline;
+	text-decoration-thickness : var( --bor-wid-bas ); /* Border Width Base ~= 1.160px */ /* What: Resting Underline Thickness. Why: A thickness of auto can't ease toward the hover's 2px. How: This sets a length close to the font's own underline, which the hover thickens. */
+	text-underline-offset     : 2px;
+	transition                : opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), text-decoration-thickness var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 2 ~= 89.9ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Duration Transition Base Minus 1 ~= 119.2ms */
 
 
 }
@@ -276,6 +285,26 @@
 
 
 	text-decoration-thickness : 2px;
+
+
+}
+.subLinBut:active { /* What: Pressed Sub Link Button. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sub Link Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.subLinBut { /* What: Still Sub Link Button. Why: The change should happen at once, the press still applying. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }
@@ -372,7 +401,7 @@
 
 /* #region filPilBut */
 
-.filPilBut { /* What: Filter Pill Button. Why: Each group, type, or conditional is a pill that filters the pickers. How: This draws an outlined pill that fades between colors. */
+.filPilBut { /* What: Filter Pill Button. Why: Each group, type, or conditional is a pill that filters the pickers. How: This draws an outlined pill that fades between colors, and eases its press and focus ring. */
 
 
 	align-items    : center;
@@ -389,7 +418,7 @@
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	letter-spacing : -0.01em;
 	padding        : 0 var( --spa-hor-bas );                          /* Spacing Horizontal Base ~= 14.572px */
-	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
@@ -420,6 +449,13 @@
 
 
 	}
+
+
+}
+.filPilBut:active { /* What: Pressed Filter Pill Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -531,10 +567,10 @@
 
 /* #region scoTabBut */
 
-.scoTabBut { /* What: Scope Tab Button. Why: Everything and each filtered item is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode. */
+.scoTabBut { /* What: Scope Tab Button. Why: Everything and each filtered item is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode, and eases its press and focus ring. */
 
 
-	animation         : global( tabGroupSlideIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global tabGroupSlideIn Keyframes. Why: The tabGroupSlideIn keyframes are shared with the Pickers and Stats tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation         : global( tabGroupSlideIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ) backwards; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global tabGroupSlideIn Keyframes. Why: The tabGroupSlideIn keyframes are shared with the Pickers and Stats tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */ /* What: Backwards Fill. Why: A fill that held the last frame would hold the tab's transform and keep its press from showing. How: The tab holds the first frame only while it waits to start, and its own styles, which match the last frame, take over once it ends. */
 	background        : var( --bac-sur-col );                                                     /* Background Surface Color = oklch( 0.975 0.004 240 ) */
 	border            : var( --bor-wid-sma ) solid var( --bor-mai-col );                          /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius     : var( --rad-bor-med );                                                     /* Radius Border Medium = 11px */
@@ -546,7 +582,7 @@
 	padding           : var( --spa-ver-m01 ) var( --spa-hor-bas );                                /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
 	scroll-snap-align : start;
 	text-align        : left;
-	transition        : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	transition        : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
@@ -576,6 +612,13 @@
 
 
 	}
+
+
+}
+.scoTabBut:active { /* What: Pressed Scope Tab Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -829,7 +872,7 @@
 
 /* #region catHeaBut */
 
-.catHeaBut { /* What: Category Header Button. Why: The chevron and the name block read as one control, and the toggle is a real button that should look like the header text it holds. How: This strips the button chrome, lets it fill the header's width, and lines its contents up in a centered row. */
+.catHeaBut { /* What: Category Header Button. Why: The chevron and the name block read as one control, and the toggle is a real button that should look like the header text it holds. How: This strips the button chrome, lets it fill the header's width, and lines its contents up in a centered row, and eases its hover, press, and focus ring. */
 
 
 	-webkit-appearance : none;
@@ -847,6 +890,34 @@
 	min-width          : 0;
 	padding            : 0;
 	text-align         : left;
+	transition         : opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 2 ~= 89.9ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Duration Transition Base Minus 1 ~= 119.2ms */
+
+
+}
+.catHeaBut:hover { /* What: Hovered Category Header Button. Why: The control should respond to the pointer. How: This shades it with the shared hover tint. */
+
+
+	background : var( --bac-hov-col ); /* Background Hover Color = oklch( 0 0 0 / 0.05 ) */
+
+
+}
+.catHeaBut:active { /* What: Pressed Category Header Button. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Category Header Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.catHeaBut { /* What: Still Category Header Button. Why: The change should happen at once, the press still applying. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }
@@ -997,7 +1068,7 @@
 }
 
 .catGroSpa,
-.catModSpa { /* What: Category Group And Mode Spans. Why: The picker's mode and group read as matching fixed-width tags. How: This sets each in a small outlined mono capsule at a fixed rhythm-step width, ending in an ellipsis when its text runs out of room. */
+.catModSpa { /* What: Category Group And Mode Spans. Why: The picker's mode and group read as matching fixed-width tags. How: This sets each in a small outlined mono capsule at a fixed rhythm-step width, ending in an ellipsis when its text runs out of room, and eases its hover, press, and focus ring. */
 
 
 	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -1014,8 +1085,40 @@
 	text-align     : center;
 	text-overflow  : ellipsis;
 	text-transform : uppercase;
+	transition     : opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 2 ~= 89.9ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Duration Transition Base Minus 1 ~= 119.2ms */
 	white-space    : nowrap;
 	width          : calc( var( --ver-rhy-p07 ) * 1rem );                            /* Vertical Rhythm Base Plus 7 ~= 104.323px */
+
+
+}
+.catGroSpa:hover,
+.catModSpa:hover { /* What: Hovered Category Group And Mode Spans. Why: A tag that explains itself should respond to the pointer. How: This darkens its outline and text a step. */
+
+
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color        : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.catGroSpa:active,
+.catModSpa:active { /* What: Pressed Category Group And Mode Spans. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Category Group And Mode Spans. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.catGroSpa,
+	.catModSpa { /* What: Still Category Group And Mode Spans. Why: The change should happen at once, the press still applying. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }
@@ -1026,23 +1129,23 @@
 
 /* #region vacTogBut */
 
-.vacTogBut { /* What: Vacation Toggle Button. Why: The whole picker goes on or off vacation from its header. How: This draws an outlined mono capsule as wide as the tags, fading between colors. */
+.vacTogBut { /* What: Vacation Toggle Button. Why: The whole picker goes on or off vacation from its header. How: This draws an outlined mono capsule as wide as the tags, fading between colors, and eases its press and focus ring. */
 
 
 	align-items     : center;
-	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                       /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius   : 999px;
-	color           : var( --tex-mut-col );                                                                                  /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : inline-flex;
-	font-family     : var( --fon-fam-sec );                                                                                  /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size       : var( --fon-siz-bas );                                                                                  /* Font Size Base = 11px */
-	gap             : var( --spa-hor-m04 );                                                                                  /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	font-family     : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size       : var( --fon-siz-bas );                            /* Font Size Base = 11px */
+	gap             : var( --spa-hor-m04 );                            /* Spacing Horizontal Base Minus 4 ~= 4.731px */
 	justify-content : center;
 	letter-spacing  : 0.04em;
-	padding         : var( --spa-ver-m07 ) var( --spa-hor-m02 );                                                             /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+	padding         : var( --spa-ver-m07 ) var( --spa-hor-m02 );       /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 2 ~= 8.304px */
 	text-transform  : uppercase;
-	transition      : color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
-	width           : calc( var( --ver-rhy-p07 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 7 ~= 104.323px */
+	transition      : color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	width           : calc( var( --ver-rhy-p07 ) * 1rem );             /* Vertical Rhythm Base Plus 7 ~= 104.323px */
 
 
 }
@@ -1071,6 +1174,13 @@
 
 
 	}
+
+
+}
+.vacTogBut:active { /* What: Pressed Vacation Toggle Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -1121,7 +1231,7 @@
 
 /* #region catTogBut */
 
-.catTogBut { /* What: Category Toggle Button. Why: Controls and Items each open and close under their own full-width toggle. How: This strips the button chrome down to a shaded, divided row that spreads its label and summary apart. */
+.catTogBut { /* What: Category Toggle Button. Why: Controls and Items each open and close under their own full-width toggle. How: This strips the button chrome down to a shaded, divided row that spreads its label and summary apart, and eases its hover, press, and focus ring. */
 
 
 	-webkit-appearance : none;
@@ -1140,6 +1250,7 @@
 	justify-content    : space-between;
 	padding            : var( --spa-ver-m01 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
 	text-align         : left;
+	transition         : opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 2 ~= 89.9ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Duration Transition Base Minus 1 ~= 119.2ms */
 	user-select        : none;
 	width              : 100%;
 
@@ -1149,6 +1260,33 @@
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+
+
+}
+.catTogBut:hover { /* What: Hovered Category Toggle Button. Why: The control should respond to the pointer. How: This shades its well a notch darker. */
+
+
+	background : var( --bor-fil-col ); /* Border Fill Color = oklch( 0.93 0.005 240 ) */
+
+
+}
+.catTogBut:active { /* What: Pressed Category Toggle Button. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Category Toggle Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.catTogBut { /* What: Still Category Toggle Button. Why: The change should happen at once, the press still applying. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }
@@ -1201,7 +1339,7 @@
 /* #region rowAddBut */
 
 .rowAddSpa,
-.rowAddBut { /* What: Row Add Span And Button. Why: Adding a item is a full-width row at the top of the list. How: This sets an uppercase mono label beside its plus icon, divided from the rows below, and eases its hover color. */
+.rowAddBut { /* What: Row Add Span And Button. Why: Adding a item is a full-width row at the top of the list. How: This sets an uppercase mono label beside its plus icon, divided from the rows below, and eases its hover color, and eases its press and focus ring. */
 
 
 	align-items    : center;
@@ -1215,7 +1353,7 @@
 	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );       /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 	text-align     : left;
 	text-transform : uppercase;
-	transition     : color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	transition     : color var( --dur-tra-m01 ) var( --mot-sta-eas ), opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Duration Transition Base ~= 157.8ms */
 	width          : 100%;
 
 
@@ -1247,6 +1385,13 @@
 
 	cursor  : default;
 	opacity : 0.5;
+
+
+}
+.rowAddBut:active { /* What: Pressed Row Add Button. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
 
 
 }
@@ -1359,7 +1504,7 @@
 /* #region lisRowBut */
 
 .lisRowDiv,
-.lisRowBut { /* What: List Row Div And Button. Why: A closed row is one button that opens its item. How: This strips the button chrome and lays the row's pieces out in a padded row, and eases its hover shade. */
+.lisRowBut { /* What: List Row Div And Button. Why: A closed row is one button that opens its item. How: This strips the button chrome and lays the row's pieces out in a padded row, and eases its hover shade, and eases its press and focus ring. */
 
 
 	-webkit-appearance : none;
@@ -1371,10 +1516,10 @@
 	cursor             : pointer;
 	display            : flex;
 	font               : inherit;
-	gap                : var( --spa-hor-m01 );                                 /* Spacing Horizontal Base Minus 1 = 11px */
-	padding            : var( --spa-ver-m01 ) var( --spa-hor-bas );            /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
+	gap                : var( --spa-hor-m01 );                      /* Spacing Horizontal Base Minus 1 = 11px */
+	padding            : var( --spa-ver-m01 ) var( --spa-hor-bas ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
 	text-align         : left;
-	transition         : background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	transition         : background var( --dur-tra-m01 ) var( --mot-sta-eas ), opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Duration Transition Base ~= 157.8ms */
 	user-select        : none;
 	width              : 100%;
 
@@ -1415,6 +1560,13 @@
 
 
 	}
+
+
+}
+.lisRowBut:active { /* What: Pressed List Row Button. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
 
 
 }
@@ -1516,11 +1668,12 @@
 /* #region rowChvBut */
 
 .rowChvSpa,
-.rowChvBut { /* What: Row Chevron Span And Button. Why: The chevron keeps a fixed slot at the row's end. How: This stops it from growing or shrinking and mutes its color. */
+.rowChvBut { /* What: Row Chevron Span And Button. Why: The chevron keeps a fixed slot at the row's end. How: This stops it from growing or shrinking and mutes its color, and eases its hover, press, and focus ring. */
 
 
-	color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	flex  : 0 0 auto;
+	color      : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	flex       : 0 0 auto;
+	transition : opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 2 ~= 89.9ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Duration Transition Base Minus 1 ~= 119.2ms */
 
 
 }
@@ -1546,6 +1699,33 @@
 	font               : inherit;
 	margin             : calc( var( --spa-ver-m05 ) * -1 ) calc( var( --spa-hor-m05 ) * -1 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
 	padding            : var( --spa-ver-m05 ) var( --spa-hor-m05 );                           /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
+
+
+}
+.rowChvBut:hover { /* What: Hovered Row Chevron Button. Why: The control should respond to the pointer. How: This darkens it to the main text color. */
+
+
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.rowChvBut:active { /* What: Pressed Row Chevron Button. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Row Chevron Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rowChvBut { /* What: Still Row Chevron Button. Why: The change should happen at once, the press still applying. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }
@@ -1581,7 +1761,7 @@
 
 
 
-.datCreBut { /* What: Data Create Button. Why: Creating a picker reads as a dashed placeholder at the end of the list. How: This draws a dashed button the size of a collapsed row, stretched across the list, with a centered icon and label that fades to the accent on hover. */
+.datCreBut { /* What: Data Create Button. Why: Creating a picker reads as a dashed placeholder at the end of the list. How: This draws a dashed button the size of a collapsed row, stretched across the list, with a centered icon and label that fades to the accent on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
@@ -1598,7 +1778,7 @@
 	height          : calc( var( --ver-rhy-p05 ) * 1rem );              /* Vertical Rhythm Base Plus 5 ~= 59.447px */
 	justify-content : center;
 	padding         : 0 var( --spa-hor-bas );                           /* Spacing Horizontal Base ~= 14.572px */
-	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
@@ -1630,6 +1810,13 @@
 
 
 	}
+
+
+}
+.datCreBut:active { /* What: Pressed Data Create Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }

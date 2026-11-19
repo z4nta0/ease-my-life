@@ -295,7 +295,7 @@
 
 /* #region groPilBut */
 
-.groPilBut { /* What: Group Pill Button. Why: Each group is a pill that moves this picker into it. How: This draws an outlined pill that fades between colors. */
+.groPilBut { /* What: Group Pill Button. Why: Each group is a pill that moves this picker into it. How: This draws an outlined pill that fades between colors, and eases its press and focus ring. */
 
 
 	align-items    : center;
@@ -312,7 +312,7 @@
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	letter-spacing : -0.01em;
 	padding        : 0 var( --spa-hor-bas );                          /* Spacing Horizontal Base ~= 14.572px */
-	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
@@ -403,6 +403,13 @@
 
 
 	}
+
+
+}
+.groPilBut:active { /* What: Pressed Group Pill Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -939,7 +946,7 @@
 
 }
 
-.cadHelSpa { /* What: Cadence Help Span. Why: A small question mark explains the cadence setting on hover or tap. How: This draws a small outlined circle with a help cursor that tints on hover. */
+.cadHelSpa { /* What: Cadence Help Span. Why: A small question mark explains the cadence setting on hover or tap. How: This draws a small outlined circle with a help cursor that tints on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
@@ -954,7 +961,7 @@
 	height          : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
 	justify-content : center;
 	line-height     : var( --ver-rhy-m01 );                            /* Vertical Rhythm Base Minus 1 = 1 */
-	transition      : border-color var( --dur-tra-p01 ) var( --mot-sta-eas ), color var( --dur-tra-p01 ) var( --mot-sta-eas ), background var( --dur-tra-p01 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+	transition      : border-color var( --dur-tra-p01 ) var( --mot-sta-eas ), color var( --dur-tra-p01 ) var( --mot-sta-eas ), background var( --dur-tra-p01 ) var( --mot-sta-eas ), opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Duration Transition Base ~= 157.8ms */
 	width           : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
 
 
@@ -978,6 +985,13 @@
 
 
 	}
+
+
+}
+.cadHelSpa:active { /* What: Pressed Cadence Help Span. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
 
 
 }
@@ -1023,16 +1037,23 @@
 
 /* #region togSwiBut */
 
-.togSwiBut { /* What: Toggle Switch Button. Why: Each schedule and item setting turns on or off with a switch. How: This draws a pill track whose knob slides across, fading its color. */
+.togSwiBut { /* What: Toggle Switch Button. Why: Each schedule and item setting turns on or off with a switch. How: This draws a pill track whose knob slides across, fading its color, and eases its hover, press, and focus ring. */
 
 
-	background    : var( --bor-mai-col );                                 /* Border Main Color = oklch( 0.91 0.005 240 ) */
+	background    : var( --bor-mai-col );                /* Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : 999px;
 	cursor        : pointer;
-	height        : calc( var( --ver-rhy-p01 ) * 1rem );                  /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	height        : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
 	position      : relative;
-	transition    : background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
-	width         : calc( var( --ver-rhy-p03 ) * 1rem );                  /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition    : background var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	width         : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+.togSwiBut:hover:not( [aria-pressed='true'] ):not( [aria-checked='true'] ) { /* What: Hovered Toggle Switch Button. Why: A switch that's off should respond to the pointer, while one that's on keeps its accent. How: This darkens its track a step, leaving a switch that's on to its own rule. */
+
+
+	background : var( --bor-hov-col ); /* Border Hover Color = oklch( 0.83 0.005 240 ) */
 
 
 }
@@ -1054,6 +1075,13 @@
 
 
 	}
+
+
+}
+.togSwiBut:active { /* What: Pressed Toggle Switch Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }

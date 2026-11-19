@@ -488,11 +488,57 @@ body { /* What: Page Body Text. Why: All text starts from the app's own typeface
 
 }
 
-a { /* What: Link. Why: Links read in the accent color. How: This colors them with the accent token, easing their hover color. */
+a,
+button,
+input,
+select,
+textarea,
+:where( [tabindex='0'] ) { /* What: Focus Ring Controls. Why: Keyboard focus should ease in rather than snap, and the browser's own ring can't. How: This gives every link, button, field, and focusable element a zero-width outline in the accent color, held a step away from it, and eases the ring's width and offset when focus arrives, the focusable element's selector weighing nothing so its module's own transition wins; every element with its own transition lists the two outline properties so the ease survives. */
 
 
-	color      : var( --acc-mai-col );                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	transition : color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	outline        : 0 solid var( --acc-mai-col );                                                                                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */ /* What: Zero Width Outline. Why: A zero width stays invisible, even in forced colors mode, until something is focused. How: The focused rule below grows it. */
+	outline-offset : var( --bor-wid-xla );                                                                                              /* Border Width Extra Large ~= 3.571px */
+	transition     : outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+
+
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex='0']:focus-visible { /* What: Focused Focus Ring Controls. Why: A keyboard user has to see where focus is. How: This grows the ring to its full width and draws it in close, so it eases in. */
+
+
+	outline-offset : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
+	outline-width  : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Focus Ring Controls. Why: Someone who asked for less motion should see the ring appear at once. How: This applies only when the reduced-motion preference is set. */
+
+
+	a,
+	button,
+	input,
+	select,
+	textarea,
+	:where( [tabindex='0'] ) { /* What: Motionless Focus Ring Controls. Why: The ring should simply appear. How: This turns the transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+a { /* What: Link. Why: Links read in the accent color. How: This colors them with the accent token, easing their hover color, press, and focus ring. */
+
+
+	color      : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	transition : color var( --dur-tra-m01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), opacity var( --dur-tra-m02 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Duration Transition Base Minus 2 ~= 89.9ms */
 
 
 }
@@ -500,6 +546,13 @@ a:hover { /* What: Hovered Link. Why: A link should respond to the pointer. How:
 
 
 	color : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+a:not( [class] ):active { /* What: Pressed Plain Link. Why: A text link presses by dimming. How: This drops a link the app doesn't style itself to about 75% strength, while a styled link sets its own press. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
 
 
 }

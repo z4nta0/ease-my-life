@@ -96,7 +96,7 @@
 
 /* #region forSteBut */
 
-.forSteBut { /* What: Form Step Button. Why: Each step is a button that jumps to it, muted until reached. How: This strips the button chrome and lines up the number and label. */
+.forSteBut { /* What: Form Step Button. Why: Each step is a button that jumps to it, muted until reached. How: This strips the button chrome and lines up the number and label, and eases its hover color, press, and focus ring. */
 
 
 	align-items : center;
@@ -107,6 +107,7 @@
 	display     : inline-flex;
 	gap         : var( --spa-hor-m02 );                      /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 	padding     : var( --spa-ver-m07 ) var( --spa-hor-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 7 ~= 2.035px */
+	transition  : opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 2 ~= 89.9ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Duration Transition Base Minus 1 ~= 119.2ms */
 
 
 }
@@ -114,6 +115,13 @@
 
 
 	cursor : default;
+
+
+}
+.forSteBut:hover { /* What: Hovered Form Step Button. Why: A step should respond to the pointer. How: This darkens it to body color, which the current and finished steps already read in. */
+
+
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
@@ -128,6 +136,26 @@
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.forSteBut:active { /* What: Pressed Form Step Button. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Form Step Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.forSteBut { /* What: Still Form Step Button. Why: The change should happen at once, the press still applying. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }
@@ -426,7 +454,7 @@
 
 }
 
-.groChiBut { /* What: Group Chip Button. Why: Each group is a chip that files the picker under it. How: This draws an outlined pill that fades between colors. */
+.groChiBut { /* What: Group Chip Button. Why: Each group is a chip that files the picker under it. How: This draws an outlined pill that fades between colors, and eases its press and focus ring. */
 
 
 	align-items   : center;
@@ -441,7 +469,7 @@
 	gap           : var( --spa-hor-m04 );                            /* Spacing Horizontal Base Minus 4 ~= 4.731px */
 	height        : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	padding       : 0 var( --spa-hor-bas );                          /* Spacing Horizontal Base ~= 14.572px */
-	transition    : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	transition    : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
@@ -490,6 +518,13 @@
 
 
 }
+.groChiBut:active { /* What: Pressed Group Chip Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+
+
+}
 
 /* #endregion forGroDiv */
 
@@ -510,7 +545,7 @@
 
 /* #region modOptLab */
 
-.modOptLab { /* What: Mode Option Label. Why: Each pick mode is a card with its radio beside its name and hints. How: This draws a rounded outlined card that fades between states, and eases its focus ring in. */
+.modOptLab { /* What: Mode Option Label. Why: Each pick mode is a card with its radio beside its name and hints. How: This draws a rounded outlined card that fades between states, and eases its focus ring in, and eases its press and focus ring. */
 
 
 	align-items    : flex-start;
@@ -523,7 +558,7 @@
 	outline        : 0 solid var( --acc-mai-col );                    /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	outline-offset : var( --bor-wid-xla );                            /* Border Width Extra Large ~= 3.571px */
 	padding        : var( --spa-ver-m01 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
-	transition     : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms */
+	transition     : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
@@ -563,6 +598,13 @@
 
 
 }
+.modOptLab:active { /* What: Pressed Mode Option Label. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+
+
+}
 
 .modOptInp { /* What: Mode Option Input. Why: The native radio is redrawn as a small ring that fills when chosen. How: This clears its native look and draws an outlined circle at the base rhythm step. */
 
@@ -574,6 +616,7 @@
 	height             : calc( var( --ver-rhy-bas ) * 1rem );                    /* Vertical Rhythm Base ~= 14.572px */
 	margin-top         : var( --spa-ver-m07 );                                   /* Spacing Vertical Base Minus 7 ~= 2.035px */
 	min-width          : calc( var( --ver-rhy-bas ) * 1rem );                    /* Vertical Rhythm Base ~= 14.572px */ /* What: Radio Minimum Width. Why: In its flex row the radio could otherwise shrink below its own width when space runs short. How: This holds it at the same rhythm step as its width. */
+	outline            : none;                                                   /* What: No Radio Ring. Why: The card around the radio already draws the focus ring, so the radio's own would double it. How: This drops the radio's outline, which the global focus rule then has no style to grow. */
 	position           : relative;
 	transition         : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 	width              : calc( var( --ver-rhy-bas ) * 1rem );                    /* Vertical Rhythm Base ~= 14.572px */
@@ -704,18 +747,25 @@
 
 /* #region togSwiBut */
 
-.togSwiBut { /* What: Toggle Switch Button. Why: Each on or off setting uses a switch that keeps its size beside its text. How: This draws a pill track whose knob slides across, fading its color. */
+.togSwiBut { /* What: Toggle Switch Button. Why: Each on or off setting uses a switch that keeps its size beside its text. How: This draws a pill track whose knob slides across, fading its color, and eases its hover, press, and focus ring. */
 
 
-	background    : var( --bor-mai-col );                                 /* Border Main Color = oklch( 0.91 0.005 240 ) */
+	background    : var( --bor-mai-col );                /* Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : 999px;
 	cursor        : pointer;
 	flex-shrink   : 0;
-	height        : calc( var( --ver-rhy-p01 ) * 1rem );                  /* Vertical Rhythm Base Plus 1 ~= 19.304px */
-	margin-top    : var( --spa-ver-m07 );                                 /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	height        : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	margin-top    : var( --spa-ver-m07 );                /* Spacing Vertical Base Minus 7 ~= 2.035px */
 	position      : relative;
-	transition    : background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
-	width         : calc( var( --ver-rhy-p03 ) * 1rem );                  /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition    : background var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	width         : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+
+
+}
+.togSwiBut:hover:not( [aria-pressed='true'] ):not( [aria-checked='true'] ) { /* What: Hovered Toggle Switch Button. Why: A switch that's off should respond to the pointer, while one that's on keeps its accent. How: This darkens its track a step, leaving a switch that's on to its own rule. */
+
+
+	background : var( --bor-hov-col ); /* Border Hover Color = oklch( 0.83 0.005 240 ) */
 
 
 }
@@ -736,6 +786,13 @@
 
 
 	}
+
+
+}
+.togSwiBut:active { /* What: Pressed Toggle Switch Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -1006,17 +1063,17 @@
 
 }
 
-.dayPreBut { /* What: Day Preset Button. Why: Each preset reads as a quiet accent text button. How: This strips the button chrome down to small accent text, and eases its hover tint. */
+.dayPreBut { /* What: Day Preset Button. Why: Each preset reads as a quiet accent text button. How: This strips the button chrome down to small accent text, and eases its hover tint, and eases its press and focus ring. */
 
 
 	background    : none;
 	border        : none;
-	border-radius : var( --rad-bor-sma );                                 /* Radius Border Small ~= 8.304px */
-	color         : var( --acc-mai-col );                                 /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius : var( --rad-bor-sma );                      /* Radius Border Small ~= 8.304px */
+	color         : var( --acc-mai-col );                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	cursor        : pointer;
-	font-size     : var( --fon-siz-bas );                                 /* Font Size Base = 11px */
-	padding       : var( --spa-ver-m05 ) var( --spa-hor-m03 );            /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 3 ~= 6.268px */
-	transition    : background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	font-size     : var( --fon-siz-bas );                      /* Font Size Base = 11px */
+	padding       : var( --spa-ver-m05 ) var( --spa-hor-m03 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+	transition    : background var( --dur-tra-m01 ) var( --mot-sta-eas ), opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Duration Transition Base ~= 157.8ms */
 
 
 }
@@ -1037,6 +1094,13 @@
 
 
 	}
+
+
+}
+.dayPreBut:active { /* What: Pressed Day Preset Button. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
 
 
 }
@@ -1400,7 +1464,7 @@
 /* #endregion pooMetDiv */
 
 
-.pooEdiBut { /* What: Pool Edit Button. Why: Each item opens its editor from a small button. How: This draws a small outlined square that tints on hover. */
+.pooEdiBut { /* What: Pool Edit Button. Why: Each item opens its editor from a small button. How: This draws a small outlined square that tints on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
@@ -1414,7 +1478,7 @@
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
@@ -1441,9 +1505,16 @@
 
 
 }
+.pooEdiBut:active { /* What: Pressed Pool Edit Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+
+
+}
 
 .pooDelBut,
-.pooDelSpa { /* What: Pool Delete Button And Span. Why: Each item can be deleted from a small button. How: This draws a small outlined square that tints in the danger color on hover. */
+.pooDelSpa { /* What: Pool Delete Button And Span. Why: Each item can be deleted from a small button. How: This draws a small outlined square that tints in the danger color on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
@@ -1457,7 +1528,7 @@
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
@@ -1499,6 +1570,13 @@
 
 
 	}
+
+
+}
+.pooDelBut:active { /* What: Pressed Pool Delete Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -1680,7 +1758,7 @@
 
 
 
-.iteAddBut { /* What: Item Add Button. Why: Adding an item is a full-width dashed button below the pool. How: This draws a dashed outline that tints in the accent on hover. */
+.iteAddBut { /* What: Item Add Button. Why: Adding an item is a full-width dashed button below the pool. How: This draws a dashed outline that tints in the accent on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
@@ -1697,7 +1775,7 @@
 	height          : calc( var( --ver-rhy-p04 ) * 1rem );              /* Vertical Rhythm Base Plus 4 ~= 44.876px */
 	justify-content : center;
 	padding         : 0 var( --spa-hor-bas );                           /* Spacing Horizontal Base ~= 14.572px */
-	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width           : 100%;
 
 
@@ -1721,6 +1799,13 @@
 
 
 	}
+
+
+}
+.iteAddBut:active { /* What: Pressed Item Add Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }

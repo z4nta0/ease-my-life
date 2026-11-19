@@ -18,7 +18,7 @@
 
 
 
-.butBasBut { /* What: Button Base Button. Why: Every action button in the app shares one pill shape. How: This lays out the icon and label in a rounded pill, reading its fit from --but-* properties a parent may set, each falling back to a button's normal behavior. */
+.butBasBut { /* What: Button Base Button. Why: Every action button in the app shares one pill shape. How: This lays out the icon and label in a rounded pill, reading its fit from --but-* properties a parent may set, each falling back to a button's normal behavior, and eases its press and focus ring. */
 
 
 	align-items          : center;
@@ -32,15 +32,15 @@
 	height               : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	letter-spacing       : -0.005em;
 	padding              : 0 var( --spa-hor-bas );              /* Spacing Horizontal Base ~= 14.572px */
-	transition           : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-m02 ) var( --mot-dec-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	transition           : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-m02 ) var( --mot-dec-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Duration Transition Base ~= 157.8ms */
 	white-space          : var( --but-bas-whi, inherit );       /* Button Base White Space, set by its parent, falling back to inherit */ /* What: Button Wrapping. Why: A button in a tight row shouldn't wrap its label. How: A parent sets --but-bas-whi to nowrap, otherwise the button inherits as usual. */
 
 
 }
-.butBasBut:active { /* What: Pressed Button. Why: A press should feel physical. How: This nudges the button down half a pixel. */
+.butBasBut:active { /* What: Pressed Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
 
 
-	transform : translateY( 0.5px );
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -52,10 +52,10 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Button. Why: Someone who asked for less motion shouldn't see the button's colors fade or its press nudge glide. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Button. Why: Someone who asked for less motion shouldn't see the button's colors fade or its press glide. How: This applies only when the reduced-motion preference is set. */
 
 
-	.butBasBut { /* What: Still Button Base Button. Why: A press and a hover should simply switch the button's look. How: This turns the transition off, so colors switch and the press nudge lands instantly. */
+	.butBasBut { /* What: Still Button Base Button. Why: A press and a hover should simply switch the button's look. How: This turns the transition off, so colors switch and the press scale lands instantly. */
 
 
 		transition : none;

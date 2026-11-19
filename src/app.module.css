@@ -96,7 +96,8 @@
 
 
 }
-.skiLinAnc:active { /* What: Pressed Skip Link Anchor. Why: A press should register before focus moves. How: This presses the button in slightly, undoing any hover lift. */
+.skiLinAnc:active,
+.skiLinAnc:focus:active { /* What: Pressed Skip Link Anchor. Why: A press should register before focus moves. How: This presses the button in slightly, undoing any hover lift, and names its focused state too, since the focused hover lift outranks a plain press. */
 
 
 	transform : scale( .97 );
@@ -689,14 +690,14 @@
 
 /* #region navTabBut */
 
-.navTabBut { /* What: Tab Button. Why: Each tab button sits above the sliding indicator and fades its colors as it becomes active. How: This lays out its icon and label in a row, raised above the indicator. */
+.navTabBut { /* What: Tab Button. Why: Each tab button sits above the sliding indicator and fades its colors as it becomes active. How: This lays out its icon and label in a row, raised above the indicator, and eases its press and focus ring. */
 
 
 	align-items : center;
 	display     : flex;
 	position    : relative;
-	transition  : color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
-	z-index     : 1;                                                                                                     /* What: Tab Button Stack Level. Why: Each button has to sit above the sliding indicator at 0. How: This raises it one level. */
+	transition  : color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	z-index     : 1;        /* What: Tab Button Stack Level. Why: Each button has to sit above the sliding indicator at 0. How: This raises it one level. */
 
 
 }
@@ -841,6 +842,13 @@
 
 
 	}
+
+
+}
+.navTabBut:active { /* What: Pressed Navigation Tab Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }

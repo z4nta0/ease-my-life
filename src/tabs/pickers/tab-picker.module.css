@@ -110,7 +110,7 @@
 
 /* #region braMarBut */
 
-.braMarBut { /* What: Brand Mark Button. Why: The logo beside the title is also a button back to Today. How: This strips the button chrome and sizes the mark as a square that lifts on hover. */
+.braMarBut { /* What: Brand Mark Button. Why: The logo beside the title is also a button back to Today. How: This strips the button chrome and sizes the mark as a square that lifts on hover, and eases its press and focus ring. */
 
 
 	-webkit-appearance : none;
@@ -119,17 +119,17 @@
 	aspect-ratio       : auto;
 	background         : none;
 	border             : 0;
-	border-radius      : var( --rad-bor-med );                                /* Radius Border Medium = 11px */
-	color              : var( --acc-mai-col );                                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius      : var( --rad-bor-med );                /* Radius Border Medium = 11px */
+	color              : var( --acc-mai-col );                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	cursor             : pointer;
 	display            : block;
 	flex               : 0 0 auto;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-p06 ) * 1rem );                 /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	height             : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 	padding            : 0;
 	text-decoration    : none;
-	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
-	width              : calc( var( --ver-rhy-p06 ) * 1rem );                 /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms */
+	width              : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 
 
 }
@@ -164,6 +164,13 @@
 
 
 	}
+
+
+}
+.braMarBut:active { /* What: Pressed Brand Mark Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -253,17 +260,19 @@
 
 }
 
-.subLinBut { /* What: Sub Link Button. Why: The intro links to other tabs inline. How: This strips the button chrome down to underlined accent text. */
+.subLinBut { /* What: Sub Link Button. Why: The intro links to other tabs inline. How: This strips the button chrome down to underlined accent text, and eases its underline, press, and focus ring. */
 
 
-	background            : none;
-	border                : 0;
-	color                 : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	cursor                : pointer;
-	font                  : inherit;
-	padding               : 0;
-	text-decoration       : underline;
-	text-underline-offset : 2px;
+	background                : none;
+	border                    : 0;
+	color                     : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	cursor                    : pointer;
+	font                      : inherit;
+	padding                   : 0;
+	text-decoration           : underline;
+	text-decoration-thickness : var( --bor-wid-bas ); /* Border Width Base ~= 1.160px */ /* What: Resting Underline Thickness. Why: A thickness of auto can't ease toward the hover's 2px. How: This sets a length close to the font's own underline, which the hover thickens. */
+	text-underline-offset     : 2px;
+	transition                : opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), text-decoration-thickness var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 2 ~= 89.9ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Duration Transition Base Minus 1 ~= 119.2ms */
 
 
 }
@@ -271,6 +280,26 @@
 
 
 	text-decoration-thickness : 2px;
+
+
+}
+.subLinBut:active { /* What: Pressed Sub Link Button. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sub Link Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.subLinBut { /* What: Still Sub Link Button. Why: The change should happen at once, the press still applying. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }
@@ -380,7 +409,7 @@
 
 /* #region filPilBut */
 
-.filPilBut { /* What: Filter Pill Button. Why: Each group or type is a pill that filters the pickers. How: This draws an outlined pill that fades between colors. */
+.filPilBut { /* What: Filter Pill Button. Why: Each group or type is a pill that filters the pickers. How: This draws an outlined pill that fades between colors, and eases its press and focus ring. */
 
 
 	align-items    : center;
@@ -397,7 +426,7 @@
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	letter-spacing : -0.01em;
 	padding        : 0 var( --spa-hor-bas );                          /* Spacing Horizontal Base ~= 14.572px */
-	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
@@ -428,6 +457,13 @@
 
 
 	}
+
+
+}
+.filPilBut:active { /* What: Pressed Filter Pill Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -539,10 +575,10 @@
 
 .picTabBut,
 .picAddBut,
-.picAddSpa { /* What: Picker Tab Button And Add Button And Span. Why: Each picker is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode. */
+.picAddSpa { /* What: Picker Tab Button And Add Button And Span. Why: Each picker is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode, and eases its press and focus ring. */
 
 
-	animation         : global( tabGroupSlideIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global Entrance Keyframes. Why: The tabGroupSlideIn keyframes are shared with the Stats and Data scope tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation         : global( tabGroupSlideIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ) backwards; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global Entrance Keyframes. Why: The tabGroupSlideIn keyframes are shared with the Stats and Data scope tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */ /* What: Backwards Fill. Why: A fill that held the last frame would hold the tab's transform and keep its press from showing. How: The tab holds the first frame only while it waits to start, and its own styles, which match the last frame, take over once it ends. */
 	background        : var( --bac-sur-col );                                                     /* Background Surface Color = oklch( 0.975 0.004 240 ) */
 	border            : var( --bor-wid-sma ) solid var( --bor-mai-col );                          /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius     : var( --rad-bor-med );                                                     /* Radius Border Medium = 11px */
@@ -554,7 +590,7 @@
 	padding           : var( --spa-ver-m01 ) var( --spa-hor-bas );                                /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
 	scroll-snap-align : start;
 	text-align        : left;
-	transition        : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	transition        : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
@@ -629,6 +665,20 @@
 
 	cursor  : default;
 	opacity : 0.5;
+
+
+}
+.picAddBut:active { /* What: Pressed Picker Add Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+
+
+}
+.picTabBut:active { /* What: Pressed Picker Tab Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }

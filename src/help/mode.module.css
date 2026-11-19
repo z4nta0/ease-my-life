@@ -107,7 +107,7 @@
 
 }
 
-.helBadBut { /* What: Help Badge Button. Why: Each target gets a small "i" marker that opens its tip, large enough to meet the 24px minimum touch target. How: This draws a round outlined button at a fixed spot that takes the pointer back from the overlay. */
+.helBadBut { /* What: Help Badge Button. Why: Each target gets a small "i" marker that opens its tip, large enough to meet the 24px minimum touch target. How: This draws a round outlined button at a fixed spot that takes the pointer back from the overlay, and eases its press and focus ring. */
 
 
 	align-items     : center;
@@ -124,7 +124,7 @@
 	line-height     : var( --ver-rhy-m01 );                            /* Vertical Rhythm Base Minus 1 = 1 */
 	pointer-events  : auto;
 	position        : fixed;
-	transition      : border-color var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	transition      : border-color var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width           : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
@@ -157,6 +157,13 @@
 
 
 	}
+
+
+}
+.helBadBut:active { /* What: Pressed Help Badge Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }

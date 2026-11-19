@@ -372,7 +372,7 @@
 .picActDiv .picActBut { /* What: Picker Action Button. Why: The buttons rise in, staggered by their inline delay, when a pick resolves. How: This plays the action entrance. */
 
 
-	animation : picActButEnterFadeIn var( --dur-ani-p01 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
+	animation : picActButEnterFadeIn var( --dur-ani-p01 ) var( --mot-ove-eas ) backwards; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */ /* What: Backwards Fill. Why: A fill that held the last frame would hold the button's transform and keep its press from showing. How: The button holds the first frame while its inline delay runs, and its own styles, which match the last frame, take over once it ends. */
 
 
 }
@@ -571,18 +571,18 @@
 
 }
 
-.driTogBut { /* What: Drift Toggle Button. Why: Resetting the pool is a quiet text action. How: This sets an uppercase mono label beside its icon that darkens on hover, easing its hover color. */
+.driTogBut { /* What: Drift Toggle Button. Why: Resetting the pool is a quiet text action. How: This sets an uppercase mono label beside its icon that darkens on hover, easing its hover color, and eases its press and focus ring. */
 
 
 	align-items    : center;
-	color          : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display        : inline-flex;
-	font-family    : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas );                            /* Font Size Base = 11px */
-	gap            : var( --spa-hor-m04 );                            /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m04 ); /* Spacing Horizontal Base Minus 4 ~= 4.731px */
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
-	transition     : color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	transition     : color var( --dur-tra-m01 ) var( --mot-sta-eas ), opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Duration Transition Base ~= 157.8ms */
 
 
 }
@@ -603,6 +603,13 @@
 
 
 	}
+
+
+}
+.driTogBut:active { /* What: Pressed Drift Toggle Button. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
 
 
 }
@@ -901,13 +908,14 @@
 
 }
 
-.pooProSpa { /* What: Pool Progress Span. Why: The progress bar and value hold a steady width across rows. How: This lines them up in a row at least a rhythm step wide. */
+.pooProSpa { /* What: Pool Progress Span. Why: The progress bar and value hold a steady width across rows. How: This lines them up in a row at least a rhythm step wide, and eases its press and focus ring. */
 
 
 	align-items : center;
 	display     : flex;
 	gap         : var( --spa-hor-m02 );                /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 	min-width   : calc( var( --ver-rhy-p07 ) * 1rem ); /* Vertical Rhythm Base Plus 7 ~= 104.323px */
+	transition  : opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 2 ~= 89.9ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms */
 
 
 }
@@ -918,6 +926,26 @@
 
 
 		min-width : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+
+
+	}
+
+
+}
+.pooProSpa:active { /* What: Pressed Pool Progress Span. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+
+
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Progress Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.pooProSpa { /* What: Still Pool Progress Span. Why: The change should happen at once, the press still applying. How: This turns its transition off. */
+
+
+		transition : none;
 
 
 	}
@@ -950,7 +978,7 @@
 /* #region pooSenBut */
 
 .pooSenBut,
-.pooSenSpa { /* What: Pool Send Button And Span. Why: Each item can be sent straight to Today. How: This draws a small outlined square that tints on hover. */
+.pooSenSpa { /* What: Pool Send Button And Span. Why: Each item can be sent straight to Today. How: This draws a small outlined square that tints on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
@@ -964,7 +992,7 @@
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
@@ -1027,6 +1055,13 @@
 
 
 }
+.pooSenBut:active { /* What: Pressed Pool Send Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+
+
+}
 
 .senCheSvg { /* What: Sent Check Svg. Why: The check pops in when the send lands. How: This plays the pop on the icon. */
 
@@ -1083,7 +1118,7 @@
 /* #endregion pooSenBut */
 
 
-.pooEdiBut { /* What: Pool Edit Button. Why: Each item opens its editor from a small button. How: This draws a small outlined square that tints on hover. */
+.pooEdiBut { /* What: Pool Edit Button. Why: Each item opens its editor from a small button. How: This draws a small outlined square that tints on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
@@ -1097,7 +1132,7 @@
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
@@ -1124,11 +1159,18 @@
 
 
 }
+.pooEdiBut:active { /* What: Pressed Pool Edit Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+
+
+}
 
 
 
 .pooDelBut,
-.pooDelSpa { /* What: Pool Delete Button And Span. Why: Each item can be deleted from a small button. How: This draws a small outlined square that tints in the danger color on hover. */
+.pooDelSpa { /* What: Pool Delete Button And Span. Why: Each item can be deleted from a small button. How: This draws a small outlined square that tints in the danger color on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
@@ -1142,7 +1184,7 @@
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
@@ -1175,6 +1217,13 @@
 
 
 	}
+
+
+}
+.pooDelBut:active { /* What: Pressed Pool Delete Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -1358,7 +1407,7 @@
 
 
 
-.iteAddBut { /* What: Item Add Button. Why: Adding an item is a full-width dashed button below the pool. How: This draws a dashed outline that tints in the accent on hover. */
+.iteAddBut { /* What: Item Add Button. Why: Adding an item is a full-width dashed button below the pool. How: This draws a dashed outline that tints in the accent on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
@@ -1375,7 +1424,7 @@
 	height          : calc( var( --ver-rhy-p04 ) * 1rem );              /* Vertical Rhythm Base Plus 4 ~= 44.876px */
 	justify-content : center;
 	padding         : 0 var( --spa-hor-bas );                           /* Spacing Horizontal Base ~= 14.572px */
-	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width           : 100%;
 
 
@@ -1399,6 +1448,13 @@
 
 
 	}
+
+
+}
+.iteAddBut:active { /* What: Pressed Item Add Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }

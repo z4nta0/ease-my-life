@@ -30,7 +30,7 @@
 }
 
 .dowChiBut,
-.dowChiSpa { /* What: Day-Of-Week Chip Button And Span. Why: Each day is a small round chip showing its initial, a toggle button or, for a locked day, an info tip span. How: This draws a fixed-size bordered circle with the letter centered in muted text, fading its colors as it toggles. */
+.dowChiSpa { /* What: Day-Of-Week Chip Button And Span. Why: Each day is a small round chip showing its initial, a toggle button or, for a locked day, an info tip span. How: This draws a fixed-size bordered circle with the letter centered in muted text, fading its colors as it toggles, and eases its press and focus ring. */
 
 
 	align-items     : center;
@@ -45,7 +45,7 @@
 	font-weight     : 600;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
-	transition      : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+	transition      : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
@@ -95,6 +95,13 @@
 
 
 	}
+
+
+}
+.dowChiBut:active { /* What: Pressed Day-Of-Week Chip Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
