@@ -7,6 +7,7 @@ import { aniFinFun   } from '../support/feedback.ts'; // What: Animation Finish 
 import { cliBloFun   } from '../support/feedback.ts'; // What: Click Block Function. Why: Pressing a control shouldn't check off a card or switch tabs mid-check. How: This cancels every click in the page.
 import { CON_PRO_ARR } from '../support/feedback.ts'; // What: Control Property Array. Why: A control's looks, such as its hover, are compared over the same properties. How: This lists them.
 import { expect      } from '@playwright/test';       // What: Expect. Why: Each state passes only when every probed control and toggle responds. How: This asserts on what each check reads, such as that its problem list is empty.
+import { EXT_STA_ARR } from '../support/states.ts';   // What: Extra State Array. Why: An editor or a form holds controls the plain tabs don't. How: This lists the opened states, such as an item editor, that the shared states module keeps.
 import { FOC_PRO_ARR } from '../support/feedback.ts'; // What: Focus Property Array. Why: A focus look is compared over the control properties and the ring's outline. How: This lists them.
 import { MIN_DUR_NUM } from '../support/feedback.ts'; // What: Minimum Duration Number. Why: A .01ms reduced-motion duration switches at once. How: This is the longest duration that still counts as none.
 import { movProFun   } from '../support/feedback.ts'; // What: Moving Problems Function. Why: Under reduced motion a change has to switch rather than ease. How: This turns two snapshots into a problem for each eased change.
@@ -18,9 +19,8 @@ import { test        } from '@playwright/test';       // What: Test. Why: Each c
 import { valSigFun   } from '../support/feedback.ts'; // What: Value Signature Function. Why: Two looks are told apart by their values alone. How: This joins a snapshot's values into one string.
 
 
-import type { ElementHandle } from '@playwright/test';     // What: Element Handle. Why: Each control and toggle is probed through a handle to its element. How: This types the element handles the helpers collect and read.
-import type { Page          } from '@playwright/test';     // What: Page. Why: The helpers that drive the page from the test take a Playwright page, while those that run inside it take none. How: This types the driving helpers' page parameters.
-import type { StaRecTyp     } from '../support/states.ts'; // What: State Record Type. Why: The opened states this spec adds share the shared states' shape. How: This types them.
+import type { ElementHandle } from '@playwright/test'; // What: Element Handle. Why: Each control and toggle is probed through a handle to its element. How: This types the element handles the helpers collect and read.
+import type { Page          } from '@playwright/test'; // What: Page. Why: The helpers that drive the page from the test take a Playwright page, while those that run inside it take none. How: This types the driving helpers' page parameters.
 
 // #endregion Imports
 
@@ -91,127 +91,6 @@ const CON_SEL_STR = 'a[href], button, input:not([type="hidden"]), select, textar
 const FIE_SEL_STR = 'input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select, textarea';                                                                                    // What: Field Selector String. Why: A text field has no hover or press look of its own, since pressing one only focuses it. How: This matches the fields, which the probe reads for focus alone.
 const HOV_TAR_STR = '[class*="todCarArt"], [class*="todCarDiv"], [class*="lisRowDiv"]'; // What: Hover Target String. Why: Today's cards and the Data tab's item rows respond to hover without being controls, so the control probe never reaches them. How: This matches each by its CSS module class, whose name Vite keeps inside the hashed class.
 const SKI_STA_ARR = [ 'today-desktop', 'today-phone', 'pickers-desktop', 'pickers-phone', 'stats-desktop', 'stats-phone', 'data-desktop', 'data-phone', 'settings-desktop', 'settings-phone' ]; // What: Skip State Array. Why: The skip link waits above the screen on every plain tab, while an open modal or help mode makes it unreachable. How: This names the states where the probe has to find it.
-
-
-
-// #region EXT_STA_ARR
-
-/**
- * EXT_STA_ARR = Extra State Array
- *
- * @summary
- * The opened states this spec adds to the shared ones, each a tab with
- * something opened that brings controls the plain tab doesn't show: an item
- * editor on Today, the day log, Today's edit mode, the new picker form, and a
- * Data card with its sections and an item row open. Every row shares the
- * StaRecTyp shape the shared states use.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
-*/
-
-const EXT_STA_ARR : StaRecTyp[] = [ // What: Extra State Array. Why: An editor or a form holds controls the plain tabs don't. How: Each row opens one on a tab at one width.
-
-
-	{ // What: Editor Phone State. Why: An item's editor holds the app's sliders, steppers, and switches. How: This opens Today at 375px and opens the first card's editor.
-
-
-		fixBoo : true,
-		heiNum : 812,
-		ideStr : 'editor-phone',
-		tabStr : 'today',
-		widNum : 375,
-
-		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="todCarArt"] [aria-label="Edit"]' ).first().click(); }
-
-
-	},
-
-	{ // What: Day Log Desktop State. Why: The day log holds its own chips and rows. How: This opens Today at 1,280px and opens the first group's log.
-
-
-		fixBoo : true,
-		heiNum : 800,
-		ideStr : 'day-log-desktop',
-		tabStr : 'today',
-		widNum : 1280,
-
-		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="logChiBut"]' ).first().click(); }
-
-
-	},
-
-	{ // What: Edit Mode Desktop State. Why: Edit mode swaps the cards' actions for grips and rename buttons. How: This opens Today at 1,280px and turns edit mode on.
-
-
-		fixBoo : true,
-		heiNum : 800,
-		ideStr : 'edit-mode-desktop',
-		tabStr : 'today',
-		widNum : 1280,
-
-		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="ediRaiBut"], [data-element-name-hook~="fooEdiBut"]' ).first().click(); }
-
-
-	},
-
-	{ // What: Picker Form Desktop State. Why: The new picker form holds its steps, mode cards, and group chips. How: This opens Pickers at 1,280px and opens the form.
-
-
-		fixBoo : true,
-		heiNum : 800,
-		ideStr : 'picker-form-desktop',
-		tabStr : 'picker',
-		widNum : 1280,
-
-		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="picAddBut"]' ).first().click(); }
-
-
-	},
-
-	{ // What: Data Card Desktop State. Why: An open Data card holds a picker's controls, its item rows, and an item's editor. How: This opens Data at 1,280px, opens the first card and both its sections, and opens its first item row.
-
-
-		fixBoo : true,
-		heiNum : 800,
-		ideStr : 'data-card-desktop',
-		tabStr : 'data',
-		widNum : 1280,
-
-		actFun : async ( curPagObj ) => { // What: Data Card Action Function. Why: The card, its sections, and its row each open on their own. How: This clicks each closed one in turn.
-
-
-			const carSecLoc = curPagObj.locator( '[data-element-name-hook~="datCatSec"]' ).first(); // What: Card Section Locator. Why: The first picker's card is opened. How: This finds it.
-
-
-			await carSecLoc.locator( '[data-element-name-hook~="catHeaBut"]' ).first().click(); // What: Card Open Call. Why: A closed card hides its sections. How: This opens it.
-
-
-			for ( const togIndNum of [ 0, 1 ] ) { // What: Section Open Loop. Why: The controls and the items each open on their own. How: This opens each section that's still closed.
-
-
-				const togButLoc = carSecLoc.locator( '[data-element-name-hook~="catTogBut"]' ).nth( togIndNum ); // What: Toggle Button Locator. Why: Each section has its own toggle. How: This finds it by place.
-
-
-				if ( await togButLoc.getAttribute( 'aria-expanded' ) !== 'true' ) await togButLoc.click(); // What: Section Open Call. Why: Only a closed section needs opening. How: This clicks its toggle when it reads closed.
-
-
-			}
-
-
-
-			await carSecLoc.locator( '[data-element-name-hook~="lisRowBut"]' ).first().click(); // What: Row Open Call. Why: An item's editor opens from its row. How: This clicks the first row.
-
-
-		}
-
-
-	}
-
-
-];
-
-// #endregion EXT_STA_ARR
 
 
 

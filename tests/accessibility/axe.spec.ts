@@ -7,8 +7,10 @@ import AxeBuilder from '@axe-core/playwright'; // What: Axe Builder. Why: axe-co
 
 
 import { expect      } from '@playwright/test';     // What: Expect. Why: A state passes only with no violations. How: This asserts the violation list is empty.
+import { EXT_STA_ARR } from '../support/states.ts'; // What: Extra State Array. Why: An opened editor or form holds controls the plain tabs don't. How: This lists those states, such as an item editor.
 import { opeStaFun   } from '../support/states.ts'; // What: Open State Function. Why: Each state has to be opened and settled before it's scanned. How: This loads it and waits for it.
-import { STA_REC_ARR } from '../support/states.ts'; // What: State Record Array. Why: Every app state is scanned. How: This lists them.
+import { REA_STA_ARR } from '../support/states.ts'; // What: Reachable State Array. Why: An open tip or form is a look a visitor can stay on. How: This lists those states, such as an open info tip.
+import { STA_REC_ARR } from '../support/states.ts'; // What: State Record Array. Why: Every shared app state is scanned. How: This lists them.
 import { test        } from '@playwright/test';     // What: Test. Why: Each state is its own test. How: This declares them.
 
 
@@ -22,8 +24,10 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The scan helpe
  * axe.spec.ts = Axe Spec
  *
  * @summary
- * Scans every app state with axe-core against WCAG 2.2 A and AA plus axe's
- * best-practice rules, in whichever engine the project runs. A state passes
+ * Scans every app state, opened editors and forms and open tips included,
+ * with axe-core against WCAG 2.2 A and AA plus axe's best-practice rules, in
+ * whichever engine the project runs, every test in parallel, since each opens
+ * its own page. A state passes
  * only with zero violations, and each failure names its rule, its impact,
  * and the elements it found. Anything axe can't decide on its own (its
  * "incomplete" results, such as text over an image) can't fail the run, so
@@ -51,6 +55,7 @@ type AxeResTyp = Awaited< ReturnType< AxeBuilder[ 'analyze' ] > >; // What: Axe 
 
 // #region Constants
 
+const ALL_STA_ARR = [ ...STA_REC_ARR, ...EXT_STA_ARR, ...REA_STA_ARR ];                          // What: All State Array. Why: Every shared state is scanned, and so is each opened or reachable one, since each holds a look the plain tabs don't. How: This lists the shared states first, then the opened ones, then the reachable ones.
 const AXE_TAG_ARR = [ 'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice' ]; // What: Axe Tag Array. Why: The app targets WCAG 2.2 AA, which includes every earlier A and AA rule, and axe's best practices catch common problems WCAG doesn't name. How: This limits the scan to those rule sets.
 
 // #endregion Constants
@@ -136,7 +141,10 @@ function sumResFun ( resLisArr : AxeResTyp[ 'violations' ] ) : string[] {
 
 // #region Module Init
 
-for ( const staRecObj of STA_REC_ARR ) { // What: State Test Loop. Why: Every app state must pass the scan. How: This declares one axe test per state.
+test.describe.configure( { mode : 'parallel' } ); // What: Parallel Mode Call. Why: Each test opens its own page, so none waits on another. How: This lets the file's tests run across every worker at once.
+
+
+for ( const staRecObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every app state must pass the scan. How: This declares one axe test per state.
 
 
 	test( `${ staRecObj.ideStr } has no axe violations`, async ( { page : curPagObj }, tesInfObj ) => { // What: Axe Test. Why: A state passes only with zero axe violations. How: This opens the state, scans it, reports anything needing review, and fails on any violation.

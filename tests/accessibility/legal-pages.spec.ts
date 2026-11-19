@@ -6,8 +6,10 @@
 import AxeBuiCla from '@axe-core/playwright'; // What: Axe Builder Class. Why: axe-core finds the mechanical accessibility failures, such as low contrast and missing names. How: This runs its scan against a Playwright page.
 
 
-import { expect } from '@playwright/test'; // What: Expect. Why: Each check asserts on what it reads from the page. How: This compares each reading with what the page should show.
-import { test   } from '@playwright/test'; // What: Test. Why: Each check of each legal page is its own test. How: This declares them.
+import { expect    } from '@playwright/test';       // What: Expect. Why: Each check asserts on what it reads from the page. How: This compares each reading with what the page should show.
+import { keyProFun } from '../support/scripted.ts'; // What: Keyboard Problems Function. Why: The pages have to be usable without a mouse, as the app is. How: This walks the page with Tab and returns every problem it meets.
+import { namProFun } from '../support/scripted.ts'; // What: Name Problems Function. Why: Every link must be announced by a clean name, a new tab link's note included. How: This reads the accessibility tree and returns every badly named link or button.
+import { test      } from '@playwright/test';       // What: Test. Why: Each check of each legal page is its own test. How: This declares them.
 
 
 import type { Page } from '@playwright/test'; // What: Page. Why: The open helper drives a Playwright page. How: This types its page parameter.
@@ -22,11 +24,13 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The open helpe
  * @summary
  * Checks the standalone /privacy and /terms pages, which the app's own state
  * list can't reach since they aren't tabs of the app. Each page is scanned
- * with axe at a phone and a desktop width, its skip link has to be the first
- * Tab stop and move focus to the main content without adding a hash, it has
- * to reflow at 320px without scrolling sideways, and under reduced motion
- * focusing its skip link must play no transition. Anything axe can't decide
- * is printed as needing review.
+ * with axe, has its links' names checked, and is walked with Tab by the
+ * app's own checks in tests/support/scripted.ts, at a phone and a desktop
+ * width. Its skip link has to be the first Tab stop, wholly on screen, and
+ * move focus to the main content without adding a hash, it has to reflow at
+ * 320px without scrolling sideways, and under reduced motion focusing its
+ * skip link must play no transition. Anything axe can't decide is printed as
+ * needing review. Every test opens its own page, so they run in parallel.
  *
  * Sections:
  *  - Constants
@@ -108,10 +112,13 @@ async function opePagFun ( curPagObj : Page, patStr : string, widNum : number ) 
 
 // #region Module Init
 
+test.describe.configure( { mode : 'parallel' } ); // What: Parallel Mode Call. Why: Each test opens its own page, so none waits on another. How: This lets the file's tests run across every worker at once.
+
+
 for ( const patStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages get the same checks. How: This declares each page's tests.
 
 
-	for ( const widNum of WID_NUM_ARR ) { // What: Width Loop. Why: Each page is scanned at a phone and a desktop width. How: This declares one scan per width.
+	for ( const widNum of WID_NUM_ARR ) { // What: Width Loop. Why: Each page is scanned, named, and walked at a phone and a desktop width. How: This declares the scan, the names check, and the keyboard walk once per width.
 
 
 		test( `${ patStr } at ${ widNum.toLocaleString( 'en-US' ) }px has no axe violations`, async ( { page : curPagObj }, tesInfObj ) => { // What: Axe Test. Why: The page passes only with zero axe violations. How: This opens the page, scans it, reports anything needing review, and fails on any violation.
@@ -135,6 +142,34 @@ for ( const patStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages 
 		} );
 
 
+
+		test( `${ patStr } at ${ widNum.toLocaleString( 'en-US' ) }px names every link cleanly`, async ( { page : curPagObj } ) => { // What: Names Test. Why: Every link must be announced by a clean name, and a new tab link has to say so. How: This opens the page and checks its accessibility tree.
+
+
+			await opePagFun( curPagObj, patStr, widNum ); // What: Page Open Call. Why: The tree should be read with the page settled. How: This opens and settles it.
+
+
+			expect( await namProFun( curPagObj ) ).toEqual( [] ); // What: No Name Problems Assertion. Why: The page passes only with clean names. How: This compares the problems with an empty list, so a failure prints each one.
+
+
+		} );
+
+
+
+		test( `${ patStr } at ${ widNum.toLocaleString( 'en-US' ) }px walks cleanly with the keyboard`, async ( { browserName : engNamStr, page : curPagObj } ) => { // What: Keyboard Test. Why: The page has to be usable without a mouse. How: This opens the page under reduced motion and walks it with Tab.
+
+
+			await curPagObj.emulateMedia( { reducedMotion : 'reduce' } ); // What: Reduced Motion Emulation. Why: A smooth scroll or a focus transition still running would be measured halfway. How: This makes the page match prefers-reduced-motion, which turns both off.
+
+			await opePagFun( curPagObj, patStr, widNum ); // What: Page Open Call. Why: The walk should start from the page settled. How: This opens and settles it.
+
+
+			expect( await keyProFun( curPagObj, engNamStr, null ) ).toEqual( [] ); // What: No Keyboard Problems Assertion. Why: The page passes only when every stop is reached, in order, on screen, uncovered, and visibly focused. How: This compares the walk's problems with an empty list, so a failure prints each one, the null saying the page has no pop-up open.
+
+
+		} );
+
+
 	}
 
 
@@ -153,7 +188,7 @@ for ( const patStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages 
 
 
 		await expect( skiLinLoc ).toBeFocused();     // What: Skip Link Focus Assertion. Why: The first Tab has to land on the skip link. How: This checks it holds focus.
-		await expect( skiLinLoc ).toBeInViewport(); // What: Skip Link On Screen Assertion. Why: A focused link has to be visible. How: This checks it sits inside the viewport.
+		await expect( skiLinLoc ).toBeInViewport( { ratio : 1 } ); // What: Skip Link On Screen Assertion. Why: A focused link has to be wholly visible, not left partly above the screen. How: This checks all of it sits inside the viewport.
 
 		await skiLinLoc.click(); // What: Skip Link Click. Why: A plain click should move focus to the main content. How: This clicks the link.
 

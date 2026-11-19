@@ -18,14 +18,16 @@ import type { Page } from '@playwright/test'; // What: Page. Why: Opening a stat
  * states.ts = States
  *
  * @summary
- * The app states the accessibility suite visits, and the helper that opens
- * one. A state is a tab at a width on the real-data backup, sometimes with
- * something opened on it: every tab at phone and desktop widths, help mode
- * on, and the Privacy Policy panel, plus the welcome modal a fresh install
- * opens with. opeStaFun sizes the viewport, loads the backup (or an empty
- * install), switches tabs, waits for the fonts, runs the state's own action,
- * and then waits for running animations to settle so nothing is measured
- * mid-fade.
+ * The app states the accessibility and feedback suites visit, and the helper
+ * that opens one. A state is a tab at a width on the real-data backup,
+ * sometimes with something opened on it: the shared list holds every tab at
+ * phone and desktop widths, help mode, the Privacy Policy panel, and the
+ * welcome modal a fresh install opens with, and two more lists hold the
+ * opened editors and forms, and the open tips and support form only the
+ * accessibility suite visits. opeStaFun sizes the viewport, loads the backup
+ * (or an empty install), switches tabs, waits for the fonts, runs the state's
+ * own action, and then waits for running animations to settle so nothing is
+ * measured mid-fade.
  *
  * Sections:
  *  - Types
@@ -41,13 +43,14 @@ import type { Page } from '@playwright/test'; // What: Page. Why: Opening a stat
 
 // #region Types
 
-type StaRecTyp = { // What: State Record Type. Why: Every check reads the same description of a state. How: This names a state, its tab, its viewport, whether it runs on real data, and an optional action.
+type StaRecTyp = { // What: State Record Type. Why: Every check reads the same description of a state. How: This names a state, its tab, its viewport, whether it runs on real data, an optional action, and an optional open pop-up.
 
 
 	actFun? : ( curPagObj : Page ) => Promise< void >, // What: Action Function. Why: Some states need something opened after the tab shows. How: This runs against the loaded page, e.g. turning help mode on.
 	fixBoo  : boolean,                                 // What: Fixture Boolean. Why: Most states need real data, but the welcome modal only shows on an empty install. How: This is true when the backup is loaded.
 	heiNum  : number,                                  // What: Height Number. Why: The viewport's height decides what's on screen. How: This is the viewport height in CSS pixels.
 	ideStr  : string,                                  // What: Identifier String. Why: Each test names the state it checks. How: This becomes part of the test title.
+	popStr? : string,                                  // What: Pop-Up String. Why: A pop-up that doesn't hold focus has to close once focus moves past it, or it could cover the next stop. How: This holds the selector matching the state's open pop-up, which the keyboard walk expects gone after its first stop.
 	tabStr  : string,                                  // What: Tab String. Why: Each state shows one tab. How: This is the tab's navigation id: today, picker, stats, data, or settings.
 	widNum  : number                                   // What: Width Number. Why: Layouts change with width. How: This is the viewport width in CSS pixels.
 
@@ -81,6 +84,9 @@ type StaRecTyp = { // What: State Record Type. Why: Every check reads the same d
  * - `heiNum` (Number): Height Number, the viewport height in CSS pixels.
  *
  * - `ideStr` (String): Identifier String, the state's name in test titles.
+ *
+ * - `popStr` (String): Pop-Up String, the selector matching an open pop-up
+ *   the keyboard walk expects to close. None of these rows has one.
  *
  * - `tabStr` (String): Tab String, the tab's navigation id.
  *
@@ -138,6 +144,216 @@ const STA_REC_ARR : StaRecTyp[] = [ // What: State Record Array. Why: Every chec
 
 // #endregion STA_REC_ARR
 
+
+
+// #region EXT_STA_ARR
+
+/**
+ * EXT_STA_ARR = Extra State Array
+ *
+ * @summary
+ * The opened states the accessibility and feedback specs add to the shared
+ * ones, each a tab with something opened that brings controls the plain tab
+ * doesn't show: an item editor on Today, the day log, Today's edit mode, the
+ * new picker form, and a Data card with its sections and an item row open.
+ * Every row shares the {@link StaRecTyp} shape the shared states use.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const EXT_STA_ARR : StaRecTyp[] = [ // What: Extra State Array. Why: An editor or a form holds controls the plain tabs don't. How: Each row opens one on a tab at one width.
+
+
+	{ // What: Editor Phone State. Why: An item's editor holds the app's sliders, steppers, and switches. How: This opens Today at 375px and opens the first card's editor.
+
+
+		fixBoo : true,
+		heiNum : 812,
+		ideStr : 'editor-phone',
+		tabStr : 'today',
+		widNum : 375,
+
+		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="todCarArt"] [aria-label="Edit"]' ).first().click(); }
+
+
+	},
+
+	{ // What: Day Log Desktop State. Why: The day log holds its own chips and rows. How: This opens Today at 1,280px and opens the first group's log.
+
+
+		fixBoo : true,
+		heiNum : 800,
+		ideStr : 'day-log-desktop',
+		tabStr : 'today',
+		widNum : 1280,
+
+		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="logChiBut"]' ).first().dispatchEvent( 'click' ); } // What: Day Log Action Function. Why: At the reflow check's 320px the group header's progress dashes overlap the chip, so a pointer click would land on them. How: This sends the chip its click event directly, which opens the log at any width.
+
+
+	},
+
+	{ // What: Edit Mode Desktop State. Why: Edit mode swaps the cards' actions for grips and rename buttons. How: This opens Today at 1,280px and turns edit mode on.
+
+
+		fixBoo : true,
+		heiNum : 800,
+		ideStr : 'edit-mode-desktop',
+		tabStr : 'today',
+		widNum : 1280,
+
+		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="ediRaiBut"], [data-element-name-hook~="fooEdiBut"]' ).filter( { visible : true } ).first().click(); } // What: Edit Mode Action Function. Why: The rail's Edit Mode button shows on a wide app and the footer's on a narrow one, such as at the reflow check's 320px. How: This clicks whichever of the two is shown.
+
+
+	},
+
+	{ // What: Picker Form Desktop State. Why: The new picker form holds its steps, mode cards, and group chips. How: This opens Pickers at 1,280px and opens the form.
+
+
+		fixBoo : true,
+		heiNum : 800,
+		ideStr : 'picker-form-desktop',
+		tabStr : 'picker',
+		widNum : 1280,
+
+		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="picAddBut"]' ).first().click(); }
+
+
+	},
+
+	{ // What: Data Card Desktop State. Why: An open Data card holds a picker's controls, its item rows, and an item's editor. How: This opens Data at 1,280px, opens the first card and both its sections, and opens its first item row.
+
+
+		fixBoo : true,
+		heiNum : 800,
+		ideStr : 'data-card-desktop',
+		tabStr : 'data',
+		widNum : 1280,
+
+		actFun : async ( curPagObj ) => { // What: Data Card Action Function. Why: The card, its sections, and its row each open on their own. How: This clicks each closed one in turn.
+
+
+			const carSecLoc = curPagObj.locator( '[data-element-name-hook~="datCatSec"]' ).first(); // What: Card Section Locator. Why: The first picker's card is opened. How: This finds it.
+
+
+			await carSecLoc.locator( '[data-element-name-hook~="catHeaBut"]' ).first().click(); // What: Card Open Call. Why: A closed card hides its sections. How: This opens it.
+
+
+			for ( const togIndNum of [ 0, 1 ] ) { // What: Section Open Loop. Why: The controls and the items each open on their own. How: This opens each section that's still closed.
+
+
+				const togButLoc = carSecLoc.locator( '[data-element-name-hook~="catTogBut"]' ).nth( togIndNum ); // What: Toggle Button Locator. Why: Each section has its own toggle. How: This finds it by place.
+
+
+				if ( await togButLoc.getAttribute( 'aria-expanded' ) !== 'true' ) await togButLoc.click(); // What: Section Open Call. Why: Only a closed section needs opening. How: This clicks its toggle when it reads closed.
+
+
+			}
+
+
+
+			await carSecLoc.locator( '[data-element-name-hook~="lisRowBut"]' ).first().click(); // What: Row Open Call. Why: An item's editor opens from its row. How: This clicks the first row.
+
+
+		}
+
+
+	}
+
+
+];
+
+// #endregion EXT_STA_ARR
+
+
+
+// #region REA_STA_ARR
+
+/**
+ * REA_STA_ARR = Reachable State Array
+ *
+ * @summary
+ * The states only the accessibility specs add, each a look a visitor reaches
+ * through a control and can stay on: an info tip opened from the keyboard on
+ * Today, a help mode badge's tip opened on a phone, and the support form open
+ * on Settings. The two tip rows name their open pop-up, which the keyboard
+ * walk expects to close once focus moves past it. Every row shares the
+ * {@link StaRecTyp} shape the shared states use.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const REA_STA_ARR : StaRecTyp[] = [ // What: Reachable State Array. Why: A pop-up or form left open is a look of its own, over or beside the tab's other controls. How: Each row opens one on a tab at one width.
+
+
+	{ // What: Info Tip Desktop State. Why: An info tip's bubble opens over the controls around it and stays until it's dismissed. How: This opens Today at 1,280px and opens the first info tip with Enter, the keyboard's way.
+
+
+		fixBoo : true,
+		heiNum : 800,
+		ideStr : 'info-tip-desktop',
+		popStr : '[data-element-name-hook~="infTipSpa"]',
+		tabStr : 'today',
+		widNum : 1280,
+
+		actFun : async ( curPagObj ) => { // What: Info Tip Action Function. Why: The state shows the tip's bubble open. How: This presses Enter on the first info tip and waits for its bubble.
+
+
+			await curPagObj.locator( '[class*="infTriSpa"]' ).first().press( 'Enter' ); // What: Tip Open Call. Why: A keyboard user opens a tip with Enter. How: This focuses the first info tip's trigger and presses Enter on it.
+
+			await curPagObj.locator( '[data-element-name-hook~="infTipSpa"]' ).waitFor(); // What: Bubble Wait. Why: The checks read the page only once the bubble shows. How: This waits for it.
+
+
+		}
+
+
+	},
+
+	{ // What: Help Tip Phone State. Why: A help badge's tip opens over the tab and stays until it's dismissed. How: This opens Today at 375px, turns help mode on, and opens the first badge's tip.
+
+
+		fixBoo : true,
+		heiNum : 812,
+		ideStr : 'help-tip-phone',
+		popStr : '[data-element-name-hook~="helTipDiv"]',
+		tabStr : 'today',
+		widNum : 375,
+
+		actFun : async ( curPagObj ) => { // What: Help Tip Action Function. Why: The state shows a help tip open. How: This turns help mode on, presses the first badge, and waits for its tip.
+
+
+			await curPagObj.locator( '[data-element-name-hook~="helTogBut"]' ).first().click(); // What: Help Toggle Click. Why: The badges show only in help mode. How: This turns it on.
+
+			await curPagObj.locator( '[data-element-name-hook~="helBadBut"]' ).first().click(); // What: Badge Click. Why: A badge's press opens its tip. How: This presses the first badge.
+
+			await curPagObj.locator( '[data-element-name-hook~="helTipDiv"]' ).waitFor(); // What: Tip Wait. Why: The checks read the page only once the tip shows. How: This waits for it.
+
+
+		}
+
+
+	},
+
+	{ // What: Support Form Desktop State. Why: The support form holds its message fields and its send controls, which only show once it opens. How: This opens Settings at 1,280px and opens the form.
+
+
+		fixBoo : true,
+		heiNum : 800,
+		ideStr : 'support-form-desktop',
+		tabStr : 'settings',
+		widNum : 1280,
+
+		actFun : async ( curPagObj ) => { await curPagObj.getByRole( 'button', { exact : true, name : 'Contact Support' } ).click(); }
+
+
+	}
+
+
+];
+
+// #endregion REA_STA_ARR
+
 // #endregion Constants
 
 
@@ -152,10 +368,11 @@ const STA_REC_ARR : StaRecTyp[] = [ // What: State Record Array. Why: Every chec
  * @summary
  * Opens one state on a page and waits until it's settled: sizes the viewport,
  * loads the real-data backup on the suites' fixed day (or an empty install
- * on that day), switches to the state's tab, waits for the web fonts, runs
- * the state's action if it has one, then waits until no finite animation is
- * still running, so a check never measures a card halfway through its
- * entrance. An endless animation (a looping boot or badge effect) can't
+ * on that day), switches to the state's tab and moves the Tab starting point
+ * back to the top of the page, waits for the web fonts, runs the state's
+ * action if it has one, then waits until no finite animation is still
+ * running, so a check never measures a card halfway through its entrance. An
+ * endless animation (a looping boot or badge effect) can't
  * settle, so it's left out of the wait, and the wait fails the check after 5
  * seconds rather than hanging.
  *
@@ -187,6 +404,20 @@ async function opeStaFun ( curPagObj : Page, staRecObj : StaRecTyp ) : Promise< 
 		await opeFixFun( curPagObj ); // What: Backup Open Call. Why: Real names and lists show real layouts. How: This loads the backup on the fixed day and waits for its list.
 
 		await selTabFun( curPagObj, staRecObj.tabStr ); // What: Tab Switch Call. Why: The state shows one tab. How: This switches to it through the navigation.
+
+
+		await curPagObj.evaluate( () => { // What: Tab Start Reset Call. Why: Switching tabs clicks a button in the tab bar, which moves the browser's Tab starting point there, past the skip link and the bar's earlier buttons. How: This focuses the root element for a moment, which puts the starting point at the top of the page.
+
+
+			document.documentElement.tabIndex = -1; // What: Root Tab Index Set. Why: Only a focusable element can take focus from a script. How: This makes the root focusable without adding it to the Tab order.
+
+
+			document.documentElement.focus(); // What: Root Focus Call. Why: Focusing an element moves the Tab starting point to it. How: This focuses the root.
+
+			document.documentElement.removeAttribute( 'tabindex' ); // What: Root Tab Index Removal. Why: The root shouldn't stay focusable after the reset. How: This removes the attribute again.
+
+
+		} );
 
 
 	}
@@ -230,7 +461,7 @@ async function opeStaFun ( curPagObj : Page, staRecObj : StaRecTyp ) : Promise< 
 
 // #region Exports
 
-export { opeStaFun, STA_REC_ARR, type StaRecTyp }; // What: Named Exports. Why: The accessibility specs share these states and their opener. How: This exports the state list, the opener, and the state type by name.
+export { EXT_STA_ARR, opeStaFun, REA_STA_ARR, STA_REC_ARR, type StaRecTyp }; // What: Named Exports. Why: The accessibility and feedback specs share these states and their opener. How: This exports the state lists, the opener, and the state type by name.
 
 // #endregion Exports
 
