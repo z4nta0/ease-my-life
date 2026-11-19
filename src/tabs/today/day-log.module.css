@@ -1326,9 +1326,9 @@
 .vacNotSpa { /* What: Vacation Note Span. Why: An item on vacation says so where its status would be. How: This sets small uppercase faded mono text. */
 
 
-	color          : oklch( from var( --tex-mut-col ) l c h / var( --cdn-pow-001-rec ) ); /* Text Muted Color = oklch( 0.5 0.012 250 ), Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
-	font-family    : var( --fon-fam-sec );                                                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas );                                                /* Font Size Base = 11px */
+	color          : var( --tex-mut-col );  /* Text Muted Color = oklch( 0.5 0.012 250 ) */ /* What: Full Muted Color. Why: At its old reduced opacity the small text fell below 4.5:1 contrast on an upcoming row. How: This reads the muted text role whole, as the row's muted name does. */
+	font-family    : var( --fon-fam-sec );  /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );  /* Font Size Base = 11px */
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
 
@@ -1537,12 +1537,12 @@
 
 }
 
-.notDueSpa { /* What: Not Due Span. Why: A reminder not due yet shows when it will be, quieter than a pill. How: This sets right-aligned small uppercase faded mono text. */
+.notDueSpa { /* What: Not Due Span. Why: A reminder not due yet shows when it will be, quieter than a pill. How: This sets right-aligned small uppercase muted mono text. */
 
 
-	color          : oklch( from var( --tex-mut-col ) l c h / var( --cdn-pow-001-rec ) ); /* Text Muted Color = oklch( 0.5 0.012 250 ), Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
-	font-family    : var( --fon-fam-sec );                                                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas );                                                /* Font Size Base = 11px */
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */ /* What: Full Muted Color. Why: At its old reduced opacity the small text fell below 4.5:1 contrast on an upcoming row. How: This reads the muted text role whole, as the row's muted name does. */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
 	letter-spacing : 0.04em;
 	text-align     : right;
 	text-transform : uppercase;
