@@ -6,17 +6,17 @@
 import AxeBuilder from '@axe-core/playwright'; // What: Axe Builder. Why: The signed-in screens get the same axe-core scan as the rest of the app. How: This runs it on a page.
 
 
-import { AXE_TAG_ARR } from '../support/accessibility.ts'; // What: Axe Tag Array. Why: The app targets WCAG 2.2 AA, the same as the main suite. How: This selects every A and AA rule up to 2.2 plus best practices.
-import { creAccFun   } from '../support/account.ts';       // What: Create Account Function. Why: Each screen needs its own emulator account. How: This creates one.
-import { EMU_PRO_STR } from '../support/emulator.ts';      // What: Emulator Project String. Why: The first-sync choice needs a cloud copy written into the emulator. How: This names its project.
-import { expect      } from '@playwright/test';            // What: Expect. Why: A screen passes only with no violations and no sideways scroll. How: This makes the assertions.
-import { FIR_EMU_STR } from '../support/emulator.ts';      // What: Firestore Emulator String. Why: The first-sync choice's cloud copy is written straight into the Firestore emulator. How: This is its address.
-import { reaFixFun   } from '../support/fixture.ts';       // What: Read Fixture Function. Why: The first-sync choice needs a device with its own data. How: This reads the backup.
-import { sigLinFun   } from '../support/account.ts';       // What: Sign In Link Function. Why: Each screen is reached by signing in. How: This signs a device in with an emailed link.
-import { synWaiFun   } from '../support/account.ts';       // What: Sync Wait Function. Why: The paid screens are scanned once synced. How: This waits for the status to read Synced.
-import { test        } from '@playwright/test';            // What: Test. Why: Each screen is its own test. How: This declares them.
-import { watErrFun   } from '../support/watch.ts';         // What: Watch Errors Function. Why: A screen fails on any page error. How: This collects them.
-import { wriStaFun   } from '../support/storage.ts';       // What: Write State Function. Why: The first-sync choice starts from the backup. How: This writes it.
+import { AXE_TAG_ARR } from '../support/accessibility.ts';   // What: Axe Tag Array. Why: The app targets WCAG 2.2 AA, the same as the main suite. How: This selects every A and AA rule up to 2.2 plus best practices.
+import { creAccFun   } from '../support/account.ts';         // What: Create Account Function. Why: Each screen needs its own emulator account. How: This creates one.
+import { EMU_PRO_STR } from '../../src/emulator-project.ts'; // What: Emulator Project String. Why: The first-sync choice needs a cloud copy written into the emulator. How: This names its project.
+import { expect      } from '@playwright/test';              // What: Expect. Why: A screen passes only with no violations and no sideways scroll. How: This makes the assertions.
+import { FIR_EMU_STR } from '../support/emulator.ts';        // What: Firestore Emulator String. Why: The first-sync choice's cloud copy is written straight into the Firestore emulator. How: This is its address.
+import { reaFixFun   } from '../support/fixture.ts';         // What: Read Fixture Function. Why: The first-sync choice needs a device with its own data. How: This reads the backup.
+import { sigLinFun   } from '../support/account.ts';         // What: Sign In Link Function. Why: Each screen is reached by signing in. How: This signs a device in with an emailed link.
+import { synWaiFun   } from '../support/account.ts';         // What: Sync Wait Function. Why: The paid screens are scanned once synced. How: This waits for the status to read Synced.
+import { test        } from '@playwright/test';              // What: Test. Why: Each screen is its own test. How: This declares them.
+import { watErrFun   } from '../support/watch.ts';           // What: Watch Errors Function. Why: A screen fails on any page error. How: This collects them.
+import { wriStaFun   } from '../support/storage.ts';         // What: Write State Function. Why: The first-sync choice starts from the backup. How: This writes it.
 
 
 import type { Page } from '@playwright/test'; // What: Page. Why: The helpers drive one page. How: This types their page parameter.

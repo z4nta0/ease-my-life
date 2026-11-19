@@ -3,11 +3,11 @@
 
 // #region Imports
 
-import { admPosFun   } from './emulator.ts';    // What: Admin Post Function. Why: Accounts are created and given their claim through the emulator's admin API. How: This posts to it.
-import { AUT_EMU_STR } from './emulator.ts';    // What: Auth Emulator String. Why: Emailed sign-in links are read back from the auth emulator. How: This is its address.
-import { EMU_PRO_STR } from './emulator.ts';    // What: Emulator Project String. Why: Admin calls name the project. How: This is the demo project.
-import { expect      } from '@playwright/test'; // What: Expect. Why: Signing in waits for what the page shows. How: This makes the assertions.
-import { selTabFun   } from './app.ts';         // What: Select Tab Function. Why: Sign-in happens on the Settings tab. How: This switches to it.
+import { admPosFun   } from './emulator.ts';                 // What: Admin Post Function. Why: Accounts are created and given their claim through the emulator's admin API. How: This posts to it.
+import { AUT_EMU_STR } from './emulator.ts';                 // What: Auth Emulator String. Why: Emailed sign-in links are read back from the auth emulator. How: This is its address.
+import { EMU_PRO_STR } from '../../src/emulator-project.ts'; // What: Emulator Project String. Why: Admin calls name the project. How: This is the demo project.
+import { expect      } from '@playwright/test';              // What: Expect. Why: Signing in waits for what the page shows. How: This makes the assertions.
+import { selTabFun   } from './app.ts';                      // What: Select Tab Function. Why: Sign-in happens on the Settings tab. How: This switches to it.
 
 
 import type { Page } from '@playwright/test'; // What: Page. Why: The helpers drive one device's page. How: This types their page parameter.

@@ -5,10 +5,10 @@
  * emulator.ts = Emulator
  *
  * @summary
- * The Firebase Emulator's auth and Firestore addresses, the demo project it
- * runs, and a helper that posts to its admin API, shared by the Playwright
- * suites that sign in and the payments test that runs under Node's own test
- * runner. It imports nothing, so Node can load it without Playwright.
+ * The Firebase Emulator's auth and Firestore addresses and a helper that
+ * posts to its admin API, shared by the Playwright suites that sign in and
+ * the payments test that runs under Node's own test runner. It imports
+ * nothing, so Node can load it without Playwright.
  *
  * Sections:
  *  - Constants
@@ -24,7 +24,6 @@
 // #region Constants
 
 const AUT_EMU_STR = 'http://127.0.0.1:9099'; // What: Auth Emulator String. Why: The admin calls reach the auth emulator. How: This is its default address.
-const EMU_PRO_STR = 'demo-ease-my-life';     // What: Emulator Project String. Why: Admin calls name the project. How: This is the demo project the app uses under the emulator.
 const FIR_EMU_STR = 'http://127.0.0.1:8080'; // What: Firestore Emulator String. Why: Specs read and write the cloud copy straight through the Firestore emulator's REST API. How: This is its default address.
 
 // #endregion Constants
@@ -41,7 +40,7 @@ const admPosFun = ( adrPatStr : string, posBodObj : object ) => fetch( `${ AUT_E
 
 // #region Exports
 
-export { admPosFun, AUT_EMU_STR, EMU_PRO_STR, FIR_EMU_STR }; // What: Named Exports. Why: The account helpers, the account specs, and the payments test reach the emulator through these. How: This exports them by name.
+export { admPosFun, AUT_EMU_STR, FIR_EMU_STR }; // What: Named Exports. Why: The account helpers, the account specs, and the payments test reach the emulator through these. How: This exports them by name.
 
 // #endregion Exports
 

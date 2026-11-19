@@ -3,16 +3,17 @@
 
 // #region Imports
 
-import { assertFails               } from '@firebase/rules-unit-testing'; // What: Assert Fails. Why: Forbidden reads and writes must be refused. How: This expects a request to be denied.
-import { assertSucceeds            } from '@firebase/rules-unit-testing'; // What: Assert Succeeds. Why: An allowed request must go through. How: This expects it to succeed.
-import { deleteDoc                 } from 'firebase/firestore';           // What: Delete Doc. Why: Deletion rules are checked. How: This deletes a document.
-import { doc                       } from 'firebase/firestore';           // What: Doc. Why: Every request names a document. How: This builds a reference.
-import { getDoc                    } from 'firebase/firestore';           // What: Get Doc. Why: Read rules are checked. How: This reads a document.
-import { initializeTestEnvironment } from '@firebase/rules-unit-testing'; // What: Initialize Test Environment. Why: The rules run in the local emulator. How: This connects to it with the project's rules.
-import { readFileSync              } from 'node:fs';                      // What: Read File Sync. Why: The emulator is given the real rules file. How: This reads it.
-import { setDoc                    } from 'firebase/firestore';           // What: Set Doc. Why: Write rules are checked. How: This writes a document.
-import { setLogLevel               } from 'firebase/firestore';           // What: Set Log Level. Why: Every refusal a test expects would otherwise print as a warning. How: This silences the SDK's logging.
-import { test                      } from '@playwright/test';             // What: Test. Why: Each rule is its own test. How: This declares them.
+import { assertFails               } from '@firebase/rules-unit-testing';  // What: Assert Fails. Why: Forbidden reads and writes must be refused. How: This expects a request to be denied.
+import { assertSucceeds            } from '@firebase/rules-unit-testing';  // What: Assert Succeeds. Why: An allowed request must go through. How: This expects it to succeed.
+import { deleteDoc                 } from 'firebase/firestore';            // What: Delete Doc. Why: Deletion rules are checked. How: This deletes a document.
+import { doc                       } from 'firebase/firestore';            // What: Doc. Why: Every request names a document. How: This builds a reference.
+import { EMU_PRO_STR               } from '../../src/emulator-project.ts'; // What: Emulator Project String. Why: The tests run against the emulator's demo project, which can never reach a real one. How: This is its ID, the same one the app uses under the emulator.
+import { getDoc                    } from 'firebase/firestore';            // What: Get Doc. Why: Read rules are checked. How: This reads a document.
+import { initializeTestEnvironment } from '@firebase/rules-unit-testing';  // What: Initialize Test Environment. Why: The rules run in the local emulator. How: This connects to it with the project's rules.
+import { readFileSync              } from 'node:fs';                       // What: Read File Sync. Why: The emulator is given the real rules file. How: This reads it.
+import { setDoc                    } from 'firebase/firestore';            // What: Set Doc. Why: Write rules are checked. How: This writes a document.
+import { setLogLevel               } from 'firebase/firestore';            // What: Set Log Level. Why: Every refusal a test expects would otherwise print as a warning. How: This silences the SDK's logging.
+import { test                      } from '@playwright/test';              // What: Test. Why: Each rule is its own test. How: This declares them.
 
 
 import type { RulesTestEnvironment } from '@firebase/rules-unit-testing'; // What: Rules Test Environment. Why: Every test reads and writes through it. How: This types it.
@@ -87,7 +88,7 @@ test.beforeAll( async () => { // What: Setup Hook. Why: The tests share one emul
 
 
 		firestore : { host : '127.0.0.1', port : 8080, rules : readFileSync( 'firestore.rules', 'utf8' ) }, // What: Firestore Options. Why: The emulator has to check the real rules. How: This names its default address and reads the rules file.
-		projectId : 'demo-ease-my-life'                                                                     // What: Project Identifier. Why: The demo project can never reach a real one. How: This names it, matching the app's emulator setting.
+		projectId : EMU_PRO_STR                                                                             // What: Project Identifier. Why: The demo project can never reach a real one. How: This names it, the same ID the app uses under the emulator.
 
 
 	});

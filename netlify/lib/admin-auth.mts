@@ -3,10 +3,11 @@
 
 // #region Imports
 
-import { cert          } from 'firebase-admin/app';  // What: Cert. Why: The real project is reached with the service account's key. How: This builds the credential from it.
-import { getApps       } from 'firebase-admin/app';  // What: Get Apps. Why: A warm function instance must not initialize twice. How: This lists the apps already set up.
-import { getAuth       } from 'firebase-admin/auth'; // What: Get Auth. Why: The functions verify sign-ins and set the paid claim. How: This returns the admin auth service.
-import { initializeApp } from 'firebase-admin/app';  // What: Initialize App. Why: Admin calls need an app. How: This creates it.
+import { cert          } from 'firebase-admin/app';            // What: Cert. Why: The real project is reached with the service account's key. How: This builds the credential from it.
+import { EMU_PRO_STR   } from '../../src/emulator-project.ts'; // What: Emulator Project String. Why: The emulator serves the demo project the app also uses in tests. How: This is its ID.
+import { getApps       } from 'firebase-admin/app';            // What: Get Apps. Why: A warm function instance must not initialize twice. How: This lists the apps already set up.
+import { getAuth       } from 'firebase-admin/auth';           // What: Get Auth. Why: The functions verify sign-ins and set the paid claim. How: This returns the admin auth service.
+import { initializeApp } from 'firebase-admin/app';            // What: Initialize App. Why: Admin calls need an app. How: This creates it.
 
 
 import type { Auth } from 'firebase-admin/auth'; // What: Auth. Why: Callers use the admin auth service. How: This types it.
@@ -42,7 +43,6 @@ import type { Auth } from 'firebase-admin/auth'; // What: Auth. Why: Callers use
 
 // #region Constants
 
-const EMU_PRO_STR = 'demo-ease-my-life';  // What: Emulator Project String. Why: The emulator serves the demo project the app also uses in tests. How: This is its id.
 const LIV_PRO_STR = 'ease-my-life-4ce18'; // What: Live Project String. Why: Production signs in to the real project. How: This is its id.
 
 // #endregion Constants

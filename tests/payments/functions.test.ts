@@ -8,13 +8,13 @@ import cheSerFun from '../../netlify/handlers/checkout.mts';      // What: Check
 import webSerFun from '../../netlify/handlers/polar-webhook.mts'; // What: Webhook Serve Function. Why: The webhook function is tested directly. How: This is its handler.
 
 
-import { admPosFun   } from '../support/emulator.ts';      // What: Admin Post Function. Why: The emulator's admin API creates and reads test accounts. How: This posts JSON as the emulator's owner and parses the reply.
-import { before      } from 'node:test';                   // What: Before. Why: The handlers' setup is set once for every case. How: This runs it first.
-import { createHmac  } from 'node:crypto';                 // What: Create HMAC. Why: Test webhooks are signed the way Polar signs them. How: This computes their signatures.
-import { EMU_PRO_STR } from '../support/emulator.ts';      // What: Emulator Project String. Why: Admin calls name the project. How: This is the demo project.
-import { PRO_LIV_STR } from '../../netlify/lib/polar.mts'; // What: Product Live String. Why: Test orders are for the sync product. How: This is its id.
-import { PRO_SAN_STR } from '../../netlify/lib/polar.mts'; // What: Product Sandbox String. Why: A preview's checkout sells the sandbox product. How: This is its id.
-import { test        } from 'node:test';                   // What: Test. Why: Each case is its own test. How: This declares them.
+import { admPosFun   } from '../support/emulator.ts';        // What: Admin Post Function. Why: The emulator's admin API creates and reads test accounts. How: This posts JSON as the emulator's owner and parses the reply.
+import { before      } from 'node:test';                     // What: Before. Why: The handlers' setup is set once for every case. How: This runs it first.
+import { createHmac  } from 'node:crypto';                   // What: Create HMAC. Why: Test webhooks are signed the way Polar signs them. How: This computes their signatures.
+import { EMU_PRO_STR } from '../../src/emulator-project.ts'; // What: Emulator Project String. Why: Admin calls name the project. How: This is the demo project.
+import { PRO_LIV_STR } from '../../netlify/lib/polar.mts';   // What: Product Live String. Why: Test orders are for the sync product. How: This is its id.
+import { PRO_SAN_STR } from '../../netlify/lib/polar.mts';   // What: Product Sandbox String. Why: A preview's checkout sells the sandbox product. How: This is its id.
+import { test        } from 'node:test';                     // What: Test. Why: Each case is its own test. How: This declares them.
 
 // #endregion Imports
 
