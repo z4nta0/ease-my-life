@@ -49,11 +49,13 @@ import type { Page          } from '@playwright/test'; // What: Page. Why: The h
  * pill, is flipped off, on, and off again by its attribute, and has to look
  * different and ease each change both ways. A control that waits above the
  * screen until it's focused, the skip link, is focused before it's hovered,
- * and on the plain tab states the probe fails when it isn't found. Under
- * reduced motion every change stays but switches at once. Real clicks are
- * blocked during the checks, so pressing a control never runs its action. The
- * snapshot and comparison helpers live in tests/support/feedback.ts. Adapted
- * from TechGeek.support's own.
+ * and on the plain tab states the probe fails when it isn't found. A control
+ * whose click changes nothing, such as the current tab, may stay still on
+ * hover, per the user's decision of 2026-11-18. Under reduced motion every
+ * change stays but switches at once. Real clicks are blocked during the
+ * checks, so pressing a control never runs its action. The snapshot and
+ * comparison helpers live in tests/support/feedback.ts. Adapted from
+ * TechGeek.support's own.
  *
  * Sections:
  *  - Types
@@ -684,6 +686,69 @@ async function reaHitFun ( hanCurObj : ElementHandle< Element > ) : Promise< boo
 
 
 
+// #region stiConFun
+
+/**
+ * stiConFun = Still Control Function
+ *
+ * @summary
+ * Runs inside the page and says whether a control may stay still when hovered,
+ * and when pressed, because a click on it does nothing, per the user's
+ * decision of 2026-11-18: a current or selected control a person can still
+ * click to change something gets a hover look, while one where a click changes
+ * nothing stays still. It judges by the element's own state, never by its
+ * class, so a new control of the same kind is judged the same way. A control
+ * marked current (aria-current, or a data-*-current-active attribute) and a
+ * radio already checked, whose click chooses what's already chosen, may skip
+ * the hover look. A control that is disabled through aria-disabled or a
+ * data-*-disabled-active attribute, or wraps a disabled control, such as an
+ * info tip trigger around a disabled button, may skip both looks. A hover card
+ * that isn't a control and whose cursor isn't the pointer, such as an open
+ * row's header, may skip the hover look too. Passed to Playwright's evaluate,
+ * so it can't read anything from this file.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param conCurEle - Control Current Element: The element probed.
+ * @param conSelStr - Control Selector String: What counts as a control, so a
+ *                    card is told apart from one.
+ *
+ * @returns Whether the element may skip its hover look, and its press look.
+ *
+ * @example
+ * ```ts
+ * handle.evaluate(stiConFun, CON_SEL_STR)
+ * // => { hovBoo : false, preBoo : false }
+ * ```
+ *
+*/
+
+function stiConFun ( conCurEle : Element, conSelStr : string ) : { hovBoo : boolean, preBoo : boolean } {
+
+
+	const cheRadBoo = conCurEle.matches( '[role="radio"][aria-checked="true"], input[type="radio"]:checked' ); // What: Checked Radio Boolean. Why: The user decided on 2026-11-18 that a chosen theme row or mode card stays still, since clicking it re-chooses the same one. How: This is true for a radio role marked checked or a native radio that is.
+	const curMarBoo = ( conCurEle.hasAttribute( 'aria-current' ) && conCurEle.getAttribute( 'aria-current' ) !== 'false' ) || [ ...conCurEle.attributes ].some( ( attCurObj ) => /^data-[a-z-]+-current-active$/.test( attCurObj.name ) ); // What: Current Marked Boolean. Why: The user decided on 2026-11-18 that a control marked current, such as the current tab, stays still, since clicking it opens what's already open. How: This is true for an element carrying aria-current, or a data-*-current-active attribute such as the picker form's current step.
+	const disWraBoo = conCurEle.matches( '[aria-disabled="true"]' ) || [ ...conCurEle.attributes ].some( ( attCurObj ) => /^data-[a-z-]+-disabled-active$/.test( attCurObj.name ) ) || !!conCurEle.querySelector( ':disabled' );           // What: Disabled Wrap Boolean. Why: The user decided on 2026-11-18 that an info tip trigger around a disabled control stays still on hover and on press, since its action can't run. How: This is true for an element marked aria-disabled or by a data-*-disabled-active attribute, such as the already-included Send's tip, or one holding a disabled control.
+	const ptrOffBoo = !conCurEle.matches( conSelStr ) && getComputedStyle( conCurEle ).cursor !== 'pointer'; // What: Pointer Off Boolean. Why: A card that isn't a control and shows no pointer cursor, such as an open row's header, does nothing on a click, so it stays still per the user's decision of 2026-11-18. How: This is true for a non-control whose computed cursor isn't the pointer.
+
+
+
+	return { // What: Still Verdict Return. Why: The probe skips only the look the decision exempts. How: This frees the hover look for every still case and the press look for a disabled wrapper alone.
+
+
+		hovBoo : cheRadBoo || curMarBoo || disWraBoo || ptrOffBoo, // What: Hover Boolean. Why: Every still case may skip the hover look. How: This is true when any of the four holds.
+		preBoo : disWraBoo                                         // What: Press Boolean. Why: Only a control whose action can't run may skip the press look too. How: This is true for a disabled wrapper.
+
+
+	};
+
+
+}
+
+// #endregion stiConFun
+
+
+
 // #region feeProFun
 
 /**
@@ -699,18 +764,22 @@ async function reaHitFun ( hanCurObj : ElementHandle< Element > ) : Promise< boo
  * the skip link, is focused so it slides in before it's hovered. Each is read
  * at rest with the pointer parked, again while hovered, and again while the
  * mouse button is held on it, a text field skipping the press, since pressing
- * one only focuses it, then blurred with the pointer parked and read once
- * more while focused the way a keyboard focuses it, every look read once its
- * motion has settled. A control that looks the same unfocused and focused is
- * a problem, and so is a link or button that looks the same at rest and
- * hovered or hovered and pressed, while a text field isn't held to those two.
- * Normally every probed property that changes on hover, press, or focus, on
- * the control or anything inside it, has to be eased ({@link snaProFun}), the
- * focus ring's outline included; under reduced motion none of them may ease
- * ({@link movProFun}), and the control's own transition durations, read while
- * it is pressed, or hovered for a field, must all be no longer than {@link
- * MIN_DUR_NUM}. It expects real clicks already blocked, so releasing the
- * mouse does nothing, and it returns the kinds it couldn't reach as notes.
+ * one only focuses it, then blurred with the pointer parked and read once more
+ * while focused the way a keyboard focuses it, every look read once its motion
+ * has settled. A control that looks the same unfocused and focused is a
+ * problem, and so is a link or button that looks the same at rest and hovered
+ * or hovered and pressed, while a text field isn't held to those two. Normally
+ * every probed property that changes on hover, press, or focus, on the control
+ * or anything inside it, has to be eased ({@link snaProFun}), the focus ring's
+ * outline included; under reduced motion none of them may ease ({@link
+ * movProFun}), and the control's own transition durations, read while it is
+ * pressed, or hovered for a field, must all be no longer than {@link
+ * MIN_DUR_NUM}. A control {@link stiConFun} finds still, since a click on it
+ * changes nothing, may skip its hover look, or its press look, and in WebKit a
+ * radio pointed at through its label skips its press look, since WebKit
+ * doesn't mark a pressed label :active. It expects real clicks already
+ * blocked, so releasing the mouse does nothing, and it returns the kinds it
+ * couldn't reach as notes.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -762,9 +831,11 @@ async function feeProFun ( curPagObj : Page, staIdeStr : string, redMotBoo : boo
 
 		const conDesStr = await conCurObj.evaluate( ( conCurEle ) => `${ conCurEle.tagName.toLowerCase() } "${ ( conCurEle.getAttribute( 'aria-label' ) || ( conCurEle.matches( 'input, select, textarea' ) ? conCurEle.getAttribute( 'name' ) || conCurEle.getAttribute( 'type' ) : conCurEle.textContent ) || '' ).trim().slice( 0, 30 ) }" (${ ( conCurEle.getAttribute( 'class' ) || '' ).trim().slice( 0, 40 ) })` ); // What: Control Description String. Why: A problem should name the control a person would recognize, and the class a reader of the stylesheet would. How: This joins its tag, its label, its text, or for a field its name or type, and the start of its class list.
 		const conFieBoo = await conCurObj.evaluate( ( conCurEle, fieSelStr ) => conCurEle.matches( fieSelStr ), FIE_SEL_STR );                                                                    // What: Control Field Boolean. Why: A text field has no hover or press look to require. How: This is true when the control is a text field.
+		const conStiObj = await conCurObj.evaluate( stiConFun, CON_SEL_STR ); // What: Control Still Object. Why: A control whose click does nothing may stay still, per the user's decision of 2026-11-18. How: This reads which looks the control may skip.
 		const labHanObj = await conCurObj.evaluateHandle( ( conCurEle ) => ( conCurEle.matches( 'input[type="radio"], input[type="checkbox"]' ) && conCurEle.closest( 'label' ) ) || conCurEle ); // What: Label Handle Object. Why: A radio or checkbox inside a label is drawn by its label, which takes the hover and press. How: This points at the label holding one, or the control itself.
 		const looHanObj = labHanObj.asElement()!; // What: Look Handle Object. Why: The look is read and pointed at through one element. How: This reads the handle as an element. // What: Non-Null Note. Why: The page function always returns an element. How: The control or its label is an element, so asElement can't be null.
 		const offScrBoo = await conCurObj.evaluate( ( conCurEle ) => conCurEle.getBoundingClientRect().bottom <= 0 );                                                                             // What: Off Screen Boolean. Why: A control that waits above the screen until it's focused, the skip link, can't be hovered where it rests. How: This is true when its box sits wholly above the viewport after the scroll.
+		const labWebBoo = curPagObj.context().browser()?.browserType().name() === 'webkit' && await labHanObj.evaluate( ( labCurEle ) => labCurEle.matches( 'label' ) );                          // What: Label WebKit Boolean. Why: WebKit doesn't mark a pressed label :active, so a radio drawn by its label, such as the picker form's mode card, can't show a press there, measured 2026-11-18. How: This is true in WebKit when the control is pointed at through its label, which frees it from the press look alone.
 
 
 		if ( offScrBoo && await conCurObj.evaluate( ( conCurEle ) => conCurEle.textContent?.trim() === 'Skip to main content' ) ) skiFouBoo = true; // What: Skip Found Assignment. Why: The skip link's focus-first branch has to run on the plain tabs. How: This marks it found when the control resting above the screen is the skip link.
@@ -829,11 +900,11 @@ async function feeProFun ( curPagObj : Page, staIdeStr : string, redMotBoo : boo
 
 
 
-		if ( !conFieBoo && valSigFun( resSnaArr ) === valSigFun( hovSnaArr ) ) proLisArr.push( `${ conDesStr } looks the same hovered` ); // What: Hover Check. Why: A hovered link or button has to respond. How: This records one that doesn't change, leaving out a text field, which has no hover look.
+		if ( !conFieBoo && !conStiObj.hovBoo && valSigFun( resSnaArr ) === valSigFun( hovSnaArr ) ) proLisArr.push( `${ conDesStr } looks the same hovered` ); // What: Hover Check. Why: A hovered link or button has to respond. How: This records one that doesn't change, leaving out a text field, which has no hover look.
 
 
 
-		if ( !conFieBoo && valSigFun( hovSnaArr ) === valSigFun( preSnaArr ) ) proLisArr.push( `${ conDesStr } looks the same pressed` ); // What: Press Check. Why: A press has to register before anything happens. How: This records a link or button that doesn't change, leaving out a text field, which isn't pressed.
+		if ( !conFieBoo && !conStiObj.preBoo && !labWebBoo && valSigFun( hovSnaArr ) === valSigFun( preSnaArr ) ) proLisArr.push( `${ conDesStr } looks the same pressed` ); // What: Press Check. Why: A press has to register before anything happens. How: This records a link or button that doesn't change, leaving out a text field, which isn't pressed.
 
 
 
@@ -877,7 +948,8 @@ async function feeProFun ( curPagObj : Page, staIdeStr : string, redMotBoo : boo
  * without being a control, such as a Today card, and returns a problem for
  * each one that gives no hover feedback. Each is scrolled into view, read at
  * rest with the pointer parked and again while hovered, every look read once
- * its motion has settled, and one that looks the same both ways is a problem.
+ * its motion has settled, and one that looks the same both ways is a problem,
+ * unless {@link stiConFun} finds it still, such as an open row's header.
  * Normally every probed property that changes, on the card or anything inside
  * it, has to be eased ({@link snaProFun}); under reduced motion none of them
  * may ease ({@link movProFun}), while the hover look still has to change.
@@ -921,6 +993,7 @@ async function hovProFun ( curPagObj : Page, redMotBoo : boolean ) : Promise< st
 
 
 		const tarDesStr = await tarCurObj.evaluate( ( tarCurEle ) => `${ tarCurEle.tagName.toLowerCase() } "${ ( tarCurEle.textContent || '' ).trim().slice( 0, 30 ) }" (${ ( tarCurEle.getAttribute( 'class' ) || '' ).trim().slice( 0, 40 ) })` ); // What: Target Description String. Why: A problem should name the card a person would recognize. How: This joins its tag with the start of its text and its class list.
+		const tarStiObj = await tarCurObj.evaluate( stiConFun, CON_SEL_STR ); // What: Target Still Object. Why: A card whose click does nothing may stay still, per the user's decision of 2026-11-18. How: This reads whether the card may skip its hover look.
 
 
 		await parMovFun( curPagObj ); // What: Pointer Park Call. Why: The resting look is read with nothing hovered. How: This moves the pointer to a clear spot.
@@ -965,7 +1038,7 @@ async function hovProFun ( curPagObj : Page, redMotBoo : boolean ) : Promise< st
 		const hovSnaArr = await tarCurObj.evaluate( snaEleFun, CON_PRO_ARR ); // What: Hover Snapshot Array. Why: The hovered look is compared with rest. How: This records it.
 
 
-		if ( valSigFun( resSnaArr ) === valSigFun( hovSnaArr ) ) proLisArr.push( `${ tarDesStr } looks the same hovered` ); // What: Hover Check. Why: A hovered card has to respond, under reduced motion too. How: This records one that doesn't change.
+		if ( !tarStiObj.hovBoo && valSigFun( resSnaArr ) === valSigFun( hovSnaArr ) ) proLisArr.push( `${ tarDesStr } looks the same hovered` ); // What: Hover Check. Why: A hovered card has to respond, under reduced motion too. How: This records one that doesn't change.
 
 
 
