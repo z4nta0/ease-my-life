@@ -161,14 +161,14 @@
 .modDotSpa { /* What: Mode Dot Span. Why: The selected state shows as a filled dot, not the native radio. How: This draws a small bordered circle with a border fade. */
 
 
-	border        : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border        : var( --bor-wid-bas ) solid var( --bor-mai-col );        /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : 50%;
 	flex          : 0 0 auto;
-	height        : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
-	margin-top    : var( --spa-ver-m09 );                            /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	height        : calc( var( --ver-rhy-bas ) * 1rem );                    /* Vertical Rhythm Base ~= 14.572px */
+	margin-top    : var( --spa-ver-m09 );                                   /* Spacing Vertical Base Minus 9 ~= 1.160px */
 	position      : relative;
-	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
-	width         : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+	transition    : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width         : calc( var( --ver-rhy-bas ) * 1rem );                    /* Vertical Rhythm Base ~= 14.572px */
 
 
 }

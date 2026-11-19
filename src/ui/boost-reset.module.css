@@ -29,13 +29,13 @@
 .booResBut { /* What: Boost Reset Button. Why: Resetting the boost is a small secondary action beside the value. How: This styles it as a compact outlined button in muted text. */
 
 
-	background    : var( --bac-sur-col );                                          /* Background Surface Color = oklch( 0.975 0.004 240 ) */
-	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );               /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius : var( --rad-bor-sma );                                          /* Radius Border Small ~= 8.304px */
-	color         : var( --tex-mut-col );                                          /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-size     : var( --fon-siz-bas );                                          /* Font Size Base = 11px */
-	padding       : var( --spa-ver-m05 ) var( --spa-hor-m02 );                     /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 2 ~= 8.304px */
-	transition    : color var( --dur-tra-m01 ), border-color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	background    : var( --bac-sur-col );                                                                                    /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                         /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                                                                                    /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mut-col );                                                                                    /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size     : var( --fon-siz-bas );                                                                                    /* Font Size Base = 11px */
+	padding       : var( --spa-ver-m05 ) var( --spa-hor-m02 );                                                               /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+	transition    : color var( --dur-tra-m01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 
 
 }

@@ -296,14 +296,14 @@
 .togSwiBut { /* What: Toggle Switch Button. Why: Each built-in day off can be turned off without deleting it. How: This draws a small rounded track that keeps its size in the row, fading to the accent when on. */
 
 
-	background    : var( --bor-mai-col );                /* Border Main Color = oklch( 0.91 0.005 240 ) */
+	background    : var( --bor-mai-col );                                 /* Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : 999px;
 	cursor        : pointer;
 	flex-shrink   : 0;
-	height        : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	height        : calc( var( --ver-rhy-p01 ) * 1rem );                  /* Vertical Rhythm Base Plus 1 ~= 19.304px */
 	position      : relative;
-	transition    : background var( --dur-tra-bas );     /* Duration Transition Base ~= 157.8ms */
-	width         : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition    : background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	width         : calc( var( --ver-rhy-p03 ) * 1rem );                  /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
@@ -338,7 +338,7 @@
 	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
 	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
-	transition    : transform var( --dur-tra-bas );                                     /* Duration Transition Base ~= 157.8ms */
+	transition    : transform var( --dur-tra-bas ) var( --mot-dec-eas );                /* Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width         : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
 
 
@@ -371,13 +371,13 @@
 
 
 	align-items     : center;
-	border-radius   : var( --rad-bor-sma );                                        /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border-radius   : var( --rad-bor-sma );                                                                                  /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                                                                  /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p02 ) * 1rem );                         /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content : center;
-	transition      : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
-	width           : calc( var( --ver-rhy-p02 ) * 1rem );                         /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	transition      : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
 }
@@ -429,19 +429,19 @@
 .holDatInp { /* What: Holiday Date Input. Why: The name and date fields should look like the app's other form fields while sharing the row. How: This gives them the shared field border, radius, padding, and type, lets them grow from a rhythm step, caps them at a rhythm step, and fades the border on focus. */
 
 
-	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
-	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
-	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
-	flex          : 1 1 calc( var( --ver-rhy-p09 ) * 1rem );         /* Vertical Rhythm Base Plus 9 ~= 183.074px */
-	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
-	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
-	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
-	margin-top    : var( --spa-ver-m07 );                            /* Spacing Vertical Base Minus 7 ~= 2.035px */
-	max-width     : calc( var( --ver-rhy-p10 ) * 1rem );             /* Vertical Rhythm Base Plus 10 ~= 242.522px */
+	background    : var( --bac-pag-col );                                   /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );        /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                                   /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                                   /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	flex          : 1 1 calc( var( --ver-rhy-p09 ) * 1rem );                /* Vertical Rhythm Base Plus 9 ~= 183.074px */
+	font-family   : var( --fon-fam-mai );                                   /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                                   /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );                    /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	margin-top    : var( --spa-ver-m07 );                                   /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	max-width     : calc( var( --ver-rhy-p10 ) * 1rem );                    /* Vertical Rhythm Base Plus 10 ~= 242.522px */
 	outline       : none;
-	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
-	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	padding       : 0 var( --spa-hor-m01 );                                 /* Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 	width         : 100%;
 
 

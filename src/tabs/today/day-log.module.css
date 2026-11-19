@@ -33,20 +33,20 @@
 
 	align-items    : center;
 	align-self     : center;
-	background     : var( --bac-sur-col );                                                                           /* Background Surface Color = oklch( 0.975 0.004 240 ) */
-	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	background     : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius  : 999px;
-	color          : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color          : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor         : pointer;
 	display        : inline-flex;
-	font-family    : var( --fon-fam-sec );                                                                           /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas );                                                                           /* Font Size Base = 11px */
-	gap            : var( --spa-hor-m04 );                                                                           /* Spacing Horizontal Base Minus 4 ~= 4.731px */
-	height         : calc( var( --ver-rhy-p02 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	font-family    : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                            /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m04 );                            /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	height         : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	letter-spacing : 0.05em;
-	padding        : 0 var( --spa-hor-m02 );                                                                         /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	padding        : 0 var( --spa-hor-m02 );                          /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 	text-transform : uppercase;
-	transition     : background var( --dur-tra-bas ), color var( --dur-tra-bas ), border-color var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
+	transition     : background var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
 
 
 }
@@ -162,17 +162,17 @@
 
 
 	align-items     : center;
-	background      : var( --bac-sur-col );                                          /* Background Surface Color = oklch( 0.975 0.004 240 ) */
-	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );               /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius   : var( --rad-bor-sma );                                          /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                          /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	background      : var( --bac-sur-col );                                                                                    /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                         /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                                                                                    /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                                                                    /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : flex;
 	flex            : none;
-	height          : calc( var( --ver-rhy-p02 ) * 1rem );                           /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );                                                                     /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content : center;
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
-	width           : calc( var( --ver-rhy-p02 ) * 1rem );                           /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );                                                                     /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
 }
@@ -454,9 +454,9 @@
 .bloChvSpa { /* What: Block Chevron Span. Why: The chevron shows whether the block is open. How: This sets a muted icon in the first column that turns when closed. */
 
 
-	color      : var( --tex-mut-col );           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color      : var( --tex-mut-col );                                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display    : inline-flex;
-	transition : transform var( --dur-tra-p01 ); /* Duration Transition Base Plus 1 ~= 209.1ms */
+	transition : transform var( --dur-tra-p01 ) var( --mot-dec-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }

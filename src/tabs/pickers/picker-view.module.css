@@ -941,17 +941,17 @@
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius   : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
-	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
@@ -1074,17 +1074,17 @@
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius   : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
-	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
@@ -1119,17 +1119,17 @@
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius   : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
-	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
@@ -1278,13 +1278,13 @@
 
 	background     : transparent;
 	border         : 0;
-	border-bottom  : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-bottom  : var( --bor-wid-bas ) solid var( --bor-mai-col );        /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	font           : inherit;
-	font-size      : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	font-size      : var( --fon-siz-p01 );                                   /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight    : 500;
 	letter-spacing : -0.005em;
-	padding        : var( --spa-ver-m09 ) 0;                          /* Spacing Vertical Base Minus 9 ~= 1.160px */
-	transition     : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	padding        : var( --spa-ver-m09 ) 0;                                 /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	transition     : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 	width          : 100%;
 
 
@@ -1349,19 +1349,19 @@
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-bas ) dashed var( --bor-mai-col );                                               /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius   : var( --rad-bor-med );                                                                           /* Radius Border Medium = 11px */
-	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border          : var( --bor-wid-bas ) dashed var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-med );                             /* Radius Border Medium = 11px */
+	color           : var( --tex-mut-col );                             /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
 	font            : inherit;
-	font-size       : var( --fon-siz-p01 );                                                                           /* Font Size Base Plus 1 ~= 14.572px */
+	font-size       : var( --fon-siz-p01 );                             /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight     : 500;
-	gap             : var( --spa-hor-m03 );                                                                           /* Spacing Horizontal Base Minus 3 ~= 6.268px */
-	height          : calc( var( --ver-rhy-p04 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	gap             : var( --spa-hor-m03 );                             /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	height          : calc( var( --ver-rhy-p04 ) * 1rem );              /* Vertical Rhythm Base Plus 4 ~= 44.876px */
 	justify-content : center;
-	padding         : 0 var( --spa-hor-bas );                                                                         /* Spacing Horizontal Base ~= 14.572px */
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
+	padding         : 0 var( --spa-hor-bas );                           /* Spacing Horizontal Base ~= 14.572px */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
 	width           : 100%;
 
 

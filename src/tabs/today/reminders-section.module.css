@@ -104,16 +104,16 @@
 
 
 	align-items     : center;
-	border-radius   : var( --rad-bor-sma );                                        /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border-radius   : var( --rad-bor-sma );                                                                                  /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                                                                  /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : grab;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p02 ) * 1rem );                         /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content : center;
-	margin-left     : calc( var( --spa-hor-m05 ) * -1 );                           /* Spacing Horizontal Base Minus 5 ~= 3.571px */
-	touch-action    : none;                                                        /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
-	transition      : color var( --dur-tra-m01 ), background var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
-	width           : calc( var( --ver-rhy-p02 ) * 1rem );                         /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	margin-left     : calc( var( --spa-hor-m05 ) * -1 );                                                                     /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+	touch-action    : none;                                                                                                  /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
+	transition      : color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
 }
@@ -297,17 +297,17 @@
 
 
 	align-items     : center;
-	background      : var( --bac-pag-col );                                                                           /* Background Page Color = oklch( 0.985 0.003 240 ) */
-	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	background      : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius   : 999px;
-	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
-	transition      : border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 ), background var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
-	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition      : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
@@ -478,19 +478,19 @@
 .addNamInp { /* What: Add Name Input. Why: The name field fills the row. How: This draws a bordered field that grows across the row and borders in the accent color on focus. */
 
 
-	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
-	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
-	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	background    : var( --bac-pag-col );                                   /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );        /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                                   /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                                   /* Text Main Color = oklch( 0.17 0.012 250 ) */
 	flex          : 1;
-	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
-	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
-	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	font-family   : var( --fon-fam-mai );                                   /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                                   /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );                    /* Vertical Rhythm Base Plus 4 ~= 44.876px */
 	margin-top    : 0;
 	max-width     : none;
 	outline       : none;
-	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
-	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	padding       : 0 var( --spa-hor-m01 );                                 /* Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 	width         : 100%;
 
 
@@ -587,17 +587,17 @@
 
 
 	align-items           : center;
-	background            : var( --bac-sur-col );                                                                             /* Background Surface Color = oklch( 0.975 0.004 240 ) */
-	border                : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                  /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius         : var( --rad-bor-lar );                                                                             /* Radius Border Large ~= 14.572px */
+	background            : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border                : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius         : var( --rad-bor-lar );                            /* Radius Border Large ~= 14.572px */
 	cursor                : pointer;
 	display               : grid;
-	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );                                                        /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
+	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );       /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 	grid-template-columns : auto 1fr auto;
-	margin-bottom         : var( --spa-ver-m01 );                                                                             /* Spacing Vertical Base Minus 1 = 11px */
-	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );                                                        /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
-	perspective           : calc( var( --ver-rhy-p14 ) * 1rem );                                                              /* Vertical Rhythm Base Plus 14 ~= 746.868px */
-	transition            : background var( --dur-tra-bas ), opacity var( --dur-tra-p01 ), border-color var( --dur-tra-m01 ); /* Duration Transition Base ~= 157.8ms, Duration Transition Base Plus 1 ~= 209.1ms, Duration Transition Base Minus 1 ~= 119.2ms */
+	margin-bottom         : var( --spa-ver-m01 );                            /* Spacing Vertical Base Minus 1 = 11px */
+	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );       /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
+	perspective           : calc( var( --ver-rhy-p14 ) * 1rem );             /* Vertical Rhythm Base Plus 14 ~= 746.868px */
+	transition            : background var( --dur-tra-bas ) var( --mot-sta-eas ), opacity var( --dur-tra-p01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Duration Transition Base Plus 1 ~= 209.1ms, Duration Transition Base Minus 1 ~= 119.2ms */
 	user-select           : none;
 
 
@@ -817,20 +817,20 @@
 	align-items        : center;
 	appearance         : none;
 	background         : none;
-	border             : var( --bor-wid-bas ) solid var( --bor-mai-col );                                                /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius      : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
+	border             : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius      : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
 	color              : inherit;
 	cursor             : pointer;
 	display            : inline-flex;
 	flex               : none;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-p02 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	height             : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content    : center;
 	margin             : 0;
 	padding            : 0;
 	position           : relative;
-	transition         : background var( --dur-tra-m01 ), border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
-	width              : calc( var( --ver-rhy-p02 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	transition         : background var( --dur-tra-m01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width              : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
 }
@@ -1004,15 +1004,15 @@
 
 	background     : none;
 	border         : none;
-	border-bottom  : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	color          : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
-	font-family    : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
-	font-size      : var( --fon-siz-p02 );                            /* Font Size Base Plus 2 ~= 19.304px */
+	border-bottom  : var( --bor-wid-bas ) solid var( --bor-mai-col );        /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	color          : var( --tex-mai-col );                                   /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family    : var( --fon-fam-mai );                                   /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size      : var( --fon-siz-p02 );                                   /* Font Size Base Plus 2 ~= 19.304px */
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	margin         : 0;
-	padding        : var( --spa-ver-m09 ) 0;                          /* Spacing Vertical Base Minus 9 ~= 1.160px */
-	transition     : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	padding        : var( --spa-ver-m09 ) 0;                                 /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	transition     : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 	width          : 100%;
 
 
@@ -1086,13 +1086,13 @@
 
 
 	align-items     : center;
-	border-radius   : var( --rad-bor-sma );                                        /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border-radius   : var( --rad-bor-sma );                                                                                  /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                                                                  /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );                         /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
-	transition      : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
-	width           : calc( var( --ver-rhy-p03 ) * 1rem );                         /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition      : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }

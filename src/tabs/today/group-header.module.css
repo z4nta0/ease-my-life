@@ -54,16 +54,16 @@
 
 
 	align-items     : center;
-	border-radius   : var( --rad-bor-sma );                                        /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border-radius   : var( --rad-bor-sma );                                                                                  /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                                                                  /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : grab;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p02 ) * 1rem );                         /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content : center;
-	margin-left     : calc( var( --spa-hor-m05 ) * -1 );                           /* Spacing Horizontal Base Minus 5 ~= 3.571px */
-	touch-action    : none;                                                        /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
-	transition      : color var( --dur-tra-m01 ), background var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
-	width           : calc( var( --ver-rhy-p02 ) * 1rem );                         /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	margin-left     : calc( var( --spa-hor-m05 ) * -1 );                                                                     /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+	touch-action    : none;                                                                                                  /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
+	transition      : color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
 }
@@ -203,19 +203,19 @@
 	align-items    : center;
 	background     : none;
 	border         : 0;
-	border-radius  : var( --rad-bor-sma );                                                /* Radius Border Small ~= 8.304px */
-	color          : var( --tex-mai-col );                                                /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	border-radius  : var( --rad-bor-sma );                                                                                  /* Radius Border Small ~= 8.304px */
+	color          : var( --tex-mai-col );                                                                                  /* Text Main Color = oklch( 0.17 0.012 250 ) */
 	cursor         : text;
 	display        : inline-flex;
 	font-family    : inherit;
-	font-size      : var( --fon-siz-p02 );                                                /* Font Size Base Plus 2 ~= 19.304px */
+	font-size      : var( --fon-siz-p02 );                                                                                  /* Font Size Base Plus 2 ~= 19.304px */
 	font-weight    : 500;
-	gap            : var( --spa-hor-m03 );                                                /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	gap            : var( --spa-hor-m03 );                                                                                  /* Spacing Horizontal Base Minus 3 ~= 6.268px */
 	letter-spacing : -0.015em;
-	margin         : calc( var( --spa-ver-m07 ) * -1 ) calc( var( --spa-hor-m03 ) * -1 ); /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 3 ~= 6.268px */
-	padding        : var( --spa-ver-m07 ) var( --spa-hor-m03 );                           /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+	margin         : calc( var( --spa-ver-m07 ) * -1 ) calc( var( --spa-hor-m03 ) * -1 );                                   /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+	padding        : var( --spa-ver-m07 ) var( --spa-hor-m03 );                                                             /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 3 ~= 6.268px */
 	text-wrap      : pretty;
-	transition     : background var( --dur-tra-m01 ), color var( --dur-tra-m01 );         /* Duration Transition Base Minus 1 ~= 119.2ms */
+	transition     : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 
 
 }
@@ -243,9 +243,9 @@
 .penIcoSvg { /* What: Pencil Icon Svg. Why: The pencil should only appear on hover, so the name reads normally at rest. How: This hides the muted glyph until hover, fading it in. */
 
 
-	color      : var( --tex-mut-col );         /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color      : var( --tex-mut-col );                              /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	opacity    : 0;
-	transition : opacity var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	transition : opacity var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 
 
 }

@@ -695,8 +695,8 @@
 	align-items : center;
 	display     : flex;
 	position    : relative;
-	transition  : color var( --dur-tra-m01 ), background var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
-	z-index     : 1;                                                           /* What: Tab Button Stack Level. Why: Each button has to sit above the sliding indicator at 0. How: This raises it one level. */
+	transition  : color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	z-index     : 1;                                                                                                     /* What: Tab Button Stack Level. Why: Each button has to sit above the sliding indicator at 0. How: This raises it one level. */
 
 
 }

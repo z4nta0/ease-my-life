@@ -532,7 +532,7 @@
 	padding           : var( --spa-ver-m01 ) var( --spa-hor-bas );                                /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
 	scroll-snap-align : start;
 	text-align        : left;
-	transition        : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 );       /* Duration Transition Base Minus 1 ~= 119.2ms */
+	transition        : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 
 
 }
@@ -829,9 +829,9 @@
 .chvDisSpa { /* What: Chevron Disclosure Span. Why: A disclosure shows which way it will open. How: This sets the muted icon in an inline box that turns when opened. */
 
 
-	color      : var( --tex-mut-col );           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color      : var( --tex-mut-col );                                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display    : inline-flex;
-	transition : transform var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
+	transition : transform var( --dur-tra-bas ) var( --mot-dec-eas ); /* Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
@@ -1002,19 +1002,19 @@
 
 
 	align-items     : center;
-	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );             /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                       /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius   : 999px;
-	color           : var( --tex-mut-col );                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color           : var( --tex-mut-col );                                                                                  /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : inline-flex;
-	font-family     : var( --fon-fam-sec );                                        /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size       : var( --fon-siz-bas );                                        /* Font Size Base = 11px */
-	gap             : var( --spa-hor-m04 );                                        /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	font-family     : var( --fon-fam-sec );                                                                                  /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size       : var( --fon-siz-bas );                                                                                  /* Font Size Base = 11px */
+	gap             : var( --spa-hor-m04 );                                                                                  /* Spacing Horizontal Base Minus 4 ~= 4.731px */
 	justify-content : center;
 	letter-spacing  : 0.04em;
-	padding         : var( --spa-ver-m07 ) var( --spa-hor-m02 );                   /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+	padding         : var( --spa-ver-m07 ) var( --spa-hor-m02 );                                                             /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 2 ~= 8.304px */
 	text-transform  : uppercase;
-	transition      : color var( --dur-tra-m01 ), background var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
-	width           : calc( var( --ver-rhy-p07 ) * 1rem );                         /* Vertical Rhythm Base Plus 7 ~= 104.323px */
+	transition      : color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p07 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 7 ~= 104.323px */
 
 
 }
@@ -1381,13 +1381,13 @@
 
 	background     : transparent;
 	border         : 0;
-	border-bottom  : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-bottom  : var( --bor-wid-bas ) solid var( --bor-mai-col );        /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	font           : inherit;
-	font-size      : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	font-size      : var( --fon-siz-p01 );                                   /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight    : 500;
 	letter-spacing : -0.005em;
-	padding        : var( --spa-ver-m09 ) 0;                          /* Spacing Vertical Base Minus 9 ~= 1.160px */
-	transition     : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	padding        : var( --spa-ver-m09 ) 0;                                 /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	transition     : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 	width          : 100%;
 
 
@@ -1528,19 +1528,19 @@
 
 	align-items     : center;
 	background      : none;
-	border          : var( --bor-wid-sma ) dashed var( --bor-mai-col );                                               /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius   : var( --rad-bor-med );                                                                           /* Radius Border Medium = 11px */
-	box-sizing      : content-box;                                                                                    /* What: Content Box Sizing. Why: The button must total exactly the height of a collapsed row card, whose border sits outside its header. How: This puts the border outside the rhythm height, so both add the same snapped border to the same height. */
-	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border          : var( --bor-wid-sma ) dashed var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-med );                             /* Radius Border Medium = 11px */
+	box-sizing      : content-box;                                      /* What: Content Box Sizing. Why: The button must total exactly the height of a collapsed row card, whose border sits outside its header. How: This puts the border outside the rhythm height, so both add the same snapped border to the same height. */
+	color           : var( --tex-mut-col );                             /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : flex;
-	font-size       : var( --fon-siz-p01 );                                                                           /* Font Size Base Plus 1 ~= 14.572px */
+	font-size       : var( --fon-siz-p01 );                             /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight     : 500;
-	gap             : var( --spa-hor-m02 );                                                                           /* Spacing Horizontal Base Minus 2 ~= 8.304px */
-	height          : calc( var( --ver-rhy-p05 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	gap             : var( --spa-hor-m02 );                             /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	height          : calc( var( --ver-rhy-p05 ) * 1rem );              /* Vertical Rhythm Base Plus 5 ~= 59.447px */
 	justify-content : center;
-	padding         : 0 var( --spa-hor-bas );                                                                         /* Spacing Horizontal Base ~= 14.572px */
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
+	padding         : 0 var( --spa-hor-bas );                           /* Spacing Horizontal Base ~= 14.572px */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
 
 
 }

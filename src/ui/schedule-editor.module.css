@@ -394,21 +394,21 @@
 .eveNumInp { /* What: Every Number Input. Why: An every-N count is a short number that looks like the app's other form fields but sits inline in its sentence. How: This gives it the shared field border, radius, padding, and focus fade in a narrow field with its digits centered in tabular mono. */
 
 
-	background           : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
-	border               : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius        : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
-	color                : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
-	font-family          : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size            : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	background           : var( --bac-pag-col );                                   /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border               : var( --bor-wid-sma ) solid var( --bor-mai-col );        /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius        : var( --rad-bor-sma );                                   /* Radius Border Small ~= 8.304px */
+	color                : var( --tex-mai-col );                                   /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family          : var( --fon-fam-sec );                                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-p01 );                                   /* Font Size Base Plus 1 ~= 14.572px */
 	font-variant-numeric : tabular-nums;
-	height               : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	height               : calc( var( --ver-rhy-p04 ) * 1rem );                    /* Vertical Rhythm Base Plus 4 ~= 44.876px */
 	margin-top           : 0;
-	max-width            : calc( var( --ver-rhy-p06 ) * 1rem );             /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	max-width            : calc( var( --ver-rhy-p06 ) * 1rem );                    /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 	outline              : none;
-	padding              : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
+	padding              : 0 var( --spa-hor-m01 );                                 /* Spacing Horizontal Base Minus 1 = 11px */
 	text-align           : center;
-	transition           : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
-	width                : calc( var( --ver-rhy-p06 ) * 1rem );             /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	transition           : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width                : calc( var( --ver-rhy-p06 ) * 1rem );                    /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 
 
 }
@@ -436,19 +436,19 @@
 .ancPicSel { /* What: Anchor Pick Select. Why: An anchor's selects look like the app's other form fields but sit inside a sentence, sized to their content. How: This gives them the shared field border, radius, padding, and type at their natural width with no top margin, a pointer, and a border fade on focus. */
 
 
-	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
-	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
-	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	background    : var( --bac-pag-col );                                   /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );        /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                                   /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                                   /* Text Main Color = oklch( 0.17 0.012 250 ) */
 	cursor        : pointer;
-	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
-	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
-	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	font-family   : var( --fon-fam-mai );                                   /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                                   /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );                    /* Vertical Rhythm Base Plus 4 ~= 44.876px */
 	margin-top    : 0;
 	max-width     : none;
 	outline       : none;
-	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
-	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	padding       : 0 var( --spa-hor-m01 );                                 /* Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 	width         : auto;
 
 

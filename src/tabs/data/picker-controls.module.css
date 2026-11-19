@@ -186,18 +186,18 @@
 .basNamInp { /* What: Basics Name Input. Why: The picker is renamed in place in a field that takes the row's width. How: This draws a rounded outlined field that borders in the accent on focus. */
 
 
-	background    : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
-	border        : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
-	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	background    : var( --bac-sur-col );                                   /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border        : var( --bor-wid-bas ) solid var( --bor-mai-col );        /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                                   /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                                   /* Text Main Color = oklch( 0.17 0.012 250 ) */
 	flex          : 1;
 	font-family   : inherit;
-	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
-	height        : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	font-size     : var( --fon-siz-p01 );                                   /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p03 ) * 1rem );                    /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	min-width     : 0;
 	outline       : none;
-	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
-	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	padding       : 0 var( --spa-hor-m01 );                                 /* Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 
 
 }
@@ -530,18 +530,18 @@
 
 
 	align-items     : center;
-	animation       : buttonOpenPopIn var( --dur-ani-bas ) var( --mot-dec-eas ) backwards;                            /* Duration Animation Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Backwards Fill. Why: A both fill would hold the end frame's full opacity after the pop, hiding the disabled confirm's dimming. How: backwards keeps the buttons hidden through the delay, then hands opacity back to their own rules once the pop ends. */
-	animation-delay : var( --dur-ani-m01 );                                                                           /* Duration Animation Base Minus 1 ~= 119.2ms */
-	background      : var( --bac-sur-col );                                                                           /* Background Surface Color = oklch( 0.975 0.004 240 ) */
-	border          : var( --bor-wid-bas ) solid var( --bor-mai-col );                                                /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	animation       : buttonOpenPopIn var( --dur-ani-bas ) var( --mot-dec-eas ) backwards; /* Duration Animation Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Backwards Fill. Why: A both fill would hold the end frame's full opacity after the pop, hiding the disabled confirm's dimming. How: backwards keeps the buttons hidden through the delay, then hands opacity back to their own rules once the pop ends. */
+	animation-delay : var( --dur-ani-m01 );                                                /* Duration Animation Base Minus 1 ~= 119.2ms */
+	background      : var( --bac-sur-col );                                                /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border          : var( --bor-wid-bas ) solid var( --bor-mai-col );                     /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius   : 50%;
-	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color           : var( --tex-mut-col );                                                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                 /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
-	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                 /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
@@ -732,14 +732,14 @@
 .modDotSpa { /* What: Mode Dot Span. Why: A drawn dot shows which option is chosen. How: This draws an outlined circle that fills when selected. */
 
 
-	border        : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border        : var( --bor-wid-bas ) solid var( --bor-mai-col );        /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : 50%;
 	flex          : 0 0 auto;
-	height        : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
-	margin-top    : var( --spa-ver-m09 );                            /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	height        : calc( var( --ver-rhy-bas ) * 1rem );                    /* Vertical Rhythm Base ~= 14.572px */
+	margin-top    : var( --spa-ver-m09 );                                   /* Spacing Vertical Base Minus 9 ~= 1.160px */
 	position      : relative;
-	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
-	width         : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+	transition    : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width         : calc( var( --ver-rhy-bas ) * 1rem );                    /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
@@ -976,13 +976,13 @@
 .togSwiBut { /* What: Toggle Switch Button. Why: Each schedule and item setting turns on or off with a switch. How: This draws a pill track whose knob slides across, fading its color. */
 
 
-	background    : var( --bor-mai-col );                /* Border Main Color = oklch( 0.91 0.005 240 ) */
+	background    : var( --bor-mai-col );                                 /* Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : 999px;
 	cursor        : pointer;
-	height        : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	height        : calc( var( --ver-rhy-p01 ) * 1rem );                  /* Vertical Rhythm Base Plus 1 ~= 19.304px */
 	position      : relative;
-	transition    : background var( --dur-tra-bas );     /* Duration Transition Base ~= 157.8ms */
-	width         : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition    : background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	width         : calc( var( --ver-rhy-p03 ) * 1rem );                  /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
@@ -1018,7 +1018,7 @@
 	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
 	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
-	transition    : transform var( --dur-tra-bas );                                     /* Duration Transition Base ~= 157.8ms */
+	transition    : transform var( --dur-tra-bas ) var( --mot-dec-eas );                /* Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width         : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
 
 
@@ -1216,18 +1216,18 @@
 .cadOptSel { /* What: Cadence Option Select. Why: The cadence selects look like the app's other fields, sized to their content. How: This draws a compact bordered field with a border fade on focus. */
 
 
-	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
-	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
-	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	background    : var( --bac-pag-col );                                   /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );        /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                                   /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                                   /* Text Main Color = oklch( 0.17 0.012 250 ) */
 	cursor        : pointer;
-	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
-	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	font-family   : var( --fon-fam-mai );                                   /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                                   /* Font Size Base Plus 1 ~= 14.572px */
 	margin-top    : 0;
 	max-width     : none;
 	outline       : none;
-	padding       : var( --spa-ver-m01 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
-	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	padding       : var( --spa-ver-m01 ) var( --spa-hor-m01 );              /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 	width         : auto;
 
 

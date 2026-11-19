@@ -542,7 +542,7 @@
 	padding           : var( --spa-ver-m01 ) var( --spa-hor-bas );                                /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
 	scroll-snap-align : start;
 	text-align        : left;
-	transition        : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 );       /* Duration Transition Base Minus 1 ~= 119.2ms */
+	transition        : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 
 
 }
@@ -671,17 +671,17 @@
 
 
 	background     : transparent;
-	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius  : 999px;
-	color          : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color          : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor         : pointer;
 	flex-shrink    : 0;
-	font-size      : var( --fon-siz-p01 );                                                                           /* Font Size Base Plus 1 ~= 14.572px */
+	font-size      : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight    : 500;
-	height         : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	height         : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	letter-spacing : -0.01em;
-	padding        : 0 var( --spa-hor-bas );                                                                         /* Spacing Horizontal Base ~= 14.572px */
-	transition     : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	padding        : 0 var( --spa-hor-bas );                          /* Spacing Horizontal Base ~= 14.572px */
+	transition     : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 	white-space    : nowrap;
 
 
@@ -1685,20 +1685,20 @@
 
 	align-items    : center;
 	background     : transparent;
-	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );               /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                         /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius  : 999px;
-	color          : var( --tex-mut-col );                                          /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color          : var( --tex-mut-col );                                                                                    /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor         : pointer;
 	display        : inline-flex;
 	flex           : 0 0 auto;
-	font-family    : var( --fon-fam-sec );                                          /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas );                                          /* Font Size Base = 11px */
-	gap            : var( --spa-hor-m04 );                                          /* Spacing Horizontal Base Minus 4 ~= 4.731px */
-	height         : calc( var( --ver-rhy-p02 ) * 1rem );                           /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	font-family    : var( --fon-fam-sec );                                                                                    /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                                                                                    /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m04 );                                                                                    /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	height         : calc( var( --ver-rhy-p02 ) * 1rem );                                                                     /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	letter-spacing : 0.04em;
-	padding        : 0 var( --spa-hor-m01 );                                        /* Spacing Horizontal Base Minus 1 = 11px */
+	padding        : 0 var( --spa-hor-m01 );                                                                                  /* Spacing Horizontal Base Minus 1 = 11px */
 	text-transform : uppercase;
-	transition     : border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	transition     : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 	white-space    : nowrap;
 
 
@@ -1777,16 +1777,16 @@
 
 
 	background     : transparent;
-	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius  : 999px;
-	color          : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color          : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor         : pointer;
 	flex           : 0 0 auto;
-	font-size      : var( --fon-siz-bas );                                                                           /* Font Size Base = 11px */
+	font-size      : var( --fon-siz-bas );                            /* Font Size Base = 11px */
 	font-weight    : 500;
 	letter-spacing : -0.01em;
-	padding        : var( --spa-ver-m04 ) var( --spa-hor-m01 );                                                      /* Spacing Vertical Base Minus 4 ~= 4.731px, Spacing Horizontal Base Minus 1 = 11px */
-	transition     : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	padding        : var( --spa-ver-m04 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 4 ~= 4.731px, Spacing Horizontal Base Minus 1 = 11px */
+	transition     : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 
 
 }
@@ -1842,14 +1842,14 @@
 
 	background            : none;
 	border                : 0;
-	color                 : var( --tex-mut-col );       /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color                 : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor                : pointer;
 	font                  : inherit;
 	padding               : 0;
 	text-decoration       : underline;
 	text-decoration-style : dotted;
 	text-underline-offset : 2px;
-	transition            : color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	transition            : color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 
 
 }

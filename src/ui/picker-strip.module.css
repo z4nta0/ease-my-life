@@ -68,17 +68,17 @@
 
 
 	align-items     : center;
-	color           : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : flex;
-	font-size       : var( --fon-siz-p02 );                /* Font Size Base Plus 2 ~= 19.304px */
+	font-size       : var( --fon-siz-p02 );                            /* Font Size Base Plus 2 ~= 19.304px */
 	font-weight     : 500;
-	height          : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	height          : calc( var( --ver-rhy-p05 ) * 1rem );             /* Vertical Rhythm Base Plus 5 ~= 59.447px */
 	justify-content : center;
 	letter-spacing  : -0.015em;
-	padding         : 0 var( --spa-hor-m01 );              /* Spacing Horizontal Base Minus 1 = 11px */
+	padding         : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
 	text-align      : center;
 	text-wrap       : pretty;
-	transition      : color var( --dur-tra-p02 );          /* Duration Transition Base Plus 2 ~= 277.0ms */
+	transition      : color var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
 
 
 }
@@ -339,16 +339,16 @@
 
 
 	align-items     : center;
-	border-radius   : var( --rad-bor-sma );                                                                        /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border-radius   : var( --rad-bor-sma );                /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : flex;
-	font-size       : var( --fon-siz-p01 );                                                                        /* Font Size Base Plus 1 ~= 14.572px */
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                         /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	font-size       : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
+	height          : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
-	padding         : 0 var( --spa-hor-bas );                                                                      /* Spacing Horizontal Base ~= 14.572px */
-	text-align      : center;                                                                                      /* What: Wrapped Name Alignment. Why: A name long enough to wrap should stay centered line by line too. How: This centers the text inside the flex row. */
+	padding         : 0 var( --spa-hor-bas );              /* Spacing Horizontal Base ~= 14.572px */
+	text-align      : center;                              /* What: Wrapped Name Alignment. Why: A name long enough to wrap should stay centered line by line too. How: This centers the text inside the flex row. */
 	text-wrap       : pretty;
-	transition      : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ), transform var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	transition      : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-m01 ) var( --mot-dec-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }

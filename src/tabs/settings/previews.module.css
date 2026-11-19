@@ -60,17 +60,17 @@
 
 
 	align-items           : center;
-	background            : var( --bac-sun-col );                                                                             /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
-	border                : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                  /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius         : var( --rad-bor-lar );                                                                             /* Radius Border Large ~= 14.572px */
+	background            : var( --bac-sun-col );                            /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
+	border                : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius         : var( --rad-bor-lar );                            /* Radius Border Large ~= 14.572px */
 	cursor                : default;
 	display               : grid;
-	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );                                                        /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
+	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );       /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 	grid-template-columns : auto 1fr auto;
-	margin-bottom         : var( --spa-ver-m01 );                                                                             /* Spacing Vertical Base Minus 1 = 11px */
-	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );                                                        /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
-	perspective           : calc( var( --ver-rhy-p14 ) * 1rem );                                                              /* Vertical Rhythm Base Plus 14 ~= 746.868px */
-	transition            : background var( --dur-tra-bas ), opacity var( --dur-tra-p01 ), border-color var( --dur-tra-m01 ); /* Duration Transition Base ~= 157.8ms, Duration Transition Base Plus 1 ~= 209.1ms, Duration Transition Base Minus 1 ~= 119.2ms */
+	margin-bottom         : var( --spa-ver-m01 );                            /* Spacing Vertical Base Minus 1 = 11px */
+	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );       /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
+	perspective           : calc( var( --ver-rhy-p14 ) * 1rem );             /* Vertical Rhythm Base Plus 14 ~= 746.868px */
+	transition            : background var( --dur-tra-bas ) var( --mot-sta-eas ), opacity var( --dur-tra-p01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Duration Transition Base Plus 1 ~= 209.1ms, Duration Transition Base Minus 1 ~= 119.2ms */
 	user-select           : none;
 
 
@@ -116,23 +116,23 @@
 .carCheSpa { /* What: Card Check Span. Why: A done card shows a filled accent check. How: This draws the rounded check box with the button chrome reset, filled with the accent color and its glyph in the background color. */
 
 
-	-webkit-appearance : none;                                                                                           /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping native control styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
+	-webkit-appearance : none;                                            /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping native control styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
 	align-items        : center;
 	appearance         : none;
-	background         : var( --acc-mai-col );                                                                           /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	border             : var( --bor-wid-bas ) solid var( --acc-mai-col );                                                /* Border Width Base ~= 1.160px, Accent Main Color = oklch( 0.5 0.14 250 ) */
-	border-radius      : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
-	color              : var( --bac-pag-col );                                                                           /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	background         : var( --acc-mai-col );                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border             : var( --bor-wid-bas ) solid var( --acc-mai-col ); /* Border Width Base ~= 1.160px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius      : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color              : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
 	display            : inline-flex;
 	flex               : none;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-p02 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	height             : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content    : center;
 	margin             : 0;
 	padding            : 0;
 	position           : relative;
-	transition         : background var( --dur-tra-m01 ), border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
-	width              : calc( var( --ver-rhy-p02 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 2 ~= 25.572px */
+	transition         : background var( --dur-tra-m01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width              : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
 }

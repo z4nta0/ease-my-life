@@ -46,19 +46,19 @@
 .sorDroSel { /* What: Sort Dropdown Select. Why: The select should look like the app's other form fields. How: This gives it the shared field styling (the form input look it previously got from .np-input) plus a pointer cursor. */
 
 
-	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
-	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
-	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	background    : var( --bac-pag-col );                                   /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );        /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                                   /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                                   /* Text Main Color = oklch( 0.17 0.012 250 ) */
 	cursor        : pointer;
-	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
-	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
-	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
-	margin-top    : var( --spa-ver-m07 );                            /* Spacing Vertical Base Minus 7 ~= 2.035px */
-	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );             /* Vertical Rhythm Base Plus 11 ~= 321.273px */
+	font-family   : var( --fon-fam-mai );                                   /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                                   /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );                    /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	margin-top    : var( --spa-ver-m07 );                                   /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );                    /* Vertical Rhythm Base Plus 11 ~= 321.273px */
 	outline       : none;
-	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
-	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	padding       : 0 var( --spa-hor-m01 );                                 /* Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 	width         : 100%;
 
 

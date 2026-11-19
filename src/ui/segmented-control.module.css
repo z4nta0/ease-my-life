@@ -85,16 +85,16 @@
 	background    : none;
 	border        : none;
 	border-radius : 999px;
-	color         : var( --tex-mut-col );                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color         : var( --tex-mut-col );                                                                                  /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor        : pointer;
-	font-family   : var( --fon-fam-mai );                                        /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
-	font-size     : var( --fon-siz-p01 );                                        /* Font Size Base Plus 1 ~= 14.572px */
+	font-family   : var( --fon-fam-mai );                                                                                  /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                                                                                  /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight   : 500;
-	min-height    : calc( var( --ver-rhy-p03 ) * 1rem );                         /* Vertical Rhythm Base Plus 3 ~= 33.876px */
-	padding       : var( --spa-ver-m03 ) var( --spa-hor-bas );                   /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base ~= 14.572px */
+	min-height    : calc( var( --ver-rhy-p03 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	padding       : var( --spa-ver-m03 ) var( --spa-hor-bas );                                                             /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base ~= 14.572px */
 	position      : relative;
-	transition    : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
-	z-index       : 1;                                                           /* What: Button Stack Level. Why: The option buttons have to sit above the sliding thumb at 0. How: This raises them one level. */
+	transition    : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	z-index       : 1;                                                                                                     /* What: Button Stack Level. Why: The option buttons have to sit above the sliding thumb at 0. How: This raises them one level. */
 
 
 }

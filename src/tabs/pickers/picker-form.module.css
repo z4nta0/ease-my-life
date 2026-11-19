@@ -136,17 +136,17 @@
 
 
 	align-items     : center;
-	border          : var( --bor-wid-bas ) solid var( --bor-mai-col );                                                /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border          : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius   : 999px;
-	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : inline-flex;
-	font-family     : var( --fon-fam-sec );                                                                           /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size       : var( --fon-siz-bas );                                                                           /* Font Size Base = 11px */
+	font-family     : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size       : var( --fon-siz-bas );                            /* Font Size Base = 11px */
 	font-weight     : 600;
-	height          : calc( var( --ver-rhy-p01 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	height          : calc( var( --ver-rhy-p01 ) * 1rem );             /* Vertical Rhythm Base Plus 1 ~= 19.304px */
 	justify-content : center;
-	transition      : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
-	width           : calc( var( --ver-rhy-p01 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	transition      : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p01 ) * 1rem );             /* Vertical Rhythm Base Plus 1 ~= 19.304px */
 
 
 }
@@ -360,18 +360,18 @@
 .forTexInp { /* What: Form Text Input. Why: Names are typed into a bordered field. How: This draws a rounded field that borders in the accent on focus. */
 
 
-	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
-	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
-	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
-	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
-	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
-	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
-	margin-top    : var( --spa-ver-m07 );                            /* Spacing Vertical Base Minus 7 ~= 2.035px */
-	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );             /* Vertical Rhythm Base Plus 11 ~= 321.273px */
+	background    : var( --bac-pag-col );                                   /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );        /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                                   /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                                   /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family   : var( --fon-fam-mai );                                   /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                                   /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );                    /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	margin-top    : var( --spa-ver-m07 );                                   /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );                    /* Vertical Rhythm Base Plus 11 ~= 321.273px */
 	outline       : none;
-	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
-	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	padding       : 0 var( --spa-hor-m01 );                                 /* Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 	width         : 100%;
 
 
@@ -430,18 +430,18 @@
 
 
 	align-items   : center;
-	background    : var( --bac-sur-col );                                                                           /* Background Surface Color = oklch( 0.975 0.004 240 ) */
-	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	background    : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : 999px;
-	color         : var( --tex-mai-col );                                                                           /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
 	cursor        : pointer;
 	display       : inline-flex;
-	font-size     : var( --fon-siz-p01 );                                                                           /* Font Size Base Plus 1 ~= 14.572px */
+	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight   : 500;
-	gap           : var( --spa-hor-m04 );                                                                           /* Spacing Horizontal Base Minus 4 ~= 4.731px */
-	height        : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
-	padding       : 0 var( --spa-hor-bas );                                                                         /* Spacing Horizontal Base ~= 14.572px */
-	transition    : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	gap           : var( --spa-hor-m04 );                            /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	height        : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	padding       : 0 var( --spa-hor-bas );                          /* Spacing Horizontal Base ~= 14.572px */
+	transition    : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 
 
 }
@@ -514,14 +514,14 @@
 
 
 	align-items   : flex-start;
-	background    : var( --bac-sun-col );                                               /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
-	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );                    /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius : var( --rad-bor-med );                                               /* Radius Border Medium = 11px */
+	background    : var( --bac-sun-col );                            /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-med );                            /* Radius Border Medium = 11px */
 	cursor        : pointer;
 	display       : flex;
-	gap           : var( --spa-hor-m01 );                                               /* Spacing Horizontal Base Minus 1 = 11px */
-	padding       : var( --spa-ver-m01 ) var( --spa-hor-m01 );                          /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
-	transition    : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	gap           : var( --spa-hor-m01 );                            /* Spacing Horizontal Base Minus 1 = 11px */
+	padding       : var( --spa-ver-m01 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 
 
 }
@@ -567,14 +567,14 @@
 
 	-webkit-appearance : none;
 	appearance         : none;
-	border             : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border             : var( --bor-wid-bas ) solid var( --bor-mai-col );        /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius      : 50%;
-	height             : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
-	margin-top         : var( --spa-ver-m07 );                            /* Spacing Vertical Base Minus 7 ~= 2.035px */
-	min-width          : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */ /* What: Radio Minimum Width. Why: In its flex row the radio could otherwise shrink below its own width when space runs short. How: This holds it at the same rhythm step as its width. */
+	height             : calc( var( --ver-rhy-bas ) * 1rem );                    /* Vertical Rhythm Base ~= 14.572px */
+	margin-top         : var( --spa-ver-m07 );                                   /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	min-width          : calc( var( --ver-rhy-bas ) * 1rem );                    /* Vertical Rhythm Base ~= 14.572px */ /* What: Radio Minimum Width. Why: In its flex row the radio could otherwise shrink below its own width when space runs short. How: This holds it at the same rhythm step as its width. */
 	position           : relative;
-	transition         : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
-	width              : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+	transition         : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width              : calc( var( --ver-rhy-bas ) * 1rem );                    /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
@@ -681,15 +681,15 @@
 .togSwiBut { /* What: Toggle Switch Button. Why: Each on or off setting uses a switch that keeps its size beside its text. How: This draws a pill track whose knob slides across, fading its color. */
 
 
-	background    : var( --bor-mai-col );                /* Border Main Color = oklch( 0.91 0.005 240 ) */
+	background    : var( --bor-mai-col );                                 /* Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : 999px;
 	cursor        : pointer;
 	flex-shrink   : 0;
-	height        : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
-	margin-top    : var( --spa-ver-m07 );                /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	height        : calc( var( --ver-rhy-p01 ) * 1rem );                  /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	margin-top    : var( --spa-ver-m07 );                                 /* Spacing Vertical Base Minus 7 ~= 2.035px */
 	position      : relative;
-	transition    : background var( --dur-tra-bas );     /* Duration Transition Base ~= 157.8ms */
-	width         : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition    : background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	width         : calc( var( --ver-rhy-p03 ) * 1rem );                  /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
@@ -724,7 +724,7 @@
 	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
 	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
-	transition    : transform var( --dur-tra-bas );                                     /* Duration Transition Base ~= 157.8ms */
+	transition    : transform var( --dur-tra-bas ) var( --mot-dec-eas );                /* Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width         : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
 
 
@@ -1365,17 +1365,17 @@
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius   : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
-	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
@@ -1408,17 +1408,17 @@
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius   : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
-	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
@@ -1574,13 +1574,13 @@
 
 	background     : transparent;
 	border         : 0;
-	border-bottom  : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-bottom  : var( --bor-wid-bas ) solid var( --bor-mai-col );        /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	font           : inherit;
-	font-size      : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	font-size      : var( --fon-siz-p01 );                                   /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight    : 500;
 	letter-spacing : -0.005em;
-	padding        : var( --spa-ver-m09 ) 0;                          /* Spacing Vertical Base Minus 9 ~= 1.160px */
-	transition     : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	padding        : var( --spa-ver-m09 ) 0;                                 /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	transition     : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 	width          : 100%;
 
 
@@ -1645,19 +1645,19 @@
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-bas ) dashed var( --bor-mai-col );                                               /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius   : var( --rad-bor-med );                                                                           /* Radius Border Medium = 11px */
-	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border          : var( --bor-wid-bas ) dashed var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-med );                             /* Radius Border Medium = 11px */
+	color           : var( --tex-mut-col );                             /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
 	font            : inherit;
-	font-size       : var( --fon-siz-p01 );                                                                           /* Font Size Base Plus 1 ~= 14.572px */
+	font-size       : var( --fon-siz-p01 );                             /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight     : 500;
-	gap             : var( --spa-hor-m03 );                                                                           /* Spacing Horizontal Base Minus 3 ~= 6.268px */
-	height          : calc( var( --ver-rhy-p04 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	gap             : var( --spa-hor-m03 );                             /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	height          : calc( var( --ver-rhy-p04 ) * 1rem );              /* Vertical Rhythm Base Plus 4 ~= 44.876px */
 	justify-content : center;
-	padding         : 0 var( --spa-hor-bas );                                                                         /* Spacing Horizontal Base ~= 14.572px */
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
+	padding         : 0 var( --spa-hor-bas );                           /* Spacing Horizontal Base ~= 14.572px */
+	transition      : color var( --dur-tra-bas ) var( --mot-sta-eas ), border-color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
 	width           : 100%;
 
 
