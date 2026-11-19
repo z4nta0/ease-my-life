@@ -24,15 +24,24 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
  * their npm scripts start around them. The emulator's admin API creates an
  * account and gives it the paid claim, standing in for the payment webhook,
  * and reads back each emailed sign-in link, which a device then opens the
- * way a person would.
+ * way a person would. It also holds the day their new-day flows start on.
  *
  * Sections:
+ *  - Constants
  *  - Helpers
  *  - Exports
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Constants
+
+const DAY_ONE_STR = '2026-10-05'; // What: Day One String. Why: The account flows build a daily list on a known day, after the backup's 6 AM run time. How: This is that Chicago date.
+
+// #endregion Constants
 
 
 
@@ -156,7 +165,7 @@ const synWaiFun = ( curPagObj : Page ) => expect( curPagObj.locator( '[data-elem
 
 // #region Exports
 
-export { claSetFun, creAccFun, sigLinFun, synWaiFun }; // What: Named Exports. Why: The account suites create accounts, sign devices in, and wait for syncs through these. How: This exports them by name.
+export { claSetFun, creAccFun, DAY_ONE_STR, sigLinFun, synWaiFun }; // What: Named Exports. Why: The account suites create accounts, sign devices in, wait for syncs, and start their new-day flows through these. How: This exports them by name.
 
 // #endregion Exports
 

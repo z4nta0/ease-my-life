@@ -5,6 +5,7 @@
 
 import { claSetFun   } from '../support/account.ts';         // What: Claim Set Function. Why: The purchase test sets the paid claim as the webhook would. How: This sets it.
 import { creAccFun   } from '../support/account.ts';         // What: Create Account Function. Why: Each flow needs its own emulator account. How: This creates one.
+import { DAY_ONE_STR } from '../support/account.ts';         // What: Day One String. Why: Both devices share a list on the first day of the new-day flow. How: This is that Chicago date.
 import { EMU_PRO_STR } from '../../src/emulator-project.ts'; // What: Emulator Project String. Why: The emulator's addresses name the project. How: This is the demo project.
 import { expect      } from '@playwright/test';              // What: Expect. Why: Every step asserts what synced. How: This makes the assertions.
 import { FIR_EMU_STR } from '../support/emulator.ts';        // What: Firestore Emulator String. Why: The test reads the cloud copy straight from the Firestore emulator. How: This is its address.
@@ -55,7 +56,6 @@ import { wriStaFun   } from '../support/storage.ts';         // What: Write Stat
 
 // #region Constants
 
-const DAY_ONE_STR = '2026-10-05';     // What: Day One String. Why: Both devices share a list on the first day of the new-day flow. How: This is that Chicago date.
 const DAY_TWO_STR = '2026-10-06';     // What: Day Two String. Why: The second device opens on the next day with the first day's list. How: This is that Chicago date.
 const ENT_CHE_STR = '[data-element-name-hook~="todCarArt"]:not( [data-element-name-hook~="chrCarArt"], [data-element-name-hook~="daoCarArt"], [data-element-name-hook~="remCarArt"], [data-element-name-hook~="tutCarArt"] ) [data-element-name-hook~="carCheBut"]'; // What: Entry Check String. Why: The check-off has to land on a picked entry, not a reminder, a charging card, a day off, or a tutorial card. How: This finds the check button of a plain Today card.
 const HOL_NAM_STR = 'Synced Holiday'; // What: Holiday Name String. Why: The second device's change must be found on the first. How: This names the holiday it adds.

@@ -3,23 +3,24 @@
 
 // #region Imports
 
-import { conChaFun   } from '../support/update.ts';         // What: Controller Change Function. Why: A new version taking control starts the flow. How: This fires the control change.
-import { creAccFun   } from '../support/account.ts';        // What: Create Account Function. Why: The flow needs its own paid emulator account. How: This creates one.
+import { conChaFun   } from '../support/update.ts';          // What: Controller Change Function. Why: A new version taking control starts the flow. How: This fires the control change.
+import { creAccFun   } from '../support/account.ts';         // What: Create Account Function. Why: The flow needs its own paid emulator account. How: This creates one.
+import { DAY_ONE_STR } from '../support/account.ts';         // What: Day One String. Why: The device's daily list is built on a known day before the change. How: This is that Chicago date.
 import { EMU_PRO_STR } from '../../src/emulator-project.ts'; // What: Emulator Project String. Why: The manifest's address names the project. How: This is the demo project.
-import { expect      } from '@playwright/test';             // What: Expect. Why: Each step asserts on the note, the page's mark, and the cloud's revision. How: This makes the assertions.
-import { fakWorFun   } from '../support/update.ts';         // What: Fake Worker Function. Why: The suites block service workers, so the update flow's inputs are faked. How: This fakes the controller, the registration, and the visibility.
-import { FIR_EMU_STR } from '../support/emulator.ts';       // What: Firestore Emulator String. Why: The test reads the manifest straight from the Firestore emulator. How: This is its address.
-import { insClcFun   } from '../support/clock.ts';          // What: Install Clock Function. Why: The flow runs on a chosen day, so its daily list is built at a known moment. How: This fakes the page's clock before it loads.
-import { locDayFun   } from '../support/clock.ts';          // What: Local Day Function. Why: The flow checks which day a list was built on. How: This reads a timestamp's Chicago date.
-import { NOT_MES_STR } from '../support/update.ts';         // What: Note Message String. Why: The note is found by its message. How: This is the text it shows.
-import { reaFixFun   } from '../support/fixture.ts';        // What: Read Fixture Function. Why: The device starts on real data. How: This reads the backup.
-import { sigLinFun   } from '../support/account.ts';        // What: Sign In Link Function. Why: The device signs in the way a person does. How: This signs it in with an emailed link.
-import { synWaiFun   } from '../support/account.ts';        // What: Sync Wait Function. Why: The first upload has to finish before the change. How: This waits for the status to read Synced.
-import { test        } from '@playwright/test';             // What: Test. Why: The flow is its own test. How: This declares it.
-import { visSetFun   } from '../support/update.ts';         // What: Visibility Set Function. Why: Hiding the app is what starts both the upload and the quiet reload. How: This sets the faked visibility and fires its event.
-import { waiStaFun   } from '../support/storage.ts';        // What: Wait State Function. Why: The change has to be saved before it waits to sync. How: This waits for it in storage.
-import { watErrFun   } from '../support/watch.ts';          // What: Watch Errors Function. Why: The flow fails on any page error. How: This collects them.
-import { wriStaFun   } from '../support/storage.ts';        // What: Write State Function. Why: The device starts from the backup. How: This writes it.
+import { expect      } from '@playwright/test';              // What: Expect. Why: Each step asserts on the note, the page's mark, and the cloud's revision. How: This makes the assertions.
+import { fakWorFun   } from '../support/update.ts';          // What: Fake Worker Function. Why: The suites block service workers, so the update flow's inputs are faked. How: This fakes the controller, the registration, and the visibility.
+import { FIR_EMU_STR } from '../support/emulator.ts';        // What: Firestore Emulator String. Why: The test reads the manifest straight from the Firestore emulator. How: This is its address.
+import { insClcFun   } from '../support/clock.ts';           // What: Install Clock Function. Why: The flow runs on a chosen day, so its daily list is built at a known moment. How: This fakes the page's clock before it loads.
+import { locDayFun   } from '../support/clock.ts';           // What: Local Day Function. Why: The flow checks which day a list was built on. How: This reads a timestamp's Chicago date.
+import { NOT_MES_STR } from '../support/update.ts';          // What: Note Message String. Why: The note is found by its message. How: This is the text it shows.
+import { reaFixFun   } from '../support/fixture.ts';         // What: Read Fixture Function. Why: The device starts on real data. How: This reads the backup.
+import { sigLinFun   } from '../support/account.ts';         // What: Sign In Link Function. Why: The device signs in the way a person does. How: This signs it in with an emailed link.
+import { synWaiFun   } from '../support/account.ts';         // What: Sync Wait Function. Why: The first upload has to finish before the change. How: This waits for the status to read Synced.
+import { test        } from '@playwright/test';              // What: Test. Why: The flow is its own test. How: This declares it.
+import { visSetFun   } from '../support/update.ts';          // What: Visibility Set Function. Why: Hiding the app is what starts both the upload and the quiet reload. How: This sets the faked visibility and fires its event.
+import { waiStaFun   } from '../support/storage.ts';         // What: Wait State Function. Why: The change has to be saved before it waits to sync. How: This waits for it in storage.
+import { watErrFun   } from '../support/watch.ts';           // What: Watch Errors Function. Why: The flow fails on any page error. How: This collects them.
+import { wriStaFun   } from '../support/storage.ts';         // What: Write State Function. Why: The device starts from the backup. How: This writes it.
 
 // #endregion Imports
 
@@ -52,7 +53,6 @@ import { wriStaFun   } from '../support/storage.ts';        // What: Write State
 
 // #region Constants
 
-const DAY_ONE_STR = '2026-10-05';     // What: Day One String. Why: The device's daily list is built on a known day before the change. How: This is that Chicago date.
 const HOL_NAM_STR = 'Update Holiday'; // What: Holiday Name String. Why: The change that waits to sync must be found in storage. How: This names the holiday it adds.
 
 // #endregion Constants
