@@ -1,7 +1,7 @@
 {
 	"name": "Ease My Life",
 	"short_name": "Ease My Life",
-	"description": "Pick what to do today, without deciding. Your pickers choose for you, on your schedule and entirely on your device.",
+	"description": "Pick what to do today, without deciding. Your pickers choose for you, on the schedule you set and entirely on your device.",
 	"id": "/",
 	"start_url": ".",
 	"scope": ".",

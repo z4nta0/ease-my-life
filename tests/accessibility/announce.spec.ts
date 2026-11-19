@@ -27,8 +27,8 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
  * hands focus back to Send, and a sent message fills the status region and
  * moves focus to the Contact Support button as the form closes. The Today
  * tab's reminder form has a status region of its own, empty on load, which
- * fills with the note once a reminder is added. Adapted from TechGeek.support's
- * own.
+ * fills with the note once a reminder is added. Adapted from
+ * TechGeek.support's own.
  *
  * Sections:
  *  - Constants
