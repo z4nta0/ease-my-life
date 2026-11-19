@@ -81,7 +81,9 @@ tests/output/report` opens the HTML report.
   emailed link (read back from the emulator) and uploads the real backup,
   the second, a fresh install, adopts it, and a holiday added on the second
   syncs back to the first. It also buys sync with the checkout stubbed,
-  resets a device with its cloud copy, takes the returning-user option, and
+  signs out (the session has to stay gone after a reload, with no token in
+  local storage while signed in), resets a device with its cloud copy, takes
+  the returning-user option, and
   scans the signed-in Account screens (unpaid, synced, the first-sync choice,
   and the reset confirm) with axe and a 320px reflow check, which the main
   accessibility suite can't reach. `npm test` runs every suite, payments

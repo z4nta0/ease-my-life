@@ -39,7 +39,8 @@ import { wriStaFun   } from '../support/storage.ts'; // What: Write State Functi
  * webhook would, and the app has to notice the claim by itself. Another
  * opens a device on a new day with the previous day's list, which has to
  * take the list another device already checked off rather than build its
- * own.
+ * own. Signing out has to end the session for good, surviving a reload, and
+ * a signed-in device keeps no token in local storage.
  *
  * Sections:
  *  - Constants
@@ -307,6 +308,56 @@ test( "a returning user skips onboarding and lands on Settings' Account section"
 	await expect( curPagObj.locator( '[data-element-name-hook~="setAccSec"]' ) ).toBeInViewport();                          // What: Account Section Assertion. Why: The person lands on Sign in. How: This expects the section on screen.
 	await expect( curPagObj.getByRole( 'dialog', { name : 'Welcome to Ease My Life' } ) ).toHaveCount( 0 );                 // What: Modal Gone Assertion. Why: Onboarding is out of the way. How: This expects no welcome modal.
 	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.onboarding.welcomed === true, 'the welcome modal marked done' ); // What: Welcomed Wait. Why: The modal must not come back on the next launch. How: This waits for the saved flag.
+
+	expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] ); // What: Error Assertion. Why: A flow that logged an error failed even if it finished. How: This expects no errors.
+
+
+} );
+
+
+
+test( 'signing out ends the session and leaves nothing of it in storage', async ( { page : curPagObj } ) => { // What: Sign Out Test. Why: Signing out has to end the session for real, and a signed-in device should keep nothing secret in local storage, the sign-in library's own session aside. How: This signs in and syncs, checks local storage holds only the app's flags, signs out, and checks the sign-in button is back, the app's account flags are gone, and a reload stays signed out.
+
+
+	const emaAdrStr = `signout-${ Date.now() }@example.com`; // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address.
+	const errMesArr = watErrFun( curPagObj );                // What: Error Message Array. Why: The flow fails on any page error. How: This starts watching.
+
+
+	await creAccFun( emaAdrStr ); // What: Account Create Call. Why: Only a paid account syncs. How: This creates one.
+
+	await wriStaFun( curPagObj, reaFixFun() ); // What: Backup Load Call. Why: The device has data to sync. How: This writes the backup.
+
+	await curPagObj.goto( '/' ); // What: App Load. Why: The app boots on the backup. How: This opens it.
+
+	await sigLinFun( curPagObj, emaAdrStr ); // What: Sign-In Call. Why: Only a signed-in device has a session to end. How: This signs in.
+
+	await synWaiFun( curPagObj ); // What: Sync Wait. Why: A synced device has written every flag it keeps. How: This waits for the sync.
+
+
+	const sigEntArr = await curPagObj.evaluate( () => Object.entries( localStorage ) ); // What: Signed-In Entry Array. Why: Local storage is readable by any script on the page, so it's checked while the session is live. How: This reads its pairs.
+
+
+	expect( sigEntArr.filter( ( [ stoKeyStr ] ) => !stoKeyStr.startsWith( 'easemylife.' ) && !stoKeyStr.startsWith( 'firebase:' ) ).map( ( [ stoKeyStr ] ) => stoKeyStr ) ).toEqual( [] );     // What: Own Keys Assertion. Why: Only the app's documented keys and the Firebase SDK's own belong there. How: This lists any other key.
+	expect( sigEntArr.filter( ( [ , stoValStr ] ) => /eyJ[0-9A-Za-z_-]{10,}\.|"(refreshToken|accessToken|idToken)"/.test( stoValStr ) ).map( ( [ stoKeyStr ] ) => stoKeyStr ) ).toEqual( [] ); // What: No Token Assertion. Why: Firebase keeps its tokens in its own IndexedDB store, so none should be in local storage. How: This lists any key whose value holds a token.
+
+
+	await curPagObj.locator( '[data-element-name-hook~="accOutBut"]' ).click(); // What: Sign Out Click. Why: This is the action under test. How: This clicks Sign out.
+
+	await expect( curPagObj.locator( '[data-element-name-hook~="accGooBut"]' ) ).toBeVisible(); // What: Signed Out Assertion. Why: The account screen has to offer sign-in again. How: This expects the sign-in button back.
+
+
+	const outKeyArr = await curPagObj.evaluate( () => Object.keys( localStorage ) ); // What: Signed-Out Key Array. Why: The app's account flags must go with the session. How: This reads local storage's keys.
+
+
+	expect( outKeyArr ).not.toContain( 'easemylife.signedin' ); // What: Signed-In Flag Assertion. Why: A signed-out device shouldn't load Firebase at launch. How: This checks the flag is gone.
+	expect( outKeyArr ).not.toContain( 'easemylife.syncmeta' ); // What: Sync Record Assertion. Why: The record belongs to the account left behind. How: This checks it's gone.
+
+
+	await curPagObj.reload(); // What: Reload Call. Why: A session Firebase still held would sign the device back in as the app loads. How: This reloads the app.
+
+	await selTabFun( curPagObj, 'settings' ); // What: Tab Switch Call. Why: The account shows on the Settings tab. How: This switches to it.
+
+	await expect( curPagObj.locator( '[data-element-name-hook~="accGooBut"]' ) ).toBeVisible(); // What: Still Signed Out Assertion. Why: The session has to be gone, not just hidden until the next load. How: This expects the sign-in button after the reload.
 
 	expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] ); // What: Error Assertion. Why: A flow that logged an error failed even if it finished. How: This expects no errors.
 
