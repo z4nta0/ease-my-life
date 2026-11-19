@@ -47,9 +47,10 @@ import type { Page } from '@playwright/test'; // What: Page. Why: Every helper d
 
 // #region Constants
 
-const GLY_DEC_REG = /[←↑→↓·•]/; // What: Glyph Decorative Regular Expression. Why: A decorative glyph inside a name is read aloud as noise, such as right arrow. How: This matches the arrows and dots an interface draws as decoration.
-const REF_WID_NUM = 320;        // What: Reflow Width Number. Why: WCAG's reflow criterion asks for no sideways scrolling at 320 CSS pixels, the width of 1,280px at 400% zoom. How: This is the viewport width the reflow check opens each state at.
-const TAB_MAX_NUM = 300;        // What: Tab Maximum Number. Why: A keyboard trap would otherwise keep the walk going forever. How: This caps the walk at far more Tab presses than the busiest state's roughly 140 stops.
+const GLY_DEC_REG = /[←↑→↓·•]/;                             // What: Glyph Decorative Regular Expression. Why: A decorative glyph inside a name is read aloud as noise, such as right arrow. How: This matches the arrows and dots an interface draws as decoration.
+const REF_WID_NUM = 320;                                    // What: Reflow Width Number. Why: WCAG's reflow criterion asks for no sideways scrolling at 320 CSS pixels, the width of 1,280px at 400% zoom. How: This is the viewport width the reflow check opens each state at.
+const TAB_HIN_REG = /\(opens (?:[^()"]+ )?in a new tab\)"/; // What: Tab Hint Regular Expression. Why: A link that opens a new tab has to say so at the end of its announced name. How: This matches the whole note, "(opens in a new tab)" or one naming where it goes, followed by the closing quote of the name.
+const TAB_MAX_NUM = 300;                                    // What: Tab Maximum Number. Why: A keyboard trap would otherwise keep the walk going forever. How: This caps the walk at far more Tab presses than the busiest state's roughly 140 stops.
 
 // #endregion Constants
 
@@ -160,16 +161,19 @@ function motRecFun () : void {
  *
  * @summary
  * Reads the page's accessibility tree, the same tree a screen reader reads,
- * and returns a problem for every link or button with no name, and for every
- * one whose name contains a decorative glyph that should have been hidden.
- * Elements hidden from assistive technology don't appear in the tree, so
- * decorative icons hidden from it are never counted.
+ * and returns a problem for every link or button with no name, for every one
+ * whose name contains a decorative glyph that should have been hidden, and for
+ * every shown link that opens a new tab without the tree reading it as a link
+ * or without saying so at the end of its name. Elements hidden from assistive
+ * technology don't appear in the tree, so decorative icons hidden from it are
+ * never counted. A tree with no link or button at all is a problem too, since
+ * every state shows at least the tab bar's buttons.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param curPagObj - Current Page Object: The page to read.
  *
- * @returns Every naming problem found.
+ * @returns A promise that resolves with every naming problem found.
  * @see {@link proLisArr}
  *
  * @example
@@ -188,6 +192,10 @@ async function namProFun ( curPagObj : Page ) : Promise< string[] > {
 	const proLisArr : string[] = []; // What: Problem List Array. Why: Every problem should be reported, not just the first. How: This collects them.
 
 
+	if ( !conLinArr.length ) proLisArr.push( 'the accessibility tree lists no link or button' ); // What: Empty Tree Check. Why: A snapshot that yields no controls, such as after a change to its format, would pass without checking any name, while every state shows at least the tab bar's buttons. How: This records a problem when no link or button line was found.
+
+
+
 	for ( const conLinStr of conLinArr ) { // What: Control Line Loop. Why: Each link and button is judged on its own. How: This reads each line's name and records what's wrong with it.
 
 
@@ -197,6 +205,28 @@ async function namProFun ( curPagObj : Page ) : Promise< string[] > {
 		if ( !conNamStr.trim() ) proLisArr.push( `${ conLinStr } has no name` ); // What: Missing Name Check. Why: A control with no name is announced as just its role. How: This records the line when its name is empty.
 
 		else if ( GLY_DEC_REG.test( conNamStr ) ) proLisArr.push( `${ conLinStr } has a decorative glyph in its name` ); // What: Glyph Name Check. Why: A decorative arrow in a name is read aloud. How: This records the line when its name contains one.
+
+
+	}
+
+
+
+	const tabLinArr = await curPagObj.locator( 'a[target="_blank"]' ).all(); // What: Tab Link Array. Why: A link that opens a new tab has to say so in its name. How: This lists every link with a blank target.
+
+
+	for ( const tabLinObj of tabLinArr ) { // What: Tab Link Loop. Why: Each new tab link is judged on its own. How: This reads each shown link's announced name and records one that doesn't mention the new tab.
+
+
+		if ( !await tabLinObj.isVisible() ) continue; // What: Hidden Link Guard. Why: A link out of sight, such as one in a closed panel, isn't announced. How: This skips it.
+
+
+
+		const tabSnaStr = ( await tabLinObj.ariaSnapshot() ).split( '\n' )[ 0 ]; // What: Tab Snapshot String. Why: The link's own tree line holds its role and announced name. How: This reads the link's tree and keeps its first line.
+
+
+		if ( !tabSnaStr.startsWith( '- link' ) ) proLisArr.push( `a new tab link reads as "${ tabSnaStr }" rather than as a link` ); // What: Tab Role Check. Why: A shown new tab link that the tree doesn't read as a link would otherwise slip past the hint check. How: This records the link's line when it doesn't open with the link role.
+
+		else if ( !TAB_HIN_REG.test( tabSnaStr ) ) proLisArr.push( `${ tabSnaStr } opens a new tab without saying so` ); // What: Tab Hint Check. Why: A screen reader user should know before a new tab opens. How: This records a link whose tree line names it without ending in the note.
 
 
 	}

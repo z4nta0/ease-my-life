@@ -2693,9 +2693,9 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 								<span className={ cssModObj.aboVerSpa }>{ APP_VER_STR == null ? 'Version: 1.0' : `Version: ${ APP_VER_STR }` }</span>{ /* What: Set About Ver Span Element. Why: The real build version belongs in this identity block. How: This renders APP_VER_STR, falling back to "1.0" when the build-time define is missing. */ }
 
-								<span className={ cssModObj.aboCreSpa }>Creator: <a className={ cssModObj.aboLinAnc } href='https://techgeek.dev/' rel='noopener noreferrer' target='_blank'>https://techgeek.dev/</a></span>{ /* What: Set About Creator Span Element. Why: The identity block links to the creator's developer site. How: This renders a fixed external link, opened in a new tab. */ }
+								<span className={ cssModObj.aboCreSpa }>Creator: <a className={ cssModObj.aboLinAnc } href='https://techgeek.dev/' rel='noopener noreferrer' target='_blank'>https://techgeek.dev/<span data-new-tab-note> (opens in a new tab)</span></a></span>{ /* What: Set About Creator Span Element. Why: The identity block links to the creator's developer site. How: This renders a fixed external link, opened in a new tab. */ }
 
-								<span className={ cssModObj.aboCreSpa }>GitHub: <a className={ cssModObj.aboLinAnc } href='https://github.com/z4nta0/ease-my-life' rel='noopener noreferrer' target='_blank'>https://github.com/z4nta0/ease-my-life</a></span>{ /* What: Set About Creator Span Element. Why: The identity block also links to the project's own source code. How: This renders a fixed external link, opened in a new tab. */ }
+								<span className={ cssModObj.aboCreSpa }>GitHub: <a className={ cssModObj.aboLinAnc } href='https://github.com/z4nta0/ease-my-life' rel='noopener noreferrer' target='_blank'>https://github.com/z4nta0/ease-my-life<span data-new-tab-note> (opens in a new tab)</span></a></span>{ /* What: Set About Creator Span Element. Why: The identity block also links to the project's own source code. How: This renders a fixed external link, opened in a new tab. */ }
 
 
 							</div>
@@ -2735,7 +2735,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 									sizValStr='sm'
 
 									onClick={ () => { if ( TIP_URL_STR ) window.open( TIP_URL_STR, '_blank', 'noopener,noreferrer' ); } } // What: Tip Click Handler. Why: The Ko-fi tip page is a separate site, and leaving the app for it would lose the user's place. How: This opens TIP_URL_STR in a new tab, cut off from this page, only while it is set.
-								>{ TIP_URL_STR ? 'Buy Me a Coffee' : 'Coming Soon' }</ButBasCom>{ /* What: Button Base Component. Why: This opens the Ko-fi tip page, or stands in disabled while a build has none. How: This reads Buy Me a Coffee while TIP_URL_STR is set, and Coming Soon otherwise. Its data-element-name-hook is read by the interaction suite. */ }
+								>{ TIP_URL_STR ? <>Buy Me a Coffee<span data-new-tab-note> (opens Ko-fi in a new tab)</span></> : 'Coming Soon' }</ButBasCom>{ /* What: Button Base Component. Why: This opens the Ko-fi tip page, or stands in disabled while a build has none. How: This reads Buy Me a Coffee while TIP_URL_STR is set, and Coming Soon otherwise. Its data-element-name-hook is read by the interaction suite. */ }
 
 
 							</div>

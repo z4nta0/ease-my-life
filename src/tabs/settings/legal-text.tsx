@@ -74,7 +74,7 @@ function PriPolCom () : React.JSX.Element {
 				href='https://www.termsfeed.com/privacy-policy-generator/'
 				rel='noopener noreferrer'
 				target='_blank'
-			>Privacy Policy Generator</a>{ /* What: Inline Generator Credit Link Element. Why: This credits the third-party generator this legal text was drafted with. How: This opens the linked generator page in a new tab. */ }.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text. */ }
+			>Privacy Policy Generator<span data-new-tab-note> (opens in a new tab)</span></a>{ /* What: Inline Generator Credit Link Element. Why: This credits the third-party generator this legal text was drafted with. How: This opens the linked generator page in a new tab. */ }.</p>{ /* What: Body Paragraph Element. Why: This is one paragraph of the document's own body copy. How: This is plain static text. */ }
 
 			<h2>Interpretation and Definitions</h2>{ /* What: Top-Level Section Heading Element. Why: This marks the start of one of the document's own major sections. How: This renders as a plain h2, styled by the prose rules of whatever container it renders into. */ }
 
@@ -190,7 +190,7 @@ function PriPolCom () : React.JSX.Element {
 						href='https://www.easemylife.app'
 						rel='external nofollow noopener noreferrer'
 						target='_blank'
-					>https://www.easemylife.app</a>{ /* What: Inline Site Link Element. Why: This points the reader at the app's own live website. How: This opens the site in a new tab. */ }.</p>{ /* What: Bolded Lead-In Paragraph Element. Why: This pairs a bolded lead-in term or phrase with the rest of its own sentence, as one entry in the list above it. How: This wraps the lead-in text in a strong element (rendered beside it) followed by the entry's own continuing text. */ }
+					>https://www.easemylife.app<span data-new-tab-note> (opens in a new tab)</span></a>{ /* What: Inline Site Link Element. Why: This points the reader at the app's own live website. How: This opens the site in a new tab. */ }.</p>{ /* What: Bolded Lead-In Paragraph Element. Why: This pairs a bolded lead-in term or phrase with the rest of its own sentence, as one entry in the list above it. How: This wraps the lead-in text in a strong element (rendered beside it) followed by the entry's own continuing text. */ }
 
 
 				</li>
@@ -512,7 +512,7 @@ function TerSerCom () : React.JSX.Element {
 						href='https://www.termsfeed.com/terms-conditions-generator/'
 						rel='noopener noreferrer'
 						target='_blank'
-					>TermsFeed Terms and Conditions Generator</a>{ /* What: Inline Generator Credit Link Element. Why: This credits the third-party generator this legal text was drafted with. How: This opens the linked generator page in a new tab. */ }.</p>{ /* What: Bolded Lead-In Paragraph Element. Why: This pairs a bolded lead-in term or phrase with the rest of its own sentence, as one entry in the list above it. How: This wraps the lead-in text in a strong element (rendered beside it) followed by the entry's own continuing text. */ }
+					>TermsFeed Terms and Conditions Generator<span data-new-tab-note> (opens in a new tab)</span></a>{ /* What: Inline Generator Credit Link Element. Why: This credits the third-party generator this legal text was drafted with. How: This opens the linked generator page in a new tab. */ }.</p>{ /* What: Bolded Lead-In Paragraph Element. Why: This pairs a bolded lead-in term or phrase with the rest of its own sentence, as one entry in the list above it. How: This wraps the lead-in text in a strong element (rendered beside it) followed by the entry's own continuing text. */ }
 
 
 				</li>
@@ -534,7 +534,7 @@ function TerSerCom () : React.JSX.Element {
 						href='https://www.easemylife.app'
 						rel='external nofollow noopener noreferrer'
 						target='_blank'
-					>https://www.easemylife.app</a>{ /* What: Inline Site Link Element. Why: This points the reader at the app's own live website. How: This opens the site in a new tab. */ }</p>{ /* What: Bolded Lead-In Paragraph Element. Why: This pairs a bolded lead-in term or phrase with the rest of its own sentence, as one entry in the list above it. How: This wraps the lead-in text in a strong element (rendered beside it) followed by the entry's own continuing text. */ }
+					>https://www.easemylife.app<span data-new-tab-note> (opens in a new tab)</span></a>{ /* What: Inline Site Link Element. Why: This points the reader at the app's own live website. How: This opens the site in a new tab. */ }</p>{ /* What: Bolded Lead-In Paragraph Element. Why: This pairs a bolded lead-in term or phrase with the rest of its own sentence, as one entry in the list above it. How: This wraps the lead-in text in a strong element (rendered beside it) followed by the entry's own continuing text. */ }
 
 
 				</li>
