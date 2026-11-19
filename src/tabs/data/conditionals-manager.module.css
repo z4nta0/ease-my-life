@@ -511,6 +511,13 @@
 
 
 }
+.lisIteDiv[data-row-edit-active] .rowChvBut:hover { /* What: Hovered Open Row Chevron Button. Why: A chosen control a person can still click should still answer the pointer. How: This darkens its accent a step. */
+
+
+	color : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ), darkened by 0.1 */
+
+
+}
 .rowChvBut { /* What: Row Chevron Button. Why: While a row is open its chevron is a real button that closes it. How: This strips the button chrome and gives it a small padded hit area that doesn't shift the layout. */
 
 

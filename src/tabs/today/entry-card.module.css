@@ -255,10 +255,12 @@
 
 
 }
-.carGriSpa:active { /* What: Pressed Card Grip. Why: A press on the handle starts a drag. How: This switches to the grabbing cursor. */
+.carGriSpa:active,
+[data-item-drag-active] .carGriSpa { /* What: Pressed Card Grip. Why: A press on the handle starts a drag, and should register before anything else happens. How: This switches to the grabbing cursor and presses the grip in slightly, keyed on the drag state as well as the press, since Firefox drops :active once the drag cancels pointerdown's default. */
 
 
-	cursor : grabbing;
+	cursor    : grabbing;
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -272,13 +274,6 @@
 
 
 	}
-
-
-}
-.carGriSpa:active { /* What: Pressed Card Grip Span. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
-
-
-	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }

@@ -119,10 +119,10 @@
 
 
 }
-.segConBut[aria-pressed='true']:hover { /* What: Hovered Pressed Segment Control Button. Why: Hover shouldn't darken the pressed option's text against the thumb. How: This keeps it the background color. */
+.segConBut[aria-pressed='true']:hover { /* What: Hovered Pressed Segment Control Button. Why: A chosen segment a person can still click should still answer the pointer, while its text has to stay light against the thumb. How: This dims its light text a step rather than darkening it to the hover text color. */
 
 
-	color : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	color : oklch( from var( --bac-pag-col ) calc( l - 0.1 ) c h ); /* Background Page Color = oklch( 0.985 0.003 240 ), darkened by 0.1 */
 
 
 }

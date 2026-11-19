@@ -908,14 +908,21 @@
 
 }
 
-.pooProSpa { /* What: Pool Progress Span. Why: The progress bar and value hold a steady width across rows. How: This lines them up in a row at least a rhythm step wide, and eases its press and focus ring. */
+.pooProSpa { /* What: Pool Progress Span. Why: The progress bar and value hold a steady width across rows. How: This lines them up in a row at least a rhythm step wide, and eases its hover color, press, and focus ring. */
 
 
 	align-items : center;
 	display     : flex;
 	gap         : var( --spa-hor-m02 );                /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 	min-width   : calc( var( --ver-rhy-p07 ) * 1rem ); /* Vertical Rhythm Base Plus 7 ~= 104.323px */
-	transition  : opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 2 ~= 89.9ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms */
+	transition  : opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 2 ~= 89.9ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Duration Transition Base Minus 1 ~= 119.2ms */
+
+
+}
+.pooProSpa:hover { /* What: Hovered Pool Progress Span. Why: Hovering the trigger opens its explanation, so it should answer the pointer. How: This darkens its value to the main text color. */
+
+
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }

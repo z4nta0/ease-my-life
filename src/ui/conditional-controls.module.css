@@ -833,6 +833,13 @@
 
 
 }
+.togSwiBut[aria-checked='true']:hover { /* What: Hovered On Toggle Switch Button. Why: A chosen control a person can still click should still answer the pointer. How: This darkens its accent track a step. */
+
+
+	background : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ), darkened by 0.1 */
+
+
+}
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Toggle Switch Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
