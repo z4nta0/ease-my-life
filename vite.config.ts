@@ -40,7 +40,6 @@ import type { Plugin            } from 'vite';  // What: Plugin. Why: The legal 
  * output, and the test output.
  *
  * Sections:
- *  - Types
  *  - Constants
  *  - Module State
  *  - Helpers
@@ -49,14 +48,6 @@ import type { Plugin            } from 'vite';  // What: Plugin. Why: The legal 
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
-
-
-
-// #region Types
-
-type LegTexTyp = Record< 'PriPolCom' | 'TerSerCom', FunctionComponent >; // What: Legal Text Type. Why: legPagFun reads the two documents from the module it loads at run time. How: This types that module's exports.
-
-// #endregion Types
 
 
 
@@ -79,6 +70,8 @@ const pacJsoObj = JSON.parse( readFileSync( new URL( './package.json', import.me
 
 
 // #region Helpers
+
+type LegTexTyp = Record< 'PriPolCom' | 'TerSerCom', FunctionComponent >; // What: Legal Text Type. Why: legPagFun reads the two documents from the module it loads at run time. How: This types that module's exports.
 
 // #region legPagFun
 
