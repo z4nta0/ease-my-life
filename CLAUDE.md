@@ -77,6 +77,8 @@ tests/output/report` opens the HTML report.
   picks: `EML_SIM_BASELINE=<path to an earlier trace.json>` compares a run
   against an earlier one (e.g. from `main`) and reports every day that
   differs. `EML_SIM_SEED` and `EML_SIM_SEGMENTS` override the seed and days.
+  It runs in Chromium only, since it checks the scheduling rules the app
+  computes rather than how a page renders (decided 2026-11-18).
 - `npm run test:account`: two browser contexts act as two devices on one
   paid account in the Firebase Emulator, which it starts and stops around
   the suite, in Chromium, Firefox, and WebKit: the first signs in with an
@@ -108,13 +110,16 @@ tests/output/report` opens the HTML report.
   (`legal-pages.spec.ts`). About 10 minutes.
 - `npm run test:interaction`: drives every tab's controls and editors on
   real data, checking each change in IndexedDB and that its animation fired,
-  and checks that a launch with a hung or slow IndexedDB loses nothing.
+  and checks that a launch with a hung or slow IndexedDB loses nothing, in
+  Chromium, Firefox, and WebKit.
 - `npm run test:onboarding`: runs the whole onboarding from an empty install
   (Welcome, every checklist launcher, Generate, every App Features tour, and
-  Replay) at 375px and 1280px.
+  Replay) at 375px and 1280px, in Chromium, Firefox, and WebKit.
 - `npm run test:responsive`: measures every tab at 375 to 1280px for
   sideways scrolling, off-screen or spilling content, and overlapping
-  controls, saving a screenshot of each.
+  controls (a control laid absolutely over its sibling, such as the custom
+  theme's name, is placed there by design), saving a screenshot of each, in
+  Chromium, Firefox, and WebKit.
 - `npm run test:rules`: checks `firestore.rules` in the Firebase Emulator,
   which it starts and stops around the suite (it needs Java 21): a paid,
   verified owner reads and writes its own copy one revision at a time, and

@@ -153,11 +153,65 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 
 		})),
 
-		{ name : 'interaction', testMatch : 'interaction/**/*.spec.ts', timeout : 300000  }, // What: Interaction Project. Why: Every control and editor is driven against IndexedDB. How: This runs tests/interaction with five minutes per test.
-		{ name : 'onboarding',  testMatch : 'onboarding/**/*.spec.ts',  timeout : 600000  }, // What: Onboarding Project. Why: Each tour is walked step by step at three widths. How: This runs tests/onboarding with ten minutes per test.
-		{ name : 'responsive',  testMatch : 'responsive/**/*.spec.ts',  timeout : 600000  }, // What: Responsive Project. Why: Every page is measured at several widths. How: This runs tests/responsive with ten minutes per test.
+		...ENG_NAM_ARR.map( ( engNamStr ) => ({ // What: Interaction Projects. Why: Every control and editor is driven against IndexedDB in every engine, since a check that passes in one engine proves nothing about the others. How: This builds one project per engine from ENG_NAM_ARR.
+
+
+			name      : `interaction-${ engNamStr }`, // What: Name. Why: A failure has to say which engine it came from. How: This names the project after it.
+			testMatch : 'interaction/**/*.spec.ts',   // What: Test Match. Why: The interaction specs live in their own folder. How: This runs every spec in tests/interaction.
+			timeout   : 300000,    // What: Timeout. Why: Each test walks a flow on real data. How: This gives each test five minutes.
+
+			use : { // What: Use. Why: The project has to launch its own engine. How: This sets the browser it runs in, and which build of it.
+
+
+				browserName : engNamStr,                                        // What: Browser Name. Why: Each project runs in one engine. How: This names it.
+				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every project does. How: This picks it for Chromium only.
+
+
+			}
+
+
+		})),
+
+		...ENG_NAM_ARR.map( ( engNamStr ) => ({ // What: Onboarding Projects. Why: Each tour is walked step by step in every engine. How: This builds one project per engine from ENG_NAM_ARR.
+
+
+			name      : `onboarding-${ engNamStr }`, // What: Name. Why: A failure has to say which engine it came from. How: This names the project after it.
+			testMatch : 'onboarding/**/*.spec.ts',   // What: Test Match. Why: The onboarding specs live in their own folder. How: This runs every spec in tests/onboarding.
+			timeout   : 600000,     // What: Timeout. Why: A whole tour runs at several widths. How: This gives each test ten minutes.
+
+			use : { // What: Use. Why: The project has to launch its own engine. How: This sets the browser it runs in, and which build of it.
+
+
+				browserName : engNamStr,                                        // What: Browser Name. Why: Each project runs in one engine. How: This names it.
+				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every project does. How: This picks it for Chromium only.
+
+
+			}
+
+
+		})),
+
+		...ENG_NAM_ARR.map( ( engNamStr ) => ({ // What: Responsive Projects. Why: Every page is measured at several widths in every engine, since layout differs between them. How: This builds one project per engine from ENG_NAM_ARR.
+
+
+			name      : `responsive-${ engNamStr }`, // What: Name. Why: A failure has to say which engine it came from. How: This names the project after it.
+			testMatch : 'responsive/**/*.spec.ts',   // What: Test Match. Why: The responsive specs live in their own folder. How: This runs every spec in tests/responsive.
+			timeout   : 600000,     // What: Timeout. Why: Every tab is measured at several widths. How: This gives each test ten minutes.
+
+			use : { // What: Use. Why: The project has to launch its own engine. How: This sets the browser it runs in, and which build of it.
+
+
+				browserName : engNamStr,                                        // What: Browser Name. Why: Each project runs in one engine. How: This names it.
+				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every project does. How: This picks it for Chromium only.
+
+
+			}
+
+
+		})),
+
 		{ name : 'rules',       testMatch : 'rules/**/*.spec.ts',       timeout : 60000   }, // What: Rules Project. Why: The Firestore security rules are checked in the local emulator, which test:rules starts around it. How: This runs tests/rules with a minute per test.
-		{ name : 'simulation',  testMatch : 'simulation/**/*.spec.ts',  timeout : 7200000 }, // What: Simulation Project. Why: Weeks of simulated days take a long time on real data. How: This runs tests/simulation with two hours per test.
+		{ name : 'simulation',  testMatch : 'simulation/**/*.spec.ts',  timeout : 7200000 }, // What: Simulation Project. Why: Weeks of simulated days take a long time on real data, and they check the scheduling rules the app computes rather than how a page renders, so they run in Chromium only. How: This runs tests/simulation with two hours per test, in Playwright's default Chromium.
 		{ name : 'sync',        testMatch : 'sync/**/*.spec.ts',        timeout : 60000   }  // What: Sync Project. Why: The sync engine is checked in Node against a fake cloud copy, with no browser. How: This runs tests/sync with a minute per test.
 
 

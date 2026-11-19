@@ -330,6 +330,16 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 
 
 
+		const sibParBoo = oneDomEle.parentElement === twoDomEle.parentElement;                                                     // What: Sibling Parent Boolean. Why: An overlay drawn on purpose sits beside the control it covers. How: This checks the pair share a parent.
+		const absOveBoo = [ oneDomEle, twoDomEle ].some( ( curDomEle ) => getComputedStyle( curDomEle ).position === 'absolute' ); // What: Absolute Overlay Boolean. Why: A control positioned absolutely was placed over its sibling by design, such as the custom theme row's name over its background swatch. How: This checks whether either control is absolutely positioned.
+
+		const desOveBoo = sibParBoo && absOveBoo; // What: Designed Overlay Boolean. Why: Only an absolute control over a sibling counts as designed. How: This combines the two checks.
+
+
+		if ( desOveBoo ) continue; // What: Designed Overlay Guard. Why: An overlay laid over its sibling on purpose isn't a collision. How: This skips the pair.
+
+
+
 		if ( layEleFun( oneDomEle ) !== layEleFun( twoDomEle ) ) continue; // What: Layer Guard. Why: A fixed bar floats over scrolling content on purpose. How: This skips pairs in different layers.
 
 

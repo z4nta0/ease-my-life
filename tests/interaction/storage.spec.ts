@@ -234,7 +234,7 @@ test.beforeEach( async ( { page : curPagObj } ) => { // What: Setup Hook. Why: E
 
 
 		const sucSetFun = Object.getOwnPropertyDescriptor( IDBRequest.prototype, 'onsuccess' )!.set!; // What: Success Setter Function. Why: A delayed request still has to deliver its success to the real handler. How: This is the native onsuccess setter. // What: Non-Null Note. Why: Every engine defines onsuccess as an accessor on IDBRequest.prototype. How: The two ! tell TypeScript the descriptor and its setter exist.
-		const oriOpeFun = indexedDB.open.bind( indexedDB );                                            // What: Original Open Function. Why: The wrapper still opens the real database. How: This is the native open, bound to indexedDB.
+		const oriOpeFun = IDBFactory.prototype.open;                                                   // What: Original Open Function. Why: The wrapper still opens the real database. How: This is the native open, read from IDBFactory's prototype.
 		const oriGetFun = IDBObjectStore.prototype.get;                                                // What: Original Get Function. Why: The slow wrapper still reads the real store. How: This is the native get.
 
 
@@ -247,10 +247,10 @@ test.beforeEach( async ( { page : curPagObj } ) => { // What: Setup Hook. Why: E
 
 
 
-		indexedDB.open = ( datNamStr : string, datVerNum? : number ) => { // What: Open Wrapper. Why: The app's first open is the one that hangs or answers late. How: This opens the real database, then hides or delays the first open's success.
+		IDBFactory.prototype.open = function ( this : IDBFactory, datNamStr : string, datVerNum? : number ) { // What: Open Wrapper. Why: The app's first open is the one that hangs or answers late, and an open assigned onto indexedDB itself never ran in WebKit, so the prototype is patched (measured 2026-11-18). How: This opens the real database, then hides or delays the first open's success.
 
 
-			const opeReqObj = oriOpeFun( datNamStr, datVerNum ); // What: Open Request Object. Why: The real database still opens underneath. How: This calls the native open.
+			const opeReqObj = oriOpeFun.call( this, datNamStr, datVerNum ); // What: Open Request Object. Why: The real database still opens underneath. How: This calls the native open.
 
 
 
