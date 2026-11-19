@@ -71,7 +71,7 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 	fullyParallel : false,               // What: Fully Parallel. Why: Each spec file walks one flow in order, step after step. How: This keeps a file's tests running in sequence, while separate files may still run in parallel.
 	outputDir     : 'output/results',    // What: Output Directory. Why: Failure screenshots and traces need a home git ignores. How: This writes them under tests/output/results.
 	testDir       : '.',                 // What: Test Directory. Why: Each project picks its own folder below. How: This roots test discovery at tests/.
-	workers       : 4,                   // What: Workers. Why: The interaction and responsive files are independent, but every worker drives a full browser. How: This runs up to four spec files at once.
+	workers       : 6,                   // What: Workers. Why: Most spec files and the parallel specs' tests are independent, but every worker drives a full browser, and six held steady on a 24-core, 31 GB machine (measured 2026-11-13 in tech-geek-cards). How: This runs up to six tests at once.
 
 	projects : [ // What: Projects. Why: Each suite runs on its own, and the simulation needs far more time than the rest. How: This lists one project per suite folder, each runnable with --project.
 
