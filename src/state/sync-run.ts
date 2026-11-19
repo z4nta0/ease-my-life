@@ -265,6 +265,8 @@ const wriMetFun = ( synRcdObj : SynRcdTyp ) => { // What: Write Meta Function. W
 function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo : boolean ) : AccSynTyp {
 
 
+	// #region Account And Sync State
+
 	const [ accErrStr, setAccErrStr ] = React.useState< string | null >( null );    // What: Account Error String And Setter. Why: The screen shows the last failure. How: This holds its sentence.
 	const [ accLoaBoo, setAccLoaBoo ] = React.useState( false );                    // What: Account Loading Boolean And Setter. Why: The screen waits while Firebase loads. How: This is true until the account is known.
 	const [ accUseObj, setAccUseObj ] = React.useState< AccUseTyp | null >( null ); // What: Account User Object And Setter. Why: The screen and sync follow the account. How: This holds it.
@@ -292,6 +294,8 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 	accCurRef.current = accUseObj; // What: Account Mirror. Why: Callbacks read the latest account. How: This copies it each render.
 	staCurRef.current = staAppObj; // What: State Mirror. Why: A sync reads the latest state. How: This copies it each render.
+
+	// #endregion Account And Sync State
 
 
 
@@ -509,8 +513,6 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
-	// #region Sync Running
-
 	synRunRef.current = async ( choValStr ) => { // What: Sync Run Assignment. Why: Every caller runs the latest version of the sync. How: This defines one run, from the account check to applying the result.
 
 
@@ -695,6 +697,8 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
+	// #region Paid Claim Renewal
+
 	React.useEffect( () => { // What: Launch Renewal Effect. Why: The paid claim only reaches a device when its token is renewed, which otherwise happens hourly, so a purchase that landed late would wait. How: This renews an unpaid account's token once per launch.
 
 
@@ -769,6 +773,8 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 	}, [ paiNowBoo, purPenBoo, sigNowBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the wait starts or ends. How: purPenBoo starts it, and paiNowBoo or sigNowBoo changing ends or restarts it.
 
+	// #endregion Paid Claim Renewal
+
 
 
 	React.useEffect( () => { // What: Page Event Effect. Why: Coming back into view or online pulls, and being hidden with a change waiting pushes. How: This listens for those page events.
@@ -823,6 +829,8 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	}, [ synActBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever syncing is switched on or off. How: synActBoo is false during the onboarding demo.
 
 
+
+	// #region Daily List Wait
 
 	const synNeeFun = () => synActBoo && ( watActRef.current || !!reaKeyFun( STG_NAM_OBJ.ACC_SIG_STR ) ); // What: Sync Needed Function. Why: Only a device following an account has a copy to bring in before a new day's list, and the demo never syncs. How: This is true outside the demo when this device is following an account or was signed in last time.
 
@@ -881,7 +889,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 	// #endregion synBefFun
 
-	// #endregion Sync Running
+	// #endregion Daily List Wait
 
 
 
