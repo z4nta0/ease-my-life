@@ -18,12 +18,21 @@ import type { RefObject } from 'react'; // What: Ref Object. Why: The frozen row
  * keeps the row being edited from jumping around a live sort.
  *
  * Sections:
+ *  - Types
  *  - Helpers
  *  - Exports
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Types
+
+type SorRowTyp = { boost? : number | null, count? : number | null, date? : number | null, group? : string | null, isActive? : boolean | null, name : string, odds? : number | null, range? : number | null, type? : string | null }; // What: Sort Row Type. Why: The Data tab sorts items, conditionals, reminders, and pickers with one comparator, each carrying different fields. How: This is any row with a name, its other fields read by whichever sort key applies.
+
+// #endregion Types
 
 
 
@@ -131,8 +140,6 @@ function freEdiFun< T extends { id : string } > ( sorLisArr : T[], opeIdeVal : s
 // #endregion freEdiFun
 
 
-
-type SorRowTyp = { boost? : number | null, count? : number | null, date? : number | null, group? : string | null, isActive? : boolean | null, name : string, odds? : number | null, range? : number | null, type? : string | null }; // What: Sort Row Type. Why: The Data tab sorts items, conditionals, reminders, and pickers with one comparator, each carrying different fields. How: This is any row with a name, its other fields read by whichever sort key applies.
 
 // #region sorEntFun
 
