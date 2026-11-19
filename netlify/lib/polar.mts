@@ -40,6 +40,7 @@ import { timingSafeEqual } from 'node:crypto'; // What: Timing Safe Equal. Why: 
 
 // #region Types
 
+type NetCotTyp = { deploy : { context : string } }; // What: Netlify Context Type. Why: Each function reads which deploy it runs in. How: This types the one field of Netlify's context they use.
 type PolOrdTyp = { customer? : { email? : string, external_id? : string | null }, id : string, metadata? : Record< string, unknown >, product? : { id? : string }, product_id? : string, status? : string }; // What: Polar Order Type. Why: The webhook reads only a few fields of an order. How: This types those, each optional the way Polar may leave them out.
 
 // #endregion Types
@@ -196,7 +197,7 @@ function ordUidFun ( ordCurObj : PolOrdTyp ) : string | null {
 
 // #region Exports
 
-export { API_LIV_STR, API_SAN_STR, isaLivFun, ordUidFun, type PolOrdTyp, PRO_LIV_STR, PRO_SAN_STR, verWebFun }; // What: Named Exports. Why: The checkout and webhook functions share Polar's addresses, products, and checks. How: This exports them by name.
+export { API_LIV_STR, API_SAN_STR, isaLivFun, type NetCotTyp, ordUidFun, type PolOrdTyp, PRO_LIV_STR, PRO_SAN_STR, verWebFun }; // What: Named Exports. Why: The checkout and webhook functions share Polar's addresses, products, and checks, and the Netlify context type. How: This exports them by name.
 
 // #endregion Exports
 

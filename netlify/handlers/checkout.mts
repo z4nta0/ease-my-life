@@ -10,6 +10,9 @@ import { isaLivFun   } from '../lib/polar.mts';      // What: Is-A Live Function
 import { PRO_LIV_STR } from '../lib/polar.mts';      // What: Product Live String. Why: Production sells the live product. How: This is its id.
 import { PRO_SAN_STR } from '../lib/polar.mts';      // What: Product Sandbox String. Why: Previews sell the sandbox product. How: This is its id.
 
+
+import type { NetCotTyp } from '../lib/polar.mts'; // What: Netlify Context Type. Why: The function reads which deploy it runs in. How: This types the one field of Netlify's context it uses.
+
 // #endregion Imports
 
 
@@ -28,17 +31,13 @@ import { PRO_SAN_STR } from '../lib/polar.mts';      // What: Product Sandbox St
  * production site uses live Polar and every other deploy the sandbox, and a
  * deploy whose token or product isn't set up says so instead of failing.
  *
+ * Sections:
+ *  - Helpers
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
-
-
-
-// #region Types
-
-type NetCotTyp = { deploy : { context : string } }; // What: Netlify Context Type. Why: The function reads which deploy it runs in. How: This types the one field of Netlify's context it uses.
-
-// #endregion Types
 
 
 

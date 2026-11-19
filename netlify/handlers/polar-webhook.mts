@@ -11,6 +11,7 @@ import { PRO_SAN_STR } from '../lib/polar.mts';      // What: Product Sandbox St
 import { verWebFun   } from '../lib/polar.mts';      // What: Verify Webhook Function. Why: Only Polar may mark an account paid. How: This checks the signature.
 
 
+import type { NetCotTyp } from '../lib/polar.mts'; // What: Netlify Context Type. Why: The webhook reads which deploy it runs in. How: This types the one field of Netlify's context it uses.
 import type { PolOrdTyp } from '../lib/polar.mts'; // What: Polar Order Type. Why: The webhook reads an order's fields. How: This types it.
 
 // #endregion Imports
@@ -35,17 +36,13 @@ import type { PolOrdTyp } from '../lib/polar.mts'; // What: Polar Order Type. Wh
  * the change up when its token refreshes, which it forces on returning from
  * the checkout.
  *
+ * Sections:
+ *  - Helpers
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
-
-
-
-// #region Types
-
-type NetCotTyp = { deploy : { context : string } }; // What: Netlify Context Type. Why: The webhook reads which deploy it runs in. How: This types the one field of Netlify's context it uses.
-
-// #endregion Types
 
 
 

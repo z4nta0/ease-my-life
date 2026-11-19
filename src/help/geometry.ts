@@ -33,7 +33,6 @@ import { splSelFun } from '../utils/selector.ts'; // What: Split Selector Functi
 
 // #region Types
 
-type BadRecTyp = { bottom : number, height : number, left : number, top : number, width : number };        // What: Badge Rect Type. Why: A help badge is placed as a fixed-size box. How: This describes badRecFun's badge rect.
 type ChrIteTyp = { chrDomEle : HTMLElement, chrRecObj : DOMRect, chrSelStr : string, chrSidStr : string }; // What: Chrome Item Type. Why: Highlights are clipped against each piece of fixed app chrome on the page. How: This describes one chrome element, its rect, its selector, and the side it sits on.
 type EdgRecTyp = { bottom : number, left : number, right : number, top : number };                         // What: Edge Rect Type. Why: Clipping only ever moves a rect's four edges. How: This describes a rect by those edges.
 type PadSidTyp = { padBotNum : number, padLefNum : number, padRigNum : number, padTopNum : number };       // What: Pad Sides Type. Why: A highlight's padding can be cut short on each side separately. How: This describes how much survived on each side.
@@ -600,6 +599,8 @@ function detEdgFun ( chrRecObj : EdgRecTyp ) : string {
 
 
 // #region Shape And Placement
+
+type BadRecTyp = { bottom : number, height : number, left : number, top : number, width : number }; // What: Badge Rect Type. Why: A help badge is placed as a fixed-size box. How: This describes badRecFun's badge rect.
 
 // #region badRecFun
 

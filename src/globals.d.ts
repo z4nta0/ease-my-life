@@ -31,14 +31,6 @@ type BipEveTyp = Event & { prompt : () => Promise< void >, userChoice : Promise<
 
 
 
-type EscEntTyp = { runFun : () => void }; // What: Escape Entry Type. Why: Every open editor that Escape should cancel puts one entry on the shared escape stack. How: This describes an entry, whose runFun cancels that editor.
-
-
-
-type RelAppTyp = { id? : string, platform : string, url? : string }; // What: Related App Type. Why: getInstalledRelatedApps reports each installed copy of the app it finds. How: This describes one of them.
-
-
-
 interface ImportMetaEnv { // What: Import Meta Env Interface. Why: Vite's own types don't know this app's build settings. How: This merges them into ImportMetaEnv, each optional since a build may leave it unset.
 
 
@@ -51,6 +43,8 @@ interface ImportMetaEnv { // What: Import Meta Env Interface. Why: Vite's own ty
 
 
 
+type RelAppTyp = { id? : string, platform : string, url? : string }; // What: Related App Type. Why: getInstalledRelatedApps reports each installed copy of the app it finds. How: This describes one of them.
+
 interface Navigator { // What: Navigator Interface. Why: pwa.ts reads two navigator features TypeScript's DOM types lack. How: This merges both into Navigator, each optional since most browsers don't have them.
 
 
@@ -61,6 +55,8 @@ interface Navigator { // What: Navigator Interface. Why: pwa.ts reads two naviga
 }
 
 
+
+type EscEntTyp = { runFun : () => void }; // What: Escape Entry Type. Why: Every open editor that Escape should cancel puts one entry on the shared escape stack. How: This describes an entry, whose runFun cancels that editor.
 
 interface Window { // What: Window Interface. Why: TypeScript's built-in Window doesn't know the app's own window.__ globals or the App Check debug token, so every use of one is an error. How: This merges them into Window, each optional since each exists only once its own code has run.
 
