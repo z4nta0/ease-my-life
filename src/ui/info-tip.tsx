@@ -380,8 +380,8 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 
 					data-element-name-hook='infTipSpa'
 
-					role='tooltip'
-				>{ /* What: Tip Span Element. Why: This is the actual floating tooltip bubble, positioned via tipPosObj. How: This renders the caller's own labTexStr text, placed per its own infotip--{placement} modifier class. Its data-element-name-hook is read by the shared Escape-key handler. */ }
+					aria-hidden='true' // What: Hidden Bubble Flag. Why: The trigger's own name already carries labTexStr, so a screen reader would hear the text twice, and the bubble, portaled into the body, would sit outside every landmark. How: This hides the bubble from assistive technology, leaving it a sighted reader's copy of the trigger's name.
+				>{ /* What: Tip Span Element. Why: This is the actual floating tooltip bubble, positioned via tipPosObj. How: This renders the caller's own labTexStr text, placed per its own infotip--{placement} modifier class, and stays out of the accessibility tree, since the trigger's name already says it. Its data-element-name-hook is read by the shared Escape-key handler. */ }
 
 
 					{ labTexStr }
