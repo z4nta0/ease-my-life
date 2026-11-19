@@ -42,6 +42,7 @@ import type { Plugin            } from 'vite';  // What: Plugin. Why: The legal 
  * Sections:
  *  - Types
  *  - Constants
+ *  - Module State
  *  - Helpers
  *  - Exports
  *
@@ -65,11 +66,15 @@ const LEG_DOC_REG = /data-legal-document-body='(privacy|terms)'\s*>(?=<\/article
 const LEG_TEX_PAT = fileURLToPath( new URL( './src/tabs/settings/legal-text.tsx', import.meta.url ) ); // What: Legal Text Path. Why: The documents live in one module the Settings modal shares. How: This is that module's absolute path, built from this config's own address.
 const MIN_SCR_ARR = [ 'boot-splash.js', 'sw-notify.js' ];                                            // What: Minify Script Array. Why: Scripts in public/ ship exactly as written unless the build minifies them. How: This lists every public/ script minShiFun's closeBundle step minifies, by its name in the output folder.
 
+// #endregion Constants
 
+
+
+// #region Module State
 
 const pacJsoObj = JSON.parse( readFileSync( new URL( './package.json', import.meta.url ), 'utf-8' ) ); // What: Package Json Object. Why: The About section and the support form's diagnostic field should report the version npm version set, rather than a hardcoded string that drifts. How: This reads package.json at build time for its version field.
 
-// #endregion Constants
+// #endregion Module State
 
 
 

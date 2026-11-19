@@ -51,6 +51,7 @@ import type { RawStaTyp } from '../src/state/onboarding-seed-data.ts'; // What: 
  *
  * Sections:
  *  - Constants
+ *  - Module State
  *  - Helpers
  *  - Module Init
  *
@@ -68,6 +69,14 @@ const PIC_DEF_ARR = [ ONB_EXA_OBJ, ...ONB_ESP_ARR ];                            
 const TRA_TAS_OBJ = ONB_TAS_ARR.find( ( curTasObj ) => curTasObj.id === 'tk_ob_trash' )!;       // What: Trash Task Object. Why: Only the weekly "Take trash out for pickup" reminder gets history, since the one-time prescription reminder hasn't been completed on a fresh install. How: This finds its definition by id. // What: Non-Null Note. Why: The onboarding samples always include the weekly trash reminder. How: The ! tells TypeScript the find returns it.
 
 // #endregion Constants
+
+
+
+// #region Module State
+
+const refModBoo = process.argv.includes( '--reformat' ); // What: Reformat Mode Boolean. Why: A template change should be applied to the existing data without replacing its simulated history. How: This is true when the script runs with --reformat.
+
+// #endregion Module State
 
 
 
@@ -611,7 +620,6 @@ export { ONB_STA_OBJ }; // What: Named Exports. Why: The Welcome Tour, the Stats
 
 // #region Module Init
 
-const refModBoo = process.argv.includes( '--reformat' );                                                             // What: Reformat Mode Boolean. Why: A template change should be applied to the existing data without replacing its simulated history. How: This is true when the script runs with --reformat.
 const outDatObj = refModBoo ? ( await import( '../src/state/onboarding-stats-data.ts' ) ).ONB_STA_OBJ : simDatFun(); // What: Output Data Object. Why: The written logs come from the existing file in reformat mode, or a fresh simulation otherwise. How: This imports the current ONB_STA_OBJ or calls simDatFun.
 
 
