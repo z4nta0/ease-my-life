@@ -146,6 +146,59 @@ const remDueFun = ( tasRcdObj : TasRcdTyp, dayIsoStr : string ) : boolean => { /
 
 
 
+// #region remVisFun
+
+/**
+ * remVisFun = Reminder Visible Function
+ *
+ * @summary
+ * Whether Today shows a reminder on a date: due by its rule, not hidden, not
+ * skipped until a later day, and not excluded by its class's weekend or
+ * holiday option. One-time reminders use the once class, the rest the
+ * recurring class, each defaulting to no exclusions.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param tasRcdObj - Task Record Object: The reminder to check.
+ * @param staAppObj - State App Object: The saved state, for its reminder
+ *                    options and holidays.
+ * @param dayIsoStr - Day ISO String: The date, as YYYY-MM-DD.
+ *
+ * @returns Whether Today shows the reminder.
+ *
+ * @example
+ * ```ts
+ * remVisFun(reminder, staAppObj, '2026-10-06') // => true or false
+ * ```
+ *
+*/
+
+const remVisFun = ( tasRcdObj : TasRcdTyp, staAppObj : StaAppTyp, dayIsoStr : string ) : boolean => { // What: Reminder Visible Function. Why: The checker compares Today's reminders with this prediction. How: This applies the due rule and every filter.
+
+
+	const claOptObj = ( staAppObj.reminderOpts || {} )[ tasRcdObj.repeat === 'once' ? 'once' : 'recurring' ] || {}; // What: Class Options Object. Why: Weekend and holiday exclusions are set per reminder class. How: This reads the reminder's class options.
+	const dowValNum = dowValFun( dayIsoStr );                                                                       // What: Day-Of-Week Value Number. Why: The weekend exclusion reads the weekday. How: This reads it.
+
+	const wkdExcBoo = !!claOptObj.excludeWeekends && ( dowValNum === 0 || dowValNum === 6 );     // What: Weekend Excluded Boolean. Why: A class can sit out weekends. How: This is true on a weekend when the option is on.
+	const holExcBoo = !!claOptObj.excludeHolidays && isaHolFun( staAppObj.holidays, dayIsoStr ); // What: Holiday Excluded Boolean. Why: A class can sit out holidays. How: This is true on a holiday when the option is on.
+	const skiActBoo = !!tasRcdObj.skipUntil && dayIsoStr < tasRcdObj.skipUntil;                  // What: Skip Active Boolean. Why: A skipped reminder hides until its skip date. How: This is true before it.
+	const notHidBoo = !tasRcdObj.hidden;                                                         // What: Not Hidden Boolean. Why: A hidden reminder never shows. How: This checks its hidden flag.
+	const isaDueBoo = remDueFun( tasRcdObj, dayIsoStr );                                         // What: Is-A Due Boolean. Why: A reminder shows only on a due day. How: This applies the due rule.
+	const notExcBoo = !( wkdExcBoo || holExcBoo || skiActBoo );                                  // What: Not Excluded Boolean. Why: Any exclusion hides the reminder. How: This is true when none applies.
+
+	const visRemBoo = notHidBoo && isaDueBoo && notExcBoo; // What: Visible Reminder Boolean. Why: A reminder shows when it's due and nothing excludes it. How: This combines the due check with every exclusion.
+
+
+
+	return visRemBoo; // What: Visible Return. Why: The checker compares this with Today's reminders. How: This returns the combined check.
+
+
+};
+
+// #endregion remVisFun
+
+
+
 const tdmDayFun = ( picRcdObj : PicRcdTyp, yeaValNum : number, monValNum : number, fieNamStr : 'anchorDay' | 'anchorDom' ) : number => ( picRcdObj.dateMode === 'nthWeekday' // What: Target-Day-Month Day Function. Why: Monthly and yearly anchors are a day number or an nth weekday. How: This resolves the anchor day for a given month.
 	? nthDayFun( yeaValNum, monValNum, picRcdObj.nthOrdinal ?? 1, picRcdObj.nthWeekday ?? 0 )                                                                                // What: Nth Weekday Branch. Why: Nth-weekday mode anchors on a weekday. How: This finds that month's nth weekday.
 	: Math.min( picRcdObj[ fieNamStr ] ?? 1, dimValFun( yeaValNum, monValNum ) ) );                                                                                          // What: Date Branch. Why: A day past the month's end falls on its last day. How: This clamps the anchor day to the month.
@@ -291,59 +344,6 @@ const comPerFun = ( picRcdObj : PicRcdTyp, picLogArr : PclRowTyp[], dayIsoStr : 
 };
 
 // #endregion comPerFun
-
-
-
-// #region remVisFun
-
-/**
- * remVisFun = Reminder Visible Function
- *
- * @summary
- * Whether Today shows a reminder on a date: due by its rule, not hidden, not
- * skipped until a later day, and not excluded by its class's weekend or
- * holiday option. One-time reminders use the once class, the rest the
- * recurring class, each defaulting to no exclusions.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param tasRcdObj - Task Record Object: The reminder to check.
- * @param staAppObj - State App Object: The saved state, for its reminder
- *                    options and holidays.
- * @param dayIsoStr - Day ISO String: The date, as YYYY-MM-DD.
- *
- * @returns Whether Today shows the reminder.
- *
- * @example
- * ```ts
- * remVisFun(reminder, staAppObj, '2026-10-06') // => true or false
- * ```
- *
-*/
-
-const remVisFun = ( tasRcdObj : TasRcdTyp, staAppObj : StaAppTyp, dayIsoStr : string ) : boolean => { // What: Reminder Visible Function. Why: The checker compares Today's reminders with this prediction. How: This applies the due rule and every filter.
-
-
-	const claOptObj = ( staAppObj.reminderOpts || {} )[ tasRcdObj.repeat === 'once' ? 'once' : 'recurring' ] || {}; // What: Class Options Object. Why: Weekend and holiday exclusions are set per reminder class. How: This reads the reminder's class options.
-	const dowValNum = dowValFun( dayIsoStr );                                                                       // What: Day-Of-Week Value Number. Why: The weekend exclusion reads the weekday. How: This reads it.
-
-	const wkdExcBoo = !!claOptObj.excludeWeekends && ( dowValNum === 0 || dowValNum === 6 );     // What: Weekend Excluded Boolean. Why: A class can sit out weekends. How: This is true on a weekend when the option is on.
-	const holExcBoo = !!claOptObj.excludeHolidays && isaHolFun( staAppObj.holidays, dayIsoStr ); // What: Holiday Excluded Boolean. Why: A class can sit out holidays. How: This is true on a holiday when the option is on.
-	const skiActBoo = !!tasRcdObj.skipUntil && dayIsoStr < tasRcdObj.skipUntil;                  // What: Skip Active Boolean. Why: A skipped reminder hides until its skip date. How: This is true before it.
-	const notHidBoo = !tasRcdObj.hidden;                                                         // What: Not Hidden Boolean. Why: A hidden reminder never shows. How: This checks its hidden flag.
-	const isaDueBoo = remDueFun( tasRcdObj, dayIsoStr );                                         // What: Is-A Due Boolean. Why: A reminder shows only on a due day. How: This applies the due rule.
-	const notExcBoo = !( wkdExcBoo || holExcBoo || skiActBoo );                                  // What: Not Excluded Boolean. Why: Any exclusion hides the reminder. How: This is true when none applies.
-
-	const visRemBoo = notHidBoo && isaDueBoo && notExcBoo; // What: Visible Reminder Boolean. Why: A reminder shows when it's due and nothing excludes it. How: This combines the due check with every exclusion.
-
-
-
-	return visRemBoo; // What: Visible Return. Why: The checker compares this with Today's reminders. How: This returns the combined check.
-
-
-};
-
-// #endregion remVisFun
 
 // #endregion Helpers
 
