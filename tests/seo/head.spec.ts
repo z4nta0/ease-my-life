@@ -326,7 +326,7 @@ test( 'the raw home page carries its full link preview', async ( { request : req
 
 	const rawHtmStr = await ( await reqCotObj.get( `${ PRE_URL_STR }/` ) ).text(); // What: Raw HTML String. Why: The tags are read the way a scraper reads what ships. How: This fetches the built root's HTML without a browser.
 	const socTagObj = Object.fromEntries( metTagFun( rawHtmStr ) );                // What: Social Tag Object. Why: Each tag is looked up by its name or property. How: This keys the page's meta tags, the later of two theme colors winning.
-	const expImaStr = `${ LIV_URL_STR }assets/og-image.png`;                       // What: Expected Image String. Why: The card shows the app's preview image. How: This is its absolute address.
+	const expImaStr = `${ LIV_URL_STR }assets/og-image-2.png`;                     // What: Expected Image String. Why: The card shows the app's preview image. How: This is its absolute address.
 
 
 	expect( SOC_KEY_ARR.filter( ( socKeyStr ) => !socTagObj[ socKeyStr ] ) ).toEqual( [] );                                                      // What: Complete Tags Assertion. Why: An app shows a bare link when a tag it needs is missing. How: This lists any required tag the page lacks.
@@ -410,8 +410,8 @@ test( 'every icon the head links to is served at its size', async ( { page : cur
 test( 'the link preview image is 1,200x630 and under 300 KB', async ( { request : reqCotObj } ) => { // What: Preview Image Test. Why: The tags promise the image's size, and WhatsApp drops a preview image over about 300 KB. How: This fetches the image from the build and checks its type, its 1,200 by 630 size, and its bytes against the limit.
 
 
-	const imaResObj = await reqCotObj.get( `${ PRE_URL_STR }/assets/og-image.png` ); // What: Image Response Object. Why: The image has to exist where the tags point. How: This fetches it from the build.
-	const imaBufObj = await imaResObj.body();                                        // What: Image Buffer Object. Why: The image's size is read from its bytes. How: This reads them.
+	const imaResObj = await reqCotObj.get( `${ PRE_URL_STR }/assets/og-image-2.png` ); // What: Image Response Object. Why: The image has to exist where the tags point. How: This fetches it from the build.
+	const imaBufObj = await imaResObj.body();                                          // What: Image Buffer Object. Why: The image's size is read from its bytes. How: This reads them.
 
 
 	expect( imaResObj.headers()[ 'content-type' ] ).toBe( 'image/png' ); // What: Image Type Assertion. Why: A missing image falls through to the app's HTML. How: This checks the file is served as a PNG.
