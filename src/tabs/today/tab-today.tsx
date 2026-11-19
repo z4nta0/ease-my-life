@@ -1666,10 +1666,12 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-	// #region Regenerate
+	// #region Regenerate State
 
 	const [ genActBoo, setGenActBoo ] = React.useState( false ); // What: Generate Active Boolean And Setter. Why: The footer's own Regenerate button, and Edit Mode's own toggle, both need to know whether a generation cascade is currently playing. How: This is set true for genLisFun's own whole duration below.
 	const [ conGenBoo, setConGenBoo ] = React.useState( false ); // What: Confirm Generate Boolean And Setter. Why: Regenerate is confirm-gated, since it replaces any completed items. How: This toggles the footer between its plain actions and the confirm prompt.
+
+	// #endregion Regenerate State
 
 
 
@@ -2021,6 +2023,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	// #endregion Edit Mode
 
+
+
+	// #region Regenerate
 
 	const [ genMapObj, setGenMapObj ] = React.useState< Record< string, GenSloTyp > | null >( null ); // What: Generate Map Object And Setter. Why: Every LoaCarCom rendered during a regeneration needs its own live { canArr, ideStr, kinStr, staStr, texStr } record to read from. How: This is populated by genLisFun below and cleared once the cascade finishes.
 

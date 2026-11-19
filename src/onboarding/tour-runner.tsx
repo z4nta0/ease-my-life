@@ -1025,7 +1025,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-	// #region Click Guard Machinery
+	// #region Step And Action Refs
 
 	const curSteRef = React.useRef( curSteObj ); // What: Current Step Reference. Why: Blocking every click during a tour except the coach card and the current step's own highlighted target(s) needs a listener that only needs to exist for as long as this component is mounted, without re-attaching per step. How: This is read fresh on every click rather than closed over stale, since curSteObj is re-evaluated fresh on every render.
 
@@ -1048,7 +1048,11 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	const priActRef = React.useRef( () => {} ); // What: Primary Action Reference. Why: Same lazy-ref pattern as curSteRef: priActFun below closes over curSteNum/curSteObj/finTouFun, all of which change every render, but the click-guard effect below is only ever set up once. How: This starts as a no-op and is overwritten with the latest priActFun at the end of every render.
 	const supGuaRef = React.useRef( false );    // What: Suppress Guard Reference. Why: This lets bacSteFun's/skiTouFun's own side effects click through the guard below, e.g. a picker mini-tour's onBacTouFun simulating a click on the create-form's own "Details" step tab to undo a later step's "Add Items" click. How: That synthetic click is not the step's own target (curSteRef still points at the step being left, since onBacTouFun runs before the step index actually changes), so without this the guard would block onBacTouFun from doing anything at all; the exact clicks meant to fix the page up before navigating back are the ones most likely to look like "not the current target" to it.
 
+	// #endregion Step And Action Refs
 
+
+
+	// #region Click Guard Machinery
 
 	// #region isaPasFun
 
