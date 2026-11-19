@@ -429,13 +429,9 @@ function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
 
 	// #region Snapshot Record List
 
-	const aniProMap = window.__aniProMap || new Map< Element, Record< string, number > >(); // What: Animation Property Map. Why: A property an animation moved during the last settle counts as eased. How: This reads the map the settle left, or an empty one before any settle.
-	const borIndNum = proNamArr.indexOf( 'border-color' );                                  // What: Border Index Number. Why: An unset border color follows the color, so its place is checked against color's. How: This finds its place, or -1 when it isn't probed.
-	const colIndNum = proNamArr.indexOf( 'color' );                                         // What: Color Index Number. Why: Only color is inherited among the probed properties. How: This finds its place, or -1 when it isn't probed.
-	const borColBoo = borIndNum >= 0 && colIndNum >= 0;                                     // What: Border Color Boolean. Why: The currentColor check needs both properties probed. How: This is true when the border color and the color are both in the list.
-	const eleLisArr = [ eleCurEle, ...eleCurEle.querySelectorAll( '*' ) ];                  // What: Element List Array. Why: A change to an inner element counts as the element's own. How: This lists the element and everything inside it, parents before children.
+	const eleLisArr = [ eleCurEle, ...eleCurEle.querySelectorAll( '*' ) ]; // What: Element List Array. Why: A change to an inner element counts as the element's own. How: This lists the element and everything inside it, parents before children.
 	const styLisArr = eleLisArr.flatMap( ( lisCurEle ) => [ getComputedStyle( lisCurEle ), ...[ '::before', '::after' ].map( ( pseNamStr ) => getComputedStyle( lisCurEle, pseNamStr ) ).map( ( pseStyObj ) => ( /^(none|normal)$/.test( pseStyObj.content ) ? null : pseStyObj ) ) ] ); // What: Style List Array. Why: The app's pseudo-elements draw parts of a control's look, such as a mode option's dot, and their fade is part of that look. How: This lists each element's computed styles followed by its ::before's and its ::after's, null for one with no content, which isn't drawn.
-	const snaRecArr = styLisArr.map( snaStyFun );                                           // What: Snapshot Record Array. Why: Each element and pseudo-element is recorded. How: This snapshots every listed style.
+	const snaRecArr = styLisArr.map( snaStyFun );                          // What: Snapshot Record Array. Why: Each element and pseudo-element is recorded. How: This snapshots every listed style.
 
 
 	for ( const [ recIndNum, snaRecObj ] of snaRecArr.entries() ) if ( recIndNum ) snaRecObj.labStr = `${ eleLisArr[ Math.floor( recIndNum / 3 ) ].tagName.toLowerCase() } ${ ( eleLisArr[ Math.floor( recIndNum / 3 ) ].classList[ 0 ] || '' ).replace( /^_([A-Za-z]+(--[a-z]+)?)_.*$/, '$1' ) }${ [ '', '::before', '::after' ][ recIndNum % 3 ] }`.trim(); // What: Record Label Loop. Why: A problem inside a control should name the part that snapped, the way a reader of the stylesheet knows it. How: This names every record but the control's own by its tag, its first class with Vite's hash taken off, and its pseudo-element.
@@ -445,6 +441,12 @@ function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
 
 
 	// #region Duration Adjustments
+
+	const aniProMap = window.__aniProMap || new Map< Element, Record< string, number > >(); // What: Animation Property Map. Why: A property an animation moved during the last settle counts as eased. How: This reads the map the settle left, or an empty one before any settle.
+	const borIndNum = proNamArr.indexOf( 'border-color' );                                  // What: Border Index Number. Why: An unset border color follows the color, so its place is checked against color's. How: This finds its place, or -1 when it isn't probed.
+	const colIndNum = proNamArr.indexOf( 'color' );                                         // What: Color Index Number. Why: Only color is inherited among the probed properties. How: This finds its place, or -1 when it isn't probed.
+	const borColBoo = borIndNum >= 0 && colIndNum >= 0;                                     // What: Border Color Boolean. Why: The currentColor check needs both properties probed. How: This is true when the border color and the color are both in the list.
+
 
 	for ( const [ lisIndNum, lisCurEle ] of eleLisArr.entries() ) { // What: Animated Property Loop. Why: A property an animation moved, or one an endless animation keeps moving, isn't read from the transition alone. How: This gives each animated property its animation's duration, and replaces each property an endless animation on an element drives with one fixed word in that element's record.
 
