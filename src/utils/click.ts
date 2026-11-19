@@ -10,7 +10,6 @@
  * browser, which opens a modified click its usual way.
  *
  * Sections:
- *  - Types
  *  - Helpers
  *  - Exports
  *
@@ -20,15 +19,9 @@
 
 
 
-// #region Types
+// #region Helpers
 
 type CliEveTyp = Pick< MouseEvent, 'altKey' | 'button' | 'ctrlKey' | 'metaKey' | 'shiftKey' >; // What: Click Event Type. Why: Both a DOM click and a React click carry these fields. How: This picks them from the DOM's mouse event, which React's matches.
-
-// #endregion Types
-
-
-
-// #region Helpers
 
 // #region modCliFun
 
