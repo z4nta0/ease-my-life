@@ -89,6 +89,23 @@
 
 }
 
+/* #region senStaSpa */
+
+.senStaSpa { /* What: Sent Status Span. Why: The sent note has to reach screen reader users, from a region that is in the page from its first render. How: This holds the note as a grid item. */
+
+
+	display : grid;
+
+
+}
+.senStaSpa:empty { /* What: Empty Sent Status Span. Why: An empty region would still take a gap in the info column. How: This takes it out of the layout until its note arrives. */
+
+
+	position : absolute;
+
+
+}
+
 .setMesSpa { /* What: Settings Message Span. Why: A successful send should confirm itself with a small, noticeable pop. How: This sets the note in small accent text and pops it in each time it remounts. */
 
 
@@ -112,6 +129,8 @@
 
 
 }
+
+/* #endregion senStaSpa */
 
 /* #endregion setInfDiv */
 
@@ -296,13 +315,30 @@
 
 }
 
+/* #region supAleSpa */
+
+.supAleSpa { /* What: Support Alert Span. Why: A refused or failed send has to reach screen reader users, from a region that is in the page from its first render. How: This holds the note as a grid item pushed to the footer's left. */
+
+
+	display      : grid;
+	margin-right : auto;
+
+
+}
+.supAleSpa:empty { /* What: Empty Support Alert Span. Why: An empty region would still take a gap beside the buttons. How: This takes it out of the layout until a note arrives. */
+
+
+	position : absolute;
+
+
+}
+
 .supValSpa { /* What: Support Validation Span. Why: An empty-field send attempt should explain itself right beside the buttons. How: This sets the note in small red text, pushes it left, and pops it in. */
 
 
-	animation    : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	color        : var( --err-dar-col );                                                         /* Error Dark Color = oklch( 0.5 0.18 25 ) */
-	font-size    : var( --fon-siz-bas );                                                         /* Font Size Base = 11px */
-	margin-right : auto;
+	animation : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	color     : var( --err-dar-col );                                                         /* Error Dark Color = oklch( 0.5 0.18 25 ) */
+	font-size : var( --fon-siz-bas );                                                         /* Font Size Base = 11px */
 
 
 }
@@ -326,12 +362,11 @@
 .supFalSpa { /* What: Support Fallback Span. Why: A send that didn't go through lost nothing, so its note reads as advice rather than an error. How: This sets it in small warm text, pushes it left, and pops it in. */
 
 
-	animation    : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	color        : var( --war-dar-col );                                                         /* Warning Dark Color = oklch( 0.45 0.13 50 ) */
-	font-size    : var( --fon-siz-bas );                                                         /* Font Size Base = 11px */
-	line-height  : var( --ver-rhy-bas );                                                         /* Vertical Rhythm Base ~= 1.325 */
-	margin-right : auto;
-	max-width    : var( --tex-wid-sma );                                                         /* Text Width Small Maximum ~= 22.047em */
+	animation   : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	color       : var( --war-dar-col );                                                         /* Warning Dark Color = oklch( 0.45 0.13 50 ) */
+	font-size   : var( --fon-siz-bas );                                                         /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas );                                                         /* Vertical Rhythm Base ~= 1.325 */
+	max-width   : var( --tex-wid-sma );                                                         /* Text Width Small Maximum ~= 22.047em */
 
 
 }
@@ -361,6 +396,8 @@
 }
 
 /* #endregion supFalSpa */
+
+/* #endregion supAleSpa */
 
 /* #endregion supFooDiv */
 

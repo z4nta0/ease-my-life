@@ -1261,19 +1261,23 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 			>{ /* What: Today List Div Element. Why: This is the shared vertical list every card/form below stacks inside, matching every other Today group's own list. How: This renders the added-message banner, the quick-add form, every tutorial card, and every real reminder row plus its inline editors. Its data-element-name-hook is read by Today's own drag-to-reorder code. */ }
 
 
-				{ addMesObj && ( // What: Added Message Visibility Check. Why: The post-add announcement only exists right after a successful commit. How: This renders the message paragraph only while addMesObj holds a value.
+				<div role='status'>{ /* What: Added Status Div Element. Why: The note after adding a reminder has to reach screen reader users, and a region added at the moment it speaks is often missed. How: This stays in the list from the first render, empty until a reminder is added. */ }
 
 
-					<p
-						className={ cssModObj.addMesPar }
-
-						data-message-ok-active={ addMesObj.okaBoo || undefined } // What: Message Ok Active Attribute. Why: A reminder that lands in today's list reads as a success, anything else as a warning. How: This sets the presence-only attribute while addMesObj's okaBoo is true.
-
-						role='status'
-					>{ addMesObj.texStr }</p> // What: Added Message Paragraph Element. Why: This is the live-announced confirmation or warning text itself. How: This reads as a success while data-message-ok-active is set, and as a warning otherwise.
+					{ addMesObj && ( // What: Added Message Visibility Check. Why: The post-add announcement only exists right after a successful commit. How: This renders the message paragraph only while addMesObj holds a value.
 
 
-				) }
+						<p
+							className={ cssModObj.addMesPar }
+
+							data-message-ok-active={ addMesObj.okaBoo || undefined } // What: Message Ok Active Attribute. Why: A reminder that lands in today's list reads as a success, anything else as a warning. How: This sets the presence-only attribute while addMesObj's okaBoo is true.
+						>{ addMesObj.texStr }</p> // What: Added Message Paragraph Element. Why: This is the live-announced confirmation or warning text itself. How: This reads as a success while data-message-ok-active is set, and as a warning otherwise.
+
+
+					) }
+
+
+				</div>
 
 
 

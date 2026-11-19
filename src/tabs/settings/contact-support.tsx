@@ -206,10 +206,13 @@ function ConSupCom () : React.JSX.Element {
 	const [ botFieStr, setBotFieStr ] = React.useState( '' );    // What: Bot Field String And Setter. Why: A spam bot filling this hidden field is the signal a real human never would. How: This is posted alongside the real fields and left for Netlify's own spam filtering to act on. // Honeypot. Bots fill every field they find; humans never see this one, so a non-empty value means we silently accept and drop the submission.
 	const [ isaSenBoo, setIsaSenBoo ] = React.useState( false ); // What: Is-A Sending Boolean And Setter. Why: A second Send press must not fire a second overlapping request while one is already in flight. How: This gates senForFun's own guard and disables the Send button while true.
 
-	const broNamStr = React.useMemo( () => detBroFun(), [] );        // What: Browser Name String. Why: The diagnostic fields need the detected browser, computed once rather than on every render. How: This memoizes detBroFun's own return value with an empty dependency array.
-	const appVerStr = APP_VER_STR == null ? '1.0' : APP_VER_STR;     // What: App Version String. Why: The diagnostic fields still need a sane version to show even on a build where the define is missing. How: This falls back to '1.0' when APP_VER_STR is null.
-	const forCarRef = React.useRef< HTMLDivElement | null >( null ); // What: Form Card Reference. Why: opeForFun needs a handle on the rendered form to scroll it into view. How: This is attached to the supForDiv div's own ref prop below.
-	const canSenBoo = draSubStr.trim() && draMesStr.trim();          // What: Can Send Boolean. Why: The Send button's own enabled state, and the validation guard, both depend on both drafts actually holding text. How: This is true only while both draSubStr and draMesStr trim to something non-empty.
+	const broNamStr = React.useMemo( () => detBroFun(), [] );           // What: Browser Name String. Why: The diagnostic fields need the detected browser, computed once rather than on every render. How: This memoizes detBroFun's own return value with an empty dependency array.
+	const appVerStr = APP_VER_STR == null ? '1.0' : APP_VER_STR;        // What: App Version String. Why: The diagnostic fields still need a sane version to show even on a build where the define is missing. How: This falls back to '1.0' when APP_VER_STR is null.
+	const forCarRef = React.useRef< HTMLDivElement | null >( null );    // What: Form Card Reference. Why: opeForFun needs a handle on the rendered form to scroll it into view. How: This is attached to the supForDiv div's own ref prop below.
+	const conSupRef = React.useRef< HTMLButtonElement | null >( null ); // What: Contact Support Reference. Why: A sent form collapses with focus on its Send button, so focus needs somewhere to land. How: This is attached to the Contact Support button, which a successful send focuses.
+	const refSenRef = React.useRef( false );                            // What: Refocus Send Reference. Why: A failed send ends with the Send button still disabled, so it can't take focus until it re-enables. How: The failure sets this, and the Send Refocus effect reads it once sending ends.
+	const senButRef = React.useRef< HTMLButtonElement | null >( null ); // What: Send Button Reference. Why: A failed send should hand focus back to Send. How: This is attached to the Send button, which the Send Refocus effect focuses.
+	const canSenBoo = draSubStr.trim() && draMesStr.trim();             // What: Can Send Boolean. Why: The Send button's own enabled state, and the validation guard, both depend on both drafts actually holding text. How: This is true only while both draSubStr and draMesStr trim to something non-empty.
 
 	// #endregion Form State
 
@@ -412,8 +415,13 @@ function ConSupCom () : React.JSX.Element {
 			setForOpeBoo( false ); // What: Form Close Call. Why: The form itself no longer needs to stay open once sent. How: This flips forOpeBoo back to false.
 
 
+			conSupRef.current?.focus(); // What: Contact Focus Call. Why: The collapsing form takes the focused Send button with it, and focus must never fall to the page. How: This moves focus to the Contact Support button, which reopens the form.
+
+
 		} ).catch( () => { // What: Fetch Catch Handler. Why: Offline, Forms not enabled, or the static form missing from the build all surface here. How: This flags the send as failed so the fallback address can be shown.
 
+
+			refSenRef.current = true; // What: Refocus Request. Why: The Send button is still disabled here, so it can't take focus yet. How: This asks the Send Refocus effect to focus it once sending ends.
 
 			setSenFaiBoo( true ); // What: Send Failed Flag. Why: This is what actually surfaces the fallback address and copy button below. How: This flips senFaiBoo to true.
 
@@ -430,6 +438,23 @@ function ConSupCom () : React.JSX.Element {
 	};
 
 	// #endregion senForFun
+
+
+
+	React.useEffect( () => { // What: Send Refocus Effect. Why: A failed send disables the Send button while it runs, and focus should come back to it once it can take focus again. How: Once sending ends with a refocus asked for, this clears the request and focuses the button.
+
+
+		if ( isaSenBoo || !refSenRef.current ) return; // What: Refocus Guard. Why: Nothing should move while a send is running or when no failure asked for it. How: This returns early in either case.
+
+
+
+		refSenRef.current = false; // What: Refocus Request Clear. Why: The request is answered once. How: This resets it.
+
+
+		senButRef.current?.focus(); // What: Send Focus Call. Why: The person can retry right away. How: This focuses the re-enabled Send button.
+
+
+	}, [ isaSenBoo ] ); // What: Effect Dependency Array. Why: The refocus waits for the send to finish. How: isaSenBoo turning false is when the Send button re-enables.
 
 	// #endregion Form Actions
 
@@ -458,19 +483,27 @@ function ConSupCom () : React.JSX.Element {
 
 						<span className={ cssModObj.setSubSpa }>Send a note and it&rsquo;ll come through with your app version and browser attached, so there&rsquo;s no back-and-forth to track those down.</span>{ /* What: Set Data Sub Span Element. Why: Every row in this tab explains itself with this same span. How: This renders the fixed description text. */ }
 
-						{ senTimNum > 0 && ( // What: Sent Confirmation Check. Why: A confirmation note should only exist right after an actual successful send. How: This renders the confirmation span only while senTimNum holds a real timestamp.
+						<span
+							className={ cssModObj.senStaSpa }
+
+							role='status'
+						>{ /* What: Sent Status Span Element. Why: The sent note has to reach screen reader users, and a region added at the moment it speaks is often missed. How: This stays in the page from the first render, empty until a send succeeds. */ }
 
 
-							<span
-								key={ senTimNum }
-
-								className={ cssModObj.setMesSpa }
-
-								role='status'
-							>Message sent, thanks! I&rsquo;ll be in touch.</span> // What: Sent Confirmation Span Element. Why: This is the actual confirmation text shown after a successful send. How: This is remounted (via its own senTimNum key) so a repeat send replays the announcement.
+							{ senTimNum > 0 && ( // What: Sent Confirmation Check. Why: A confirmation note should only exist right after an actual successful send. How: This renders the confirmation span only while senTimNum holds a real timestamp.
 
 
-						) }
+								<span
+									key={ senTimNum }
+
+									className={ cssModObj.setMesSpa }
+								>Message sent, thanks! I&rsquo;ll be in touch.</span> // What: Sent Confirmation Span Element. Why: This is the actual confirmation text shown after a successful send. How: This is remounted (via its own senTimNum key) so a repeat send replays the announcement.
+
+
+							) }
+
+
+						</span>
 
 
 					</div>
@@ -478,6 +511,8 @@ function ConSupCom () : React.JSX.Element {
 
 
 					<ButBasCom
+						ref={ conSupRef }
+
 						kinValStr='secondary'
 						sizValStr='sm'
 
@@ -613,37 +648,45 @@ function ConSupCom () : React.JSX.Element {
 						>{ /* What: Support Form Foot Div Element. Why: The validation/failure messages and the form's own action buttons need their own grouping at the bottom. How: This wraps whichever messages currently apply plus the Cancel/Send buttons. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-							{ shoErrBoo && !canSenBoo && ( // What: Validation Message Check. Why: A validation message should only show while the form is actually invalid and the user has already tried to send. How: This renders the message only while both conditions hold.
+							<span
+								className={ cssModObj.supAleSpa }
+
+								role='alert'
+							>{ /* What: Support Alert Span Element. Why: A refused or failed send has to reach screen reader users, and a region added at the moment it speaks is often missed. How: This stays in the footer from the first render, empty until the validation note or the fallback note fills it. */ }
 
 
-								<span
-									key='verr'
-
-									className={ cssModObj.supValSpa }
-								>Please fill out both form fields.</span> // What: Validation Message Span Element. Why: This is the actual validation copy shown on an empty-field send attempt. How: This renders fixed text explaining what is missing.
+								{ shoErrBoo && !canSenBoo && ( // What: Validation Message Check. Why: A validation message should only show while the form is actually invalid and the user has already tried to send. How: This renders the message only while both conditions hold.
 
 
-							) }
+									<span
+										key='verr'
 
-							{ senFaiBoo && !shoErrBoo && ( // What: Failure Message Check. Why: The fallback address should only show after an actual failed send, and not alongside an unrelated validation message. How: This renders the fallback message only while both conditions hold.
-
-
-								<span
-									key='sfail'
-
-									className={ cssModObj.supFalSpa }
-
-									role='status'
-								>{ /* What: Failure Message Span Element. Why: This is the actual fallback copy shown on a failed send. How: This explains the likely cause and surfaces the raw support address. */ }
+										className={ cssModObj.supValSpa }
+									>Please fill out both form fields.</span> // What: Validation Message Span Element. Why: This is the actual validation copy shown on an empty-field send attempt. How: This renders fixed text explaining what is missing.
 
 
-									Couldn&rsquo;t send. You may be offline. Your message is still here, so try again, or write to <span className={ cssModObj.falAdrSpa }>{ SUP_EMA_STR }</span>.
+								) }
+
+								{ senFaiBoo && !shoErrBoo && ( // What: Failure Message Check. Why: The fallback address should only show after an actual failed send, and not alongside an unrelated validation message. How: This renders the fallback message only while both conditions hold.
 
 
-								</span>
+									<span
+										key='sfail'
+
+										className={ cssModObj.supFalSpa }
+									>{ /* What: Failure Message Span Element. Why: This is the actual fallback copy shown on a failed send. How: This explains the likely cause and surfaces the raw support address. */ }
 
 
-							) }
+										Couldn&rsquo;t send. You may be offline. Your message is still here, so try again, or write to <span className={ cssModObj.falAdrSpa }>{ SUP_EMA_STR }</span>.
+
+
+									</span>
+
+
+								) }
+
+
+							</span>
 
 
 
@@ -672,6 +715,8 @@ function ConSupCom () : React.JSX.Element {
 
 
 							<ButBasCom
+								ref={ senButRef }
+
 								disabled={ isaSenBoo }
 								kinValStr='secondary'
 								sizValStr='sm'

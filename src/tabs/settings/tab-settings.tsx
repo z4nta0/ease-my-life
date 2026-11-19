@@ -794,6 +794,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	};
 
+
+
+	React.useEffect( () => { if ( perMesObj ) annStaFun( perMesObj.texStr ); }, [ perMesObj ] ); // What: Persist Message Announce Effect. Why: An install or protect result has to reach screen reader users, and the app's live region is in the page from load, unlike the message span. How: This announces each new result message once it's set, re-running whenever perMesObj changes.
+
 	// #endregion Storage And Installation
 
 
@@ -2117,8 +2121,6 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 											data-message-error-active={ !perMesObj.okaBoo || undefined } // What: Message Error Active Attribute. Why: A failed attempt reads red. How: This is present only while perMesObj.okaBoo is false.
 											data-message-ok-active={ perMesObj.okaBoo || undefined } // What: Message Ok Active Attribute. Why: A successful attempt reads in the accent. How: This is present only while perMesObj.okaBoo is true.
-
-											role='status'
 										>{ perMesObj.texStr }</span> // What: Persist Message Span Element. Why: This is the actual outcome text from the last Install/Protect Data attempt. How: This renders perMesObj's own text field, styled ok/err based on its own ok field.
 
 
@@ -2507,8 +2509,6 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 											className={ cssModObj.setMesSpa }
 
 											data-message-ok-active
-
-											role='status'
 										>{ resMesStr }</span> // What: Reset Message Span Element. Why: This is the actual confirmation text from the last reset. How: This renders resMesStr directly.
 
 
