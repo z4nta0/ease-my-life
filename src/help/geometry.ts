@@ -35,14 +35,13 @@ import { splSelFun } from '../utils/selector.ts'; // What: Split Selector Functi
 
 type ChrIteTyp = { chrDomEle : HTMLElement, chrRecObj : DOMRect, chrSelStr : string, chrSidStr : string }; // What: Chrome Item Type. Why: Highlights are clipped against each piece of fixed app chrome on the page. How: This describes one chrome element, its rect, its selector, and the side it sits on.
 type EdgRecTyp = { bottom : number, left : number, right : number, top : number };                         // What: Edge Rect Type. Why: Clipping only ever moves a rect's four edges. How: This describes a rect by those edges.
-type PadSidTyp = { padBotNum : number, padLefNum : number, padRigNum : number, padTopNum : number };       // What: Pad Sides Type. Why: A highlight's padding can be cut short on each side separately. How: This describes how much survived on each side.
-type ShaRadTyp = { radXcoNum : number, radYcoNum : number };                                               // What: Shape Radius Type. Why: A highlight cutout's corners follow its target's rounding on each axis. How: This holds the horizontal and vertical radius, in pixels.
-
-
 
 type BoxRecTyp = EdgRecTyp & { height : number, width : number }; // What: Box Rect Type. Why: A unioned target also carries its size. How: This is an edge rect plus its height and width.
 
 
+
+type PadSidTyp = { padBotNum : number, padLefNum : number, padRigNum : number, padTopNum : number }; // What: Pad Sides Type. Why: A highlight's padding can be cut short on each side separately. How: This describes how much survived on each side.
+type ShaRadTyp = { radXcoNum : number, radYcoNum : number };                                         // What: Shape Radius Type. Why: A highlight cutout's corners follow its target's rounding on each axis. How: This holds the horizontal and vertical radius, in pixels.
 
 type HelRecTyp = BoxRecTyp & Partial< PadSidTyp > & { alwBelBoo? : boolean, badAncNum? : number, labStr? : string, shaObj? : ShaRadTyp | null, tipWidNum? : number | null }; // What: Help Rect Type. Why: Help mode measures each catalog item into one rect that its badge, tip, mask, and title all read. How: This is a box rect plus its surviving pads, the always-below flag, a column group's badge anchor, a live label, its cutout shape, and a matched tip width.
 

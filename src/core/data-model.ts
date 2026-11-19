@@ -256,14 +256,6 @@ type PicRcdTyp = { // What: Picker Record Type. Why: A picker is a pool of items
 
 
 
-type PicArgTyp = Partial< PicRcdTyp > & { includeInDaily? : boolean, items? : Partial< IteRcdTyp >[], newConditional? : Partial< ConRcdTyp > | null, replaceId? : string, step? : number }; // What: Picker Argument Type. Why: Adding, editing, or prefilling a picker passes the form's fields, its items, and any new conditional together. How: This is a partial picker plus whether it joins the daily list, its items, a new conditional, the id of a sample it replaces, and the create form step a tour prefill opens on.
-
-
-
-type PicForTyp = Omit< PicArgTyp, 'items' > & Pick< PicRcdTyp, 'group' | 'mode' | 'name' > & { items? : ( Partial< IteRcdTyp > & Pick< IteRcdTyp, 'name' > )[] }; // What: Picker Form Type. Why: Adding or saving a picker builds a real picker from the form, which always names it, groups it, and picks its mode. How: This is a picker argument whose group, mode, name, and item names are required.
-
-
-
 type EntPenTyp = { // What: Entry Pending Type. Why: A pick's effects wait until its entry is checked off, so nothing changes for a pick the user never does. How: This describes an entry's staged effects, entry.pending.
 
 
@@ -275,6 +267,14 @@ type EntPenTyp = { // What: Entry Pending Type. Why: A pick's effects wait until
 
 
 };
+
+
+
+type PicArgTyp = Partial< PicRcdTyp > & { includeInDaily? : boolean, items? : Partial< IteRcdTyp >[], newConditional? : Partial< ConRcdTyp > | null, replaceId? : string, step? : number }; // What: Picker Argument Type. Why: Adding, editing, or prefilling a picker passes the form's fields, its items, and any new conditional together. How: This is a partial picker plus whether it joins the daily list, its items, a new conditional, the id of a sample it replaces, and the create form step a tour prefill opens on.
+
+
+
+type PicForTyp = Omit< PicArgTyp, 'items' > & Pick< PicRcdTyp, 'group' | 'mode' | 'name' > & { items? : ( Partial< IteRcdTyp > & Pick< IteRcdTyp, 'name' > )[] }; // What: Picker Form Type. Why: Adding or saving a picker builds a real picker from the form, which always names it, groups it, and picks its mode. How: This is a picker argument whose group, mode, name, and item names are required.
 
 
 
