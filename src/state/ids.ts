@@ -1,17 +1,24 @@
 
 
 
+// #region Imports
+
+import { ideMakFun } from '../utils/sequence-id.ts'; // What: Identifier Make Function. Why: Each Today entry ID joins a time stamp and a counter of this file's own. How: This makes newEidFun once, in Module State.
+
+// #endregion Imports
+
+
+
 /**
  * ids.ts = Identifiers
  *
  * @summary
- * Mints the unique id every Today entry carries. A module-level counter is
- * appended to the timestamp so two ids minted in the same millisecond still
- * differ.
+ * Mints the unique id every Today entry carries. A counter of this file's
+ * own is appended to the timestamp so two ids minted in the same millisecond
+ * still differ.
  *
  * Sections:
  *  - Module State
- *  - Helpers
  *  - Exports
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -21,14 +28,6 @@
 
 
 // #region Module State
-
-let __eidSeqNum = 0; // What: Entry-Id Sequence Number. Why: newEidFun below needs a shared counter across every call so two ids minted in the same millisecond still differ. How: This starts at 0 and is incremented once per newEidFun call.
-
-// #endregion Module State
-
-
-
-// #region Helpers
 
 // #region newEidFun
 
@@ -54,23 +53,17 @@ let __eidSeqNum = 0; // What: Entry-Id Sequence Number. Why: newEidFun below nee
  *
 */
 
-function newEidFun () : string {
-
-
-	return 'e_' + Date.now().toString( 36 ) + ( __eidSeqNum++ ).toString( 36 ); // What: Entry Id Return. Why: The caller needs a short, sortable, collision-resistant id. How: This concatenates a fixed prefix, the current time base-36, and the incrementing counter base-36.
-
-
-}
+const newEidFun = ideMakFun( 'e_' ); // What: New Entry-Id Function. Why: The caller needs a short, sortable, collision-resistant id. How: This is the factory's id function, joining the 'e_' prefix, the current time in base 36, and this file's own counter in base 36.
 
 // #endregion newEidFun
 
-// #endregion Helpers
+// #endregion Module State
 
 
 
 // #region Exports
 
-export { newEidFun }; // What: Named Export. Why: Migration and the Today-entry actions both mint entry ids. How: This exports newEidFun by name; its counter stays private to this file.
+export { newEidFun }; // What: Named Export. Why: Migration and the Today-entry actions both mint entry ids. How: This exports newEidFun by name; its counter stays private to it.
 
 // #endregion Exports
 

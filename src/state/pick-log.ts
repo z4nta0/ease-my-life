@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import { isoDayFun } from '../utils/date.ts'; // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
+import { ideMakFun } from '../utils/sequence-id.ts'; // What: Identifier Make Function. Why: Each pick-log row ID joins a time stamp and a counter of this file's own. How: This makes newLogFun once, in Module State.
+import { isoDayFun } from '../utils/date.ts';        // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 
 
 import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: logRowFun builds one pick-log row. How: This types its return.
@@ -45,22 +46,14 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
 
 // #region Module State
 
-let __pclSeqNum = 0; // What: Pick-Log Sequence Number. Why: newLogFun below needs a shared counter across every call so two ids minted in the same millisecond still differ. How: This starts at 0 and is incremented once per newLogFun call.
-
-// #endregion Module State
-
-
-
-// #region Helpers
-
 // #region newLogFun
 
 /**
  * newLogFun = New Log Function
  *
  * @summary
- * Mints a new, distinct id for one state.pickLog row, sharing one
- * module-private counter so two ids minted in the same millisecond
+ * Mints a new, distinct id for one state.pickLog row, counting with a
+ * counter of this file's own so two ids minted in the same millisecond
  * still never collide.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -76,17 +69,15 @@ let __pclSeqNum = 0; // What: Pick-Log Sequence Number. Why: newLogFun below nee
  *
 */
 
-function newLogFun () : string {
-
-
-	return 'pl_' + Date.now().toString( 36 ) + ( __pclSeqNum++ ).toString( 36 ); // What: Pick-Log Id Return. Why: The caller needs a short, sortable, collision-resistant id. How: This concatenates a fixed prefix, the current time base-36, and the incrementing counter base-36.
-
-
-}
+const newLogFun = ideMakFun( 'pl_' ); // What: New Log Function. Why: The caller needs a short, sortable, collision-resistant ID. How: This is the factory's ID function, joining the 'pl_' prefix, the current time in base 36, and this file's own counter in base 36.
 
 // #endregion newLogFun
 
+// #endregion Module State
 
+
+
+// #region Helpers
 
 // #region logRowFun
 

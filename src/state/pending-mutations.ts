@@ -4,6 +4,7 @@
 // #region Imports
 
 import { CON_NAM_OBJ } from '../core/conditionals.ts'; // What: Conditionals Namespace Object. Why: A day-off card's completion advances or reverts its conditional through this module's own logic. How: This is aliased to conModObj inside cotAplFun.
+import { ideMakFun   } from '../utils/sequence-id.ts'; // What: Identifier Make Function. Why: Each conditional-log row ID joins a time stamp and a counter of this file's own. How: This makes nclIdeFun once, in Module State.
 import { isaTruFun   } from '../utils/guard.ts';       // What: Is-A Truthy Function. Why: The touched-id set drops a missing picked id. How: This filters the ids through the shared truthy guard, so TypeScript sees only real ids.
 import { isoDayFun   } from '../utils/date.ts';        // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 
@@ -75,7 +76,32 @@ type EnpResTyp = { items : IteRcdTyp[], pickers : PicRcdTyp[], pickLog : PclRowT
 
 // #region Module State
 
-let __cdlSeqNum = 0; // What: Conditional-Log Sequence Number. Why: nclIdeFun below needs its own shared counter, separate from newLogFun's, so ids minted in the same millisecond still differ. How: This starts at 0 and is incremented once per nclIdeFun call.
+// #region nclIdeFun
+
+/**
+ * nclIdeFun = New-Conditional-Log Identifier Function
+ *
+ * @summary
+ * Mints a new, distinct id for one state.conditionalLog row, with a
+ * counter of this file's own and its own prefix, so its ids can never
+ * collide with the pick log's.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns A new conditional-log row id string, prefixed 'cl_'.
+ *
+ * @example
+ * ```ts
+ * nclIdeFun() // => 'cl_abc123xy'
+ * ```
+ *
+*/
+
+const nclIdeFun = ideMakFun( 'cl_' ); // What: New-Conditional-Log Identifier Function. Why: The caller needs a short, sortable, collision-resistant ID. How: This is the factory's ID function, joining the 'cl_' prefix, the current time in base 36, and this file's own counter in base 36.
+
+// #endregion nclIdeFun
 
 // #endregion Module State
 
@@ -534,41 +560,6 @@ function enpRevFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 }
 
 // #endregion enpRevFun
-
-
-
-// #region nclIdeFun
-
-/**
- * nclIdeFun = New-Conditional-Log Identifier Function
- *
- * @summary
- * Mints a new, distinct id for one state.conditionalLog row, mirroring
- * newLogFun's own shape but with its own separate counter and prefix so
- * the two logs' ids can never collide with each other.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param void - This function takes no parameters.
- *
- * @returns A new conditional-log row id string, prefixed 'cl_'.
- *
- * @example
- * ```ts
- * nclIdeFun() // => 'cl_abc123xy'
- * ```
- *
-*/
-
-function nclIdeFun () : string {
-
-
-	return 'cl_' + Date.now().toString( 36 ) + ( __cdlSeqNum++ ).toString( 36 ); // What: Conditional-Log Id Return. Why: The caller needs a short, sortable, collision-resistant id. How: This concatenates a fixed prefix, the current time base-36, and the incrementing counter base-36.
-
-
-}
-
-// #endregion nclIdeFun
 
 
 
