@@ -372,16 +372,40 @@
 
 
 }
-.modOptLab[data-option-select-active]::before { /* What: Selected Mode Option Bar. Why: A bar on the edge marks the chosen type. How: This draws a thin accent strip down the option's left side. */
+.modOptLab::before { /* What: Mode Option Label Bar. Why: A bar on the edge marks the chosen type. How: This draws a thin accent strip down the option's left side, hidden until the option is chosen, and fades it out on the accelerating curve. */
 
 
-	background : var( --acc-mai-col );                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	background : var( --acc-mai-col );                              /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	bottom     : 0;
 	content    : '';
 	left       : 0;
+	opacity    : 0;
 	position   : absolute;
 	top        : 0;
-	width      : calc( var( --ver-rhy-m07 ) * 1rem ); /* Vertical Rhythm Base Minus 7 ~= 2.035px */
+	transition : opacity var( --dur-tra-m01 ) var( --mot-acc-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */
+	width      : calc( var( --ver-rhy-m07 ) * 1rem );               /* Vertical Rhythm Base Minus 7 ~= 2.035px */
+
+
+}
+.modOptLab[data-option-select-active]::before { /* What: Selected Mode Option Label Bar. Why: The chosen option shows its mark. How: This fades the mark in on the decelerating curve. */
+
+
+	opacity    : 1;
+	transition : opacity var( --dur-tra-m01 ) var( --mot-dec-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Mode Option Label Bar. Why: Someone who asked for less motion shouldn't see the mark fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.modOptLab::before,
+	.modOptLab[data-option-select-active]::before { /* What: Still Mode Option Label Bar. Why: The mark should simply appear and disappear. How: This turns its fade off in both states. */
+
+
+		transition : none;
+
+
+	}
 
 
 }
@@ -432,14 +456,38 @@
 
 
 }
-.modOptLab[data-option-select-active] .modDotSpa::after { /* What: Selected Mode Dot Fill. Why: The chosen option's dot is filled. How: This draws an accent disc inside the ring. */
+.modDotSpa::after { /* What: Mode Dot Span Fill. Why: A filled center marks the dot as chosen. How: This draws an accent disc inside the ring, hidden until the option is chosen, and fades it out on the accelerating curve. */
 
 
-	background    : var( --acc-mai-col );                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	background    : var( --acc-mai-col );                              /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius : 50%;
 	content       : '';
-	inset         : var( --spa-ver-m06 ) var( --spa-hor-m06 ); /* Spacing Vertical Base Minus 6 ~= 2.696px, Spacing Horizontal Base Minus 6 ~= 2.696px */
+	inset         : var( --spa-ver-m06 ) var( --spa-hor-m06 );         /* Spacing Vertical Base Minus 6 ~= 2.696px, Spacing Horizontal Base Minus 6 ~= 2.696px */
+	opacity       : 0;
 	position      : absolute;
+	transition    : opacity var( --dur-tra-m01 ) var( --mot-acc-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */
+
+
+}
+.modOptLab[data-option-select-active] .modDotSpa::after { /* What: Selected Mode Dot Span Fill. Why: The chosen option shows its mark. How: This fades the mark in on the decelerating curve. */
+
+
+	opacity    : 1;
+	transition : opacity var( --dur-tra-m01 ) var( --mot-dec-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Mode Dot Span Fill. Why: Someone who asked for less motion shouldn't see the mark fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.modDotSpa::after,
+	.modOptLab[data-option-select-active] .modDotSpa::after { /* What: Still Mode Dot Span Fill. Why: The mark should simply appear and disappear. How: This turns its fade off in both states. */
+
+
+		transition : none;
+
+
+	}
 
 
 }

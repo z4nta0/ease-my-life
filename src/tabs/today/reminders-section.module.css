@@ -1049,22 +1049,36 @@
 
 }
 
-.carNamDiv { /* What: Card Name Div. Why: The reminder's name is the card's headline. How: This sets it large and medium weight. */
+.carNamDiv { /* What: Card Name Div. Why: The reminder's name is the card's headline. How: This sets it large and medium weight, holding the done strike's thickness so only the strike itself switches on, and eases its color. */
 
 
-	font-size      : var( --fon-siz-p02 ); /* Font Size Base Plus 2 ~= 19.304px */
-	font-weight    : 500;
-	letter-spacing : -0.01em;
-	text-wrap      : pretty;
+	font-size                 : var( --fon-siz-p02 );                            /* Font Size Base Plus 2 ~= 19.304px */
+	font-weight               : 500;
+	letter-spacing            : -0.01em;
+	text-decoration-thickness : var( --bor-wid-sma );                            /* Border Width Small ~= 0.499px */
+	text-wrap                 : pretty;
+	transition                : color var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
 
 
 }
 .todCarArt[data-card-done-active] .carNamDiv { /* What: Done Reminder Name. Why: A done reminder reads as crossed off. How: This mutes and strikes through its name. */
 
 
-	color                     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	text-decoration           : line-through;
-	text-decoration-thickness : var( --bor-wid-sma ); /* Border Width Small ~= 0.499px */
+	color                : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	text-decoration-line : line-through;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Card Name Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.carNamDiv { /* What: Still Card Name Div. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }

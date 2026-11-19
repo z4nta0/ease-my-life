@@ -1463,18 +1463,18 @@
 
 
 	align-items     : center;
-	border-radius   : var( --rad-bor-sma );                                                                                  /* Radius Border Small ~= 8.304px */
-	color           : var( --tex-mut-col );                                                                                  /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	border-radius   : var( --rad-bor-sma );                      /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                      /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : flex;
-	font-size       : var( --fon-siz-p01 );                                                                                  /* Font Size Base Plus 1 ~= 14.572px */
+	font-size       : var( --fon-siz-p01 );                      /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight     : 500;
-	gap             : var( --spa-hor-m01 );                                                                                  /* Spacing Horizontal Base Minus 1 = 11px */
+	gap             : var( --spa-hor-m01 );                      /* Spacing Horizontal Base Minus 1 = 11px */
 	justify-content : space-between;
 	letter-spacing  : -0.005em;
-	min-height      : calc( var( --ver-rhy-p03 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 3 ~= 33.876px */
-	padding         : var( --spa-ver-m03 ) var( --spa-hor-m01 );                                                             /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 1 = 11px */
+	min-height      : calc( var( --ver-rhy-p03 ) * 1rem );       /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	padding         : var( --spa-ver-m03 ) var( --spa-hor-m01 ); /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 1 = 11px */
 	text-align      : left;
-	transition      : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	transition      : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 	width           : 100%;
 
 
