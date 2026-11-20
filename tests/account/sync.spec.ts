@@ -146,8 +146,12 @@ test( 'two devices sign in to one paid account and sync each other', async ( { b
 
 
 
+	// #region Context Closes
+
 	await oneConObj.close(); // What: First Context Close. Why: The devices end with the test. How: This closes the first.
 	await twoConObj.close(); // What: Second Context Close. Why: The devices end with the test. How: This closes the second.
+
+	// #endregion Context Closes
 
 
 } );
@@ -278,8 +282,12 @@ test( "a device opened with yesterday's list takes the day's list another device
 
 
 
+	// #region Context Closes
+
 	await oneConObj.close(); // What: First Context Close. Why: The devices end with the test. How: This closes the first.
 	await twoConObj.close(); // What: Second Context Close. Why: The devices end with the test. How: This closes the second.
+
+	// #endregion Context Closes
 
 
 } );
