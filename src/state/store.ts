@@ -480,8 +480,6 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 
-	// #region State Persistence
-
 	const perActBoo = !( optArgObj && optArgObj.persist === false ); // What: Persist Active Boolean. Why: The onboarding demo needs to opt entirely out of the idle-save/flush effects below. How: This is false only when optArgObj.persist is explicitly false.
 
 
@@ -572,8 +570,6 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 	}, [ canPenFun, perActBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run only when persistence is turned on or off, the one change that needs its listeners re-wired. How: canPenFun never changes since its own callback has no dependencies, and perActBoo changing means the listeners need re-wiring (or tearing down) under the new persistence setting.
-
-	// #endregion State Persistence
 
 
 
@@ -699,15 +695,11 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 
-			// #region Clean State Install
-
 			const cleStaObj = migStaFun( SED_NAM_OBJ.buiCleFun() ); // What: Clean State Object. Why: The freshly-reloaded app needs a real, migrated empty state ready in latStaRef before reload() fires. How: This builds a fresh SED_NAM_OBJ.buiCleFun() and runs it through migStaFun().
 
 			latStaRef.current = cleStaObj; // What: Latest State Reference Update. Why: The flush effect's own pagehide handler must see this clean state, not the stale pre-wipe one, per the design-rationale comment above. How: This assigns cleStaObj directly onto latStaRef.current.
 
 			setAppStaObj( cleStaObj ); // What: App State Set. Why: React itself should also reflect the clean state, even though the reload below discards this render anyway. How: This calls setAppStaObj with cleStaObj.
-
-			// #endregion Clean State Install
 
 
 
@@ -3589,8 +3581,6 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		skiEntFun : ( entIdeStr ) => setAppStaObj( ( curStaObj ) => { // What: Skip Entry Function. Why: A user must be able to drop an entry from today while Stats still counts it as a skip. How: This undoes any completed mutation and conditional charge first, removes the entry, marks its own live log row skipped, and reconciles the streak.
 
 
-			// #region Done Entry Undo
-
 			const curEntObj = curStaObj.today.entries.find( ( entFinObj ) => entFinObj.eid === entIdeStr ); // What: Current Entry Object And Guard. Why: The undo-before-skip branch below needs to know whether this entry was already completed. How: This looks up entIdeStr in curStaObj.today.entries.
 
 			let nexIteArr = curStaObj.items;         // What: Next Item Array. Why: This defaults to the unchanged items and is only replaced below when an already-done entry needs its own pending undone first. How: This starts at curStaObj.items.
@@ -3609,8 +3599,6 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 			}
-
-			// #endregion Done Entry Undo
 
 
 

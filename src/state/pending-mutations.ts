@@ -374,8 +374,6 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 
-	// #region Dependent Charge Lookup
-
 	const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === togEntObj.pickerId ); // What: Current Picker Object And Guard. Why: A dependent entry's own conditional is looked up through its picker, not the entry itself. How: This looks up togEntObj's own pickerId in curStaObj.pickers.
 	const conIdeStr = curPicObj && curPicObj.conditionalId;                                           // What: Conditional Identifier String And Guard. Why: An entry whose picker has no conditionalId gates nothing. How: This reads curPicObj's own conditionalId, or stays falsy when curPicObj is missing.
 
@@ -399,8 +397,6 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 	} ).length; // What: Match Count Read. Why: The caller only needs how many entries matched. How: This reads the filtered array's own length.
-
-	// #endregion Dependent Charge Lookup
 
 
 
@@ -428,16 +424,11 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 
-		// #region Revert Edge Detection
-
 		const nowUndBoo = !nowDonBoo;              // What: Now Undone Boolean. Why: Only an un-done toggle can revert an earlier charge. How: This negates nowDonBoo.
 		const depZerBoo = depDonNum === 0;         // What: Dependents Zero Boolean. Why: The charge only reverts once the LAST dependent completion of the day is un-done. How: This is true when depDonNum is 0.
 		const hasPreBoo = !!curConObj._chargePrev; // What: Has Previous Boolean. Why: There's nothing to restore unless the charge left its own snapshot. How: This is true when curConObj carries its own _chargePrev.
 
 		const revEdgBoo = nowUndBoo && depZerBoo && hasPreBoo; // What: Reverting Edge Boolean. Why: The earlier charge must be undone only when all three checks above hold at once. How: This combines nowUndBoo, depZerBoo and hasPreBoo.
-
-		// #endregion Revert Edge Detection
-
 
 
 		if ( revEdgBoo ) { // What: Reverting-Edge Branch. Why: Once the LAST dependent completion of the day is un-done, the earlier charge must be undone too. How: This restores curConObj's own pre-charge fields from _chargePrev.
@@ -826,14 +817,10 @@ function rebPenFun ( todEntArr : TodEntTyp[], picRcdArr : PicRcdTyp[], iteIdeStr
 
 
 
-		// #region Decay Recalculation
-
 		const thrValNum = curPicObj.threshold ?? 100;                       // What: Threshold Value Number. Why: A depleted item recharges to its picker's own threshold. How: This reads the picker's threshold, defaulting to 100.
 		const basValNum = newValNum > 0 ? newValNum : thrValNum;            // What: Base Value Number. Why: The decay starts from the item's new value, the same way a new streak starts from a full one when the item is empty. How: This uses newValNum, or thrValNum when it's 0.
 		const remValNum = Math.max( 0, basValNum - decUpdObj.chargeStep! ); // What: Remaining Value Number. Why: Completing the entry takes one step off the new value. How: This subtracts the row's chargeStep, floored at 0. // What: Non-Null Note. Why: decUpdObj was found only when its chargeStep is above 0. How: The ! tells TypeScript the step is set.
 		const depEndBoo = remValNum <= 0.5;                                 // What: Depleted End Boolean. Why: The streak ends only when this step empties the item, with the same half-unit tolerance pickers.ts uses. How: This checks remValNum against 0.5.
-
-		// #endregion Decay Recalculation
 
 
 

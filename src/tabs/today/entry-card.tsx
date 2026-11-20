@@ -761,8 +761,6 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 
-	// #region Real Pick Branch
-
 	const curIteObj = staAppObj.items.find( ( pooIteObj ) => pooIteObj.id === entRecObj.itemId ); // What: Current Item Object. Why: A real pick row needs its own live item resolved before anything else in this branch can render. How: This finds the item matching entRecObj's own itemId.
 
 
@@ -1151,8 +1149,6 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 	);
-
-	// #endregion Real Pick Branch
 
 
 }

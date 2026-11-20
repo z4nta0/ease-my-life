@@ -1033,8 +1033,6 @@ async function iniStoFun () : Promise< RawSavTyp > {
 
 
 
-	// #region Boot State Seeding
-
 	if ( cacStaObj && cacStaObj.pickLog ) lplRefArr = cacStaObj.pickLog; // What: Last-Pick-Log Reference Seed. Why: wriDatFun's own change-detection needs a starting reference so it does not treat the very first save after boot as a change. How: This seeds lplRefArr from whatever pickLog cacStaObj already has, if any.
 
 
@@ -1052,8 +1050,6 @@ async function iniStoFun () : Promise< RawSavTyp > {
 
 
 	}
-
-	// #endregion Boot State Seeding
 
 
 
@@ -1451,8 +1447,6 @@ async function reqPerFun () : Promise< boolean > {
 async function staRepFun () : Promise< StoRepTyp > {
 
 
-	// #region Mirror Time Read
-
 	let mirTimStr = null; // What: Mirror Time String. Why: The mirror freshness timestamp is read from localStorage, which can itself throw. How: This starts null and is only assigned inside the try block below.
 
 
@@ -1460,8 +1454,6 @@ async function staRepFun () : Promise< StoRepTyp > {
 	try { mirTimStr = localStorage.getItem( MIR_TIM_STR ); } // What: Mirror Time Read Try. Why: The mirror freshness timestamp must actually be read from localStorage before it can be reported. How: This assigns mirTimStr from whatever is currently stored under MIR_TIM_STR.
 
 	catch {} // What: Mirror Time Read Guard. Why: A blocked or inaccessible localStorage must not abort the rest of this status report. How: This silently leaves mirTimStr at its own null default instead of letting the read throw.
-
-	// #endregion Mirror Time Read
 
 
 

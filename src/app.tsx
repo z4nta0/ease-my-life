@@ -128,8 +128,6 @@ type TbcProTyp = { actIdeStr : string, className? : string, onChange : ( tabIdeS
 function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeBoo, tabPlaStr, tbcGhoBoo = false } : TbcProTyp ) : React.JSX.Element {
 
 
-	// #region Active Tab Indicator
-
 	const navEleRef                   = React.useRef< HTMLElement | null >( null );                                                              // What: Nav Element Reference. Why: This gives the effect a handle on the actual nav DOM node. How: This is attached via the nav element's ref prop and read inside the layout effect to query and measure it.
 	const [ indRecObj, setIndRecObj ] = React.useState< { heiNum : number, lefNum : number, topNum : number, widNum : number } | null >( null ); // What: Indicator Record Object And Setter. Why: This holds the active tab's measured position and size so the sliding indicator pill can be rendered. How: This is computed by meaPosFun and consumed in the JSX style to position the indicator span.
 
@@ -219,8 +217,6 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 
 	}, [ actIdeStr, tabPlaStr, raiOpeBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever a change to one of these values could move or resize the active tab's indicator target. How: actIdeStr changes which button is marked active, tabPlaStr changes the tab bar's placement and therefore its whole layout, and raiOpeBoo toggling the rail open or closed can resize the nav itself.
-
-	// #endregion Active Tab Indicator
 
 
 

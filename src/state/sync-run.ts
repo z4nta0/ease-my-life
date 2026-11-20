@@ -600,8 +600,6 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
-		// #region Run Start Marking
-
 		runActRef.current = true;  // What: Run Mark. Why: Other requests wait for this sync. How: This marks it running.
 		setSynRawStr( 'syncing' ); // What: Syncing Status. Why: The screen shows the sync. How: This sets the status.
 
@@ -616,8 +614,6 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 		busRepFun(); // What: Busy Report Call. Why: A reload would cut off this sync. How: This reports it running.
-
-		// #endregion Run Start Marking
 
 
 

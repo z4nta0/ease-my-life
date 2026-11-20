@@ -1042,10 +1042,6 @@ function nexEliFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 	const basDatObj = new Date( froDatObj.getFullYear(), froDatObj.getMonth(), froDatObj.getDate() ); // What: Base Date Object. Why: Every candidate day stepped through below is relative to froDatObj with its own time-of-day stripped. How: This rebuilds a Date from froDatObj's own year/month/day alone.
 	const intCouNum = Math.max( 1, tasRcdObj.interval || 1 );                                         // What: Interval Count Number. Why: The search horizon below needs to scale with a sparse "every N ___" schedule, or it could fail to find its own next occurrence. How: This reads tasRcdObj's own interval, floored at 1.
 
-
-
-	// #region Search Horizon
-
 	const horDayNum = tasRcdObj.repeat === 'annual' // What: Horizon Day Number. Why: 1100 days (~3 years) comfortably covers the old max (annual, interval 1) but not a large "every N weeks/months/years", and a one-time task's own onceDate has no upper bound (a plain date picker), so a far-future pick needs its own horizon or this function would falsely report "this will never show". How: This picks a horizon sized to tasRcdObj's own repeat kind and interval, or (for 'once') the distance to its own onceDate plus 30 days of slack.
 		? intCouNum * 366 + 366                                                                             // What: Annual Horizon Branch. Why: An annual task needs at least one full interval of years plus a year of slack. How: This scales 366 days by intCouNum and adds one more year.
 		: tasRcdObj.repeat === 'monthly'                                                                    // What: Monthly Check. Why: A monthly task needs its own month-sized horizon. How: This tests for the monthly kind next.
@@ -1058,8 +1054,6 @@ function nexEliFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 
 
 	const horValNum = Math.max( 1100, horDayNum ); // What: Horizon Value Number. Why: The loop below needs a single floored-at-1100 day count to actually iterate up to. How: This floors horDayNum at 1100.
-
-	// #endregion Search Horizon
 
 
 

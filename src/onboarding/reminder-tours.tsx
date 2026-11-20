@@ -495,16 +495,12 @@ type RtcProTyp = { actStoObj : ActStoTyp, onCloForFun : () => void, onCloTouFun 
 function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr } : RtcProTyp ) : React.JSX.Element {
 
 
-	// #region Tour Setup
-
 	const varCopObj = VAR_COP_OBJ[ varKeyStr ];                                                                                    // What: Variant Copy Object. Why: Both the intro modal and cloTouFun below need this varKeyStr's own sample task id, icon, title, and second paragraph. How: This looks up VAR_COP_OBJ by the varKeyStr prop.
 	const onbStaObj = staAppObj.onboarding;                                                                                        // What: Onboarding State Object. Why: A reload lands here with tab-today.tsx's own minTouObj already re-derived from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which step to resume into. How: This reads staAppObj.onboarding, which migStaFun guarantees on every state.
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `reminder-${ varKeyStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding/tour-runner.tsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this varKeyStr's own touIdeStr, otherwise null.
 
 	const { draRepStr }               = useEmlTouFun();                                 // What: Draft Repeat String. Why: Only the recurring tour's own Step 4 actually depends on this, but the hook itself has to run unconditionally either way. How: This subscribes to the shared bus and reads its own draRepStr field, harmless to read up front even when unused.
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuiTouCom running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
-
-	// #endregion Tour Setup
 
 
 
