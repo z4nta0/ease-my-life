@@ -6,6 +6,7 @@
 import { chromium      } from '@playwright/test'; // What: Chromium. Why: Every design image is drawn or captured in a real browser. How: This launches Playwright's Chromium.
 import { createServer  } from 'vite';             // What: Create Server. Why: A card that reads the app's own font and token stylesheets needs Vite to serve them. How: This starts a dev server from the repo root.
 import { fileURLToPath } from 'node:url';         // What: File URL To Path. Why: The Vite server runs from the repo root. How: This turns the root's file URL into a path.
+import { statSync      } from 'node:fs';          // What: Stat Sync. Why: A square card's render reports the file's size. How: This reads it once written.
 
 
 import type { Browser       } from '@playwright/test'; // What: Browser. Why: A caller closes the browser it was handed once its image is saved. How: This types the launched browser.
@@ -20,11 +21,11 @@ import type { ViteDevServer } from 'vite';             // What: Vite Dev Server.
  * render-kit.mts = Render Kit
  *
  * @summary
- * The setup every design render script shares: opening a Chromium page to
- * draw or capture in, and starting the Vite server a card needs when it reads
- * the app's own stylesheets from the repo root. Each script beside it imports
- * what it needs and still runs on its own with node, then closes what it was
- * handed once its image is saved.
+ * The setup the design render scripts share: opening a Chromium page to draw
+ * or capture in, starting the Vite server a card needs when it reads the
+ * app's own stylesheets from the repo root, and the whole capture of a square
+ * product card. Each script beside it imports what it needs and still runs on
+ * its own with node, then closes what it was handed once its image is saved.
  *
  * Sections:
  *  - Constants
@@ -133,13 +134,73 @@ async function staVitFun () : Promise< ViteDevServer > {
 
 // #endregion staVitFun
 
+
+
+// #region renCarFun
+
+/**
+ * renCarFun = Render Card Function
+ *
+ * @summary
+ * Captures a 1,200px square product card to a PNG: it starts the render
+ * server, opens the card.html in the given folder at that size, waits for its
+ * fonts, screenshots its #carSqaDiv element to the output path, closes the
+ * browser and the server, and logs the file's size in KB.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param carDirStr - Card Directory String: The card's folder, as a path from
+ *                    the repo root.
+ * @param outPatStr - Output Path String: The file path the PNG is written to.
+ *
+ * @returns A promise that settles once the image is written and both the
+ *          browser and the server are closed, with no value.
+ *
+ * @example
+ * ```ts
+ * renCarFun('design/sync-image', OUT_PAT_STR) // => Promise<void>
+ * ```
+ *
+*/
+
+async function renCarFun ( carDirStr : string, outPatStr : string ) : Promise< void > {
+
+
+	const vitSerObj = await staVitFun(); // What: Vite Server Object. Why: The card's stylesheet links need a server. How: This is the render server, already listening.
+
+
+
+	const { broInsObj, capPagObj } = await opeCapFun( { height : 1200, width : 1200 } ); // What: Browser Instance Object. Why: The card is screenshotted by Chromium. How: This is the Chromium launched headless. // What: Capture Page Object. Why: The card fills a 1,200px square. How: This is a page opened that size.
+
+
+	await capPagObj.goto( `${ VIT_URL_STR }/${ carDirStr }/card.html` ); // What: Card Load Call. Why: The card has to render first. How: This opens the card in carDirStr.
+
+	await capPagObj.evaluate( () => document.fonts.ready.then( () => undefined ) ); // What: Font Wait Call. Why: The brand fonts must be drawn, not their fallbacks. How: This waits for every font to load.
+
+	await capPagObj.locator( '#carSqaDiv' ).screenshot( { path : outPatStr } ); // What: Card Screenshot Call. Why: This is the image itself. How: This captures the card element as a PNG.
+
+
+
+	await broInsObj.close(); // What: Browser Close Call. Why: The render is done. How: This closes Chromium.
+
+	await vitSerObj.close(); // What: Server Close Call. Why: The render is done. How: This stops Vite.
+
+
+
+	console.log( `Wrote ${ outPatStr } (${ Math.round( statSync( outPatStr ).size / 1024 ) } KB)` ); // What: Result Log Call. Why: The size is worth knowing before uploading. How: This prints the path and size in KB.
+
+
+}
+
+// #endregion renCarFun
+
 // #endregion Helpers
 
 
 
 // #region Exports
 
-export { opeCapFun, staVitFun, VIT_URL_STR }; // What: Named Exports. Why: The design render scripts share their browser and server setup. How: This exports the page opener, the server starter, and the server's address by name.
+export { opeCapFun, renCarFun }; // What: Named Exports. Why: The design render scripts share their browser setup and the square card capture. How: This exports the page opener and the card renderer by name.
 
 // #endregion Exports
 
