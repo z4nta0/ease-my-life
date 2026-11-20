@@ -222,12 +222,25 @@ test( "the reminder form's status region is empty on load and fills once a remin
 	await opeFixFun( curPagObj ); // What: Fixture Open Call. Why: The Reminders list lives on the Today tab, which opens first. How: This loads the backup and opens the app.
 
 
+
+	// #region Region Starts Empty
+
 	await expect( curPagObj.locator( ADD_LOC_STR ) ).toHaveCount( 1 ); // What: One Region Assertion. Why: The region has to be in the list from the first render. How: This checks exactly one is there.
 	await expect( curPagObj.locator( ADD_LOC_STR ) ).toBeEmpty();      // What: Empty Region Assertion. Why: Nothing has been added yet. How: This checks it holds no text.
+
+	// #endregion Region Starts Empty
+
+
+
+	// #region Reminder Add Steps
 
 	await curPagObj.locator( '[data-element-name-hook~="remAddBut"]' ).click();                      // What: Add Open Call. Why: The form opens from the Reminders header. How: This presses its add button.
 	await curPagObj.locator( '[data-element-name-hook~="addNamInp"]' ).fill( 'Announced Reminder' ); // What: Name Fill Call. Why: A reminder needs a name to save. How: This types one.
 	await curPagObj.locator( '[data-element-name-hook~="remSavBut"]' ).click();                      // What: Add Save Call. Why: The note shows once the reminder is added. How: This saves it.
+
+	// #endregion Reminder Add Steps
+
+
 
 	await expect( curPagObj.locator( ADD_LOC_STR ) ).not.toBeEmpty(); // What: Filled Region Assertion. Why: The region announces where the reminder went. How: This checks it now holds the note.
 

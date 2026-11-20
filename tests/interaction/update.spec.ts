@@ -143,6 +143,8 @@ test( 'a new version reaching a hidden app with nothing being edited reloads it'
 test( 'a new version reaching a hidden app with an editor open waits and shows the note', async ( { page : curPagObj } ) => { // What: Busy Update Test. Why: A reload would throw away an unsaved edit. How: This opens the reminder form, hides the app, fires a control change, and checks no reload comes while the note shows.
 
 
+	// #region Update Setup
+
 	await fakWorFun( curPagObj, true ); // What: Worker Fake Call. Why: The flow needs a controlled page. How: This fakes one.
 
 	await opeFixFun( curPagObj ); // What: Fixture Open Call. Why: The reminder form opens on the Today tab. How: This loads the backup and opens the app.
@@ -151,16 +153,29 @@ test( 'a new version reaching a hidden app with an editor open waits and shows t
 
 	await curPagObj.evaluate( () => { window.__stiMarBoo = true; } ); // What: Still Mark Call. Why: A reload would clear anything the page set. How: This marks the page.
 
+	// #endregion Update Setup
+
+
+
+	// #region Hidden Update Arrival
+
 	await visSetFun( curPagObj, 'hidden' ); // What: Hide Call. Why: The app would reload if nothing were being edited. How: This hides the app.
 
 	await conChaFun( curPagObj ); // What: Control Change Call. Why: A new version has taken over. How: This fires the event.
 
 	await visSetFun( curPagObj, 'visible' ); // What: Show Call. Why: The person comes back to the form. How: This shows the app again.
 
+	// #endregion Hidden Update Arrival
+
+
+
+	// #region Update Checks
 
 	await expect( curPagObj.getByText( NOT_MES_STR ) ).toBeVisible(); // What: Note Shown Assertion. Why: The update waits for the person. How: This checks the note shows.
 
 	expect( await curPagObj.evaluate( () => !!window.__stiMarBoo ) ).toBe( true ); // What: No Reload Assertion. Why: The open form must survive. How: This checks the page's mark is still set.
+
+	// #endregion Update Checks
 
 
 } );
@@ -170,6 +185,8 @@ test( 'a new version reaching a hidden app with an editor open waits and shows t
 test( 'a new version reaching a hidden app waits while sync is busy, then reloads once it ends', async ( { page : curPagObj } ) => { // What: Sync Wait Test. Why: A reload would cut off a sync uploading a change or one waiting to. How: This marks sync busy, hides the app, fires a control change, checks no reload comes, then ends the sync while hidden and waits for the reload.
 
 
+	// #region Busy Sync Setup
+
 	await fakWorFun( curPagObj, true ); // What: Worker Fake Call. Why: The flow needs a controlled page. How: This fakes one.
 
 	await opeFixFun( curPagObj ); // What: Fixture Open Call. Why: The app should hold real data. How: This loads the backup and opens the app.
@@ -178,20 +195,40 @@ test( 'a new version reaching a hidden app waits while sync is busy, then reload
 
 	await curPagObj.evaluate( () => { window.__stiMarBoo = true; } ); // What: Still Mark Call. Why: A reload would clear anything the page set. How: This marks the page.
 
+	// #endregion Busy Sync Setup
+
+
+
+	// #region Hidden Update Arrival
+
 	await visSetFun( curPagObj, 'hidden' ); // What: Hide Call. Why: The app would reload if sync weren't busy. How: This hides the app.
 
 	await conChaFun( curPagObj ); // What: Control Change Call. Why: A new version has taken over. How: This fires the event.
 
 	await visSetFun( curPagObj, 'visible' ); // What: Show Call. Why: The note confirms the update was held back. How: This shows the app again.
 
+	// #endregion Hidden Update Arrival
+
+
+
+	// #region Held Update Checks
 
 	await expect( curPagObj.getByText( NOT_MES_STR ) ).toBeVisible(); // What: Note Shown Assertion. Why: The update waits for the sync. How: This checks the note shows.
 
 	expect( await curPagObj.evaluate( () => !!window.__stiMarBoo ) ).toBe( true ); // What: No Reload Assertion. Why: The sync must not be cut off. How: This checks the page's mark is still set.
 
+	// #endregion Held Update Checks
+
+
+
+	// #region Second Hide Check
+
 	await visSetFun( curPagObj, 'hidden' ); // What: Hide Again Call. Why: The sync ends while the app is out of sight. How: This hides the app, which still holds the reload back.
 
 	expect( await curPagObj.evaluate( () => !!window.__stiMarBoo ) ).toBe( true ); // What: Hidden No Reload Assertion. Why: Hiding again must not reload while sync is busy. How: This checks the mark is still set.
+
+	// #endregion Second Hide Check
+
 
 
 	await Promise.all( [ curPagObj.waitForEvent( 'load' ), synSetFun( curPagObj, false ) ] ); // What: Sync End Reload Wait. Why: Once the sync ends, a hidden app takes the new version. How: This ends the sync and waits for the page to load again.
@@ -204,9 +241,17 @@ test( 'a new version reaching a hidden app waits while sync is busy, then reload
 test( 'coming back to the app looks for a new version, and a first install shows nothing', async ( { page : curPagObj } ) => { // What: Update Check Test. Why: An app left open never looks for a new version by itself, and a first install isn't an update. How: This shows the app twice and checks each asks for an update, then fires a control change with no earlier controller and checks no note shows.
 
 
+	// #region First Install Setup
+
 	await fakWorFun( curPagObj, false ); // What: Worker Fake Call. Why: A first install has no controller at load. How: This fakes the page without one.
 
 	await opeFixFun( curPagObj ); // What: Fixture Open Call. Why: The app should hold real data. How: This loads the backup and opens the app.
+
+	// #endregion First Install Setup
+
+
+
+	// #region Foreground Returns
 
 	await visSetFun( curPagObj, 'hidden' );  // What: Hide Call. Why: The check runs on coming back. How: This hides the app first.
 	await visSetFun( curPagObj, 'visible' ); // What: Show Call. Why: Coming back asks for an update. How: This shows the app.
@@ -215,10 +260,18 @@ test( 'coming back to the app looks for a new version, and a first install shows
 
 	await expect.poll( () => curPagObj.evaluate( () => window.__updCheNum || 0 ) ).toBe( 2 ); // What: Update Check Assertion. Why: Each return should look for a new version. How: This waits until two checks were counted.
 
+	// #endregion Foreground Returns
+
+
+
+	// #region First Install Control Change
+
 	await conChaFun( curPagObj ); // What: Control Change Call. Why: A first install's worker takes control too. How: This fires the event with no earlier controller.
 
 
 	await expect( curPagObj.locator( '[data-element-name-hook~="updNotDiv"]' ) ).toBeEmpty(); // What: No Note Assertion. Why: A first install isn't a new version. How: This checks the note's region stays empty.
+
+	// #endregion First Install Control Change
 
 
 } );

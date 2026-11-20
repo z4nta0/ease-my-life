@@ -121,11 +121,17 @@ async function chePagFun ( curPagObj : Page ) : Promise< void > {
 test( 'the signed-in Account screens pass the accessibility checks', async ( { page : curPagObj } ) => { // What: Signed-In Screens Test. Why: The main suite only reaches the signed-out section. How: This signs in unpaid, then paid, and checks each screen and the reset confirm.
 
 
+	// #region Test Setup
+
 	const errMesArr = watErrFun( curPagObj );                    // What: Error Message Array. Why: A screen fails on any page error. How: This starts watching.
 	const unpEmaStr = `a11y-unpaid-${ Date.now() }@example.com`; // What: Unpaid Email String. Why: The unpaid screen needs its own account. How: This builds a unique address.
 	const paiEmaStr = `a11y-paid-${ Date.now() }@example.com`;   // What: Paid Email String. Why: The paid screens need their own account. How: This builds a unique address.
 
+	// #endregion Test Setup
 
+
+
+	// #region Unpaid Screen
 
 	await creAccFun( unpEmaStr, false ); // What: Unpaid Account Call. Why: The unpaid screen shows Unlock sync. How: This creates the account without the claim.
 
@@ -139,7 +145,11 @@ test( 'the signed-in Account screens pass the accessibility checks', async ( { p
 
 	await chePagFun( curPagObj ); // What: Unpaid Check Call. Why: The unpaid screen must pass. How: This checks it.
 
+	// #endregion Unpaid Screen
 
+
+
+	// #region Paid Screens
 
 	await curPagObj.locator( '[data-element-name-hook~="accOutBut"]' ).click(); // What: Sign-Out Click. Why: The paid account signs in next on the same device. How: This signs out.
 
@@ -153,7 +163,11 @@ test( 'the signed-in Account screens pass the accessibility checks', async ( { p
 
 	await chePagFun( curPagObj ); // What: Paid Check Call. Why: The synced screen must pass. How: This checks it.
 
+	// #endregion Paid Screens
 
+
+
+	// #region Reset Confirm
 
 	await curPagObj.setViewportSize( { height : 900, width : 1280 } ); // What: Width Reset Call. Why: The reset row is opened at desktop width. How: This restores the width.
 
@@ -162,6 +176,8 @@ test( 'the signed-in Account screens pass the accessibility checks', async ( { p
 	await expect( curPagObj.locator( '[data-element-name-hook~="resCloBut"]' ) ).toBeVisible(); // What: Confirm Wait. Why: The screen is ready once the cloud option shows. How: This waits for it.
 
 	await chePagFun( curPagObj ); // What: Confirm Check Call. Why: The reset confirm must pass. How: This checks it.
+
+	// #endregion Reset Confirm
 
 
 
@@ -175,6 +191,8 @@ test( 'the signed-in Account screens pass the accessibility checks', async ( { p
 test( 'the first-sync choice passes the accessibility checks', async ( { page : curPagObj } ) => { // What: Choice Screen Test. Why: A device with its own data joining an account with a cloud copy asks which to keep. How: This sets that up and checks the choice.
 
 
+	// #region Choice Account Setup
+
 	const emaAdrStr = `a11y-choice-${ Date.now() }@example.com`; // What: Email Address String. Why: The screen needs its own account. How: This builds a unique address.
 	const errMesArr = watErrFun( curPagObj );                    // What: Error Message Array. Why: A screen fails on any page error. How: This starts watching.
 	const uidValStr = await creAccFun( emaAdrStr );              // What: User Identifier Value String. Why: The cloud copy is written under the account's id. How: This creates the paid account.
@@ -182,7 +200,11 @@ test( 'the first-sync choice passes the accessibility checks', async ( { page : 
 
 	await fetch( `${ FIR_EMU_STR }/v1/projects/${ EMU_PRO_STR }/databases/(default)/documents/users/${ uidValStr }`, { body : JSON.stringify( { fields : { docs : { mapValue : { fields : {} } }, prior : { mapValue : { fields : {} } }, rev : { integerValue : '1' }, savedAt : { integerValue : '1' }, v : { integerValue : '1' } } } ), headers : { 'Authorization' : 'Bearer owner', 'Content-Type' : 'application/json' }, method : 'PATCH' } ); // What: Cloud Copy Write. Why: The choice only appears when the account already has a copy. How: This writes an empty manifest into the emulator as its owner.
 
+	// #endregion Choice Account Setup
 
+
+
+	// #region First Sync Choice
 
 	await wriStaFun( curPagObj, reaFixFun() ); // What: Backup Load Call. Why: The device has data of its own. How: This writes the backup.
 
@@ -193,6 +215,8 @@ test( 'the first-sync choice passes the accessibility checks', async ( { page : 
 	await expect( curPagObj.locator( '[data-element-name-hook~="accChoBut"]' ) ).toBeVisible(); // What: Choice Wait. Why: The screen is ready once the choice shows. How: This waits for it.
 
 	await chePagFun( curPagObj ); // What: Choice Check Call. Why: The choice must pass. How: This checks it.
+
+	// #endregion First Sync Choice
 
 
 

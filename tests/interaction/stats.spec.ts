@@ -138,6 +138,8 @@ test( 'a heatmap day opens its detail', async ( { page : curPagObj } ) => { // W
 test( 'a rail scrolls sideways with the mouse wheel', async ( { page : curPagObj } ) => { // What: Rail Wheel Test. Why: A mouse wheel must move a pill rail sideways, then hand back to the page at the rail's end. How: This turns the wheel over the Type rail at its start and at its end, checking the rail scrolls while the page holds, then the page scrolls.
 
 
+	// #region Rail Setup
+
 	const raiDivLoc = curPagObj.locator( '[data-element-name-hook~="typFilDiv"]' );                                                   // What: Rail Div Locator. Why: The Type rail overflows on the fixed day's data. How: This finds it.
 	const maiTopFun = () => curPagObj.evaluate( () => document.querySelector( '[data-element-name-hook~="appConMai"]' )!.scrollTop ); // What: Main Top Function. Why: The page scrolls inside its main area. How: This reads that area's scroll position. // What: Non-Null Note. Why: The main area is always mounted. How: The ! tells TypeScript it exists.
 
@@ -152,7 +154,11 @@ test( 'a rail scrolls sideways with the mouse wheel', async ( { page : curPagObj
 
 	await curPagObj.mouse.move( raiBoxObj.x + raiBoxObj.width / 2, raiBoxObj.y + raiBoxObj.height / 2 ); // What: Pointer Move Call. Why: The wheel turn must land on the rail. How: This moves the pointer to its center.
 
+	// #endregion Rail Setup
 
+
+
+	// #region Rail Wheel Turn
 
 	const preTopNum = await maiTopFun(); // What: Previous Top Number. Why: The page mustn't move while the rail can. How: This reads the page's position first.
 
@@ -167,7 +173,11 @@ test( 'a rail scrolls sideways with the mouse wheel', async ( { page : curPagObj
 
 	expect( await maiTopFun(), 'page held' ).toBe( preTopNum ); // What: Page Held Assertion. Why: The page stays put while the rail scrolls. How: This compares its position.
 
+	// #endregion Rail Wheel Turn
 
+
+
+	// #region Page Handoff
 
 	await raiDivLoc.evaluate( ( raiDomEle ) => { raiDomEle.scrollLeft = raiDomEle.scrollWidth; } ); // What: Rail End Call. Why: A rail at its end must hand the wheel back. How: This scrolls it to its last pill.
 
@@ -176,6 +186,8 @@ test( 'a rail scrolls sideways with the mouse wheel', async ( { page : curPagObj
 
 
 	await expect.poll( maiTopFun, { message : 'page scrolled' } ).toBeGreaterThan( preTopNum ); // What: Page Scroll Assertion. Why: The page takes over once the rail can't move. How: This waits for the page to scroll.
+
+	// #endregion Page Handoff
 
 
 } );

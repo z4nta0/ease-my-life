@@ -142,9 +142,17 @@ for ( const staRecObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every ap
 		await opeStaFun( curPagObj, staRecObj ); // What: State Open Call. Why: The scan should see the state settled. How: This loads and settles it.
 
 
+
+		// #region Axe Scan
+
 		const axeResObj = await scaStaFun( curPagObj );      // What: Axe Result Object. Why: Both the violations and the incomplete results come from one scan. How: This scans the page.
 		const revLinArr = sumResFun( axeResObj.incomplete ); // What: Review Line Array. Why: Results axe couldn't decide need a person's look. How: This summarizes them.
 
+		// #endregion Axe Scan
+
+
+
+		// #region Result Reporting
 
 		for ( const revLinStr of revLinArr ) tesInfObj.annotations.push( { description : revLinStr, type : 'needs review' } ); // What: Review Annotations Loop. Why: The report should list each result needing review beside its test. How: This attaches each line as an annotation.
 
@@ -155,6 +163,8 @@ for ( const staRecObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every ap
 
 
 		expect( sumResFun( axeResObj.violations ) ).toEqual( [] ); // What: No Violations Assertion. Why: The state passes only with zero violations. How: This compares the summarized violations with an empty list, so a failure prints each one.
+
+		// #endregion Result Reporting
 
 
 	} );

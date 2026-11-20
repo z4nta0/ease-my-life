@@ -159,17 +159,25 @@ const cliCheFun = async ( curPagObj : Page, carLisLoc : Locator, couFunObj : ( s
 
 
 
+	// #region Pre-Click Reading
+
 	const butHanObj = ( await butCurLoc.elementHandle() )!; // What: Button Handle Object. Why: An undo must click the same card. How: This holds the button itself. // What: Non-Null Note. Why: The count above just found the button. How: The ! tells TypeScript the handle exists.
 	const preStaObj = ( await reaStaFun( curPagObj ) )!;    // What: Previous State Object. Why: The check compares around the click. How: This reads the state first. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 	const preCouNum = couFunObj( preStaObj );               // What: Previous Count Number. Why: The save is recognized by the count rising. How: This counts before the click.
 
+	// #endregion Pre-Click Reading
 
+
+
+	// #region Check-Off Click
 
 	await butHanObj.click(); // What: Check Click Call. Why: Check-offs go through the real button. How: This clicks it.
 
 
 
 	const aftStaObj = await waiStaFun( curPagObj, ( staAppObj ) => couFunObj( staAppObj ) === preCouNum + 1, 'check-off saved' ); // What: After State Object. Why: The check compares around the click. How: This waits for the count to rise and reads the state.
+
+	// #endregion Check-Off Click
 
 
 
@@ -635,6 +643,8 @@ test.use( { contextOptions : { reducedMotion : 'reduce' }, viewport : { height :
 test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }, tesInfObj ) => { // What: Simulation Test. Why: Weeks of real use must follow every rule. How: This loads the backup, runs every day, then checks Stats and the odds.
 
 
+	// #region Run State
+
 	const issMesArr : string[] = [];                      // What: Issue Message Array. Why: Every problem across the run is reported together. How: This collects them.
 	const proMapObj = new Map< string, ProRolTyp >();     // What: Probability Map Object. Why: Probability gates are checked across the run. How: This tallies their rolls.
 	const traDayArr : DayTraTyp[] = [];                   // What: Trace Day Array. Why: The run leaves a trace for comparison. How: This collects each day.
@@ -645,7 +655,11 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 	let dayIndNum = 0;                       // What: Day Index Number. Why: Variations follow each day's position. How: This counts days across segments.
 	let lasDayStr = fstDayStr;               // What: Last Day String. Why: Stats are checked as of the last day. How: This tracks it.
 
+	// #endregion Run State
 
+
+
+	// #region Run Setup
 
 	await insClcFun( curPagObj, fstDayStr, 10 ); // What: Clock Install Call. Why: The run starts on its first day. How: This installs the fake clock on it.
 
@@ -656,6 +670,8 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 
 	await wriStaFun( curPagObj, addSimFun( reaFixFun() ) ); // What: Backup Load Call. Why: The run starts from real data plus the scenario's schedules. How: This writes the extended backup into the page.
+
+	// #endregion Run Setup
 
 
 
@@ -808,6 +824,8 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 
 
+	// #region Problem Report
+
 	issMesArr.push( ...errMesArr ); // What: Error Merge Call. Why: Page errors count as problems too. How: This adds them to the list.
 
 
@@ -820,6 +838,8 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 
 	} );
+
+	// #endregion Problem Report
 
 
 

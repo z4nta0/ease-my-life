@@ -209,22 +209,35 @@ test( 'a webhook with a bad signature or an old timestamp is refused and changes
 test( 'a whsec_ secret signs with its decoded key, as Polar signs', async () => { // What: Base64 Secret Test. Why: Polar's current secrets are base64 keys, which the first version of the check missed, refusing every real delivery. How: This sets a whsec_ secret and signs with its decoded bytes.
 
 
+	// #region Signed Delivery Setup
+
 	const keyRawBuf = Buffer.from( 'polar-test-signing-key-bytes-0001' ); // What: Key Raw Buffer. Why: The signature is made with the raw key. How: This is a known key.
 	const accNewObj = await accNewFun( true );                            // What: Account New Object. Why: The buyer's account. How: This creates it.
 
 
 	process.env.POLAR_WEBHOOK_SECRET = `whsec_${ keyRawBuf.toString( 'base64' ) }`; // What: Base64 Secret Setting. Why: This is the shape of a Polar secret. How: This writes the key as whsec_ plus base64.
 
+	// #endregion Signed Delivery Setup
+
+
+
+	// #region Webhook Delivery
 
 	const webResObj = await webSerFun( webReqFun( { data : { customer : { external_id : accNewObj.uidStr }, id : 'ord5', product_id : PRO_LIV_STR, status : 'paid' }, type : 'order.paid' }, keyRawBuf ), LIV_COT_OBJ ); // What: Webhook Response Object. Why: The order is signed with the decoded key. How: This delivers it.
 
 
 	process.env.POLAR_WEBHOOK_SECRET = WEB_SEC_STR; // What: Secret Restore. Why: Later cases sign with the plain secret. How: This puts it back.
 
+	// #endregion Webhook Delivery
 
+
+
+	// #region Claim Assertions
 
 	assert.equal( webResObj.status, 200 );                                    // What: Status Assertion. Why: The decoded key's signature is genuine. How: This expects 200.
 	assert.deepEqual( await claReaFun( accNewObj.uidStr ), { paid : true } ); // What: Claim Assertion. Why: The account is unlocked. How: This expects it paid.
+
+	// #endregion Claim Assertions
 
 
 } );
@@ -233,6 +246,8 @@ test( 'a whsec_ secret signs with its decoded key, as Polar signs', async () => 
 
 test( 'an untagged order finds its account by email, and only a full refund clears the claim', async () => { // What: Email And Refund Test. Why: A checkout-link purchase still unlocks, and a partial refund keeps sync. How: This pays by email, then refunds partly and fully.
 
+
+	// #region Paid Delivery
 
 	const accNewObj = await accNewFun( true );                                                                                // What: Account New Object. Why: The buyer's account. How: This creates it.
 	const ordDatObj = { customer : { email : accNewObj.emaStr, external_id : null }, id : 'ord3', product_id : PRO_LIV_STR }; // What: Order Data Object. Why: The order carries only the buyer's email. How: This builds it.
@@ -243,17 +258,29 @@ test( 'an untagged order finds its account by email, and only a full refund clea
 
 	assert.deepEqual( await claReaFun( accNewObj.uidStr ), { paid : true } ); // What: Email Match Assertion. Why: The email found the account. How: This expects it paid.
 
+	// #endregion Paid Delivery
+
+
+
+	// #region Partial Refund
 
 	await webSerFun( webReqFun( { data : { ...ordDatObj, status : 'partially_refunded' }, type : 'order.refunded' } ), LIV_COT_OBJ ); // What: Partial Refund Delivery. Why: A partial refund keeps sync. How: This sends one.
 
 
 	assert.deepEqual( await claReaFun( accNewObj.uidStr ), { paid : true } ); // What: Partial Refund Assertion. Why: Sync stays unlocked. How: This expects it still paid.
 
+	// #endregion Partial Refund
+
+
+
+	// #region Full Refund
 
 	await webSerFun( webReqFun( { data : { ...ordDatObj, status : 'refunded' }, type : 'order.refunded' } ), LIV_COT_OBJ ); // What: Full Refund Delivery. Why: A full refund takes sync away. How: This sends one.
 
 
 	assert.deepEqual( await claReaFun( accNewObj.uidStr ), { paid : false } ); // What: Full Refund Assertion. Why: Sync is locked again. How: This expects it unpaid.
+
+	// #endregion Full Refund
 
 
 } );
@@ -279,17 +306,27 @@ test( 'an order for another product is acknowledged and unlocks nothing', async 
 test( 'the checkout refuses a missing or unverified sign-in and a deploy without its Polar token', async () => { // What: Checkout Refusal Test. Why: Only a verified account may buy, and only where checkout is set up. How: This posts without a token, with an unverified one, and to a preview.
 
 
+	// #region Test Accounts
+
 	const unvAccObj = await accNewFun( false ); // What: Unverified Account Object. Why: An account without a verified email. How: This creates it.
 	const verAccObj = await accNewFun( true );  // What: Verified Account Object. Why: A verified account, refused only where the token is missing. How: This creates it.
 
 	const cheReqFun = ( idTokStr : string ) => new Request( 'https://easemylife.app/.netlify/functions/checkout', { headers : { 'Authorization' : `Bearer ${ idTokStr }` }, method : 'POST' } ); // What: Checkout Request Function. Why: Each case posts with a different token. How: This builds the request.
 
+	// #endregion Test Accounts
 
+
+
+	// #region Sign-In Refusals
 
 	assert.equal( ( await cheSerFun( cheReqFun( '' ), LIV_COT_OBJ ) ).status, 401 );                 // What: No Token Assertion. Why: Nobody signed in can't buy. How: This expects 401.
 	assert.equal( ( await cheSerFun( cheReqFun( unvAccObj.idTokStr ), LIV_COT_OBJ ) ).status, 403 ); // What: Unverified Assertion. Why: An unverified email couldn't sync anyway. How: This expects 403.
 
+	// #endregion Sign-In Refusals
 
+
+
+	// #region Missing Token Refusal
 
 	delete process.env.POLAR_ACCESS_TOKEN; // What: Token Removal. Why: A deploy context without its token must say checkout isn't set up. How: This removes it for the next check.
 
@@ -298,6 +335,8 @@ test( 'the checkout refuses a missing or unverified sign-in and a deploy without
 
 
 	process.env.POLAR_ACCESS_TOKEN = 'test-polar-token'; // What: Token Restore. Why: Later cases need it. How: This puts the fake token back.
+
+	// #endregion Missing Token Refusal
 
 
 } );

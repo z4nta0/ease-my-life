@@ -135,6 +135,8 @@ test.afterEach( () => { expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] 
 test( 'a picker name typed as markup is tidied and shows as text', async ( { page : curPagObj } ) => { // What: Picker Name Test. Why: A picker's name shows again on every tab, and the app tidies a picker's name into plain words as it saves. How: This renames a picker in the Data tab's controls, saves, checks the saved name kept no markup, and checks it shows as text and ran nothing.
 
 
+	// #region Picker Card Open
+
 	await selTabFun( curPagObj, 'data' ); // What: Tab Switch Call. Why: Pickers are renamed on the Data tab. How: This switches to it.
 
 
@@ -145,6 +147,12 @@ test( 'a picker name typed as markup is tidied and shows as text', async ( { pag
 
 	await carSecLoc.locator( '[data-element-name-hook~="catTogBut"]' ).first().click(); // What: Controls Open Click. Why: The name lives in the controls. How: This opens them.
 
+	// #endregion Picker Card Open
+
+
+
+	// #region Payload Save
+
 	await carSecLoc.locator( '[data-element-name-hook~="basNamInp"]' ).fill( PAY_LOA_STR ); // What: Name Fill Call. Why: The payload is typed where a name goes. How: This fills the name field.
 
 	await carSecLoc.locator( '[data-element-name-hook~="picFooDiv"]' ).getByRole( 'button', { exact : true, name : 'Save' } ).click(); // What: Save Click Call. Why: Save commits the draft. How: This clicks it.
@@ -153,10 +161,17 @@ test( 'a picker name typed as markup is tidied and shows as text', async ( { pag
 	const savStaObj = await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.pickers.some( ( curPicObj ) => /onerror/i.test( curPicObj.name ) ), 'picker name saved' ); // What: Saved State Object. Why: The name is checked once saved, in whatever form the app tidied it to. How: This waits for a picker whose name holds the payload's words.
 	const savNamStr = savStaObj.pickers.find( ( curPicObj ) => /onerror/i.test( curPicObj.name ) )!.name;                                                               // What: Saved Name String. Why: The tidied name is what the card shows. How: This reads it from the saved state. // What: Non-Null Note. Why: The wait above returns only once such a picker exists. How: The ! says find succeeds.
 
+	// #endregion Payload Save
+
+
+
+	// #region Text Display Checks
 
 	expect( savNamStr ).not.toMatch( /[<>=]/ ); // What: Tidied Name Assertion. Why: A picker's name keeps only words, so no markup reaches any screen. How: This checks the saved name holds none of the tag's symbols.
 
 	await texCheFun( curPagObj, savNamStr ); // What: Text Check Call. Why: The saved name shows again on the card. How: This checks it shows as text and ran nothing.
+
+	// #endregion Text Display Checks
 
 
 } );

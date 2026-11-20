@@ -82,6 +82,8 @@ for ( const staRecObj of STA_REC_ARR ) { // What: State Loop. Why: Every state t
 	test( `${ staRecObj.ideStr } breaks no rule of the security policy and closes off every new tab link`, async ( { page : curPagObj } ) => { // What: State Policy Test. Why: A blocked resource, such as a font, would break the app once deployed, and the policy can't be loosened to hide it. How: This opens the state under the policy and checks nothing was refused and every new tab link is closed off.
 
 
+		// #region Page Load Under Policy
+
 		const errMesArr = watErrFun( curPagObj ); // What: Error Message Array. Why: A page error under the policy is a failure even when nothing was refused. How: This starts watching.
 
 
@@ -89,9 +91,19 @@ for ( const staRecObj of STA_REC_ARR ) { // What: State Loop. Why: Every state t
 
 		await opeStaFun( curPagObj, staRecObj ); // What: State Open Call. Why: The state's fonts, data, and open panel have to load before the page is checked. How: This opens the state the way the accessibility suite does.
 
+		// #endregion Page Load Under Policy
+
+
+
+		// #region Policy Checks
+
 		expect( await polVioFun( curPagObj ) ).toEqual( [] ); // What: No Violation Assertion. Why: Everything the state loads should be allowed by the policy. How: This checks none was refused.
 
 		await relCheFun( curPagObj ); // What: Relationship Check Call. Why: Every new tab link has to be closed off. How: This checks each carries noopener and noreferrer.
+
+		// #endregion Policy Checks
+
+
 
 		expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] ); // What: Error Assertion. Why: A page that logged an error failed even if it loaded. How: This expects no errors.
 
@@ -109,6 +121,8 @@ for ( const legPatStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: The lega
 	test( `${ legPatStr } breaks no rule of the security policy and closes off every new tab link`, async ( { page : curPagObj } ) => { // What: Legal Policy Test. Why: The legal pages ship under the same policy as the app. How: This opens the page under the policy, waits for its fonts, and checks nothing was refused and every new tab link is closed off.
 
 
+		// #region Legal Page Load
+
 		const errMesArr = watErrFun( curPagObj ); // What: Error Message Array. Why: A page error under the policy is a failure even when nothing was refused. How: This starts watching.
 
 
@@ -118,9 +132,19 @@ for ( const legPatStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: The lega
 
 		await curPagObj.evaluate( () => document.fonts.ready.then( () => undefined ) ); // What: Fonts Ready Wait. Why: A refused font is reported only once the page asks for it. How: This waits until every font face has loaded.
 
+		// #endregion Legal Page Load
+
+
+
+		// #region Policy Checks
+
 		expect( await polVioFun( curPagObj ) ).toEqual( [] ); // What: No Violation Assertion. Why: Everything the page loads should be allowed by the policy. How: This checks none was refused.
 
 		await relCheFun( curPagObj ); // What: Relationship Check Call. Why: The legal text links out to other sites. How: This checks each new tab link carries noopener and noreferrer.
+
+		// #endregion Policy Checks
+
+
 
 		expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] ); // What: Error Assertion. Why: A page that logged an error failed even if it loaded. How: This expects no errors.
 

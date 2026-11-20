@@ -128,16 +128,26 @@ for ( const patStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages 
 			await opePagFun( curPagObj, patStr, widNum ); // What: Page Open Call. Why: The scan should see the page settled. How: This opens and settles it.
 
 
+
+			// #region Axe Scan
+
 			const axeResObj = await new AxeBuiCla( { page : curPagObj } ).withTags( AXE_TAG_ARR ).analyze();         // What: Axe Result Object. Why: Both the violations and the undecided results come from one scan. How: This scans the page with the chosen rule sets.
 			const revLinArr = axeResObj.incomplete.map( ( resCurObj ) => `${ resCurObj.id }: ${ resCurObj.help }` ); // What: Review Line Array. Why: Results axe couldn't decide need a person's look. How: This names each one with its help text.
 			const vioLinArr = vioLinFun( axeResObj.violations );                                                     // What: Violation Line Array. Why: A failure should say what broke and where. How: This names each violation with its help text and the elements it found.
 
+			// #endregion Axe Scan
+
+
+
+			// #region Result Reporting
 
 			if ( revLinArr.length ) console.log( `[${ tesInfObj.project.name }] ${ patStr } at ${ widNum }px needs review:\n  ${ revLinArr.join( '\n  ' ) }` ); // What: Review Log Call. Why: The run should show what needs a look. How: This prints the page's review lines under its project, address, and width.
 
 
 
 			expect( vioLinArr ).toEqual( [] ); // What: No Violations Assertion. Why: The page passes only with zero violations. How: This compares the violation lines with an empty list, so a failure prints each one.
+
+			// #endregion Result Reporting
 
 
 		} );
@@ -180,6 +190,10 @@ for ( const patStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages 
 
 		await opePagFun( curPagObj, patStr, 375 ); // What: Page Open Call. Why: The link is checked at a phone width, where room is tightest. How: This opens and settles the page at 375px.
 
+
+
+		// #region Skip Link Reach
+
 		await curPagObj.keyboard.press( 'Tab' ); // What: First Tab Press. Why: The skip link has to be the first stop. How: This moves focus onto the first focusable element.
 
 		await curPagObj.evaluate( () => Promise.all( document.getAnimations().map( ( aniCurObj ) => aniCurObj.finished ) ) ); // What: Slide Finished Wait. Why: The link slides into view on focus, so it's judged where it lands. How: This waits for its transition to finish.
@@ -191,10 +205,18 @@ for ( const patStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages 
 		await expect( skiLinLoc ).toBeFocused();     // What: Skip Link Focus Assertion. Why: The first Tab has to land on the skip link. How: This checks it holds focus.
 		await expect( skiLinLoc ).toBeInViewport( { ratio : 1 } ); // What: Skip Link On Screen Assertion. Why: A focused link has to be wholly visible, not left partly above the screen. How: This checks all of it sits inside the viewport.
 
+		// #endregion Skip Link Reach
+
+
+
+		// #region Skip Link Activation
+
 		await skiLinLoc.click(); // What: Skip Link Click. Why: A plain click should move focus to the main content. How: This clicks the link.
 
 		await expect( curPagObj.locator( 'main' ) ).toBeFocused();            // What: Main Focus Assertion. Why: The next Tab should continue into the document. How: This checks the main holds focus.
 		await expect( curPagObj ).toHaveURL( new RegExp( `${ patStr }$` ) ); // What: Unchanged Address Assertion. Why: The skip link should leave no hash in the address. How: This checks the address still ends with the page's own path.
+
+		// #endregion Skip Link Activation
 
 
 	} );

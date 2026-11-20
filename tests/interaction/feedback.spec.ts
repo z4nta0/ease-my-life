@@ -1175,6 +1175,8 @@ for ( const redMotBoo of [ false, true ] ) for ( const staRecObj of ALL_STA_ARR 
 	test( `${ staRecObj.ideStr } gives each kind of control hover, press, and focus feedback, and each toggle its switch${ redMotBoo ? ', without motion under reduced motion' : '' }`, async ( { page : curPagObj } ) => { // What: Feedback Test. Why: Every interaction should visibly register, and still register without moving for someone who asked for less motion. How: This opens the state, blocks clicks, flips each toggle kind, probes each kind of control and hover card, and checks it finds no problems.
 
 
+		// #region Probe Setup
+
 		test.setTimeout( 600000 ); // What: Test Timeout Call. Why: Probing each kind's hover, press, focus, and toggles waits out each look's motion, which adds up across a slow engine. How: This gives the test ten minutes.
 
 
@@ -1186,17 +1188,29 @@ for ( const redMotBoo of [ false, true ] ) for ( const staRecObj of ALL_STA_ARR 
 
 		await curPagObj.evaluate( cliBloFun ); // What: Click Block Call. Why: Pressing a control shouldn't run its action. How: This cancels every click from here on.
 
+		// #endregion Probe Setup
+
+
+
+		// #region Probe Runs
 
 		const togProArr = await togProFun( curPagObj, staRecObj.ideStr, redMotBoo ); // What: Toggle Problem Array. Why: Every switched state has to show and ease. How: This flips the toggles first, since probing the controls moves focus and the pointer, which can close what a toggle shows.
 		const feeResObj = await feeProFun( curPagObj, staRecObj.ideStr, redMotBoo ); // What: Feedback Result Object. Why: Every kind of control has to respond. How: This probes them, collecting problems and notes.
 		const hovProArr = await hovProFun( curPagObj, redMotBoo );                   // What: Hover Problem Array. Why: The cards and rows that respond to hover are checked too. How: This probes them.
 
+		// #endregion Probe Runs
+
+
+
+		// #region Probe Reporting
 
 		for ( const notCurStr of feeResObj.notArr ) test.info().annotations.push( { description : notCurStr, type : 'unreached' } ); // What: Note Record Loop. Why: A kind the pointer couldn't reach should be visible in the report without failing the test. How: This adds each note as an annotation.
 
 
 
 		expect( [ ...togProArr, ...feeResObj.proArr, ...hovProArr ] ).toEqual( [] ); // What: No Feedback Problems Assertion. Why: The state passes only when every probe finds nothing. How: This compares the problems with an empty list, so a failure prints each one.
+
+		// #endregion Probe Reporting
 
 
 	} );

@@ -82,6 +82,8 @@ test.afterEach( () => { expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] 
 test( 'pick one and send it to Today', async ( { page : curPagObj } ) => { // What: Pick And Send Test. Why: A manual pick must reach Today. How: This picks, sends, and checks the new entry.
 
 
+	// #region Pick One
+
 	const preStaObj = ( await reaStaFun( curPagObj ) )!; // What: Previous State Object. Why: The send adds one entry. How: This reads the state first. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 
 
@@ -92,7 +94,11 @@ test( 'pick one and send it to Today', async ( { page : curPagObj } ) => { // Wh
 
 	await expect( curPagObj.locator( '[data-element-name-hook~="picSenBut"]' ), 'send button' ).toBeEnabled( { timeout : 15000 } ); // What: Send Ready Assertion. Why: Send unlocks once the reel settles. How: This waits for it to enable.
 
+	// #endregion Pick One
 
+
+
+	// #region Send To Today
 
 	await recAniFun( curPagObj ); // What: Recording Start Call. Why: The Sent flash is confirmed. How: This starts recording.
 
@@ -108,6 +114,8 @@ test( 'pick one and send it to Today', async ( { page : curPagObj } ) => { // Wh
 
 	expect( await seeAniFun( curPagObj, '[data-pick-sent-active]' ), 'sent flash' ).toBe( true ); // What: Sent Flash Assertion. Why: The button flashes Sent. How: This checks its attribute appeared.
 
+	// #endregion Send To Today
+
 
 } );
 
@@ -115,6 +123,8 @@ test( 'pick one and send it to Today', async ( { page : curPagObj } ) => { // Wh
 
 test( 'a pool item can be edited and deleted', async ( { page : curPagObj } ) => { // What: Pool Item Test. Why: Pool edits and deletes must save. How: This renames an item, then deletes it, waiting for IndexedDB to show each change.
 
+
+	// #region Pool Item Rename
 
 	const ediButLoc = curPagObj.locator( `${ POO_DIV_STR } [aria-label^="Edit "]` ).first(); // What: Edit Button Locator. Why: The first pool item is edited. How: This finds its Edit button.
 
@@ -134,7 +144,11 @@ test( 'a pool item can be edited and deleted', async ( { page : curPagObj } ) =>
 
 	const renStaObj = await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.items.some( ( curIteObj ) => curIteObj.name === 'Pool Renamed' ), 'pool rename saved' ); // What: Renamed State Object. Why: The rename must reach storage. How: This waits for it.
 
+	// #endregion Pool Item Rename
 
+
+
+	// #region Pool Item Delete
 
 	await curPagObj.locator( `${ POO_DIV_STR } [aria-label="Delete Pool Renamed"]` ).click(); // What: Delete Open Call. Why: Deleting asks to confirm first. How: This opens the confirm.
 
@@ -146,6 +160,8 @@ test( 'a pool item can be edited and deleted', async ( { page : curPagObj } ) =>
 
 	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.items.length === renStaObj.items.length - 1 && !staAppObj.items.some( ( curIteObj ) => curIteObj.name === 'Pool Renamed' ), 'pool delete saved' ); // What: Delete Save Wait. Why: The delete must reach storage. How: This waits for the item to go.
 
+	// #endregion Pool Item Delete
+
 
 } );
 
@@ -153,6 +169,8 @@ test( 'a pool item can be edited and deleted', async ( { page : curPagObj } ) =>
 
 test( 'the form creates a new picker with items', async ( { page : curPagObj } ) => { // What: Picker Form Test. Why: Building a picker is the main setup flow. How: This fills the form, creates a picker, and checks its mode and items in IndexedDB.
 
+
+	// #region Picker Details Step
 
 	await curPagObj.locator( '[data-element-name-hook~="picAddBut"]' ).click(); // What: Form Open Call. Why: New pickers start from Add New Picker. How: This opens the form.
 
@@ -171,6 +189,8 @@ test( 'the form creates a new picker with items', async ( { page : curPagObj } )
 
 
 	await curPagObj.locator( '[data-element-name-hook~="forNexBut"]' ).click(); // What: Next Click Call. Why: Items come on the second step. How: This moves on.
+
+	// #endregion Picker Details Step
 
 
 
@@ -196,6 +216,8 @@ test( 'the form creates a new picker with items', async ( { page : curPagObj } )
 
 
 
+	// #region Picker Creation Check
+
 	await curPagObj.locator( '[data-element-name-hook~="forCreBut"]' ).click(); // What: Create Click Call. Why: Create saves the picker and its items. How: This clicks it.
 
 
@@ -210,6 +232,8 @@ test( 'the form creates a new picker with items', async ( { page : curPagObj } )
 
 
 	expect( creStaObj.items.filter( ( curIteObj ) => curIteObj.pickerId === newPicObj.id ).map( ( curIteObj ) => curIteObj.name ).sort(), 'items saved' ).toEqual( [ 'Form Item A', 'Form Item B' ] ); // What: Items Assertion. Why: Both items are saved with the picker. How: This compares their names.
+
+	// #endregion Picker Creation Check
 
 
 } );

@@ -70,6 +70,8 @@ const HOL_NAM_STR = 'Synced Holiday'; // What: Holiday Name String. Why: The sec
 test( 'two devices sign in to one paid account and sync each other', async ( { browser } ) => { // What: Two Device Test. Why: Paid sync has to carry one device's data and changes to another. How: This signs two contexts in to one account, syncs each way, and waits for each device to hold the other's changes, with no page errors.
 
 
+	// #region Two Device Setup
+
 	const emaAdrStr = `sync-${ Date.now() }@example.com`;                       // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address.
 	const fixStaObj = reaFixFun();                                              // What: Fixture State Object. Why: The first device starts on real data, which the second must receive. How: This reads the backup.
 	const oneConObj = await browser.newContext( { serviceWorkers : 'block' } ); // What: One Context Object. Why: The first device has its own storage. How: This opens a context, blocking the service worker as every suite does.
@@ -82,7 +84,11 @@ test( 'two devices sign in to one paid account and sync each other', async ( { b
 
 	await creAccFun( emaAdrStr ); // What: Account Creation Call. Why: The paid account exists before either device signs in. How: This creates it with the paid claim.
 
+	// #endregion Two Device Setup
 
+
+
+	// #region First Device Upload
 
 	await wriStaFun( onePagObj, fixStaObj ); // What: Backup Load Call. Why: The first device holds real data. How: This writes the backup into its storage.
 
@@ -92,7 +98,11 @@ test( 'two devices sign in to one paid account and sync each other', async ( { b
 
 	await synWaiFun( onePagObj ); // What: First Upload Wait. Why: An empty account takes the first device's data. How: This waits for the upload to finish.
 
+	// #endregion First Device Upload
 
+
+
+	// #region Second Device Adopt
 
 	await twoPagObj.goto( '/' ); // What: Second Device Load. Why: The second device starts as a fresh install. How: This opens the app.
 
@@ -104,7 +114,11 @@ test( 'two devices sign in to one paid account and sync each other', async ( { b
 
 	await waiStaFun( twoPagObj, ( staAppObj ) => staAppObj.pickers.length === fixStaObj.pickers.length, 'the account adopted on the second device' ); // What: Adopted State Wait. Why: The second device must now hold the first's pickers. How: This waits until its count matches the backup's.
 
+	// #endregion Second Device Adopt
 
+
+
+	// #region Holiday Change Upload
 
 	await subHolFun( twoPagObj, HOL_NAM_STR, '2026-11-03' ); // What: Holiday Submit Call. Why: The second device makes a change to carry back. How: This names, dates, and adds a holiday.
 
@@ -114,11 +128,17 @@ test( 'two devices sign in to one paid account and sync each other', async ( { b
 
 	await synWaiFun( twoPagObj ); // What: Change Upload Wait. Why: The holiday must reach the cloud. How: This waits for the sync.
 
+	// #endregion Holiday Change Upload
 
+
+
+	// #region Holiday Pull
 
 	await onePagObj.locator( '[data-element-name-hook~="accNowBut"]' ).click(); // What: First Sync Click. Why: The first device pulls the change. How: This clicks Sync now.
 
 	await waiStaFun( onePagObj, ( staAppObj ) => staAppObj.holidays.custom.some( ( holCusObj ) => holCusObj.name === HOL_NAM_STR ), 'the holiday synced to the first device' ); // What: Holiday Arrival Wait. Why: The second device's change has to reach the first. How: This waits for the holiday in its storage.
+
+	// #endregion Holiday Pull
 
 
 
@@ -269,6 +289,8 @@ test( "a device opened with yesterday's list takes the day's list another device
 test( 'an unpaid account buys sync, and the app picks up the paid claim on its own', async ( { page : curPagObj } ) => { // What: Purchase Test. Why: Returning from the checkout must unlock sync without a reload or a sign-in. How: This stubs the checkout, sets the claim as the webhook would, and waits for the app to sync.
 
 
+	// #region Buyer Setup
+
 	const emaAdrStr = `buy-${ Date.now() }@example.com`;   // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address.
 	const errMesArr = watErrFun( curPagObj );              // What: Error Message Array. Why: The flow fails on any page error. How: This starts watching.
 	const uidValStr = await creAccFun( emaAdrStr, false ); // What: User Identifier Value String. Why: The claim is set on this account mid-flow. How: This creates it unpaid.
@@ -287,7 +309,11 @@ test( 'an unpaid account buys sync, and the app picks up the paid claim on its o
 
 	} );
 
+	// #endregion Buyer Setup
 
+
+
+	// #region Buyer Sign In
 
 	await curPagObj.goto( '/' ); // What: App Load. Why: The buyer starts on a fresh install. How: This opens the app.
 
@@ -295,13 +321,19 @@ test( 'an unpaid account buys sync, and the app picks up the paid claim on its o
 
 	await sigLinFun( curPagObj, emaAdrStr ); // What: Sign-In Call. Why: Only a signed-in account can buy. How: This signs in.
 
+	// #endregion Buyer Sign In
 
+
+
+	// #region Purchase
 
 	await curPagObj.locator( '[data-element-name-hook~="accBuyBut"]' ).click(); // What: Unlock Click. Why: This is the purchase. How: This clicks Unlock sync.
 
 	await selTabFun( curPagObj, 'settings' ); // What: Tab Return Call. Why: The account shows on the Settings tab after the return. How: This switches to it.
 
 	await synWaiFun( curPagObj ); // What: Unlock Wait. Why: The app must notice the claim and sync. How: This waits for the status to read Synced.
+
+	// #endregion Purchase
 
 
 
@@ -319,16 +351,26 @@ test( "a returning user skips onboarding and lands on Settings' Account section"
 
 
 
+	// #region Returning Option
+
 	await curPagObj.goto( '/' ); // What: App Load. Why: The option is on a fresh install's welcome modal. How: This opens the app.
 
 	await curPagObj.locator( '[data-element-name-hook~="intRetBut"]' ).click(); // What: Returning Click. Why: This is the option under test. How: This clicks it.
 
+	// #endregion Returning Option
 
+
+
+	// #region Landing Checks
 
 	await expect( curPagObj.locator( '[data-tab="settings"]' ) ).toHaveAttribute( 'aria-current', 'page' );                 // What: Settings Assertion. Why: Signing in and importing live there. How: This expects the Settings tab current.
 	await expect( curPagObj.locator( '[data-element-name-hook~="setAccSec"]' ) ).toBeInViewport();                          // What: Account Section Assertion. Why: The person lands on Sign in. How: This expects the section on screen.
 	await expect( curPagObj.getByRole( 'dialog', { name : 'Welcome to Ease My Life' } ) ).toHaveCount( 0 );                 // What: Modal Gone Assertion. Why: Onboarding is out of the way. How: This expects no welcome modal.
 	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.onboarding.welcomed === true, 'the welcome modal marked done' ); // What: Welcomed Wait. Why: The modal must not come back on the next launch. How: This waits for the saved flag.
+
+	// #endregion Landing Checks
+
+
 
 	expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] ); // What: Error Assertion. Why: A flow that logged an error failed even if it finished. How: This expects no errors.
 
@@ -339,6 +381,8 @@ test( "a returning user skips onboarding and lands on Settings' Account section"
 
 test( 'signing out ends the session and leaves nothing of it in storage', async ( { page : curPagObj } ) => { // What: Sign Out Test. Why: Signing out has to end the session for real, and a signed-in device should keep nothing secret in local storage, the sign-in library's own session aside. How: This signs in and syncs, checks local storage holds only the app's flags, signs out, and checks the sign-in button is back, the app's account flags are gone, and a reload stays signed out.
 
+
+	// #region Signed In Setup
 
 	const emaAdrStr = `signout-${ Date.now() }@example.com`; // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address.
 	const errMesArr = watErrFun( curPagObj );                // What: Error Message Array. Why: The flow fails on any page error. How: This starts watching.
@@ -354,6 +398,11 @@ test( 'signing out ends the session and leaves nothing of it in storage', async 
 
 	await synWaiFun( curPagObj ); // What: Sync Wait. Why: A synced device has written every flag it keeps. How: This waits for the sync.
 
+	// #endregion Signed In Setup
+
+
+
+	// #region Signed In Storage Check
 
 	const sigEntArr = await curPagObj.evaluate( () => Object.entries( localStorage ) ); // What: Signed-In Entry Array. Why: Local storage is readable by any script on the page, so it's checked while the session is live. How: This reads its pairs.
 
@@ -361,6 +410,11 @@ test( 'signing out ends the session and leaves nothing of it in storage', async 
 	expect( sigEntArr.filter( ( [ stoKeyStr ] ) => !stoKeyStr.startsWith( 'easemylife.' ) && !stoKeyStr.startsWith( 'firebase:' ) ).map( ( [ stoKeyStr ] ) => stoKeyStr ) ).toEqual( [] );     // What: Own Keys Assertion. Why: Only the app's documented keys and the Firebase SDK's own belong there. How: This lists any other key.
 	expect( sigEntArr.filter( ( [ , stoValStr ] ) => /eyJ[0-9A-Za-z_-]{10,}\.|"(refreshToken|accessToken|idToken)"/.test( stoValStr ) ).map( ( [ stoKeyStr ] ) => stoKeyStr ) ).toEqual( [] ); // What: No Token Assertion. Why: Firebase keeps its tokens in its own IndexedDB store, so none should be in local storage. How: This lists any key whose value holds a token.
 
+	// #endregion Signed In Storage Check
+
+
+
+	// #region Sign Out Check
 
 	await curPagObj.locator( '[data-element-name-hook~="accOutBut"]' ).click(); // What: Sign Out Click. Why: This is the action under test. How: This clicks Sign out.
 
@@ -373,12 +427,21 @@ test( 'signing out ends the session and leaves nothing of it in storage', async 
 	expect( outKeyArr ).not.toContain( 'easemylife.signedin' ); // What: Signed-In Flag Assertion. Why: A signed-out device shouldn't load Firebase at launch. How: This checks the flag is gone.
 	expect( outKeyArr ).not.toContain( 'easemylife.syncmeta' ); // What: Sync Record Assertion. Why: The record belongs to the account left behind. How: This checks it's gone.
 
+	// #endregion Sign Out Check
+
+
+
+	// #region Reload Check
 
 	await curPagObj.reload(); // What: Reload Call. Why: A session Firebase still held would sign the device back in as the app loads. How: This reloads the app.
 
 	await selTabFun( curPagObj, 'settings' ); // What: Tab Switch Call. Why: The account shows on the Settings tab. How: This switches to it.
 
 	await expect( curPagObj.locator( '[data-element-name-hook~="accGooBut"]' ) ).toBeVisible(); // What: Still Signed Out Assertion. Why: The session has to be gone, not just hidden until the next load. How: This expects the sign-in button after the reload.
+
+	// #endregion Reload Check
+
+
 
 	expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] ); // What: Error Assertion. Why: A flow that logged an error failed even if it finished. How: This expects no errors.
 
@@ -389,6 +452,8 @@ test( 'signing out ends the session and leaves nothing of it in storage', async 
 
 test( 'resetting a signed-in device can delete the cloud copy too, and signs the device out', async ( { page : curPagObj } ) => { // What: Cloud Reset Test. Why: Someone must be able to remove their cloud copy along with the device's data. How: This syncs a copy, resets with the cloud option, and checks both.
 
+
+	// #region Cloud Copy Setup
 
 	const emaAdrStr = `wipe-${ Date.now() }@example.com`;                                                                      // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address.
 	const errMesArr = watErrFun( curPagObj );                                                                                  // What: Error Message Array. Why: The flow fails on any page error. How: This starts watching.
@@ -407,6 +472,11 @@ test( 'resetting a signed-in device can delete the cloud copy too, and signs the
 
 	expect( ( await fetch( manUrlStr, { headers : { 'Authorization' : 'Bearer owner' } } ) ).status ).toBe( 200 ); // What: Copy Exists Assertion. Why: The deletion has something to delete. How: This expects the manifest found.
 
+	// #endregion Cloud Copy Setup
+
+
+
+	// #region Cloud Reset
 
 	await curPagObj.locator( '[data-element-name-hook~="resRowDiv"]' ).getByRole( 'button', { exact : true, name : 'Reset' } ).click(); // What: Reset Open Click. Why: The reset asks for confirmation first. How: This opens it.
 
@@ -417,12 +487,21 @@ test( 'resetting a signed-in device can delete the cloud copy too, and signs the
 
 	expect( ( await fetch( manUrlStr, { headers : { 'Authorization' : 'Bearer owner' } } ) ).status ).toBe( 404 ); // What: Copy Gone Assertion. Why: The cloud copy was deleted. How: This expects the manifest missing.
 
+	// #endregion Cloud Reset
+
+
+
+	// #region Reset Device Check
 
 	await curPagObj.getByRole( 'button', { name : /explore myself/ } ).click(); // What: Welcome Skip Click. Why: The reset device opens on the welcome modal. How: This skips it.
 
 	await selTabFun( curPagObj, 'settings' ); // What: Tab Switch Call. Why: The account shows on the Settings tab. How: This switches to it.
 
 	await expect( curPagObj.locator( '[data-element-name-hook~="accGooBut"]' ) ).toBeVisible(); // What: Signed Out Assertion. Why: The reset signed the device out. How: This expects the sign-in button back.
+
+	// #endregion Reset Device Check
+
+
 
 	expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] ); // What: Error Assertion. Why: A flow that logged an error failed even if it finished. How: This expects no errors.
 

@@ -166,6 +166,8 @@ test( 'the daily generator switch and run time save', async ( { page : curPagObj
 test( 'holidays can be turned off, added, and removed', async ( { page : curPagObj } ) => { // What: Holiday Test. Why: Every holiday action must save. How: This disables one, adds one, and removes it, checking IndexedDB and the row animations at each step.
 
 
+	// #region Holiday Disable
+
 	await curPagObj.locator( '[data-element-name-hook~="holLisUno"] [aria-label^="Disable "]' ).first().click(); // What: Disable Click Call. Why: A built-in holiday can be turned off. How: This clicks the first enabled one's switch.
 
 
@@ -173,7 +175,11 @@ test( 'holidays can be turned off, added, and removed', async ( { page : curPagO
 	const disStaObj = await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.holidays.disabled.length > 0, 'holiday disabled' ); // What: Disabled State Object. Why: The holiday must be off in storage. How: This waits for the disabled list to fill.
 	const preCusNum = disStaObj.holidays.custom.length;                                                                          // What: Previous Custom Number. Why: Adding raises the count. How: This reads it.
 
+	// #endregion Holiday Disable
 
+
+
+	// #region Holiday Add
 
 	await subHolFun( curPagObj, 'Test Holiday', '2026-11-03' ); // What: Holiday Submit Call. Why: A custom holiday is added through the form. How: This names, dates, and adds one.
 
@@ -181,7 +187,11 @@ test( 'holidays can be turned off, added, and removed', async ( { page : curPagO
 
 	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.holidays.custom.length === preCusNum + 1, 'holiday added' ); // What: Add Save Wait. Why: The holiday must reach storage. How: This waits for it.
 
+	// #endregion Holiday Add
 
+
+
+	// #region Holiday Remove
 
 	await recAniFun( curPagObj ); // What: Recording Start Call. Why: The row's exit is confirmed. How: This starts recording.
 
@@ -197,6 +207,8 @@ test( 'holidays can be turned off, added, and removed', async ( { page : curPagO
 
 	expect( await seeAniFun( curPagObj, 'holRowIte--exiting' ), 'holiday row exit' ).toBe( true ); // What: Exit Assertion. Why: The row animates out. How: This checks its class appeared.
 
+	// #endregion Holiday Remove
+
 
 } );
 
@@ -204,6 +216,8 @@ test( 'holidays can be turned off, added, and removed', async ( { page : curPagO
 
 test( 'an exported backup imports back', async ( { page : curPagObj }, tesInfObj ) => { // What: Backup Round Trip Test. Why: Export and import must round trip. How: This exports, imports the file, and compares.
 
+
+	// #region Backup Export
 
 	const preStaObj = ( await reaStaFun( curPagObj ) )!; // What: Previous State Object. Why: The import is compared with the export. How: This reads the state. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 
@@ -216,7 +230,11 @@ test( 'an exported backup imports back', async ( { page : curPagObj }, tesInfObj
 
 	await dowFilObj.saveAs( filPatStr ); // What: Download Save Call. Why: The import reads the file from disk. How: This saves it.
 
+	// #endregion Backup Export
 
+
+
+	// #region Backup Import
 
 	await curPagObj.locator( '[data-element-name-hook~="impRowDiv"] input[type="file"]' ).setInputFiles( filPatStr ); // What: File Choice Call. Why: Import starts from a chosen file. How: This sets it on the input.
 
@@ -236,6 +254,8 @@ test( 'an exported backup imports back', async ( { page : curPagObj }, tesInfObj
 
 	expect( [ impStaObj.items.length, impStaObj.tasks.length, impStaObj.pickLog.length ], 'round trip' ).toEqual( [ preStaObj.items.length, preStaObj.tasks.length, preStaObj.pickLog.length ] ); // What: Round Trip Assertion. Why: Nothing is lost on the way. How: This compares the record counts.
 
+	// #endregion Backup Import
+
 
 } );
 
@@ -244,13 +264,19 @@ test( 'an exported backup imports back', async ( { page : curPagObj }, tesInfObj
 test( 'the Buy Me a Coffee button opens the tip page in a new tab', async ( { page : curPagObj } ) => { // What: Tip Page Test. Why: The tip button must reach the tip page without leaving the app. How: This clicks it and checks the new tab and the app's own page.
 
 
+	// #region Tip Button Check
+
 	const tipButLoc = curPagObj.locator( '[data-element-name-hook~="tipCofBut"]' ); // What: Tip Button Locator. Why: The test clicks the About section's tip button. How: This finds it by its hook.
 
 
 
 	await expect( tipButLoc, 'tip button enabled' ).toBeEnabled(); // What: Enabled Assertion. Why: A build with a tip page address enables the button. How: This checks it isn't disabled.
 
+	// #endregion Tip Button Check
 
+
+
+	// #region Tip Page Open
 
 	const [ tipPagObj ] = await Promise.all( [ curPagObj.context().waitForEvent( 'page' ), tipButLoc.click() ] ); // What: Tip Page Object. Why: The tip page opens in a new tab. How: This clicks the button and catches the tab it opens.
 
@@ -263,6 +289,8 @@ test( 'the Buy Me a Coffee button opens the tip page in a new tab', async ( { pa
 	expect( tipPagObj.url(), 'tip page address' ).toContain( TIP_URL_STR );          // What: Tip Page Address Assertion. Why: The tab must open the configured tip page. How: This checks its address.
 	await expect( curPagObj, 'app stays put' ).toHaveURL( /^[^?]*\/(#settings)?$/ ); // What: App Address Assertion. Why: The app's own tab must not navigate away. How: This checks it's still on the app's root.
 
+	// #endregion Tip Page Open
+
 
 } );
 
@@ -270,6 +298,8 @@ test( 'the Buy Me a Coffee button opens the tip page in a new tab', async ( { pa
 
 test( 'the legal panels open and close', async ( { page : curPagObj } ) => { // What: Legal Panel Test. Why: The legal panels must open and close. How: This opens the privacy panel and closes it, checking it shows, animates out, and leaves the page.
 
+
+	// #region Panel Open
 
 	const panDiaLoc = curPagObj.locator( '[data-element-name-hook~="legBacDiv"]' ).getByRole( 'dialog', { name : 'Privacy Policy' } ); // What: Panel Dialog Locator. Why: The panel sits in the modal's backdrop, which carries the modal's hook. How: This finds the privacy dialog inside it.
 
@@ -281,7 +311,11 @@ test( 'the legal panels open and close', async ( { page : curPagObj } ) => { // 
 
 	await expect( panDiaLoc, 'panel open' ).toBeVisible(); // What: Panel Open Assertion. Why: The panel shows. How: This checks it's visible.
 
+	// #endregion Panel Open
 
+
+
+	// #region Panel Close
 
 	await recAniFun( curPagObj ); // What: Recording Start Call. Why: The closing animation is confirmed. How: This starts recording.
 
@@ -296,6 +330,8 @@ test( 'the legal panels open and close', async ( { page : curPagObj } ) => { // 
 
 
 	await expect( curPagObj.locator( '[data-element-name-hook~="legBacDiv"]' ), 'panel gone' ).toHaveCount( 0 ); // What: Panel Gone Assertion. Why: The modal leaves once closed. How: This checks its backdrop is gone.
+
+	// #endregion Panel Close
 
 
 } );

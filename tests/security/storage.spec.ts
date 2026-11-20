@@ -76,6 +76,9 @@ test( 'local storage holds only the documented keys and no secret', async ( { pa
 	const errMesArr = watErrFun( curPagObj ); // What: Error Message Array. Why: The run through the tabs fails on any page error. How: This starts watching.
 
 
+
+	// #region Tab Walk
+
 	await opeFixFun( curPagObj ); // What: App Open Call. Why: The app writes its flags as it boots on real data. How: This opens the backup.
 
 
@@ -85,6 +88,11 @@ test( 'local storage holds only the documented keys and no secret', async ( { pa
 
 	await curPagObj.evaluate( () => window.dispatchEvent( new Event( 'pagehide' ) ) ); // What: Page Hide Call. Why: The app writes its warm mirror as the page goes away. How: This sends the event it listens for.
 
+	// #endregion Tab Walk
+
+
+
+	// #region Storage Checks
 
 	const stoEntArr = await curPagObj.evaluate( () => Object.entries( localStorage ) ); // What: Storage Entry Array. Why: Every key and value is checked. How: This reads local storage's pairs.
 
@@ -93,6 +101,8 @@ test( 'local storage holds only the documented keys and no secret', async ( { pa
 	expect( stoEntArr.filter( ( [ , stoValStr ] ) => SEC_VAL_ARR.some( ( secValReg ) => secValReg.test( stoValStr ) ) ).map( ( [ stoKeyStr ] ) => stoKeyStr ) ).toEqual( [] );     // What: No Secret Assertion. Why: No value should hold a token, a private key, or a password. How: This lists every key whose value matches a secret pattern.
 	expect( stoEntArr.map( ( [ stoKeyStr ] ) => stoKeyStr ) ).toContain( 'easemylife.v2' );                                                                                        // What: Mirror Written Assertion. Why: The check means little unless the largest value, the mirror, was there to read. How: This checks the mirror was written.
 	expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] ); // What: Error Assertion. Why: A run that logged an error failed even if it finished. How: This expects no errors.
+
+	// #endregion Storage Checks
 
 
 } );

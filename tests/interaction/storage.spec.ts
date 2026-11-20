@@ -234,6 +234,8 @@ test.beforeEach( async ( { page : curPagObj } ) => { // What: Setup Hook. Why: E
 
 
 
+		// #region Original IDB Handles
+
 		const sucSetFun = Object.getOwnPropertyDescriptor( IDBRequest.prototype, 'onsuccess' )!.set!; // What: Success Setter Function. Why: A delayed request still has to deliver its success to the real handler. How: This is the native onsuccess setter. // What: Non-Null Note. Why: Every engine defines onsuccess as an accessor on IDBRequest.prototype. How: The two ! tell TypeScript the descriptor and its setter exist.
 		const oriOpeFun = IDBFactory.prototype.open;                                                   // What: Original Open Function. Why: The wrapper still opens the real database. How: This is the native open, read from IDBFactory's prototype.
 		const oriGetFun = IDBObjectStore.prototype.get;                                                // What: Original Get Function. Why: The slow wrapper still reads the real store. How: This is the native get.
@@ -246,7 +248,11 @@ test.beforeEach( async ( { page : curPagObj } ) => { // What: Setup Hook. Why: E
 
 		let opeCouNum = 0; // What: Open Count Number. Why: Only the app's own boot open is faulty, so the test can still read IndexedDB later. How: This counts opens on this page.
 
+		// #endregion Original IDB Handles
 
+
+
+		// #region Fault Wrappers
 
 		IDBFactory.prototype.open = function ( this : IDBFactory, datNamStr : string, datVerNum? : number ) { // What: Open Wrapper. Why: The app's first open is the one that hangs or answers late, and an open assigned onto indexedDB itself never ran in WebKit, so the prototype is patched (measured 2026-11-18). How: This opens the real database, then hides or delays the first open's success.
 
@@ -277,6 +283,8 @@ test.beforeEach( async ( { page : curPagObj } ) => { // What: Setup Hook. Why: E
 
 
 		if ( modValStr === 'slow' ) IDBObjectStore.prototype.get = function ( this : IDBObjectStore, ...getArgArr : Parameters< IDBObjectStore[ 'get' ] > ) { const getReqObj = oriGetFun.apply( this, getArgArr ); delSucFun( getReqObj, 400 ); return getReqObj; }; // What: Slow Read Check. Why: A slow open plus slow reads runs the whole boot past its 3.5-second deadline. How: This delays each store read's success by 400ms.
+
+		// #endregion Fault Wrappers
 
 
 	} );

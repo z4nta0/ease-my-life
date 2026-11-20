@@ -169,18 +169,26 @@ test( 'nobody else, and no unverified or signed-out account, can read or write a
 test( 'an unpaid owner can read and delete its own copy but not write it, and a stranger cannot delete it', async () => { // What: Unpaid Owner Test. Why: Anyone can always find and remove their own data, while writing is the paid feature. How: This deletes as a stranger and as the unpaid owner, checking which reads, writes, and deletes the rules allow.
 
 
+	// #region Copy Setup
+
 	await seeManFun(); // What: Manifest Seed. Why: There has to be a copy to delete. How: This writes alice's manifest.
 
 
 
 	const unpStoObj = accStoFun( 'alice', { email_verified : true } ); // What: Unpaid Store Object. Why: Alice before paying, or after a refund. How: This acts as her without the paid claim.
 
+	// #endregion Copy Setup
 
+
+
+	// #region Unpaid Owner Checks
 
 	await assertSucceeds( getDoc( doc( unpStoObj, 'users/alice' ) ) );                           // What: Unpaid Read. Why: Alice can see her own copy. How: This expects the read allowed.
 	await assertFails( setDoc( doc( unpStoObj, 'users/alice' ), { ...MAN_ONE_OBJ, rev : 2 } ) ); // What: Unpaid Write. Why: Writing is the paid feature. How: This expects the write refused.
 	await assertFails( deleteDoc( doc( accStoFun( 'bob', PAI_TOK_OBJ ), 'users/alice' ) ) );     // What: Stranger Delete. Why: Bob can't delete alice's copy. How: This expects it refused.
 	await assertSucceeds( deleteDoc( doc( unpStoObj, 'users/alice' ) ) );                        // What: Owner Delete. Why: Alice can delete her own copy without paying. How: This expects it allowed.
+
+	// #endregion Unpaid Owner Checks
 
 
 } );

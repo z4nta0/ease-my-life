@@ -165,11 +165,17 @@ test( 'picker controls save a rename on Save', async ( { page : curPagObj } ) =>
 test( 'closing the controls commits a toggle', async ( { page : curPagObj } ) => { // What: Controls Commit Test. Why: Closing the controls saves the draft too. How: This flips a toggle, collapses the controls, and waits for IndexedDB to hold the change.
 
 
+	// #region Card Lookup
+
 	const carSecLoc = picCarFun( curPagObj );                                                                                      // What: Card Section Locator. Why: The first picker is changed. How: This finds its card.
 	const picIdeStr = ( await carSecLoc.getAttribute( 'data-picker-id' ) )!;                                                       // What: Picker Identifier String. Why: The saved picker is checked afterwards. How: This reads the card's picker id. // What: Non-Null Note. Why: The card was selected by that attribute. How: The ! tells TypeScript it's present.
 	const preSkiBoo = ( await reaStaFun( curPagObj ) )!.pickers.find( ( curPicObj ) => curPicObj.id === picIdeStr )!.skipHolidays; // What: Previous Skip Boolean. Why: The toggle flips it. How: This reads it first. // What: Non-Null Note. Why: The state was saved and the card names a real picker. How: Each ! tells TypeScript the value exists.
 
+	// #endregion Card Lookup
 
+
+
+	// #region Toggle Commit
 
 	await opeSecFun( carSecLoc, 0 ); // What: Controls Open Call. Why: The toggle lives in the controls. How: This opens them.
 
@@ -184,6 +190,8 @@ test( 'closing the controls commits a toggle', async ( { page : curPagObj } ) =>
 
 
 	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.pickers.find( ( curPicObj ) => curPicObj.id === picIdeStr )?.skipHolidays === !preSkiBoo, 'controls toggle committed' ); // What: Commit Wait. Why: The toggle must reach storage on close. How: This waits for the flipped setting.
+
+	// #endregion Toggle Commit
 
 
 } );
@@ -242,10 +250,16 @@ test( 'an item row renames through its editor', async ( { page : curPagObj } ) =
 test( 'a new conditional saves', async ( { page : curPagObj } ) => { // What: Conditional Add Test. Why: Conditionals can be created from Data. How: This adds and saves one, then waits for IndexedDB to hold it.
 
 
+	// #region Conditional Lookup
+
 	const conSecLoc = curPagObj.locator( '[data-element-name-hook~="conCatSec"]' ); // What: Conditional Section Locator. Why: Conditionals have their own card. How: This finds it.
 	const preConNum = ( await reaStaFun( curPagObj ) )!.conditionals.length;        // What: Previous Conditional Number. Why: The add raises the count. How: This reads it first. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 
+	// #endregion Conditional Lookup
 
+
+
+	// #region Conditional Add
 
 	await opeSecFun( conSecLoc, null ); // What: Section Open Call. Why: The add button lives in the open card. How: This opens it.
 
@@ -265,6 +279,8 @@ test( 'a new conditional saves', async ( { page : curPagObj } ) => { // What: Co
 
 	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.conditionals.length === preConNum + 1 && staAppObj.conditionals.some( ( curConObj ) => curConObj.name === 'Data Conditional' ), 'conditional added' ); // What: Add Save Wait. Why: The conditional must reach storage. How: This waits for it.
 
+	// #endregion Conditional Add
+
 
 } );
 
@@ -273,10 +289,16 @@ test( 'a new conditional saves', async ( { page : curPagObj } ) => { // What: Co
 test( 'the reminder options matrix saves', async ( { page : curPagObj } ) => { // What: Reminder Options Test. Why: Reminder class options save from the matrix. How: This flips one option, saves, and waits for IndexedDB to hold the change.
 
 
+	// #region Matrix Lookup
+
 	const remSecLoc = curPagObj.locator( '[data-element-name-hook~="remCatSec"]' );     // What: Reminder Section Locator. Why: The matrix lives in the reminders card. How: This finds it.
 	const preOptStr = JSON.stringify( ( await reaStaFun( curPagObj ) )!.reminderOpts ); // What: Previous Options String. Why: The save changes the options. How: This records them first. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 
+	// #endregion Matrix Lookup
 
+
+
+	// #region Matrix Save
 
 	await opeSecFun( remSecLoc, 0 ); // What: Matrix Open Call. Why: The matrix is the first section. How: This opens it.
 
@@ -292,6 +314,8 @@ test( 'the reminder options matrix saves', async ( { page : curPagObj } ) => { /
 
 	await waiStaFun( curPagObj, ( staAppObj ) => JSON.stringify( staAppObj.reminderOpts ) !== preOptStr, 'reminder options saved' ); // What: Options Save Wait. Why: The change must reach storage. How: This waits for the options to differ.
 
+	// #endregion Matrix Save
+
 
 } );
 
@@ -300,18 +324,26 @@ test( 'the reminder options matrix saves', async ( { page : curPagObj } ) => { /
 test( 'the section sort is remembered', async ( { page : curPagObj } ) => { // What: Sort Test. Why: The chosen sort persists. How: This changes the sort and checks it saved.
 
 
+	// #region Sort Options Lookup
+
 	const sorSelLoc = curPagObj.locator( '[data-element-name-hook~="sorBarDiv"] [data-element-name-hook~="sorDroSel"]' ).first();                                     // What: Sort Select Locator. Why: The section sort is the top dropdown. How: This finds it.
 	const optValArr = await sorSelLoc.locator( 'option' ).evaluateAll( ( optEleArr ) => optEleArr.map( ( optDomEle ) => ( optDomEle as HTMLOptionElement ).value ) ); // What: Option Value Array. Why: A different option is chosen. How: This lists the values. // What: Type Assertion Note. Why: Every match is an option element. How: It's read as an option, since the selector names option.
 	const curValStr = await sorSelLoc.inputValue(); // What: Current Value String. Why: The new choice must differ. How: This reads the current one.
 	const newValStr = optValArr.find( ( optValStr ) => optValStr !== curValStr )!;                                                                                    // What: New Value String. Why: A different sort is chosen. How: This takes the first other value. // What: Non-Null Note. Why: The sort always offers several options. How: The ! tells TypeScript one exists.
 
+	// #endregion Sort Options Lookup
 
+
+
+	// #region Sort Change
 
 	await sorSelLoc.selectOption( newValStr ); // What: Sort Choice Call. Why: The sort changes. How: This selects the new value.
 
 
 
 	await waiStaFun( curPagObj, ( staAppObj ) => JSON.stringify( staAppObj.ui ).includes( newValStr ), 'sort saved' ); // What: Sort Save Wait. Why: The sort must reach storage. How: This waits for the value in the saved UI settings.
+
+	// #endregion Sort Change
 
 
 } );

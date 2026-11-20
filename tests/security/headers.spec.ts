@@ -147,9 +147,16 @@ test( 'the content security policy allows only the app and its named sync servic
 test( 'the other hardening headers are set', () => { // What: Hardening Headers Test. Why: Each header closes a different gap: plain HTTP, sniffed file types, framing, referrer leaks, and unused browser features. How: This reads the policy, checks HSTS's age and subdomain flag and the nosniff and DENY values, and checks that a referrer policy and a permissions policy are set.
 
 
+	// #region Header Lookup
+
 	const heaAllObj = heaAllFun();                                    // What: Headers All Object. Why: Each header is looked up by name. How: This reads the /* block of public/_headers.
 	const hstValStr = heaAllObj[ 'strict-transport-security' ] ?? ''; // What: HTTP-Strict-Transport Value String. Why: Its age and subdomain flag are checked separately. How: This reads the header, or an empty string if it's missing.
 
+	// #endregion Header Lookup
+
+
+
+	// #region Hardening Checks
 
 	expect( Number( hstValStr.match( /max-age=(\d+)/ )?.[ 1 ] ?? 0 ) ).toBeGreaterThanOrEqual( 31536000 ); // What: HSTS Age Assertion. Why: Browsers should stay on HTTPS for at least a year once they've seen the app. How: This checks max-age is at least 31,536,000 seconds.
 	expect( hstValStr ).toContain( 'includeSubDomains' );                                                  // What: HSTS Subdomains Assertion. Why: A plain HTTP subdomain could still be used against the app. How: This checks HSTS covers every subdomain.
@@ -157,6 +164,8 @@ test( 'the other hardening headers are set', () => { // What: Hardening Headers 
 	expect( heaAllObj[ 'x-frame-options' ] ).toBe( 'DENY' );                                               // What: Frame Options Assertion. Why: Older browsers ignore frame-ancestors. How: This checks framing is refused the older way too.
 	expect( heaAllObj[ 'referrer-policy' ] ).toBeTruthy();                                                 // What: Referrer Policy Assertion. Why: A referrer policy states how much of the address other sites receive. How: This checks a policy is set.
 	expect( heaAllObj[ 'permissions-policy' ] ).toBeTruthy();                                              // What: Permissions Policy Assertion. Why: Browser features the app never uses shouldn't be available to injected code. How: This checks a policy is set.
+
+	// #endregion Hardening Checks
 
 
 } );
@@ -218,6 +227,8 @@ test( 'the built app holds no secrets beyond its browser keys', () => { // What:
 test( 'the shipped dependencies have no high or critical advisory', () => { // What: Dependency Audit Test. Why: A known hole in a library the app or its functions ship reaches every visitor or the accounts. How: This runs npm audit on the production dependencies and checks the high and critical counts.
 
 
+	// #region Audit Run
+
 	let audTexStr = ''; // What: Audit Text String. Why: npm reports its findings as JSON on standard output, even when it exits with an error for finding some. How: This holds that output.
 
 
@@ -238,10 +249,17 @@ test( 'the shipped dependencies have no high or critical advisory', () => { // W
 
 	}
 
+	// #endregion Audit Run
 
+
+
+	// #region Audit Counts
 
 	const audDatObj = JSON.parse( audTexStr || '{}' ) as { metadata? : { vulnerabilities? : Record< string, number > } }; // What: Audit Data Object. Why: The counts are read by severity. How: This parses npm's JSON, or an empty object when there was no output. // What: Type Assertion Note. Why: JSON.parse returns any. How: The as names only the fields read.
 	const vulCouObj = audDatObj.metadata?.vulnerabilities;                                                                // What: Vulnerability Count Object. Why: Only a real report has counts. How: This reads them, or undefined when npm couldn't reach its registry.
+
+	// #endregion Audit Counts
+
 
 
 	test.skip( !vulCouObj, 'npm audit could not reach the registry, so the dependencies went unchecked.' ); // What: Offline Skip. Why: Without a report there's nothing to check, and passing would hide that. How: This skips the test with a message saying why.

@@ -170,6 +170,8 @@ test.afterEach( () => { expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] 
 test( 'checking a card saves, animates, and undoes', async ( { page : curPagObj } ) => { // What: Check-Off Test. Why: Checking off is the app's core action. How: This checks a card, watches its animations, and unchecks it.
 
 
+	// #region Check-Off Setup
+
 	const preStaObj = ( await reaStaFun( curPagObj ) )!;                                // What: Previous State Object. Why: The check-off and undo are compared with it. How: This reads the state. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 	const butCurLoc = curPagObj.locator( `${ ENT_CAR_STR } ${ UNC_BUT_STR }` ).first(); // What: Button Current Locator. Why: The first unchecked card is checked off. How: This finds its button.
 	const butHanObj = ( await butCurLoc.elementHandle() )!;                             // What: Button Handle Object. Why: The undo clicks the same card. How: This holds the button. // What: Non-Null Note. Why: The fixed day always has an unchecked card. How: The ! tells TypeScript the handle exists.
@@ -178,7 +180,11 @@ test( 'checking a card saves, animates, and undoes', async ( { page : curPagObj 
 
 	await recAniFun( curPagObj ); // What: Recording Start Call. Why: The check-off's animations are confirmed. How: This starts recording.
 
+	// #endregion Check-Off Setup
 
+
+
+	// #region Check-Off
 
 	await butHanObj.click(); // What: Check Click Call. Why: Check-offs go through the real button. How: This clicks it.
 
@@ -190,7 +196,11 @@ test( 'checking a card saves, animates, and undoes', async ( { page : curPagObj 
 
 	expect( await seeAniFun( curPagObj, 'proRinDiv--pulsing' ), 'progress ring pulse' ).toBe( true ); // What: Ring Pulse Assertion. Why: The ring pulses when the done count rises. How: This checks its class appeared.
 
+	// #endregion Check-Off
 
+
+
+	// #region Undo
 
 	await butHanObj.click(); // What: Undo Click Call. Why: Checking again undoes it. How: This clicks the same button.
 
@@ -202,6 +212,8 @@ test( 'checking a card saves, animates, and undoes', async ( { page : curPagObj 
 
 	expect( JSON.stringify( undStaObj.items ), 'items restored' ).toBe( JSON.stringify( preStaObj.items ) ); // What: Items Restored Assertion. Why: Undoing restores every item. How: This compares the items.
 
+	// #endregion Undo
+
 
 } );
 
@@ -210,11 +222,15 @@ test( 'checking a card saves, animates, and undoes', async ( { page : curPagObj 
 test( 'finishing every card celebrates', async ( { page : curPagObj } ) => { // What: Celebration Test. Why: Finishing the day must celebrate. How: This checks everything off and watches for the celebration.
 
 
+	// #region Celebration Setup
+
 	const preStaObj = ( await reaStaFun( curPagObj ) )!; // What: Previous State Object. Why: The streak bumps only when this run claims the day. How: This reads whether the day was already claimed. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 
 
 
 	await recAniFun( curPagObj ); // What: Recording Start Call. Why: The celebration is confirmed by its classes. How: This starts recording.
+
+	// #endregion Celebration Setup
 
 
 
@@ -232,6 +248,8 @@ test( 'finishing every card celebrates', async ( { page : curPagObj } ) => { // 
 
 
 
+	// #region Celebration Checks
+
 	expect( await seeAniFun( curPagObj, 'proRinDiv--celebrating' ), 'ring celebration' ).toBe( true ); // What: Ring Celebration Assertion. Why: The ring celebrates a finished day. How: This checks its class appeared.
 
 
@@ -246,6 +264,8 @@ test( 'finishing every card celebrates', async ( { page : curPagObj } ) => { // 
 
 	if ( !preStaObj.today.streakClaimed && finStaObj.today.streakClaimed ) expect( await seeAniFun( curPagObj, 'todStrDiv--bumped' ), 'streak bump' ).toBe( true ); // What: Streak Bump Assertion. Why: The streak badge bumps only when the day's claim goes from false to true, which happens once every card is done. How: This checks its class appeared when this run made the claim.
 
+	// #endregion Celebration Checks
+
 
 } );
 
@@ -253,6 +273,8 @@ test( 'finishing every card celebrates', async ( { page : curPagObj } ) => { // 
 
 test( 'pushing an item onto a finished day gives the streak back', async ( { page : curPagObj } ) => { // What: Streak Reopen Test. Why: A day that gains an unchecked card is no longer finished, so its streak point must be given back. How: This finishes the day, sends an item from the Pickers tab, and checks the streak drops back.
 
+
+	// #region Finish The Day
 
 	for ( let cliNumVal = 0; cliNumVal < 60 && await curPagObj.locator( `${ ENT_CAR_STR } ${ UNC_BUT_STR }, ${ REM_CAR_STR } ${ UNC_BUT_STR }` ).count(); cliNumVal++ ) { // What: Check-Off Loop. Why: The day must be finished first. How: This clicks the next unchecked card until none remain.
 
@@ -274,7 +296,11 @@ test( 'pushing an item onto a finished day gives the streak back', async ( { pag
 
 	await expect( curPagObj.locator( '[data-element-name-hook~="todStrDiv"]' ), 'badge tinted' ).toHaveAttribute( 'data-streak-claim-active' ); // What: Tinted Badge Assertion. Why: A claimed day keeps the streak badge tinted. How: This checks the badge carries the claim attribute.
 
+	// #endregion Finish The Day
 
+
+
+	// #region Push An Item
 
 	await selTabFun( curPagObj, 'picker' ); // What: Pickers Tab Call. Why: Items are pushed to Today from the Pickers tab. How: This switches to it.
 
@@ -290,7 +316,11 @@ test( 'pushing an item onto a finished day gives the streak back', async ( { pag
 
 	await curPagObj.locator( '[data-element-name-hook~="picSenBut"]' ).click(); // What: Send Click Call. Why: Sending pushes an unchecked item onto Today. How: This clicks it.
 
+	// #endregion Push An Item
 
+
+
+	// #region Reopened Day Check
 
 	const reoStaObj = await waiStaFun( curPagObj, ( staAppObj ) => !staAppObj.today.streakClaimed, 'streak given back' ); // What: Reopened State Object. Why: The pushed item reopens the day. How: This waits for the claim to clear in storage.
 
@@ -306,6 +336,8 @@ test( 'pushing an item onto a finished day gives the streak back', async ( { pag
 
 	await expect( curPagObj.locator( '[data-element-name-hook~="todStrDiv"]' ), 'badge untinted' ).not.toHaveAttribute( 'data-streak-claim-active' ); // What: Untinted Badge Assertion. Why: A reopened day drops the badge's tint. How: This checks the claim attribute is gone.
 
+	// #endregion Reopened Day Check
+
 
 } );
 
@@ -313,6 +345,8 @@ test( 'pushing an item onto a finished day gives the streak back', async ( { pag
 
 test( 're-rolling and skipping animate and save', async ( { page : curPagObj } ) => { // What: Re-Roll And Skip Test. Why: Both card actions must work and animate. How: This re-rolls one card and skips another, waiting for each save and checking each animation.
 
+
+	// #region Re-Roll
 
 	const rolCarObj = ( await picCarFun( curPagObj, [ 'dynamic', 'random', 'weighted' ] ) )!; // What: Roll Card Object. Why: A draw-mode card can always re-roll. How: This finds one. // What: Non-Null Note. Why: The backup's fixed day always has a draw-mode pick. How: The ! tells TypeScript one was found.
 
@@ -332,7 +366,11 @@ test( 're-rolling and skipping animate and save', async ( { page : curPagObj } )
 
 	expect( await seeAniFun( curPagObj, 'todCarArt--rolling' ), 'card roll' ).toBe( true ); // What: Roll Animation Assertion. Why: The card spins while re-rolling. How: This checks its class appeared.
 
+	// #endregion Re-Roll
 
+
+
+	// #region Skip
 
 	const skiCarObj = ( await picCarFun( curPagObj, [ 'dynamic', 'ease-down', 'ease-up', 'random', 'weighted' ] ) )!; // What: Skip Card Object. Why: Any pick can be skipped. How: This finds one. // What: Non-Null Note. Why: The fixed day has several picks. How: The ! tells TypeScript one was found.
 
@@ -352,6 +390,8 @@ test( 're-rolling and skipping animate and save', async ( { page : curPagObj } )
 
 	expect( await seeAniFun( curPagObj, 'todCarArt--removing' ), 'card removal' ).toBe( true ); // What: Removal Animation Assertion. Why: A skipped card slides out. How: This checks its class appeared.
 
+	// #endregion Skip
+
 
 } );
 
@@ -360,10 +400,16 @@ test( 're-rolling and skipping animate and save', async ( { page : curPagObj } )
 test( 'the item editor saves only on Save', async ( { page : curPagObj } ) => { // What: Item Editor Test. Why: Edits are drafts until saved. How: This cancels one rename and saves another, checking the cancelled name never saves and no item is added or lost.
 
 
+	// #region Editor Setup
+
 	const ediCarLoc = curPagObj.locator( ENT_CAR_STR ).filter( { has : curPagObj.locator( '[aria-label="Edit"]' ) } ).first(); // What: Edit Card Locator. Why: The first editable card is used. How: This finds it.
 	const preStaObj = ( await reaStaFun( curPagObj ) )!;                                                                       // What: Previous State Object. Why: Cancel must change nothing. How: This reads the state. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 
+	// #endregion Editor Setup
 
+
+
+	// #region Cancelled Rename
 
 	await ediCarLoc.locator( '[aria-label="Edit"]' ).click(); // What: Editor Open Call. Why: Renaming happens in the editor. How: This opens it.
 
@@ -383,7 +429,11 @@ test( 'the item editor saves only on Save', async ( { page : curPagObj } ) => { 
 
 	expect( ( await reaStaFun( curPagObj ) )!.items.some( ( curIteObj ) => curIteObj.name === 'Cancelled Name' ), 'cancel wrote nothing' ).toBe( false ); // What: Cancel Assertion. Why: A cancelled draft must not be saved. How: This checks no item took the name. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 
+	// #endregion Cancelled Rename
 
+
+
+	// #region Saved Rename
 
 	await ediCarLoc.locator( '[aria-label="Edit"]' ).click(); // What: Editor Reopen Call. Why: The saved rename is tried next. How: This reopens the editor.
 
@@ -403,6 +453,8 @@ test( 'the item editor saves only on Save', async ( { page : curPagObj } ) => { 
 
 	expect( savStaObj.items.length, 'no item added or lost' ).toBe( preStaObj.items.length ); // What: Item Count Assertion. Why: Renaming changes no item count. How: This compares counts.
 
+	// #endregion Saved Rename
+
 
 } );
 
@@ -410,6 +462,8 @@ test( 'the item editor saves only on Save', async ( { page : curPagObj } ) => { 
 
 test( 'reminders can be added, renamed, and skipped', async ( { page : curPagObj } ) => { // What: Reminder Test. Why: Every reminder action must save. How: This adds, renames, and skips a reminder, checking IndexedDB after each step.
 
+
+	// #region Reminder Add
 
 	await curPagObj.locator( '[data-element-name-hook~="remAddBut"]' ).click(); // What: Add Open Call. Why: New reminders start from the add button. How: This opens the form.
 
@@ -425,7 +479,11 @@ test( 'reminders can be added, renamed, and skipped', async ( { page : curPagObj
 
 	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.tasks.some( ( curTasObj ) => curTasObj.name === 'Test Reminder' ), 'reminder added' ); // What: Add Save Wait. Why: The reminder must reach storage. How: This waits for it.
 
+	// #endregion Reminder Add
 
+
+
+	// #region Reminder Rename
 
 	const remCarLoc = curPagObj.locator( REM_CAR_STR ).filter( { has : curPagObj.locator( '[aria-label="Mark Test Reminder complete"]' ) } ); // What: Reminder Card Locator. Why: The new reminder's card is edited next. How: This finds it.
 
@@ -445,7 +503,11 @@ test( 'reminders can be added, renamed, and skipped', async ( { page : curPagObj
 
 	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.tasks.some( ( curTasObj ) => curTasObj.name === 'Renamed Reminder' ), 'reminder renamed' ); // What: Rename Save Wait. Why: The rename must reach storage. How: This waits for it.
 
+	// #endregion Reminder Rename
 
+
+
+	// #region Reminder Skip
 
 	await curPagObj.locator( REM_CAR_STR ).filter( { has : curPagObj.locator( '[aria-label="Mark Renamed Reminder complete"]' ) } ).locator( '[aria-label="Skip reminder"]' ).click(); // What: Skip Open Call. Why: Skipping starts from the card's skip button. How: This opens the confirm.
 
@@ -466,6 +528,8 @@ test( 'reminders can be added, renamed, and skipped', async ( { page : curPagObj
 
 	expect( !!skiTasObj && ( !!skiTasObj.skipUntil || skiStaObj.reminderSkipLog.every( ( logRowObj ) => logRowObj.taskId !== skiTasObj.id ) ), 'skip saved or nothing to skip to' ).toBe( true ); // What: Skip Assertion. Why: A confirmed skip sets skipUntil, and a closed one logs nothing. How: This accepts either consistent outcome.
 
+	// #endregion Reminder Skip
+
 
 } );
 
@@ -473,6 +537,8 @@ test( 'reminders can be added, renamed, and skipped', async ( { page : curPagObj
 
 test( 'edit mode opens and cancels without reordering', async ( { page : curPagObj } ) => { // What: Edit Mode Test. Why: Cancelling Edit Mode must leave the order alone. How: This opens and cancels it, checking the banner and grips come and go and the order is unchanged.
 
+
+	// #region Edit Mode Open
 
 	const preStaObj = ( await reaStaFun( curPagObj ) )!; // What: Previous State Object. Why: The order must match afterwards. How: This reads it. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 
@@ -488,7 +554,11 @@ test( 'edit mode opens and cancels without reordering', async ( { page : curPagO
 
 	await expect( curPagObj.locator( '[data-element-name-hook~="carGriSpa"]' ).first(), 'drag grips' ).toBeVisible(); // What: Grip Assertion. Why: Edit Mode swaps checkboxes for drag grips. How: This checks a grip shows.
 
+	// #endregion Edit Mode Open
 
+
+
+	// #region Edit Mode Cancel
 
 	await recAniFun( curPagObj ); // What: Recording Start Call. Why: The banner's close animation is confirmed. How: This starts recording.
 
@@ -504,13 +574,19 @@ test( 'edit mode opens and cancels without reordering', async ( { page : curPagO
 
 	await expect( curPagObj.locator( '[data-element-name-hook~="ediBanDiv"]' ), 'banner gone' ).toHaveCount( 0 ); // What: Banner Gone Assertion. Why: Edit Mode has ended. How: This checks the banner left.
 
+	// #endregion Edit Mode Cancel
 
+
+
+	// #region Order Check
 
 	const aftStaObj = ( await reaStaFun( curPagObj ) )!; // What: After State Object. Why: The order is compared afterwards. How: This reads it. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 
 
 
 	expect( JSON.stringify( [ aftStaObj.groupOrder, aftStaObj.pickerOrder ] ), 'order unchanged' ).toBe( JSON.stringify( [ preStaObj.groupOrder, preStaObj.pickerOrder ] ) ); // What: Order Assertion. Why: Cancel reorders nothing. How: This compares both orders.
+
+	// #endregion Order Check
 
 
 } );
@@ -519,6 +595,8 @@ test( 'edit mode opens and cancels without reordering', async ( { page : curPagO
 
 test( 'regenerate rebuilds the list', async ( { page : curPagObj } ) => { // What: Regenerate Test. Why: Regenerate must replace the list. How: This confirms a regenerate and checks the new list.
 
+
+	// #region Regenerate Request
 
 	const preStaObj = ( await reaStaFun( curPagObj ) )!; // What: Previous State Object. Why: The new list is compared with the old. How: This reads it. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 
@@ -530,7 +608,11 @@ test( 'regenerate rebuilds the list', async ( { page : curPagObj } ) => { // Wha
 
 	await curPagObj.locator( '[data-element-name-hook~="genConBut"]' ).click(); // What: Regenerate Confirm Call. Why: The list rebuilds once confirmed. How: This clicks Continue.
 
+	// #endregion Regenerate Request
 
+
+
+	// #region Regenerate Checks
 
 	await expect( curPagObj.locator( '[data-slot-pending-active]' ).first(), 'loader slots' ).toBeAttached(); // What: Loader Assertion. Why: Regenerating shows loader cards, which mount already pending, so no attribute change marks them. How: This checks a pending slot is on the page during the cascade.
 
@@ -542,6 +624,8 @@ test( 'regenerate rebuilds the list', async ( { page : curPagObj } ) => { // Wha
 
 	expect( genStaObj.today.entries.length, 'list rebuilt' ).toBeGreaterThan( 0 ); // What: Rebuilt Assertion. Why: The new list holds entries. How: This checks it isn't empty.
 
+	// #endregion Regenerate Checks
+
 
 } );
 
@@ -550,6 +634,8 @@ test( 'regenerate rebuilds the list', async ( { page : curPagObj } ) => { // Wha
 test( 'a group can be renamed', async ( { page : curPagObj } ) => { // What: Group Rename Test. Why: Renaming a group renames it on every picker in it. How: This renames the first group and checks the pickers.
 
 
+	// #region Rename Target
+
 	await curPagObj.locator( '[data-element-name-hook~="ediRaiBut"], [data-element-name-hook~="fooEdiBut"]' ).first().click(); // What: Edit Open Call. Why: A group's name only becomes a rename button in Edit Mode. How: This clicks whichever Edit Mode button shows first.
 
 
@@ -557,7 +643,11 @@ test( 'a group can be renamed', async ( { page : curPagObj } ) => { // What: Gro
 	const namButLoc = curPagObj.locator( `${ PIC_GRO_STR } [data-element-name-hook~="groNamBut"]` ).first();      // What: Name Button Locator. Why: The first picker group's name opens its rename field. How: This finds it, skipping the Reminders and tour groups.
 	const oldNamStr = ( ( await namButLoc.getAttribute( 'aria-label' ) ) || '' ).replace( /^Rename group /, '' ); // What: Old Name String. Why: The pickers in this group are checked afterwards. How: This reads the group's name from the label.
 
+	// #endregion Rename Target
 
+
+
+	// #region Rename Entry
 
 	await namButLoc.click(); // What: Rename Open Call. Why: Renaming happens in the field. How: This opens it.
 
@@ -569,13 +659,19 @@ test( 'a group can be renamed', async ( { page : curPagObj } ) => { // What: Gro
 
 	await curPagObj.locator( '[data-element-name-hook~="groNamInp"]' ).press( 'Enter' ); // What: Rename Commit Call. Why: Enter commits the rename. How: This presses it.
 
+	// #endregion Rename Entry
 
+
+
+	// #region Rename Checks
 
 	const renStaObj = await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.pickers.some( ( curPicObj ) => curPicObj.group === 'Renamed Group' ), 'group renamed' ); // What: Renamed State Object. Why: The rename must reach storage. How: This waits for it.
 
 
 
 	expect( renStaObj.pickers.some( ( curPicObj ) => curPicObj.group === oldNamStr && !curPicObj.hidden ), 'no picker left in the old group' ).toBe( false ); // What: Old Group Assertion. Why: Every visible picker moved with the rename. How: This checks none keeps the old name.
+
+	// #endregion Rename Checks
 
 
 } );
@@ -584,6 +680,8 @@ test( 'a group can be renamed', async ( { page : curPagObj } ) => { // What: Gro
 
 test( 'the day log opens and closes', async ( { page : curPagObj } ) => { // What: Day Log Test. Why: The day log must open from its chip. How: This toggles it, checking the chip's pressed state and the log's blocks.
 
+
+	// #region Log Open
 
 	const chiButLoc = curPagObj.locator( `${ PIC_GRO_STR } [data-element-name-hook~="logChiBut"]` ).first(); // What: Chip Button Locator. Why: The first picker group's log chip is used, since the Reminders log shows reminder rows instead of picker blocks. How: This finds it.
 
@@ -599,7 +697,11 @@ test( 'the day log opens and closes', async ( { page : curPagObj } ) => { // Wha
 
 	await expect( curPagObj.locator( '[data-element-name-hook~="logBloDiv"]' ).first(), 'log blocks' ).toBeVisible(); // What: Log Block Assertion. Why: The open log shows its picker blocks. How: This checks one is visible.
 
+	// #endregion Log Open
 
+
+
+	// #region Log Close
 
 	await chiButLoc.click(); // What: Log Close Call. Why: The chip closes the log again. How: This clicks it.
 
@@ -607,12 +709,16 @@ test( 'the day log opens and closes', async ( { page : curPagObj } ) => { // Wha
 
 	await expect( chiButLoc, 'log closed' ).toHaveAttribute( 'aria-pressed', 'false' ); // What: Closed Assertion. Why: The chip reports the closed log. How: This checks aria-pressed.
 
+	// #endregion Log Close
+
 
 } );
 
 
 test( 'refilling an Ease Down item keeps its streak going', async ( { page : curPagObj } ) => { // What: Refill Streak Test. Why: An item refilled just before running out used to end its streak once checked off, so the next day picked a new item. How: This stages an Ease Down entry about to run out, refills its item in the editor, checks it off, and checks the item stays active.
 
+
+	// #region Ease Entry Search
 
 	const fixStaObj = ( await reaStaFun( curPagObj ) )!; // What: Fixture State Object. Why: The staged entry comes from the day's real list. How: This reads the saved state. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript the state is set.
 
@@ -630,11 +736,15 @@ test( 'refilling an Ease Down item keeps its streak going', async ( { page : cur
 
 	} );
 
+	// #endregion Ease Entry Search
+
 
 
 	test.skip( !easEntObj, 'the backup has no Ease Down pick on the fixed day' ); // What: No Ease Pick Skip. Why: The flow can't run without an Ease Down pick. How: This skips the test when none was found.
 
 
+
+	// #region Staged State Build
 
 	const decUpdObj = easEntObj!.pending!.updates.find( ( curUpdObj ) => curUpdObj.id === easEntObj!.itemId && ( curUpdObj.chargeStep ?? 0 ) > 0 )!; // What: Decay Update Object. Why: Its step sets how low the item is staged. How: This finds the entry's decay row. // What: Non-Null Note. Why: easEntObj was found only with a pending holding this row. How: The ! tells TypeScript the entry, its pending, and the row are set.
 	const easIteObj = fixStaObj.items.find( ( curIteObj ) => curIteObj.id === easEntObj!.itemId )!;                                                  // What: Ease Item Object. Why: Its card and saved value are checked. How: This finds the entry's item. // What: Non-Null Note. Why: Every entry's item is in the saved items. How: The ! tells TypeScript the item is found.
@@ -681,11 +791,21 @@ test( 'refilling an Ease Down item keeps its streak going', async ( { page : cur
 
 	};
 
+	// #endregion Staged State Build
+
+
+
+	// #region Staged State Load
 
 	await wriStaFun( curPagObj, staStaObj ); // What: Staged State Write. Why: The flow starts from the item about to run out. How: This saves the staged state.
 
 	await opeDayFun( curPagObj, '2026-10-05' ); // What: Day Reopen Call. Why: The app has to load the staged state. How: This reopens the fixed day.
 
+	// #endregion Staged State Load
+
+
+
+	// #region Item Refill
 
 	const easCarLoc = curPagObj.locator( ENT_CAR_STR ).filter( { has : curPagObj.locator( `[aria-label="Mark ${ easIteObj.name } complete"]` ) } ); // What: Ease Card Locator. Why: The refill and check-off happen on this item's card. How: This finds the card by its check button's name.
 
@@ -696,6 +816,12 @@ test( 'refilling an Ease Down item keeps its streak going', async ( { page : cur
 
 	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.items.find( ( curIteObj ) => curIteObj.id === easIteObj.id )?.value === thrValNum, 'item refilled' ); // What: Refill Wait. Why: The check-off has to follow the saved refill. How: This waits for the item to reach the threshold.
 
+	// #endregion Item Refill
+
+
+
+	// #region Check-Off Result
+
 	await easCarLoc.locator( `[aria-label="Mark ${ easIteObj.name } complete"]` ).click(); // What: Check-Off Click Call. Why: Completing the entry applies its planned step. How: This checks the card off.
 
 
@@ -705,6 +831,8 @@ test( 'refilling an Ease Down item keeps its streak going', async ( { page : cur
 	expect( donStaObj.pickers.find( ( curPicObj ) => curPicObj.id === easPicObj.id )?.activeItemId, 'the item stays active' ).toBe( easIteObj.id );                         // What: Active Item Assertion. Why: A refilled item's streak goes on. How: This checks the picker still points at it.
 	expect( donStaObj.items.find( ( curIteObj ) => curIteObj.id === easIteObj.id )?.value, 'one step comes off the refill' ).toBeCloseTo( thrValNum - steValNum );          // What: Value Assertion. Why: The day's step decays the refilled item. How: This checks one step came off the threshold.
 	expect( donStaObj.pickLog.some( ( curRowObj ) => curRowObj.eid === easEntObj!.eid && curRowObj.depletedEnd ), 'the streak is not logged as ended' ).toBe( false ); // What: Depletion Log Assertion. Why: The day didn't empty the item. How: This checks the entry's log row isn't marked depleted. // What: Non-Null Note. Why: The skip above ends the test when no entry was found. How: The ! tells TypeScript the entry is set.
+
+	// #endregion Check-Off Result
 
 
 } );

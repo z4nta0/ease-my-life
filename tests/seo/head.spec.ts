@@ -232,11 +232,18 @@ for ( const heaRowObj of PAG_HEA_ARR ) { // What: Raw Head Loop. Why: Every inde
 	test( `${ heaRowObj.patStr } raw page has its own title, description, canonical, and author`, async ( { request : reqCotObj } ) => { // What: Raw Head Test. Why: Link checkers and many crawlers never run a script, so each page's head has to be complete in the file that ships. How: This fetches the built page without a browser and checks its title, description, canonical address, author, and that nothing keeps it out of search.
 
 
+		// #region Raw Page Reading
+
 		const rawHtmStr = await ( await reqCotObj.get( `${ PRE_URL_STR }${ heaRowObj.patStr }` ) ).text();                                              // What: Raw HTML String. Why: The page is read the way a script-free reader reads what ships. How: This fetches the built page's HTML without a browser.
 		const titMatArr = [ ...rawHtmStr.matchAll( /<title>([^<]*)<\/title>/g ) ].map( ( titCurArr ) => titCurArr[ 1 ].replace( /&amp;/g, '&' ) );      // What: Title Match Array. Why: A page should have exactly one title. How: This reads every title element's decoded text.
 		const desConArr = metTagFun( rawHtmStr ).filter( ( [ tagKeyStr ] ) => tagKeyStr === 'description' ).map( ( [ , tagConStr ] ) => tagConStr );    // What: Description Content Array. Why: A page should have exactly one description. How: This reads every description tag's text.
 		const canHreArr = [ ...rawHtmStr.matchAll( /<link\s+href=(['"])([^'"]+)\1\s+rel=(['"])canonical\3/g ) ].map( ( canMatArr ) => canMatArr[ 2 ] ); // What: Canonical Hypertext-Reference Array. Why: A page should name exactly one canonical address. How: This reads every canonical link's address.
 
+		// #endregion Raw Page Reading
+
+
+
+		// #region Head Assertions
 
 		expect( titMatArr ).toEqual( [ heaRowObj.titStr ] );                       // What: Single Title Assertion. Why: Search listings and tabs name the page by its one title. How: This checks the page has exactly its row's title.
 		expect( heaRowObj.titStr.length ).toBeLessThanOrEqual( 60 );               // What: Title Length Assertion. Why: A title past about 60 characters is cut off in listings. How: This checks it's at most 60 characters.
@@ -248,6 +255,8 @@ for ( const heaRowObj of PAG_HEA_ARR ) { // What: Raw Head Loop. Why: Every inde
 		expect( metTagFun( rawHtmStr ).filter( ( [ tagKeyStr ] ) => tagKeyStr === 'author' ).map( ( [ , tagConStr ] ) => tagConStr ) ).toEqual( [ 'techgeek.dev' ] ); // What: Author Assertion. Why: The page names techgeek.dev, who built the app, as its author. How: This checks the one author tag.
 		expect( rawHtmStr ).not.toContain( 'noindex' );                            // What: Indexable Page Assertion. Why: The page has to stay findable. How: This checks no tag in it asks search engines to skip it.
 		expect( heaPatFun( heaRowObj.patStr )[ 'x-robots-tag' ] ).toBeUndefined(); // What: Indexable Header Assertion. Why: A robots header would keep the page out as surely as a tag. How: This checks the built headers file sends none with its path.
+
+		// #endregion Head Assertions
 
 
 	} );
@@ -274,15 +283,27 @@ for ( const staRecObj of STA_REC_ARR ) { // What: State Head Loop. Why: The app 
 	test( `${ staRecObj.ideStr } keeps the one title, description, and canonical link`, async ( { page : curPagObj } ) => { // What: State Head Test. Why: React adds a rendered description beside index.html's rather than replacing it, which would leave two. How: This opens the state in a browser and checks its title and that it has exactly one description and one canonical link, index.html's.
 
 
+		// #region State Load
+
 		const errMesArr = watErrFun( curPagObj ); // What: Error Message Array. Why: The state fails on any page error. How: This starts watching.
 
 
 		await opeStaFun( curPagObj, staRecObj ); // What: State Open Call. Why: The state's screens have to render before the head is read. How: This opens the state the way the accessibility suite does.
 
+		// #endregion State Load
+
+
+
+		// #region Head Checks
+
 		await expect( curPagObj ).toHaveTitle( HOM_TIT_STR );                                                      // What: Title Assertion. Why: The app keeps its home title on every screen. How: This checks the document's title.
 		await expect( curPagObj.locator( 'meta[name="description"]' ) ).toHaveCount( 1 );                          // What: Single Description Assertion. Why: Two descriptions leave search engines to guess. How: This checks there's exactly one.
 		await expect( curPagObj.locator( 'meta[name="description"]' ) ).toHaveAttribute( 'content', HOM_DES_STR ); // What: Home Description Assertion. Why: Every screen sits at the home address, so it keeps the home description. How: This checks the one description holds it.
 		await expect( curPagObj.locator( 'link[rel="canonical"]' ) ).toHaveAttribute( 'href', LIV_URL_STR );       // What: Canonical Assertion. Why: Every screen counts as the app's one address. How: This checks the one canonical link names it, which also fails on a second link.
+
+		// #endregion Head Checks
+
+
 
 		expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] ); // What: Error Assertion. Why: A state that logged an error failed even if it loaded. How: This expects no errors.
 
@@ -300,16 +321,28 @@ for ( const heaRowObj of PAG_HEA_ARR.slice( 1 ) ) { // What: Legal Head Loop. Wh
 	test( `${ heaRowObj.patStr } shows its own head and one h1 in a browser`, async ( { page : curPagObj } ) => { // What: Legal Head Test. Why: A visitor's browser runs the page's script, which must leave its head as it ships. How: This loads the page and checks its title, its one description and canonical link, and its one h1.
 
 
+		// #region Page Load
+
 		const errMesArr = watErrFun( curPagObj ); // What: Error Message Array. Why: The page fails on any page error. How: This starts watching.
 
 
 		await curPagObj.goto( heaRowObj.patStr ); // What: Legal Page Open Call. Why: The check starts on its page. How: This loads it.
+
+		// #endregion Page Load
+
+
+
+		// #region Head Checks
 
 		await expect( curPagObj ).toHaveTitle( heaRowObj.titStr );                                                      // What: Title Assertion. Why: The tab and listings name the page by its title. How: This checks the page's own title.
 		await expect( curPagObj.locator( 'meta[name="description"]' ) ).toHaveCount( 1 );                               // What: Single Description Assertion. Why: Two descriptions leave search engines to guess. How: This checks there's exactly one.
 		await expect( curPagObj.locator( 'meta[name="description"]' ) ).toHaveAttribute( 'content', heaRowObj.desStr ); // What: Own Description Assertion. Why: Each page should describe itself. How: This checks the one description holds the row's text.
 		await expect( curPagObj.locator( 'link[rel="canonical"]' ) ).toHaveAttribute( 'href', heaRowObj.canStr );       // What: Canonical Assertion. Why: Every address the page is served at should count as its live one. How: This checks the one canonical link names it.
 		await expect( curPagObj.getByRole( 'heading', { level : 1 } ) ).toHaveCount( 1 );                               // What: Single Heading Assertion. Why: One h1 tells search engines and screen readers what the page is about. How: This checks there's exactly one.
+
+		// #endregion Head Checks
+
+
 
 		expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] ); // What: Error Assertion. Why: A page that logged an error failed even if it loaded. How: This expects no errors.
 
@@ -324,10 +357,17 @@ for ( const heaRowObj of PAG_HEA_ARR.slice( 1 ) ) { // What: Legal Head Loop. Wh
 test( 'the raw home page carries its full link preview', async ( { request : reqCotObj } ) => { // What: Raw Preview Test. Why: Link scrapers never run the app's script, so the raw page alone decides the card a shared link shows. How: This fetches the built root without a browser and checks every preview tag, its addresses, its texts, and its image's stated type and size.
 
 
+	// #region Raw Tags Reading
+
 	const rawHtmStr = await ( await reqCotObj.get( `${ PRE_URL_STR }/` ) ).text(); // What: Raw HTML String. Why: The tags are read the way a scraper reads what ships. How: This fetches the built root's HTML without a browser.
 	const socTagObj = Object.fromEntries( metTagFun( rawHtmStr ) );                // What: Social Tag Object. Why: Each tag is looked up by its name or property. How: This keys the page's meta tags, the later of two theme colors winning.
 	const expImaStr = `${ LIV_URL_STR }assets/og-image-2.png`;                     // What: Expected Image String. Why: The card shows the app's preview image. How: This is its absolute address.
 
+	// #endregion Raw Tags Reading
+
+
+
+	// #region Preview Tag Checks
 
 	expect( SOC_KEY_ARR.filter( ( socKeyStr ) => !socTagObj[ socKeyStr ] ) ).toEqual( [] );                                                      // What: Complete Tags Assertion. Why: An app shows a bare link when a tag it needs is missing. How: This lists any required tag the page lacks.
 	expect( [ socTagObj[ 'og:url' ], socTagObj[ 'og:image' ], socTagObj[ 'twitter:image' ] ] ).toEqual( [ LIV_URL_STR, expImaStr, expImaStr ] ); // What: Address Assertion. Why: Scrapers need absolute HTTPS addresses for the page and its image. How: This checks each against the live site's.
@@ -336,6 +376,8 @@ test( 'the raw home page carries its full link preview', async ( { request : req
 	expect( socTagObj[ 'og:title' ].length ).toBeLessThanOrEqual( 60 );                                                                          // What: Title Length Assertion. Why: A card title past about 60 characters is cut off. How: This checks it's at most 60 characters.
 	expect( socTagObj[ 'twitter:image:alt' ] ).toBe( socTagObj[ 'og:image:alt' ] );                                                              // What: Image Text Assertion. Why: Every app describes the image the same way. How: This checks the two alternatives agree.
 	expect( [ socTagObj[ 'og:image:type' ], socTagObj[ 'og:image:width' ], socTagObj[ 'og:image:height' ], socTagObj[ 'og:type' ], socTagObj[ 'twitter:card' ], socTagObj[ 'og:locale' ] ] ).toEqual( [ 'image/png', '1200', '630', 'website', 'summary_large_image', 'en_US' ] ); // What: Image And Type Assertion. Why: Apps lay out a large preview from the image's stated type and size. How: This checks them, the page's type, the card type, and the locale.
+
+	// #endregion Preview Tag Checks
 
 
 } );
@@ -426,6 +468,8 @@ test( 'the link preview image is 1,200x630 and under 300 KB', async ( { request 
 test( 'the structured data describes the app and its sync price', async ( { request : reqCotObj } ) => { // What: Structured Data Test. Why: Search engines may show the app's details and price from the JSON-LD, so every claim has to match what the app shows. How: This parses the raw page's data and checks its type, name, address, and both offers against the app's own price.
 
 
+	// #region Structured Data Reading
+
 	const rawHtmStr = await ( await reqCotObj.get( `${ PRE_URL_STR }/` ) ).text();                                                                            // What: Raw HTML String. Why: Crawlers read the data from the page that ships. How: This fetches the built root's HTML without a browser.
 	const ldjTexArr = [ ...rawHtmStr.matchAll( /<script type=(['"])application\/ld\+json\1>([\s\S]*?)<\/script>/g ) ].map( ( ldjMatArr ) => ldjMatArr[ 2 ] ); // What: Linked-Data-JSON Text Array. Why: The page should carry one block of data. How: This reads every JSON-LD script's text.
 
@@ -433,12 +477,19 @@ test( 'the structured data describes the app and its sync price', async ( { requ
 
 	const ldjAppObj : LdjAppTyp = JSON.parse( ldjTexArr[ 0 ] ?? '{}' ); // What: Linked-Data-JSON App Object. Why: The app's details are checked together. How: This parses the one block, or an empty object.
 
+	// #endregion Structured Data Reading
+
+
+
+	// #region Structured Data Checks
 
 	expect( ldjTexArr.length ).toBe( 1 );                                                                                           // What: Single Block Assertion. Why: Two blocks could describe the app two ways. How: This checks there's one.
 	expect( [ ldjAppObj[ '@type' ], ldjAppObj.name, ldjAppObj.url ] ).toEqual( [ 'WebApplication', 'Ease My Life', LIV_URL_STR ] ); // What: App Assertion. Why: The app is a web application at its one address. How: This checks its type, its name, and its address.
 	expect( ldjAppObj.description ).toBeTruthy();                                                                                   // What: Description Assertion. Why: Search engines read what the app does from the data. How: This checks it carries a description.
 	expect( SYN_PRI_STR ).not.toBe( '' );                                                                                           // What: Price Found Assertion. Why: A price that couldn't be read would compare against nothing. How: This checks the app's price was read.
 	expect( ldjAppObj.offers?.map( ( offCurObj ) => [ offCurObj.name, offCurObj.price, offCurObj.priceCurrency ] ) ).toEqual( [ [ 'Ease My Life', '0', 'USD' ], [ 'Ease My Life Sync', SYN_PRI_STR, 'USD' ] ] ); // What: Offers Assertion. Why: The app is free, and the optional sync costs what the Account section shows. How: This checks the free offer and the sync offer, whose price must match SYN_PRI_STR.
+
+	// #endregion Structured Data Checks
 
 
 } );

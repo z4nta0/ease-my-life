@@ -90,9 +90,13 @@ const VIE_WID_ARR = [ 375, 414, 768, 1024, 1280 ];                       // What
 const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.evaluate( () => { // What: Measure Layout Function. Why: Layout problems are measured in the page. How: This checks overflow, spills, and overlaps and returns them.
 
 
+	// #region Check Setup
+
 	const issMesArr : string[] = [];                                                                             // What: Issue Message Array. Why: Every problem is reported. How: This collects them.
 	const vieWidNum = document.documentElement.clientWidth;                                                      // What: Viewport Width Number. Why: Overflow is measured against the screen's width. How: This reads it.
 	const conSelStr = 'a[href], button, input, select, textarea, [role="button"], [role="radio"], [role="tab"]'; // What: Control Selector String. Why: Overlap matters between things people tap. How: This selects every control.
+
+	// #endregion Check Setup
 
 
 
@@ -387,6 +391,8 @@ test.use( { contextOptions : { reducedMotion : 'reduce' } } ); // What: Page Opt
 for ( const vieWidNum of VIE_WID_ARR ) for ( const pagStaObj of PAG_STA_ARR ) test( `${ pagStaObj.namStr } at ${ vieWidNum }px`, async ( { page : curPagObj }, tesInfObj ) => { // What: Layout Test Loop. Why: Every state is checked at every width. How: This declares one test per pair.
 
 
+	// #region Page Setup
+
 	await curPagObj.setViewportSize({ // What: Viewport Size Call. Why: Each test measures one width. How: This sizes the page, phone-tall below tablet width.
 
 
@@ -412,7 +418,11 @@ for ( const vieWidNum of VIE_WID_ARR ) for ( const pagStaObj of PAG_STA_ARR ) te
 
 	await curPagObj.waitForTimeout( 500 ); // What: Settle Wait. Why: Layout can shift for a moment after opening things. How: This waits half a second.
 
+	// #endregion Page Setup
 
+
+
+	// #region Screenshot Capture
 
 	mkdirSync( OUT_DIR_STR, { recursive : true } ); // What: Output Folder Call. Why: Screenshots need their folder. How: This creates it.
 
@@ -424,13 +434,19 @@ for ( const vieWidNum of VIE_WID_ARR ) for ( const pagStaObj of PAG_STA_ARR ) te
 
 	await tesInfObj.attach( 'screenshot', { body : shoBufObj, contentType : 'image/png' } ); // What: Screenshot Attach Call. Why: The report shows each layout. How: This attaches the screenshot.
 
+	// #endregion Screenshot Capture
 
+
+
+	// #region Layout Measurement
 
 	const issMesArr = await meaLayFun( curPagObj ); // What: Issue Message Array. Why: The layout's measured problems. How: This measures the page.
 
 
 
 	expect( issMesArr, issMesArr.join( '\n' ) ).toEqual( [] ); // What: No Problems Assertion. Why: The layout passes only when every check held. How: This expects the list empty.
+
+	// #endregion Layout Measurement
 
 
 } );

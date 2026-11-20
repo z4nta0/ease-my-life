@@ -181,6 +181,8 @@ const advSteFun = async ( curPagObj : Page ) : Promise< boolean > => { // What: 
 
 
 
+	// #region Next Button Try
+
 	const nexButLoc = curPagObj.locator( COA_CAR_STR ).getByRole( 'button', { name : /^(Next ›|Done|Dismiss)$/ } ); // What: Next Button Locator. Why: Most steps advance by their primary button. How: This finds it by label.
 
 
@@ -197,7 +199,11 @@ const advSteFun = async ( curPagObj : Page ) : Promise< boolean > => { // What: 
 
 	}
 
+	// #endregion Next Button Try
 
+
+
+	// #region Target Click Try
 
 	const tarRecArr = await curPagObj.evaluate( ( cliSelStr ) => { // What: Target Rect Array. Why: A click step advances on a click on its target, which lies under the spotlight. How: This measures the spotlight, then every clickable element showing inside it.
 
@@ -249,6 +255,8 @@ const advSteFun = async ( curPagObj : Page ) : Promise< boolean > => { // What: 
 
 
 	}
+
+	// #endregion Target Click Try
 
 
 
@@ -357,10 +365,16 @@ const runTouFun = async ( curPagObj : Page, touNamStr : string ) : Promise< void
 const lauRunFun = async ( curPagObj : Page, butSelStr : string ) : Promise< void > => { // What: Launcher Run Function. Why: Every launcher card plays its tour the same way. How: This starts the first unplayed one and walks its tour.
 
 
+	// #region Launcher Lookup
+
 	const lauButLoc = curPagObj.locator( butSelStr ).first();                 // What: Launcher Button Locator. Why: The cards are played in order. How: This finds the first unplayed one.
 	const lauLabStr = ( await lauButLoc.getAttribute( 'aria-label' ) ) || ''; // What: Launcher Label String. Why: A failure names the tour. How: This reads the launcher's label.
 
+	// #endregion Launcher Lookup
 
+
+
+	// #region Tour Play
 
 	await lauButLoc.click(); // What: Launcher Click Call. Why: The launcher opens its tour's modal. How: This clicks it.
 
@@ -375,6 +389,8 @@ const lauRunFun = async ( curPagObj : Page, butSelStr : string ) : Promise< void
 
 
 	await curPagObj.locator( TOD_TAB_STR ).waitFor( { timeout : 15000 } ); // What: Today Return Wait. Why: The next launcher lives on Today, where every tour ends. How: This waits for the Today tab.
+
+	// #endregion Tour Play
 
 
 };

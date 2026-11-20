@@ -54,6 +54,9 @@ for ( const staRecObj of SKI_STA_ARR ) { // What: Skip State Loop. Why: Every ta
 		await opeStaFun( curPagObj, staRecObj ); // What: State Open Call. Why: The first Tab press should meet the settled tab. How: This loads and settles it.
 
 
+
+		// #region Skip Link Reach
+
 		await curPagObj.evaluate( () => { // What: Tab Start Reset Call. Why: A state's action clicks or focuses a control, which moves the browser's Tab starting point there, past the skip link. How: This focuses the root element for a moment, which puts the starting point at the top of the page.
 
 
@@ -79,11 +82,19 @@ for ( const staRecObj of SKI_STA_ARR ) { // What: Skip State Loop. Why: Every ta
 		await expect( skiLinLoc ).toBeFocused();                   // What: Skip Link Focus Assertion. Why: The first Tab has to land on the skip link. How: This checks it holds focus.
 		await expect( skiLinLoc ).toBeInViewport( { ratio : 1 } ); // What: Skip Link On Screen Assertion. Why: A focused link has to be wholly visible, not left partly above the screen. How: This checks all of it sits inside the viewport.
 
+		// #endregion Skip Link Reach
+
+
+
+		// #region Skip Link Activation
+
 		await skiLinLoc.click(); // What: Skip Link Click. Why: A plain click should move focus to the main area. How: This clicks the link.
 
 		await expect( curPagObj.locator( 'main' ) ).toBeFocused(); // What: Main Focus Assertion. Why: The next Tab should continue into the open tab. How: This checks the main area holds focus.
 
 		expect( new URL( curPagObj.url() ).hash ).toBe( '' ); // What: No Hash Assertion. Why: The skip link should leave no hash in the address. How: This reads the address's hash once the click has been handled.
+
+		// #endregion Skip Link Activation
 
 
 	} );

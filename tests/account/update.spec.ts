@@ -98,11 +98,18 @@ const HOL_TWO_STR = 'Rerun Holiday';  // What: Holiday Two String. Why: The chan
 async function devSetFun ( curPagObj : Page ) : Promise< { errMesArr : string[], manUrlStr : string } > {
 
 
+	// #region Account Setup
+
 	const emaAdrStr = `update-${ Date.now() }@example.com`;                                                                // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address.
 	const errMesArr = watErrFun( curPagObj );                                                                              // What: Error Message Array. Why: The flow fails on any page error. How: This starts watching.
 	const uidValStr = await creAccFun( emaAdrStr );                                                                        // What: User Identifier Value String. Why: The manifest is read by the account's id. How: This creates the paid account.
 	const manUrlStr = `${ FIR_EMU_STR }/v1/projects/${ EMU_PRO_STR }/databases/(default)/documents/users/${ uidValStr }`; // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
 
+	// #endregion Account Setup
+
+
+
+	// #region Device Boot And Sync
 
 	await insClcFun( curPagObj, DAY_ONE_STR, 12 ); // What: Clock Install Call. Why: The device starts on day one, after the backup's 6 AM run time, so it builds that day's list. How: This fakes its clock before anything loads.
 
@@ -117,6 +124,8 @@ async function devSetFun ( curPagObj : Page ) : Promise< { errMesArr : string[],
 	await synWaiFun( curPagObj ); // What: First Upload Wait. Why: The device's copy has to be in the cloud before the change. How: This waits for the first upload to finish.
 
 	await waiStaFun( curPagObj, ( staAppObj ) => !!staAppObj.today.generatedAt && locDayFun( staAppObj.today.generatedAt ) === DAY_ONE_STR, "day one's list built on the device" ); // What: Day List Wait. Why: A list built while the upload is held would start a fresh two-minute wait and hold the reload past the test. How: This waits for day one's list before the change.
+
+	// #endregion Device Boot And Sync
 
 
 
@@ -179,6 +188,8 @@ const revReaFun = ( manUrlStr : string ) : Promise< number > => fetch( manUrlStr
 test( 'a hidden app holds a new version back while a change syncs, then reloads once the upload lands', async ( { page : curPagObj } ) => { // What: Sync Update Test. Why: A reload would cut off a change waiting to sync or an upload under way. How: This makes a change, readies an update, hides the app with the upload's commit held, checks no reload comes, then lets the commit through and waits for the reload.
 
 
+	// #region Update Test Setup
+
 	const { errMesArr, manUrlStr } = await devSetFun( curPagObj ); // What: Error Message Array. Why: The flow fails on any page error. How: This is the list the setup started. // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
 
 	let cmtRelFun = () => {}; // What: Commit Release Function. Why: The held commit goes through only once the test has checked no reload came. How: The promise below replaces this with its resolver.
@@ -187,7 +198,11 @@ test( 'a hidden app holds a new version back while a change syncs, then reloads 
 
 	const begRevNum = await revReaFun( manUrlStr ); // What: Begin Revision Number. Why: The change's upload must move the revision past this. How: This reads it after the first upload.
 
+	// #endregion Update Test Setup
 
+
+
+	// #region Pending Change And Note
 
 	await holAddFun( curPagObj, HOL_NAM_STR, '2026-11-03' ); // What: Holiday Add Call. Why: The device makes a change that waits to sync. How: This adds a holiday and waits for it in storage.
 
@@ -195,7 +210,11 @@ test( 'a hidden app holds a new version back while a change syncs, then reloads 
 
 	await expect( curPagObj.getByText( NOT_MES_STR ) ).toBeVisible(); // What: Note Shown Assertion. Why: The update is ready and waiting for the app to be hidden. How: This checks the note shows.
 
+	// #endregion Pending Change And Note
 
+
+
+	// #region Held Commit Setup
 
 	await curPagObj.route( /documents:commit/, async ( rouCurObj ) => { // What: Commit Hold Route. Why: The upload has to stay under way long enough to check no reload cuts it off. How: This holds the manifest's commit until the test releases it.
 
@@ -220,13 +239,27 @@ test( 'a hidden app holds a new version back while a change syncs, then reloads 
 
 	await cmtReqPro; // What: Commit Request Wait. Why: The checks below run while the upload is held. How: This waits for the commit to be sent.
 
+	// #endregion Held Commit Setup
+
+
+
+	// #region Held Upload Checks
+
 	expect( await curPagObj.evaluate( () => !!window.__stiMarBoo ) ).toBe( true ); // What: No Reload Assertion. Why: The waiting change and the running upload must hold the reload back. How: This checks the page's mark is still set.
 	expect( await revReaFun( manUrlStr ) ).toBe( begRevNum );                      // What: Held Revision Assertion. Why: The upload hasn't landed while its commit is held. How: This checks the revision hasn't moved.
 	expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] );                     // What: Error Assertion. Why: A flow that logged an error failed even if it finished. How: This expects no errors up to the reload, since the reload aborts Firestore's long-polling requests, which WebKit reports as page errors (measured 2026-11-19).
 
+	// #endregion Held Upload Checks
+
+
+
+	// #region Release And Reload
+
 	await Promise.all( [ curPagObj.waitForEvent( 'load' ), cmtRelFun() ] ); // What: Upload Reload Wait. Why: Once the upload lands, a hidden app takes the new version. How: This releases the commit and waits for the page to load again.
 
 	expect( await revReaFun( manUrlStr ) ).toBeGreaterThan( begRevNum ); // What: Landed Revision Assertion. Why: The reload must come after the upload landed. How: This checks the revision moved.
+
+	// #endregion Release And Reload
 
 
 } );
@@ -236,6 +269,8 @@ test( 'a hidden app holds a new version back while a change syncs, then reloads 
 test( 'a hidden app reloads once a rerun uploads a change made during a sync, without waiting out its two minutes', async ( { page : curPagObj } ) => { // What: Rerun Update Test. Why: A sync uploads every change made before it starts, so the two-minute wait a change made during the last sync started must not hold the reload once the rerun has uploaded it. How: This hides the app with the first upload's commit held, makes a second change, then lets the commits through and waits for the reload well inside two minutes.
 
 
+	// #region Update Test Setup
+
 	const { errMesArr, manUrlStr } = await devSetFun( curPagObj ); // What: Error Message Array. Why: The flow fails on any page error. How: This is the list the setup started. // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
 
 	let cmtRelFun = () => {}; // What: Commit Release Function. Why: The held commit goes through only once the second change is made. How: The promise below replaces this with its resolver.
@@ -244,7 +279,11 @@ test( 'a hidden app reloads once a rerun uploads a change made during a sync, wi
 
 	const begRevNum = await revReaFun( manUrlStr ); // What: Begin Revision Number. Why: Both uploads must move the revision past this. How: This reads it after the first upload.
 
+	// #endregion Update Test Setup
 
+
+
+	// #region Pending Change And Note
 
 	await holAddFun( curPagObj, HOL_NAM_STR, '2026-11-03' ); // What: First Holiday Add Call. Why: The device makes a change that waits to sync. How: This adds a holiday and waits for it in storage.
 
@@ -252,7 +291,11 @@ test( 'a hidden app reloads once a rerun uploads a change made during a sync, wi
 
 	await expect( curPagObj.getByText( NOT_MES_STR ) ).toBeVisible(); // What: Note Shown Assertion. Why: The update is ready and waiting for the app to be hidden. How: This checks the note shows.
 
+	// #endregion Pending Change And Note
 
+
+
+	// #region Held Commit Setup
 
 	await curPagObj.route( /documents:commit/, async ( rouCurObj ) => { // What: Commit Hold Route. Why: The first upload has to stay under way while the second change is made. How: This holds each commit until the test releases them, after which they pass at once.
 
@@ -277,14 +320,28 @@ test( 'a hidden app reloads once a rerun uploads a change made during a sync, wi
 
 	await cmtReqPro; // What: Commit Request Wait. Why: The second change has to land while the first upload runs. How: This waits for the commit to be sent.
 
+	// #endregion Held Commit Setup
+
+
+
+	// #region Second Change During Upload
+
 	await holAddFun( curPagObj, HOL_TWO_STR, '2026-11-04' ); // What: Second Holiday Add Call. Why: A change made during a sync starts its own two-minute wait, and the sync reruns to upload it. How: This adds a second holiday while the commit is held.
 
 	expect( await curPagObj.evaluate( () => !!window.__stiMarBoo ) ).toBe( true ); // What: No Reload Assertion. Why: The running upload must hold the reload back. How: This checks the page's mark is still set.
 	expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] );                     // What: Error Assertion. Why: A flow that logged an error failed even if it finished. How: This expects no errors up to the reload, since the reload aborts Firestore's long-polling requests, which WebKit reports as page errors (measured 2026-11-19).
 
+	// #endregion Second Change During Upload
+
+
+
+	// #region Rerun Reload
+
 	await Promise.all( [ curPagObj.waitForEvent( 'load', { timeout : 30000 } ), cmtRelFun() ] ); // What: Rerun Reload Wait. Why: Once the rerun has uploaded the second change, nothing is left to upload, so a hidden app takes the new version well before the second change's two minutes are up. How: This releases the commits and waits up to 30 seconds for the page to load again.
 
 	expect( await revReaFun( manUrlStr ) ).toBeGreaterThanOrEqual( begRevNum + 2 ); // What: Rerun Revision Assertion. Why: The reload must come after both the first upload and the rerun landed. How: This checks the revision moved by at least two commits.
+
+	// #endregion Rerun Reload
 
 
 } );
