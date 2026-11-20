@@ -54,6 +54,53 @@ import type { TodEntTyp } from '../../src/core/data-model.ts'; // What: Today En
 
 // #region Helpers
 
+// #region depCouFun
+
+/**
+ * depCouFun = Dependent Count Function
+ *
+ * @summary
+ * Counts a conditional's done dependents in a state: the entries on its Today
+ * list that are done, aren't day-off cards, and come from a picker gated by
+ * that conditional. The day's first dependent done is the one that charges
+ * and logs the conditional, so a count of exactly 1 after a check-off marks
+ * it.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param staAppObj - State App Object: The state whose Today list is counted.
+ * @param conIdeStr - Conditional Identifier String: The conditional's id, or
+ *                    nothing when the entry reaches none.
+ *
+ * @returns The number of done dependents.
+ *
+ * @example
+ * ```ts
+ * depCouFun(aftStaObj, conIdeStr) // => 1
+ * ```
+ *
+*/
+
+const depCouFun = ( staAppObj : StaAppTyp, conIdeStr : string | null | undefined ) : number => staAppObj.today.entries.filter( ( depEntObj ) => { // What: Dependent Count Function. Why: A conditional charges and logs on the day's first done dependent. How: This counts the done entries, cards aside, whose picker shares conIdeStr.
+
+
+	const notDaoBoo = depEntObj.kind !== 'dayoff';                                                                                 // What: Not Day-Off Boolean. Why: Cards aren't dependents. How: This checks the entry's kind.
+	const isaDonBoo = depEntObj.done;                                                                                              // What: Is-A Done Boolean. Why: Only done dependents count. How: This reads the entry's done flag.
+	const samConBoo = staAppObj.pickers.find( ( curPicObj ) => curPicObj.id === depEntObj.pickerId )?.conditionalId === conIdeStr; // What: Same Conditional Boolean. Why: Only this conditional's dependents count. How: This checks the entry's picker's conditional.
+
+	const isaDepBoo = notDaoBoo && isaDonBoo && samConBoo; // What: Is-A Dependent Boolean. Why: The count needs all three checks. How: This combines them.
+
+
+
+	return isaDepBoo; // What: Dependent Return. Why: The filter keeps the conditional's done dependents. How: This returns the combined check.
+
+
+} ).length; // What: Dependent Count. Why: The kept entries are the done dependents. How: This reads their count.
+
+// #endregion depCouFun
+
+
+
 // #region expConFun
 
 /**
@@ -174,22 +221,7 @@ const expConFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, curEntObj : To
 
 	// #region Charge Gate
 
-	const depDonNum = aftStaObj.today.entries.filter( ( depEntObj ) => { // What: Dependent Done Number. Why: Only the day's first dependent charges. How: This counts the conditional's done dependents after the click.
-
-
-		const notDaoBoo = depEntObj.kind !== 'dayoff';                                                                                 // What: Not Day-Off Boolean. Why: Cards aren't dependents. How: This checks the entry's kind.
-		const isaDonBoo = depEntObj.done;                                                                                              // What: Is-A Done Boolean. Why: Only done dependents charge. How: This reads the entry's done flag.
-		const samConBoo = aftStaObj.pickers.find( ( curPicObj ) => curPicObj.id === depEntObj.pickerId )?.conditionalId === conIdeStr; // What: Same Conditional Boolean. Why: Only this conditional's dependents count. How: This checks the entry's picker's conditional.
-
-		const isaDepBoo = notDaoBoo && isaDonBoo && samConBoo; // What: Is-A Dependent Boolean. Why: The count needs all three checks. How: This combines them.
-
-
-
-		return isaDepBoo; // What: Dependent Return. Why: The filter keeps the conditional's done dependents. How: This returns the combined check.
-
-
-	} ).length; // What: Dependent Count. Why: The kept entries are the done dependents. How: This reads their count.
-
+	const depDonNum = depCouFun( aftStaObj, conIdeStr ); // What: Dependent Done Number. Why: Only the day's first dependent charges. How: This counts the conditional's done dependents after the click.
 
 	const notOneBoo = depDonNum !== 1;            // What: Not One Boolean. Why: Only the day's first dependent charges. How: This checks the count isn't exactly 1.
 	const chrTodBoo = preConObj.chargedToday;     // What: Charged Today Boolean. Why: A conditional charges once a day. How: This reads its flag.
@@ -504,24 +536,7 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entEidStr : st
 	const conIdeStr = preEntObj.kind === 'dayoff' ? preEntObj.conditionalId : picRcdObj && picRcdObj.conditionalId;                     // What: Conditional Identifier String. Why: The log row belongs to that conditional. How: This reads it.
 	const conRcdObj = preStaObj.conditionals.find( ( curConObj ) => curConObj.id === conIdeStr );                                       // What: Conditional Record Object. Why: Only active conditionals log. How: This looks it up.
 	const hadRowBoo = preStaObj.conditionalLog.some( ( logRowObj ) => logRowObj.condId === conIdeStr && logRowObj.date === dayIsoStr ); // What: Had Row Boolean. Why: A conditional logs once a day. How: This checks for an earlier row today.
-
-
-	const depDonNum = aftStaObj.today.entries.filter( ( depEntObj ) => { // What: Dependent Done Number. Why: Only the first dependent logs. How: This counts the done dependents after the click.
-
-
-		const notDaoBoo = depEntObj.kind !== 'dayoff';                                                                                 // What: Not Day-Off Boolean. Why: Cards aren't dependents. How: This checks the entry's kind.
-		const isaDonBoo = depEntObj.done;                                                                                              // What: Is-A Done Boolean. Why: Only done dependents log. How: This reads the entry's done flag.
-		const samConBoo = aftStaObj.pickers.find( ( curPicObj ) => curPicObj.id === depEntObj.pickerId )?.conditionalId === conIdeStr; // What: Same Conditional Boolean. Why: Only this conditional's dependents count. How: This checks the entry's picker's conditional.
-
-		const isaDepBoo = notDaoBoo && isaDonBoo && samConBoo; // What: Is-A Dependent Boolean. Why: The count needs all three checks. How: This combines them.
-
-
-
-		return isaDepBoo; // What: Dependent Return. Why: The filter keeps the conditional's done dependents. How: This returns the combined check.
-
-
-	} ).length; // What: Dependent Count. Why: The kept entries are the done dependents. How: This reads their count.
-
+	const depDonNum = depCouFun( aftStaObj, conIdeStr );                                                                                // What: Dependent Done Number. Why: Only the first dependent logs. How: This counts the conditional's done dependents after the click.
 
 	const notHadBoo = !hadRowBoo;                                     // What: Not Had Boolean. Why: A conditional logs once a day. How: This negates the earlier-row check.
 	const cofEntBoo = preEntObj.kind === 'dayoff' || depDonNum === 1; // What: Card-Or-First Entry Boolean. Why: Only a card or the first dependent logs. How: This checks the entry's kind and the dependent count.
