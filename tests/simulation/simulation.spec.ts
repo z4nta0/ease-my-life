@@ -780,8 +780,6 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 
 
-	// #region Odds Checks
-
 	for ( const proRolObj of proMapObj.values() ) { // What: Odds Loop. Why: Each probability gate's fires must fit its odds. How: This compares fires with the expected sum.
 
 
@@ -793,8 +791,6 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 
 	}
-
-	// #endregion Odds Checks
 
 
 

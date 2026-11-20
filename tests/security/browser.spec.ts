@@ -159,6 +159,8 @@ for ( const legPatStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: The lega
 test( 'an unknown address loads the app and is replaced by the root', async ( { page : curPagObj } ) => { // What: Unknown Address Test. Why: The app answers at one address, so a mistyped one must never stay in the address bar, while its query and hash still reach the app. How: This loads an unknown path under the policy and checks the app shows at the root with the same query and hash and nothing refused.
 
 
+	// #region Unknown Address Load
+
 	const errMesArr = watErrFun( curPagObj ); // What: Error Message Array. Why: A page error on the fallback is a failure even when nothing was refused. How: This starts watching.
 
 
@@ -168,10 +170,18 @@ test( 'an unknown address loads the app and is replaced by the root', async ( { 
 
 	await curPagObj.getByRole( 'dialog' ).first().waitFor(); // What: Welcome Modal Wait. Why: A fresh install opens the app on its welcome modal, which shows the app loaded. How: This waits for it.
 
+	// #endregion Unknown Address Load
+
+
+
+	// #region Address And Policy Checks
+
 	await expect( curPagObj ).toHaveURL( /^http:\/\/localhost:\d+\/\?from=test#top$/ ); // What: Root Address Assertion. Why: The unknown path has to give way to the root, keeping the query and hash. How: This checks the address is the root with both kept.
 
 	expect( await polVioFun( curPagObj ) ).toEqual( [] );      // What: No Violation Assertion. Why: The fallback page should load cleanly. How: This checks nothing was refused.
 	expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] ); // What: Error Assertion. Why: A page that logged an error failed even if it loaded. How: This expects no errors.
+
+	// #endregion Address And Policy Checks
 
 
 } );
