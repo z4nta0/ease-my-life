@@ -3,6 +3,9 @@
 
 // #region Imports
 
+import { PIC_NAM_OBJ } from './pickers.ts'; // What: Pickers Namespace Object. Why: A conditional falls back to the pickers' shared full-charge ceiling and default drift band. How: This reads its THR_VAL_NUM and DEF_EAS_OBJ.
+
+
 import type { ConRcdTyp } from './data-model.ts'; // What: Conditional Record Type. Why: Every function here reads a saved conditional or returns a partial update to one. How: This types those parameters and patches.
 
 // #endregion Imports
@@ -28,7 +31,7 @@ import type { ConRcdTyp } from './data-model.ts'; // What: Conditional Record Ty
  * a value-family mode), oddsPct (the odds knob for a probability-
  * family mode), easeMin/easeMax (the per-day drift band a value-family
  * mode rolls its own cycle length from), threshold (the charge
- * ceiling, default 100), chargedToday (a guard so value advances at
+ * ceiling, default THR_VAL_NUM), chargedToday (a guard so value advances at
  * most once per day), and chargeStep (the fixed step a value-family
  * mode's own current charge/discharge cycle has committed to, see
  * rolSteFun below). A dependent picker points back at its own gating
@@ -304,7 +307,8 @@ function resDayFun ( conAllArr : ConRcdTyp[] | null | undefined ) : Record< stri
  * @param conCurObj - Conditional Current Object: The value-mode conditional to
  *                    roll a fresh plan for.
  * @param thrValNum - Threshold Value Number: The conditional's own resolved
- *                    charge ceiling (defaulted to 100 by every caller).
+ *                    charge ceiling (defaulted to THR_VAL_NUM by every
+ *                    caller).
  *
  * @returns The fixed per-cycle charge/discharge step this new plan
  * commits to.
@@ -319,9 +323,9 @@ function resDayFun ( conAllArr : ConRcdTyp[] | null | undefined ) : Record< stri
 function rolSteFun ( conCurObj : ConRcdTyp, thrValNum : number ) : number {
 
 
-	const sooCycNum = Math.max( 1, Math.round( thrValNum / ( conCurObj.easeMax ?? 14 ) ) );        // What: Soonest Cycle Number. Why: The target cycle count must be rolled no sooner than the fastest possible cycle length, derived from easeMax the same way threshold/easeMax already bounds the fastest duration. How: This divides thrValNum by conCurObj's own easeMax (defaulted to 14), rounded and floored at 1 cycle via Math.max.
-	const latCycNum = Math.max( sooCycNum, Math.round( thrValNum / ( conCurObj.easeMin ?? 7 ) ) ); // What: Latest Cycle Number. Why: The target cycle count also needs its own slowest bound, derived from easeMin the same way threshold/easeMin already bounds the slowest duration, and must never resolve below sooCycNum. How: This divides thrValNum by conCurObj's own easeMin (defaulted to 7), rounded, then floored at sooCycNum via Math.max.
-	const tarCycNum = sooCycNum + Math.floor( Math.random() * ( latCycNum - sooCycNum + 1 ) );     // What: Target Cycle Number. Why: Every cycle length within [sooCycNum, latCycNum] must have equal odds, which is what actually avoids the duration bias this function's own summary describes. How: This adds sooCycNum to a random integer offset within the inclusive range.
+	const sooCycNum = Math.max( 1, Math.round( thrValNum / ( conCurObj.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax ) ) );         // What: Soonest Cycle Number. Why: The target cycle count must be rolled no sooner than the fastest possible cycle length, derived from easeMax the same way threshold/easeMax already bounds the fastest duration. How: This divides thrValNum by conCurObj's own easeMax (defaulted to the pickers' default band's), rounded and floored at 1 cycle via Math.max.
+	const latCycNum = Math.max( sooCycNum, Math.round( thrValNum / ( conCurObj.easeMin ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin ) ) ); // What: Latest Cycle Number. Why: The target cycle count also needs its own slowest bound, derived from easeMin the same way threshold/easeMin already bounds the slowest duration, and must never resolve below sooCycNum. How: This divides thrValNum by conCurObj's own easeMin (defaulted to the pickers' default band's), rounded, then floored at sooCycNum via Math.max.
+	const tarCycNum = sooCycNum + Math.floor( Math.random() * ( latCycNum - sooCycNum + 1 ) );                                   // What: Target Cycle Number. Why: Every cycle length within [sooCycNum, latCycNum] must have equal odds, which is what actually avoids the duration bias this function's own summary describes. How: This adds sooCycNum to a random integer offset within the inclusive range.
 
 
 
@@ -386,7 +390,7 @@ function advValFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRc
 
 
 
-	const thrValNum = conCurObj.threshold ?? 100; // What: Threshold Value Number. Why: Every branch below needs the same resolved charge ceiling, defaulting to 100 for a legacy conditional with none. How: This reads conCurObj.threshold, falling back to 100 when it is nullish.
+	const thrValNum = conCurObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: Every branch below needs the same resolved charge ceiling, defaulting to the shared full-charge ceiling for a legacy conditional with none. How: This reads conCurObj.threshold, falling back to PIC_NAM_OBJ.THR_VAL_NUM when it is nullish.
 
 
 	if ( conCurObj.mode === 'ease-up' ) { // What: Ease Up Mode Check. Why: An ease-up conditional's own advance needs its own multi-step charge-and-patch build, unlike dynamic's single-line return just below. How: This branches into the charge roll and patch object below whenever conCurObj's own mode is 'ease-up'.
@@ -489,7 +493,7 @@ function carComFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRc
 
 
 
-	const thrValNum = conCurObj.threshold ?? 100; // What: Threshold Value Number. Why: Every branch below needs the same resolved charge ceiling, defaulting to 100 for a legacy conditional with none. How: This reads conCurObj.threshold, falling back to 100 when it is nullish.
+	const thrValNum = conCurObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: Every branch below needs the same resolved charge ceiling, defaulting to the shared full-charge ceiling for a legacy conditional with none. How: This reads conCurObj.threshold, falling back to PIC_NAM_OBJ.THR_VAL_NUM when it is nullish.
 
 
 	if ( conCurObj.mode === 'ease-up' ) return { // What: Ease Up Reset Return. Why: Completing the card both resets this cycle and rolls a fresh plan for the next one, mirroring pickers.ts's own reset-on-pick behavior. How: This zeroes value, clears triggered, and rolls a brand new chargeStep via rolSteFun.

@@ -1363,13 +1363,13 @@ const PIC_NAM_OBJ = { // What: Pickers Namespace Object. Why: store.ts, tab-toda
 
 	aveEasFun   : aveEasFun,   // What: Average Ease Function. Why: store.ts, tab-today.tsx, and tab-picker.tsx all call this for a picker's own average ease-band value. How: This re-exports aveEasFun under its own matching name.
 	dayDriFun   : dayDriFun,   // What: Day Drift Function. Why: The item and conditional editors convert a typed day count back into a drift value. How: This re-exports dayDriFun under its own matching name.
-	DEF_EAS_OBJ : DEF_EAS_OBJ, // What: Default Ease Object. Why: store.ts reads this for a fresh item's own starting ease-band shape. How: This re-exports DEF_EAS_OBJ under its own matching name.
+	DEF_EAS_OBJ : DEF_EAS_OBJ, // What: Default Ease Object. Why: store.ts reads this for a fresh item's own starting ease-band shape, and conditionals.ts for a conditional with no band. How: This re-exports DEF_EAS_OBJ under its own matching name.
 	driDayFun   : driDayFun,   // What: Drift Day Function. Why: The editors and the Pickers, Data, and Stats tabs show an ease band as soonest and latest days. How: This re-exports driDayFun under its own matching name.
 	easEliFun   : easEliFun,   // What: Ease Eligible Function. Why: tab-today.tsx checks this to decide whether an ease-mode item is currently eligible to be picked. How: This re-exports easEliFun under its own matching name.
 	modEliFun   : modEliFun,   // What: Mode Eligible Function. Why: tab-picker.tsx checks this for a pool item's own mode-specific eligibility. How: This re-exports modEliFun under its own matching name.
 	picIteFun   : picIteFun,   // What: Pick Item Function. Why: tab-today.tsx and tab-picker.tsx both call this to actually pick a new item from a picker's own pool. How: This re-exports picIteFun under its own matching name.
 	reaValFun   : reaValFun,   // What: Readiness Value Function. Why: tab-picker.tsx reads this for a pool item's own readiness value. How: This re-exports reaValFun under its own matching name.
-	THR_VAL_NUM : THR_VAL_NUM  // What: Threshold Value Number. Why: The editors and the Pickers, Data, and Today tabs share the full-charge ceiling. How: This re-exports THR_VAL_NUM under its own matching name.
+	THR_VAL_NUM : THR_VAL_NUM  // What: Threshold Value Number. Why: The editors, the tabs, and the conditionals share the full-charge ceiling. How: This re-exports THR_VAL_NUM under its own matching name.
 
 
 };
