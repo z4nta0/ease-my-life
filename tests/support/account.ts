@@ -8,9 +8,11 @@ import { AUT_EMU_STR } from './emulator.ts';                 // What: Auth Emula
 import { EMU_PRO_STR } from '../../src/emulator-project.ts'; // What: Emulator Project String. Why: Admin calls name the project. How: This is the demo project.
 import { expect      } from '@playwright/test';              // What: Expect. Why: Signing in waits for what the page shows. How: This makes the assertions.
 import { selTabFun   } from './app.ts';                      // What: Select Tab Function. Why: Sign-in happens on the Settings tab. How: This switches to it.
+import { wriStaFun   } from './storage.ts';                  // What: Write State Function. Why: A device signing in with data starts from a saved state. How: This writes it.
 
 
-import type { Page } from '@playwright/test'; // What: Page. Why: The helpers drive one device's page. How: This types their page parameter.
+import type { Page      } from '@playwright/test';             // What: Page. Why: The helpers drive one device's page. How: This types their page parameter.
+import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State App Type. Why: A device signing in with data starts from a saved state. How: This types the state its helper writes.
 
 // #endregion Imports
 
@@ -169,7 +171,92 @@ async function sigLinFun ( curPagObj : Page, emaAdrStr : string ) : Promise< voi
 
 
 
+// #region freSigFun
+
+/**
+ * freSigFun = Fresh Sign In Function
+ *
+ * @summary
+ * Signs a fresh install in: opens the app, skips the welcome modal's tour,
+ * and signs in through the emailed link. It leaves waiting for a sync to
+ * the caller, since an unpaid account never syncs.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curPagObj - Current Page Object: The device's page.
+ * @param emaAdrStr - Email Address String: The account's address.
+ *
+ * @returns A promise that settles once the device is signed in, with no
+ *          value.
+ *
+ * @example
+ * ```ts
+ * await freSigFun(curPagObj, 'sync@example.com') // => Promise<void>
+ * ```
+ *
+*/
+
+async function freSigFun ( curPagObj : Page, emaAdrStr : string ) : Promise< void > {
+
+
+	await curPagObj.goto( '/' ); // What: App Load. Why: The device starts as a fresh install. How: This opens the app.
+
+	await curPagObj.getByRole( 'button', { name : /explore myself/ } ).click(); // What: Welcome Skip Click. Why: A fresh install opens on the welcome modal. How: This skips the tour.
+
+	await sigLinFun( curPagObj, emaAdrStr ); // What: Sign-In Call. Why: The device joins the account. How: This signs it in through the emailed link.
+
+
+}
+
+// #endregion freSigFun
+
+
+
 const synWaiFun = ( curPagObj : Page ) => expect( curPagObj.locator( '[data-element-name-hook~="accStaSpa"]' ) ).toHaveText( /^Synced at/, { timeout : 30000 } ); // What: Sync Wait Function. Why: Each step waits for a finished sync. How: This waits for the status to read Synced.
+
+
+
+// #region bacUplFun
+
+/**
+ * bacUplFun = Backup Upload Function
+ *
+ * @summary
+ * Readies a signed-in device holding data: writes the given state into its
+ * storage, opens the app on it, signs in through the emailed link, and
+ * waits for the sync that follows, which uploads the state to an empty
+ * account. It expects the account already created.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curPagObj - Current Page Object: The device's page.
+ * @param emaAdrStr - Email Address String: The account's address.
+ * @param staAppObj - State App Object: The saved state the device starts on.
+ *
+ * @returns A promise that settles once the sync has finished, with no value.
+ *
+ * @example
+ * ```ts
+ * await bacUplFun(curPagObj, 'a@example.com', reaFixFun()) // => Promise<void>
+ * ```
+ *
+*/
+
+async function bacUplFun ( curPagObj : Page, emaAdrStr : string, staAppObj : StaAppTyp ) : Promise< void > {
+
+
+	await wriStaFun( curPagObj, staAppObj ); // What: State Load Call. Why: The device holds data to upload. How: This writes the state into its storage.
+
+	await curPagObj.goto( '/' ); // What: App Load. Why: The app boots on the written state. How: This opens it.
+
+	await sigLinFun( curPagObj, emaAdrStr ); // What: Sign-In Call. Why: Only a signed-in device syncs. How: This signs it in through the emailed link.
+
+	await synWaiFun( curPagObj ); // What: Upload Wait. Why: The device's copy has to reach the cloud before the flow goes on. How: This waits for the sync to finish.
+
+
+}
+
+// #endregion bacUplFun
 
 // #endregion Helpers
 
@@ -177,7 +264,7 @@ const synWaiFun = ( curPagObj : Page ) => expect( curPagObj.locator( '[data-elem
 
 // #region Exports
 
-export { claSetFun, creAccFun, DAY_ONE_STR, sigLinFun, synWaiFun }; // What: Named Exports. Why: The account suites create accounts, sign devices in, wait for syncs, and start their new-day flows through these. How: This exports them by name.
+export { bacUplFun, claSetFun, creAccFun, DAY_ONE_STR, freSigFun, sigLinFun, synWaiFun }; // What: Named Exports. Why: The account suites create accounts, sign devices in, wait for syncs, and start their new-day flows through these. How: This exports them by name.
 
 // #endregion Exports
 

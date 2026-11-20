@@ -11,6 +11,7 @@ import { creAccFun   } from '../support/account.ts';         // What: Create Acc
 import { EMU_PRO_STR } from '../../src/emulator-project.ts'; // What: Emulator Project String. Why: The first-sync choice needs a cloud copy written into the emulator. How: This names its project.
 import { expect      } from '@playwright/test';              // What: Expect. Why: A screen passes only with no violations and no sideways scroll. How: This makes the assertions.
 import { FIR_EMU_STR } from '../support/emulator.ts';        // What: Firestore Emulator String. Why: The first-sync choice's cloud copy is written straight into the Firestore emulator. How: This is its address.
+import { freSigFun   } from '../support/account.ts';         // What: Fresh Sign In Function. Why: The unpaid screen starts on a fresh install. How: This opens the app, skips the welcome tour, and signs in.
 import { reaFixFun   } from '../support/fixture.ts';         // What: Read Fixture Function. Why: The first-sync choice needs a device with its own data. How: This reads the backup.
 import { REF_WID_NUM } from '../support/accessibility.ts';   // What: Reflow Width Number. Why: WCAG's reflow criterion asks for no sideways scrolling at 320 CSS pixels, as the main suite checks. How: This is the width the reflow check opens each screen at.
 import { sidOveFun   } from '../support/accessibility.ts';   // What: Sideways Overflow Function. Why: The reflow check measures overflow the way the main suite does. How: This reads how far the page reaches past the viewport.
@@ -135,11 +136,7 @@ test( 'the signed-in Account screens pass the accessibility checks', async ( { p
 
 	await creAccFun( unpEmaStr, false ); // What: Unpaid Account Call. Why: The unpaid screen shows Unlock sync. How: This creates the account without the claim.
 
-	await curPagObj.goto( '/' ); // What: App Load. Why: The screen starts on a fresh install. How: This opens the app.
-
-	await curPagObj.getByRole( 'button', { name : /explore myself/ } ).click(); // What: Welcome Skip Click. Why: A fresh install opens on the welcome modal. How: This skips it.
-
-	await sigLinFun( curPagObj, unpEmaStr ); // What: Unpaid Sign-In Call. Why: The screen is signed in. How: This signs in the unpaid account.
+	await freSigFun( curPagObj, unpEmaStr ); // What: Unpaid Sign-In Call. Why: The screen is signed in, starting on a fresh install. How: This opens the app, skips the welcome tour, and signs in the unpaid account.
 
 	await expect( curPagObj.locator( '[data-element-name-hook~="accBuyBut"]' ) ).toBeVisible(); // What: Unlock Row Wait. Why: The screen is ready once Unlock sync shows. How: This waits for it.
 

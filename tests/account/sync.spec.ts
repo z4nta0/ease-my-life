@@ -3,24 +3,30 @@
 
 // #region Imports
 
+import { bacUplFun   } from '../support/account.ts';         // What: Backup Upload Function. Why: Devices holding data sign in and upload. How: This writes the state, opens the app, signs in, and waits for the sync.
 import { claSetFun   } from '../support/account.ts';         // What: Claim Set Function. Why: The purchase test sets the paid claim as the webhook would. How: This sets it.
 import { creAccFun   } from '../support/account.ts';         // What: Create Account Function. Why: Each flow needs its own emulator account. How: This creates one.
 import { DAY_ONE_STR } from '../support/account.ts';         // What: Day One String. Why: Both devices share a list on the first day of the new-day flow. How: This is that Chicago date.
 import { EMU_PRO_STR } from '../../src/emulator-project.ts'; // What: Emulator Project String. Why: The emulator's addresses name the project. How: This is the demo project.
 import { expect      } from '@playwright/test';              // What: Expect. Why: Every step asserts what synced. How: This makes the assertions.
 import { FIR_EMU_STR } from '../support/emulator.ts';        // What: Firestore Emulator String. Why: The test reads the cloud copy straight from the Firestore emulator. How: This is its address.
+import { freSigFun   } from '../support/account.ts';         // What: Fresh Sign In Function. Why: Fresh installs sign in the way a person does. How: This opens the app, skips the welcome tour, and signs in.
 import { insClcFun   } from '../support/clock.ts';           // What: Install Clock Function. Why: The new-day flow runs both devices on chosen days. How: This fakes a page's clock before it loads.
 import { locDayFun   } from '../support/clock.ts';           // What: Local Day Function. Why: The new-day flow checks which day a list was built on. How: This reads a timestamp's Chicago date.
 import { reaFixFun   } from '../support/fixture.ts';         // What: Read Fixture Function. Why: The first device starts on real data. How: This reads the backup.
 import { reaStaFun   } from '../support/storage.ts';         // What: Read State Function. Why: The new-day flow compares what each device saved. How: This reads a device's state.
 import { selTabFun   } from '../support/app.ts';             // What: Select Tab Function. Why: Sign-in and holidays are on the Settings tab. How: This switches to it.
-import { sigLinFun   } from '../support/account.ts';         // What: Sign In Link Function. Why: Devices sign in the way a person does. How: This signs one in with an emailed link.
 import { subHolFun   } from '../support/app.ts';             // What: Submit Holiday Function. Why: A custom holiday is added through the Settings form. How: This names, dates, and adds it.
 import { synWaiFun   } from '../support/account.ts';         // What: Sync Wait Function. Why: Steps wait for a finished sync. How: This waits for the status to read Synced.
 import { test        } from '@playwright/test';              // What: Test. Why: The flow is its own test. How: This declares it.
 import { waiStaFun   } from '../support/storage.ts';         // What: Wait State Function. Why: A synced change lands in IndexedDB a moment later. How: This waits for it.
 import { watErrFun   } from '../support/watch.ts';           // What: Watch Errors Function. Why: The flow fails on any page error. How: This collects them.
-import { wriStaFun   } from '../support/storage.ts';         // What: Write State Function. Why: The first device starts from the backup. How: This writes it.
+
+
+import type { Browser        } from '@playwright/test';             // What: Browser. Why: The two-device setup opens its contexts on the test's browser. How: This types its browser parameter.
+import type { BrowserContext } from '@playwright/test';             // What: Browser Context. Why: Each device is its own context. How: This types the contexts the setup hands back.
+import type { Page           } from '@playwright/test';             // What: Page. Why: Each device's app runs on a page. How: This types the pages the setup hands back.
+import type { StaAppTyp      } from '../../src/core/data-model.ts'; // What: State App Type. Why: The setup hands back the backup the first device starts on. How: This types it.
 
 // #endregion Imports
 
@@ -47,6 +53,7 @@ import { wriStaFun   } from '../support/storage.ts';         // What: Write Stat
  *
  * Sections:
  *  - Constants
+ *  - Helpers
  *  - Module Init
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -65,50 +72,93 @@ const HOL_NAM_STR = 'Synced Holiday'; // What: Holiday Name String. Why: The sec
 
 
 
+// #region Helpers
+
+type TwoDevTyp = { // What: Two Device Type. Why: Both two-device tests read the same set of contexts, pages, and error lists. How: This is the shape twoDevFun hands back.
+
+
+	emaAdrStr : string;         // What: Email Address String. Why: Both devices sign in to the one account. How: This is its address.
+	fixStaObj : StaAppTyp;      // What: Fixture State Object. Why: The first device starts on real data. How: This is the backup.
+	oneConObj : BrowserContext; // What: One Context Object. Why: The first device has its own storage. How: This is its context.
+	oneErrArr : string[];       // What: One Error Array. Why: The first device is watched for errors. How: This is the list collecting them.
+	onePagObj : Page;           // What: One Page Object. Why: The first device's app runs here. How: This is its page.
+	twoConObj : BrowserContext; // What: Two Context Object. Why: The second device has separate storage. How: This is its context.
+	twoErrArr : string[];       // What: Two Error Array. Why: The second device is watched for errors. How: This is the list collecting them.
+	twoPagObj : Page;           // What: Two Page Object. Why: The second device's app runs here. How: This is its page.
+
+
+};
+
+// #region twoDevFun
+
+/**
+ * twoDevFun = Two Device Function
+ *
+ * @summary
+ * Readies two devices on one paid account: builds a unique address from the
+ * given prefix, reads the backup, opens a context and a page for each device
+ * with service workers blocked, as every suite does, starts watching each
+ * page for errors, and creates the account with the paid claim. Neither page
+ * has loaded the app yet.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param broCurObj - Browser Current Object: The test's browser.
+ * @param emaPreStr - Email Prefix String: The start of the account's address.
+ *
+ * @returns A promise that resolves with the address, the backup, and each
+ *          device's context, page, and error list.
+ *
+ * @example
+ * ```ts
+ * await twoDevFun(browser, 'sync') // => { emaAdrStr, fixStaObj, ... }
+ * ```
+ *
+*/
+
+async function twoDevFun ( broCurObj : Browser, emaPreStr : string ) : Promise< TwoDevTyp > {
+
+
+	const emaAdrStr = `${ emaPreStr }-${ Date.now() }@example.com`;               // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address from the prefix.
+	const fixStaObj = reaFixFun();                                                // What: Fixture State Object. Why: The first device starts on real data. How: This reads the backup.
+	const oneConObj = await broCurObj.newContext( { serviceWorkers : 'block' } ); // What: One Context Object. Why: The first device has its own storage. How: This opens a context, blocking the service worker as every suite does.
+	const twoConObj = await broCurObj.newContext( { serviceWorkers : 'block' } ); // What: Two Context Object. Why: The second device has separate storage. How: This opens another context.
+	const onePagObj = await oneConObj.newPage();                                  // What: One Page Object. Why: The first device's app runs here. How: This opens its page.
+	const twoPagObj = await twoConObj.newPage();                                  // What: Two Page Object. Why: The second device's app runs here. How: This opens its page.
+	const oneErrArr = watErrFun( onePagObj );                                     // What: One Error Array. Why: The first device is watched for errors. How: This starts watching it.
+	const twoErrArr = watErrFun( twoPagObj );                                     // What: Two Error Array. Why: The second device is watched for errors. How: This starts watching it.
+
+
+	await creAccFun( emaAdrStr ); // What: Account Creation Call. Why: The paid account exists before either device signs in. How: This creates it with the paid claim.
+
+
+
+	return { emaAdrStr, fixStaObj, oneConObj, oneErrArr, onePagObj, twoConObj, twoErrArr, twoPagObj }; // What: Setup Return. Why: Each test drives both devices and checks their errors. How: This hands back everything it opened.
+
+
+}
+
+// #endregion twoDevFun
+
+// #endregion Helpers
+
+
+
 // #region Module Init
 
 test( 'two devices sign in to one paid account and sync each other', async ( { browser } ) => { // What: Two Device Test. Why: Paid sync has to carry one device's data and changes to another. How: This signs two contexts in to one account, syncs each way, and waits for each device to hold the other's changes, with no page errors.
 
 
-	// #region Two Device Setup
-
-	const emaAdrStr = `sync-${ Date.now() }@example.com`;                       // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address.
-	const fixStaObj = reaFixFun();                                              // What: Fixture State Object. Why: The first device starts on real data, which the second must receive. How: This reads the backup.
-	const oneConObj = await browser.newContext( { serviceWorkers : 'block' } ); // What: One Context Object. Why: The first device has its own storage. How: This opens a context, blocking the service worker as every suite does.
-	const twoConObj = await browser.newContext( { serviceWorkers : 'block' } ); // What: Two Context Object. Why: The second device has separate storage. How: This opens another context.
-	const onePagObj = await oneConObj.newPage();                                // What: One Page Object. Why: The first device's app runs here. How: This opens its page.
-	const twoPagObj = await twoConObj.newPage();                                // What: Two Page Object. Why: The second device's app runs here. How: This opens its page.
-	const oneErrArr = watErrFun( onePagObj );                                   // What: One Error Array. Why: The first device is watched for errors. How: This starts watching it.
-	const twoErrArr = watErrFun( twoPagObj );                                   // What: Two Error Array. Why: The second device is watched for errors. How: This starts watching it.
+	const { emaAdrStr, fixStaObj, oneConObj, oneErrArr, onePagObj, twoConObj, twoErrArr, twoPagObj } = await twoDevFun( browser, 'sync' ); // What: Email Address String. Why: Both devices sign in to one account. How: This is its unique address. // What: Fixture State Object. Why: The first device starts on real data, which the second must receive. How: This is the backup. // What: One Context Object. Why: The first device has its own storage. How: This is its context. // What: One Error Array. Why: The first device is watched for errors. How: This is its list. // What: One Page Object. Why: The first device's app runs here. How: This is its page. // What: Two Context Object. Why: The second device has separate storage. How: This is its context. // What: Two Error Array. Why: The second device is watched for errors. How: This is its list. // What: Two Page Object. Why: The second device's app runs here. How: This is its page.
 
 
-	await creAccFun( emaAdrStr ); // What: Account Creation Call. Why: The paid account exists before either device signs in. How: This creates it with the paid claim.
-
-	// #endregion Two Device Setup
-
-
-
-	// #region First Device Upload
-
-	await wriStaFun( onePagObj, fixStaObj ); // What: Backup Load Call. Why: The first device holds real data. How: This writes the backup into its storage.
-
-	await onePagObj.goto( '/' ); // What: First Device Load. Why: The app boots on the backup. How: This opens it.
-
-	await sigLinFun( onePagObj, emaAdrStr ); // What: First Sign-In Call. Why: The first device joins the account. How: This signs it in through the emailed link.
-
-	await synWaiFun( onePagObj ); // What: First Upload Wait. Why: An empty account takes the first device's data. How: This waits for the upload to finish.
-
-	// #endregion First Device Upload
+	await bacUplFun( onePagObj, emaAdrStr, fixStaObj ); // What: First Device Upload Call. Why: An empty account takes the first device's real data. How: This writes the backup, opens the app, signs in, and waits for the upload.
 
 
 
 	// #region Second Device Adopt
 
-	await twoPagObj.goto( '/' ); // What: Second Device Load. Why: The second device starts as a fresh install. How: This opens the app.
-
-	await twoPagObj.getByRole( 'button', { name : /explore myself/ } ).click(); // What: Welcome Skip Click. Why: A fresh install opens on the welcome modal. How: This skips the tour.
-
-	await sigLinFun( twoPagObj, emaAdrStr ); // What: Second Sign-In Call. Why: The second device joins the same account. How: This signs it in.
+	await freSigFun( twoPagObj, emaAdrStr ); // What: Second Sign-In Call. Why: The second device, a fresh install, joins the same account. How: This opens the app, skips the welcome tour, and signs it in.
 
 	await synWaiFun( twoPagObj ); // What: Adopt Wait. Why: A fresh device takes the account's data. How: This waits for the sync to finish.
 
@@ -159,21 +209,7 @@ test( 'two devices sign in to one paid account and sync each other', async ( { b
 test( "a device opened with yesterday's list takes the day's list another device already checked off", async ( { browser } ) => { // What: New Day Test. Why: A device opened on a new day used to build its own list before its launch sync, then win the sync and replace the list another device had already checked off. How: This shares one day's list between two devices, builds and checks off the next day's on the first, opens the second on that day, and checks both keep the first device's list.
 
 
-	// #region Two Device Setup
-
-	const emaAdrStr = `newday-${ Date.now() }@example.com`;                     // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address.
-	const fixStaObj = reaFixFun();                                              // What: Fixture State Object. Why: The first device starts on real data with a daily generator. How: This reads the backup.
-	const oneConObj = await browser.newContext( { serviceWorkers : 'block' } ); // What: One Context Object. Why: The first device has its own storage. How: This opens a context, blocking the service worker as every suite does.
-	const twoConObj = await browser.newContext( { serviceWorkers : 'block' } ); // What: Two Context Object. Why: The second device has separate storage, kept between its two launches. How: This opens another context.
-	const onePagObj = await oneConObj.newPage();                                // What: One Page Object. Why: The first device's app runs here. How: This opens its page.
-	const twoPagObj = await twoConObj.newPage();                                // What: Two Page Object. Why: The second device's first launch runs here. How: This opens its page.
-	const oneErrArr = watErrFun( onePagObj );                                   // What: One Error Array. Why: The first device is watched for errors. How: This starts watching it.
-	const twoErrArr = watErrFun( twoPagObj );                                   // What: Two Error Array. Why: The second device's first launch is watched for errors. How: This starts watching it.
-
-
-	await creAccFun( emaAdrStr ); // What: Account Creation Call. Why: The paid account exists before either device signs in. How: This creates it with the paid claim.
-
-	// #endregion Two Device Setup
+	const { emaAdrStr, fixStaObj, oneConObj, oneErrArr, onePagObj, twoConObj, twoErrArr, twoPagObj } = await twoDevFun( browser, 'newday' ); // What: Email Address String. Why: Both devices sign in to one account. How: This is its unique address. // What: Fixture State Object. Why: The first device starts on real data with a daily generator. How: This is the backup. // What: One Context Object. Why: The first device has its own storage. How: This is its context. // What: One Error Array. Why: The first device is watched for errors. How: This is its list. // What: One Page Object. Why: The first device's app runs here. How: This is its page. // What: Two Context Object. Why: The second device has separate storage, kept between its two launches. How: This is its context. // What: Two Error Array. Why: The second device is watched for errors. How: This is its list. // What: Two Page Object. Why: The second device's app runs here. How: This is its page.
 
 
 
@@ -182,19 +218,9 @@ test( "a device opened with yesterday's list takes the day's list another device
 	await insClcFun( onePagObj, DAY_ONE_STR, 12 ); // What: First Clock Install. Why: The first device starts on day one, after the backup's 6 AM run time. How: This fakes its clock before anything loads.
 	await insClcFun( twoPagObj, DAY_ONE_STR, 12 ); // What: Second Clock Install. Why: The second device joins on the same day. How: This fakes its clock before anything loads.
 
-	await wriStaFun( onePagObj, fixStaObj ); // What: Backup Load Call. Why: The first device holds real data. How: This writes the backup into its storage.
+	await bacUplFun( onePagObj, emaAdrStr, fixStaObj ); // What: First Device Upload Call. Why: The account takes the first device's data and the day one list it builds on boot. How: This writes the backup, opens the app, signs in, and waits for the upload.
 
-	await onePagObj.goto( '/' ); // What: First Device Load. Why: The app boots on the backup and builds day one's list. How: This opens it.
-
-	await sigLinFun( onePagObj, emaAdrStr ); // What: First Sign-In Call. Why: The first device joins the account. How: This signs it in through the emailed link.
-
-	await synWaiFun( onePagObj ); // What: First Upload Wait. Why: The account takes the first device's data and day one's list. How: This waits for the upload to finish.
-
-	await twoPagObj.goto( '/' ); // What: Second Device Load. Why: The second device starts as a fresh install. How: This opens the app.
-
-	await twoPagObj.getByRole( 'button', { name : /explore myself/ } ).click(); // What: Welcome Skip Click. Why: A fresh install opens on the welcome modal. How: This skips the tour.
-
-	await sigLinFun( twoPagObj, emaAdrStr ); // What: Second Sign-In Call. Why: The second device joins the same account. How: This signs it in.
+	await freSigFun( twoPagObj, emaAdrStr ); // What: Second Sign-In Call. Why: The second device, a fresh install, joins the same account. How: This opens the app, skips the welcome tour, and signs it in.
 
 	await synWaiFun( twoPagObj ); // What: Adopt Wait. Why: The second device takes the account's data, day one's list included. How: This waits for the sync to finish.
 
@@ -321,15 +347,7 @@ test( 'an unpaid account buys sync, and the app picks up the paid claim on its o
 
 
 
-	// #region Buyer Sign In
-
-	await curPagObj.goto( '/' ); // What: App Load. Why: The buyer starts on a fresh install. How: This opens the app.
-
-	await curPagObj.getByRole( 'button', { name : /explore myself/ } ).click(); // What: Welcome Skip Click. Why: A fresh install opens on the welcome modal. How: This skips the tour.
-
-	await sigLinFun( curPagObj, emaAdrStr ); // What: Sign-In Call. Why: Only a signed-in account can buy. How: This signs in.
-
-	// #endregion Buyer Sign In
+	await freSigFun( curPagObj, emaAdrStr ); // What: Sign-In Call. Why: Only a signed-in account can buy, and the buyer starts on a fresh install. How: This opens the app, skips the welcome tour, and signs in.
 
 
 
@@ -398,13 +416,7 @@ test( 'signing out ends the session and leaves nothing of it in storage', async 
 
 	await creAccFun( emaAdrStr ); // What: Account Create Call. Why: Only a paid account syncs. How: This creates one.
 
-	await wriStaFun( curPagObj, reaFixFun() ); // What: Backup Load Call. Why: The device has data to sync. How: This writes the backup.
-
-	await curPagObj.goto( '/' ); // What: App Load. Why: The app boots on the backup. How: This opens it.
-
-	await sigLinFun( curPagObj, emaAdrStr ); // What: Sign-In Call. Why: Only a signed-in device has a session to end. How: This signs in.
-
-	await synWaiFun( curPagObj ); // What: Sync Wait. Why: A synced device has written every flag it keeps. How: This waits for the sync.
+	await bacUplFun( curPagObj, emaAdrStr, reaFixFun() ); // What: Signed-In Upload Call. Why: Only a signed-in device has a session to end, and a synced one has written every flag it keeps. How: This writes the backup, opens the app, signs in, and waits for the sync.
 
 	// #endregion Signed In Setup
 
@@ -469,13 +481,7 @@ test( 'resetting a signed-in device can delete the cloud copy too, and signs the
 	const manUrlStr = `${ FIR_EMU_STR }/v1/projects/${ EMU_PRO_STR }/databases/(default)/documents/users/${ uidValStr }`; // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
 
 
-	await wriStaFun( curPagObj, reaFixFun() ); // What: Backup Load Call. Why: The device has data to upload and then wipe. How: This writes the backup.
-
-	await curPagObj.goto( '/' ); // What: App Load. Why: The app boots on the backup. How: This opens it.
-
-	await sigLinFun( curPagObj, emaAdrStr ); // What: Sign-In Call. Why: Only a signed-in device has a cloud copy. How: This signs in.
-
-	await synWaiFun( curPagObj ); // What: Upload Wait. Why: The copy must exist before it's deleted. How: This waits for the sync.
+	await bacUplFun( curPagObj, emaAdrStr, reaFixFun() ); // What: Cloud Copy Upload Call. Why: Only a signed-in device has a cloud copy, and it must exist before it's deleted. How: This writes the backup, opens the app, signs in, and waits for the upload.
 
 
 	expect( ( await fetch( manUrlStr, { headers : { 'Authorization' : 'Bearer owner' } } ) ).status ).toBe( 200 ); // What: Copy Exists Assertion. Why: The deletion has something to delete. How: This expects the manifest found.
