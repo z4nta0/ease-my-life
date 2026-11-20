@@ -279,6 +279,64 @@ function loaStaFun () {
 
 
 
+// #region madConFun
+
+/**
+ * madConFun = Made Conditional Function
+ *
+ * @summary
+ * Builds the full record for a conditional authored inline in the picker
+ * form, minting its fresh id and filling every field the form left out with
+ * its default. Ease Down starts fully charged and triggered. It returns null
+ * when the form authored no conditional.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param newConObj - New Conditional Object: The form's inline conditional,
+ *                    or nothing when none was authored.
+ *
+ * @returns The new conditional record, or null.
+ *
+ * @example
+ * ```ts
+ * madConFun(newConObj) // => { active : true, ..., weight : 1 }
+ * ```
+ *
+*/
+
+function madConFun ( newConObj : Partial< ConRcdTyp > | null | undefined ) : ConRcdTyp | null {
+
+
+	if ( !newConObj ) return null; // What: No Conditional Guard. Why: A picker form with no inline conditional has nothing to build. How: This returns null when newConObj is missing.
+
+
+
+	return { // What: Made Conditional Return. Why: The picker below attaches to this conditional by its fresh id. How: This returns the form's fields with each default filled in.
+
+
+		active       : newConObj.active !== undefined ? newConObj.active : true,                                     // What: Active. Why: A new conditional is enabled unless the form says otherwise. How: This honors newConObj.active when given, else defaults to true.
+		cardText     : newConObj.cardText || 'Day off',                                                              // What: Card Text. Why: The day-off card shown on Today needs its own display text. How: This reads newConObj.cardText, defaulting to 'Day off'.
+		chargedToday : false,                                                                                        // What: Charged Today. Why: A brand-new conditional hasn't charged yet today, so its per-day charge guard starts clear. How: This is false.
+		easeMax      : newConObj.easeMax ?? 14,                                                                      // What: Ease Max. Why: An ease-mode conditional needs the upper end of its own drift band. How: This reads newConObj.easeMax, defaulting to 14.
+		easeMin      : newConObj.easeMin ?? 7,                                                                       // What: Ease Min. Why: An ease-mode conditional needs the lower end of its own drift band. How: This reads newConObj.easeMin, defaulting to 7.
+		id           : ranIdeFun( 'cnd_' ),                                                                          // What: Id. Why: The picker below attaches to this conditional by id, so it must exist before the picker is built. How: This mints a random 'cnd_' id.
+		mode         : newConObj.mode || 'random',                                                                   // What: Mode. Why: The mode decides how this conditional rolls or charges each day. How: This reads newConObj.mode, defaulting to 'random'.
+		name         : norConFun( newConObj.name ) || newConObj.name || 'Conditional',                               // What: Name. Why: The conditional needs a tidied display name. How: This title-cases newConObj.name via norConFun, falling back to the raw name, then 'Conditional'.
+		oddsPct      : newConObj.oddsPct ?? 50,                                                                      // What: Odds Percent. Why: A probability-mode conditional needs its own daily firing odds. How: This reads newConObj.oddsPct, defaulting to 50.
+		threshold    : newConObj.threshold ?? 100,                                                                   // What: Threshold. Why: An ease-mode conditional charges toward (or decays from) this value. How: This reads newConObj.threshold, defaulting to 100.
+		triggered    : newConObj.triggered !== undefined ? newConObj.triggered : ( newConObj.mode === 'ease-down' ), // What: Triggered. Why: A new conditional starts firing only when it's ease-down, which starts charged. How: This honors newConObj.triggered when given, else defaults to whether mode is 'ease-down'.
+		value        : newConObj.mode === 'ease-down' ? ( newConObj.threshold ?? 100 ) : ( newConObj.value ?? 0 ),   // What: Value. Why: Ease Down starts fully charged at its threshold while every other mode starts from its own given value. How: This is the threshold (default 100) for ease-down, else newConObj.value (default 0).
+		weight       : newConObj.weight ?? 1                                                                         // What: Weight. Why: A weighted conditional needs its own draw weight. How: This reads newConObj.weight, defaulting to 1.
+
+	};
+
+
+}
+
+// #endregion madConFun
+
+
+
 // #region stkSynFun
 
 /**
@@ -380,6 +438,62 @@ function stkSynFun ( curStaObj : StaAppTyp, entArgArr : TodEntTyp[], tasArgArr :
 }
 
 // #endregion stkSynFun
+
+
+
+// #region undEntFun
+
+/**
+ * undEntFun = Undo Entry Function
+ *
+ * @summary
+ * Finds a Today entry and, when it was already completed with a revert
+ * snapshot, reverts its applied consequences through enpRevFun, so a skip or
+ * re-roll builds on the restored items, pickers, and pick log rather than
+ * the still-applied ones. Otherwise the three lists come back unchanged.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curStaObj - Current State Object: The state the action starts from.
+ * @param entIdeStr - Entry Identifier String: The entry's own eid.
+ *
+ * @returns { curEntObj, nexIteArr, nexLogArr, nexPicArr }: the entry (or
+ * undefined) and the items, pick log, and pickers to build on.
+ *
+ * @example
+ * ```ts
+ * undEntFun(curStaObj, entIdeStr) // => { curEntObj, nexIteArr, ... }
+ * ```
+ *
+*/
+
+function undEntFun ( curStaObj : StaAppTyp, entIdeStr : string ) : { curEntObj : TodEntTyp | undefined, nexIteArr : StaAppTyp[ 'items' ], nexLogArr : StaAppTyp[ 'pickLog' ], nexPicArr : StaAppTyp[ 'pickers' ] } {
+
+
+	const curEntObj = curStaObj.today.entries.find( ( entFinObj ) => entFinObj.eid === entIdeStr ); // What: Current Entry Object. Why: The undo below needs to know whether this entry was already completed. How: This looks up entIdeStr in curStaObj.today.entries.
+
+
+
+	if ( curEntObj && curEntObj.done && curEntObj.revert ) { // What: Already-Done Undo Branch. Why: An entry that stops being a completion must undo the staged mutation it already applied. How: This calls enpRevFun and returns its restored lists.
+
+
+		const resValObj = enpRevFun( { ...curStaObj }, curEntObj ); // What: Result Value Object. Why: enpRevFun returns the restored items/pickers/pickLog together. How: This calls enpRevFun with a shallow copy of curStaObj and curEntObj.
+
+
+
+		return { curEntObj, nexIteArr : resValObj.items, nexLogArr : resValObj.pickLog, nexPicArr : resValObj.pickers }; // What: Restored Lists Return. Why: Every downstream line must build on the restored lists, not the still-applied ones. How: This returns the entry with enpRevFun's items, pick log, and pickers.
+
+
+	}
+
+
+
+	return { curEntObj, nexIteArr : curStaObj.items, nexLogArr : curStaObj.pickLog || [], nexPicArr : curStaObj.pickers }; // What: Unchanged Lists Return. Why: An entry that was never completed has nothing to undo. How: This returns the entry with the current items, pick log (defaulting to []), and pickers.
+
+
+}
+
+// #endregion undEntFun
 
 
 
@@ -2646,25 +2760,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 			} ) );
 
-			const madConObj = newConObj ? { // What: Made Conditional Object. Why: A brand-new inline conditional (authored inline in this same form) needs its own fresh id minted here so the picker below can attach to it. How: This builds a full conditional object from newConObj's own fields, mirroring addConFun's own defaults.
-
-
-				active       : newConObj.active !== undefined ? newConObj.active : true,                                     // What: Active. Why: A new conditional is enabled unless the form says otherwise. How: This honors newConObj.active when given, else defaults to true.
-				cardText     : newConObj.cardText || 'Day off',                                                              // What: Card Text. Why: The day-off card shown on Today needs its own display text. How: This reads newConObj.cardText, defaulting to 'Day off'.
-				chargedToday : false,                                                                                        // What: Charged Today. Why: A brand-new conditional hasn't charged yet today, so its per-day charge guard starts clear. How: This is false.
-				easeMax      : newConObj.easeMax ?? 14,                                                                      // What: Ease Max. Why: An ease-mode conditional needs the upper end of its own drift band. How: This reads newConObj.easeMax, defaulting to 14.
-				easeMin      : newConObj.easeMin ?? 7,                                                                       // What: Ease Min. Why: An ease-mode conditional needs the lower end of its own drift band. How: This reads newConObj.easeMin, defaulting to 7.
-				id           : ranIdeFun( 'cnd_' ),                                                                          // What: Id. Why: The picker below attaches to this conditional by id, so it must exist before the picker is built. How: This mints a random 'cnd_' id.
-				mode         : newConObj.mode || 'random',                                                                   // What: Mode. Why: The mode decides how this conditional rolls or charges each day. How: This reads newConObj.mode, defaulting to 'random'.
-				name         : ( norConFun && norConFun( newConObj.name ) ) || newConObj.name || 'Conditional',              // What: Name. Why: The conditional needs a tidied display name. How: This title-cases newConObj.name via norConFun, falling back to the raw name, then 'Conditional'.
-				oddsPct      : newConObj.oddsPct ?? 50,                                                                      // What: Odds Percent. Why: A probability-mode conditional needs its own daily firing odds. How: This reads newConObj.oddsPct, defaulting to 50.
-				threshold    : newConObj.threshold ?? 100,                                                                   // What: Threshold. Why: An ease-mode conditional charges toward (or decays from) this value. How: This reads newConObj.threshold, defaulting to 100.
-				triggered    : newConObj.triggered !== undefined ? newConObj.triggered : ( newConObj.mode === 'ease-down' ), // What: Triggered. Why: A new conditional starts firing only when it's ease-down, which starts charged. How: This honors newConObj.triggered when given, else defaults to whether mode is 'ease-down'.
-				value        : newConObj.mode === 'ease-down' ? ( newConObj.threshold ?? 100 ) : ( newConObj.value ?? 0 ),   // What: Value. Why: Ease Down starts fully charged at its threshold while every other mode starts from its own given value. How: This is the threshold (default 100) for ease-down, else newConObj.value (default 0).
-				weight       : newConObj.weight ?? 1                                                                         // What: Weight. Why: A weighted conditional needs its own draw weight. How: This reads newConObj.weight, defaulting to 1.
-
-
-			} : null;
+			const madConObj = madConFun( newConObj ); // What: Made Conditional Object. Why: A brand-new inline conditional authored inline in this same form needs its own fresh id so the picker below can point at it. How: This builds it through madConFun, or null when the form authored none.
 
 			const norCadObj = CAD_NAM_OBJ.norCadFun({ // What: Normalized Cadence Object. Why: The schedule resolve and the cadence spread below both need the same normalized cadence fields. How: This calls CAD_NAM_OBJ.norCadFun once with picArgObj's own 8 cadence fields, reused by both the daysOfWeek resolve and the cadence spread below.
 
@@ -3043,25 +3139,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 			// #region Inline Conditional And Cadence
 
-			const madConObj = newConObj ? { // What: Made Conditional Object. Why: A brand-new inline conditional authored inline in this same edit form needs its own fresh id, mirroring addPicFun's own madConObj. How: This builds a full conditional object from newConObj's own fields.
-
-
-				active       : newConObj.active !== undefined ? newConObj.active : true,                                     // What: Active. Why: A new conditional is enabled unless the form says otherwise. How: This honors newConObj.active when given, else defaults to true.
-				cardText     : newConObj.cardText || 'Day off',                                                              // What: Card Text. Why: The day-off card shown on Today needs its own display text. How: This reads newConObj.cardText, defaulting to 'Day off'.
-				chargedToday : false,                                                                                        // What: Charged Today. Why: A brand-new conditional hasn't charged yet today, so its per-day charge guard starts clear. How: This is false.
-				easeMax      : newConObj.easeMax ?? 14,                                                                      // What: Ease Max. Why: An ease-mode conditional needs the upper end of its own drift band. How: This reads newConObj.easeMax, defaulting to 14.
-				easeMin      : newConObj.easeMin ?? 7,                                                                       // What: Ease Min. Why: An ease-mode conditional needs the lower end of its own drift band. How: This reads newConObj.easeMin, defaulting to 7.
-				id           : ranIdeFun( 'cnd_' ),                                                                          // What: Id. Why: The picker below attaches to this conditional by id, so it must exist before the picker is built. How: This mints a random 'cnd_' id.
-				mode         : newConObj.mode || 'random',                                                                   // What: Mode. Why: The mode decides how this conditional rolls or charges each day. How: This reads newConObj.mode, defaulting to 'random'.
-				name         : norConFun( newConObj.name ) || newConObj.name || 'Conditional',                               // What: Name. Why: The conditional needs a tidied display name. How: This title-cases newConObj.name via norConFun, falling back to the raw name, then 'Conditional'.
-				oddsPct      : newConObj.oddsPct ?? 50,                                                                      // What: Odds Percent. Why: A probability-mode conditional needs its own daily firing odds. How: This reads newConObj.oddsPct, defaulting to 50.
-				threshold    : newConObj.threshold ?? 100,                                                                   // What: Threshold. Why: An ease-mode conditional charges toward (or decays from) this value. How: This reads newConObj.threshold, defaulting to 100.
-				triggered    : newConObj.triggered !== undefined ? newConObj.triggered : ( newConObj.mode === 'ease-down' ), // What: Triggered. Why: A new conditional starts firing only when it's ease-down, which starts charged. How: This honors newConObj.triggered when given, else defaults to whether mode is 'ease-down'.
-				value        : newConObj.mode === 'ease-down' ? ( newConObj.threshold ?? 100 ) : ( newConObj.value ?? 0 ),   // What: Value. Why: Ease Down starts fully charged at its threshold while every other mode starts from its own given value. How: This is the threshold (default 100) for ease-down, else newConObj.value (default 0).
-				weight       : newConObj.weight ?? 1                                                                         // What: Weight. Why: A weighted conditional needs its own draw weight. How: This reads newConObj.weight, defaulting to 1.
-
-
-			} : null;
+			const madConObj = madConFun( newConObj ); // What: Made Conditional Object. Why: A brand-new inline conditional authored inline in this same edit form needs its own fresh id and its defaults filled. How: This builds it through madConFun, or null when the form authored none.
 
 
 			const norCadObj = CAD_NAM_OBJ.norCadFun({ // What: Normalized Cadence Object. Why: The schedule resolve and the cadence spread below both need the same normalized cadence fields. How: This calls CAD_NAM_OBJ.norCadFun once with picArgObj's own 8 cadence fields, reused by both the daysOfWeek resolve and the cadence spread below.
@@ -3581,26 +3659,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		skiEntFun : ( entIdeStr ) => setAppStaObj( ( curStaObj ) => { // What: Skip Entry Function. Why: A user must be able to drop an entry from today while Stats still counts it as a skip. How: This undoes any completed mutation and conditional charge first, removes the entry, marks its own live log row skipped, and reconciles the streak.
 
 
-			const curEntObj = curStaObj.today.entries.find( ( entFinObj ) => entFinObj.eid === entIdeStr ); // What: Current Entry Object And Guard. Why: The undo-before-skip branch below needs to know whether this entry was already completed. How: This looks up entIdeStr in curStaObj.today.entries.
-
-			let nexIteArr = curStaObj.items;         // What: Next Item Array. Why: This defaults to the unchanged items and is only replaced below when an already-done entry needs its own pending undone first. How: This starts at curStaObj.items.
-			let nexPicArr = curStaObj.pickers;       // What: Next Picker Array. Why: This defaults to the unchanged pickers and is only replaced below when an already-done entry needs its own pending undone first. How: This starts at curStaObj.pickers.
-			let nexLogArr = curStaObj.pickLog || []; // What: Next Log Array. Why: This defaults to the unchanged pick log and is only replaced below when an already-done entry needs its own pending undone first. How: This starts at curStaObj.pickLog, defaulting to [].
-
-
-			if ( curEntObj && curEntObj.done && curEntObj.revert ) { // What: Already-Done Undo Guard. Why: A skipped entry is no longer a completion, so any staged mutation it already applied must be undone first. How: This calls enpRevFun and adopts its own result.
-
-
-				const resValObj = enpRevFun( { ...curStaObj }, curEntObj ); // What: Result Value Object. Why: enpRevFun returns the restored items/pickers/pickLog together. How: This calls enpRevFun with a shallow copy of curStaObj and curEntObj.
-
-				nexIteArr = resValObj.items;   // What: Restored Items Array Adopt. Why: Every downstream line below must build on the RESTORED items. How: This adopts resValObj's own items onto the outer nexIteArr binding.
-				nexPicArr = resValObj.pickers; // What: Restored Pickers Array Adopt. Why: Every downstream line below must build on the RESTORED pickers. How: This adopts resValObj's own pickers onto the outer nexPicArr binding.
-				nexLogArr = resValObj.pickLog; // What: Restored Pick Log Array Adopt. Why: Every downstream line below must build on the RESTORED pick log. How: This adopts resValObj's own pickLog onto the outer nexLogArr binding.
-
-
-			}
-
-
+			const { curEntObj, nexIteArr, nexLogArr, nexPicArr } = undEntFun( curStaObj, entIdeStr ); // What: Undone Entry Destructure. Why: A skipped entry is no longer a completion, so any staged mutation it already applied must be undone first. How: This reads the entry and the restored (or unchanged) lists from undEntFun.
 
 			const nexEntArr = curStaObj.today.entries.filter( ( entFilObj ) => entFilObj.eid !== entIdeStr ); // What: Next Entry Array. Why: A skipped entry is removed from today entirely, not merely marked. How: This filters out the one entry matching entIdeStr.
 
@@ -3612,7 +3671,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 				? cdlAplFun( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curEntObj, false ) // What: Undo Log Branch. Why: The matching cycle's row must be un-recorded too. How: This re-runs cdlAplFun as not-done.
 				: ( curStaObj.conditionalLog || [] );                                                                // What: Unchanged Log Branch. Why: A not-done entry never logged a cycle. How: This passes the conditional log through.
 
-			nexLogArr = nexLogArr.map( ( curRowObj ) => // What: Live Log Row Skip. Why: The live row for this entry must be marked skipped (never overwriting an already-rejected row from an earlier re-roll). How: This flags the matching row outcome:'skipped', done:false, completedAt:null.
+			const skiLogArr : PclRowTyp[] = nexLogArr.map( ( curRowObj ) => // What: Skipped Log Array. Why: The live row for this entry must be marked skipped (never overwriting an already-rejected row from an earlier re-roll). How: This flags the matching row outcome:'skipped', done:false, completedAt:null.
 				( curRowObj.eid === entIdeStr && curRowObj.outcome !== 'rejected' ) ? { ...curRowObj, completedAt : null, done : false, outcome : 'skipped' } : curRowObj ); // What: Skip Row Patch. Why: Only this entry's non-rejected row becomes skipped. How: This marks it skipped and not done, and passes every other row through.
 
 			const { stkClaBoo, stkValNum } = stkSynFun( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Removing an entry from today can flip whether today counts as fully done. How: This calls stkSynFun against the already-patched items/pickers and the already-filtered entries.
@@ -3628,7 +3687,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 				conditionals   : nexConArr,                                                             // What: Conditionals. Why: Skipping an already-completed entry must revert its gating conditional's own charge. How: This is nexConArr.
 				items          : nexIteArr,                                                             // What: Items. Why: Any completed consequences this skip reverts land here. How: This is nexIteArr.
 				pickers        : nexPicArr,                                                             // What: Pickers. Why: Any completed picker-level consequences this skip reverts land here. How: This is nexPicArr.
-				pickLog        : nexLogArr,                                                             // What: Pick Log. Why: The live row for this entry must be marked skipped. How: This is nexLogArr.
+				pickLog        : skiLogArr,                                                             // What: Pick Log. Why: The live row for this entry must be marked skipped. How: This is nexLogArr.
 				streak         : stkValNum,                                                             // What: Streak. Why: The persisted streak count must reflect the reconciled verdict. How: This is stkValNum, from stkSynFun.
 				today          : { ...curStaObj.today, entries : nexEntArr, streakClaimed : stkClaBoo } // What: Today. Why: Today's own entries and claimed flag must both reflect this change. How: This spreads curStaObj.today with entries replaced and streakClaimed set to stkClaBoo.
 
@@ -3677,32 +3736,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		swaIteFun : ( entIdeStr, iteIdeStr, penArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Swap Item Function. Why: Today's own Re-roll must swap the item one entry shows while keeping a record of what was rolled away. How: This points the entry at the new item with freshly staged pending, marks the old live log row rejected, and appends a new 'reroll' row under the same eid.
 
 
-			// #region Done Entry Undo
-
-			const curEntObj = curStaObj.today.entries.find( ( entFinObj ) => entFinObj.eid === entIdeStr ); // What: Current Entry Object And Guard. Why: The undo-then-restage flow below needs to know whether this entry was already completed. How: This looks up entIdeStr in curStaObj.today.entries.
-
-			let nexIteArr = curStaObj.items;         // What: Next Item Array. Why: This defaults to the unchanged items and is only replaced below when an already-completed entry needs its own pending undone first. How: This starts at curStaObj.items.
-			let nexPicArr = curStaObj.pickers;       // What: Next Picker Array. Why: This defaults to the unchanged pickers and is only replaced below when an already-completed entry needs its own pending undone first. How: This starts at curStaObj.pickers.
-			let nexLogArr = curStaObj.pickLog || []; // What: Next Log Array. Why: This defaults to the unchanged pick log and is only replaced below when an already-completed entry needs its own pending undone first. How: This starts at curStaObj.pickLog, defaulting to [].
-
-
-			if ( curEntObj && curEntObj.done && curEntObj.revert ) { // What: Already-Done Undo Guard. Why: A re-roll always lands not-done, so an already-completed entry's own staged mutation must be undone first. How: This calls enpRevFun and adopts its own result when curEntObj is done and carries a revert snapshot.
-
-
-				const resValObj = enpRevFun( { ...curStaObj }, curEntObj ); // What: Result Value Object. Why: enpRevFun returns the restored items/pickers/pickLog together. How: This calls enpRevFun with a shallow copy of curStaObj and curEntObj.
-
-				nexIteArr = resValObj.items;   // What: Restored Items Array Adopt. Why: Every downstream line below must build on the RESTORED items, not the still-applied ones. How: This adopts resValObj's own items onto the outer nexIteArr binding.
-				nexPicArr = resValObj.pickers; // What: Restored Pickers Array Adopt. Why: Every downstream line below must build on the RESTORED pickers, not the still-applied ones. How: This adopts resValObj's own pickers onto the outer nexPicArr binding.
-				nexLogArr = resValObj.pickLog; // What: Restored Pick Log Array Adopt. Why: Every downstream line below must build on the RESTORED pick log, not the still-applied one. How: This adopts resValObj's own pickLog onto the outer nexLogArr binding.
-
-
-			}
-
-			// #endregion Done Entry Undo
-
-
-
-			// #region Reroll Log Rows
+			const { nexIteArr, nexLogArr, nexPicArr } = undEntFun( curStaObj, entIdeStr ); // What: Undone Entry Destructure. Why: A re-roll always lands not-done, so an already-completed entry's own staged mutation must be undone first. How: This reads the restored (or unchanged) lists from undEntFun.
 
 			const curRowObj = nexLogArr.find( ( logFinObj ) => logFinObj.eid === entIdeStr && !logFinObj.outcome ); // What: Current Row Object And Guard. Why: The live log row (if any) is where this entry's own current pickerId can still be read from. How: This finds the one row sharing entIdeStr with no outcome yet.
 
@@ -3714,8 +3748,6 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 			if ( picIdeStr ) rejLogArr.push( logRowFun( { ...curStaObj, items : nexIteArr }, { eid : entIdeStr, itemId : iteIdeStr, pickerId : picIdeStr, source : 'reroll' } ) ); // What: Reroll Row Append. Why: Only when a picker id could actually be resolved does a fresh reroll row make sense to log. How: This pushes a new logRowFun row with source:'reroll' onto rejLogArr.
-
-			// #endregion Reroll Log Rows
 
 
 
