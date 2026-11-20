@@ -55,7 +55,7 @@ type TouBusTyp = { // What: Tour Bus Type. Why: The tours, the tour runner, and 
 	iteMaxNum? : number | null;                                                   // What: Item Max Number. Why: A tour can stage an added item's ease band. How: This holds its easeMax, or null once a tour clears it.
 	iteMinNum? : number | null;                                                   // What: Item Min Number. Why: A tour can stage an added item's ease band. How: This holds its easeMin, or null once a tour clears it.
 	itePreStr? : string | null;                                                   // What: Item Prefill String. Why: A tour can stage an added item's name. How: This holds it, or null once a tour clears it.
-	preFilObj? : PrePayTyp | null;                                                // What: Prefill Object. Why: A tour prefills the real create form. How: This holds the prefill, or null once consumed.
+	prePayObj? : PrePayTyp | null;                                                // What: Prefill Payload Object. Why: A tour prefills the real create form. How: This holds the prefill, or null once consumed.
 	redNonNum? : number;                                                          // What: Redo Nonce Number. Why: Going back in a tour asks the Pickers tab for a fresh pick. How: Each change of this number is one request.
 	reoNonNum? : number;                                                          // What: Reopen Nonce Number. Why: Going back in a tour can reopen a form. How: Each change of this number is one request.
 	resNonNum? : number;                                                          // What: Reset Nonce Number. Why: A tour can ask a page to reset to its starting state. How: Each change of this number is one request.
@@ -77,7 +77,7 @@ type TouBusTyp = { // What: Tour Bus Type. Why: The tours, the tour runner, and 
 
 // #region Module State
 
-let curBusObj : TouBusTyp = { preFilObj : null, staCreObj : null }; // What: Current Bus Object. Why: This is the bus's own live state, read by every get() call and replayed to every subscriber on every set() call. How: This starts with the same two fields the rest of the app already reads (preFilObj, staCreObj), reassigned wholesale by set() below rather than mutated in place.
+let curBusObj : TouBusTyp = { prePayObj : null, staCreObj : null }; // What: Current Bus Object. Why: This is the bus's own live state, read by every get() call and replayed to every subscriber on every set() call. How: This starts with the same two fields the rest of the app already reads (prePayObj, staCreObj), reassigned wholesale by set() below rather than mutated in place.
 
 const subCalSet = new Set< ( busSnaObj : TouBusTyp ) => void >(); // What: Subscriber Callback Set. Why: Every mounted useEmlTouFun instance needs to be notified when curBusObj changes. How: This collects every currently-subscribed callback, added by subscribe() and removed by the cleanup function it returns.
 

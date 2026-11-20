@@ -780,7 +780,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 		// #region Seed Item Build
 
-		const fulChaBoo = selModStr === 'ease-down' || ( curTouBoo && selModStr === 'ease-up' ); // What: Full Charge Boolean. Why: Ease Down items start fully charged (mirrors addPicFun's own iniValNum), otherwise the editor would show a spent item needing a Refill it never needed; the tour's own Ease Up item is also given a full charge (like the rest of the sample pool) so the later generation demo step has something eligible to pick, but this doesn't apply to Weighted/Dynamic/Random tour samples, since those modes have no eligibility gate at all (value there is a weight boost, not a charge), so forcing 100 would just unfairly skew the new item's odds against its siblings for no reason. How: This is true for Ease Down items, and for Ease Up items added during a tour.
+		const fulChrBoo = selModStr === 'ease-down' || ( curTouBoo && selModStr === 'ease-up' ); // What: Full Charge Boolean. Why: Ease Down items start fully charged (mirrors addPicFun's own iniValNum), otherwise the editor would show a spent item needing a Refill it never needed; the tour's own Ease Up item is also given a full charge (like the rest of the sample pool) so the later generation demo step has something eligible to pick, but this doesn't apply to Weighted/Dynamic/Random tour samples, since those modes have no eligibility gate at all (value there is a weight boost, not a charge), so forcing 100 would just unfairly skew the new item's odds against its siblings for no reason. How: This is true for Ease Down items, and for Ease Up items added during a tour.
 
 
 		const easBanObj = curTouBoo && curBusObj.iteMinNum != null && curBusObj.iteMaxNum != null // What: Ease Band Object. Why: A tour can override the generic 7/14-day DEF_EAS_OBJ for its own added item (e.g. a monthly-cadence sample's own item shouldn't look like a daily one). How: This uses the bus's own staged easeMin/easeMax when a tour supplied both, otherwise DEF_EAS_OBJ.
@@ -798,7 +798,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 				id     : newIdeStr,                               // What: ID. Why: The pool item needs its own id. How: This uses newIdeStr.
 				name   : newNamStr,                               // What: Name. Why: The item starts with its de-duplicated name. How: This uses newNamStr.
-				value  : fulChaBoo ? PIC_NAM_OBJ.THR_VAL_NUM : 0, // What: Value. Why: An item that should start full begins at the threshold, otherwise at 0. How: This uses THR_VAL_NUM when fulChaBoo, otherwise 0.
+				value  : fulChrBoo ? PIC_NAM_OBJ.THR_VAL_NUM : 0, // What: Value. Why: An item that should start full begins at the threshold, otherwise at 0. How: This uses THR_VAL_NUM when fulChrBoo, otherwise 0.
 				weight : 1,                                       // What: Weight. Why: Every item starts at the baseline weight. How: This is 1.
 
 				...easBanObj // What: Ease Band Spread. Why: The item carries the tour's or the default drift band. How: This spreads in easeMin and easeMax.

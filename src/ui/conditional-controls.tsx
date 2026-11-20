@@ -258,7 +258,7 @@ function BouRowCom ( { dayValNum, isaDowBoo, labTexStr, onSetValFun, subTexStr }
 
 
 
-type FrcProTyp = { chaValNum : number, isaDowBoo : boolean, labTexStr : string, onFilActFun : () => void, thrValNum : number }; // What: Fill-Row-Component Props Type. Why: Each full-charge row names its own action and direction and shows the charge against its ceiling. How: This types FilRowCom's props.
+type FrcProTyp = { chrValNum : number, isaDowBoo : boolean, labTexStr : string, onFilActFun : () => void, thrValNum : number }; // What: Fill-Row-Component Props Type. Why: Each full-charge row names its own action and direction and shows the charge against its ceiling. How: This types FilRowCom's props.
 
 // #region FilRowCom
 
@@ -275,7 +275,7 @@ type FrcProTyp = { chaValNum : number, isaDowBoo : boolean, labTexStr : string, 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.chaValNum   - Charge Value Number: The conditional's current
+ * @param props.chrValNum   - Charge Value Number: The conditional's current
  *                            charge.
  * @param props.isaDowBoo   - Is-A Down Boolean: Whether the row is ease-down's
  *                            Refill row rather than ease-up's Fill row.
@@ -290,12 +290,12 @@ type FrcProTyp = { chaValNum : number, isaDowBoo : boolean, labTexStr : string, 
  *
  * @example
  * ```tsx
- * FilRowCom({ chaValNum, isaDowBoo, labTexStr, ... }) // => <FilRowCom />
+ * FilRowCom({ chrValNum, isaDowBoo, labTexStr, ... }) // => <FilRowCom />
  * ```
  *
 */
 
-function FilRowCom ( { chaValNum, isaDowBoo, labTexStr, onFilActFun, thrValNum } : FrcProTyp ) : React.JSX.Element {
+function FilRowCom ( { chrValNum, isaDowBoo, labTexStr, onFilActFun, thrValNum } : FrcProTyp ) : React.JSX.Element {
 
 
 	return (
@@ -316,10 +316,10 @@ function FilRowCom ( { chaValNum, isaDowBoo, labTexStr, onFilActFun, thrValNum }
 				<span className={ cssModObj.ediNamSpa }>{ labTexStr }</span>{ /* What: Editor Name Span Element. Why: This names the row's own control. How: This renders labTexStr. */ }
 
 				<span
-					key={ chaValNum >= thrValNum ? 'full' : 'part' } // What: Charge State Key. Why: The summary should re-fade only when the charge reaches or leaves full, not on every value change. How: This keys on whether chaValNum has reached thrValNum.
+					key={ chrValNum >= thrValNum ? 'full' : 'part' } // What: Charge State Key. Why: The summary should re-fade only when the charge reaches or leaves full, not on every value change. How: This keys on whether chrValNum has reached thrValNum.
 
 					className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-				>{ chaValNum >= thrValNum ? <>conditional is <strong>fully charged</strong></> : <>conditional at <strong>{ Math.round( chaValNum ) } charge</strong></> }</span>{ /* What: Editor Sub Span Element. Why: The user needs to see the current charge, or know it is already full, before deciding to fill it. How: This re-keys, and so re-fades, whenever the full/part state flips. */ }
+				>{ chrValNum >= thrValNum ? <>conditional is <strong>fully charged</strong></> : <>conditional at <strong>{ Math.round( chrValNum ) } charge</strong></> }</span>{ /* What: Editor Sub Span Element. Why: The user needs to see the current charge, or know it is already full, before deciding to fill it. How: This re-keys, and so re-fades, whenever the full/part state flips. */ }
 
 
 			</div>
@@ -327,7 +327,7 @@ function FilRowCom ( { chaValNum, isaDowBoo, labTexStr, onFilActFun, thrValNum }
 
 
 			<FilButCom
-				isaDisBoo={ chaValNum >= thrValNum }
+				isaDisBoo={ chrValNum >= thrValNum }
 				labTexStr={ labTexStr }
 
 				onFilActFun={ onFilActFun }
@@ -912,7 +912,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 							<FilRowCom
-								chaValNum={ conDraObj.value ?? 0 }
+								chrValNum={ conDraObj.value ?? 0 }
 								isaDowBoo={ false } // What: Ease Down Flag. Why: The Fill row belongs to ease-up. How: This marks the row as an ease-up row for help mode.
 								labTexStr='Fill'
 								thrValNum={ thrValNum }
@@ -929,7 +929,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 							<FilRowCom
-								chaValNum={ conDraObj.value ?? 0 }
+								chrValNum={ conDraObj.value ?? 0 }
 								isaDowBoo={ true } // What: Ease Down Flag. Why: The Refill row belongs to ease-down. How: This marks the row as an ease-down row for help mode.
 								labTexStr='Refill'
 								thrValNum={ thrValNum }

@@ -537,7 +537,7 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 		const thrValNum = curPicObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: Every charge calculation below needs this picker's own starting/eligibility value. How: This reads curPicObj's own threshold, defaulting to PIC_NAM_OBJ.THR_VAL_NUM when missing.
 
 		let actIteObj = null; // What: Active Item Object And Guard. Why: The simulation below needs a running "currently active item" slot, starting with none picked yet. How: This starts null and is assigned/cleared throughout the loop below.
-		let chaValNum = 0;    // What: Charge Value Number And Guard. Why: The simulation below needs a running charge for whichever item is active. How: This starts at 0, immediately overwritten once an item first becomes active below.
+		let chrValNum = 0;    // What: Charge Value Number And Guard. Why: The simulation below needs a running charge for whichever item is active. How: This starts at 0, immediately overwritten once an item first becomes active below.
 
 
 		for ( let dayIndNum = totDayNum - 1; dayIndNum >= 1; dayIndNum-- ) { // What: Ease Down Daily Loop. Why: This picker's own decay must be simulated one day at a time, in order, since each day's own charge depends on the day before it. How: This walks backward from totDayNum - 1 days ago to 1 day ago.
@@ -575,7 +575,7 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 
 				actIteObj = picWeiFun( itePooArr ); // What: New Active Item Assignment. Why: With no item currently active, a fresh one must be drawn from this picker's own pool. How: This assigns a weighted pick from itePooArr to actIteObj.
-				chaValNum = thrValNum;              // What: Charge Value Full Reset. Why: A freshly-activated item must start at full charge, matching a real Ease Down pick. How: This sets chaValNum to thrValNum, resolved above.
+				chrValNum = thrValNum;              // What: Charge Value Full Reset. Why: A freshly-activated item must start at full charge, matching a real Ease Down pick. How: This sets chrValNum to thrValNum, resolved above.
 
 
 			}
@@ -584,9 +584,9 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 			const decValNum = ranBetFun( actIteObj.easeMin ?? curPicObj.easeMin ?? 20, actIteObj.easeMax ?? curPicObj.easeMax ?? 34 ); // What: Decay Value Number. Why: Every simulated day, the active item's own charge decays by a random amount within its own (or its picker's own) ease range. How: This resolves a random value between actIteObj's own easeMin/easeMax, falling back to curPicObj's own, then a hardcoded default.
 
-			chaValNum = Math.max( 0, chaValNum - decValNum ); // What: Charge Value Decay. Why: The active item's own charge must never be simulated below 0. How: This subtracts decValNum from chaValNum, floored at 0.
+			chrValNum = Math.max( 0, chrValNum - decValNum ); // What: Charge Value Decay. Why: The active item's own charge must never be simulated below 0. How: This subtracts decValNum from chrValNum, floored at 0.
 
-			const depEndBoo = chaValNum <= 0; // What: Depleted End Boolean. Why: The row logged below needs to know whether this simulated day completed a full depletion cycle. How: This is true exactly when chaValNum has reached 0.
+			const depEndBoo = chrValNum <= 0; // What: Depleted End Boolean. Why: The row logged below needs to know whether this simulated day completed a full depletion cycle. How: This is true exactly when chrValNum has reached 0.
 
 
 			logPicFun( curDatObj, curPicObj, actIteObj, Math.random() < 0.82, 'auto', undefined, depEndBoo ); // What: Ease Down Pick Log Call. Why: Every simulated day of an Ease Down streak still needs its own logged row. How: This logs actIteObj, rolling its own done state independently of the charge simulation.
@@ -598,7 +598,7 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 		}
 
 
-		easStaObj[ curPicObj.id ] = actIteObj ? { activeItemId : actIteObj.id, charge : chaValNum } : { activeItemId : null, charge : 0 }; // What: Ease State Assignment. Why: The caller needs this picker's own final in-progress state, whatever it ended on. How: This records actIteObj's own id and charge, or a fully-released empty state when nothing is active.
+		easStaObj[ curPicObj.id ] = actIteObj ? { activeItemId : actIteObj.id, charge : chrValNum } : { activeItemId : null, charge : 0 }; // What: Ease State Assignment. Why: The caller needs this picker's own final in-progress state, whatever it ended on. How: This records actIteObj's own id and charge, or a fully-released empty state when nothing is active.
 
 
 	}

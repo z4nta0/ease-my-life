@@ -848,7 +848,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 						<PicForCom
 							conObjArr={ staAppObj.conditionals || [] }
 							exiGroArr={ exiGroArr }
-							iniForObj={ touBusObj.preFilObj || empIniObj || null }
+							iniForObj={ touBusObj.prePayObj || empIniObj || null }
 							iniGroStr={ groFilStr === 'all' ? '' : groFilStr }
 
 							onCanForFun={ () => { // What: On Cancel Form Handler. Why: Cancelling the create form must also drop any staged prefill. How: This clears the prefill, then runs canCreFun.
@@ -862,14 +862,14 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 							onCrePicFun={ ( payForObj ) => { // What: On Create Function. Why: A successful create must reconcile with whatever the guided-tour checklist expects, then land the user on the freshly-made picker. How: This tags a tour-created picker for later replay matching, then advances the selection once the created id comes back.
 
 
-								const newPicStr = actStoObj.addPicFun({ // What: New Picker String. Why: This is the actual created (or replayed-in-place) picker's own id. How: This calls actions.addPicFun with the payload plus the tour-driven fields above. // What: Replay Update Note. Why: A replay updates the SAME picker in place (via replaceId) instead of creating a duplicate, see store.ts's own addPicFun; createdFromSample tags this run's picker either way, so a LATER replay can find it too. How: This is gated on touBusObj.preFilObj, which is only set while a picker tutorial walks this form. // What: Hidden Field Note. Why: While the mini-tour checklist is up, ANY picker created here (via a tutorial's own walkthrough OR the user just clicking this same real button themselves) stays out of the real list until the closing Generate step (mirrors reminders-section.tsx's own staAddFun). How: This is driven by touBusObj.shoCheBoo below.
+								const newPicStr = actStoObj.addPicFun({ // What: New Picker String. Why: This is the actual created (or replayed-in-place) picker's own id. How: This calls actions.addPicFun with the payload plus the tour-driven fields above. // What: Replay Update Note. Why: A replay updates the SAME picker in place (via replaceId) instead of creating a duplicate, see store.ts's own addPicFun; createdFromSample tags this run's picker either way, so a LATER replay can find it too. How: This is gated on touBusObj.prePayObj, which is only set while a picker tutorial walks this form. // What: Hidden Field Note. Why: While the mini-tour checklist is up, ANY picker created here (via a tutorial's own walkthrough OR the user just clicking this same real button themselves) stays out of the real list until the closing Generate step (mirrors reminders-section.tsx's own staAddFun). How: This is driven by touBusObj.shoCheBoo below.
 
 
 									...payForObj, // What: Payload Spread. Why: Every field the form collected goes into the new picker. How: This spreads in payForObj.
 
 									hidden : !!touBusObj.shoCheBoo, // What: Hidden. Why: A picker made while the tour checklist is up stays out of sight until the tour finishes. How: This is true while the bus shows the checklist.
 
-									...( touBusObj.preFilObj ? { createdFromSample : touBusObj.samIdeStr! } : {} ), // What: Sample Tag Spread. Why: A tour-prefilled picker records which sample it came from. How: This adds createdFromSample only while a prefill is active. // What: Non-Null Note. Why: A picker tour sets its prefill and its sample id in the same bus write. How: The ! tells TypeScript samIdeStr is set whenever preFilObj is.
+									...( touBusObj.prePayObj ? { createdFromSample : touBusObj.samIdeStr! } : {} ), // What: Sample Tag Spread. Why: A tour-prefilled picker records which sample it came from. How: This adds createdFromSample only while a prefill is active. // What: Non-Null Note. Why: A picker tour sets its prefill and its sample id in the same bus write. How: The ! tells TypeScript samIdeStr is set whenever prePayObj is.
 									...( touBusObj.exiIdeStr ? { replaceId : touBusObj.exiIdeStr } : {} )           // What: Replace ID Spread. Why: A tour replay updates its earlier picker in place instead of adding a duplicate. How: This adds replaceId only while the bus names an existing picker.
 
 

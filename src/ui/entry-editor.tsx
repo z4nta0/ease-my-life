@@ -48,12 +48,12 @@ import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record T
 
 // #region Components
 
-type CrcProTyp = { chaValNum : number, isaDowBoo : boolean, labTexStr : string, onFilActFun : () => void, thrValNum : number }; // What: Charge-Row-Component Props Type. Why: Each full-charge row names its own action and direction and shows the item's charge against its picker's ceiling. How: This types ChaRowCom's props.
+type CrcProTyp = { chrValNum : number, isaDowBoo : boolean, labTexStr : string, onFilActFun : () => void, thrValNum : number }; // What: Charge-Row-Component Props Type. Why: Each full-charge row names its own action and direction and shows the item's charge against its picker's ceiling. How: This types ChrRowCom's props.
 
-// #region ChaRowCom
+// #region ChrRowCom
 
 /**
- * ChaRowCom = Charge Row Component
+ * ChrRowCom = Charge Row Component
  *
  * @summary
  * Renders an ease item's full-charge row, "Fill" for ease-up and "Refill"
@@ -65,7 +65,7 @@ type CrcProTyp = { chaValNum : number, isaDowBoo : boolean, labTexStr : string, 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.chaValNum   - Charge Value Number: The item's current charge.
+ * @param props.chrValNum   - Charge Value Number: The item's current charge.
  * @param props.isaDowBoo   - Is-A Down Boolean: Whether the row is ease-down's
  *                            Refill row rather than ease-up's Fill row.
  * @param props.labTexStr   - Label Text String: The row's own label, also
@@ -79,12 +79,12 @@ type CrcProTyp = { chaValNum : number, isaDowBoo : boolean, labTexStr : string, 
  *
  * @example
  * ```tsx
- * ChaRowCom({ chaValNum, isaDowBoo, labTexStr, ... }) // => <ChaRowCom />
+ * ChrRowCom({ chrValNum, isaDowBoo, labTexStr, ... }) // => <ChrRowCom />
  * ```
  *
 */
 
-function ChaRowCom ( { chaValNum, isaDowBoo, labTexStr, onFilActFun, thrValNum } : CrcProTyp ) : React.JSX.Element {
+function ChrRowCom ( { chrValNum, isaDowBoo, labTexStr, onFilActFun, thrValNum } : CrcProTyp ) : React.JSX.Element {
 
 
 	return (
@@ -105,10 +105,10 @@ function ChaRowCom ( { chaValNum, isaDowBoo, labTexStr, onFilActFun, thrValNum }
 				<span className={ cssModObj.ediNamSpa }>{ labTexStr }</span>{ /* What: Editor Name Span Element. Why: This is the row's own heading text. How: This renders labTexStr. */ }
 
 				<span
-					key={ chaValNum >= PIC_NAM_OBJ.THR_VAL_NUM ? 'full' : 'part' } // What: Charge State Key. Why: The summary should re-fade only when the charge reaches or leaves full, not on every value change. How: This keys on whether chaValNum has reached THR_VAL_NUM.
+					key={ chrValNum >= PIC_NAM_OBJ.THR_VAL_NUM ? 'full' : 'part' } // What: Charge State Key. Why: The summary should re-fade only when the charge reaches or leaves full, not on every value change. How: This keys on whether chrValNum has reached THR_VAL_NUM.
 
 					className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-				>{ chaValNum < PIC_NAM_OBJ.THR_VAL_NUM ? <>item at <strong>{ Math.round( chaValNum ) } charge</strong></> : isaDowBoo ? <>item is <strong>fully charged</strong></> : <>item is <strong>fully charged</strong> at { Math.round( chaValNum ) }</> }</span>{ /* What: Editor Sub Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders the partial phrasing below THR_VAL_NUM, and otherwise the full phrasing, which Fill follows with the charge. */ }
+				>{ chrValNum < PIC_NAM_OBJ.THR_VAL_NUM ? <>item at <strong>{ Math.round( chrValNum ) } charge</strong></> : isaDowBoo ? <>item is <strong>fully charged</strong></> : <>item is <strong>fully charged</strong> at { Math.round( chrValNum ) }</> }</span>{ /* What: Editor Sub Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders the partial phrasing below THR_VAL_NUM, and otherwise the full phrasing, which Fill follows with the charge. */ }
 
 
 			</div>
@@ -116,7 +116,7 @@ function ChaRowCom ( { chaValNum, isaDowBoo, labTexStr, onFilActFun, thrValNum }
 
 
 			<FilButCom
-				isaDisBoo={ chaValNum >= thrValNum }
+				isaDisBoo={ chrValNum >= thrValNum }
 				labTexStr={ labTexStr }
 
 				onFilActFun={ onFilActFun }
@@ -131,7 +131,7 @@ function ChaRowCom ( { chaValNum, isaDowBoo, labTexStr, onFilActFun, thrValNum }
 
 }
 
-// #endregion ChaRowCom
+// #endregion ChrRowCom
 
 
 
@@ -536,8 +536,8 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 						{ picModStr === 'ease-up' && ( // What: Fill Row Visibility Check. Why: Only ease-up offers an instant-fill shortcut for its own charge. How: This renders the Fill row only while picModStr is 'ease-up'.
 
 
-							<ChaRowCom
-								chaValNum={ iteDatObj.value ?? 0 }
+							<ChrRowCom
+								chrValNum={ iteDatObj.value ?? 0 }
 								isaDowBoo={ false }
 								labTexStr='Fill'
 								thrValNum={ picDatObj!.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
@@ -553,8 +553,8 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 						{ picModStr === 'ease-down' && ( // What: Refill Row Visibility Check. Why: Only ease-down offers an instant-refill shortcut for its own charge. How: This renders the Refill row only while picModStr is 'ease-down'.
 
 
-							<ChaRowCom
-								chaValNum={ iteDatObj.value ?? 0 }
+							<ChrRowCom
+								chrValNum={ iteDatObj.value ?? 0 }
 								isaDowBoo={ true }
 								labTexStr='Refill'
 								thrValNum={ picDatObj!.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.

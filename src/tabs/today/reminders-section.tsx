@@ -743,11 +743,11 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 	// #region Card Transitions
 
 	const [ insIdeStr, setInsIdeStr ] = React.useState< string | null >( null ); // What: Insert Identifier String And Setter. Why: A newly-added card needs to play its own entrance animation exactly once. How: This is set to the new card's own id right when commit finishes, then cleared on that card's own animation end.
-	const [ remIdeStr, setRemIdeStr ] = React.useState< string | null >( null ); // What: Removing Identifier String And Setter. Why: A card slated for delete/skip needs to play its own collapse-out animation before the underlying task is actually removed. How: This is set right before that animation starts, then cleared once it ends.
+	const [ rmvIdeStr, setRmvIdeStr ] = React.useState< string | null >( null ); // What: Removing Identifier String And Setter. Why: A card slated for delete/skip needs to play its own collapse-out animation before the underlying task is actually removed. How: This is set right before that animation starts, then cleared once it ends.
 	const [ skiIdeStr, setSkiIdeStr ] = React.useState< string | null >( null ); // What: Skip Identifier String And Setter. Why: A card's own skip confirm is its own independent open/closed slot, separate from actEdiStr. How: This holds whichever task's own skip confirm is currently open.
 	const [ jusCheStr, setJusCheStr ] = React.useState< string | null >( null ); // What: Just-Checked String And Setter. Why: A reminder that was JUST checked needs a brief "fresh" flourish, distinct from one that was already done. How: This is set on every fresh check and cleared 700ms later.
 
-	const remActRef = React.useRef< ( () => void ) | null >( null ); // What: Remove Action Reference. Why: Delete and Skip share the same collapse-out animation, but each needs its own action to run once it finishes. How: This holds whichever thunk should run on the removing card's own animation end.
+	const rmvActRef = React.useRef< ( () => void ) | null >( null ); // What: Remove Action Reference. Why: Delete and Skip share the same collapse-out animation, but each needs its own action to run once it finishes. How: This holds whichever thunk should run on the removing card's own animation end.
 
 
 	const onTogDonFun = ( curTasObj : TasRcdTyp ) => { // What: On Toggle Done Function. Why: Toggling a reminder's own done state also needs to trigger its brief "fresh" flourish, but only on a genuine 0-to-1 transition. How: This calls actStoObj.togTasFun, then stages jusCheStr only when curTasObj wasn't already done.
@@ -909,7 +909,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 		const touBusObj = emlTouObj.get(); // What: Tour Bus Object. Why: A reminder mini-tour publishes the sample it's walking through here so the real "+" button (which the tour has the user click themselves) opens pre-filled with that sample's data instead of blank. How: This reads the shared tour bus's own current snapshot.
 
 
-		setDraTasObj( TAS_NAM_OBJ.defTasFun( { ...( touBusObj.preFilObj || { repeat : 'once' } ), ...( touBusObj.shoCheBoo ? { hidden : true } : {} ) } ) ); // What: Draft Task Seed. Why: Any reminder created while the mini-tour checklist is up should stay hidden from the real list until it concludes, not just a tour's own reminders. How: This spreads touBusObj's own prefill (or a plain 'once' default) plus a hidden flag whenever touBusObj's own shoCheBoo is set.
+		setDraTasObj( TAS_NAM_OBJ.defTasFun( { ...( touBusObj.prePayObj || { repeat : 'once' } ), ...( touBusObj.shoCheBoo ? { hidden : true } : {} ) } ) ); // What: Draft Task Seed. Why: Any reminder created while the mini-tour checklist is up should stay hidden from the real list until it concludes, not just a tour's own reminders. How: This spreads touBusObj's own prefill (or a plain 'once' default) plus a hidden flag whenever touBusObj's own shoCheBoo is set.
 
 		setAddCloBoo( false );          // What: Add Closing Flag Reset. Why: A freshly-opened form must not start out mid-close, in case a previous close was still in flight. How: This clears addCloBoo back to false.
 		setActEdiStr( 'reminder-add' ); // What: Active Editor Claim. Why: The quick-add form needs to claim the shared actEdiStr slot so every other open editor forces itself closed. How: This sets actEdiStr to the 'reminder-add' sentinel.
@@ -1450,8 +1450,8 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 							draNamStr={ opeDraObj && opeDraObj.id === curTasObj.id ? opeDraObj.name : undefined } // What: Draft Name String. Why: While this card's editor is open, its name input edits the draft's name instead of the real one. How: This passes the draft's name only when the draft belongs to this reminder.
 							extClaStr={ insIdeStr === curTasObj.id // What: Card Class Pick. Why: A card plays at most one entrance or exit animation, picked by which transition it is currently in. How: This checks each transition in priority order below, falling back to no class.
 								? cssModObj.todCarArtInserting                        // What: Just Added Class. Why: A newly added card plays its entrance animation. How: This applies while insIdeStr matches this card.
-								: remIdeStr === curTasObj.id                     // What: Removing Check. Why: A card being deleted plays its exit animation next in priority. How: This compares remIdeStr against this card.
-								? cssModObj.todCarArtDeleting                      // What: Removing Class. Why: This is the deletion exit animation. How: This applies while remIdeStr matches this card.
+								: rmvIdeStr === curTasObj.id                     // What: Removing Check. Why: A card being deleted plays its exit animation next in priority. How: This compares rmvIdeStr against this card.
+								? cssModObj.todCarArtDeleting                      // What: Removing Class. Why: This is the deletion exit animation. How: This applies while rmvIdeStr matches this card.
 								: ( leaTasSet && leaTasSet.has( curTasObj.id ) ) // What: Leaving Check. Why: A card leaving the list for another reason plays the purge animation. How: This checks leaTasSet for this card.
 								? cssModObj.todCarArtPurging                       // What: Purging Class. Why: This is the leave-the-list exit animation. How: This applies while leaTasSet holds this card.
 								: ( ariTasSet && ariTasSet.has( curTasObj.id ) ) // What: Arriving Check. Why: A card newly arriving in the list (e.g. due again) also plays the entrance animation. How: This checks ariTasSet for this card.
@@ -1473,12 +1473,12 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 
 
-								if ( remIdeStr === curTasObj.id ) { // What: Removal Finish Guard. Why: The card's own collapse-out animation ending is exactly when the deferred delete/skip action should actually run. How: This invokes remActRef's own thunk (or a plain delTasFun fallback), then clears both remActRef and remIdeStr.
+								if ( rmvIdeStr === curTasObj.id ) { // What: Removal Finish Guard. Why: The card's own collapse-out animation ending is exactly when the deferred delete/skip action should actually run. How: This invokes rmvActRef's own thunk (or a plain delTasFun fallback), then clears both rmvActRef and rmvIdeStr.
 
 
-									( remActRef.current || ( () => actStoObj.delTasFun( curTasObj.id ) ) )(); // What: Deferred Action Call. Why: Delete and Skip each stage a different thunk here; a missing thunk still falls back to a plain remove. How: This invokes remActRef's own current thunk, or a plain delTasFun call when none was staged.
-									remActRef.current = null;                                                 // What: Action Reference Clear. Why: A stale thunk must not accidentally run again on some later animation end. How: This resets remActRef back to null.
-									setRemIdeStr( null );                                                     // What: Removing Flag Clear. Why: The card's own collapse-out animation has now fully finished. How: This clears remIdeStr back to null.
+									( rmvActRef.current || ( () => actStoObj.delTasFun( curTasObj.id ) ) )(); // What: Deferred Action Call. Why: Delete and Skip each stage a different thunk here; a missing thunk still falls back to a plain remove. How: This invokes rmvActRef's own current thunk, or a plain delTasFun call when none was staged.
+									rmvActRef.current = null;                                                 // What: Action Reference Clear. Why: A stale thunk must not accidentally run again on some later animation end. How: This resets rmvActRef back to null.
+									setRmvIdeStr( null );                                                     // What: Removing Flag Clear. Why: The card's own collapse-out animation has now fully finished. How: This clears rmvIdeStr back to null.
 
 
 								}
@@ -1527,8 +1527,8 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 
 
-									remActRef.current = () => actStoObj.delTasFun( curTasObj.id ); // What: Remove Action Stage Call. Why: The card's own collapse-out animation must finish before the actual removal runs. How: This stages a thunk remActRef reads on the card's own onAniEndFun.
-									setRemIdeStr( curTasObj.id );                                  // What: Removal Stage Call. Why: The card above must play its own collapse-out animation before remActRef's own thunk actually runs, on that card's own onAniEndFun. How: This stages curTasObj's own id as the currently-removing card.
+									rmvActRef.current = () => actStoObj.delTasFun( curTasObj.id ); // What: Remove Action Stage Call. Why: The card's own collapse-out animation must finish before the actual removal runs. How: This stages a thunk rmvActRef reads on the card's own onAniEndFun.
+									setRmvIdeStr( curTasObj.id );                                  // What: Removal Stage Call. Why: The card above must play its own collapse-out animation before rmvActRef's own thunk actually runs, on that card's own onAniEndFun. How: This stages curTasObj's own id as the currently-removing card.
 
 
 								} }
@@ -1608,9 +1608,9 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 
 
-															remActRef.current = () => actStoObj.skiTasFun( curTasObj.id, nexIsoStr! ); // What: Skip Action Stage Call. Why: The card's own collapse-out animation must finish before the actual skip runs. How: This stages a thunk remActRef reads on the card's own onAniEndFun, reusing the same removal machinery Delete uses. // What: Non-Null Note. Why: The Skip confirm only renders when skiLabStr found a next eligible day, which also sets nexIsoStr. How: The ! tells TypeScript the day is set here.
+															rmvActRef.current = () => actStoObj.skiTasFun( curTasObj.id, nexIsoStr! ); // What: Skip Action Stage Call. Why: The card's own collapse-out animation must finish before the actual skip runs. How: This stages a thunk rmvActRef reads on the card's own onAniEndFun, reusing the same removal machinery Delete uses. // What: Non-Null Note. Why: The Skip confirm only renders when skiLabStr found a next eligible day, which also sets nexIsoStr. How: The ! tells TypeScript the day is set here.
 
-															setRemIdeStr( curTasObj.id ); // What: Removal Stage Call. Why: The card above must play its own collapse-out animation before the deferred skiTasFun call actually runs, on that card's own onAniEndFun. How: This stages curTasObj's own id as the currently-removing card, reusing the same removal machinery Delete uses.
+															setRmvIdeStr( curTasObj.id ); // What: Removal Stage Call. Why: The card above must play its own collapse-out animation before the deferred skiTasFun call actually runs, on that card's own onAniEndFun. How: This stages curTasObj's own id as the currently-removing card, reusing the same removal machinery Delete uses.
 
 
 														} }

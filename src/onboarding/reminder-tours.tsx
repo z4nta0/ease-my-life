@@ -307,7 +307,7 @@ const buiAddFun = ( varKeyStr : string, staAppObj : StaAppTyp ) : TouSteTyp => {
 			emlTouObj.set({ // What: Prefill Publish Call. Why: reminders-section.tsx's own staAddFun reads this to prefill the real add-reminder form. How: This builds the prefill shape from the resolved samTasObj above.
 
 
-				preFilObj : { // What: Prefill Object. Why: reminders-section.tsx's own staAddFun reads this nested shape directly as the real form's own prefill payload. How: This is built from samTasObj's own resolved fields below.
+				prePayObj : { // What: Prefill Payload Object. Why: reminders-section.tsx's own staAddFun reads this nested shape directly as the real form's own prefill payload. How: This is built from samTasObj's own resolved fields below.
 
 
 					createdFromSample : varCopObj.ideStr, // What: Created From Sample Field. Why: A future Replay needs to find and update this same reminder instead of creating a duplicate. How: This tags the prefill with the sample task's own id.
@@ -535,7 +535,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 	const cloTouFun = ( staValStr : CheStaTyp ) : void => { // What: Close Tour Function. Why: Clears the checklist status and the shared bus's own prefill together, the only two bits of state this tour ever touches outside its own local phase. How: This never touches the sample task itself (see buiAddFun's own runFun above), only the new draft it seeded gets built from it.
 
 
-		emlTouObj.set( { preFilObj : null } ); // What: Prefill Clear Call. Why: A stale prefill left over from Step 1 must not leak into whatever the add-reminder form shows next. How: This clears the shared bus's own preFilObj field.
+		emlTouObj.set( { prePayObj : null } ); // What: Prefill Clear Call. Why: A stale prefill left over from Step 1 must not leak into whatever the add-reminder form shows next. How: This clears the shared bus's own prePayObj field.
 
 
 		actStoObj.setCarFun( varCopObj.ideStr, { status : staValStr } ); // What: Checklist Status Update Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this varKeyStr's own sample task's checklist entry to staValStr.

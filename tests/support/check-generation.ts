@@ -376,7 +376,7 @@ const chePicFun = ( picRcdObj : PicRcdTyp, preIteArr : IteRcdTyp[], curEntObj : 
 
 
 		const eliIteArr = pooIteArr.filter( ( curIteObj ) => ( curIteObj.value ?? 0 ) >= thrValNum - 0.5 ); // What: Eligible Item Array. Why: Only items within 0.5 of the threshold can be picked. How: This filters the pool.
-		const chaRowArr : PicUpdTyp[] = [];                                                                 // What: Charge Row Array. Why: The expected updates are built item by item. How: This collects them.
+		const chrRowArr : PicUpdTyp[] = [];                                                                 // What: Charge Row Array. Why: The expected updates are built item by item. How: This collects them.
 
 
 
@@ -399,7 +399,7 @@ const chePicFun = ( picRcdObj : PicRcdTyp, preIteArr : IteRcdTyp[], curEntObj : 
 
 
 
-				chaRowArr.push({ // What: Charge Row Push. Why: Each item's value rises by its step. How: This expects the new value.
+				chrRowArr.push({ // What: Charge Row Push. Why: Each item's value rises by its step. How: This expects the new value.
 
 
 					chargeStep : steValNum,                           // What: Charge Step. Why: The step is kept or rolled. How: This stores the expected step.
@@ -414,7 +414,7 @@ const chePicFun = ( picRcdObj : PicRcdTyp, preIteArr : IteRcdTyp[], curEntObj : 
 
 
 
-			cmpUpdFun( chaRowArr, actUpdArr, issAddFun, labTexStr ); // What: Charge Compare Call. Why: The staged charge must match. How: This compares it.
+			cmpUpdFun( chrRowArr, actUpdArr, issAddFun, labTexStr ); // What: Charge Compare Call. Why: The staged charge must match. How: This compares it.
 
 
 
@@ -447,7 +447,7 @@ const chePicFun = ( picRcdObj : PicRcdTyp, preIteArr : IteRcdTyp[], curEntObj : 
 
 
 
-			chaRowArr.push({ // What: Expected Row Push. Why: The pick resets to 0 and the rest charge. How: This expects each new value.
+			chrRowArr.push({ // What: Expected Row Push. Why: The pick resets to 0 and the rest charge. How: This expects each new value.
 
 
 				chargeStep : steValNum,                                           // What: Charge Step. Why: The step is kept or rolled. How: This stores the expected step.
@@ -462,15 +462,15 @@ const chePicFun = ( picRcdObj : PicRcdTyp, preIteArr : IteRcdTyp[], curEntObj : 
 
 
 
-		const oveValArr = chaRowArr.filter( ( updRowObj ) => ( updRowObj.value ?? 0 ) > thrValNum ).map( ( updRowObj ) => ( updRowObj.value ?? 0 ) - thrValNum ); // What: Overshoot Value Array. Why: Several overshooters are pulled back together. How: This lists each overshoot.
+		const oveValArr = chrRowArr.filter( ( updRowObj ) => ( updRowObj.value ?? 0 ) > thrValNum ).map( ( updRowObj ) => ( updRowObj.value ?? 0 ) - thrValNum ); // What: Overshoot Value Array. Why: Several overshooters are pulled back together. How: This lists each overshoot.
 
 
 
-		if ( oveValArr.length > 1 && Math.min( ...oveValArr ) > 0 ) for ( const updRowObj of chaRowArr ) if ( ( updRowObj.value ?? 0 ) > thrValNum ) updRowObj.value = ( updRowObj.value ?? 0 ) - Math.min( ...oveValArr ); // What: Overshoot Compression. Why: More than one overshooter drop by the smallest overshoot. How: This subtracts it from each.
+		if ( oveValArr.length > 1 && Math.min( ...oveValArr ) > 0 ) for ( const updRowObj of chrRowArr ) if ( ( updRowObj.value ?? 0 ) > thrValNum ) updRowObj.value = ( updRowObj.value ?? 0 ) - Math.min( ...oveValArr ); // What: Overshoot Compression. Why: More than one overshooter drop by the smallest overshoot. How: This subtracts it from each.
 
 
 
-		cmpUpdFun( chaRowArr, actUpdArr, issAddFun, labTexStr ); // What: Pick Update Compare Call. Why: The staged updates must match. How: This compares them.
+		cmpUpdFun( chrRowArr, actUpdArr, issAddFun, labTexStr ); // What: Pick Update Compare Call. Why: The staged updates must match. How: This compares them.
 
 
 	}

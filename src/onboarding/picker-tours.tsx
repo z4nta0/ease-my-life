@@ -851,7 +851,7 @@ const buiNewFun = ( picIdeStr : string, staAppObj : StaAppTyp ) : TouSteTyp => (
 
 
 			exiIdeStr : exiPicObj ? exiPicObj.id : null, // What: Existing Identifier String. Why: A previously-finished run's own real picker must be updated in place, not duplicated. How: This carries exiPicObj's own id through when found, null otherwise.
-			preFilObj : PIC_SAM_OBJ[ picIdeStr ],        // What: Prefill Object. Why: The real form's own fields need this sample's own template data. How: This reads PIC_SAM_OBJ by picIdeStr straight through.
+			prePayObj : PIC_SAM_OBJ[ picIdeStr ],        // What: Prefill Payload Object. Why: The real form's own fields need this sample's own template data. How: This reads PIC_SAM_OBJ by picIdeStr straight through.
 			samIdeStr : picIdeStr                        // What: Sample Identifier String. Why: A future replay of this same tour needs to find this run's own picker. How: This tags the prefill with picIdeStr.
 
 
@@ -1001,7 +1001,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 	 * sample's own checklist entry. It clears every prefill field this tour
 	 * published on the shared bus, since tab-picker.tsx prefills its create
 	 * form from
- * preFilObj whenever one is present, so a leftover value would fill the next
+ * prePayObj whenever one is present, so a leftover value would fill the next
  * picker the user creates with stale sample data. It then updates this
  * sample's own launcher card status and calls onCloTouFun so app.tsx unmounts
  * the tour.
@@ -1022,7 +1022,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 	 *
 	*/
 
-	const cloTouFun = ( staValStr : CheStaTyp ) : void => { // What: Close Tour Function. Why: Every exit path (cancelled, skipped, or finished) must clear this tour's prefill fields, since tab-picker.tsx prefills its create form from preFilObj whenever one is present, so a leftover value would fill the next picker the user creates with stale sample data. How: This publishes every prefill-related field back to its own idle value, updates the checklist, then calls onCloTouFun.
+	const cloTouFun = ( staValStr : CheStaTyp ) : void => { // What: Close Tour Function. Why: Every exit path (cancelled, skipped, or finished) must clear this tour's prefill fields, since tab-picker.tsx prefills its create form from prePayObj whenever one is present, so a leftover value would fill the next picker the user creates with stale sample data. How: This publishes every prefill-related field back to its own idle value, updates the checklist, then calls onCloTouFun.
 
 
 		emlTouObj.set({ // What: Prefill Clear Call. Why: A stale prefill left over from this tour must not leak into a future visit to the Pickers tab. How: This resets every field buiNewFun's/buiAddFun's own runFun() published, back to its own idle value.
@@ -1032,7 +1032,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 			iteMaxNum : null, // What: Item Maximum Number. Why: Same reasoning as itePreStr, for the drift band's own fast end. How: This clears the field buiAddFun's own runFun() set.
 			iteMinNum : null, // What: Item Minimum Number. Why: Same reasoning as itePreStr, for the drift band's own slow end. How: This clears the field buiAddFun's own runFun() set.
 			itePreStr : null, // What: Item Prefill String. Why: The item editor must not reopen with a stale prefilled name. How: This clears the field buiAddFun's own runFun() set.
-			preFilObj : null, // What: Prefill Object. Why: The create-picker form must not reopen with stale sample data. How: This clears the field buiNewFun's own runFun() set.
+			prePayObj : null, // What: Prefill Payload Object. Why: The create-picker form must not reopen with stale sample data. How: This clears the field buiNewFun's own runFun() set.
 			samIdeStr : null  // What: Sample Identifier String. Why: Same reasoning as exiIdeStr. How: This clears the field buiNewFun's own runFun() set.
 
 

@@ -91,12 +91,12 @@ function invColFun ( hexColStr : string ) : string {
 
 		};
 
-		const linOklFun = ( [ linRedNum, linGrnNum, linBluNum ] : number[] ) => { // What: Linear Oklab Function. Why: Lightness must be inverted in OKLab space, not raw RGB, for a perceptually sane result. How: This applies Ottosson's own linear-RGB-to-OKLab matrix multiplication and cube roots.
+		const linOklFun = ( [ linRedNum, linGreNum, linBluNum ] : number[] ) => { // What: Linear Oklab Function. Why: Lightness must be inverted in OKLab space, not raw RGB, for a perceptually sane result. How: This applies Ottosson's own linear-RGB-to-OKLab matrix multiplication and cube roots.
 
 
-			const lmsLonNum = 0.4122214708 * linRedNum + 0.5363325363 * linGrnNum + 0.0514459929 * linBluNum; // What: Long-Medium-Short Long Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Long-cone row of Ottosson's linear-RGB-to-LMS matrix.
-			const lmsMedNum = 0.2119034982 * linRedNum + 0.6806995451 * linGrnNum + 0.1073969566 * linBluNum; // What: Long-Medium-Short Medium Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Medium-cone row of Ottosson's linear-RGB-to-LMS matrix.
-			const lmsShoNum = 0.0883024619 * linRedNum + 0.2817188376 * linGrnNum + 0.6299787005 * linBluNum; // What: Long-Medium-Short Short Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Short-cone row of Ottosson's linear-RGB-to-LMS matrix.
+			const lmsLonNum = 0.4122214708 * linRedNum + 0.5363325363 * linGreNum + 0.0514459929 * linBluNum; // What: Long-Medium-Short Long Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Long-cone row of Ottosson's linear-RGB-to-LMS matrix.
+			const lmsMedNum = 0.2119034982 * linRedNum + 0.6806995451 * linGreNum + 0.1073969566 * linBluNum; // What: Long-Medium-Short Medium Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Medium-cone row of Ottosson's linear-RGB-to-LMS matrix.
+			const lmsShoNum = 0.0883024619 * linRedNum + 0.2817188376 * linGreNum + 0.6299787005 * linBluNum; // What: Long-Medium-Short Short Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Short-cone row of Ottosson's linear-RGB-to-LMS matrix.
 			const cbrLonNum = Math.cbrt( lmsLonNum );                                                         // What: Cube-Root Long Number. Why: OKLab's own nonlinearity is a cube root of each cone response, applied before the final matrix. How: This cube-roots lmsLonNum.
 			const cbrMedNum = Math.cbrt( lmsMedNum );                                                         // What: Cube-Root Medium Number. Why: OKLab's own nonlinearity is a cube root of each cone response, applied before the final matrix. How: This cube-roots lmsMedNum.
 			const cbrShoNum = Math.cbrt( lmsShoNum );                                                         // What: Cube-Root Short Number. Why: OKLab's own nonlinearity is a cube root of each cone response, applied before the final matrix. How: This cube-roots lmsShoNum.
