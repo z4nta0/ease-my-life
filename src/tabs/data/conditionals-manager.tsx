@@ -16,6 +16,7 @@ import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Ico
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled add button or a truncated type label still needs to explain itself on demand. How: This wraps those controls in ConManCom.
 import { norConFun    } from '../../core/pickers.ts';               // What: Normalize Conditional Function. Why: A newly-typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on ConManCom's own in-progress draft name.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Adding a conditional must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutProFun in ConManCom.
+import { PIC_NAM_OBJ  } from '../../core/pickers.ts';               // What: Pickers Namespace Object. Why: A conditional's sortable Range falls back to the shared full-charge ceiling. How: This reads PIC_NAM_OBJ.THR_VAL_NUM in conRanFun.
 import { ranIdeFun    } from '../../utils/random-id.ts';            // What: Random Identifier Function. Why: A brand-new conditional draft needs its own id at once. How: This mints a 'cnd_' id.
 import { redMotFun    } from '../../utils/motion.ts';               // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see this section's own row open, close, save, or delete animations. How: This is checked before each of those animations in ConManCom.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';                 // What: Seed Namespace Object. Why: Each conditional mode's own label comes from this shared catalog. How: This is read (MOD_DEF_OBJ) in ConManCom for each row's type label.
@@ -439,8 +440,8 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 
 	const conRanFun = ( conCurObj : ConRcdTyp ) => ( conCurObj.mode === 'ease-up' || conCurObj.mode === 'ease-down' ) // What: Conditional Range Function. Why: Ease-mode conditionals expose a sortable Range value, the same soonest/latest-band math their own editor uses, collapsed to its near end. How: This computes it only for ease-up/ease-down, null otherwise.
-		? Math.max( 1, Math.round( ( conCurObj.threshold ?? 100 ) / ( conCurObj.easeMax ?? 14 ) ) ) // What: Ease Range Branch. Why: An ease-mode conditional's range is roughly how many days it takes to fully charge. How: This divides threshold by easeMax, never below 1.
-		: null;                                                                                     // What: No Range Branch. Why: Every other mode has no range to sort by. How: This returns null.
+		? Math.max( 1, Math.round( ( conCurObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM ) / ( conCurObj.easeMax ?? 14 ) ) ) // What: Ease Range Branch. Why: An ease-mode conditional's range is roughly how many days it takes to fully charge. How: This divides threshold by easeMax, never below 1.
+		: null; // What: No Range Branch. Why: Every other mode has no range to sort by. How: This returns null.
 
 
 	const conOddFun = ( conCurObj : ConRcdTyp ) => ( conCurObj.mode === 'weighted' || conCurObj.mode === 'dynamic' ) ? ( conCurObj.oddsPct ?? 50 ) : null; // What: Conditional Odds Function. Why: Weighted/dynamic conditionals expose their real trigger-likelihood as Odds, not their own vestigial weight field. How: This reads conCurObj.oddsPct only for those 2 modes, null otherwise.

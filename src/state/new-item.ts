@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { PIC_NAM_OBJ } from '../core/pickers.ts';    // What: Pickers Namespace Object. Why: An ease-mode item is stamped with its picker's average drift band. How: This is called via PIC_NAM_OBJ.aveEasFun.
+import { PIC_NAM_OBJ } from '../core/pickers.ts';    // What: Pickers Namespace Object. Why: An ease-mode item is stamped with its picker's average drift band, and an ease-down item starts at the shared full-charge ceiling when its picker has no threshold of its own. How: This is called via PIC_NAM_OBJ.aveEasFun and read for THR_VAL_NUM.
 import { ranIdeFun   } from '../utils/random-id.ts'; // What: Random Identifier Function. Why: A new item with no id of its own needs a fresh one. How: This mints an 'it_' id.
 import { uniNamFun   } from '../utils/format.ts';    // What: Unique Name Function. Why: Two items in the same picker can't share a name. How: This de-duplicates the new item's name against its siblings.
 
@@ -87,7 +87,7 @@ function buiIteFun ( curPicObj : Pick< PicRcdTyp, 'id' > & Partial< PicRcdTyp >,
 	if ( isaDowBoo ) { // What: Ease-Down Defaults Guard. Why: Only ease-down needs its own charged value and fairness-averaged weight computed. How: This overwrites iniValNum/weiValNum with the ease-down-specific computation below.
 
 
-		iniValNum = curPicObj.threshold ?? 100; // What: Charged Value Set. Why: A new ease-down item starts fully charged, same as every other item in that mode. How: This reads curPicObj's own threshold, defaulting to 100.
+		iniValNum = curPicObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Charged Value Set. Why: A new ease-down item starts fully charged, same as every other item in that mode. How: This reads curPicObj's own threshold, defaulting to PIC_NAM_OBJ.THR_VAL_NUM.
 
 
 		const perWeiArr = sibIteArr.map( ( curIteObj ) => curIteObj.weight ?? 1 ).filter( ( curWeiNum ) => curWeiNum > 0 ); // What: Peer Weight Array. Why: The average below must exclude the weight-0 active item, so a fresh streak's own zero can't drag the newcomer down. How: This maps sibIteArr to its own weights (defaulting 1), then drops any that are 0 or below.

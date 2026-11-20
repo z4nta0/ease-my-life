@@ -5,6 +5,7 @@
 
 import { HOL_NAM_OBJ } from '../core/holidays.ts'; // What: Holidays Namespace Object. Why: The clean state needs the canonical empty holidays shape. How: This is called (defStaFun) by buiCleFun below.
 import { isoDayFun   } from '../utils/date.ts';    // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
+import { PIC_NAM_OBJ } from '../core/pickers.ts';  // What: Pickers Namespace Object. Why: The Ease Down history simulation charges toward the shared full-charge ceiling when a picker has no threshold of its own. How: This reads PIC_NAM_OBJ.THR_VAL_NUM.
 import { TAS_NAM_OBJ } from '../core/tasks.ts';    // What: Tasks Namespace Object. Why: The clean state needs the reminders engine's own default options shape. How: This is called (defOptFun) by buiCleFun below.
 
 
@@ -533,7 +534,7 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 
 
-		const thrValNum = curPicObj.threshold ?? 100; // What: Threshold Value Number. Why: Every charge calculation below needs this picker's own starting/eligibility value. How: This reads curPicObj's own threshold, defaulting to 100 when missing.
+		const thrValNum = curPicObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: Every charge calculation below needs this picker's own starting/eligibility value. How: This reads curPicObj's own threshold, defaulting to PIC_NAM_OBJ.THR_VAL_NUM when missing.
 
 		let actIteObj = null; // What: Active Item Object And Guard. Why: The simulation below needs a running "currently active item" slot, starting with none picked yet. How: This starts null and is assigned/cleared throughout the loop below.
 		let chaValNum = 0;    // What: Charge Value Number And Guard. Why: The simulation below needs a running charge for whichever item is active. How: This starts at 0, immediately overwritten once an item first becomes active below.

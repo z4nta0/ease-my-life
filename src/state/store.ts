@@ -26,6 +26,7 @@ import { norGroFun   } from '../core/pickers.ts';        // What: Normalize Grou
 import { norPicFun   } from '../core/pickers.ts';        // What: Normalize Picker Function. Why: A picker's own display name needs tidying wherever one is created or renamed. How: This is called from addPicFun, savEdiFun, and renPicFun below.
 import { ONB_CHE_OBJ } from './onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Resolving a checklist item can flip the closing Generate card's own readiness. How: This is called (reaGenFun) from setCarFun below.
 import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicFun below.
+import { PIC_NAM_OBJ } from '../core/pickers.ts';        // What: Pickers Namespace Object. Why: Pickers and conditionals with no threshold of their own fall back to the shared full-charge ceiling. How: This reads PIC_NAM_OBJ.THR_VAL_NUM wherever a threshold is resolved.
 import { PWA_NAM_OBJ } from '../platform/pwa.ts';        // What: Progressive Web App Namespace Object. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (askFirFun) once, from inside addPicFun below.
 import { ranIdeFun   } from '../utils/random-id.ts';     // What: Random Identifier Function. Why: New pickers, items, conditionals, holidays, and log rows each need a fresh id. How: This mints one from each kind's own prefix.
 import { rebPenFun   } from './pending-mutations.ts';    // What: Rebase Pending Function. Why: A direct value edit to an Ease Down item must not leave its own entry decaying from the old value. How: This is called by updIteFun after spuDroFun.
@@ -323,10 +324,12 @@ function madConFun ( newConObj : Partial< ConRcdTyp > | null | undefined ) : Con
 		mode         : newConObj.mode || 'random',                                                                   // What: Mode. Why: The mode decides how this conditional rolls or charges each day. How: This reads newConObj.mode, defaulting to 'random'.
 		name         : norConFun( newConObj.name ) || newConObj.name || 'Conditional',                               // What: Name. Why: The conditional needs a tidied display name. How: This title-cases newConObj.name via norConFun, falling back to the raw name, then 'Conditional'.
 		oddsPct      : newConObj.oddsPct ?? 50,                                                                      // What: Odds Percent. Why: A probability-mode conditional needs its own daily firing odds. How: This reads newConObj.oddsPct, defaulting to 50.
-		threshold    : newConObj.threshold ?? 100,                                                                   // What: Threshold. Why: An ease-mode conditional charges toward (or decays from) this value. How: This reads newConObj.threshold, defaulting to 100.
+		threshold    : newConObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM,                                               // What: Threshold. Why: An ease-mode conditional charges toward (or decays from) this value. How: This reads newConObj.threshold, defaulting to PIC_NAM_OBJ.THR_VAL_NUM.
 		triggered    : newConObj.triggered !== undefined ? newConObj.triggered : ( newConObj.mode === 'ease-down' ), // What: Triggered. Why: A new conditional starts firing only when it's ease-down, which starts charged. How: This honors newConObj.triggered when given, else defaults to whether mode is 'ease-down'.
-		value        : newConObj.mode === 'ease-down' ? ( newConObj.threshold ?? 100 ) : ( newConObj.value ?? 0 ),   // What: Value. Why: Ease Down starts fully charged at its threshold while every other mode starts from its own given value. How: This is the threshold (default 100) for ease-down, else newConObj.value (default 0).
-		weight       : newConObj.weight ?? 1                                                                         // What: Weight. Why: A weighted conditional needs its own draw weight. How: This reads newConObj.weight, defaulting to 1.
+		weight       : newConObj.weight ?? 1,                                                                        // What: Weight. Why: A weighted conditional needs its own draw weight. How: This reads newConObj.weight, defaulting to 1.
+
+		value : newConObj.mode === 'ease-down' ? ( newConObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM ) : ( newConObj.value ?? 0 ) // What: Value. Why: Ease Down starts fully charged at its threshold while every other mode starts from its own given value. How: This is the threshold (default PIC_NAM_OBJ.THR_VAL_NUM) for ease-down, else newConObj.value (default 0).
+
 
 	};
 
@@ -1207,9 +1210,9 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 					mode         : conArgObj.mode || 'ease-up',                                                                  // What: Mode. Why: The mode decides how this conditional rolls or charges each day. How: This reads conArgObj.mode, defaulting to 'ease-up'.
 					name         : conArgObj.name || 'Conditional',                                                              // What: Name. Why: The conditional needs a display name across the Data tab and its own day-off card. How: This reads conArgObj.name, defaulting to 'Conditional'.
 					oddsPct      : conArgObj.oddsPct ?? 50,                                                                      // What: Odds Percent. Why: A probability-mode conditional needs its own daily firing odds. How: This reads conArgObj.oddsPct, defaulting to 50.
-					threshold    : conArgObj.threshold ?? 100,                                                                   // What: Threshold. Why: An ease-mode conditional charges toward (or decays from) this value. How: This reads conArgObj.threshold, defaulting to 100.
+					threshold    : conArgObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM,                                               // What: Threshold. Why: An ease-mode conditional charges toward (or decays from) this value. How: This reads conArgObj.threshold, defaulting to PIC_NAM_OBJ.THR_VAL_NUM.
 					triggered    : conArgObj.triggered !== undefined ? conArgObj.triggered : ( conArgObj.mode === 'ease-down' ), // What: Triggered. Why: A new conditional starts firing only when it's ease-down, which starts charged. How: This honors conArgObj.triggered when given, else defaults to whether mode is 'ease-down'. // What: Active/Triggered Defaults. Why: active means enabled (not inactive); triggered means currently firing, defaulting true only for ease-down (which starts "charged"). How: This honors an explicit value when given, else applies each field's own default.
-					value        : conArgObj.mode === 'ease-down' ? ( conArgObj.threshold ?? 100 ) : 0,                          // What: Value. Why: Ease Down starts fully charged at its threshold while every other mode starts empty. How: This is the threshold (default 100) for ease-down, else 0.
+					value        : conArgObj.mode === 'ease-down' ? ( conArgObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM ) : 0,      // What: Value. Why: Ease Down starts fully charged at its threshold while every other mode starts empty. How: This is the threshold (default PIC_NAM_OBJ.THR_VAL_NUM) for ease-down, else 0.
 					weight       : conArgObj.weight ?? 1                                                                         // What: Weight. Why: A weighted conditional needs its own draw weight. How: This reads conArgObj.weight, defaulting to 1.
 
 
@@ -2027,7 +2030,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 
-					const thrValNum = curPicObj.threshold ?? 100; // What: Threshold Value Number. Why: An abandoned item must recharge back to this exact threshold, as if it were never touched. How: This reads curPicObj's own threshold, defaulting to 100.
+					const thrValNum = curPicObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: An abandoned item must recharge back to this exact threshold, as if it were never touched. How: This reads curPicObj's own threshold, defaulting to PIC_NAM_OBJ.THR_VAL_NUM.
 
 					nexPicArr = nexPicArr.map( ( picMapObj ) => picMapObj.id === curPicObj.id ? { ...picMapObj, activeItemId : null } : picMapObj ); // What: Picker Pointer Null. Why: The abandoned picker must no longer point at this item as its own in-progress one. How: This nulls activeItemId on the one matching picker.
 					nexIteArr = nexIteArr.map( ( iteMapObj ) => iteMapObj.id === cuiIdeStr ? { ...iteMapObj, value : thrValNum } : iteMapObj );      // What: Item Recharge. Why: An abandoned streak must recharge to full, never counting toward Spent. How: This sets the one matching item's own value to thrValNum.
@@ -3062,7 +3065,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 
-			const thrValNum = curPicObj.threshold ?? 100; // What: Threshold Value Number. Why: Every owned item's own value below must be raised to (at least) this exact number. How: This reads curPicObj's own threshold, defaulting to 100.
+			const thrValNum = curPicObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: Every owned item's own value below must be raised to (at least) this exact number. How: This reads curPicObj's own threshold, defaulting to PIC_NAM_OBJ.THR_VAL_NUM.
 
 
 
@@ -3246,8 +3249,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 			// #region Mode Reset Defaults
 
-			const thrValNum = curPicObj.threshold ?? 100;             // What: Threshold Value Number. Why: An Ease Down picker's items reset to fully charged at its threshold. How: This reads curPicObj's own threshold, defaulting to 100.
-			const modDefObj = modDefFun( picArgObj.mode, thrValNum ); // What: Mode Defaults Object. Why: Every item's own weight/value/drift-band must reset to sensible defaults for whichever mode was just switched to. How: This calls modDefFun with the new mode and this picker's threshold.
+			const thrValNum = curPicObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: An Ease Down picker's items reset to fully charged at its threshold. How: This reads curPicObj's own threshold, defaulting to PIC_NAM_OBJ.THR_VAL_NUM.
+			const modDefObj = modDefFun( picArgObj.mode, thrValNum );         // What: Mode Defaults Object. Why: Every item's own weight/value/drift-band must reset to sensible defaults for whichever mode was just switched to. How: This calls modDefFun with the new mode and this picker's threshold.
 
 
 			const nexIteArr = modChaBoo // What: Next Item Array. Why: Only an ACTUAL mode change resets this picker's own items; an unchanged mode leaves every item's own tuning untouched. How: This maps curStaObj.items, merging modDefObj onto every item owned by picIdeStr, only when modChaBoo is true.
@@ -3488,7 +3491,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 				if ( easDowBoo && curPicObj.activeItemId !== iteIdeStr ) { // What: Ease-Down Reactivation Guard. Why: Only switching to a DIFFERENT active item needs its own staged recharge-and-activate pending. How: This builds penValObj only when curPicObj is ease-down and itemId isn't already its own active item.
 
 
-					const thrValNum = curPicObj.threshold ?? 100; // What: Threshold Value Number. Why: The previously-active item (if any) must be staged to recharge back to this exact threshold. How: This reads curPicObj's own threshold, defaulting to 100.
+					const thrValNum = curPicObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: The previously-active item (if any) must be staged to recharge back to this exact threshold. How: This reads curPicObj's own threshold, defaulting to PIC_NAM_OBJ.THR_VAL_NUM.
 
 					penValObj = { // What: Ease-Down Pending Object. Why: The caller needs a real pending payload staging both the recharge and the activation switch. How: This stages the previously-active item's own recharge (if any), the activeItemId patch, and the pick bump.
 

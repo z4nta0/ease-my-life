@@ -13,7 +13,7 @@ import { EntEdiCom    } from '../../ui/entry-editor.tsx'; // What: Entry Editor 
 import { IcoSvgCom    } from '../../ui/icon.tsx';         // What: Icon Svg Component. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
 import { InfTipCom    } from '../../ui/info-tip.tsx';     // What: Info Tip Component. Why: Several controls need an explanatory tooltip on hover/focus. How: This wraps the weight/value pills and the disabled Send/Delete buttons, given the tooltip's own label text.
 import { isaTruFun    } from '../../utils/guard.ts';      // What: Is-A Truthy Function. Why: Entries without an item drop out of the Today id set. How: This filters them so the set holds only real ids.
-import { PIC_NAM_OBJ  } from '../../core/pickers.ts';     // What: Pickers Namespace Object. Why: This is the namespace of pure picking-engine functions this file drives every actual pick through. How: This is called throughout for PIC_NAM_OBJ.picIteFun/reaValFun/modEliFun/aveEasFun.
+import { PIC_NAM_OBJ  } from '../../core/pickers.ts';     // What: Pickers Namespace Object. Why: This is the namespace of pure picking-engine functions this file drives every actual pick through. How: This is called throughout for PIC_NAM_OBJ.picIteFun/reaValFun/modEliFun/aveEasFun, and read for THR_VAL_NUM.
 import { PicForCom    } from './picker-form.tsx';         // What: Picker Form Component. Why: Editing a picker's details reuses the create form's Details step. How: This is rendered in place of the view while ediOpeBoo is on.
 import { PicStrCom    } from '../../ui/picker-strip.tsx'; // What: Picker Strip Component. Why: Pick One plays the shared reel, spotlight, or dissolve reveal before showing its result. How: This is rendered in the run stage while a pick is cycling.
 import { PilTagCom    } from '../../ui/pill-tag.tsx';     // What: Pill Tag Component. Why: Small status labels need a consistent pill styling. How: This wraps the mode name, the 'inactive' tag, and the 'not yet'/'spent' tag.
@@ -462,13 +462,13 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 		setNewDraObj( { // What: New Draft Seed Call. Why: The freshly-opened editor needs a complete, sensible default item shape to start from. How: This seeds a full charge default for Ease Down (matching addPicFun's own iniValNum) and a zeroed one otherwise. // What: Type Assertion Note. Why: The draft lacks the fields only a saved item has. How: It's read as an item, since the store fills those in when the draft is committed.
 
 
-			easeMax  : 14,                                                                  // What: Ease Max. Why: Ease items start with a default latest end. How: This is 14.
-			easeMin  : 7,                                                                   // What: Ease Min. Why: Ease items start with a default soonest end. How: This is 7.
-			id       : newIdeStr,                                                           // What: Id. Why: The draft needs its own id before it's saved. How: This uses newIdeStr.
-			name     : 'New item',                                                          // What: Name. Why: The editor opens with a placeholder name. How: This is the literal 'New item'.
-			vacation : false,                                                               // What: Vacation. Why: A new item starts active. How: This is false.
-			value    : picDatObj.mode === 'ease-down' ? ( picDatObj.threshold ?? 100 ) : 0, // What: Value. Why: An ease-down item starts fully charged, everything else at 0. How: This uses the picker's threshold for ease-down, otherwise 0.
-			weight   : 1                                                                    // What: Weight. Why: Every item starts at the baseline weight. How: This is 1.
+			easeMax  : 14,                                                                                      // What: Ease Max. Why: Ease items start with a default latest end. How: This is 14.
+			easeMin  : 7,                                                                                       // What: Ease Min. Why: Ease items start with a default soonest end. How: This is 7.
+			id       : newIdeStr,                                                                               // What: Id. Why: The draft needs its own id before it's saved. How: This uses newIdeStr.
+			name     : 'New item',                                                                              // What: Name. Why: The editor opens with a placeholder name. How: This is the literal 'New item'.
+			vacation : false,                                                                                   // What: Vacation. Why: A new item starts active. How: This is false.
+			value    : picDatObj.mode === 'ease-down' ? ( picDatObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM ) : 0, // What: Value. Why: An ease-down item starts fully charged, everything else at 0. How: This uses the picker's threshold for ease-down, otherwise 0.
+			weight   : 1                                                                                        // What: Weight. Why: Every item starts at the baseline weight. How: This is 1.
 
 
 		} as IteRcdTyp );
@@ -1395,9 +1395,9 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 						{ picIteArr.map( ( curIteObj ) => { // What: Pool Row List Render. Why: Every item in this picker's own pool needs its own row, computed fresh each render from its current readiness/eligibility. How: This maps picIteArr to one row per curIteObj, deriving each row's own tooltip text from its mode-specific meaning.
 
 
-							const reaValNum = PIC_NAM_OBJ.reaValFun( curIteObj, picDatObj.mode, picDatObj.threshold ?? 100 ); // What: Readiness Value Number. Why: The drift bar (when shown) needs a normalized 0..1 progress value. How: This calls the shared readiness helper for this exact item/mode/threshold.
-							const eliHerBoo = PIC_NAM_OBJ.modEliFun( curIteObj, picDatObj );                                  // What: Eligible Here Boolean. Why: The row needs to know whether this item is currently pickable under this picker's own mode rules. How: This calls the shared mode-eligibility helper.
-							const weiValNum = curIteObj.weight;                                                               // What: Weight Value Number. Why: The tooltip text needs the item's own current weight. How: This is read directly off curIteObj.weight. // What: Weight Tooltip String. Why: The wN pill (itself fixed, it never drifts) benefits from a plain-language hover explanation of what the number means. How: This is computed from curIteObj's own weight below.
+							const reaValNum = PIC_NAM_OBJ.reaValFun( curIteObj, picDatObj.mode, picDatObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM ); // What: Readiness Value Number. Why: The drift bar (when shown) needs a normalized 0..1 progress value. How: This calls the shared readiness helper for this exact item/mode/threshold.
+							const eliHerBoo = PIC_NAM_OBJ.modEliFun( curIteObj, picDatObj );                                                      // What: Eligible Here Boolean. Why: The row needs to know whether this item is currently pickable under this picker's own mode rules. How: This calls the shared mode-eligibility helper.
+							const weiValNum = curIteObj.weight;                                                                                   // What: Weight Value Number. Why: The tooltip text needs the item's own current weight. How: This is read directly off curIteObj.weight. // What: Weight Tooltip String. Why: The wN pill (itself fixed, it never drifts) benefits from a plain-language hover explanation of what the number means. How: This is computed from curIteObj's own weight below.
 
 
 							const weiTipStr = weiValNum === 1 // What: Weight Tip String. Why: The weight pill's tooltip explains what this item's weight means. How: This picks the baseline sentence for w1, otherwise a multiplier sentence.
@@ -1405,7 +1405,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 								: `Weight ${ weiValNum }, ${ weiValNum }× as likely to be picked as a w1 item.`; // What: Multiplied Weight Branch. Why: A heavier item is picked proportionally more often. How: This names the weight as a multiple of w1.
 
 
-							const thrValNum = picDatObj.threshold ?? 100; // What: Threshold Value Number. Why: Two of the three explanations below need to quote the picker's own threshold. How: This falls back to 100 when the picker has no explicit threshold set. // What: Value Tooltip String. Why: The drifting `value` shown beside wN changes run-to-run, and what it means depends entirely on the picker's own mode. How: This picks one of three explanations, or an empty string for modes with no such meaning.
+							const thrValNum = picDatObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: Two of the three explanations below need to quote the picker's own threshold. How: This falls back to PIC_NAM_OBJ.THR_VAL_NUM when the picker has no explicit threshold set. // What: Value Tooltip String. Why: The drifting `value` shown beside wN changes run-to-run, and what it means depends entirely on the picker's own mode. How: This picks one of three explanations, or an empty string for modes with no such meaning.
 
 
 							const valTipStr = picDatObj.mode === 'dynamic' // What: Value Tip String. Why: The value pill's tooltip explains what the drifting number means for this picker's mode. How: This picks one sentence per mode, empty for modes with no drifting value.

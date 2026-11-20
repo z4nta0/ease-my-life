@@ -7,6 +7,7 @@ import { CON_NAM_OBJ } from '../core/conditionals.ts'; // What: Conditionals Nam
 import { ideMakFun   } from '../utils/sequence-id.ts'; // What: Identifier Make Function. Why: Each conditional-log row ID joins a time stamp and a counter of this file's own. How: This makes nclIdeFun once, in Module State.
 import { isaTruFun   } from '../utils/guard.ts';       // What: Is-A Truthy Function. Why: The touched-id set drops a missing picked id. How: This filters the ids through the shared truthy guard, so TypeScript sees only real ids.
 import { isoDayFun   } from '../utils/date.ts';        // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
+import { PIC_NAM_OBJ } from '../core/pickers.ts';      // What: Pickers Namespace Object. Why: A reworked decay starts from the shared full-charge ceiling when its picker has no threshold of its own. How: This reads PIC_NAM_OBJ.THR_VAL_NUM in rebPenFun.
 
 
 import type { CdlRowTyp } from '../core/data-model.ts'; // What: Conditional-Log Row Type. Why: Completing a day-off card logs its outcome. How: This types cdlAplFun's return.
@@ -839,7 +840,7 @@ function rebPenFun ( todEntArr : TodEntTyp[], picRcdArr : PicRcdTyp[], iteIdeStr
 
 
 
-		const thrValNum = curPicObj.threshold ?? 100;                       // What: Threshold Value Number. Why: A depleted item recharges to its picker's own threshold. How: This reads the picker's threshold, defaulting to 100.
+		const thrValNum = curPicObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM;   // What: Threshold Value Number. Why: A depleted item recharges to its picker's own threshold. How: This reads the picker's threshold, defaulting to PIC_NAM_OBJ.THR_VAL_NUM.
 		const basValNum = newValNum > 0 ? newValNum : thrValNum;            // What: Base Value Number. Why: The decay starts from the item's new value, the same way a new streak starts from a full one when the item is empty. How: This uses newValNum, or thrValNum when it's 0.
 		const remValNum = Math.max( 0, basValNum - decUpdObj.chargeStep! ); // What: Remaining Value Number. Why: Completing the entry takes one step off the new value. How: This subtracts the row's chargeStep, floored at 0. // What: Non-Null Note. Why: decUpdObj was found only when its chargeStep is above 0. How: The ! tells TypeScript the step is set.
 		const depEndBoo = remValNum <= 0.5;                                 // What: Depleted End Boolean. Why: The streak ends only when this step empties the item, with the same half-unit tolerance pickers.ts uses. How: This checks remValNum against 0.5.
