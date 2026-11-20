@@ -184,16 +184,16 @@ function reaPhrFun ( visResObj : TodVisTyp ) : string {
 	const reaParArr = []; // What: Reason Part Array. Why: Every applicable settings-based cause below is collected here before being joined into one phrase. How: This is pushed onto by both branches below and joined at the very end.
 
 
-	if ( visResObj.causes.includes( 'weekends' ) ) reaParArr.push( 'weekends' ); // What: Weekends Cause Guard. Why: Weekend exclusion is one of the possible settings-based reasons. How: This pushes the plain word onto reaParArr when visResObj's own causes include 'weekends'.
+	if ( visResObj.cauArr.includes( 'weekends' ) ) reaParArr.push( 'weekends' ); // What: Weekends Cause Guard. Why: Weekend exclusion is one of the possible settings-based reasons. How: This pushes the plain word onto reaParArr when visResObj's own cauArr include 'weekends'.
 
 
 
-	if ( visResObj.causes.includes( 'holidays' ) ) { // What: Holidays Cause Guard. Why: Holiday exclusion is the other possible settings-based reason, and it needs its own specific holiday name when one is known. How: This pushes either a named-holiday phrase or the plain word 'holidays' onto reaParArr.
+	if ( visResObj.cauArr.includes( 'holidays' ) ) { // What: Holidays Cause Guard. Why: Holiday exclusion is the other possible settings-based reason, and it needs its own specific holiday name when one is known. How: This pushes either a named-holiday phrase or the plain word 'holidays' onto reaParArr.
 
 
-		const holPhrStr = visResObj.holidayName // What: Holiday Phrase String. Why: A named holiday reads better than the plain word. How: This picks the named phrase below when visResObj carries a holiday name.
-			? ( visResObj.holidayCustom ? `your ${ visResObj.holidayName } custom holiday` : `the ${ visResObj.holidayName } holiday` ) // What: Named Holiday Phrase. Why: Naming the specific holiday tells the user exactly where to go to change it. How: This picks the custom-holiday or built-in-holiday phrasing based on visResObj's own holidayCustom flag.
-			: 'holidays'; // What: Generic Holidays Fallback. Why: A holiday-based cause with no specific name still needs a defined phrase. How: This falls back to the plain word when visResObj's own holidayName is unset.
+		const holPhrStr = visResObj.holStr // What: Holiday Phrase String. Why: A named holiday reads better than the plain word. How: This picks the named phrase below when visResObj carries a holiday name.
+			? ( visResObj.cusBoo ? `your ${ visResObj.holStr } custom holiday` : `the ${ visResObj.holStr } holiday` ) // What: Named Holiday Phrase. Why: Naming the specific holiday tells the user exactly where to go to change it. How: This picks the custom-holiday or built-in-holiday phrasing based on visResObj's own cusBoo flag.
+			: 'holidays'; // What: Generic Holidays Fallback. Why: A holiday-based cause with no specific name still needs a defined phrase. How: This falls back to the plain word when visResObj's own holStr is unset.
 
 
 		reaParArr.push( holPhrStr ); // What: Holiday Phrase Push. Why: The holiday reason joins the other collected reasons. How: This appends holPhrStr to reaParArr.
@@ -733,19 +733,19 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp 
 		: null;                                                                          // What: No Task Branch. Why: With no task there is nothing to compute. How: This leaves the result null.
 
 
-	const nevShoBoo = !!visResObj && !visResObj.visible && !visResObj.next; // What: Never Show Boolean. Why: A reminder with no eligible day at all is a dead configuration, not a deferred one, and needs a red warning instead of the calm advisory. How: This is true only when visResObj exists, isn't visible, and has no next eligible date either.
+	const nevShoBoo = !!visResObj && !visResObj.visBoo && !visResObj.nexObj; // What: Never Show Boolean. Why: A reminder with no eligible day at all is a dead configuration, not a deferred one, and needs a red warning instead of the calm advisory. How: This is true only when visResObj exists, isn't visible, and has no next eligible date either.
 
 
 	const notConEle = ( () => { // What: Note Content Element. Why: The actual advisory content depends on several branches below, computed once as an IIFE rather than duplicated at each return point. How: This returns null when nothing applies to this instance's own kinValStr, otherwise the advisory paragraph.
 
 
-		if ( !visResObj || visResObj.visible ) return null; // What: Already-Visible Guard. Why: A reminder that's already showing today needs no advisory at all. How: This returns null when there's no result yet, or the reminder is already visible.
+		if ( !visResObj || visResObj.visBoo ) return null; // What: Already-Visible Guard. Why: A reminder that's already showing today needs no advisory at all. How: This returns null when there's no result yet, or the reminder is already visible.
 
 
 
 		// #region Note Placement
 
-		const setCauArr = visResObj.causes.filter( ( curCauStr ) => { // What: Settings Cause Array. Why: This decides which placement (settings vs schedule) the current cause set belongs to. How: This keeps only the 3 settings-based cause values out of visResObj's own causes.
+		const setCauArr = visResObj.cauArr.filter( ( curCauStr ) => { // What: Settings Cause Array. Why: This decides which placement (settings vs schedule) the current cause set belongs to. How: This keeps only the 3 settings-based cause values out of visResObj's own cauArr.
 
 
 			const wkdCauBoo = curCauStr === 'weekends';  // What: Weekend Cause Boolean. Why: The weekends setting is one of the 3 settings-based causes. How: This compares curCauStr against 'weekends'.
@@ -797,7 +797,7 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp 
 
 		// #region Advisory Text
 
-		const nexLabStr = nexDatFun( visResObj.next, tasRcdObj.repeat === 'annual' );    // What: Next Label String. Why: Both remaining branches below name the next day the reminder WILL appear, whenever one is known. How: This calls nexDatFun against visResObj's own next date, always including the year for an annual reminder.
+		const nexLabStr = nexDatFun( visResObj.nexObj, tasRcdObj.repeat === 'annual' );  // What: Next Label String. Why: Both remaining branches below name the next day the reminder WILL appear, whenever one is known. How: This calls nexDatFun against visResObj's own nexObj date, always including the year for an annual reminder.
 		const kinWorStr = TAS_NAM_OBJ.isaReuFun( tasRcdObj ) ? 'recurring' : 'one-time'; // What: Kind Word String. Why: The settings-cause branch below needs to name whether it's talking about a recurring or one-time item. How: This picks the word based on TAS_NAM_OBJ.isaReuFun.
 
 		let bodTexEle; // What: Body Text Element. Why: The actual advisory sentence depends on which of the 3 branches below applies, assigned in exactly one of them. How: This is declared here and read by the shared return at the end of this branch.
@@ -813,7 +813,7 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp 
 
 		}
 
-		else if ( visResObj.cause === 'skipUntil' ) { // What: Manual Skip Branch. Why: A user-initiated Skip needs its own distinct wording rather than reusing the settings phrasing above. How: This names the manual skip directly.
+		else if ( visResObj.cauStr === 'skipUntil' ) { // What: Manual Skip Branch. Why: A user-initiated Skip needs its own distinct wording rather than reusing the settings phrasing above. How: This names the manual skip directly.
 
 
 			bodTexEle = <>This item is <strong>skipped</strong> until a later date, so it will not show up in your todo list today.</>; // What: Manual Skip Text Assignment. Why: This is the actual sentence rendered for a user-initiated Skip. How: This assigns the fixed skip-specific wording to bodTexEle.

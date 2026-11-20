@@ -797,10 +797,10 @@ function weiPicFun ( itePooArr : IteRcdTyp[], weiGetFun : ( iteRcdObj : IteRcdTy
 type PicOptTyp = { // What: Pick Option Type. Why: A single pick can be steered by the caller. How: This describes picIteFun's options, every one optional.
 
 
-	excludeIds?   : Set< string >; // What: Exclude IDs. Why: A manual spin mustn't land on an item already live on Today. How: This holds those items' ids.
-	excludeNames? : Set< string >; // What: Exclude Names. Why: An avoidDuplicates picker mustn't repeat a name already on today's list. How: This holds those names, lower-cased.
-	forceItemId?  : string;        // What: Force Item ID. Why: A manual send targets one specific item. How: This is that item's id, bypassing the draw.
-	forceNew?     : boolean;       // What: Force New. Why: An Ease Down re-roll has to abandon the active item. How: This starts a fresh streak when true.
+	excIdeSet? : Set< string >; // What: Exclude Identifier Set. Why: A manual spin mustn't land on an item already live on Today. How: This holds those items' ids.
+	excNamSet? : Set< string >; // What: Exclude Name Set. Why: An avoidDuplicates picker mustn't repeat a name already on today's list. How: This holds those names, lower-cased.
+	forIdeStr? : string;        // What: Force Identifier String. Why: A manual send targets one specific item. How: This is that item's id, bypassing the draw.
+	forNewBoo? : boolean;       // What: Force New Boolean. Why: An Ease Down re-roll has to abandon the active item. How: This starts a fresh streak when true.
 
 
 };
@@ -835,11 +835,11 @@ type PicOptTyp = { // What: Pick Option Type. Why: A single pick can be steered 
  *                    of the filtered pool, since an abandoned item may no
  *                    longer be eligible.
  * @param optConObj - Option Control Object: Options controlling this specific
- *                    pick: excludeIds (a Set of item ids already live on
- *                    Today), excludeNames (a Set of lower-cased names already
- *                    on today's list), forceItemId (a manual, specific pick
- *                    that bypasses the normal draw), and forceNew (ease-down
- *                    only, abandons the current active item to start a fresh
+ *                    pick: excIdeSet (a Set of item ids already live on
+ *                    Today), excNamSet (a Set of lower-cased names already on
+ *                    today's list), forIdeStr (a manual, specific pick that
+ *                    bypasses the normal draw), and forNewBoo (ease-down only,
+ *                    abandons the current active item to start a fresh
  *                    streak).
  *
  * @returns This pick's own result. See this file's own header comment
@@ -859,10 +859,10 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 	let itePooArr = eliPooFun( iteAllArr.filter( ( curIteObj ) => curIteObj.pickerId === picRcdObj.id ) ); // What: Item Pool Array. Why: Every mode below draws from this picker's own eligible items only. How: This filters iteAllArr down to this picker's own items, then drops any currently on vacation via eliPooFun.
 
-	const excIdeSet = optConObj && optConObj.excludeIds; // What: Exclude Identifier Set. Why: A manual "Pick One" spin must not land on an item already live on Today. How: This reads optConObj's own excludeIds Set, if any was given.
+	const excIdeSet = optConObj && optConObj.excIdeSet; // What: Exclude Identifier Set. Why: A manual "Pick One" spin must not land on an item already live on Today. How: This reads optConObj's own excIdeSet Set, if any was given.
 
 
-	if ( excIdeSet && excIdeSet.size && !( optConObj && optConObj.forceItemId ) ) { // What: Exclude IDs Check. Why: A direct forceItemId send bypasses this drop entirely, since its own button is already disabled in the UI whenever the target item is on Today. How: This gates the filter below on a real, non-empty excIdeSet and the absence of a forced pick.
+	if ( excIdeSet && excIdeSet.size && !( optConObj && optConObj.forIdeStr ) ) { // What: Exclude IDs Check. Why: A direct forIdeStr send bypasses this drop entirely, since its own button is already disabled in the UI whenever the target item is on Today. How: This gates the filter below on a real, non-empty excIdeSet and the absence of a forced pick.
 
 
 		itePooArr = itePooArr.filter( ( curIteObj ) => !excIdeSet.has( curIteObj.id ) ); // What: Item Pool Exclude-IDs Filter. Why: Every id already live on Today must actually be dropped from the pool a normal draw can land on. How: This keeps only items whose own id is absent from excIdeSet.
@@ -876,12 +876,12 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 	// #region Duplicate Avoidance
 
-	const excNamSet = optConObj && optConObj.excludeNames; // What: Exclude Name Set. Why: A picker opted into avoidDuplicates must not resurface an item another picker already placed on Today under the same name. How: This reads optConObj's own excludeNames Set, if any was given.
-	const updPooArr = itePooArr;                           // What: Update Pool Array. Why: Duplicate avoidance only limits which item can be chosen, so an item skipped for its name must still drift, charge, or gain fairness weight like any other unchosen item. How: This keeps the pool as it stood before the dedup swap below, for every mode's own updates to walk.
+	const excNamSet = optConObj && optConObj.excNamSet; // What: Exclude Name Set. Why: A picker opted into avoidDuplicates must not resurface an item another picker already placed on Today under the same name. How: This reads optConObj's own excNamSet Set, if any was given.
+	const updPooArr = itePooArr;                        // What: Update Pool Array. Why: Duplicate avoidance only limits which item can be chosen, so an item skipped for its name must still drift, charge, or gain fairness weight like any other unchosen item. How: This keeps the pool as it stood before the dedup swap below, for every mode's own updates to walk.
 
-	const avoDupBoo = !!picRcdObj.avoidDuplicates;             // What: Avoid Duplicates Boolean. Why: This behavior is opt-in per picker, so the dedup block below must never run for a picker that hasn't turned it on. How: This coerces picRcdObj's own avoidDuplicates flag to a real boolean.
-	const hasSizBoo = !!( excNamSet && excNamSet.size );       // What: Has Size Boolean. Why: A picker opted into avoidDuplicates still has nothing to dedup against until another picker has actually placed something on Today under some name. How: This is true only when excNamSet exists and holds at least one entry.
-	const notForBoo = !( optConObj && optConObj.forceItemId ); // What: Not Force Boolean. Why: A direct forceItemId send bypasses this drop entirely, since its own button is already disabled in the UI whenever the target item is on Today. How: This is true whenever optConObj is missing, or present without its own forceItemId set.
+	const avoDupBoo = !!picRcdObj.avoidDuplicates;           // What: Avoid Duplicates Boolean. Why: This behavior is opt-in per picker, so the dedup block below must never run for a picker that hasn't turned it on. How: This coerces picRcdObj's own avoidDuplicates flag to a real boolean.
+	const hasSizBoo = !!( excNamSet && excNamSet.size );     // What: Has Size Boolean. Why: A picker opted into avoidDuplicates still has nothing to dedup against until another picker has actually placed something on Today under some name. How: This is true only when excNamSet exists and holds at least one entry.
+	const notForBoo = !( optConObj && optConObj.forIdeStr ); // What: Not Force Boolean. Why: A direct forIdeStr send bypasses this drop entirely, since its own button is already disabled in the UI whenever the target item is on Today. How: This is true whenever optConObj is missing, or present without its own forIdeStr set.
 
 	const shoDedBoo = avoDupBoo && hasSizBoo && notForBoo; // What: Should Dedup Boolean. Why: The dedup block below must never leave the picker with zero eligible items, so it only runs once every one of these conditions holds. How: This combines avoDupBoo, hasSizBoo, and notForBoo into the single gate the if-check below reads.
 
@@ -911,7 +911,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 		case 'random': { // What: Random Mode Branch. Why: This is the simplest mode, an unweighted uniform-random pick with no side effects on item state. How: This either honors a forced pick or draws one uniformly-random index from itePooArr.
 
 
-			const forIdeStr = optConObj && optConObj.forceItemId; // What: Force Identifier String. Why: A manual send targets one specific item directly. How: This reads optConObj's own forceItemId, if any was given.
+			const forIdeStr = optConObj && optConObj.forIdeStr; // What: Force Identifier String. Why: A manual send targets one specific item directly. How: This reads optConObj's own forIdeStr, if any was given.
 			const picResObj = forIteFun( itePooArr, forIdeStr ) || itePooArr[ Math.floor( Math.random() * itePooArr.length ) ]; // What: Picked Result Object. Why: The forced item wins outright when given and actually found; otherwise a uniform-random item is drawn. How: This tries the forced lookup first, falling back to Math.random() against itePooArr's own length.
 
 
@@ -924,7 +924,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 		case 'weighted': { // What: Weighted Mode Branch. Why: This mode draws proportionally to each item's own user-set weight, with no drift/decay side effects. How: This either honors a forced pick or draws via weiPicFun keyed on each item's own weight.
 
 
-			const forIdeStr = optConObj && optConObj.forceItemId; // What: Force Identifier String. Why: A manual send targets one specific item directly. How: This reads optConObj's own forceItemId, if any was given.
+			const forIdeStr = optConObj && optConObj.forIdeStr; // What: Force Identifier String. Why: A manual send targets one specific item directly. How: This reads optConObj's own forIdeStr, if any was given.
 			const picResObj = forIteFun( itePooArr, forIdeStr ) || weiPicFun( itePooArr, ( curIteObj ) => Math.max( 0.0001, curIteObj.weight ) ); // What: Picked Result Object. Why: The forced item wins outright when given and actually found; otherwise the weighted draw picks proportionally to weight. How: This tries the forced lookup first, falling back to weiPicFun with a floored weight so a literal 0 weight still has a sliver of a chance.
 
 
@@ -937,9 +937,9 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 		case 'dynamic': { // What: Dynamic Mode Branch. Why: This mode draws on base weight plus an accumulating drift value, so low-weight items reliably catch up over time instead of starving. How: This either honors a forced pick or draws via weiPicFun keyed on weight plus drift, then charges every item's own drift value as a side effect below.
 
 
-			const forIdeStr = optConObj && optConObj.forceItemId; // What: Force Identifier String. Why: A manual send targets one specific item directly. How: This reads optConObj's own forceItemId, if any was given.
+			const forIdeStr = optConObj && optConObj.forIdeStr; // What: Force Identifier String. Why: A manual send targets one specific item directly. How: This reads optConObj's own forIdeStr, if any was given.
 			const picResObj = ( forIteFun( itePooArr, forIdeStr ) || weiPicFun( itePooArr, ( curIteObj ) => Math.max( 0.0001, curIteObj.weight + curIteObj.value ) ) )!; // What: Picked Result Object. Why: The forced item wins outright when given and actually found; otherwise the weighted draw picks proportionally to weight plus drift. How: This tries the forced lookup first, falling back to weiPicFun with a floored weight-plus-drift value. // What: Non-Null Note. Why: weiPicFun returns null only for an empty pool. How: The empty-pool guard above already returned, so the weighted draw always lands on an item.
-			const updIteArr = [];                                 // What: Update Item Array. Why: Every eligible item's own drift value changes as a side effect of this one pick, whether picked or not. How: This starts empty and is pushed to once per item in the loop below.
+			const updIteArr = [];                               // What: Update Item Array. Why: Every eligible item's own drift value changes as a side effect of this one pick, whether picked or not. How: This starts empty and is pushed to once per item in the loop below.
 
 
 			for ( const curIteObj of updPooArr ) { // What: Drift Charge Loop. Why: Every eligible item's own drift value must be updated by this pick, not just the picked one, including one skipped only for its name. How: This walks updPooArr, resetting the picked item to 0 and incrementing every other item by a flat +1.
@@ -1031,7 +1031,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 			// #region Most Overdue Pick
 
 			const eliIteArr = itePooArr.filter( ( curIteObj ) => easEliFun( curIteObj, thrValNum ) ); // What: Eligible Item Array. Why: Only items that have actually charged up to (within tolerance of) thrValNum can be picked naturally. How: This keeps every item in itePooArr that easEliFun reports as eligible.
-			const forIdeStr = optConObj && optConObj.forceItemId;                                     // What: Force Identifier String. Why: A manual send (Today's Re-roll) may target any item in the pool, bypassing the eligibility gate entirely. How: This reads optConObj's own forceItemId, if any was given.
+			const forIdeStr = optConObj && optConObj.forIdeStr;                                       // What: Force Identifier String. Why: A manual send (Today's Re-roll) may target any item in the pool, bypassing the eligibility gate entirely. How: This reads optConObj's own forIdeStr, if any was given.
 			const forIteObj = forIteFun( itePooArr, forIdeStr );                                      // What: Forced Item Object. Why: A forced pick searches the WHOLE pool, not just eliIteArr, since the user chose this item directly. How: This looks forIdeStr up against itePooArr rather than eliIteArr.
 
 
@@ -1184,9 +1184,9 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 
 
-			const forIdeStr = optConObj && optConObj.forceItemId;                                                               // What: Force Identifier String. Why: A manual send may target a specific item directly. How: This reads optConObj's own forceItemId, if any was given.
-			const forNewBoo = !!( optConObj && optConObj.forceNew ) || !!( forIdeStr && forIdeStr !== picRcdObj.activeItemId ); // What: Force New Boolean. Why: A manual send of a DIFFERENT item than the current active one must start a fresh streak, same as an explicit re-roll. How: This is true when optConObj.forceNew was given directly, or when forIdeStr names an item other than picRcdObj's own current activeItemId.
-			const updIteArr = [];                                                                                               // What: Update Item Array. Why: Both branches below (continue vs. start new) need a shared place to collect their own item-state changes. How: This starts empty and is pushed to by whichever branch below actually runs.
+			const forIdeStr = optConObj && optConObj.forIdeStr;                                                                  // What: Force Identifier String. Why: A manual send may target a specific item directly. How: This reads optConObj's own forIdeStr, if any was given.
+			const forNewBoo = !!( optConObj && optConObj.forNewBoo ) || !!( forIdeStr && forIdeStr !== picRcdObj.activeItemId ); // What: Force New Boolean. Why: A manual send of a DIFFERENT item than the current active one must start a fresh streak, same as an explicit re-roll. How: This is true when optConObj.forNewBoo was given directly, or when forIdeStr names an item other than picRcdObj's own current activeItemId.
+			const updIteArr = [];                                                                                                // What: Update Item Array. Why: Both branches below (continue vs. start new) need a shared place to collect their own item-state changes. How: This starts empty and is pushed to by whichever branch below actually runs.
 
 			// #endregion Streak Setup
 

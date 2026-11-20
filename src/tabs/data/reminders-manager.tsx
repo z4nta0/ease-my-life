@@ -936,12 +936,12 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 		{ // What: Row One Object. Why: sorEntFun needs a comparable shape for the left-hand side of this comparison. How: This builds it from tasOneObj, with every field this shape doesn't use left null.
 
 
-			count    : null,                                                         // What: Count. Why: A reminder has no meaningful count field. How: This is always null for a reminder row.
-			date     : tasDatMap.get( tasOneObj.id ),                                // What: Date. Why: This is the field sorEntFun sorts by for the date-asc/date-desc options. How: This looks up tasOneObj's own precomputed next-eligible time from tasDatMap.
-			group    : null,                                                         // What: Group. Why: A reminder has no meaningful group field. How: This is always null for a reminder row.
-			isActive : null,                                                         // What: Is Active. Why: A reminder has no meaningful active-state field. How: This is always null for a reminder row.
-			name     : tasOneObj.name,                                               // What: Name. Why: This is the field sorEntFun sorts by for the name-asc/name-desc options, and the tie-break for every other sort. How: This reads tasOneObj's own name.
-			type     : TAS_NAM_OBJ.isaReuFun( tasOneObj ) ? 'Recurring' : 'One-time' // What: Type. Why: This is the field sorEntFun sorts by for the type-asc/type-desc options. How: This picks the word based on TAS_NAM_OBJ.isaReuFun.
+			actBoo : null,                                                         // What: Active Boolean. Why: A reminder has no meaningful active-state field. How: This is always null for a reminder row.
+			couNum : null,                                                         // What: Count Number. Why: A reminder has no meaningful count field. How: This is always null for a reminder row.
+			datNum : tasDatMap.get( tasOneObj.id ),                                // What: Date Number. Why: This is the field sorEntFun sorts by for the date-asc/date-desc options. How: This looks up tasOneObj's own precomputed next-eligible time from tasDatMap.
+			groStr : null,                                                         // What: Group String. Why: A reminder has no meaningful group field. How: This is always null for a reminder row.
+			namStr : tasOneObj.name,                                               // What: Name String. Why: This is the field sorEntFun sorts by for the name-asc/name-desc options, and the tie-break for every other sort. How: This reads tasOneObj's own name.
+			typStr : TAS_NAM_OBJ.isaReuFun( tasOneObj ) ? 'Recurring' : 'One-time' // What: Type String. Why: This is the field sorEntFun sorts by for the type-asc/type-desc options. How: This picks the word based on TAS_NAM_OBJ.isaReuFun.
 
 
 		},
@@ -949,12 +949,12 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 		{ // What: Row Two Object. Why: sorEntFun needs a comparable shape for the right-hand side of this comparison. How: This builds it from tasTwoObj, mirroring Row One Object's own shape.
 
 
-			count    : null,                                                         // What: Count. Why: A reminder has no meaningful count field. How: This is always null for a reminder row.
-			date     : tasDatMap.get( tasTwoObj.id ),                                // What: Date. Why: This is the field sorEntFun sorts by for the date-asc/date-desc options. How: This looks up tasTwoObj's own precomputed next-eligible time from tasDatMap.
-			group    : null,                                                         // What: Group. Why: A reminder has no meaningful group field. How: This is always null for a reminder row.
-			isActive : null,                                                         // What: Is Active. Why: A reminder has no meaningful active-state field. How: This is always null for a reminder row.
-			name     : tasTwoObj.name,                                               // What: Name. Why: This is the field sorEntFun sorts by for the name-asc/name-desc options, and the tie-break for every other sort. How: This reads tasTwoObj's own name.
-			type     : TAS_NAM_OBJ.isaReuFun( tasTwoObj ) ? 'Recurring' : 'One-time' // What: Type. Why: This is the field sorEntFun sorts by for the type-asc/type-desc options. How: This picks the word based on TAS_NAM_OBJ.isaReuFun.
+			actBoo : null,                                                         // What: Active Boolean. Why: A reminder has no meaningful active-state field. How: This is always null for a reminder row.
+			couNum : null,                                                         // What: Count Number. Why: A reminder has no meaningful count field. How: This is always null for a reminder row.
+			datNum : tasDatMap.get( tasTwoObj.id ),                                // What: Date Number. Why: This is the field sorEntFun sorts by for the date-asc/date-desc options. How: This looks up tasTwoObj's own precomputed next-eligible time from tasDatMap.
+			groStr : null,                                                         // What: Group String. Why: A reminder has no meaningful group field. How: This is always null for a reminder row.
+			namStr : tasTwoObj.name,                                               // What: Name String. Why: This is the field sorEntFun sorts by for the name-asc/name-desc options, and the tie-break for every other sort. How: This reads tasTwoObj's own name.
+			typStr : TAS_NAM_OBJ.isaReuFun( tasTwoObj ) ? 'Recurring' : 'One-time' // What: Type String. Why: This is the field sorEntFun sorts by for the type-asc/type-desc options. How: This picks the word based on TAS_NAM_OBJ.isaReuFun.
 
 
 		},

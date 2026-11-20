@@ -1242,7 +1242,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 
-	const picSecMap = React.useMemo( () => { // What: Picker Section Map. Why: The section sort needs each shown picker's own item count and active state, computed once rather than per sort comparison. How: This builds an id-keyed map of { count, isActive } for every entry in shoPicArr.
+	const picSecMap = React.useMemo( () => { // What: Picker Section Map. Why: The section sort needs each shown picker's own item count and active state, computed once rather than per sort comparison. How: This builds an id-keyed map of { actBoo, couNum } for every entry in shoPicArr.
 
 
 		const picMetMap = new Map(); // What: Picker Meta Map. Why: The loop below needs somewhere to collect each picker's own computed metadata. How: This starts empty and is set on below.
@@ -1254,11 +1254,11 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 			const ownIteArr = staAppObj.items.filter( ( iteCurObj ) => iteCurObj.pickerId === picCurObj.id ); // What: Owned Item Array. Why: Both fields below depend on this exact picker's own items. How: This filters the whole app's items down to just this picker's own.
 
 
-			picMetMap.set( picCurObj.id, { // What: Map Set Call. Why: This picker's own computed metadata needs to be recorded under its own id. How: This sets count to the item count, and isActive false only when every item (and there's at least one) is on vacation.
+			picMetMap.set( picCurObj.id, { // What: Map Set Call. Why: This picker's own computed metadata needs to be recorded under its own id. How: This sets couNum to the item count, and actBoo false only when every item (and there's at least one) is on vacation.
 
 
-				count    : ownIteArr.length,                                                                   // What: Count. Why: The Count sort needs this picker's item total. How: This is ownIteArr's length.
-				isActive : !( ownIteArr.length > 0 && ownIteArr.every( ( iteCurObj ) => iteCurObj.vacation ) ) // What: Is Active. Why: The Active sort treats a picker whose every item is on vacation as inactive. How: This is false only when there are items and all of them are on vacation.
+				actBoo : !( ownIteArr.length > 0 && ownIteArr.every( ( iteCurObj ) => iteCurObj.vacation ) ), // What: Active Boolean. Why: The Active sort treats a picker whose every item is on vacation as inactive. How: This is false only when there are items and all of them are on vacation.
+				couNum : ownIteArr.length                                                                     // What: Count Number. Why: The Count sort needs this picker's item total. How: This is ownIteArr's length.
 
 
 			} );
@@ -1283,18 +1283,18 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 		const colEntArr : SecEntTyp[] = []; // What: Collected Entry Array. Why: The pushes below need somewhere to collect one entry per visible section. How: This starts empty and is conditionally pushed to just below.
 
 
-		if ( shoConBoo ) { // What: Conditionals Entry Push. Why: Group/Active have no meaning for Conditionals as a WHOLE section. How: This pushes a null group/isActive entry, with count as the total conditional count.
+		if ( shoConBoo ) { // What: Conditionals Entry Push. Why: Group/Active have no meaning for Conditionals as a WHOLE section. How: This pushes a null groStr/actBoo entry, with couNum as the total conditional count.
 
 
 			colEntArr.push({ // What: Conditionals Entry Push. Why: The Conditionals section joins the sort as one entry. How: This pushes its comparable shape.
 
 
-				count    : conIteArr.length, // What: Count. Why: The Count sort needs this section's size. How: This is the conditional count.
-				group    : null,             // What: Group. Why: The Group sort needs this section's group. How: This is always null.
-				isActive : null,             // What: Is Active. Why: The Active sort needs this section's on/off state. How: This is always null.
-				kinStr   : 'conditionals',   // What: Kind String. Why: The render below picks a component by kind. How: This is 'conditionals'.
-				name     : 'Conditionals',   // What: Name. Why: The Name sort and the section heading need this name. How: This is the literal "Conditionals".
-				type     : 'Conditionals'    // What: Type. Why: The Type sort needs this section's type label. How: This is the literal "Conditionals".
+				actBoo : null,             // What: Active Boolean. Why: The Active sort needs this section's on/off state. How: This is always null.
+				couNum : conIteArr.length, // What: Count Number. Why: The Count sort needs this section's size. How: This is the conditional count.
+				groStr : null,             // What: Group String. Why: The Group sort needs this section's group. How: This is always null.
+				kinStr : 'conditionals',   // What: Kind String. Why: The render below picks a component by kind. How: This is 'conditionals'.
+				namStr : 'Conditionals',   // What: Name String. Why: The Name sort and the section heading need this name. How: This is the literal "Conditionals".
+				typStr : 'Conditionals'    // What: Type String. Why: The Type sort needs this section's type label. How: This is the literal "Conditionals".
 
 
 			});
@@ -1304,18 +1304,18 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 
-		if ( shoRemBoo ) { // What: Reminders Entry Push. Why: Same reasoning as the Conditionals entry above, for Reminders. How: This pushes a null group/isActive entry, with count as remCouNum.
+		if ( shoRemBoo ) { // What: Reminders Entry Push. Why: Same reasoning as the Conditionals entry above, for Reminders. How: This pushes a null groStr/actBoo entry, with couNum as remCouNum.
 
 
 			colEntArr.push({ // What: Reminders Entry Push. Why: The Reminders section joins the sort as one entry. How: This pushes its comparable shape.
 
 
-				count    : remCouNum,   // What: Count. Why: The Count sort needs this section's size. How: This is the visible reminder count.
-				group    : null,        // What: Group. Why: The Group sort needs this section's group. How: This is always null.
-				isActive : null,        // What: Is Active. Why: The Active sort needs this section's on/off state. How: This is always null.
-				kinStr   : 'reminders', // What: Kind String. Why: The render below picks a component by kind. How: This is 'reminders'.
-				name     : 'Reminders', // What: Name. Why: The Name sort and the section heading need this name. How: This is the literal "Reminders".
-				type     : 'Reminders'  // What: Type. Why: The Type sort needs this section's type label. How: This is the literal "Reminders".
+				actBoo : null,        // What: Active Boolean. Why: The Active sort needs this section's on/off state. How: This is always null.
+				couNum : remCouNum,   // What: Count Number. Why: The Count sort needs this section's size. How: This is the visible reminder count.
+				groStr : null,        // What: Group String. Why: The Group sort needs this section's group. How: This is always null.
+				kinStr : 'reminders', // What: Kind String. Why: The render below picks a component by kind. How: This is 'reminders'.
+				namStr : 'Reminders', // What: Name String. Why: The Name sort and the section heading need this name. How: This is the literal "Reminders".
+				typStr : 'Reminders'  // What: Type String. Why: The Type sort needs this section's type label. How: This is the literal "Reminders".
 
 
 			});
@@ -1328,19 +1328,19 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 		for ( const picCurObj of shoPicArr ) { // What: Picker Entry Loop. Why: Every shown picker needs its own entry in the same comparable shape. How: This looks up each picker's own precomputed metadata from picSecMap.
 
 
-			const picMetObj = picSecMap.get( picCurObj.id ) || { count : 0, isActive : true }; // What: Picker Meta Object. Why: This picker's own count/active fields were already computed above. How: This reads picSecMap, falling back to a safe default if somehow missing.
+			const picMetObj = picSecMap.get( picCurObj.id ) || { actBoo : true, couNum : 0 }; // What: Picker Meta Object. Why: This picker's own count/active fields were already computed above. How: This reads picSecMap, falling back to a safe default if somehow missing.
 
 
 			colEntArr.push({ // What: Picker Entry Push. Why: A picker's own entry needs its own name/type/group alongside the precomputed count/active fields. How: This pushes one entry per picCurObj.
 
 
-				count    : picMetObj.count,                                 // What: Count. Why: The Count sort needs this section's size. How: This is picMetObj's precomputed count.
-				group    : picCurObj.group || null,                         // What: Group. Why: The Group sort needs this section's group. How: This is the picker's group, or null.
-				isActive : picMetObj.isActive,                              // What: Is Active. Why: The Active sort needs this section's on/off state. How: This is picMetObj's precomputed state.
-				kinStr   : 'picker',                                        // What: Kind String. Why: The render below picks a component by kind. How: This is 'picker'.
-				name     : picCurObj.name,                                  // What: Name. Why: The Name sort and the section heading need this name. How: This is the picker's name.
-				picObj   : picCurObj,                                       // What: Picker Object. Why: A picker card renders straight from its live record. How: This is picCurObj itself.
-				type     : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr // What: Type. Why: The Type sort needs this section's type label. How: This is the mode's label.
+				actBoo : picMetObj.actBoo,                              // What: Active Boolean. Why: The Active sort needs this section's on/off state. How: This is picMetObj's precomputed state.
+				couNum : picMetObj.couNum,                                 // What: Count Number. Why: The Count sort needs this section's size. How: This is picMetObj's precomputed count.
+				groStr : picCurObj.group || null,                         // What: Group String. Why: The Group sort needs this section's group. How: This is the picker's group, or null.
+				kinStr : 'picker',                                        // What: Kind String. Why: The render below picks a component by kind. How: This is 'picker'.
+				namStr : picCurObj.name,                                  // What: Name String. Why: The Name sort and the section heading need this name. How: This is the picker's name.
+				picObj : picCurObj,                                       // What: Picker Object. Why: A picker card renders straight from its live record. How: This is picCurObj itself.
+				typStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr // What: Type String. Why: The Type sort needs this section's type label. How: This is the mode's label.
 
 
 			});
@@ -1356,7 +1356,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	}, [ shoConBoo, shoRemBoo, shoPicArr, picSecMap, conIteArr.length, remCouNum, secSorStr ] ); // What: Memo Dependency Array. Why: Any of these changing can add, remove, or reorder a section. How: shoConBoo and shoRemBoo add or drop the Conditionals and Reminders sections, shoPicArr changes which picker sections exist, picSecMap changes each picker section's count and active state, conIteArr.length and remCouNum change the other two sections' counts, and secSorStr changes the sort order itself.
 
 
-	const draEntObj : SecEntTyp | null = newPicObj ? { draBoo : true, kinStr : 'picker', name : newPicObj.name, picObj : newPicObj as PicRcdTyp } : null; // What: Draft Entry Object. Why: The draft card is deliberately NOT part of secEntArr/its sort, so it always renders last regardless of sort order and never shows up filtered out by an unrelated group/type/conditional filter. How: This is null unless a real draft picker exists. // What: Type Assertion Note. Why: staNewFun builds the draft with every field a picker card reads, so it renders through the same code as a stored picker. How: The as tells TypeScript to treat the draft as a picker record.
+	const draEntObj : SecEntTyp | null = newPicObj ? { draBoo : true, kinStr : 'picker', namStr : newPicObj.name, picObj : newPicObj as PicRcdTyp } : null; // What: Draft Entry Object. Why: The draft card is deliberately NOT part of secEntArr/its sort, so it always renders last regardless of sort order and never shows up filtered out by an unrelated group/type/conditional filter. How: This is null unless a real draft picker exists. // What: Type Assertion Note. Why: staNewFun builds the draft with every field a picker card reads, so it renders through the same code as a stored picker. How: The as tells TypeScript to treat the draft as a picker record.
 
 	const shoSecArr = draEntObj ? [ ...secEntArr, draEntObj ] : secEntArr; // What: Shown Section Array. Why: The list below needs the sorted sections plus, when present, the draft appended after them. How: This appends draEntObj only when it exists.
 
@@ -1974,7 +1974,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 					const falEasObj = isaEasBoo ? PIC_NAM_OBJ.aveEasFun( picIteArr, picCurObj.id ) : null; // What: Fallback Ease Object. Why: An item with no ease band of its own falls back to the same average the picking engine itself uses. How: This is computed once per card, shared by both the sort entries and every item row below.
 
 
-					const iteEntFun = ( iteCurObj : IteRcdTyp ) : SorRowTyp => { // What: Item Entry Function. Why: Every item needs the same comparable shape before sorEntFun can sort them. How: This builds a { name, type, group, count, range, boost, isActive } entry per item, mode-dependent per pisOptFun.
+					const iteEntFun = ( iteCurObj : IteRcdTyp ) : SorRowTyp => { // What: Item Entry Function. Why: Every item needs the same comparable shape before sorEntFun can sort them. How: This builds an { actBoo, booNum, couNum, groStr, namStr, ranNum, typStr } entry per item, mode-dependent per pisOptFun.
 
 
 						const easMaxNum = iteCurObj.easeMax ?? falEasObj?.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax; // What: Ease Max Number. Why: The Range field below needs this item's own (or the fallback) ease-max value. How: This reads iteCurObj.easeMax, falling back to falEasObj's own easeMax, then PIC_NAM_OBJ.DEF_EAS_OBJ's easeMax, the engine's own default band.
@@ -1984,13 +1984,13 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 						return { // What: Item Entry Return. Why: sorEntFun needs one comparable shape per item, mode-dependent fields included. How: This builds that entry from iteCurObj plus the resolved isaEasBoo/useWeiBoo/easMaxNum context above.
 
 
-							boost    : picCurObj.mode === 'dynamic' ? ( iteCurObj.value ?? 0 ) : null,                          // What: Boost. Why: The Boost sort needs a dynamic item's boost value. How: This is the item's value for a dynamic picker, otherwise null.
-							count    : isaEasBoo ? ( iteCurObj.value ?? 0 ) : ( useWeiBoo ? ( iteCurObj.weight ?? 1 ) : null ), // What: Count. Why: The Count sort needs each item's charge or weight. How: This is the value for ease modes, the weight for weighted/dynamic, otherwise null.
-							group    : null,                                                                                    // What: Group. Why: Items have no group to sort by. How: This is always null.
-							isActive : !iteCurObj.vacation,                                                                     // What: Is Active. Why: The Active sort puts vacationing items apart. How: This is true unless the item is on vacation.
-							name     : iteCurObj.name,                                                                          // What: Name. Why: The Name sort needs each item's name. How: This reads the name directly.
-							range    : isaEasBoo ? PIC_NAM_OBJ.driDayFun( easMaxNum ) : null,                                   // What: Range. Why: The Range sort needs an ease item's range in days. How: This converts easMaxNum to days through PIC_NAM_OBJ.driDayFun, or is null outside ease modes.
-							type     : null                                                                                     // What: Type. Why: Items have no type to sort by. How: This is always null.
+							actBoo : !iteCurObj.vacation,                                                                     // What: Active Boolean. Why: The Active sort puts vacationing items apart. How: This is true unless the item is on vacation.
+							booNum : picCurObj.mode === 'dynamic' ? ( iteCurObj.value ?? 0 ) : null,                          // What: Boost Number. Why: The Boost sort needs a dynamic item's boost value. How: This is the item's value for a dynamic picker, otherwise null.
+							couNum : isaEasBoo ? ( iteCurObj.value ?? 0 ) : ( useWeiBoo ? ( iteCurObj.weight ?? 1 ) : null ), // What: Count Number. Why: The Count sort needs each item's charge or weight. How: This is the value for ease modes, the weight for weighted/dynamic, otherwise null.
+							groStr : null,                                                                                    // What: Group String. Why: Items have no group to sort by. How: This is always null.
+							namStr : iteCurObj.name,                                                                          // What: Name String. Why: The Name sort needs each item's name. How: This reads the name directly.
+							ranNum : isaEasBoo ? PIC_NAM_OBJ.driDayFun( easMaxNum ) : null,                                   // What: Range Number. Why: The Range sort needs an ease item's range in days. How: This converts easMaxNum to days through PIC_NAM_OBJ.driDayFun, or is null outside ease modes.
+							typStr : null                                                                                     // What: Type String. Why: Items have no type to sort by. How: This is always null.
 
 
 						};

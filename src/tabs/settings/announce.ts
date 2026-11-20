@@ -23,7 +23,7 @@
 
 // #region Module State
 
-let annStaFun : ( mesTexStr : string, mesOptObj? : { assertive? : boolean } ) => void; // What: Announce Status Function. Why: The real implementation is only built once the setup IIFE just below runs, but the exported binding must already exist for it to assign into. How: This starts undefined and is overwritten inside that IIFE.
+let annStaFun : ( mesTexStr : string, mesOptObj? : { assBoo? : boolean } ) => void; // What: Announce Status Function. Why: The real implementation is only built once the setup IIFE just below runs, but the exported binding must already exist for it to assign into. How: This starts undefined and is overwritten inside that IIFE.
 
 // #endregion Module State
 
@@ -107,7 +107,7 @@ let annStaFun : ( mesTexStr : string, mesOptObj? : { assertive? : boolean } ) =>
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
 	 * @param mesTexStr - Message Text String: The text to announce.
-	 * @param mesOptObj - Message Option Object: Optional settings; assertive
+	 * @param mesOptObj - Message Option Object: Optional settings; assBoo
 	 *                    interrupts instead of waiting politely.
 	 *
 	 * @returns This function does not return anything.
@@ -126,7 +126,7 @@ let annStaFun : ( mesTexStr : string, mesOptObj? : { assertive? : boolean } ) =>
 
 
 
-		livRegEle.setAttribute( 'aria-live', ( mesOptObj && mesOptObj.assertive ) ? 'assertive' : 'polite' ); // What: Live Attribute Update. Why: Some announcements (e.g. an error) need to interrupt immediately rather than wait politely. How: This sets assertive only when mesOptObj explicitly asks for it, polite otherwise.
+		livRegEle.setAttribute( 'aria-live', ( mesOptObj && mesOptObj.assBoo ) ? 'assertive' : 'polite' ); // What: Live Attribute Update. Why: Some announcements (e.g. an error) need to interrupt immediately rather than wait politely. How: This sets assertive only when mesOptObj explicitly asks for it, polite otherwise.
 
 
 		livRegEle.textContent = ''; // What: Text Content Clear. Why: Re-announcing the exact same text as last time needs a real change for the reader to detect. How: This empties the region first, before the delayed set below.

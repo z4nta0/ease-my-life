@@ -66,7 +66,7 @@ type HolRcdTyp = { // What: Holiday Record Type. Why: Callers need one resolved 
 
 
 	actObj? : Date;    // What: Actual Object. Why: A caller wording around an observed shift needs the true date. How: This is the unshifted date, absent on custom days.
-	custom? : boolean; // What: Custom. Why: Callers tell the user's own days apart from computed ones. How: This is true on a custom day and false on a computed one.
+	cusBoo? : boolean; // What: Custom Boolean. Why: Callers tell the user's own days apart from computed ones. How: This is true on a custom day and false on a computed one.
 	datObj  : Date;    // What: Date Object. Why: Most callers care about the day actually taken off. How: This is the observed date.
 	isoStr  : string;  // What: ISO String. Why: Callers match a holiday to a calendar day as text. How: This is the observed day as 'YYYY-MM-DD'.
 	keyStr  : string;  // What: Key String. Why: A holiday is disabled by its key. How: This is its identifier, prefixed 'custom:' on custom days.
@@ -497,7 +497,7 @@ function actYeaFun ( holStaObj : HolStaTyp | null | undefined, yeaValNum : numbe
 
 		.filter( ( cmpRcdObj ) => !disKeyArr.includes( cmpRcdObj.keyStr ) ) // What: Disabled Filter. Why: A holiday the user has switched off must never appear in the active list. How: This keeps only records whose key is absent from disKeyArr.
 
-		.map( ( cmpRcdObj ) => ( { ...cmpRcdObj, custom : false } ) ); // What: Custom Flag Map. Why: Every surviving record needs marking as a computed (non-custom) holiday, for callers that tell the two kinds apart. How: This spreads each record and overrides custom to false.
+		.map( ( cmpRcdObj ) => ( { ...cmpRcdObj, cusBoo : false } ) ); // What: Custom Flag Map. Why: Every surviving record needs marking as a computed (non-custom) holiday, for callers that tell the two kinds apart. How: This spreads each record and overrides custom to false.
 
 
 	const cusDayArr = ( resHolObj.custom || [] ).map( ( cusDefObj ) => { // What: Custom Day Array. Why: The user's own recurring custom days off need resolving to this specific year too, each flagged as custom. How: This maps every saved custom definition to a concrete date for yeaValNum.
@@ -510,7 +510,7 @@ function actYeaFun ( holStaObj : HolStaTyp | null | undefined, yeaValNum : numbe
 		return { // What: Custom Record Object. Why: Every resolved custom day needs the same record shape as a computed holiday, so callers can treat them uniformly. How: This builds one record, prefixing the key so it can never collide with a computed holiday's own key.
 
 
-			custom : true,                     // What: Custom. Why: A caller needs to tell this record apart from a computed built-in holiday. How: This is always true for a record built from the user's own custom list.
+			cusBoo : true,                     // What: Custom Boolean. Why: A caller needs to tell this record apart from a computed built-in holiday. How: This is always true for a record built from the user's own custom list.
 			datObj : cusDatObj,                // What: Date Object. Why: This is the resolved concrete date for yeaValNum. How: This is cusDatObj, resolved above.
 			isoStr : isoDayFun( cusDatObj ),   // What: ISO String. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts cusDatObj via isoDayFun.
 			keyStr : 'custom:' + cusDefObj.id, // What: Key String. Why: This is the stable identifier for this custom day, namespaced so it can never collide with a computed holiday's own key. How: This prefixes cusDefObj.id with 'custom:'.

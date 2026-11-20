@@ -87,12 +87,12 @@ type VisCauTyp = 'holidays' | 'schedule' | 'skipUntil' | 'weekends'; // What: Vi
 type TodVisTyp = { // What: Today Visibility Type. Why: The schedule editor explains why a reminder isn't showing today. How: This describes what todVisFun returns.
 
 
-	cause         : VisCauTyp | null; // What: Cause. Why: An advisory note is routed by one main reason. How: This is the first reason, or null when the reminder shows.
-	causes        : VisCauTyp[];      // What: Causes. Why: A fuller note can mention every reason at once. How: This lists them all.
-	holidayCustom : boolean;          // What: Holiday Custom. Why: The note words a custom holiday differently. How: This is true when the blocking holiday is the user's own.
-	holidayName   : string | null;    // What: Holiday Name. Why: The note can name the holiday. How: This is its name, or null when no holiday applies.
-	next          : Date | null;      // What: Next. Why: The note can say when the reminder shows again. How: This is that date, or null when it's showing or never will.
-	visible       : boolean;          // What: Visible. Why: The simplest question is whether it shows today. How: This is true when no reason applies.
+	cauArr : VisCauTyp[];      // What: Cause Array. Why: A fuller note can mention every reason at once. How: This lists them all.
+	cauStr : VisCauTyp | null; // What: Cause String. Why: An advisory note is routed by one main reason. How: This is the first reason, or null when the reminder shows.
+	cusBoo : boolean;          // What: Custom Boolean. Why: The note words a custom holiday differently. How: This is true when the blocking holiday is the user's own.
+	holStr : string | null;    // What: Holiday String. Why: The note can name the holiday. How: This is its name, or null when no holiday applies.
+	nexObj : Date | null;      // What: Next Object. Why: The note can say when the reminder shows again. How: This is that date, or null when it's showing or never will.
+	visBoo : boolean;          // What: Visible Boolean. Why: The simplest question is whether it shows today. How: This is true when no reason applies.
 
 
 };
@@ -1178,7 +1178,7 @@ function nexEliFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
  * 'holidays' means tasRcdObj IS due today but its own class's
  * participation switch hides it, which is surprising, especially for
  * a one-time task with no later occurrence of its own; 'skipUntil'
- * means the user manually skipped it. The returned next is the first
+ * means the user manually skipped it. The returned nexObj is the first
  * day tasRcdObj will actually appear (schedule AND exclusions
  * honored), or null if nothing qualifies within nexEliFun's own search
  * horizon.
@@ -1193,8 +1193,8 @@ function nexEliFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
  * @param cheDatObj - Check Date Object: The date to check visibility against,
  *                    defaulting to right now.
  *
- * @returns A { visible, cause, causes, holidayName, holidayCustom,
- * next } advisory object; see this function's own @summary above for
+ * @returns A { visBoo, cauStr, cauArr, holStr, cusBoo, nexObj } advisory
+ * object; see this function's own @summary above for
  * what each field means.
  *
  * @example
@@ -1253,12 +1253,12 @@ function todVisFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 	return { // What: Today Visibility Return. Why: The caller needs the full advisory shape described in this function's own @summary above. How: This builds one plain object from every value computed above.
 
 
-		cause         : priCauStr,                                                                        // What: Cause. Why: The caller needs the single primary reason, for routing an advisory note to the right control. How: This is priCauStr, computed above.
-		causes        : cauValArr,                                                                        // What: Causes. Why: A caller wording a fuller note (more than one cause can apply at once) needs the complete set. How: This is cauValArr, computed above.
-		holidayCustom : holInfObj ? !!holInfObj.custom : false,                                           // What: Holiday Custom. Why: A caller needs to distinguish "the Christmas Day holiday" from "your Family Day custom holiday" in its own wording. How: This coerces holInfObj's own custom flag when holInfObj exists, false otherwise.
-		holidayName   : holInfObj ? holInfObj.namStr : null,                                              // What: Holiday Name. Why: A caller wording itself around a specific holiday needs its own display name. How: This reads holInfObj's own name when holInfObj exists, null otherwise.
-		next          : priCauStr ? nexEliFun( tasRcdObj, remOptObj, holStaObj, cheDatObj, true ) : null, // What: Next. Why: A caller offering "it'll show again on ..." only needs to compute that (a real search) when tasRcdObj isn't visible at all. How: This calls nexEliFun only when priCauStr is set, null otherwise.
-		visible       : !priCauStr                                                                        // What: Visible. Why: The caller's simplest possible question is whether tasRcdObj shows at all. How: This is true only when priCauStr is null.
+		cauArr : cauValArr,                                                                        // What: Cause Array. Why: A caller wording a fuller note (more than one cause can apply at once) needs the complete set. How: This is cauValArr, computed above.
+		cauStr : priCauStr,                                                                        // What: Cause String. Why: The caller needs the single primary reason, for routing an advisory note to the right control. How: This is priCauStr, computed above.
+		cusBoo : holInfObj ? !!holInfObj.cusBoo : false,                                           // What: Custom Boolean. Why: A caller needs to distinguish "the Christmas Day holiday" from "your Family Day custom holiday" in its own wording. How: This coerces holInfObj's own custom flag when holInfObj exists, false otherwise.
+		holStr : holInfObj ? holInfObj.namStr : null,                                              // What: Holiday String. Why: A caller wording itself around a specific holiday needs its own display name. How: This reads holInfObj's own name when holInfObj exists, null otherwise.
+		nexObj : priCauStr ? nexEliFun( tasRcdObj, remOptObj, holStaObj, cheDatObj, true ) : null, // What: Next Object. Why: A caller offering "it'll show again on ..." only needs to compute that (a real search) when tasRcdObj isn't visible at all. How: This calls nexEliFun only when priCauStr is set, null otherwise.
+		visBoo : !priCauStr                                                                        // What: Visible Boolean. Why: The caller's simplest possible question is whether tasRcdObj shows at all. How: This is true only when priCauStr is null.
 
 
 	};

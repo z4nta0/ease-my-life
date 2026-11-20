@@ -791,10 +791,10 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 		// #region Message Build
 
 		const visResObj = TAS_NAM_OBJ.todVisFun( curTasObj, staAppObj.reminderOpts, staAppObj.holidays ); // What: Visibility Result Object. Why: The message below depends entirely on whether the new reminder is actually visible today. How: This calls TAS_NAM_OBJ.todVisFun against curTasObj.
-		const nexLabStr = nexDatFun( visResObj.next, curTasObj.repeat === 'annual' );                     // What: Next Label String. Why: A hidden-today message should still say when the reminder WILL next appear, when known. How: This calls nexDatFun against visResObj's own next date.
+		const nexLabStr = nexDatFun( visResObj.nexObj, curTasObj.repeat === 'annual' );                   // What: Next Label String. Why: A hidden-today message should still say when the reminder WILL next appear, when known. How: This calls nexDatFun against visResObj's own nexObj date.
 
 
-		const newMesObj = visResObj.visible // What: New Message Object. Why: The announcement differs for an add that shows today versus one that doesn't. How: This picks the success or hidden-today message object based on visResObj's own visible flag.
+		const newMesObj = visResObj.visBoo // What: New Message Object. Why: The announcement differs for an add that shows today versus one that doesn't. How: This picks the success or hidden-today message object based on visResObj's own visBoo flag.
 			? { okaBoo : true, texStr : `"${ curTasObj.name }" added.` } // What: Success Message Object. Why: A visible-today add just needs a short confirmation. How: This names curTasObj's own name in the confirmation text.
 			: { okaBoo : false, texStr : `"${ curTasObj.name }" added, but it will not show up in today's todo list.${ nexLabStr ? ` It will next appear on ${ nexLabStr }.` : '' }` }; // What: Hidden Message Object. Why: A not-visible-today add needs the fuller explanation, plus the next-appearance date when known. How: This names curTasObj's own name and appends nexLabStr's own sentence when it resolved to something.
 
@@ -807,8 +807,8 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 		setAddMesObj( newMesObj ); // What: Add Message Stage Call. Why: This is the actual announcement staged for the effect below to auto-clear. How: This stores newMesObj for the message paragraph to render.
 
 
-		clearTimeout( addTimRef.current );                                                             // What: Stale Timer Clear. Why: A previous message's own scheduled clear must not fire early and wipe this fresh one. How: This clears whatever timeout id addTimRef currently holds.
-		addTimRef.current = setTimeout( () => setAddMesObj( null ), visResObj.visible ? 3000 : 9000 ); // What: Message Auto-Clear Call. Why: A hidden-today message is more important and gets more time on screen before it fades. How: This schedules addMesObj back to null after 3s (visible) or 9s (hidden).
+		clearTimeout( addTimRef.current );                                                            // What: Stale Timer Clear. Why: A previous message's own scheduled clear must not fire early and wipe this fresh one. How: This clears whatever timeout id addTimRef currently holds.
+		addTimRef.current = setTimeout( () => setAddMesObj( null ), visResObj.visBoo ? 3000 : 9000 ); // What: Message Auto-Clear Call. Why: A hidden-today message is more important and gets more time on screen before it fades. How: This schedules addMesObj back to null after 3s (visible) or 9s (hidden).
 
 		// #endregion Message Staging
 

@@ -463,14 +463,14 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 		{ // What: First Sort Entry Object. Why: sorEntFun compares 2 entries of one shared sortable shape. How: This maps the left-hand conditional onto that shape.
 
 
-			boost    : conBooFun( conOneObj ),                                                      // What: Boost. Why: The Boost sort needs a dynamic conditional's boost value. How: This calls conBooFun.
-			count    : null,                                                                        // What: Count. Why: Conditionals have no item count to sort by. How: This is always null.
-			group    : null,                                                                        // What: Group. Why: Conditionals have no group to sort by. How: This is always null.
-			isActive : conOneObj.active !== false,                                                  // What: Is Active. Why: The Active sort needs each conditional's on/off state. How: This treats anything but an explicit false as active.
-			name     : conOneObj.name,                                                              // What: Name. Why: The Name sort needs each conditional's name. How: This reads the name directly.
-			odds     : conOddFun( conOneObj ),                                                      // What: Odds. Why: The Odds sort needs a weighted/dynamic conditional's odds. How: This calls conOddFun.
-			range    : conRanFun( conOneObj ),                                                      // What: Range. Why: The Range sort needs an ease-mode conditional's range. How: This calls conRanFun.
-			type     : ( SED_NAM_OBJ.MOD_DEF_OBJ[ conOneObj.mode ] || {} ).labStr || conOneObj.mode // What: Type. Why: The Type sort needs each conditional's mode label. How: This reads the mode's label, falling back to its raw id.
+			actBoo : conOneObj.active !== false,                                                  // What: Active Boolean. Why: The Active sort needs each conditional's on/off state. How: This treats anything but an explicit false as active.
+			booNum : conBooFun( conOneObj ),                                                      // What: Boost Number. Why: The Boost sort needs a dynamic conditional's boost value. How: This calls conBooFun.
+			couNum : null,                                                                        // What: Count Number. Why: Conditionals have no item count to sort by. How: This is always null.
+			groStr : null,                                                                        // What: Group String. Why: Conditionals have no group to sort by. How: This is always null.
+			namStr : conOneObj.name,                                                              // What: Name String. Why: The Name sort needs each conditional's name. How: This reads the name directly.
+			oddNum : conOddFun( conOneObj ),                                                      // What: Odds Number. Why: The Odds sort needs a weighted/dynamic conditional's odds. How: This calls conOddFun.
+			ranNum : conRanFun( conOneObj ),                                                      // What: Range Number. Why: The Range sort needs an ease-mode conditional's range. How: This calls conRanFun.
+			typStr : ( SED_NAM_OBJ.MOD_DEF_OBJ[ conOneObj.mode ] || {} ).labStr || conOneObj.mode // What: Type String. Why: The Type sort needs each conditional's mode label. How: This reads the mode's label, falling back to its raw id.
 
 
 		},
@@ -478,14 +478,14 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 		{ // What: Second Sort Entry Object. Why: sorEntFun compares 2 entries of one shared sortable shape. How: This maps the right-hand conditional onto that shape.
 
 
-			boost    : conBooFun( conTwoObj ),                                                      // What: Boost. Why: The Boost sort needs a dynamic conditional's boost value. How: This calls conBooFun.
-			count    : null,                                                                        // What: Count. Why: Conditionals have no item count to sort by. How: This is always null.
-			group    : null,                                                                        // What: Group. Why: Conditionals have no group to sort by. How: This is always null.
-			isActive : conTwoObj.active !== false,                                                  // What: Is Active. Why: The Active sort needs each conditional's on/off state. How: This treats anything but an explicit false as active.
-			name     : conTwoObj.name,                                                              // What: Name. Why: The Name sort needs each conditional's name. How: This reads the name directly.
-			odds     : conOddFun( conTwoObj ),                                                      // What: Odds. Why: The Odds sort needs a weighted/dynamic conditional's odds. How: This calls conOddFun.
-			range    : conRanFun( conTwoObj ),                                                      // What: Range. Why: The Range sort needs an ease-mode conditional's range. How: This calls conRanFun.
-			type     : ( SED_NAM_OBJ.MOD_DEF_OBJ[ conTwoObj.mode ] || {} ).labStr || conTwoObj.mode // What: Type. Why: The Type sort needs each conditional's mode label. How: This reads the mode's label, falling back to its raw id.
+			actBoo : conTwoObj.active !== false,                                                  // What: Active Boolean. Why: The Active sort needs each conditional's on/off state. How: This treats anything but an explicit false as active.
+			booNum : conBooFun( conTwoObj ),                                                      // What: Boost Number. Why: The Boost sort needs a dynamic conditional's boost value. How: This calls conBooFun.
+			couNum : null,                                                                        // What: Count Number. Why: Conditionals have no item count to sort by. How: This is always null.
+			groStr : null,                                                                        // What: Group String. Why: Conditionals have no group to sort by. How: This is always null.
+			namStr : conTwoObj.name,                                                              // What: Name String. Why: The Name sort needs each conditional's name. How: This reads the name directly.
+			oddNum : conOddFun( conTwoObj ),                                                      // What: Odds Number. Why: The Odds sort needs a weighted/dynamic conditional's odds. How: This calls conOddFun.
+			ranNum : conRanFun( conTwoObj ),                                                      // What: Range Number. Why: The Range sort needs an ease-mode conditional's range. How: This calls conRanFun.
+			typStr : ( SED_NAM_OBJ.MOD_DEF_OBJ[ conTwoObj.mode ] || {} ).labStr || conTwoObj.mode // What: Type String. Why: The Type sort needs each conditional's mode label. How: This reads the mode's label, falling back to its raw id.
 
 
 		},

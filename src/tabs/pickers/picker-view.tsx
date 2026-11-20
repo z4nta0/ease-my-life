@@ -251,7 +251,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	const senIteFun = ( iteIdeStr : string ) => { // What: Send Item Function. Why: This is full parity with "Pick One" -> Send: it runs the engine forcing this exact item, then stages the identical pending mutation (drift/weight plus bumpPick) so marking it done has the same consequence as a natural pick. How: Ease Down replaces the picker's single entry; other modes add one, both handled inside actions.addEntFun.
 
 
-		const senResObj = PIC_NAM_OBJ.picIteFun( picDatObj, staAppObj.items, { forceItemId : iteIdeStr } ); // What: Send Result Object. Why: Forcing the pick engine onto this exact item still needs to compute the same pending updates a natural pick would. How: This calls PIC_NAM_OBJ.picIteFun with forceItemId set to the item being sent.
+		const senResObj = PIC_NAM_OBJ.picIteFun( picDatObj, staAppObj.items, { forIdeStr : iteIdeStr } ); // What: Send Result Object. Why: Forcing the pick engine onto this exact item still needs to compute the same pending updates a natural pick would. How: This calls PIC_NAM_OBJ.picIteFun with forIdeStr set to the item being sent.
 
 
 		if ( !senResObj || !senResObj.picObj ) return; // What: No Result Guard. Why: An item that's somehow no longer pickable (already removed, say) must not commit a phantom Today entry. How: This bails out before touching the store at all.
@@ -780,7 +780,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 *
 	*/
 
-	const runPicFun = () => { // What: Run Pick Function. Why: The Pick One button needs to execute a real, forced-new pick against the engine and stage its result for the cycle animation. How: This calls PIC_NAM_OBJ.picIteFun with forceNew and the current Today-excluded ids, then either shows the empty state or starts the running cycle.
+	const runPicFun = () => { // What: Run Pick Function. Why: The Pick One button needs to execute a real, forced-new pick against the engine and stage its result for the cycle animation. How: This calls PIC_NAM_OBJ.picIteFun with forNewBoo and the current Today-excluded ids, then either shows the empty state or starts the running cycle.
 
 
 		if ( busPicBoo ) return; // What: Already Busy Guard. Why: A second pick must not start while one is already running. How: This bails out entirely while busPicBoo is true.
@@ -790,7 +790,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 		// #region Pick Computation
 
 		const iteSnaArr = staAppObj.items;                                                                            // What: Item Snapshot Array. Why: The pick engine needs a stable snapshot of items to compute against. How: This is just staAppObj.items, captured under a clearer local name for the call below.
-		const runResObj = PIC_NAM_OBJ.picIteFun( picDatObj, iteSnaArr, { excludeIds : todIdeSet, forceNew : true } ); // What: Run Result Object. Why: This is the actual computed outcome the rest of this function and the stage below render from. How: This calls the shared picking engine with this picker's own current pool. // What: Force New Note. Why: This button is a manual "pick/roll again" action, so for ease-down it should offer a real choice, not just re-confirm whatever item is already active; abandoning it recharges it, same as re-roll. How: forceNew is passed through to PIC_NAM_OBJ.picIteFun below.
+		const runResObj = PIC_NAM_OBJ.picIteFun( picDatObj, iteSnaArr, { excIdeSet : todIdeSet, forNewBoo : true } ); // What: Run Result Object. Why: This is the actual computed outcome the rest of this function and the stage below render from. How: This calls the shared picking engine with this picker's own current pool. // What: Force New Note. Why: This button is a manual "pick/roll again" action, so for ease-down it should offer a real choice, not just re-confirm whatever item is already active; abandoning it recharges it, same as re-roll. How: forNewBoo is passed through to PIC_NAM_OBJ.picIteFun below.
 
 
 		if ( !runResObj.picObj ) { // What: Nothing Picked Guard. Why: An exhausted or empty pool has nothing left to cycle through. How: This stores the empty result and switches straight to the 'empty' stage, skipping the cycle animation entirely.
@@ -885,7 +885,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 		// #region Redo Pick Computation
 
-		const runResObj = PIC_NAM_OBJ.picIteFun( picDatObj, staAppObj.items, { excludeIds : todIdeSet, forceNew : true } ); // What: Run Result Object. Why: The revisited step still needs a real, current pick result to show. How: This calls the shared picking engine exactly like runPicFun does.
+		const runResObj = PIC_NAM_OBJ.picIteFun( picDatObj, staAppObj.items, { excIdeSet : todIdeSet, forNewBoo : true } ); // What: Run Result Object. Why: The revisited step still needs a real, current pick result to show. How: This calls the shared picking engine exactly like runPicFun does.
 
 
 		if ( !runResObj.picObj ) { // What: Nothing Picked Guard. Why: An exhausted or empty pool still has nothing to synthesize a 'done' result from. How: This stores the empty result and switches to the 'empty' stage instead.

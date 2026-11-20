@@ -30,7 +30,7 @@ import type { RefObject } from 'react'; // What: Ref Object. Why: The frozen row
 
 // #region Types
 
-type SorRowTyp = { boost? : number | null, count? : number | null, date? : number | null, group? : string | null, isActive? : boolean | null, name : string, odds? : number | null, range? : number | null, type? : string | null }; // What: Sort Row Type. Why: The Data tab sorts items, conditionals, reminders, and pickers with one comparator, each carrying different fields. How: This is any row with a name, its other fields read by whichever sort key applies.
+type SorRowTyp = { actBoo? : boolean | null, booNum? : number | null, couNum? : number | null, datNum? : number | null, groStr? : string | null, namStr : string, oddNum? : number | null, ranNum? : number | null, typStr? : string | null }; // What: Sort Row Type. Why: The Data tab sorts items, conditionals, reminders, and pickers with one comparator, each carrying different fields. How: This is any row with a name, its other fields read by whichever sort key applies.
 
 // #endregion Types
 
@@ -150,17 +150,17 @@ function freEdiFun< T extends { id : string } > ( sorLisArr : T[], opeIdeVal : s
  * Shared sort vocabulary for the Data tab's section list (Conditionals
  * / Reminders / each picker card) and, per section, its own item list
  * (picker pool items, conditionals, reminders). Each list builds its
- * own array of { name, type, group, count, range, odds, boost, date,
- * isActive } rows (fields that don't apply to a given row are null)
- * and sorts them with this one comparator, keyed by e.g. 'name-asc' or
- * 'count-desc'.
+ * own array of { namStr, typStr, groStr, couNum, ranNum, oddNum,
+ * booNum, datNum, actBoo } rows (fields that don't apply to a given row
+ * are null) and sorts them with this one comparator, keyed by e.g.
+ * 'name-asc' or 'count-desc'.
  *
- * group/date/isActive are N/A (null) for anything that doesn't have a
+ * groStr/datNum/actBoo are N/A (null) for anything that doesn't have a
  * meaningful single value for that field (the Conditionals/Reminders
  * section as a whole, an item type with no such concept, or, for
  * date, a reminder with no next occurrence at all): those sort to the
  * top for the forward direction and the bottom for the reverse,
- * rather than being forced into a fake value. range/odds/boost are
+ * rather than being forced into a fake value. ranNum/oddNum/booNum are
  * different: null on a row means the field is irrelevant to that
  * row's own mode (mixed into the same list as rows it does apply to,
  * e.g. Odds/Boost only mean something for a weighted/dynamic
@@ -204,7 +204,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 
 	// #region Comparison Helpers
 
-	const namSorFun = () => rowOneObj.name.localeCompare( rowTwoObj.name ); // What: Name Sort Function. Why: Every field's own tie-break, and the fallback for an unrecognized field, both need the same plain A-Z name comparison. How: This calls String.localeCompare between the two rows' own name fields.
+	const namSorFun = () => rowOneObj.namStr.localeCompare( rowTwoObj.namStr ); // What: Name Sort Function. Why: Every field's own tie-break, and the fallback for an unrecognized field, both need the same plain A-Z name comparison. How: This calls String.localeCompare between the two rows' own name fields.
 
 
 	const dirNulFun = ( cmpOneVal : unknown, cmpTwoVal : unknown ) => { // What: Direction Null Function. Why: A field that's genuinely missing (not merely irrelevant) should sort to whichever end the current direction implies, rather than being forced into a fake value. How: This returns a real comparison result when either side is null/undefined, or null to mean both sides are real values and the caller does the actual field comparison.
@@ -288,7 +288,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 		case 'type': { // What: Type Case Block. Why: Type has no N/A concept at all, unlike most other fields, so it skips straight to a real comparison. How: This compares the two rows' own type strings, flips for descending, and falls back to name on a tie.
 
 
-			const priCmpNum = rowOneObj.type!.localeCompare( rowTwoObj.type! ); // What: Primary Compare Number. Why: This is the actual field comparison this case exists to perform. How: This calls String.localeCompare between the two rows' own type fields. // What: Non-Null Note. Why: Only the lists whose rows all carry a type label offer the Type sort. How: The ! tells TypeScript both types are set here.
+			const priCmpNum = rowOneObj.typStr!.localeCompare( rowTwoObj.typStr! ); // What: Primary Compare Number. Why: This is the actual field comparison this case exists to perform. How: This calls String.localeCompare between the two rows' own type fields. // What: Non-Null Note. Why: Only the lists whose rows all carry a type label offer the Type sort. How: The ! tells TypeScript both types are set here.
 
 
 
@@ -300,14 +300,14 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 		case 'group': { // What: Group Case Block. Why: Group can be genuinely N/A for a row with no meaningful single group. How: This defers to dirNulFun first, then compares the two rows' own group strings.
 
 
-			const notAvaNum = dirNulFun( rowOneObj.group, rowTwoObj.group ); // What: Not Available Number. Why: A real result from dirNulFun already fully answers this comparison. How: This calls dirNulFun and checks its result before doing any real comparison.
+			const notAvaNum = dirNulFun( rowOneObj.groStr, rowTwoObj.groStr ); // What: Not Available Number. Why: A real result from dirNulFun already fully answers this comparison. How: This calls dirNulFun and checks its result before doing any real comparison.
 
 
 			if ( notAvaNum != null ) return notAvaNum; // What: Not Available Check. Why: An N/A result from dirNulFun already fully answers this comparison. How: This returns that result directly instead of falling through.
 
 
 
-			const priCmpNum = rowOneObj.group!.localeCompare( rowTwoObj.group! ); // What: Primary Compare Number. Why: Both sides are confirmed real strings at this point. How: This calls String.localeCompare between the two rows' own group fields. // What: Non-Null Note. Why: dirNulFun already returned for any row missing its group. How: The ! tells TypeScript both groups are set here.
+			const priCmpNum = rowOneObj.groStr!.localeCompare( rowTwoObj.groStr! ); // What: Primary Compare Number. Why: Both sides are confirmed real strings at this point. How: This calls String.localeCompare between the two rows' own group fields. // What: Non-Null Note. Why: dirNulFun already returned for any row missing its group. How: The ! tells TypeScript both groups are set here.
 
 
 
@@ -319,7 +319,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 		case 'count': { // What: Count Case Block. Why: Count is always a real number for every row, with no N/A concept at all. How: This compares the two rows' own count fields directly.
 
 
-			const priCmpNum = ( rowOneObj.count ?? 0 ) - ( rowTwoObj.count ?? 0 ); // What: Primary Compare Number. Why: This is the actual field comparison this case exists to perform. How: This subtracts rowTwoObj.count from rowOneObj.count, reading a missing count as 0, the same value a null count always gave the subtraction.
+			const priCmpNum = ( rowOneObj.couNum ?? 0 ) - ( rowTwoObj.couNum ?? 0 ); // What: Primary Compare Number. Why: This is the actual field comparison this case exists to perform. How: This subtracts rowTwoObj.couNum from rowOneObj.couNum, reading a missing count as 0, the same value a null count always gave the subtraction.
 
 
 
@@ -331,14 +331,14 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 		case 'date': { // What: Date Case Block. Why: Date can be genuinely N/A for a reminder with no next occurrence at all. How: This defers to dirNulFun first, then compares the two rows' own date fields.
 
 
-			const notAvaNum = dirNulFun( rowOneObj.date, rowTwoObj.date ); // What: Not Available Number. Why: A real result from dirNulFun already fully answers this comparison. How: This calls dirNulFun and checks its result before doing any real comparison.
+			const notAvaNum = dirNulFun( rowOneObj.datNum, rowTwoObj.datNum ); // What: Not Available Number. Why: A real result from dirNulFun already fully answers this comparison. How: This calls dirNulFun and checks its result before doing any real comparison.
 
 
 			if ( notAvaNum != null ) return notAvaNum; // What: Not Available Check. Why: An N/A result from dirNulFun already fully answers this comparison. How: This returns that result directly instead of falling through.
 
 
 
-			const priCmpNum = rowOneObj.date! - rowTwoObj.date!; // What: Primary Compare Number. Why: Both sides are confirmed real timestamps at this point. How: This subtracts rowTwoObj.date from rowOneObj.date. // What: Non-Null Note. Why: dirNulFun already returned for any row missing its date. How: The ! tells TypeScript both dates are set here.
+			const priCmpNum = rowOneObj.datNum! - rowTwoObj.datNum!; // What: Primary Compare Number. Why: Both sides are confirmed real timestamps at this point. How: This subtracts rowTwoObj.datNum from rowOneObj.datNum. // What: Non-Null Note. Why: dirNulFun already returned for any row missing its date. How: The ! tells TypeScript both dates are set here.
 
 
 
@@ -347,26 +347,26 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 
 		}
 
-		case 'range': return numLasFun( rowOneObj.range, rowTwoObj.range ); // What: Range Case Return. Why: Range only means something for an ease-up/ease-down conditional, so it always sorts last on any other mode. How: This defers entirely to numLasFun.
+		case 'range': return numLasFun( rowOneObj.ranNum, rowTwoObj.ranNum ); // What: Range Case Return. Why: Range only means something for an ease-up/ease-down conditional, so it always sorts last on any other mode. How: This defers entirely to numLasFun.
 
-		case 'odds': return numLasFun( rowOneObj.odds, rowTwoObj.odds ); // What: Odds Case Return. Why: Odds only means something for a weighted/dynamic conditional, so it always sorts last on any other mode. How: This defers entirely to numLasFun.
+		case 'odds': return numLasFun( rowOneObj.oddNum, rowTwoObj.oddNum ); // What: Odds Case Return. Why: Odds only means something for a weighted/dynamic conditional, so it always sorts last on any other mode. How: This defers entirely to numLasFun.
 
-		case 'boost': return numLasFun( rowOneObj.boost, rowTwoObj.boost ); // What: Boost Case Return. Why: Boost only means something for a dynamic conditional, so it always sorts last on any other mode. How: This defers entirely to numLasFun.
+		case 'boost': return numLasFun( rowOneObj.booNum, rowTwoObj.booNum ); // What: Boost Case Return. Why: Boost only means something for a dynamic conditional, so it always sorts last on any other mode. How: This defers entirely to numLasFun.
 
-		case 'active': { // What: Active Case Block. Why: isActive can be genuinely N/A for a row with no single meaningful active state. How: This defers to dirNulFun first, then compares the two rows' own boolean isActive fields.
+		case 'active': { // What: Active Case Block. Why: actBoo can be genuinely N/A for a row with no single meaningful active state. How: This defers to dirNulFun first, then compares the two rows' own boolean actBoo fields.
 
 
-			const notAvaNum = dirNulFun( rowOneObj.isActive, rowTwoObj.isActive ); // What: Not Available Number. Why: A real result from dirNulFun already fully answers this comparison. How: This calls dirNulFun and checks its result before doing any real comparison.
+			const notAvaNum = dirNulFun( rowOneObj.actBoo, rowTwoObj.actBoo ); // What: Not Available Number. Why: A real result from dirNulFun already fully answers this comparison. How: This calls dirNulFun and checks its result before doing any real comparison.
 
 
 			if ( notAvaNum != null ) return notAvaNum; // What: Not Available Check. Why: An N/A result from dirNulFun already fully answers this comparison. How: This returns that result directly instead of falling through.
 
 
 
-			if ( rowOneObj.isActive !== rowTwoObj.isActive ) { // What: Active Difference Check. Why: A plain boolean subtraction doesn't work, so an unequal pair needs its own explicit comparison. How: This picks -1/1 based on which row is active, then flips it for a descending sort.
+			if ( rowOneObj.actBoo !== rowTwoObj.actBoo ) { // What: Active Difference Check. Why: A plain boolean subtraction doesn't work, so an unequal pair needs its own explicit comparison. How: This picks -1/1 based on which row is active, then flips it for a descending sort.
 
 
-				const priCmpNum = rowOneObj.isActive ? -1 : 1; // What: Primary Compare Number. Why: An active row should sort before an inactive one, ascending. How: This picks -1 when rowOneObj is the active one, 1 otherwise.
+				const priCmpNum = rowOneObj.actBoo ? -1 : 1; // What: Primary Compare Number. Why: An active row should sort before an inactive one, ascending. How: This picks -1 when rowOneObj is the active one, 1 otherwise.
 
 
 

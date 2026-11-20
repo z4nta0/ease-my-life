@@ -1190,7 +1190,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 		});
 
-		annStaFun( `Backup exported, including ${ entCouNum } history ${ entCouNum === 1 ? 'entry' : 'entries' }.`, { assertive : true } ); // What: Export Announce Call. Why: A screen-reader user needs to hear the export actually happened, including how much history it carried. How: This announces the entry count assertively, pluralized correctly for exactly 1 entry. // Announce BEFORE firing the download. The browser's own download UI takes focus the moment the link is clicked, and a screen reader that follows focus into browser chrome drops any pending polite announcement, so the speech has to be assertive and already under way. The file is fully built by this point, so "exported" is true when it is said.
+		annStaFun( `Backup exported, including ${ entCouNum } history ${ entCouNum === 1 ? 'entry' : 'entries' }.`, { assBoo : true } ); // What: Export Announce Call. Why: A screen-reader user needs to hear the export actually happened, including how much history it carried. How: This announces the entry count assertively, pluralized correctly for exactly 1 entry. // Announce BEFORE firing the download. The browser's own download UI takes focus the moment the link is clicked, and a screen reader that follows focus into browser chrome drops any pending polite announcement, so the speech has to be assertive and already under way. The file is fully built by this point, so "exported" is true when it is said.
 
 		// #endregion Export Report
 
@@ -1271,7 +1271,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-				annStaFun( 'That file couldn’t be read as a backup.', { assertive : true } ); // What: Import Failure Announce Call. Why: A screen-reader user needs to hear the failure too, not just see it. How: This announces the same fixed failure message, assertively.
+				annStaFun( 'That file couldn’t be read as a backup.', { assBoo : true } ); // What: Import Failure Announce Call. Why: A screen-reader user needs to hear the failure too, not just see it. How: This announces the same fixed failure message, assertively.
 
 
 			}

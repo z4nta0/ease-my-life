@@ -1437,9 +1437,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				if ( eliIteArr.length >= 2 ) { // What: Enough Candidates Guard. Why: Fewer than 2 eligible candidates means the UI already disabled the button, so this is a safe no-op rather than a real error case. How: This only proceeds once eliIteArr has at least 2 entries.
 
 
-					const fouIndNum = eliIteArr.findIndex( ( curIteObj ) => curIteObj.id === entRcdObj.itemId );                        // What: Found Index Number. Why: The next candidate is found relative to whichever one is currently picked. How: This finds entRcdObj's own itemId within eliIteArr.
-					const nexIteObj = eliIteArr[ ( fouIndNum + 1 ) % eliIteArr.length ];                                                // What: Next Item Object. Why: This is the actual next candidate to roll to, wrapping back to the front once the end is reached. How: This indexes eliIteArr one past fouIndNum, modulo its own length.
-					const picResObj = PIC_NAM_OBJ.picIteFun( picRcdObj as PicRcdTyp, staAppObj.items, { forceItemId : nexIteObj.id } ); // What: Pick Result Object. Why: Forcing the specific next item still needs to run through the real picking engine so its own value/pending mutations compute correctly. How: This calls PIC_NAM_OBJ.picIteFun with forceItemId set to nexIteObj's own id. // What: Type Assertion Note. Why: A row's picker is typed as possibly a stand-in. How: A reroll only ever runs on a real pick card, whose picker is a full record, so it's read as one here.
+					const fouIndNum = eliIteArr.findIndex( ( curIteObj ) => curIteObj.id === entRcdObj.itemId );                      // What: Found Index Number. Why: The next candidate is found relative to whichever one is currently picked. How: This finds entRcdObj's own itemId within eliIteArr.
+					const nexIteObj = eliIteArr[ ( fouIndNum + 1 ) % eliIteArr.length ];                                              // What: Next Item Object. Why: This is the actual next candidate to roll to, wrapping back to the front once the end is reached. How: This indexes eliIteArr one past fouIndNum, modulo its own length.
+					const picResObj = PIC_NAM_OBJ.picIteFun( picRcdObj as PicRcdTyp, staAppObj.items, { forIdeStr : nexIteObj.id } ); // What: Pick Result Object. Why: Forcing the specific next item still needs to run through the real picking engine so its own value/pending mutations compute correctly. How: This calls PIC_NAM_OBJ.picIteFun with forIdeStr set to nexIteObj's own id. // What: Type Assertion Note. Why: A row's picker is typed as possibly a stand-in. How: A reroll only ever runs on a real pick card, whose picker is a full record, so it's read as one here.
 
 
 					actStoObj.swaIteFun( entRcdObj.eid, nexIteObj.id, { // What: Set Entry Item Call. Why: This stages the new pick's own value/weight mutation as pending, applied only once the entry is marked done, preserving the "nothing changes until you actually do it" contract. How: This writes nexIteObj's own id plus picResObj's own updArr/patObj/depBoo.
@@ -1460,10 +1460,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 			}
 
-			else { // What: Other Mode Reroll Branch. Why: Every other mode re-rolls via a fresh forced-new pick instead of a manual cycle; forceNew makes ease-down specifically abandon its current active item (recharging it) and roll to a different one, while other modes simply ignore the flag. How: This calls PIC_NAM_OBJ.picIteFun with forceNew and stages whatever it returns as pending.
+			else { // What: Other Mode Reroll Branch. Why: Every other mode re-rolls via a fresh forced-new pick instead of a manual cycle; forNewBoo makes ease-down specifically abandon its current active item (recharging it) and roll to a different one, while other modes simply ignore the flag. How: This calls PIC_NAM_OBJ.picIteFun with forNewBoo and stages whatever it returns as pending.
 
 
-				const picResObj = PIC_NAM_OBJ.picIteFun( picRcdObj as PicRcdTyp, staAppObj.items, { forceNew : true } ); // What: Pick Result Object. Why: This is the actual fresh pick this branch draws. How: This calls PIC_NAM_OBJ.picIteFun with forceNew true. // What: Type Assertion Note. Why: A row's picker is typed as possibly a stand-in. How: A reroll only ever runs on a real pick card, whose picker is a full record, so it's read as one here.
+				const picResObj = PIC_NAM_OBJ.picIteFun( picRcdObj as PicRcdTyp, staAppObj.items, { forNewBoo : true } ); // What: Pick Result Object. Why: This is the actual fresh pick this branch draws. How: This calls PIC_NAM_OBJ.picIteFun with forNewBoo true. // What: Type Assertion Note. Why: A row's picker is typed as possibly a stand-in. How: A reroll only ever runs on a real pick card, whose picker is a full record, so it's read as one here.
 
 
 				if ( picResObj.picObj ) { // What: Picked Guard. Why: A pick can legitimately come back empty (no eligible candidates), in which case there is nothing to stage. How: This only proceeds once picResObj.picObj exists.
@@ -2283,7 +2283,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const ordSloArr : { infObj : GenSloTyp, picStr : string }[] = []; // What: Ordered Slot Array. Why: Ordered animation slots (encounter order) let day-off/charging cards settle DURING the cascade alongside picks, instead of popping in at the final commit; each slot is keyed by the picker whose list position it occupies during the loader. How: This is pushed to inside the main loop below.
 		const carEntArr : EntDesTyp[]                               = []; // What: Carried Entry Array. Why: A cadence pick persisting from a prior day still needs its own encounter-order slot, wrapped so the commit step below can tell it apart from a fresh pick. How: This is pushed to inside the main loop below.
 
-		const picNamSet = new Set< string >(); // What: Picked Name Set. Why: Item names already committed to today's list so far (lowercased) are fed to any avoidDuplicates picker below so it won't re-surface an item another picker already put on today's list; seeded with carried-over cadence picks (still "on the list" today, just not freshly picked), then grown as each fresh pick lands, in encounter order, matching "as it is being built" rather than checking against the final list. How: This is read by PIC_NAM_OBJ.picIteFun's own excludeNames option and added to throughout the loop below.
+		const picNamSet = new Set< string >(); // What: Picked Name Set. Why: Item names already committed to today's list so far (lowercased) are fed to any avoidDuplicates picker below so it won't re-surface an item another picker already put on today's list; seeded with carried-over cadence picks (still "on the list" today, just not freshly picked), then grown as each fresh pick lands, in encounter order, matching "as it is being built" rather than checking against the final list. How: This is read by PIC_NAM_OBJ.picIteFun's own excNamSet option and added to throughout the loop below.
 
 
 		for ( const picIdeStr of staAppObj.daily.pickerIds ) { // What: Daily Picker Loop. Why: This is the actual per-picker scheduling/picking pass every other collection above feeds from. How: This walks every picker id in staAppObj.daily.pickerIds, gating and picking (or suppressing) each one in turn.
@@ -2439,8 +2439,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-			const perKeyStr = picCadStr !== 'daily' ? CAD_NAM_OBJ.perKeyFun( picRcdObj, genNowDat ) : null;      // What: Period Key String. Why: A fresh non-daily pick still needs to be tagged with the period it belongs to, so a future generation can recognize it as already-current. How: This computes the period key only for a non-daily picker, otherwise null.
-			const picResObj = PIC_NAM_OBJ.picIteFun( picRcdObj, staAppObj.items, { excludeNames : picNamSet } ); // What: Pick Result Object. Why: This is the actual picking engine call for this picker. How: This calls PIC_NAM_OBJ.picIteFun, passing picNamSet so an avoidDuplicates picker won't re-surface an already-committed name.
+			const perKeyStr = picCadStr !== 'daily' ? CAD_NAM_OBJ.perKeyFun( picRcdObj, genNowDat ) : null;   // What: Period Key String. Why: A fresh non-daily pick still needs to be tagged with the period it belongs to, so a future generation can recognize it as already-current. How: This computes the period key only for a non-daily picker, otherwise null.
+			const picResObj = PIC_NAM_OBJ.picIteFun( picRcdObj, staAppObj.items, { excNamSet : picNamSet } ); // What: Pick Result Object. Why: This is the actual picking engine call for this picker. How: This calls PIC_NAM_OBJ.picIteFun, passing picNamSet so an avoidDuplicates picker won't re-surface an already-committed name.
 
 
 			if ( picResObj.picObj ) { // What: Picked Branch. Why: A successful pick needs collecting into newPicArr plus its own animation slot. How: This adds the picked name to picNamSet, then pushes both records.

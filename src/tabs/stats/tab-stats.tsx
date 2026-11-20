@@ -2213,13 +2213,13 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		const ghoIteArr = [ ...ghoNamMap ].map( ( [ iteIdeStr, iteNamStr ] ) => ( // What: Ghost Item Array. Why: Every ghost needs a minimal item-shaped object so it can flow through the same mapping logic as a live item below. How: This turns each recorded ghost name into a small stand-in object flagged __delBoo.
 
 
-			{ __delBoo : true, id : iteIdeStr, name : iteNamStr, pickerId : scoValStr, vacation : false } // What: Ghost Item Object. Why: A ghost has to look like a real item so it flows through the same mapping below. How: This mirrors a live item's own id/name/pickerId/vacation fields, flagged __delBoo.
+			{ delBoo : true, id : iteIdeStr, name : iteNamStr, pickerId : scoValStr, vacation : false } // What: Ghost Item Object. Why: A ghost has to look like a real item so it flows through the same mapping below. How: This mirrors a live item's own id/name/pickerId/vacation fields, flagged __delBoo.
 
 
 		) );
 
 
-		const allIteArr : ( Partial< IteRcdTyp > & Pick< IteRcdTyp, 'id' | 'name' > & { __delBoo? : boolean } )[] = [ ...livIteArr, ...ghoIteArr ]; // What: All Item Array. Why: The mapping below builds one output row per item regardless of whether it's live or a ghost. How: This concatenates both arrays into one combined list.
+		const allIteArr : ( Partial< IteRcdTyp > & Pick< IteRcdTyp, 'id' | 'name' > & { delBoo? : boolean } )[] = [ ...livIteArr, ...ghoIteArr ]; // What: All Item Array. Why: The mapping below builds one output row per item regardless of whether it's live or a ghost. How: This concatenates both arrays into one combined list.
 
 
 
@@ -2236,7 +2236,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 			const lasEliNum = ( lasDatStr != null && eliIndNum >= 0 ) ? ( eliDatArr.length - 1 - eliIndNum ) : null;                             // What: Last Eligible Number. Why: The eligible-mode reading needs "how many eligible days ago", not the raw index. How: This subtracts the pick's own position from the last eligible index.
 			const lasDayNum = lasModStr === 'eligible' ? lasEliNum : lasCalNum;                                                                  // What: Last Day Number. Why: The row's own displayed "last picked" value depends on which unit mode is currently active. How: This picks whichever of lasEliNum/lasCalNum matches lasModStr.
 			const eliDenNum = picRowArr.reduce( ( sumRunNum, rowCurObj ) => sumRunNum + ( vacCheObj.inaDayFun( iteCurObj.id, rowCurObj.date ) ? 0 : 1 ), 0 ); // What: Eligible Denominator Number. Why: The eligible-mode Count percentage needs a denominator of only the picks made while this item was actually active. How: This sums picRowArr, adding 1 per row unless this item was inactive on that row's own date. // Count denominator: total picks vs. picks made while this item was eligible.
-			const notDelBoo = !iteCurObj.__delBoo;                                                                                               // What: Not Deleted Boolean. Why: A deleted item's ghost row never gets the was-inactive label. How: This negates the ghost's own __delBoo marker.
+			const notDelBoo = !iteCurObj.delBoo;                                                                                                 // What: Not Deleted Boolean. Why: A deleted item's ghost row never gets the was-inactive label. How: This negates the ghost's own delBoo marker.
 			const notVacBoo = !iteCurObj.vacation;                                                                                               // What: Not Vacation Boolean. Why: A currently-inactive item shows its own inactive tag instead of the was-inactive label. How: This negates the item's own vacation flag.
 			const retAftBoo = vacCheObj.retAftFun( iteCurObj.id, lasDatStr || '' );                                                              // What: Return After Boolean. Why: The label only applies when the item came back from inactive after its own last pick. How: This calls vacCheObj.retAftFun with the item's id and lasDatStr, or an empty string for a never-picked item.
 
@@ -2253,7 +2253,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 				autNum : couEntObj.autNum,                   // What: Auto Number. Why: The Auto metric reads this count. How: This passes the auto-sourced pick count.
 				couNum : couEntObj.couNum,                   // What: Count Number. Why: The Count metric reads this total. How: This passes the item's own pick count.
-				delBoo : !!iteCurObj.__delBoo,               // What: Deleted Boolean. Why: A ghost row gets its own "deleted" tag. How: This reads the ghost's own __delBoo marker.
+				delBoo : !!iteCurObj.delBoo,                 // What: Deleted Boolean. Why: A ghost row gets its own "deleted" tag. How: This reads the ghost's own delBoo marker.
 				denNum : eliDenNum,                          // What: Denominator Number. Why: The eligible-mode Count percentage divides by this. How: This passes eliDenNum.
 				freNum : freEntObj.couNum,                   // What: Frequency Number. Why: A never-gapped item still sorts by how often it was picked. How: This passes freEntObj's own distinct-day count.
 				gapNum : aveGapNum,                          // What: Gap Number. Why: The Frequency metric reads this average gap. How: This passes aveGapNum.

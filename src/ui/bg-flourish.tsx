@@ -71,7 +71,7 @@ type FloIteTyp = { // What: Flourish Item Type. Why: genSidFun builds each decor
 
 };
 
-type FloSidTyp = { left : FloIteTyp[], right : FloIteTyp[] }; // What: Flourish Sides Type. Why: Each tab's glyphs are generated once per gutter and cached. How: This holds the left and right gutters' glyphs.
+type FloSidTyp = { lefArr : FloIteTyp[], rigArr : FloIteTyp[] }; // What: Flourish Sides Type. Why: Each tab's glyphs are generated once per gutter and cached. How: This holds the left and right gutters' glyphs.
 
 // #endregion Types
 
@@ -628,7 +628,7 @@ function genSidFun ( gutWidNum : number, conHeiNum : number ) : FloIteTyp[] {
  *
  * @example
  * ```ts
- * useFloIteFun(tabIdeStr, meaEleRef) // => { left, right } or null
+ * useFloIteFun(tabIdeStr, meaEleRef) // => { lefArr, rigArr } or null
  * ```
  *
 */
@@ -674,8 +674,8 @@ function useFloIteFun ( tabIdeStr : string, meaEleRef : React.RefObject< HTMLEle
 		const genIteObj = { // What: Generated Item Object. Why: Both gutters need their own independently-generated placement. How: This calls genSidFun twice, once per side, with the same measured dimensions.
 
 
-			left  : genSidFun( gutWidNum, conHeiNum ), // What: Left. Why: The left gutter needs its own placement. How: This generates it from the measured gutter width and content height.
-			right : genSidFun( gutWidNum, conHeiNum )  // What: Right. Why: The right gutter needs its own placement, independent of the left. How: This generates it from the same measured dimensions.
+			lefArr : genSidFun( gutWidNum, conHeiNum ), // What: Left Array. Why: The left gutter needs its own placement. How: This generates it from the measured gutter width and content height.
+			rigArr : genSidFun( gutWidNum, conHeiNum )  // What: Right Array. Why: The right gutter needs its own placement, independent of the left. How: This generates it from the same measured dimensions.
 
 
 		};
@@ -840,14 +840,14 @@ function BacFloCom ( { meaEleRef, tabIdeStr } : BfcProTyp ) : React.JSX.Element 
 
 
 			<FloColCom
-				floIteArr={ floIteObj.left }
+				floIteArr={ floIteObj.lefArr }
 				sidKeyStr='left'
 			/>{ /* What: Flourish Column Component. Why: This renders the left gutter's own already-generated items. How: This is passed 'left' and floIteObj's own left array. */ }
 
 
 
 			<FloColCom
-				floIteArr={ floIteObj.right }
+				floIteArr={ floIteObj.rigArr }
 				sidKeyStr='right'
 			/>{ /* What: Flourish Column Component. Why: This renders the right gutter's own already-generated items. How: This is passed 'right' and floIteObj's own right array. */ }
 
