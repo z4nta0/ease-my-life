@@ -66,6 +66,229 @@ import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Recor
 
 // #region Components
 
+type DwcProTyp = { ariLabStr : string, onChange : ( dowValNum : number ) => void, value : number }; // What: Day-Of-Week-Select-Component Props Type. Why: Each weekday select names its own role and hands back the chosen weekday. How: This types DowSelCom's props.
+
+// #region DowSelCom
+
+/**
+ * DowSelCom = Day-Of-Week Select Component
+ *
+ * @summary
+ * Draws a cadence select of every weekday, named in full and valued by its
+ * index from Sunday, for the weekly anchor day and the nth-weekday rules.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.ariLabStr - Aria Label String: The select's accessible name.
+ * @param props.onChange  - On Change: Called with the chosen weekday's index.
+ * @param props.value     - Value: The current weekday's index.
+ *
+ * @returns The weekday select.
+ *
+ * @example
+ * ```tsx
+ * DowSelCom({ ariLabStr, onChange, value }) // => <DowSelCom />
+ * ```
+ *
+*/
+
+function DowSelCom ( { ariLabStr, onChange, value } : DwcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<select
+			className={ cssModObj.cadOptSel }
+
+			value={ value }
+
+			aria-label={ ariLabStr }
+
+			onChange={ ( chaEveObj ) => onChange( parseInt( chaEveObj.target.value ) ) }
+		>{ /* What: Cadence Option Select Element. Why: This is the actual control for choosing a weekday. How: This hands the chosen weekday's own index to onChange. */ }
+
+
+			{ DAY_FUL_ARR.map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dayIndNum.
+
+
+				<option
+					key={ dayIndNum }
+
+					value={ dayIndNum }
+				>{ dayNamStr }</option> // What: Weekday Option Element. Why: Each weekday needs its own selectable option. How: This renders dayNamStr, valued by its weekday index.
+
+
+			) ) }
+
+
+		</select>
+
+
+	);
+
+
+}
+
+// #endregion DowSelCom
+
+
+
+type MlcProTyp = { onChange : ( monValNum : number ) => void, value : number }; // What: Month-Select-Component Props Type. Why: The month select shows the anchor month and hands back the one chosen. How: This types MonSelCom's props.
+
+// #region MonSelCom
+
+/**
+ * MonSelCom = Month Select Component
+ *
+ * @summary
+ * Draws the yearly cadence's anchor month select, every month abbreviated
+ * and valued by its 1-based number, shared by both yearly date modes.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.onChange - On Change: Called with the chosen month's 1-based
+ *                         number.
+ * @param props.value    - Value: The current anchor month's 1-based number.
+ *
+ * @returns The month select.
+ *
+ * @example
+ * ```tsx
+ * MonSelCom({ onChange, value }) // => <MonSelCom />
+ * ```
+ *
+*/
+
+function MonSelCom ( { onChange, value } : MlcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<select
+			className={ cssModObj.cadOptSel }
+
+			value={ value }
+
+			aria-label='Anchor month'
+
+			onChange={ ( chaEveObj ) => onChange( parseInt( chaEveObj.target.value ) ) }
+		>{ /* What: Cadence Option Select Element. Why: A yearly cadence needs its own target month. How: This hands the chosen 1-based month number to onChange. */ }
+
+
+			{ MON_ABB_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps MON_ABB_ARR to one option per entry, keyed by its own monIndNum.
+
+
+				<option
+					key={ monIndNum }
+
+					value={ monIndNum + 1 }
+				>{ monNamStr }</option> // What: Month Option Element. Why: Each month needs its own selectable option. How: This renders monNamStr, valued by its 1-based month number.
+
+
+			) ) }
+
+
+		</select>
+
+
+	);
+
+
+}
+
+// #endregion MonSelCom
+
+
+
+type NtcProTyp = { dowValNum : number, onPatPicFun : ( patPicObj : Partial< PicForTyp > ) => void, ordValNum : number }; // What: Nth-Select-Component Props Type. Why: The pair shows the rule's occurrence and weekday and hands back each change as a patch. How: This types NthSelCom's props.
+
+// #region NthSelCom
+
+/**
+ * NthSelCom = Nth Select Component
+ *
+ * @summary
+ * Draws an nth-weekday cadence's two selects, which occurrence (1st through
+ * 5th) and which weekday, as true siblings with no wrapper of their own,
+ * for the monthly and yearly cadences alike.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.dowValNum   - Day-Of-Week Value Number: The rule's weekday
+ *                            index.
+ * @param props.onPatPicFun - On Patch Picker Function: Called with a patch
+ *                            naming the changed field.
+ * @param props.ordValNum   - Ordinal Value Number: The rule's occurrence.
+ *
+ * @returns The ordinal and weekday selects.
+ *
+ * @example
+ * ```tsx
+ * NthSelCom({ dowValNum, onPatPicFun, ordValNum }) // => <NthSelCom />
+ * ```
+ *
+*/
+
+function NthSelCom ( { dowValNum, onPatPicFun, ordValNum } : NtcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<>{ /* What: Nth Selects Fragment. Why: The week-of-month and weekday selects are true siblings with no shared wrapper of their own. How: This groups both selects without adding an extra DOM node. */ }
+
+
+			<select
+				className={ cssModObj.cadOptSel }
+
+				value={ ordValNum }
+
+				aria-label='Week of the month'
+
+				onChange={ ( chaEveObj ) => onPatPicFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
+			>{ /* What: Cadence Option Select Element. Why: An nth-weekday cadence needs its own "first/second/.../last" ordinal. How: This commits the chosen number as the draft's nthOrdinal. */ }
+
+
+				{ [ 1, 2, 3, 4, 5 ].map( ( ordOptNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordOptNum.
+
+
+					<option
+						key={ ordOptNum }
+
+						value={ ordOptNum }
+					>{ CAD_NAM_OBJ.sumCadFun( { anchorDom : ordOptNum, cadence : 'monthly' } ).split( '· ' )[ 1 ] }</option> // What: Ordinal Option Element. Why: Each week-of-month ordinal needs its own selectable option. How: This reuses sumCadFun to spell the ordinal, e.g. "2nd".
+
+
+				) ) }
+
+
+			</select>
+
+
+
+			<DowSelCom
+				value={ dowValNum }
+
+				ariLabStr='Weekday'
+
+				onChange={ ( newDowNum ) => onPatPicFun( { nthWeekday : newDowNum } ) }
+			/>{ /* What: Day-Of-Week Select Component. Why: An nth-weekday cadence also needs its own target weekday. How: This commits the chosen index as the draft's nthWeekday. */ }
+
+
+		</>
+
+
+	);
+
+
+}
+
+// #endregion NthSelCom
+
+
+
 type PccProTyp = { actStoObj : ActStoTyp, allGroArr : string[], conIteArr? : ConRcdTyp[], hasNewBoo? : boolean, incDaiBoo : boolean, isaNewBoo? : boolean, iteSecBoo? : boolean, onCanNewFun : () => void, onColConFun : () => void, onOpeSecFun? : () => void, onPatNewFun? : ( patPicObj : Partial< PicForTyp > ) => void, onReqDelFun? : () => void, onSavNewFun : ( draPicObj : PicForTyp, filAllBoo : boolean ) => void, picDatObj : PicRcdTyp, picIteArr : IteRcdTyp[] }; // What: Picker-Controls-Component Props Type. Why: A picker's Controls body edits one picker, real or a brand-new draft, and hands a draft's changes, save, and cancel to its card. How: This types PicConCom's props.
 
 // #region PicConCom
@@ -1280,37 +1503,23 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 								</select>
 
+
+
 								{ draPicObj.cadence === 'weekly' && ( // What: Weekly Anchor Check. Why: Only a weekly cadence has a single anchor-weekday select. How: This renders the select only while draPicObj.cadence is 'weekly'.
 
 
-									<select
-										className={ cssModObj.cadOptSel }
-
+									<DowSelCom
 										value={ draPicObj.anchorDow ?? 0 }
 
-										aria-label='Anchor weekday'
+										ariLabStr='Anchor weekday'
 
-										onChange={ ( chaEveObj ) => patPicFun( { anchorDow : parseInt( chaEveObj.target.value ) } ) }
-									>{ /* What: Anchor Weekday Select Element. Why: A weekly cadence needs exactly one weekday to anchor to. How: This commits the chosen index as draPicObj.anchorDow. */ }
-
-
-										{ DAY_FUL_ARR.map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dayIndNum.
-
-
-											<option
-												key={ dayIndNum }
-
-												value={ dayIndNum }
-											>{ dayNamStr }</option> // What: Weekday Option Element. Why: Each weekday needs its own selectable option. How: This renders dayNamStr, valued by its weekday index.
-
-
-										) ) }
-
-
-									</select>
+										onChange={ ( dowValNum ) => patPicFun( { anchorDow : dowValNum } ) }
+									/> // What: Day-Of-Week Select Component. Why: A weekly cadence needs exactly one weekday to anchor to. How: This commits the chosen index as draPicObj.anchorDow.
 
 
 								) }
+
+
 
 								{ ( draPicObj.cadence === 'monthly' || draPicObj.cadence === 'yearly' ) && ( // What: Date Mode Check. Why: Only monthly/yearly cadences let the user choose between a fixed date and an nth weekday. How: This renders the select only while draPicObj.cadence is 'monthly' or 'yearly'.
 
@@ -1341,63 +1550,12 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 								{ draPicObj.cadence === 'monthly' && ( draPicObj.dateMode === 'nthWeekday' ? ( // What: Monthly Anchor Check. Why: A monthly cadence's own anchor selects differ entirely depending on dateMode. How: This renders the nth-weekday pair when dateMode is 'nthWeekday', otherwise the single date-of-month select.
 
 
-									<React.Fragment>{ /* What: Nth Weekday Fragment Element. Why: The week-of-month and weekday selects are true siblings with no shared wrapper of their own. How: This groups both selects without adding an extra DOM node. */ }
+									<NthSelCom
+										dowValNum={ draPicObj.nthWeekday ?? 0 }
+										ordValNum={ draPicObj.nthOrdinal ?? 1 }
 
-
-										<select
-											className={ cssModObj.cadOptSel }
-
-											value={ draPicObj.nthOrdinal ?? 1 }
-
-											aria-label='Week of the month'
-
-											onChange={ ( chaEveObj ) => patPicFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
-										>{ /* What: Nth Ordinal Select Element. Why: An nth-weekday monthly cadence needs its own "first/second/.../last" ordinal. How: This commits the chosen number as draPicObj.nthOrdinal. */ }
-
-
-											{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum, labeled via CAD_NAM_OBJ.sumCadFun.
-
-
-												<option
-													key={ ordValNum }
-
-													value={ ordValNum }
-												>{ CAD_NAM_OBJ.sumCadFun( { anchorDom : ordValNum, cadence : 'monthly' } ).split( '· ' )[ 1 ] }</option> // What: Ordinal Option Element. Why: Each week-of-month ordinal needs its own selectable option. How: This reuses sumCadFun to spell the ordinal, e.g. "2nd".
-
-
-											) ) }
-
-
-										</select>
-
-										<select
-											className={ cssModObj.cadOptSel }
-
-											value={ draPicObj.nthWeekday ?? 0 }
-
-											aria-label='Weekday'
-
-											onChange={ ( chaEveObj ) => patPicFun( { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
-										>{ /* What: Nth Weekday Select Element. Why: An nth-weekday monthly cadence also needs its own target weekday. How: This commits the chosen index as draPicObj.nthWeekday. */ }
-
-
-											{ DAY_FUL_ARR.map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dayIndNum.
-
-
-												<option
-													key={ dayIndNum }
-
-													value={ dayIndNum }
-												>{ dayNamStr }</option> // What: Weekday Option Element. Why: Each weekday needs its own selectable option. How: This renders dayNamStr, valued by its weekday index.
-
-
-											) ) }
-
-
-										</select>
-
-
-									</React.Fragment>
+										onPatPicFun={ patPicFun }
+									/> // What: Nth Select Component. Why: An nth-weekday monthly cadence needs its own ordinal and target weekday. How: This renders both selects, committing each change through patPicFun.
 
 
 								) : ( // What: Anchor Dom Branch. Why: A date-anchored monthly cadence needs its own plain day-of-month select instead. How: This renders the else branch, taken while dateMode isn't 'nthWeekday'.
@@ -1440,83 +1598,20 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 									<React.Fragment>{ /* What: Nth Weekday Fragment Element. Why: The week-of-month, weekday, and month selects are true siblings with no shared wrapper of their own. How: This groups all 3 selects without adding an extra DOM node. */ }
 
 
-										<select
-											className={ cssModObj.cadOptSel }
+										<NthSelCom
+											dowValNum={ draPicObj.nthWeekday ?? 0 }
+											ordValNum={ draPicObj.nthOrdinal ?? 1 }
 
-											value={ draPicObj.nthOrdinal ?? 1 }
-
-											aria-label='Week of the month'
-
-											onChange={ ( chaEveObj ) => patPicFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
-										>{ /* What: Nth Ordinal Select Element. Why: An nth-weekday yearly cadence needs its own "first/second/.../last" ordinal. How: This commits the chosen number as draPicObj.nthOrdinal. */ }
+											onPatPicFun={ patPicFun }
+										/>{ /* What: Nth Select Component. Why: An nth-weekday yearly cadence needs its own ordinal and target weekday. How: This renders both selects, committing each change through patPicFun. */ }
 
 
-											{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum, labeled via CAD_NAM_OBJ.sumCadFun.
 
-
-												<option
-													key={ ordValNum }
-
-													value={ ordValNum }
-												>{ CAD_NAM_OBJ.sumCadFun( { anchorDom : ordValNum, cadence : 'monthly' } ).split( '· ' )[ 1 ] }</option> // What: Ordinal Option Element. Why: Each week-of-month ordinal needs its own selectable option. How: This reuses sumCadFun to spell the ordinal, e.g. "2nd".
-
-
-											) ) }
-
-
-										</select>
-
-										<select
-											className={ cssModObj.cadOptSel }
-
-											value={ draPicObj.nthWeekday ?? 0 }
-
-											aria-label='Weekday'
-
-											onChange={ ( chaEveObj ) => patPicFun( { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
-										>{ /* What: Nth Weekday Select Element. Why: An nth-weekday yearly cadence also needs its own target weekday. How: This commits the chosen index as draPicObj.nthWeekday. */ }
-
-
-											{ DAY_FUL_ARR.map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dayIndNum.
-
-
-												<option
-													key={ dayIndNum }
-
-													value={ dayIndNum }
-												>{ dayNamStr }</option> // What: Weekday Option Element. Why: Each weekday needs its own selectable option. How: This renders dayNamStr, valued by its weekday index.
-
-
-											) ) }
-
-
-										</select>
-
-										<select
-											className={ cssModObj.cadOptSel }
-
+										<MonSelCom
 											value={ draPicObj.anchorMonth ?? 1 }
 
-											aria-label='Anchor month'
-
-											onChange={ ( chaEveObj ) => patPicFun( { anchorMonth : parseInt( chaEveObj.target.value ) } ) }
-										>{ /* What: Anchor Month Select Element. Why: An nth-weekday yearly cadence also needs its own target month. How: This commits the chosen 1-based month number as draPicObj.anchorMonth. */ }
-
-
-											{ MON_ABB_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps MON_ABB_ARR to one option per entry, keyed by its own 1-indexed monIndNum.
-
-
-												<option
-													key={ monIndNum }
-
-													value={ monIndNum + 1 }
-												>{ monNamStr }</option> // What: Month Option Element. Why: Each month needs its own selectable option. How: This renders monNamStr, valued by its 1-based month number.
-
-
-											) ) }
-
-
-										</select>
+											onChange={ ( monValNum ) => patPicFun( { anchorMonth : monValNum } ) }
+										/>{ /* What: Month Select Component. Why: A yearly cadence needs its own target month. How: This commits the chosen 1-based month number as draPicObj.anchorMonth. */ }
 
 
 									</React.Fragment>
@@ -1528,31 +1623,13 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 									<React.Fragment>{ /* What: Date Anchor Fragment Element. Why: The month and day-of-month selects are true siblings with no shared wrapper of their own. How: This groups both selects without adding an extra DOM node. */ }
 
 
-										<select
-											className={ cssModObj.cadOptSel }
-
+										<MonSelCom
 											value={ draPicObj.anchorMonth ?? 1 }
 
-											aria-label='Anchor month'
-
-											onChange={ ( chaEveObj ) => patPicFun( { anchorMonth : parseInt( chaEveObj.target.value ) } ) }
-										>{ /* What: Anchor Month Select Element. Why: A date-anchored yearly cadence needs its own target month. How: This commits the chosen 1-based month number as draPicObj.anchorMonth. */ }
+											onChange={ ( monValNum ) => patPicFun( { anchorMonth : monValNum } ) }
+										/>{ /* What: Month Select Component. Why: A yearly cadence needs its own target month. How: This commits the chosen 1-based month number as draPicObj.anchorMonth. */ }
 
 
-											{ MON_ABB_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps MON_ABB_ARR to one option per entry, keyed by its own 1-indexed monIndNum.
-
-
-												<option
-													key={ monIndNum }
-
-													value={ monIndNum + 1 }
-												>{ monNamStr }</option> // What: Month Option Element. Why: Each month needs its own selectable option. How: This renders monNamStr, valued by its 1-based month number.
-
-
-											) ) }
-
-
-										</select>
 
 										<select
 											className={ cssModObj.cadOptSel }
