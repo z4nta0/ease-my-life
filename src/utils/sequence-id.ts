@@ -35,8 +35,8 @@
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param preStr - Prefix String: The text every ID starts with, naming its
- *                 kind of record.
+ * @param preTexStr - Prefix Text String: The text every ID starts with,
+ *                    naming its kind of record.
  *
  * @returns The module's ID function.
  *
@@ -47,14 +47,14 @@
  *
 */
 
-function ideMakFun ( preStr : string ) : ( () => string ) {
+function ideMakFun ( preTexStr : string ) : ( () => string ) {
 
 
 	let seqCouNum = 0; // What: Sequence Count Number. Why: Two IDs minted in the same millisecond must still differ. How: This starts at 0 and goes up by one per ID, private to this one ID function.
 
 
 
-	return () => preStr + Date.now().toString( 36 ) + ( seqCouNum++ ).toString( 36 ); // What: Identifier Function Return. Why: The module mints every ID of its kind through it. How: This returns a function joining the prefix, the time in base 36, and the counter in base 36, counting up once per call.
+	return () => preTexStr + Date.now().toString( 36 ) + ( seqCouNum++ ).toString( 36 ); // What: Identifier Function Return. Why: The module mints every ID of its kind through it. How: This returns a function joining the prefix, the time in base 36, and the counter in base 36, counting up once per call.
 
 
 }

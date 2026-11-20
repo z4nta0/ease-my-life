@@ -1567,7 +1567,6 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 						allCouNum={ allPicArr.filter( ( picCurObj ) => !picCurObj.hidden ).length } // What: All Count Number. Why: The "All" pill needs its own live total. How: This counts every non-hidden picker.
 						allSelBoo={ filGroStr === 'all' }
-						disBoo={ disGroBoo }
 						entIteArr={ exiGroArr.map( ( groCurStr ) => ( { // What: Group Entry Map. Why: One pill is needed per existing group. How: This maps exiGroArr to one entry each, keyed by its own name.
 
 
@@ -1579,6 +1578,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 						} ) ) }
+						isaDisBoo={ disGroBoo }
 						labTexStr='Group'
 
 						ariLabStr='Filter pickers by group'
@@ -1601,7 +1601,6 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 						allCouNum={ allPicArr.filter( ( picCurObj ) => !picCurObj.hidden ).length } // What: All Count Number. Why: The "All" pill needs its own live total. How: This counts every non-hidden picker.
 						allSelBoo={ filTypStr === 'all' }
-						disBoo={ disGroBoo }
 						entIteArr={ [ // What: Type Entry Build. Why: Conditionals/Reminders sort in alphabetically alongside the real modes instead of being pinned, matching the Show row's own vocabulary. How: This builds one entry per mode plus (when applicable) Conditionals and Reminders, then sorts them below.
 
 
@@ -1660,6 +1659,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 						]
 							.sort( ( entOneObj, entTwoObj ) => entOneObj.namStr.localeCompare( entTwoObj.namStr ) ) } // What: Entry Sort Call. Why: The pills list alphabetically by name. How: This sorts the entries with localeCompare.
+						isaDisBoo={ disGroBoo }
 						labTexStr='Type'
 
 						ariLabStr='Filter pickers by type'
@@ -1682,7 +1682,6 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 						allCouNum={ allPicArr.length }
 						allSelBoo={ filConStr === 'all' }
-						disBoo={ disGroBoo }
 						entIteArr={ [ ...conIteArr ].sort( ( conOneObj, conTwoObj ) => conOneObj.name.localeCompare( conTwoObj.name ) ).map( ( conCurObj ) => ( { // What: Conditional Entry Map. Why: One pill is needed per existing conditional, alphabetical. How: This maps the sorted list to one entry each, keyed by its own id.
 
 
@@ -1703,6 +1702,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 						} ) ) }
+						isaDisBoo={ disGroBoo }
 						labTexStr='Conditionals'
 
 						ariLabStr='Filter pickers by conditional'

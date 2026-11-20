@@ -35,10 +35,10 @@
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param preStr - Prefix String: The text the id starts with, naming its
- *                 kind of record.
- * @param lenNum - Length Number: How many random characters follow the
- *                 prefix, 6 by default.
+ * @param preTexStr - Prefix Text String: The text the id starts with,
+ *                    naming its kind of record.
+ * @param lenValNum - Length Value Number: How many random characters follow
+ *                    the prefix, 6 by default.
  *
  * @returns The prefix followed by the random characters.
  *
@@ -49,7 +49,7 @@
  *
 */
 
-const ranIdeFun = ( preStr : string, lenNum : number = 6 ) : string => preStr + Math.random().toString( 36 ).slice( 2, 2 + lenNum ); // What: Random Identifier Function. Why: Records of many kinds mint a fresh id the same way. How: This joins preStr to lenNum base-36 characters of one Math.random call.
+const ranIdeFun = ( preTexStr : string, lenValNum : number = 6 ) : string => preTexStr + Math.random().toString( 36 ).slice( 2, 2 + lenValNum ); // What: Random Identifier Function. Why: Records of many kinds mint a fresh id the same way. How: This joins preTexStr to lenValNum base-36 characters of one Math.random call.
 
 // #endregion ranIdeFun
 

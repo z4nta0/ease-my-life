@@ -31,7 +31,7 @@ import cssModObj from './filter-rail.module.css'; // What: CSS Module Object. Wh
 
 // #region Components
 
-type FacProTyp = { allCouNum : number, allSelBoo : boolean, ariLabStr : string, 'data-element-name-hook' : string, disBoo? : boolean, entIteArr : { cliFun : () => void, couNum : number, keyStr : string, namStr : string, selBoo : boolean }[], labTexStr : string, onAllFun : () => void, ref : React.Ref< HTMLDivElement > }; // What: Filter-Rail-Component Props Type. Why: A rail names itself, counts and marks its "All" pill and each choice, can be disabled, and hands each pill its own action. How: This types FilRaiCom's props, named Fac since Frc already belongs to FilRowCom.
+type FacProTyp = { allCouNum : number, allSelBoo : boolean, ariLabStr : string, 'data-element-name-hook' : string, entIteArr : { cliFun : () => void, couNum : number, keyStr : string, namStr : string, selBoo : boolean }[], isaDisBoo? : boolean, labTexStr : string, onAllFun : () => void, ref : React.Ref< HTMLDivElement > }; // What: Filter-Rail-Component Props Type. Why: A rail names itself, counts and marks its "All" pill and each choice, can be disabled, and hands each pill its own action. How: This types FilRaiCom's props, named Fac since Frc already belongs to FilRowCom.
 
 // #region FilRaiCom
 
@@ -55,11 +55,11 @@ type FacProTyp = { allCouNum : number, allSelBoo : boolean, ariLabStr : string, 
  *                                       accessible name.
  * @param props.data-element-name-hook - Data Element Name Hook: The rail's
  *                                       identity hook.
- * @param props.disBoo                 - Disabled Boolean: Whether every pill
- *                                       is disabled.
  * @param props.entIteArr              - Entry Item Array: One { cliFun,
  *                                       couNum, keyStr, namStr, selBoo }
  *                                       entry per pill after "All".
+ * @param props.isaDisBoo              - Is-A Disabled Boolean: Whether every
+ *                                       pill is disabled.
  * @param props.labTexStr              - Label Text String: The row's
  *                                       visible label.
  * @param props.onAllFun               - On All Function: Called when the
@@ -76,7 +76,7 @@ type FacProTyp = { allCouNum : number, allSelBoo : boolean, ariLabStr : string, 
  *
 */
 
-function FilRaiCom ( { allCouNum, allSelBoo, ariLabStr, 'data-element-name-hook' : hooNamStr, disBoo, entIteArr, labTexStr, onAllFun, ref } : FacProTyp ) : React.JSX.Element {
+function FilRaiCom ( { allCouNum, allSelBoo, ariLabStr, 'data-element-name-hook' : hooNamStr, entIteArr, isaDisBoo, labTexStr, onAllFun, ref } : FacProTyp ) : React.JSX.Element {
 
 
 	return (
@@ -105,7 +105,7 @@ function FilRaiCom ( { allCouNum, allSelBoo, ariLabStr, 'data-element-name-hook'
 
 					data-element-name-hook='filPilBut'
 
-					disabled={ disBoo }
+					disabled={ isaDisBoo }
 					type='button'
 
 					aria-selected={ allSelBoo }
@@ -132,7 +132,7 @@ function FilRaiCom ( { allCouNum, allSelBoo, ariLabStr, 'data-element-name-hook'
 
 						data-element-name-hook='filPilBut'
 
-						disabled={ disBoo }
+						disabled={ isaDisBoo }
 						type='button'
 
 						aria-selected={ entCurObj.selBoo }

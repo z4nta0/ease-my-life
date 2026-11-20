@@ -72,8 +72,8 @@ const WID_NUM_ARR = [ 375, 1280 ]; // What: Width Number Array. Why: The pages a
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param curPagObj - Current Page Object: The page to open it in.
- * @param patStr    - Path String: The legal page's address.
- * @param widNum    - Width Number: The viewport width in CSS pixels.
+ * @param legPatStr - Legal Path String: The legal page's address.
+ * @param vieWidNum - Viewport Width Number: The viewport width in CSS pixels.
  *
  * @returns A promise that settles once the page is open and still, with no
  *          value.
@@ -85,12 +85,12 @@ const WID_NUM_ARR = [ 375, 1280 ]; // What: Width Number Array. Why: The pages a
  *
 */
 
-async function opePagFun ( curPagObj : Page, patStr : string, widNum : number ) : Promise< void > {
+async function opePagFun ( curPagObj : Page, legPatStr : string, vieWidNum : number ) : Promise< void > {
 
 
-	await curPagObj.setViewportSize( { height : 800, width : widNum } ); // What: Viewport Size Call. Why: Layouts change with width. How: This sizes the viewport before the page loads.
+	await curPagObj.setViewportSize( { height : 800, width : vieWidNum } ); // What: Viewport Size Call. Why: Layouts change with width. How: This sizes the viewport before the page loads.
 
-	await curPagObj.goto( patStr ); // What: Page Open Call. Why: The checks read the page itself. How: This opens its address.
+	await curPagObj.goto( legPatStr ); // What: Page Open Call. Why: The checks read the page itself. How: This opens its address.
 
 	await curPagObj.evaluate( async () => { // What: Settle Wait Call. Why: Fonts and transitions still running would change what the checks read. How: This waits for the fonts, then for every running animation to finish.
 
@@ -116,16 +116,16 @@ async function opePagFun ( curPagObj : Page, patStr : string, widNum : number ) 
 test.describe.configure( { mode : 'parallel' } ); // What: Parallel Mode Call. Why: Each test opens its own page, so none waits on another. How: This lets the file's tests run across every worker at once.
 
 
-for ( const patStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages get the same checks. How: This declares each page's tests.
+for ( const legPatStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages get the same checks. How: This declares each page's tests.
 
 
-	for ( const widNum of WID_NUM_ARR ) { // What: Width Loop. Why: Each page is scanned, named, and walked at a phone and a desktop width. How: This declares the scan, the names check, and the keyboard walk once per width.
+	for ( const vieWidNum of WID_NUM_ARR ) { // What: Width Loop. Why: Each page is scanned, named, and walked at a phone and a desktop width. How: This declares the scan, the names check, and the keyboard walk once per width.
 
 
-		test( `${ patStr } at ${ widNum.toLocaleString( 'en-US' ) }px has no axe violations`, async ( { page : curPagObj }, tesInfObj ) => { // What: Axe Test. Why: The page passes only with zero axe violations. How: This opens the page, scans it, reports anything needing review, and fails on any violation.
+		test( `${ legPatStr } at ${ vieWidNum.toLocaleString( 'en-US' ) }px has no axe violations`, async ( { page : curPagObj }, tesInfObj ) => { // What: Axe Test. Why: The page passes only with zero axe violations. How: This opens the page, scans it, reports anything needing review, and fails on any violation.
 
 
-			await opePagFun( curPagObj, patStr, widNum ); // What: Page Open Call. Why: The scan should see the page settled. How: This opens and settles it.
+			await opePagFun( curPagObj, legPatStr, vieWidNum ); // What: Page Open Call. Why: The scan should see the page settled. How: This opens and settles it.
 
 
 
@@ -141,7 +141,7 @@ for ( const patStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages 
 
 			// #region Result Reporting
 
-			if ( revLinArr.length ) console.log( `[${ tesInfObj.project.name }] ${ patStr } at ${ widNum }px needs review:\n  ${ revLinArr.join( '\n  ' ) }` ); // What: Review Log Call. Why: The run should show what needs a look. How: This prints the page's review lines under its project, address, and width.
+			if ( revLinArr.length ) console.log( `[${ tesInfObj.project.name }] ${ legPatStr } at ${ vieWidNum }px needs review:\n  ${ revLinArr.join( '\n  ' ) }` ); // What: Review Log Call. Why: The run should show what needs a look. How: This prints the page's review lines under its project, address, and width.
 
 
 
@@ -154,10 +154,10 @@ for ( const patStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages 
 
 
 
-		test( `${ patStr } at ${ widNum.toLocaleString( 'en-US' ) }px names every link cleanly`, async ( { page : curPagObj } ) => { // What: Names Test. Why: Every link must be announced by a clean name, and a new tab link has to say so. How: This opens the page and checks its accessibility tree.
+		test( `${ legPatStr } at ${ vieWidNum.toLocaleString( 'en-US' ) }px names every link cleanly`, async ( { page : curPagObj } ) => { // What: Names Test. Why: Every link must be announced by a clean name, and a new tab link has to say so. How: This opens the page and checks its accessibility tree.
 
 
-			await opePagFun( curPagObj, patStr, widNum ); // What: Page Open Call. Why: The tree should be read with the page settled. How: This opens and settles it.
+			await opePagFun( curPagObj, legPatStr, vieWidNum ); // What: Page Open Call. Why: The tree should be read with the page settled. How: This opens and settles it.
 
 
 			expect( await namProFun( curPagObj ) ).toEqual( [] ); // What: No Name Problems Assertion. Why: The page passes only with clean names. How: This compares the problems with an empty list, so a failure prints each one.
@@ -167,12 +167,12 @@ for ( const patStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages 
 
 
 
-		test( `${ patStr } at ${ widNum.toLocaleString( 'en-US' ) }px walks cleanly with the keyboard`, async ( { browserName : engNamStr, page : curPagObj } ) => { // What: Keyboard Test. Why: The page has to be usable without a mouse. How: This opens the page under reduced motion and walks it with Tab.
+		test( `${ legPatStr } at ${ vieWidNum.toLocaleString( 'en-US' ) }px walks cleanly with the keyboard`, async ( { browserName : engNamStr, page : curPagObj } ) => { // What: Keyboard Test. Why: The page has to be usable without a mouse. How: This opens the page under reduced motion and walks it with Tab.
 
 
 			await curPagObj.emulateMedia( { reducedMotion : 'reduce' } ); // What: Reduced Motion Emulation. Why: A smooth scroll or a focus transition still running would be measured halfway. How: This makes the page match prefers-reduced-motion, which turns both off.
 
-			await opePagFun( curPagObj, patStr, widNum ); // What: Page Open Call. Why: The walk should start from the page settled. How: This opens and settles it.
+			await opePagFun( curPagObj, legPatStr, vieWidNum ); // What: Page Open Call. Why: The walk should start from the page settled. How: This opens and settles it.
 
 
 			expect( await keyProFun( curPagObj, engNamStr, null ) ).toEqual( [] ); // What: No Keyboard Problems Assertion. Why: The page passes only when every stop is reached, in order, on screen, uncovered, and visibly focused. How: This compares the walk's problems with an empty list, so a failure prints each one, the null saying the page has no pop-up open.
@@ -185,10 +185,10 @@ for ( const patStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages 
 
 
 
-	test( `${ patStr } opens with a skip link to its main content`, async ( { page : curPagObj } ) => { // What: Skip Link Test. Why: A keyboard user's first stop should lead straight to the document. How: This presses Tab, checks the skip link has focus on screen, clicks it, and checks the main has focus with the address unchanged.
+	test( `${ legPatStr } opens with a skip link to its main content`, async ( { page : curPagObj } ) => { // What: Skip Link Test. Why: A keyboard user's first stop should lead straight to the document. How: This presses Tab, checks the skip link has focus on screen, clicks it, and checks the main has focus with the address unchanged.
 
 
-		await opePagFun( curPagObj, patStr, 375 ); // What: Page Open Call. Why: The link is checked at a phone width, where room is tightest. How: This opens and settles the page at 375px.
+		await opePagFun( curPagObj, legPatStr, 375 ); // What: Page Open Call. Why: The link is checked at a phone width, where room is tightest. How: This opens and settles the page at 375px.
 
 
 
@@ -214,7 +214,7 @@ for ( const patStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages 
 		await skiLinLoc.click(); // What: Skip Link Click. Why: A plain click should move focus to the main content. How: This clicks the link.
 
 		await expect( curPagObj.locator( 'main' ) ).toBeFocused();            // What: Main Focus Assertion. Why: The next Tab should continue into the document. How: This checks the main holds focus.
-		await expect( curPagObj ).toHaveURL( new RegExp( `${ patStr }$` ) ); // What: Unchanged Address Assertion. Why: The skip link should leave no hash in the address. How: This checks the address still ends with the page's own path.
+		await expect( curPagObj ).toHaveURL( new RegExp( `${ legPatStr }$` ) ); // What: Unchanged Address Assertion. Why: The skip link should leave no hash in the address. How: This checks the address still ends with the page's own path.
 
 		// #endregion Skip Link Activation
 
@@ -223,10 +223,10 @@ for ( const patStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages 
 
 
 
-	test( `${ patStr } reflows at ${ REF_WID_NUM }px without scrolling sideways`, async ( { page : curPagObj } ) => { // What: Reflow Test. Why: Zoomed-in visitors read in one column without scrolling sideways. How: This opens the page at the reflow width and compares each scrolling box's content width with its visible width.
+	test( `${ legPatStr } reflows at ${ REF_WID_NUM }px without scrolling sideways`, async ( { page : curPagObj } ) => { // What: Reflow Test. Why: Zoomed-in visitors read in one column without scrolling sideways. How: This opens the page at the reflow width and compares each scrolling box's content width with its visible width.
 
 
-		await opePagFun( curPagObj, patStr, REF_WID_NUM ); // What: Page Open Call. Why: The check reads the page at the reflow width. How: This opens and settles it at 320px.
+		await opePagFun( curPagObj, legPatStr, REF_WID_NUM ); // What: Page Open Call. Why: The check reads the page at the reflow width. How: This opens and settles it at 320px.
 
 
 		const oveWidArr = await curPagObj.evaluate( () => [ document.documentElement, document.body ].map( ( eleCurObj ) => eleCurObj.scrollWidth - eleCurObj.clientWidth ) ); // What: Overflow Width Array. Why: Sideways overflow could show on the root or on the body. How: This reads how far each one's content reaches past its visible width.
@@ -239,12 +239,12 @@ for ( const patStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pages 
 
 
 
-	test( `${ patStr } plays no motion under reduced motion`, async ( { page : curPagObj } ) => { // What: Reduced Motion Test. Why: Visitors who ask for less motion shouldn't see the skip link slide or its ring ease. How: This requests reduced motion, focuses the skip link, and checks no animation is running.
+	test( `${ legPatStr } plays no motion under reduced motion`, async ( { page : curPagObj } ) => { // What: Reduced Motion Test. Why: Visitors who ask for less motion shouldn't see the skip link slide or its ring ease. How: This requests reduced motion, focuses the skip link, and checks no animation is running.
 
 
 		await curPagObj.emulateMedia( { reducedMotion : 'reduce' } ); // What: Reduced Motion Emulation. Why: The preference has to be set before the page loads. How: This makes the page match prefers-reduced-motion: reduce.
 
-		await opePagFun( curPagObj, patStr, 375 ); // What: Page Open Call. Why: The check reads the page once it has loaded. How: This opens and settles it.
+		await opePagFun( curPagObj, legPatStr, 375 ); // What: Page Open Call. Why: The check reads the page once it has loaded. How: This opens and settles it.
 
 		await curPagObj.keyboard.press( 'Tab' ); // What: First Tab Press. Why: Focusing the skip link is the page's one motion. How: This moves focus onto it.
 

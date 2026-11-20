@@ -51,25 +51,25 @@ import React from 'react'; // What: React. Why: useModIneFun applies and lifts t
  *
  * @param insEleRef - Inside Element Reference: A ref to any element inside
  *                    the modal, such as its panel or its primary button.
- * @param opeBoo    - Open Boolean: Whether the modal is open now, for a
+ * @param isaOpeBoo - Is-An Open Boolean: Whether the modal is open now, for a
  *                    modal component that stays mounted while closed.
  *
  * @returns This function does not return anything.
  *
  * @example
  * ```ts
- * useModIneFun(panEleRef, opeBoo) // => void
+ * useModIneFun(panEleRef, isaOpeBoo) // => void
  * ```
  *
 */
 
-function useModIneFun ( insEleRef : React.RefObject< HTMLElement | null >, opeBoo : boolean ) : void {
+function useModIneFun ( insEleRef : React.RefObject< HTMLElement | null >, isaOpeBoo : boolean ) : void {
 
 
 	React.useEffect( () => { // What: Inert Effect. Why: The page behind the modal must stay out of reach only while the modal is open. How: This sets inert on the modal's siblings when it opens and lifts it on cleanup.
 
 
-		if ( !opeBoo ) return; // What: Closed Modal Guard. Why: A closed modal leaves the page alone. How: This returns early.
+		if ( !isaOpeBoo ) return; // What: Closed Modal Guard. Why: A closed modal leaves the page alone. How: This returns early.
 
 
 
@@ -107,7 +107,7 @@ function useModIneFun ( insEleRef : React.RefObject< HTMLElement | null >, opeBo
 		return () => ineEleArr.forEach( ( ineCurEle ) => ineCurEle.removeAttribute( 'inert' ) ); // What: Inert Cleanup. Why: The page has to come back once the modal closes. How: This removes inert from exactly the elements the effect set it on.
 
 
-	}, [ insEleRef, opeBoo ] ); // What: Effect Dependency Array. Why: The page has to change whenever the modal opens or closes, or a different ref is passed. How: opeBoo flipping runs or cleans up the effect, and insEleRef keeps its identity across renders.
+	}, [ insEleRef, isaOpeBoo ] ); // What: Effect Dependency Array. Why: The page has to change whenever the modal opens or closes, or a different ref is passed. How: isaOpeBoo flipping runs or cleans up the effect, and insEleRef keeps its identity across renders.
 
 
 }
