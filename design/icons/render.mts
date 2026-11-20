@@ -86,6 +86,8 @@ async function renPngFun ( icoSizNum : number ) : Promise< Buffer > {
 	const pngB64Str = await capPagObj.evaluate( async ( [ souB64Str, tarSizNum ] ) => { // What: PNG Base64 String. Why: The canvas lives in the page, so the finished image comes back as text. How: This runs the drawing in the page and returns the PNG as base64.
 
 
+		// #region Source Image Loading
+
 		const souImaEle = new Image(); // What: Source Image Element. Why: The mark has to be decoded before it's drawn. How: This loads it from its base64 data.
 
 
@@ -94,6 +96,11 @@ async function renPngFun ( icoSizNum : number ) : Promise< Buffer > {
 
 		await souImaEle.decode(); // What: Source Decode Wait. Why: Drawing an undecoded image draws nothing. How: This waits until it's ready.
 
+		// #endregion Source Image Loading
+
+
+
+		// #region Final Canvas Drawing
 
 		const finCanEle = document.createElement( 'canvas' ); // What: Final Canvas Element. Why: The icon draws at its exact target size. How: This creates the canvas.
 
@@ -103,6 +110,8 @@ async function renPngFun ( icoSizNum : number ) : Promise< Buffer > {
 
 
 		finCanEle.getContext( '2d' )!.drawImage( souImaEle, 0, 0, tarSizNum, tarSizNum ); // What: Mark Draw Call. Why: This draws the icon itself. How: This rasterizes the mark to fill the square. // What: Non-Null Note. Why: getContext can return null for an unknown context type, and '2d' is always supported. How: The assertion lets drawImage run on it.
+
+		// #endregion Final Canvas Drawing
 
 
 

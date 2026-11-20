@@ -134,6 +134,8 @@ async function webSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 
 
 
+	// #region Signature Verification
+
 	const webSecStr = process.env.POLAR_WEBHOOK_SECRET; // What: Webhook Secret String. Why: Signatures are checked against this deploy's secret. How: This reads it.
 
 
@@ -162,7 +164,11 @@ async function webSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 
 	}
 
+	// #endregion Signature Verification
 
+
+
+	// #region Event Classification
 
 	const webEveObj : { data : PolOrdTyp, type : string } = JSON.parse( bodTexStr );               // What: Webhook Event Object. Why: The event's type and order decide what happens. How: This parses the body.
 	const proIdeStr = isaLivFun( netCotObj.deploy.context ) ? PRO_LIV_STR : PRO_SAN_STR;           // What: Product Identifier String. Why: Only the sync product unlocks sync. How: This picks this deploy's product.
@@ -178,7 +184,11 @@ async function webSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 
 	if ( ( !paiNowBoo && !refAllBoo ) || !proMatBoo ) return new Response( null, { status : 202 } ); // What: Ignored Event Guard. Why: Other events and products change nothing. How: This acknowledges them.
 
+	// #endregion Event Classification
 
+
+
+	// #region Account Lookup
 
 	const accUidStr = await ordAccFun( webEveObj.data ); // What: Account User Identifier String. Why: The claim belongs on the buyer's account. How: This finds it.
 
@@ -196,7 +206,11 @@ async function webSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 
 	}
 
+	// #endregion Account Lookup
 
+
+
+	// #region Claim Write
 
 	const admAutObj = admAutFun();                          // What: Admin Auth Object. Why: The claim is set through it. How: This gets the service.
 	const accRcdObj = await admAutObj.getUser( accUidStr ); // What: Account Record Object. Why: Other claims must survive. How: This reads the account's current claims.
@@ -204,6 +218,8 @@ async function webSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 
 
 	await admAutObj.setCustomUserClaims( accUidStr, { ...accRcdObj.customClaims, paid : paiNowBoo } ); // What: Claim Write Call. Why: The paid claim follows the order. How: This sets it true on payment and false on a full refund, keeping other claims.
+
+	// #endregion Claim Write
 
 
 

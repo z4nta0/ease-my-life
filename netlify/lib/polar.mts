@@ -140,6 +140,8 @@ function ordUidFun ( ordCurObj : PolOrdTyp ) : string | null {
 function verWebFun ( bodTexStr : string, reqHeaObj : Headers, webSecStr : string, nowSecNum : number = Math.floor( Date.now() / 1000 ) ) : string | null {
 
 
+	// #region Header Validation
+
 	const msgIdeStr = reqHeaObj.get( 'webhook-id' );        // What: Message Identifier String. Why: The id is part of what's signed. How: This reads its header.
 	const msgSigStr = reqHeaObj.get( 'webhook-signature' ); // What: Message Signature String. Why: The signatures to check. How: This reads their header.
 	const msgTimStr = reqHeaObj.get( 'webhook-timestamp' ); // What: Message Timestamp String. Why: The time is signed and checked for freshness. How: This reads its header.
@@ -152,13 +154,19 @@ function verWebFun ( bodTexStr : string, reqHeaObj : Headers, webSecStr : string
 
 	if ( !( Math.abs( nowSecNum - Number( msgTimStr ) ) <= TIM_TOL_NUM ) ) return 'stale timestamp'; // What: Stale Timestamp Guard. Why: An old webhook could be replayed, and a timestamp that isn't a number is no better. How: This refuses one more than five minutes off, or unreadable.
 
+	// #endregion Header Validation
 
+
+
+	// #region Expected Signatures
 
 	const b64RemStr = webSecStr.startsWith( 'whsec_' ) ? webSecStr.slice( 6 ) : webSecStr;                                  // What: Base64 Remainder String. Why: A Standard Webhooks secret may carry a whsec_ prefix before its base64 key. How: This drops it.
 	const b64ValBoo = b64RemStr.length > 0 && b64RemStr.length % 4 === 0 && /^[A-Za-z0-9+/]*={0,2}$/.test( b64RemStr );     // What: Base64 Valid Boolean. Why: Only a real base64 string means a decoded key, the same test Polar's SDK makes with atob. How: This checks its length and characters.
 	const keyBufArr = [ Buffer.from( webSecStr, 'utf8' ), ...( b64ValBoo ? [ Buffer.from( b64RemStr, 'base64' ) ] : [] ) ]; // What: Key Buffer Array. Why: Polar's SDK accepts a signature made with either key. How: This lists the secret's own bytes and, when valid, its decoded bytes.
 	const sigConStr = `${ msgIdeStr }.${ Math.floor( Number( msgTimStr ) ) }.${ bodTexStr }`;                               // What: Signed Content String. Why: Polar signs the id, the timestamp, and the body joined by dots. How: This builds the same text.
 	const expSigArr = keyBufArr.map( ( keyCurBuf ) => createHmac( 'sha256', keyCurBuf ).update( sigConStr ).digest() );     // What: Expected Signature Array. Why: A genuine signature matches one of these. How: This signs the content with each key.
+
+	// #endregion Expected Signatures
 
 
 

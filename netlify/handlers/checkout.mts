@@ -80,6 +80,8 @@ async function cheSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 
 
 
+	// #region Sign-In Verification
+
 	const ideTokStr = ( reqCurObj.headers.get( 'authorization' ) || '' ).replace( /^Bearer\s*/i, '' ).trim(); // What: Identity Token String. Why: The caller proves who they are with their Firebase token. How: This reads it from the Authorization header.
 
 
@@ -110,7 +112,11 @@ async function cheSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 
 	if ( !decTokObj.email_verified || !decTokObj.email ) return errResFun( 'Your email address needs to be verified first.', 403 ); // What: Unverified Email Guard. Why: The Firestore rules need a verified email to sync, so buying without one would unlock nothing. How: This refuses.
 
+	// #endregion Sign-In Verification
 
+
+
+	// #region Polar Setup
 
 	const isaLivBoo = isaLivFun( netCotObj.deploy.context ); // What: Is-A Live Boolean. Why: Only production uses live Polar. How: This checks the deploy context.
 	const polTokStr = process.env.POLAR_ACCESS_TOKEN;        // What: Polar Token String. Why: Polar's API needs the organization's token. How: This reads the deploy's secret.
@@ -120,7 +126,11 @@ async function cheSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 
 	if ( !polTokStr || !proIdeStr ) return errResFun( "Checkout isn't set up on this version of the site yet.", 503 ); // What: Setup Guard. Why: A preview without the sandbox set up can't sell anything. How: This says so.
 
+	// #endregion Polar Setup
 
+
+
+	// #region Checkout Creation
 
 	const polResObj = await fetch( `${ isaLivBoo ? API_LIV_STR : API_SAN_STR }/v1/checkouts/`, { // What: Polar Response Object. Why: Polar creates the checkout. How: This posts the product, the account's tags, the email, and where to return.
 
@@ -168,6 +178,8 @@ async function cheSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 
 
 	const cheSesObj = await polResObj.json() as { url : string }; // What: Checkout Session Object. Why: Polar returns the checkout's address. How: This parses its reply. // What: Type Assertion Note. Why: A successful checkout creation always returns the checkout with its url. How: The as types the parsed reply.
+
+	// #endregion Checkout Creation
 
 
 
