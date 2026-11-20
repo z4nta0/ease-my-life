@@ -107,7 +107,7 @@ const locDayFun = ( timValStr : string ) : string => DAY_FOR_OBJ.format( new Dat
 const locTimFun = ( dayIsoStr : string, houValNum : number, minValNum : number = 0 ) : Date => { // What: Local Time Function. Why: Faked times are named in Chicago time. How: This tries both Chicago offsets and returns the instant that reads back as the request.
 
 
-	const [ yeaValNum, monValNum, dayValNum ] = dayIsoStr.split( '-' ).map( Number ); // What: Year Month Day Numbers. Why: The candidate instants are built from the date's parts. How: This splits the ISO date into numbers.
+	const [ yeaValNum, monValNum, dayValNum ] = dayIsoStr.split( '-' ).map( Number ); // What: Year Value Number. Why: The candidate instants are built from the date's parts. How: This splits the ISO date into numbers and keeps the first. // What: Month Value Number. Why: The month is the second part. How: This keeps the second. // What: Day Value Number. Why: The day is the third part. How: This keeps the third.
 
 	const wanTimStr = `${ houValNum }:${ String( minValNum ).padStart( 2, '0' ) }`; // What: Wanted Time String. Why: A candidate instant is checked against the requested time of day. How: This formats it the way HOU_FOR_OBJ does.
 

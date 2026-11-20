@@ -802,7 +802,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 		: ( staAppObj.tasks || [] ).find( ( curTasObj ) => curTasObj.id === opeIdeStr ) || null; // What: Stored Reminder Branch. Why: Any other open row is a stored reminder. How: This looks the open id up in the store, or null.
 
 
-	const { cmtDraFun, draTasObj, patDraFun } = useTasDraFun( actStoObj, opeTasObj ); // What: Task Draft Destructure. Why: The open row's name input and schedule editor both edit one local draft, committed when the row closes or saves. How: This calls useTasDraFun with the open reminder.
+	const { cmtDraFun, draTasObj, patDraFun } = useTasDraFun( actStoObj, opeTasObj ); // What: Commit Draft Function. Why: The open row's name input and schedule editor both edit one local draft, committed when the row closes or saves. How: This calls useTasDraFun with the open reminder and keeps its commit. // What: Draft Task Object. Why: The row's controls show the draft. How: This keeps the draft reminder. // What: Patch Draft Function. Why: Each control edits the draft. How: This keeps the hook's patcher.
 
 	const hanDraRef = React.useRef< TasRcdTyp | null >( null ); // What: Handled Draft Reference. Why: A draft that was already saved or cancelled must not be committed again when its row unmounts afterward. How: This holds the last draft object keeTasFun committed or Cancel dropped.
 

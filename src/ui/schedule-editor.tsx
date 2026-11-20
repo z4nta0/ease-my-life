@@ -940,7 +940,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 	const ancLabStr = ( () => { // What: Anchor Label String. Why: The anchor link's own visible text needs a locale-formatted date, not the raw ISO string. How: This parses ancIsoStr into a real Date and formats it.
 
 
-		const [ yeaValNum, monValNum, dayValNum ] = ( ancIsoStr || '' ).split( '-' ).map( Number ); // What: Year Value Month Value Day Value Destructure. Why: A locale-formatted date needs a real Date instance built from 3 numeric parts. How: This splits ancIsoStr (or an empty string when falsy) on '-' and maps each segment through Number.
+		const [ yeaValNum, monValNum, dayValNum ] = ( ancIsoStr || '' ).split( '-' ).map( Number ); // What: Year Value Number. Why: A locale-formatted date needs a real Date instance built from 3 numeric parts. How: This splits ancIsoStr (or an empty string when falsy) on '-', maps each segment through Number, and keeps the first. // What: Month Value Number. Why: The month is the date's second part. How: This keeps the second segment. // What: Day Value Number. Why: The day is the date's third part. How: This keeps the third segment.
 
 		const ancDatObj = ( yeaValNum && monValNum && dayValNum ) ? new Date( yeaValNum, monValNum - 1, dayValNum ) : new Date(); // What: Anchor Date Object. Why: The format call below needs a real Date, not the 3 raw numbers. How: This builds a Date from the destructured parts, falling back to right now if any part was missing.
 
@@ -966,7 +966,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 	const oncLabStr = ( () => { // What: Once Label String. Why: The start-date link's own visible text needs a locale-formatted date. How: This parses oncIsoStr into a real Date and formats it.
 
 
-		const [ yeaValNum, monValNum, dayValNum ] = oncIsoStr.split( '-' ).map( Number ); // What: Year Value Month Value Day Value Destructure. Why: A locale-formatted date needs a real Date instance built from 3 numeric parts. How: This splits oncIsoStr on '-' and maps each segment through Number.
+		const [ yeaValNum, monValNum, dayValNum ] = oncIsoStr.split( '-' ).map( Number ); // What: Year Value Number. Why: A locale-formatted date needs a real Date instance built from 3 numeric parts. How: This splits oncIsoStr on '-', maps each segment through Number, and keeps the first. // What: Month Value Number. Why: The month is the date's second part. How: This keeps the second segment. // What: Day Value Number. Why: The day is the date's third part. How: This keeps the third segment.
 
 
 

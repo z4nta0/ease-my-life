@@ -139,7 +139,7 @@ function useRcdDraFun< T extends { id : string } > ( rcdDatObj : T | null ) : { 
 function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' | 'togVacFun' | 'updIteFun' >, iteDatObj : IteRcdTyp | null ) : { cmtDraFun : () => void, draIteObj : IteRcdTyp | null, patDraFun : ( patRcdObj : Partial< IteRcdTyp > ) => void } {
 
 
-	const { draRcdObj, oriRcdObj, patDraFun } = useRcdDraFun( iteDatObj ); // What: Record Draft Destructure. Why: The item draft is a record draft with an item-specific commit. How: This calls useRcdDraFun with the open item.
+	const { draRcdObj, oriRcdObj, patDraFun } = useRcdDraFun( iteDatObj ); // What: Draft Record Object. Why: The item draft is a record draft with an item-specific commit. How: This calls useRcdDraFun with the open item and keeps its draft. // What: Original Record Object. Why: The commit compares against the item as opened. How: This keeps the original. // What: Patch Draft Function. Why: Callers edit the draft through it. How: This keeps the record draft's patcher.
 
 
 
@@ -255,7 +255,7 @@ function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' |
 function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >, tasDatObj : TasRcdTyp | null ) : { cmtDraFun : () => void, draTasObj : TasRcdTyp | null, patDraFun : ( patRcdObj : Partial< TasRcdTyp > ) => void } {
 
 
-	const { draRcdObj, oriRcdObj, patDraFun } = useRcdDraFun( tasDatObj ); // What: Record Draft Destructure. Why: The reminder draft is a record draft with a reminder-specific commit. How: This calls useRcdDraFun with the open reminder.
+	const { draRcdObj, oriRcdObj, patDraFun } = useRcdDraFun( tasDatObj ); // What: Draft Record Object. Why: The reminder draft is a record draft with a reminder-specific commit. How: This calls useRcdDraFun with the open reminder and keeps its draft. // What: Original Record Object. Why: The commit compares against the reminder as opened. How: This keeps the original. // What: Patch Draft Function. Why: Callers edit the draft through it. How: This keeps the record draft's patcher.
 
 
 

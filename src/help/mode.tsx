@@ -242,7 +242,7 @@ const RAI_HAN_OBJ : HelIteTyp = { // What: Rail Handle Object. Why: The side rai
 const resBoxFun = ( curRecObj : HelRecTyp ) : PadSidTyp & ShaRadTyp => { // What: Resolve Box Function. Why: The mask cutout and the highlight spot must draw each target with the same radii and padding. How: This reads the rect's own shape and pads, falling back to the default radius and the flat pad margin.
 
 
-	const { radXcoNum, radYcoNum } = curRecObj.shaObj || { // What: Shape Destructure. Why: A multi-element union with no single shape falls back to the app's own default radius. How: This reads curRecObj's own shape, or the default, directly.
+	const { radXcoNum, radYcoNum } = curRecObj.shaObj || { // What: Radius X-Coordinate Number. Why: A multi-element union with no single shape falls back to the app's own default radius. How: This reads curRecObj's own shape's horizontal radius, or the default's. // What: Radius Y-Coordinate Number. Why: The vertical radius follows the same fallback. How: This reads the shape's vertical radius, or the default's.
 
 
 		radXcoNum : rhyPixFun( 'm01' ), // What: Radius X-Coordinate Number. Why: A target with no measured shape still needs a horizontal corner radius. How: This reads the Vertical Rhythm m01 step in pixels as the default. // Vertical Rhythm Base Minus 1 = 11px
@@ -930,7 +930,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 					{ recEntArr.map( ( [ curIdeStr, curRecObj ] ) => { // What: Mask Cutout Map. Why: Every currently-highlighted target needs its own black cutout rect, shaped and padded to match how it is actually rendered on top. How: This maps recEntArr, reading each rect's own shape/pad fields.
 
 
-						const { padBotNum, padLefNum, padRigNum, padTopNum, radXcoNum, radYcoNum } = resBoxFun( curRecObj ); // What: Resolved Box Destructure. Why: The cutout is drawn with the target's own radii and pads. How: This reads them from resBoxFun.
+						const { padBotNum, padLefNum, padRigNum, padTopNum, radXcoNum, radYcoNum } = resBoxFun( curRecObj ); // What: Pad Bottom Number. Why: The cutout is drawn with the target's own radii and pads. How: This reads the bottom pad from resBoxFun. // What: Pad Left Number. Why: The cutout grows by the left pad. How: This reads it from resBoxFun. // What: Pad Right Number. Why: The cutout grows by the right pad. How: This reads it from resBoxFun. // What: Pad Top Number. Why: The cutout grows by the top pad. How: This reads it from resBoxFun. // What: Radius X-Coordinate Number. Why: The cutout's corners follow the target's horizontal radius. How: This reads it from resBoxFun. // What: Radius Y-Coordinate Number. Why: The cutout's corners follow the target's vertical radius. How: This reads it from resBoxFun.
 
 
 
@@ -987,7 +987,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 			{ recEntArr.map( ( [ curIdeStr, curRecObj ] ) => { // What: Highlight Spot Map. Why: Alongside the mask's own dim-layer cutout, each target also gets a rendered help spot div, e.g. for its own visible border/glow styling. How: This maps recEntArr the same way the mask cutouts above do.
 
 
-				const { padBotNum, padLefNum, padRigNum, padTopNum, radXcoNum, radYcoNum } = resBoxFun( curRecObj ); // What: Resolved Box Destructure. Why: The spot must draw the same box as its mask cutout. How: This reads the radii and pads from resBoxFun.
+				const { padBotNum, padLefNum, padRigNum, padTopNum, radXcoNum, radYcoNum } = resBoxFun( curRecObj ); // What: Pad Bottom Number. Why: The spot must draw the same box as its mask cutout. How: This reads the bottom pad from resBoxFun. // What: Pad Left Number. Why: The spot grows by the same left pad. How: This reads it from resBoxFun. // What: Pad Right Number. Why: The spot grows by the same right pad. How: This reads it from resBoxFun. // What: Pad Top Number. Why: The spot grows by the same top pad. How: This reads it from resBoxFun. // What: Radius X-Coordinate Number. Why: The spot's corners match the cutout's horizontal radius. How: This reads it from resBoxFun. // What: Radius Y-Coordinate Number. Why: The spot's corners match the cutout's vertical radius. How: This reads it from resBoxFun.
 
 				const spoStyObj = { // What: Spot Style Object. Why: The rendered highlight spot needs its own absolute position/size plus a border-radius matching radXcoNum/radYcoNum exactly. How: This is applied directly as this div's own inline style below.
 

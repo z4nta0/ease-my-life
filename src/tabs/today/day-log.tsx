@@ -250,7 +250,7 @@ function forDueFun ( dueDatObj : Date | null, dayKeyStr : string ) : string {
 
 
 
-	const [ yeaValNum, monValNum, domValNum ] = dayKeyStr.split( '-' ).map( Number ); // What: Reference Date Parts. Why: The midnight-stripped reference date below needs its own year/month/day numbers. How: This splits dayKeyStr on its dashes and parses each part as a Number.
+	const [ yeaValNum, monValNum, domValNum ] = dayKeyStr.split( '-' ).map( Number ); // What: Year Value Number. Why: The midnight-stripped reference date below needs its own year/month/day numbers. How: This splits dayKeyStr on its dashes, parses each part as a Number, and keeps the first. // What: Month Value Number. Why: The month is the key's second part. How: This keeps the second part. // What: Day-Of-Month Value Number. Why: The day of the month is the key's third part. How: This keeps the third part.
 
 	const curMidObj = new Date( yeaValNum, monValNum - 1, domValNum );                                // What: Current Midnight Object. Why: The day-count below must compare 2 midnights, not 2 arbitrary times of day. How: This builds a local Date at midnight from yeaValNum/monValNum/domValNum.
 	const dueMidObj = new Date( dueDatObj.getFullYear(), dueDatObj.getMonth(), dueDatObj.getDate() ); // What: Due Midnight Object. Why: The day-count below must compare 2 midnights, not 2 arbitrary times of day. How: This builds a local Date at midnight from dueDatObj's own year/month/day.

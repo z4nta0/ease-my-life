@@ -710,7 +710,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const ediEntObj = actEdiStr ? staAppObj.today.entries.find( ( curEntObj ) => `item:${ curEntObj.eid }` === actEdiStr ) : null; // What: Editing Entry Object. Why: The open item editor's draft needs to know which entry it belongs to. How: This finds the entry whose own editor key matches actEdiStr, or null when no item editor is open.
 	const ediIteObj = ediEntObj ? staAppObj.items.find( ( curIteObj ) => curIteObj.id === ediEntObj.itemId ) || null : null;       // What: Editing Item Object. Why: The draft is a copy of this entry's own item. How: This looks the item up by the entry's itemId, or null when there's none.
 
-	const { cmtDraFun, draIteObj, patDraFun } = useIteDraFun( actStoObj, ediIteObj ); // What: Item Draft Destructure. Why: The open card's name input and its editor both edit one local draft, committed only on Save. How: This calls useIteDraFun with the open item.
+	const { cmtDraFun, draIteObj, patDraFun } = useIteDraFun( actStoObj, ediIteObj ); // What: Commit Draft Function. Why: The open card's name input and its editor both edit one local draft, committed only on Save. How: This calls useIteDraFun with the open item and keeps its commit. // What: Draft Item Object. Why: The card's controls show the draft. How: This keeps the draft item. // What: Patch Draft Function. Why: Each control edits the draft. How: This keeps the hook's patcher.
 
 	// #endregion Item Editor State
 
@@ -2868,7 +2868,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 			const cheNowObj = new Date(); // What: Check Now Object. Why: The boundary math below needs "now" as a real Date. How: This is a fresh Date, read once.
 
-			const [ runHouNum, runMinNum ] = ( daiRcdObj.runTime || '04:00' ).split( ':' ).map( Number ); // What: Run Hour/Minute Number. Why: The boundary below is built from the configured run time's own hour and minute. How: This splits daiRcdObj.runTime (or its '04:00' default) on ':' and parses both halves as numbers.
+			const [ runHouNum, runMinNum ] = ( daiRcdObj.runTime || '04:00' ).split( ':' ).map( Number ); // What: Run Hour Number. Why: The boundary below is built from the configured run time's own hour and minute. How: This splits daiRcdObj.runTime (or its '04:00' default) on ':', parses both halves as numbers, and keeps the first. // What: Run Minute Number. Why: The boundary needs the minute too. How: This keeps the second half.
 
 			const bouDatObj = new Date( cheNowObj ); // What: Boundary Date Object. Why: The most recent occurrence of the run time needs its own mutable Date to adjust below. How: This starts as a copy of cheNowObj.
 

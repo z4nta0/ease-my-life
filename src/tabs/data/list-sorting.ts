@@ -194,7 +194,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 
 	// #region Sort Key Parsing
 
-	const [ fieNamStr, sorDirStr ] = sorKeyStr.split( '-' ); // What: Field Name String And Direction String. Why: Every sort key packs both which field to compare and which way, joined by a dash. How: This splits sorKeyStr once into the two pieces every branch below reads.
+	const [ fieNamStr, sorDirStr ] = sorKeyStr.split( '-' ); // What: Field Name String. Why: Every sort key packs which field to compare and which way, joined by a dash. How: This splits sorKeyStr once and keeps the part before the dash. // What: Sort Direction String. Why: Every branch below also reads the direction. How: This keeps the part after the dash.
 
 	const revSorBoo = sorDirStr === 'desc'; // What: Reverse Sort Boolean. Why: Every branch below needs to know whether to flip its own comparison. How: This is true only when sorDirStr is exactly 'desc'.
 

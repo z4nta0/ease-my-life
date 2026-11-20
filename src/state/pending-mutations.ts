@@ -405,7 +405,7 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 
-			const { _cardPrev : carPreObj, ...remFieObj } = curConObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _cardPrev snapshot. How: This destructures _cardPrev off curConObj as carPreObj, which goes unused, keeping every other field in remFieObj.
+			const { _cardPrev : carPreObj, ...remFieObj } = curConObj; // What: Card Previous Object. Why: The restored object below must drop the now-consumed _cardPrev snapshot. How: This destructures _cardPrev off curConObj as carPreObj, which goes unused. // What: Remaining Fields Object. Why: Every other field is restored. How: This keeps them in remFieObj.
 
 
 
@@ -467,7 +467,7 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 			const preSnaObj = curConObj._chargePrev!; // What: Previous Snapshot Object. Why: The restoration below needs the exact pre-charge fields recorded earlier. How: This reads curConObj's own _chargePrev field. // What: Non-Null Note. Why: This branch only runs when hasPreBoo found a snapshot. How: The ! tells TypeScript _chargePrev is set here.
 
-			const { _chargePrev : chrPreObj, ...remFieObj } = curConObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _chargePrev snapshot. How: This destructures _chargePrev off curConObj as chrPreObj, which goes unused, keeping every other field in remFieObj.
+			const { _chargePrev : chrPreObj, ...remFieObj } = curConObj; // What: Charge Previous Object. Why: The restored object below must drop the now-consumed _chargePrev snapshot. How: This destructures _chargePrev off curConObj as chrPreObj, which goes unused. // What: Remaining Fields Object. Why: Every other field is restored. How: This keeps them in remFieObj.
 
 
 

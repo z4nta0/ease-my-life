@@ -90,11 +90,11 @@ const remDueFun = ( tasRcdObj : TasRcdTyp, dayIsoStr : string ) : boolean => { /
 
 	// #region Due Date Setup
 
-	const [ yeaValNum, monValNum, dayValNum ] = parIsoFun( dayIsoStr ); // What: Year Month Day Numbers. Why: Monthly and yearly rules read the date's parts. How: This splits the date.
+	const [ yeaValNum, monValNum, dayValNum ] = parIsoFun( dayIsoStr ); // What: Year Value Number. Why: Monthly and yearly rules read the date's parts. How: This splits the date and keeps the year. // What: Month Value Number. Why: Monthly rules read the month. How: This keeps the month. // What: Day Value Number. Why: Monthly rules compare the day. How: This keeps the day.
 
 	const intValNum = Math.max( 1, tasRcdObj.interval || 1 );                     // What: Interval Value Number. Why: Every repeat can skip units. How: This reads N, at least 1.
 	const ancDayStr = ( tasRcdObj.anchor || tasRcdObj.createdAt ).slice( 0, 10 ); // What: Anchor Day String. Why: Every-N counts start from the anchor. How: This reads the anchor, falling back to the creation date.
-	const [ ancYeaNum, ancMonNum ] = parIsoFun( ancDayStr );                      // What: Anchor Year Month Numbers. Why: Monthly and yearly counts are in whole months and years. How: This splits the anchor.
+	const [ ancYeaNum, ancMonNum ] = parIsoFun( ancDayStr );                      // What: Anchor Year Number. Why: Yearly counts are in whole years. How: This splits the anchor and keeps its year. // What: Anchor Month Number. Why: Monthly counts are in whole months. How: This keeps its month.
 	const nthModBoo = tasRcdObj.dateMode === 'nthWeekday';                        // What: Nth Mode Boolean. Why: Monthly and yearly reminders can fall on an nth weekday. How: This reads the date mode.
 
 	// #endregion Due Date Setup
@@ -241,7 +241,7 @@ const tdmDayFun = ( picRcdObj : PicRcdTyp, yeaValNum : number, monValNum : numbe
 const perStaFun = ( picRcdObj : PicRcdTyp, dayIsoStr : string ) : string => { // What: Period Start Function. Why: Non-daily pickers run once per period. How: This finds the period's first day by cadence.
 
 
-	const [ yeaValNum, monValNum, dayValNum ] = parIsoFun( dayIsoStr ); // What: Year Month Day Numbers. Why: Monthly and yearly rules read the date's parts. How: This splits the date.
+	const [ yeaValNum, monValNum, dayValNum ] = parIsoFun( dayIsoStr ); // What: Year Value Number. Why: Monthly and yearly rules read the date's parts. How: This splits the date and keeps the year. // What: Month Value Number. Why: Monthly rules read the month. How: This keeps the month. // What: Day Value Number. Why: Monthly rules compare the day. How: This keeps the day.
 
 
 

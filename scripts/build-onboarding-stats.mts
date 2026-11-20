@@ -264,7 +264,7 @@ const buiRemFun = ( todDatObj : Date ) : { remLogArr : RawStaTyp[ 'reminderLog' 
 const isoIndFun = ( isoDayStr : string ) => { // What: ISO Index Function. Why: Day offsets need a comparable, timezone-safe day count rather than an ISO string. How: This parses the date's parts and converts them to whole UTC days since the epoch.
 
 
-	const [ yeaValNum, monValNum, dayValNum ] = isoDayStr.split( '-' ).map( Number ); // What: Year Month Day Numbers. Why: Date.UTC needs each part as a number. How: This splits the ISO string on its dashes and parses each piece.
+	const [ yeaValNum, monValNum, dayValNum ] = isoDayStr.split( '-' ).map( Number ); // What: Year Value Number. Why: Date.UTC needs each part as a number. How: This splits the ISO string on its dashes, parses each piece, and keeps the first. // What: Month Value Number. Why: The month is the second part. How: This keeps the second piece. // What: Day Value Number. Why: The day is the third part. How: This keeps the third piece.
 
 
 
@@ -371,7 +371,7 @@ const simDatFun = () : RawStaTyp => { // What: Simulate Data Function. Why: A no
 	todDatObj.setHours( 0, 0, 0, 0 ); // What: Midnight Reset Call. Why: Only the calendar day matters to the offsets. How: This zeroes the time of day.
 
 
-	const { remLogArr, remSkiArr } = buiRemFun( todDatObj ); // What: Reminder Rows. Why: The trash reminder's history is built from the same today. How: This calls buiRemFun.
+	const { remLogArr, remSkiArr } = buiRemFun( todDatObj ); // What: Reminder Log Array. Why: The trash reminder's history is built from the same today. How: This reads the completion rows buiRemFun returns. // What: Reminder Skip Array. Why: Its skipped days come from the same build. How: This reads the skip rows buiRemFun returns.
 
 
 

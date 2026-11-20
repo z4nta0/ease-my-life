@@ -734,7 +734,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 	const opeTasObj = opeTasStr ? staAppObj.tasks.find( ( curTasObj ) => curTasObj.id === opeTasStr ) || null : null; // What: Open Task Object. Why: The open editor's draft is a copy of this reminder. How: This looks the open id up among the tasks, or null when no saved reminder's editor is open.
 
-	const { cmtDraFun, draTasObj : opeDraObj, patDraFun } = useTasDraFun( actStoObj, opeTasObj ); // What: Task Draft Destructure. Why: The open card's name input and its schedule editor both edit one local draft, committed only on Save. How: This calls useTasDraFun with the open reminder.
+	const { cmtDraFun, draTasObj : opeDraObj, patDraFun } = useTasDraFun( actStoObj, opeTasObj ); // What: Commit Draft Function. Why: The open card's name input and its schedule editor both edit one local draft, committed only on Save. How: This calls useTasDraFun with the open reminder and keeps its commit. // What: Open Draft Object. Why: The card's controls show the draft. How: This keeps the hook's draTasObj as opeDraObj. // What: Patch Draft Function. Why: Each control edits the draft. How: This keeps the hook's patcher.
 
 	// #endregion Editor Slots
 

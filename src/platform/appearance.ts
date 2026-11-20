@@ -505,7 +505,7 @@ function covHexFun ( cssColStr : string ) : string | null {
 		__tinProObj.fillRect( 0, 0, 1, 1 );  // What: Pixel Fill Call. Why: Modern browsers keep a color like oklch() as-is in fillStyle, so the only reliable way to get sRGB bytes is to actually paint it. How: This paints the probe's single pixel with the assigned color.
 
 
-		const [ redValNum, greValNum, bluValNum ] = __tinProObj.getImageData( 0, 0, 1, 1 ).data; // What: Red Green Blue Value Numbers. Why: The painted pixel holds the color converted to sRGB, which is what a hex string needs. How: This reads the pixel back and destructures its first 3 channels, ignoring alpha.
+		const [ redValNum, greValNum, bluValNum ] = __tinProObj.getImageData( 0, 0, 1, 1 ).data; // What: Red Value Number. Why: The painted pixel holds the color converted to sRGB, which is what a hex string needs. How: This reads the pixel back and keeps its first channel. // What: Green Value Number. Why: The hex string needs the green channel too. How: This keeps the second channel. // What: Blue Value Number. Why: The hex string needs the blue channel too. How: This keeps the third channel, ignoring alpha after it.
 
 		const hexResStr = '#' + [ redValNum, greValNum, bluValNum ].map( ( chaValNum ) => chaValNum.toString( 16 ).padStart( 2, '0' ) ).join( '' ); // What: Hex Result String. Why: A theme-color tag needs a plain hex color every browser parses. How: This formats each channel as 2 hex digits and joins them after a leading #.
 

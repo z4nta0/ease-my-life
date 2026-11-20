@@ -173,7 +173,7 @@ function verWebFun ( bodTexStr : string, reqHeaObj : Headers, webSecStr : string
 	const sigMatBoo = mesSigStr.split( ' ' ).some( ( sigEntStr ) => { // What: Signature Match Boolean. Why: Any listed v1 signature matching proves the webhook genuine. How: This compares each against every expected one in constant time.
 
 
-		const [ sigVerStr, sigB64Str ] = sigEntStr.split( ',', 2 ); // What: Signature Version And Value. Why: Each entry is a version, a comma, and the base64 signature. How: This splits them.
+		const [ sigVerStr, sigB64Str ] = sigEntStr.split( ',', 2 ); // What: Signature Version String. Why: Each entry starts with a version before its comma. How: This keeps the part before the first comma. // What: Signature Base64 String. Why: The base64 signature follows the comma. How: This keeps the part after it.
 
 
 

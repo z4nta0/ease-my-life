@@ -210,7 +210,7 @@ const eveNthFun = ( nthValNum : number, uniCouNum : number ) : boolean => nthVal
 const parIsoFun = ( isoValStr : string ) => { // What: Parse ISO Function. Why: Every anchor/onceDate comparison in this file needs a stored ISO string turned back into a real local-midnight Date. How: This splits the string into its 3 numeric parts and builds a Date from them.
 
 
-	const [ yeaValNum, monValNum, dayValNum ] = ( isoValStr || '' ).split( '-' ).map( Number ); // What: Year Value Month Value Day Value Destructure. Why: An anchor/onceDate ISO string needs splitting into its 3 numeric parts before a local-midnight Date can be built from it. How: This splits isoValStr (or an empty string when falsy) on '-' and maps each segment through Number.
+	const [ yeaValNum, monValNum, dayValNum ] = ( isoValStr || '' ).split( '-' ).map( Number ); // What: Year Value Number. Why: An anchor/onceDate ISO string needs splitting into its 3 numeric parts before a local-midnight Date can be built from it. How: This splits isoValStr (or an empty string when falsy) on '-', maps each segment through Number, and keeps the first. // What: Month Value Number. Why: The month is the string's second part. How: This keeps the second segment. // What: Day Value Number. Why: The day is the string's third part. How: This keeps the third segment.
 
 
 
@@ -779,7 +779,7 @@ function sumTasFun ( tasRcdObj : TasRcdTyp ) : string {
 
 
 
-			const [ yeaValNum, monValNum, dayValNum ] = tasRcdObj.onceDate.split( '-' ).map( Number ); // What: Year Value Month Value Day Value Destructure. Why: A locale-formatted date label needs a real Date instance, not the raw ISO string. How: This splits tasRcdObj's own onceDate on '-' and maps each segment through Number.
+			const [ yeaValNum, monValNum, dayValNum ] = tasRcdObj.onceDate.split( '-' ).map( Number ); // What: Year Value Number. Why: A locale-formatted date label needs a real Date instance, not the raw ISO string. How: This splits tasRcdObj's own onceDate on '-', maps each segment through Number, and keeps the first. // What: Month Value Number. Why: The month is the date's second part. How: This keeps the second segment. // What: Day Value Number. Why: The day is the date's third part. How: This keeps the third segment.
 
 			const datLabStr = new Date( yeaValNum, monValNum - 1, dayValNum ).toLocaleDateString( 'en-US', { day : 'numeric', month : 'short' } ); // What: Date Label String. Why: This is the actual short, locale-formatted date the label displays. How: This builds a Date from the 3 destructured parts and formats it.
 

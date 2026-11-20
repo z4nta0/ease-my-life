@@ -142,7 +142,7 @@ function invColFun ( hexColStr : string ) : string {
 
 		};
 
-		let [ oklLigNum, oklAaxNum, oklBaxNum ] = linOklFun( rgbZerArr.map( srgLinFun ) ); // What: Oklab Triple And Guard. Why: The rest of this function inverts and re-encodes this exact triple. How: This converts rgbZerArr through the linear-light/OKLab pipeline built above.
+		let [ oklLigNum, oklAaxNum, oklBaxNum ] = linOklFun( rgbZerArr.map( srgLinFun ) ); // What: Oklab Lightness Number. Why: The rest of this function inverts and re-encodes this exact triple. How: This converts rgbZerArr through the linear-light/Oklab pipeline built above and keeps the lightness. // What: Oklab A-Axis Number. Why: The same triple's green-red axis is re-encoded too. How: This keeps the second value. // What: Oklab B-Axis Number. Why: The same triple's blue-yellow axis is re-encoded too. How: This keeps the third value.
 
 
 		if ( Math.hypot( oklAaxNum, oklBaxNum ) < 0.02 ) { // What: Chroma Near-Zero Guard. Why: Near-neutral colors carry a tiny residual a/b from floating-point noise in the forward conversion, which gets amplified when inverting an extreme lightness (e.g. a near-white background would invert to a visibly red-tinted near-black instead of neutral). How: This clamps a/b to true zero whenever their combined magnitude is below a small threshold.

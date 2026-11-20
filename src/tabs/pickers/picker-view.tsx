@@ -492,7 +492,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	const ediOpeObj = ediIteStr && !ediCloBoo ? staAppObj.items.find( ( iteCurObj ) => iteCurObj.id === ediIteStr ) || null : null; // What: Editing Open Object. Why: Only an editor that's open, not one playing its closing animation, has a draft. How: This looks up the edited item while the editor is open and not closing, else null.
 
-	const { cmtDraFun, draIteObj, patDraFun } = useIteDraFun( actStoObj, ediOpeObj ); // What: Item Draft Destructure. Why: The open editor's name input and controls edit one local draft, committed only on Save. How: This calls useIteDraFun with the open item.
+	const { cmtDraFun, draIteObj, patDraFun } = useIteDraFun( actStoObj, ediOpeObj ); // What: Commit Draft Function. Why: The open editor's name input and controls edit one local draft, committed only on Save. How: This calls useIteDraFun with the open item and keeps its commit. // What: Draft Item Object. Why: The editor's controls show the draft. How: This keeps the draft item. // What: Patch Draft Function. Why: Each control edits the draft. How: This keeps the hook's patcher.
 
 
 	React.useEffect( () => { // What: Deleted-Under-Editor Effect. Why: An item can be deleted out from under its own open editor (the row's own trash icon stays reachable while editing, see the render's own null-guard below), and that guard alone only stops THIS render from crashing; without also clearing ediIteStr here, it would stay set forever, permanently tripping staEdiFun's own "one editor at a time" guard against ever opening another. How: This watches for the currently-edited item vanishing from staAppObj.items and clears both ediIteStr and ediCloBoo the moment it does.

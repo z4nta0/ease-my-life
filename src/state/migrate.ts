@@ -161,7 +161,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 				const rspIdeStr = curIteObj.pickerId || itePicObj[ curIteObj.id ] || null; // What: Resolved-Picker Identifier String. Why: An item may already carry a pickerId, or only be inferable from the old itemIds inversion above. How: This prefers curIteObj's own pickerId, falling back to itePicObj's lookup, then null.
 
-				const { categoryId : catIdeStr, ...remFieObj } = curIteObj; // What: Remaining Fields Object. Why: The old categoryId field must be dropped entirely, not merely ignored. How: This destructures categoryId off curIteObj as catIdeStr, which goes unused, keeping every other field in remFieObj.
+				const { categoryId : catIdeStr, ...remFieObj } = curIteObj; // What: Category Identifier String. Why: The old categoryId field must be dropped entirely, not merely ignored. How: This destructures categoryId off curIteObj as catIdeStr, which goes unused. // What: Remaining Fields Object. Why: Every other field carries over. How: This keeps them in remFieObj.
 
 
 
@@ -178,7 +178,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 		curStaObj.pickers = curStaObj.pickers.map( ( curPicObj : RawSavTyp ) => { // What: Picker Itemids Drop. Why: A picker no longer owns an itemIds list at all once items carry their own pickerId. How: This maps every picker to a copy without its itemIds.
 
 
-			const { itemIds : iteIdeArr, ...remFieObj } = curPicObj; // What: Remaining Fields Object. Why: The itemIds list must be dropped entirely. How: This destructures itemIds off the picker as iteIdeArr, which goes unused, keeping every other field in remFieObj.
+			const { itemIds : iteIdeArr, ...remFieObj } = curPicObj; // What: Item Identifier Array. Why: The itemIds list must be dropped entirely. How: This destructures itemIds off the picker as iteIdeArr, which goes unused. // What: Remaining Fields Object. Why: Every other field carries over. How: This keeps them in remFieObj.
 
 
 

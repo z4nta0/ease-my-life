@@ -148,7 +148,7 @@ const SET_SEC_ARR = [ // What: Settings Section Array. Why: This drives both the
 function forRunFun ( runTimStr : string ) : string {
 
 
-	const [ houValNum, minValNum ] = ( runTimStr || '04:00' ).split( ':' ).map( Number ); // What: Hour Value Number And Minute Value Number. Why: The raw "HH:MM" string must be split into numeric parts before it can be reformatted. How: This splits runTimStr (or the '04:00' default) on ':' and maps both halves through Number.
+	const [ houValNum, minValNum ] = ( runTimStr || '04:00' ).split( ':' ).map( Number ); // What: Hour Value Number. Why: The raw "HH:MM" string must be split into numeric parts before it can be reformatted. How: This splits runTimStr (or the '04:00' default) on ':', maps both halves through Number, and keeps the first. // What: Minute Value Number. Why: The minutes are the second half. How: This keeps the second half.
 
 	const merSufStr = houValNum < 12 ? 'AM' : 'PM';               // What: Meridiem Suffix String. Why: A 12-hour label needs to say whether the hour is morning or afternoon/evening. How: This reads 'AM' for any hour before noon, 'PM' otherwise.
 	const houDisNum = houValNum % 12 === 0 ? 12 : houValNum % 12; // What: Hour Display Number. Why: A 24-hour hour of 0 or 12 must read as "12" on a 12-hour clock, never "0". How: This takes the 24-hour hour modulo 12, substituting 12 whenever that remainder is 0.

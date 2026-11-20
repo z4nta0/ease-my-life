@@ -548,7 +548,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 	const draPicBoo = !!opeIteObj && opeIteObj.pickerId === newDraStr; // What: Draft Picker Boolean. Why: An open row inside the draft picker commits into draIteArr, never the store. How: This checks whether the open item belongs to the draft picker.
 
-	const { cmtDraFun, draIteObj, patDraFun } = useIteDraFun( draPicBoo ? draActObj : actStoObj, opeIteObj ); // What: Item Draft Destructure. Why: The open row's name input and editor both edit one local draft, committed when the row closes or saves. How: This calls useIteDraFun with the open item, committing through draActObj for a draft picker's item.
+	const { cmtDraFun, draIteObj, patDraFun } = useIteDraFun( draPicBoo ? draActObj : actStoObj, opeIteObj ); // What: Commit Draft Function. Why: The open row's name input and editor both edit one local draft, committed when the row closes or saves. How: This calls useIteDraFun with the open item, committing through draActObj for a draft picker's item, and keeps its commit. // What: Draft Item Object. Why: The row's controls show the draft. How: This keeps the draft item. // What: Patch Draft Function. Why: Each control edits the draft. How: This keeps the hook's patcher.
 
 	const hanDraRef = React.useRef< IteRcdTyp | null >( null ); // What: Handled Draft Reference. Why: A draft that was already saved or cancelled must not be committed again when its row unmounts afterward. How: This holds the last draft object keeIteFun committed or Cancel dropped.
 

@@ -157,7 +157,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 
 
 
-		const [ , monValNum, dayValNum ] = draDatStr.split( '-' ).map( Number ); // What: Month Value Number And Day Value Number. Why: A custom holiday recurs by month/day only, not by the specific year the date input happened to show. How: This splits the "YYYY-MM-DD" draft and discards the year, keeping only the numeric month and day.
+		const [ , monValNum, dayValNum ] = draDatStr.split( '-' ).map( Number ); // What: Month Value Number. Why: A custom holiday recurs by month/day only, not by the specific year the date input happened to show. How: This splits the "YYYY-MM-DD" draft, discards the year, and maps the month through Number. // What: Day Value Number. Why: The day is the date's last part. How: This keeps the third piece as a number.
 
 
 		actStoObj.addHolFun({ // What: Add Custom Holiday Call. Why: This is the actual store mutation that creates the new recurring day off. How: This calls actStoObj.addHolFun with the trimmed name and the parsed month/day.

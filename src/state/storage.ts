@@ -378,7 +378,7 @@ async function wriDatFun ( appStaObj : StaAppTyp ) : Promise< void > {
 
 	// #region State Store Write
 
-	const { pickLog : picLogArr, ...resStaObj } = appStaObj; // What: Rest State Object Destructure. Why: The pick log and the rest of state are written to two separate object stores and must be split apart before either write happens. How: This pulls pickLog out as picLogArr, leaving every other field in resStaObj.
+	const { pickLog : picLogArr, ...resStaObj } = appStaObj; // What: Pick Log Array. Why: The pick log and the rest of state are written to two separate object stores and must be split apart before either write happens. How: This pulls pickLog out as picLogArr. // What: Rest State Object. Why: The rest of state goes to its own store. How: This keeps every other field in resStaObj.
 
 	const cloStaObj = JSON.parse( JSON.stringify( resStaObj ) ); // What: Clone State Object. Why: Structured clone cannot take proxies or functions, and although state is meant to be plain JSON, round-tripping it here defensively means a stray non-clonable value cannot kill the whole write. How: This serializes resStaObj to JSON text and immediately parses it back into a plain object.
 
@@ -583,7 +583,7 @@ function wriLocFun ( appStaObj : StaAppTyp, fulWriBoo : boolean ) : boolean {
 		if ( !fulWriBoo ) { // What: Not Full Write Check. Why: A warm-mirror write (as opposed to a fallback-engine write) must exclude pickLog entirely. How: This rebuilds payDatObj without pickLog, flagged with __mirrorNoLog, whenever fulWriBoo is false.
 
 
-			const { pickLog : picLogArr, ...resStaObj } = appStaObj; // What: Rest State Object Destructure. Why: pickLog must be pulled out before the remaining fields become the actual mirror payload. How: This pulls pickLog out as picLogArr (discarded below) and keeps every other field in resStaObj.
+			const { pickLog : picLogArr, ...resStaObj } = appStaObj; // What: Pick Log Array. Why: pickLog must be pulled out before the remaining fields become the actual mirror payload. How: This pulls pickLog out as picLogArr, discarded below. // What: Rest State Object. Why: The mirror holds everything else. How: This keeps every other field in resStaObj.
 
 			payDatObj = { ...resStaObj, __mirrorNoLog : true }; // What: Payload Data Object Rebuild. Why: A later reader (reaLocFun/iniStoFun) needs to know this specific copy's own pickLog is a stand-in, not real history. How: This spreads resStaObj and adds the __mirrorNoLog marker field.
 

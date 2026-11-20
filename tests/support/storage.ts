@@ -234,7 +234,7 @@ const wriStaFun = async ( curPagObj : Page, staAppObj : StaAppTyp ) : Promise< v
 	await curPagObj.evaluate( ( wriStaObj ) => new Promise< void >( ( resProFun, rejProFun ) => { // What: State Write Script. Why: IndexedDB can only be written from inside the page. How: This opens the database, writes both stores, and clears the mirror.
 
 
-		const { pickLog : picLogArr, ...resStaObj } = wriStaObj; // What: Log And Rest Split. Why: The app keeps the pick log in its own store. How: This separates the log from the rest of the state.
+		const { pickLog : picLogArr, ...resStaObj } = wriStaObj; // What: Pick Log Array. Why: The app keeps the pick log in its own store. How: This separates the log from the rest of the state. // What: Rest State Object. Why: The rest of the state goes to the state store. How: This keeps every other field in resStaObj.
 		const opeReqObj = indexedDB.open( 'easemylife', 1 );     // What: Open Request Object. Why: The state lives in the app's own database. How: This opens it at the app's version 1.
 
 

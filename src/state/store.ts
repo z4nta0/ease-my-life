@@ -534,7 +534,7 @@ function stkSynFun ( curStaObj : StaAppTyp, entArgArr : TodEntTyp[], tasArgArr :
 function nexStaFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], chaStaObj : Pick< StaAppTyp, 'conditionalLog' | 'conditionals' | 'items' | 'pickers' | 'pickLog' > ) : StaAppTyp {
 
 
-	const { stkClaBoo, stkValNum } = stkSynFun( { ...curStaObj, items : chaStaObj.items, pickers : chaStaObj.pickers }, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: The action's entries and changed lists can flip whether today counts as fully done. How: This calls stkSynFun with the changed items and pickers laid over the current state.
+	const { stkClaBoo, stkValNum } = stkSynFun( { ...curStaObj, items : chaStaObj.items, pickers : chaStaObj.pickers }, nexEntArr, curStaObj.tasks ); // What: Streak Claimed Boolean. Why: The action's entries and changed lists can flip whether today counts as fully done. How: This calls stkSynFun with the changed items and pickers laid over the current state. // What: Streak Value Number. Why: The streak count follows the same reconcile. How: This reads the count stkSynFun returns.
 
 
 
@@ -1918,7 +1918,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 			const curDayStr = isoDayFun(); // What: Current Day String. Why: The pick-log purge below only drops TODAY's own rows, keeping history intact. How: This reads isoDayFun().
 			const nexLogArr = ( curStaObj.pickLog || [] ).filter( ( curRowObj ) => !( curRowObj.itemId === tarIdeStr && curRowObj.date === curDayStr ) ); // What: Next Log Array. Why: Only today's own live rows for this item are dropped; historical rows survive (their own denormalized name preserves past stats, like reminderLog does). How: This filters out rows matching both tarIdeStr and curDayStr.
 
-			const { stkClaBoo, stkValNum } = stkSynFun( curStaObj, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Removing an item can drop entries off today, which can flip whether today counts as fully done. How: This calls stkSynFun against the already-filtered entries.
+			const { stkClaBoo, stkValNum } = stkSynFun( curStaObj, nexEntArr, curStaObj.tasks ); // What: Streak Claimed Boolean. Why: Removing an item can drop entries off today, which can flip whether today counts as fully done. How: This calls stkSynFun against the already-filtered entries. // What: Streak Value Number. Why: The streak count follows the same reconcile. How: This reads the count stkSynFun returns.
 
 			const nexPicArr = curStaObj.pickers.map( ( curPicObj ) => curPicObj.activeItemId === tarIdeStr ? { ...curPicObj, activeItemId : null } : curPicObj ); // What: Next Picker Array. Why: A removed item that was some ease-down picker's own in-progress item must no longer be pointed at. How: This nulls activeItemId on any picker that was pointing at tarIdeStr.
 
@@ -2287,7 +2287,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			const { stkClaBoo, stkValNum } = stkSynFun( curStaObj, curStaObj.today.entries, nexTasArr ); // What: Streak Reconcile. Why: A new reminder due today means a fully done day isn't done anymore, so its streak point must be given back. How: This reconciles the streak against the tasks with the new one added.
+			const { stkClaBoo, stkValNum } = stkSynFun( curStaObj, curStaObj.today.entries, nexTasArr ); // What: Streak Claimed Boolean. Why: A new reminder due today means a fully done day isn't done anymore, so its streak point must be given back. How: This reconciles the streak against the tasks with the new one added. // What: Streak Value Number. Why: The streak count follows the same reconcile. How: This reads the count stkSynFun returns.
 
 
 
@@ -2558,7 +2558,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			const { stkClaBoo, stkValNum } = stkSynFun( curStaObj, curStaObj.today.entries, nexTasArr ); // What: Streak Reconcile. Why: Toggling a reminder can flip whether today counts as fully done. How: This calls stkSynFun against curStaObj's own current entries and the already-toggled nexTasArr.
+			const { stkClaBoo, stkValNum } = stkSynFun( curStaObj, curStaObj.today.entries, nexTasArr ); // What: Streak Claimed Boolean. Why: Toggling a reminder can flip whether today counts as fully done. How: This calls stkSynFun against curStaObj's own current entries and the already-toggled nexTasArr. // What: Streak Value Number. Why: The streak count follows the same reconcile. How: This reads the count stkSynFun returns.
 
 
 
@@ -3601,7 +3601,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			const { stkClaBoo, stkValNum } = stkSynFun( curStaObj, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: A new, unchecked entry means a fully done day isn't done anymore, so its streak point must be given back. How: This reconciles the streak against the entries with the new one added.
+			const { stkClaBoo, stkValNum } = stkSynFun( curStaObj, nexEntArr, curStaObj.tasks ); // What: Streak Claimed Boolean. Why: A new, unchecked entry means a fully done day isn't done anymore, so its streak point must be given back. How: This reconciles the streak against the entries with the new one added. // What: Streak Value Number. Why: The streak count follows the same reconcile. How: This reads the count stkSynFun returns.
 
 
 
@@ -3778,7 +3778,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		skiEntFun : ( entIdeStr ) => setAppStaObj( ( curStaObj ) => { // What: Skip Entry Function. Why: A user must be able to drop an entry from today while Stats still counts it as a skip. How: This undoes any completed mutation and conditional charge first, removes the entry, marks its own live log row skipped, and reconciles the streak.
 
 
-			const { curEntObj, nexIteArr, nexLogArr, nexPicArr } = undEntFun( curStaObj, entIdeStr ); // What: Undone Entry Destructure. Why: A skipped entry is no longer a completion, so any staged mutation it already applied must be undone first. How: This reads the entry and the restored (or unchanged) lists from undEntFun.
+			const { curEntObj, nexIteArr, nexLogArr, nexPicArr } = undEntFun( curStaObj, entIdeStr ); // What: Current Entry Object. Why: A skipped entry is no longer a completion, so any staged mutation it already applied must be undone first. How: This reads the entry from undEntFun. // What: Next Item Array. Why: The undo may restore items. How: This reads the restored (or unchanged) items. // What: Next Log Array. Why: The undo may drop the entry's log row. How: This reads the restored (or unchanged) pick log. // What: Next Picker Array. Why: The undo may restore pickers. How: This reads the restored (or unchanged) pickers.
 
 			const nexEntArr = curStaObj.today.entries.filter( ( entFilObj ) => entFilObj.eid !== entIdeStr ); // What: Next Entry Array. Why: A skipped entry is removed from today entirely, not merely marked. How: This filters out the one entry matching entIdeStr.
 
@@ -3839,7 +3839,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		swaIteFun : ( entIdeStr, iteIdeStr, penArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Swap Item Function. Why: Today's own Re-roll must swap the item one entry shows while keeping a record of what was rolled away. How: This points the entry at the new item with freshly staged pending, marks the old live log row rejected, and appends a new 'reroll' row under the same eid.
 
 
-			const { nexIteArr, nexLogArr, nexPicArr } = undEntFun( curStaObj, entIdeStr ); // What: Undone Entry Destructure. Why: A re-roll always lands not-done, so an already-completed entry's own staged mutation must be undone first. How: This reads the restored (or unchanged) lists from undEntFun.
+			const { nexIteArr, nexLogArr, nexPicArr } = undEntFun( curStaObj, entIdeStr ); // What: Next Item Array. Why: A re-roll always lands not-done, so an already-completed entry's own staged mutation must be undone first. How: This reads the restored (or unchanged) items from undEntFun. // What: Next Log Array. Why: The undo may drop the entry's log row. How: This reads the restored (or unchanged) pick log. // What: Next Picker Array. Why: The undo may restore pickers. How: This reads the restored (or unchanged) pickers.
 
 			const curRowObj = nexLogArr.find( ( logFinObj ) => logFinObj.eid === entIdeStr && !logFinObj.outcome ); // What: Current Row Object And Guard. Why: The live log row (if any) is where this entry's own current pickerId can still be read from. How: This finds the one row sharing entIdeStr with no outcome yet.
 

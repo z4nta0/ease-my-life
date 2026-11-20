@@ -223,7 +223,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element 
 
 
 
-		const { arrHorNum, lefTipNum, maxHeiNum, tipClaStr, topTipNum } = plaTipFun( tarRecObj, tipCurEle.offsetWidth, tipCurEle.offsetHeight ); // What: Placement Result. Why: This is the whole positioning answer for this render. How: This calls plaTipFun with the tip's own real measured size.
+		const { arrHorNum, lefTipNum, maxHeiNum, tipClaStr, topTipNum } = plaTipFun( tarRecObj, tipCurEle.offsetWidth, tipCurEle.offsetHeight ); // What: Arrow Horizontal Number. Why: The arrow points at the target from wherever the tip lands. How: This reads its offset from plaTipFun, called with the tip's own real measured size. // What: Left Tip Number. Why: The tip's horizontal position for this render. How: This reads it from plaTipFun. // What: Maximum Height Number. Why: A tip taller than the room left scrolls instead. How: This reads its cap from plaTipFun. // What: Tip Class String. Why: The tip's side decides its arrow's look. How: This reads the class plaTipFun picks. // What: Top Tip Number. Why: The tip's vertical position for this render. How: This reads it from plaTipFun.
 
 		// #endregion Tip Measurement
 
