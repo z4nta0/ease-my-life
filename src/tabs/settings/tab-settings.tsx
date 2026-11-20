@@ -167,6 +167,145 @@ function forRunFun ( runTimStr : string ) : string {
 
 // #region Components
 
+type IocProTyp = { labTexStr : string, steTexEle : React.ReactNode, warTexEle : React.ReactNode }; // What: Install-Row-Component Props Type. Why: Each install note names itself, its steps, and its warning. How: This types InsRowCom's props.
+
+// #region InsRowCom
+
+/**
+ * InsRowCom = Install Row Component
+ *
+ * @summary
+ * Renders one platform's install note in the tab's info-row shape, minus
+ * any action: its name, the steps to install the app, and a warning about
+ * data the install doesn't carry over.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.labTexStr - Label Text String: The note's own name.
+ * @param props.steTexEle - Steps Text Element: The install steps.
+ * @param props.warTexEle - Warning Text Element: The data-migration warning.
+ *
+ * @returns The install note row.
+ *
+ * @example
+ * ```tsx
+ * InsRowCom({ labTexStr, steTexEle, warTexEle }) // => <InsRowCom />
+ * ```
+ *
+*/
+
+function InsRowCom ( { labTexStr, steTexEle, warTexEle } : IocProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<div
+			className={` ${ cssModObj.setRowDiv }   ${ cssModObj.setRowDivIos } `}
+
+			data-element-name-hook='insRowDiv'
+		>{ /* What: Install Row Div Element. Why: A platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+
+
+			<div className={ cssModObj.setInfDiv }>{ /* What: Install Info Div Element. Why: The note's own name and its 2 explanatory paragraphs need their own grouping. How: This wraps the name span and both sub spans. */ }
+
+
+				<span className={ cssModObj.setNamSpa }>{ labTexStr }</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders labTexStr. */ }
+
+				<span className={ cssModObj.setSubSpa }>{ steTexEle }</span>{ /* What: Set Data Sub Span Element. Why: The note first says how to install the app. How: This renders steTexEle. */ }
+
+				<span className={ cssModObj.setSubSpa }>{ warTexEle }</span>{ /* What: Set Data Sub Span Element. Why: The note warns that installing doesn't carry existing data over. How: This renders warTexEle. */ }
+
+
+			</div>
+
+
+		</div>
+
+
+	);
+
+
+}
+
+// #endregion InsRowCom
+
+
+
+type LwcProTyp = { 'data-element-name-hook' : string, labTexStr : string, onClick : () => void, subTexStr : string }; // What: Legal-Row-Component Props Type. Why: Each legal document row names its document and opens it. How: This types LegRowCom's props.
+
+// #region LegRowCom
+
+/**
+ * LegRowCom = Legal Row Component
+ *
+ * @summary
+ * Renders one legal document's row in the tab's info-plus-action layout:
+ * the document's name and description beside a View button.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.data-element-name-hook - Data Element Name Hook: The row's own
+ *                                       identity hook, forwarded onto it.
+ * @param props.labTexStr              - Label Text String: The document's
+ *                                       name.
+ * @param props.onClick                - On Click: Called when View is pressed.
+ * @param props.subTexStr              - Sub Text String: What the document
+ *                                       covers.
+ *
+ * @returns The legal document row.
+ *
+ * @example
+ * ```tsx
+ * LegRowCom({ labTexStr, onClick, subTexStr, ... }) // => <LegRowCom />
+ * ```
+ *
+*/
+
+function LegRowCom ( { 'data-element-name-hook' : hooNamStr, labTexStr, onClick, subTexStr } : LwcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<div
+			className={ cssModObj.setRowDiv }
+
+			data-element-name-hook={ hooNamStr }
+		>{ /* What: Legal Row Div Element. Why: The label/description and the View button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the View button. */ }
+
+
+			<div className={ cssModObj.setInfDiv }>{ /* What: Legal Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
+
+
+				<span className={ cssModObj.setNamSpa }>{ labTexStr }</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders labTexStr. */ }
+
+				<span className={ cssModObj.setSubSpa }>{ subTexStr }</span>{ /* What: Set Data Sub Span Element. Why: The row needs a short description of what the document actually covers. How: This renders subTexStr. */ }
+
+
+			</div>
+
+			<button
+				className={ cssModObj.docOpeBut }
+
+				type='button'
+
+				onClick={ onClick }
+			>View</button>{ /* What: View Button Element. Why: This is the actual trigger that opens the document inside LegModCom. How: This calls onClick when pressed. */ }
+
+
+		</div>
+
+
+	);
+
+
+}
+
+// #endregion LegRowCom
+
+
+
 type StaMesTyp = { okaBoo : boolean, texStr : string }; // What: Status Message Type. Why: The install, protect, and import actions each report a short success or failure line. How: This holds whether it worked and the text to show.
 type TecProTyp = { accSynObj : AccSynTyp, actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Settings-Component Props Type. Why: The Settings tab reads and changes the whole app state and can navigate to other tabs. How: This types TabSetCom's props, named Tec since Tsc already belongs to TheSecCom.
 
@@ -2310,27 +2449,12 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 							{ iosInsBoo && ( // What: iOS Install Note Check. Why: iOS/iPadOS need their own distinct install instructions and data-migration warning. How: This renders the note only while iosInsBoo is true.
 
 
-								<div
-									className={` ${ cssModObj.setRowDiv }   ${ cssModObj.setRowDivIos } `}
 
-									data-element-name-hook='insRowDiv'
-								>{ /* What: iOS Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
-
-
-									<div className={ cssModObj.setInfDiv }>{ /* What: iOS Install Info Div Element. Why: The note's own name and its 2 explanatory paragraphs need their own grouping. How: This wraps the name span and 2 description spans. */ }
-
-
-										<span className={ cssModObj.setNamSpa }>Add to your Home Screen</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Add to your Home Screen". */ }
-
-										<span className={ cssModObj.setSubSpa }>On iPhone and iPad, tap <strong>Share</strong> then <strong>Add to Home Screen</strong>. Do this and Safari stops clearing your data when the app sits unused. Without it, everything here can be wiped after a period of not opening the app.</span>{ /* What: Set Data Sub Span Element. Why: The user needs the actual step-by-step instructions for this platform. How: This renders the fixed instructional copy. */ }
-
-										<span className={ cssModObj.setSubSpa }><strong>WARNING:</strong> iOS and iPadOS do not copy over your existing data when installing the app. Please use the Export feature below to export your data and then import your data back in using the Import feature.</span>{ /* What: Set Data Sub Span Element. Why: This platform's own install flow does not carry over existing data, and that is a genuinely destructive surprise worth its own separate warning. How: This renders the fixed warning copy. */ }
-
-
-									</div>
-
-
-								</div>
+								<InsRowCom
+									labTexStr='Add to your Home Screen'
+									steTexEle={ <>On iPhone and iPad, tap <strong>Share</strong> then <strong>Add to Home Screen</strong>. Do this and Safari stops clearing your data when the app sits unused. Without it, everything here can be wiped after a period of not opening the app.</> }
+									warTexEle={ <><strong>WARNING:</strong> iOS and iPadOS do not copy over your existing data when installing the app. Please use the Export feature below to export your data and then import your data back in using the Import feature.</> }
+								/> // What: Install Row Component. Why: iOS needs its own install instructions and data-migration warning, in the same info-row shape as every other row here, minus any action. How: This renders the note's name, its steps, and its warning.
 
 
 							) }
@@ -2339,27 +2463,12 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 							{ macInsBoo && ( // What: Mac Install Note Check. Why: macOS Safari needs its own distinct install instructions and data-migration warning. How: This renders the note only while macInsBoo is true.
 
 
-								<div
-									className={` ${ cssModObj.setRowDiv }   ${ cssModObj.setRowDivIos } `}
 
-									data-element-name-hook='insRowDiv'
-								>{ /* What: Mac Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
-
-
-									<div className={ cssModObj.setInfDiv }>{ /* What: Mac Install Info Div Element. Why: The note's own name and its 2 explanatory paragraphs need their own grouping. How: This wraps the name span and 2 description spans. */ }
-
-
-										<span className={ cssModObj.setNamSpa }>Add to your Dock</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Add to your Dock". */ }
-
-										<span className={ cssModObj.setSubSpa }>On Mac, open Safari&rsquo;s <strong>File</strong> menu and choose <strong>Add to Dock</strong>. Do this and Safari stops clearing your data when the app sits unused. Without it, everything here can be wiped after a period of not opening the app.</span>{ /* What: Set Data Sub Span Element. Why: The user needs the actual step-by-step instructions for this platform. How: This renders the fixed instructional copy. */ }
-
-										<span className={ cssModObj.setSubSpa }><strong>WARNING:</strong> macOS does not copy over your existing data when installing the app. Please use the Export feature below to export your data and then import your data back in using the Import feature.</span>{ /* What: Set Data Sub Span Element. Why: This platform's own install flow does not carry over existing data, and that is a genuinely destructive surprise worth its own separate warning. How: This renders the fixed warning copy. */ }
-
-
-									</div>
-
-
-								</div>
+								<InsRowCom
+									labTexStr='Add to your Dock'
+									steTexEle={ <>On Mac, open Safari&rsquo;s <strong>File</strong> menu and choose <strong>Add to Dock</strong>. Do this and Safari stops clearing your data when the app sits unused. Without it, everything here can be wiped after a period of not opening the app.</> }
+									warTexEle={ <><strong>WARNING:</strong> macOS does not copy over your existing data when installing the app. Please use the Export feature below to export your data and then import your data back in using the Import feature.</> }
+								/> // What: Install Row Component. Why: macOS needs its own install instructions and data-migration warning, in the same info-row shape as every other row here, minus any action. How: This renders the note's name, its steps, and its warning.
 
 
 							) }
@@ -2906,62 +3015,27 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						<CarSurCom>{ /* What: Card Surface Component. Why: Both document rows share one bordered container. How: This wraps the Privacy Policy row and the Terms of Service row. */ }
 
 
-							<div
-								className={ cssModObj.setRowDiv }
 
+							<LegRowCom
 								data-element-name-hook='priRowDiv'
-							>{ /* What: Privacy Row Div Element. Why: The label/description and the View button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the View button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+
+								labTexStr='Privacy Policy'
+								subTexStr='How your data is collected, used, and stored.'
+
+								onClick={ () => setLegDocStr( 'privacy' ) }
+							/>{ /* What: Legal Row Component. Why: The Privacy Policy needs the tab's usual info-plus-action row, with a View button. How: This renders the name, its description, and a View button that sets legDocStr to 'privacy'. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-								<div className={ cssModObj.setInfDiv }>{ /* What: Privacy Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
 
-
-									<span className={ cssModObj.setNamSpa }>Privacy Policy</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Privacy Policy". */ }
-
-									<span className={ cssModObj.setSubSpa }>How your data is collected, used, and stored.</span>{ /* What: Set Data Sub Span Element. Why: The row needs a short description of what the document actually covers. How: This renders the fixed description. */ }
-
-
-								</div>
-
-								<button
-									className={ cssModObj.docOpeBut }
-
-									type='button'
-
-									onClick={ () => setLegDocStr( 'privacy' ) }
-								>View</button>{ /* What: Privacy View Button Element. Why: This is the actual trigger that opens the Privacy Policy inside LegModCom. How: This sets legDocStr to 'privacy' when clicked. */ }
-
-
-							</div>
-
-
-							<div
-								className={ cssModObj.setRowDiv }
-
+							<LegRowCom
 								data-element-name-hook='terRowDiv'
-							>{ /* What: Terms Row Div Element. Why: The label/description and the View button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the View button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
+								labTexStr='Terms of Service'
+								subTexStr='The rules for using Ease My Life, including paid features.'
 
-								<div className={ cssModObj.setInfDiv }>{ /* What: Terms Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
+								onClick={ () => setLegDocStr( 'terms' ) }
+							/>{ /* What: Legal Row Component. Why: The Terms of Service needs the tab's usual info-plus-action row, with a View button. How: This renders the name, its description, and a View button that sets legDocStr to 'terms'. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
-
-									<span className={ cssModObj.setNamSpa }>Terms of Service</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Terms of Service". */ }
-
-									<span className={ cssModObj.setSubSpa }>The rules for using Ease My Life, including paid features.</span>{ /* What: Set Data Sub Span Element. Why: The row needs a short description of what the document actually covers. How: This renders the fixed description. */ }
-
-
-								</div>
-
-								<button
-									className={ cssModObj.docOpeBut }
-
-									type='button'
-
-									onClick={ () => setLegDocStr( 'terms' ) }
-								>View</button>{ /* What: Terms View Button Element. Why: This is the actual trigger that opens the Terms of Service inside LegModCom. How: This sets legDocStr to 'terms' when clicked. */ }
-
-
-							</div>
 
 
 						</CarSurCom>
