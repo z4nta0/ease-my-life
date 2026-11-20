@@ -223,11 +223,11 @@ function cloBacFun ( uidValStr : string ) : SynBacTyp {
 
 
 
-			const { docs, rev, savedAt, v } = manSnaObj.data() as CloManTyp; // What: Manifest Fields. Why: The engine doesn't need prior. How: This reads the other fields. // What: Type Assertion Note. Why: The security rules only let this app write the manifest in this shape. How: The as types the stored data.
+			const { docs : docHasObj, rev : revValNum, savedAt : savTimNum, v : verValNum } = manSnaObj.data() as CloManTyp; // What: Document Hash Object. Why: The engine compares each document's hash. How: This reads the manifest's docs, leaving prior behind. // What: Revision Value Number. Why: An upload commits only on the revision it was built from. How: This reads the manifest's rev. // What: Saved Time Number. Why: The engine knows which side saved later. How: This reads the manifest's savedAt. // What: Version Value Number. Why: The engine checks the schema version. How: This reads the manifest's v. // What: Type Assertion Note. Why: The security rules only let this app write the manifest in this shape. How: The as types the stored data.
 
 
 
-			return { docs, rev, savedAt, v }; // What: Manifest Return. Why: The engine compares against it. How: This returns the engine's fields.
+			return { docs : docHasObj, rev : revValNum, savedAt : savTimNum, v : verValNum }; // What: Manifest Return. Why: The engine compares against it. How: This returns the engine's fields.
 
 
 		},
