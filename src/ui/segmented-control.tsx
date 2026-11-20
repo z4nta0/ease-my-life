@@ -78,13 +78,20 @@ type SccProTyp< T extends string > = { ariLabStr : string, desIdeStr? : string, 
 function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onChange, optIteArr, value } : SccProTyp< T > ) : React.JSX.Element {
 
 
+	// #region Segment References
+
 	const segEleRef = React.useRef< HTMLDivElement | null >( null );                                      // What: Segment Element Reference. Why: plaThuFun needs a handle on the actual group DOM node to query and measure it. How: This is attached via the group div's own ref prop below.
 	const thuEleRef = React.useRef< HTMLSpanElement | null >( null );                                     // What: Thumb Element Reference. Why: plaThuFun needs a handle on the sliding thumb span to move and resize it. How: This is attached via the thumb span's own ref prop below.
 	const preIndRef = React.useRef( optIteArr.findIndex( ( optConObj ) => optConObj.keyStr === value ) ); // What: Previous Index Reference. Why: plaThuFun needs to know which direction the selection just moved in, to decide which edge of the thumb leads the animation. How: This starts at the initially-selected entry's own index and is updated at the end of every plaThuFun run.
 
+	// #endregion Segment References
+
+
 
 	const plaThuFun = React.useCallback( ( aniMovBoo : boolean ) => { // What: Place Thumb Function. Why: This centralizes measuring the active button and moving/resizing the thumb span to match it, with or without an animated transition. How: This is called by both layout effects below, once on every selection/resize and once (with animation) on every value change.
 
+
+		// #region Element Lookup
 
 		const segCurEle = segEleRef.current; // What: Segment Current Element. Why: This gives a stable local reference to the live group DOM node for this placement pass. How: This is read once from segEleRef.current and reused below.
 		const thuCurEle = thuEleRef.current; // What: Thumb Current Element. Why: This gives a stable local reference to the live thumb span for this placement pass. How: This is read once from thuEleRef.current and reused below.
@@ -99,11 +106,18 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 
 		if ( !butActEle ) return; // What: No Active Button Guard. Why: No option is currently marked active, such as mid-transition. How: This bails out of the rest of the placement when there is nothing to measure against.
 
+		// #endregion Element Lookup
 
+
+
+		// #region Move Values
 
 		const curIndNum = optIteArr.findIndex( ( optConObj ) => optConObj.keyStr === value );                   // What: Current Index Number. Why: This is compared against the previous index to decide which direction the thumb is moving. How: This looks up the currently-selected entry's own position in optIteArr.
 		const movDirNum = curIndNum - preIndRef.current;                                                        // What: Move Direction Number. Why: A positive value means the selection moved right, negative means left, deciding which edge of the thumb leads. How: This subtracts the previous index from curIndNum.
 		const redMotBoo = window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches; // What: Reduced Motion Boolean. Why: A user who prefers reduced motion shouldn't see the thumb glide between optIteArr. How: This safely checks matchMedia support before querying the prefers-reduced-motion media query's current match state.
+
+		// #endregion Move Values
+
 
 
 		if ( !aniMovBoo || redMotBoo ) { // What: No-Animation Branch. Why: Either the caller explicitly asked for an instant placement, or the user prefers reduced motion. How: This clears the thumb's own transition so the move below applies instantly.
@@ -131,11 +145,17 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 
 
 
+		// #region Thumb Style Writes
+
 		thuCurEle.style.left     = butActEle.offsetLeft + 'px';   // What: Left Write. Why: This positions the thumb horizontally over the active button. How: This is taken directly from the active button's own offsetLeft.
 		thuCurEle.style.top      = butActEle.offsetTop + 'px';    // What: Top Write. Why: This positions the thumb vertically over the active button. How: This is taken directly from the active button's own offsetTop.
 		thuCurEle.style.width    = butActEle.offsetWidth + 'px';  // What: Width Write. Why: This sizes the thumb to match the active button's own width. How: This is taken directly from the active button's own offsetWidth.
 		thuCurEle.style.height   = butActEle.offsetHeight + 'px'; // What: Height Write. Why: This sizes the thumb to match the active button's own height. How: This is taken directly from the active button's own offsetHeight.
 		thuCurEle.style.opacity  = '1';                           // What: Opacity Write. Why: The thumb starts invisible until it has a real measurement to show. How: This reveals the thumb once it has actually been placed.
+
+		// #endregion Thumb Style Writes
+
+
 
 		preIndRef.current = curIndNum; // What: Previous Index Update. Why: The next call to plaThuFun needs to compare against the index that's current now. How: This overwrites preIndRef with curIndNum.
 
@@ -143,11 +163,19 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 	}, [ value, optIteArr ] ); // What: Callback Dependency Array. Why: plaThuFun must be recreated whenever either the selected value or the option set itself changes, since both affect which button is "active". How: value decides which button matches, optIteArr decides the whole set plaThuFun searches.
 
 
+
+	// #region Latest Placement Reference
+
 	const plaThuRef = React.useRef( plaThuFun ); // What: Place Thumb Reference. Why: The ResizeObserver below lives for the component's whole life, so calling the plaThuFun it closed over at mount would place the thumb with a stale value and record a stale previous index. How: This holds the newest plaThuFun, synced by the effect just below.
 
 
 	React.useLayoutEffect( () => { plaThuRef.current = plaThuFun; } ); // What: Place Thumb Sync Effect. Why: The resize observer must always call the current render's plaThuFun. How: This copies the newest plaThuFun into plaThuRef after every render.
 
+	// #endregion Latest Placement Reference
+
+
+
+	// #region Thumb Placement Effects
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: Only a real selection change should animate the thumb, while plaThuFun also changes whenever a parent passes a fresh options array. How: The effect body is recreated every render, so it still calls the current plaThuFun when value changes.
 	React.useLayoutEffect( () => { plaThuFun( true ); }, [ value ] ); // What: Selection Change Effect. Why: A genuine value change should animate the thumb to its new position. How: This calls plaThuFun with animation enabled whenever value itself changes.
@@ -182,6 +210,8 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 
 
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to subscribe its ResizeObserver once, on mount. How: An empty array means it never re-subscribes or re-runs after the initial mount.
+
+	// #endregion Thumb Placement Effects
 
 
 

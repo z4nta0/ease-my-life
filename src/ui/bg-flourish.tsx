@@ -532,6 +532,8 @@ function plaGriFun ( colCouNum : number, rowCouNum : number ) : { colIndNum : nu
 function genSidFun ( gutWidNum : number, conHeiNum : number ) : FloIteTyp[] {
 
 
+	// #region Grid Dimensions
+
 	const fulColNum = Math.max( 0, Math.floor( gutWidNum / COL_WID_NUM - 0.3 ) ); // What: Full Column Number. Why: This is how many complete, fixed-width columns actually fit in the measured gutter. How: This divides the gutter width by the fixed column width, nudged down slightly so a column that just barely fits isn't counted.
 
 
@@ -543,10 +545,17 @@ function genSidFun ( gutWidNum : number, conHeiNum : number ) : FloIteTyp[] {
 	const outBanNum = gutWidNum - fulColNum * COL_WID_NUM;                  // What: Outer Band Number. Why: The bleed column's own real width is whatever pixels are left over, not a fixed half-column guess. How: This subtracts every full column's own width from the total gutter width.
 	const rowCouNum = Math.max( 1, Math.floor( conHeiNum / ROW_HEI_NUM ) ); // What: Row Count Number. Why: Placement needs to know how many fixed-height rows fit down the tab's own measured content height. How: This divides the content height by the fixed row height, with at least 1 row even for very short content.
 
+	// #endregion Grid Dimensions
+
+
+
+	// #region Placement Cyclers
 
 	const nexSymFun = makCycFun( () => shuArrFun( FLO_SYM_ARR ) );              // What: Next Symbol Function. Why: Each placed glyph needs a symbol, well-distributed across the whole pool rather than repeating nearby. How: This is a cycler drawing from a freshly-shuffled copy of FLO_SYM_ARR each time it's exhausted.
 	const nexRotFun = makCycFun( () => shuArrFun( eveSpaFun( -28, 28, 11 ) ) ); // What: Next Rotation Function. Why: Each placed glyph needs a rotation angle, well-distributed across the whole range rather than repeating nearby. How: This is a cycler drawing from a freshly-shuffled copy of 11 evenly-spaced angles between -28 and 28 degrees.
 	const nexSizFun = makCycFun( () => shuArrFun( [ 'p03', 'p04', 'p05' ] ) );  // What: Next Size Function. Why: Each normal placed glyph needs a font size, well-distributed across the scale rather than repeating nearby. How: This is a cycler drawing from a freshly-shuffled copy of the p03, p04, and p05 font size steps, leaving p06 to the big glyphs, since a larger size would spill out of a normal glyph's one-cell footprint.
+
+	// #endregion Placement Cyclers
 
 
 
@@ -639,19 +648,30 @@ function useFloIteFun ( tabIdeStr : string, meaEleRef : React.RefObject< HTMLEle
 
 
 
+		// #region Measure Elements
+
 		const meaCurEle = meaEleRef.current;                                                         // What: Measure Current Element. Why: This is the actual DOM node whose real size the grid is generated against. How: This is read once from meaEleRef.current and reused for every measurement below.
 		const maiCurEle = meaCurEle && meaCurEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Main Current Element. Why: The gutter width is measured relative to the shared .main wrapper, not the centered column itself. How: This walks up from meaCurEle to its nearest .main ancestor.
 
 
 		if ( !meaCurEle || !maiCurEle ) return; // What: No Element Guard. Why: Without both elements mounted there is nothing real to measure yet. How: This bails out of the effect early, leaving floIteObj at its prior (likely null) value.
 
+		// #endregion Measure Elements
 
+
+
+		// #region Gutter Measurement
 
 		const maiStyObj = getComputedStyle( maiCurEle );                                                                                        // What: Main Style Object. Why: The gutter width calculation below needs .main's own actual left/right padding. How: This reads .main's live computed style once, reused for both padding reads.
 		const padSumNum = ( parseFloat( maiStyObj.paddingLeft ) || 0 ) + ( parseFloat( maiStyObj.paddingRight ) || 0 );                         // What: Padding Sum Number. Why: The measured gutter width must exclude .main's own inner padding on both sides. How: This adds maiStyObj's own left and right padding together, falling back to 0 for either if unparseable.
 		const gutWidNum = Math.max( 0, ( maiCurEle.getBoundingClientRect().width - padSumNum - meaCurEle.getBoundingClientRect().width ) / 2 ); // What: Gutter Width Number. Why: This is the actual per-side gutter width every placement below is generated against. How: This subtracts the padding and the centered column's own width from .main's total width, then halves what remains.
 		const conHeiNum = meaCurEle.scrollHeight;                                                                                               // What: Content Height Number. Why: Row placement needs to know how tall the tab's own real content actually is. How: This reads meaCurEle's own scrollHeight, which (unlike a pure-CSS approach) reflects the true rendered content height.
 
+		// #endregion Gutter Measurement
+
+
+
+		// #region Flourish Generation
 
 		const genIteObj = { // What: Generated Item Object. Why: Both gutters need their own independently-generated placement. How: This calls genSidFun twice, once per side, with the same measured dimensions.
 
@@ -667,6 +687,8 @@ function useFloIteFun ( tabIdeStr : string, meaEleRef : React.RefObject< HTMLEle
 
 
 		setFloIteObj( genIteObj ); // What: Flourish Item Object Update. Why: The freshly-generated items need to actually render. How: This applies the same object just cached above.
+
+		// #endregion Flourish Generation
 
 
 	}, [ tabIdeStr, meaEleRef ] ); // What: Effect Dependency Array. Why: A different tab needs its own cache lookup/generation, and a changed ref (rare, but possible across remounts) needs to re-measure. How: tabIdeStr changes which cache entry applies; meaEleRef changes what gets measured.

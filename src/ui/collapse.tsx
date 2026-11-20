@@ -74,9 +74,16 @@ type CdcProTyp = { children : React.ReactNode, className? : string, isaInsBoo? :
 function ColDisCom ( { children, className = '', isaInsBoo = false, open } : CdcProTyp ) : React.JSX.Element | null {
 
 
+	// #region Collapse State
+
 	const [ chiMouBoo, setChiMouBoo ] = React.useState( open );              // What: Child Mounted Boolean And Setter. Why: Children must stay in the DOM through the close animation and unmount only once it finishes. How: This starts matching the initial open value and is flipped by the effects below.
 	const [ expStaBoo, setExpStaBoo ] = React.useState( isaInsBoo && open ); // What: Expand State Boolean And Setter. Why: This drives the 0fr/1fr grid row, starting collapsed even when open so a fresh mount-while-open still animates open instead of snapping. How: isaInsBoo opts a specific mount out of that behavior by starting already expanded.
 
+	// #endregion Collapse State
+
+
+
+	// #region Open Close Sync
 
 	React.useEffect( () => { // What: Mount Sync Effect. Why: A newly-opened section must mount its children before it can animate expanding, and a newly-closed one must animate before unmounting. How: This mounts immediately on open, or starts the close animation (unmounting right away under reduced motion, since transitionend never fires) on close.
 
@@ -119,6 +126,9 @@ function ColDisCom ( { children, className = '', isaInsBoo = false, open } : Cdc
 
 
 	}, [ chiMouBoo, expStaBoo, open ] ); // What: Effect Dependency Array. Why: open decides whether an expand should happen at all, chiMouBoo re-runs this on the mount commit rather than only on the open change, and expStaBoo keeps the guard reading the current expand state. How: All three are read in the guard above, and a re-run caused by expStaBoo itself just returns there.
+
+	// #endregion Open Close Sync
+
 
 
 	const onTraEndFun = ( traEndObj : React.TransitionEvent ) => { // What: On Transition End Function. Why: The child can only safely unmount once the close animation has actually finished playing. How: This checks that the event is the grid-row transition finishing on this element itself while closed, then unmounts the child.

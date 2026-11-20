@@ -82,16 +82,25 @@ function useFliRaiFun ( raiNodRef : React.RefObject< HTMLElement | null >, trgKe
 	React.useLayoutEffect( () => { // What: Rail Flip Effect. Why: A re-sorted pill would otherwise snap to its new spot; this plays a FLIP tween instead. How: This measures each pill's new x, inverts it back to its recorded old x, and plays the transform to none.
 
 
+		// #region Rail Lookup
+
 		const raiCurEle = raiNodRef.current; // What: Rail Current Element. Why: There is nothing to animate before the rail itself has mounted. How: This reads the live node the caller's own ref holds.
 
 
 		if ( !raiCurEle ) return; // What: No Rail Guard. Why: The rail may not be mounted yet, such as while its own collapse is still closed. How: This bails out of the effect early when there is no rail element to measure.
 
+		// #endregion Rail Lookup
 
+
+
+		// #region Flip Inputs
 
 		const firMapObj = fliFirRef.current;                                                          // What: First Map Object. Why: This is the map of each pill's own previous x position, read and then overwritten below. How: This is read once from fliFirRef.current and reused throughout this effect run.
 		const pilNodArr = [ ...raiCurEle.querySelectorAll< HTMLElement >( '[data-flip-item-key]' ) ]; // What: Pill Node Array. Why: Every currently-rendered pill that takes part needs to be measured and possibly animated. How: This queries every element carrying data-flip-item-key inside the rail and spreads the NodeList into a real array.
 		const redMotBoo = redMotFun();                                                                // What: Reduce Motion Boolean. Why: A user who prefers reduced motion should never see this FLIP tween. How: This is checked once per run and read by every pill below.
+
+		// #endregion Flip Inputs
+
 
 
 		pilNodArr.forEach( ( pilCurEle ) => { // What: Pill Animate Loop. Why: Every pill needs its own individual FLIP tween (or fade-in, if new), since each may have moved a different distance. How: This computes each pill's own delta from firMapObj and plays the matching animation.
@@ -145,9 +154,13 @@ function useFliRaiFun ( raiNodRef : React.RefObject< HTMLElement | null >, trgKe
 
 
 
+		// #region First Map Refresh
+
 		firMapObj.clear(); // What: First Map Clear. Why: The map must not accumulate stale positions from a pill that no longer exists. How: This empties firMapObj before it's repopulated just below.
 
 		pilNodArr.forEach( ( pilCurEle ) => firMapObj.set( pilCurEle.dataset.flipItemKey!, pilCurEle.offsetLeft ) ); // What: First Map Populate. Why: The NEXT reorder's own FLIP tween needs this run's final positions as its own "previous" baseline. How: This records every pill's own current offsetLeft, keyed by its own data-flip-item-key. // What: Non-Null Note. Why: Every pill was selected by its data-flip-item-key attribute, so the key is always present. How: The ! tells TypeScript the key is set here.
+
+		// #endregion First Map Refresh
 
 
 	}, [ raiNodRef, trgKeyStr ] ); // What: Effect Dependency Array. Why: The animation must run once per re-sort, and a different rail ref would mean different pills. How: trgKeyStr is the caller's own reorder trigger, and raiNodRef is the stable ref the effect reads the rail through.

@@ -103,15 +103,23 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } : BrcProTyp ) : 
 
 
 
+		// #region Tick Start Values
+
 		const staValNum = booValNum;                                                                      // What: Start Value Number. Why: The tick loop below needs the original boost booValNum to ease down from, even after onResBooFun below changes the real booValNum to 0. How: This captures booValNum before it changes.
 		const staTimNum = performance.now();                                                              // What: Start Time Number. Why: Each animation frame needs to know how much time has elapsed since the tick loop began. How: This captures the current high-resolution timestamp.
 		const durValNum = Math.max( durMilFun( 'p02' ), Math.min( durMilFun( 'p06' ), staValNum * 55 ) ); // What: Duration Value Number. Why: A small boost shouldn't blink past and a large one shouldn't crawl. How: This scales the animation's own duration with staValNum, clamped to a sensible min/max. // Duration Base Plus 2 ~= 277.0ms, Duration Base Plus 6 ~= 853.0ms
+
+		// #endregion Tick Start Values
+
 
 
 		onResBooFun(); // What: On Reset Call. Why: The real committed booValNum must become 0 immediately, independent of however long the shown-number animation takes. How: This calls the caller's own reset handler right away.
 
 		cancelAnimationFrame( aniFraRef.current ); // What: Frame Cancel Guard. Why: A rapid repeat click must not let an earlier tick loop keep racing this new one. How: This cancels whatever frame id aniFraRef currently holds before starting a fresh loop.
 
+
+
+		// #region Tick Loop
 
 		const ticFraFun = ( fraTimNum : number ) => { // What: Tick Frame Function. Why: This is the actual per-frame step that eases the shown number down to 0 over durValNum. How: This computes an eased progress ratio from elapsed time, sets disValNum accordingly, and reschedules itself until progress reaches 1.
 
@@ -139,6 +147,8 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } : BrcProTyp ) : 
 
 
 		aniFraRef.current = requestAnimationFrame( ticFraFun ); // What: Frame Start Call. Why: The tick loop above needs to actually begin. How: This schedules the first frame and records its id in aniFraRef.
+
+		// #endregion Tick Loop
 
 
 	};

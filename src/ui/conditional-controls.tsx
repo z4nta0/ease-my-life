@@ -107,14 +107,24 @@ const RAN_NOT_STR = 'Truly Random conditionals have no options and function like
 const conDraFun = ( picNamStr : string, exiNamArr : string[] = [] ) : Partial< ConRcdTyp > => { // What: Conditional Draft Function Body. Why: A brand-new conditional needs a sensible starting draft rather than a blank one. How: This resolves a free "{Picker} Conditional N" name, then returns it alongside every other field's own default value.
 
 
+	// #region Base Name
+
 	const norPicStr = ( norConFun( picNamStr ) || '' ).trim();                                               // What: Normalize Picker String. Why: The default name's own picker-name prefix should be tidied the same way a typed name is. How: This calls norConFun against picNamStr, falling back to an empty string when it returns nothing.
 	const basNamStr = ( norPicStr ? norPicStr + ' ' : '' ) + 'Conditional';                                  // What: Base Name String. Why: Every candidate name below is built from this same "{Picker} Conditional" prefix. How: This prepends norPicStr (plus a trailing space) when one exists, otherwise starts from "Conditional" alone.
 	const takNamSet = new Set( exiNamArr.map( ( exiOneStr ) => ( exiOneStr || '' ).trim().toLowerCase() ) ); // What: Taken Name Set. Why: Finding a free N below needs a case-insensitive lookup of every name already in use. How: This lowercases and trims every entry of exiNamArr into a Set.
+
+	// #endregion Base Name
+
+
+
+	// #region Free Suffix Search
 
 	let namCouNum = 1; // What: Name Count Number. Why: The candidate suffix N starts at 1 and climbs only as far as an actual collision requires. How: This is incremented by the while loop below until basNamStr plus this number is free.
 
 
 	while ( takNamSet.has( `${ basNamStr } ${ namCouNum }`.toLowerCase() ) ) namCouNum++; // What: Free Suffix Search Loop. Why: The chosen name must not collide with any existing conditional's own name. How: This keeps incrementing namCouNum while the case-insensitive candidate is already present in takNamSet.
+
+	// #endregion Free Suffix Search
 
 
 

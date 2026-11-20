@@ -176,6 +176,8 @@ function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' |
 
 
 
+		// #region Changed Field Collection
+
 		const namTriStr = String( draRcdObj.name || '' ).trim(); // What: Name Trimmed String. Why: A committed name never keeps stray spaces, and an emptied one must not replace the real name. How: This trims the draft's own name.
 
 		const patValObj : Partial< IteRcdTyp > = {}; // What: Patch Value Object. Why: The ease band and value all commit through one updIteFun call. How: This starts empty and gains each changed field below.
@@ -183,7 +185,11 @@ function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' |
 
 		( [ 'easeMax', 'easeMin', 'value' ] as const ).forEach( ( fieKeyStr ) => { if ( draRcdObj[ fieKeyStr ] !== oriRcdObj[ fieKeyStr ] ) patValObj[ fieKeyStr ] = draRcdObj[ fieKeyStr ]; } ); // What: Changed Value Fields Loop. Why: Only fields the user actually changed may be written, leaving any the app changed meanwhile alone. How: This copies each differing field into patValObj, the names read as a constant tuple so each one indexes an item.
 
+		// #endregion Changed Field Collection
 
+
+
+		// #region Commit Writes
 
 		if ( namTriStr && namTriStr !== oriRcdObj.name ) tarActObj.renIteFun( oriRcdObj.id, namTriStr ); // What: Rename Guard. Why: A changed, non-empty name must go through the de-duplicating rename. How: This calls renIteFun only then.
 
@@ -198,6 +204,8 @@ function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' |
 
 
 		if ( Object.keys( patValObj ).length ) tarActObj.updIteFun( oriRcdObj.id, patValObj ); // What: Value Fields Guard. Why: Changed ease or value fields must be written together, clearing any stale pending mutation. How: This calls updIteFun only when patValObj holds something.
+
+		// #endregion Commit Writes
 
 
 	};
@@ -282,6 +290,8 @@ function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >
 
 
 
+		// #region Changed Field Collection
+
 		const namTriStr = String( draRcdObj.name || '' ).trim(); // What: Name Trimmed String. Why: A committed name never keeps stray spaces, and an emptied one must not replace the real name. How: This trims the draft's own name.
 
 		const patValObj : Record< string, unknown > = {}; // What: Patch Value Object. Why: Every changed field other than the name commits through one updTasFun call. How: This starts empty and gains each changed field below.
@@ -289,13 +299,19 @@ function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >
 
 		( Object.keys( draRcdObj ) as ( keyof TasRcdTyp )[] ).forEach( ( fieKeyStr ) => { if ( fieKeyStr !== 'name' && JSON.stringify( draRcdObj[ fieKeyStr ] ) !== JSON.stringify( oriRcdObj[ fieKeyStr ] ) ) patValObj[ fieKeyStr ] = draRcdObj[ fieKeyStr ]; } ); // What: Changed Fields Loop. Why: Only fields the user actually changed may be written, leaving any the app changed meanwhile alone. How: This copies each differing field (arrays such as the weekdays compared by value) into patValObj. // What: Type Assertion Note. Why: Object.keys types its keys as plain strings. How: The draft's keys are read as reminder keys, since the draft is a reminder record.
 
+		// #endregion Changed Field Collection
 
+
+
+		// #region Commit Writes
 
 		if ( namTriStr && namTriStr !== oriRcdObj.name ) tarActObj.renTasFun( oriRcdObj.id, namTriStr ); // What: Rename Guard. Why: A changed, non-empty name must go through the de-duplicating rename. How: This calls renTasFun only then.
 
 
 
 		if ( Object.keys( patValObj ).length ) tarActObj.updTasFun( oriRcdObj.id, patValObj as Partial< TasRcdTyp > ); // What: Changed Fields Guard. Why: The schedule edits must be written together. How: This calls updTasFun only when patValObj holds something. // What: Type Assertion Note. Why: patValObj is built up as a loose object. How: It's passed as a reminder patch, since every field in it was copied from the reminder draft.
+
+		// #endregion Commit Writes
 
 
 	};

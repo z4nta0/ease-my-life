@@ -67,12 +67,18 @@ const wheScrFun = ( wheEveObj : WheelEvent ) : void => { // What: Wheel Scroll F
 
 
 
+	// #region Rail Lookup
+
 	const raiDomEle = wheEveObj.target instanceof Element ? wheEveObj.target.closest< HTMLElement >( '[data-rail-wheel-scroll]' ) : null; // What: Rail DOM Element. Why: Only a rail that opted in is scrolled. How: This finds the nearest marked rail around the pointer, if any.
 
 
 	if ( !raiDomEle ) return; // What: No Rail Guard. Why: A wheel turn anywhere else scrolls the page as usual. How: This skips it.
 
+	// #endregion Rail Lookup
 
+
+
+	// #region Scroll Edge Checks
 
 	const uniPixNum = [ 1, 16, raiDomEle.clientWidth ][ wheEveObj.deltaMode ] ?? 1; // What: Unit Pixel Number. Why: A wheel can report its turn in pixels, lines, or pages, depending on the browser. How: This picks the pixels in one unit, guessing 16 for a line.
 	const delPixNum = wheEveObj.deltaY * uniPixNum;                                 // What: Delta Pixel Number. Why: The rail scrolls by the wheel's turn in pixels. How: This converts the vertical turn to pixels.
@@ -84,11 +90,17 @@ const wheScrFun = ( wheEveObj : WheelEvent ) : void => { // What: Wheel Scroll F
 
 	if ( maxScrNum <= 0 || staEdgBoo || endEdgBoo ) return; // What: Rail Edge Guard. Why: A rail with nothing to scroll, or already at the edge the turn points at, hands the turn back to the page. How: This skips it.
 
+	// #endregion Scroll Edge Checks
 
+
+
+	// #region Rail Scroll
 
 	wheEveObj.preventDefault(); // What: Page Scroll Prevention Call. Why: The page mustn't scroll while the rail does. How: This cancels the page's own scroll for this turn.
 
 	raiDomEle.scrollLeft += delPixNum; // What: Rail Scroll Write. Why: The turn moves the rail sideways. How: This adds the turn's pixels to the rail's scroll position, which the browser clamps to its ends.
+
+	// #endregion Rail Scroll
 
 
 };

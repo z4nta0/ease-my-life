@@ -142,6 +142,8 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 	React.useEffect( () => { // What: Cycle Schedule Effect. Why: The strip must run its own step-by-step schedule loop to animate rowPosNum toward indPicNum, unless there's nothing to animate or reduced motion applies. How: This bails out early for an empty pool, an unset pick, or reduced motion, otherwise recursively schedules each step via setTimeout until totSteNum is reached.
 
 
+		// #region Early Exits
+
 		if ( !lenCanNum || !picIteObj ) return; // What: Nothing To Animate Guard. Why: There is no cycle to run without both a real pool and a real decided pick. How: This bails out of the effect entirely when either is missing.
 
 
@@ -158,7 +160,11 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 		}
 
+		// #endregion Early Exits
 
+
+
+		// #region Schedule Loop
 
 		let curPosNum = staPosNum; // What: Current Position Number. Why: The schedule loop below needs its own mutable running position, seeded from the same start the initial render used. How: This is incremented by 1 on every step inside schSteFun.
 		let steCouNum = 0;         // What: Step Count Number. Why: The schedule loop needs to know how many steps have elapsed so it can stop at totSteNum and shape the deceleration curve. How: This is incremented by 1 on every step inside schSteFun.
@@ -179,6 +185,8 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 
 
+				// #region Cycle Completion
+
 				steCouNum++; // What: Step Count Increment. Why: This step has now actually happened. How: This advances the running step counter by 1.
 
 
@@ -197,10 +205,15 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 				}
 
+				// #endregion Cycle Completion
+
 
 
 				curPosNum += 1; // What: Position Advance. Why: The reel/spotlight/dissolve frame must move forward by exactly one row each step. How: This increments the running position by 1.
 
+
+
+				// #region Next Step Scheduling
 
 				const proRatNum = steCouNum / totSteNum;                 // What: Progress Ratio Number. Why: This is the actual 0..1 progress value described above. How: This is steCouNum divided by totSteNum. // What: Deceleration Curve. Why: The cycle should start fast (roughly 40ms per step) and slow to a stop (roughly 300ms per step) as it approaches indPicNum. How: proRatNum is this step's progress through totSteNum, raised to a 2.2 exponent to bias the curve toward a late, gentle stop.
 				const nexGapNum = 40 + Math.pow( proRatNum, 2.2 ) * 260; // What: Next Gap Number. Why: This is the actual eased delay, in ms, before the following step should fire. How: This maps proRatNum through the curve above onto the 40-300ms range.
@@ -211,6 +224,8 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 				schSteFun( nexGapNum ); // What: Recursive Schedule Call. Why: The chain must continue until the cycle-complete guard above stops it. How: This schedules the next step using the same eased gap just computed.
 
+				// #endregion Next Step Scheduling
+
 
 			}, gapTimNum ); // What: Step Delay. Why: Each frame of the cycle waits its own scheduled gap before advancing. How: This delays the step by gapTimNum milliseconds.
 
@@ -219,6 +234,8 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 
 		const kicOffTim = setTimeout( () => schSteFun( 40 ), 30 ); // What: Kick Off Timeout. Why: The very first step needs a small initial delay before the recursive chain above takes over. How: This starts the whole schedule loop with an initial 40ms gap, 30ms after this effect runs.
+
+		// #endregion Schedule Loop
 
 
 

@@ -127,6 +127,8 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 	document.addEventListener( 'keydown', ( keyDowObj ) => { // What: Document Keydown Listener. Why: This is the single shared handler that lets Escape cancel whichever editor is currently innermost. How: This checks a run of guards, then invokes the top entry on the shared escape stack.
 
 
+		// #region Escape Guards
+
 		if ( keyDowObj.key !== 'Escape' || keyDowObj.defaultPrevented ) return; // What: Non-Escape Guard. Why: Only an actual, not-already-handled Escape keypress should ever reach the stack. How: This bails out for any other key, or one whose default was already prevented by something else.
 
 
@@ -140,11 +142,17 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 
 		if ( document.querySelector( '[data-element-name-hook~="infTipSpa"], [data-element-name-hook~="intScrDiv"]' ) ) return; // What: Overlay Guard. Why: A visible tooltip or modal scrim owns Escape first, ahead of any inline editor. How: This bails out while either kind of overlay is present in the document.
 
+		// #endregion Escape Guards
 
+
+
+		// #region Top Entry Cancel
 
 		keyDowObj.preventDefault(); // What: Default Prevention Call. Why: The browser's own Escape behavior (e.g. exiting fullscreen) shouldn't also fire alongside this cancel. How: This prevents the keydown event's default action.
 
 		escStaArr[ escStaArr.length - 1 ].runFun(); // What: Top Entry Run Call. Why: Only the deepest (innermost, most-recently-registered) active editor should react. How: This invokes the runFun() of the last entry in escStaArr.
+
+		// #endregion Top Entry Cancel
 
 
 	} );

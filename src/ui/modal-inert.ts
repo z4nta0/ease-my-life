@@ -73,6 +73,8 @@ function useModIneFun ( insEleRef : React.RefObject< HTMLElement | null >, opeBo
 
 
 
+		// #region Modal Root Lookup
+
 		let topEleObj : Element | null = insEleRef.current; // What: Top Element Object. Why: The siblings to make inert are those of the modal's own body-level node. How: This starts at the ref's element and climbs below.
 
 
@@ -87,10 +89,18 @@ function useModIneFun ( insEleRef : React.RefObject< HTMLElement | null >, opeBo
 
 		const modTopEle = topEleObj; // What: Modal Top Element. Why: The filter below runs in a callback, which can't rely on the loop variable's narrowed type. How: This holds the found node.
 
+		// #endregion Modal Root Lookup
+
+
+
+		// #region Inert Application
+
 		const ineEleArr = [ ...document.body.children ].filter( ( sibCurEle ) => sibCurEle !== modTopEle && !sibCurEle.hasAttribute( 'inert' ) && !sibCurEle.hasAttribute( 'aria-live' ) ); // What: Inert Element Array. Why: Only the modal's siblings that aren't already inert, and aren't live regions that still need to speak, should change. How: This filters the body's children down to them.
 
 
 		ineEleArr.forEach( ( ineCurEle ) => ineCurEle.setAttribute( 'inert', '' ) ); // What: Inert Set Loop. Why: The page behind the modal must not take focus or be read. How: This sets inert on each of them.
+
+		// #endregion Inert Application
 
 
 

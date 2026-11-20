@@ -282,6 +282,8 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp 
 
 
 
+		// #region Note Placement
+
 		const setCauArr = visResObj.causes.filter( ( curCauStr ) => { // What: Settings Cause Array. Why: This decides which placement (settings vs schedule) the current cause set belongs to. How: This keeps only the 3 settings-based cause values out of visResObj's own causes.
 
 
@@ -304,6 +306,8 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp 
 
 
 		if ( kinValStr !== notPlaStr ) return null; // What: Wrong Placement Guard. Why: Only one of the several mounted instances per task should ever render the note. How: This returns null for every instance whose own kinValStr doesn't match notPlaStr.
+
+		// #endregion Note Placement
 
 
 
@@ -329,6 +333,8 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp 
 		}
 
 
+
+		// #region Advisory Text
 
 		const nexLabStr = nexDatFun( visResObj.next, tasRcdObj.repeat === 'annual' );    // What: Next Label String. Why: Both remaining branches below name the next day the reminder WILL appear, whenever one is known. How: This calls nexDatFun against visResObj's own next date, always including the year for an annual reminder.
 		const kinWorStr = TAS_NAM_OBJ.isaReuFun( tasRcdObj ) ? 'recurring' : 'one-time'; // What: Kind Word String. Why: The settings-cause branch below needs to name whether it's talking about a recurring or one-time item. How: This picks the word based on TAS_NAM_OBJ.isaReuFun.
@@ -361,6 +367,8 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp 
 
 
 		}
+
+		// #endregion Advisory Text
 
 
 

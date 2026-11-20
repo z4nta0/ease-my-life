@@ -113,6 +113,8 @@ type ItcProTyp = { actNamStr? : string | null, children : React.ReactNode, class
 const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-name-hook' : hooNamStr, labTexStr, trnOnlBoo = false, ...datAttObj } : ItcProTyp ) : React.JSX.Element => { // What: Info Tip Component. Why: See the design-rationale block above. How: This tracks its own open/position/truncation state and renders either an inert span or the full interactive trigger plus its portaled tooltip below.
 
 
+	// #region Tip State
+
 	const [ tipOpeBoo, setTipOpeBoo ] = React.useState( false );                                      // What: Tip Open Boolean And Setter. Why: This tracks whether the floating tooltip is currently showing. How: This is flipped by the pointer/keyboard handlers below and read by the render's own portal guard.
 	const [ tipPosObj, setTipPosObj ] = React.useState( { lefNum : 0, plaStr : 'top', topNum : 0 } ); // What: Tip Position Object And Setter. Why: The portaled tooltip needs an absolute left/top plus which side it's placed on, recomputed every time it opens or the page scrolls/resizes. How: This is written by plaTipFun below and read directly in the portaled span's own inline style.
 	const [ texTrnBoo, setTexTrnBoo ] = React.useState( false );                                      // What: Text Truncated Boolean And Setter. Why: trnOnlBoo mode needs to know whether the trigger's own text is actually overflowing before deciding to be interactive at all. How: This is measured by the effect below and read by actTipBoo.
@@ -122,6 +124,9 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 	const lasPoiRef = React.useRef( 'mouse' );                        // What: Last Pointer Reference. Why: The click handler needs to know whether the interaction so far has been mouse-driven (where clicks are ignored) or touch/pen-driven (where a tap should toggle). How: This is updated on every pointerdown and read by the click handler below.
 	const actTipBoo = trnOnlBoo ? texTrnBoo : true;                   // What: Active Tip Boolean. Why: Every other piece of this component needs one single answer for whether the tip should behave as a real, focusable, interactive trigger at all. How: This is texTrnBoo itself under trnOnlBoo, otherwise always true.
 
+	// #endregion Tip State
+
+
 
 	React.useLayoutEffect( () => { // What: Truncation Measurement Effect. Why: trnOnlBoo needs to know, before paint, whether the trigger's own text is actually overflowing. How: This measures scrollWidth vs. clientWidth on mount and on every observed resize, via ResizeObserver where available, a plain window resize listener otherwise.
 
@@ -130,18 +135,29 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 
 
 
+		// #region Trigger Lookup
+
 		const trgCurEle = trgEleRef.current; // What: Trigger Current Element. Why: The measurement below needs a stable local reference to the live trigger DOM node. How: This is read once from trgEleRef.current and reused for every check below.
 
 
 		if ( !trgCurEle ) return; // What: No Trigger Guard. Why: The ref may not be attached yet. How: This bails out early when there is no trigger element to measure.
 
+		// #endregion Trigger Lookup
 
+
+
+		// #region Truncation Check
 
 		const cheTrnFun = () => setTexTrnBoo( trgCurEle.scrollWidth > trgCurEle.clientWidth ); // What: Check Truncated Function. Why: This is the actual comparison that decides whether the trigger's own text is currently overflowing. How: This compares trgCurEle's own scrollWidth against its clientWidth.
 
 
 		cheTrnFun(); // What: Initial Check Call. Why: The truncation state must be known immediately on mount, not just after a later resize. How: This invokes cheTrnFun once, synchronously.
 
+		// #endregion Truncation Check
+
+
+
+		// #region Resize Watching
 
 		if ( typeof ResizeObserver === 'function' ) { // What: Resize Observer Support Check. Why: ResizeObserver catches every real cause of a width change, including ones that never fire a window resize event. How: This prefers ResizeObserver when the browser actually supports it.
 
@@ -162,6 +178,8 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 
 		window.addEventListener( 'resize', cheTrnFun ); // What: Window Resize Listener Fallback. Why: A browser without ResizeObserver still needs some way to catch a viewport-level size change. How: This re-runs cheTrnFun on every window resize event.
 
+		// #endregion Resize Watching
+
 
 
 		return () => window.removeEventListener( 'resize', cheTrnFun ); // What: Window Resize Listener Cleanup Return. Why: The fallback listener must not outlive this effect run. How: This removes the same cheTrnFun reference that was added above.
@@ -176,13 +194,19 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 	const plaTipFun = React.useCallback( () => { // What: Place Tip Function. Why: The portaled tooltip needs its own absolute position recomputed from scratch every time it might have moved. How: This measures both the trigger and the tip, prefers placing above, flips below if that would clip, and clamps both axes to the viewport.
 
 
+		// #region Element Lookup
+
 		const trgCurEle = trgEleRef.current; // What: Trigger Current Element. Why: The measurement below needs a stable local reference to the live trigger DOM node. How: This is read once from trgEleRef.current and reused below.
 		const tipCurEle = tipEleRef.current; // What: Tip Current Element. Why: The measurement below needs a stable local reference to the live tooltip DOM node. How: This is read once from tipEleRef.current and reused below.
 
 
 		if ( !trgCurEle || !tipCurEle ) return; // What: No Element Guard. Why: Both elements must actually be mounted before there is anything real to measure. How: This bails out early when either ref isn't attached yet.
 
+		// #endregion Element Lookup
 
+
+
+		// #region Placement Measurements
 
 		const trgRecObj = trgCurEle.getBoundingClientRect(); // What: Trigger Rect Object. Why: The tooltip's own position is computed relative to the trigger's real on-screen position. How: This reads trgCurEle's own bounding rect.
 		const tipWidNum = tipCurEle.offsetWidth;             // What: Tip Width Number. Why: Centering and clamping the tooltip both need its own real rendered width. How: This reads tipCurEle's own offsetWidth.
@@ -191,6 +215,11 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 		const vieWidNum = window.innerWidth;                 // What: Viewport Width Number. Why: The horizontal clamp below needs the real current viewport width. How: This reads window.innerWidth.
 		const vieHeiNum = window.innerHeight;                // What: Viewport Height Number. Why: The vertical clamp below needs the real current viewport height. How: This reads window.innerHeight.
 
+		// #endregion Placement Measurements
+
+
+
+		// #region Vertical Placement
 
 		let tipPlaStr = 'top';                                          // What: Tip Placement String. Why: Above the trigger is the preferred placement, flipped below only if it would clip. How: This starts at 'top' and may be overwritten to 'bottom' just below.
 		let tipTopNum = trgRecObj.top - tipHeiNum - rhyPxlFun( 'm02' ); // What: Tip Top Number. Why: This is the candidate vertical position for the preferred above-trigger placement. How: This sits tipHeiNum plus an m02-step gap above trgRecObj's own top edge. // Vertical Rhythm Base Minus 2 ~= 8.304px
@@ -209,12 +238,19 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 
 		if ( tipTopNum + tipHeiNum > vieHeiNum - edgMarNum ) tipTopNum = Math.max( edgMarNum, vieHeiNum - tipHeiNum - edgMarNum ); // What: Bottom Clip Guard. Why: A below-placement (or an above one that's still too tall) must not run past the bottom of the viewport either. How: This clamps tipTopNum so the tooltip's own bottom edge never crosses vieHeiNum - edgMarNum.
 
+		// #endregion Vertical Placement
 
+
+
+		// #region Horizontal Placement
 
 		let tipLefNum = trgRecObj.left + trgRecObj.width / 2 - tipWidNum / 2; // What: Tip Left Number. Why: The tooltip should start centered on the trigger horizontally. How: This computes the centered left offset before the horizontal clamp below.
 
 
 		tipLefNum = Math.max( edgMarNum, Math.min( tipLefNum, vieWidNum - tipWidNum - edgMarNum ) ); // What: Horizontal Clamp. Why: A centered tooltip can still overflow either side of a narrow viewport. How: This clamps tipLefNum between edgMarNum and the viewport's own right-edge margin.
+
+		// #endregion Horizontal Placement
+
 
 
 		setTipPosObj( { lefNum : tipLefNum, plaStr : tipPlaStr, topNum : tipTopNum } ); // What: Tip Position Update Call. Why: This publishes the freshly-computed position so the portaled tooltip re-renders in the right place. How: This builds the { lefNum, plaStr, topNum } shape the render below reads directly.
@@ -266,6 +302,8 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 
 
 
+		// #region Close Handlers
+
 		const onPoiDowFun = ( poiDowObj : PointerEvent ) => { // What: On Pointer Down Function. Why: A pointerdown anywhere outside the trigger itself should close the tooltip. How: This checks whether the event's own target falls inside the trigger element before closing.
 
 
@@ -282,11 +320,17 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 		const onKeyDowFun = ( keyDowObj : KeyboardEvent ) => { if ( keyDowObj.key === 'Escape' ) setTipOpeBoo( false ); };                                                // What: On Key Down Function. Why: Escape is a standard way to dismiss a transient overlay like this tooltip. How: This closes the tooltip only when the pressed key is exactly Escape.
 		const onFocMovFun = ( focEveObj : FocusEvent ) => { if ( trgEleRef.current && !trgEleRef.current.contains( focEveObj.target as Node ) ) setTipOpeBoo( false ); }; // What: On Focus Move Function. Why: A tip whose trigger focus has left, such as one opened by hovering while Tab moves on, could cover the next control. How: This closes the tip when focus lands anywhere outside the trigger. // What: Type Assertion Note. Why: A focusin event's target is always a node in the document. How: The cast lets contains read it.
 
+		// #endregion Close Handlers
 
+
+
+		// #region Listener Registration
 
 		document.addEventListener( 'pointerdown', onPoiDowFun, true ); // What: Pointer Down Listener Add Call. Why: The capture phase ensures this fires before an inner element's own stopPropagation could swallow it. How: This registers onPoiDowFun for every pointerdown in the document.
 		document.addEventListener( 'keydown', onKeyDowFun );           // What: Key Down Listener Add Call. Why: Escape must close the tooltip regardless of which element currently has focus. How: This registers onKeyDowFun for every keydown in the document.
 		document.addEventListener( 'focusin', onFocMovFun );           // What: Focus In Listener Add Call. Why: Focus moving anywhere must be seen, and focusin bubbles from every focused element. How: This registers onFocMovFun on the document.
+
+		// #endregion Listener Registration
 
 
 
