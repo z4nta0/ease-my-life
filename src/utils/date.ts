@@ -66,123 +66,6 @@ const dimCouFun = ( yeaValNum : number, monOneNum : number ) : number => new Dat
 
 
 
-// #region forDatFun
-
-/**
- * forDatFun = Format Date Function
- *
- * @summary
- * Formats a date the compact way the app shows dates everywhere (Today's
- * header, Stats rows, ...): short weekday, short month, day. With no
- * argument it formats right now.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param isoDatStr - Iso Date String: The date to format, or omitted for now.
- *
- * @returns The formatted date, e.g. 'Sun, Sep 27'.
- *
- * @example
- * ```ts
- * forDatFun('2026-09-27') // => 'Sun, Sep 27'
- * ```
- *
-*/
-
-const forDatFun = ( isoDatStr? : string ) : string => { // What: Format Date Function. Why: Every date shown compactly across the app (Today's header, Stats rows, ...) needs the same short weekday/month/day format. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString.
-
-
-	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
-
-
-
-	return parDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'short' } ); // What: Short Date Return. Why: The caller needs the actual formatted string, not the Date object itself. How: This formats parDatObj as e.g. "Wed, May 13" via the locale API.
-
-
-};
-
-// #endregion forDatFun
-
-
-
-// #region forLonFun
-
-/**
- * forLonFun = Format Long Function
- *
- * @summary
- * The same as forDatFun, but with the full weekday name, for the few
- * long-form date displays. With no argument it formats right now.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param isoDatStr - Iso Date String: The date to format, or omitted or null
- *                    for now.
- *
- * @returns The formatted date, e.g. 'Sunday, Sep 27'.
- *
- * @example
- * ```ts
- * forLonFun('2026-09-27') // => 'Sunday, Sep 27'
- * ```
- *
-*/
-
-const forLonFun = ( isoDatStr? : string | null ) : string => { // What: Format Long Function. Why: A few spots (long-form date displays) need the full weekday name instead of the short 3-letter one. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString with a long weekday.
-
-
-	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
-
-
-
-	return parDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'long' } ); // What: Long Date Return. Why: The caller needs the actual formatted string, not the Date object itself. How: This formats parDatObj as e.g. "Wednesday, May 13" via the locale API.
-
-
-};
-
-// #endregion forLonFun
-
-
-
-// #region forTimFun
-
-/**
- * forTimFun = Format Time Function
- *
- * @summary
- * Formats a time as a plain hour and minute with no seconds. With no
- * argument it formats right now.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param isoDatStr - Iso Date String: The moment to format, or omitted or
- *                    null for now.
- *
- * @returns The formatted time, e.g. '3:42 PM'.
- *
- * @example
- * ```ts
- * forTimFun(isoDatStr) // => '3:42 PM'
- * ```
- *
-*/
-
-const forTimFun = ( isoDatStr? : string | null ) : string => { // What: Format Time Function. Why: A few spots need a plain "3:42 PM" style time with no seconds. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleTimeString.
-
-
-	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
-
-
-
-	return parDatObj.toLocaleTimeString( 'en-US', { hour : 'numeric', minute : '2-digit' } ); // What: Time Return. Why: The caller needs the actual formatted string, not the Date object itself. How: This formats parDatObj as e.g. "3:42 PM" via the locale API.
-
-
-};
-
-// #endregion forTimFun
-
-
-
 // #region isoDayFun
 
 /**
@@ -376,6 +259,127 @@ function ordSufFun ( ordValNum : number ) : string {
 }
 
 // #endregion ordSufFun
+
+
+
+const parDatFun = ( isoDatStr? : string | null ) : Date => isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parse Date Function. Why: Every date formatter takes an ISO string or nothing, meaning now. How: This parses the string, or makes the current date when none is given.
+
+
+
+// #region forDatFun
+
+/**
+ * forDatFun = Format Date Function
+ *
+ * @summary
+ * Formats a date the compact way the app shows dates everywhere (Today's
+ * header, Stats rows, ...): short weekday, short month, day. With no
+ * argument it formats right now.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param isoDatStr - Iso Date String: The date to format, or omitted for now.
+ *
+ * @returns The formatted date, e.g. 'Sun, Sep 27'.
+ *
+ * @example
+ * ```ts
+ * forDatFun('2026-09-27') // => 'Sun, Sep 27'
+ * ```
+ *
+*/
+
+const forDatFun = ( isoDatStr? : string ) : string => { // What: Format Date Function. Why: Every date shown compactly across the app (Today's header, Stats rows, ...) needs the same short weekday/month/day format. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString.
+
+
+	const parDatObj = parDatFun( isoDatStr ); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This calls parDatFun, which builds a Date from isoDatStr when given, otherwise the current moment.
+
+
+
+	return parDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'short' } ); // What: Short Date Return. Why: The caller needs the actual formatted string, not the Date object itself. How: This formats parDatObj as e.g. "Wed, May 13" via the locale API.
+
+
+};
+
+// #endregion forDatFun
+
+
+
+// #region forLonFun
+
+/**
+ * forLonFun = Format Long Function
+ *
+ * @summary
+ * The same as forDatFun, but with the full weekday name, for the few
+ * long-form date displays. With no argument it formats right now.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param isoDatStr - Iso Date String: The date to format, or omitted or null
+ *                    for now.
+ *
+ * @returns The formatted date, e.g. 'Sunday, Sep 27'.
+ *
+ * @example
+ * ```ts
+ * forLonFun('2026-09-27') // => 'Sunday, Sep 27'
+ * ```
+ *
+*/
+
+const forLonFun = ( isoDatStr? : string | null ) : string => { // What: Format Long Function. Why: A few spots (long-form date displays) need the full weekday name instead of the short 3-letter one. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString with a long weekday.
+
+
+	const parDatObj = parDatFun( isoDatStr ); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This calls parDatFun, which builds a Date from isoDatStr when given, otherwise the current moment.
+
+
+
+	return parDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'long' } ); // What: Long Date Return. Why: The caller needs the actual formatted string, not the Date object itself. How: This formats parDatObj as e.g. "Wednesday, May 13" via the locale API.
+
+
+};
+
+// #endregion forLonFun
+
+
+
+// #region forTimFun
+
+/**
+ * forTimFun = Format Time Function
+ *
+ * @summary
+ * Formats a time as a plain hour and minute with no seconds. With no
+ * argument it formats right now.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param isoDatStr - Iso Date String: The moment to format, or omitted or
+ *                    null for now.
+ *
+ * @returns The formatted time, e.g. '3:42 PM'.
+ *
+ * @example
+ * ```ts
+ * forTimFun(isoDatStr) // => '3:42 PM'
+ * ```
+ *
+*/
+
+const forTimFun = ( isoDatStr? : string | null ) : string => { // What: Format Time Function. Why: A few spots need a plain "3:42 PM" style time with no seconds. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleTimeString.
+
+
+	const parDatObj = parDatFun( isoDatStr ); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This calls parDatFun, which builds a Date from isoDatStr when given, otherwise the current moment.
+
+
+
+	return parDatObj.toLocaleTimeString( 'en-US', { hour : 'numeric', minute : '2-digit' } ); // What: Time Return. Why: The caller needs the actual formatted string, not the Date object itself. How: This formats parDatObj as e.g. "3:42 PM" via the locale API.
+
+
+};
+
+// #endregion forTimFun
 
 // #endregion Helpers
 
