@@ -48,6 +48,132 @@ import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record T
 
 // #region Components
 
+type ErcProTyp = { dayValNum : number, isaDowBoo : boolean, iteNamStr : string, labTexStr : string, maxValNum : number, onSetValFun : ( dayValNum : number ) => void, picModStr : string, subTexEle : React.ReactNode, uniWorStr : string }; // What: Ease-Row-Component Props Type. Why: Each ease row names its own bound and day count, with its own subtitle and limit. How: This types EasRowCom's props.
+
+// #region EasRowCom
+
+/**
+ * EasRowCom = Ease Row Component
+ *
+ * @summary
+ * Renders one ease range row, the Soonest/Shortest or Latest/Longest bound:
+ * its heading, with ease-up's warning tip beside it, a live subtitle that
+ * fades whenever the direction, day count, or unit word changes, and a day
+ * count stepper with its unit word. The row is marked with its ease
+ * direction so help mode can tell the two apart.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.dayValNum   - Day Value Number: The bound's day count.
+ * @param props.isaDowBoo   - Is-A Down Boolean: Whether the picker eases
+ *                            down.
+ * @param props.iteNamStr   - Item Name String: The item's name, for the
+ *                            stepper's accessible name.
+ * @param props.labTexStr   - Label Text String: The row's own heading.
+ * @param props.maxValNum   - Maximum Value Number: The largest day count the
+ *                            stepper allows.
+ * @param props.onSetValFun - On Set Value Function: Called with the new day
+ *                            count.
+ * @param props.picModStr   - Picker Mode String: The picker's own mode.
+ * @param props.subTexEle   - Sub Text Element: The row's own subtitle.
+ * @param props.uniWorStr   - Unit Word String: The unit word for the day
+ *                            count.
+ *
+ * @returns The ease row.
+ *
+ * @example
+ * ```tsx
+ * EasRowCom({ dayValNum, isaDowBoo, iteNamStr, ... }) // => <EasRowCom />
+ * ```
+ *
+*/
+
+function EasRowCom ( { dayValNum, isaDowBoo, iteNamStr, labTexStr, maxValNum, onSetValFun, picModStr, subTexEle, uniWorStr } : ErcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<div
+			className={ cssModObj.ediRowDiv }
+
+			data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
+			data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
+			data-element-name-hook='ediRowDiv'
+		>{ /* What: Editor Row Div Element. Why: This is one Soonest/Shortest or Latest/Longest control row. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+
+
+			<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
+
+
+				<span className={ cssModObj.namRowSpa }>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfTipCom sit side by side. How: This wraps the label span and, for ease-up only, the warning InfTipCom. */ }
+
+
+					<span className={ cssModObj.ediNamSpa }>{ labTexStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders labTexStr directly. */ }
+
+
+
+					{ picModStr === 'ease-up' && ( // What: Ease-Up Warning Check. Why: Only ease-up needs its own inline warning about item competition at high item counts. How: This renders the InfTipCom only while picModStr is 'ease-up'.
+
+
+						<InfTipCom
+							className={ cssModObj.helIcoSpa }
+
+							labTexStr={ EUR_WAR_STR }
+						>?</InfTipCom> // What: Info Tip Component. Why: Ease-up specifically needs its own warning about item competition at high item counts. How: This renders only for ease-up, labeled with EUR_WAR_STR.
+
+
+					) }
+
+
+				</span>
+
+				<span
+					key={ `${ isaDowBoo }-${ dayValNum }-${ uniWorStr }` }
+
+					className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
+				>{ subTexEle }</span>{ /* What: Subtitle Span Element. Why: The live day count/unit-word combination needs its own fade-replace key so a change visibly refreshes. How: This renders subTexEle, keyed by direction/value/unit-word together. */ }
+
+
+			</div>
+
+			<div className={ cssModObj.ediConDiv }>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumSteCom and the unit-word span below. */ }
+
+
+				<NumSteCom
+					maxValNum={ maxValNum }
+					minValNum={ 1 }
+					value={ dayValNum }
+
+					ariLabStr={ `${ labTexStr } for ${ iteNamStr }` }
+
+					onSetValFun={ onSetValFun }
+				/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the row's day count. How: This is passed dayValNum and onSetValFun, clamped to [1, maxValNum]. */ }
+
+
+
+				<span
+					className={ cssModObj.easUniSpa }
+
+					data-element-name-hook='easUniSpa'
+				>{ uniWorStr }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorStr. Its data-element-name-hook is read by the help items' own unit-word lookups. */ }
+
+
+			</div>
+
+
+		</div>
+
+
+	);
+
+
+}
+
+// #endregion EasRowCom
+
+
+
 type EecProTyp = { isaNewBoo? : boolean, iteCouNum? : number, iteDatObj : IteRcdTyp, onCanEdiFun : () => void, onDelIteFun? : () => void, onPatIteFun : ( patValObj : Partial< IteRcdTyp > ) => void, onSavEdiFun : () => void, picDatObj : Partial< PicRcdTyp > | null, picIteArr? : IteRcdTyp[] }; // What: Entry-Editor-Component Props Type. Why: The editor edits one draft item against its picker, which can itself be an unsaved draft, and hands every change, save, cancel, and delete to its parent. How: This types EntEdiCom's props, with the count, delete, and item list optional, since the Pickers tab enforces its own delete floor on each row instead.
 
 // #region EntEdiCom
@@ -290,146 +416,34 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 					<React.Fragment>{ /* What: Ease Rows Fragment Element. Why: The Soonest/Latest rows plus one direction-specific Fill/Refill row are true siblings with no shared wrapper of their own. How: This groups all 3 without adding an extra DOM node. */ }
 
 
-						<div
-							className={ cssModObj.ediRowDiv }
+						<EasRowCom
+							dayValNum={ sooDayNum }
+							isaDowBoo={ isaDowBoo }
+							iteNamStr={ iteDatObj.name }
+							labTexStr={ sooLabStr }
+							maxValNum={ 60 }
+							picModStr={ picModStr }
+							subTexEle={ sooSubEle }
+							uniWorStr={ uniWorFun( sooDayNum ) }
+
+							onSetValFun={ setSooFun }
+						/>{ /* What: Ease Row Component. Why: This is the Soonest/Shortest control row. How: This renders the row's own label, subtitle, and day count stepper, clamped to [1, 60]. Its data-element-name-hook is read by the picker mini-tours, help mode's catalogs, and the help items' own unit-word lookups. */ }
+
+
+
+						<EasRowCom
+							dayValNum={ latDayNum }
+							isaDowBoo={ isaDowBoo }
+							iteNamStr={ iteDatObj.name }
+							labTexStr={ latLabStr }
+							maxValNum={ 90 }
+							picModStr={ picModStr }
+							subTexEle={ latSubEle }
+							uniWorStr={ uniWorFun( latDayNum ) }
+
+							onSetValFun={ setLatFun }
+						/>{ /* What: Ease Row Component. Why: This is the Latest/Longest control row. How: This renders the row's own label, subtitle, and day count stepper, clamped to [1, 90]. Its data-element-name-hook is read by the picker mini-tours, help mode's catalogs, and the help items' own unit-word lookups. */ }
 
-							data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
-							data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
-							data-element-name-hook='ediRowDiv'
-						>{ /* What: Soonest Row Div Element. Why: This is the Soonest/Shortest control row. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-							<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
-
-
-								<span className={ cssModObj.namRowSpa }>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfTipCom sit side by side. How: This wraps the label span and, for ease-up only, the warning InfTipCom. */ }
-
-
-									<span className={ cssModObj.ediNamSpa }>{ sooLabStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders sooLabStr directly. */ }
-
-
-
-									{ picModStr === 'ease-up' && ( // What: Ease-Up Warning Check. Why: Only ease-up needs its own inline warning about item competition at high item counts. How: This renders the InfTipCom only while picModStr is 'ease-up'.
-
-
-										<InfTipCom
-											className={ cssModObj.helIcoSpa }
-
-											labTexStr={ EUR_WAR_STR }
-										>?</InfTipCom> // What: Info Tip Component. Why: Ease-up specifically needs its own warning about item competition at high item counts. How: This renders only for ease-up, labeled with EUR_WAR_STR.
-
-
-									) }
-
-
-								</span>
-
-								<span
-									key={ `${ isaDowBoo }-${ sooDayNum }-${ uniWorFun( sooDayNum ) }` }
-
-									className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-								>{ sooSubEle }</span>{ /* What: Subtitle Span Element. Why: The live day count/unit-word combination needs its own fade-replace key so a change visibly refreshes. How: This renders sooSubEle, keyed by direction/value/unit-word together. */ }
-
-
-							</div>
-
-							<div className={ cssModObj.ediConDiv }>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumSteCom and the unit-word span below. */ }
-
-
-								<NumSteCom
-									maxValNum={ 60 }
-									minValNum={ 1 }
-									value={ sooDayNum }
-
-									ariLabStr={ `${ sooLabStr } for ${ iteDatObj.name }` }
-
-									onSetValFun={ setSooFun }
-								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Soonest/Shortest day count. How: This is passed sooDayNum and setSooFun, clamped to [1, 60]. */ }
-
-
-
-								<span
-									className={ cssModObj.easUniSpa }
-
-									data-element-name-hook='easUniSpa'
-								>{ uniWorFun( sooDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for sooDayNum. Its data-element-name-hook is read by the help items' own unit-word lookups. */ }
-
-
-							</div>
-
-
-						</div>
-
-
-						<div
-							className={ cssModObj.ediRowDiv }
-
-							data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
-							data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
-							data-element-name-hook='ediRowDiv'
-						>{ /* What: Latest Row Div Element. Why: This is the Latest/Longest control row, the mirror of the Soonest row above. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-							<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
-
-
-								<span className={ cssModObj.namRowSpa }>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfTipCom sit side by side. How: This wraps the label span and, for ease-up only, the warning InfTipCom. */ }
-
-
-									<span className={ cssModObj.ediNamSpa }>{ latLabStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders latLabStr directly. */ }
-
-
-
-									{ picModStr === 'ease-up' && ( // What: Ease-Up Warning Check. Why: Only ease-up needs its own inline warning about item competition at high item counts. How: This renders the InfTipCom only while picModStr is 'ease-up'.
-
-
-										<InfTipCom
-											className={ cssModObj.helIcoSpa }
-
-											labTexStr={ EUR_WAR_STR }
-										>?</InfTipCom> // What: Info Tip Component. Why: Ease-up specifically needs its own warning about item competition at high item counts. How: This renders only for ease-up, labeled with EUR_WAR_STR.
-
-
-									) }
-
-
-								</span>
-
-								<span
-									key={ `${ isaDowBoo }-${ latDayNum }-${ uniWorFun( latDayNum ) }` }
-
-									className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-								>{ latSubEle }</span>{ /* What: Subtitle Span Element. Why: The live day count/unit-word combination needs its own fade-replace key so a change visibly refreshes. How: This renders latSubEle, keyed by direction/value/unit-word together. */ }
-
-
-							</div>
-
-							<div className={ cssModObj.ediConDiv }>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumSteCom and the unit-word span below. */ }
-
-
-								<NumSteCom
-									maxValNum={ 90 }
-									minValNum={ 1 }
-									value={ latDayNum }
-
-									ariLabStr={ `${ latLabStr } for ${ iteDatObj.name }` }
-
-									onSetValFun={ setLatFun }
-								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Latest/Longest day count. How: This is passed latDayNum and setLatFun, clamped to [1, 90]. */ }
-
-
-
-								<span
-									className={ cssModObj.easUniSpa }
-
-									data-element-name-hook='easUniSpa'
-								>{ uniWorFun( latDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for latDayNum. Its data-element-name-hook is read by the help items' own unit-word lookups. */ }
-
-
-							</div>
-
-
-						</div>
 
 
 						{ picModStr === 'ease-up' && ( // What: Fill Row Visibility Check. Why: Only ease-up offers an instant-fill shortcut for its own charge. How: This renders the Fill row only while picModStr is 'ease-up'.
