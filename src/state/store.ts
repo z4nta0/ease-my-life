@@ -337,6 +337,60 @@ function madConFun ( newConObj : Partial< ConRcdTyp > | null | undefined ) : Con
 
 
 
+// #region nexStaFun
+
+/**
+ * nexStaFun = Next State Function
+ *
+ * @summary
+ * Builds the next state after a Today entry action that touched the items,
+ * pickers, logs, and conditionals: it lays the changed lists over the
+ * current state, replaces today's entries, and reconciles the streak and
+ * today's claimed flag against those entries and the changed items and
+ * pickers.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curStaObj - Current State Object: The state the action started from.
+ * @param nexEntArr - Next Entry Array: Today's entries after the action.
+ * @param chaStaObj - Changed State Object: The action's conditional log,
+ *                    conditionals, items, pickers, and pick log.
+ *
+ * @returns The next state.
+ *
+ * @example
+ * ```ts
+ * nexStaFun(curStaObj, nexEntArr, chaStaObj) // => next state
+ * ```
+ *
+*/
+
+function nexStaFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], chaStaObj : Pick< StaAppTyp, 'conditionalLog' | 'conditionals' | 'items' | 'pickers' | 'pickLog' > ) : StaAppTyp {
+
+
+	const { stkClaBoo, stkValNum } = stkSynFun( { ...curStaObj, items : chaStaObj.items, pickers : chaStaObj.pickers }, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: The action's entries and changed lists can flip whether today counts as fully done. How: This calls stkSynFun with the changed items and pickers laid over the current state.
+
+
+
+	return { // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj, then the changed lists, the streak, and today.
+
+
+		...curStaObj, // What: Current State Spread. Why: Every field the action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
+		...chaStaObj, // What: Changed State Spread. Why: The action's changed lists replace the current ones. How: This spreads chaStaObj, whose keys curStaObj already holds, so each keeps its place.
+
+		streak : stkValNum,                                                             // What: Streak. Why: The persisted streak count must reflect the reconcile. How: This is stkValNum.
+		today  : { ...curStaObj.today, entries : nexEntArr, streakClaimed : stkClaBoo } // What: Today. Why: Today's own entries and claimed flag change with the action. How: This spreads today with nexEntArr and stkClaBoo.
+
+
+	};
+
+
+}
+
+// #endregion nexStaFun
+
+
+
 // #region stkSynFun
 
 /**
@@ -3674,25 +3728,9 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			const skiLogArr : PclRowTyp[] = nexLogArr.map( ( curRowObj ) => // What: Skipped Log Array. Why: The live row for this entry must be marked skipped (never overwriting an already-rejected row from an earlier re-roll). How: This flags the matching row outcome:'skipped', done:false, completedAt:null.
 				( curRowObj.eid === entIdeStr && curRowObj.outcome !== 'rejected' ) ? { ...curRowObj, completedAt : null, done : false, outcome : 'skipped' } : curRowObj ); // What: Skip Row Patch. Why: Only this entry's non-rejected row becomes skipped. How: This marks it skipped and not done, and passes every other row through.
 
-			const { stkClaBoo, stkValNum } = stkSynFun( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Removing an entry from today can flip whether today counts as fully done. How: This calls stkSynFun against the already-patched items/pickers and the already-filtered entries.
 
 
-
-			return { // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/conditionals/conditionalLog/streak/today/pickLog all replaced.
-
-
-				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
-
-				conditionalLog : nexCdlArr,                                                             // What: Conditional Log. Why: Skipping an already-completed entry must revert its conditional's own logged cycle. How: This is nexCdlArr.
-				conditionals   : nexConArr,                                                             // What: Conditionals. Why: Skipping an already-completed entry must revert its gating conditional's own charge. How: This is nexConArr.
-				items          : nexIteArr,                                                             // What: Items. Why: Any completed consequences this skip reverts land here. How: This is nexIteArr.
-				pickers        : nexPicArr,                                                             // What: Pickers. Why: Any completed picker-level consequences this skip reverts land here. How: This is nexPicArr.
-				pickLog        : skiLogArr,                                                             // What: Pick Log. Why: The live row for this entry must be marked skipped. How: This is nexLogArr.
-				streak         : stkValNum,                                                             // What: Streak. Why: The persisted streak count must reflect the reconciled verdict. How: This is stkValNum, from stkSynFun.
-				today          : { ...curStaObj.today, entries : nexEntArr, streakClaimed : stkClaBoo } // What: Today. Why: Today's own entries and claimed flag must both reflect this change. How: This spreads curStaObj.today with entries replaced and streakClaimed set to stkClaBoo.
-
-
-			};
+			return nexStaFun( curStaObj, nexEntArr, { conditionalLog : nexCdlArr, conditionals : nexConArr, items : nexIteArr, pickers : nexPicArr, pickLog : skiLogArr } ); // What: Next State Return. Why: A skip can undo a completion's consequences and remove an entry from today, so every touched list and the streak must land together. How: This builds the next state through nexStaFun, which also reconciles the streak.
 
 
 		} ),
@@ -3873,25 +3911,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 
-			const { stkClaBoo, stkValNum } = stkSynFun( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Toggling any entry can flip whether today counts as fully done. How: This calls stkSynFun against the already-patched items/pickers and the already-toggled entries.
-
-
-
-			return { // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/conditionals/conditionalLog/streak/today/pickLog all replaced.
-
-
-				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
-
-				conditionalLog : nexCdlArr,                                                             // What: Conditional Log. Why: A done/undone flip can open or close a conditional's own logged cycle. How: This is nexCdlArr.
-				conditionals   : nexConArr,                                                             // What: Conditionals. Why: A done/undone flip can change a gating conditional's own charge. How: This is nexConArr.
-				items          : nexIteArr,                                                             // What: Items. Why: The entry's own staged value/weight consequences land here. How: This is nexIteArr.
-				pickers        : nexPicArr,                                                             // What: Pickers. Why: The entry's own staged picker-level consequences land here. How: This is nexPicArr.
-				pickLog        : nexLogArr,                                                             // What: Pick Log. Why: The live row for this entry must reflect its new outcome. How: This is nexLogArr.
-				streak         : stkValNum,                                                             // What: Streak. Why: The persisted streak count must reflect the reconciled verdict. How: This is stkValNum, from stkSynFun.
-				today          : { ...curStaObj.today, entries : nexEntArr, streakClaimed : stkClaBoo } // What: Today. Why: Today's own entries and claimed flag must both reflect this change. How: This spreads curStaObj.today with entries replaced and streakClaimed set to stkClaBoo.
-
-
-			};
+			return nexStaFun( curStaObj, nexEntArr, { conditionalLog : nexCdlArr, conditionals : nexConArr, items : nexIteArr, pickers : nexPicArr, pickLog : nexLogArr } ); // What: Next State Return. Why: A done/undone flip touches the items, pickers, logs, and conditionals, and can flip whether today counts as fully done. How: This builds the next state through nexStaFun, which also reconciles the streak.
 
 
 		} )
