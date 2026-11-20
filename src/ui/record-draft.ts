@@ -114,7 +114,7 @@ function useRcdDraFun< T extends { id : string } > ( rcdDatObj : T | null ) : { 
  * useIteDraFun = Use Item Draft Function
  *
  * @summary
- * An item editor's draft (see useRcdDraFun), plus comDraFun, which writes
+ * An item editor's draft (see useRcdDraFun), plus cmtDraFun, which writes
  * every field that differs from the item as it was when the draft started
  * back through tarActObj.
  *
@@ -131,22 +131,22 @@ function useRcdDraFun< T extends { id : string } > ( rcdDatObj : T | null ) : { 
  *
  * @example
  * ```ts
- * useIteDraFun(actStoObj, curIteObj) // => { comDraFun, draIteObj, ... }
+ * useIteDraFun(actStoObj, curIteObj) // => { cmtDraFun, draIteObj, ... }
  * ```
  *
 */
 
-function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' | 'togVacFun' | 'updIteFun' >, iteDatObj : IteRcdTyp | null ) : { comDraFun : () => void, draIteObj : IteRcdTyp | null, patDraFun : ( patRcdObj : Partial< IteRcdTyp > ) => void } {
+function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' | 'togVacFun' | 'updIteFun' >, iteDatObj : IteRcdTyp | null ) : { cmtDraFun : () => void, draIteObj : IteRcdTyp | null, patDraFun : ( patRcdObj : Partial< IteRcdTyp > ) => void } {
 
 
 	const { draRcdObj, oriRcdObj, patDraFun } = useRcdDraFun( iteDatObj ); // What: Record Draft Destructure. Why: The item draft is a record draft with an item-specific commit. How: This calls useRcdDraFun with the open item.
 
 
 
-	// #region comDraFun
+	// #region cmtDraFun
 
 	/**
-	 * comDraFun = Commit Draft Function
+	 * cmtDraFun = Commit Draft Function
 	 *
 	 * @summary
 	 * Writes the draft back to the real item. Each field that differs from the
@@ -164,12 +164,12 @@ function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' |
 	 *
 	 * @example
 	 * ```ts
-	 * comDraFun() // => void
+	 * cmtDraFun() // => void
 	 * ```
 	 *
 	*/
 
-	const comDraFun = () => { // What: Commit Draft Function. Why: Save (or closing a Data tab row) must apply the draft's edits to the real item. How: This sends each changed field through the action that owns it.
+	const cmtDraFun = () => { // What: Commit Draft Function. Why: Save (or closing a Data tab row) must apply the draft's edits to the real item. How: This sends each changed field through the action that owns it.
 
 
 		if ( !draRcdObj || !oriRcdObj ) return; // What: No Draft Guard. Why: With no item open there's nothing to commit. How: This bails out when either copy is missing.
@@ -210,11 +210,11 @@ function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' |
 
 	};
 
-	// #endregion comDraFun
+	// #endregion cmtDraFun
 
 
 
-	return { comDraFun, draIteObj : draRcdObj, patDraFun }; // What: Draft Handle Return. Why: The caller's name input and editor both read the draft, patch it, and commit it. How: This returns the three together.
+	return { cmtDraFun, draIteObj : draRcdObj, patDraFun }; // What: Draft Handle Return. Why: The caller's name input and editor both read the draft, patch it, and commit it. How: This returns the three together.
 
 
 }
@@ -229,7 +229,7 @@ function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' |
  * useTasDraFun = Use Task Draft Function
  *
  * @summary
- * A reminder editor's draft (see useRcdDraFun), plus comDraFun, which writes
+ * A reminder editor's draft (see useRcdDraFun), plus cmtDraFun, which writes
  * every field that differs from the reminder as it was when the draft
  * started back through tarActObj: the trimmed name through renTasFun, which
  * de-duplicates it (an emptied name is skipped, keeping the old one), and
@@ -247,22 +247,22 @@ function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' |
  *
  * @example
  * ```ts
- * useTasDraFun(actStoObj, curTasObj) // => { comDraFun, draTasObj, ... }
+ * useTasDraFun(actStoObj, curTasObj) // => { cmtDraFun, draTasObj, ... }
  * ```
  *
 */
 
-function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >, tasDatObj : TasRcdTyp | null ) : { comDraFun : () => void, draTasObj : TasRcdTyp | null, patDraFun : ( patRcdObj : Partial< TasRcdTyp > ) => void } {
+function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >, tasDatObj : TasRcdTyp | null ) : { cmtDraFun : () => void, draTasObj : TasRcdTyp | null, patDraFun : ( patRcdObj : Partial< TasRcdTyp > ) => void } {
 
 
 	const { draRcdObj, oriRcdObj, patDraFun } = useRcdDraFun( tasDatObj ); // What: Record Draft Destructure. Why: The reminder draft is a record draft with a reminder-specific commit. How: This calls useRcdDraFun with the open reminder.
 
 
 
-	// #region comDraFun
+	// #region cmtDraFun
 
 	/**
-	 * comDraFun = Commit Draft Function
+	 * cmtDraFun = Commit Draft Function
 	 *
 	 * @summary
 	 * Writes the draft back to the real reminder: a changed, non-empty trimmed
@@ -278,12 +278,12 @@ function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >
 	 *
 	 * @example
 	 * ```ts
-	 * comDraFun() // => void
+	 * cmtDraFun() // => void
 	 * ```
 	 *
 	*/
 
-	const comDraFun = () => { // What: Commit Draft Function. Why: Save (or closing a Data tab row) must apply the draft's edits to the real reminder. How: This sends a changed name through renTasFun and every other changed field through updTasFun.
+	const cmtDraFun = () => { // What: Commit Draft Function. Why: Save (or closing a Data tab row) must apply the draft's edits to the real reminder. How: This sends a changed name through renTasFun and every other changed field through updTasFun.
 
 
 		if ( !draRcdObj || !oriRcdObj ) return; // What: No Draft Guard. Why: With no reminder open there's nothing to commit. How: This bails out when either copy is missing.
@@ -316,11 +316,11 @@ function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >
 
 	};
 
-	// #endregion comDraFun
+	// #endregion cmtDraFun
 
 
 
-	return { comDraFun, draTasObj : draRcdObj, patDraFun }; // What: Draft Handle Return. Why: The caller's name input and schedule editor both read the draft, patch it, and commit it. How: This returns the three together.
+	return { cmtDraFun, draTasObj : draRcdObj, patDraFun }; // What: Draft Handle Return. Why: The caller's name input and schedule editor both read the draft, patch it, and commit it. How: This returns the three together.
 
 
 }

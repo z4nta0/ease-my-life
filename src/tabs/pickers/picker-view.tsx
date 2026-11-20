@@ -204,8 +204,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	// #region Pool Row State
 
 	const [ shoDriBoo, setShoDriBoo ] = React.useState( picDatObj.mode !== 'random' && picDatObj.mode !== 'weighted' ); // What: Show Drift Boolean And Setter. Why: A non-random/weighted picker's pool rows can optionally reveal each item's own drift/readiness bar, hidden by default to keep the list simple. How: This starts true whenever the picker's mode isn't 'random' or 'weighted', and is toggled by the pool header's own "Show/Hide drift" link.
-	const [ newDraObj, setNewDraObj ] = React.useState< IteRcdTyp | null >( null );                                     // What: New Draft Object And Setter. Why: Adding a new pool item is held as a LOCAL draft, not committed to the store, until Save, so a reload or tab-switch discards an in-progress item, matching the new-picker create flow. How: This is the editing item; patNewFun (below) edits it locally, and cmtDraFun commits it via the real store actions on Save.
-	const [ insSavStr, setInsSavStr ] = React.useState< string | null >( null );                                        // What: Insert Saved String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set by cmtDraFun and cleared once the row's own insert keyframe finishes.
+	const [ newDraObj, setNewDraObj ] = React.useState< IteRcdTyp | null >( null );                                     // What: New Draft Object And Setter. Why: Adding a new pool item is held as a LOCAL draft, not committed to the store, until Save, so a reload or tab-switch discards an in-progress item, matching the new-picker create flow. How: This is the editing item; patNewFun (below) edits it locally, and cmtNewFun commits it via the real store actions on Save.
+	const [ insSavStr, setInsSavStr ] = React.useState< string | null >( null );                                        // What: Insert Saved String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set by cmtNewFun and cleared once the row's own insert keyframe finishes.
 
 	const { canConFun, conDelStr, conLeaStr, setConDelStr } = useDelConFun(); // What: Cancel Confirm Function. Why: Cancel backs out of a pending delete. How: This plays the confirm row's leaving animation, then clears it. // What: Confirm Delete String. Why: A pool row asks before deleting, in place of its normal content. How: This holds the id showing its delete-confirm row. // What: Confirm Leaving String. Why: The confirm row plays an out-animation after Cancel. How: This holds the id playing it. // What: Set Confirm Delete String. Why: The delete button starts a row's confirmation, and the confirmed delete ends it. How: This sets conDelStr.
 
@@ -295,10 +295,10 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	const patNewFun = ( patIteObj : Partial< IteRcdTyp > ) => setNewDraObj( ( preDraObj ) => preDraObj ? { ...preDraObj, ...patIteObj } : preDraObj ); // What: Patch New Function. Why: The new-item draft's name input and its editor both change a field or two of the draft, which isn't in the store yet. How: This merges patIteObj into newDraObj, leaving it alone once the draft is gone.
 
 
-	// #region cmtDraFun
+	// #region cmtNewFun
 
 	/**
-	 * cmtDraFun = Commit Draft Function
+	 * cmtNewFun = Commit New Function
 	 *
 	 * @summary
 	 * Saves the new-item draft as a real item: it creates the item through
@@ -314,12 +314,12 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 *
 	 * @example
 	 * ```ts
-	 * cmtDraFun(draIteObj) // => void
+	 * cmtNewFun(draIteObj) // => void
 	 * ```
 	 *
 	*/
 
-	const cmtDraFun = ( draIteObj : IteRcdTyp ) => { // What: Commit Draft Function. Why: Saving the new-item draft must create the real store item and then carry over every field the draft flow itself edited. How: This calls actions.addIteFun, then patches in vacation/weight/ease fields, moves the new item to the end of the pool, and flags it for its own insert animation.
+	const cmtNewFun = ( draIteObj : IteRcdTyp ) => { // What: Commit New Function. Why: Saving the new-item draft must create the real store item and then carry over every field the draft flow itself edited. How: This calls actions.addIteFun, then patches in vacation/weight/ease fields, moves the new item to the end of the pool, and flags it for its own insert animation.
 
 
 		actStoObj.addIteFun( picDatObj.id, draIteObj.name, draIteObj.id ); // What: Add Item Call. Why: The draft only exists locally until this point; this is what actually creates it in the store. How: This passes the draft's own id through so the created item keeps the same id the draft UI was already using.
@@ -362,7 +362,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	};
 
-	// #endregion cmtDraFun
+	// #endregion cmtNewFun
 
 
 	// #region revSloFun
@@ -492,7 +492,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	const ediOpeObj = ediIteStr && !ediCloBoo ? staAppObj.items.find( ( iteCurObj ) => iteCurObj.id === ediIteStr ) || null : null; // What: Editing Open Object. Why: Only an editor that's open, not one playing its closing animation, has a draft. How: This looks up the edited item while the editor is open and not closing, else null.
 
-	const { comDraFun, draIteObj, patDraFun } = useIteDraFun( actStoObj, ediOpeObj ); // What: Item Draft Destructure. Why: The open editor's name input and controls edit one local draft, committed only on Save. How: This calls useIteDraFun with the open item.
+	const { cmtDraFun, draIteObj, patDraFun } = useIteDraFun( actStoObj, ediOpeObj ); // What: Item Draft Destructure. Why: The open editor's name input and controls edit one local draft, committed only on Save. How: This calls useIteDraFun with the open item.
 
 
 	React.useEffect( () => { // What: Deleted-Under-Editor Effect. Why: An item can be deleted out from under its own open editor (the row's own trash icon stays reachable while editing, see the render's own null-guard below), and that guard alone only stops THIS render from crashing; without also clearing ediIteStr here, it would stay set forever, permanently tripping staEdiFun's own "one editor at a time" guard against ever opening another. How: This watches for the currently-edited item vanishing from staAppObj.items and clears both ediIteStr and ediCloBoo the moment it does.
@@ -1779,7 +1779,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 									onSavEdiFun={ () => { // What: On Save Edit Function. Why: Save must apply the draft to the real item before the editor closes. How: This commits the draft, then starts the editor's closing animation.
 
 
-										comDraFun(); // What: Commit Draft Call. Why: The draft's edits only reach the item on Save. How: This calls comDraFun.
+										cmtDraFun(); // What: Commit Draft Call. Why: The draft's edits only reach the item on Save. How: This calls cmtDraFun.
 
 										setEdiCloBoo( true ); // What: Start Closing Call. Why: A saved editor has nothing left to show. How: This flips ediCloBoo, which plays the closing animation.
 
@@ -1840,7 +1840,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 								onCloEndFun={ () => { // What: On Close End Function. Why: The new-item editor's own close animation must finish before the add is committed or dropped. How: This commits a saved draft, clears the draft state, then opens any editor requested meanwhile.
 
 
-									if ( newCloStr === 'save' ) cmtDraFun( newIteObj ); // What: Save Commit Guard. Why: A saved new item becomes a real item, while a cancelled one is just dropped. How: This commits the draft only when newCloStr is 'save'.
+									if ( newCloStr === 'save' ) cmtNewFun( newIteObj ); // What: Save Commit Guard. Why: A saved new item becomes a real item, while a cancelled one is just dropped. How: This commits the draft only when newCloStr is 'save'.
 
 
 
@@ -1853,10 +1853,10 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 								} }
 								onNamChaFun={ ( namValStr ) => patNewFun( { name : namValStr } ) }
-								onNamComFun={ ( namValStr ) => patNewFun( { name : namValStr } ) } // What: On Name Commit Function. Why: Leaving the name field commits a tidied name. How: This writes the trimmed name into the draft through patNewFun.
+								onNamCmtFun={ ( namValStr ) => patNewFun( { name : namValStr } ) } // What: On Name Commit Function. Why: Leaving the name field commits a tidied name. How: This writes the trimmed name into the draft through patNewFun.
 								onPatIteFun={ patNewFun }
 								onSavEdiFun={ () => setNewCloStr( 'save' ) }
-							/> // What: Item Card Component. Why: This is the whole new-item draft editor slot, playing its own closing animation before actually committing or discarding. How: This is passed the draft and its local patch function, commits the draft via cmtDraFun only when newCloStr is 'save', then reopens whatever staEdiFun staged in penEdiRef.
+							/> // What: Item Card Component. Why: This is the whole new-item draft editor slot, playing its own closing animation before actually committing or discarding. How: This is passed the draft and its local patch function, commits the draft via cmtNewFun only when newCloStr is 'save', then reopens whatever staEdiFun staged in penEdiRef.
 
 
 						);

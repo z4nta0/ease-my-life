@@ -28,7 +28,7 @@ import { redMotFun    } from '../../utils/motion.ts';        // What: Reduce Mot
 import { scrBehFun    } from '../../utils/motion.ts';        // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';          // What: Seed Namespace Object. Why: Every picker mode's own label and hint text comes from this shared catalog. How: This is read (MOD_DEF_OBJ) in PicConCom for the mode radio group.
 import { togFadFun    } from '../../ui/edge-fade.ts';        // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
-import { UnmWatCom    } from './unmount-watcher.ts';         // What: Unmount Watcher Component. Why: Controls that close without Save still keep their edits. How: This is rendered at the end of PicConCom's body with comPicFun.
+import { UnmWatCom    } from './unmount-watcher.ts';         // What: Unmount Watcher Component. Why: Controls that close without Save still keep their edits. How: This is rendered at the end of PicConCom's body with cmtPicFun.
 import { useFliRaiFun } from '../../ui/flip-rail.ts';        // What: Use Flip Rail Function. Why: The conditional rail's pinned pill should glide to the front instead of snapping. How: This is called once with the rail ref and a trigger key.
 import { WeeChiCom    } from '../../ui/weekday-chips.tsx';   // What: Weekday Chip Component. Why: PicConCom's own Days control needs the same weekday multi-select every other schedule editor uses. How: This is rendered inside PicConCom's "When it runs" group.
 
@@ -820,10 +820,10 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 	// #region Close Handling
 
-	// #region comPicFun
+	// #region cmtPicFun
 
 	/**
-	 * comPicFun = Commit Picker Function
+	 * cmtPicFun = Commit Picker Function
 	 *
 	 * @summary
 	 * Commits an existing picker's draft, once, through the same savEdiFun the
@@ -842,12 +842,12 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	 *
 	 * @example
 	 * ```ts
-	 * comPicFun() // => void
+	 * cmtPicFun() // => void
 	 * ```
 	 *
 	*/
 
-	const comPicFun = () => { // What: Commit Picker Function. Why: Saving or closing Controls keeps its edits. How: This sends a changed draft through savEdiFun, then applies a pending Fill all.
+	const cmtPicFun = () => { // What: Commit Picker Function. Why: Saving or closing Controls keeps its edits. How: This sends a changed draft through savEdiFun, then applies a pending Fill all.
 
 
 		if ( isaNewBoo || hanCloRef.current ) return; // What: Not Applicable Guard. Why: A new draft commits through its own Save, and a handled close has nothing left to commit. How: This bails out in either case.
@@ -878,7 +878,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 	};
 
-	// #endregion comPicFun
+	// #endregion cmtPicFun
 
 
 
@@ -896,7 +896,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	const savCloFun = () => { // What: Save Close Function. Why: Save keeps the draft and closes Controls. How: This commits the draft, then collapses Controls.
 
 
-		comPicFun(); // What: Commit Picker Call. Why: Save keeps every change. How: This calls comPicFun.
+		cmtPicFun(); // What: Commit Picker Call. Why: Save keeps every change. How: This calls cmtPicFun.
 
 		onColConFun(); // What: Collapse Controls Call. Why: Save closes the Controls disclosure. How: This calls the parent's own collapse callback.
 
@@ -2101,7 +2101,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 
-			<UnmWatCom onUnmWatFun={ comPicFun } />{ /* What: Unmount Watcher Component. Why: Controls that close without Save (collapsing Controls or its card, a filter hiding the picker, a tab switch) still keep their edits. How: This calls comPicFun when Controls unmounts, which skips a draft already saved, cancelled, or deleted. */ }
+			<UnmWatCom onUnmWatFun={ cmtPicFun } />{ /* What: Unmount Watcher Component. Why: Controls that close without Save (collapsing Controls or its card, a filter hiding the picker, a tab switch) still keep their edits. How: This calls cmtPicFun when Controls unmounts, which skips a draft already saved, cancelled, or deleted. */ }
 
 
 		</div>

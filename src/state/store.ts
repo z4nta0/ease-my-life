@@ -2240,7 +2240,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * task in place (same id) instead of prepending a new one, mirroring
 		 * addPicFun's own replaceId, used when a reminder mini-tour is
 		 * replayed after already finishing once (see reminders-section.tsx's
-		 * own comAddFun, which looks up the prior real task via
+		 * own cmtAddFun, which looks up the prior real task via
 		 * createdFromSample). A new reminder due today reopens a fully done
 		 * day, so the streak is reconciled through stkSynFun.
 		 *

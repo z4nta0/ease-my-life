@@ -710,7 +710,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const ediEntObj = actEdiStr ? staAppObj.today.entries.find( ( curEntObj ) => `item:${ curEntObj.eid }` === actEdiStr ) : null; // What: Editing Entry Object. Why: The open item editor's draft needs to know which entry it belongs to. How: This finds the entry whose own editor key matches actEdiStr, or null when no item editor is open.
 	const ediIteObj = ediEntObj ? staAppObj.items.find( ( curIteObj ) => curIteObj.id === ediEntObj.itemId ) || null : null;       // What: Editing Item Object. Why: The draft is a copy of this entry's own item. How: This looks the item up by the entry's itemId, or null when there's none.
 
-	const { comDraFun, draIteObj, patDraFun } = useIteDraFun( actStoObj, ediIteObj ); // What: Item Draft Destructure. Why: The open card's name input and its editor both edit one local draft, committed only on Save. How: This calls useIteDraFun with the open item.
+	const { cmtDraFun, draIteObj, patDraFun } = useIteDraFun( actStoObj, ediIteObj ); // What: Item Draft Destructure. Why: The open card's name input and its editor both edit one local draft, committed only on Save. How: This calls useIteDraFun with the open item.
 
 	// #endregion Item Editor State
 
@@ -4566,7 +4566,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 																		onSavEdiFun={ () => { // What: On Save Edit Function. Why: Save must apply the draft to the real item before the editor closes. How: This commits the draft, then clears actEdiStr when it still points at this row.
 
 
-																			comDraFun(); // What: Commit Draft Call. Why: The draft's edits only reach the item on Save. How: This calls comDraFun.
+																			cmtDraFun(); // What: Commit Draft Call. Why: The draft's edits only reach the item on Save. How: This calls cmtDraFun.
 
 																			setActEdiStr( ( curValStr ) => curValStr === `item:${ entRecObj.eid }` ? null : curValStr ); // What: Editor Close Call. Why: A saved editor has nothing left to show. How: This clears actEdiStr when it still points at this row.
 

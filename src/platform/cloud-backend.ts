@@ -251,14 +251,14 @@ function cloBacFun ( uidValStr : string ) : SynBacTyp {
 
 				const manSnaObj = await traCurObj.get( manRefObj );                          // What: Manifest Snapshot Object. Why: The revision is checked inside the transaction. How: This reads the manifest.
 				const curManObj = manSnaObj.exists() ? manSnaObj.data() as CloManTyp : null; // What: Current Manifest Object. Why: Cleanup needs what the cloud listed. How: This reads it, null before the first upload. // What: Type Assertion Note. Why: The security rules only let this app write the manifest in this shape. How: The as types the stored data.
-				const comNowBoo = ( curManObj ? curManObj.rev : 0 ) === basRevNum;           // What: Commit Now Boolean. Why: An upload built on an older revision must not land. How: This is true when the cloud is still at basRevNum.
+				const cmtNowBoo = ( curManObj ? curManObj.rev : 0 ) === basRevNum;           // What: Commit Now Boolean. Why: An upload built on an older revision must not land. How: This is true when the cloud is still at basRevNum.
 
 
-				if ( comNowBoo ) traCurObj.set( manRefObj, { ...manNewObj, prior : curManObj ? curManObj.docs : {} } ); // What: Manifest Commit. Why: The new versions become the cloud copy. How: This writes the manifest, keeping the replaced hashes as prior.
+				if ( cmtNowBoo ) traCurObj.set( manRefObj, { ...manNewObj, prior : curManObj ? curManObj.docs : {} } ); // What: Manifest Commit. Why: The new versions become the cloud copy. How: This writes the manifest, keeping the replaced hashes as prior.
 
 
 
-				return { comNowBoo, curManObj }; // What: Transaction Return. Why: Cleanup depends on whether the commit landed and what it replaced. How: This returns both.
+				return { cmtNowBoo, curManObj }; // What: Transaction Return. Why: Cleanup depends on whether the commit landed and what it replaced. How: This returns both.
 
 
 			} );
@@ -268,9 +268,9 @@ function cloBacFun ( uidValStr : string ) : SynBacTyp {
 			// #region Old Version Cleanup
 
 			const curManObj = traResObj.curManObj; // What: Current Manifest Object. Why: Cleanup keeps every version it lists. How: This reads it from the transaction.
-			const keeHasArr = [ curManObj?.docs, curManObj?.prior, traResObj.comNowBoo ? manNewObj.docs : undefined ];                                                                                                   // What: Keep Hash Array. Why: A version any of these manifests lists may still be downloaded. How: This lists the current, prior, and newly committed hashes.
+			const keeHasArr = [ curManObj?.docs, curManObj?.prior, traResObj.cmtNowBoo ? manNewObj.docs : undefined ];                                                                                                   // What: Keep Hash Array. Why: A version any of these manifests lists may still be downloaded. How: This lists the current, prior, and newly committed hashes.
 			const keeKeySet = new Set( keeHasArr.flatMap( ( hasMapObj ) => Object.entries( hasMapObj || {} ).map( ( [ docIdeStr, docHasStr ] ) => verKeyFun( docIdeStr, docHasStr ) ) ) );                               // What: Keep Key Set. Why: Cleanup must not delete a version still listed. How: This collects their keys.
-			const garKeyArr = traResObj.comNowBoo ? Object.entries( curManObj?.prior || {} ).map( ( [ docIdeStr, docHasStr ] ) => verKeyFun( docIdeStr, docHasStr ) ) : newEntArr.map( ( [ verKeyStr ] ) => verKeyStr ); // What: Garbage Key Array. Why: A commit retires what the replaced manifest's prior listed, and a lost race retires what it uploaded. How: This lists those candidates.
+			const garKeyArr = traResObj.cmtNowBoo ? Object.entries( curManObj?.prior || {} ).map( ( [ docIdeStr, docHasStr ] ) => verKeyFun( docIdeStr, docHasStr ) ) : newEntArr.map( ( [ verKeyStr ] ) => verKeyStr ); // What: Garbage Key Array. Why: A commit retires what the replaced manifest's prior listed, and a lost race retires what it uploaded. How: This lists those candidates.
 
 
 
@@ -282,7 +282,7 @@ function cloBacFun ( uidValStr : string ) : SynBacTyp {
 
 
 
-			return traResObj.comNowBoo; // What: Commit Return. Why: The engine starts over when the race was lost. How: This reports whether the manifest landed.
+			return traResObj.cmtNowBoo; // What: Commit Return. Why: The engine starts over when the race was lost. How: This reports whether the manifest landed.
 
 
 		}

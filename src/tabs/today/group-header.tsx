@@ -223,7 +223,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 
 
-	const comEdiFun = () => { // What: Commit Edit Function. Why: Both blur (Enter blurs the input) and an explicit commit path need this exact same validation-then-close sequence. How: This trims the draft, checks whether it actually changed, validates it, and either stages an error or finishes closing.
+	const cmtEdiFun = () => { // What: Commit Edit Function. Why: Both blur (Enter blurs the input) and an explicit commit path need this exact same validation-then-close sequence. How: This trims the draft, checks whether it actually changed, validates it, and either stages an error or finishes closing.
 
 
 		if ( cloOutBoo ) return; // What: Already Closing Guard. Why: A commit already in flight must not be re-triggered by a second event (e.g. Enter's own blur firing after the click that started this). How: This bails out while cloOutBoo is already true.
@@ -248,7 +248,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 
 
-				return; // What: Validation Return. Why: A collision must not fall through to finCloFun below. How: This exits comEdiFun immediately.
+				return; // What: Validation Return. Why: A collision must not fall through to finCloFun below. How: This exits cmtEdiFun immediately.
 
 
 			}
@@ -323,7 +323,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 					) }
 
-					{ ediModBoo && ediOpeBoo ? ( // What: Editing Field Branch. Why: While Edit Mode is on AND the field is open, the group's own name renders as an editable input instead of plain text or the rename button. How: This renders the inline input, wired to draNamStr/comEdiFun/canEdiFun.
+					{ ediModBoo && ediOpeBoo ? ( // What: Editing Field Branch. Why: While Edit Mode is on AND the field is open, the group's own name renders as an editable input instead of plain text or the rename button. How: This renders the inline input, wired to draNamStr/cmtEdiFun/canEdiFun.
 
 
 						<input
@@ -340,7 +340,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 							aria-label='Group name'
 
-							onBlur={ comEdiFun }
+							onBlur={ cmtEdiFun }
 							onChange={ ( chaEveObj ) => { // What: Change Handler. Why: Typing both updates the draft and clears any staged collision error, since the user is now fixing it. How: This copies the input's value into draNamStr, then clears namErrStr if one is set.
 
 
@@ -355,7 +355,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 							onKeyDown={ ( keyEveObj ) => { // What: Key Down Handler. Why: Enter should commit (via a blur) and Escape should cancel, mirroring every other inline editor in the app. How: This blurs the input on Enter and calls canEdiFun on Escape.
 
 
-								if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); // What: Enter Branch. Why: Enter commits the rename, which happens through the input's own onBlur. How: This blurs the input, firing comEdiFun.
+								if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); // What: Enter Branch. Why: Enter commits the rename, which happens through the input's own onBlur. How: This blurs the input, firing cmtEdiFun.
 
 								else if ( keyEveObj.key === 'Escape' ) { // What: Escape Branch. Why: Escape cancels the rename. How: This stops the key's default behavior, then calls canEdiFun.
 

@@ -414,10 +414,10 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 	const hanCloRef = React.useRef( false ); // What: Handled Close Reference. Why: A matrix already saved or cancelled must not commit again when it unmounts. How: This flips true on either.
 
 
-	// #region comOptFun
+	// #region cmtOptFun
 
 	/**
-	 * comOptFun = Commit Options Function
+	 * cmtOptFun = Commit Options Function
 	 *
 	 * @summary
 	 * Commits the matrix's draft, once: every toggle that differs from the
@@ -432,12 +432,12 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 	 *
 	 * @example
 	 * ```ts
-	 * comOptFun() // => void
+	 * cmtOptFun() // => void
 	 * ```
 	 *
 	*/
 
-	const comOptFun = () => { // What: Commit Options Function. Why: Saving or closing the matrix keeps its toggles. How: This writes every changed toggle through setOptFun, once.
+	const cmtOptFun = () => { // What: Commit Options Function. Why: Saving or closing the matrix keeps its toggles. How: This writes every changed toggle through setOptFun, once.
 
 
 		if ( hanCloRef.current ) return; // What: Handled Close Guard. Why: A saved or cancelled matrix has nothing left to commit. How: This bails out once hanCloRef is set.
@@ -453,7 +453,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 
 	};
 
-	// #endregion comOptFun
+	// #endregion cmtOptFun
 
 
 	const canMatFun = () => { // What: Cancel Matrix Function. Why: Cancel drops the draft and closes the body. How: This marks the close handled, then collapses the body.
@@ -470,7 +470,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 	const savMatFun = () => { // What: Save Matrix Function. Why: Save keeps the draft and closes the body. How: This commits the draft, then collapses the body.
 
 
-		comOptFun(); // What: Commit Options Call. Why: Save keeps every toggle. How: This calls comOptFun.
+		cmtOptFun(); // What: Commit Options Call. Why: Save keeps every toggle. How: This calls cmtOptFun.
 
 		onCloConFun(); // What: Controls Close Call. Why: A saved matrix has nothing left to show. How: This collapses the Controls body.
 
@@ -625,7 +625,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 
 
 
-			<UnmWatCom onUnmWatFun={ comOptFun } />{ /* What: Unmount Watcher Component. Why: A matrix closed without Save (collapsing Controls or the Reminders card, a tab switch) still keeps its toggles. How: This calls comOptFun when the matrix unmounts, which skips one already saved or cancelled. */ }
+			<UnmWatCom onUnmWatFun={ cmtOptFun } />{ /* What: Unmount Watcher Component. Why: A matrix closed without Save (collapsing Controls or the Reminders card, a tab switch) still keeps its toggles. How: This calls cmtOptFun when the matrix unmounts, which skips one already saved or cancelled. */ }
 
 
 		</div>
@@ -802,7 +802,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 		: ( staAppObj.tasks || [] ).find( ( curTasObj ) => curTasObj.id === opeIdeStr ) || null; // What: Stored Reminder Branch. Why: Any other open row is a stored reminder. How: This looks the open id up in the store, or null.
 
 
-	const { comDraFun, draTasObj, patDraFun } = useTasDraFun( actStoObj, opeTasObj ); // What: Task Draft Destructure. Why: The open row's name input and schedule editor both edit one local draft, committed when the row closes or saves. How: This calls useTasDraFun with the open reminder.
+	const { cmtDraFun, draTasObj, patDraFun } = useTasDraFun( actStoObj, opeTasObj ); // What: Task Draft Destructure. Why: The open row's name input and schedule editor both edit one local draft, committed when the row closes or saves. How: This calls useTasDraFun with the open reminder.
 
 	const hanDraRef = React.useRef< TasRcdTyp | null >( null ); // What: Handled Draft Reference. Why: A draft that was already saved or cancelled must not be committed again when its row unmounts afterward. How: This holds the last draft object keeTasFun committed or Cancel dropped.
 
@@ -863,7 +863,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 		}
 
-		else comDraFun(); // What: Commit Draft Branch. Why: A stored reminder's edits must reach it. How: This calls comDraFun.
+		else cmtDraFun(); // What: Commit Draft Branch. Why: A stored reminder's edits must reach it. How: This calls cmtDraFun.
 
 
 	};

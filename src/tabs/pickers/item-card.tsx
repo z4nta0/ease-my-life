@@ -39,7 +39,7 @@ import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Recor
 
 // #region Components
 
-type IccProTyp = { cloBoo : boolean, ediKeyStr? : string, iteDatObj : IteRcdTyp, namRef? : ( inpEleObj : HTMLInputElement | null ) => void, namValStr : string, onCanEdiFun : () => void, onCloEndFun : () => void, onNamChaFun : ( namValStr : string ) => void, onNamComFun? : ( namValStr : string ) => void, onPatIteFun : ( patValObj : Partial< IteRcdTyp > ) => void, onSavEdiFun : () => void, picDatObj : Partial< PicRcdTyp > | null, picIteArr? : IteRcdTyp[] }; // What: Item-Card-Component Props Type. Why: The card shows one item's name and editor, may key its editor and select its name on mount, and hands every edit, save, cancel, and close back to its parent. How: This types IteCarCom's props.
+type IccProTyp = { cloBoo : boolean, ediKeyStr? : string, iteDatObj : IteRcdTyp, namRef? : ( inpEleObj : HTMLInputElement | null ) => void, namValStr : string, onCanEdiFun : () => void, onCloEndFun : () => void, onNamChaFun : ( namValStr : string ) => void, onNamCmtFun? : ( namValStr : string ) => void, onPatIteFun : ( patValObj : Partial< IteRcdTyp > ) => void, onSavEdiFun : () => void, picDatObj : Partial< PicRcdTyp > | null, picIteArr? : IteRcdTyp[] }; // What: Item-Card-Component Props Type. Why: The card shows one item's name and editor, may key its editor and select its name on mount, and hands every edit, save, cancel, and close back to its parent. How: This types IteCarCom's props.
 
 // #region IteCarCom
 
@@ -49,7 +49,7 @@ type IccProTyp = { cloBoo : boolean, ediKeyStr? : string, iteDatObj : IteRcdTyp,
  * @summary
  * Draws one item card: a name row whose field shows namValStr and reports
  * each keystroke through onNamChaFun, blurring itself on Enter, above the
- * shared item editor for iteDatObj. When onNamComFun is given, leaving the
+ * shared item editor for iteDatObj. When onNamCmtFun is given, leaving the
  * field commits its trimmed name through it, unless the name is blank.
  * While cloBoo is true the card plays its closing animation, and once that
  * animation (not one of its children's) ends, it calls onCloEndFun. The
@@ -73,7 +73,7 @@ type IccProTyp = { cloBoo : boolean, ediKeyStr? : string, iteDatObj : IteRcdTyp,
  *                            closing animation ends.
  * @param props.onNamChaFun - On Name Change Function: Called with the name
  *                            field's value on every change.
- * @param props.onNamComFun - On Name Commit Function: The optional handler
+ * @param props.onNamCmtFun - On Name Commit Function: The optional handler
  *                            called with the trimmed name when the field
  *                            loses focus with a non-blank name.
  * @param props.onPatIteFun - On Patch Item Function: Called with each change
@@ -93,7 +93,7 @@ type IccProTyp = { cloBoo : boolean, ediKeyStr? : string, iteDatObj : IteRcdTyp,
  *
 */
 
-function IteCarCom ( { cloBoo, ediKeyStr, iteDatObj, namRef, namValStr, onCanEdiFun, onCloEndFun, onNamChaFun, onNamComFun, onPatIteFun, onSavEdiFun, picDatObj, picIteArr } : IccProTyp ) : React.JSX.Element {
+function IteCarCom ( { cloBoo, ediKeyStr, iteDatObj, namRef, namValStr, onCanEdiFun, onCloEndFun, onNamChaFun, onNamCmtFun, onPatIteFun, onSavEdiFun, picDatObj, picIteArr } : IccProTyp ) : React.JSX.Element {
 
 
 	return (
@@ -143,13 +143,13 @@ function IteCarCom ( { cloBoo, ediKeyStr, iteDatObj, namRef, namValStr, onCanEdi
 
 						aria-label='Item name'
 
-						onBlur={ onNamComFun && ( ( bluEveObj ) => { // What: On Blur Handler. Why: Leaving the name field commits a tidied name, where the parent asks for it. How: This trims the value and hands it to onNamComFun when it's non-empty, and is left off when onNamComFun isn't given.
+						onBlur={ onNamCmtFun && ( ( bluEveObj ) => { // What: On Blur Handler. Why: Leaving the name field commits a tidied name, where the parent asks for it. How: This trims the value and hands it to onNamCmtFun when it's non-empty, and is left off when onNamCmtFun isn't given.
 
 
 							const newNamStr = bluEveObj.target.value.trim(); // What: New Name String. Why: A blur commit should tidy the name, not keep stray whitespace. How: This trims the input's current value.
 
 
-							if ( newNamStr ) onNamComFun( newNamStr ); // What: Rename Item Guard. Why: A blank name must never be committed. How: This hands the tidied name to onNamComFun only when newNamStr is non-empty.
+							if ( newNamStr ) onNamCmtFun( newNamStr ); // What: Rename Item Guard. Why: A blank name must never be committed. How: This hands the tidied name to onNamCmtFun only when newNamStr is non-empty.
 
 
 						} ) }

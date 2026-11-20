@@ -734,7 +734,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 	const opeTasObj = opeTasStr ? staAppObj.tasks.find( ( curTasObj ) => curTasObj.id === opeTasStr ) || null : null; // What: Open Task Object. Why: The open editor's draft is a copy of this reminder. How: This looks the open id up among the tasks, or null when no saved reminder's editor is open.
 
-	const { comDraFun, draTasObj : opeDraObj, patDraFun } = useTasDraFun( actStoObj, opeTasObj ); // What: Task Draft Destructure. Why: The open card's name input and its schedule editor both edit one local draft, committed only on Save. How: This calls useTasDraFun with the open reminder.
+	const { cmtDraFun, draTasObj : opeDraObj, patDraFun } = useTasDraFun( actStoObj, opeTasObj ); // What: Task Draft Destructure. Why: The open card's name input and its schedule editor both edit one local draft, committed only on Save. How: This calls useTasDraFun with the open reminder.
 
 	// #endregion Editor Slots
 
@@ -823,13 +823,13 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 	const [ visForBoo, setVisForBoo ] = React.useState( addOpeBoo );                // What: Visible Form Boolean And Setter. Why: The quick-add form must stay mounted for its own exit animation even after actEdiStr has already moved on to a different editor. How: This starts at addOpeBoo and is later driven by the effect below.
 	const [ draTasObj, setDraTasObj ] = React.useState< TasRcdTyp | null >( null ); // What: Draft Task Object And Setter. Why: The quick-add form holds a full draft task so the same SchEdiCom used on an existing reminder can configure recurrence before it's ever created. How: This starts null and is populated by staAddFun below.
-	const [ addCloBoo, setAddCloBoo ] = React.useState( false );                    // What: Add Closing Boolean And Setter. Why: The quick-add form's own exit animation needs a flag distinct from visForBoo, so the form stays mounted but visually collapsing during the close. How: This is toggled by canAddFun/comAddFun below.
+	const [ addCloBoo, setAddCloBoo ] = React.useState( false );                    // What: Add Closing Boolean And Setter. Why: The quick-add form's own exit animation needs a flag distinct from visForBoo, so the form stays mounted but visually collapsing during the close. How: This is toggled by canAddFun/cmtAddFun below.
 
 	const wasAddRef  = React.useRef( addOpeBoo );                       // What: Was Adding Reference. Why: The effect below needs to detect an addOpeBoo transition, not just its current value. How: This is read and overwritten at the end of that same effect.
 	const selCloRef  = React.useRef( false );                           // What: Self Closing Reference. Why: Our own cancel/commit already starts the exit animation itself; the effect below must not ALSO re-trigger it as if some other editor forced this one closed. How: This is set just before that self-initiated close begins.
 	const cloTimRef  = React.useRef< number | undefined >( undefined ); // What: Close Timeout Reference. Why: The scheduled end of an in-progress close animation needs to be cancellable if a fresh open/close interrupts it. How: This holds whichever setTimeout id is currently pending.
 	const inpEleRef = React.useRef< HTMLInputElement | null >( null );  // What: Input Element Reference. Why: The quick-add form's own name input needs to be focusable programmatically. How: This is attached to that input's own ref prop below.
-	const comTasRef = React.useRef( false );                            // What: Commit Task Reference. Why: A rapid double-click on Add must not commit the same draft twice. How: This is checked and set at the very top of comAddFun below, then cleared 500ms after it finishes.
+	const cmtTasRef = React.useRef( false );                            // What: Commit Task Reference. Why: A rapid double-click on Add must not commit the same draft twice. How: This is checked and set at the very top of cmtAddFun below, then cleared 500ms after it finishes.
 
 
 	React.useEffect( () => { if ( addOpeBoo && inpEleRef.current ) inpEleRef.current.focus(); }, [ addOpeBoo ] ); // What: Focus Effect. Why: Opening the quick-add form should focus its own name input immediately. How: This focuses inpEleRef's own current node whenever addOpeBoo becomes true.
@@ -996,7 +996,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 	};
 
 
-	const comAddFun = () => { // What: Commit Add Function. Why: This is the quick-add form's own Save action, creating the real reminder (or updating an existing one, for a re-run mini-tour) from draTasObj. How: This validates the name, resolves a possible existing sample-linked task, then stages the same collapse-then-reveal animation commit already used elsewhere.
+	const cmtAddFun = () => { // What: Commit Add Function. Why: This is the quick-add form's own Save action, creating the real reminder (or updating an existing one, for a re-run mini-tour) from draTasObj. How: This validates the name, resolves a possible existing sample-linked task, then stages the same collapse-then-reveal animation commit already used elsewhere.
 
 
 		if ( !draTasObj ) return; // What: No Draft Guard. Why: There is nothing to commit while no quick-add draft is open. How: This bails out of the commit when draTasObj is null.
@@ -1006,11 +1006,11 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 		const tasNamStr = ( draTasObj.name || '' ).trim(); // What: Task Name String. Why: An empty name is not a valid reminder and must not be committed. How: This trims draTasObj's own name, defaulting to an empty string when it has none.
 
 
-		if ( !tasNamStr || comTasRef.current ) return; // What: Guard: Ignore Rapid Double-Click. Why: Either the name is blank, or a commit is already in flight. How: This bails out of the whole commit when either condition holds.
+		if ( !tasNamStr || cmtTasRef.current ) return; // What: Guard: Ignore Rapid Double-Click. Why: Either the name is blank, or a commit is already in flight. How: This bails out of the whole commit when either condition holds.
 
 
 
-		comTasRef.current = true; // What: Commit In-Flight Flag Set. Why: This is the actual guard the top-of-function check above reads to reject a rapid second click. How: This flips comTasRef true for the duration of this commit.
+		cmtTasRef.current = true; // What: Commit In-Flight Flag Set. Why: This is the actual guard the top-of-function check above reads to reject a rapid second click. How: This flips cmtTasRef true for the duration of this commit.
 		selCloRef.current = true; // What: Self-Close Flag Set. Why: The forced-close effect above must not also react to the addOpeBoo transition this commit is about to cause. How: This flags selCloRef before the animated close below begins.
 
 
@@ -1029,7 +1029,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 			setInsIdeStr( newIdeStr );                       // What: Insert Identifier Stage Call. Why: The committed reminder needs to play its own entrance animation exactly once. How: This sets insIdeStr to newIdeStr.
 			endAddFun();                                     // What: End Add Call. Why: The quick-add form's own draft is fully spent once committed. How: This clears the draft, hides the form, and releases the editor slot through endAddFun.
 
-			setTimeout( () => { comTasRef.current = false; }, 500 ); // What: Commit Flag Release Call. Why: A later, genuinely new commit must be allowed once this one has fully settled. How: This clears comTasRef back to false after 500ms.
+			setTimeout( () => { cmtTasRef.current = false; }, 500 ); // What: Commit Flag Release Call. Why: A later, genuinely new commit must be allowed once this one has fully settled. How: This clears cmtTasRef back to false after 500ms.
 
 
 		};
@@ -1352,8 +1352,8 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 								aria-label='Reminder name'
 
 								onChange={ ( chaEveObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj!, name : chaEveObj.target.value } ) ) } // What: Non-Null Note. Why: The quick-add form only renders, and so only edits, while a draft is open. How: The ! tells TypeScript the previous draft is set.
-								onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) comAddFun(); } } // What: Enter Commit Shortcut. Why: Pressing Enter in the name field should add the reminder. How: This calls comAddFun on Enter.
-							/>{ /* What: Name Input Element. Why: This is the quick-add form's own primary, first-focused field. How: This commits every keystroke straight into draTasObj, and Enter commits the whole form via comAddFun. Its data-element-name-hook is read by help mode's Today catalog. */ }
+								onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) cmtAddFun(); } } // What: Enter Commit Shortcut. Why: Pressing Enter in the name field should add the reminder. How: This calls cmtAddFun on Enter.
+							/>{ /* What: Name Input Element. Why: This is the quick-add form's own primary, first-focused field. How: This commits every keystroke straight into draTasObj, and Enter commits the whole form via cmtAddFun. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 						</div>
@@ -1400,8 +1400,8 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 									kinValStr='primary'
 									sizValStr='sm'
 
-									onClick={ comAddFun }
-								>Add</ButBasCom>{ /* What: Button Base Component. Why: This is the form's own actual submit action. How: This calls comAddFun, disabled while the name is blank. Its data-element-name-hook is read by the reminder mini-tours. */ }
+									onClick={ cmtAddFun }
+								>Add</ButBasCom>{ /* What: Button Base Component. Why: This is the form's own actual submit action. How: This calls cmtAddFun, disabled while the name is blank. Its data-element-name-hook is read by the reminder mini-tours. */ }
 
 
 							</div>
@@ -1536,7 +1536,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 								onSavTasFun={ () => { // What: Save Handler. Why: Save applies the draft, name included, to the real reminder before the editor closes. How: This commits the draft, then releases the editor slot when it still belongs to this card.
 
 
-									comDraFun(); // What: Commit Draft Call. Why: The draft's edits only reach the reminder on Save. How: This calls comDraFun.
+									cmtDraFun(); // What: Commit Draft Call. Why: The draft's edits only reach the reminder on Save. How: This calls cmtDraFun.
 
 									setActEdiStr( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : curEdiStr ); // What: Editor Close Call. Why: A saved editor has nothing left to show. How: This releases the shared slot only while it still belongs to this card.
 

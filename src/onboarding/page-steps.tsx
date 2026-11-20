@@ -729,7 +729,7 @@ const buiTs1Fun = ( pagKeyStr : string, runSteFun? : () => void, priButStr : str
  * the gghObj step, which needs Edit Mode to stay on (the rgiObj step's own
  * Done doesn't need this at all, see forNamFun below for why). Resets the
  * input's value back to its real name first so the blur that follows reads as
- * a NO-OP commit (see tab-today.tsx's GroHeaCom: comEdiFun only calls
+ * a NO-OP commit (see tab-today.tsx's GroHeaCom: cmtEdiFun only calls
  * onRenGroFun when the draft differs from the name prop) instead of an actual
  * rename. Deliberately NOT Escape: GroHeaCom's own Escape handling is exactly
  * this (see its canEdiFun), but a real Escape keydown also bubbles to
@@ -738,8 +738,8 @@ const buiTs1Fun = ( pagKeyStr : string, runSteFun? : () => void, priButStr : str
  * The blur is deferred a frame, NOT a cosmetic choice. Dispatching the reset
  * 'input' event calls React's onChange (setDraNamStr) synchronously, but that
  * only SCHEDULES the re-render, draft's actual value inside the
- * ALREADY-DEFINED comEdiFun closure doesn't update until React re-renders.
- * Calling blur() in the same tick invokes that same (stale) comEdiFun, reading
+ * ALREADY-DEFINED cmtEdiFun closure doesn't update until React re-renders.
+ * Calling blur() in the same tick invokes that same (stale) cmtEdiFun, reading
  * the pre-reset, still-typed draft, and genuinely renames the group for real.
  * This is not hypothetical: it's exactly how an earlier version of this
  * function (calling blur() synchronously right after dispatch) shipped and
@@ -774,7 +774,7 @@ const canRenFun = () : void => { // What: Cancel Rename Function. Why: A Back ou
 
 	renInpEle.dispatchEvent( new Event( 'input', { bubbles : true } ) ); // What: Input Event Dispatch. Why: React's own onChange (setDraNamStr) must see this reset value to update its own draft state. How: This dispatches a bubbling native 'input' event off renInpEle.
 
-	requestAnimationFrame( () => renInpEle.blur() ); // What: Deferred Blur Call. Why: Blurring in the same tick would read the ALREADY-DEFINED comEdiFun closure's own stale, pre-reset draft and genuinely rename the group. How: This defers the blur a frame, after React's own re-render has updated draft to the reset value.
+	requestAnimationFrame( () => renInpEle.blur() ); // What: Deferred Blur Call. Why: Blurring in the same tick would read the ALREADY-DEFINED cmtEdiFun closure's own stale, pre-reset draft and genuinely rename the group. How: This defers the blur a frame, after React's own re-render has updated draft to the reset value.
 
 
 };
@@ -792,7 +792,7 @@ const canRenFun = () : void => { // What: Cancel Rename Function. Why: A Back ou
  * Forces the real Page Tours name back, used wherever a click (Done, Back,
  * Skip) might have blurred a still-open, typed-in rename input a tick earlier,
  * see each call site's own comment for that race. Deferred a full 200ms, NOT
- * just a frame: GroHeaCom's own blur-triggered comEdiFun doesn't call
+ * just a frame: GroHeaCom's own blur-triggered cmtEdiFun doesn't call
  * onRenGroFun synchronously either, it defers to its OWN setTimeout(…, 150)
  * (the closing-animation delay in finCloFun), so calling this immediately
  * would fire BEFORE that delayed commit and get overwritten right back to the

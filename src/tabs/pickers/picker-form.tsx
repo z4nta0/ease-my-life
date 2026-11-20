@@ -600,8 +600,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const [ ediCloBoo, setEdiCloBoo ] = React.useState( false );                 // What: Editing Closing Boolean And Setter. Why: Closing a committed draft item's editor needs its own out-animation before it's actually torn down. How: This is flipped true to start that animation.
 
 	const penEdiRef = React.useRef< string | null >( null );                                  // What: Pending Edit Reference. Why: Switching straight from the new-item form (or a different item's editor) into this one must not silently drop the request. How: This holds the target id to reopen once whatever's currently closing finishes.
-	const comCouNum = pooIteArr.filter( ( iteCurObj ) => iteCurObj.id !== actNewStr ).length; // What: Committed Count Number. Why: The count and the Create button must not react early to a row still being edited, so its own Save hasn't landed yet. How: This is deliberately computed AFTER actNewStr's own declaration above; referencing it earlier in the body would (since this project targets Vite, not a var-hoisting build) read as undefined and this filter would exclude nothing.
-	const enoIteBoo = comCouNum >= 2;                                                         // What: Enough Item Boolean. Why: A picker must have at least 2 real, committed items before it can be created. How: This is true once comCouNum reaches 2.
+	const cmtCouNum = pooIteArr.filter( ( iteCurObj ) => iteCurObj.id !== actNewStr ).length; // What: Committed Count Number. Why: The count and the Create button must not react early to a row still being edited, so its own Save hasn't landed yet. How: This is deliberately computed AFTER actNewStr's own declaration above; referencing it earlier in the body would (since this project targets Vite, not a var-hoisting build) read as undefined and this filter would exclude nothing.
+	const enoIteBoo = cmtCouNum >= 2;                                                         // What: Enough Item Boolean. Why: A picker must have at least 2 real, committed items before it can be created. How: This is true once cmtCouNum reaches 2.
 
 
 	const draActObj : Pick< ActStoTyp, 'delIteFun' | 'renIteFun' | 'setWeiFun' | 'togVacFun' | 'updIteFun' > = { // What: Draft Actions Object. Why: The pool rows and useIteDraFun's commit both need store-shaped actions, but pooIteArr isn't the real store. How: Every method below mirrors the real store action's own name and signature, but writes into pooIteArr instead of dispatching a real store update.
@@ -628,7 +628,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 	const ediOpeObj = ediIteStr && !ediCloBoo ? pooIteArr.find( ( iteCurObj ) => iteCurObj.id === ediIteStr ) || null : null; // What: Editing Open Object. Why: Only an editor that's open, not one playing its closing animation, has a draft. How: This looks up the edited pool item while its editor is open and not closing, else null.
 
-	const { comDraFun, draIteObj, patDraFun } = useIteDraFun( draActObj, ediOpeObj ); // What: Item Draft Destructure. Why: An already-added pool item's editor edits its own local draft, committed into the pool only on Save, the same as every other item editor. How: This calls useIteDraFun with the open pool item and the pool's own actions.
+	const { cmtDraFun, draIteObj, patDraFun } = useIteDraFun( draActObj, ediOpeObj ); // What: Item Draft Destructure. Why: An already-added pool item's editor edits its own local draft, committed into the pool only on Save, the same as every other item editor. How: This calls useIteDraFun with the open pool item and the pool's own actions.
 
 
 	const draPicObj = { cadence : cadCurObj.cadence, mode : selModStr, threshold : PIC_NAM_OBJ.THR_VAL_NUM }; // What: Draft Picker Object. Why: EntEdiCom still expects a picker-shaped object to read mode/threshold/cadence off of, even though the real picker doesn't exist yet. How: No `id` -- deliberately, since draft items carry no pickerId either (both undefined), so EntEdiCom's own PIC_NAM_OBJ.aveEasFun(items, picDatObj.id) fallback still matches every draft item against this pseudo-picker's undefined id and averages them correctly, not a coincidence to "fix" by inventing ids here. No easeMin/easeMax here either, since EntEdiCom no longer reads those off the picker directly.
@@ -2314,7 +2314,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											onSavEdiFun={ () => { // What: On Save Edit Function. Why: Save must apply the draft to the pool item before the editor closes. How: This commits the draft, then starts the editor's closing animation.
 
 
-												comDraFun(); // What: Commit Draft Call. Why: The draft's edits only reach the pool item on Save. How: This calls comDraFun.
+												cmtDraFun(); // What: Commit Draft Call. Why: The draft's edits only reach the pool item on Save. How: This calls cmtDraFun.
 
 												setEdiCloBoo( true ); // What: Start Closing Call. Why: A saved editor has nothing left to show. How: This flips ediCloBoo, which plays the closing animation.
 
@@ -2393,7 +2393,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 										} }
 										onNamChaFun={ ( namValStr ) => draActObj.updIteFun( newIteObj.id, { name : namValStr } ) }
-										onNamComFun={ ( namValStr ) => draActObj.renIteFun( newIteObj.id, namValStr ) } // What: On Name Commit Function. Why: Leaving the name field commits a tidied name. How: This renames the draft item to the trimmed name.
+										onNamCmtFun={ ( namValStr ) => draActObj.renIteFun( newIteObj.id, namValStr ) } // What: On Name Commit Function. Why: Leaving the name field commits a tidied name. How: This renames the draft item to the trimmed name.
 										onPatIteFun={ ( patIteObj ) => draActObj.updIteFun( newIteObj.id, patIteObj ) } // What: On Patch Item Function. Why: A brand-new pool item is still unsaved, since Cancel removes it from the pool, so its edits can go straight onto it. How: This merges each change into the new item through the pool's own updIteFun.
 										onSavEdiFun={ () => setActCloStr( 'save' ) }
 									/> // What: Item Card Component. Why: This is the whole new-item draft editor slot, playing its own closing animation before actually keeping or discarding it. How: This is passed the new pool item and the pool-bound handlers, flags the row for its own insert animation only when actCloStr is 'save', otherwise removes it, then reopens whatever staDraFun staged in penEdiRef.
@@ -2429,13 +2429,13 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							{ !enoIteBoo // What: Not Enough Items Check. Why: The footer note either says how many more items are needed or confirms the minimum is met. How: This picks the add-more message first, then the weight or minimum message.
 
 
-								? `Add at least 2 items to create this picker${ comCouNum === 1 ? ' (1 so far)' : '' }.` // What: Add More Message. Why: A picker needs at least 2 items to be a real choice. How: This notes the one item added so far, when there is one.
+								? `Add at least 2 items to create this picker${ cmtCouNum === 1 ? ' (1 so far)' : '' }.` // What: Add More Message. Why: A picker needs at least 2 items to be a real choice. How: This notes the one item added so far, when there is one.
 
 								: shoWeiBoo // What: Show Weight Check. Why: Weighted pools get a hint about setting weights. How: This checks shoWeiBoo.
 
 								? 'Looks good, set each item’s weight above, or leave them even.' // What: Weight Hint Message. Why: The minimum is met and weights are worth a look. How: This renders a fixed sentence.
 
-								: `Minimum number of items added (${ comCouNum } so far). You can always add more items later.` // What: Minimum Met Message. Why: The minimum is met with no weights to set. How: This names the item count so far.
+								: `Minimum number of items added (${ cmtCouNum } so far). You can always add more items later.` // What: Minimum Met Message. Why: The minimum is met with no weights to set. How: This names the item count so far.
 
 
 							}
