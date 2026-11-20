@@ -502,71 +502,17 @@ function actYeaFun ( holStaObj : HolStaTyp | null | undefined, yeaValNum : numbe
 
 
 
-// #region holDatFun
-
-/**
- * holDatFun = Holiday Date Function
- *
- * @summary
- * Checks whether a given date is an active day off, returning just its
- * name (or null). Checks the neighboring years too, because an
- * observed shift can push a holiday across a year boundary (New Year's
- * Day on a Saturday is observed Dec 31 of the prior year).
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param holStaObj - Holiday State Object: The persisted holidays state object
- *                    to check against, in the same shape actYeaFun accepts.
- * @param cheDatObj - Check Date Object: The date being checked.
- *
- * @returns The matching holiday/custom-day's own name, or null if
- * cheDatObj is not an active day off.
- *
- * @example
- * ```ts
- * holDatFun(holStaObj, cheDatObj) // => holiday name, or null
- * ```
- *
-*/
-
-function holDatFun ( holStaObj : HolStaTyp | null | undefined, cheDatObj : Date ) : string | null {
-
-
-	const tarIsoStr = isoDayFun( cheDatObj );  // What: Target Iso String. Why: Every candidate year's own active list needs comparing against the queried date as a plain string, not a Date instance. How: This converts cheDatObj via isoDayFun once, reused across every loop iteration below.
-	const curYeaNum = cheDatObj.getFullYear(); // What: Current Year Number. Why: The neighboring-year search below needs an anchor year to offset from. How: This reads cheDatObj's own calendar year.
-
-
-	for ( const cheYeaNum of [ curYeaNum - 1, curYeaNum, curYeaNum + 1 ] ) { // What: Neighboring Year Loop. Why: An observed shift can push a holiday across a year boundary, so the year before and after must be checked too, not just curYeaNum itself. How: This walks the prior, current, and next calendar year in turn.
-
-
-		const hitHolObj = actYeaFun( holStaObj, cheYeaNum ).find( ( comRcdObj ) => comRcdObj.isoStr === tarIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches cheYeaNum's own active list for a matching iso string.
-
-
-		if ( hitHolObj ) return hitHolObj.namStr; // What: Hit Found Guard. Why: The first matching year's own record is enough; there's no need to keep searching once found. How: This returns the matched record's own name immediately.
-
-
-	}
-
-
-
-	return null; // What: No Hit Return. Why: None of the 3 candidate years had an active record on the queried date. How: This returns null, this module's convention for "not a day off".
-
-
-}
-
-// #endregion holDatFun
-
-
-
 // #region holInfFun
 
 /**
  * holInfFun = Holiday Info Function
  *
  * @summary
- * Same lookup as holDatFun, but returns the full record instead of
- * just the name, so a caller can tell a built-in holiday from a
- * user-added one and word itself accordingly.
+ * Finds the active day off a given date falls on, returning its full
+ * record (or null), so a caller can tell a built-in holiday from a
+ * user-added one and word itself accordingly. Checks the neighboring years
+ * too, because an observed shift can push a holiday across a year boundary
+ * (New Year's Day on a Saturday is observed Dec 31 of the prior year).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -597,7 +543,7 @@ function holInfFun ( holStaObj : HolStaTyp | null | undefined, cheDatObj : Date 
 		const hitHolObj = actYeaFun( holStaObj, cheYeaNum ).find( ( comRcdObj ) => comRcdObj.isoStr === tarIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches cheYeaNum's own active list for a matching iso string.
 
 
-		if ( hitHolObj ) return hitHolObj; // What: Hit Found Guard. Why: The first matching year's own record is enough; there's no need to keep searching once found. How: This returns the matched full record immediately, unlike holDatFun which returns just its name.
+		if ( hitHolObj ) return hitHolObj; // What: Hit Found Guard. Why: The first matching year's own record is enough; there's no need to keep searching once found. How: This returns the matched full record immediately.
 
 
 	}
@@ -610,6 +556,47 @@ function holInfFun ( holStaObj : HolStaTyp | null | undefined, cheDatObj : Date 
 }
 
 // #endregion holInfFun
+
+
+
+// #region holDatFun
+
+/**
+ * holDatFun = Holiday Date Function
+ *
+ * @summary
+ * Checks whether a given date is an active day off, returning just its
+ * name (or null), from the same lookup holInfFun makes.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param holStaObj - Holiday State Object: The persisted holidays state object
+ *                    to check against, in the same shape actYeaFun accepts.
+ * @param cheDatObj - Check Date Object: The date being checked.
+ *
+ * @returns The matching holiday/custom-day's own name, or null if
+ * cheDatObj is not an active day off.
+ *
+ * @example
+ * ```ts
+ * holDatFun(holStaObj, cheDatObj) // => holiday name, or null
+ * ```
+ *
+*/
+
+function holDatFun ( holStaObj : HolStaTyp | null | undefined, cheDatObj : Date ) : string | null {
+
+
+	const hitHolObj = holInfFun( holStaObj, cheDatObj ); // What: Hit Holiday Object. Why: The name comes from the same neighboring-year lookup the full record does. How: This finds the record cheDatObj falls on, or null.
+
+
+
+	return hitHolObj ? hitHolObj.namStr : null; // What: Holiday Name Return. Why: This caller wants only the name, or null for "not a day off". How: This reads the record's own name when one was found.
+
+
+}
+
+// #endregion holDatFun
 
 // #endregion Holiday Resolution
 

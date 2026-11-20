@@ -375,6 +375,26 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 	const ranBetFun = ( lowBouNum : number, higBouNum : number ) => lowBouNum + Math.random() * ( higBouNum - lowBouNum ); // What: Random Between Function. Why: Several places below need a random value somewhere inside a given range, not just 0 to 1. How: This scales Math.random()'s own 0-1 output into the [ lowBouNum, higBouNum ] range.
 
+
+
+	const dayDatFun = ( dayIndNum : number ) => { // What: Day Date Function. Why: Both simulation loops below need each simulated day's own real date. How: This copies todMidObj and steps it back dayIndNum days.
+
+
+		const curDatObj = new Date( todMidObj ); // What: Current Date Object. Why: The simulated day starts from today's midnight. How: This copies todMidObj.
+
+		curDatObj.setDate( todMidObj.getDate() - dayIndNum ); // What: Day Step Back Call. Why: The copy has to land on the simulated day. How: This moves its date back dayIndNum days, rolling over months and years.
+
+
+
+		return curDatObj; // What: Day Date Return. Why: The caller checks and logs against this date. How: This returns the stepped copy.
+
+
+	};
+
+
+
+	const dayPooFun = ( curPicObj : PicRcdTyp, dayIsoStr : string ) => ( picPooObj[ curPicObj.id ] || [] ).filter( ( curIteObj ) => !isaVacFun( curIteObj.id, dayIsoStr ) ); // What: Day Pool Function. Why: Both simulation loops below need a picker's items still active on the simulated day. How: This filters the picker's pool, dropping items isaVacFun reports inactive on dayIsoStr.
+
 	// #endregion Simulation Setup
 
 
@@ -421,8 +441,8 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 	for ( let dayIndNum = totDayNum - 1; dayIndNum >= 1; dayIndNum-- ) { // What: Daily Simulation Loop. Why: Every past day (excluding today, added separately from today.entries) needs its own simulated picks. How: This walks backward from totDayNum - 1 days ago to 1 day ago.
 
 
-		const curDatObj = new Date( todMidObj ); curDatObj.setDate( todMidObj.getDate() - dayIndNum ); // What: Current Date Object. Why: Every check and row below needs this simulated day's own real date. How: This constructs a fresh copy of todMidObj, then moves it back dayIndNum days.
-		const curDowNum = curDatObj.getDay();                                                          // What: Current Day-Of-Week Number. Why: A picker's own daysOfWeek schedule must be checked against this simulated day's own weekday. How: This reads curDatObj's own weekday via Date.getDay().
+		const curDatObj = dayDatFun( dayIndNum ); // What: Current Date Object. Why: Every check and row below needs this simulated day's own real date. How: This builds it through dayDatFun, dayIndNum days back from todMidObj.
+		const curDowNum = curDatObj.getDay();     // What: Current Day-Of-Week Number. Why: A picker's own daysOfWeek schedule must be checked against this simulated day's own weekday. How: This reads curDatObj's own weekday via Date.getDay().
 
 
 
@@ -441,8 +461,8 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 
 
-			const dayIsoStr = isoDayFun( curDatObj );                                                                               // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via isoDayFun.
-			const itePooArr = ( picPooObj[ curPicObj.id ] || [] ).filter( ( curIteObj ) => !isaVacFun( curIteObj.id, dayIsoStr ) ); // What: Item Pool Array And Guard. Why: An item inactive on this simulated day must not be eligible for it. How: This filters curPicObj's own pool down to items isaVacFun does not report inactive.
+			const dayIsoStr = isoDayFun( curDatObj );            // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via isoDayFun.
+			const itePooArr = dayPooFun( curPicObj, dayIsoStr ); // What: Item Pool Array And Guard. Why: An item inactive on this simulated day must not be eligible for it. How: This filters curPicObj's own pool through dayPooFun.
 
 
 			if ( !itePooArr.length ) continue; // What: Empty Pool Guard. Why: A picker with nothing eligible today (e.g. every item currently inactive) cannot pick at all. How: This skips to the next picker when itePooArr is empty.
@@ -522,8 +542,8 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 		for ( let dayIndNum = totDayNum - 1; dayIndNum >= 1; dayIndNum-- ) { // What: Ease Down Daily Loop. Why: This picker's own decay must be simulated one day at a time, in order, since each day's own charge depends on the day before it. How: This walks backward from totDayNum - 1 days ago to 1 day ago.
 
 
-			const curDatObj = new Date( todMidObj ); curDatObj.setDate( todMidObj.getDate() - dayIndNum ); // What: Current Date Object. Why: Every check and row below needs this simulated day's own real date. How: This constructs a fresh copy of todMidObj, then moves it back dayIndNum days.
-			const curDowNum = curDatObj.getDay();                                                          // What: Current Day-Of-Week Number. Why: This picker's own daysOfWeek schedule must be checked against this simulated day's own weekday. How: This reads curDatObj's own weekday via Date.getDay().
+			const curDatObj = dayDatFun( dayIndNum ); // What: Current Date Object. Why: Every check and row below needs this simulated day's own real date. How: This builds it through dayDatFun, dayIndNum days back from todMidObj.
+			const curDowNum = curDatObj.getDay();     // What: Current Day-Of-Week Number. Why: This picker's own daysOfWeek schedule must be checked against this simulated day's own weekday. How: This reads curDatObj's own weekday via Date.getDay().
 
 
 			if ( Array.isArray( curPicObj.daysOfWeek ) && !curPicObj.daysOfWeek.includes( curDowNum ) ) continue; // What: Schedule Skip Guard. Why: This picker not being scheduled for this simulated day's own weekday means no decay tick happens at all today. How: This skips the day when curPicObj's own daysOfWeek excludes curDowNum.
@@ -534,8 +554,8 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 
 
-			const dayIsoStr = isoDayFun( curDatObj );                                                                               // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via isoDayFun.
-			const itePooArr = ( picPooObj[ curPicObj.id ] || [] ).filter( ( curIteObj ) => !isaVacFun( curIteObj.id, dayIsoStr ) ); // What: Item Pool Array And Guard. Why: An item inactive on this simulated day must not be eligible to become (or remain) active. How: This filters curPicObj's own pool down to items isaVacFun does not report inactive.
+			const dayIsoStr = isoDayFun( curDatObj );            // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via isoDayFun.
+			const itePooArr = dayPooFun( curPicObj, dayIsoStr ); // What: Item Pool Array And Guard. Why: An item inactive on this simulated day must not be eligible to become (or remain) active. How: This filters curPicObj's own pool through dayPooFun.
 
 
 			if ( !itePooArr.length ) { actIteObj = null; continue; } // What: Empty Pool Guard. Why: With nothing eligible today, any in-progress item must be abandoned rather than kept active. How: This clears actIteObj and skips to the next day.

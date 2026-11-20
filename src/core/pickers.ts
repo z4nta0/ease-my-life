@@ -601,11 +601,122 @@ function reaValFun ( iteRcdObj : IteRcdTyp, modKeyStr : string, thrValNum : numb
 
 // #endregion reaValFun
 
+
+
+// #region rolSteFun
+
+/**
+ * rolSteFun = Roll Step Function
+ *
+ * @summary
+ * Plans a fresh fixed step for an Ease Up or Ease Down item: it rolls a
+ * target cycle count uniformly in the item's own [soonest, latest] range,
+ * read from its easeMax and easeMin (or the fallback band when it has none),
+ * and returns the step that moves the item across the whole threshold in
+ * exactly that many cycles, charging it up from 0 or decaying it down to 0.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curIteObj - Current Item Object: The item a plan is rolled for.
+ * @param thrValNum - Threshold Value Number: The item's own picker's
+ *                    threshold.
+ * @param falEasObj - Fallback Ease Object: The band an item with no easeMin or
+ *                    easeMax of its own rolls from, from aveEasFun.
+ *
+ * @returns The fixed step, the threshold over the rolled cycle count.
+ *
+ * @example
+ * ```ts
+ * rolSteFun(curIteObj, thrValNum, falEasObj) // => 25
+ * ```
+ *
+*/
+
+const rolSteFun = ( curIteObj : IteRcdTyp, thrValNum : number, falEasObj : Required< Pick< IteRcdTyp, 'easeMax' | 'easeMin' > > ) : number => { // What: Roll Step Function. Why: A freshly reset or freshly chosen item needs a brand new fixed step planned, uniformly across its own eligible cycle-count range. How: This rolls a target cycle count in [sooCycNum, latCycNum], then returns the fixed step that crosses thrValNum in exactly that many cycles.
+
+
+	const sooCycNum = Math.max( 1, Math.round( thrValNum / ( curIteObj.easeMax ?? falEasObj.easeMax ) ) );         // What: Soonest Cycle Number. Why: This is the fewest cycles this item's own band allows. How: This divides thrValNum by the item's easeMax (or the fallback), at least 1.
+	const latCycNum = Math.max( sooCycNum, Math.round( thrValNum / ( curIteObj.easeMin ?? falEasObj.easeMin ) ) ); // What: Latest Cycle Number. Why: This is the most cycles this item's own band allows. How: This divides thrValNum by the item's easeMin (or the fallback), never below sooCycNum.
+	const tarCycNum = sooCycNum + Math.floor( Math.random() * ( latCycNum - sooCycNum + 1 ) );                     // What: Target Cycle Number. Why: Every duration in [sooCycNum, latCycNum] should have equal odds of being this item's own plan. How: This rolls a whole number in that range.
+
+
+
+	return thrValNum / tarCycNum; // What: Roll Step Return. Why: A fixed step of this size crosses the whole threshold in exactly tarCycNum cycles. How: This divides thrValNum by tarCycNum.
+
+
+};
+
+// #endregion rolSteFun
+
+
+
+// #region getSteFun
+
+/**
+ * getSteFun = Get Step Function
+ *
+ * @summary
+ * Returns the step an Ease Up or Ease Down item moves by this cycle: its
+ * own persisted chargeStep while it's mid-plan, or a freshly rolled one from
+ * rolSteFun for a legacy item with none.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curIteObj - Current Item Object: The item whose step is needed.
+ * @param thrValNum - Threshold Value Number: The item's own picker's
+ *                    threshold, for a roll.
+ * @param falEasObj - Fallback Ease Object: The band an item with no easeMin or
+ *                    easeMax of its own rolls from, for a roll.
+ *
+ * @returns The item's kept or freshly rolled step.
+ *
+ * @example
+ * ```ts
+ * getSteFun(curIteObj, thrValNum, falEasObj) // => 25
+ * ```
+ *
+*/
+
+const getSteFun = ( curIteObj : IteRcdTyp, thrValNum : number, falEasObj : Required< Pick< IteRcdTyp, 'easeMax' | 'easeMin' > > ) : number => ( curIteObj.chargeStep && curIteObj.chargeStep > 0 ) ? curIteObj.chargeStep : rolSteFun( curIteObj, thrValNum, falEasObj ); // What: Get Step Function. Why: An item already mid-plan must keep moving by its own step, and only a legacy item with none rolls one. How: This returns the persisted chargeStep when positive, else a fresh roll.
+
+// #endregion getSteFun
+
 // #endregion Item State
 
 
 
 // #region Pick Draw
+
+// #region forIteFun
+
+/**
+ * forIteFun = Forced Item Function
+ *
+ * @summary
+ * Finds the item a manual send forced, searching the whole pool given, or
+ * returns undefined when no item was forced or the forced one isn't there,
+ * so a caller can fall back to its own draw with ||.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param itePooArr - Item Pool Array: The items the forced one is looked up
+ *                    in.
+ * @param forIdeStr - Force Identifier String: The forced item's id, if any.
+ *
+ * @returns The forced item, or undefined.
+ *
+ * @example
+ * ```ts
+ * forIteFun(itePooArr, forIdeStr) // => forced item or undefined
+ * ```
+ *
+*/
+
+const forIteFun = ( itePooArr : IteRcdTyp[], forIdeStr : string | undefined ) : IteRcdTyp | undefined => forIdeStr ? itePooArr.find( ( curIteObj ) => curIteObj.id === forIdeStr ) : undefined; // What: Forced Item Function. Why: Every mode lets a manual send's forced item win outright over its own draw. How: This looks forIdeStr up in itePooArr when one was given.
+
+// #endregion forIteFun
+
+
 
 // #region weiPicFun
 
@@ -801,7 +912,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 
 			const forIdeStr = optConObj && optConObj.forceItemId; // What: Force Identifier String. Why: A manual send targets one specific item directly. How: This reads optConObj's own forceItemId, if any was given.
-			const picResObj = ( forIdeStr && itePooArr.find( ( curIteObj ) => curIteObj.id === forIdeStr ) ) || itePooArr[ Math.floor( Math.random() * itePooArr.length ) ]; // What: Picked Result Object. Why: The forced item wins outright when given and actually found; otherwise a uniform-random item is drawn. How: This tries the forced lookup first, falling back to Math.random() against itePooArr's own length.
+			const picResObj = forIteFun( itePooArr, forIdeStr ) || itePooArr[ Math.floor( Math.random() * itePooArr.length ) ]; // What: Picked Result Object. Why: The forced item wins outright when given and actually found; otherwise a uniform-random item is drawn. How: This tries the forced lookup first, falling back to Math.random() against itePooArr's own length.
 
 
 
@@ -814,7 +925,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 
 			const forIdeStr = optConObj && optConObj.forceItemId; // What: Force Identifier String. Why: A manual send targets one specific item directly. How: This reads optConObj's own forceItemId, if any was given.
-			const picResObj = ( forIdeStr && itePooArr.find( ( curIteObj ) => curIteObj.id === forIdeStr ) ) || weiPicFun( itePooArr, ( curIteObj ) => Math.max( 0.0001, curIteObj.weight ) ); // What: Picked Result Object. Why: The forced item wins outright when given and actually found; otherwise the weighted draw picks proportionally to weight. How: This tries the forced lookup first, falling back to weiPicFun with a floored weight so a literal 0 weight still has a sliver of a chance.
+			const picResObj = forIteFun( itePooArr, forIdeStr ) || weiPicFun( itePooArr, ( curIteObj ) => Math.max( 0.0001, curIteObj.weight ) ); // What: Picked Result Object. Why: The forced item wins outright when given and actually found; otherwise the weighted draw picks proportionally to weight. How: This tries the forced lookup first, falling back to weiPicFun with a floored weight so a literal 0 weight still has a sliver of a chance.
 
 
 
@@ -827,7 +938,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 
 			const forIdeStr = optConObj && optConObj.forceItemId; // What: Force Identifier String. Why: A manual send targets one specific item directly. How: This reads optConObj's own forceItemId, if any was given.
-			const picResObj = ( ( forIdeStr && itePooArr.find( ( curIteObj ) => curIteObj.id === forIdeStr ) ) || weiPicFun( itePooArr, ( curIteObj ) => Math.max( 0.0001, curIteObj.weight + curIteObj.value ) ) )!; // What: Picked Result Object. Why: The forced item wins outright when given and actually found; otherwise the weighted draw picks proportionally to weight plus drift. How: This tries the forced lookup first, falling back to weiPicFun with a floored weight-plus-drift value. // What: Non-Null Note. Why: weiPicFun returns null only for an empty pool. How: The empty-pool guard above already returned, so the weighted draw always lands on an item.
+			const picResObj = ( forIteFun( itePooArr, forIdeStr ) || weiPicFun( itePooArr, ( curIteObj ) => Math.max( 0.0001, curIteObj.weight + curIteObj.value ) ) )!; // What: Picked Result Object. Why: The forced item wins outright when given and actually found; otherwise the weighted draw picks proportionally to weight plus drift. How: This tries the forced lookup first, falling back to weiPicFun with a floored weight-plus-drift value. // What: Non-Null Note. Why: weiPicFun returns null only for an empty pool. How: The empty-pool guard above already returned, so the weighted draw always lands on an item.
 			const updIteArr = [];                                 // What: Update Item Array. Why: Every eligible item's own drift value changes as a side effect of this one pick, whether picked or not. How: This starts empty and is pushed to once per item in the loop below.
 
 
@@ -878,7 +989,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 			 * odds (the reciprocal drift-band collapse a naive per-cycle
 			 * random step would have is gone). chargeStep persists that
 			 * plan across cycles; a legacy item with none lazily rolls
-			 * one via getSteFun below. Among eligible items, the MOST
+			 * one via getSteFun. Among eligible items, the MOST
 			 * overdue one wins (highest value); ties break on oldest
 			 * lastPicked. Weight is deliberately NOT used at all here,
 			 * since ease-up is a cadence system, not a preference one.
@@ -893,28 +1004,10 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 			const falEasObj = aveEasFun( updPooArr, picRcdObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a drift band to roll a target cycle count from. How: This computes the sibling-average fallback band via aveEasFun.
 
 
-			const rolSteFun = ( curIteObj : IteRcdTyp ) => { // What: Roll Step Function. Why: A freshly-reset item needs a brand new fixed charge step planned, uniformly across its own eligible cycle-count range. How: This rolls a target cycle count in [sooCycNum, latCycNum], then returns the fixed step that lands the item exactly on thrValNum in that many cycles.
-
-
-				const sooCycNum = Math.max( 1, Math.round( thrValNum / ( curIteObj.easeMax ?? falEasObj.easeMax ) ) );         // What: Soonest Cycle Number. Why: This is the fewest cycles this item's own band allows before becoming eligible. How: This divides thrValNum by the item's own (or fallback) easeMax, its fastest charge rate.
-				const latCycNum = Math.max( sooCycNum, Math.round( thrValNum / ( curIteObj.easeMin ?? falEasObj.easeMin ) ) ); // What: Latest Cycle Number. Why: This is the most cycles this item's own band allows before becoming eligible. How: This divides thrValNum by the item's own (or fallback) easeMin, its slowest charge rate, floored at sooCycNum so the range is never inverted.
-				const tarCycNum = sooCycNum + Math.floor( Math.random() * ( latCycNum - sooCycNum + 1 ) );                     // What: Target Cycle Number. Why: Every duration in [sooCycNum, latCycNum] should have equal odds of being this item's own plan. How: This rolls a uniform-random integer across that inclusive range.
-
-
-
-				return thrValNum / tarCycNum; // What: Roll Step Return. Why: A fixed step of this size charges the item from 0 to exactly thrValNum in exactly tarCycNum cycles. How: This divides thrValNum by tarCycNum.
-
-
-			};
-
-
-			const getSteFun = ( curIteObj : IteRcdTyp ) => ( curIteObj.chargeStep && curIteObj.chargeStep > 0 ) ? curIteObj.chargeStep : rolSteFun( curIteObj ); // What: Get Step Function. Why: An item already mid-plan must keep charging by its own already-rolled step; only a legacy item with none rolls a fresh one. How: This returns curIteObj's own chargeStep when it's a real positive number, rolling one via rolSteFun otherwise.
-
-
 			const chrUpdFun = ( curIteObj : IteRcdTyp ) => { // What: Charge Update Function. Why: A waiting item needs its own resolved step both applied to its value and persisted for next cycle. How: This resolves the step once via getSteFun, then returns an update carrying both the new value and that same step.
 
 
-				const curSteNum = getSteFun( curIteObj ); // What: Current Step Number. Why: This item's own resolved charge step is needed twice below, for the value increment and the persisted chargeStep. How: This calls getSteFun once and reuses the result.
+				const curSteNum = getSteFun( curIteObj, thrValNum, falEasObj ); // What: Current Step Number. Why: This item's own resolved charge step is needed twice below, for the value increment and the persisted chargeStep. How: This calls getSteFun once and reuses the result.
 
 
 
@@ -937,9 +1030,9 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 			// #region Most Overdue Pick
 
-			const eliIteArr = itePooArr.filter( ( curIteObj ) => easEliFun( curIteObj, thrValNum ) );     // What: Eligible Item Array. Why: Only items that have actually charged up to (within tolerance of) thrValNum can be picked naturally. How: This keeps every item in itePooArr that easEliFun reports as eligible.
-			const forIdeStr = optConObj && optConObj.forceItemId;                                         // What: Force Identifier String. Why: A manual send (Today's Re-roll) may target any item in the pool, bypassing the eligibility gate entirely. How: This reads optConObj's own forceItemId, if any was given.
-			const forIteObj = forIdeStr && itePooArr.find( ( curIteObj ) => curIteObj.id === forIdeStr ); // What: Forced Item Object. Why: A forced pick searches the WHOLE pool, not just eliIteArr, since the user chose this item directly. How: This looks forIdeStr up against itePooArr rather than eliIteArr.
+			const eliIteArr = itePooArr.filter( ( curIteObj ) => easEliFun( curIteObj, thrValNum ) ); // What: Eligible Item Array. Why: Only items that have actually charged up to (within tolerance of) thrValNum can be picked naturally. How: This keeps every item in itePooArr that easEliFun reports as eligible.
+			const forIdeStr = optConObj && optConObj.forceItemId;                                     // What: Force Identifier String. Why: A manual send (Today's Re-roll) may target any item in the pool, bypassing the eligibility gate entirely. How: This reads optConObj's own forceItemId, if any was given.
+			const forIteObj = forIteFun( itePooArr, forIdeStr );                                      // What: Forced Item Object. Why: A forced pick searches the WHOLE pool, not just eliIteArr, since the user chose this item directly. How: This looks forIdeStr up against itePooArr rather than eliIteArr.
 
 
 			if ( !eliIteArr.length && !forIteObj ) { // What: No Eligible Item Guard. Why: With nothing eligible and no forced target, this cycle can only charge every waiting item, not actually pick one. How: This gates the early-return charge-only branch below.
@@ -980,9 +1073,9 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 			const updIteArr = updPooArr.map( ( curIteObj ) => curIteObj.id === picResObj.id ? { // What: Update Item Array. Why: The picked item must reset to 0 and roll a fresh plan, while every other item charges by its own existing plan, including one skipped only for its name. How: This maps updPooArr, branching per item on whether it matches picResObj's own id.
 
 
-				chargeStep : rolSteFun( curIteObj ), // What: Charge Step. Why: The picked item resets to a brand new plan, never reusing whatever step it charged under before. How: This rolls a fresh step via rolSteFun.
-				id         : curIteObj.id,           // What: Id. Why: The caller needs to know which item this update applies to. How: This carries curIteObj's own id through unchanged.
-				value      : 0                       // What: Value. Why: The picked item's own drift resets to 0 the moment it's picked. How: This is a fixed literal 0.
+				chargeStep : rolSteFun( curIteObj, thrValNum, falEasObj ), // What: Charge Step. Why: The picked item resets to a brand new plan, never reusing whatever step it charged under before. How: This rolls a fresh step via rolSteFun.
+				id         : curIteObj.id,                                 // What: Id. Why: The caller needs to know which item this update applies to. How: This carries curIteObj's own id through unchanged.
+				value      : 0                                             // What: Value. Why: The picked item's own drift resets to 0 the moment it's picked. How: This is a fixed literal 0.
 
 
 			} : chrUpdFun( curIteObj ) ); // What: Charge Update Branch. Why: Every item that wasn't picked charges by its own existing plan. How: This hands the item to chrUpdFun.
@@ -1078,7 +1171,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 			 * [shortest, longest] range and decays by a fixed step
 			 * (thrValNum/N), emptying in exactly N cycles; chargeStep
 			 * persists that plan across the streak, and a legacy item
-			 * with none lazily rolls one via rolSteFun below.
+			 * with none lazily rolls one via getSteFun.
 			 *
 			 * @author z4nta0 <https://github.com/z4nta0>
 			 *
@@ -1088,21 +1181,6 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 			const thrValNum = picRcdObj.threshold ?? THR_VAL_NUM;   // What: Threshold Value Number. Why: Every charge/decay calculation below is relative to this picker's own threshold. How: This reads picRcdObj's own threshold, defaulting to THR_VAL_NUM for older pickers with none set.
 			const falEasObj = aveEasFun( updPooArr, picRcdObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a decay band to roll a target cycle count from. How: This computes the sibling-average fallback band via aveEasFun.
-
-
-			const rolSteFun = ( curIteObj : IteRcdTyp ) => { // What: Roll Step Function. Why: A freshly-chosen item needs a brand new fixed decay step planned, uniformly across its own eligible cycle-count range. How: This rolls a target cycle count in [sooCycNum, latCycNum], then returns the fixed step that empties the item exactly in that many cycles.
-
-
-				const sooCycNum = Math.max( 1, Math.round( thrValNum / ( curIteObj.easeMax ?? falEasObj.easeMax ) ) );         // What: Soonest Cycle Number. Why: This is the fewest cycles this item's own band allows before fully depleting. How: This divides thrValNum by the item's own (or fallback) easeMax, its fastest decay rate.
-				const latCycNum = Math.max( sooCycNum, Math.round( thrValNum / ( curIteObj.easeMin ?? falEasObj.easeMin ) ) ); // What: Latest Cycle Number. Why: This is the most cycles this item's own band allows before fully depleting. How: This divides thrValNum by the item's own (or fallback) easeMin, its slowest decay rate, floored at sooCycNum so the range is never inverted.
-				const tarCycNum = sooCycNum + Math.floor( Math.random() * ( latCycNum - sooCycNum + 1 ) );                     // What: Target Cycle Number. Why: Every duration in [sooCycNum, latCycNum] should have equal odds of being this item's own plan. How: This rolls a uniform-random integer across that inclusive range.
-
-
-
-				return thrValNum / tarCycNum; // What: Roll Step Return. Why: A fixed step of this size decays the item from thrValNum to 0 in exactly tarCycNum cycles. How: This divides thrValNum by tarCycNum.
-
-
-			};
 
 
 
@@ -1136,9 +1214,9 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 			if ( actIteObj ) { // What: Continue Streak Check. Why: A real active item found above means this draw continues its own depletion rather than starting a new streak. How: This gates the whole continue-branch below, which returns directly.
 
 
-				const decValNum = ( actIteObj.chargeStep && actIteObj.chargeStep > 0 ) ? actIteObj.chargeStep : rolSteFun( actIteObj ); // What: Decay Value Number. Why: An item already mid-plan must keep decaying by its own already-rolled step; only a legacy item with none rolls a fresh one. How: This returns actIteObj's own chargeStep when it's a real positive number, rolling one via rolSteFun otherwise.
-				const newValNum = Math.max( 0, actIteObj.value - decValNum );                                                           // What: New Value Number. Why: The active item's own remaining charge must never go negative. How: This subtracts decValNum from actIteObj's own value, floored at 0.
-				const depEndBoo = newValNum <= 0.5;                                                                                     // What: Depleted End Boolean. Why: A half-unit tolerance matches easEliFun's own, so a step that lands a hair under 0 still counts as fully depleted this cycle. How: This checks newValNum against 0.5 rather than a strict 0.
+				const decValNum = getSteFun( actIteObj, thrValNum, falEasObj ); // What: Decay Value Number. Why: An item already mid-plan must keep decaying by its own already-rolled step; only a legacy item with none rolls a fresh one. How: This returns actIteObj's own chargeStep when it's a real positive number, rolling one via rolSteFun otherwise.
+				const newValNum = Math.max( 0, actIteObj.value - decValNum );   // What: New Value Number. Why: The active item's own remaining charge must never go negative. How: This subtracts decValNum from actIteObj's own value, floored at 0.
+				const depEndBoo = newValNum <= 0.5;                             // What: Depleted End Boolean. Why: A half-unit tolerance matches easEliFun's own, so a step that lands a hair under 0 still counts as fully depleted this cycle. How: This checks newValNum against 0.5 rather than a strict 0.
 
 
 				updIteArr.push({ // What: Continue Update Push. Why: A depleted item must auto-recharge to full rather than sit at (or below) 0 forever. How: This pushes newValNum normally, or thrValNum when depEndBoo, alongside the same decValNum for the next cycle's own plan.
@@ -1201,7 +1279,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 
 
-			const choIteObj = ( ( forIdeStr && itePooArr.find( ( curIteObj ) => curIteObj.id === forIdeStr ) ) || weiPicFun( canIteArr, ( curIteObj ) => Math.max( 0, curIteObj.weight ?? 1 ) ) )!; // What: Chosen Item Object. Why: A forced target wins outright when given and actually found; otherwise the new streak draws weighted by fairness weight. How: This tries the forced lookup first, falling back to weiPicFun against canIteArr. // What: Non-Null Note. Why: weiPicFun returns null only for an empty pool. How: canIteArr falls back to the whole non-empty pool, so the weighted draw always lands on an item.
+			const choIteObj = ( forIteFun( itePooArr, forIdeStr ) || weiPicFun( canIteArr, ( curIteObj ) => Math.max( 0, curIteObj.weight ?? 1 ) ) )!; // What: Chosen Item Object. Why: A forced target wins outright when given and actually found; otherwise the new streak draws weighted by fairness weight. How: This tries the forced lookup first, falling back to weiPicFun against canIteArr. // What: Non-Null Note. Why: weiPicFun returns null only for an empty pool. How: canIteArr falls back to the whole non-empty pool, so the weighted draw always lands on an item.
 
 
 			for ( const curIteObj of updPooArr ) { // What: Fairness Bookkeeping Loop. Why: Every OTHER item's own fairness weight must climb by 1, including one skipped only for its name, and this happens only here, on a new-streak draw. How: This walks updPooArr, skipping the chosen item and pushing a weight+1 update for every other one.
@@ -1225,7 +1303,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 
 			const basValNum = choIteObj.value > 0 ? choIteObj.value : thrValNum; // What: Base Value Number. Why: The freshly-chosen item decays from its own full charge, which may already be sitting at thrValNum or need defaulting there. How: This uses choIteObj's own value when positive, thrValNum otherwise.
-			const decValNum = rolSteFun( choIteObj );                            // What: Decay Value Number. Why: A brand new streak always rolls a fresh decay plan, never reusing a stale chargeStep. How: This calls rolSteFun directly for choIteObj.
+			const decValNum = rolSteFun( choIteObj, thrValNum, falEasObj );      // What: Decay Value Number. Why: A brand new streak always rolls a fresh decay plan, never reusing a stale chargeStep. How: This calls rolSteFun directly for choIteObj.
 			const newValNum = Math.max( 0, basValNum - decValNum );              // What: New Value Number. Why: The freshly-chosen item's own first decay step must never go negative. How: This subtracts decValNum from basValNum, floored at 0.
 			const depEndBoo = newValNum <= 0.5;                                  // What: Depleted End Boolean. Why: Same half-unit tolerance as the continue-branch above, in case a single-cycle plan empties immediately. How: This checks newValNum against 0.5 rather than a strict 0.
 

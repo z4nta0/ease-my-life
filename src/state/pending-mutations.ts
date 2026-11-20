@@ -109,6 +109,59 @@ const nclIdeFun = ideMakFun( 'cl_' ); // What: New-Conditional-Log Identifier Fu
 
 // #region Helpers
 
+// #region depDonFun
+
+/**
+ * depDonFun = Dependent Done Function
+ *
+ * @summary
+ * Counts how many of a conditional's dependent entries are done in a Today
+ * list: entries that aren't day-off cards, are done, and come from a picker
+ * that shares the conditional. A conditional charges and logs on the first of
+ * them each day, and reverts once none is left.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curStaObj - Current State Object: The state whose pickers link each
+ *                    entry to its conditional.
+ * @param nexEntArr - Next Entry Array: The Today entries after the toggle.
+ * @param conIdeStr - Conditional Identifier String: The conditional's id.
+ *
+ * @returns The number of done dependent entries.
+ *
+ * @example
+ * ```ts
+ * depDonFun(curStaObj, nexEntArr, conIdeStr) // => 1
+ * ```
+ *
+*/
+
+function depDonFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], conIdeStr : string ) : number {
+
+
+	return nexEntArr.filter( ( curEntObj ) => { // What: Dependent Done Return. Why: The caller needs how many entries are this conditional's done dependents. How: This filters the entries and reads the kept ones' length.
+
+
+		if ( curEntObj.kind === 'dayoff' || !curEntObj.done ) return false; // What: Non-Dependent Guard. Why: A day-off card, or an entry that isn't done, never counts as a dependent completion. How: This excludes both cases from the count.
+
+
+
+		const matPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ); // What: Matched Picker Object And Guard. Why: Only an entry whose own picker shares this exact conditional counts. How: This looks up curEntObj's own pickerId in curStaObj.pickers.
+
+
+
+		return matPicObj && matPicObj.conditionalId === conIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPicObj exists and shares conIdeStr.
+
+
+	} ).length; // What: Match Count Read. Why: The caller only needs how many entries matched. How: This reads the filtered array's own length.
+
+
+}
+
+// #endregion depDonFun
+
+
+
 // #region cdlAplFun
 
 /**
@@ -205,23 +258,6 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 	const exiRowObj = curLogArr.find( ( curRowObj ) => curRowObj.condId === conIdeStr && curRowObj.date === curDayStr ); // What: Existing Row Object And Guard. Why: Only one row per conditional per cycle is ever kept. How: This looks up an existing row sharing conIdeStr and curDayStr.
 
 
-	const depDonFun = () => nexEntArr.filter( ( curEntObj ) => { // What: Dependent Done Function. Why: Both branches below need to know how many dependent entries for this exact conditional are currently done. How: This counts entries (excluding day-off cards) whose own picker shares conIdeStr and are done.
-
-
-		if ( curEntObj.kind === 'dayoff' || !curEntObj.done ) return false; // What: Non-Dependent Guard. Why: A day-off card, or an entry that isn't done, never counts as a dependent completion. How: This excludes both cases from the count.
-
-
-
-		const matPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ); // What: Matched Picker Object And Guard. Why: Only an entry whose own picker shares this exact conditional counts. How: This looks up curEntObj's own pickerId in curStaObj.pickers.
-
-
-
-		return matPicObj && matPicObj.conditionalId === conIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPicObj exists and shares conIdeStr.
-
-
-	} ).length; // What: Match Count Read. Why: The caller only needs how many entries matched. How: This reads the filtered array's own length.
-
-
 	if ( nowDonBoo ) { // What: Now-Done Branch. Why: A completion may add a new row, subject to the one-row-per-cycle and first-dependent rules. How: This either returns curLogArr unchanged or appends one fresh row.
 
 
@@ -229,7 +265,7 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 
-		if ( !trgValBoo && depDonFun() !== 1 ) return curLogArr; // What: First-Dependent Guard. Why: An untriggered cycle only logs on its FIRST dependent completion, not every subsequent one. How: This returns curLogArr unchanged when trgValBoo is false and depDonFun() isn't exactly 1.
+		if ( !trgValBoo && depDonFun( curStaObj, nexEntArr, conIdeStr ) !== 1 ) return curLogArr; // What: First-Dependent Guard. Why: An untriggered cycle only logs on its FIRST dependent completion, not every subsequent one. How: This returns curLogArr unchanged when trgValBoo is false and depDonFun's count isn't exactly 1.
 
 
 
@@ -263,7 +299,7 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 
-	if ( !trgValBoo && depDonFun() > 0 ) return curLogArr; // What: Still-Confirmed Guard. Why: Another dependent completion still stands, so this cycle's own row must stay. How: This returns curLogArr unchanged when trgValBoo is false and depDonFun() is still above 0.
+	if ( !trgValBoo && depDonFun( curStaObj, nexEntArr, conIdeStr ) > 0 ) return curLogArr; // What: Still-Confirmed Guard. Why: Another dependent completion still stands, so this cycle's own row must stay. How: This returns curLogArr unchanged when trgValBoo is false and depDonFun's count is still above 0.
 
 
 
@@ -382,21 +418,7 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 
-	const depDonNum = nexEntArr.filter( ( curEntObj ) => { // What: Dependent Done Number. Why: The charging edge below only fires on the FIRST dependent completion of the day, so every OTHER done dependent entry for this same conditional must be counted. How: This counts entries (excluding day-off cards) whose own picker shares conIdeStr and are done.
-
-
-		if ( curEntObj.kind === 'dayoff' || !curEntObj.done ) return false; // What: Non-Dependent Guard. Why: A day-off card, or an entry that isn't done, never counts as a dependent completion. How: This excludes both cases from the count.
-
-
-
-		const matPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ); // What: Matched Picker Object And Guard. Why: Only an entry whose own picker shares this exact conditional counts. How: This looks up curEntObj's own pickerId in curStaObj.pickers.
-
-
-
-		return matPicObj && matPicObj.conditionalId === conIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPicObj exists and shares conIdeStr.
-
-
-	} ).length; // What: Match Count Read. Why: The caller only needs how many entries matched. How: This reads the filtered array's own length.
+	const depDonNum = depDonFun( curStaObj, nexEntArr, conIdeStr ); // What: Dependent Done Number. Why: The charging edge below only fires on the FIRST dependent completion of the day, so every OTHER done dependent entry for this same conditional must be counted. How: This counts them through depDonFun.
 
 
 
