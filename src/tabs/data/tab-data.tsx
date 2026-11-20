@@ -463,7 +463,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	const [ newIteObj, setNewIteObj ] = React.useState< IteRcdTyp | null >( null ); // What: New Item Object And Setter. Why: A brand-new item stays a local draft, out of the store and storage, until it's kept. How: This holds that item, built with buiIteFun's defaults, or null when none is being added.
 
 	const newIteRef = React.useRef< string | null >( null );                               // What: New Item Reference. Why: A brand-new, not-yet-kept item needs to be tracked so Cancel can discard the whole add instead of keeping it. How: This holds whichever new item's own id was just created, cleared once it's kept or discarded.
-	const froIndRef = React.useRef< { ideVal : string, indNum : number } | null >( null ); // What: Frozen Index Reference. Why: freEdiFun needs one shared ref across every picker's own item list (only one item can be open at a time). How: This is passed straight through to freEdiFun below.
+	const froIndRef = React.useRef< { ideStr : string, indNum : number } | null >( null ); // What: Frozen Index Reference. Why: freEdiFun needs one shared ref across every picker's own item list (only one item can be open at a time). How: This is passed straight through to freEdiFun below.
 
 
 	const preOpeRef = React.useRef< string | null >( null ); // What: Previous Open Reference. Why: The insert-entrance replay effect below needs to compare against whichever item was open on the PREVIOUS render. How: This starts null and is updated by the effect below on every change.

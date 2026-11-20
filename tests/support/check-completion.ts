@@ -438,8 +438,8 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entIdeStr : st
 	// #region Item Checks
 
 	const entPenObj = preEntObj.pending; // What: Entry Pending Object. Why: The staged effects drive every expectation. How: This reads them.
-	const updMapObj = ( ( entPenObj && entPenObj.updates ) || [] ).reduce( ( accMapObj, updRowObj ) => accMapObj.set( updRowObj.id, { ...accMapObj.get( updRowObj.id ), ...updRowObj } ), new Map< string, PicUpdTyp >() ); // What: Update Map Object. Why: An item can carry several rows, and each adds its own fields. How: This folds the staged rows by item, merging a later row over an earlier one.
-	const touIdeSet = new Set( [ ...updMapObj.keys(), ...( entPenObj && entPenObj.pickedId ? [ entPenObj.pickedId ] : [] ) ] );                                                                                             // What: Touched Identifier Set. Why: Only touched items may change. How: This is the updated ids plus the picked one.
+	const iteUpdMap = ( ( entPenObj && entPenObj.updates ) || [] ).reduce( ( accUpdMap, updRowObj ) => accUpdMap.set( updRowObj.id, { ...accUpdMap.get( updRowObj.id ), ...updRowObj } ), new Map< string, PicUpdTyp >() ); // What: Item Update Map. Why: An item can carry several rows, and each adds its own fields. How: This folds the staged rows by item, merging a later row over an earlier one.
+	const touIdeSet = new Set( [ ...iteUpdMap.keys(), ...( entPenObj && entPenObj.pickedId ? [ entPenObj.pickedId ] : [] ) ] );                                                                                             // What: Touched Identifier Set. Why: Only touched items may change. How: This is the updated ids plus the picked one.
 
 
 
@@ -458,7 +458,7 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entIdeStr : st
 
 
 
-		const updRowObj = updMapObj.get( preIteObj.id );                                              // What: Update Row Object. Why: The staged fields for this item. How: This looks them up.
+		const updRowObj = iteUpdMap.get( preIteObj.id );                                              // What: Update Row Object. Why: The staged fields for this item. How: This looks them up.
 		const isaPicBoo = !!entPenObj && entPenObj.pickedId === preIteObj.id && !!entPenObj.bumpPick; // What: Is-A Pick Boolean. Why: The picked item counts one more pick. How: This checks pickedId and bumpPick.
 
 

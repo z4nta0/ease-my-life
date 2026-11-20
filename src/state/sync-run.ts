@@ -209,7 +209,7 @@ function reaMetFun ( uidValStr : string ) : SynRcdTyp {
 const waiConFun = async ( conTesFun : () => boolean, endTimNum : number ) : Promise< void > => {
 
 
-	while ( !conTesFun() && Date.now() < endTimNum ) await new Promise( ( resFunObj ) => window.setTimeout( resFunObj, 100 ) ); // What: Condition Poll Loop. Why: Neither the account nor a running sync announces when it's done. How: This sleeps 100 milliseconds at a time until the condition holds or the deadline passes.
+	while ( !conTesFun() && Date.now() < endTimNum ) await new Promise( ( resProFun ) => window.setTimeout( resProFun, 100 ) ); // What: Condition Poll Loop. Why: Neither the account nor a running sync announces when it's done. How: This sleeps 100 milliseconds at a time until the condition holds or the deadline passes.
 
 
 };
@@ -1080,7 +1080,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 			wipActRef.current = true; // What: Sync Block. Why: No sync may start during the reset. How: This marks the reset running.
 
 
-			for ( let waiCouNum = 0; runActRef.current && waiCouNum < 100; waiCouNum++ ) await new Promise( ( resFunObj ) => window.setTimeout( resFunObj, 100 ) ); // What: Running Sync Wait. Why: A sync in progress could upload the copy again after it's deleted. How: This waits up to ten seconds for it to finish.
+			for ( let waiCouNum = 0; runActRef.current && waiCouNum < 100; waiCouNum++ ) await new Promise( ( resProFun ) => window.setTimeout( resProFun, 100 ) ); // What: Running Sync Wait. Why: A sync in progress could upload the copy again after it's deleted. How: This waits up to ten seconds for it to finish.
 
 
 

@@ -135,7 +135,7 @@ const SEG_DEF_ARR : SegDefTyp[] = process.env.EML_SIM_SEGMENTS ? JSON.parse( pro
  *
  * @param curPagObj - Current Page Object: The page to click on.
  * @param carLisLoc - Card List Locator: The cards to choose from.
- * @param couFunObj - Count Function Object: Counts done things in a state, so
+ * @param couDonFun - Count Done Function: Counts done things in a state, so
  *                    the save is recognized by the count rising.
  *
  * @returns The handle and the states around the click, or null.
@@ -148,7 +148,7 @@ const SEG_DEF_ARR : SegDefTyp[] = process.env.EML_SIM_SEGMENTS ? JSON.parse( pro
  *
 */
 
-const cliCheFun = async ( curPagObj : Page, carLisLoc : Locator, couFunObj : ( staAppObj : StaAppTyp ) => number ) => { // What: Click Check Function. Why: Each check-off is one click and one save. How: This clicks the first unchecked card and waits for the count to rise.
+const cliCheFun = async ( curPagObj : Page, carLisLoc : Locator, couDonFun : ( staAppObj : StaAppTyp ) => number ) => { // What: Click Check Function. Why: Each check-off is one click and one save. How: This clicks the first unchecked card and waits for the count to rise.
 
 
 	const butCurLoc = carLisLoc.locator( `${ CHE_BUT_STR }[aria-pressed="false"]` ).first(); // What: Button Current Locator. Why: Only unchecked cards are clicked. How: This finds the first one's check button.
@@ -163,7 +163,7 @@ const cliCheFun = async ( curPagObj : Page, carLisLoc : Locator, couFunObj : ( s
 
 	const butHanObj = ( await butCurLoc.elementHandle() )!; // What: Button Handle Object. Why: An undo must click the same card. How: This holds the button itself. // What: Non-Null Note. Why: The count above just found the button. How: The ! tells TypeScript the handle exists.
 	const preStaObj = ( await reaStaFun( curPagObj ) )!;    // What: Previous State Object. Why: The check compares around the click. How: This reads the state first. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
-	const preCouNum = couFunObj( preStaObj );               // What: Previous Count Number. Why: The save is recognized by the count rising. How: This counts before the click.
+	const preCouNum = couDonFun( preStaObj );               // What: Previous Count Number. Why: The save is recognized by the count rising. How: This counts before the click.
 
 	// #endregion Pre-Click Reading
 
@@ -175,7 +175,7 @@ const cliCheFun = async ( curPagObj : Page, carLisLoc : Locator, couFunObj : ( s
 
 
 
-	const aftStaObj = await waiStaFun( curPagObj, ( staAppObj ) => couFunObj( staAppObj ) === preCouNum + 1, 'check-off saved' ); // What: After State Object. Why: The check compares around the click. How: This waits for the count to rise and reads the state.
+	const aftStaObj = await waiStaFun( curPagObj, ( staAppObj ) => couDonFun( staAppObj ) === preCouNum + 1, 'check-off saved' ); // What: After State Object. Why: The check compares around the click. How: This waits for the count to rise and reads the state.
 
 	// #endregion Check-Off Click
 
@@ -297,7 +297,7 @@ const visEntFun = ( staAppObj : StaAppTyp ) => staAppObj.today.entries.filter( (
  * @param preStaObj - Previous State Object: The state the day starts from,
  *                    or null on the warm-up day.
  * @param issMesArr - Issue Message Array: Collects every problem.
- * @param proMapObj - Probability Map Object: Tallies probability rolls.
+ * @param proRolMap - Probability Roll Map: Tallies probability rolls.
  * @param traDayArr - Trace Day Array: Collects each day's trace.
  *
  * @returns The state the day ended with.
@@ -310,7 +310,7 @@ const visEntFun = ( staAppObj : StaAppTyp ) => staAppObj.today.entries.filter( (
  *
 */
 
-const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : number, preStaObj : StaAppTyp | null, issMesArr : string[], proMapObj : Map< string, ProRolTyp >, traDayArr : DayTraTyp[] ) : Promise< StaAppTyp > => { // What: Run Day Function. Why: The run is a sequence of days. How: This opens, checks, and completes one day.
+const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : number, preStaObj : StaAppTyp | null, issMesArr : string[], proRolMap : Map< string, ProRolTyp >, traDayArr : DayTraTyp[] ) : Promise< StaAppTyp > => { // What: Run Day Function. Why: The run is a sequence of days. How: This opens, checks, and completes one day.
 
 
 	const genStaObj = await opeDayFun( curPagObj, dayIsoStr ); // What: Generated State Object. Why: Every check starts from the generated list. How: This opens the day and waits for it.
@@ -336,11 +336,11 @@ const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : numb
 
 		const preConObj = preStaObj.conditionals.find( ( oldConObj ) => oldConObj.id === curConObj.id );                                                                                            // What: Previous Conditional Object. Why: The odds come from the conditional before the roll. How: This looks it up.
 		const proValNum = curConObj.mode === 'random' ? 0.5 : Math.min( 100, Math.max( 0, ( curConObj.oddsPct ?? 50 ) + ( curConObj.mode === 'dynamic' ? ( preConObj?.value || 0 ) : 0 ) ) ) / 100; // What: Probability Value Number. Why: Each mode sets its own odds. How: This computes the odds the roll used.
-		const proRolObj = proMapObj.get( curConObj.id ) || { firNum : 0, namStr : curConObj.name, proSumNum : 0, rolNum : 0, varSumNum : 0 };                                                       // What: Probability Roll Object. Why: Rolls accumulate across days. How: This reads or starts the tally.
+		const proRolObj = proRolMap.get( curConObj.id ) || { firNum : 0, namStr : curConObj.name, proSumNum : 0, rolNum : 0, varSumNum : 0 };                                                       // What: Probability Roll Object. Why: Rolls accumulate across days. How: This reads or starts the tally.
 
 
 
-		proMapObj.set( curConObj.id, { // What: Tally Update. Why: The fire rate is compared with the expected sum. How: This adds the roll and its odds.
+		proRolMap.set( curConObj.id, { // What: Tally Update. Why: The fire rate is compared with the expected sum. How: This adds the roll and its odds.
 
 
 			firNum    : proRolObj.firNum + ( curConObj.triggered ? 1 : 0 ), // What: Fired Number. Why: Fires are compared with the expected sum. How: This adds 1 when the gate triggered.
@@ -646,7 +646,7 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 	// #region Run State
 
 	const issMesArr : string[] = [];                      // What: Issue Message Array. Why: Every problem across the run is reported together. How: This collects them.
-	const proMapObj = new Map< string, ProRolTyp >();     // What: Probability Map Object. Why: Probability gates are checked across the run. How: This tallies their rolls.
+	const proRolMap = new Map< string, ProRolTyp >();     // What: Probability Roll Map. Why: Probability gates are checked across the run. How: This tallies their rolls.
 	const traDayArr : DayTraTyp[] = [];                   // What: Trace Day Array. Why: The run leaves a trace for comparison. How: This collects each day.
 	const firDayStr = SEG_DEF_ARR[ 0 ].staIsoStr;         // What: First Day String. Why: The clock starts on the run's first day. How: This reads the first segment's start.
 	const errMesArr = watErrFun( curPagObj );             // What: Error Message Array. Why: A page error anywhere in the run is a problem. How: This collects page and console errors.
@@ -685,7 +685,7 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 
 
-			preStaObj = await runDayFun( curPagObj, lasDayStr, dayIndNum++, preStaObj, issMesArr, proMapObj, traDayArr ); // What: Day Run Call. Why: Each day is simulated and checked. How: This runs it and keeps its end state.
+			preStaObj = await runDayFun( curPagObj, lasDayStr, dayIndNum++, preStaObj, issMesArr, proRolMap, traDayArr ); // What: Day Run Call. Why: Each day is simulated and checked. How: This runs it and keeps its end state.
 
 
 		}
@@ -780,7 +780,7 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 
 
-	for ( const proRolObj of proMapObj.values() ) { // What: Odds Loop. Why: Each probability gate's fires must fit its odds. How: This compares fires with the expected sum.
+	for ( const proRolObj of proRolMap.values() ) { // What: Odds Loop. Why: Each probability gate's fires must fit its odds. How: This compares fires with the expected sum.
 
 
 		const devValNum = Math.abs( proRolObj.firNum - proRolObj.proSumNum ); // What: Deviation Value Number. Why: Fires vary around their expectation. How: This is the gap from the expected sum.

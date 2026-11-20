@@ -48,15 +48,15 @@ type SorRowTyp = { actBoo? : boolean | null, booNum? : number | null, couNum? : 
  * around a live sort (picker items and reminders both write each
  * keystroke straight to the store, so their sort key can change mid-
  * edit): a brand-new row (still being named for the first time, id
- * === newIdeVal) pins to the very top, matching where its own
+ * === newIdeStr) pins to the very top, matching where its own
  * "+ Add" button sits, rather than wherever its still-default values
  * would otherwise sort it; an existing row being edited freezes at
  * whatever index it already occupied when editing began, instead of
  * chasing its live-typed values through the sort in real time.
  * froRowRef is a plain useRef({}) owned by the caller, persisted
- * across renders for as long as opeIdeVal stays the same; the caller is
+ * across renders for as long as opeIdeStr stays the same; the caller is
  * responsible for replaying the row's entrance animation once its
- * editor actually closes (opeIdeVal changes away), so it settles into
+ * editor actually closes (opeIdeStr changes away), so it settles into
  * its now-current live position with the same visual treatment a
  * freshly-created row already gets, rather than silently snapping
  * there.
@@ -65,13 +65,13 @@ type SorRowTyp = { actBoo? : boolean | null, booNum? : number | null, couNum? : 
  *
  * @param sorLisArr  - Sort List Array: The list, already sorted by the
  *                     caller's own live sort key.
- * @param opeIdeVal  - Open Identifier Value: The currently-open row's own id,
+ * @param opeIdeStr  - Open Identifier String: The currently-open row's own id,
  *                     or null/undefined when nothing is open.
- * @param newIdeVal  - New Identifier Value: The id of a row that was just
+ * @param newIdeStr  - New Identifier String: The id of a row that was just
  *                     created (pins to the top instead of freezing at its live
  *                     index).
  * @param froRowRef  - Frozen Row Reference: A ref, owned by the caller, that
- *                     persists the frozen { ideVal, indNum } record across
+ *                     persists the frozen { ideStr, indNum } record across
  *                     renders.
  *
  * @returns sorLisArr unmodified when nothing is open or the open row
@@ -80,15 +80,15 @@ type SorRowTyp = { actBoo? : boolean | null, booNum? : number | null, couNum? : 
  *
  * @example
  * ```ts
- * freEdiFun(sorLisArr, opeIdeVal, newIdeVal, froRowRef) // => reordered array
+ * freEdiFun(sorLisArr, opeIdeStr, newIdeStr, froRowRef) // => reordered array
  * ```
  *
 */
 
-function freEdiFun< T extends { id : string } > ( sorLisArr : T[], opeIdeVal : string | null | undefined, newIdeVal : string | null | undefined, froRowRef : RefObject< { ideVal : string, indNum : number } | null > ) : T[] {
+function freEdiFun< T extends { id : string } > ( sorLisArr : T[], opeIdeStr : string | null | undefined, newIdeStr : string | null | undefined, froRowRef : RefObject< { ideStr : string, indNum : number } | null > ) : T[] {
 
 
-	if ( opeIdeVal == null ) { // What: No Open Row Guard. Why: With nothing currently open for editing, there is no frozen position to maintain at all. How: This clears any stale frozen record and returns the live sorted list completely unmodified.
+	if ( opeIdeStr == null ) { // What: No Open Row Guard. Why: With nothing currently open for editing, there is no frozen position to maintain at all. How: This clears any stale frozen record and returns the live sorted list completely unmodified.
 
 
 		froRowRef.current = null; // What: Frozen Row Reference Clear. Why: A stale frozen record from a previously-open row must not leak into a later editing session. How: This resets froRowRef back to null.
@@ -102,21 +102,21 @@ function freEdiFun< T extends { id : string } > ( sorLisArr : T[], opeIdeVal : s
 
 
 
-	const livIndNum = sorLisArr.findIndex( ( curRowObj ) => curRowObj.id === opeIdeVal ); // What: Live Index Number. Why: The frozen position logic below needs to know where the open row currently sits in the live sort. How: This searches sorLisArr for the row whose id matches opeIdeVal.
+	const livIndNum = sorLisArr.findIndex( ( curRowObj ) => curRowObj.id === opeIdeStr ); // What: Live Index Number. Why: The frozen position logic below needs to know where the open row currently sits in the live sort. How: This searches sorLisArr for the row whose id matches opeIdeStr.
 
 
 	if ( livIndNum === -1 ) return sorLisArr; // What: Not Found Guard. Why: A list that doesn't contain the currently-open row has nothing to freeze at all. How: This returns sorLisArr unmodified when no matching row was found.
 
 
 
-	if ( !froRowRef.current || froRowRef.current.ideVal !== opeIdeVal ) { // What: Frozen Record Guard. Why: A frozen position must only be computed once per "this row became the open one" session, not recomputed on every render while it stays open. How: This (re)computes froRowRef only when there's no existing record or it belongs to a different row than the currently-open one.
+	if ( !froRowRef.current || froRowRef.current.ideStr !== opeIdeStr ) { // What: Frozen Record Guard. Why: A frozen position must only be computed once per "this row became the open one" session, not recomputed on every render while it stays open. How: This (re)computes froRowRef only when there's no existing record or it belongs to a different row than the currently-open one.
 
 
 		froRowRef.current = { // What: Frozen Record Set. Why: A brand-new row pins to the very top matching its own "+ Add" button, while an existing row freezes at whatever index it already occupied. How: This records the open row's id plus its own starting index, 0 for a just-created row, livIndNum otherwise.
 
 
-			ideVal : opeIdeVal,                              // What: Identifier Value. Why: A later render must be able to tell whether this record still belongs to the open row. How: This stores opeIdeVal.
-			indNum : opeIdeVal === newIdeVal ? 0 : livIndNum // What: Index Number. Why: This is the position the open row stays frozen at. How: This is 0 for a just-created row, livIndNum otherwise.
+			ideStr : opeIdeStr,                              // What: Identifier String. Why: A later render must be able to tell whether this record still belongs to the open row. How: This stores opeIdeStr.
+			indNum : opeIdeStr === newIdeStr ? 0 : livIndNum // What: Index Number. Why: This is the position the open row stays frozen at. How: This is 0 for a just-created row, livIndNum otherwise.
 
 
 		};
@@ -127,7 +127,7 @@ function freEdiFun< T extends { id : string } > ( sorLisArr : T[], opeIdeVal : s
 
 
 	const opeRowObj = sorLisArr[ livIndNum ];                                          // What: Open Row Object. Why: The final result needs the actual open row's own data to reinsert at its frozen position. How: This reads the row at livIndNum from sorLisArr.
-	const resRowArr = sorLisArr.filter( ( curRowObj ) => curRowObj.id !== opeIdeVal ); // What: Rest Row Array. Why: The open row must be pulled out before it can be reinserted at a fixed position rather than wherever it currently live-sorts to. How: This filters sorLisArr down to every row except the open one.
+	const resRowArr = sorLisArr.filter( ( curRowObj ) => curRowObj.id !== opeIdeStr ); // What: Rest Row Array. Why: The open row must be pulled out before it can be reinserted at a fixed position rather than wherever it currently live-sorts to. How: This filters sorLisArr down to every row except the open one.
 	const insIndNum = Math.min( froRowRef.current.indNum, resRowArr.length );          // What: Insert Index Number. Why: A frozen index from an earlier, longer list must not run past the current (possibly shorter) rest array. How: This clamps froRowRef's own recorded index to resRowArr's own current length.
 
 
@@ -207,11 +207,11 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 	const namSorFun = () => rowOneObj.namStr.localeCompare( rowTwoObj.namStr ); // What: Name Sort Function. Why: Every field's own tie-break, and the fallback for an unrecognized field, both need the same plain A-Z name comparison. How: This calls String.localeCompare between the two rows' own name fields.
 
 
-	const dirNulFun = ( cmpOneVal : unknown, cmpTwoVal : unknown ) => { // What: Direction Null Function. Why: A field that's genuinely missing (not merely irrelevant) should sort to whichever end the current direction implies, rather than being forced into a fake value. How: This returns a real comparison result when either side is null/undefined, or null to mean both sides are real values and the caller does the actual field comparison.
+	const dirNulFun = ( cmpOneAny : unknown, cmpTwoAny : unknown ) => { // What: Direction Null Function. Why: A field that's genuinely missing (not merely irrelevant) should sort to whichever end the current direction implies, rather than being forced into a fake value. How: This returns a real comparison result when either side is null/undefined, or null to mean both sides are real values and the caller does the actual field comparison.
 
 
-		const nulOneBoo = cmpOneVal == null; // What: Null One Boolean. Why: The 3 outcomes below all depend on which side (if any) is actually missing. How: This checks cmpOneVal with a loose null comparison, matching undefined too.
-		const nulTwoBoo = cmpTwoVal == null; // What: Null Two Boolean. Why: Same reasoning as nulOneBoo, for the other side. How: This checks cmpTwoVal with a loose null comparison, matching undefined too.
+		const nulOneBoo = cmpOneAny == null; // What: Null One Boolean. Why: The 3 outcomes below all depend on which side (if any) is actually missing. How: This checks cmpOneAny with a loose null comparison, matching undefined too.
+		const nulTwoBoo = cmpTwoAny == null; // What: Null Two Boolean. Why: Same reasoning as nulOneBoo, for the other side. How: This checks cmpTwoAny with a loose null comparison, matching undefined too.
 
 
 		if ( nulOneBoo && nulTwoBoo ) return namSorFun(); // What: Both Null Check. Why: Two equally-missing rows have nothing else to compare by. How: This falls back to the plain name tie-break.
@@ -232,11 +232,11 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 	};
 
 
-	const lasNulFun = ( cmpOneVal : unknown, cmpTwoVal : unknown ) => { // What: Last Null Function. Why: A field that's irrelevant to a row (not missing, just N/A for its own mode) should always sort last in EITHER direction, unlike a genuinely missing value. How: This is the same idea as dirNulFun, except both null cases return a fixed "goes last" result regardless of revSorBoo.
+	const lasNulFun = ( cmpOneAny : unknown, cmpTwoAny : unknown ) => { // What: Last Null Function. Why: A field that's irrelevant to a row (not missing, just N/A for its own mode) should always sort last in EITHER direction, unlike a genuinely missing value. How: This is the same idea as dirNulFun, except both null cases return a fixed "goes last" result regardless of revSorBoo.
 
 
-		const nulOneBoo = cmpOneVal == null; // What: Null One Boolean. Why: The 3 outcomes below all depend on which side (if any) is actually N/A. How: This checks cmpOneVal with a loose null comparison, matching undefined too.
-		const nulTwoBoo = cmpTwoVal == null; // What: Null Two Boolean. Why: Same reasoning as nulOneBoo, for the other side. How: This checks cmpTwoVal with a loose null comparison, matching undefined too.
+		const nulOneBoo = cmpOneAny == null; // What: Null One Boolean. Why: The 3 outcomes below all depend on which side (if any) is actually N/A. How: This checks cmpOneAny with a loose null comparison, matching undefined too.
+		const nulTwoBoo = cmpTwoAny == null; // What: Null Two Boolean. Why: Same reasoning as nulOneBoo, for the other side. How: This checks cmpTwoAny with a loose null comparison, matching undefined too.
 
 
 		if ( nulOneBoo && nulTwoBoo ) return namSorFun(); // What: Both Null Check. Why: Two equally-N/A rows have nothing else to compare by. How: This falls back to the plain name tie-break.
@@ -257,17 +257,17 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 	};
 
 
-	const numLasFun = ( cmpOneVal : number | null | undefined, cmpTwoVal : number | null | undefined ) => { // What: Numeric Last Function. Why: A numeric field (Range/Odds/Boost) that's irrelevant to a row needs the same "always last" rule as lasNulFun, plus the actual numeric comparison once both sides are real. How: This defers to lasNulFun first, then subtracts the two values and applies revSorBoo/the name tie-break.
+	const numLasFun = ( cmpOneNum : number | null | undefined, cmpTwoNum : number | null | undefined ) => { // What: Numeric Last Function. Why: A numeric field (Range/Odds/Boost) that's irrelevant to a row needs the same "always last" rule as lasNulFun, plus the actual numeric comparison once both sides are real. How: This defers to lasNulFun first, then subtracts the two values and applies revSorBoo/the name tie-break.
 
 
-		const notAvaNum = lasNulFun( cmpOneVal, cmpTwoVal ); // What: Not Available Number. Why: A real comparison result from lasNulFun means one side was N/A and nothing more needs computing. How: This calls lasNulFun and checks its result before doing any real math.
+		const notAvaNum = lasNulFun( cmpOneNum, cmpTwoNum ); // What: Not Available Number. Why: A real comparison result from lasNulFun means one side was N/A and nothing more needs computing. How: This calls lasNulFun and checks its result before doing any real math.
 
 
 		if ( notAvaNum != null ) return notAvaNum; // What: Not Available Check. Why: An N/A result from lasNulFun already fully answers this comparison. How: This returns that result directly instead of falling through to the numeric comparison below.
 
 
 
-		const priCmpNum = cmpOneVal! - cmpTwoVal!; // What: Primary Compare Number. Why: Both sides are confirmed real numbers at this point, so a plain subtraction is a valid ascending comparison. How: This subtracts cmpTwoVal from cmpOneVal. // What: Non-Null Note. Why: lasNulFun only returns null once both values are real. How: The ! tells TypeScript both are numbers here.
+		const priCmpNum = cmpOneNum! - cmpTwoNum!; // What: Primary Compare Number. Why: Both sides are confirmed real numbers at this point, so a plain subtraction is a valid ascending comparison. How: This subtracts cmpTwoNum from cmpOneNum. // What: Non-Null Note. Why: lasNulFun only returns null once both values are real. How: The ! tells TypeScript both are numbers here.
 
 
 

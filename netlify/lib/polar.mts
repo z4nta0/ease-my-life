@@ -164,7 +164,7 @@ function verWebFun ( bodTexStr : string, reqHeaObj : Headers, webSecStr : string
 	const b64ValBoo = b64KeyStr.length > 0 && b64KeyStr.length % 4 === 0 && /^[A-Za-z0-9+/]*={0,2}$/.test( b64KeyStr );     // What: Base64 Valid Boolean. Why: Only a real base64 string means a decoded key, the same test Polar's SDK makes with atob. How: This checks its length and characters.
 	const keyBufArr = [ Buffer.from( webSecStr, 'utf8' ), ...( b64ValBoo ? [ Buffer.from( b64KeyStr, 'base64' ) ] : [] ) ]; // What: Key Buffer Array. Why: Polar's SDK accepts a signature made with either key. How: This lists the secret's own bytes and, when valid, its decoded bytes.
 	const sigConStr = `${ mesIdeStr }.${ Math.floor( Number( mesTimStr ) ) }.${ bodTexStr }`;                               // What: Signed Content String. Why: Polar signs the id, the timestamp, and the body joined by dots. How: This builds the same text.
-	const expSigArr = keyBufArr.map( ( keyCurBuf ) => createHmac( 'sha256', keyCurBuf ).update( sigConStr ).digest() );     // What: Expected Signature Array. Why: A genuine signature matches one of these. How: This signs the content with each key.
+	const expSigArr = keyBufArr.map( ( keyBufObj ) => createHmac( 'sha256', keyBufObj ).update( sigConStr ).digest() );     // What: Expected Signature Array. Why: A genuine signature matches one of these. How: This signs the content with each key.
 
 	// #endregion Expected Signatures
 
@@ -181,11 +181,11 @@ function verWebFun ( bodTexStr : string, reqHeaObj : Headers, webSecStr : string
 
 
 
-		const sigValBuf = Buffer.from( sigB64Str, 'base64' ); // What: Signature Value Buffer. Why: The signature is compared as bytes. How: This decodes it.
+		const sigBufObj = Buffer.from( sigB64Str, 'base64' ); // What: Signature Buffer Object. Why: The signature is compared as bytes. How: This decodes it.
 
 
 
-		return expSigArr.some( ( expSigBuf ) => sigValBuf.length === expSigBuf.length && timingSafeEqual( sigValBuf, expSigBuf ) ); // What: Entry Match Return. Why: Lengths must match before a constant-time compare. How: This checks each expected signature.
+		return expSigArr.some( ( expBufObj ) => sigBufObj.length === expBufObj.length && timingSafeEqual( sigBufObj, expBufObj ) ); // What: Entry Match Return. Why: Lengths must match before a constant-time compare. How: This checks each expected signature.
 
 
 	} );

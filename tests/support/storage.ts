@@ -71,14 +71,14 @@ const SET_GAP_NUM = 300;   // What: Settle Gap Number. Why: The app writes the p
  *
 */
 
-const reaStaFun = async ( curPagObj : Page ) : Promise< StaAppTyp | null > => curPagObj.evaluate( () => new Promise< StaAppTyp | null >( ( resFunObj, rejFunObj ) => { // What: Read State Function. Why: Tests check what landed on disk. How: This opens the app's database in the page and resolves with the state and its pick log joined.
+const reaStaFun = async ( curPagObj : Page ) : Promise< StaAppTyp | null > => curPagObj.evaluate( () => new Promise< StaAppTyp | null >( ( resProFun, rejProFun ) => { // What: Read State Function. Why: Tests check what landed on disk. How: This opens the app's database in the page and resolves with the state and its pick log joined.
 
 
 	const opeReqObj = indexedDB.open( 'easemylife' ); // What: Open Request Object. Why: The state lives in the app's own database. How: This opens it at whatever version it has.
 
 
 
-	opeReqObj.onerror = () => rejFunObj( opeReqObj.error ); // What: Open Error Handler. Why: A database that won't open fails the read loudly. How: This rejects with the open error.
+	opeReqObj.onerror = () => rejProFun( opeReqObj.error ); // What: Open Error Handler. Why: A database that won't open fails the read loudly. How: This rejects with the open error.
 
 
 
@@ -99,7 +99,7 @@ const reaStaFun = async ( curPagObj : Page ) : Promise< StaAppTyp | null > => cu
 
 
 
-			resFunObj( staReqObj.result ? { ...staReqObj.result, pickLog : logReqObj.result || [] } : null ); // What: Joined State Resolve. Why: Callers want the same shape the app works with. How: This adds the log back onto the state, or resolves null when nothing was saved.
+			resProFun( staReqObj.result ? { ...staReqObj.result, pickLog : logReqObj.result || [] } : null ); // What: Joined State Resolve. Why: Callers want the same shape the app works with. How: This adds the log back onto the state, or resolves null when nothing was saved.
 
 
 		};
@@ -231,7 +231,7 @@ const wriStaFun = async ( curPagObj : Page, staAppObj : StaAppTyp ) : Promise< v
 
 
 
-	await curPagObj.evaluate( ( wriStaObj ) => new Promise< void >( ( resFunObj, rejFunObj ) => { // What: State Write Script. Why: IndexedDB can only be written from inside the page. How: This opens the database, writes both stores, and clears the mirror.
+	await curPagObj.evaluate( ( wriStaObj ) => new Promise< void >( ( resProFun, rejProFun ) => { // What: State Write Script. Why: IndexedDB can only be written from inside the page. How: This opens the database, writes both stores, and clears the mirror.
 
 
 		const { pickLog : picLogArr, ...resStaObj } = wriStaObj; // What: Log And Rest Split. Why: The app keeps the pick log in its own store. How: This separates the log from the rest of the state.
@@ -250,7 +250,7 @@ const wriStaFun = async ( curPagObj : Page, staAppObj : StaAppTyp ) : Promise< v
 
 
 
-		opeReqObj.onerror = () => rejFunObj( opeReqObj.error ); // What: Open Error Handler. Why: A database that won't open fails the setup loudly. How: This rejects with the open error.
+		opeReqObj.onerror = () => rejProFun( opeReqObj.error ); // What: Open Error Handler. Why: A database that won't open fails the setup loudly. How: This rejects with the open error.
 
 
 
@@ -276,7 +276,7 @@ const wriStaFun = async ( curPagObj : Page, staAppObj : StaAppTyp ) : Promise< v
 
 
 
-				resFunObj(); // What: Write Resolve Call. Why: The caller loads the app only after the write. How: This resolves the promise.
+				resProFun(); // What: Write Resolve Call. Why: The caller loads the app only after the write. How: This resolves the promise.
 
 
 			};

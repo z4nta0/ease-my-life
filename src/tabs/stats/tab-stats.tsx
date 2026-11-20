@@ -3200,10 +3200,10 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 							{ ( () => { // What: Mode Hint Render. Why: A mode's own hint text can be either a single paragraph or several, and each needs wrapping in its own paragraph element. How: This reads the mode's own hint field and maps an array into one <p> per paragraph, or wraps a plain string in one.
 
 
-								const modHinVal = ( SED_NAM_OBJ.MOD_DEF_OBJ[ scoPicObj.mode ] || {} ).hinArr; // What: Mode Hint Value. Why: The render below needs this looked up once rather than twice. How: This reads the scoped picker's own mode's hint field, which may be a string or an array of strings.
+								const modHinAny = ( SED_NAM_OBJ.MOD_DEF_OBJ[ scoPicObj.mode ] || {} ).hinArr; // What: Mode Hint Any. Why: The render below needs this looked up once rather than twice. How: This reads the scoped picker's own mode's hint field, which may be a string or an array of strings.
 
 
-								if ( !Array.isArray( modHinVal ) ) { // What: Single Hint Guard. Why: A plain-string hint is just one paragraph. How: This returns it wrapped in a single picHinPar paragraph.
+								if ( !Array.isArray( modHinAny ) ) { // What: Single Hint Guard. Why: A plain-string hint is just one paragraph. How: This returns it wrapped in a single picHinPar paragraph.
 
 
 									return (
@@ -3213,7 +3213,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 											className={ cssModObj.picHinPar }
 
 											data-element-name-hook='picHinPar'
-										>{ modHinVal }</p> // What: Picker Hint Paragraph Element. Why: A plain-string hint needs just one paragraph element. How: This renders modHinVal. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
+										>{ modHinAny }</p> // What: Picker Hint Paragraph Element. Why: A plain-string hint needs just one paragraph element. How: This renders modHinAny. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
 
 
 									);
@@ -3223,7 +3223,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-								return modHinVal.map( ( parCurStr, parIndNum ) => ( // What: Paragraph Hint Return. Why: A multi-paragraph hint needs one paragraph element per entry. How: This maps each string to its own picHinPar paragraph, keyed by position.
+								return modHinAny.map( ( parCurStr, parIndNum ) => ( // What: Paragraph Hint Return. Why: A multi-paragraph hint needs one paragraph element per entry. How: This maps each string to its own picHinPar paragraph, keyed by position.
 
 
 									<p

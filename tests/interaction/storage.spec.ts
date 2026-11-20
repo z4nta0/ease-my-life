@@ -242,7 +242,7 @@ test.beforeEach( async ( { page : curPagObj } ) => { // What: Setup Hook. Why: E
 
 
 
-		const delSucFun = ( idbReqObj : IDBRequest, delMilNum : number ) => Object.defineProperty( idbReqObj, 'onsuccess', { configurable : true, set ( hanFunObj ) { sucSetFun.call( idbReqObj, ( sucEveObj : Event ) => setTimeout( () => hanFunObj.call( idbReqObj, sucEveObj ), delMilNum ) ); } } ); // What: Delay Success Function. Why: A slow IndexedDB answers, just late. How: This makes the request's onsuccess handler run delMilNum milliseconds after the real success.
+		const delSucFun = ( idbReqObj : IDBRequest, delMilNum : number ) => Object.defineProperty( idbReqObj, 'onsuccess', { configurable : true, set ( hanSucFun ) { sucSetFun.call( idbReqObj, ( sucEveObj : Event ) => setTimeout( () => hanSucFun.call( idbReqObj, sucEveObj ), delMilNum ) ); } } ); // What: Delay Success Function. Why: A slow IndexedDB answers, just late. How: This makes the request's onsuccess handler run delMilNum milliseconds after the real success.
 
 
 

@@ -156,17 +156,17 @@ const expStaFun = ( staAppObj : StaAppTyp, todIsoStr : string, ranDayNum : numbe
 
 	// #region Item Counts
 
-	const couMapObj = new Map< string, { couNum : number, namStr : string } >(); // What: Count Map Object. Why: Most picked counts rows per item, in first-seen order. How: This tallies each item's rows and keeps its latest name.
+	const iteCouMap = new Map< string, { couNum : number, namStr : string } >(); // What: Item Count Map. Why: Most picked counts rows per item, in first-seen order. How: This tallies each item's rows and keeps its latest name.
 
 
 
 	for ( const logRowObj of picRowArr ) { // What: Item Count Loop. Why: Each row counts for its item. How: This raises the item's count and records its name.
 
 
-		couMapObj.set( logRowObj.itemId, { // What: Item Count Set. Why: The row adds to its item's tally. How: This stores the raised count and the latest name.
+		iteCouMap.set( logRowObj.itemId, { // What: Item Count Set. Why: The row adds to its item's tally. How: This stores the raised count and the latest name.
 
 
-			couNum : ( couMapObj.get( logRowObj.itemId )?.couNum ?? 0 ) + 1, // What: Count Number. Why: Each row is one more pick. How: This adds 1 to the item's count so far.
+			couNum : ( iteCouMap.get( logRowObj.itemId )?.couNum ?? 0 ) + 1, // What: Count Number. Why: Each row is one more pick. How: This adds 1 to the item's count so far.
 			namStr : logRowObj.itemName                                      // What: Name String. Why: The card shows the item's latest name. How: This records the row's name.
 
 
@@ -225,7 +225,7 @@ const expStaFun = ( staAppObj : StaAppTyp, todIsoStr : string, ranDayNum : numbe
 		conCycStr : String( conRowArr.length ),                                                      // What: Conditional Cycles String. Why: Every row is a cycle. How: This is the row count.
 		conFirStr : String( conFirNum ),                                                             // What: Conditional Fired String. Why: Triggered rows are fires. How: This is their count.
 		conRatStr : `${ conRowArr.length ? Math.round( conFirNum / conRowArr.length * 100 ) : 0 }%`, // What: Conditional Rate String. Why: The fire rate is fires over cycles. How: This is the rounded percent.
-		mosPicArr : [ ...couMapObj.values() ].filter( ( couEntObj ) => couEntObj.couNum > 0 ).sort( ( oneEntObj, twoEntObj ) => twoEntObj.couNum - oneEntObj.couNum ).slice( 0, 5 ).map( ( couEntObj ) => `${ couEntObj.namStr } ${ couEntObj.couNum }` ), // What: Most Picked Array. Why: The card lists the five most picked items, ties in first-seen order. How: This sorts the counts stably and keeps the top five.
+		mosPicArr : [ ...iteCouMap.values() ].filter( ( couEntObj ) => couEntObj.couNum > 0 ).sort( ( oneEntObj, twoEntObj ) => twoEntObj.couNum - oneEntObj.couNum ).slice( 0, 5 ).map( ( couEntObj ) => `${ couEntObj.namStr } ${ couEntObj.couNum }` ), // What: Most Picked Array. Why: The card lists the five most picked items, ties in first-seen order. How: This sorts the counts stably and keeps the top five.
 		remActStr : String( remDayMap.size ),                                                        // What: Reminder Active String. Why: Active days have a completion. How: This is the day count.
 		remBusStr : String( Math.max( 0, ...remDayMap.values() ) ),                                  // What: Reminder Busiest String. Why: The busiest day has the most completions. How: This is the largest day count.
 		remDonStr : String( remRowArr.length ),                                                      // What: Reminder Done String. Why: Every completion counts. How: This is the row count.

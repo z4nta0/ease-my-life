@@ -198,7 +198,7 @@ const steOkaFun = ( steValNum : number | undefined, thrValNum : number, easMaxNu
  * @param updRowArr - Update Row Array: The rows to fold.
  *
  * @returns The rows keyed by item id.
- * @see {@link updMapObj}
+ * @see {@link iteUpdMap}
  *
  * @example
  * ```ts
@@ -210,15 +210,15 @@ const steOkaFun = ( steValNum : number | undefined, thrValNum : number, easMaxNu
 const updMapFun = ( updRowArr : PicUpdTyp[] ) : Map< string, PicUpdTyp > => { // What: Update Map Function. Why: Expected and actual updates are compared per item. How: This keys the rows by item id.
 
 
-	const updMapObj = new Map< string, PicUpdTyp >(); // What: Update Map Object. Why: Each item's rows fold into one. How: This collects them by id.
+	const iteUpdMap = new Map< string, PicUpdTyp >(); // What: Item Update Map. Why: Each item's rows fold into one. How: This collects them by id.
 
 
 
-	for ( const updRowObj of updRowArr ) updMapObj.set( updRowObj.id, updRowObj ); // What: Row Fold Loop. Why: The app keeps one row per item, the later one winning. How: This sets each row in turn.
+	for ( const updRowObj of updRowArr ) iteUpdMap.set( updRowObj.id, updRowObj ); // What: Row Fold Loop. Why: The app keeps one row per item, the later one winning. How: This sets each row in turn.
 
 
 
-	return updMapObj; // What: Map Return. Why: The caller compares per item. How: This returns the folded rows.
+	return iteUpdMap; // What: Map Return. Why: The caller compares per item. How: This returns the folded rows.
 
 
 };
@@ -257,15 +257,15 @@ const updMapFun = ( updRowArr : PicUpdTyp[] ) : Map< string, PicUpdTyp > => { //
 const cmpUpdFun = ( expUpdArr : PicUpdTyp[], actUpdArr : PicUpdTyp[], issAddFun : IssAddTyp, labTexStr : string ) : void => { // What: Compare Updates Function. Why: Every staged update must match the rules. How: This compares the folded rows field by field.
 
 
-	const expMapObj = updMapFun( expUpdArr ); // What: Expected Map Object. Why: Rows are compared per item. How: This folds the expected rows.
-	const actMapObj = updMapFun( actUpdArr ); // What: Actual Map Object. Why: Rows are compared per item. How: This folds the actual rows.
+	const expUpdMap = updMapFun( expUpdArr ); // What: Expected Update Map. Why: Rows are compared per item. How: This folds the expected rows.
+	const actUpdMap = updMapFun( actUpdArr ); // What: Actual Update Map. Why: Rows are compared per item. How: This folds the actual rows.
 
 
 
-	for ( const [ iteIdeStr, expRowObj ] of expMapObj ) { // What: Expected Row Loop. Why: Every expected row must be staged as expected. How: This checks each one against its actual row.
+	for ( const [ iteIdeStr, expRowObj ] of expUpdMap ) { // What: Expected Row Loop. Why: Every expected row must be staged as expected. How: This checks each one against its actual row.
 
 
-		const actRowObj = actMapObj.get( iteIdeStr ); // What: Actual Row Object. Why: The staged row for the same item. How: This looks it up.
+		const actRowObj = actUpdMap.get( iteIdeStr ); // What: Actual Row Object. Why: The staged row for the same item. How: This looks it up.
 
 
 
@@ -280,7 +280,7 @@ const cmpUpdFun = ( expUpdArr : PicUpdTyp[], actUpdArr : PicUpdTyp[], issAddFun 
 
 
 
-	for ( const iteIdeStr of actMapObj.keys() ) if ( !expMapObj.has( iteIdeStr ) ) issAddFun( `${ labTexStr }: unexpected update staged for item ${ iteIdeStr }` ); // What: Extra Row Loop. Why: An update the rules don't call for is a failure too. How: This reports every staged item with no expected row.
+	for ( const iteIdeStr of actUpdMap.keys() ) if ( !expUpdMap.has( iteIdeStr ) ) issAddFun( `${ labTexStr }: unexpected update staged for item ${ iteIdeStr }` ); // What: Extra Row Loop. Why: An update the rules don't call for is a failure too. How: This reports every staged item with no expected row.
 
 
 };
@@ -626,7 +626,7 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 	const issMesArr : string[] = [];                                                                                              // What: Issue Message Array. Why: Every problem is reported, not just the first. How: This collects them.
 	const issAddFun = ( issMesStr : string ) => issMesArr.push( `${ dayIsoStr } generation: ${ issMesStr }` );                    // What: Issue Add Function. Why: Every report names the day and phase. How: This prefixes and stores a message.
-	const conMapObj = new Map< string, ConRcdTyp >( genStaObj.conditionals.map( ( curConObj ) => [ curConObj.id, curConObj ] ) ); // What: Conditional Map Object. Why: Gates read the conditionals as resolved for today. How: This keys them by id.
+	const genConMap = new Map< string, ConRcdTyp >( genStaObj.conditionals.map( ( curConObj ) => [ curConObj.id, curConObj ] ) ); // What: Generate Conditional Map. Why: Gates read the conditionals as resolved for today. How: This keys them by id.
 	const preConMap = new Map< string, ConRcdTyp >( preStaObj.conditionals.map( ( curConObj ) => [ curConObj.id, curConObj ] ) ); // What: Previous Conditional Map. Why: Ease triggers must carry over from before. How: This keys the previous conditionals by id.
 	const entRcdArr = genStaObj.today.entries;                                                                                    // What: Entry Record Array. Why: Every check reads the generated entries. How: This is today's list.
 	const accIdeSet = new Set< string >();                                                                                        // What: Accounted Identifier Set. Why: Entries no rule called for are failures. How: This collects every entry a rule explained.
@@ -748,7 +748,7 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 
 
-		const conRcdObj = picRcdObj.conditionalId ? conMapObj.get( picRcdObj.conditionalId ) : undefined; // What: Conditional Record Object. Why: A triggered conditional gives the picker the day off. How: This looks up the picker's gate.
+		const conRcdObj = picRcdObj.conditionalId ? genConMap.get( picRcdObj.conditionalId ) : undefined; // What: Conditional Record Object. Why: A triggered conditional gives the picker the day off. How: This looks up the picker's gate.
 
 
 
@@ -819,7 +819,7 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 	for ( const daoEntObj of daoEntArr ) { // What: Day-Off Card Loop. Why: Each card must stand for one triggered conditional. How: This checks and accounts for each.
 
 
-		const conRcdObj = conMapObj.get( daoEntObj.conditionalId || '' ); // What: Conditional Record Object. Why: The card names its conditional. How: This looks it up.
+		const conRcdObj = genConMap.get( daoEntObj.conditionalId || '' ); // What: Conditional Record Object. Why: The card names its conditional. How: This looks it up.
 
 
 
@@ -849,7 +849,7 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 
 
-	for ( const conIdeStr of expDaoSet ) if ( daoEntArr.filter( ( curEntObj ) => curEntObj.conditionalId === conIdeStr ).length !== 1 ) issAddFun( `expected exactly one day-off card for ${ conMapObj.get( conIdeStr )?.name }` ); // What: Card Count Loop. Why: Each triggered gate shows exactly one card. How: This counts each gate's cards.
+	for ( const conIdeStr of expDaoSet ) if ( daoEntArr.filter( ( curEntObj ) => curEntObj.conditionalId === conIdeStr ).length !== 1 ) issAddFun( `expected exactly one day-off card for ${ genConMap.get( conIdeStr )?.name }` ); // What: Card Count Loop. Why: Each triggered gate shows exactly one card. How: This counts each gate's cards.
 
 	// #endregion Day-Off Card Checks
 

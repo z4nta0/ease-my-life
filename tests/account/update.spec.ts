@@ -220,7 +220,7 @@ async function cmtHolFun ( curPagObj : Page ) : Promise< CmtHolTyp > {
 
 	let cmtRelFun = () => {}; // What: Commit Release Function. Why: The held commit goes through only once the test lets it. How: The promise below replaces this with its resolver.
 
-	const cmtRelPro = new Promise< void >( ( resFunObj ) => { cmtRelFun = () => resFunObj(); } ); // What: Commit Release Promise. Why: The route holds the commit until the test lets it go. How: This settles once cmtRelFun is called.
+	const cmtRelPro = new Promise< void >( ( resProFun ) => { cmtRelFun = () => resProFun(); } ); // What: Commit Release Promise. Why: The route holds the commit until the test lets it go. How: This settles once cmtRelFun is called.
 
 	const begRevNum = await revReaFun( manUrlStr ); // What: Begin Revision Number. Why: The held upload must move the revision past this. How: This reads it after the first upload.
 

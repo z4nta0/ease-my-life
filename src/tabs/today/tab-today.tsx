@@ -663,13 +663,13 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	// #region Live Clock
 
-	const [ curNowDat, setCurNowDat ] = React.useState( () => new Date() ); // What: Current Now Date And Setter. Why: The header's own kicker line needs a live-updating clock, re-rendered at the top of every minute rather than spamming setState every second. How: This starts at the current Date and is advanced by the effect below.
+	const [ curNowObj, setCurNowObj ] = React.useState( () => new Date() ); // What: Current Now Object And Setter. Why: The header's own kicker line needs a live-updating clock, re-rendered at the top of every minute rather than spamming setState every second. How: This starts at the current Date and is advanced by the effect below.
 
 
 	React.useEffect( () => { // What: Clock Tick Effect. Why: See the doc comment just above. How: This waits until the next exact minute boundary, ticks once, then ticks every 60 seconds after that.
 
 
-		const ticCloFun = () => setCurNowDat( new Date() ); // What: Tick Clock Function. Why: Both the initial aligned tick and every later interval tick need this exact same update. How: This writes a fresh Date into curNowDat.
+		const ticCloFun = () => setCurNowObj( new Date() ); // What: Tick Clock Function. Why: Both the initial aligned tick and every later interval tick need this exact same update. How: This writes a fresh Date into curNowObj.
 		const minDelNum = 60000 - ( Date.now() % 60000 );   // What: Minute Delay Number. Why: The first tick should land exactly on the next minute boundary, not an arbitrary offset. How: This computes the milliseconds remaining until that boundary.
 
 		let ticIntNum : number | null = null; // What: Tick Interval Number. Why: The recurring interval isn't started until the first aligned tick fires. How: This is assigned inside the alignment timeout below and read by the cleanup.
@@ -2254,9 +2254,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		 *
 		*/
 
-		const genNowDat = new Date();                                             // What: Generate Now Date. Why: Every schedule/cadence/holiday check below needs one single, consistent "now" for this whole generation pass. How: This is a fresh Date, read once.
-		const dowTodNum = genNowDat.getDay();                                     // What: Day-Of-Week Today Number. Why: A picker's own daysOfWeek gate is checked against this. How: This reads genNowDat.getDay().
-		const holTodBoo = HOL_NAM_OBJ.holDatFun( staAppObj.holidays, genNowDat ); // What: Holiday Today Boolean. Why: A picker's own skipHolidays gate is checked against this. How: This calls HOL_NAM_OBJ.holDatFun with staAppObj.holidays and genNowDat.
+		const genNowObj = new Date();                                             // What: Generate Now Object. Why: Every schedule/cadence/holiday check below needs one single, consistent "now" for this whole generation pass. How: This is a fresh Date, read once.
+		const dowTodNum = genNowObj.getDay();                                     // What: Day-Of-Week Today Number. Why: A picker's own daysOfWeek gate is checked against this. How: This reads genNowObj.getDay().
+		const holTodBoo = HOL_NAM_OBJ.holDatFun( staAppObj.holidays, genNowObj ); // What: Holiday Today Boolean. Why: A picker's own skipHolidays gate is checked against this. How: This calls HOL_NAM_OBJ.holDatFun with staAppObj.holidays and genNowObj.
 
 		const conAllArr = actStoObj.resConFun() || staAppObj.conditionals;                          // What: Conditional All Array. Why: Phase A resolves every conditional's own `triggered` for today up front, before the per-picker loop below needs to read it. How: This calls actStoObj.resConFun, falling back to staAppObj.conditionals.
 		const conIdeMap = new Map( conAllArr.map( ( curConObj ) => [ curConObj.id, curConObj ] ) ); // What: Conditional Identifier Map. Why: The per-picker loop below needs a fast lookup from a picker's own conditionalId to its resolved conditional. How: This maps conAllArr down to an id-keyed Map.
@@ -2327,7 +2327,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			if ( picCadStr !== 'daily' ) { // What: Non-Daily Branch. Why: See the doc comment just above. How: This runs the period-key/carry/completed checks and, when none of them apply, falls through to the fresh-surface path below.
 
 
-				const perKeyStr = CAD_NAM_OBJ.perKeyFun( picRcdObj, genNowDat ); // What: Period Key String. Why: This identifies exactly which period (week/month/year) this picker's own card belongs to right now. How: This calls CAD_NAM_OBJ.perKeyFun.
+				const perKeyStr = CAD_NAM_OBJ.perKeyFun( picRcdObj, genNowObj ); // What: Period Key String. Why: This identifies exactly which period (week/month/year) this picker's own card belongs to right now. How: This calls CAD_NAM_OBJ.perKeyFun.
 				const exiEntObj = exiPicMap.get( picIdeStr );                    // What: Existing Entry Object. Why: A live entry already on screen for this exact period must be carried or recognized as satisfied. How: This reads exiPicMap at picIdeStr.
 
 
@@ -2354,7 +2354,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-				if ( CAD_NAM_OBJ.fulPerFun( picRcdObj, staAppObj.pickLog, genNowDat ) ) continue; // What: Completed This Period Skip. Why: A completed pick logged this period, even with the entry itself wiped, still satisfies the cadence. How: This skips picIdeStr when CAD_NAM_OBJ.fulPerFun reports true.
+				if ( CAD_NAM_OBJ.fulPerFun( picRcdObj, staAppObj.pickLog, genNowObj ) ) continue; // What: Completed This Period Skip. Why: A completed pick logged this period, even with the entry itself wiped, still satisfies the cadence. How: This skips picIdeStr when CAD_NAM_OBJ.fulPerFun reports true.
 
 
 			}
@@ -2401,7 +2401,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						kind          : 'dayoff',                   // What: Kind. Why: The entry must render as a day-off card. How: This is the fixed 'dayoff' kind.
 						pickerName    : picRcdObj.name,             // What: Picker Name. Why: The card's title also names the suppressed picker. How: This passes picRcdObj's own name.
 
-						...( picCadStr !== 'daily' ? { periodKey : CAD_NAM_OBJ.perKeyFun( picRcdObj, genNowDat ) } : {} ) // What: Period Key Spread. Why: A non-daily picker's card belongs to one specific period. How: This adds a periodKey only when the picker is not daily.
+						...( picCadStr !== 'daily' ? { periodKey : CAD_NAM_OBJ.perKeyFun( picRcdObj, genNowObj ) } : {} ) // What: Period Key Spread. Why: A non-daily picker's card belongs to one specific period. How: This adds a periodKey only when the picker is not daily.
 
 
 					});
@@ -2439,7 +2439,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-			const perKeyStr = picCadStr !== 'daily' ? CAD_NAM_OBJ.perKeyFun( picRcdObj, genNowDat ) : null;   // What: Period Key String. Why: A fresh non-daily pick still needs to be tagged with the period it belongs to, so a future generation can recognize it as already-current. How: This computes the period key only for a non-daily picker, otherwise null.
+			const perKeyStr = picCadStr !== 'daily' ? CAD_NAM_OBJ.perKeyFun( picRcdObj, genNowObj ) : null;   // What: Period Key String. Why: A fresh non-daily pick still needs to be tagged with the period it belongs to, so a future generation can recognize it as already-current. How: This computes the period key only for a non-daily picker, otherwise null.
 			const picResObj = PIC_NAM_OBJ.picIteFun( picRcdObj, staAppObj.items, { excNamSet : picNamSet } ); // What: Pick Result Object. Why: This is the actual picking engine call for this picker. How: This calls PIC_NAM_OBJ.picIteFun, passing picNamSet so an avoidDuplicates picker won't re-surface an already-committed name.
 
 
@@ -2706,7 +2706,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const depTasArr = oldDueArr.filter( ( curTasObj ) => TAS_NAM_OBJ.isaFulFun( curTasObj ) ).map( ( curTasObj ) => curTasObj.id ); // What: Departing Task Array. Why: A completed one-time reminder is about to be purged and needs its own exit animation first. How: This filters oldDueArr down to completed-once entries, then maps to just their ids.
 
 		const oldDueSet = new Set( oldDueArr.map( ( curTasObj ) => curTasObj.id ) );                                                // What: Old Due Set. Why: The arrival diff below needs a fast membership check against the PRE-generate visible set. How: This collects every oldDueArr entry's own id.
-		const newDueArr = TAS_NAM_OBJ.visTodFun( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, genNowDat );          // What: New Due Array. Why: This is what becomes visible under the fresh, post-generate anchor. How: This calls TAS_NAM_OBJ.visTodFun with genNowDat as the anchor.
+		const newDueArr = TAS_NAM_OBJ.visTodFun( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, genNowObj );          // What: New Due Array. Why: This is what becomes visible under the fresh, post-generate anchor. How: This calls TAS_NAM_OBJ.visTodFun with genNowObj as the anchor.
 		const ariTasArr = newDueArr.filter( ( curTasObj ) => !oldDueSet.has( curTasObj.id ) ).map( ( curTasObj ) => curTasObj.id ); // What: Arriving Task Array. Why: This is exactly which reminders are newly visible and deserve an entrance animation. How: This filters newDueArr down to ids absent from oldDueSet.
 
 
@@ -2866,16 +2866,16 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-			const cheNowDat = new Date(); // What: Check Now Date. Why: The boundary math below needs "now" as a real Date. How: This is a fresh Date, read once.
+			const cheNowObj = new Date(); // What: Check Now Object. Why: The boundary math below needs "now" as a real Date. How: This is a fresh Date, read once.
 
 			const [ runHouNum, runMinNum ] = ( daiRcdObj.runTime || '04:00' ).split( ':' ).map( Number ); // What: Run Hour/Minute Number. Why: The boundary below is built from the configured run time's own hour and minute. How: This splits daiRcdObj.runTime (or its '04:00' default) on ':' and parses both halves as numbers.
 
-			const bouDatObj = new Date( cheNowDat ); // What: Boundary Date Object. Why: The most recent occurrence of the run time needs its own mutable Date to adjust below. How: This starts as a copy of cheNowDat.
+			const bouDatObj = new Date( cheNowObj ); // What: Boundary Date Object. Why: The most recent occurrence of the run time needs its own mutable Date to adjust below. How: This starts as a copy of cheNowObj.
 
 
 			bouDatObj.setHours( runHouNum, runMinNum, 0, 0 ); // What: Boundary Hours Set. Why: This pins bouDatObj to TODAY's own run time, before the day-back adjustment below. How: This sets bouDatObj's own hours/minutes/seconds/ms.
 
-			if ( bouDatObj > cheNowDat ) bouDatObj.setDate( bouDatObj.getDate() - 1 ); // What: Day-Back Adjustment. Why: If today's own run time hasn't happened yet, the most recent occurrence was actually yesterday's. How: This subtracts 1 day from bouDatObj only when it is still in the future relative to cheNowDat.
+			if ( bouDatObj > cheNowObj ) bouDatObj.setDate( bouDatObj.getDate() - 1 ); // What: Day-Back Adjustment. Why: If today's own run time hasn't happened yet, the most recent occurrence was actually yesterday's. How: This subtracts 1 day from bouDatObj only when it is still in the future relative to cheNowObj.
 
 
 
@@ -3091,9 +3091,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		const cheNowDat = new Date();                                             // What: Check Now Date. Why: The weekday/holiday gates below both need a single consistent "now". How: This is a fresh Date, read once.
-		const dowTodNum = cheNowDat.getDay();                                     // What: Day-Of-Week Today Number. Why: The weekday gate below is checked against this. How: This reads cheNowDat.getDay().
-		const holNowBoo = HOL_NAM_OBJ.holDatFun( staAppObj.holidays, cheNowDat ); // What: Holiday Now Boolean. Why: The holiday gate below is checked against this. How: This calls HOL_NAM_OBJ.holDatFun with staAppObj.holidays and cheNowDat.
+		const cheNowObj = new Date();                                             // What: Check Now Object. Why: The weekday/holiday gates below both need a single consistent "now". How: This is a fresh Date, read once.
+		const dowTodNum = cheNowObj.getDay();                                     // What: Day-Of-Week Today Number. Why: The weekday gate below is checked against this. How: This reads cheNowObj.getDay().
+		const holNowBoo = HOL_NAM_OBJ.holDatFun( staAppObj.holidays, cheNowObj ); // What: Holiday Now Boolean. Why: The holiday gate below is checked against this. How: This calls HOL_NAM_OBJ.holDatFun with staAppObj.holidays and cheNowObj.
 
 
 
@@ -3597,10 +3597,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						<div className={ cssModObj.kicRowDiv }>{ /* What: Kicker Row Div Element. Why: The date/time and the streak/help cluster sit on one shared row. How: This wraps the kicker span and the rowRigDiv div below. */ }
 
 
-							<div className={ cssModObj.pagKicDiv }>{ /* What: Kicker Div Element. Why: Today's own date and time read as one small cluster. How: This renders forDatFun and forTimFun against curNowDat. */ }
+							<div className={ cssModObj.pagKicDiv }>{ /* What: Kicker Div Element. Why: Today's own date and time read as one small cluster. How: This renders forDatFun and forTimFun against curNowObj. */ }
 
 
-								{ forDatFun( curNowDat.toISOString() ) }{ /* What: Kicker Date Expression. Why: The header leads with today's own date. How: This formats curNowDat, as an ISO string, through forDatFun. */ } <span className={ cssModObj.kicTimSpa }>{ forTimFun( curNowDat.toISOString() ) }</span>{ /* What: Kicker Time Span Element. Why: The current time sits beside the date in its own styled span. How: This formats curNowDat, as an ISO string, through forTimFun, re-rendered every minute by the Live Clock effect. */ }
+								{ forDatFun( curNowObj.toISOString() ) }{ /* What: Kicker Date Expression. Why: The header leads with today's own date. How: This formats curNowObj, as an ISO string, through forDatFun. */ } <span className={ cssModObj.kicTimSpa }>{ forTimFun( curNowObj.toISOString() ) }</span>{ /* What: Kicker Time Span Element. Why: The current time sits beside the date in its own styled span. How: This formats curNowObj, as an ISO string, through forTimFun, re-rendered every minute by the Live Clock effect. */ }
 
 
 							</div>
