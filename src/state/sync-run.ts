@@ -515,6 +515,8 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
+	// #region Sync Scheduling
+
 	const busRepFun = React.useCallback( () => UPD_NAM_OBJ.synBusFun( runActRef.current || idlTimRef.current !== null ), [] ); // What: Busy Report Function. Why: An app update must not reload over a sync uploading a change or one waiting to. How: This tells the update handling whether a sync is running or a change is waiting, reading only refs, so it is built once.
 
 
@@ -582,6 +584,8 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	}, [ busRepFun, synNowFun ] ); // What: Callback Dependency Array. Why: This callback must be rebuilt whenever the report or sync function changes. How: busRepFun and synNowFun are built once, so this one is too.
 
 	// #endregion idlStaFun
+
+	// #endregion Sync Scheduling
 
 
 
