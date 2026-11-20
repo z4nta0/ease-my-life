@@ -668,6 +668,52 @@ function isaStaFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : bo
 
 
 
+// #region Task Summary
+
+// #region isaWkdFun
+
+/**
+ * isaWkdFun = Is-A Weekend Function
+ *
+ * @summary
+ * Whether a weekly reminder's day set is exactly Saturday and Sunday, the
+ * shape its summary names "weekends" instead of listing the two days.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param dowSetArr - Day-Of-Week Set Array: The selected days of the week,
+ *                    0 for Sunday through 6 for Saturday.
+ *
+ * @returns Whether the set holds exactly those two days.
+ * @see {@link wkdSetBoo}
+ *
+ * @example
+ * ```ts
+ * isaWkdFun([ 0, 6 ]) // => true
+ * ```
+ *
+*/
+
+const isaWkdFun = ( dowSetArr : number[] ) : boolean => { // What: Is-A Weekend Function. Why: Both weekly summary branches name an exactly Saturday and Sunday set "weekends". How: This checks the set's length and both weekend days.
+
+
+	const hasSatBoo = dowSetArr.includes( 6 ); // What: Has Saturday Boolean. Why: The weekend-shape check below combines 3 real checks, so each is named individually per this repo's long-boolean-expression rule. How: This is true only when dowSetArr includes Saturday (6).
+	const hasSunBoo = dowSetArr.includes( 0 ); // What: Has Sunday Boolean. Why: Same reasoning as hasSatBoo above. How: This is true only when dowSetArr includes Sunday (0).
+	const twoLenBoo = dowSetArr.length === 2;  // What: Two Length Boolean. Why: Same reasoning as hasSatBoo above. How: This is true only when exactly 2 days are selected.
+
+	const wkdSetBoo = twoLenBoo && hasSunBoo && hasSatBoo; // What: Weekend Set Boolean. Why: Exactly Sun+Sat is common enough to deserve its own plain phrase instead of a 2-day list. How: This combines the 3 checks above.
+
+
+
+	return wkdSetBoo; // What: Weekend Set Return. Why: The caller needs the weekend verdict back. How: This returns wkdSetBoo.
+
+
+};
+
+// #endregion isaWkdFun
+
+
+
 // #region sumTasFun
 
 /**
@@ -737,14 +783,7 @@ function sumTasFun ( tasRcdObj : TasRcdTyp ) : string {
 
 
 
-				const twoLenBoo = dowSetArr.length === 2;  // What: Two Length Boolean. Why: The weekend-shape check below combines 3 real checks, so each is named individually per this repo's long-boolean-expression rule. How: This is true only when dowSetArr holds exactly 2 entries.
-				const hasSunBoo = dowSetArr.includes( 0 ); // What: Has Sunday Boolean. Why: Same reasoning as twoLenBoo above. How: This is true only when dowSetArr includes Sunday (0).
-				const hasSatBoo = dowSetArr.includes( 6 ); // What: Has Saturday Boolean. Why: Same reasoning as twoLenBoo above. How: This is true only when dowSetArr includes Saturday (6).
-
-				const wkdSetBoo = twoLenBoo && hasSunBoo && hasSatBoo; // What: Weekend Set Boolean. Why: Exactly Sun+Sat is common enough to deserve its own plain phrase instead of a 2-day list. How: This combines the 3 individual checks above with &&, true only when every one of them holds.
-
-
-				if ( wkdSetBoo ) return 'Weekends'; // What: Weekends Case Return. Why: See wkdSetBoo above. How: This returns the plain phrase when wkdSetBoo is true.
+				if ( isaWkdFun( dowSetArr ) ) return 'Weekends'; // What: Weekends Case Return. Why: Exactly Sun+Sat is common enough to deserve its own plain phrase instead of a 2-day list. How: This returns the plain phrase when isaWkdFun says the set is a weekend.
 
 
 
@@ -767,18 +806,11 @@ function sumTasFun ( tasRcdObj : TasRcdTyp ) : string {
 
 
 
-			const twoLenBoo = dowSetArr.length === 2;  // What: Two Length Boolean. Why: The weekend-shape check below combines 3 real checks, so each is named individually per this repo's long-boolean-expression rule. How: This is true only when dowSetArr holds exactly 2 entries.
-			const hasSunBoo = dowSetArr.includes( 0 ); // What: Has Sunday Boolean. Why: Same reasoning as twoLenBoo above. How: This is true only when dowSetArr includes Sunday (0).
-			const hasSatBoo = dowSetArr.includes( 6 ); // What: Has Saturday Boolean. Why: Same reasoning as twoLenBoo above. How: This is true only when dowSetArr includes Saturday (6).
-
-			const wkdSetBoo = twoLenBoo && hasSunBoo && hasSatBoo; // What: Weekend Set Boolean. Why: Exactly Sun+Sat is common enough to deserve its own plain phrase instead of a 2-day list. How: This combines the 3 individual checks above with &&, true only when every one of them holds.
-
-
 			const dayLabStr = dowSetArr.length === 7 // What: Day Label String. Why: This is the secondary day-set clause the unit phrase is joined with below. How: This chains 4 mutually exclusive day-set shapes, falling back to a raw comma list, reusing wkdSetBoo for the weekend shape.
 				? 'every day'                                                                                               // What: Full Week Branch. Why: All 7 days selected reads better as a single plain phrase than a 7-day list. How: This returns the plain phrase when dowSetArr's own length is 7.
 				: ( dowSetArr.length === 5 && [ 1, 2, 3, 4, 5 ].every( ( dowValNum ) => dowSetArr.includes( dowValNum ) ) ) // What: Weekdays Check. Why: Exactly Mon-Fri is common enough to deserve its own plain phrase. How: This tests for exactly the 5 weekday numbers next.
 				? 'weekdays'                                                                                                // What: Weekdays Branch. Why: See the check above. How: This returns the plain phrase when that check holds.
-				: wkdSetBoo                                                                                                 // What: Weekend Check. Why: Exactly Sun+Sat also deserves its own plain phrase. How: This tests wkdSetBoo next.
+				: isaWkdFun( dowSetArr )                                                                                    // What: Weekend Check. Why: Exactly Sun+Sat also deserves its own plain phrase. How: This tests wkdSetBoo next.
 				? 'weekends'                                                                                                // What: Weekends Branch. Why: See the check above. How: This returns the plain phrase when wkdSetBoo is true.
 				: dowSetArr.length === 1                                                                                    // What: Single Day Check. Why: Exactly one selected day reads best as its own full weekday name. How: This tests for a single entry next.
 				? DAY_FUL_ARR[ dowSetArr[ 0 ] ]                                                                             // What: Single Day Branch. Why: See the check above. How: This looks dowSetArr's own only entry up in DAY_FUL_ARR.
@@ -849,6 +881,8 @@ function sumTasFun ( tasRcdObj : TasRcdTyp ) : string {
 }
 
 // #endregion sumTasFun
+
+// #endregion Task Summary
 
 
 
