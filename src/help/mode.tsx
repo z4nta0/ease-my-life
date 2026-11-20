@@ -17,8 +17,8 @@ import { finTarFun    } from './geometry.ts';      // What: Find Target Function
 import { HelTipCom    } from './tooltip.tsx';      // What: Help Tip Component. Why: A clicked badge reveals its own target's tip. How: This is rendered once for the open help item, given its target rect and item.
 import { IcoSvgCom    } from '../ui/icon.tsx';     // What: Icon Svg Component. Why: The navigation help item's own bodEle renders each tab's real nav icon next to its label. How: This is rendered once per tab entry inside NAV_HEL_OBJ's own bodEle JSX.
 import { isaTruFun    } from '../utils/guard.ts';  // What: Is-A Truthy Function. Why: The chrome matches drop their misses before being measured. How: This filters them so the rest read as real matches.
-import { redMotFun    } from '../utils/motion.ts'; // What: Reduce Motion Function. Why: Scrolling a focused badge's target into view should jump rather than glide for someone who asked for less motion. How: This picks the scroll behavior in the badge focus handler.
 import { rhyPxlFun    } from '../utils/rhythm.ts'; // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
+import { scrBehFun    } from '../utils/motion.ts'; // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { shaRadFun    } from './geometry.ts';      // What: Shape Radius Function. Why: Each highlight cutout roughly matches its own target's border radius. How: This is called once per highlighted target.
 import { uniRecFun    } from './geometry.ts';      // What: Union Rect Function. Why: A help item covering several elements highlights them as one box. How: This is called once per multi-element help item.
 
@@ -1082,7 +1082,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 								document.querySelector( '[data-element-name-hook~="appConMai"]' )?.scrollBy({ // What: Main Scroll Call. Why: The badge's target has to come into view. How: This scrolls the main area so the badge lands mid-screen, jumping instead of gliding under reduced motion.
 
 
-									behavior : redMotFun() ? 'auto' : 'smooth',       // What: Behavior. Why: The scroll should glide unless less motion was asked for. How: This jumps under reduced motion and glides otherwise.
+									behavior : scrBehFun(),                           // What: Behavior. Why: The scroll should glide unless less motion was asked for. How: This jumps under reduced motion and glides otherwise.
 									top      : badRecObj.top - window.innerHeight / 2 // What: Top. Why: The badge should land mid-screen. How: This is its distance from the viewport's middle.
 
 

@@ -8,6 +8,7 @@ import React     from 'react';                     // What: React. Why: This fil
 
 
 import { buiTs1Fun } from './page-steps.tsx';  // What: Build Tour-Step-1 Function. Why: Every App Feature tour reuses this exact shared Step 1, the real nav-button highlight, as its own opening step. How: This is called inside FeaTouCom below, passed this feature's own page, an optional run side effect, and a primary button label.
+import { colMapFun } from '../state/store.ts'; // What: Collapsed Map Function. Why: The saved section collapse state may be missing on an old save. How: This is called with the app state to read the collapse map, empty when there is none.
 import { GuiTouCom } from './tour-runner.tsx'; // What: Guided Tour Component. Why: This is the generic spotlight-tour engine that actually drives each App Feature tutorial once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-feature step array.
 import { IcoSvgCom } from '../ui/icon.tsx';    // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph matching the current feature's own page. How: This is rendered inside the intro modal's icon prop below.
 import { IntModCom } from './intro-modal.tsx'; // What: Intro Modal Component. Why: Each App Feature tutorial opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this feature's own icon/title/paragraphs/pills.
@@ -1144,7 +1145,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 	const colAllFun = () => { // What: Collapse All Function. Why: Step 2 of the edit-item tour expects every picker to start collapsed. How: This flips only the pickers currently found expanded, leaving already-collapsed ones untouched. // "Edit your first item" wants a clean, all-collapsed Data page the moment it lands there, any picker the user happened to leave expanded from a previous visit would otherwise make the Your Pickers step's "click a header to expand" instruction confusing (that picker's already open). Runs as Step 1's own runFun, which fires at the exact moment its real nav click transitions into Step 2 (see priActFun's own comment in onboarding/tour-runner.tsx), togColFun only ever FLIPS, so this only touches pickers actually found expanded (=== false), rather than blindly toggling every picker and accidentally re-opening ones that were already collapsed.
 
 
-		const colMapObj = ( staAppObj.ui && staAppObj.ui.controlsCollapsed ) || {}; // What: Collapsed Map Object. Why: Only a picker actually found expanded (=== false) should be touched. How: This reads staAppObj.ui.controlsCollapsed, falling back to an empty object.
+		const colMapObj = colMapFun( staAppObj ); // What: Collapsed Map Object. Why: Only a picker actually found expanded (=== false) should be touched. How: This reads staAppObj.ui.controlsCollapsed, falling back to an empty object.
 
 
 		staAppObj.pickers.forEach( ( curPicObj ) => { if ( colMapObj[ curPicObj.id ] === false ) actStoObj.togColFun( curPicObj.id ); } ); // What: Collapse Forced Call. Why: Every picker actually found expanded must be flipped closed. How: This toggles curPicObj.id only when colMapObj marks it explicitly not collapsed.

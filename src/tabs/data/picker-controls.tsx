@@ -25,6 +25,7 @@ import { norGroFun    } from '../../core/pickers.ts';        // What: Normalize 
 import { ordSufFun    } from '../../utils/date.ts';          // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
 import { PIC_NAM_OBJ  } from '../../core/pickers.ts';        // What: Pickers Namespace Object. Why: The Fill and Refill summary counts items short of the shared full-charge ceiling when the picker has no threshold of its own. How: This reads PIC_NAM_OBJ.THR_VAL_NUM.
 import { redMotFun    } from '../../utils/motion.ts';        // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see PicConCom's own scroll or collapse animations. How: This is checked before each of those animations.
+import { scrBehFun    } from '../../utils/motion.ts';        // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';          // What: Seed Namespace Object. Why: Every picker mode's own label and hint text comes from this shared catalog. How: This is read (MOD_DEF_OBJ) in PicConCom for the mode radio group.
 import { togFadFun    } from '../../ui/edge-fade.ts';        // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { UnmWatCom    } from './unmount-watcher.ts';         // What: Unmount Watcher Component. Why: Controls that close without Save still keep their edits. How: This is rendered at the end of PicConCom's body with comPicFun.
@@ -578,8 +579,8 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 			raiCurEle.scrollTo({ // What: Rail Scroll Call. Why: This is the actual glide back to the rail's start. How: This scrolls raiCurEle to its left edge.
 
 
-				behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
-				left     : 0                                // What: Left. Why: The rail's start is its left edge. How: This scrolls to x 0.
+				behavior : scrBehFun(), // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
+				left     : 0            // What: Left. Why: The rail's start is its left edge. How: This scrolls to x 0.
 
 
 			});
@@ -668,8 +669,8 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 			groCurEle.scrollTo({ // What: Group Scroll Call. Why: This is the actual glide back to the row's start. How: This scrolls groCurEle to its left edge.
 
 
-				behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
-				left     : 0                                // What: Left. Why: The row's start is its left edge. How: This scrolls to x 0.
+				behavior : scrBehFun(), // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
+				left     : 0            // What: Left. Why: The row's start is its left edge. How: This scrolls to x 0.
 
 
 			});

@@ -12,6 +12,7 @@ import { CAD_NAM_OBJ  } from '../../core/cadence.ts';               // What: Cad
 import { clePicFun    } from '../../help/sample-data.ts';           // What: Clear Pickers Function. Why: Help mode's disposable sample pickers must not survive past the help session or this tab unmounting. How: This is called whenever helOpeBoo turns off and on TabDatCom's own unmount cleanup.
 import { cleTasFun    } from '../../help/sample-data.ts';           // What: Clear Tasks Function. Why: Help mode's disposable sample reminders must not survive past the help session or this tab unmounting. How: This is called whenever helOpeBoo turns off and on TabDatCom's own unmount cleanup.
 import { ColDisCom    } from '../../ui/collapse.tsx';               // What: Collapse Disclosure Component. Why: Picker cards, their Controls and Items disclosures, and item rows share the same collapse-height animation. How: This wraps each of those bodies, driven by the matching open boolean.
+import { colMapFun    } from '../../state/store.ts';                // What: Collapsed Map Function. Why: The saved section collapse state may be missing on an old save. How: This is called with the app state to read the collapse map, empty when there is none.
 import { ConManCom    } from './conditionals-manager.tsx';          // What: Conditional Manager Component. Why: The Data tab lists every conditional in its own section above the picker cards. How: This is rendered once in TabDatCom whenever the Conditionals scope is shown.
 import { DAT_HEL_ARR  } from '../../help/data-catalog.tsx';         // What: Data Help Array. Why: Help mode needs this tab's own catalog of labeled elements to badge. How: This is passed straight through to HelOveCom's own items prop.
 import { durMilFun    } from '../../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
@@ -30,6 +31,7 @@ import { PicConCom    } from './picker-controls.tsx';               // What: Pic
 import { ranIdeFun    } from '../../utils/random-id.ts';            // What: Random Identifier Function. Why: A new draft picker needs a stable id before it's created. How: This mints a 'pkr_' id.
 import { redMotFun    } from '../../utils/motion.ts';               // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see any of this tab's own FLIP, scroll, or collapse animations. How: This is checked before every animation in TabDatCom.
 import { RemManCom    } from './reminders-manager.tsx';             // What: Reminder Manager Component. Why: The Reminders section of this tab is a full, separately-maintained editor. How: This is rendered once, in place of a picker card, whenever the Reminders scope is shown.
+import { scrBehFun    } from '../../utils/motion.ts';               // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';                 // What: Seed Namespace Object. Why: Every picker mode's own label and hint text comes from this shared catalog. How: This is read (MOD_DEF_OBJ) in TabDatCom for mode labels and the new-picker mode radio group.
 import { sedPicFun    } from '../../help/sample-data.ts';           // What: Seed Pickers Function. Why: Help mode needs a real picker of every mode to show a representative "view and edit" section. How: This is called whenever helOpeBoo turns on.
 import { sedTasFun    } from '../../help/sample-data.ts';           // What: Seed Tasks Function. Why: Help mode needs real reminders of every recurrence kind to show a representative "view and edit" section. How: This is called whenever helOpeBoo turns on.
@@ -1009,8 +1011,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 		draCarRef.current.scrollIntoView({ // What: Draft Scroll Call. Why: This is the actual scroll-to-top-of-viewport action. How: This scrolls instantly under reduced motion, smoothly otherwise.
 
 
-			behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
-			block    : 'start'                          // What: Block. Why: The draft's tall form should start at the viewport's top. How: This aligns the card's top edge with the viewport's top.
+			behavior : scrBehFun(), // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
+			block    : 'start'      // What: Block. Why: The draft's tall form should start at the viewport's top. How: This aligns the card's top edge with the viewport's top.
 
 
 		});
@@ -1024,7 +1026,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 	const IteEdiCom = EntEdiCom; // What: Item Editor Component. Why: This scopes EntEdiCom under a name matching this file's own component-naming convention, without renaming the actual import. How: This is reused so Today and Data stay exact copies, same pattern as the Reminders editor.
 
-	const colMapObj = ( staAppObj.ui && staAppObj.ui.controlsCollapsed ) || {}; // What: Collapsed Map Object. Why: Every picker card's own open/closed state, plus its nested Controls/Items disclosures, are all persisted through this one map. How: This reads staAppObj.ui.controlsCollapsed, falling back to an empty object.
+	const colMapObj = colMapFun( staAppObj ); // What: Collapsed Map Object. Why: Every picker card's own open/closed state, plus its nested Controls/Items disclosures, are all persisted through this one map. How: This reads staAppObj.ui.controlsCollapsed, falling back to an empty object.
 
 
 

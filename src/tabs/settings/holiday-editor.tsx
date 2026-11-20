@@ -9,7 +9,7 @@ import React     from 'react';                       // What: React. Why: HolEdi
 
 import { ButBasCom   } from '../../ui/button.tsx';    // What: Button Base Component. Why: Adding a custom holiday needs a consistently-styled button. How: This is rendered in HolEdiCom's own add form.
 import { durMilFun   } from '../../utils/rhythm.ts';  // What: Duration Millisecond Function. Why: The row's exit timer must end with its exit animation. How: This returns a duration step's length in milliseconds.
-import { HOL_NAM_OBJ } from '../../core/holidays.ts'; // What: Holidays Namespace Object. Why: The Holidays section needs both a default holidays-state shape and the computed U.S. holiday list for the current year. How: This is called via HOL_NAM_OBJ.defStaFun() and HOL_NAM_OBJ.comYeaFun() inside HolEdiCom.
+import { HOL_NAM_OBJ } from '../../core/holidays.ts'; // What: Holidays Namespace Object. Why: The Holidays section needs a holidays state even on an old save without one, and the computed U.S. holiday list for the current year. How: This is called via HOL_NAM_OBJ.resStaFun() and HOL_NAM_OBJ.comYeaFun() inside HolEdiCom.
 import { IcoSvgCom   } from '../../ui/icon.tsx';      // What: Icon Svg Component. Why: The custom-holiday delete button needs a small trash glyph. How: This is rendered with a specific name/size prop.
 
 
@@ -76,7 +76,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 	// #region Holiday Data
 
 	const curYeaNum = new Date().getFullYear();                              // What: Current Year Number. Why: The computed U.S. holiday list is specific to a single calendar year. How: This reads the real device's current year and is passed to HOL_NAM_OBJ.comYeaFun below.
-	const holStaObj = staAppObj.holidays || HOL_NAM_OBJ.defStaFun();         // What: Holiday State Object. Why: A very old persisted state might not carry a holidays sub-object at all. How: This falls back to HOL_NAM_OBJ's own default shape when staAppObj.holidays is missing.
+	const holStaObj = HOL_NAM_OBJ.resStaFun( staAppObj.holidays );           // What: Holiday State Object. Why: A very old persisted state might not carry a holidays sub-object at all. How: This falls back to HOL_NAM_OBJ's own default shape when staAppObj.holidays is missing.
 	const comHolArr = HOL_NAM_OBJ.comYeaFun( curYeaNum, holStaObj.country ); // What: Computed Holiday Array. Why: The list needs every rule-computed U.S. holiday for the current year and country. How: This calls HOL_NAM_OBJ.comYeaFun with the current year and the user's saved country.
 	const disKeyArr = holStaObj.disabled || [];                              // What: Disabled Key Array. Why: A toggled-off computed holiday must still render, just marked disabled. How: This is checked per-row below via .includes to decide each row's on/off state.
 	const cusHolArr = holStaObj.custom || [];                                // What: Custom Holiday Array. Why: The user's own added recurring days off need to render in their own list, below the computed ones. How: This is mapped below into its own set of rows.

@@ -11,6 +11,7 @@ import { isoDayFun   } from '../utils/date.ts';      // What: Iso Day Function. 
 import { nwmDayFun   } from '../utils/date.ts';      // What: Nth-Weekday-Month Day Function. Why: An nth-weekday schedule needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
 import { ordSufFun   } from '../utils/date.ts';      // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
 import { ranIdeFun   } from '../utils/random-id.ts'; // What: Random Identifier Function. Why: A new reminder with no id of its own needs a fresh one. How: This mints a 'tk_' id.
+import { wkdDayFun   } from '../utils/date.ts';      // What: Weekend Day Function. Why: The weekend exclusions need one rule for which days count as the weekend. How: This is called with the date being checked.
 
 
 import type { HolStaTyp } from './data-model.ts'; // What: Holiday State Type. Why: Holiday exclusions read the saved holiday settings. How: This types every holStaObj parameter.
@@ -330,6 +331,34 @@ function defTasFun ( tasInpObj : Partial< TasRcdTyp > = {} ) : TasRcdTyp {
 
 
 
+// #region intCouFun
+
+/**
+ * intCouFun = Interval Count Function
+ *
+ * @summary
+ * A reminder's "every N" interval as a usable count: its own interval, or 1
+ * when it has none, and never below 1.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param tasRcdObj - Task Record Object: The reminder to read.
+ *
+ * @returns The interval, at least 1.
+ *
+ * @example
+ * ```ts
+ * intCouFun(tasRcdObj) // => 2
+ * ```
+ *
+*/
+
+const intCouFun = ( tasRcdObj : TasRcdTyp ) : number => Math.max( 1, tasRcdObj.interval || 1 ); // What: Interval Count Function. Why: Every due check and summary of an "every N" schedule needs the same floor-1 interval count. How: This reads tasRcdObj's own interval, defaulting to 1 and flooring it at 1.
+
+// #endregion intCouFun
+
+
+
 // #region isaComFun
 
 /**
@@ -446,7 +475,7 @@ function isaDueFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : bo
 
 
 
-			const intCouNum = Math.max( 1, tasRcdObj.interval || 1 ); // What: Interval Count Number. Why: The every-N-weeks gate below needs a real, floor-1 interval count. How: This reads tasRcdObj's own interval, floored at 1.
+			const intCouNum = intCouFun( tasRcdObj ); // What: Interval Count Number. Why: The every-N-weeks gate below needs a real, floor-1 interval count. How: This reads tasRcdObj's own interval, floored at 1.
 
 
 
@@ -458,7 +487,7 @@ function isaDueFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : bo
 		case 'interval': { // What: Interval Case Block. Why: An interval task is due every flat N days from its own anchor, with no weekday/month concept at all. How: This computes the day difference and checks it's both non-negative and evenly divisible by N.
 
 
-			const intCouNum = Math.max( 1, tasRcdObj.interval || 1 );                          // What: Interval Count Number. Why: The divisibility check below needs a real, floor-1 interval count. How: This reads tasRcdObj's own interval, floored at 1.
+			const intCouNum = intCouFun( tasRcdObj );                                          // What: Interval Count Number. Why: The divisibility check below needs a real, floor-1 interval count. How: This reads tasRcdObj's own interval, floored at 1.
 			const delDayNum = difDayFun( tasRcdObj.anchor || tasRcdObj.createdAt, cheDatObj ); // What: Delta Day Number. Why: The divisibility check below needs the actual day count since the anchor. How: This calls difDayFun once and reuses the result.
 
 
@@ -471,7 +500,7 @@ function isaDueFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : bo
 		case 'monthly': { // What: Monthly Case Block. Why: A monthly task is due every N months from its own anchor, on either a plain day-of-month or an Nth-weekday rule. How: This guards on the every-N-months gate first, then branches on dateMode for the actual target day.
 
 
-			const intCouNum = Math.max( 1, tasRcdObj.interval || 1 ); // What: Interval Count Number. Why: The every-N-months gate immediately below needs a real, floor-1 interval count. How: This reads tasRcdObj's own interval, floored at 1.
+			const intCouNum = intCouFun( tasRcdObj ); // What: Interval Count Number. Why: The every-N-months gate immediately below needs a real, floor-1 interval count. How: This reads tasRcdObj's own interval, floored at 1.
 
 
 			if ( !eveNthFun( intCouNum, difMonFun( tasRcdObj.anchor || tasRcdObj.createdAt, cheDatObj ) ) ) return false; // What: Every-N-Months Guard. Why: A monthly task on, say, an every-3-months cadence must skip the 2 months in between entirely. How: This returns false when the anchor-to-cheDatObj month difference doesn't satisfy eveNthFun.
@@ -499,7 +528,7 @@ function isaDueFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : bo
 
 
 
-			const intCouNum = Math.max( 1, tasRcdObj.interval || 1 ); // What: Interval Count Number. Why: The every-N-years gate immediately below needs a real, floor-1 interval count. How: This reads tasRcdObj's own interval, floored at 1.
+			const intCouNum = intCouFun( tasRcdObj ); // What: Interval Count Number. Why: The every-N-years gate immediately below needs a real, floor-1 interval count. How: This reads tasRcdObj's own interval, floored at 1.
 
 
 			if ( !eveNthFun( intCouNum, difYeaFun( tasRcdObj.anchor || tasRcdObj.createdAt, cheDatObj ) ) ) return false; // What: Every-N-Years Guard. Why: An annual task on, say, an every-3-years cadence must skip the 2 years in between entirely. How: This returns false when the anchor-to-cheDatObj year difference doesn't satisfy eveNthFun.
@@ -765,7 +794,7 @@ function sumTasFun ( tasRcdObj : TasRcdTyp ) : string {
 
 
 			const dowSetArr = [ ...( tasRcdObj.daysOfWeek || [] ) ].sort( ( dowOneNum, dowTwoNum ) => dowOneNum - dowTwoNum ); // What: Day-Of-Week Set Array. Why: Every branch below reads daysOfWeek in ascending order, so a stray unsorted save doesn't produce a scrambled label. How: This spreads and sorts tasRcdObj's own daysOfWeek numerically.
-			const intCouNum = Math.max( 1, tasRcdObj.interval || 1 );                                                          // What: Interval Count Number. Why: This decides which of the 2 branches below applies. How: This reads tasRcdObj's own interval, floored at 1.
+			const intCouNum = intCouFun( tasRcdObj );                                                                          // What: Interval Count Number. Why: This decides which of the 2 branches below applies. How: This reads tasRcdObj's own interval, floored at 1.
 
 
 			if ( intCouNum === 1 ) { // What: Plain Weekly Branch. Why: The common every-1-week case reads as a plain day-name label with no "every N weeks" prefix at all. How: This chains 5 mutually exclusive day-set shapes, falling back to a raw comma list.
@@ -826,7 +855,7 @@ function sumTasFun ( tasRcdObj : TasRcdTyp ) : string {
 		case 'interval': { // What: Interval Case Block. Why: An interval summary is just the plain "every N days" phrase, singularized for N of 1. How: This floors interval at 1 and picks between the 2 phrasings.
 
 
-			const intCouNum = Math.max( 1, tasRcdObj.interval || 1 ); // What: Interval Count Number. Why: This decides both the phrasing and the interpolated count below. How: This reads tasRcdObj's own interval, floored at 1.
+			const intCouNum = intCouFun( tasRcdObj ); // What: Interval Count Number. Why: This decides both the phrasing and the interpolated count below. How: This reads tasRcdObj's own interval, floored at 1.
 
 
 
@@ -838,7 +867,7 @@ function sumTasFun ( tasRcdObj : TasRcdTyp ) : string {
 		case 'monthly': { // What: Monthly Case Block. Why: A monthly summary joins an "every N months" unit phrase with either an Nth-weekday clause or a plain ordinal day clause. How: This computes both pieces then joins them with a middle dot.
 
 
-			const intCouNum = Math.max( 1, tasRcdObj.interval || 1 );                      // What: Interval Count Number. Why: This decides both the unit phrasing and the interpolated count below. How: This reads tasRcdObj's own interval, floored at 1.
+			const intCouNum = intCouFun( tasRcdObj );                                      // What: Interval Count Number. Why: This decides both the unit phrasing and the interpolated count below. How: This reads tasRcdObj's own interval, floored at 1.
 			const uniLabStr = intCouNum === 1 ? 'Monthly' : `Every ${ intCouNum } months`; // What: Unit Label String. Why: A plain monthly cadence reads better as "Monthly" than "Every 1 months". How: This picks the singular phrasing only when intCouNum is exactly 1.
 
 
@@ -856,7 +885,7 @@ function sumTasFun ( tasRcdObj : TasRcdTyp ) : string {
 		case 'annual': { // What: Annual Case Block. Why: An annual summary joins an "every N years" unit phrase with either an Nth-weekday-of-month clause or a plain month/day clause. How: This computes all 3 pieces then joins the unit and day clauses with a middle dot.
 
 
-			const intCouNum = Math.max( 1, tasRcdObj.interval || 1 );                                                               // What: Interval Count Number. Why: This decides both the unit phrasing and the interpolated count below. How: This reads tasRcdObj's own interval, floored at 1.
+			const intCouNum = intCouFun( tasRcdObj );                                                                               // What: Interval Count Number. Why: This decides both the unit phrasing and the interpolated count below. How: This reads tasRcdObj's own interval, floored at 1.
 			const uniLabStr = intCouNum === 1 ? 'Yearly' : `Every ${ intCouNum } years`;                                            // What: Unit Label String. Why: A plain annual cadence reads better as "Yearly" than "Every 1 years". How: This picks the singular phrasing only when intCouNum is exactly 1.
 			const monAbbStr = new Date( 2001, ( tasRcdObj.month || 1 ) - 1, 1 ).toLocaleDateString( 'en-US', { month : 'short' } ); // What: Month Abbreviation String. Why: The Nth-weekday branch below needs a short month name to name the target month. How: This builds a throwaway Date (year 2001 is arbitrary) from tasRcdObj's own month and formats it.
 
@@ -1074,7 +1103,7 @@ function nexEliFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 
 	const optNorObj = optForFun( tasRcdObj, remOptObj );                                              // What: Options Normalized Object. Why: The weekend/holiday exclusion guards inside the loop below both read from tasRcdObj's own governing class. How: This calls optForFun once and reuses the result.
 	const basDatObj = new Date( froDatObj.getFullYear(), froDatObj.getMonth(), froDatObj.getDate() ); // What: Base Date Object. Why: Every candidate day stepped through below is relative to froDatObj with its own time-of-day stripped. How: This rebuilds a Date from froDatObj's own year/month/day alone.
-	const intCouNum = Math.max( 1, tasRcdObj.interval || 1 );                                         // What: Interval Count Number. Why: The search horizon below needs to scale with a sparse "every N ___" schedule, or it could fail to find its own next occurrence. How: This reads tasRcdObj's own interval, floored at 1.
+	const intCouNum = intCouFun( tasRcdObj );                                                         // What: Interval Count Number. Why: The search horizon below needs to scale with a sparse "every N ___" schedule, or it could fail to find its own next occurrence. How: This reads tasRcdObj's own interval, floored at 1.
 
 	const horDayNum = tasRcdObj.repeat === 'annual' // What: Horizon Day Number. Why: 1100 days (~3 years) comfortably covers the old max (annual, interval 1) but not a large "every N weeks/months/years", and a one-time task's own onceDate has no upper bound (a plain date picker), so a far-future pick needs its own horizon or this function would falsely report "this will never show". How: This picks a horizon sized to tasRcdObj's own repeat kind and interval, or (for 'once') the distance to its own onceDate plus 30 days of slack.
 		? intCouNum * 366 + 366                                                                             // What: Annual Horizon Branch. Why: An annual task needs at least one full interval of years plus a year of slack. How: This scales 366 days by intCouNum and adds one more year.
@@ -1109,7 +1138,7 @@ function nexEliFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 
 
 
-		const isaWkdBoo = curDatObj.getDay() === 0 || curDatObj.getDay() === 6; // What: Is-A Weekend Boolean. Why: The weekend-exclusion guard right below needs to know whether curDatObj itself falls on a weekend. How: This checks curDatObj's own weekday against Sunday (0) and Saturday (6).
+		const isaWkdBoo = wkdDayFun( curDatObj ); // What: Is-A Weekend Boolean. Why: The weekend-exclusion guard right below needs to know whether curDatObj itself falls on a weekend. How: This checks curDatObj's own weekday against Sunday (0) and Saturday (6).
 
 
 		if ( optNorObj.excludeWeekends && isaWkdBoo ) continue; // What: Weekend Exclusion Guard. Why: This class has opted out of showing on a weekend, and curDatObj is one. How: This skips to the next iteration when both conditions hold.
@@ -1180,11 +1209,11 @@ function todVisFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 
 	// #region Exclusion Inputs
 
-	const optNorObj = optForFun( tasRcdObj, remOptObj );                    // What: Options Normalized Object. Why: The 2 exclusion checks further below both read from tasRcdObj's own governing class. How: This calls optForFun once and reuses the result.
-	const isaWkdBoo = cheDatObj.getDay() === 0 || cheDatObj.getDay() === 6; // What: Is-A Weekend Boolean. Why: The weekend-exclusion check further below needs to know whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
-	const holInfObj = HOL_NAM_OBJ.holInfFun( holStaObj, cheDatObj );        // What: Holiday Info Object. Why: A caller distinguishing a built-in holiday from a custom one needs the full record, not just its name. How: This calls holInfFun, which returns the matched holiday's record, or null when cheDatObj isn't a holiday.
-	const isaHolBoo = !!holInfObj;                                          // What: Is-A Holiday Boolean. Why: The holiday-exclusion check further below only needs a plain boolean, not the full record. How: This coerces holInfObj to a real boolean.
-	const cheIsoStr = isoDayFun( cheDatObj );                               // What: Check Iso String. Why: The manual-skip check further below compares tasRcdObj's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
+	const optNorObj = optForFun( tasRcdObj, remOptObj );             // What: Options Normalized Object. Why: The 2 exclusion checks further below both read from tasRcdObj's own governing class. How: This calls optForFun once and reuses the result.
+	const isaWkdBoo = wkdDayFun( cheDatObj );                        // What: Is-A Weekend Boolean. Why: The weekend-exclusion check further below needs to know whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
+	const holInfObj = HOL_NAM_OBJ.holInfFun( holStaObj, cheDatObj ); // What: Holiday Info Object. Why: A caller distinguishing a built-in holiday from a custom one needs the full record, not just its name. How: This calls holInfFun, which returns the matched holiday's record, or null when cheDatObj isn't a holiday.
+	const isaHolBoo = !!holInfObj;                                   // What: Is-A Holiday Boolean. Why: The holiday-exclusion check further below only needs a plain boolean, not the full record. How: This coerces holInfObj to a real boolean.
+	const cheIsoStr = isoDayFun( cheDatObj );                        // What: Check Iso String. Why: The manual-skip check further below compares tasRcdObj's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
 
 	// #endregion Exclusion Inputs
 
@@ -1275,7 +1304,7 @@ function todVisFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 function visTodFun ( tasLisArr : TasRcdTyp[], remOptObj : RemOptTyp | null | undefined, holStaObj : HolStaTyp | null | undefined, cheDatObj : Date = new Date() ) : TasRcdTyp[] {
 
 
-	const isaWkdBoo = cheDatObj.getDay() === 0 || cheDatObj.getDay() === 6;               // What: Is-A Weekend Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
+	const isaWkdBoo = wkdDayFun( cheDatObj );                                             // What: Is-A Weekend Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
 	const isaHolBoo = !!( HOL_NAM_OBJ && HOL_NAM_OBJ.holDatFun( holStaObj, cheDatObj ) ); // What: Is-A Holiday Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself is an active holiday. How: This guards on HOL_NAM_OBJ existing before calling its own holDatFun, coercing the result to a real boolean.
 	const cheIsoStr = isoDayFun( cheDatObj );                                             // What: Check Iso String. Why: The filter below compares a task's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
 

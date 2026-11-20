@@ -12,8 +12,8 @@ import { ButBasCom   } from '../../ui/button.tsx';       // What: Button Base Co
 import { CarSurCom   } from '../../ui/card-surface.tsx'; // What: Card Surface Component. Why: The support form sits inside the shared bordered container. How: This wraps the form's own fields inside ConSupCom.
 import { ColDisCom   } from '../../ui/collapse.tsx';     // What: Collapse Disclosure Component. Why: The contact-support form needs to expand/collapse in place. How: This wraps the contact-support form's own CarSurCom, gated on forOpeBoo.
 import { durMilFun   } from '../../utils/rhythm.ts';     // What: Duration Millisecond Function. Why: The scroll timer must wait out the form's expand. How: This returns a duration step's length in milliseconds.
-import { redMotFun   } from '../../utils/motion.ts';     // What: Reduce Motion Function. Why: Scrolling the opened form into view must not animate for a user who prefers reduced motion. How: This is checked before choosing 'smooth' vs 'auto' scroll behavior in opeForFun.
 import { rhyPxlFun   } from '../../utils/rhythm.ts';     // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
+import { scrBehFun   } from '../../utils/motion.ts';     // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 
 // #endregion Imports
 
@@ -272,8 +272,8 @@ function ConSupCom () : React.JSX.Element {
 				scrConEle.scrollTo({ // What: Scroll Into View Call. Why: This is the actual scroll that brings the form's bottom into view. How: This scrolls the container down by exactly the overflow amount.
 
 
-					behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion should not see an animated scroll. How: This picks 'auto' under reduced motion, 'smooth' otherwise.
-					top      : scrConEle.scrollTop + oveBelNum  // What: Top. Why: This is the scroll target that just clears the overflow. How: This adds oveBelNum to the container's own current scrollTop.
+					behavior : scrBehFun(),                    // What: Behavior. Why: A user who prefers reduced motion should not see an animated scroll. How: This picks 'auto' under reduced motion, 'smooth' otherwise.
+					top      : scrConEle.scrollTop + oveBelNum // What: Top. Why: This is the scroll target that just clears the overflow. How: This adds oveBelNum to the container's own current scrollTop.
 
 
 				});

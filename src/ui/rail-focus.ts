@@ -6,7 +6,7 @@
 import React from 'react'; // What: React. Why: useRaiFocFun attaches and removes its listener from an effect. How: This is used directly (React.useEffect).
 
 
-import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function. Why: Bringing a focused pill into view should jump rather than glide for someone who asked for less motion. How: This picks the scroll behavior in focScrFun.
+import { scrBehFun } from '../utils/motion.ts'; // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 
 // #endregion Imports
 
@@ -77,9 +77,9 @@ const focScrFun = ( focEveObj : FocusEvent ) : void => { // What: Focus Scroll F
 	tarEleObj.scrollIntoView({ // What: Into View Call. Why: The focused pill has to be fully visible. How: This scrolls it to the nearest edge of its rail, jumping under reduced motion.
 
 
-		behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: The scroll should glide unless less motion was asked for. How: This jumps under reduced motion and glides otherwise.
-		block    : 'nearest',                       // What: Block. Why: The page shouldn't jump vertically for a pill already in view. How: This scrolls vertically only as far as needed.
-		inline   : 'nearest'                        // What: Inline. Why: The rail should move only far enough to show the whole pill. How: This scrolls sideways to its nearest edge.
+		behavior : scrBehFun(), // What: Behavior. Why: The scroll should glide unless less motion was asked for. How: This jumps under reduced motion and glides otherwise.
+		block    : 'nearest',   // What: Block. Why: The page shouldn't jump vertically for a pill already in view. How: This scrolls vertically only as far as needed.
+		inline   : 'nearest'    // What: Inline. Why: The rail should move only far enough to show the whole pill. How: This scrolls sideways to its nearest edge.
 
 
 	});

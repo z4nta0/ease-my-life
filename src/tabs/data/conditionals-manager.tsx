@@ -10,6 +10,7 @@ import React     from 'react';                             // What: React. Why: 
 import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: ConEdiCom's own Save/Cancel/Delete footer and ConManCom's add button need consistently-styled buttons. How: This is rendered in both components below.
 import { CodConCom    } from '../../ui/conditional-controls.tsx';   // What: Conditional Control Component. Why: ConEdiCom reuses the exact same "type + settings" editor the Pickers create-flow uses, so both stay in sync. How: This is rendered directly inside ConEdiCom below.
 import { ColDisCom    } from '../../ui/collapse.tsx';               // What: Collapse Disclosure Component. Why: Each conditional row opens and closes with the same collapse-height animation as every other disclosure in the app. How: This wraps each row's editor body, driven by that row's open state.
+import { colMapFun    } from '../../state/store.ts';                // What: Collapsed Map Function. Why: The saved section collapse state may be missing on an old save. How: This is called with the app state to read the collapse map, empty when there is none.
 import { CON_NAM_OBJ  } from '../../core/conditionals.ts';          // What: Conditionals Namespace Object. Why: A conditional's sortable Odds falls back to the shared default odds. How: This reads CON_NAM_OBJ.DEF_ODD_NUM in conOddFun.
 import { conDraFun    } from '../../ui/conditional-controls.tsx';   // What: Conditional Draft Function. Why: A brand-new conditional started from ConManCom needs the same sensible starting draft the Pickers create-flow uses. How: This is called once when the "Add a conditional" button is clicked.
 import { durMilFun    } from '../../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
@@ -433,8 +434,8 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 	// #region Section Collapse State
 
-	const colMapObj = ( staAppObj.ui && staAppObj.ui.controlsCollapsed ) || {}; // What: Collapsed Map Object. Why: The section's own collapse state is persisted the same way every picker card's own Controls/Items disclosures are. How: This reads staAppObj.ui.controlsCollapsed, falling back to an empty object.
-	const secOpeBoo = colMapObj[ '__conditionals' ] === false;                  // What: Section Open Boolean. Why: This section defaults COLLAPSED (absent means collapsed), unlike its own nested disclosures. How: This is true only when the persisted entry is explicitly false.
+	const colMapObj = colMapFun( staAppObj );                  // What: Collapsed Map Object. Why: The section's own collapse state is persisted the same way every picker card's own Controls/Items disclosures are. How: This reads staAppObj.ui.controlsCollapsed, falling back to an empty object.
+	const secOpeBoo = colMapObj[ '__conditionals' ] === false; // What: Section Open Boolean. Why: This section defaults COLLAPSED (absent means collapsed), unlike its own nested disclosures. How: This is true only when the persisted entry is explicitly false.
 
 	// #endregion Section Collapse State
 

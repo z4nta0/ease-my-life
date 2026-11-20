@@ -9,10 +9,11 @@ import React     from 'react';                    // What: React. Why: This is t
 
 import { createPortal } from 'react-dom';            // What: Create Portal. Why: The dim layer, spotlight and coach card must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with GuiTouCom's own JSX and document.body inside the porBodFun helper below.
 import { emlTouObj    } from '../state/tour-bus.ts'; // What: Ease My Life Tour Object. Why: This publishes the running tour's touPhaStr/touSteNum/touIdeStr/resTopNum/wanRaiBoo fields so other tabs can react without a context provider. How: This is written to via .set() at several points below and never read synchronously here.
+import { finTarFun    } from '../help/geometry.ts';  // What: Find Targets Function. Why: A step's selector list resolves to its visible targets the same way help mode's items do. How: This is called with the step's own selector list, trying each alternative in turn.
 import { InfTipCom    } from '../ui/info-tip.tsx';   // What: Info Tip Component. Why: A cirBoo step's disabled Next button needs a hover/tap hint explaining why it can't be clicked yet. How: This wraps that disabled button in the render output below.
-import { redMotFun    } from '../utils/motion.ts';   // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant scroll instead of a smooth one. How: This is checked inside briTarFun's own scroll calls below.
 import { rhyPxlFun    } from '../utils/rhythm.ts';   // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
-import { splSelFun    } from '../utils/selector.ts'; // What: Split Selector Function. Why: A selector list's alternatives are tried in turn, and a comma nested inside :is() or :has() must not split one alternative in two. How: This is called with the step's or item's own selector list.
+import { scrBehFun    } from '../utils/motion.ts';   // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
+import { uniRecFun    } from '../help/geometry.ts';  // What: Union Rect Function. Why: A step's highlight and coach placement are measured against the one box enclosing every target, each clipped against its scrollable rows first. How: This is called with the step's matched elements.
 import { useEmlTouFun } from '../state/tour-bus.ts'; // What: Use Ease My Life Tour Function. Why: GuiTouCom needs to know whether a drag gesture is in progress elsewhere in the app, so it can hide its own coach card during one. How: This is called once to subscribe to the shared tour bus and read its own draActBoo field.
 
 
@@ -159,6 +160,35 @@ const arrHorFun = ( curRecObj : { left : number, width : number }, coaLefNum : n
 const coaWidFun = ( vieWidNum : number ) : number => Math.min( rhyPxlFun( 'p10' ) + ( rhyPxlFun( 'bas' ) + rhyPxlFun( 'm12' ) ) * 2, vieWidNum - rhyPxlFun( 'm01' ) * 2 ); // What: Coach Width Function. Why: The coach card should fit its body text like help mode's tip, without outgrowing a narrow viewport. How: This takes the smaller of the text width plus padding and borders, and the viewport less its edge margins. // Vertical Rhythm Base Plus 10 ~= 242.522px, Vertical Rhythm Base ~= 14.572px, Vertical Rhythm Base Minus 12 ~= 0.499px, Vertical Rhythm Base Minus 1 = 11px
 
 // #endregion coaWidFun
+
+
+
+// #region isaDocFun
+
+/**
+ * isaDocFun = Is-A Document Function
+ *
+ * @summary
+ * Whether a resolved scroller is the document's own scroller, which is
+ * scrolled through window and measured through documentElement rather than
+ * through the element itself.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curScrEle - Current Scroll Element: The scroller to check.
+ *
+ * @returns Whether curScrEle is the document's own scroller.
+ *
+ * @example
+ * ```ts
+ * isaDocFun(document.documentElement) // => true
+ * ```
+ *
+*/
+
+const isaDocFun = ( curScrEle : Element ) : boolean => curScrEle === document.scrollingElement || curScrEle === document.documentElement; // What: Is-A Document Function. Why: Every scroll and measurement of a step's scroller treats the document's own scroller differently. How: This compares curScrEle against document.scrollingElement and documentElement.
+
+// #endregion isaDocFun
 
 
 
@@ -358,6 +388,36 @@ const coaLayFun = ( curRecObj : { height : number, left : number, top : number }
 };
 
 // #endregion coaLayFun
+
+
+
+// #region spoPadFun
+
+/**
+ * spoPadFun = Spotlight Pad Function
+ *
+ * @summary
+ * How far a step's spotlight reaches past its target on each side: none for
+ * a cirBoo step, whose pulsing ring is drawn tight against the target, so
+ * any padding would leave a visible gap between the target and its ring, and
+ * the vertical rhythm's m02 step otherwise.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curSteObj - Current Step Object: The step being shown.
+ *
+ * @returns The spotlight padding in pixels.
+ *
+ * @example
+ * ```ts
+ * spoPadFun(curSteObj) // => 8.304
+ * ```
+ *
+*/
+
+const spoPadFun = ( curSteObj : TouSteTyp ) : number => curSteObj.cirBoo ? 0 : rhyPxlFun( 'm02' ); // What: Spotlight Pad Function. Why: The live spotlight and the render-time layout must pad a step's target alike. How: This is 0 for a cirBoo step, otherwise the m02 rhythm step in pixels. // Vertical Rhythm Base Minus 2 ~= 8.304px
+
+// #endregion spoPadFun
 
 
 
@@ -774,284 +834,6 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	}, [ curSteNum ] ); // What: Effect Dependency Array. Why: This should republish whenever the step index moves, since a different step's own selector decides the answer. How: curSteNum is what curSteObj itself is derived from.
 
 	// #endregion Current Step Sync
-
-
-
-	// #region Target Resolution And Rect Math Helpers
-
-	// #region finTarFun
-
-	/**
-	 * finTarFun = Find Targets Function
-	 *
-	 * @summary
-	 * Resolves a step selector to the visible elements it matches. The
-	 * selector's comma-separated alternatives are tried in order, and the
-	 * first one matching at least one element with a real, non-zero rect wins,
-	 * so a display:none half of a responsive pair never beats the visible
-	 * half. Every element that winning alternative matches is returned, which
-	 * lets one step spotlight several elements as a single combined highlight.
-	 *
-	 * @author z4nta0 <https://github.com/z4nta0>
-	 *
-	 * @param selLisStr - Selector List String: A step's own selector field
-	 *                   (selStr, cliSelStr, cptSelStr, advCliStr, or
-	 *                   advSelStr), comma-separated alternatives allowed.
-	 *
-	 * @returns The visible elements the first matching alternative found, or
-	 * an empty array when no alternative matched anything.
-	 * @see {@link curEleArr}
-	 *
-	 * @example
-	 * ```ts
-	 * finTarFun(curSteObj.selStr) // => [ curIteEle, ... ]
-	 * ```
-	 *
-	*/
-
-	const finTarFun = ( selLisStr : string ) => { // What: Find Targets Function. Why: Every element a step's selector matches needs resolving, honoring selector ORDER (comma-separated fallbacks), so a step can spotlight more than one element (e.g. "the whole list") as a single combined highlight. How: This filters out zero-rect (CSS display:none) elements before checking emptiness, since some responsive pairs (e.g. the sidebar vs. footer Edit Mode button) both exist in the DOM at every width, only swapping which one is display:none via a container query, unlike genLisBut/genConDiv's conditional-render swap; without this, the first alternative in a fallback list would always win even when it is the hidden one.
-
-
-		for ( const oneSelStr of splSelFun( selLisStr ) ) { // What: Selector Alternative Loop. Why: Each comma-separated alternative must be tried in order until one actually matches something visible. How: This walks selLisStr's own alternatives left to right.
-
-
-			const curEleArr = [ ...document.querySelectorAll( oneSelStr ) ].filter( ( curIteEle ) => { // What: Current Element Array. Why: Every element matching this one alternative needs collecting before it can be filtered down to visible ones. How: This spreads the live NodeList from querySelectorAll into a plain array, then keeps only the elements the visibility filter below accepts.
-
-
-				const eleRecObj = curIteEle.getBoundingClientRect(); // What: Element Rect Object. Why: The visibility check below needs this element's own on-screen size. How: This reads curIteEle's own bounding rect.
-
-
-
-				return eleRecObj.width > 0 || eleRecObj.height > 0; // What: Visibility Filter Return. Why: A matched element that is display:none or otherwise zero-sized should never count as a real, clickable target. How: This keeps only elements whose own bounding rect has a real width or height.
-
-
-			} );
-
-
-			if ( curEleArr.length ) return curEleArr; // What: First Match Return. Why: An earlier alternative that actually matched something wins over a later one. How: This returns as soon as this alternative's own filtered array is non-empty.
-
-
-		}
-
-
-
-		return []; // What: No Match Return. Why: The caller always needs an array back, even when nothing matched at all. How: This returns an empty array once every alternative has been tried.
-
-
-	};
-
-	// #endregion finTarFun
-
-
-
-	// #region cliHorFun
-
-	/**
-	 * cliHorFun = Clip Horizontal Function
-	 *
-	 * @summary
-	 * Clips an element's rect horizontally against the element itself and
-	 * every ancestor that clips its own overflow-x, so the part of an element
-	 * scrolled past the edge of a scrollable row never counts toward a
-	 * highlight. Without this, a step matching several items in the same
-	 * scrollable row would union in the ones scrolled out of view, stretching
-	 * the highlight into empty space past the row's own edge. It is
-	 * deliberately horizontal-only, since briTarFun's own scroll already
-	 * settles the vertical case, and clipping vertically too would fight that
-	 * scroll while it runs.
-	 *
-	 * @author z4nta0 <https://github.com/z4nta0>
-	 *
-	 * @param curRecObj - Current Rect Object: The element's own bounding rect,
-	 *                    straight from getBoundingClientRect().
-	 * @param curTarEle - Current Target Element: The element that rect belongs
-	 *                    to, whose own overflow and ancestors are checked.
-	 *
-	 * @returns A plain { bottom, left, right, top } rect, or null once the
-	 * element is clipped away entirely.
-	 *
-	 * @example
-	 * ```ts
-	 * cliHorFun(curIteEle.getBoundingClientRect(), curIteEle) // => rect
-	 * ```
-	 *
-	*/
-
-	const cliHorFun = ( curRecObj : BoxRecTyp, curTarEle : Element ) => { // What: Clip Horizontal Function. Why: Clamps a rect's left/right against every ancestor that horizontally clips its own overflow (overflow-x auto/scroll/hidden, e.g. the Pickers page's Group/Show rows), since an element scrolled past the edge of one of these still has a real, full-width getBoundingClientRect() even though none of it is actually visible there. How: Without this, a step whose selector matches several items in the SAME scrollable row (e.g. "every picker tab") would union in whichever ones happen to be scrolled out of view, stretching the highlight into the empty space past the row's own clipped edge; deliberately horizontal-only, since briTarFun's own scroll-to-target already settles the VERTICAL case before this ever runs steady-state, and clipping vertically too would fight that during the brief transient scroll itself. Returns null once the element ends up fully clipped away.
-
-
-		// #region Working Rect
-
-		const cliTopNum = curRecObj.top;    // What: Clip Top Number. Why: This copies top out into a plain number up front rather than spreading curRecObj itself (a DOMRect), since DOMRect's fields are getters on its prototype, not its own enumerable properties, so a spread would silently drop every field this function does not explicitly set, poisoning every later Math.min/max call downstream with NaN. How: This starts as a plain copy of curRecObj's own top.
-		const cliBotNum = curRecObj.bottom; // What: Clip Bottom Number. Why: Same reasoning as cliTopNum above, for the bottom edge. How: This starts as a plain copy of curRecObj's own bottom.
-
-		let cliLefNum = curRecObj.left;  // What: Clip Left Number. Why: Same reasoning as cliTopNum above, for the left edge. How: This starts as a plain copy of curRecObj's own left.
-		let cliRigNum = curRecObj.right; // What: Clip Right Number. Why: Same reasoning as cliTopNum above, for the right edge. How: This starts as a plain copy of curRecObj's own right.
-
-		// #endregion Working Rect
-
-
-
-		// #region Own Overflow Clip
-
-		const ownOveStr = getComputedStyle( curTarEle ).overflowX; // What: Own Overflow String. Why: A step whose selector matches the scrollable row ITSELF as one element (e.g. the Stats tour's Range row) rather than several children inside it needs its own overflow-x checked too, since only inspecting ancestors below would miss that case. How: This reads curTarEle's own computed overflow-x style.
-
-		const ownAutBoo = ownOveStr === 'auto';                                  // What: Own Auto Boolean. Why: An overflow-x of auto clips the target's own content. How: This compares ownOveStr against 'auto'.
-		const ownScrBoo = ownOveStr === 'scroll';                                // What: Own Scroll Boolean. Why: An overflow-x of scroll clips the target's own content. How: This compares ownOveStr against 'scroll'.
-		const ownHidBoo = ownOveStr === 'hidden';                                // What: Own Hidden Boolean. Why: An overflow-x of hidden clips the target's own content. How: This compares ownOveStr against 'hidden'.
-		const ownNarBoo = curTarEle.clientWidth < ( cliRigNum - cliLefNum ) - 2; // What: Own Narrow Boolean. Why: Only a visible width meaningfully narrower than the reported rect needs the clamp. How: This compares curTarEle's own clientWidth against the rect's width, with a 2px tolerance against float rounding.
-
-		const ownCliBoo = ( ownAutBoo || ownScrBoo || ownHidBoo ) && ownNarBoo; // What: Own Clip Boolean. Why: The target needs its own clamp only when it clips its content and is narrower than its rect. How: This ANDs any of the 3 clipping overflow values with ownNarBoo.
-
-
-		if ( ownCliBoo ) { // What: Self Overflow Guard. Why: clientWidth reflects what is actually rendered/visible regardless of a too-wide getBoundingClientRect() (seen on some engine/layout combinations even with min-width:0 set); only clamps if it is meaningfully narrower than the raw rect, so a normal thin border does not shave a couple pixels off every ordinary highlight. How: This reads ownCliBoo, which pairs the 3 CSS values that actually clip content with a 2px-tolerant width check.
-
-
-			cliRigNum = cliLefNum + curTarEle.clientWidth; // What: Right Clamp. Why: The right edge must stop at what is actually visible, not the full scrollable content width. How: This rebuilds cliRigNum from cliLefNum plus curTarEle's own clientWidth.
-
-
-		}
-
-		// #endregion Own Overflow Clip
-
-
-
-		// #region Ancestor Walk
-
-		let ancCurEle = curTarEle.parentElement; // What: Ancestor Current Element And Walker. Why: A target nested inside a DIFFERENT scrollable ancestor also needs clipping against that ancestor's own visible bounds. How: This starts at curTarEle's own parent and is reassigned by the loop below.
-
-
-		while ( ancCurEle && ancCurEle !== document.body ) { // What: Ancestor Walk Loop. Why: Every scrollable ancestor between curTarEle and the document body can further clip the working rect. How: This walks upward one parentElement at a time until it reaches document.body or runs out of ancestors.
-
-
-			const ancOveStr = getComputedStyle( ancCurEle ).overflowX; // What: Ancestor Overflow String. Why: Only a genuinely scrollable ancestor should clip anything. How: This reads ancCurEle's own computed overflow-x style.
-
-			const ancAutBoo = ancOveStr === 'auto';   // What: Ancestor Auto Boolean. Why: An overflow-x of auto clips the ancestor's content. How: This compares ancOveStr against 'auto'.
-			const ancScrBoo = ancOveStr === 'scroll'; // What: Ancestor Scroll Boolean. Why: An overflow-x of scroll clips the ancestor's content. How: This compares ancOveStr against 'scroll'.
-			const ancHidBoo = ancOveStr === 'hidden'; // What: Ancestor Hidden Boolean. Why: An overflow-x of hidden clips the ancestor's content. How: This compares ancOveStr against 'hidden'.
-
-			const ancCliBoo = ancAutBoo || ancScrBoo || ancHidBoo; // What: Ancestor Clip Boolean. Why: Only an ancestor that clips its content can narrow the working rect. How: This ORs the 3 clipping overflow values above.
-
-
-			if ( ancCliBoo ) { // What: Ancestor Overflow Guard. Why: A non-scrolling ancestor (the common case) has nothing to clip against. How: This reads ancCliBoo, which ORs the 3 CSS values that actually clip content.
-
-
-				const ancRecObj = ancCurEle.getBoundingClientRect(); // What: Ancestor Rect Object. Why: The clamp below needs the ancestor's own real on-screen bounds. How: This reads ancCurEle's own bounding rect.
-
-				cliLefNum = Math.max( cliLefNum, ancRecObj.left );  // What: Left Clamp. Why: The working rect must never extend past this ancestor's own visible left edge. How: This narrows cliLefNum to whichever is further right between the working rect and ancRecObj.
-				cliRigNum = Math.min( cliRigNum, ancRecObj.right ); // What: Right Clamp. Why: The working rect must never extend past this ancestor's own visible right edge. How: This narrows cliRigNum to whichever is further left between the working rect and ancRecObj.
-
-
-
-				if ( cliRigNum <= cliLefNum ) return null; // What: Fully Clipped Guard. Why: An element scrolled entirely out of this ancestor's visible bounds is not a real, clickable target at all. How: This returns null once the clamped width collapses to zero or less.
-
-
-			}
-
-
-
-			ancCurEle = ancCurEle.parentElement; // What: Ancestor Advance. Why: The walk must keep climbing toward the document body. How: This reassigns ancCurEle to its own parentElement for the next loop iteration.
-
-
-		}
-
-		// #endregion Ancestor Walk
-
-
-
-		return { bottom : cliBotNum, left : cliLefNum, right : cliRigNum, top : cliTopNum }; // What: Clipped Rect Return. Why: The caller needs the final, fully-clamped rect back. How: This builds the { top, left, right, bottom } shape every other rect helper below expects.
-
-
-	};
-
-	// #endregion cliHorFun
-
-
-
-	// #region uniRecFun
-
-	/**
-	 * uniRecFun = Union Rect Function
-	 *
-	 * @summary
-	 * Builds the single bounding box that encloses every matched element, the
-	 * rect every highlight and coach placement is measured against. Each
-	 * element's own rect is passed through cliHorFun first, so a scrolled-away
-	 * portion of any one of them never stretches the union, and an element
-	 * clipped away entirely contributes nothing at all.
-	 *
-	 * @author z4nta0 <https://github.com/z4nta0>
-	 *
-	 * @param curEleArr - Current Element Array: The elements finTarFun matched
-	 *                    for the current step.
-	 *
-	 * @returns A { bottom, height, left, right, top, width } rect, using the
-	 * same edge names a DOMRect does.
-	 *
-	 * @example
-	 * ```ts
-	 * uniRecFun(curEleArr) // => rect
-	 * ```
-	 *
-	*/
-
-	const uniRecFun = ( curEleArr : Element[] ) => { // What: Union Rect Function. Why: This is the bounding box that encloses every matched element. How: Each element's own rect is first passed through cliHorFun so a scrolled-away portion of any one of them never stretches the union into empty space.
-
-
-		let uniTopNum = Infinity;  // What: Union Top Number. Why: The union's own top edge must start from a value any real rect will immediately beat. How: This starts at Infinity before the loop below narrows it.
-		let uniLefNum = Infinity;  // What: Union Left Number. Why: Same reasoning as uniTopNum above, for the left edge. How: This starts at Infinity before the loop below narrows it.
-		let uniRigNum = -Infinity; // What: Union Right Number. Why: Same reasoning as uniTopNum above, for the right edge, widening instead of narrowing. How: This starts at -Infinity before the loop below widens it.
-		let uniBotNum = -Infinity; // What: Union Bottom Number. Why: Same reasoning as uniTopNum above, for the bottom edge, widening instead of narrowing. How: This starts at -Infinity before the loop below widens it.
-
-
-
-		curEleArr.forEach( ( curIteEle ) => { // What: Element Union Loop. Why: Every matched element contributes to the overall union. How: This walks curEleArr, folding each element's own clipped rect into the accumulator numbers above.
-
-
-			// #region Element Clipping
-
-			const cliRecObj = cliHorFun( curIteEle.getBoundingClientRect(), curIteEle ); // What: Clipped Rect Object. Why: A scrolled-away portion of this element must not stretch the union. How: This runs curIteEle's own bounding rect through cliHorFun.
-
-
-			if ( !cliRecObj ) return; // What: Fully Clipped Guard. Why: An element clipped away entirely contributes nothing to the union. How: This skips the rest of this iteration when cliHorFun returned null.
-
-			// #endregion Element Clipping
-
-
-
-			// #region Union Folding
-
-			uniTopNum = Math.min( uniTopNum, cliRecObj.top );    // What: Top Fold. Why: The union's own top edge is whichever top is furthest up among every element seen so far. How: This narrows uniTopNum to the smaller of the running value and this element's own top.
-			uniLefNum = Math.min( uniLefNum, cliRecObj.left );   // What: Left Fold. Why: The union's own left edge is whichever left is furthest out among every element seen so far. How: This narrows uniLefNum to the smaller of the running value and this element's own left.
-			uniRigNum = Math.max( uniRigNum, cliRecObj.right );  // What: Right Fold. Why: The union's own right edge is whichever right is furthest out among every element seen so far. How: This widens uniRigNum to the larger of the running value and this element's own right.
-			uniBotNum = Math.max( uniBotNum, cliRecObj.bottom ); // What: Bottom Fold. Why: The union's own bottom edge is whichever bottom is furthest down among every element seen so far. How: This widens uniBotNum to the larger of the running value and this element's own bottom.
-
-			// #endregion Union Folding
-
-
-		} );
-
-
-
-		return { // What: Union Rect Return. Why: The caller needs the final unioned rect back, including its own derived width/height, the same edge names a DOMRect uses so either one can be passed to the rect helpers. How: This builds the shape every other rect helper below expects.
-
-
-			bottom : uniBotNum,             // What: Bottom. Why: This is the union's own bottom edge. How: This is the widest bottom any element reached.
-			height : uniBotNum - uniTopNum, // What: Height. Why: Callers size the spotlight from this. How: This is derived from the union's own top and bottom edges.
-			left   : uniLefNum,             // What: Left. Why: This is the union's own left edge. How: This is the furthest-out left any element reached.
-			right  : uniRigNum,             // What: Right. Why: This is the union's own right edge. How: This is the furthest-out right any element reached.
-			top    : uniTopNum,             // What: Top. Why: This is the union's own top edge. How: This is the furthest-up top any element reached.
-			width  : uniRigNum - uniLefNum  // What: Width. Why: Callers size the spotlight from this. How: This is derived from the union's own left and right edges.
-
-
-		};
-
-
-	};
-
-	// #endregion uniRecFun
-
-	// #endregion Target Resolution And Rect Math Helpers
 
 
 
@@ -1784,12 +1566,12 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		const scrAmoFun = ( curScrEle : Element, delYcoNum : number ) => { // What: Scroll Amount Function. Why: A step that jumps to a different part of the page, or, via briTarFun's own content-grew re-trigger and decResFun's own follow-up correction below, mid-step too, should read as the tour visibly navigating there rather than an unexplained cut. How: This is smooth unless prefers-reduced-motion, and is deliberately NOT applied to todTopFun (the tour-END reset on Skip/Done), which is a closing reset, not a "here's the next thing" step transition, and already fires alongside a tab switch back to Today, staying an instant cut by design.
 
 
-			const curBehStr = redMotFun() ? 'auto' : 'smooth'; // What: Current Behavior String. Why: The scroll should be instant for a user who prefers reduced motion. How: This resolves the reduced-motion preference once.
+			const curBehStr = scrBehFun(); // What: Current Behavior String. Why: The scroll should be instant for a user who prefers reduced motion. How: This resolves the reduced-motion preference once.
 
 			const scrOptObj : ScrollToOptions = { behavior : curBehStr, top : delYcoNum }; // What: Scroll Options Object. Why: Both branches below need the same options. How: This builds one shared options object from curBehStr and delYcoNum.
 
 
-			if ( curScrEle === document.scrollingElement || curScrEle === document.documentElement ) window.scrollBy( scrOptObj ); // What: Window Scroll By. Why: The document's own scroller is addressed through window, not the element itself. How: This calls window.scrollBy when curScrEle is the document's own scroller.
+			if ( isaDocFun( curScrEle ) ) window.scrollBy( scrOptObj ); // What: Window Scroll By. Why: The document's own scroller is addressed through window, not the element itself. How: This calls window.scrollBy when curScrEle is the document's own scroller.
 
 			else curScrEle.scrollBy( scrOptObj ); // What: Element Scroll By. Why: Any other scroller is addressed directly. How: This calls curScrEle.scrollBy for every other case.
 
@@ -1867,12 +1649,12 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			if ( curSteObj.sttBoo ) { // What: Scroll-To-Top Guard. Why: A step whose target starts right at the top of the page anyway (e.g. a full-list review step) should scroll all the way up rather than just nudging it into view, keeping everything visible from the top instead of opening mid-scroll. How: This scrolls the target's scroller, or the window, to the very top, then returns.
 
 
-				const curBehStr = redMotFun() ? 'auto' : 'smooth'; // What: Current Behavior String. Why: The scroll should be instant for a user who prefers reduced motion. How: This resolves the reduced-motion preference once.
+				const curBehStr = scrBehFun(); // What: Current Behavior String. Why: The scroll should be instant for a user who prefers reduced motion. How: This resolves the reduced-motion preference once.
 
 				const scrOptObj : ScrollToOptions = { behavior : curBehStr, top : 0 }; // What: Scroll Options Object. Why: Both branches below need the same options. How: This builds one shared options object that scrolls to the very top.
 
 
-				if ( curScrEle === document.scrollingElement || curScrEle === document.documentElement ) window.scrollTo( scrOptObj ); // What: Window Scroll To. Why: The document's own scroller is addressed through window. How: This calls window.scrollTo when curScrEle is the document's own scroller.
+				if ( isaDocFun( curScrEle ) ) window.scrollTo( scrOptObj ); // What: Window Scroll To. Why: The document's own scroller is addressed through window. How: This calls window.scrollTo when curScrEle is the document's own scroller.
 
 				else curScrEle.scrollTo( scrOptObj ); // What: Element Scroll To. Why: Any other scroller is addressed directly. How: This calls curScrEle.scrollTo for every other case.
 
@@ -1888,10 +1670,10 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			if ( curSteObj.stbBoo ) { // What: Scroll-To-Bottom Guard. Why: The symmetric case: a step whose target always sits at the very bottom of its page/form (e.g. a footer "next" button), where scrolling by pad math alone can undershoot after the surrounding content just changed shape (e.g. a form switching back from a longer sub-step to a shorter one), landing short of the target instead of reaching it. How: This scrolls the target's scroller, or the window, to the very bottom, then returns.
 
 
-				const curBehStr = redMotFun() ? 'auto' : 'smooth'; // What: Current Behavior String. Why: Both branches below need the same behavior choice. How: This resolves the reduced-motion preference once.
+				const curBehStr = scrBehFun(); // What: Current Behavior String. Why: Both branches below need the same behavior choice. How: This resolves the reduced-motion preference once.
 
 
-				if ( curScrEle === document.scrollingElement || curScrEle === document.documentElement ) window.scrollTo( { behavior : curBehStr, top : document.documentElement.scrollHeight } ); // What: Window Scroll To Bottom. Why: The document's own scroller is addressed through window. How: This scrolls the window all the way to documentElement's own scrollHeight.
+				if ( isaDocFun( curScrEle ) ) window.scrollTo( { behavior : curBehStr, top : document.documentElement.scrollHeight } ); // What: Window Scroll To Bottom. Why: The document's own scroller is addressed through window. How: This scrolls the window all the way to documentElement's own scrollHeight.
 
 				else curScrEle.scrollTo( { behavior : curBehStr, top : curScrEle.scrollHeight } ); // What: Element Scroll To Bottom. Why: Any other scroller is addressed directly. How: This scrolls curScrEle all the way to its own scrollHeight.
 
@@ -1908,7 +1690,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 			// #region Target Measurements
 
-			const isaDocBoo = curScrEle === document.scrollingElement || curScrEle === document.documentElement;        // What: Is-A Document Boolean. Why: Several branches below need to know whether the resolved scroller is the document itself. How: This compares curScrEle against both document.scrollingElement and document.documentElement.
+			const isaDocBoo = isaDocFun( curScrEle );                                                                   // What: Is-A Document Boolean. Why: Several branches below need to know whether the resolved scroller is the document itself. How: This compares curScrEle against both document.scrollingElement and document.documentElement.
 			const tarRecObj = uniRecFun( curEleArr );                                                                   // What: Target Rect Object. Why: Every branch below needs the target's own current union rect. How: This unions every matched element via uniRecFun.
 			const scrRecObj = isaDocBoo ? { bottom : window.innerHeight, top : 0 } : curScrEle.getBoundingClientRect(); // What: Scroller Rect Object. Why: The pad math below needs the scroller's own visible bounds. How: This uses the viewport bounds for the document scroller, otherwise curScrEle's own bounding rect.
 
@@ -2007,7 +1789,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 		// #region Chrome Clamping And Imperative Placement
 
-		const spoPadNum = curSteObj.cirBoo ? 0 : rhyPxlFun( 'm02' ); // What: Spotlight Pad Number. Why: cirBoo steps get a pulsing ring drawn tight against the target (see the .touSpoDiv--pulse CSS); any padding here would leave a visible gap between the target's real edge and the pulse, which reads as the highlight being for some larger, vaguer area instead of the exact element to click. How: This is 0 for a cirBoo step, otherwise the normal m02 step. // Vertical Rhythm Base Minus 2 ~= 8.304px
+		const spoPadNum = spoPadFun( curSteObj ); // What: Spotlight Pad Number. Why: cirBoo steps get a pulsing ring drawn tight against the target (see the .touSpoDiv--pulse CSS); any padding here would leave a visible gap between the target's real edge and the pulse, which reads as the highlight being for some larger, vaguer area instead of the exact element to click. How: This is 0 for a cirBoo step, otherwise the normal m02 step.
 
 
 
@@ -2142,7 +1924,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		*/
 
-		const plaTarFun = ( curEleArr : Element[] ) => { // What: Place Target Function. Why: This positions both the spotlight and the real coach imperatively, every frame, so neither one visibly lags behind a smooth scroll the way pure React state would. How: This writes the clipped target rect onto the spotlight's style, then places the coach beside it from the same rect.
+		const plaTarFun = ( curEleArr : HTMLElement[] ) => { // What: Place Target Function. Why: This positions both the spotlight and the real coach imperatively, every frame, so neither one visibly lags behind a smooth scroll the way pure React state would. How: This writes the clipped target rect onto the spotlight's style, then places the coach beside it from the same rect.
 
 
 			const tarRecObj = claHorFun( claChrFun( uniRecFun( curEleArr ), curEleArr ) ); // What: Target Rect Object. Why: Both the spotlight and the coach below need the same clamped, unioned rect. How: This unions curEleArr, then clamps the result against chrome and the screen's side edges.
@@ -2232,7 +2014,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		*/
 
-		const decResFun = ( curEleArr : Element[] ) => { // What: Decide Reserve Function. Why: This decides how much top-space (if any) THIS step's target needs reserved above it, ONCE, the very first time the target's own geometry has settled, rather than continuously on every frame. How: A continuous decision looks right on Today (its highlight is tall enough that scrolling never changes the verdict) but flips mid-scroll on shorter pages like Pickers, where scrolling the header over the target can cross the "fits above" threshold WHILE THE USER IS STILL SCROLLING, jumping the layout under them; deciding once and locking it for the step's duration reads like a person who sized up the space up front, not one who keeps rearranging things as you scroll.
+		const decResFun = ( curEleArr : HTMLElement[] ) => { // What: Decide Reserve Function. Why: This decides how much top-space (if any) THIS step's target needs reserved above it, ONCE, the very first time the target's own geometry has settled, rather than continuously on every frame. How: A continuous decision looks right on Today (its highlight is tall enough that scrolling never changes the verdict) but flips mid-scroll on shorter pages like Pickers, where scrolling the header over the target can cross the "fits above" threshold WHILE THE USER IS STILL SCROLLING, jumping the layout under them; deciding once and locking it for the step's duration reads like a person who sized up the space up front, not one who keeps rearranging things as you scroll.
 
 
 			// #region Decision Guards
@@ -2424,10 +2206,10 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 				notFouNum = null; // What: Not-Found Reset. Why: The watchdog must reset the instant the target reappears. How: This clears notFouNum back to null.
 
 
-				const curScrEle = getScrFun( curEleArr[ 0 ] );                                                       // What: Current Scroll Element. Why: The content-grew check below needs to know which element actually scrolls. How: This resolves the first matched element's own scroller.
-				const isaDocBoo = curScrEle === document.scrollingElement || curScrEle === document.documentElement; // What: Is-A Document Boolean. Why: The document's own scroller reports its height through documentElement rather than itself. How: This compares curScrEle against both document.scrollingElement and document.documentElement.
-				const rawHeiNum = isaDocBoo ? document.documentElement.scrollHeight : curScrEle.scrollHeight;        // What: Raw Height Number. Why: The content-grew check needs the scrollable content's own total height. How: This reads documentElement's own scrollHeight for the document scroller, otherwise the scroller's own.
-				const scrHeiNum = rawHeiNum - resAmoNum;                                                             // What: Scroll Height Number. Why: The scroll stable check compares this against preScrNum, and the content-grew check against broScrNum. How: This subtracts resAmoNum from rawHeiNum (see preScrNum's own doc comment above for why).
+				const curScrEle = getScrFun( curEleArr[ 0 ] );                                                // What: Current Scroll Element. Why: The content-grew check below needs to know which element actually scrolls. How: This resolves the first matched element's own scroller.
+				const isaDocBoo = isaDocFun( curScrEle );                                                     // What: Is-A Document Boolean. Why: The document's own scroller reports its height through documentElement rather than itself. How: This compares curScrEle against both document.scrollingElement and document.documentElement.
+				const rawHeiNum = isaDocBoo ? document.documentElement.scrollHeight : curScrEle.scrollHeight; // What: Raw Height Number. Why: The content-grew check needs the scrollable content's own total height. How: This reads documentElement's own scrollHeight for the document scroller, otherwise the scroller's own.
+				const scrHeiNum = rawHeiNum - resAmoNum;                                                      // What: Scroll Height Number. Why: The scroll stable check compares this against preScrNum, and the content-grew check against broScrNum. How: This subtracts resAmoNum from rawHeiNum (see preScrNum's own doc comment above for why).
 
 
 				if ( preScrNum != null && Math.abs( scrHeiNum - preScrNum ) < 1 ) scrStaNum++; // What: Scroll Stable Increment. Why: The content-grew re-bring must wait until the page has stopped changing size. How: This adds a stable frame whenever the scroll height matches the previous frame's.
@@ -2565,7 +2347,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		// #endregion Live Position And Watchdog Loop
 
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: curSteObj, skiTouFun, and uniRecFun all get new identities on every render, so listing them would restart the frame loop and the not-found watchdog every render. How: Each is read from the render where the step or its selector changed.
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: curSteObj and skiTouFun both get new identities on every render, so listing them would restart the frame loop and the not-found watchdog every render. How: Each is read from the render where the step or its selector changed.
 	}, [ curSelStr, curSteNum ] ); // What: Effect Dependency Array. Why: This must re-run whenever the step index moves (a genuinely new step to track) or, for the very same step, whenever its own selStr changes (steps are rebuilt as fresh objects on every render, so this watches the one field that actually decides what to track). How: curSteNum is the step position itself, and curSelStr is the selector that drives everything inside this effect.
 
 	// #endregion Position Tracking
@@ -2717,7 +2499,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 	// #region Coach Layout Values
 
-	const spoPadNum = curSteObj.cirBoo ? 0 : rhyPxlFun( 'm02' );                          // What: Spotlight Pad Number. Why: See plaTarFun's own spoPadNum comment above, this is the render-time twin of that same value. How: This is 0 for a cirBoo step, otherwise the normal m02 step. // Vertical Rhythm Base Minus 2 ~= 8.304px
+	const spoPadNum = spoPadFun( curSteObj );                                             // What: Spotlight Pad Number. Why: See plaTarFun's own spoPadNum comment above, this is the render-time twin of that same value. How: This is 0 for a cirBoo step, otherwise the normal m02 step.
 	const coaLayObj = coaLayFun( curRecObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ); // What: Coach Layout Object. Why: This is the same shared math plaTarFun uses imperatively every frame, kept here too as the coach's own first-paint value each step and the eventual React-driven fallback once it catches up. How: This calls coaLayFun with the current curRecObj, coaHeiNum, and the current viewport/coach sizes; catBoo needs no special branch here at all any more, letting it fall through to the exact same below/above logic every other step already uses is what lets the coach flip to sit BELOW the target (arrow up) once there is room, instead of only ever attaching above it, since catBoo's own remaining job is upstream of this (skipping decResFun's own padding and giving briTarFun a precise initial scroll target).
 	const arrHorNum = arrHorFun( curRecObj, coaLayObj.left, coaWidNum );                  // What: Arrow Horizontal Number. Why: The real, visible coach's own render-time arrow position needs the same math plaTarFun uses imperatively. How: This calls arrHorFun with the current curRecObj and coaLayObj's own left.
 

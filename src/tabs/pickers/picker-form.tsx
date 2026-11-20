@@ -24,6 +24,7 @@ import { PIC_NAM_OBJ  } from '../../core/pickers.ts';             // What: Picke
 import { ranIdeFun    } from '../../utils/random-id.ts';          // What: Random Identifier Function. Why: A new item needs a stable id from the moment it's added. How: This mints an 'it_' id.
 import { redMotFun    } from '../../utils/motion.ts';             // What: Reduce Motion Function. Why: Several exit/scroll animations must be skipped for a user who prefers reduced motion. How: This is checked before every animated scroll, exit delay, or the reel/spotlight/dissolve cycle itself.
 import { rhyPxlFun    } from '../../utils/rhythm.ts';             // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
+import { scrBehFun    } from '../../utils/motion.ts';             // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';               // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) throughout to show the active mode's label/hint and to render the mode-choice radio list.
 import { selAllFun    } from '../../utils/input.ts';              // What: Select All Function. Why: A new pool item opens with a default name that typing should replace outright. How: This is the name field's ref callback, selecting its text once as it mounts.
 import { togFadFun    } from '../../ui/edge-fade.ts';             // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
@@ -296,8 +297,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing block needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
 
 
-				behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
-				top      : scrConEle.scrollTop + oveBelNum  // What: Top. Why: The page scrolls just enough to reveal the editor's bottom edge. How: This adds oveBelNum to the current scroll.
+				behavior : scrBehFun(),                    // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
+				top      : scrConEle.scrollTop + oveBelNum // What: Top. Why: The page scrolls just enough to reveal the editor's bottom edge. How: This adds oveBelNum to the current scroll.
 
 
 			});
@@ -470,8 +471,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		if ( raiCurEle.scrollLeft > 1 ) raiCurEle.scrollTo({ // What: Scroll Adjust Guard. Why: A rail that's already at its start needs no animation at all. How: This scrolls back to the start only when it's actually scrolled away from it.
 
 
-			behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
-			left     : 0                                // What: Left. Why: The rail's start is its left edge. How: This scrolls to x 0.
+			behavior : scrBehFun(), // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
+			left     : 0            // What: Left. Why: The rail's start is its left edge. How: This scrolls to x 0.
 
 
 		});
@@ -519,8 +520,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					curWalEle.scrollTo({ // What: Ancestor Scroll Call. Why: This is the actual reset of the found ancestor. How: This scrolls curWalEle to its top.
 
 
-						behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
-						top      : 0                                // What: Top. Why: The form's start is the top of the page. How: This scrolls to y 0.
+						behavior : scrBehFun(), // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
+						top      : 0            // What: Top. Why: The form's start is the top of the page. How: This scrolls to y 0.
 
 
 					});
@@ -549,8 +550,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 				scrConEle.scrollTo({ // What: Fallback Scroll Call. Why: This is the actual reset of the main container. How: This scrolls scrConEle to its top.
 
 
-					behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
-					top      : 0                                // What: Top. Why: The form's start is the top of the page. How: This scrolls to y 0.
+					behavior : scrBehFun(), // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
+					top      : 0            // What: Top. Why: The form's start is the top of the page. How: This scrolls to y 0.
 
 
 				});
@@ -677,8 +678,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
 
 
-				behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
-				top      : scrConEle.scrollTop + oveBelNum  // What: Top. Why: The page scrolls just enough to reveal the editor's bottom edge. How: This adds oveBelNum to the current scroll.
+				behavior : scrBehFun(),                    // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
+				top      : scrConEle.scrollTop + oveBelNum // What: Top. Why: The page scrolls just enough to reveal the editor's bottom edge. How: This adds oveBelNum to the current scroll.
 
 
 			});

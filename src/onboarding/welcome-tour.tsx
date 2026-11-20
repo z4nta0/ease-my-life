@@ -15,7 +15,7 @@ import { ONB_ASP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboard
 import { ONB_SPI_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: The tour needs to recognize its own sample pickers by id, to hide/unhide them without touching a user's real ones. How: This is read by the settings step's runFun and by bacSteFun below.
 import { ONB_STI_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Ids Array. Why: The tour needs to recognize its own sample reminders by id, so a Replay never seeds duplicates. How: This is checked before ever calling actStoObj.addTasFun below.
 import { ONB_TAS_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actStoObj.addTasFun by the Generate step's own runFun and by skiEndFun below.
-import { redMotFun   } from '../utils/motion.ts';               // What: Reduce Motion Function. Why: The returning-user scroll jumps instead of gliding for someone who asked for less motion. How: This reads the preference.
+import { scrBehFun   } from '../utils/motion.ts';               // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { todTopFun   } from './tour-runner.tsx';                // What: Today Top Function. Why: Skipping the Welcome Tour should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This is called from the intro modal's own onSkiTouFun handler below.
 
 
@@ -653,7 +653,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 					selTabFun( 'settings' ); // What: Settings Switch Call. Why: Signing in and importing both live on the Settings tab. How: This switches to it.
 
 
-					window.requestAnimationFrame( () => window.requestAnimationFrame( () => document.querySelector( '[data-element-name-hook~="setAccSec"]' )?.scrollIntoView( { behavior : redMotFun() ? 'auto' : 'smooth', block : 'start' } ) ) ); // What: Account Scroll Call. Why: The person lands on Sign in, with Import just above. How: This waits two frames for the tab to render, then scrolls the Account section into view, instantly under reduced motion.
+					window.requestAnimationFrame( () => window.requestAnimationFrame( () => document.querySelector( '[data-element-name-hook~="setAccSec"]' )?.scrollIntoView( { behavior : scrBehFun(), block : 'start' } ) ) ); // What: Account Scroll Call. Why: The person lands on Sign in, with Import just above. How: This waits two frames for the tab to render, then scrolls the Account section into view, instantly under reduced motion.
 
 
 				} }

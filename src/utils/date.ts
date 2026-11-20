@@ -10,7 +10,7 @@
  * time-of-day display formatters, and the calendar math behind monthly and
  * yearly schedules (days in a month, the nth weekday of a month, and ordinal
  * suffixes), plus the weekday and month names those schedules are read
- * by. Nothing here knows about pickers, tasks, or app state.
+ * by, and whether a date falls on a weekend. Nothing here knows about pickers, tasks, or app state.
  *
  * Sections:
  *  - Constants
@@ -381,13 +381,40 @@ const forTimFun = ( isoDatStr? : string | null ) : string => { // What: Format T
 
 // #endregion forTimFun
 
+
+
+// #region wkdDayFun
+
+/**
+ * wkdDayFun = Weekend Day Function
+ *
+ * @summary
+ * Whether a date falls on a weekend, a Saturday or a Sunday, in local time.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param cheDatObj - Check Date Object: The date to check.
+ *
+ * @returns Whether cheDatObj is a Saturday or a Sunday.
+ *
+ * @example
+ * ```ts
+ * wkdDayFun(new Date(2026, 10, 21)) // => true
+ * ```
+ *
+*/
+
+const wkdDayFun = ( cheDatObj : Date ) : boolean => cheDatObj.getDay() === 0 || cheDatObj.getDay() === 6; // What: Weekend Day Function. Why: Weekend exclusions need one rule for which days count as the weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
+
+// #endregion wkdDayFun
+
 // #endregion Helpers
 
 
 
 // #region Exports
 
-export { DAY_ABB_ARR, DAY_FUL_ARR, dimCouFun, forDatFun, forLonFun, forTimFun, isoDayFun, MON_ABB_ARR, MON_FUL_ARR, nexDatFun, nwmDayFun, ordSufFun }; // What: Named Exports. Why: Core schedules, state, and UI all format, compute, and name dates the same way. How: This exports every constant and helper above by name.
+export { DAY_ABB_ARR, DAY_FUL_ARR, dimCouFun, forDatFun, forLonFun, forTimFun, isoDayFun, MON_ABB_ARR, MON_FUL_ARR, nexDatFun, nwmDayFun, ordSufFun, wkdDayFun }; // What: Named Exports. Why: Core schedules, state, and UI all format, compute, and name dates the same way. How: This exports every constant and helper above by name.
 
 // #endregion Exports
 

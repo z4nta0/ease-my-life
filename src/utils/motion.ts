@@ -8,8 +8,9 @@
  * The reduced-motion check every animation in the app consults before playing:
  * whether the user's operating system asks for reduced motion. It reads the
  * live media query each time, so a change to the setting takes effect without
- * a reload. It also reads the stylesheet's easing curves, for motion that
- * JavaScript plays itself.
+ * a reload. It also picks the behavior a script-driven scroll uses from it,
+ * and reads the stylesheet's easing curves, for motion that JavaScript plays
+ * itself.
  *
  * Sections:
  *  - Helpers
@@ -84,13 +85,42 @@ const redMotFun = () : boolean => !!( window.matchMedia && window.matchMedia( '(
 
 // #endregion redMotFun
 
+
+
+// #region scrBehFun
+
+/**
+ * scrBehFun = Scroll Behavior Function
+ *
+ * @summary
+ * The behavior a script-driven scroll should use: an instant jump when the
+ * user asked for reduced motion, otherwise a smooth glide. It reads the live
+ * setting on every call, through redMotFun.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns 'auto' under reduced motion, else 'smooth'.
+ *
+ * @example
+ * ```ts
+ * scrBehFun() // => 'smooth'
+ * ```
+ *
+*/
+
+const scrBehFun = () : ScrollBehavior => redMotFun() ? 'auto' : 'smooth'; // What: Scroll Behavior Function. Why: Every scrollTo and scrollIntoView should jump instead of glide for a user who prefers reduced motion. How: This picks 'auto' when redMotFun reports reduced motion, otherwise 'smooth'.
+
+// #endregion scrBehFun
+
 // #endregion Helpers
 
 
 
 // #region Exports
 
-export { motEasFun, redMotFun }; // What: Named Exports. Why: Every animated component checks the same reduced-motion preference, and JS-played motion reads the same curves as the stylesheet. How: This exports motEasFun and redMotFun by name.
+export { motEasFun, redMotFun, scrBehFun }; // What: Named Exports. Why: Every animated component checks the same reduced-motion preference, script-driven scrolls pick their behavior from it, and JS-played motion reads the same curves as the stylesheet. How: This exports motEasFun, redMotFun, and scrBehFun by name.
 
 // #endregion Exports
 

@@ -15,9 +15,10 @@ import { splSelFun } from '../utils/selector.ts'; // What: Split Selector Functi
  *
  * @summary
  * The measurement math behind help mode's highlights, with no React: finding
- * and measuring each help item's targets (Target Measurement), keeping a
- * highlight from painting over fixed app chrome (Chrome Clipping), and shaping
- * each highlight's cutout and badge (Shape And Placement).
+ * and measuring each help item's targets (Target Measurement), which the
+ * guided tours measure their steps with too, keeping a highlight from
+ * painting over fixed app chrome (Chrome Clipping), and shaping each
+ * highlight's cutout and badge (Shape And Placement).
  *
  * Sections:
  *  - Types
@@ -68,17 +69,18 @@ const CHR_PRI_OBJ : Record< string, number > = { '[data-element-name-hook~="appT
  * cliHorFun = Clip Horizontal Function
  *
  * @summary
- * Same fix as onboarding/tour-runner.tsx's own cliHorFun
- * (see its header comment there for the full story), ported here for
- * the same reason: an item like Pickers' "Picker Selection" matches
- * every tab in a horizontally-scrollable row (picTabDiv), and once
- * there are enough pickers to overflow it, the ones scrolled out of
- * view still report a real, full-width getBoundingClientRect(); unioning
- * them in stretches the highlight into empty space past the row's own
- * clipped edge. This clips an element's rect against its own overflow-x
- * (if it is the scrollable box itself) and every scrollable ancestor's
- * visible bounds before it ever reaches uniRecFun's own union, and
- * returns null if an element ends up fully clipped away.
+ * Clips an element's rect horizontally against the element itself and
+ * every ancestor that clips its own overflow-x, so the part of an element
+ * scrolled past the edge of a scrollable row never counts toward a
+ * highlight. An item like Pickers' "Picker Selection" matches every tab in a
+ * horizontally scrollable row (picTabDiv), and once there are enough pickers
+ * to overflow it, the ones scrolled out of view still report a real,
+ * full-width getBoundingClientRect(); unioning them in would stretch the
+ * highlight into empty space past the row's own clipped edge. It returns
+ * null if the element ends up fully clipped away. It is deliberately
+ * horizontal-only, since a guided tour's own scroll to its target settles
+ * the vertical case, and clipping vertically too would fight that scroll
+ * while it runs.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -756,6 +758,49 @@ function badRecFun ( tarRecObj : BoxRecTyp & Partial< PadSidTyp >, cenBadBoo : b
 
 
 
+// #region defRadFun
+
+/**
+ * defRadFun = Default Radius Function
+ *
+ * @summary
+ * Returns the app's default highlight radius, the vertical rhythm's m01
+ * step in pixels on both axes, read at call time so it follows the root
+ * font size. shaRadFun falls back to it whenever a target's own
+ * border-radius can't be used.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns The default { radXcoNum, radYcoNum } radii.
+ *
+ * @example
+ * ```ts
+ * defRadFun() // => { radXcoNum: 11, radYcoNum: 11 }
+ * ```
+ *
+*/
+
+function defRadFun () : ShaRadTyp {
+
+
+	return { // What: Default Radius Return. Why: Every fallback case needs the same default rounding on both axes. How: This reads the Vertical Rhythm m01 step in pixels for each radius.
+
+
+		radXcoNum : rhyPxlFun( 'm01' ), // What: Radius X-Coordinate Number. Why: The horizontal radius falls back to the app's own default. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
+		radYcoNum : rhyPxlFun( 'm01' )  // What: Radius Y-Coordinate Number. Why: The vertical radius falls back to that same default. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
+
+
+	};
+
+
+}
+
+// #endregion defRadFun
+
+
+
 // #region shaRadFun
 
 /**
@@ -823,14 +868,7 @@ function shaRadFun ( tarDomEle : HTMLElement, padWidNum : number, padHeiNum : nu
 	const radTokStr = ( getComputedStyle( tarDomEle ).borderRadius || '' ).split( ' ' )[ 0 ]; // What: Radius Token String. Why: A multi-corner border-radius value can list up to 4 tokens; only the first is meaningful for this file's own single-radius rounded-rect approximation. How: This reads tarDomEle's own computed border-radius and takes its first space-separated token.
 
 
-	if ( !radTokStr ) return { // What: No Radius Guard. Why: An element with no computed border-radius at all falls back to the app's own default radius. How: This returns early once radTokStr is empty.
-
-
-		radXcoNum : rhyPxlFun( 'm01' ), // What: Radius X-Coordinate Number. Why: The horizontal radius falls back to the app's own default when the element has no border-radius. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
-		radYcoNum : rhyPxlFun( 'm01' )  // What: Radius Y-Coordinate Number. Why: The vertical radius falls back to that same default. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
-
-
-	};
+	if ( !radTokStr ) return defRadFun(); // What: No Radius Guard. Why: An element with no computed border-radius at all falls back to the app's own default radius. How: This returns early once radTokStr is empty.
 
 
 
@@ -840,14 +878,7 @@ function shaRadFun ( tarDomEle : HTMLElement, padWidNum : number, padHeiNum : nu
 		const perRatNum = parseFloat( radTokStr ) / 100; // What: Percent Ratio Number. Why: The parsed percentage needs converting to a plain 0-1 ratio before it can scale anything. How: This parses radTokStr as a float and divides by 100.
 
 
-		if ( Number.isNaN( perRatNum ) ) return { // What: Unparseable Guard. Why: A malformed percentage token must not silently produce NaN radii. How: This falls back to the default radius once perRatNum failed to parse.
-
-
-			radXcoNum : rhyPxlFun( 'm01' ), // What: Radius X-Coordinate Number. Why: A malformed percentage falls back to the app's own default horizontal radius. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
-			radYcoNum : rhyPxlFun( 'm01' )  // What: Radius Y-Coordinate Number. Why: The vertical radius falls back to that same default. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
-
-
-		};
+		if ( Number.isNaN( perRatNum ) ) return defRadFun(); // What: Unparseable Guard. Why: A malformed percentage token must not silently produce NaN radii. How: This falls back to the default radius once perRatNum failed to parse.
 
 
 
@@ -868,25 +899,11 @@ function shaRadFun ( tarDomEle : HTMLElement, padWidNum : number, padHeiNum : nu
 	const pixValNum = parseFloat( radTokStr ); // What: Pixel Value Number. Why: Every other radius form is a plain pixel value that needs parsing before it can be compared or added to. How: This parses radTokStr as a float.
 
 
-	if ( Number.isNaN( pixValNum ) || pixValNum === 0 ) return { // What: Zero/Unparseable Guard. Why: A square-cornered element (0) or a malformed value both fall back to the default radius. How: This checks pixValNum against both failure cases at once.
-
-
-		radXcoNum : rhyPxlFun( 'm01' ), // What: Radius X-Coordinate Number. Why: A square or malformed radius falls back to the app's own default horizontal radius. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
-		radYcoNum : rhyPxlFun( 'm01' )  // What: Radius Y-Coordinate Number. Why: The vertical radius falls back to that same default. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
-
-
-	};
+	if ( Number.isNaN( pixValNum ) || pixValNum === 0 ) return defRadFun(); // What: Zero/Unparseable Guard. Why: A square-cornered element (0) or a malformed value both fall back to the default radius. How: This checks pixValNum against both failure cases at once.
 
 
 
-	if ( pixValNum >= 24 ) return { // What: Pill Cap Guard. Why: A "pill" source radius renders visibly faceted through the SVG mask's own radXcoNum/radYcoNum math at extreme values, confirmed against plain CSS border-radius. How: This caps anything at or past 24px down to the app's own default radius instead.
-
-
-		radXcoNum : rhyPxlFun( 'm01' ), // What: Radius X-Coordinate Number. Why: A pill-sized radius is capped to the app's own default horizontal radius. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
-		radYcoNum : rhyPxlFun( 'm01' )  // What: Radius Y-Coordinate Number. Why: The vertical radius is capped to that same default. How: This reads the Vertical Rhythm m01 step in pixels. // Vertical Rhythm Base Minus 1 = 11px
-
-
-	};
+	if ( pixValNum >= 24 ) return defRadFun(); // What: Pill Cap Guard. Why: A "pill" source radius renders visibly faceted through the SVG mask's own radXcoNum/radYcoNum math at extreme values, confirmed against plain CSS border-radius. How: This caps anything at or past 24px down to the app's own default radius instead.
 
 
 
@@ -912,7 +929,7 @@ function shaRadFun ( tarDomEle : HTMLElement, padWidNum : number, padHeiNum : nu
 
 // #region Exports
 
-export { badRecFun, type BoxRecTyp, claPadFun, cliChrFun, cliHorFun, detEdgFun, finTarFun, type HelRecTyp, type PadSidTyp, shaRadFun, type ShaRadTyp, uniRecFun }; // What: Named Exports. Why: HelOveCom measures, clips, and shapes every highlight with these, and the overlay, catalog, and tip type their rects, pads, and shapes with the four types. How: This exports every helper the overlay reads and the four types by name; CHR_PRI_OBJ stays private to this file.
+export { badRecFun, type BoxRecTyp, claPadFun, cliChrFun, cliHorFun, detEdgFun, finTarFun, type HelRecTyp, type PadSidTyp, shaRadFun, type ShaRadTyp, uniRecFun }; // What: Named Exports. Why: HelOveCom measures, clips, and shapes every highlight with these, the guided tours find and measure their targets with finTarFun and uniRecFun, and the overlay, catalog, and tip type their rects, pads, and shapes with the four types. How: This exports every helper the overlay reads and the four types by name; CHR_PRI_OBJ stays private to this file.
 
 // #endregion Exports
 

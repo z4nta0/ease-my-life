@@ -26,6 +26,7 @@ import { PicAniCom    } from './previews.tsx';                      // What: Pic
 import { PWA_NAM_OBJ  } from '../../platform/pwa.ts';               // What: Progressive Web App Namespace Object. Why: The Data Control section reports install/persistence state and drives the install prompt. How: This is called via its own subscribe()/isaStaFun()/canInsFun()/insStaFun()/askInsFun()/askPerFun() methods.
 import { redMotFun    } from '../../utils/motion.ts';               // What: Reduce Motion Function. Why: A jump-to-section scroll and both preview stages must not animate for a user who prefers reduced motion. How: This is checked before choosing 'smooth' vs 'auto' scroll behavior, and to track the note shown above each style picker.
 import { rhyPxlFun    } from '../../utils/rhythm.ts';               // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
+import { scrBehFun    } from '../../utils/motion.ts';               // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { SegConCom    } from '../../ui/segmented-control.tsx';      // What: Segment Control Component. Why: The tab-bar-placement control is a 3-way exclusive choice, the exact shape this shared control renders. How: This renders the bottom/side/top options, driven by the persisted tabPlacement value.
 import { SET_HEL_ARR  } from '../../help/settings-catalog.tsx';     // What: Settings Help Array. Why: Help mode needs this tab's own catalog of tooltip targets. How: This is passed straight to HelOveCom.
 import { STG_NAM_OBJ  } from '../../state/storage.ts';              // What: Storage Namespace Object. Why: The Data Control section reports where data lives and reads the true persisted pick log before exporting. How: This is called via its own staRepFun()/reaPerFun() methods.
@@ -675,8 +676,8 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 			scrConEle.scrollTo({ // What: Container Scroll Call. Why: This is the actual scroll animation for the normal, in-'.appConMai' case. How: This scrolls scrConEle to topPosNum, animated unless reduced motion is preferred.
 
 
-				behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion should not see an animated scroll. How: This picks 'auto' under reduced motion, 'smooth' otherwise.
-				top      : topPosNum                        // What: Top. Why: This is the computed landing position. How: This passes topPosNum straight through.
+				behavior : scrBehFun(), // What: Behavior. Why: A user who prefers reduced motion should not see an animated scroll. How: This picks 'auto' under reduced motion, 'smooth' otherwise.
+				top      : topPosNum    // What: Top. Why: This is the computed landing position. How: This passes topPosNum straight through.
 
 
 			});
@@ -693,8 +694,8 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 			window.scrollTo({ // What: Window Scroll Call. Why: This is the actual scroll animation for the fallback case, when no '.appConMai' ancestor was found. How: This scrolls the window to topPosNum, animated unless reduced motion is preferred.
 
 
-				behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion should not see an animated scroll. How: This picks 'auto' under reduced motion, 'smooth' otherwise.
-				top      : topPosNum                        // What: Top. Why: This is the computed landing position. How: This passes topPosNum straight through.
+				behavior : scrBehFun(), // What: Behavior. Why: A user who prefers reduced motion should not see an animated scroll. How: This picks 'auto' under reduced motion, 'smooth' otherwise.
+				top      : topPosNum    // What: Top. Why: This is the computed landing position. How: This passes topPosNum straight through.
 
 
 			});

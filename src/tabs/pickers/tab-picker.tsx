@@ -20,6 +20,7 @@ import { PIC_HEL_ARR  } from '../../help/pickers-catalog.tsx';      // What: Pic
 import { PicForCom    } from './picker-form.tsx';                   // What: Picker Form Component. Why: Creating a picker happens in the same slot a picker's view would occupy. How: This is rendered while the create form is open.
 import { PicVieCom    } from './picker-view.tsx';                   // What: Picker View Component. Why: The selected picker's run stage and pool list render below the picker rails. How: This is rendered for the active picker whenever the create form is closed.
 import { redMotFun    } from '../../utils/motion.ts';               // What: Reduce Motion Function. Why: Several exit/scroll animations must be skipped for a user who prefers reduced motion. How: This is checked before every animated scroll, exit delay, or the reel/spotlight/dissolve cycle itself.
+import { scrBehFun    } from '../../utils/motion.ts';               // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';                 // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) throughout to show the active mode's label/hint and to render the mode-choice radio list.
 import { sedPicFun    } from '../../help/sample-data.ts';           // What: Seed Pickers Function. Why: Help mode needs real pickers of every mode, plus a conditional-gated one, to point its tooltips at. How: This is called the moment help mode turns on.
 import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
@@ -404,8 +405,8 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 		if ( scrConEle ) scrConEle.scrollTo({ // What: Scroll Call Guard. Why: Only a genuinely-found container should be scrolled. How: This scrolls .main to the top if it exists.
 
 
-			behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
-			top      : 0                                // What: Top. Why: The page's start is its top. How: This scrolls to y 0.
+			behavior : scrBehFun(), // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
+			top      : 0            // What: Top. Why: The page's start is its top. How: This scrolls to y 0.
 
 
 		});

@@ -428,6 +428,36 @@ function defStaFun () : HolStaTyp { return { country : 'US', custom : [], disabl
 
 
 
+// #region resStaFun
+
+/**
+ * resStaFun = Resolve State Function
+ *
+ * @summary
+ * Returns the given holidays state, or the canonical empty one from
+ * defStaFun when it's missing, as it is on a very old save that predates
+ * the holidays field.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param holStaObj - Holiday State Object: The persisted holidays state
+ *                    object, or a falsy value.
+ *
+ * @returns The holidays state to read from.
+ *
+ * @example
+ * ```ts
+ * resStaFun(undefined) // => { country: 'US', custom: [], disabled: [] }
+ * ```
+ *
+*/
+
+function resStaFun ( holStaObj : HolStaTyp | null | undefined ) : HolStaTyp { return holStaObj || defStaFun(); } // What: Resolve State Body. Why: Every reader of a holidays state needs a real shape even when the state carries none. How: This returns holStaObj, falling back to defStaFun's canonical empty shape when it's falsy.
+
+// #endregion resStaFun
+
+
+
 // #region actYeaFun
 
 /**
@@ -442,7 +472,8 @@ function defStaFun () : HolStaTyp { return { country : 'US', custom : [], disabl
  *
  * @param holStaObj - Holiday State Object: The persisted holidays state object
  *                    ({ country, disabled, custom }), or a falsy value to fall
- *                    back to defStaFun's canonical empty shape.
+ *                    back to defStaFun's canonical empty shape through
+ *                    resStaFun.
  * @param yeaValNum - Year Value Number: The calendar year to resolve active
  *                    days off for.
  *
@@ -458,7 +489,7 @@ function defStaFun () : HolStaTyp { return { country : 'US', custom : [], disabl
 function actYeaFun ( holStaObj : HolStaTyp | null | undefined, yeaValNum : number ) : HolRcdTyp[] {
 
 
-	const resHolObj = holStaObj || defStaFun(); // What: Resolved Holidays Object. Why: A caller might pass a missing/undefined holidays state, which still needs a safe fallback to read from below. How: This falls back to defStaFun's canonical empty shape when holStaObj is falsy.
+	const resHolObj = resStaFun( holStaObj );   // What: Resolved Holidays Object. Why: A caller might pass a missing/undefined holidays state, which still needs a safe fallback to read from below. How: This falls back to defStaFun's canonical empty shape through resStaFun when holStaObj is falsy.
 	const disKeyArr = resHolObj.disabled || []; // What: Disabled Key Array. Why: A very old persisted state might be missing this field entirely. How: This falls back to an empty array when resHolObj.disabled is missing.
 
 
@@ -610,9 +641,10 @@ const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is the modul
 
 
 	comYeaFun : comYeaFun, // What: Compute Year Function. Why: tab-settings.tsx calls this for a specific year's own active holiday set. How: This re-exports comYeaFun under its own matching name.
-	defStaFun : defStaFun, // What: Default State Function. Why: seed.ts, store.ts, and tab-settings.tsx all call this for a fresh holidays-state shape. How: This re-exports defStaFun under its own matching name.
+	defStaFun : defStaFun, // What: Default State Function. Why: The seed and the save migration call this for a fresh holidays-state shape. How: This re-exports defStaFun under its own matching name.
 	holDatFun : holDatFun, // What: Holiday Date Function. Why: tab-today.tsx and tasks.ts both call this to check whether a specific date is a holiday. How: This re-exports holDatFun under its own matching name.
-	holInfFun : holInfFun  // What: Holiday Info Function. Why: tasks.ts calls this for a specific date's own full holiday info. How: This re-exports holInfFun under its own matching name.
+	holInfFun : holInfFun, // What: Holiday Info Function. Why: tasks.ts calls this for a specific date's own full holiday info. How: This re-exports holInfFun under its own matching name.
+	resStaFun : resStaFun  // What: Resolve State Function. Why: The store's holiday actions and the Settings holiday editor read a holidays state that an old save may lack. How: This re-exports resStaFun under its own matching name.
 
 
 };

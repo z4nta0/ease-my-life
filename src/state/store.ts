@@ -13,7 +13,7 @@ import { CON_NAM_OBJ } from '../core/conditionals.ts';   // What: Conditionals N
 import { cotAplFun   } from './pending-mutations.ts';    // What: Conditional-Toggle Apply Function. Why: Checking off a day-off card advances or reverts its conditional. How: This is called by togDonFun for a day-off entry.
 import { enpAplFun   } from './pending-mutations.ts';    // What: Entry-Pending Apply Function. Why: A pick's staged consequences land only when its entry is marked done. How: This is called when an entry is checked off.
 import { enpRevFun   } from './pending-mutations.ts';    // What: Entry-Pending Revert Function. Why: Unchecking a done entry must restore exactly what completing it changed. How: This is called when an entry is unchecked.
-import { HOL_NAM_OBJ } from '../core/holidays.ts';       // What: Holidays Namespace Object. Why: The holiday-editing actions need the canonical empty holidays shape. How: This is called (defStaFun) from the holiday actions below.
+import { HOL_NAM_OBJ } from '../core/holidays.ts';       // What: Holidays Namespace Object. Why: The holiday-editing actions need a holidays state even on an old save without one. How: This is called (resStaFun) from the holiday actions below.
 import { invColFun   } from '../utils/color.ts';         // What: Invert Color Function. Why: A custom theme's other half is derived from whichever color the user edited. How: This is called in setCusFun with the edited hex color.
 import { isoDayFun   } from '../utils/date.ts';          // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { logRowFun   } from './pick-log.ts';             // What: Log Row Function. Why: Every pick that lands on Today appends one pick-log row. How: This is called with the state and the pick's own fields.
@@ -164,6 +164,65 @@ type ActStoTyp = { // What: Action Store Type. Why: Every tab changes state only
 
 
 // #region Helpers
+
+// #region colMapFun
+
+/**
+ * colMapFun = Collapsed Map Function
+ *
+ * @summary
+ * The Data tab's saved per-section collapse map, or an empty map when the
+ * state has none yet, as a save from before the map existed doesn't. A
+ * section missing from the map has no saved choice, so each reader applies
+ * its own default.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param staAppObj - State App Object: The app state to read.
+ *
+ * @returns The section id to collapsed flag map.
+ *
+ * @example
+ * ```ts
+ * colMapFun(staAppObj) // => { reminders : true }
+ * ```
+ *
+*/
+
+const colMapFun = ( staAppObj : StaAppTyp ) : Record< string, boolean > => ( staAppObj.ui && staAppObj.ui.controlsCollapsed ) || {}; // What: Collapsed Map Function. Why: Every reader of the saved collapse state needs the same fallback for a state that has none. How: This reads ui.controlsCollapsed, falling back to an empty map.
+
+// #endregion colMapFun
+
+
+
+// #region cusKeyFun
+
+/**
+ * cusKeyFun = Custom Key Function
+ *
+ * @summary
+ * The appearance keys of a theme mode's own custom slot and of its
+ * counterpart in the other mode: 'customDark' and 'customLight' for 'dark',
+ * and the reverse for any other mode.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param theModStr - Theme Mode String: 'light' or 'dark'.
+ *
+ * @returns The { couKeyStr, keyNamStr } slot keys.
+ *
+ * @example
+ * ```ts
+ * cusKeyFun('dark') // => { couKeyStr, keyNamStr }
+ * ```
+ *
+*/
+
+const cusKeyFun = ( theModStr : string ) : { couKeyStr : 'customDark' | 'customLight', keyNamStr : 'customDark' | 'customLight' } => theModStr === 'dark' ? { couKeyStr : 'customLight', keyNamStr : 'customDark' } : { couKeyStr : 'customDark', keyNamStr : 'customLight' }; // What: Custom Key Function. Why: Renaming and saving a custom theme both write one slot and derive its counterpart. How: This picks the slot keys from theModStr.
+
+// #endregion cusKeyFun
+
+
 
 // #region fluStaFun
 
@@ -925,8 +984,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		renCusFun : ( theModStr, newNamStr ) => setAppStaObj( ( curStaObj ) => { // What: Rename Custom Function. Why: A custom theme slot needs its own editable display name without switching the live theme. How: This renames theModStr's own slot and its counterpart too, unless the counterpart's name was edited directly.
 
 
-			const keyNamStr = theModStr === 'dark' ? 'customDark' : 'customLight'; // What: Key Name String. Why: The rename below is written under whichever slot this exact mode owns. How: This picks 'customDark' or 'customLight' from theModStr.
-			const couKeyStr = theModStr === 'dark' ? 'customLight' : 'customDark'; // What: Counter Key String. Why: The auto-derive step below writes onto the OPPOSITE slot from keyNamStr. How: This picks the opposite of keyNamStr.
+			const { couKeyStr, keyNamStr } = cusKeyFun( theModStr ); // What: Counter Key String. Why: The auto-derive step below writes onto the OPPOSITE slot from keyNamStr. How: This takes the opposite slot from cusKeyFun. // What: Key Name String. Why: The rename below is written under whichever slot this exact mode owns. How: This takes theModStr's own slot from cusKeyFun.
 
 			const sedDefObj = theModStr === 'dark' // What: Seed Defaults Object. Why: The counterpart fallback below needs plausible starting colors when it has no slot of its own yet at all. How: This picks the light-mode defaults when theModStr is 'dark' (since the counterpart would be light), else the dark-mode defaults.
 				? { accent : '#3360a8', bg : '#fcfbf9', text : '#242629' }  // What: Light Seed Branch. Why: A light slot starts from light colors. How: This is the default light palette.
@@ -1051,8 +1109,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		setCusFun : ( theModStr, cusColObj ) => setAppStaObj( ( curStaObj ) => { // What: Set Custom Function. Why: Appearance's own custom color pickers need to save a palette and make it live immediately. How: This writes the 3 colors to theModStr's own custom slot, activates it, and auto-derives the other mode's counterpart unless that one was edited directly.
 
 
-			const keyNamStr = theModStr === 'dark' ? 'customDark' : 'customLight'; // What: Key Name String. Why: Every field below is written under whichever slot this exact mode owns. How: This picks 'customDark' or 'customLight' from theModStr.
-			const couKeyStr = theModStr === 'dark' ? 'customLight' : 'customDark'; // What: Counter Key String. Why: The auto-derive step below writes onto the OPPOSITE slot from keyNamStr. How: This picks the opposite of keyNamStr.
+			const { couKeyStr, keyNamStr } = cusKeyFun( theModStr ); // What: Counter Key String. Why: The auto-derive step below writes onto the OPPOSITE slot from keyNamStr. How: This takes the opposite slot from cusKeyFun. // What: Key Name String. Why: Every field below is written under whichever slot this exact mode owns. How: This takes theModStr's own slot from cusKeyFun.
 
 			const savColObj = { ...cusColObj, derived : false }; // What: Saved Colors Object. Why: A directly-saved slot is by definition NOT auto-derived from its own counterpart. How: This spreads cusColObj with derived explicitly set false.
 
@@ -1484,7 +1541,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		togColFun : ( secIdeStr, defColBoo = false ) => setAppStaObj( ( curStaObj ) => { // What: Toggle Collapsed Function. Why: Persisted collapse state for the Data tab's own disclosures, uniform polarity everywhere (true means COLLAPSED, false means expanded); the main sections default collapsed via defColBoo so the first click expands rather than re-collapsing. How: This flips ui.controlsCollapsed[secIdeStr], falling back to defColBoo when it has no value yet.
 
 
-			const curColObj = ( curStaObj.ui && curStaObj.ui.controlsCollapsed ) || {};                  // What: Current Collapsed Object. Why: The flip below needs the live collapse-state map, or an empty fallback. How: This reads curStaObj's own ui.controlsCollapsed, defaulting to {}.
+			const curColObj = colMapFun( curStaObj );                                                    // What: Current Collapsed Object. Why: The flip below needs the live collapse-state map, or an empty fallback. How: This reads curStaObj's own ui.controlsCollapsed, defaulting to {}.
 			const curValBoo = curColObj[ secIdeStr ] === undefined ? defColBoo : curColObj[ secIdeStr ]; // What: Current Value Boolean. Why: A section with no saved value yet starts from its own caller-supplied default, not always false. How: This reads curColObj's own secIdeStr entry, falling back to defColBoo when it's undefined.
 
 
@@ -1665,7 +1722,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		addHolFun : ( { day : dayValNum, month : monValNum, name : holNamStr } ) => setAppStaObj( ( curStaObj ) => { // What: Add Holiday Function. Why: A user's own hand-entered holiday needs its own fresh id before it can be appended. How: This appends a new row to holidays.custom.
 
 
-			const curHolObj = curStaObj.holidays || HOL_NAM_OBJ.defStaFun(); // What: Current Holidays Object. Why: The append below needs a real holidays shape even for state that predates this field. How: This reads curStaObj's own holidays, falling back to HOL_NAM_OBJ's own default state.
+			const curHolObj = HOL_NAM_OBJ.resStaFun( curStaObj.holidays ); // What: Current Holidays Object. Why: The append below needs a real holidays shape even for state that predates this field. How: This reads curStaObj's own holidays, falling back to HOL_NAM_OBJ's own default state.
 
 			const newHolObj = { // What: New Holiday Object. Why: This is the actual custom-holiday row being added. How: This bundles a fresh id with holNamStr/monValNum/dayValNum.
 
@@ -1708,7 +1765,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		delHolFun : ( tarIdeStr ) => setAppStaObj( ( curStaObj ) => { // What: Delete Holiday Function. Why: A user's own hand-entered holiday must be removable by its own id. How: This filters holidays.custom down to every entry but the matching one.
 
 
-			const curHolObj = curStaObj.holidays || HOL_NAM_OBJ.defStaFun(); // What: Current Holidays Object. Why: The filter below needs a real holidays shape even for state that predates this field. How: This reads curStaObj's own holidays, falling back to HOL_NAM_OBJ's own default state.
+			const curHolObj = HOL_NAM_OBJ.resStaFun( curStaObj.holidays ); // What: Current Holidays Object. Why: The filter below needs a real holidays shape even for state that predates this field. How: This reads curStaObj's own holidays, falling back to HOL_NAM_OBJ's own default state.
 
 
 
@@ -1738,7 +1795,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		togHolFun : ( holKeyStr ) => setAppStaObj( ( curStaObj ) => { // What: Toggle Holiday Function. Why: A computed holiday must be switchable off and back on for the skip-holidays gate. How: This adds holKeyStr to, or removes it from, the holidays object's own disabled list.
 
 
-			const curHolObj = curStaObj.holidays || HOL_NAM_OBJ.defStaFun(); // What: Current Holidays Object. Why: The toggle below needs a real holidays shape even for state that predates this field. How: This reads curStaObj's own holidays, falling back to HOL_NAM_OBJ's own default state.
+			const curHolObj = HOL_NAM_OBJ.resStaFun( curStaObj.holidays ); // What: Current Holidays Object. Why: The toggle below needs a real holidays shape even for state that predates this field. How: This reads curStaObj's own holidays, falling back to HOL_NAM_OBJ's own default state.
 
 			const nexDisArr = curHolObj.disabled.includes( holKeyStr ) // What: Next Disabled Array. Why: Toggling off removes holKeyStr from disabled; toggling on (re-enabling) adds it. How: This filters holKeyStr out when already present, else appends it.
 				? curHolObj.disabled.filter( ( curKeyStr ) => curKeyStr !== holKeyStr ) // What: Re-Enable Branch. Why: A disabled holiday being turned back on leaves the list. How: This filters holKeyStr out.
@@ -3946,7 +4003,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 // #region Exports
 
-export { type ActStoTyp, type EntDesTyp, useAppStaFun }; // What: Named Exports. Why: useAppStaFun is the entire app's own state layer, imported by app.tsx, and the tabs type the actions they receive with ActStoTyp. How: This exports the hook and the action type by name.
+export { type ActStoTyp, colMapFun, type EntDesTyp, useAppStaFun }; // What: Named Exports. Why: useAppStaFun is the entire app's own state layer, imported by app.tsx, the tabs type the actions they receive with ActStoTyp, and the Data tab's sections and tours read the saved collapse state through colMapFun. How: This exports the hook, the collapse map helper, and the action type by name.
 
 // #endregion Exports
 
