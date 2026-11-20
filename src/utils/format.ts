@@ -52,13 +52,19 @@
 function uniNamFun ( namRawStr : string, sibNamArr : string[] ) : string {
 
 
+	// #region Taken Name Check
+
 	const takNamSet = new Set( sibNamArr.map( ( curNamStr ) => ( curNamStr || '' ).trim().toLowerCase() ) ); // What: Taken Name Set. Why: The collision check below needs every sibling name normalized the same way as the candidate. How: This trims and lowercases every entry of sibNamArr into a Set.
 	const basNamStr = ( namRawStr || '' ).trim();                                                            // What: Base Name String. Why: The candidate itself needs the same trim before it's compared or returned. How: This trims namRawStr, falling back to an empty string.
 
 
 	if ( !takNamSet.has( basNamStr.toLowerCase() ) ) return basNamStr; // What: No-Collision Guard. Why: A name that doesn't collide at all needs no renumbering. How: This returns basNamStr unchanged as soon as its lowercase form isn't in takNamSet.
 
+	// #endregion Taken Name Check
 
+
+
+	// #region Suffix Search
 
 	const stiNamStr = basNamStr.replace( /\s*\(\d+\)$/, '' ); // What: Stripped Name String. Why: A name that already ends in " (N)" must be re-numbered from its own bare base, not stacked again. How: This strips a trailing " (N)" suffix from basNamStr, if present.
 
@@ -66,6 +72,8 @@ function uniNamFun ( namRawStr : string, sibNamArr : string[] ) : string {
 
 
 	while ( takNamSet.has( `${ stiNamStr } (${ sufCanNum })`.toLowerCase() ) ) sufCanNum++; // What: Free-Suffix Search Loop. Why: Every already-taken suffix must be skipped until a genuinely free one is found. How: This keeps incrementing sufCanNum while its candidate string is still present in takNamSet.
+
+	// #endregion Suffix Search
 
 
 

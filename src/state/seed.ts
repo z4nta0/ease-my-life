@@ -356,6 +356,8 @@ type EasStaTyp = Record< string, { activeItemId : string | null, charge : number
 function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun : ( iteIdeStr : string, dayIsoStr : string ) => boolean, totDayNum : number = 365 ) : { easStaObj : EasStaTyp, hisRowArr : PclRowTyp[] } {
 
 
+	// #region Simulation Setup
+
 	const picRowArr : PclRowTyp[] = []; // What: Pick Row Array And Guard. Why: Every row built by logPicFun below needs somewhere to accumulate. How: This starts empty and is pushed into below.
 
 	const todMidObj = new Date(); // What: Today Midnight Object. Why: Every simulated day below is computed relative to this same anchor. How: This is read as "now" and then floored to midnight on the next line.
@@ -373,6 +375,11 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 	const ranBetFun = ( lowBouNum : number, higBouNum : number ) => lowBouNum + Math.random() * ( higBouNum - lowBouNum ); // What: Random Between Function. Why: Several places below need a random value somewhere inside a given range, not just 0 to 1. How: This scales Math.random()'s own 0-1 output into the [ lowBouNum, higBouNum ] range.
 
+	// #endregion Simulation Setup
+
+
+
+	// #region Daily Simulation
 
 	const logPicFun = ( datValObj : Date, curPicObj : PicRcdTyp, curIteObj : IteRcdTyp, donValBoo : boolean, souValStr : PclSouTyp, outValStr? : PclOutTyp, depEndBoo? : boolean ) => { // What: Log Pick Function. Why: Every simulated pick, toss, skip, or Ease Down tick below shares the same row-building logic. How: This builds one pickLog row shaped to state.pickLog's own contract and pushes it onto picRowArr.
 
@@ -490,7 +497,11 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 	}
 
+	// #endregion Daily Simulation
 
+
+
+	// #region Ease Down Simulation
 
 	const easStaObj : EasStaTyp = {}; // What: Ease State Object And Guard. Why: Every Ease Down picker's own final in-progress state must be reported back to the caller, since the live app needs to resume it. How: This starts empty and is filled once per Ease Down picker by the loop directly below.
 
@@ -570,6 +581,8 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 
 	}
+
+	// #endregion Ease Down Simulation
 
 
 

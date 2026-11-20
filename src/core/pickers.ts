@@ -653,13 +653,20 @@ function reaValFun ( iteRcdObj : IteRcdTyp, modKeyStr : string, thrValNum : numb
 function weiPicFun ( itePooArr : IteRcdTyp[], weiGetFun : ( iteRcdObj : IteRcdTyp ) => number ) : IteRcdTyp | null {
 
 
+	// #region Weight Totals
+
 	const weiValArr = itePooArr.map( weiGetFun );                                               // What: Weight Value Array. Why: The roulette-wheel draw below needs every item's own weight resolved up front, not recomputed on each loop iteration. How: This calls weiGetFun once per item in itePooArr.
 	const totWeiNum = weiValArr.reduce( ( accValNum, curValNum ) => accValNum + curValNum, 0 ); // What: Total Weight Number. Why: The roulette wheel's own full number line spans exactly the sum of every item's weight. How: This sums every value in weiValArr.
+
+	// #endregion Weight Totals
+
 
 
 	if ( totWeiNum <= 0 ) return itePooArr[ Math.floor( Math.random() * itePooArr.length ) ] || null; // What: Non-Positive Total Guard. Why: A degenerate all-zero (or negative) weight pool has no real roulette wheel to draw from, but should still produce a pick rather than none at all. How: This falls back to a plain uniform-random index into itePooArr.
 
 
+
+	// #region Roulette Draw
 
 	let rouRemNum = Math.random() * totWeiNum; // What: Roulette Remaining Number. Why: This is the single random point rolled on the roulette wheel's own number line, decremented below until it lands inside the winning item's own band. How: This scales Math.random()'s own [0,1) output by totWeiNum.
 
@@ -675,6 +682,8 @@ function weiPicFun ( itePooArr : IteRcdTyp[], weiGetFun : ( iteRcdObj : IteRcdTy
 
 
 	}
+
+	// #endregion Roulette Draw
 
 
 

@@ -312,10 +312,17 @@ let __tinProObj : CanvasRenderingContext2D | null = null; // What: Tint Probe Ob
 function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' | 'bg' | 'text' > ) : PalTokTyp {
 
 
+	// #region Anchor Colors
+
 	const bacColStr = usrColObj.bg;     // What: Background Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.bg and reused in the returned object and the relative-color expressions below.
 	const texColStr = usrColObj.text;   // What: Text Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.text and reused in the returned object and the muted expression below.
 	const accColStr = usrColObj.accent; // What: Accent Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.accent and reused in the returned object and the aceStr expression below.
 
+	// #endregion Anchor Colors
+
+
+
+	// #region Offset Calculation
 
 	const modSgnNum = modKeyStr === 'dark' ? 1 : -1; // What: Mode Sign Number. Why: The mutStr/aceStr tokens need to move toward the page background in dark mode but away from it in light mode. How: This flips the sign of their lightness offset below based on the given mode.
 
@@ -324,6 +331,8 @@ function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' |
 		? `calc(max(l + ${ offAmoNum }, ${ floValNum }))` // What: Dark Mode Calc Expression. Why: Flooring the result keeps surface/border from vanishing into true black. How: This raises the lightness by offAmoNum, but never below floValNum.
 
 		: `calc(l - ${ offAmoNum })` ); // What: Light Mode Calc Expression. Why: Light mode has no black-end hazard, so a plain offset is enough. How: This simply lowers the lightness by offAmoNum.
+
+	// #endregion Offset Calculation
 
 
 
@@ -556,6 +565,8 @@ function synTinFun ( bacColStr : string ) : void {
 
 
 
+	// #region Meta Tag Reconciliation
+
 	const metTagLis = document.querySelectorAll( 'meta[name="theme-color"]' ); // What: Meta Tag List. Why: index.html ships a light/dark pair of theme-color tags, both of which need collapsing down to one. How: This finds every existing theme-color meta tag, in document order.
 
 	let priMetEle = null; // What: Primary Meta Element And Setter. Why: Exactly one theme-color tag should survive; every other one gets removed below. How: This starts null and is assigned the first tag found in the loop that follows.
@@ -584,11 +595,17 @@ function synTinFun ( bacColStr : string ) : void {
 
 	}
 
+	// #endregion Meta Tag Reconciliation
 
+
+
+	// #region Meta Tag Update
 
 	priMetEle.removeAttribute( 'media' ); // What: Media Attribute Removal. Why: A leftover light/dark media query would stop matching once the in-app theme and OS preference disagree. How: This strips any media attribute the surviving tag may have shipped with.
 
 	priMetEle.setAttribute( 'content', hexResStr ); // What: Content Attribute Write. Why: This is the actual value the UA reads to tint the status bar. How: This writes the freshly-resolved hex color onto the surviving tag.
+
+	// #endregion Meta Tag Update
 
 
 }
@@ -634,10 +651,15 @@ function synTinFun ( bacColStr : string ) : void {
 function appPalFun ( palResObj : PalTokTyp, theKeyStr : string ) : void {
 
 
+	// #region Palette Change Detection
+
 	const palSigStr = [ palResObj.bacStr, palResObj.surStr, palResObj.texStr, palResObj.accStr, palResObj.aceStr, palResObj.borStr, palResObj.mutStr, palResObj.warStr ].join( '|' ); // What: Palette Signature String. Why: Detecting an actual color change requires comparing against what was last applied, not just re-running on every call. How: This joins every token into one comparable string.
 	const palChaBoo = palSigStr !== __lasPalStr; // What: Palette Changed Boolean. Why: The cross-fade must only run when the resolved colors actually differ from last time. How: This compares the freshly-built signature against the previous call's stored one.
 
 	__lasPalStr = palSigStr; // What: Last Palette String Update. Why: The next call needs to compare against what is current now. How: This overwrites __lasPalStr with the freshly-computed signature.
+
+	// #endregion Palette Change Detection
+
 
 
 	if ( __palAppBoo && palChaBoo && !redMotFun() ) { // What: Cross-Fade Trigger Check. Why: The cross-fade should only play when a palette had already been applied before, the resolved colors actually changed, and the user doesn't prefer reduced motion. How: This gates the class-add/timeout block below on all three conditions holding at once.
@@ -659,6 +681,10 @@ function appPalFun ( palResObj : PalTokTyp, theKeyStr : string ) : void {
 
 	__palAppBoo = true; // What: Palette Applied Boolean Update. Why: Every call after this one is a real theme swap, eligible for the cross-fade above. How: This is set true unconditionally, once, on the very first call.
 
+
+
+	// #region Palette Property Writes
+
 	const rooStyObj = document.documentElement.style; // What: Root Style Object. Why: Every custom property write below targets the same style object. How: This is read once and reused for all 8 setProperty calls that follow.
 
 	rooStyObj.setProperty( '--bac-pag-col', palResObj.bacStr ); // What: Background Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the page background. How: This writes the palette's bacStr token onto the root element's inline style.
@@ -669,6 +695,9 @@ function appPalFun ( palResObj : PalTokTyp, theKeyStr : string ) : void {
 	rooStyObj.setProperty( '--acc-mai-col', palResObj.accStr ); // What: Accent Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the primary accent color. How: This writes the palette's accStr token onto the root element's inline style.
 	rooStyObj.setProperty( '--acc-tin-col', palResObj.aceStr ); // What: Accent Soft Property Write. Why: This is the actual CSS custom property the app's stylesheets read for a softened accent background. How: This writes the palette's aceStr token onto the root element's inline style.
 	rooStyObj.setProperty( '--acc-sec-col', palResObj.warStr ); // What: Warm Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the warm/celebration accent color. How: This writes the palette's warStr token onto the root element's inline style.
+
+	// #endregion Palette Property Writes
+
 
 
 	document.body.dataset.palette = theKeyStr || 'custom'; // What: Palette Dataset Write. Why: Some CSS keys off which specific palette is active, not just its raw token values. How: This writes the resolved theme key, or 'custom' if none was given, onto body's own dataset.

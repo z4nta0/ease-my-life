@@ -318,12 +318,18 @@ async function genNotFun () : Promise< boolean > {
 
 
 
+	// #region Visibility Check
+
 	const appVisBoo = document.visibilityState === 'visible' && document.hasFocus(); // What: App Visible Boolean. Why: A notification for a page the user is already looking at is pure noise. How: This is true only when the tab is both the visible one and actually focused.
 
 
 	if ( appVisBoo ) return false; // What: App Visible Guard. Why: The whole point of appVisBoo above is to skip showing a notification while it's true. How: This returns early without showing anything when the app is already front and center.
 
+	// #endregion Visibility Check
 
+
+
+	// #region Daily Claim
 
 	const curDayStr = locDayFun( new Date() ); // What: Current Day String. Why: The once-per-day guard below needs today's own local-day string to compare against. How: This calls locDayFun with a freshly-constructed Date for right now.
 
@@ -334,7 +340,11 @@ async function genNotFun () : Promise< boolean > {
 
 	stoSetFun( DAY_KEY_STR, curDayStr ); // What: Day Claim Write. Why: The day must be claimed before the async work below, so two near-simultaneous calls can't both get past the guard above. How: This writes curDayStr as the new last-notified day immediately, ahead of any await.
 
+	// #endregion Daily Claim
 
+
+
+	// #region Notification Content
 
 	const notTitStr = 'Your life is ready to be eased!'; // What: Notification Title String. Why: This is the fixed headline shown on every daily-generation notification. How: This is handed to both the service-worker and page-level notification paths below.
 
@@ -349,6 +359,8 @@ async function genNotFun () : Promise< boolean > {
 
 
 	};
+
+	// #endregion Notification Content
 
 
 

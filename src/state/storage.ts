@@ -376,6 +376,8 @@ async function reaDatFun () : Promise< RawSavTyp > {
 async function wriDatFun ( appStaObj : StaAppTyp ) : Promise< void > {
 
 
+	// #region State Store Write
+
 	const { pickLog : picLogArr, ...resStaObj } = appStaObj; // What: Rest State Object Destructure. Why: The pick log and the rest of state are written to two separate object stores and must be split apart before either write happens. How: This pulls pickLog out as picLogArr, leaving every other field in resStaObj.
 
 	const cloStaObj = JSON.parse( JSON.stringify( resStaObj ) ); // What: Clone State Object. Why: Structured clone cannot take proxies or functions, and although state is meant to be plain JSON, round-tripping it here defensively means a stray non-clonable value cannot kill the whole write. How: This serializes resStaObj to JSON text and immediately parses it back into a plain object.
@@ -389,7 +391,11 @@ async function wriDatFun ( appStaObj : StaAppTyp ) : Promise< void > {
 
 	await reqProFun( traStoFun( STA_STO_STR, 'readwrite' ).put( cloStaObj, 'main' ) ); // What: State Store Put Call. Why: This is the actual write of the non-pickLog portion of state into its own object store. How: This awaits reqProFun wrapping a put(cloStaObj, 'main') request against the state object store.
 
+	// #endregion State Store Write
 
+
+
+	// #region Pick Log Write
 
 	const logEmpBoo = !picLogArr || !picLogArr.length; // What: Log Empty Boolean. Why: Later logic must tell an intentionally-empty pick log apart from one that is empty only because it was never actually read from the mirror. How: This is true whenever picLogArr is missing or has no entries.
 
@@ -409,6 +415,8 @@ async function wriDatFun ( appStaObj : StaAppTyp ) : Promise< void > {
 
 
 	}
+
+	// #endregion Pick Log Write
 
 
 }
@@ -782,14 +790,21 @@ function logAutFun () : void { logSusBoo = false; } // What: Log Authoritative B
 function mirAdoFun ( idbStaObj : RawSavTyp, mirStaObj : RawSavTyp ) : RawSavTyp {
 
 
+	// #region Freshness Comparison
+
 	const idbTimNum = idbStaObj.__savedAt;                                            // What: IndexedDB Time Number. Why: IndexedDB's copy is kept unless the mirror was saved after it. How: This is IndexedDB's own save stamp, undefined for a copy saved before stamps existed.
 	const mirTimNum = mirStaObj ? mirStaObj.__savedAt : null;                         // What: Mirror Time Number. Why: The mirror only wins when it was saved later. How: This is the mirror's own save stamp, or null when there is no mirror.
 	const bthStaBoo = typeof idbTimNum === 'number' && typeof mirTimNum === 'number'; // What: Both Stamped Boolean. Why: Two copies can only be compared when both carry a stamp. How: This is true when both stamps are numbers.
+
+	// #endregion Freshness Comparison
+
 
 
 	if ( !bthStaBoo || mirTimNum <= idbTimNum ) return null; // What: Keep IndexedDB Guard. Why: An unstamped or older mirror must never replace IndexedDB's copy. How: This returns null so the caller keeps IndexedDB's state.
 
 
+
+	// #region Pick Log Merge
 
 	const idbLogArr = idbStaObj.pickLog || [];                                                                             // What: IndexedDB Log Array. Why: IndexedDB's pick log is the full history whenever the mirror's isn't. How: This reads it, defaulting to an empty array.
 	const idbDatSet = new Set( idbLogArr.map( ( logRowObj : PclRowTyp ) => logRowObj.date ) );                             // What: IndexedDB Date Set. Why: A partial mirror only adds rows for days IndexedDB has none for, so a day is never counted twice. How: This collects every date IndexedDB's log covers.
@@ -801,12 +816,20 @@ function mirAdoFun ( idbStaObj : RawSavTyp, mirStaObj : RawSavTyp ) : RawSavTyp 
 			? [ ...idbLogArr, ...newLogArr ] // What: Partial Log Branch. Why: The full history must survive, with the session's new days added. How: This appends newLogArr to IndexedDB's log.
 			: mirStaObj.pickLog;             // What: Full Log Branch. Why: An unmarked full write holds the complete log. How: This adopts the mirror's own.
 
+	// #endregion Pick Log Merge
+
+
+
+	// #region Adopted State Build
+
 	const adoStaObj = { ...mirStaObj, pickLog : adoLogArr }; // What: Adopted State Object. Why: This is the newer state the app boots from. How: This spreads the mirror and sets the chosen pick log.
 
 
 
 	delete adoStaObj.__logPartial;  // What: Partial Log Marker Strip. Why: The adopted pick log is now complete. How: This deletes the marker.
 	delete adoStaObj.__mirrorNoLog; // What: Mirror Marker Strip. Why: The adopted pick log is now complete. How: This deletes the marker.
+
+	// #endregion Adopted State Build
 
 
 
@@ -853,6 +876,8 @@ function mirAdoFun ( idbStaObj : RawSavTyp, mirStaObj : RawSavTyp ) : RawSavTyp 
 async function idbBooFun () : Promise< RawSavTyp > {
 
 
+	// #region Connection Setup
+
 	const opeConObj = await opeDatFun(); // What: Open Connection Object. Why: Every read and write below needs an open connection. How: This awaits opeDatFun.
 
 
@@ -869,6 +894,8 @@ async function idbBooFun () : Promise< RawSavTyp > {
 
 
 	datConObj = opeConObj; // What: Database Connection Object Assignment. Why: Every IndexedDB read and write in this file goes through datConObj. How: This stores the open connection.
+
+	// #endregion Connection Setup
 
 
 
@@ -908,6 +935,8 @@ async function idbBooFun () : Promise< RawSavTyp > {
 
 
 
+	// #region Mirror Adoption
+
 	const adoStaObj = mirAdoFun( idbStaObj, reaLocFun() ); // What: Adopted State Object. Why: A newer localStorage copy must win over IndexedDB's. How: This calls mirAdoFun with the mirror, null when IndexedDB's copy should be kept.
 
 
@@ -916,6 +945,8 @@ async function idbBooFun () : Promise< RawSavTyp > {
 
 
 	await wriDatFun( adoStaObj ); // What: Adopted State Write Call. Why: The newer copy must be in IndexedDB before anything else reads it. How: This awaits wriDatFun with adoStaObj.
+
+	// #endregion Mirror Adoption
 
 
 
@@ -1002,6 +1033,8 @@ async function iniStoFun () : Promise< RawSavTyp > {
 
 
 
+	// #region Boot State Seeding
+
 	if ( cacStaObj && cacStaObj.pickLog ) lplRefArr = cacStaObj.pickLog; // What: Last-Pick-Log Reference Seed. Why: wriDatFun's own change-detection needs a starting reference so it does not treat the very first save after boot as a change. How: This seeds lplRefArr from whatever pickLog cacStaObj already has, if any.
 
 
@@ -1019,6 +1052,8 @@ async function iniStoFun () : Promise< RawSavTyp > {
 
 
 	}
+
+	// #endregion Boot State Seeding
 
 
 
@@ -1416,6 +1451,8 @@ async function reqPerFun () : Promise< boolean > {
 async function staRepFun () : Promise< StoRepTyp > {
 
 
+	// #region Mirror Time Read
+
 	let mirTimStr = null; // What: Mirror Time String. Why: The mirror freshness timestamp is read from localStorage, which can itself throw. How: This starts null and is only assigned inside the try block below.
 
 
@@ -1423,6 +1460,8 @@ async function staRepFun () : Promise< StoRepTyp > {
 	try { mirTimStr = localStorage.getItem( MIR_TIM_STR ); } // What: Mirror Time Read Try. Why: The mirror freshness timestamp must actually be read from localStorage before it can be reported. How: This assigns mirTimStr from whatever is currently stored under MIR_TIM_STR.
 
 	catch {} // What: Mirror Time Read Guard. Why: A blocked or inaccessible localStorage must not abort the rest of this status report. How: This silently leaves mirTimStr at its own null default instead of letting the read throw.
+
+	// #endregion Mirror Time Read
 
 
 

@@ -77,6 +77,8 @@ import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record T
 function buiIteFun ( curPicObj : Pick< PicRcdTyp, 'id' > & Partial< PicRcdTyp >, sibIteArr : IteRcdTyp[], newNamStr : string, optIdeStr? : string ) : IteRcdTyp {
 
 
+	// #region Ease Mode Defaults
+
 	const isaDowBoo = curPicObj && curPicObj.mode === 'ease-down';                                     // What: Is-A Down Boolean. Why: Only Ease Down needs the special charged-value/fairness-weight treatment below. How: This is true only when curPicObj exists and its own mode is 'ease-down'.
 	const isaEasBoo = curPicObj && ( curPicObj.mode === 'ease-up' || curPicObj.mode === 'ease-down' ); // What: Is-An Ease Boolean. Why: Both ease modes need their own drift-band fields stamped below. How: This is true when curPicObj's own mode is either ease-up or ease-down.
 
@@ -98,6 +100,8 @@ function buiIteFun ( curPicObj : Pick< PicRcdTyp, 'id' > & Partial< PicRcdTyp >,
 
 
 	}
+
+	// #endregion Ease Mode Defaults
 
 
 

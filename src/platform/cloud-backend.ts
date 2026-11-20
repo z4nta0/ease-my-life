@@ -235,10 +235,14 @@ function cloBacFun ( uidValStr : string ) : SynBacTyp {
 		putDocFun : async ( basRevNum, docTexObj, manNewObj ) => { // What: Put Document Function. Why: A sync uploads its changes. How: This writes the new versions, commits the manifest on the expected revision, and cleans up.
 
 
+			// #region Version Upload
+
 			const newEntArr = Object.entries( docTexObj ).flatMap( ( [ docIdeStr, docTexStr ] ) : [ string, string ][] => docTexStr === null ? [] : [ [ verKeyFun( docIdeStr, manNewObj.docs[ docIdeStr ] ), docTexStr ] ] ); // What: New Entry Array. Why: Only changed documents are uploaded, and a deleted one has nothing to write. How: This pairs each new version's key with its text.
 
 
 			await wriBatFun( uidValStr, newEntArr ); // What: Version Upload. Why: The manifest may only list versions that exist. How: This writes them before the commit.
+
+			// #endregion Version Upload
 
 
 
@@ -261,6 +265,8 @@ function cloBacFun ( uidValStr : string ) : SynBacTyp {
 
 
 
+			// #region Old Version Cleanup
+
 			const curManObj = traResObj.curManObj; // What: Current Manifest Object. Why: Cleanup keeps every version it lists. How: This reads it from the transaction.
 			const keeHasArr = [ curManObj?.docs, curManObj?.prior, traResObj.comNowBoo ? manNewObj.docs : undefined ];                                                                                                   // What: Keep Hash Array. Why: A version any of these manifests lists may still be downloaded. How: This lists the current, prior, and newly committed hashes.
 			const keeKeySet = new Set( keeHasArr.flatMap( ( hasMapObj ) => Object.entries( hasMapObj || {} ).map( ( [ docIdeStr, docHasStr ] ) => verKeyFun( docIdeStr, docHasStr ) ) ) );                               // What: Keep Key Set. Why: Cleanup must not delete a version still listed. How: This collects their keys.
@@ -271,6 +277,8 @@ function cloBacFun ( uidValStr : string ) : SynBacTyp {
 			try { await wriBatFun( uidValStr, garKeyArr.filter( ( verKeyStr ) => !keeKeySet.has( verKeyStr ) ).map( ( verKeyStr ) : [ string, null ] => [ verKeyStr, null ] ) ); } // What: Cleanup Try. Why: Versions nothing lists only cost storage. How: This deletes every candidate no manifest still lists.
 
 			catch ( errCatObj ) { console.warn( errCatObj ); } // What: Cleanup Catch. Why: A failed cleanup must not fail a sync that already landed. How: This logs it, leaving at most a little unused storage.
+
+			// #endregion Old Version Cleanup
 
 
 

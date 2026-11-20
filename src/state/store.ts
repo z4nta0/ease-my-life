@@ -319,6 +319,8 @@ function loaStaFun () {
 function stkSynFun ( curStaObj : StaAppTyp, entArgArr : TodEntTyp[], tasArgArr : TasRcdTyp[] ) : { stkClaBoo : boolean, stkValNum : number } {
 
 
+	// #region Streak Eligibility
+
 	const hidPicSet = new Set( ( curStaObj.pickers || [] ).filter( ( curPicObj ) => curPicObj.hidden ).map( ( curPicObj ) => curPicObj.id ) ); // What: Hidden Picker Set. Why: The visible-entries filter below needs fast membership checks against every hidden picker's own id. How: This collects the id of every picker whose own hidden flag is true.
 	const visEntArr = ( entArgArr || [] ).filter( ( curEntObj ) => !curEntObj.pickerId || !hidPicSet.has( curEntObj.pickerId ) );              // What: Visible Entry Array. Why: An entry belonging to a hidden picker must not count toward, or block, the streak. How: This keeps every entry with no pickerId at all, or whose pickerId isn't in hidPicSet.
 
@@ -326,12 +328,23 @@ function stkSynFun ( curStaObj : StaAppTyp, entArgArr : TodEntTyp[], tasArgArr :
 	const visTasArr = TAS_NAM_OBJ.visTodFun( tasArgArr, curStaObj.reminderOpts, curStaObj.holidays, curAncObj );              // What: Visible Task Array. Why: Only a reminder actually shown today can participate in the streak at all. How: This calls TAS_NAM_OBJ.visTodFun with curAncObj as the anchor.
 	const stkTasArr = visTasArr.filter( ( curTasObj ) => TAS_NAM_OBJ.optForFun( curTasObj, curStaObj.reminderOpts ).streak ); // What: Streak Task Array. Why: Only a reminder whose own type has the streak switch on actually counts. How: This filters visTasArr to those TAS_NAM_OBJ.optForFun reports streak:true for.
 
+	// #endregion Streak Eligibility
+
+
+
+	// #region Streak Verdict
+
 	const hasAnyBoo = visEntArr.length > 0 || stkTasArr.length > 0;                                      // What: Has Any Boolean. Why: A day with nothing eligible on it at all can't claim a streak either way. How: This is true when either visEntArr or stkTasArr is non-empty.
 	const entDonBoo = visEntArr.every( ( curEntObj ) => curEntObj.done );                                // What: Entries Done Boolean. Why: The streak requires every visible entry to be done, not just some. How: This is true only when every entry in visEntArr is done.
 	const tasDonBoo = stkTasArr.every( ( curTasObj ) => TAS_NAM_OBJ.isaDonFun( curTasObj, curAncObj ) ); // What: Tasks Done Boolean. Why: The streak requires every streak-counting reminder to be done today too. How: This is true only when every task in stkTasArr is done as of curAncObj.
 
 	const nowDonBoo = hasAnyBoo && entDonBoo && tasDonBoo; // What: Now Done Boolean. Why: The final streak verdict needs all 3 conditions to hold at once. How: This combines hasAnyBoo/entDonBoo/tasDonBoo with &&.
 
+	// #endregion Streak Verdict
+
+
+
+	// #region Streak Reconciliation
 
 	const wasClaBoo = !!curStaObj.today.streakClaimed; // What: Was Claimed Boolean. Why: The reconciliation below needs to compare the new verdict against the PRIOR claimed state. How: This coerces curStaObj.today.streakClaimed to a real boolean.
 
@@ -356,6 +369,8 @@ function stkSynFun ( curStaObj : StaAppTyp, entArgArr : TodEntTyp[], tasArgArr :
 
 
 	}
+
+	// #endregion Streak Reconciliation
 
 
 
@@ -463,6 +478,10 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 	const [ appStaObj, setAppStaObj ] = React.useState( () => ( optArgObj && optArgObj.initial ? migStaFun( optArgObj.initial ) : loaStaFun() ) ); // What: App State Object And Setter. Why: This one useState is the entire app's own persisted state. How: This lazily seeds from optArgObj.initial when given, else from loaStaFun()'s own migrated result.
 
+
+
+	// #region State Persistence
+
 	const perActBoo = !( optArgObj && optArgObj.persist === false ); // What: Persist Active Boolean. Why: The onboarding demo needs to opt entirely out of the idle-save/flush effects below. How: This is false only when optArgObj.persist is explicitly false.
 
 
@@ -553,6 +572,9 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 	}, [ canPenFun, perActBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run only when persistence is turned on or off, the one change that needs its listeners re-wired. How: canPenFun never changes since its own callback has no dependencies, and perActBoo changing means the listeners need re-wiring (or tearing down) under the new persistence setting.
+
+	// #endregion State Persistence
+
 
 
 	const actStoObj = React.useMemo< ActStoTyp >( () => ( { // What: Action Store Object. Why: This is the entire mutation surface of the app's own state: a tab reads/calls these exact keys by name, so every key here is a real, load-bearing external contract. How: This builds a memoized object of state-transition functions, computed once (empty dependency array below).
@@ -677,11 +699,15 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 
+			// #region Clean State Install
+
 			const cleStaObj = migStaFun( SED_NAM_OBJ.buiCleFun() ); // What: Clean State Object. Why: The freshly-reloaded app needs a real, migrated empty state ready in latStaRef before reload() fires. How: This builds a fresh SED_NAM_OBJ.buiCleFun() and runs it through migStaFun().
 
 			latStaRef.current = cleStaObj; // What: Latest State Reference Update. Why: The flush effect's own pagehide handler must see this clean state, not the stale pre-wipe one, per the design-rationale comment above. How: This assigns cleStaObj directly onto latStaRef.current.
 
 			setAppStaObj( cleStaObj ); // What: App State Set. Why: React itself should also reflect the clean state, even though the reload below discards this render anyway. How: This calls setAppStaObj with cleStaObj.
+
+			// #endregion Clean State Install
 
 
 
@@ -2580,16 +2606,27 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 
+			// #region Identifier Resolution
+
 			const exiIdeStr = picArgObj.replaceId; // What: Existing Identifier String. Why: A replace must keep the existing picker's own id alive. How: This reads picArgObj.replaceId, undefined on an ordinary add.
 			const givIdeStr = picArgObj.id;        // What: Given Identifier String. Why: Onboarding's own sample pickers pass an explicit id so it matches the one baked into precomputed Stats history. How: This reads picArgObj.id, undefined for every other caller.
 			const newIdeStr = ranIdeFun( 'pkr_' ); // What: New Identifier String. Why: Every other caller needs a fresh random id. How: This mints a 'pkr_' id from 6 random base-36 characters.
 
 			const picIdeStr = exiIdeStr || givIdeStr || newIdeStr; // What: Picker Identifier String. Why: An explicit id (onboarding's own sample pickers only, so their ids match the ones baked into precomputed Stats history) must win; every other caller gets a fresh random one. How: This prefers exiIdeStr, then givIdeStr, else newIdeStr.
 
+			// #endregion Identifier Resolution
+
+
+
+			// #region Item Defaults
 
 			const iniValNum = picArgObj.mode === 'ease-down' ? 100 : 0;                       // What: Initial Value Number. Why: Every new item's own starting drift value depends on the picker's own mode. How: This is 100 for ease-down (starts "charged"), else 0.
 			const isaEasBoo = picArgObj.mode === 'ease-up' || picArgObj.mode === 'ease-down'; // What: Is-An Ease Boolean. Why: Only an ease-mode item carries its own per-item drift band. How: This is true when mode is either ease-up or ease-down.
 			const isaDowBoo = picArgObj.mode === 'ease-down';                                 // What: Is-A Down Boolean. Why: Only ease-down forces every item to a uniform starting weight of 1 regardless of any user-supplied weight. How: This is true only when mode is 'ease-down'.
+
+			// #endregion Item Defaults
+
+
 
 			const newConObj = picArgObj.newConditional; // What: New Conditional Object. Why: The inline-conditional build below reads many of this one field's own properties. How: This reads picArgObj.newConditional, which is null/undefined when no inline conditional was authored.
 
@@ -3011,6 +3048,9 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			);
 
 
+
+			// #region Inline Conditional And Cadence
+
 			const madConObj = newConObj ? { // What: Made Conditional Object. Why: A brand-new inline conditional authored inline in this same edit form needs its own fresh id, mirroring addPicFun's own madConObj. How: This builds a full conditional object from newConObj's own fields.
 
 
@@ -3047,6 +3087,9 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 			});
 
+			// #endregion Inline Conditional And Cadence
+
+
 
 			const finPicObj = { // What: Final Picker Object. Why: This is curPicObj patched with every field this edit form can change. How: This spreads curPicObj, overriding name/group/mode/schedule/gate fields with the resolved values below.
 
@@ -3076,6 +3119,9 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			};
 
 
+
+			// #region Mode Reset Defaults
+
 			const thrValNum = curPicObj.threshold ?? 100;             // What: Threshold Value Number. Why: An Ease Down picker's items reset to fully charged at its threshold. How: This reads curPicObj's own threshold, defaulting to 100.
 			const modDefObj = modDefFun( picArgObj.mode, thrValNum ); // What: Mode Defaults Object. Why: Every item's own weight/value/drift-band must reset to sensible defaults for whichever mode was just switched to. How: This calls modDefFun with the new mode and this picker's threshold.
 
@@ -3083,6 +3129,9 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			const nexIteArr = modChaBoo // What: Next Item Array. Why: Only an ACTUAL mode change resets this picker's own items; an unchanged mode leaves every item's own tuning untouched. How: This maps curStaObj.items, merging modDefObj onto every item owned by picIdeStr, only when modChaBoo is true.
 				? curStaObj.items.map( ( curIteObj ) => curIteObj.pickerId === picIdeStr ? { ...curIteObj, ...modDefObj } : curIteObj ) // What: Reset Items Branch. Why: A mode change resets this picker's own items. How: This spreads modDefObj onto each of its items.
 				: curStaObj.items; // What: Unchanged Items Branch. Why: An unchanged mode keeps every item's tuning. How: This passes the items through.
+
+			// #endregion Mode Reset Defaults
+
 
 
 			const nexPidArr = picArgObj.includeInDaily // What: Next Picker-Ids Array. Why: picArgObj.includeInDaily decides whether this picker joins or leaves the Daily generator's own membership list, same as addPicFun's own resolution. How: This adds picIdeStr when it's included and it isn't already present, else removes it.
@@ -3299,6 +3348,10 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 				? ( curStaObj.today.entries.find( ( curEntObj ) => curEntObj.pickerId === picIdeStr )?.eid || newEidFun() ) // What: Reused Eid Branch. Why: Ease Down replaces its own existing entry. How: This reuses that entry's eid, minting one when there is none.
 				: newEidFun();                                                                                              // What: Fresh Eid Branch. Why: Every other mode stacks a new entry. How: This mints a new eid.
 
+
+
+			// #region Pending Staging
+
 			let penValObj = penArgObj; // What: Pending Value Object. Why: The caller's own staged pick result is normally used as-is, but a fallback must be computed when none was given. How: This starts at penArgObj and is resolved below when it's undefined.
 
 
@@ -3330,11 +3383,17 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 			}
 
+			// #endregion Pending Staging
+
 
 
 			const newEntObj : TodEntTyp = { done : false, eid : entIdeStr, itemId : iteIdeStr, pending : penValObj, pickerId : picIdeStr, revert : null, skipped : false }; // What: New Entry Object. Why: This is the actual Today entry being added, in today.entries' own shape. How: This bundles entIdeStr/picIdeStr/iteIdeStr, under the entry's own persisted eid/pickerId/itemId keys, with a fresh not-done/not-skipped state and penValObj as its own pending.
 
 			const logRowObj = logRowFun( curStaObj, { eid : entIdeStr, itemId : iteIdeStr, pickerId : picIdeStr, source : 'manual' } ); // What: Log Row Object. Why: A manual send must be reflected in the pick log too, denormalized the same way every other pick is. How: This calls logRowFun with source:'manual'.
+
+
+
+			// #region Day-Off Replacement
 
 			const conIdeStr = curPicObj && curPicObj.conditionalId; // What: Conditional Identifier String. Why: The day-off-card check below needs to know which conditional (if any) gates this picker. How: This reads curPicObj's own conditionalId, or stays falsy when curPicObj is missing.
 
@@ -3348,6 +3407,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			const nexLogArr = easDowBoo // What: Next Log Array. Why: A replaced Ease Down entry must not leave its own prior log row behind under the same eid. How: This drops any earlier row sharing eid before appending logRowObj, only for ease-down; every other mode simply appends.
 				? [ ...( curStaObj.pickLog || [] ).filter( ( curRowObj ) => curRowObj.eid !== entIdeStr ), logRowObj ] // What: Replace Row Branch. Why: A replaced entry's old row must not linger under the same eid. How: This drops that row and appends logRowObj.
 				: [ ...( curStaObj.pickLog || [] ), logRowObj ];                                                       // What: Append Row Branch. Why: A new entry just adds its row. How: This appends logRowObj.
+
+			// #endregion Day-Off Replacement
 
 
 
@@ -3425,6 +3486,10 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 			const curDayStr = isoDayFun(); // What: Current Day String. Why: The fresh-row and pick-log-purge logic below both need today's own calendar day. How: This reads isoDayFun().
 
+
+
+			// #region Entry Merge
+
 			const carEntArr = lisEntArr.filter( ( curDesObj ) => curDesObj._carry ).map( ( curDesObj ) => curDesObj.entry! ); // What: Carried Entry Array. Why: A carried descriptor's own already-formed entry must be kept verbatim, unwrapped from its own _carry marker. How: This filters lisEntArr to _carry descriptors and unwraps each one's own entry. // What: Non-Null Note. Why: The generator only flags a descriptor _carry when it wraps an existing entry. How: The ! tells TypeScript entry is set here.
 			const carEidSet = new Set< string | null >( carEntArr.map( ( curEntObj ) => curEntObj.eid ) );                    // What: Carried Eid Set. Why: The pick-log purge below must never drop a carried entry's own still-live row. How: This collects every carried entry's own eid.
 
@@ -3459,10 +3524,20 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 			const nexEntArr = [ ...carEntArr, ...freEntArr ]; // What: Next Entry Array. Why: The new today.entries list is exactly the carried entries plus the freshly-built ones. How: This concatenates carEntArr and freEntArr.
 
+			// #endregion Entry Merge
+
+
+
+			// #region Pick Log Rebuild
+
 			const newRowArr = freEntArr.filter( ( curEntObj ) => !curEntObj.kind && curEntObj.pickerId ).map( ( curEntObj ) => // What: New Row Array. Why: Only a real (non-day-off-card) fresh entry needs its own auto pick-log row; depletedEnd is deliberately NOT written here, since it's a value consequence recorded only on completion. How: This builds one logRowFun row per qualifying fresh entry, source:'auto'.
 				logRowFun( curStaObj, { date : curDayStr, eid : curEntObj.eid, itemId : curEntObj.itemId!, pickerId : curEntObj.pickerId!, source : 'auto' } ) ); // What: Auto Row Build. Why: Every fresh entry logs as an automatic pick. How: This builds the row from the entry's own eid, item and picker. // What: Non-Null Note. Why: The filter above keeps only ordinary picks with a picker, and an ordinary pick always holds its item. How: The ! tells TypeScript itemId and pickerId are set here.
 
 			const nexLogArr = ( curStaObj.pickLog || [] ).filter( ( curRowObj ) => curRowObj.date !== curDayStr || carEidSet.has( curRowObj.eid ) ).concat( newRowArr ); // What: Next Log Array. Why: The generator owns today, so every OTHER row logged today (auto or manual) must be dropped, except a carried entry's own still-live row. How: This keeps every row not dated today (or belonging to a carried eid), then appends newRowArr.
+
+			// #endregion Pick Log Rebuild
+
+
 
 			const nexTodObj = { ...curStaObj.today, entries : nexEntArr }; // What: Next Today Object. Why: The caller needs a fresh today object carrying the new entries. How: This spreads curStaObj.today with entries replaced by nexEntArr.
 
@@ -3514,6 +3589,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		skiEntFun : ( entIdeStr ) => setAppStaObj( ( curStaObj ) => { // What: Skip Entry Function. Why: A user must be able to drop an entry from today while Stats still counts it as a skip. How: This undoes any completed mutation and conditional charge first, removes the entry, marks its own live log row skipped, and reconciles the streak.
 
 
+			// #region Done Entry Undo
+
 			const curEntObj = curStaObj.today.entries.find( ( entFinObj ) => entFinObj.eid === entIdeStr ); // What: Current Entry Object And Guard. Why: The undo-before-skip branch below needs to know whether this entry was already completed. How: This looks up entIdeStr in curStaObj.today.entries.
 
 			let nexIteArr = curStaObj.items;         // What: Next Item Array. Why: This defaults to the unchanged items and is only replaced below when an already-done entry needs its own pending undone first. How: This starts at curStaObj.items.
@@ -3532,6 +3609,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 			}
+
+			// #endregion Done Entry Undo
 
 
 
@@ -3610,6 +3689,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		swaIteFun : ( entIdeStr, iteIdeStr, penArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Swap Item Function. Why: Today's own Re-roll must swap the item one entry shows while keeping a record of what was rolled away. How: This points the entry at the new item with freshly staged pending, marks the old live log row rejected, and appends a new 'reroll' row under the same eid.
 
 
+			// #region Done Entry Undo
+
 			const curEntObj = curStaObj.today.entries.find( ( entFinObj ) => entFinObj.eid === entIdeStr ); // What: Current Entry Object And Guard. Why: The undo-then-restage flow below needs to know whether this entry was already completed. How: This looks up entIdeStr in curStaObj.today.entries.
 
 			let nexIteArr = curStaObj.items;         // What: Next Item Array. Why: This defaults to the unchanged items and is only replaced below when an already-completed entry needs its own pending undone first. How: This starts at curStaObj.items.
@@ -3629,7 +3710,11 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 			}
 
+			// #endregion Done Entry Undo
 
+
+
+			// #region Reroll Log Rows
 
 			const curRowObj = nexLogArr.find( ( logFinObj ) => logFinObj.eid === entIdeStr && !logFinObj.outcome ); // What: Current Row Object And Guard. Why: The live log row (if any) is where this entry's own current pickerId can still be read from. How: This finds the one row sharing entIdeStr with no outcome yet.
 
@@ -3641,6 +3726,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 			if ( picIdeStr ) rejLogArr.push( logRowFun( { ...curStaObj, items : nexIteArr }, { eid : entIdeStr, itemId : iteIdeStr, pickerId : picIdeStr, source : 'reroll' } ) ); // What: Reroll Row Append. Why: Only when a picker id could actually be resolved does a fresh reroll row make sense to log. How: This pushes a new logRowFun row with source:'reroll' onto rejLogArr.
+
+			// #endregion Reroll Log Rows
 
 
 
@@ -3708,6 +3795,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 
+			// #region Pending Apply Or Revert
+
 			const nowDonBoo = !curEntObj.done; // What: Now Done Boolean. Why: Every branch below needs to know which direction this toggle is heading. How: This is the logical negation of curEntObj's own current done state.
 
 			let nexIteArr = curStaObj.items;         // What: Next Item Array. Why: This defaults to the unchanged items and is replaced below by whichever branch fires. How: This starts at curStaObj.items.
@@ -3742,10 +3831,16 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 			}
 
+			// #endregion Pending Apply Or Revert
+
 
 
 			const nexEntArr = curStaObj.today.entries.map( ( entMapObj ) => // What: Next Entry Array. Why: Only the toggled entry's own done/skipped/revert fields actually change. How: This maps today.entries, patching the one entry matching entIdeStr.
 				entMapObj.eid === entIdeStr ? { ...entMapObj, done : nowDonBoo, revert : nexRevObj, skipped : false } : entMapObj ); // What: Toggled Entry Patch. Why: Only the toggled entry changes. How: This sets done, clears skipped, stores the revert snapshot, and passes every other entry through.
+
+
+
+			// #region Conditional And Log Updates
 
 			const nexConArr = cotAplFun( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curEntObj, nowDonBoo ); // What: Next Conditionals Array. Why: A charge on the first dependent completion, or a day-off card reset/discharge, must be resolved against the ALREADY-toggled entries list. How: This calls cotAplFun against the patched items/pickers.
 			const nexCdlArr = cdlAplFun( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curEntObj, nowDonBoo ); // What: Next Conditional-Log Array. Why: The matching cycle's own log row must be resolved against the same ALREADY-toggled entries list. How: This calls cdlAplFun against the patched items/pickers.
@@ -3753,6 +3848,10 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			nexLogArr = nexLogArr.map( ( curRowObj ) => ( curRowObj.eid === entIdeStr && !curRowObj.outcome ) // What: Live Log Row Toggle. Why: Only the live (active, non-rejected/non-skipped) row for this entry ever toggles its own done/completedAt. How: This stamps done/completedAt on the one matching row, leaving every other row untouched.
 				? { ...curRowObj, completedAt : nowDonBoo ? new Date().toISOString() : null, done : nowDonBoo } // What: Toggled Row Branch. Why: The live row mirrors the entry's new done state. How: This sets done and stamps or clears completedAt.
 				: curRowObj );                                                                                  // What: Other Row Branch. Why: Every other row is untouched. How: This passes curRowObj through.
+
+			// #endregion Conditional And Log Updates
+
+
 
 			const { stkClaBoo, stkValNum } = stkSynFun( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Toggling any entry can flip whether today counts as fully done. How: This calls stkSynFun against the already-patched items/pickers and the already-toggled entries.
 

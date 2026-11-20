@@ -600,6 +600,8 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
+		// #region Run Start Marking
+
 		runActRef.current = true;  // What: Run Mark. Why: Other requests wait for this sync. How: This marks it running.
 		setSynRawStr( 'syncing' ); // What: Syncing Status. Why: The screen shows the sync. How: This sets the status.
 
@@ -614,6 +616,8 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 		busRepFun(); // What: Busy Report Call. Why: A reload would cut off this sync. How: This reports it running.
+
+		// #endregion Run Start Marking
 
 
 
@@ -873,6 +877,8 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
+		// #region Event Handlers
+
 		const visChaFun = () => { // What: Visibility Change Function. Why: Hiding and showing the app are the moments to push and pull. How: This syncs on show, and on hide when a change is waiting.
 
 
@@ -896,11 +902,17 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 		const onlRunFun = () => void synRunRef.current(); // What: Online Run Function. Why: Coming back online is the moment to catch up. How: This syncs.
 
+		// #endregion Event Handlers
 
+
+
+		// #region Listener Registration
 
 		document.addEventListener( 'visibilitychange', visChaFun ); // What: Visibility Listener. Why: Showing and hiding the app trigger syncs. How: This listens.
 		window.addEventListener( 'focus', onlRunFun );              // What: Focus Listener. Why: Returning to the window pulls. How: This listens.
 		window.addEventListener( 'online', onlRunFun );             // What: Online Listener. Why: Reconnecting catches up. How: This listens.
+
+		// #endregion Listener Registration
 
 
 

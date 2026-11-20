@@ -374,6 +374,8 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 
+	// #region Dependent Charge Lookup
+
 	const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === togEntObj.pickerId ); // What: Current Picker Object And Guard. Why: A dependent entry's own conditional is looked up through its picker, not the entry itself. How: This looks up togEntObj's own pickerId in curStaObj.pickers.
 	const conIdeStr = curPicObj && curPicObj.conditionalId;                                           // What: Conditional Identifier String And Guard. Why: An entry whose picker has no conditionalId gates nothing. How: This reads curPicObj's own conditionalId, or stays falsy when curPicObj is missing.
 
@@ -397,6 +399,8 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 	} ).length; // What: Match Count Read. Why: The caller only needs how many entries matched. How: This reads the filtered array's own length.
+
+	// #endregion Dependent Charge Lookup
 
 
 
@@ -424,11 +428,16 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 
+		// #region Revert Edge Detection
+
 		const nowUndBoo = !nowDonBoo;              // What: Now Undone Boolean. Why: Only an un-done toggle can revert an earlier charge. How: This negates nowDonBoo.
 		const depZerBoo = depDonNum === 0;         // What: Dependents Zero Boolean. Why: The charge only reverts once the LAST dependent completion of the day is un-done. How: This is true when depDonNum is 0.
 		const hasPreBoo = !!curConObj._chargePrev; // What: Has Previous Boolean. Why: There's nothing to restore unless the charge left its own snapshot. How: This is true when curConObj carries its own _chargePrev.
 
 		const revEdgBoo = nowUndBoo && depZerBoo && hasPreBoo; // What: Reverting Edge Boolean. Why: The earlier charge must be undone only when all three checks above hold at once. How: This combines nowUndBoo, depZerBoo and hasPreBoo.
+
+		// #endregion Revert Edge Detection
+
 
 
 		if ( revEdgBoo ) { // What: Reverting-Edge Branch. Why: Once the LAST dependent completion of the day is un-done, the earlier charge must be undone too. How: This restores curConObj's own pre-charge fields from _chargePrev.
@@ -510,6 +519,8 @@ function enpAplFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 
 
 
+	// #region Staged Update Index
+
 	const touIdeSet = new Set( [ ...( curPenObj.updates || [] ).map( ( curUpdObj ) => curUpdObj.id ), curPenObj.pickedId ].filter( isaTruFun ) ); // What: Touched Identifier Set. Why: Both the revert snapshot and the items map below need to know every item id this pending payload actually touches. How: This unions every updates row's own id with pickedId, dropping falsy entries.
 
 	const updIdeMap = new Map< string, PicUpdTyp >(); // What: Update Identifier Map. Why: The items map below needs O(1) lookup of a touched item's own staged update. How: This starts empty and is filled by the merge loop below, one entry per item.
@@ -526,6 +537,12 @@ function enpAplFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 
 
 	) );
+
+	// #endregion Staged Update Index
+
+
+
+	// #region Item Patching
 
 	const nowIsoStr = new Date().toISOString(); // What: Now Iso String. Why: A picked-and-bumped item needs a real completion timestamp. How: This reads the current instant as an ISO string.
 
@@ -574,6 +591,11 @@ function enpAplFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 
 	} );
 
+	// #endregion Item Patching
+
+
+
+	// #region Picker Patch Build
 
 	const hasPipBoo = !!curPenObj.pickerPatch;                                        // What: Has Picker-Patch Boolean. Why: The previous-active lookup below only snapshots activeItemId when a pickerPatch is actually being applied. How: This coerces curPenObj's own pickerPatch to a real boolean.
 	const perRunStr = ( curEntObj.kind !== 'dayoff' && curEntObj.periodKey ) || null; // What: Period Run String. Why: Completing a non-daily pick or charging card is this picker's run for the period, which the cadence check must see even when no pick-log row exists. How: This is the entry's own periodKey, or null for a daily entry or a day-off card, whose completion never counts as a run.
@@ -599,6 +621,9 @@ function enpAplFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 	const nexPicArr = Object.keys( nexPatObj ).length // What: Next Picker Array. Why: Only a pending payload carrying pickerPatch (e.g. Ease Down's activeItemId) or a run period needs any picker actually rewritten. How: This patches curEntObj's own picker with nexPatObj's own fields, else passes pickers through unchanged.
 		? curStaObj.pickers.map( ( picMapObj ) => picMapObj.id === curEntObj.pickerId ? { ...picMapObj, ...nexPatObj } : picMapObj ) // What: Patched Pickers Branch. Why: The entry's own picker takes the staged patch. How: This spreads nexPatObj onto the matching picker only.
 		: curStaObj.pickers; // What: Unchanged Pickers Branch. Why: Without a patch nothing about the pickers changes. How: This passes the pickers through.
+
+	// #endregion Picker Patch Build
+
 
 
 	const nexLogArr = curPenObj.depletedEnd // What: Next Log Array. Why: depletedEnd is a value consequence, so it's only recorded on the live log row once the pending payload is actually applied. How: This flags the live (no outcome) row sharing curEntObj's own eid, else passes pickLog through unchanged.
@@ -684,6 +709,8 @@ function enpRevFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 
 
 
+	// #region Item Restore
+
 	const revIdeMap = new Map( curRevObj.items.map( ( curSnaObj ) => [ curSnaObj.id, curSnaObj ] ) ); // What: Revert Identifier Map. Why: The items map below needs O(1) lookup of each item's own pre-apply snapshot. How: This maps every curRevObj.items row by its own id.
 
 	const nexIteArr = curStaObj.items.map( ( curIteObj ) => { // What: Next Item Array. Why: Every item must be checked for a matching snapshot to restore. How: This maps curStaObj.items, restoring a matched item's own value/weight/picks/lastPicked/chargeStep, else leaving it unchanged.
@@ -700,6 +727,11 @@ function enpRevFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 
 	} );
 
+	// #endregion Item Restore
+
+
+
+	// #region Picker Restore
 
 	const resPatObj = { // What: Restore Patch Object. Why: Each picker field the apply snapshotted must come back, and only those. How: This collects activeItemId when it was recorded and lastRunPeriod when the snapshot carries one, so a snapshot saved before lastRunPeriod existed restores exactly as it did.
 
@@ -714,6 +746,9 @@ function enpRevFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 	const nexPicArr = Object.keys( resPatObj ).length // What: Next Picker Array. Why: Only a snapshot that actually recorded a picker field needs any picker rewritten back. How: This restores resPatObj onto curRevObj's own pickerId, else passes pickers through unchanged.
 		? curStaObj.pickers.map( ( picMapObj ) => picMapObj.id === curRevObj.pickerId ? { ...picMapObj, ...resPatObj } : picMapObj ) // What: Restored Pickers Branch. Why: The entry's own picker gets its previous fields back. How: This spreads resPatObj onto the matching picker only.
 		: curStaObj.pickers; // What: Unchanged Pickers Branch. Why: With nothing recorded there is nothing to restore. How: This passes the pickers through.
+
+	// #endregion Picker Restore
+
 
 
 	const nexLogArr = ( curStaObj.pickLog || [] ).map( ( curRowObj ) => // What: Next Log Array. Why: A reverted day no longer counts as ending an Ease Down depletion streak. How: This strips depletedEnd back to false on the live (no outcome) row sharing curEntObj's own eid.
@@ -791,10 +826,14 @@ function rebPenFun ( todEntArr : TodEntTyp[], picRcdArr : PicRcdTyp[], iteIdeStr
 
 
 
+		// #region Decay Recalculation
+
 		const thrValNum = curPicObj.threshold ?? 100;                       // What: Threshold Value Number. Why: A depleted item recharges to its picker's own threshold. How: This reads the picker's threshold, defaulting to 100.
 		const basValNum = newValNum > 0 ? newValNum : thrValNum;            // What: Base Value Number. Why: The decay starts from the item's new value, the same way a new streak starts from a full one when the item is empty. How: This uses newValNum, or thrValNum when it's 0.
 		const remValNum = Math.max( 0, basValNum - decUpdObj.chargeStep! ); // What: Remaining Value Number. Why: Completing the entry takes one step off the new value. How: This subtracts the row's chargeStep, floored at 0. // What: Non-Null Note. Why: decUpdObj was found only when its chargeStep is above 0. How: The ! tells TypeScript the step is set.
 		const depEndBoo = remValNum <= 0.5;                                 // What: Depleted End Boolean. Why: The streak ends only when this step empties the item, with the same half-unit tolerance pickers.ts uses. How: This checks remValNum against 0.5.
+
+		// #endregion Decay Recalculation
 
 
 

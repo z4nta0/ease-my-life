@@ -1043,6 +1043,9 @@ function nexEliFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 	const intCouNum = Math.max( 1, tasRcdObj.interval || 1 );                                         // What: Interval Count Number. Why: The search horizon below needs to scale with a sparse "every N ___" schedule, or it could fail to find its own next occurrence. How: This reads tasRcdObj's own interval, floored at 1.
 
 
+
+	// #region Search Horizon
+
 	const horDayNum = tasRcdObj.repeat === 'annual' // What: Horizon Day Number. Why: 1100 days (~3 years) comfortably covers the old max (annual, interval 1) but not a large "every N weeks/months/years", and a one-time task's own onceDate has no upper bound (a plain date picker), so a far-future pick needs its own horizon or this function would falsely report "this will never show". How: This picks a horizon sized to tasRcdObj's own repeat kind and interval, or (for 'once') the distance to its own onceDate plus 30 days of slack.
 		? intCouNum * 366 + 366                                                                             // What: Annual Horizon Branch. Why: An annual task needs at least one full interval of years plus a year of slack. How: This scales 366 days by intCouNum and adds one more year.
 		: tasRcdObj.repeat === 'monthly'                                                                    // What: Monthly Check. Why: A monthly task needs its own month-sized horizon. How: This tests for the monthly kind next.
@@ -1055,6 +1058,9 @@ function nexEliFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 
 
 	const horValNum = Math.max( 1100, horDayNum ); // What: Horizon Value Number. Why: The loop below needs a single floored-at-1100 day count to actually iterate up to. How: This floors horDayNum at 1100.
+
+	// #endregion Search Horizon
+
 
 
 	for ( let dayOffNum = 1; dayOffNum <= horValNum; dayOffNum++ ) { // What: Search Loop. Why: Every candidate day from tomorrow through the horizon must be checked in order, so the FIRST one that qualifies is genuinely the next eligible one. How: This walks basDatObj forward one day at a time via dayOffNum.
@@ -1144,11 +1150,19 @@ function nexEliFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 function todVisFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undefined, holStaObj : HolStaTyp | null | undefined, cheDatObj : Date = new Date() ) : TodVisTyp {
 
 
+	// #region Exclusion Inputs
+
 	const optNorObj = optForFun( tasRcdObj, remOptObj );                    // What: Options Normalized Object. Why: The 2 exclusion checks further below both read from tasRcdObj's own governing class. How: This calls optForFun once and reuses the result.
 	const isaWkdBoo = cheDatObj.getDay() === 0 || cheDatObj.getDay() === 6; // What: Is-A Weekend Boolean. Why: The weekend-exclusion check further below needs to know whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
 	const holInfObj = HOL_NAM_OBJ.holInfFun( holStaObj, cheDatObj );        // What: Holiday Info Object. Why: A caller distinguishing a built-in holiday from a custom one needs the full record, not just its name. How: This calls holInfFun, which returns the matched holiday's record, or null when cheDatObj isn't a holiday.
 	const isaHolBoo = !!holInfObj;                                          // What: Is-A Holiday Boolean. Why: The holiday-exclusion check further below only needs a plain boolean, not the full record. How: This coerces holInfObj to a real boolean.
 	const cheIsoStr = isoDayFun( cheDatObj );                               // What: Check Iso String. Why: The manual-skip check further below compares tasRcdObj's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
+
+	// #endregion Exclusion Inputs
+
+
+
+	// #region Cause Collection
 
 	const cauValArr : VisCauTyp[] = []; // What: Cause Value Array. Why: More than one exclusion can apply on the same day (e.g. both an excluded weekend and an excluded holiday), and naming only the first would leave the user turning off one setting while the task still doesn't appear. How: This starts empty and is pushed to below, one entry per applicable cause.
 
@@ -1170,6 +1184,8 @@ function todVisFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 
 
 	}
+
+	// #endregion Cause Collection
 
 
 
