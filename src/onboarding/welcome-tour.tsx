@@ -293,6 +293,44 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 
 
 
+	// #region hidSamFun
+
+	/**
+	 * hidSamFun = Hide Samples Function
+	 *
+	 * @summary
+	 * Hides every sample picker and every sample reminder, the "tucked out
+	 * of sight, not deleted" state the tour ends in, which the per-page
+	 * mini-tours reuse later, along with the pickers' precomputed Stats
+	 * history.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * hidSamFun() // => void
+	 * ```
+	 *
+	*/
+
+	const hidSamFun = () => { // What: Hide Samples Function. Why: The tour's Settings step and a Skip both end with the samples hidden. How: This hides every sample picker and every sample task.
+
+
+		ONB_SPI_ARR.forEach( ( picIdeStr ) => actStoObj.updPicFun( picIdeStr, { hidden : true } ) ); // What: Sample Picker Hide Call. Why: A hidden sample still exists for a later mini-tour to reuse, it just should not clutter Today anymore. How: This updates every sample picker id to hidden:true.
+
+		ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.updTasFun( curTasObj.id, { hidden : true } ) ); // What: Sample Task Hide Call. Why: A hidden sample reminder still exists for its own mini-tour launcher card to read later. How: This updates every ONB_TAS_ARR entry's own id to hidden:true.
+
+
+	};
+
+	// #endregion hidSamFun
+
+
+
 	// #region skiEndFun
 
 	/**
@@ -326,9 +364,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 
 
 
-		ONB_SPI_ARR.forEach( ( picIdeStr ) => actStoObj.updPicFun( picIdeStr, { hidden : true } ) ); // What: Sample Picker Hide Call. Why: Skipping reaches the same "tucked out of sight, not deleted" end state the full tour's own Settings step reaches. How: This updates every sample picker id to hidden:true.
-
-		ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.updTasFun( curTasObj.id, { hidden : true } ) ); // What: Sample Task Hide Call. Why: A Skip after the Generate step leaves its visible sample reminders behind. How: This updates every ONB_TAS_ARR entry's own id to hidden:true.
+		hidSamFun(); // What: Samples Hide Call. Why: Skipping reaches the same "tucked out of sight, not deleted" end state the full tour's own Settings step reaches, and a Skip after the Generate step leaves visible sample reminders behind. How: This hides every sample picker and task.
 
 
 
@@ -466,19 +502,10 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 
 			...NAV_TAR_OBJ.settings, // What: Settings Nav Target Spread. Why: This reuses the shared Settings nav-target descriptor instead of duplicating its selStr/titStr/bodEle. How: This spreads NAV_TAR_OBJ.settings's own fields onto this step object.
 
-			bacBoo : true,       // What: Back Boolean. Why: The user should always be able to return to the previous, Data step. How: GuiTouCom shows its own Back button whenever this is true.
-			priStr : 'Next',     // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
-			tabStr : 'settings', // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
-
-			runFun : () => { // What: Run Function. Why: The sample pickers/reminders are not deleted, since the per-page mini-tours will reuse this exact data (and its precomputed Stats history) later, only tucked out of sight. How: This hides every sample picker and every sample task.
-
-
-				ONB_SPI_ARR.forEach( ( picIdeStr ) => actStoObj.updPicFun( picIdeStr, { hidden : true } ) ); // What: Sample Picker Hide Call. Why: A hidden sample still exists for a later mini-tour to reuse, it just should not clutter Today anymore. How: This updates every sample picker id to hidden:true.
-
-				ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.updTasFun( curTasObj.id, { hidden : true } ) ); // What: Sample Task Hide Call. Why: A hidden sample reminder still exists for its own mini-tour launcher card to read later. How: This updates every ONB_TAS_ARR entry's own id to hidden:true.
-
-
-			}
+			bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous, Data step. How: GuiTouCom shows its own Back button whenever this is true.
+			priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+			runFun : hidSamFun, // What: Run Function. Why: The sample pickers/reminders are not deleted, since the per-page mini-tours will reuse this exact data (and its precomputed Stats history) later, only tucked out of sight. How: This hides every sample picker and every sample task through hidSamFun.
+			tabStr : 'settings' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 		},

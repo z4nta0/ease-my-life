@@ -84,6 +84,19 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 	const groBucMap = new Map< string, TodGroTyp >(); // What: Group Bucket Map. Why: Every entry below needs to land in its own group's bucket, created the first time that group is seen. How: This is read and populated by both loops in this region, keyed by group name.
 
 
+	const bucArrFun = ( groNamStr : string ) => { // What: Bucket Array Function. Why: Every row below lands in its own group's bucket, which the first row seen for a group creates. How: This creates the group's bucket when it's missing, then returns its row array to push onto.
+
+
+		if ( !groBucMap.has( groNamStr ) ) groBucMap.set( groNamStr, { entArr : [], namStr : groNamStr } ); // What: Group Bucket Init Guard. Why: The very first entry seen for a group must create its own bucket. How: This sets a fresh { name, entries } bucket only when groNamStr has none yet.
+
+
+
+		return groBucMap.get( groNamStr )!.entArr; // What: Bucket Rows Return. Why: The caller pushes its row onto the group's own rows. How: This returns the bucket's entry array. // What: Non-Null Note. Why: The bucket init guard just above creates this group's bucket before anything is pushed. How: The ! tells TypeScript the get returns it.
+
+
+	};
+
+
 	for ( const curEntObj of staAppObj.today.entries ) { // What: Today Entry Bucket Loop. Why: Every real entry (pick, day-off, charging) needs to land in its own picker's group. How: This walks staAppObj.today.entries, resolving each one's own picker and group before pushing it into groBucMap.
 
 
@@ -93,11 +106,7 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 			const groNamStr = curEntObj.group || 'Other'; // What: Group Name String. Why: A day-off card still needs a real group to bucket into. How: This reads curEntObj's own group, falling back to 'Other'.
 
 
-			if ( !groBucMap.has( groNamStr ) ) groBucMap.set( groNamStr, { entArr : [], namStr : groNamStr } ); // What: Group Bucket Init Guard. Why: The very first entry seen for a group must create its own bucket. How: This sets a fresh { name, entries } bucket only when groNamStr has none yet.
-
-
-
-			groBucMap.get( groNamStr )!.entArr.push({ // What: Day-Off Row Push. Why: This is the synthetic row EntCarCom's own day-off branch renders. How: This pairs curEntObj with a picker-shaped stand-in carrying just enough fields (id/name/group) to sort and render like a real one. // What: Non-Null Note. Why: The bucket init guard just above creates this group's bucket before anything is pushed. How: The ! tells TypeScript the get returns it.
+			bucArrFun( groNamStr ).push({ // What: Day-Off Row Push. Why: This is the synthetic row EntCarCom's own day-off branch renders. How: This pairs curEntObj with a picker-shaped stand-in carrying just enough fields (id/name/group) to sort and render like a real one.
 
 
 				entRecObj : curEntObj, // What: Entry Record Object. Why: The day-off branch renders the real day-off entry itself. How: This passes curEntObj straight through.
@@ -134,11 +143,7 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 		const groNamStr = picRecObj.group || 'Other'; // What: Group Name String. Why: This entry needs a real group to bucket into. How: This reads picRecObj's own group, falling back to 'Other'.
 
 
-		if ( !groBucMap.has( groNamStr ) ) groBucMap.set( groNamStr, { entArr : [], namStr : groNamStr } ); // What: Group Bucket Init Guard. Why: The very first entry seen for a group must create its own bucket. How: This sets a fresh { name, entries } bucket only when groNamStr has none yet.
-
-
-
-		groBucMap.get( groNamStr )!.entArr.push( { entRecObj : curEntObj, picRecObj : picRecObj } ); // What: Entry Row Push. Why: This is the real row EntCarCom renders. How: This pairs curEntObj with its own resolved picRecObj. // What: Non-Null Note. Why: The bucket init guard just above creates this group's bucket before anything is pushed. How: The ! tells TypeScript the get returns it.
+		bucArrFun( groNamStr ).push( { entRecObj : curEntObj, picRecObj : picRecObj } ); // What: Entry Row Push. Why: This is the real row EntCarCom renders. How: This pairs curEntObj with its own resolved picRecObj.
 
 
 	}
@@ -206,11 +211,7 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 		const groNamStr = curPicObj.group || 'Other'; // What: Group Name String. Why: A launcher card still needs a real group to bucket into, same as any other row. How: This reads curPicObj's own group, falling back to 'Other'.
 
 
-		if ( !groBucMap.has( groNamStr ) ) groBucMap.set( groNamStr, { entArr : [], namStr : groNamStr } ); // What: Group Bucket Init Guard. Why: The very first entry seen for a group must create its own bucket. How: This sets a fresh { name, entries } bucket only when groNamStr has none yet.
-
-
-
-		groBucMap.get( groNamStr )!.entArr.push({ // What: Tutorial Row Push. Why: This is the synthetic row EntCarCom's own tutorial branch renders. How: This pairs a synthetic { done, eid, kind } entry with the real curPicObj. // What: Non-Null Note. Why: The bucket init guard just above creates this group's bucket before anything is pushed. How: The ! tells TypeScript the get returns it.
+		bucArrFun( groNamStr ).push({ // What: Tutorial Row Push. Why: This is the synthetic row EntCarCom's own tutorial branch renders. How: This pairs a synthetic { done, eid, kind } entry with the real curPicObj.
 
 
 			picRecObj : curPicObj, // What: Picker Record Object. Why: The launcher card belongs to the real sample picker it starts a tour for. How: This passes curPicObj straight through.

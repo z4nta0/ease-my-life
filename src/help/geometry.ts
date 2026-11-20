@@ -33,6 +33,7 @@ import { splSelFun } from '../utils/selector.ts'; // What: Split Selector Functi
 
 // #region Types
 
+type BadRecTyp = { bottom : number, height : number, left : number, top : number, width : number };        // What: Badge Rect Type. Why: A help badge is placed as a fixed-size box. How: This describes badBoxFun's badge rect.
 type ChrIteTyp = { chrDomEle : HTMLElement, chrRecObj : DOMRect, chrSelStr : string, chrSidStr : string }; // What: Chrome Item Type. Why: Highlights are clipped against each piece of fixed app chrome on the page. How: This describes one chrome element, its rect, its selector, and the side it sits on.
 type EdgRecTyp = { bottom : number, left : number, right : number, top : number };                         // What: Edge Rect Type. Why: Clipping only ever moves a rect's four edges. How: This describes a rect by those edges.
 
@@ -621,7 +622,51 @@ function detEdgFun ( chrRecObj : EdgRecTyp ) : string {
 
 // #region Shape And Placement
 
-type BadRecTyp = { bottom : number, height : number, left : number, top : number, width : number }; // What: Badge Rect Type. Why: A help badge is placed as a fixed-size box. How: This describes badRecFun's badge rect.
+// #region badBoxFun
+
+/**
+ * badBoxFun = Badge Box Function
+ *
+ * @summary
+ * Builds a badge's fixed-position rect from where it's drawn: a p02-step
+ * square, its bottom and size worked out from that step.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param lefBadNum - Left Badge Number: The badge's left edge, in pixels.
+ * @param topBadNum - Top Badge Number: The badge's top edge, in pixels.
+ *
+ * @returns { bottom, height, left, top, width } for the badge's own
+ * fixed-position placement.
+ *
+ * @example
+ * ```ts
+ * badBoxFun(lefBadNum, topBadNum) // => badge rect
+ * ```
+ *
+*/
+
+function badBoxFun ( lefBadNum : number, topBadNum : number ) : BadRecTyp {
+
+
+	return { // What: Badge Rect Return. Why: The caller needs the final fixed-position badge rect back. How: This builds the shape both the rendered badge button and plaTipFun's own anchoring read.
+
+
+		bottom : topBadNum + rhyPxlFun( 'p02' ), // What: Badge Bottom. Why: plaTipFun and hit tests read the badge's own bottom edge. How: This adds the badge size to topBadNum. // Vertical Rhythm Base Plus 2 ~= 25.572px
+		height : rhyPxlFun( 'p02' ),             // What: Badge Height. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 2 ~= 25.572px
+		left   : lefBadNum,                      // What: Badge Left. Why: This is where the badge is drawn horizontally. How: This is the left position given.
+		top    : topBadNum,                      // What: Top. Why: This is where the badge is drawn vertically. How: This is the top position given.
+		width  : rhyPxlFun( 'p02' )              // What: Badge Width. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 2 ~= 25.572px
+
+
+	};
+
+
+}
+
+// #endregion badBoxFun
+
+
 
 // #region badRecFun
 
@@ -683,17 +728,7 @@ function badRecFun ( tarRecObj : BoxRecTyp & Partial< PadSidTyp >, cenBadBoo : b
 
 
 
-		return { // What: Centered Badge Return. Why: A column group member's own badge is complete once centered. How: This builds the badge rect around the centered left position.
-
-
-			bottom : topBadNum + rhyPxlFun( 'p02' ), // What: Badge Bottom. Why: plaTipFun and hit tests read the badge's own bottom edge. How: This adds the badge size to topBadNum. // Vertical Rhythm Base Plus 2 ~= 25.572px
-			height : rhyPxlFun( 'p02' ),             // What: Badge Height. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 2 ~= 25.572px
-			left   : lefBadNum,                      // What: Badge Left. Why: This is where the badge is drawn horizontally. How: This is the left position computed above.
-			top    : topBadNum,                      // What: Top. Why: This is where the badge is drawn vertically. How: This is the top position computed above.
-			width  : rhyPxlFun( 'p02' )              // What: Badge Width. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 2 ~= 25.572px
-
-
-		};
+		return badBoxFun( lefBadNum, topBadNum ); // What: Centered Badge Return. Why: A column group member's own badge is complete once centered. How: This builds the badge rect around the centered left position.
 
 
 	}
@@ -712,17 +747,7 @@ function badRecFun ( tarRecObj : BoxRecTyp & Partial< PadSidTyp >, cenBadBoo : b
 
 
 
-	return { // What: Badge Rect Return. Why: The caller needs the final fixed-position badge rect back. How: This builds the shape both the rendered badge button and plaTipFun's own anchoring read.
-
-
-		bottom : topBadNum + rhyPxlFun( 'p02' ), // What: Badge Bottom. Why: plaTipFun and hit tests read the badge's own bottom edge. How: This adds the badge size to topBadNum. // Vertical Rhythm Base Plus 2 ~= 25.572px
-		height : rhyPxlFun( 'p02' ),             // What: Badge Height. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 2 ~= 25.572px
-		left   : lefBadNum,                      // What: Badge Left. Why: This is where the badge is drawn horizontally. How: This is the left position computed above.
-		top    : topBadNum,                      // What: Top. Why: This is where the badge is drawn vertically. How: This is the top position computed above.
-		width  : rhyPxlFun( 'p02' )              // What: Badge Width. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 2 ~= 25.572px
-
-
-	};
+	return badBoxFun( lefBadNum, topBadNum ); // What: Badge Rect Return. Why: The caller needs the final fixed-position badge rect back. How: This builds it from the corner placement's left and the vertical top.
 
 
 }

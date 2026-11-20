@@ -102,45 +102,35 @@ function plaTipFun ( tarRecObj : HelRecTyp, tipWidNum : number, tipHeiNum : numb
 
 
 
-	if ( tarRecObj.alwBelBoo ) { // What: Always Below Branch. Why: A target spanning nearly the whole viewport itself (the nav tip's own 'side'/'top' placements) has essentially zero room above no matter what. How: This skips the below/above choice entirely and places the tip a fixed 16px below the target.
+	const useBadBoo = tarRecObj.badAncNum != null;                         // What: Use Badge Boolean. Why: A column group member's own badge sits well above tarRecObj.top itself, so an above-placed tip anchored to tarRecObj.top would point its own arrow at empty space instead of the badge. How: This checks whether tarRecObj carries a badAncNum at all.
+	const aboAncNum = tarRecObj.badAncNum ?? tarRecObj.top;                // What: Above Anchor Number. Why: The "flips above" branch below needs one single Y to anchor against, whichever is correct for this target. How: This picks badAncNum when it's set, the same check as useBadBoo, otherwise the target's own top edge.
+	const gapAboNum = useBadBoo ? rhyPxlFun( 'm02' ) : rhyPxlFun( 'bas' ); // What: Gap Above Number. Why: The usual base-step breathing room reads as "detached" for a small round badge specifically, so a badge anchor uses a tighter m02 step instead. How: This picks the m02 step when anchored to a badge, otherwise the app's own normal base-step gap. // Vertical Rhythm Base Minus 2 ~= 8.304px, Vertical Rhythm Base ~= 14.572px
+	const spaBelNum = vieHeiNum - tarRecObj.bottom - rhyPxlFun( 'bas' );   // What: Space Below Number. Why: This is how much room the "below" placement actually has to work with. How: This subtracts the target's own bottom edge and the normal base-step gap from the viewport's own height. // Vertical Rhythm Base ~= 14.572px
+	const spaAboNum = aboAncNum - gapAboNum - edgMarNum;                   // What: Space Above Number. Why: This is how much room the "above" placement actually has to work with. How: This subtracts gapAboNum and the edge margin from aboAncNum.
+
+	const alwBelBoo = !!tarRecObj.alwBelBoo;  // What: Always Below Boolean. Why: A target spanning nearly the whole viewport itself (the nav tip's own 'side'/'top' placements) has essentially zero room above no matter what. How: This reads the target's own always-below flag.
+	const fitBelBoo = spaBelNum >= tipHeiNum; // What: Fits Below Boolean. Why: Below wins whenever the full content actually fits there. How: This checks the room below against tipHeiNum.
+	const morBelBoo = spaBelNum >= spaAboNum; // What: More Below Boolean. Why: Below also wins whenever it simply has more room than above, even if neither fully fits. How: This compares the two rooms.
+
+	const plaBelBoo = alwBelBoo || fitBelBoo || morBelBoo; // What: Place Below Boolean. Why: The tip prefers below and flips above only when above genuinely has more room. How: This is true when any one of the three holds.
 
 
-		topTipNum = tarRecObj.bottom + rhyPxlFun( 'bas' ); // What: Below Top Set. Why: The always-below branch places the tip a fixed base step under the target regardless of available room. How: This sets topTipNum to the target's own bottom plus the base step. // Vertical Rhythm Base ~= 14.572px
+	if ( plaBelBoo ) { // What: Below Branch. Why: Below is the tip's usual side. How: This places the tip a base step under the target, capped by the viewport's own bottom.
+
+
+		topTipNum = tarRecObj.bottom + rhyPxlFun( 'bas' ); // What: Below Top Set. Why: The below branch places the tip a fixed base step under the target, whether it always sits below or has the room there. How: This sets topTipNum to the target's own bottom plus the base step. // Vertical Rhythm Base ~= 14.572px
 		tipClaStr = 'helTipDiv--up';                       // What: Up Arrow Set. Why: A tip below the target points its arrow up at it. How: This sets tipClaStr to the up-pointing arrow class.
 		maxHeiNum = vieHeiNum - topTipNum - edgMarNum;     // What: Max Height Cap. Why: A below-placed tip must still not overflow past the bottom of the viewport. How: This subtracts topTipNum and the edge margin from the viewport's own height.
 
 
 	}
 
-	else { // What: Normal Above/Below Branch. Why: This is the ordinary case, where the tip prefers below but can flip above when that genuinely has more room. How: This compares the room below against the room above before picking a side.
+	else { // What: Flip Above Branch. Why: Above only wins once it has genuinely more room than below. How: This places the tip so its own bottom edge sits gapAboNum clear of aboAncNum, capped to never rise above the edge margin.
 
 
-		const useBadBoo = tarRecObj.badAncNum != null;                         // What: Use Badge Boolean. Why: A column group member's own badge sits well above tarRecObj.top itself, so an above-placed tip anchored to tarRecObj.top would point its own arrow at empty space instead of the badge. How: This checks whether tarRecObj carries a badAncNum at all.
-		const aboAncNum = tarRecObj.badAncNum ?? tarRecObj.top;                // What: Above Anchor Number. Why: The "flips above" branch below needs one single Y to anchor against, whichever is correct for this target. How: This picks badAncNum when it's set, the same check as useBadBoo, otherwise the target's own top edge.
-		const gapAboNum = useBadBoo ? rhyPxlFun( 'm02' ) : rhyPxlFun( 'bas' ); // What: Gap Above Number. Why: The usual base-step breathing room reads as "detached" for a small round badge specifically, so a badge anchor uses a tighter m02 step instead. How: This picks the m02 step when anchored to a badge, otherwise the app's own normal base-step gap. // Vertical Rhythm Base Minus 2 ~= 8.304px, Vertical Rhythm Base ~= 14.572px
-		const spaBelNum = vieHeiNum - tarRecObj.bottom - rhyPxlFun( 'bas' );   // What: Space Below Number. Why: This is how much room the "below" placement actually has to work with. How: This subtracts the target's own bottom edge and the normal base-step gap from the viewport's own height. // Vertical Rhythm Base ~= 14.572px
-		const spaAboNum = aboAncNum - gapAboNum - edgMarNum;                   // What: Space Above Number. Why: This is how much room the "above" placement actually has to work with. How: This subtracts gapAboNum and the edge margin from aboAncNum.
-
-
-		if ( spaBelNum >= tipHeiNum || spaBelNum >= spaAboNum ) { // What: Prefer Below Guard. Why: Below wins whenever the full content actually fits there, or whenever below simply has more room than above even if neither fully fits. How: This checks tipHeiNum against spaBelNum first, then compares the two spaces directly.
-
-
-			topTipNum = tarRecObj.bottom + rhyPxlFun( 'bas' ); // What: Below Top Set. Why: The ordinary case's own below branch places the tip a base step under the target once it genuinely has the room. How: This sets topTipNum to the target's own bottom plus the base step. // Vertical Rhythm Base ~= 14.572px
-			tipClaStr = 'helTipDiv--up';                       // What: Up Arrow Set. Why: A tip below the target points its arrow up at it. How: This sets tipClaStr to the up-pointing arrow class.
-			maxHeiNum = vieHeiNum - topTipNum - edgMarNum;     // What: Max Height Cap. Why: A below-placed tip must still not overflow past the bottom of the viewport. How: This subtracts topTipNum and the edge margin from the viewport's own height.
-
-
-		}
-
-		else { // What: Flip Above Branch. Why: Above only wins once it has genuinely more room than below. How: This places the tip so its own bottom edge sits gapAboNum clear of aboAncNum, capped to never rise above the edge margin.
-
-
-			topTipNum = Math.max( edgMarNum, aboAncNum - gapAboNum - tipHeiNum ); // What: Above Top Set. Why: The flip-above branch places the tip so its own bottom edge clears aboAncNum by gapAboNum, capped to never rise above the edge margin. How: This sets topTipNum via Math.max against edgMarNum.
-			tipClaStr = 'helTipDiv--down';                                        // What: Down Arrow Set. Why: A tip above the target points its arrow down at it. How: This sets tipClaStr to the down-pointing arrow class.
-			maxHeiNum = spaAboNum;                                                // What: Above Max Height. Why: An above-placed tip's own ceiling is the target itself, not the viewport's own bottom edge (reusing the "below" formula here let a clamped top overflow back down through the target). How: This bounds maxHeiNum by spaAboNum instead.
-
-
-		}
+		topTipNum = Math.max( edgMarNum, aboAncNum - gapAboNum - tipHeiNum ); // What: Above Top Set. Why: The flip-above branch places the tip so its own bottom edge clears aboAncNum by gapAboNum, capped to never rise above the edge margin. How: This sets topTipNum via Math.max against edgMarNum.
+		tipClaStr = 'helTipDiv--down';                                        // What: Down Arrow Set. Why: A tip above the target points its arrow down at it. How: This sets tipClaStr to the down-pointing arrow class.
+		maxHeiNum = spaAboNum;                                                // What: Above Max Height. Why: An above-placed tip's own ceiling is the target itself, not the viewport's own bottom edge (reusing the "below" formula here let a clamped top overflow back down through the target). How: This bounds maxHeiNum by spaAboNum instead.
 
 
 	}
