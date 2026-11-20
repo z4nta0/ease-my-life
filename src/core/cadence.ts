@@ -108,10 +108,6 @@ const CAD_STR_ARR : string[] = [ 'daily', 'weekly', 'monthly', 'yearly' ]; // Wh
 
 // #region Helpers
 
-const midDatFun = ( inpDatObj : Date ) => new Date( inpDatObj.getFullYear(), inpDatObj.getMonth(), inpDatObj.getDate() ); // What: Midnight Date Function. Why: Period-start comparisons must ignore whatever time-of-day inpDatObj carries. How: This rebuilds a Date from inpDatObj's own year/month/day alone, dropping the time component entirely.
-
-
-
 // #region Cadence Normalization
 
 // #region enfWeeFun
@@ -258,6 +254,10 @@ function norCadFun ( picLikObj : CadFieTyp = {} ) : CadNorTyp {
 
 
 // #region Period Resolution
+
+const midDatFun = ( inpDatObj : Date ) => new Date( inpDatObj.getFullYear(), inpDatObj.getMonth(), inpDatObj.getDate() ); // What: Midnight Date Function. Why: Period-start comparisons must ignore whatever time-of-day inpDatObj carries. How: This rebuilds a Date from inpDatObj's own year/month/day alone, dropping the time component entirely.
+
+
 
 // #region tdmResFun
 
