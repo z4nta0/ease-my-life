@@ -9,7 +9,7 @@ import { heaPatFun     } from '../support/headers.ts'; // What: Headers Path Fun
 import { opeStaFun     } from '../support/states.ts';  // What: Open State Function. Why: Each app state is opened the way the accessibility suite opens it. How: This loads the state and waits until it's settled.
 import { PRE_URL_STR   } from '../support/servers.ts'; // What: Preview URL String. Why: Link scrapers read the shipped page, which the build minifies, so the raw pages are read from the build rather than the dev server. How: This is the address the preview server answers on.
 import { readFileSync  } from 'node:fs';               // What: Read File Sync. Why: The structured data's price is checked against the app's own. How: This reads src/constants.ts.
-import { STA_REC_ARR   } from '../support/states.ts';  // What: State Record Array. Why: Every state's document has to keep one description. How: This lists the states to load.
+import { STA_RCD_ARR   } from '../support/states.ts';  // What: State Record Array. Why: Every state's document has to keep one description. How: This lists the states to load.
 import { test          } from '@playwright/test';      // What: Test. Why: Each page and each file is its own test. How: This declares them.
 import { watErrFun     } from '../support/watch.ts';   // What: Watch Errors Function. Why: A page error during a check is a failure even when the check itself passes. How: This collects page and console errors.
 
@@ -277,10 +277,10 @@ test( 'every indexed page has its own title and description', () => { // What: U
 
 
 
-for ( const staRecObj of STA_REC_ARR ) { // What: State Head Loop. Why: The app renders every screen at one address, so no screen may add a second description or canonical link. How: This declares one test per state.
+for ( const staRcdObj of STA_RCD_ARR ) { // What: State Head Loop. Why: The app renders every screen at one address, so no screen may add a second description or canonical link. How: This declares one test per state.
 
 
-	test( `${ staRecObj.ideStr } keeps the one title, description, and canonical link`, async ( { page : curPagObj } ) => { // What: State Head Test. Why: React adds a rendered description beside index.html's rather than replacing it, which would leave two. How: This opens the state in a browser and checks its title and that it has exactly one description and one canonical link, index.html's.
+	test( `${ staRcdObj.ideStr } keeps the one title, description, and canonical link`, async ( { page : curPagObj } ) => { // What: State Head Test. Why: React adds a rendered description beside index.html's rather than replacing it, which would leave two. How: This opens the state in a browser and checks its title and that it has exactly one description and one canonical link, index.html's.
 
 
 		// #region State Load
@@ -288,7 +288,7 @@ for ( const staRecObj of STA_REC_ARR ) { // What: State Head Loop. Why: The app 
 		const errMesArr = watErrFun( curPagObj ); // What: Error Message Array. Why: The state fails on any page error. How: This starts watching.
 
 
-		await opeStaFun( curPagObj, staRecObj ); // What: State Open Call. Why: The state's screens have to render before the head is read. How: This opens the state the way the accessibility suite does.
+		await opeStaFun( curPagObj, staRcdObj ); // What: State Open Call. Why: The state's screens have to render before the head is read. How: This opens the state the way the accessibility suite does.
 
 		// #endregion State Load
 

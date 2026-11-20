@@ -8,8 +8,8 @@ import { ENT_CAR_STR } from '../support/today.ts';   // What: Entry Card String.
 import { expect      } from '@playwright/test';      // What: Expect. Why: Every flow asserts what it changed. How: This makes the assertions.
 import { opeDayFun   } from '../support/app.ts';     // What: Open Day Function. Why: The refill flow reopens the day on a staged state. How: This loads the app on the fixed day.
 import { opeFixFun   } from '../support/app.ts';     // What: Open Fixture Function. Why: Each flow starts from real data. How: This opens the backup on a fixed day.
+import { rcdAniFun   } from '../support/watch.ts';   // What: Record Animations Function. Why: Flows confirm their animations played. How: This starts recording.
 import { reaStaFun   } from '../support/storage.ts'; // What: Read State Function. Why: Flows compare saved state before and after. How: This reads it.
-import { recAniFun   } from '../support/watch.ts';   // What: Record Animations Function. Why: Flows confirm their animations played. How: This starts recording.
 import { REM_CAR_STR } from '../support/today.ts';   // What: Reminder Card String. Why: The reminder flows act on a real reminder card. How: This selects them, leaving out tutorials.
 import { seeAniFun   } from '../support/watch.ts';   // What: Seen Animation Function. Why: Flows confirm their animations played. How: This checks the record.
 import { selTabFun   } from '../support/app.ts';     // What: Select Tab Function. Why: The streak test pushes an item from the Pickers tab. How: This switches tabs.
@@ -178,7 +178,7 @@ test( 'checking a card saves, animates, and undoes', async ( { page : curPagObj 
 
 
 
-	await recAniFun( curPagObj ); // What: Recording Start Call. Why: The check-off's animations are confirmed. How: This starts recording.
+	await rcdAniFun( curPagObj ); // What: Recording Start Call. Why: The check-off's animations are confirmed. How: This starts recording.
 
 	// #endregion Check-Off Setup
 
@@ -228,7 +228,7 @@ test( 'finishing every card celebrates', async ( { page : curPagObj } ) => { // 
 
 
 
-	await recAniFun( curPagObj ); // What: Recording Start Call. Why: The celebration is confirmed by its classes. How: This starts recording.
+	await rcdAniFun( curPagObj ); // What: Recording Start Call. Why: The celebration is confirmed by its classes. How: This starts recording.
 
 	// #endregion Celebration Setup
 
@@ -352,7 +352,7 @@ test( 're-rolling and skipping animate and save', async ( { page : curPagObj } )
 
 
 
-	await recAniFun( curPagObj ); // What: Recording Start Call. Why: The re-roll spin is confirmed. How: This starts recording.
+	await rcdAniFun( curPagObj ); // What: Recording Start Call. Why: The re-roll spin is confirmed. How: This starts recording.
 
 
 
@@ -376,7 +376,7 @@ test( 're-rolling and skipping animate and save', async ( { page : curPagObj } )
 
 
 
-	await recAniFun( curPagObj ); // What: Recording Restart Call. Why: The skip's slide-out is confirmed separately. How: This restarts recording.
+	await rcdAniFun( curPagObj ); // What: Recording Restart Call. Why: The skip's slide-out is confirmed separately. How: This restarts recording.
 
 
 
@@ -560,7 +560,7 @@ test( 'edit mode opens and cancels without reordering', async ( { page : curPagO
 
 	// #region Edit Mode Cancel
 
-	await recAniFun( curPagObj ); // What: Recording Start Call. Why: The banner's close animation is confirmed. How: This starts recording.
+	await rcdAniFun( curPagObj ); // What: Recording Start Call. Why: The banner's close animation is confirmed. How: This starts recording.
 
 
 

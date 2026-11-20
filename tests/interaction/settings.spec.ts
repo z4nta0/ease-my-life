@@ -5,8 +5,8 @@
 
 import { expect      } from '@playwright/test';      // What: Expect. Why: Every flow asserts what it changed. How: This makes the assertions.
 import { opeFixFun   } from '../support/app.ts';     // What: Open Fixture Function. Why: Each flow starts from real data. How: This opens the backup on a fixed day.
+import { rcdAniFun   } from '../support/watch.ts';   // What: Record Animations Function. Why: Flows confirm their animations played. How: This starts recording.
 import { reaStaFun   } from '../support/storage.ts'; // What: Read State Function. Why: Flows compare saved state before and after. How: This reads it.
-import { recAniFun   } from '../support/watch.ts';   // What: Record Animations Function. Why: Flows confirm their animations played. How: This starts recording.
 import { seeAniFun   } from '../support/watch.ts';   // What: Seen Animation Function. Why: Flows confirm their animations played. How: This checks the record.
 import { selTabFun   } from '../support/app.ts';     // What: Select Tab Function. Why: Every flow runs on the Settings tab. How: This switches to it.
 import { subHolFun   } from '../support/app.ts';     // What: Submit Holiday Function. Why: A custom holiday is added through the Settings form. How: This names, dates, and adds it.
@@ -82,7 +82,7 @@ test( 'a theme choice saves and fades the page', async ( { page : curPagObj } ) 
 
 
 
-	await recAniFun( curPagObj ); // What: Recording Start Call. Why: The page fade is confirmed. How: This starts recording.
+	await rcdAniFun( curPagObj ); // What: Recording Start Call. Why: The page fade is confirmed. How: This starts recording.
 
 
 
@@ -193,7 +193,7 @@ test( 'holidays can be turned off, added, and removed', async ( { page : curPagO
 
 	// #region Holiday Remove
 
-	await recAniFun( curPagObj ); // What: Recording Start Call. Why: The row's exit is confirmed. How: This starts recording.
+	await rcdAniFun( curPagObj ); // What: Recording Start Call. Why: The row's exit is confirmed. How: This starts recording.
 
 
 
@@ -317,7 +317,7 @@ test( 'the legal panels open and close', async ( { page : curPagObj } ) => { // 
 
 	// #region Panel Close
 
-	await recAniFun( curPagObj ); // What: Recording Start Call. Why: The closing animation is confirmed. How: This starts recording.
+	await rcdAniFun( curPagObj ); // What: Recording Start Call. Why: The closing animation is confirmed. How: This starts recording.
 
 
 

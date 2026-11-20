@@ -14,7 +14,7 @@ import { movProFun   } from '../support/feedback.ts'; // What: Moving Problems F
 import { opeStaFun   } from '../support/states.ts';   // What: Open State Function. Why: Each check opens and settles its state first. How: This loads it and waits for it.
 import { snaEleFun   } from '../support/feedback.ts'; // What: Snapshot Element Function. Why: Each look is recorded with whether each part of it would ease. How: This runs inside the page to read it.
 import { snaProFun   } from '../support/feedback.ts'; // What: Snap Problems Function. Why: A change has to ease rather than snap. How: This turns two snapshots into a problem for each snapped change.
-import { STA_REC_ARR } from '../support/states.ts';   // What: State Record Array. Why: The shared app states are each checked. How: This lists them.
+import { STA_RCD_ARR } from '../support/states.ts';   // What: State Record Array. Why: The shared app states are each checked. How: This lists them.
 import { test        } from '@playwright/test';       // What: Test. Why: Each check of each state is its own test. How: This declares them.
 import { valSigFun   } from '../support/feedback.ts'; // What: Value Signature Function. Why: Two looks are told apart by their values alone. How: This joins a snapshot's values into one string.
 
@@ -70,19 +70,19 @@ import type { Page          } from '@playwright/test'; // What: Page. Why: The h
 
 // #region Constants
 
-const ALL_STA_ARR = [ ...STA_REC_ARR, ...EXT_STA_ARR ]; // What: All State Array. Why: Every shared state is checked, and so is each opened one, since each holds controls the plain tabs don't. How: This lists the shared states first, then the opened ones.
+const ALL_STA_ARR = [ ...STA_RCD_ARR, ...EXT_STA_ARR ]; // What: All State Array. Why: Every shared state is checked, and so is each opened one, since each holds controls the plain tabs don't. How: This lists the shared states first, then the opened ones.
 const CON_SEL_STR = 'a[href], button, input:not([type="hidden"]), select, textarea, [role="button"], [role="radio"], [role="switch"], [role="tab"], [tabindex="0"]'; // What: Control Selector String. Why: Every element a person can press or focus is an interaction, the theme rows' radios and the info tips' trigger spans included. How: This matches the links, buttons, form fields, and focusable roles.
 const FIE_SEL_STR = 'input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select, textarea';                                                         // What: Field Selector String. Why: A text field has no hover or press look of its own, since pressing one only focuses it. How: This matches the fields, which the probe reads for focus alone.
 const HOV_TAR_STR = '[class*="todCarArt"], [class*="todCarDiv"], [class*="lisRowDiv"]';                                                                              // What: Hover Target String. Why: Today's cards and the Data tab's item rows respond to hover without being controls, so the control probe never reaches them. How: This matches each by its CSS module class, whose name Vite keeps inside the hashed class.
-const IDE_LIS_ARR = ALL_STA_ARR.map( ( staRecObj ) => staRecObj.ideStr );                                                                                            // What: Identifier List Array. Why: Each toggle row names the states it has to be found in, and most rows name every state of a tab. How: This lists every checked state's name, for the tab lists below.
+const IDE_LIS_ARR = ALL_STA_ARR.map( ( staRcdObj ) => staRcdObj.ideStr );                                                                                            // What: Identifier List Array. Why: Each toggle row names the states it has to be found in, and most rows name every state of a tab. How: This lists every checked state's name, for the tab lists below.
 const DAT_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'data-' ) );                                                                          // What: Data Identifier Array. Why: The Data tab's chevrons, scope tabs, and vacation buttons show on its states. How: This lists the Data states' names.
 const PIC_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'picker' ) );                                                                         // What: Pickers Identifier Array. Why: The Pickers tab's picker tabs and add button show on its states, the form's included. How: This lists the Pickers states' names.
 const PIL_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => /^(data|picker|stats)-?/.test( ideCurStr ) );                                                               // What: Pill Identifier Array. Why: The filter rails' pills show on the Data, Pickers, and Stats states. How: This lists those states' names.
 const SET_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'settings-' ) );                                                                      // What: Settings Identifier Array. Why: The Settings rail, theme rows, and switches show on its states. How: This lists the Settings states' names.
 const SKI_STA_ARR = [ 'today-desktop', 'today-phone', 'pickers-desktop', 'pickers-phone', 'stats-desktop', 'stats-phone', 'data-desktop', 'data-phone', 'settings-desktop', 'settings-phone' ]; // What: Skip State Array. Why: The skip link waits above the screen on every plain tab, while an open modal or help mode makes it unreachable. How: This names the states where the probe has to find it.
 const STA_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'stats-' ) );                                                                         // What: Stats Identifier Array. Why: The Stats tab's range pills and heat cells show on its states. How: This lists the Stats states' names.
-const TAB_IDE_ARR = ALL_STA_ARR.filter( ( staRecObj ) => staRecObj.fixBoo && !staRecObj.ideStr.startsWith( 'privacy' ) ).map( ( staRecObj ) => staRecObj.ideStr );   // What: Tab Bar Identifier Array. Why: The tab bar and its help button show on every state with the backup loaded, except under the Privacy panel, which covers them. How: This lists those states' names.
-const TOD_IDE_ARR = ALL_STA_ARR.filter( ( staRecObj ) => staRecObj.fixBoo && staRecObj.tabStr === 'today' ).map( ( staRecObj ) => staRecObj.ideStr );                // What: Today Identifier Array. Why: Today's cards, rail, and log chips show on every Today state with the backup loaded. How: This lists those states' names.
+const TAB_IDE_ARR = ALL_STA_ARR.filter( ( staRcdObj ) => staRcdObj.fixBoo && !staRcdObj.ideStr.startsWith( 'privacy' ) ).map( ( staRcdObj ) => staRcdObj.ideStr );   // What: Tab Bar Identifier Array. Why: The tab bar and its help button show on every state with the backup loaded, except under the Privacy panel, which covers them. How: This lists those states' names.
+const TOD_IDE_ARR = ALL_STA_ARR.filter( ( staRcdObj ) => staRcdObj.fixBoo && staRcdObj.tabStr === 'today' ).map( ( staRcdObj ) => staRcdObj.ideStr );                // What: Today Identifier Array. Why: Today's cards, rail, and log chips show on every Today state with the backup loaded. How: This lists those states' names.
 
 
 
@@ -1169,10 +1169,10 @@ test.describe.configure( { mode : 'parallel' } ); // What: Parallel Mode Call. W
 
 
 
-for ( const redMotBoo of [ false, true ] ) for ( const staRecObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every state is checked with motion and again under reduced motion. How: This declares one test per state and motion setting.
+for ( const redMotBoo of [ false, true ] ) for ( const staRcdObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every state is checked with motion and again under reduced motion. How: This declares one test per state and motion setting.
 
 
-	test( `${ staRecObj.ideStr } gives each kind of control hover, press, and focus feedback, and each toggle its switch${ redMotBoo ? ', without motion under reduced motion' : '' }`, async ( { page : curPagObj } ) => { // What: Feedback Test. Why: Every interaction should visibly register, and still register without moving for someone who asked for less motion. How: This opens the state, blocks clicks, flips each toggle kind, probes each kind of control and hover card, and checks it finds no problems.
+	test( `${ staRcdObj.ideStr } gives each kind of control hover, press, and focus feedback, and each toggle its switch${ redMotBoo ? ', without motion under reduced motion' : '' }`, async ( { page : curPagObj } ) => { // What: Feedback Test. Why: Every interaction should visibly register, and still register without moving for someone who asked for less motion. How: This opens the state, blocks clicks, flips each toggle kind, probes each kind of control and hover card, and checks it finds no problems.
 
 
 		// #region Probe Setup
@@ -1184,7 +1184,7 @@ for ( const redMotBoo of [ false, true ] ) for ( const staRecObj of ALL_STA_ARR 
 
 
 
-		await opeStaFun( curPagObj, staRecObj ); // What: State Open Call. Why: The controls are probed with the state settled. How: This loads and settles it.
+		await opeStaFun( curPagObj, staRcdObj ); // What: State Open Call. Why: The controls are probed with the state settled. How: This loads and settles it.
 
 		await curPagObj.evaluate( cliBloFun ); // What: Click Block Call. Why: Pressing a control shouldn't run its action. How: This cancels every click from here on.
 
@@ -1194,8 +1194,8 @@ for ( const redMotBoo of [ false, true ] ) for ( const staRecObj of ALL_STA_ARR 
 
 		// #region Probe Runs
 
-		const togProArr = await togProFun( curPagObj, staRecObj.ideStr, redMotBoo ); // What: Toggle Problem Array. Why: Every switched state has to show and ease. How: This flips the toggles first, since probing the controls moves focus and the pointer, which can close what a toggle shows.
-		const feeResObj = await feeProFun( curPagObj, staRecObj.ideStr, redMotBoo ); // What: Feedback Result Object. Why: Every kind of control has to respond. How: This probes them, collecting problems and notes.
+		const togProArr = await togProFun( curPagObj, staRcdObj.ideStr, redMotBoo ); // What: Toggle Problem Array. Why: Every switched state has to show and ease. How: This flips the toggles first, since probing the controls moves focus and the pointer, which can close what a toggle shows.
+		const feeResObj = await feeProFun( curPagObj, staRcdObj.ideStr, redMotBoo ); // What: Feedback Result Object. Why: Every kind of control has to respond. How: This probes them, collecting problems and notes.
 		const hovProArr = await hovProFun( curPagObj, redMotBoo );                   // What: Hover Problem Array. Why: The cards and rows that respond to hover are checked too. How: This probes them.
 
 		// #endregion Probe Runs

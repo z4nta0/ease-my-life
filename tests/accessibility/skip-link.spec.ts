@@ -37,7 +37,7 @@ import { test        } from '@playwright/test';     // What: Test. Why: Each sta
 
 // #region Constants
 
-const SKI_STA_ARR = ALL_STA_ARR.filter( ( staRecObj ) => staRecObj.fixBoo && !/^(help|privacy)-/.test( staRecObj.ideStr ) ); // What: Skip State Array. Why: The link is the first stop wherever nothing modal covers the tab, while the Privacy panel makes it inert and help mode's click guard blocks it. How: This keeps the states on real data, leaving out the Privacy panel and the help mode states by name.
+const SKI_STA_ARR = ALL_STA_ARR.filter( ( staRcdObj ) => staRcdObj.fixBoo && !/^(help|privacy)-/.test( staRcdObj.ideStr ) ); // What: Skip State Array. Why: The link is the first stop wherever nothing modal covers the tab, while the Privacy panel makes it inert and help mode's click guard blocks it. How: This keeps the states on real data, leaving out the Privacy panel and the help mode states by name.
 
 // #endregion Constants
 
@@ -45,13 +45,13 @@ const SKI_STA_ARR = ALL_STA_ARR.filter( ( staRecObj ) => staRecObj.fixBoo && !/^
 
 // #region Module Init
 
-for ( const staRecObj of SKI_STA_ARR ) { // What: Skip State Loop. Why: Every tab opens with the same skip link, whatever is opened on it. How: This declares one test per state.
+for ( const staRcdObj of SKI_STA_ARR ) { // What: Skip State Loop. Why: Every tab opens with the same skip link, whatever is opened on it. How: This declares one test per state.
 
 
-	test( `${ staRecObj.ideStr } opens with a skip link to the main area`, async ( { page : curPagObj } ) => { // What: Skip Link Test. Why: A keyboard user's first stop should lead straight past the tab bar. How: This presses Tab, checks the link has focus on screen, clicks it, and checks the main area has focus with no hash added.
+	test( `${ staRcdObj.ideStr } opens with a skip link to the main area`, async ( { page : curPagObj } ) => { // What: Skip Link Test. Why: A keyboard user's first stop should lead straight past the tab bar. How: This presses Tab, checks the link has focus on screen, clicks it, and checks the main area has focus with no hash added.
 
 
-		await opeStaFun( curPagObj, staRecObj ); // What: State Open Call. Why: The first Tab press should meet the settled tab. How: This loads and settles it.
+		await opeStaFun( curPagObj, staRcdObj ); // What: State Open Call. Why: The first Tab press should meet the settled tab. How: This loads and settles it.
 
 
 

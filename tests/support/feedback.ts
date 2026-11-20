@@ -26,7 +26,7 @@
 
 // #region Types
 
-type SnaRecTyp = { // What: Snapshot Record Type. Why: An element's look, and whether each part of it would ease, is compared between two moments the same way. How: This holds one value and one duration per probed property.
+type SnaRcdTyp = { // What: Snapshot Record Type. Why: An element's look, and whether each part of it would ease, is compared between two moments the same way. How: This holds one value and one duration per probed property.
 
 
 	durArr : number[], // What: Duration Array. Why: A property that changes has to ease rather than snap. How: This holds each probed property's transition or animation duration in milliseconds, or 0 when neither covers it, with a color matching its parent's taking the longer of its own duration and the parent's and a currentColor border taking the color's when that's longer.
@@ -282,8 +282,8 @@ function cliBloFun () : void {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param froRecArr - From Record Array: The snapshot before the change.
- * @param tarRecArr - Target Record Array: The snapshot after the change.
+ * @param froRcdArr - From Record Array: The snapshot before the change.
+ * @param tarRcdArr - Target Record Array: The snapshot after the change.
  * @param proNamArr - Property Name Array: The probed property names, in the
  *                    snapshots' order.
  * @param desLabStr - Description Label String: The element's name in each
@@ -302,16 +302,16 @@ function cliBloFun () : void {
  *
 */
 
-function movProFun ( froRecArr : SnaRecTyp[], tarRecArr : SnaRecTyp[], proNamArr : string[], desLabStr : string, staNamStr : string ) : string[] {
+function movProFun ( froRcdArr : SnaRcdTyp[], tarRcdArr : SnaRcdTyp[], proNamArr : string[], desLabStr : string, staNamStr : string ) : string[] {
 
 
 	const movNamMap = new Map< string, string >(); // What: Moving Name Map. Why: A property that eases on several inner elements is one problem, named by the first part it eased on. How: This maps each eased property's name to that part's label.
 
 
-	for ( const [ recIndNum, tarCurObj ] of tarRecArr.entries() ) { // What: Record Compare Loop. Why: Every element of the snapshot has to switch its changes at once. How: This compares each later record with the earlier one in its place.
+	for ( const [ rcdIndNum, tarCurObj ] of tarRcdArr.entries() ) { // What: Record Compare Loop. Why: Every element of the snapshot has to switch its changes at once. How: This compares each later record with the earlier one in its place.
 
 
-		const froCurObj = froRecArr[ recIndNum ]; // What: From Current Object. Why: The change is read against the same element's earlier record. How: This finds it by place.
+		const froCurObj = froRcdArr[ rcdIndNum ]; // What: From Current Object. Why: The change is read against the same element's earlier record. How: This finds it by place.
 
 
 		if ( !froCurObj ) continue; // What: Missing Record Guard. Why: An element that appeared with the change has nothing to compare with. How: This skips it.
@@ -373,7 +373,7 @@ function movProFun ( froRecArr : SnaRecTyp[], tarRecArr : SnaRecTyp[], proNamArr
  * @param proNamArr - Property Name Array: The property names to probe.
  *
  * @returns Three records per element, the element itself first.
- * @see {@link snaRecArr}
+ * @see {@link snaRcdArr}
  *
  * @example
  * ```ts
@@ -382,7 +382,7 @@ function movProFun ( froRecArr : SnaRecTyp[], tarRecArr : SnaRecTyp[], proNamArr
  *
 */
 
-function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
+function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRcdTyp[] {
 
 
 	// #region Snapshot Record Builders
@@ -395,7 +395,7 @@ function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
 
 
 
-	const snaStyFun = ( styCurObj : CSSStyleDeclaration | null ) : SnaRecTyp => { // What: Snapshot Style Function. Why: Each element and pseudo-element is recorded the same way. How: This reads its probed values and the duration covering each, or an empty record for a pseudo-element that isn't drawn.
+	const snaStyFun = ( styCurObj : CSSStyleDeclaration | null ) : SnaRcdTyp => { // What: Snapshot Style Function. Why: Each element and pseudo-element is recorded the same way. How: This reads its probed values and the duration covering each, or an empty record for a pseudo-element that isn't drawn.
 
 
 		if ( !styCurObj ) return { durArr : proNamArr.map( () => 0 ), labStr : '', valArr : proNamArr.map( () => '' ) }; // What: Undrawn Pseudo Guard. Why: A pseudo-element that isn't drawn has no look, but still holds its place so the snapshots line up. How: This returns a record of empty values and zero durations.
@@ -443,10 +443,10 @@ function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
 
 	const eleLisArr = [ eleCurEle, ...eleCurEle.querySelectorAll( '*' ) ]; // What: Element List Array. Why: A change to an inner element counts as the element's own. How: This lists the element and everything inside it, parents before children.
 	const styLisArr = eleLisArr.flatMap( ( lisCurEle ) => [ getComputedStyle( lisCurEle ), ...[ '::before', '::after' ].map( ( pseNamStr ) => getComputedStyle( lisCurEle, pseNamStr ) ).map( ( pseStyObj ) => ( /^(none|normal)$/.test( pseStyObj.content ) ? null : pseStyObj ) ) ] ); // What: Style List Array. Why: The app's pseudo-elements draw parts of a control's look, such as a mode option's dot, and their fade is part of that look. How: This lists each element's computed styles followed by its ::before's and its ::after's, null for one with no content, which isn't drawn.
-	const snaRecArr = styLisArr.map( snaStyFun );                          // What: Snapshot Record Array. Why: Each element and pseudo-element is recorded. How: This snapshots every listed style.
+	const snaRcdArr = styLisArr.map( snaStyFun );                          // What: Snapshot Record Array. Why: Each element and pseudo-element is recorded. How: This snapshots every listed style.
 
 
-	for ( const [ recIndNum, snaRecObj ] of snaRecArr.entries() ) if ( recIndNum ) snaRecObj.labStr = `${ eleLisArr[ Math.floor( recIndNum / 3 ) ].tagName.toLowerCase() } ${ ( eleLisArr[ Math.floor( recIndNum / 3 ) ].classList[ 0 ] || '' ).replace( /^_([A-Za-z]+(--[a-z]+)?)_.*$/, '$1' ) }${ [ '', '::before', '::after' ][ recIndNum % 3 ] }`.trim(); // What: Record Label Loop. Why: A problem inside a control should name the part that snapped, the way a reader of the stylesheet knows it. How: This names every record but the control's own by its tag, its first class with Vite's hash taken off, and its pseudo-element.
+	for ( const [ rcdIndNum, snaRcdObj ] of snaRcdArr.entries() ) if ( rcdIndNum ) snaRcdObj.labStr = `${ eleLisArr[ Math.floor( rcdIndNum / 3 ) ].tagName.toLowerCase() } ${ ( eleLisArr[ Math.floor( rcdIndNum / 3 ) ].classList[ 0 ] || '' ).replace( /^_([A-Za-z]+(--[a-z]+)?)_.*$/, '$1' ) }${ [ '', '::before', '::after' ][ rcdIndNum % 3 ] }`.trim(); // What: Record Label Loop. Why: A problem inside a control should name the part that snapped, the way a reader of the stylesheet knows it. How: This names every record but the control's own by its tag, its first class with Vite's hash taken off, and its pseudo-element.
 
 	// #endregion Snapshot Record List
 
@@ -479,14 +479,14 @@ function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
 				const aniDurNum = proDurObj[ `${ pseNamStr }|${ camNamStr }` ]; // What: Animation Duration Number. Why: Only a property the animation moved counts. How: This reads its duration, or undefined.
 
 
-				if ( aniDurNum !== undefined ) snaRecArr[ lisIndNum * 3 + pseIndNum ].durArr[ proIndNum ] = Math.max( snaRecArr[ lisIndNum * 3 + pseIndNum ].durArr[ proIndNum ], aniDurNum ); // What: Animated Duration Assignment. Why: A property an animation moved was eased by it. How: This takes the longer of the transition's duration and the animation's.
+				if ( aniDurNum !== undefined ) snaRcdArr[ lisIndNum * 3 + pseIndNum ].durArr[ proIndNum ] = Math.max( snaRcdArr[ lisIndNum * 3 + pseIndNum ].durArr[ proIndNum ], aniDurNum ); // What: Animated Duration Assignment. Why: A property an animation moved was eased by it. How: This takes the longer of the transition's duration and the animation's.
 
 
 			}
 
 
 
-			if ( looNamArr.includes( camNamStr ) ) snaRecArr[ lisIndNum * 3 ].valArr[ proIndNum ] = 'looping'; // What: Looping Value Assignment. Why: A looping property should read the same at every moment. How: When an endless animation drives the property, this records it as looping.
+			if ( looNamArr.includes( camNamStr ) ) snaRcdArr[ lisIndNum * 3 ].valArr[ proIndNum ] = 'looping'; // What: Looping Value Assignment. Why: A looping property should read the same at every moment. How: When an endless animation drives the property, this records it as looping.
 
 
 		}
@@ -496,32 +496,32 @@ function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
 
 
 
-	for ( const [ recIndNum, snaRecObj ] of snaRecArr.entries() ) { // What: Inherited Color Loop. Why: A record whose color comes from its parent eases with the parent's transition. How: This gives each one whose color matches its parent's the longer of its own and its parent's durations, in document order, so it passes down every level.
+	for ( const [ rcdIndNum, snaRcdObj ] of snaRcdArr.entries() ) { // What: Inherited Color Loop. Why: A record whose color comes from its parent eases with the parent's transition. How: This gives each one whose color matches its parent's the longer of its own and its parent's durations, in document order, so it passes down every level.
 
 
-		const hosCurEle = eleLisArr[ Math.floor( recIndNum / 3 ) ];                                        // What: Host Current Element. Why: Each element's three records sit together, so the record's place names the element it belongs to. How: This finds that element.
+		const hosCurEle = eleLisArr[ Math.floor( rcdIndNum / 3 ) ];                                        // What: Host Current Element. Why: Each element's three records sit together, so the record's place names the element it belongs to. How: This finds that element.
 		const hosParNum = hosCurEle.parentElement ? eleLisArr.indexOf( hosCurEle.parentElement ) * 3 : -1; // What: Host Parent Number. Why: An element inherits from its parent element, whose own record leads its three. How: This finds that record's place, or a negative number when the parent sits outside the element.
-		const parIndNum = recIndNum % 3 ? recIndNum - recIndNum % 3 : hosParNum;                           // What: Parent Index Number. Why: A pseudo-element inherits from the element drawing it, and an element from its parent. How: This picks the element's own record for a pseudo-element, or its parent's record for an element.
+		const parIndNum = rcdIndNum % 3 ? rcdIndNum - rcdIndNum % 3 : hosParNum;                           // What: Parent Index Number. Why: A pseudo-element inherits from the element drawing it, and an element from its parent. How: This picks the element's own record for a pseudo-element, or its parent's record for an element.
 
 
 		if ( parIndNum < 0 || colIndNum < 0 ) continue; // What: No Parent Guard. Why: The element itself, and every record when color isn't probed, keeps its own duration. How: This skips them.
 
 
 
-		if ( snaRecObj.valArr[ colIndNum ] === snaRecArr[ parIndNum ].valArr[ colIndNum ] ) snaRecObj.durArr[ colIndNum ] = Math.max( snaRecObj.durArr[ colIndNum ], snaRecArr[ parIndNum ].durArr[ colIndNum ] ); // What: Inherited Duration Assignment. Why: A color matching the parent's may be the parent's, eased by the parent's transition, while a color the record sets itself still eases with its own. How: This takes the longer of its own color duration and the parent's.
+		if ( snaRcdObj.valArr[ colIndNum ] === snaRcdArr[ parIndNum ].valArr[ colIndNum ] ) snaRcdObj.durArr[ colIndNum ] = Math.max( snaRcdObj.durArr[ colIndNum ], snaRcdArr[ parIndNum ].durArr[ colIndNum ] ); // What: Inherited Duration Assignment. Why: A color matching the parent's may be the parent's, eased by the parent's transition, while a color the record sets itself still eases with its own. How: This takes the longer of its own color duration and the parent's.
 
 
 	}
 
 
 
-	for ( const snaRecObj of snaRecArr ) if ( borColBoo && snaRecObj.valArr[ borIndNum ] === snaRecObj.valArr[ colIndNum ] ) snaRecObj.durArr[ borIndNum ] = Math.max( snaRecObj.durArr[ borIndNum ], snaRecObj.durArr[ colIndNum ] ); // What: Current Color Border Loop. Why: A border color matching the record's own color is currentColor, which follows the color as it eases. How: This gives each such border color the longer of its own duration and the color's.
+	for ( const snaRcdObj of snaRcdArr ) if ( borColBoo && snaRcdObj.valArr[ borIndNum ] === snaRcdObj.valArr[ colIndNum ] ) snaRcdObj.durArr[ borIndNum ] = Math.max( snaRcdObj.durArr[ borIndNum ], snaRcdObj.durArr[ colIndNum ] ); // What: Current Color Border Loop. Why: A border color matching the record's own color is currentColor, which follows the color as it eases. How: This gives each such border color the longer of its own duration and the color's.
 
 	// #endregion Duration Adjustments
 
 
 
-	return snaRecArr; // What: Snapshot Records Return. Why: Two moments' records are compared. How: This hands back every record.
+	return snaRcdArr; // What: Snapshot Records Return. Why: Two moments' records are compared. How: This hands back every record.
 
 
 }
@@ -546,8 +546,8 @@ function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param froRecArr - From Record Array: The snapshot before the change.
- * @param tarRecArr - Target Record Array: The snapshot after the change.
+ * @param froRcdArr - From Record Array: The snapshot before the change.
+ * @param tarRcdArr - Target Record Array: The snapshot after the change.
  * @param proNamArr - Property Name Array: The probed property names, in the
  *                    snapshots' order.
  * @param desLabStr - Description Label String: The element's name in each
@@ -566,16 +566,16 @@ function snaEleFun ( eleCurEle : Element, proNamArr : string[] ) : SnaRecTyp[] {
  *
 */
 
-function snaProFun ( froRecArr : SnaRecTyp[], tarRecArr : SnaRecTyp[], proNamArr : string[], desLabStr : string, staNamStr : string ) : string[] {
+function snaProFun ( froRcdArr : SnaRcdTyp[], tarRcdArr : SnaRcdTyp[], proNamArr : string[], desLabStr : string, staNamStr : string ) : string[] {
 
 
 	const snaNamMap = new Map< string, string >(); // What: Snapped Name Map. Why: A property that snaps on several inner elements is one problem, named by the first part it snapped on. How: This maps each snapped property's name to that part's label.
 
 
-	for ( const [ recIndNum, tarCurObj ] of tarRecArr.entries() ) { // What: Record Compare Loop. Why: Every element of the snapshot has to ease its own probed changes. How: This compares each later record with the earlier one in its place.
+	for ( const [ rcdIndNum, tarCurObj ] of tarRcdArr.entries() ) { // What: Record Compare Loop. Why: Every element of the snapshot has to ease its own probed changes. How: This compares each later record with the earlier one in its place.
 
 
-		const froCurObj = froRecArr[ recIndNum ]; // What: From Current Object. Why: The change is read against the same element's earlier record. How: This finds it by place.
+		const froCurObj = froRcdArr[ rcdIndNum ]; // What: From Current Object. Why: The change is read against the same element's earlier record. How: This finds it by place.
 
 
 		if ( !froCurObj ) continue; // What: Missing Record Guard. Why: An element that appeared with the change has nothing to compare with. How: This skips it.
@@ -611,7 +611,7 @@ function snaProFun ( froRecArr : SnaRecTyp[], tarRecArr : SnaRecTyp[], proNamArr
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param snaRecArr - Snapshot Record Array: The snapshot to sign.
+ * @param snaRcdArr - Snapshot Record Array: The snapshot to sign.
  *
  * @returns The snapshot's values as one string.
  *
@@ -622,7 +622,7 @@ function snaProFun ( froRecArr : SnaRecTyp[], tarRecArr : SnaRecTyp[], proNamArr
  *
 */
 
-const valSigFun = ( snaRecArr : SnaRecTyp[] ) : string => JSON.stringify( snaRecArr.map( ( snaRecObj ) => snaRecObj.valArr.map( ( valCurStr ) => ( valCurStr.startsWith( '~' ) ? '~' : valCurStr ) ) ) ); // What: Value Signature Function. Why: A look is the same between two moments only when every probed value that shows matches. How: This joins every record's values into one string to compare, reading an undrawn outline's color and offset as one mark.
+const valSigFun = ( snaRcdArr : SnaRcdTyp[] ) : string => JSON.stringify( snaRcdArr.map( ( snaRcdObj ) => snaRcdObj.valArr.map( ( valCurStr ) => ( valCurStr.startsWith( '~' ) ? '~' : valCurStr ) ) ) ); // What: Value Signature Function. Why: A look is the same between two moments only when every probed value that shows matches. How: This joins every record's values into one string to compare, reading an undrawn outline's color and offset as one mark.
 
 // #endregion valSigFun
 

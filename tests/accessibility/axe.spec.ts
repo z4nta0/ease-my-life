@@ -133,13 +133,13 @@ function sumResFun ( resLisArr : AxeResTyp[ 'violations' ] ) : string[] {
 test.describe.configure( { mode : 'parallel' } ); // What: Parallel Mode Call. Why: Each test opens its own page, so none waits on another. How: This lets the file's tests run across every worker at once.
 
 
-for ( const staRecObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every app state must pass the scan. How: This declares one axe test per state.
+for ( const staRcdObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every app state must pass the scan. How: This declares one axe test per state.
 
 
-	test( `${ staRecObj.ideStr } has no axe violations`, async ( { page : curPagObj }, tesInfObj ) => { // What: Axe Test. Why: A state passes only with zero axe violations. How: This opens the state, scans it, reports anything needing review, and fails on any violation.
+	test( `${ staRcdObj.ideStr } has no axe violations`, async ( { page : curPagObj }, tesInfObj ) => { // What: Axe Test. Why: A state passes only with zero axe violations. How: This opens the state, scans it, reports anything needing review, and fails on any violation.
 
 
-		await opeStaFun( curPagObj, staRecObj ); // What: State Open Call. Why: The scan should see the state settled. How: This loads and settles it.
+		await opeStaFun( curPagObj, staRcdObj ); // What: State Open Call. Why: The scan should see the state settled. How: This loads and settles it.
 
 
 
@@ -158,7 +158,7 @@ for ( const staRecObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every ap
 
 
 
-		if ( revLinArr.length ) console.log( `[${ tesInfObj.project.name }] ${ staRecObj.ideStr } needs review:\n  ${ revLinArr.join( '\n  ' ) }` ); // What: Review Log Call. Why: The terminal run should show what needs a look without opening the report. How: This prints the state's review lines under its project and name.
+		if ( revLinArr.length ) console.log( `[${ tesInfObj.project.name }] ${ staRcdObj.ideStr } needs review:\n  ${ revLinArr.join( '\n  ' ) }` ); // What: Review Log Call. Why: The terminal run should show what needs a look without opening the report. How: This prints the state's review lines under its project and name.
 
 
 

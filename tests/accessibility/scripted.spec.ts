@@ -81,10 +81,10 @@ function lonAniFun () : string[] {
 
 
 
-// #region motRecFun
+// #region motRcdFun
 
 /**
- * motRecFun = Motion Recorder Function
+ * motRcdFun = Motion Recorder Function
  *
  * @summary
  * Runs inside the page from the moment it loads, as an init script, and
@@ -105,12 +105,12 @@ function lonAniFun () : string[] {
  *
  * @example
  * ```ts
- * page.addInitScript(motRecFun) // => void
+ * page.addInitScript(motRcdFun) // => void
  * ```
  *
 */
 
-function motRecFun () : void {
+function motRcdFun () : void {
 
 
 	const motLisArr : string[] = []; // What: Motion List Array. Why: Each motion that starts has to be kept until the check reads it. How: This collects one name per motion.
@@ -136,7 +136,7 @@ function motRecFun () : void {
 
 }
 
-// #endregion motRecFun
+// #endregion motRcdFun
 
 // #endregion Helpers
 
@@ -147,13 +147,13 @@ function motRecFun () : void {
 test.describe.configure( { mode : 'parallel' } ); // What: Parallel Mode Call. Why: Each test opens its own page, so none waits on another, and the keyboard walks are slow. How: This lets the file's tests run across every worker at once.
 
 
-for ( const staRecObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every check runs on every app state. How: This declares each check once per state.
+for ( const staRcdObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every check runs on every app state. How: This declares each check once per state.
 
 
-	test( `${ staRecObj.ideStr } names every link and button cleanly`, async ( { page : curPagObj } ) => { // What: Names Test. Why: Every control must be announced by a clean name. How: This opens the state and checks its accessibility tree.
+	test( `${ staRcdObj.ideStr } names every link and button cleanly`, async ( { page : curPagObj } ) => { // What: Names Test. Why: Every control must be announced by a clean name. How: This opens the state and checks its accessibility tree.
 
 
-		await opeStaFun( curPagObj, staRecObj ); // What: State Open Call. Why: The tree should be read with the state settled. How: This loads and settles it.
+		await opeStaFun( curPagObj, staRcdObj ); // What: State Open Call. Why: The tree should be read with the state settled. How: This loads and settles it.
 
 
 		expect( await namProFun( curPagObj ) ).toEqual( [] ); // What: No Name Problems Assertion. Why: The state passes only with clean names. How: This compares the problems with an empty list, so a failure prints each one.
@@ -163,25 +163,25 @@ for ( const staRecObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every ch
 
 
 
-	test( `${ staRecObj.ideStr } walks cleanly with the keyboard`, async ( { browserName : engNamStr, page : curPagObj } ) => { // What: Keyboard Test. Why: Everything has to be usable without a mouse. How: This opens the state under reduced motion and walks it with Tab, handing the walk the state's open pop-up, if it has one.
+	test( `${ staRcdObj.ideStr } walks cleanly with the keyboard`, async ( { browserName : engNamStr, page : curPagObj } ) => { // What: Keyboard Test. Why: Everything has to be usable without a mouse. How: This opens the state under reduced motion and walks it with Tab, handing the walk the state's open pop-up, if it has one.
 
 
 		await curPagObj.emulateMedia( { reducedMotion : 'reduce' } ); // What: Reduced Motion Emulation. Why: A smooth scroll or a focus transition still running would be measured halfway. How: This makes the page match prefers-reduced-motion, which turns both off.
 
-		await opeStaFun( curPagObj, staRecObj ); // What: State Open Call. Why: The walk should start from the state settled. How: This loads and settles it.
+		await opeStaFun( curPagObj, staRcdObj ); // What: State Open Call. Why: The walk should start from the state settled. How: This loads and settles it.
 
 
-		expect( await keyProFun( curPagObj, engNamStr, staRecObj.popStr || null ) ).toEqual( [] ); // What: No Keyboard Problems Assertion. Why: The state passes only when no element takes a positive tabindex, every stop is reached, in order, on screen, uncovered, and visibly focused, and an open pop-up closes as focus moves on. How: This compares the problems with an empty list, so a failure prints each one.
+		expect( await keyProFun( curPagObj, engNamStr, staRcdObj.popStr || null ) ).toEqual( [] ); // What: No Keyboard Problems Assertion. Why: The state passes only when no element takes a positive tabindex, every stop is reached, in order, on screen, uncovered, and visibly focused, and an open pop-up closes as focus moves on. How: This compares the problems with an empty list, so a failure prints each one.
 
 
 	} );
 
 
 
-	test( `${ staRecObj.ideStr } reflows at ${ REF_WID_NUM }px without scrolling sideways`, async ( { page : curPagObj } ) => { // What: Reflow Test. Why: Zoomed-in visitors read in one column without scrolling sideways. How: This opens the state at the reflow width and compares the page's scroll width with its visible width.
+	test( `${ staRcdObj.ideStr } reflows at ${ REF_WID_NUM }px without scrolling sideways`, async ( { page : curPagObj } ) => { // What: Reflow Test. Why: Zoomed-in visitors read in one column without scrolling sideways. How: This opens the state at the reflow width and compares the page's scroll width with its visible width.
 
 
-		await opeStaFun( curPagObj, { ...staRecObj, widNum : REF_WID_NUM } ); // What: Narrow State Open Call. Why: Reflow is judged at WCAG's narrowest width. How: This opens the state with its width replaced by the reflow width.
+		await opeStaFun( curPagObj, { ...staRcdObj, widNum : REF_WID_NUM } ); // What: Narrow State Open Call. Why: Reflow is judged at WCAG's narrowest width. How: This opens the state with its width replaced by the reflow width.
 
 
 		expect( await sidOveFun( curPagObj ) ).toBeLessThanOrEqual( 0 ); // What: No Sideways Scroll Assertion. Why: The page passes only when nothing reaches past the viewport's width. How: This expects the page's sideways overflow, its scroll width less its visible width, to stay at zero or below.
@@ -191,14 +191,14 @@ for ( const staRecObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every ch
 
 
 
-	test( `${ staRecObj.ideStr } plays no motion under reduced motion`, async ( { page : curPagObj } ) => { // What: Reduced Motion Test. Why: Visitors who ask for less motion shouldn't see the page animate. How: This requests reduced motion, records any animation or transition over 1ms that starts while the state opens, and lists any the page still holds once it has.
+	test( `${ staRcdObj.ideStr } plays no motion under reduced motion`, async ( { page : curPagObj } ) => { // What: Reduced Motion Test. Why: Visitors who ask for less motion shouldn't see the page animate. How: This requests reduced motion, records any animation or transition over 1ms that starts while the state opens, and lists any the page still holds once it has.
 
 
 		await curPagObj.emulateMedia( { reducedMotion : 'reduce' } ); // What: Reduced Motion Emulation. Why: The preference has to be set before the page loads. How: This makes the page match prefers-reduced-motion: reduce.
 
-		await curPagObj.addInitScript( motRecFun ); // What: Motion Recorder Install Call. Why: A transition the state's action sets off can finish before the page settles, and a finished one drops out of getAnimations. How: This runs motRecFun in the page before it loads, recording every motion over 1ms that starts.
+		await curPagObj.addInitScript( motRcdFun ); // What: Motion Recorder Install Call. Why: A transition the state's action sets off can finish before the page settles, and a finished one drops out of getAnimations. How: This runs motRcdFun in the page before it loads, recording every motion over 1ms that starts.
 
-		await opeStaFun( curPagObj, staRecObj ); // What: State Open Call. Why: Entrance animations and the state's own action are the motion being checked. How: This loads the state and runs its action.
+		await opeStaFun( curPagObj, staRcdObj ); // What: State Open Call. Why: Entrance animations and the state's own action are the motion being checked. How: This loads the state and runs its action.
 
 
 		expect( await curPagObj.evaluate( () => Reflect.get( window, 'motLisArr' ) ) ).toEqual( [] ); // What: No Motion Started Assertion. Why: Nothing should have moved while the state opened, including transitions that already finished. How: This checks the recorder caught no motion longer than 1ms.

@@ -44,7 +44,7 @@ import type { Page } from '@playwright/test'; // What: Page. Why: Opening a stat
 
 // #region Types
 
-type StaRecTyp = { // What: State Record Type. Why: Every check reads the same description of a state. How: This names a state, its tab, its viewport, whether it runs on real data, an optional action, and an optional open pop-up.
+type StaRcdTyp = { // What: State Record Type. Why: Every check reads the same description of a state. How: This names a state, its tab, its viewport, whether it runs on real data, an optional action, and an optional open pop-up.
 
 
 	actFun? : ( curPagObj : Page ) => Promise< void >, // What: Action Function. Why: Some states need something opened after the tab shows. How: This runs against the loaded page, e.g. turning help mode on.
@@ -74,13 +74,13 @@ type StaRecTyp = { // What: State Record Type. Why: Every check reads the same d
  * ones, each a tab with something opened that brings controls the plain tab
  * doesn't show: an item editor on Today, the day log, Today's edit mode, the
  * new picker form, and a Data card with its sections and an item row open.
- * Every row shares the {@link StaRecTyp} shape the shared states use.
+ * Every row shares the {@link StaRcdTyp} shape the shared states use.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const EXT_STA_ARR : StaRecTyp[] = [ // What: Extra State Array. Why: An editor or a form holds controls the plain tabs don't. How: Each row opens one on a tab at one width.
+const EXT_STA_ARR : StaRcdTyp[] = [ // What: Extra State Array. Why: An editor or a form holds controls the plain tabs don't. How: Each row opens one on a tab at one width.
 
 
 	{ // What: Editor Phone State. Why: An item's editor holds the app's sliders, steppers, and switches. How: This opens Today at 375px and opens the first card's editor.
@@ -200,13 +200,13 @@ const LEG_PAT_ARR = [ '/privacy', '/terms' ]; // What: Legal Path Array. Why: Th
  * Today, a help mode badge's tip opened on a phone, and the support form open
  * on Settings. The two tip rows name their open pop-up, which the keyboard
  * walk expects to close once focus moves past it. Every row shares the
- * {@link StaRecTyp} shape the shared states use.
+ * {@link StaRcdTyp} shape the shared states use.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const REA_STA_ARR : StaRecTyp[] = [ // What: Reachable State Array. Why: A pop-up or form left open is a look of its own, over or beside the tab's other controls. How: Each row opens one on a tab at one width.
+const REA_STA_ARR : StaRcdTyp[] = [ // What: Reachable State Array. Why: A pop-up or form left open is a look of its own, over or beside the tab's other controls. How: Each row opens one on a tab at one width.
 
 
 	{ // What: Info Tip Desktop State. Why: An info tip's bubble opens over the controls around it and stays until it's dismissed. How: This opens Today at 1,280px and opens the first info tip with Enter, the keyboard's way.
@@ -278,16 +278,16 @@ const REA_STA_ARR : StaRecTyp[] = [ // What: Reachable State Array. Why: A pop-u
 
 
 
-// #region STA_REC_ARR
+// #region STA_RCD_ARR
 
 /**
- * STA_REC_ARR = State Record Array
+ * STA_RCD_ARR = State Record Array
  *
  * @summary
  * Every state the checks visit: each tab on the real-data backup at a phone
  * width (375px) and a desktop width (1,280px), help mode turned on over
  * Today, the Privacy Policy panel open over Settings, and the welcome modal a
- * fresh install opens with. Every row shares the {@link StaRecTyp} shape, so
+ * fresh install opens with. Every row shares the {@link StaRcdTyp} shape, so
  * its fields carry no comments of their own:
  *
  * - `actFun` (Function): Action Function, run after the tab shows to open
@@ -311,7 +311,7 @@ const REA_STA_ARR : StaRecTyp[] = [ // What: Reachable State Array. Why: A pop-u
  *
 */
 
-const STA_REC_ARR : StaRecTyp[] = [ // What: State Record Array. Why: Every check walks the same list of states, so a new state is added in one place. How: Each row names a state, its tab, its viewport, and whether it loads the backup, and the opened states add an action.
+const STA_RCD_ARR : StaRcdTyp[] = [ // What: State Record Array. Why: Every check walks the same list of states, so a new state is added in one place. How: Each row names a state, its tab, its viewport, and whether it loads the backup, and the opened states add an action.
 
 
 	{ fixBoo : true,  heiNum : 800, ideStr : 'today-desktop',    tabStr : 'today',    widNum : 1280 }, // What: Today Desktop State. Why: The day's list is the app's main screen. How: This opens Today at 1,280px.
@@ -357,11 +357,11 @@ const STA_REC_ARR : StaRecTyp[] = [ // What: State Record Array. Why: Every chec
 
 ];
 
-// #endregion STA_REC_ARR
+// #endregion STA_RCD_ARR
 
 
 
-const ALL_STA_ARR = [ ...STA_REC_ARR, ...EXT_STA_ARR, ...REA_STA_ARR ]; // What: All State Array. Why: Every shared state is checked, and so is each opened or reachable one, since each holds a look the plain tabs don't. How: This lists the shared states first, then the opened ones, then the reachable ones.
+const ALL_STA_ARR = [ ...STA_RCD_ARR, ...EXT_STA_ARR, ...REA_STA_ARR ]; // What: All State Array. Why: Every shared state is checked, and so is each opened or reachable one, since each holds a look the plain tabs don't. How: This lists the shared states first, then the opened ones, then the reachable ones.
 
 // #endregion Constants
 
@@ -388,33 +388,33 @@ const ALL_STA_ARR = [ ...STA_REC_ARR, ...EXT_STA_ARR, ...REA_STA_ARR ]; // What:
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param curPagObj - Current Page Object: The page to open the state on.
- * @param staRecObj - State Record Object: {@link StaRecTyp}
+ * @param staRcdObj - State Record Object: {@link StaRcdTyp}
  *
  * @returns A promise that settles once the state is open and settled, with no
  *          value.
  *
  * @example
  * ```ts
- * opeStaFun(page, staRecObj) // => Promise<void>
+ * opeStaFun(page, staRcdObj) // => Promise<void>
  * ```
  *
 */
 
-async function opeStaFun ( curPagObj : Page, staRecObj : StaRecTyp ) : Promise< void > {
+async function opeStaFun ( curPagObj : Page, staRcdObj : StaRcdTyp ) : Promise< void > {
 
 
 	// #region State Load
 
-	await curPagObj.setViewportSize( { height : staRecObj.heiNum, width : staRecObj.widNum } ); // What: Viewport Size Call. Why: The state's layout depends on its width. How: This sizes the page before it loads, so breakpoints apply from the first paint.
+	await curPagObj.setViewportSize( { height : staRcdObj.heiNum, width : staRcdObj.widNum } ); // What: Viewport Size Call. Why: The state's layout depends on its width. How: This sizes the page before it loads, so breakpoints apply from the first paint.
 
 
 
-	if ( staRecObj.fixBoo ) { // What: Fixture Check. Why: Most states need real data, which opens on Today once the day's list is saved. How: This loads the backup and switches tabs.
+	if ( staRcdObj.fixBoo ) { // What: Fixture Check. Why: Most states need real data, which opens on Today once the day's list is saved. How: This loads the backup and switches tabs.
 
 
 		await opeFixFun( curPagObj ); // What: Backup Open Call. Why: Real names and lists show real layouts. How: This loads the backup on the fixed day and waits for its list.
 
-		await selTabFun( curPagObj, staRecObj.tabStr ); // What: Tab Switch Call. Why: The state shows one tab. How: This switches to it through the navigation.
+		await selTabFun( curPagObj, staRcdObj.tabStr ); // What: Tab Switch Call. Why: The state shows one tab. How: This switches to it through the navigation.
 
 
 		await curPagObj.evaluate( () => { // What: Tab Start Reset Call. Why: Switching tabs clicks a button in the tab bar, which moves the browser's Tab starting point there, past the skip link and the bar's earlier buttons. How: This focuses the root element for a moment, which puts the starting point at the top of the page.
@@ -459,7 +459,7 @@ async function opeStaFun ( curPagObj : Page, staRecObj : StaRecTyp ) : Promise< 
 
 
 
-	if ( staRecObj.actFun ) await staRecObj.actFun( curPagObj ); // What: State Action Call. Why: Some states need something opened first. How: This runs the state's action, if it has one.
+	if ( staRcdObj.actFun ) await staRcdObj.actFun( curPagObj ); // What: State Action Call. Why: Some states need something opened first. How: This runs the state's action, if it has one.
 
 
 
@@ -478,7 +478,7 @@ async function opeStaFun ( curPagObj : Page, staRecObj : StaRecTyp ) : Promise< 
 
 // #region Exports
 
-export { ALL_STA_ARR, EXT_STA_ARR, LEG_PAT_ARR, opeStaFun, STA_REC_ARR }; // What: Named Exports. Why: The accessibility, feedback, and security specs share these states, the legal pages' addresses, and the state opener. How: This exports the state lists, the legal paths, and the opener by name.
+export { ALL_STA_ARR, EXT_STA_ARR, LEG_PAT_ARR, opeStaFun, STA_RCD_ARR }; // What: Named Exports. Why: The accessibility, feedback, and security specs share these states, the legal pages' addresses, and the state opener. How: This exports the state lists, the legal paths, and the opener by name.
 
 // #endregion Exports
 
