@@ -597,6 +597,14 @@ non-daily run.
 Each of these resolves a naming collision that only exists in this
 codebase, so it applies here and nowhere else.
 
+- **No word but Component takes `com`** (decided 2026-11-20, in the full
+  audit): `com` is Component, the most loaded segment here, so the other
+  words that start with it move off it. Commit takes `cmt` and Compute or
+  Computed takes `cmp` (the overrides below); Complete or Completed takes
+  its synonym Full or Done, whichever reads true and is free (`isaFulBoo`,
+  `donBoo`); Compensation takes Offset (`scrOffNum`); any other word takes
+  a synonym. Scoped to ease-my-life ONLY, for the same reason as
+  `rmn`/`rmv`.
 - **Trigger/Triggered uses `trg`, not `tri`** (a project-scoped
   decision, reversing an earlier sweep that had moved `trgValBoo`/
   `trgEleRef`/`trgCurEle`/`trgRecObj` to `tri`). `tri` had become
