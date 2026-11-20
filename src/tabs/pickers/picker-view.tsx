@@ -554,6 +554,50 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	// #endregion opeEdiFun
 
 
+	// #region opePenFun
+
+	/**
+	 * opePenFun = Open Pending Function
+	 *
+	 * @summary
+	 * Opens the editor staEdiFun staged in penEdiRef while another item's
+	 * editor or the new-item draft was closing, clearing the request first so
+	 * it runs once. It does nothing when no editor is pending.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * opePenFun() // => void
+	 * ```
+	 *
+	*/
+
+	const opePenFun = () => { // What: Open Pending Function. Why: Both closing editor slots finish by opening whatever edit was requested meanwhile. How: This reads and clears penEdiRef, then opens that editor through opeEdiFun.
+
+
+		const tarIdeStr = penEdiRef.current; // What: Target Identifier String. Why: The pending editor request must be read before it's cleared. How: This copies penEdiRef.current.
+
+
+		if ( !tarIdeStr ) return; // What: No Pending Guard. Why: Most closes have no editor waiting. How: This bails out when penEdiRef held nothing.
+
+
+
+		penEdiRef.current = null; // What: Pending Clear. Why: The request is being handled now, so it must not run twice. How: This resets penEdiRef to null.
+
+		opeEdiFun( tarIdeStr ); // What: Open Editor Call. Why: The editor the user asked for opens once the previous one has closed. How: This calls opeEdiFun with tarIdeStr.
+
+
+	};
+
+	// #endregion opePenFun
+
+
+
 	// #region staEdiFun
 
 	/**
@@ -1726,17 +1770,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 										setEdiIteStr( null ); // What: Editor Clear Call. Why: No item's editor stays open. How: This resets ediIteStr to null.
 
-										if ( penEdiRef.current ) { // What: Pending Editor Guard. Why: A different item's editor may have been requested while this one was closing. How: This opens it once this editor has finished closing.
-
-
-											const tarIdeStr = penEdiRef.current; // What: Target Identifier String. Why: The pending editor request must be read before it's cleared. How: This copies penEdiRef.current.
-
-
-											penEdiRef.current = null; // What: Pending Clear. Why: The request is being handled now, so it must not run twice. How: This resets penEdiRef to null.
-											opeEdiFun( tarIdeStr );   // What: Open Editor Call. Why: The editor the user asked for opens once the previous one has closed. How: This calls opeEdiFun with tarIdeStr.
-
-
-										}
+										opePenFun(); // What: Pending Editor Open Call. Why: A different item's editor may have been requested while this one was closing. How: This opens it through opePenFun once this editor has finished closing.
 
 
 									} }
@@ -1866,17 +1900,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 									setNewDraObj( null ); // What: Draft Clear Call. Why: The new-item draft is finished either way. How: This resets newDraObj to null.
 
-									if ( penEdiRef.current ) { // What: Pending Editor Guard. Why: A different item's editor may have been requested while this one was closing. How: This opens it once this editor has finished closing.
-
-
-										const tarIdeStr = penEdiRef.current; // What: Target Identifier String. Why: The pending editor request must be read before it's cleared. How: This copies penEdiRef.current.
-
-
-										penEdiRef.current = null; // What: Pending Clear. Why: The request is being handled now, so it must not run twice. How: This resets penEdiRef to null.
-										opeEdiFun( tarIdeStr );   // What: Open Editor Call. Why: The editor the user asked for opens once the previous one has closed. How: This calls opeEdiFun with tarIdeStr.
-
-
-									}
+									opePenFun(); // What: Pending Editor Open Call. Why: A different item's editor may have been requested while this one was closing. How: This opens it through opePenFun once this editor has finished closing.
 
 
 								} }
