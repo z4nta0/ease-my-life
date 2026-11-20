@@ -66,6 +66,8 @@ const neeCopFun = ( pagIdeStr : string ) : boolean => pagIdeStr === 'explore_pic
 
 
 
+// #region Picker Copies
+
 const picCopFun = ( samIdeStr : string ) => `pt_${ samIdeStr }`; // What: Picker Copy Function. Why: Every disposable picker copy's own id needs deriving from its real sample's id, consistently. How: This prefixes samIdeStr with 'pt_'.
 
 
@@ -180,7 +182,11 @@ const seePicFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 // #endregion seePicFun
 
+// #endregion Picker Copies
 
+
+
+// #region Reminder Copies
 
 const tasCopFun = ( samIdeStr : string ) => `pt_${ samIdeStr }`; // What: Task Copy Function. Why: Every disposable reminder copy's own id needs deriving from its real sample's id, consistently. How: This prefixes samIdeStr with 'pt_'.
 
@@ -285,6 +291,8 @@ const seeTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 };
 
 // #endregion seeTasFun
+
+// #endregion Reminder Copies
 
 // #endregion Helpers
 
