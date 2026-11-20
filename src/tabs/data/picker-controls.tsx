@@ -414,7 +414,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 	// #region Fill Summary
 
-	const isaEasBoo = draPicObj.mode === 'ease-up' || draPicObj.mode === 'ease-down';                                                                            // What: Is-A Ease Boolean. Why: Several sections below (Item Controls' own Fill/Refill, the item sort options) only apply to an ease-mode picker. How: This is true whenever draPicObj.mode is 'ease-up' or 'ease-down'.
+	const isaEasBoo = draPicObj.mode === 'ease-up' || draPicObj.mode === 'ease-down';                                                                            // What: Is-An Ease Boolean. Why: Several sections below (Item Controls' own Fill/Refill, the item sort options) only apply to an ease-mode picker. How: This is true whenever draPicObj.mode is 'ease-up' or 'ease-down'.
 	const isaDowBoo = draPicObj.mode === 'ease-down'; // What: Is-A Down Boolean. Why: Ease-up and ease-down share most UI but need opposite Fill/Refill wording. How: This is true only for 'ease-down'.
 	const notFulNum = filAllBoo ? 0 : picIteArr.filter( ( iteCurObj ) => ( iteCurObj.value ?? 0 ) < ( draPicObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM ) ).length; // What: Not Full Number. Why: The Fill/Refill row's own summary needs to know how many items still aren't at full charge. How: This counts none once Fill all is pending in the draft, otherwise every item whose own value falls short of the picker's own threshold.
 
@@ -1442,7 +1442,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 										const curCadStr = draPicObj.cadence || 'daily';                            // What: Current Cadence String. Why: Every branch below needs the picker's own resolved cadence. How: This reads draPicObj.cadence, defaulting to 'daily'.
-										const isaNthBoo = draPicObj.dateMode === 'nthWeekday';                     // What: Is-A Nth Boolean. Why: Monthly/yearly cadences can anchor either to a fixed date or to an "nth weekday", which read very differently. How: This checks draPicObj.dateMode.
+										const isaNthBoo = draPicObj.dateMode === 'nthWeekday';                     // What: Is-An Nth Boolean. Why: Monthly/yearly cadences can anchor either to a fixed date or to an "nth weekday", which read very differently. How: This checks draPicObj.dateMode.
 										const taiEndStr = ', and the pick will persist until marked as completed'; // What: Tail End String. Why: Every non-daily branch below ends with the same trailing clause. How: This is appended to each branch's own JSX below.
 
 
@@ -1560,7 +1560,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 									/> // What: Nth Select Component. Why: An nth-weekday monthly cadence needs its own ordinal and target weekday. How: This renders both selects, committing each change through patPicFun.
 
 
-								) : ( // What: Anchor Dom Branch. Why: A date-anchored monthly cadence needs its own plain day-of-month select instead. How: This renders the else branch, taken while dateMode isn't 'nthWeekday'.
+								) : ( // What: Anchor Day-Of-Month Branch. Why: A date-anchored monthly cadence needs its own plain day-of-month select instead. How: This renders the else branch, taken while dateMode isn't 'nthWeekday'.
 
 
 									<select

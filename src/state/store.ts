@@ -2882,8 +2882,8 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 				anchorDay   : picArgObj.anchorDay,   // What: Anchor Day. Why: A yearly cadence needs its own day of the month. How: This passes picArgObj.anchorDay through.
-				anchorDom   : picArgObj.anchorDom,   // What: Anchor Dom. Why: A monthly cadence needs its own day of the month. How: This passes picArgObj.anchorDom through.
-				anchorDow   : picArgObj.anchorDow,   // What: Anchor Dow. Why: A weekly cadence needs its own day of the week. How: This passes picArgObj.anchorDow through.
+				anchorDom   : picArgObj.anchorDom,   // What: Anchor Day-Of-Month. Why: A monthly cadence needs its own day of the month. How: This passes picArgObj.anchorDom through.
+				anchorDow   : picArgObj.anchorDow,   // What: Anchor Day-Of-Week. Why: A weekly cadence needs its own day of the week. How: This passes picArgObj.anchorDow through.
 				anchorMonth : picArgObj.anchorMonth, // What: Anchor Month. Why: A yearly cadence needs its own month. How: This passes picArgObj.anchorMonth through.
 				cadence     : picArgObj.cadence,     // What: Cadence. Why: This decides whether the picker surfaces daily, weekly, monthly, or yearly. How: This passes picArgObj.cadence through; norCadFun itself defaults a missing one to 'daily'.
 				dateMode    : picArgObj.dateMode,    // What: Date Mode. Why: A monthly/yearly cadence can anchor on a date or an nth weekday. How: This passes picArgObj.dateMode through.
@@ -3265,8 +3265,8 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 				anchorDay   : picArgObj.anchorDay,   // What: Anchor Day. Why: A yearly cadence needs its own day of the month. How: This passes picArgObj.anchorDay through.
-				anchorDom   : picArgObj.anchorDom,   // What: Anchor Dom. Why: A monthly cadence needs its own day of the month. How: This passes picArgObj.anchorDom through.
-				anchorDow   : picArgObj.anchorDow,   // What: Anchor Dow. Why: A weekly cadence needs its own day of the week. How: This passes picArgObj.anchorDow through.
+				anchorDom   : picArgObj.anchorDom,   // What: Anchor Day-Of-Month. Why: A monthly cadence needs its own day of the month. How: This passes picArgObj.anchorDom through.
+				anchorDow   : picArgObj.anchorDow,   // What: Anchor Day-Of-Week. Why: A weekly cadence needs its own day of the week. How: This passes picArgObj.anchorDow through.
 				anchorMonth : picArgObj.anchorMonth, // What: Anchor Month. Why: A yearly cadence needs its own month. How: This passes picArgObj.anchorMonth through.
 				cadence     : picArgObj.cadence,     // What: Cadence. Why: This decides whether the picker surfaces daily, weekly, monthly, or yearly. How: This passes picArgObj.cadence through; norCadFun itself defaults a missing one to 'daily'.
 				dateMode    : picArgObj.dateMode,    // What: Date Mode. Why: A monthly/yearly cadence can anchor on a date or an nth weekday. How: This passes picArgObj.dateMode through.

@@ -178,7 +178,7 @@ const curIsoFun = () : string => isoDayFun( new Date() ); // What: Current ISO F
 // #region eveNthFun
 
 /**
- * eveNthFun = Every-Nth Function
+ * eveNthFun = Every Nth Function
  *
  * @summary
  * Whether a unit count since a task's anchor lands on its "every N"
@@ -201,7 +201,7 @@ const curIsoFun = () : string => isoDayFun( new Date() ); // What: Current ISO F
  *
 */
 
-const eveNthFun = ( nthValNum : number, uniCouNum : number ) : boolean => nthValNum <= 1 || ( uniCouNum >= 0 && uniCouNum % nthValNum === 0 ); // What: Every-Nth Function. Why: Weekly/monthly/annual all share this same "every N units" check; nthValNum defaults effectively to 1 (no anchor needed, every unit always qualifies, same as before this feature existed) and only actually consults the anchor once N is greater than 1. How: This returns true outright for nthValNum of 1 or less, otherwise checks that uniCouNum is non-negative and evenly divisible by nthValNum.
+const eveNthFun = ( nthValNum : number, uniCouNum : number ) : boolean => nthValNum <= 1 || ( uniCouNum >= 0 && uniCouNum % nthValNum === 0 ); // What: Every Nth Function. Why: Weekly/monthly/annual all share this same "every N units" check; nthValNum defaults effectively to 1 (no anchor needed, every unit always qualifies, same as before this feature existed) and only actually consults the anchor once N is greater than 1. How: This returns true outright for nthValNum of 1 or less, otherwise checks that uniCouNum is non-negative and evenly divisible by nthValNum.
 
 // #endregion eveNthFun
 

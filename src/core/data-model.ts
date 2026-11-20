@@ -227,8 +227,8 @@ type PicRcdTyp = { // What: Picker Record Type. Why: A picker is a pool of items
 
 	activeItemId?      : string | null; // What: Active Item ID. Why: Ease Down keeps one item active until it runs out. How: This is that item's id, or null between streaks.
 	anchorDay          : number;        // What: Anchor Day. Why: A yearly picker runs on one day of the month. How: This is that day, 1 through 31.
-	anchorDom          : number;        // What: Anchor Day Of Month. Why: A monthly picker runs on one day of the month. How: This is that day, 1 through 31.
-	anchorDow          : number;        // What: Anchor Day Of Week. Why: A weekly picker runs on one weekday. How: This is that weekday, 0 for Sunday.
+	anchorDom          : number;        // What: Anchor Day-Of-Month. Why: A monthly picker runs on one day of the month. How: This is that day, 1 through 31.
+	anchorDow          : number;        // What: Anchor Day-Of-Week. Why: A weekly picker runs on one weekday. How: This is that weekday, 0 for Sunday.
 	anchorMonth        : number;        // What: Anchor Month. Why: A yearly picker runs in one month. How: This is that month, 1 through 12.
 	avoidDuplicates    : boolean;       // What: Avoid Duplicates. Why: A picker can refuse to pick an item already on today's list. How: This is true when it does.
 	cadence            : CadNamTyp;     // What: Cadence. Why: A picker surfaces on a schedule. How: This names which.

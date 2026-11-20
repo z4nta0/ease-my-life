@@ -68,7 +68,7 @@ type TouSteTyp = { // What: Tour Step Type. Why: Every guided tour is a list of 
 	cptSelStr? : string;     // What: Click Pass-Through Selector String. Why: A repeatable action inside a step must stay usable without advancing it. How: Clicks on this selector reach their own handler untouched.
 	priStr     : string;     // What: Primary String. Why: The primary button's label changes on the last step. How: This is that label, with 'Done' finishing the tour.
 	pulSelStr? : string;     // What: Pulse Selector String. Why: The cirBoo pulse should stop once nothing is left to click. How: The pulse only plays while this selector matches.
-	resBoo?    : boolean;    // What: Resume Boolean. Why: A step whose target came from an unsaved earlier action can't be resumed after a reload. How: This is false on such a step, keeping it out of the resume checkpoint.
+	resBoo?    : boolean;    // What: Resumable Boolean. Why: A step whose target came from an unsaved earlier action can't be resumed after a reload. How: This is false on such a step, keeping it out of the resume checkpoint.
 	rhsBoo?    : boolean;    // What: Row Horizontal Scroll Boolean. Why: A target in a horizontally scrolling row isn't reached by vertical scrolling. How: This scrolls it into view horizontally once found.
 	runFun?    : () => void; // What: Run Function. Why: A step can perform a real action as it advances. How: This runs when the primary button is clicked, before advancing.
 	selStr     : string;     // What: Selector String. Why: Each step spotlights its target. How: This selector list names the element or elements to highlight.

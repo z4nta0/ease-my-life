@@ -2181,7 +2181,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const genLisFun = async ( genOptObj : { autBoo? : boolean } = {} ) => { // What: Generate List Function. Why: See the doc comment just above. How: This scrolls to the top, computes every pick up front, plays the reel cascade, then commits the new entries and reminder transitions.
 
 
-		const isaAutBoo = !!genOptObj.autBoo; // What: Is-A Auto Boolean. Why: Every branch below that behaves differently for a scheduled auto-run versus a manual/tour-triggered one needs this single flag. How: This reads genOptObj.autBoo, coerced to a real boolean.
+		const isaAutBoo = !!genOptObj.autBoo; // What: Is-An Auto Boolean. Why: Every branch below that behaves differently for a scheduled auto-run versus a manual/tour-triggered one needs this single flag. How: This reads genOptObj.autBoo, coerced to a real boolean.
 
 
 

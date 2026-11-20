@@ -732,8 +732,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 		anchorDay       : picDatObj.anchorDay,                                                                 // What: Anchor Day. Why: A yearly date-mode picker prefills its day. How: This copies picDatObj.anchorDay.
-		anchorDom       : picDatObj.anchorDom,                                                                 // What: Anchor Day Of Month. Why: A monthly date-mode picker prefills its day of the month. How: This copies picDatObj.anchorDom.
-		anchorDow       : picDatObj.anchorDow,                                                                 // What: Anchor Day Of Week. Why: A weekly picker prefills its weekday. How: This copies picDatObj.anchorDow.
+		anchorDom       : picDatObj.anchorDom,                                                                 // What: Anchor Day-Of-Month. Why: A monthly date-mode picker prefills its day of the month. How: This copies picDatObj.anchorDom.
+		anchorDow       : picDatObj.anchorDow,                                                                 // What: Anchor Day-Of-Week. Why: A weekly picker prefills its weekday. How: This copies picDatObj.anchorDow.
 		anchorMonth     : picDatObj.anchorMonth,                                                               // What: Anchor Month. Why: A yearly picker prefills its month. How: This copies picDatObj.anchorMonth.
 		avoidDuplicates : picDatObj.avoidDuplicates,                                                           // What: Avoid Duplicates. Why: The toggle prefills to the picker's current setting. How: This copies picDatObj.avoidDuplicates.
 		cadence         : picDatObj.cadence,                                                                   // What: Cadence. Why: The cadence control prefills to the picker's current cadence. How: This copies picDatObj.cadence.

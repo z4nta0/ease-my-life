@@ -223,7 +223,7 @@ test( 'an exported backup imports back', async ( { page : curPagObj }, tesInfObj
 
 
 
-	const [ dowFilObj ] = await Promise.all( [ curPagObj.waitForEvent( 'download' ), curPagObj.locator( '[data-element-name-hook~="expRowDiv"]' ).getByRole( 'button', { name : 'Export' } ).click() ] ); // What: Download Object. Why: Export downloads a file. How: This clicks Export and catches the download.
+	const [ dowFilObj ] = await Promise.all( [ curPagObj.waitForEvent( 'download' ), curPagObj.locator( '[data-element-name-hook~="expRowDiv"]' ).getByRole( 'button', { name : 'Export' } ).click() ] ); // What: Download File Object. Why: Export downloads a file. How: This clicks Export and catches the download.
 	const filPatStr = tesInfObj.outputPath( 'backup.json' );                                                                                                                                                // What: File Path String. Why: The file is imported next. How: This picks a path in the test's output.
 
 

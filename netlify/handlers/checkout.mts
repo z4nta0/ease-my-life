@@ -82,7 +82,7 @@ async function cheSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 
 	// #region Sign-In Verification
 
-	const ideTokStr = ( reqCurObj.headers.get( 'authorization' ) || '' ).replace( /^Bearer\s*/i, '' ).trim(); // What: Identity Token String. Why: The caller proves who they are with their Firebase token. How: This reads it from the Authorization header.
+	const ideTokStr = ( reqCurObj.headers.get( 'authorization' ) || '' ).replace( /^Bearer\s*/i, '' ).trim(); // What: Identifier Token String. Why: The caller proves who they are with their Firebase token. How: This reads it from the Authorization header.
 
 
 

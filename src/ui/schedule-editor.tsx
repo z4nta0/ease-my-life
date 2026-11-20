@@ -163,7 +163,7 @@ const REP_OPT_ARR : { keyStr : RepNamTyp, labStr : string, subEle : React.JSX.El
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param visResObj - Visibility Resolved Object: {@link
+ * @param visResObj - Visibility Result Object: {@link
  *                    TAS_NAM_OBJ.todVisFun}'s own result object, carrying the
  *                    causes array and holiday name fields this function reads.
  *

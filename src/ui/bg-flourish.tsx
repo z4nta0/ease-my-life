@@ -164,9 +164,9 @@ const floCacMap = new Map< string, FloSidTyp >(); // What: Flourish Cache Map. W
  *                    top-left cell.
  * @param colIndNum - Column Index Number: The column of the placed glyph's own
  *                    top-left cell.
- * @param heiSpaNum - Height Spacing Number: How many rows the placed glyph
+ * @param heiSpaNum - Height Span Number: How many rows the placed glyph
  *                    itself spans (1 for a normal glyph, 2 for a "big" one).
- * @param widSpaNum - Width Spacing Number: How many columns the placed glyph
+ * @param widSpaNum - Width Span Number: How many columns the placed glyph
  *                    itself spans (1 for a normal glyph, 2 for a "big" one).
  *
  * @returns This function does not return anything.
@@ -191,10 +191,10 @@ function bloAroFun ( bloGriArr : boolean[][], rowIndNum : number, colIndNum : nu
 		for ( let curColNum = colIndNum - 1; curColNum <= colIndNum + widSpaNum; curColNum++ ) { // What: Column Neighborhood Loop. Why: Every column from one left of the glyph's own left edge to one right of its own right edge must be excluded. How: This walks curColNum across that full span for each curRowNum above.
 
 
-			const rowMinBoo = curRowNum >= 0;        // What: Row Min Boolean. Why: A neighborhood row above the glyph's own top edge can fall above the grid's own first row entirely. How: This checks that curRowNum hasn't gone negative.
-			const rowMaxBoo = curRowNum < rowCouNum; // What: Row Max Boolean. Why: A neighborhood row below the glyph's own bottom edge can fall past the grid's own last row entirely. How: This checks that curRowNum stays under rowCouNum.
-			const colMinBoo = curColNum >= 0;        // What: Column Min Boolean. Why: A neighborhood column left of the glyph's own left edge can fall before the grid's own first column entirely. How: This checks that curColNum hasn't gone negative.
-			const colMaxBoo = curColNum < colCouNum; // What: Column Max Boolean. Why: A neighborhood column right of the glyph's own right edge can fall past the grid's own last column entirely. How: This checks that curColNum stays under colCouNum.
+			const rowMinBoo = curRowNum >= 0;        // What: Row Minimum Boolean. Why: A neighborhood row above the glyph's own top edge can fall above the grid's own first row entirely. How: This checks that curRowNum hasn't gone negative.
+			const rowMaxBoo = curRowNum < rowCouNum; // What: Row Maximum Boolean. Why: A neighborhood row below the glyph's own bottom edge can fall past the grid's own last row entirely. How: This checks that curRowNum stays under rowCouNum.
+			const colMinBoo = curColNum >= 0;        // What: Column Minimum Boolean. Why: A neighborhood column left of the glyph's own left edge can fall before the grid's own first column entirely. How: This checks that curColNum hasn't gone negative.
+			const colMaxBoo = curColNum < colCouNum; // What: Column Maximum Boolean. Why: A neighborhood column right of the glyph's own right edge can fall past the grid's own last column entirely. How: This checks that curColNum stays under colCouNum.
 
 			const witBouBoo = rowMinBoo && rowMaxBoo && colMinBoo && colMaxBoo; // What: Within Bound Boolean. Why: A neighborhood cell that falls outside the grid's own real edges doesn't exist and must not be written to. How: This combines all 4 individual checks with &&, true only when both the row and column stay within the grid's own bounds.
 
@@ -228,7 +228,7 @@ function bloAroFun ( bloGriArr : boolean[][], rowIndNum : number, colIndNum : nu
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param pooFacFun - Pool Factor Function: A zero-argument function that
+ * @param pooFacFun - Pool Factory Function: A zero-argument function that
  *                    produces a fresh pool array each time it's called.
  *
  * @returns A zero-argument function that returns one value from

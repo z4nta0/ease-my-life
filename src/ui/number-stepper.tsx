@@ -35,7 +35,7 @@ type NscProTyp = { ariLabStr : string, maxValNum? : number, minValNum? : number,
 // #region NumSteCom
 
 /**
- * NumSteCom = Numeric Stepper Component
+ * NumSteCom = Number Stepper Component
  *
  * @summary
  * A -/[editable number]/+ stepper. The value can be typed directly

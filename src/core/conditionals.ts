@@ -386,7 +386,7 @@ function advValFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRc
 
 	const misConBoo = !conCurObj;                    // What: Missing Conditional Boolean. Why: There is nothing to advance for a conditional that doesn't exist. How: This is true when conCurObj is nullish.
 	const disConBoo = conCurObj?.active === false;   // What: Disabled Conditional Boolean. Why: A disabled conditional is frozen and never charges. How: This reads conCurObj's own active flag, safely skipping a nullish conCurObj.
-	const nonValBoo = !modValFun( conCurObj?.mode ); // What: Non-Value Boolean. Why: A probability-family conditional never charges at all. How: This negates modValFun for conCurObj's own mode, safely skipping a nullish conCurObj.
+	const nonValBoo = !modValFun( conCurObj?.mode ); // What: Non Value Boolean. Why: A probability-family conditional never charges at all. How: This negates modValFun for conCurObj's own mode, safely skipping a nullish conCurObj.
 
 	const ineConBoo = misConBoo || disConBoo || nonValBoo; // What: Ineligible Conditional Boolean. Why: The guard below needs one answer for whether this conditional can advance at all. How: This combines the three checks above with ||.
 
