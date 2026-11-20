@@ -176,7 +176,7 @@
 
 }
 
-.braMarSvg { /* What: Brand Mark Svg. Why: The logo fills its button. How: This sizes the svg to the full box as a block. */
+.braMarSvg { /* What: Brand Mark SVG. Why: The logo fills its button. How: This sizes the svg to the full box as a block. */
 
 
 	display : block;
@@ -788,7 +788,7 @@
 
 }
 
-.staIcoSvg { /* What: Stat Icon Svg. Why: Each headline card carries a small icon in its corner. How: This pins it to the top right in the warm color. */
+.staIcoSvg { /* What: Stat Icon SVG. Why: Each headline card carries a small icon in its corner. How: This pins it to the top right in the warm color. */
 
 
 	color    : var( --acc-sec-col ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */

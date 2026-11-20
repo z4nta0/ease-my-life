@@ -249,7 +249,7 @@
 
 }
 
-.penIcoSvg { /* What: Pencil Icon Svg. Why: The pencil should only appear on hover, so the name reads normally at rest. How: This hides the muted glyph until hover, fading it in. */
+.penIcoSvg { /* What: Pencil Icon SVG. Why: The pencil should only appear on hover, so the name reads normally at rest. How: This hides the muted glyph until hover, fading it in. */
 
 
 	color      : var( --tex-mut-col );                              /* Text Muted Color = oklch( 0.5 0.012 250 ) */

@@ -89,7 +89,7 @@ function merDocFun ( docIdeStr : string, locDocObj : RawSavTyp, remDocObj : RawS
 
 
 	const winRowArr = winDocObj || []; // What: Winner Row Array. Why: Every winner row is kept. How: This reads the winner's rows, or none.
-	const winIdeSet = new Set( winRowArr.map( ( rowCurObj : RawSavTyp ) => logSpeObj.ideFun( rowCurObj ) ) );                                                                  // What: Winner Identity Set. Why: A row both sides hold is taken from the winner, so the other side's copy is skipped. How: This collects the winner's row identities.
+	const winIdeSet = new Set( winRowArr.map( ( rowCurObj : RawSavTyp ) => logSpeObj.ideFun( rowCurObj ) ) );                                                                  // What: Winner Identifier Set. Why: A row both sides hold is taken from the winner, so the other side's copy is skipped. How: This collects the winner's row identities.
 	const addRowArr = ( losDocObj || [] ).filter( ( rowCurObj : RawSavTyp ) => logSpeObj.dayFun( rowCurObj ) < todDayStr && !winIdeSet.has( logSpeObj.ideFun( rowCurObj ) ) ); // What: Added Row Array. Why: The other side's history from before today is kept, while its rows for today follow the winner. How: This keeps the other side's rows dated before todDayStr that the winner doesn't already hold.
 
 

@@ -648,14 +648,14 @@ type RscProTyp = { actEdiStr : string | null, actStoObj : ActStoTyp, ariTasSet :
  *                             editor.
  * @param props.actStoObj    - Action Store Object: The shared app actions that
  *                             mutate props.staAppObj.
- * @param props.ariTasSet    - Arriving Task Set: Ids currently playing a
+ * @param props.ariTasSet    - Arriving Task Set: IDs currently playing a
  *                             cross-day arrival animation.
  * @param props.cheExiBoo    - Checklist Exiting Boolean: Whether the
  *                             onboarding checklist itself is mid-exit
  *                             animation.
  * @param props.ediModBoo    - Edit Mode Boolean: Whether Today's own Edit Mode
  *                             is on.
- * @param props.leaTasSet    - Leaving Task Set: Ids currently playing a cross-
+ * @param props.leaTasSet    - Leaving Task Set: IDs currently playing a cross-
  *                             day purge exit animation.
  * @param props.logOpeBoo    - Log Open Boolean: Whether the Reminders day-log
  *                             panel is currently open.

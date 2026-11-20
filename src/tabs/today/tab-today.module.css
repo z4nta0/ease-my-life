@@ -264,7 +264,7 @@
 
 }
 
-.strFlaSvg { /* What: Streak Flame Svg. Why: The flame icon reads warm beside the count. How: This colors it warm at its natural size, easing its transform and glow. */
+.strFlaSvg { /* What: Streak Flame SVG. Why: The flame icon reads warm beside the count. How: This colors it warm at its natural size, easing its transform and glow. */
 
 
 	color      : var( --acc-sec-col );                                                                                  /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
@@ -303,7 +303,7 @@
 
 
 }
-@keyframes strFlaSvgBumpFlare { /* What: Streak Flame Svg Bump Flare Keyframes. Why: The flame flares and settles. How: This scales, tilts, and glows it, then eases back. */
+@keyframes strFlaSvgBumpFlare { /* What: Streak Flame SVG Bump Flare Keyframes. Why: The flame flares and settles. How: This scales, tilts, and glows it, then eases back. */
 
 
 	0% {
@@ -483,7 +483,7 @@
 
 }
 
-.braMarSvg { /* What: Brand Mark Svg. Why: The logo fills its button. How: This sizes the svg to the full box as a block. */
+.braMarSvg { /* What: Brand Mark SVG. Why: The logo fills its button. How: This sizes the svg to the full box as a block. */
 
 
 	display : block;
@@ -715,7 +715,7 @@
 
 /* #region rinGraSvg */
 
-.rinGraSvg { /* What: Ring Graphic Svg. Why: The arc starts at the top rather than the right. How: This fills the ring and turns it a quarter back. */
+.rinGraSvg { /* What: Ring Graphic SVG. Why: The arc starts at the top rather than the right. How: This fills the ring and turns it a quarter back. */
 
 
 	height    : 100%;
@@ -745,7 +745,7 @@
 
 
 }
-@keyframes rinGraSvgPulseBounce { /* What: Ring Graphic Svg Pulse Bounce Keyframes. Why: The ring swells briefly without losing its rotation. How: This scales it up and back while keeping the quarter turn. */
+@keyframes rinGraSvgPulseBounce { /* What: Ring Graphic SVG Pulse Bounce Keyframes. Why: The ring swells briefly without losing its rotation. How: This scales it up and back while keeping the quarter turn. */
 
 
 	0% {
@@ -1284,7 +1284,7 @@
 
 }
 
-.banIcoSvg { /* What: Banner Icon Svg. Why: The icon reads a touch quieter than the text. How: This fades it slightly. */
+.banIcoSvg { /* What: Banner Icon SVG. Why: The icon reads a touch quieter than the text. How: This fades it slightly. */
 
 
 	opacity : 0.85;

@@ -105,7 +105,7 @@ const RAN_NOT_STR = 'Truly Random conditionals have no options and function like
  *
 */
 
-const conDraFun = ( picNamStr : string, exiNamArr : string[] = [] ) : Partial< ConRcdTyp > => { // What: Conditional Draft Function Body. Why: A brand-new conditional needs a sensible starting draft rather than a blank one. How: This resolves a free "{Picker} Conditional N" name, then returns it alongside every other field's own default value.
+const conDraFun = ( picNamStr : string, exiNamArr : string[] = [] ) : Partial< ConRcdTyp > => { // What: Conditional Draft Function. Why: A brand-new conditional needs a sensible starting draft rather than a blank one. How: This resolves a free "{Picker} Conditional N" name, then returns it alongside every other field's own default value.
 
 
 	// #region Base Name

@@ -164,7 +164,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 			const butRecObj = butActEle.getBoundingClientRect(); // What: Button Rect Object. Why: This gives the raw viewport position and size of the active tab. How: This is combined with navRecObj to compute the nav-relative position stored in indRecObj.
 
 
-			setIndRecObj({ // What: Indicator Record Update Call. Why: This publishes the freshly-measured position and size so the indicator pill re-renders in the right place. How: This builds the lefNum/topNum/widNum/heiNum shape from the two bounding rects above.
+			setIndRecObj({ // What: Indicator Rect Update Call. Why: This publishes the freshly-measured position and size so the indicator pill re-renders in the right place. How: This builds the lefNum/topNum/widNum/heiNum shape from the two bounding rects above.
 
 
 				heiNum : butRecObj.height,                                       // What: Height Number. Why: This sizes the indicator pill to match the active tab's height. How: This is taken directly from the active button's bounding rect.

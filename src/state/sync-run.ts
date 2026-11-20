@@ -1001,7 +1001,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 		try { // What: Checkout Try. Why: A network or setup failure must explain itself. How: This proves who is buying and opens the checkout.
 
 
-			const ideTokStr = await ( await staWatFun() ).tokGetFun(); // What: Identity Token String. Why: The checkout function verifies the buyer. How: This gets the account's token.
+			const ideTokStr = await ( await staWatFun() ).tokGetFun(); // What: Identifier Token String. Why: The checkout function verifies the buyer. How: This gets the account's token.
 
 
 

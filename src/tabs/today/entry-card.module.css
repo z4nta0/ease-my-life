@@ -397,7 +397,7 @@
 
 }
 
-.cheIcoSvg { /* What: Check Icon Svg. Why: The mark springs in when an entry is checked. How: This plays the shared spring on the mark. */
+.cheIcoSvg { /* What: Check Icon SVG. Why: The mark springs in when an entry is checked. How: This plays the shared spring on the mark. */
 
 
 	animation : global( checkDoneBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global checkDoneBounce Keyframes. Why: The checkDoneBounce keyframes are shared with the reminder, page tour, and app feature cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -742,7 +742,7 @@
 
 }
 
-.actIcoBut.actIcoBut--spinning .rolIcoSvg { /* What: Spinning Roll Icon Svg. Why: The re-roll icon spins along with the card's tumble. How: This turns the icon a full turn backward while the button carries its spinning class. */
+.actIcoBut.actIcoBut--spinning .rolIcoSvg { /* What: Spinning Roll Icon SVG. Why: The re-roll icon spins along with the card's tumble. How: This turns the icon a full turn backward while the button carries its spinning class. */
 
 
 	animation : rolIcoSvgRollSpin var( --dur-ani-p06 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */
@@ -763,7 +763,7 @@
 
 
 }
-@keyframes rolIcoSvgRollSpin { /* What: Roll Icon Svg Roll Spin Keyframes. Why: The icon spins the same way the card tumbles. How: This turns it a full turn backward. */
+@keyframes rolIcoSvgRollSpin { /* What: Roll Icon SVG Roll Spin Keyframes. Why: The icon spins the same way the card tumbles. How: This turns it a full turn backward. */
 
 
 	from {

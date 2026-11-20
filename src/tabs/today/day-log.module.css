@@ -95,7 +95,7 @@
 
 }
 
-.chiIcoSvg { /* What: Chip Icon Svg. Why: The icon sits small beside the label. How: This sizes it to the base rhythm step. */
+.chiIcoSvg { /* What: Chip Icon SVG. Why: The icon sits small beside the label. How: This sizes it to the base rhythm step. */
 
 
 	height : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
@@ -156,7 +156,7 @@
 
 }
 
-.kicIcoSvg { /* What: Kicker Icon Svg. Why: The kicker's icon reads in the accent. How: This sizes it small in the accent color. */
+.kicIcoSvg { /* What: Kicker Icon SVG. Why: The kicker's icon reads in the accent. How: This sizes it small in the accent color. */
 
 
 	color  : var( --acc-mai-col );                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -219,7 +219,7 @@
 
 }
 
-.cloIcoSvg { /* What: Close Icon Svg. Why: The icon fits the small button. How: This sizes it to the base rhythm step. */
+.cloIcoSvg { /* What: Close Icon SVG. Why: The icon fits the small button. How: This sizes it to the base rhythm step. */
 
 
 	height : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
@@ -340,7 +340,7 @@
 
 }
 
-.icoGlySvg { /* What: Icon Glyph Svg. Why: The glyph sits small in its tile. How: This sizes it to the base rhythm step. */
+.icoGlySvg { /* What: Icon Glyph SVG. Why: The glyph sits small in its tile. How: This sizes it to the base rhythm step. */
 
 
 	height : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
@@ -509,7 +509,7 @@
 
 }
 
-.chvIcoSvg { /* What: Chevron Icon Svg. Why: The glyph sits at a fixed size. How: This sizes it to the base rhythm step as a block. */
+.chvIcoSvg { /* What: Chevron Icon SVG. Why: The glyph sits at a fixed size. How: This sizes it to the base rhythm step as a block. */
 
 
 	display : block;
@@ -660,7 +660,7 @@
 
 }
 
-.donIcoSvg { /* What: Done Icon Svg. Why: The icon sits small beside the count. How: This sizes it to the small rhythm step. */
+.donIcoSvg { /* What: Done Icon SVG. Why: The icon sits small beside the count. How: This sizes it to the small rhythm step. */
 
 
 	height : calc( var( --ver-rhy-m01 ) * 1rem ); /* Vertical Rhythm Base Minus 1 = 11px */
@@ -716,7 +716,7 @@
 
 }
 
-.resIcoSvg { /* What: Rested Icon Svg. Why: The icon sits small. How: This sizes it to the base rhythm step. */
+.resIcoSvg { /* What: Rested Icon SVG. Why: The icon sits small. How: This sizes it to the base rhythm step. */
 
 
 	height : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
@@ -1381,7 +1381,7 @@
 
 }
 
-.affIcoSvg { /* What: Affected Icon Svg. Why: The icon sits small and a little faded. How: This sizes it to the small rhythm step at 0.8 opacity. */
+.affIcoSvg { /* What: Affected Icon SVG. Why: The icon sits small and a little faded. How: This sizes it to the small rhythm step at 0.8 opacity. */
 
 
 	flex    : none;

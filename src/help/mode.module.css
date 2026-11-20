@@ -75,7 +75,7 @@
 
 /* #region dimLaySvg */
 
-.dimLaySvg { /* What: Dim Layer Svg. Why: The dim layer has to cover the whole viewport. How: This pins the svg to the overlay's edges. */
+.dimLaySvg { /* What: Dim Layer SVG. Why: The dim layer has to cover the whole viewport. How: This pins the svg to the overlay's edges. */
 
 
 	inset    : 0;

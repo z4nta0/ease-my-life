@@ -75,7 +75,7 @@ type LogSpeTyp = { dayFun : ( logRowObj : RawSavTyp ) => string, ideFun : ( logR
  * - `dayFun` (Function): Day Function, returning the row's local
  *   'YYYY-MM-DD' day, which also names its month's document.
  *
- * - `ideFun` (Function): Identity Function, returning what identifies the
+ * - `ideFun` (Function): Identifier Function, returning what identifies the
  *   row across devices. A vacation row has no id of its own, so it's
  *   identified by its day, item, and direction.
  *

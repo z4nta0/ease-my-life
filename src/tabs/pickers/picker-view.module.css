@@ -1070,7 +1070,7 @@
 
 }
 
-.senCheSvg { /* What: Sent Check Svg. Why: The check pops in when the send lands. How: This plays the pop on the icon. */
+.senCheSvg { /* What: Sent Check SVG. Why: The check pops in when the send lands. How: This plays the pop on the icon. */
 
 
 	animation : senCheSvgSentPopIn var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
@@ -1080,7 +1080,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sent Pool Check. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.senCheSvg { /* What: Instant Sent Check Svg. Why: The check should simply appear. How: This shortens its pop to .01ms. */
+	.senCheSvg { /* What: Instant Sent Check SVG. Why: The check should simply appear. How: This shortens its pop to .01ms. */
 
 
 		animation-duration : .01ms;
@@ -1090,7 +1090,7 @@
 
 
 }
-@keyframes senCheSvgSentPopIn { /* What: Sent Check Svg Sent Pop In Keyframes. Why: An overshooting scale reads as the check landing. How: This grows the check from small past full size and back while fading it in. */
+@keyframes senCheSvgSentPopIn { /* What: Sent Check SVG Sent Pop In Keyframes. Why: An overshooting scale reads as the check landing. How: This grows the check from small past full size and back while fading it in. */
 
 
 	0% {
