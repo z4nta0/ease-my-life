@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import AxeBuilder from '@axe-core/playwright'; // What: Axe Builder. Why: The signed-in screens get the same axe-core scan as the rest of the app. How: This runs it on a page.
+import AxeBuiCla from '@axe-core/playwright'; // What: Axe Builder Class. Why: The signed-in screens get the same axe-core scan as the rest of the app. How: This runs it on a page.
 
 
 import { AXE_TAG_ARR } from '../support/accessibility.ts';   // What: Axe Tag Array. Why: The app targets WCAG 2.2 AA, the same as the main suite. How: This selects every A and AA rule up to 2.2 plus best practices.
@@ -91,7 +91,7 @@ async function chePagFun ( curPagObj : Page ) : Promise< void > {
 		await curPagObj.waitForTimeout( 400 ); // What: Settle Wait. Why: Container queries and transitions finish after a resize. How: This waits a moment.
 
 
-		const axeResObj = await new AxeBuilder( { page : curPagObj } ).include( '[data-element-name-hook~="setAccSec"]' ).include( '[data-element-name-hook~="resRowDiv"]' ).withTags( AXE_TAG_ARR ).analyze(); // What: Axe Result Object. Why: The scan decides the test, and covers only what signing in changes, since the main suite scans the rest of Settings, and a section half scrolled out of view reads to axe as a clipped, undersized target. How: This runs axe-core with the suite's tags on the Account section and the reset row.
+		const axeResObj = await new AxeBuiCla( { page : curPagObj } ).include( '[data-element-name-hook~="setAccSec"]' ).include( '[data-element-name-hook~="resRowDiv"]' ).withTags( AXE_TAG_ARR ).analyze(); // What: Axe Result Object. Why: The scan decides the test, and covers only what signing in changes, since the main suite scans the rest of Settings, and a section half scrolled out of view reads to axe as a clipped, undersized target. How: This runs axe-core with the suite's tags on the Account section and the reset row.
 
 
 		expect( vioLinFun( axeResObj.violations ), `axe at ${ widValNum }px` ).toEqual( [] ); // What: Violation Assertion. Why: A screen passes only with none. How: This lists each by rule and target.

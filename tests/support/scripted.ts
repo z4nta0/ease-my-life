@@ -317,7 +317,7 @@ function stoInfFun () : StoInfTyp | null {
 
 
 	const focSigStr = sigStyFun();                                      // What: Focused Signature String. Why: The stop's look while focused is the first half of the comparison. How: This reads it before anything changes.
-	const newStoBoo = actCurEle !== Reflect.get( window, 'preStoEle' ); // What: New Stop Boolean. Why: A blur and refocus send a date or time field back to its first part, so a field met again would never move on to its next part. How: This is true when the stop isn't the one the previous press reached.
+	const newStoBoo = actCurEle !== Reflect.get( window, '__preStoEle' ); // What: New Stop Boolean. Why: A blur and refocus send a date or time field back to its first part, so a field met again would never move on to its next part. How: This is true when the stop isn't the one the previous press reached.
 
 
 
@@ -385,22 +385,22 @@ function stoInfFun () : StoInfTyp | null {
 
 	// #region Stop Tracking
 
-	const firStoEle = Reflect.get( window, 'firStoEle' ) as Element | undefined; // What: First Stop Element. Why: The walk ends when focus comes back to its first stop. How: This reads the first stop the page remembered, if any. // What: Type Assertion Note. Why: Reflect.get types the global as unknown. How: This function only ever stores an element there.
-	const preStoEle = Reflect.get( window, 'preStoEle' ) as Element | undefined; // What: Previous Stop Element. Why: Each stop is compared with the one before it. How: This reads the previous stop the page remembered, if any. // What: Type Assertion Note. Why: Reflect.get types the global as unknown. How: This function only ever stores an element there.
+	const firStoEle = Reflect.get( window, '__firStoEle' ) as Element | undefined; // What: First Stop Element. Why: The walk ends when focus comes back to its first stop. How: This reads the first stop the page remembered, if any. // What: Type Assertion Note. Why: Reflect.get types the global as unknown. How: This function only ever stores an element there.
+	const preStoEle = Reflect.get( window, '__preStoEle' ) as Element | undefined; // What: Previous Stop Element. Why: Each stop is compared with the one before it. How: This reads the previous stop the page remembered, if any. // What: Type Assertion Note. Why: Reflect.get types the global as unknown. How: This function only ever stores an element there.
 
 	const befStoBoo = !!preStoEle && preStoEle.isConnected && preStoEle !== actCurEle && !!( preStoEle.compareDocumentPosition( actCurEle ) & Node.DOCUMENT_POSITION_PRECEDING ); // What: Before Stop Boolean. Why: Focus should move forward through the page. How: This asks the document directly whether the stop precedes the previous one, skipping a previous stop the page has since replaced, which keeps it right even when the page adds or removes elements during the walk, as help mode's overlay does while it scrolls a badge's target into view.
 	const mulFieBoo = actCurEle.matches( 'input[type="date"], input[type="datetime-local"], input[type="month"], input[type="time"], input[type="week"]' );                       // What: Multi-Field Boolean. Why: Chromium moves Tab through a date or time field's parts, such as its hours and minutes, so focus stays on the same field for several presses. How: This is true when the stop is one of those fields.
-	const samCouNum = actCurEle === preStoEle ? ( Number( Reflect.get( window, 'samCouNum' ) ) || 0 ) + 1 : 0;                                                                    // What: Same Count Number. Why: A field with parts holds focus for a few presses in a row without the walk having ended. How: This counts the presses in a row that left focus on the same stop, 0 when it moved.
+	const samCouNum = actCurEle === preStoEle ? ( Number( Reflect.get( window, '__samCouNum' ) ) || 0 ) + 1 : 0;                                                                  // What: Same Count Number. Why: A field with parts holds focus for a few presses in a row without the walk having ended. How: This counts the presses in a row that left focus on the same stop, 0 when it moved.
 
 
 
-	if ( !firStoEle ) Reflect.set( window, 'firStoEle', actCurEle ); // What: First Stop Record. Why: The walk ends if focus comes back to it. How: This remembers the first stop the walk reaches.
+	if ( !firStoEle ) Reflect.set( window, '__firStoEle', actCurEle ); // What: First Stop Record. Why: The walk ends if focus comes back to it. How: This remembers the first stop the walk reaches.
 
 
 
-	Reflect.set( window, 'preStoEle', actCurEle );                                                                                   // What: Previous Stop Record. Why: The next stop is compared with this one. How: This remembers it.
-	Reflect.set( window, 'reaStoArr', [ ...( ( Reflect.get( window, 'reaStoArr' ) as Element[] | undefined ) || [] ), actCurEle ] ); // What: Reached Stops Record. Why: A trap that cycles back to the first stop or holds focus on one ends the walk the way an ordinary end does, leaving later stops unreached, which only a list of where the walk has been can show. How: This adds the stop to the list the page keeps of every stop reached. // What: Type Assertion Note. Why: Reflect.get types the global as unknown. How: This function only ever stores an array of elements there.
-	Reflect.set( window, 'samCouNum', samCouNum );                                                                                   // What: Same Count Record. Why: The next press's count builds on this one. How: This remembers it.
+	Reflect.set( window, '__preStoEle', actCurEle );                                                                                     // What: Previous Stop Record. Why: The next stop is compared with this one. How: This remembers it.
+	Reflect.set( window, '__reaStoArr', [ ...( ( Reflect.get( window, '__reaStoArr' ) as Element[] | undefined ) || [] ), actCurEle ] ); // What: Reached Stops Record. Why: A trap that cycles back to the first stop or holds focus on one ends the walk the way an ordinary end does, leaving later stops unreached, which only a list of where the walk has been can show. How: This adds the stop to the list the page keeps of every stop reached. // What: Type Assertion Note. Why: Reflect.get types the global as unknown. How: This function only ever stores an array of elements there.
+	Reflect.set( window, '__samCouNum', samCouNum );                                                                                     // What: Same Count Record. Why: The next press's count builds on this one. How: This remembers it.
 
 	// #endregion Stop Tracking
 
@@ -468,9 +468,9 @@ function tabStoFun ( colSkiBoo : boolean ) : string[] {
 
 
 
-	const firStoEle = Reflect.get( window, 'firStoEle' ) as Element;                         // What: First Stop Element. Why: An element before the walk's first stop was never part of the walk. How: This reads the first stop the page remembered. // What: Type Assertion Note. Why: Reflect.get types the global as unknown. How: The walk only lists unreached stops once it has reached one, so an element is stored there.
-	const modDiaEle = document.querySelector( 'dialog:modal' );                              // What: Modal Dialog Element. Why: An open modal dialog keeps Tab inside itself. How: This finds the open one, or null when none is.
-	const reaStoArr = ( Reflect.get( window, 'reaStoArr' ) as Element[] | undefined ) || []; // What: Reached Stop Array. Why: A stop the walk reached isn't missing. How: This reads the list stoInfFun kept, or an empty one. // What: Type Assertion Note. Why: Reflect.get types the global as unknown. How: stoInfFun only ever stores an array of elements there.
+	const firStoEle = Reflect.get( window, '__firStoEle' ) as Element;                         // What: First Stop Element. Why: An element before the walk's first stop was never part of the walk. How: This reads the first stop the page remembered. // What: Type Assertion Note. Why: Reflect.get types the global as unknown. How: The walk only lists unreached stops once it has reached one, so an element is stored there.
+	const modDiaEle = document.querySelector( 'dialog:modal' );                                // What: Modal Dialog Element. Why: An open modal dialog keeps Tab inside itself. How: This finds the open one, or null when none is.
+	const reaStoArr = ( Reflect.get( window, '__reaStoArr' ) as Element[] | undefined ) || []; // What: Reached Stop Array. Why: A stop the walk reached isn't missing. How: This reads the list stoInfFun kept, or an empty one. // What: Type Assertion Note. Why: Reflect.get types the global as unknown. How: stoInfFun only ever stores an array of elements there.
 
 
 
