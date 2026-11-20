@@ -87,17 +87,17 @@ async function accNewFun ( verEmaBoo : boolean, staClaObj : object = {} ) : Prom
 
 
 	const emaAdrStr = `pay-${ Date.now() }-${ Math.random().toString( 36 ).slice( 2 ) }@example.com`;                                                                                          // What: Email Address String. Why: Each case needs its own account. How: This builds a unique address.
-	const sigUpcObj = await admPosFun( '/identitytoolkit.googleapis.com/v1/accounts:signUp?key=fake-api-key', { email : emaAdrStr, password : 'unused-password', returnSecureToken : true } ); // What: Sign Up Object. Why: The account has to exist. How: This creates it.
+	const sigNewObj = await admPosFun( '/identitytoolkit.googleapis.com/v1/accounts:signUp?key=fake-api-key', { email : emaAdrStr, password : 'unused-password', returnSecureToken : true } ); // What: Sign New Object. Why: The account has to exist. How: This creates it.
 
 
-	await admPosFun( `/identitytoolkit.googleapis.com/v1/projects/${ EMU_PRO_STR }/accounts:update`, { customAttributes : JSON.stringify( staClaObj ), emailVerified : verEmaBoo, localId : sigUpcObj.localId } ); // What: Account Setup Call. Why: Cases need a chosen verification and starting claims. How: This sets both.
+	await admPosFun( `/identitytoolkit.googleapis.com/v1/projects/${ EMU_PRO_STR }/accounts:update`, { customAttributes : JSON.stringify( staClaObj ), emailVerified : verEmaBoo, localId : sigNewObj.localId } ); // What: Account Setup Call. Why: Cases need a chosen verification and starting claims. How: This sets both.
 
 
-	const sigInnObj = await admPosFun( '/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=fake-api-key', { email : emaAdrStr, password : 'unused-password', returnSecureToken : true } ); // What: Sign In Object. Why: A fresh token carries the new verification. How: This signs in again.
+	const sigExiObj = await admPosFun( '/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=fake-api-key', { email : emaAdrStr, password : 'unused-password', returnSecureToken : true } ); // What: Sign Existing Object. Why: A fresh token carries the new verification. How: This signs in again.
 
 
 
-	return { emaStr : emaAdrStr, tokStr : sigInnObj.idToken, uidStr : sigUpcObj.localId }; // What: Account Return. Why: Cases use the email, token, and id. How: This returns them.
+	return { emaStr : emaAdrStr, tokStr : sigExiObj.idToken, uidStr : sigNewObj.localId }; // What: Account Return. Why: Cases use the email, token, and id. How: This returns them.
 
 
 }

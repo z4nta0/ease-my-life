@@ -428,11 +428,11 @@ for ( const vieWidNum of VIE_WID_ARR ) for ( const pagStaObj of PAG_STA_ARR ) te
 
 
 
-	const shoBufObj = await curPagObj.screenshot( { fullPage : true, path : new URL( `${ pagStaObj.namStr }-${ vieWidNum }.png`, OUT_DIR_STR ).pathname } ); // What: Screenshot Buffer Object. Why: Some problems only show to the eye. How: This saves and keeps a full-page screenshot.
+	const imaBufObj = await curPagObj.screenshot( { fullPage : true, path : new URL( `${ pagStaObj.namStr }-${ vieWidNum }.png`, OUT_DIR_STR ).pathname } ); // What: Image Buffer Object. Why: Some problems only show to the eye. How: This saves and keeps a full-page screenshot.
 
 
 
-	await tesInfObj.attach( 'screenshot', { body : shoBufObj, contentType : 'image/png' } ); // What: Screenshot Attach Call. Why: The report shows each layout. How: This attaches the screenshot.
+	await tesInfObj.attach( 'screenshot', { body : imaBufObj, contentType : 'image/png' } ); // What: Screenshot Attach Call. Why: The report shows each layout. How: This attaches the screenshot.
 
 	// #endregion Screenshot Capture
 

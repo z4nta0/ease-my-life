@@ -83,14 +83,14 @@ const claSetFun = ( uidValStr : string ) => admPosFun( `/identitytoolkit.googlea
 async function creAccFun ( emaAdrStr : string, paiValBoo : boolean = true ) : Promise< string > {
 
 
-	const sigUpcObj = await admPosFun( '/identitytoolkit.googleapis.com/v1/accounts:signUp?key=fake-api-key', { email : emaAdrStr, password : 'unused-password', returnSecureToken : true } ); // What: Sign Up Object. Why: The account has to exist before its claim is set. How: This creates it.
+	const sigNewObj = await admPosFun( '/identitytoolkit.googleapis.com/v1/accounts:signUp?key=fake-api-key', { email : emaAdrStr, password : 'unused-password', returnSecureToken : true } ); // What: Sign New Object. Why: The account has to exist before its claim is set. How: This creates it.
 
 
-	if ( paiValBoo ) await claSetFun( sigUpcObj.localId ); // What: Paid Claim Call. Why: Only a paid account syncs, and the webhook that sets this doesn't run here. How: This sets the paid claim unless the account starts unpaid.
+	if ( paiValBoo ) await claSetFun( sigNewObj.localId ); // What: Paid Claim Call. Why: Only a paid account syncs, and the webhook that sets this doesn't run here. How: This sets the paid claim unless the account starts unpaid.
 
 
 
-	return sigUpcObj.localId; // What: Identifier Return. Why: A purchase test sets the claim later. How: This returns the account's id.
+	return sigNewObj.localId; // What: Identifier Return. Why: A purchase test sets the claim later. How: This returns the account's id.
 
 
 }

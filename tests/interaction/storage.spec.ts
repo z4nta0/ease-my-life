@@ -123,7 +123,7 @@ const addHolFun = async ( curPagObj : Page, holNamStr : string ) : Promise< void
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param curPagObj - Current Page Object: The page running the app.
- * @param faiModStr - Fault Mode String: 'hang', 'slow', or null for a
+ * @param fauModStr - Fault Mode String: 'hang', 'slow', or null for a
  *                    healthy IndexedDB.
  *
  * @returns A promise that settles once Today has mounted, with no value.
@@ -135,14 +135,14 @@ const addHolFun = async ( curPagObj : Page, holNamStr : string ) : Promise< void
  *
 */
 
-const relAppFun = async ( curPagObj : Page, faiModStr : string | null ) : Promise< void > => { // What: Relaunch App Function. Why: Each flow relaunches with and without a fault. How: This sets or clears the fault, reloads the app, and waits for Today.
+const relAppFun = async ( curPagObj : Page, fauModStr : string | null ) : Promise< void > => { // What: Relaunch App Function. Why: Each flow relaunches with and without a fault. How: This sets or clears the fault, reloads the app, and waits for Today.
 
 
 	await curPagObj.goto( '/robots.txt' ); // What: Plain Page Navigation. Why: Leaving the app fires its pagehide flush, and the fault must be set while no app code runs. How: This opens a same-origin file that runs no app code.
 
 
 
-	await curPagObj.evaluate( ( { modKeyStr, modValStr } ) => { if ( modValStr ) localStorage.setItem( modKeyStr, modValStr ); else localStorage.removeItem( modKeyStr ); }, { modKeyStr : IDB_MOD_STR, modValStr : faiModStr } ); // What: Fault Set Call. Why: The init script reads the fault on the next load. How: This writes faiModStr under IDB_MOD_STR, or removes the key for none, passing both in one object since the script can't see this file's variables.
+	await curPagObj.evaluate( ( { modKeyStr, modValStr } ) => { if ( modValStr ) localStorage.setItem( modKeyStr, modValStr ); else localStorage.removeItem( modKeyStr ); }, { modKeyStr : IDB_MOD_STR, modValStr : fauModStr } ); // What: Fault Set Call. Why: The init script reads the fault on the next load. How: This writes fauModStr under IDB_MOD_STR, or removes the key for none, passing both in one object since the script can't see this file's variables.
 
 
 

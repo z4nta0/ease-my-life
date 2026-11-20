@@ -668,7 +668,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 							ariLabStr='Filter pickers by group'
 
-							onAllFun={ () => { // What: On All Function. Why: The All pill clears the group filter. How: This resets the filter, closes the create form, and selects the first visible picker.
+							onAllPilFun={ () => { // What: On All Pill Function. Why: The All pill clears the group filter. How: This resets the filter, closes the create form, and selects the first visible picker.
 
 
 								setGroFilStr( 'all' );                                                            // What: Group Filter Reset Call. Why: The All pill clears the group filter. How: This writes 'all' into groFilStr.
@@ -709,7 +709,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 							ariLabStr='Filter pickers by type'
 
-							onAllFun={ () => { // What: On All Function. Why: The All pill clears the type filter. How: This resets the filter, closes the create form, and selects the first visible picker.
+							onAllPilFun={ () => { // What: On All Pill Function. Why: The All pill clears the type filter. How: This resets the filter, closes the create form, and selects the first visible picker.
 
 
 								setTypFilStr( 'all' );                                                            // What: Type Filter Reset Call. Why: The All pill clears the type filter. How: This writes 'all' into typFilStr.

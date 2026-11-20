@@ -31,7 +31,7 @@ import cssModObj from './filter-rail.module.css'; // What: CSS Module Object. Wh
 
 // #region Components
 
-type FacProTyp = { allCouNum : number, allSelBoo : boolean, ariLabStr : string, 'data-element-name-hook' : string, entIteArr : { cliFun : () => void, couNum : number, keyStr : string, namStr : string, selBoo : boolean }[], isaDisBoo? : boolean, labTexStr : string, onAllFun : () => void, ref : React.Ref< HTMLDivElement > }; // What: Filter-Rail-Component Props Type. Why: A rail names itself, counts and marks its "All" pill and each choice, can be disabled, and hands each pill its own action. How: This types FilRaiCom's props, named Fac since Frc already belongs to FilRowCom.
+type FacProTyp = { allCouNum : number, allSelBoo : boolean, ariLabStr : string, 'data-element-name-hook' : string, entIteArr : { cliFun : () => void, couNum : number, keyStr : string, namStr : string, selBoo : boolean }[], isaDisBoo? : boolean, labTexStr : string, onAllPilFun : () => void, ref : React.Ref< HTMLDivElement > }; // What: Filter-Rail-Component Props Type. Why: A rail names itself, counts and marks its "All" pill and each choice, can be disabled, and hands each pill its own action. How: This types FilRaiCom's props, named Fac since Frc already belongs to FilRowCom.
 
 // #region FilRaiCom
 
@@ -62,8 +62,8 @@ type FacProTyp = { allCouNum : number, allSelBoo : boolean, ariLabStr : string, 
  *                                       pill is disabled.
  * @param props.labTexStr              - Label Text String: The row's
  *                                       visible label.
- * @param props.onAllFun               - On All Function: Called when the
- *                                       "All" pill is clicked.
+ * @param props.onAllPilFun            - On All Pill Function: Called when
+ *                                       the "All" pill is clicked.
  * @param props.ref                    - Reference: Attached to the rail
  *                                       element.
  *
@@ -76,7 +76,7 @@ type FacProTyp = { allCouNum : number, allSelBoo : boolean, ariLabStr : string, 
  *
 */
 
-function FilRaiCom ( { allCouNum, allSelBoo, ariLabStr, 'data-element-name-hook' : hooNamStr, entIteArr, isaDisBoo, labTexStr, onAllFun, ref } : FacProTyp ) : React.JSX.Element {
+function FilRaiCom ( { allCouNum, allSelBoo, ariLabStr, 'data-element-name-hook' : hooNamStr, entIteArr, isaDisBoo, labTexStr, onAllPilFun, ref } : FacProTyp ) : React.JSX.Element {
 
 
 	return (
@@ -111,8 +111,8 @@ function FilRaiCom ( { allCouNum, allSelBoo, ariLabStr, 'data-element-name-hook'
 					aria-selected={ allSelBoo }
 					role='tab'
 
-					onClick={ onAllFun }
-				>{ /* What: All Pill Button Element. Why: The user needs a way to clear the filter back to unfiltered. How: This marks itself selected when allSelBoo and runs onAllFun. Its data-element-name-hook is read by the page tours and help mode. */ }
+					onClick={ onAllPilFun }
+				>{ /* What: All Pill Button Element. Why: The user needs a way to clear the filter back to unfiltered. How: This marks itself selected when allSelBoo and runs onAllPilFun. Its data-element-name-hook is read by the page tours and help mode. */ }
 
 
 					All

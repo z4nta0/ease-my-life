@@ -161,7 +161,7 @@ const expConFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, curEntObj : To
 	if ( curEntObj.kind === 'dayoff' ) { // What: Card Branch. Why: A day-off card resolves its conditional by mode. How: This builds the resolved conditional.
 
 
-		const cadPreObj = { chargeStep : preConObj.chargeStep, triggered : preConObj.triggered, value : preConObj.value }; // What: Card Previous Object. Why: The card's undo snapshot is the conditional before it. How: This builds the expected snapshot.
+		const carPreObj = { chargeStep : preConObj.chargeStep, triggered : preConObj.triggered, value : preConObj.value }; // What: Card Previous Object. Why: The card's undo snapshot is the conditional before it. How: This builds the expected snapshot.
 
 
 
@@ -172,14 +172,14 @@ const expConFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, curEntObj : To
 
 
 
-			return { ...preConObj, _cardPrev : cadPreObj, chargeStep : aftConObj.chargeStep, triggered : false, value : 0 }; // What: Ease Up Card Return. Why: The cycle starts over. How: This returns the reset conditional.
+			return { ...preConObj, _cardPrev : carPreObj, chargeStep : aftConObj.chargeStep, triggered : false, value : 0 }; // What: Ease Up Card Return. Why: The cycle starts over. How: This returns the reset conditional.
 
 
 		}
 
 
 
-		if ( preConObj.mode === 'dynamic' ) return { ...preConObj, _cardPrev : cadPreObj, triggered : false, value : 0 }; // What: Dynamic Card Return. Why: Completing the card clears the boost. How: This returns value 0, untriggered.
+		if ( preConObj.mode === 'dynamic' ) return { ...preConObj, _cardPrev : carPreObj, triggered : false, value : 0 }; // What: Dynamic Card Return. Why: Completing the card clears the boost. How: This returns value 0, untriggered.
 
 
 
@@ -199,7 +199,7 @@ const expConFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, curEntObj : To
 
 				...preConObj, // What: Previous Conditional Spread. Why: The card leaves every other field as it was. How: This copies the conditional before the click.
 
-				_cardPrev  : cadPreObj,     // What: Card Previous. Why: The card's undo reads this snapshot. How: This stores the expected snapshot.
+				_cardPrev  : carPreObj,     // What: Card Previous. Why: The card's undo reads this snapshot. How: This stores the expected snapshot.
 				chargeStep : steResNum,     // What: Charge Step. Why: An unset step is rolled on the card. How: This stores the kept or rolled step.
 				triggered  : nexValNum > 0, // What: Triggered. Why: The gate stays on while any charge remains. How: This checks the drained value is above 0.
 				value      : nexValNum      // What: Value. Why: The card drains the conditional. How: This stores the drained value.
@@ -382,7 +382,7 @@ const cheRemFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, tasIdeStr : st
 
 
 
-const unpConFun = ( conRcdObj : ConRcdTyp ) : string => { const { _cardPrev : carPreObj, _chargePrev : chrPreObj, ...resConObj } = conRcdObj; return jsoStrFun( resConObj ); }; // What: Unsnapshotted Conditional Function. Why: Undo snapshots linger from earlier days and aren't part of what a check-off restores. How: This serializes a conditional without them.
+const unsConFun = ( conRcdObj : ConRcdTyp ) : string => { const { _cardPrev : carPreObj, _chargePrev : chrPreObj, ...resConObj } = conRcdObj; return jsoStrFun( resConObj ); }; // What: Unsnapshotted Conditional Function. Why: Undo snapshots linger from earlier days and aren't part of what a check-off restores. How: This serializes a conditional without them.
 
 
 
@@ -521,7 +521,7 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entIdeStr : st
 
 
 
-		if ( !aftConObj || jsoStrFun( aftConObj ) !== jsoStrFun( expRcdObj ) && !( neaEquFun( aftConObj.value, expRcdObj.value ) && unpConFun( { ...aftConObj, value : 0 } ) === unpConFun( { ...expRcdObj, value : 0 } ) ) ) issAddFun( `conditional ${ preConObj.name } is ${ jsoStrFun( aftConObj ) }, expected ${ jsoStrFun( expRcdObj ) }` ); // What: Conditional Compare Report. Why: The conditional must match, allowing float noise in its value. How: This compares whole, then without snapshots and value.
+		if ( !aftConObj || jsoStrFun( aftConObj ) !== jsoStrFun( expRcdObj ) && !( neaEquFun( aftConObj.value, expRcdObj.value ) && unsConFun( { ...aftConObj, value : 0 } ) === unsConFun( { ...expRcdObj, value : 0 } ) ) ) issAddFun( `conditional ${ preConObj.name } is ${ jsoStrFun( aftConObj ) }, expected ${ jsoStrFun( expRcdObj ) }` ); // What: Conditional Compare Report. Why: The conditional must match, allowing float noise in its value. How: This compares whole, then without snapshots and value.
 
 
 	}
@@ -648,7 +648,7 @@ const cheUndFun = ( preStaObj : StaAppTyp, undStaObj : StaAppTyp, entIdeStr : st
 
 	if ( jsoStrFun( undStaObj.items ) !== jsoStrFun( preStaObj.items ) ) issAddFun( 'items weren\'t restored' );                                                // What: Item Restore Check. Why: Every item returns to its earlier state. How: This compares them whole.
 	if ( jsoStrFun( undStaObj.pickers ) !== jsoStrFun( preStaObj.pickers ) ) issAddFun( 'pickers weren\'t restored' );                                          // What: Picker Restore Check. Why: The patch and period mark are undone. How: This compares them whole.
-	if ( undStaObj.conditionals.map( unpConFun ).join() !== preStaObj.conditionals.map( unpConFun ).join() ) issAddFun( 'conditionals weren\'t restored' );      // What: Conditional Restore Check. Why: Charges and card effects are undone. How: This compares them without undo snapshots.
+	if ( undStaObj.conditionals.map( unsConFun ).join() !== preStaObj.conditionals.map( unsConFun ).join() ) issAddFun( 'conditionals weren\'t restored' );      // What: Conditional Restore Check. Why: Charges and card effects are undone. How: This compares them without undo snapshots.
 	if ( jsoStrFun( undStaObj.conditionalLog ) !== jsoStrFun( preStaObj.conditionalLog ) ) issAddFun( 'conditional log wasn\'t restored' );                     // What: Conditional Log Restore Check. Why: The day's row is removed again. How: This compares the logs.
 	if ( undStaObj.pickLog.map( rowNorFun ).join() !== preStaObj.pickLog.map( rowNorFun ).join() ) issAddFun( 'pick log wasn\'t restored' );                    // What: Pick Log Restore Check. Why: The live row is undone again. How: This compares the logs, treating depletedEnd false as unset.
 

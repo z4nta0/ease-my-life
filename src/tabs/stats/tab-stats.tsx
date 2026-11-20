@@ -2908,7 +2908,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 							ariLabStr='Filter pickers by group'
 
-							onAllFun={ () => { // What: On All Function. Why: Returning to All must also reset the scope, since a narrowed scope may no longer be visible. How: This resets both staGroStr and scoValStr to 'all'.
+							onAllPilFun={ () => { // What: On All Pill Function. Why: Returning to All must also reset the scope, since a narrowed scope may no longer be visible. How: This resets both staGroStr and scoValStr to 'all'.
 
 
 								setStaGroStr( 'all' ); // What: Group Filter Reset. Why: The Group row should highlight All again. How: This writes 'all' into staGroStr.
@@ -2995,7 +2995,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 							ariLabStr='Filter pickers by type'
 
-							onAllFun={ () => { // What: On All Function. Why: Returning to All must also reset the scope, since a narrowed scope may no longer be visible. How: This resets both typFilStr and scoValStr to 'all'.
+							onAllPilFun={ () => { // What: On All Pill Function. Why: Returning to All must also reset the scope, since a narrowed scope may no longer be visible. How: This resets both typFilStr and scoValStr to 'all'.
 
 
 								setTypFilStr( 'all' ); // What: Type Filter Reset. Why: The Type row should highlight All again. How: This writes 'all' into typFilStr.
