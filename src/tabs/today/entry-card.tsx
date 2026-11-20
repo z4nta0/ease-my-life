@@ -103,7 +103,7 @@ function DisActCom ( { actNamStr, icoNamStr, labTexStr } : DacProTyp ) : React.J
 
 
 
-type LocProTyp = { ariSubStr : string, ediModBoo : boolean, entRecObj : TodRowTyp[ 'entRecObj' ], onGriDowFun : ( poiEveObj : React.PointerEvent< HTMLElement > ) => void, onTogDonFun : ( entRecObj : TodRowTyp[ 'entRecObj' ] ) => void }; // What: Lead-Control-Component Props Type. Why: A card's leading control drags it in Edit Mode and checks it off otherwise, naming what it marks. How: This types LeaConCom's props.
+type LocProTyp = { ariSubStr : string, ediModBoo : boolean, entRcdObj : TodRowTyp[ 'entRcdObj' ], onGriDowFun : ( poiEveObj : React.PointerEvent< HTMLElement > ) => void, onTogDonFun : ( entRcdObj : TodRowTyp[ 'entRcdObj' ] ) => void }; // What: Lead-Control-Component Props Type. Why: A card's leading control drags it in Edit Mode and checks it off otherwise, naming what it marks. How: This types LeaConCom's props.
 
 // #region LeaConCom
 
@@ -121,7 +121,7 @@ type LocProTyp = { ariSubStr : string, ediModBoo : boolean, entRecObj : TodRowTy
  * @param props.ariSubStr   - ARIA Subject String: What the check button
  *                            marks complete, in its accessible name.
  * @param props.ediModBoo   - Edit Mode Boolean: Whether Edit Mode is on.
- * @param props.entRecObj   - Entry Record Object: The row's own entry.
+ * @param props.entRcdObj   - Entry Record Object: The row's own entry.
  * @param props.onGriDowFun - On Grip Down Function: Called with the grip's
  *                            pointer down.
  * @param props.onTogDonFun - On Toggle Done Function: Called with the entry
@@ -131,12 +131,12 @@ type LocProTyp = { ariSubStr : string, ediModBoo : boolean, entRecObj : TodRowTy
  *
  * @example
  * ```tsx
- * LeaConCom({ ariSubStr, ediModBoo, entRecObj, ... }) // => <LeaConCom />
+ * LeaConCom({ ariSubStr, ediModBoo, entRcdObj, ... }) // => <LeaConCom />
  * ```
  *
 */
 
-function LeaConCom ( { ariSubStr, ediModBoo, entRecObj, onGriDowFun, onTogDonFun } : LocProTyp ) : React.JSX.Element {
+function LeaConCom ( { ariSubStr, ediModBoo, entRcdObj, onGriDowFun, onTogDonFun } : LocProTyp ) : React.JSX.Element {
 
 
 	return (
@@ -183,18 +183,18 @@ function LeaConCom ( { ariSubStr, ediModBoo, entRecObj, onGriDowFun, onTogDonFun
 
 					type='button'
 
-					aria-label={ `${ entRecObj.done ? 'Unmark' : 'Mark' } ${ ariSubStr } complete` }
-					aria-pressed={ !!entRecObj.done }
+					aria-label={ `${ entRcdObj.done ? 'Unmark' : 'Mark' } ${ ariSubStr } complete` }
+					aria-pressed={ !!entRcdObj.done }
 
 					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
 
 						cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The card's own row click handler would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-						onTogDonFun( entRecObj );    // What: Check Toggle Call. Why: This button toggles the row's own done state. How: This calls onTogDonFun with the row's own entry.
+						onTogDonFun( entRcdObj );    // What: Check Toggle Call. Why: This button toggles the row's own done state. How: This calls onTogDonFun with the row's own entry.
 
 
 					} }
-				>{ /* What: Check Button Element. Why: This is the actual done-toggle control for the row. How: This calls onTogDonFun, and shows a checkmark only once entRecObj.done is true. Its data-element-name-hook is read by help mode's Today catalog. */ }
+				>{ /* What: Check Button Element. Why: This is the actual done-toggle control for the row. How: This calls onTogDonFun, and shows a checkmark only once entRcdObj.done is true. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 					<span
@@ -203,7 +203,7 @@ function LeaConCom ( { ariSubStr, ediModBoo, entRecObj, onGriDowFun, onTogDonFun
 						aria-hidden='true'
 					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
 
-					{ entRecObj.done && ( // What: Done IcoSvgCom Check. Why: A completed card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the IcoSvgCom only while entRecObj.done is true.
+					{ entRcdObj.done && ( // What: Done IcoSvgCom Check. Why: A completed card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the IcoSvgCom only while entRcdObj.done is true.
 
 
 						<IcoSvgCom
@@ -211,7 +211,7 @@ function LeaConCom ( { ariSubStr, ediModBoo, entRecObj, onGriDowFun, onTogDonFun
 
 							icoNamStr='cheEle'
 							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-						/> // What: Icon SVG Component. Why: A completed card needs a checkmark glyph. How: This renders the 'cheEle' icon only while entRecObj.done is true.
+						/> // What: Icon SVG Component. Why: A completed card needs a checkmark glyph. How: This renders the 'cheEle' icon only while entRcdObj.done is true.
 
 
 					) }
@@ -302,7 +302,7 @@ function SkiButCom ( { entIdeStr, onSkiEntFun } : SbcProTyp ) : React.JSX.Elemen
 
 
 
-type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : string, ediModBoo : boolean, entRecObj : TodRowTyp[ 'entRecObj' ], isaEdiBoo : boolean, isaRmvBoo : boolean, isaRolBoo : boolean, jusCheStr : string | null, onGriDowFun : ( poiEveObj : React.PointerEvent< HTMLElement > ) => void, onPlaTutFun : ( touKinStr : string, touIdeStr : string ) => void, onRenIteFun : ( curNamStr : string ) => void, onRerEntFun : ( entRecObj : TodRowTyp[ 'entRecObj' ], picRecObj : TodRowTyp[ 'picRecObj' ] ) => void, onSkiEntFun : ( entIdeStr : string ) => void, onTogDonFun : ( entRecObj : TodRowTyp[ 'entRecObj' ] ) => void, onTogEdiFun : () => void, onUncTutFun : ( touIdeStr : string ) => void, picRecObj : TodRowTyp[ 'picRecObj' ], staAppObj : StaAppTyp }; // What: Entry-Card-Component Props Type. Why: An entry card renders one Today row, a pick, day-off, charging, or tutorial card, with its check, skip, reroll, rename, and drag actions. How: This types EntCarCom's props, its entry and picker taken from the grouped row they come from.
+type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : string, ediModBoo : boolean, entRcdObj : TodRowTyp[ 'entRcdObj' ], isaEdiBoo : boolean, isaRmvBoo : boolean, isaRolBoo : boolean, jusCheStr : string | null, onGriDowFun : ( poiEveObj : React.PointerEvent< HTMLElement > ) => void, onPlaTutFun : ( touKinStr : string, touIdeStr : string ) => void, onRenIteFun : ( curNamStr : string ) => void, onRerEntFun : ( entRcdObj : TodRowTyp[ 'entRcdObj' ], picRcdObj : TodRowTyp[ 'picRcdObj' ] ) => void, onSkiEntFun : ( entIdeStr : string ) => void, onTogDonFun : ( entRcdObj : TodRowTyp[ 'entRcdObj' ] ) => void, onTogEdiFun : () => void, onUncTutFun : ( touIdeStr : string ) => void, picRcdObj : TodRowTyp[ 'picRcdObj' ], staAppObj : StaAppTyp }; // What: Entry-Card-Component Props Type. Why: An entry card renders one Today row, a pick, day-off, charging, or tutorial card, with its check, skip, reroll, rename, and drag actions. How: This types EntCarCom's props, its entry and picker taken from the grouped row they come from.
 
 // #region EntCarCom
 
@@ -315,7 +315,7 @@ type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : stri
  * tutorial), a day-off card (a triggered conditional suppressing its
  * dependent pickers), or a charging card (an ease-up picker with
  * nothing charged to its own threshold today). Which of the four
- * renders is decided entirely by entRecObj.kind, checked in that order.
+ * renders is decided entirely by entRcdObj.kind, checked in that order.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -328,7 +328,7 @@ type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : stri
  *                            or undefined when this row isn't being edited.
  * @param props.ediModBoo   - Edit Mode Boolean: Whether Edit Mode is currently
  *                            on.
- * @param props.entRecObj   - Entry Record Object: The entry (or synthetic
+ * @param props.entRcdObj   - Entry Record Object: The entry (or synthetic
  *                            tutorial/day-off/charging row) this card renders.
  * @param props.isaEdiBoo   - Is-An Editing Boolean: Whether this row's own
  *                            inline editor is open.
@@ -354,13 +354,13 @@ type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : stri
  *                            inline editor.
  * @param props.onUncTutFun - On Uncheck Tutorial Function: Un-resolves this
  *                            row's own mini-tour (tutorial rows only).
- * @param props.picRecObj   - Picker Record Object: The entry's own resolved
+ * @param props.picRcdObj   - Picker Record Object: The entry's own resolved
  *                            picker (or a picker-shaped stand-in for a day-off
  *                            row).
  * @param props.staAppObj   - State App Object: The shared app state.
  *
  * @returns Exactly one of the tutorial/day-off/charging/real-pick
- * article elements, chosen by entRecObj.kind, or null when the row's own
+ * article elements, chosen by entRcdObj.kind, or null when the row's own
  * item can no longer be found at all.
  *
  * @example
@@ -370,7 +370,7 @@ type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : stri
  *
 */
 
-function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, isaEdiBoo, isaRmvBoo, isaRolBoo, jusCheStr, onGriDowFun, onPlaTutFun, onRenIteFun, onRerEntFun, onSkiEntFun, onTogDonFun, onTogEdiFun, onUncTutFun, picRecObj, staAppObj } : EccProTyp ) : React.JSX.Element | null {
+function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, isaEdiBoo, isaRmvBoo, isaRolBoo, jusCheStr, onGriDowFun, onPlaTutFun, onRenIteFun, onRerEntFun, onSkiEntFun, onTogDonFun, onTogEdiFun, onUncTutFun, picRcdObj, staAppObj } : EccProTyp ) : React.JSX.Element | null {
 
 
 	const disTipStr = 'This action is disabled for this type of item.'; // What: Disabled Tip String. Why: Every disabled action icon on a day-off or charging row shares the exact same explanation. How: This is passed as each of those rows' InfTipCom labels below.
@@ -388,17 +388,17 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 
-		onTogDonFun( entRecObj ); // What: Check Toggle Call. Why: A plain row click toggles the row's own done state. How: This calls onTogDonFun with the row's own entry.
+		onTogDonFun( entRcdObj ); // What: Check Toggle Call. Why: A plain row click toggles the row's own done state. How: This calls onTogDonFun with the row's own entry.
 
 
 	};
 
 
 
-	if ( entRecObj.kind === 'tutorial' ) { // What: Tutorial Branch. Why: A mini-tour launcher card renders entirely differently from a real pick, with no item/reroll/skip of its own. How: This returns a dedicated article and skips every other branch below.
+	if ( entRcdObj.kind === 'tutorial' ) { // What: Tutorial Branch. Why: A mini-tour launcher card renders entirely differently from a real pick, with no item/reroll/skip of its own. How: This returns a dedicated article and skips every other branch below.
 
 
-		const tutDonBoo = entRecObj.done;                                         // What: Tutorial Done Boolean. Why: A resolved tutorial card renders/behaves differently from a pending one. How: This reads entRecObj's own done flag.
+		const tutDonBoo = entRcdObj.done;                                         // What: Tutorial Done Boolean. Why: A resolved tutorial card renders/behaves differently from a pending one. How: This reads entRcdObj's own done flag.
 		const neeAttBoo = !tutDonBoo && ONB_CHE_OBJ.reaPicFun( staAppObj ) === 0; // What: Needs Attention Boolean. Why: Only picker cards participate in the "at least one real picker" gate that blocks the closing Generate card, flagged with a visible cue rather than requiring a tap to discover. How: This is true only while this card is unresolved and no real picker exists yet.
 
 
@@ -409,9 +409,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 
-			if ( tutDonBoo ) onUncTutFun( picRecObj.id ); // What: Done Dispatch Branch. Why: A finished tutorial card's row click un-resolves it. How: This calls onUncTutFun with the picker's own id.
+			if ( tutDonBoo ) onUncTutFun( picRcdObj.id ); // What: Done Dispatch Branch. Why: A finished tutorial card's row click un-resolves it. How: This calls onUncTutFun with the picker's own id.
 
-			else onPlaTutFun( 'picker', picRecObj.id ); // What: Not-Done Dispatch Branch. Why: An unfinished tutorial card's row click starts its mini-tour. How: This calls onPlaTutFun with the picker kind and id.
+			else onPlaTutFun( 'picker', picRcdObj.id ); // What: Not-Done Dispatch Branch. Why: An unfinished tutorial card's row click starts its mini-tour. How: This calls onPlaTutFun with the picker kind and id.
 
 
 		};
@@ -442,14 +442,14 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 						type='button'
 
-						aria-label={ `Undo ${ picRecObj.name } tutorial` }
+						aria-label={ `Undo ${ picRcdObj.name } tutorial` }
 						aria-pressed='true'
 
 						onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
 
 							cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-							onUncTutFun( picRecObj.id ); // What: Uncheck Tutorial Call. Why: This card's own tutorial should go back to unresolved. How: This calls onUncTutFun with the card's own id.
+							onUncTutFun( picRcdObj.id ); // What: Uncheck Tutorial Call. Why: This card's own tutorial should go back to unresolved. How: This calls onUncTutFun with the card's own id.
 
 
 						} }
@@ -483,13 +483,13 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 						type='button'
 
-						aria-label={ `Start the ${ picRecObj.name } tutorial` }
+						aria-label={ `Start the ${ picRcdObj.name } tutorial` }
 
 						onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
 
 							cliEveObj.stopPropagation();           // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-							onPlaTutFun( 'picker', picRecObj.id ); // What: Play Tutorial Call. Why: This card's own tutorial should start playing. How: This calls onPlaTutFun with the tutorial kind and id.
+							onPlaTutFun( 'picker', picRcdObj.id ); // What: Play Tutorial Call. Why: This card's own tutorial should start playing. How: This calls onPlaTutFun with the tutorial kind and id.
 
 
 						} }
@@ -514,11 +514,11 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 					<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: The picker's own name and its optional time estimate sit together. How: This wraps the picker-name span and, when one exists, the time estimate. */ }
 
 
-						<span>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which sample picker this card offers. How: This renders picRecObj's own name. */ }
+						<span>{ picRcdObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which sample picker this card offers. How: This renders picRcdObj's own name. */ }
 
 
 
-						{ ONB_PCT_OBJ[ picRecObj.id ] && ( // What: Time Estimate Check. Why: Not every sample picker card has a manually-timed estimate. How: This renders the dot/time pair only while ONB_PCT_OBJ has an entry for picRecObj's own id.
+						{ ONB_PCT_OBJ[ picRcdObj.id ] && ( // What: Time Estimate Check. Why: Not every sample picker card has a manually-timed estimate. How: This renders the dot/time pair only while ONB_PCT_OBJ has an entry for picRcdObj's own id.
 
 
 							<React.Fragment>{ /* What: Time Estimate Fragment Element. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
@@ -526,7 +526,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 								<span className={ cssModObj.metDotSpa }>&middot;</span>{ /* What: Meta Dot Span Element. Why: The picker name and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
 
-								<span>{ ONB_PCT_OBJ[ picRecObj.id ] }</span>{ /* What: Meta Time Span Element. Why: A manually-timed estimate helps the user judge how long this tutorial takes. How: This renders the looked-up estimate for picRecObj's own id. */ }
+								<span>{ ONB_PCT_OBJ[ picRcdObj.id ] }</span>{ /* What: Meta Time Span Element. Why: A manually-timed estimate helps the user judge how long this tutorial takes. How: This renders the looked-up estimate for picRcdObj's own id. */ }
 
 
 							</React.Fragment>
@@ -537,7 +537,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 					</div>
 
-					<div className={ cssModObj.carNamDiv }>Set up a { picRecObj.name } picker</div>{ /* What: Card Name Div Element. Why: This is the card's own call-to-action text. How: This renders the fixed phrasing with picRecObj's own name interpolated. */ }
+					<div className={ cssModObj.carNamDiv }>Set up a { picRcdObj.name } picker</div>{ /* What: Card Name Div Element. Why: This is the card's own call-to-action text. How: This renders the fixed phrasing with picRcdObj's own name interpolated. */ }
 
 
 				</div>
@@ -563,7 +563,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 								cliEveObj.stopPropagation();                                   // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-								actStoObj.setCarFun( picRecObj.id, { status : 'cancelled' } ); // What: Cancel Tutorial Call. Why: The user is dismissing this tutorial card entirely. How: This marks the checklist entry cancelled via actStoObj.setCarFun.
+								actStoObj.setCarFun( picRcdObj.id, { status : 'cancelled' } ); // What: Cancel Tutorial Call. Why: The user is dismissing this tutorial card entirely. How: This marks the checklist entry cancelled via actStoObj.setCarFun.
 
 
 							} }
@@ -595,11 +595,11 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 
-	if ( entRecObj.kind === 'dayoff' ) { // What: Day-Off Branch. Why: A triggered conditional's own day-off card renders like a completable row, but with no item, no re-roll, and no editable name. How: This returns a dedicated article and skips every other branch below.
+	if ( entRcdObj.kind === 'dayoff' ) { // What: Day-Off Branch. Why: A triggered conditional's own day-off card renders like a completable row, but with no item, no re-roll, and no editable name. How: This returns a dedicated article and skips every other branch below.
 
 
-		const daoFreBoo = jusCheStr === entRecObj.eid && entRecObj.done;                                                         // What: Day-Off Fresh Boolean. Why: This row's own brief "fresh" cue only plays right after IT specifically was just checked done. How: This compares jusCheStr against entRecObj's own eid, and requires done to already be true.
-		const daoTitStr = entRecObj.pickerName ? `${ entRecObj.pickerName }, ${ entRecObj.condName || 'Day off' }` : 'Day off'; // What: Day-Off Title String. Why: The truncatable title's tooltip and its screen-reader name need the full "{picker}, {conditional}" text even when the visible row itself wraps or truncates it, joined by a comma rather than the visible middle dot, which a screen reader can read aloud as a symbol. How: This combines entRecObj's own pickerName/condName, falling back to a plain "Day off" when no picker name is recorded.
+		const daoFreBoo = jusCheStr === entRcdObj.eid && entRcdObj.done;                                                         // What: Day-Off Fresh Boolean. Why: This row's own brief "fresh" cue only plays right after IT specifically was just checked done. How: This compares jusCheStr against entRcdObj's own eid, and requires done to already be true.
+		const daoTitStr = entRcdObj.pickerName ? `${ entRcdObj.pickerName }, ${ entRcdObj.condName || 'Day off' }` : 'Day off'; // What: Day-Off Title String. Why: The truncatable title's tooltip and its screen-reader name need the full "{picker}, {conditional}" text even when the visible row itself wraps or truncates it, joined by a comma rather than the visible middle dot, which a screen reader can read aloud as a symbol. How: This combines entRcdObj's own pickerName/condName, falling back to a plain "Day off" when no picker name is recorded.
 
 
 
@@ -609,7 +609,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 			<article
 				className={` ${ cssModObj.todCarArt }   ${ cssModObj.todCarArtDayoff }   ${ daoFreBoo ? cssModObj.todCarArtFresh : '' }   ${ isaRmvBoo ? cssModObj.todCarArtRemoving : '' } `}
 
-				data-card-done-active={ entRecObj.done || undefined } // What: Card Done Active Attribute. Why: A done card is shaded, its checkbox filled, and its name struck through by its module. How: This sets the presence-only attribute while entRecObj.done is true.
+				data-card-done-active={ entRcdObj.done || undefined } // What: Card Done Active Attribute. Why: A done card is shaded, its checkbox filled, and its name struck through by its module. How: This sets the presence-only attribute while entRcdObj.done is true.
 				data-card-reorder-active={ ediModBoo || undefined } // What: Card Reorder Active Attribute. Why: In Edit Mode the card turns into a dashed, draggable outline. How: This sets the presence-only attribute while ediModBoo is true.
 				data-element-name-hook='todCarArt daoCarArt'
 
@@ -621,7 +621,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 				<LeaConCom
 					ariSubStr='day off'
 					ediModBoo={ ediModBoo }
-					entRecObj={ entRecObj }
+					entRcdObj={ entRcdObj }
 
 					onGriDowFun={ onGriDowFun }
 					onTogDonFun={ onTogDonFun }
@@ -643,7 +643,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 						>{ /* What: Info Tip Component. Why: A visually-truncated title still needs its own full text reachable on hover/tap. How: This wraps the visible title text, only ever showing its own tooltip when the text is actually truncated (trnOnlBoo). */ }
 
 
-							{ entRecObj.pickerName ? <>{ entRecObj.pickerName } &middot; <strong className={ cssModObj.daoConStr }>{ entRecObj.condName || 'Day off' }</strong></> : 'Day off' }{ /* What: Day-Off Title Expression. Why: The title names both the suppressed picker and its conditional when the entry carries them. How: This renders the picker name and bold conditional name, or a plain "Day off". */ }
+							{ entRcdObj.pickerName ? <>{ entRcdObj.pickerName } &middot; <strong className={ cssModObj.daoConStr }>{ entRcdObj.condName || 'Day off' }</strong></> : 'Day off' }{ /* What: Day-Off Title Expression. Why: The title names both the suppressed picker and its conditional when the entry carries them. How: This renders the picker name and bold conditional name, or a plain "Day off". */ }
 
 
 						</InfTipCom>
@@ -651,7 +651,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 					</div>
 
-					<div className={ cssModObj.carNamDiv }>{ entRecObj.cardText || 'Enjoy your day off' }</div>{ /* What: Card Name Div Element. Why: This is the day-off card's own main display text. How: This renders entRecObj's own cardText, falling back to a fixed friendly phrase. */ }
+					<div className={ cssModObj.carNamDiv }>{ entRcdObj.cardText || 'Enjoy your day off' }</div>{ /* What: Card Name Div Element. Why: This is the day-off card's own main display text. How: This renders entRcdObj's own cardText, falling back to a fixed friendly phrase. */ }
 
 
 				</div>
@@ -677,10 +677,10 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 						<SkiButCom
-							entIdeStr={ entRecObj.eid }
+							entIdeStr={ entRcdObj.eid }
 
 							onSkiEntFun={ onSkiEntFun }
-						/>{ /* What: Skip Button Component. Why: Skip is the one action that DOES still apply to a day-off row. How: This calls onSkiEntFun with entRecObj's own eid. */ }
+						/>{ /* What: Skip Button Component. Why: Skip is the one action that DOES still apply to a day-off row. How: This calls onSkiEntFun with entRcdObj's own eid. */ }
 
 
 
@@ -708,10 +708,10 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 
-	if ( entRecObj.kind === 'charging' ) { // What: Charging Branch. Why: An ease-up picker with nothing charged to its own threshold today still needs a completable placeholder row that applies the day's drift once checked. How: This returns a dedicated article and skips the real-pick branch below.
+	if ( entRcdObj.kind === 'charging' ) { // What: Charging Branch. Why: An ease-up picker with nothing charged to its own threshold today still needs a completable placeholder row that applies the day's drift once checked. How: This returns a dedicated article and skips the real-pick branch below.
 
 
-		const chrFreBoo = jusCheStr === entRecObj.eid && entRecObj.done; // What: Charging Fresh Boolean. Why: This row's own brief "fresh" cue only plays right after IT specifically was just checked done. How: This compares jusCheStr against entRecObj's own eid, and requires done to already be true.
+		const chrFreBoo = jusCheStr === entRcdObj.eid && entRcdObj.done; // What: Charging Fresh Boolean. Why: This row's own brief "fresh" cue only plays right after IT specifically was just checked done. How: This compares jusCheStr against entRcdObj's own eid, and requires done to already be true.
 
 
 
@@ -721,7 +721,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 			<article
 				className={` ${ cssModObj.todCarArt }   ${ cssModObj.todCarArtCharging }   ${ chrFreBoo ? cssModObj.todCarArtFresh : '' }   ${ isaRmvBoo ? cssModObj.todCarArtRemoving : '' } `}
 
-				data-card-done-active={ entRecObj.done || undefined } // What: Card Done Active Attribute. Why: A done card is shaded, its checkbox filled, and its name struck through by its module. How: This sets the presence-only attribute while entRecObj.done is true.
+				data-card-done-active={ entRcdObj.done || undefined } // What: Card Done Active Attribute. Why: A done card is shaded, its checkbox filled, and its name struck through by its module. How: This sets the presence-only attribute while entRcdObj.done is true.
 				data-card-reorder-active={ ediModBoo || undefined } // What: Card Reorder Active Attribute. Why: In Edit Mode the card turns into a dashed, draggable outline. How: This sets the presence-only attribute while ediModBoo is true.
 				data-element-name-hook='todCarArt chrCarArt'
 
@@ -731,9 +731,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 				<LeaConCom
-					ariSubStr={ `${ picRecObj.name } charging card` }
+					ariSubStr={ `${ picRcdObj.name } charging card` }
 					ediModBoo={ ediModBoo }
-					entRecObj={ entRecObj }
+					entRcdObj={ entRcdObj }
 
 					onGriDowFun={ onGriDowFun }
 					onTogDonFun={ onTogDonFun }
@@ -747,7 +747,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 					<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot, matching a real card's own layout. How: This wraps the picker-name span below. */ }
 
 
-						<span>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker this charging card belongs to. How: This renders picRecObj's own name. */ }
+						<span>{ picRcdObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker this charging card belongs to. How: This renders picRcdObj's own name. */ }
 
 
 					</div>
@@ -809,14 +809,14 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 
-	const curIteObj = staAppObj.items.find( ( pooIteObj ) => pooIteObj.id === entRecObj.itemId ); // What: Current Item Object. Why: A real pick row needs its own live item resolved before anything else in this branch can render. How: This finds the item matching entRecObj's own itemId.
+	const curIteObj = staAppObj.items.find( ( pooIteObj ) => pooIteObj.id === entRcdObj.itemId ); // What: Current Item Object. Why: A real pick row needs its own live item resolved before anything else in this branch can render. How: This finds the item matching entRcdObj's own itemId.
 
 
 	if ( !curIteObj ) return null; // What: Missing Item Guard. Why: An item deleted out from under a still-listed entry has nothing left to render. How: This returns null early when curIteObj cannot be found at all.
 
 
 
-	const isaFreBoo = jusCheStr === entRecObj.eid && entRecObj.done; // What: Is-A Fresh Boolean. Why: This row's own brief "fresh" cue only plays right after IT specifically was just checked done. How: This compares jusCheStr against entRecObj's own eid, and requires done to already be true.
+	const isaFreBoo = jusCheStr === entRcdObj.eid && entRcdObj.done; // What: Is-A Fresh Boolean. Why: This row's own brief "fresh" cue only plays right after IT specifically was just checked done. How: This compares jusCheStr against entRcdObj's own eid, and requires done to already be true.
 
 
 
@@ -836,11 +836,11 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 	 *
 	*/
 
-	const rerPooArr = staAppObj.items.filter( ( pooIteObj ) => pooIteObj.pickerId === picRecObj.id && !pooIteObj.vacation ); // What: Reroll Pool Array. Why: See the doc comment just above. How: This filters staAppObj.items down to this picker's own active items.
+	const rerPooArr = staAppObj.items.filter( ( pooIteObj ) => pooIteObj.pickerId === picRcdObj.id && !pooIteObj.vacation ); // What: Reroll Pool Array. Why: See the doc comment just above. How: This filters staAppObj.items down to this picker's own active items.
 
 
-	const eliCouNum = picRecObj.mode === 'ease-up' // What: Eligible Count Number. Why: This is the actual number of candidates re-roll could land on. How: This counts only threshold-eligible items for ease-up, or the whole active pool for every other mode.
-		? rerPooArr.filter( ( pooIteObj ) => PIC_NAM_OBJ.easEliFun( pooIteObj, picRecObj.threshold! ) ).length // What: Ease-Up Count Branch. Why: Ease-up only re-rolls between items charged to the threshold. How: This counts rerPooArr's own eligible items. // What: Non-Null Note. Why: Only a real ease-up picker reaches this branch, and every real picker has a threshold. How: The ! tells TypeScript the threshold is set.
+	const eliCouNum = picRcdObj.mode === 'ease-up' // What: Eligible Count Number. Why: This is the actual number of candidates re-roll could land on. How: This counts only threshold-eligible items for ease-up, or the whole active pool for every other mode.
+		? rerPooArr.filter( ( pooIteObj ) => PIC_NAM_OBJ.easEliFun( pooIteObj, picRcdObj.threshold! ) ).length // What: Ease-Up Count Branch. Why: Ease-up only re-rolls between items charged to the threshold. How: This counts rerPooArr's own eligible items. // What: Non-Null Note. Why: Only a real ease-up picker reaches this branch, and every real picker has a threshold. How: The ! tells TypeScript the threshold is set.
 		: rerPooArr.length;                                                                                    // What: Active Pool Count Branch. Why: Every other mode can land on any active item. How: This counts the whole rerPooArr.
 
 	// #endregion Reroll Eligibility
@@ -864,14 +864,14 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 	 *
 	*/
 
-	const entDonBoo = !!entRecObj.done;             // What: Entry Done Boolean. Why: See the doc comment just above. How: This reads entRecObj's own done flag.
+	const entDonBoo = !!entRcdObj.done;             // What: Entry Done Boolean. Why: See the doc comment just above. How: This reads entRcdObj's own done flag.
 	const canRerBoo = eliCouNum >= 2 && !entDonBoo; // What: Can Reroll Boolean. Why: Re-roll is only ever a live control when both enough candidates exist AND the row is not already completed. How: This combines eliCouNum's own floor with the negation of entDonBoo.
 
 	const donRerStr = 'Item is completed and cannot be rolled away. If you want another item added, use the Pickers tab to manually push another item here.'; // What: Done Reroll String. Why: A completed row's own disabled re-roll needs its own specific explanation. How: This is passed as the InfTipCom's own label when entDonBoo blocks re-roll.
 	const donSkiStr = 'Item is completed and cannot be skipped. If you want to remove this item, uncheck it first.';                                          // What: Done Skip String. Why: A completed row's own disabled skip needs its own specific explanation. How: This is passed as the InfTipCom's own label when entDonBoo blocks skip.
 
 
-	const rerTipStr = picRecObj.mode === 'ease-up' // What: Reroll Tip String. Why: A not-yet-completed row with too few candidates still needs an explanation, phrased differently per mode. How: This picks the ease-up-specific wording or the general "only one active item" wording.
+	const rerTipStr = picRcdObj.mode === 'ease-up' // What: Reroll Tip String. Why: A not-yet-completed row with too few candidates still needs an explanation, phrased differently per mode. How: This picks the ease-up-specific wording or the general "only one active item" wording.
 		? 'Only one item is charged and ready, so there’s nothing to re-roll to. Another item becomes available once it reaches full charge.'         // What: Ease-Up Tip Branch. Why: Ease-up's candidates are only the fully charged items. How: This explains waiting for another item to charge.
 		: 'This picker has only one active item, so there’s nothing to re-roll to. Add or activate another item for this picker to enable re-rolls.'; // What: Active Pool Tip Branch. Why: Every other mode's candidates are its active items. How: This explains adding or activating another item.
 
@@ -896,7 +896,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 
-		onTogDonFun( entRecObj ); // What: Check Toggle Call. Why: A plain row click toggles the row's own done state. How: This calls onTogDonFun with the row's own entry.
+		onTogDonFun( entRcdObj ); // What: Check Toggle Call. Why: A plain row click toggles the row's own done state. How: This calls onTogDonFun with the row's own entry.
 
 
 	};
@@ -909,7 +909,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 		<article
 			className={` ${ cssModObj.todCarArt }   ${ isaFreBoo ? cssModObj.todCarArtFresh : '' }   ${ isaRmvBoo ? cssModObj.todCarArtRemoving : '' }   ${ isaRolBoo ? cssModObj.todCarArtRolling : '' } `}
 
-			data-card-done-active={ entRecObj.done || undefined } // What: Card Done Active Attribute. Why: A done card is shaded, its checkbox filled, and its name struck through by its module. How: This sets the presence-only attribute while entRecObj.done is true.
+			data-card-done-active={ entRcdObj.done || undefined } // What: Card Done Active Attribute. Why: A done card is shaded, its checkbox filled, and its name struck through by its module. How: This sets the presence-only attribute while entRcdObj.done is true.
 			data-card-edit-active={ isaEdiBoo || undefined } // What: Card Edit Active Attribute. Why: While its editor is open, the card stops looking clickable. How: This sets the presence-only attribute while isaEdiBoo is true.
 			data-card-reorder-active={ ediModBoo || undefined } // What: Card Reorder Active Attribute. Why: In Edit Mode the card turns into a dashed, draggable outline. How: This sets the presence-only attribute while ediModBoo is true.
 			data-element-name-hook='todCarArt'
@@ -922,7 +922,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 			<LeaConCom
 				ariSubStr={ curIteObj.name }
 				ediModBoo={ ediModBoo }
-				entRecObj={ entRecObj }
+				entRcdObj={ entRcdObj }
 
 				onGriDowFun={ onGriDowFun }
 				onTogDonFun={ onTogDonFun }
@@ -936,7 +936,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 				<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot. How: This wraps the picker-name span below. */ }
 
 
-					<span>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker produced this item. How: This renders picRecObj's own name. */ }
+					<span>{ picRcdObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker produced this item. How: This renders picRcdObj's own name. */ }
 
 
 				</div>
@@ -999,7 +999,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 								cliEveObj.stopPropagation();         // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-								onRerEntFun( entRecObj, picRecObj ); // What: Re-Roll Call. Why: This button swaps the row to a different item. How: This calls onRerEntFun with the row's own entry and picker.
+								onRerEntFun( entRcdObj, picRcdObj ); // What: Re-Roll Call. Why: This button swaps the row to a different item. How: This calls onRerEntFun with the row's own entry and picker.
 
 
 							} }
@@ -1048,10 +1048,10 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 						<SkiButCom
-							entIdeStr={ entRecObj.eid }
+							entIdeStr={ entRcdObj.eid }
 
 							onSkiEntFun={ onSkiEntFun }
-						/> // What: Skip Button Component. Why: This is the actual working skip control, available whenever the row is not yet completed. How: This calls onSkiEntFun with entRecObj's own eid.
+						/> // What: Skip Button Component. Why: This is the actual working skip control, available whenever the row is not yet completed. How: This calls onSkiEntFun with entRcdObj's own eid.
 
 
 					) }

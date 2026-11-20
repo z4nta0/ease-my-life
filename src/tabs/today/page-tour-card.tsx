@@ -38,7 +38,7 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
 
 // #region Components
 
-type PrcProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, onPlaTutFun : ( touKinStr : string, touIdeStr : string ) => void, onUncTutFun : ( touIdeStr : string ) => void, staAppObj : StaAppTyp, touRecObj : { ideStr : string, labStr : string, timStr : string } }; // What: Page-Tour-Component Props Type. Why: A page tour's launcher card starts or un-resolves its tour and reads whether it's done. How: This types PagTouCom's props, named Pto since Ptc, Poc, and Puc already belong to other components.
+type PrcProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, onPlaTutFun : ( touKinStr : string, touIdeStr : string ) => void, onUncTutFun : ( touIdeStr : string ) => void, staAppObj : StaAppTyp, touRcdObj : { ideStr : string, labStr : string, timStr : string } }; // What: Page-Tour-Component Props Type. Why: A page tour's launcher card starts or un-resolves its tour and reads whether it's done. How: This types PagTouCom's props, named Pto since Ptc, Poc, and Puc already belong to other components.
 
 // #region PagTouCom
 
@@ -62,7 +62,7 @@ type PrcProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, onPlaTutFun : ( t
  * @param props.onUncTutFun - On Uncheck Tutorial Function: Un-resolves this
  *                            page tour's own checklist entry.
  * @param props.staAppObj   - State App Object: The shared app state.
- * @param props.touRecObj   - Tour Record Object: The page-tour manifest entry
+ * @param props.touRcdObj   - Tour Record Object: The page-tour manifest entry
  *                            this card offers.
  *
  * @returns This card's own article element.
@@ -74,10 +74,10 @@ type PrcProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, onPlaTutFun : ( t
  *
 */
 
-function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj, touRecObj } : PrcProTyp ) : React.JSX.Element {
+function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj, touRcdObj } : PrcProTyp ) : React.JSX.Element {
 
 
-	const tutDonBoo = !!ONB_CHE_OBJ.entLooFun( staAppObj, touRecObj.ideStr ); // What: Tutorial Done Boolean. Why: A resolved page-tour card renders/behaves differently from a pending one. How: This checks ONB_CHE_OBJ for an existing entry against touRecObj's own id.
+	const tutDonBoo = !!ONB_CHE_OBJ.entLooFun( staAppObj, touRcdObj.ideStr ); // What: Tutorial Done Boolean. Why: A resolved page-tour card renders/behaves differently from a pending one. How: This checks ONB_CHE_OBJ for an existing entry against touRcdObj's own id.
 
 
 	const onRowCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this tour. How: This checks for a click inside the actions area first, then dispatches to onUncTutFun or onPlaTutFun based on tutDonBoo.
@@ -87,9 +87,9 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 
-		if ( tutDonBoo ) onUncTutFun( touRecObj.ideStr ); // What: Done Dispatch Branch. Why: A finished page-tour card's row click un-resolves it. How: This calls onUncTutFun with the tour's own id.
+		if ( tutDonBoo ) onUncTutFun( touRcdObj.ideStr ); // What: Done Dispatch Branch. Why: A finished page-tour card's row click un-resolves it. How: This calls onUncTutFun with the tour's own id.
 
-		else onPlaTutFun( 'pageTour', touRecObj.ideStr ); // What: Not-Done Dispatch Branch. Why: An unfinished page-tour card's row click starts its tour. How: This calls onPlaTutFun with the pageTour kind and id.
+		else onPlaTutFun( 'pageTour', touRcdObj.ideStr ); // What: Not-Done Dispatch Branch. Why: An unfinished page-tour card's row click starts its tour. How: This calls onPlaTutFun with the pageTour kind and id.
 
 
 	};
@@ -119,14 +119,14 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 					type='button'
 
-					aria-label={ `Undo ${ touRecObj.labStr } tour` }
+					aria-label={ `Undo ${ touRcdObj.labStr } tour` }
 					aria-pressed='true'
 
 					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
 
 						cliEveObj.stopPropagation();     // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-						onUncTutFun( touRecObj.ideStr ); // What: Uncheck Tutorial Call. Why: This card's own tutorial should go back to unresolved. How: This calls onUncTutFun with the card's own id.
+						onUncTutFun( touRcdObj.ideStr ); // What: Uncheck Tutorial Call. Why: This card's own tutorial should go back to unresolved. How: This calls onUncTutFun with the card's own id.
 
 
 					} }
@@ -160,13 +160,13 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 					type='button'
 
-					aria-label={ `Start the ${ touRecObj.labStr } tour` }
+					aria-label={ `Start the ${ touRcdObj.labStr } tour` }
 
 					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
 
 						cliEveObj.stopPropagation();                 // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-						onPlaTutFun( 'pageTour', touRecObj.ideStr ); // What: Play Tutorial Call. Why: This card's own tutorial should start playing. How: This calls onPlaTutFun with the tutorial kind and id.
+						onPlaTutFun( 'pageTour', touRcdObj.ideStr ); // What: Play Tutorial Call. Why: This card's own tutorial should start playing. How: This calls onPlaTutFun with the tutorial kind and id.
 
 
 					} }
@@ -191,11 +191,11 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 				<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: The tour's own label and its optional time estimate sit together. How: This wraps the label span and, when one exists, the time estimate. */ }
 
 
-					<span>{ touRecObj.labStr } Tour</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page tour this card offers. How: This renders touRecObj's own label plus the literal word "Tour". */ }
+					<span>{ touRcdObj.labStr } Tour</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page tour this card offers. How: This renders touRcdObj's own label plus the literal word "Tour". */ }
 
 
 
-					{ touRecObj.timStr && ( // What: Time Estimate Check. Why: Not every page-tour card has a manually-timed estimate. How: This renders the dot/time pair only while touRecObj's own time is set.
+					{ touRcdObj.timStr && ( // What: Time Estimate Check. Why: Not every page-tour card has a manually-timed estimate. How: This renders the dot/time pair only while touRcdObj's own time is set.
 
 
 						<React.Fragment>{ /* What: Time Estimate Fragment Element. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
@@ -203,7 +203,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 							<span className={ cssModObj.metDotSpa }>&middot;</span>{ /* What: Meta Dot Span Element. Why: The label and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
 
-							<span>{ touRecObj.timStr }</span>{ /* What: Meta Time Span Element. Why: A time estimate helps the user judge how long this tour takes. How: This renders touRecObj's own time. */ }
+							<span>{ touRcdObj.timStr }</span>{ /* What: Meta Time Span Element. Why: A time estimate helps the user judge how long this tour takes. How: This renders touRcdObj's own time. */ }
 
 
 						</React.Fragment>
@@ -214,7 +214,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 				</div>
 
-				<div className={ cssModObj.carNamDiv }>Take a quick tour of the { touRecObj.labStr } page</div>{ /* What: Card Name Div Element. Why: This is the card's own call-to-action text. How: This renders the fixed phrasing with touRecObj's own label interpolated. */ }
+				<div className={ cssModObj.carNamDiv }>Take a quick tour of the { touRcdObj.labStr } page</div>{ /* What: Card Name Div Element. Why: This is the card's own call-to-action text. How: This renders the fixed phrasing with touRcdObj's own label interpolated. */ }
 
 
 			</div>
@@ -240,7 +240,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 							cliEveObj.stopPropagation();                                       // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-							actStoObj.setCarFun( touRecObj.ideStr, { status : 'cancelled' } ); // What: Cancel Tutorial Call. Why: The user is dismissing this tutorial card entirely. How: This marks the checklist entry cancelled via actStoObj.setCarFun.
+							actStoObj.setCarFun( touRcdObj.ideStr, { status : 'cancelled' } ); // What: Cancel Tutorial Call. Why: The user is dismissing this tutorial card entirely. How: This marks the checklist entry cancelled via actStoObj.setCarFun.
 
 
 						} }

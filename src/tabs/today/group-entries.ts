@@ -8,9 +8,9 @@ import { ONB_SPI_ARR } from '../../state/onboarding-seed-data.ts'; // What: Onbo
 
 
 import type { EntKinTyp } from '../../core/data-model.ts'; // What: Entry Kind Type. Why: A row's entry kind extends the saved kinds with a tutorial launcher. How: This types TodRowTyp's kind.
-import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Record Type. Why: Every row carries its picker or a stand-in for one. How: This types TodRowTyp's picRecObj.
+import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Record Type. Why: Every row carries its picker or a stand-in for one. How: This types TodRowTyp's picRcdObj.
 import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: Grouping reads today's entries, the pickers, and the saved orders. How: This types groEntFun's staAppObj.
-import type { TodEntTyp } from '../../core/data-model.ts'; // What: Today Entry Type. Why: Every row carries an entry or a stand-in for one. How: This types TodRowTyp's entRecObj.
+import type { TodEntTyp } from '../../core/data-model.ts'; // What: Today Entry Type. Why: Every row carries an entry or a stand-in for one. How: This types TodRowTyp's entRcdObj.
 
 // #endregion Imports
 
@@ -39,7 +39,7 @@ import type { TodEntTyp } from '../../core/data-model.ts'; // What: Today Entry 
 
 // #region Types
 
-type TodRowTyp = { entRecObj : Partial< Omit< TodEntTyp, 'kind' > > & { eid : string, kind? : EntKinTyp | 'tutorial' }, picRecObj : Partial< PicRcdTyp > & Pick< PicRcdTyp, 'id' > }; // What: Today Row Type. Why: Every Today card pairs an entry with its picker, but day-off and tutorial cards build stand-ins for whichever half they lack. How: This types a row whose entry and picker may each be partial, though the entry always has an eid and the picker an id, and whose kind can also be a tutorial launcher.
+type TodRowTyp = { entRcdObj : Partial< Omit< TodEntTyp, 'kind' > > & { eid : string, kind? : EntKinTyp | 'tutorial' }, picRcdObj : Partial< PicRcdTyp > & Pick< PicRcdTyp, 'id' > }; // What: Today Row Type. Why: Every Today card pairs an entry with its picker, but day-off and tutorial cards build stand-ins for whichever half they lack. How: This types a row whose entry and picker may each be partial, though the entry always has an eid and the picker an id, and whose kind can also be a tutorial launcher.
 type TodGroTyp = { entArr : TodRowTyp[], namStr : string };                                                                                   // What: Today Group Type. Why: The Today list renders one header and its rows per group. How: This types a group's name and its sorted rows.
 
 // #endregion Types
@@ -109,9 +109,9 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 			bucArrFun( groNamStr ).push({ // What: Day-Off Row Push. Why: This is the synthetic row EntCarCom's own day-off branch renders. How: This pairs curEntObj with a picker-shaped stand-in carrying just enough fields (id/name/group) to sort and render like a real one.
 
 
-				entRecObj : curEntObj, // What: Entry Record Object. Why: The day-off branch renders the real day-off entry itself. How: This passes curEntObj straight through.
+				entRcdObj : curEntObj, // What: Entry Record Object. Why: The day-off branch renders the real day-off entry itself. How: This passes curEntObj straight through.
 
-				picRecObj : { // What: Picker Record Object. Why: Sorting and rendering expect a picker beside every entry, and a day-off card has no real one. How: This builds a picker-shaped stand-in from the entry's own fields.
+				picRcdObj : { // What: Picker Record Object. Why: Sorting and rendering expect a picker beside every entry, and a day-off card has no real one. How: This builds a picker-shaped stand-in from the entry's own fields.
 
 
 					group : groNamStr,                           // What: Group. Why: The stand-in sorts into the same group as the card. How: This passes groNamStr.
@@ -133,17 +133,17 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 
 
 
-		const picRecObj = staAppObj.pickers.find( ( curPicObj ) => curPicObj.id === curEntObj.pickerId ); // What: Picker Record Object. Why: Every non-day-off entry needs its own picker resolved to know its group and to render its name. How: This finds the picker matching curEntObj's own pickerId.
+		const picRcdObj = staAppObj.pickers.find( ( curPicObj ) => curPicObj.id === curEntObj.pickerId ); // What: Picker Record Object. Why: Every non-day-off entry needs its own picker resolved to know its group and to render its name. How: This finds the picker matching curEntObj's own pickerId.
 
 
-		if ( !picRecObj || picRecObj.hidden ) continue; // What: Missing Or Hidden Picker Guard. Why: An entry whose picker was deleted, or is still hidden mid-onboarding, must not render at all. How: This skips curEntObj when picRecObj is missing or flagged hidden.
+		if ( !picRcdObj || picRcdObj.hidden ) continue; // What: Missing Or Hidden Picker Guard. Why: An entry whose picker was deleted, or is still hidden mid-onboarding, must not render at all. How: This skips curEntObj when picRcdObj is missing or flagged hidden.
 
 
 
-		const groNamStr = picRecObj.group || 'Other'; // What: Group Name String. Why: This entry needs a real group to bucket into. How: This reads picRecObj's own group, falling back to 'Other'.
+		const groNamStr = picRcdObj.group || 'Other'; // What: Group Name String. Why: This entry needs a real group to bucket into. How: This reads picRcdObj's own group, falling back to 'Other'.
 
 
-		bucArrFun( groNamStr ).push( { entRecObj : curEntObj, picRecObj : picRecObj } ); // What: Entry Row Push. Why: This is the real row EntCarCom renders. How: This pairs curEntObj with its own resolved picRecObj.
+		bucArrFun( groNamStr ).push( { entRcdObj : curEntObj, picRcdObj : picRcdObj } ); // What: Entry Row Push. Why: This is the real row EntCarCom renders. How: This pairs curEntObj with its own resolved picRcdObj.
 
 
 	}
@@ -214,9 +214,9 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 		bucArrFun( groNamStr ).push({ // What: Tutorial Row Push. Why: This is the synthetic row EntCarCom's own tutorial branch renders. How: This pairs a synthetic { done, eid, kind } entry with the real curPicObj.
 
 
-			picRecObj : curPicObj, // What: Picker Record Object. Why: The launcher card belongs to the real sample picker it starts a tour for. How: This passes curPicObj straight through.
+			picRcdObj : curPicObj, // What: Picker Record Object. Why: The launcher card belongs to the real sample picker it starts a tour for. How: This passes curPicObj straight through.
 
-			entRecObj : { // What: Entry Record Object. Why: A tutorial launcher has no real Today entry, so the card needs an entry-shaped stand-in. How: This builds the few fields the tutorial branch reads.
+			entRcdObj : { // What: Entry Record Object. Why: A tutorial launcher has no real Today entry, so the card needs an entry-shaped stand-in. How: This builds the few fields the tutorial branch reads.
 
 
 				done : isaDonBoo,             // What: Done. Why: A finished mini-tour shows its launcher as resolved. How: This passes isaDonBoo.
@@ -289,13 +289,13 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 		const posOrdFun = ( curRowObj : TodRowTyp ) => { // What: Position Order Function. Why: Sorting needs one numeric position per row: an explicit saved order always wins, so day-off/charging/tutorial cards can still be dragged anywhere; only a row with no stored position falls back to a default. How: This looks up curRowObj's own picker id in posIndObj first, otherwise defaults day-off/charging/tutorial rows to the top and regular picks to the end.
 
 
-			if ( curRowObj.picRecObj.id in posIndObj ) return posIndObj[ curRowObj.picRecObj.id ]; // What: Explicit Position Branch. Why: A row the user has already positioned must sort exactly there. How: This returns its own saved index.
+			if ( curRowObj.picRcdObj.id in posIndObj ) return posIndObj[ curRowObj.picRcdObj.id ]; // What: Explicit Position Branch. Why: A row the user has already positioned must sort exactly there. How: This returns its own saved index.
 
 
 
-			const kinDaoBoo = curRowObj.entRecObj.kind === 'dayoff';   // What: Kind Day-Off Boolean. Why: A day-off card is one of the special cards that default near the top. How: This compares the row's own entry kind against 'dayoff'.
-			const kinChrBoo = curRowObj.entRecObj.kind === 'charging'; // What: Kind Charging Boolean. Why: A charging card is one of the special cards that default near the top. How: This compares the row's own entry kind against 'charging'.
-			const kinTutBoo = curRowObj.entRecObj.kind === 'tutorial'; // What: Kind Tutorial Boolean. Why: A tutorial card is one of the special cards that default near the top. How: This compares the row's own entry kind against 'tutorial'.
+			const kinDaoBoo = curRowObj.entRcdObj.kind === 'dayoff';   // What: Kind Day-Off Boolean. Why: A day-off card is one of the special cards that default near the top. How: This compares the row's own entry kind against 'dayoff'.
+			const kinChrBoo = curRowObj.entRcdObj.kind === 'charging'; // What: Kind Charging Boolean. Why: A charging card is one of the special cards that default near the top. How: This compares the row's own entry kind against 'charging'.
+			const kinTutBoo = curRowObj.entRcdObj.kind === 'tutorial'; // What: Kind Tutorial Boolean. Why: A tutorial card is one of the special cards that default near the top. How: This compares the row's own entry kind against 'tutorial'.
 
 			const kinSpeBoo = kinDaoBoo || kinChrBoo || kinTutBoo; // What: Kind Special Boolean. Why: Every special card shares one default position. How: This is true when the row is any of the three special kinds above.
 

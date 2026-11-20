@@ -40,7 +40,7 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
 
 // #region Components
 
-type AfcProTyp = { actStoObj : ActStoTyp, feaRecObj : { ideStr : string, labStr : string, pagStr : string, timStr : string }, onPlaTutFun : ( touKinStr : string, touIdeStr : string ) => void, onUncFeaFun : ( feaIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: App-Feature-Component Props Type. Why: An App Features launcher card starts or un-resolves its tutorial and reads whether it's done. How: This types AppFeaCom's props.
+type AfcProTyp = { actStoObj : ActStoTyp, feaRcdObj : { ideStr : string, labStr : string, pagStr : string, timStr : string }, onPlaTutFun : ( touKinStr : string, touIdeStr : string ) => void, onUncFeaFun : ( feaIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: App-Feature-Component Props Type. Why: An App Features launcher card starts or un-resolves its tutorial and reads whether it's done. How: This types AppFeaCom's props.
 
 // #region AppFeaCom
 
@@ -57,7 +57,7 @@ type AfcProTyp = { actStoObj : ActStoTyp, feaRecObj : { ideStr : string, labStr 
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.actStoObj   - Action Store Object: The shared app actions.
- * @param props.feaRecObj   - Feature Record Object: The App Features manifest
+ * @param props.feaRcdObj   - Feature Record Object: The App Features manifest
  *                            entry this card offers.
  * @param props.onPlaTutFun - On Play Tutorial Function: Starts this App
  *                            Feature's own tutorial.
@@ -69,16 +69,16 @@ type AfcProTyp = { actStoObj : ActStoTyp, feaRecObj : { ideStr : string, labStr 
  *
  * @example
  * ```tsx
- * AppFeaCom({ actStoObj, feaRecObj, onPlaTutFun, ... }) // => <AppFeaCom />
+ * AppFeaCom({ actStoObj, feaRcdObj, onPlaTutFun, ... }) // => <AppFeaCom />
  * ```
  *
 */
 
-function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj } : AfcProTyp ) : React.JSX.Element {
+function AppFeaCom ( { actStoObj, feaRcdObj, onPlaTutFun, onUncFeaFun, staAppObj } : AfcProTyp ) : React.JSX.Element {
 
 
-	const tutDonBoo = !!( staAppObj.onboarding.appFeatures && staAppObj.onboarding.appFeatures[ feaRecObj.ideStr ] ); // What: Tutorial Done Boolean. Why: A resolved App Feature card renders/behaves differently from a pending one. How: This reads staAppObj's own onboarding.appFeatures map for feaRecObj's own ideStr.
-	const bloReaStr = !tutDonBoo ? bloReaFun( feaRecObj.ideStr, staAppObj ) : null;                                   // What: Blocked Reason String. Why: A still-pending card can require an earlier one first, and needs its own explanation string when it does. How: This calls bloReaFun only while tutDonBoo is false, otherwise null.
+	const tutDonBoo = !!( staAppObj.onboarding.appFeatures && staAppObj.onboarding.appFeatures[ feaRcdObj.ideStr ] ); // What: Tutorial Done Boolean. Why: A resolved App Feature card renders/behaves differently from a pending one. How: This reads staAppObj's own onboarding.appFeatures map for feaRcdObj's own ideStr.
+	const bloReaStr = !tutDonBoo ? bloReaFun( feaRcdObj.ideStr, staAppObj ) : null;                                   // What: Blocked Reason String. Why: A still-pending card can require an earlier one first, and needs its own explanation string when it does. How: This calls bloReaFun only while tutDonBoo is false, otherwise null.
 
 
 	const onRowCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this feature, unless it is currently blocked. How: This checks the actions-area exclusion and the blocked guard first, then dispatches to onUncFeaFun or onPlaTutFun based on tutDonBoo.
@@ -92,9 +92,9 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 
-		if ( tutDonBoo ) onUncFeaFun( feaRecObj.ideStr ); // What: Done Dispatch Branch. Why: A finished App Features card's row click un-resolves it. How: This calls onUncFeaFun with the feature's own id.
+		if ( tutDonBoo ) onUncFeaFun( feaRcdObj.ideStr ); // What: Done Dispatch Branch. Why: A finished App Features card's row click un-resolves it. How: This calls onUncFeaFun with the feature's own id.
 
-		else onPlaTutFun( 'appFeature', feaRecObj.ideStr ); // What: Not-Done Dispatch Branch. Why: An unfinished App Features card's row click starts its tutorial. How: This calls onPlaTutFun with the appFeature kind and id.
+		else onPlaTutFun( 'appFeature', feaRcdObj.ideStr ); // What: Not-Done Dispatch Branch. Why: An unfinished App Features card's row click starts its tutorial. How: This calls onPlaTutFun with the appFeature kind and id.
 
 
 	};
@@ -125,14 +125,14 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 					type='button'
 
-					aria-label={ `Undo ${ feaRecObj.labStr } tutorial` }
+					aria-label={ `Undo ${ feaRcdObj.labStr } tutorial` }
 					aria-pressed='true'
 
 					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
 
 						cliEveObj.stopPropagation();     // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-						onUncFeaFun( feaRecObj.ideStr ); // What: Uncheck Feature Call. Why: This App Features card should go back to unresolved. How: This calls onUncFeaFun with the feature's own id.
+						onUncFeaFun( feaRcdObj.ideStr ); // What: Uncheck Feature Call. Why: This App Features card should go back to unresolved. How: This calls onUncFeaFun with the feature's own id.
 
 
 					} }
@@ -164,7 +164,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 					data-element-name-hook='carCheSpa'
 
-					actNamStr={ `Start the ${ feaRecObj.labStr } tutorial` }
+					actNamStr={ `Start the ${ feaRcdObj.labStr } tutorial` }
 					labTexStr={ bloReaStr }
 				>{ /* What: Info Tip Component. Why: A blocked feature's own disabled check button still needs to explain WHY it is blocked. How: This wraps a disabled-looking play icon with bloReaStr. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
@@ -188,13 +188,13 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 					type='button'
 
-					aria-label={ `Start the ${ feaRecObj.labStr } tutorial` }
+					aria-label={ `Start the ${ feaRcdObj.labStr } tutorial` }
 
 					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
 
 						cliEveObj.stopPropagation();                   // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-						onPlaTutFun( 'appFeature', feaRecObj.ideStr ); // What: Play Tutorial Call. Why: This card's own tutorial should start playing. How: This calls onPlaTutFun with the tutorial kind and id.
+						onPlaTutFun( 'appFeature', feaRcdObj.ideStr ); // What: Play Tutorial Call. Why: This card's own tutorial should start playing. How: This calls onPlaTutFun with the tutorial kind and id.
 
 
 					} }
@@ -220,11 +220,11 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 				<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: The feature's own page label and its optional time estimate sit together. How: This wraps the page-label span and, when one exists, the time estimate. */ }
 
 
-					<span>{ PAG_LAB_OBJ[ feaRecObj.pagStr ] }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page this App Feature lives on. How: This looks up feaRecObj's own pagStr in PAG_LAB_OBJ. */ }
+					<span>{ PAG_LAB_OBJ[ feaRcdObj.pagStr ] }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page this App Feature lives on. How: This looks up feaRcdObj's own pagStr in PAG_LAB_OBJ. */ }
 
 
 
-					{ feaRecObj.timStr && ( // What: Time Estimate Check. Why: Not every App Feature card has a manually-timed estimate. How: This renders the dot/time pair only while feaRecObj's own timStr is set.
+					{ feaRcdObj.timStr && ( // What: Time Estimate Check. Why: Not every App Feature card has a manually-timed estimate. How: This renders the dot/time pair only while feaRcdObj's own timStr is set.
 
 
 						<React.Fragment>{ /* What: Time Estimate Fragment Element. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
@@ -232,7 +232,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 							<span className={ cssModObj.metDotSpa }>&middot;</span>{ /* What: Meta Dot Span Element. Why: The page label and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
 
-							<span>{ feaRecObj.timStr }</span>{ /* What: Meta Time Span Element. Why: A time estimate helps the user judge how long this tutorial takes. How: This renders feaRecObj's own time. */ }
+							<span>{ feaRcdObj.timStr }</span>{ /* What: Meta Time Span Element. Why: A time estimate helps the user judge how long this tutorial takes. How: This renders feaRcdObj's own time. */ }
 
 
 						</React.Fragment>
@@ -243,7 +243,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 				</div>
 
-				<div className={ cssModObj.carNamDiv }>{ feaRecObj.labStr }</div>{ /* What: Card Name Div Element. Why: This is the card's own main display text. How: This renders feaRecObj's own label directly. */ }
+				<div className={ cssModObj.carNamDiv }>{ feaRcdObj.labStr }</div>{ /* What: Card Name Div Element. Why: This is the card's own main display text. How: This renders feaRcdObj's own label directly. */ }
 
 
 			</div>
@@ -269,7 +269,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 							cliEveObj.stopPropagation();                                       // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-							actStoObj.setFeaFun( feaRecObj.ideStr, { status : 'cancelled' } ); // What: Cancel Feature Call. Why: The user is dismissing this App Features card entirely. How: This marks the feature cancelled via actStoObj.setFeaFun.
+							actStoObj.setFeaFun( feaRcdObj.ideStr, { status : 'cancelled' } ); // What: Cancel Feature Call. Why: The user is dismissing this App Features card entirely. How: This marks the feature cancelled via actStoObj.setFeaFun.
 
 
 						} }

@@ -7,7 +7,7 @@ import cssModObj from './regeneration-loader.module.css'; // What: CSS Module Ob
 import React     from 'react';                            // What: React. Why: LoaReeCom and LoaCarCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useState) instead of importing individual named hooks.
 
 
-import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Record Type. Why: A loader card belongs to one picker, or a day-off stand-in for one. How: This types LacProTyp's picRecObj.
+import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Record Type. Why: A loader card belongs to one picker, or a day-off stand-in for one. How: This types LacProTyp's picRcdObj.
 
 // #endregion Imports
 
@@ -127,7 +127,7 @@ function LoaReeCom ( { canIteArr } : LrcProTyp ) : React.JSX.Element {
 
 
 
-type LacProTyp = { infRecObj : GenSloTyp | undefined, picRecObj : Partial< PicRcdTyp > }; // What: Loader-Card-Component Props Type. Why: A loader card shows one picker's slot during a regeneration. How: This types LoaCarCom's props, named Lac since Lcc already belongs to LogChiCom.
+type LacProTyp = { infRcdObj : GenSloTyp | undefined, picRcdObj : Partial< PicRcdTyp > }; // What: Loader-Card-Component Props Type. Why: A loader card shows one picker's slot during a regeneration. How: This types LoaCarCom's props, named Lac since Lcc already belongs to LogChiCom.
 
 // #region LoaCarCom
 
@@ -141,36 +141,36 @@ type LacProTyp = { infRecObj : GenSloTyp | undefined, picRecObj : Partial< PicRc
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.infRecObj - Info Record Object: The slot's own
+ * @param props.infRcdObj - Info Record Object: The slot's own
  *                          generation-in-progress record: { canArr, ideStr,
  *                          kinStr, staStr, texStr }, built up in TabTodCom's
  *                          own genLisFun.
- * @param props.picRecObj - Picker Record Object: The picker this loader slot
+ * @param props.picRcdObj - Picker Record Object: The picker this loader slot
  *                          belongs to.
  *
  * @returns This slot's own loader card, whose visible state follows
- * infRecObj.staStr.
+ * infRcdObj.staStr.
  *
  * @example
  * ```tsx
- * LoaCarCom({ infRecObj, picRecObj }) // => <LoaCarCom />
+ * LoaCarCom({ infRcdObj, picRcdObj }) // => <LoaCarCom />
  * ```
  *
 */
 
-function LoaCarCom ( { infRecObj, picRecObj } : LacProTyp ) : React.JSX.Element {
+function LoaCarCom ( { infRcdObj, picRcdObj } : LacProTyp ) : React.JSX.Element {
 
 
-	const sloStaStr = infRecObj?.staStr || 'pending'; // What: Slot Status String. Why: Every branch below renders differently depending on this slot's own current phase. How: This reads infRecObj's own staStr, defaulting to 'pending' before the generator even sets one.
-	const sloKinStr = infRecObj?.kinStr || 'pick';    // What: Slot Kind String. Why: A non-pick slot (day-off/charging) has no candidate reel and a fixed settled name instead. How: This reads infRecObj's own kinStr, defaulting to 'pick'.
-	const canIteArr = infRecObj?.canArr || [];        // What: Candidate Item Array. Why: Both the settled name lookup and the reel below read this slot's own candidate pool. How: This reads infRecObj's own canArr, defaulting to an empty array.
+	const sloStaStr = infRcdObj?.staStr || 'pending'; // What: Slot Status String. Why: Every branch below renders differently depending on this slot's own current phase. How: This reads infRcdObj's own staStr, defaulting to 'pending' before the generator even sets one.
+	const sloKinStr = infRcdObj?.kinStr || 'pick';    // What: Slot Kind String. Why: A non-pick slot (day-off/charging) has no candidate reel and a fixed settled name instead. How: This reads infRcdObj's own kinStr, defaulting to 'pick'.
+	const canIteArr = infRcdObj?.canArr || [];        // What: Candidate Item Array. Why: Both the settled name lookup and the reel below read this slot's own candidate pool. How: This reads infRcdObj's own canArr, defaulting to an empty array.
 
 
 	const finNamStr = sloKinStr === 'dayoff' // What: Final Name String. Why: The settled state needs one final display name, computed differently per kind. How: This resolves a day-off's own card text (or the picker's own name), a fixed charging message, or the actually-picked candidate's own name.
-		? ( infRecObj!.texStr || picRecObj.name )                                            // What: Day-Off Name Branch. Why: A day-off slot settles on its own card text. How: This falls back to the picker's own name when the card has no text. // What: Non-Null Note. Why: sloKinStr is only 'dayoff' when infRecObj gave it that kind. How: The ! tells TypeScript the slot is set here.
+		? ( infRcdObj!.texStr || picRcdObj.name )                                            // What: Day-Off Name Branch. Why: A day-off slot settles on its own card text. How: This falls back to the picker's own name when the card has no text. // What: Non-Null Note. Why: sloKinStr is only 'dayoff' when infRcdObj gave it that kind. How: The ! tells TypeScript the slot is set here.
 		: sloKinStr === 'charging'                                                           // What: Charging Check. Why: A charging slot has no candidate to settle on. How: This tests for the charging kind next.
 		? 'No eligible items for today'                                                      // What: Charging Name Branch. Why: A charging slot settles on a fixed explanation instead of an item. How: This returns the same text a real charging card shows.
-		: canIteArr.find( ( canCurObj ) => canCurObj.id === infRecObj!.ideStr )?.name ?? ''; // What: Picked Name Branch. Why: A pick slot settles on whichever candidate the generator actually chose. How: This finds that candidate by infRecObj's own ideStr, falling back to an empty string. // What: Non-Null Note. Why: The find callback only runs when canIteArr has candidates, which only a real slot supplies. How: The ! tells TypeScript the slot is set inside it.
+		: canIteArr.find( ( canCurObj ) => canCurObj.id === infRcdObj!.ideStr )?.name ?? ''; // What: Picked Name Branch. Why: A pick slot settles on whichever candidate the generator actually chose. How: This finds that candidate by infRcdObj's own ideStr, falling back to an empty string. // What: Non-Null Note. Why: The find callback only runs when canIteArr has candidates, which only a real slot supplies. How: The ! tells TypeScript the slot is set inside it.
 
 
 	const hasReeBoo = sloKinStr === 'pick' && canIteArr.length > 0; // What: Has Reel Boolean. Why: Only an actual pick slot with real candidates gets the cycling reel; day-off/charging slots just show dots while active. How: This is true only when this is a pick slot with at least one candidate.
@@ -203,7 +203,7 @@ function LoaCarCom ( { infRecObj, picRecObj } : LacProTyp ) : React.JSX.Element 
 				<div className={ cssModObj.carMetDiv }>{ /* What: Loader Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot, matching a real card's own layout. How: This wraps the picker-name span below. */ }
 
 
-					<span>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker this slot belongs to while it is still generating. How: This renders picRecObj's own name. */ }
+					<span>{ picRcdObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker this slot belongs to while it is still generating. How: This renders picRcdObj's own name. */ }
 
 
 				</div>
