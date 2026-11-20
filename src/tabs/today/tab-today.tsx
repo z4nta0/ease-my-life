@@ -47,7 +47,7 @@ import { redMotFun    } from '../../utils/motion.ts';               // What: Red
 import { RemSecCom    } from './reminders-section.tsx';             // What: Reminder Section Component. Why: The Reminders block is one whole section rendered alongside the picker groups. How: This is rendered once per the '__reminders' sentinel in genOrdArr.
 import { RemTouCom    } from '../../onboarding/reminder-tours.tsx'; // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it is rendered directly here rather than lifted to app.tsx. How: This is rendered while minTouObj holds a 'reminder' kind entry.
 import { REO_NAM_OBJ  } from './reorder.ts';                        // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REO_NAM_OBJ.staDraFun inside groDraFun/iteDraFun.
-import { rhyPxlFun    } from '../../utils/rhythm.ts';               // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
+import { rhyPixFun    } from '../../utils/rhythm.ts';               // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { scrBehFun    } from '../../utils/motion.ts';               // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { TAS_NAM_OBJ  } from '../../core/tasks.ts';                 // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for ancDatFun/visTodFun/isaDonFun/optForFun/isaComFun.
 import { TOD_HEL_ARR  } from '../../help/today-catalog.tsx';        // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
@@ -128,7 +128,7 @@ import type { TodRowTyp } from './group-entries.ts';        // What: Today Row T
  *
 */
 
-const stiHeiFun = ( tabCurEle : Element | null | undefined ) : number => tabCurEle ? ( parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sti-top-hei' ) ) || rhyPxlFun( 'p09' ) ) : rhyPxlFun( 'p09' ); // What: Sticky Height Function. Why: Every scroll that has to land beneath the sticky header reads the same offset. How: This parses the tab's --sti-top-hei, falling back to the p09 step. // Vertical Rhythm Base Plus 9 ~= 183.074px
+const stiHeiFun = ( tabCurEle : Element | null | undefined ) : number => tabCurEle ? ( parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sti-top-hei' ) ) || rhyPixFun( 'p09' ) ) : rhyPixFun( 'p09' ); // What: Sticky Height Function. Why: Every scroll that has to land beneath the sticky header reads the same offset. How: This parses the tab's --sti-top-hei, falling back to the p09 step. // Vertical Rhythm Base Plus 9 ~= 183.074px
 
 // #endregion stiHeiFun
 
@@ -1727,7 +1727,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const maiScrEle = tarSecEle.closest( '[data-element-name-hook~="appConMai"]' );  // What: Main Scroll Element. Why: The scroll target depends on whether a real scroll container exists. How: This walks up from tarSecEle to its nearest appConMai hook ancestor.
 		const tabCurEle = tarSecEle.closest( '[data-element-name-hook~="todTabDiv"]' )!; // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from tarSecEle to its nearest todTabDiv hook ancestor. // What: Non-Null Note. Why: Every group section renders inside Today's own tab root. How: The ! tells TypeScript the root is found.
 		const stiHeiNum = stiHeiFun( tabCurEle );                                        // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail, not at the section's own raw offset. How: This reads the --sti-top-hei custom property, falling back to the p09 rhythm step.
-		const extPadNum = rhyPxlFun( 'bas' );                                            // What: Extra Padding Number. Why: A small extra gap beyond the sticky offset reads as more natural than a section's header touching the sticky edge exactly. How: This is a base rhythm step added to the scroll target below. // Vertical Rhythm Base ~= 14.572px
+		const extPadNum = rhyPixFun( 'bas' );                                            // What: Extra Padding Number. Why: A small extra gap beyond the sticky offset reads as more natural than a section's header touching the sticky edge exactly. How: This is a base rhythm step added to the scroll target below. // Vertical Rhythm Base ~= 14.572px
 		const scrBehStr = scrBehFun();                                                   // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
 
 		// #endregion Scroll Target Values
@@ -3387,7 +3387,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 					const stiHeiNum = stiHeiFun( tabCurEle );                               // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail. How: This reads the --sti-top-hei custom property, falling back to the p09 rhythm step.
-					const tarOffNum = genCurEle.offsetTop - stiHeiNum - rhyPxlFun( 'bas' ); // What: Target Offset Number. Why: This is the actual scroll position that lands the card's own top just beneath the sticky offset, with a small base-step pad. How: This subtracts stiHeiNum and a base rhythm step from genCurEle's own offsetTop. // Vertical Rhythm Base ~= 14.572px
+					const tarOffNum = genCurEle.offsetTop - stiHeiNum - rhyPixFun( 'bas' ); // What: Target Offset Number. Why: This is the actual scroll position that lands the card's own top just beneath the sticky offset, with a small base-step pad. How: This subtracts stiHeiNum and a base rhythm step from genCurEle's own offsetTop. // Vertical Rhythm Base ~= 14.572px
 					const scrBehStr = scrBehFun();                                          // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
 
 

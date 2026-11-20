@@ -11,7 +11,7 @@ import { createPortal } from 'react-dom';            // What: Create Portal. Why
 import { emlTouObj    } from '../state/tour-bus.ts'; // What: Ease My Life Tour Object. Why: This publishes the running tour's touPhaStr/touSteNum/touIdeStr/resTopNum/wanRaiBoo fields so other tabs can react without a context provider. How: This is written to via .set() at several points below and never read synchronously here.
 import { finTarFun    } from '../help/geometry.ts';  // What: Find Targets Function. Why: A step's selector list resolves to its visible targets the same way help mode's items do. How: This is called with the step's own selector list, trying each alternative in turn.
 import { InfTipCom    } from '../ui/info-tip.tsx';   // What: Info Tip Component. Why: A cirBoo step's disabled Next button needs a hover/tap hint explaining why it can't be clicked yet. How: This wraps that disabled button in the render output below.
-import { rhyPxlFun    } from '../utils/rhythm.ts';   // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
+import { rhyPixFun    } from '../utils/rhythm.ts';   // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { scrBehFun    } from '../utils/motion.ts';   // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { uniRecFun    } from '../help/geometry.ts';  // What: Union Rect Function. Why: A step's highlight and coach placement are measured against the one box enclosing every target, each clipped against its scrollable rows first. How: This is called with the step's matched elements.
 import { useEmlTouFun } from '../state/tour-bus.ts'; // What: Use Ease My Life Tour Function. Why: GuiTouCom needs to know whether a drag gesture is in progress elsewhere in the app, so it can hide its own coach card during one. How: This is called once to subscribe to the shared tour bus and read its own draActBoo field.
@@ -157,7 +157,7 @@ const arrHorFun = ( curRecObj : { left : number, width : number }, coaLefNum : n
  *
 */
 
-const coaWidFun = ( vieWidNum : number ) : number => Math.min( rhyPxlFun( 'p10' ) + ( rhyPxlFun( 'bas' ) + rhyPxlFun( 'm12' ) ) * 2, vieWidNum - rhyPxlFun( 'm01' ) * 2 ); // What: Coach Width Function. Why: The coach card should fit its body text like help mode's tip, without outgrowing a narrow viewport. How: This takes the smaller of the text width plus padding and borders, and the viewport less its edge margins. // Vertical Rhythm Base Plus 10 ~= 242.522px, Vertical Rhythm Base ~= 14.572px, Vertical Rhythm Base Minus 12 ~= 0.499px, Vertical Rhythm Base Minus 1 = 11px
+const coaWidFun = ( vieWidNum : number ) : number => Math.min( rhyPixFun( 'p10' ) + ( rhyPixFun( 'bas' ) + rhyPixFun( 'm12' ) ) * 2, vieWidNum - rhyPixFun( 'm01' ) * 2 ); // What: Coach Width Function. Why: The coach card should fit its body text like help mode's tip, without outgrowing a narrow viewport. How: This takes the smaller of the text width plus padding and borders, and the viewport less its edge margins. // Vertical Rhythm Base Plus 10 ~= 242.522px, Vertical Rhythm Base ~= 14.572px, Vertical Rhythm Base Minus 12 ~= 0.499px, Vertical Rhythm Base Minus 1 = 11px
 
 // #endregion coaWidFun
 
@@ -371,14 +371,14 @@ const safTopFun = ( { forCoaBoo } : { forCoaBoo? : boolean } = {} ) : number => 
 const coaLayFun = ( curRecObj : { height : number, left : number, top : number }, coaHeiNum : number, coaWidNum : number, vieWidNum : number, vieHeiNum : number ) : { arrStr : string, left : number, top : number } => { // What: Coach Layout Function. Why: This is the one shared answer for where the coach sits relative to a clamped highlight rect. How: This prefers below the target, flipping above it only once there is no room below.
 
 
-	const coaLefNum = Math.max( rhyPxlFun( 'm01' ), Math.min( curRecObj.left, vieWidNum - coaWidNum - rhyPxlFun( 'm01' ) ) ); // What: Coach Left Number. Why: The coach must never sit flush against either viewport edge. How: This clamps the target's own left edge between a small-step margin and the coach's own width from the right edge. // Vertical Rhythm Base Minus 1 = 11px
-	const safTopNum = safTopFun( { forCoaBoo : true } ) + rhyPxlFun( 'm01' );                                                 // What: Safe Top Number. Why: The "flip above" branch below must not let the coach rise above the coach's own exclusion floor. How: This calls safTopFun in coach mode (always 0) plus a fixed small-step margin. // Vertical Rhythm Base Minus 1 = 11px
+	const coaLefNum = Math.max( rhyPixFun( 'm01' ), Math.min( curRecObj.left, vieWidNum - coaWidNum - rhyPixFun( 'm01' ) ) ); // What: Coach Left Number. Why: The coach must never sit flush against either viewport edge. How: This clamps the target's own left edge between a small-step margin and the coach's own width from the right edge. // Vertical Rhythm Base Minus 1 = 11px
+	const safTopNum = safTopFun( { forCoaBoo : true } ) + rhyPixFun( 'm01' );                                                 // What: Safe Top Number. Why: The "flip above" branch below must not let the coach rise above the coach's own exclusion floor. How: This calls safTopFun in coach mode (always 0) plus a fixed small-step margin. // Vertical Rhythm Base Minus 1 = 11px
 	const spaBelNum = vieHeiNum - ( curRecObj.top + curRecObj.height );                                                       // What: Space Below Number. Why: The below/above choice needs to know how much room actually exists under the target. How: This subtracts the target's own bottom edge from the viewport's own height.
-	const aboTopNum = Math.max( curRecObj.top - rhyPxlFun( 'bas' ) - coaHeiNum, safTopNum );                                  // What: Above Top Number. Why: The above placement needs its own top edge. How: This places the coach a base step above the target, clamped down to safTopNum so it never rises past the safe floor. // Vertical Rhythm Base ~= 14.572px
-	const belTopNum = curRecObj.top + curRecObj.height + rhyPxlFun( 'bas' );                                                  // What: Below Top Number. Why: The below placement needs its own top edge. How: This places the coach a base step under the target's own bottom edge. // Vertical Rhythm Base ~= 14.572px
+	const aboTopNum = Math.max( curRecObj.top - rhyPixFun( 'bas' ) - coaHeiNum, safTopNum );                                  // What: Above Top Number. Why: The above placement needs its own top edge. How: This places the coach a base step above the target, clamped down to safTopNum so it never rises past the safe floor. // Vertical Rhythm Base ~= 14.572px
+	const belTopNum = curRecObj.top + curRecObj.height + rhyPixFun( 'bas' );                                                  // What: Below Top Number. Why: The below placement needs its own top edge. How: This places the coach a base step under the target's own bottom edge. // Vertical Rhythm Base ~= 14.572px
 
 
-	if ( spaBelNum >= coaHeiNum + rhyPxlFun( 'bas' ) ) return { arrStr : 'coaCarDiv--up', left : coaLefNum, top : belTopNum }; // What: Below Placement Return. Why: Below is preferred whenever the coach's own height plus its base-step gap actually fits there. How: This returns the below layout with an upward-pointing arrow. // Vertical Rhythm Base ~= 14.572px
+	if ( spaBelNum >= coaHeiNum + rhyPixFun( 'bas' ) ) return { arrStr : 'coaCarDiv--up', left : coaLefNum, top : belTopNum }; // What: Below Placement Return. Why: Below is preferred whenever the coach's own height plus its base-step gap actually fits there. How: This returns the below layout with an upward-pointing arrow. // Vertical Rhythm Base ~= 14.572px
 
 
 
@@ -415,7 +415,7 @@ const coaLayFun = ( curRecObj : { height : number, left : number, top : number }
  *
 */
 
-const spoPadFun = ( curSteObj : TouSteTyp ) : number => curSteObj.cirBoo ? 0 : rhyPxlFun( 'm02' ); // What: Spotlight Pad Function. Why: The live spotlight and the render-time layout must pad a step's target alike. How: This is 0 for a cirBoo step, otherwise the m02 rhythm step in pixels. // Vertical Rhythm Base Minus 2 ~= 8.304px
+const spoPadFun = ( curSteObj : TouSteTyp ) : number => curSteObj.cirBoo ? 0 : rhyPixFun( 'm02' ); // What: Spotlight Pad Function. Why: The live spotlight and the render-time layout must pad a step's target alike. How: This is 0 for a cirBoo step, otherwise the m02 rhythm step in pixels. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 // #endregion spoPadFun
 
@@ -1701,7 +1701,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			if ( curSteObj.catBoo ) { // What: Coach-At-Top Guard. Why: See catBoo's own doc comment in GuiTouCom's own JSDoc above, scrolls so the target starts right where the coach (pinned to safTopNum) leaves off, instead of trying to fit the target's WHOLE height within the normal pad/padBotNum window below, which a too-tall target cannot do. How: This scrolls by the distance between the target's top and the spot just below the coach, then returns.
 
 
-				const desTopNum = safTopFun( { forCoaBoo : true } ) + rhyPxlFun( 'm01' ) + coaHeiRef.current + rhyPxlFun( 'bas' ); // What: Desired Top Number. Why: This is exactly where the target's own top edge should land. How: This adds the coach's own floor, its small-step margin, its current measured height, and a base-step gap. // Vertical Rhythm Base Minus 1 = 11px, Vertical Rhythm Base ~= 14.572px
+				const desTopNum = safTopFun( { forCoaBoo : true } ) + rhyPixFun( 'm01' ) + coaHeiRef.current + rhyPixFun( 'bas' ); // What: Desired Top Number. Why: This is exactly where the target's own top edge should land. How: This adds the coach's own floor, its small-step margin, its current measured height, and a base-step gap. // Vertical Rhythm Base Minus 1 = 11px, Vertical Rhythm Base ~= 14.572px
 
 				scrAmoFun( curScrEle, tarRecObj.top - desTopNum ); // What: Scroll By Desired Delta. Why: The scroller needs to move by exactly the gap between the target's own current top and its desired top. How: This calls scrAmoFun with that difference.
 
@@ -1716,9 +1716,9 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 			// #region Reserve Prediction
 
-			const padTopNum = rhyPxlFun( 'p06' );                                                      // What: Pad Top Number. Why: This is the ordinary top breathing-room margin used by the pad-based branch below. How: This is a fixed pixel constant tuned for the coach card's own typical size. // Vertical Rhythm Base Plus 6 ~= 78.750px
-			const padBotNum = rhyPxlFun( 'p08' );                                                      // What: Pad Bottom Number. Why: Same reasoning as padTopNum above, for the bottom margin. How: This is a fixed pixel constant tuned for the coach card's own typical size. // Vertical Rhythm Base Plus 8 ~= 138.199px
-			const minTopNum = Math.max( scrRecObj.top + padTopNum, safTopFun() + rhyPxlFun( 'm01' ) ); // What: Min Top Number. Why: The top boundary also cannot sit above safTopFun(), since a fixed pad alone assumes Today's own sticky header (plus, when present, the Edit Mode banner) is shorter than it actually is, which on a short enough viewport (or once the banner adds its own height) lets a target that "fits" by the pad's math alone still land partly behind that chrome, with briTarFun then seeing no need to scroll further. How: This takes whichever floor is higher between the plain pad math and the safe-chrome floor. // Vertical Rhythm Base Minus 1 = 11px
+			const padTopNum = rhyPixFun( 'p06' );                                                      // What: Pad Top Number. Why: This is the ordinary top breathing-room margin used by the pad-based branch below. How: This is a fixed pixel constant tuned for the coach card's own typical size. // Vertical Rhythm Base Plus 6 ~= 78.750px
+			const padBotNum = rhyPixFun( 'p08' );                                                      // What: Pad Bottom Number. Why: Same reasoning as padTopNum above, for the bottom margin. How: This is a fixed pixel constant tuned for the coach card's own typical size. // Vertical Rhythm Base Plus 8 ~= 138.199px
+			const minTopNum = Math.max( scrRecObj.top + padTopNum, safTopFun() + rhyPixFun( 'm01' ) ); // What: Min Top Number. Why: The top boundary also cannot sit above safTopFun(), since a fixed pad alone assumes Today's own sticky header (plus, when present, the Edit Mode banner) is shorter than it actually is, which on a short enough viewport (or once the banner adds its own height) lets a target that "fits" by the pad's math alone still land partly behind that chrome, with briTarFun then seeing no need to scroll further. How: This takes whichever floor is higher between the plain pad math and the safe-chrome floor. // Vertical Rhythm Base Minus 1 = 11px
 
 			let preTopNum = null; // What: Predicted Top Number. Why: A target too tall to fit alongside the coach no matter where it is scrolled to needs reserve space, decided HERE using a PREDICTED landing position (wherever the branch just below is about to place it) rather than an OBSERVED post-scroll one, so it can be applied before this step's very first scroll instead of discovered only after that scroll already settled. How: preTopNum mirrors whichever of the two branches below will actually fire; null (no scroll needed at all) is deliberately left unhandled, since a target that already fits without scrolling was never going to need reserve either.
 
@@ -1741,15 +1741,15 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 				const vieHeiNum = window.innerHeight;                                                                                    // What: Viewport Height Number. Why: The fit checks below need the current viewport height. How: This is read fresh from window.innerHeight.
 				const coaHeiNum = coaHeiRef.current;                                                                                     // What: Coach Height Number. Why: The fit checks below need the coach's own latest measured height. How: This is read fresh from coaHeiRef.current.
-				const fitBelBoo = vieHeiNum - ( preTopNum! + tarRecObj.height ) >= coaHeiNum + rhyPxlFun( 'bas' );                       // What: Fits Below Boolean. Why: The below placement only works if the coach's own height plus its base-step gap actually fits under the predicted landing position. How: This compares the remaining viewport space under the predicted bottom edge against coaHeiNum plus a base step. // Vertical Rhythm Base ~= 14.572px // What: Non-Null Note. Why: This branch only runs once hasPreBoo found a predicted top. How: The ! tells TypeScript preTopNum is set here.
-				const fitAboBoo = preTopNum! - rhyPxlFun( 'bas' ) - coaHeiNum >= safTopFun( { forCoaBoo : true } ) + rhyPxlFun( 'm01' ); // What: Fits Above Boolean. Why: The above placement only works if the coach's own height plus its base-step gap actually fits above the predicted top edge, down to the coach's own safe floor. How: This compares the predicted top edge minus the coach's own space against the safe floor. // Vertical Rhythm Base ~= 14.572px, Vertical Rhythm Base Minus 1 = 11px // What: Non-Null Note. Why: This branch only runs once hasPreBoo found a predicted top. How: The ! tells TypeScript preTopNum is set here.
+				const fitBelBoo = vieHeiNum - ( preTopNum! + tarRecObj.height ) >= coaHeiNum + rhyPixFun( 'bas' );                       // What: Fits Below Boolean. Why: The below placement only works if the coach's own height plus its base-step gap actually fits under the predicted landing position. How: This compares the remaining viewport space under the predicted bottom edge against coaHeiNum plus a base step. // Vertical Rhythm Base ~= 14.572px // What: Non-Null Note. Why: This branch only runs once hasPreBoo found a predicted top. How: The ! tells TypeScript preTopNum is set here.
+				const fitAboBoo = preTopNum! - rhyPixFun( 'bas' ) - coaHeiNum >= safTopFun( { forCoaBoo : true } ) + rhyPixFun( 'm01' ); // What: Fits Above Boolean. Why: The above placement only works if the coach's own height plus its base-step gap actually fits above the predicted top edge, down to the coach's own safe floor. How: This compares the predicted top edge minus the coach's own space against the safe floor. // Vertical Rhythm Base ~= 14.572px, Vertical Rhythm Base Minus 1 = 11px // What: Non-Null Note. Why: This branch only runs once hasPreBoo found a predicted top. How: The ! tells TypeScript preTopNum is set here.
 
 
 				if ( !fitBelBoo && !fitAboBoo ) { // What: No Fit Guard. Why: Reserve space is only ever needed once neither the below nor the above placement actually fits. How: This only enters the reserve branch when both fit checks failed.
 
 
 					resDecBoo = true;                           // What: Reserve Decided Commit. Why: This decision must only ever happen once per step. How: This flips resDecBoo to true so neither this branch nor decResFun's own later check re-decides it.
-					resAmoNum = coaHeiNum + rhyPxlFun( 'p04' ); // What: Reserve Amount Commit. Why: The reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed p04 step. // Vertical Rhythm Base Plus 4 ~= 44.876px
+					resAmoNum = coaHeiNum + rhyPixFun( 'p04' ); // What: Reserve Amount Commit. Why: The reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed p04 step. // Vertical Rhythm Base Plus 4 ~= 44.876px
 
 					setResTopNum( resAmoNum ); // What: Reserve Top Commit. Why: TabTodCom reads this off the bus to actually pad its own list. How: This publishes resAmoNum into React state, which the effect below forwards onto the bus.
 
@@ -2067,11 +2067,11 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			const coaHeiNum = coaHeiRef.current;  // What: Coach Height Number. Why: This must read coaHeiRef.current, not a closed-over value, since a narrower coach (small/mobile screens) wraps the same body text over more lines and renders taller, so the fixed COA_HEI_NUM guess under-reserved there specifically, this step fitting "above" by the estimate but not in reality, with the coach ending up overlapping the highlight's top edge anyway. How: This reads the ref's own current value fresh.
 
 
-			if ( vieHeiNum - ( tarRecObj.top + tarRecObj.height ) >= coaHeiNum + rhyPxlFun( 'bas' ) ) return; // What: Fits Below Return. Why: No reserve is needed once the coach's own height plus its base-step gap already fits below the target. How: This returns whenever that check passes, leaving resTopNum at its already-0 default. // Vertical Rhythm Base ~= 14.572px
+			if ( vieHeiNum - ( tarRecObj.top + tarRecObj.height ) >= coaHeiNum + rhyPixFun( 'bas' ) ) return; // What: Fits Below Return. Why: No reserve is needed once the coach's own height plus its base-step gap already fits below the target. How: This returns whenever that check passes, leaving resTopNum at its already-0 default. // Vertical Rhythm Base ~= 14.572px
 
 
 
-			if ( tarRecObj.top - rhyPxlFun( 'bas' ) - coaHeiNum >= safTopFun( { forCoaBoo : true } ) + rhyPxlFun( 'm01' ) ) return; // What: Fits Above Return. Why: No reserve is needed once the coach's own height plus its base-step gap already fits above the target either. How: This returns whenever that check passes, leaving resTopNum at its already-0 default. // Vertical Rhythm Base ~= 14.572px, Vertical Rhythm Base Minus 1 = 11px
+			if ( tarRecObj.top - rhyPixFun( 'bas' ) - coaHeiNum >= safTopFun( { forCoaBoo : true } ) + rhyPixFun( 'm01' ) ) return; // What: Fits Above Return. Why: No reserve is needed once the coach's own height plus its base-step gap already fits above the target either. How: This returns whenever that check passes, leaving resTopNum at its already-0 default. // Vertical Rhythm Base ~= 14.572px, Vertical Rhythm Base Minus 1 = 11px
 
 			// #endregion Fit Checks
 
@@ -2079,7 +2079,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 			// #region Reserve Commit
 
-			resAmoNum = coaHeiNum + rhyPxlFun( 'p04' ); // What: Reserve Amount Commit. Why: Neither side fits, so the reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed p04 step. // Vertical Rhythm Base Plus 4 ~= 44.876px
+			resAmoNum = coaHeiNum + rhyPixFun( 'p04' ); // What: Reserve Amount Commit. Why: Neither side fits, so the reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed p04 step. // Vertical Rhythm Base Plus 4 ~= 44.876px
 			setResTopNum( resAmoNum );                  // What: Reserve Top Commit. Why: TabTodCom reads this off the bus to actually pad its own list. How: This publishes resAmoNum into React state.
 
 
@@ -2108,7 +2108,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 					const freScrEle = getScrFun( freEleArr[ 0 ] );                                                             // What: Fresh Scroll Element. Why: The scroller itself may have changed too, now that the reserve padding has actually rendered, so this must be re-resolved fresh rather than reusing one resolved before the frame. How: This resolves the first fresh element's own scroller via getScrFun.
 					const freTopNum = uniRecFun( freEleArr ).top;                                                              // What: Fresh Top Number. Why: This is the target's own real, post-padding top edge. How: This unions freEleArr and reads its own top.
-					const desTopNum = safTopFun( { forCoaBoo : true } ) + rhyPxlFun( 'm01' ) + coaHeiNum + rhyPxlFun( 'bas' ); // What: Desired Top Number. Why: This scrolls so the target lands exactly coaHeiNum plus a base step below the safe floor, the same threshold the "fits above" check above uses, and what the coach's own render-time placement needs to actually seat it flush above the target instead of overlapping it. How: This adds the safe floor, its small-step margin, the coach's own height, and a base-step gap. // Vertical Rhythm Base Minus 1 = 11px, Vertical Rhythm Base ~= 14.572px
+					const desTopNum = safTopFun( { forCoaBoo : true } ) + rhyPixFun( 'm01' ) + coaHeiNum + rhyPixFun( 'bas' ); // What: Desired Top Number. Why: This scrolls so the target lands exactly coaHeiNum plus a base step below the safe floor, the same threshold the "fits above" check above uses, and what the coach's own render-time placement needs to actually seat it flush above the target instead of overlapping it. How: This adds the safe floor, its small-step margin, the coach's own height, and a base-step gap. // Vertical Rhythm Base Minus 1 = 11px, Vertical Rhythm Base ~= 14.572px
 
 
 					scrAmoFun( freScrEle, freTopNum - desTopNum ); // What: Scroll By Desired Delta. Why: This is deliberately NOT a scroll that compensates for the padding just added (e.g. scrolling by +resAmoNum), since that would fully cancel the reserve's own effect, undoing the room it just opened up and leaving the coach exactly as short on space as before any reserve existed. How: This calls scrAmoFun with the gap between the target's own fresh top and its desired top.

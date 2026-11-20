@@ -25,7 +25,7 @@ import { ONB_SPI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onb
 import { PicAniCom    } from './previews.tsx';                      // What: Picker Animation Component. Why: The picker-animation style picker needs a live preview the user can play. How: This is rendered inside the Picker Animation card, driven by picPreStr/picTokNum.
 import { PWA_NAM_OBJ  } from '../../platform/pwa.ts';               // What: Progressive Web App Namespace Object. Why: The Data Control section reports install/persistence state and drives the install prompt. How: This is called via its own subscribe()/isaStaFun()/canInsFun()/insStaFun()/askInsFun()/askPerFun() methods.
 import { redMotFun    } from '../../utils/motion.ts';               // What: Reduce Motion Function. Why: A jump-to-section scroll and both preview stages must not animate for a user who prefers reduced motion. How: This is checked before choosing 'smooth' vs 'auto' scroll behavior, and to track the note shown above each style picker.
-import { rhyPxlFun    } from '../../utils/rhythm.ts';               // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
+import { rhyPixFun    } from '../../utils/rhythm.ts';               // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { scrBehFun    } from '../../utils/motion.ts';               // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { SegConCom    } from '../../ui/segmented-control.tsx';      // What: Segment Control Component. Why: The tab-bar-placement control is a 3-way exclusive choice, the exact shape this shared control renders. How: This renders the bottom/side/top options, driven by the persisted tabPlacement value.
 import { SET_HEL_ARR  } from '../../help/settings-catalog.tsx';     // What: Settings Help Array. Why: Help mode needs this tab's own catalog of tooltip targets. How: This is passed straight to HelOveCom.
@@ -470,7 +470,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-		return ( horDirBoo ? raiCurEle.offsetHeight + rhyPxlFun( 'm02' ) : 0 ) + rhyPxlFun( 'bas' ); // What: Sticky Offset Return. Why: This is the actual usable offset callers add to their own scroll-position math. How: This adds the rail's own measured height plus an m02 step only in the horizontal/mobile case, then always adds a flat base-step margin. // Vertical Rhythm Base Minus 2 ~= 8.304px, Vertical Rhythm Base ~= 14.572px
+		return ( horDirBoo ? raiCurEle.offsetHeight + rhyPixFun( 'm02' ) : 0 ) + rhyPixFun( 'bas' ); // What: Sticky Offset Return. Why: This is the actual usable offset callers add to their own scroll-position math. How: This adds the rail's own measured height plus an m02 step only in the horizontal/mobile case, then always adds a flat base-step margin. // Vertical Rhythm Base Minus 2 ~= 8.304px, Vertical Rhythm Base ~= 14.572px
 
 
 	};

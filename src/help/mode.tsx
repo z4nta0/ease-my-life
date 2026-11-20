@@ -17,7 +17,7 @@ import { finTarFun    } from './geometry.ts';      // What: Find Target Function
 import { HelTipCom    } from './tooltip.tsx';      // What: Help Tip Component. Why: A clicked badge reveals its own target's tip. How: This is rendered once for the open help item, given its target rect and item.
 import { IcoSvgCom    } from '../ui/icon.tsx';     // What: Icon Svg Component. Why: The navigation help item's own bodEle renders each tab's real nav icon next to its label. How: This is rendered once per tab entry inside NAV_HEL_OBJ's own bodEle JSX.
 import { isaTruFun    } from '../utils/guard.ts';  // What: Is-A Truthy Function. Why: The chrome matches drop their misses before being measured. How: This filters them so the rest read as real matches.
-import { rhyPxlFun    } from '../utils/rhythm.ts'; // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
+import { rhyPixFun    } from '../utils/rhythm.ts'; // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { scrBehFun    } from '../utils/motion.ts'; // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { shaRadFun    } from './geometry.ts';      // What: Shape Radius Function. Why: Each highlight cutout roughly matches its own target's border radius. How: This is called once per highlighted target.
 import { uniRecFun    } from './geometry.ts';      // What: Union Rect Function. Why: A help item covering several elements highlights them as one box. How: This is called once per multi-element help item.
@@ -159,7 +159,7 @@ const NAV_HEL_OBJ : HelIteTyp = { // What: Nav Help Object. Why: Every page shar
 
 		const shoPilNum = Math.min( padWidNum, padHeiNum );                                // What: Short Pill Number. Why: The elongation check and the pill radius itself both need to know which dimension is smaller. How: This takes the smaller of padWidNum/padHeiNum.
 		const lonPilNum = Math.max( padWidNum, padHeiNum );                                // What: Long Pill Number. Why: The elongation check needs the larger dimension to compare against shoPilNum. How: This takes the larger of padWidNum/padHeiNum.
-		const radPilNum = lonPilNum / shoPilNum >= 2 ? shoPilNum / 2 : rhyPxlFun( 'm01' ); // What: Radius Pill Number. Why: Only a box at least twice as long as it is short reads correctly as a true pill; a nearly-square union (the 'side' stack) would otherwise round into a circle/oval. How: This picks half of shoPilNum once elongated enough, otherwise the app's own default radius. // Vertical Rhythm Base Minus 1 = 11px
+		const radPilNum = lonPilNum / shoPilNum >= 2 ? shoPilNum / 2 : rhyPixFun( 'm01' ); // What: Radius Pill Number. Why: Only a box at least twice as long as it is short reads correctly as a true pill; a nearly-square union (the 'side' stack) would otherwise round into a circle/oval. How: This picks half of shoPilNum once elongated enough, otherwise the app's own default radius. // Vertical Rhythm Base Minus 1 = 11px
 
 
 
@@ -245,8 +245,8 @@ const resBoxFun = ( curRecObj : HelRecTyp ) : PadSidTyp & ShaRadTyp => { // What
 	const { radXcoNum, radYcoNum } = curRecObj.shaObj || { // What: Shape Destructure. Why: A multi-element union with no single shape falls back to the app's own default radius. How: This reads curRecObj's own shape, or the default, directly.
 
 
-		radXcoNum : rhyPxlFun( 'm01' ), // What: Radius X-Coordinate Number. Why: A target with no measured shape still needs a horizontal corner radius. How: This reads the Vertical Rhythm m01 step in pixels as the default. // Vertical Rhythm Base Minus 1 = 11px
-		radYcoNum : rhyPxlFun( 'm01' )  // What: Radius Y-Coordinate Number. Why: A target with no measured shape still needs a vertical corner radius. How: This reads the Vertical Rhythm m01 step in pixels as the default. // Vertical Rhythm Base Minus 1 = 11px
+		radXcoNum : rhyPixFun( 'm01' ), // What: Radius X-Coordinate Number. Why: A target with no measured shape still needs a horizontal corner radius. How: This reads the Vertical Rhythm m01 step in pixels as the default. // Vertical Rhythm Base Minus 1 = 11px
+		radYcoNum : rhyPixFun( 'm01' )  // What: Radius Y-Coordinate Number. Why: A target with no measured shape still needs a vertical corner radius. How: This reads the Vertical Rhythm m01 step in pixels as the default. // Vertical Rhythm Base Minus 1 = 11px
 
 
 	};
@@ -259,10 +259,10 @@ const resBoxFun = ( curRecObj : HelRecTyp ) : PadSidTyp & ShaRadTyp => { // What
 		radXcoNum, // What: Radius X-Coordinate Number. Why: The cutout and spot round their horizontal corners by this. How: This is the shape's own value or the default.
 		radYcoNum, // What: Radius Y-Coordinate Number. Why: The cutout and spot round their vertical corners by this. How: This is the shape's own value or the default.
 
-		padBotNum : curRecObj.padBotNum ?? rhyPxlFun( 'm02' ), // What: Pad Bottom Number. Why: A column group member's own side pads are forced to 0 elsewhere, but its top and bottom pads still apply normally here. How: This reads curRecObj's own padBotNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
-		padLefNum : curRecObj.padLefNum ?? rhyPxlFun( 'm02' ), // What: Pad Left Number. Why: A clipped side keeps only the pad that survived. How: This reads curRecObj's own padLefNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
-		padRigNum : curRecObj.padRigNum ?? rhyPxlFun( 'm02' ), // What: Pad Right Number. Why: A clipped side keeps only the pad that survived. How: This reads curRecObj's own padRigNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
-		padTopNum : curRecObj.padTopNum ?? rhyPxlFun( 'm02' )  // What: Pad Top Number. Why: A column group member's own side pads are forced to 0 elsewhere, but its top and bottom pads still apply normally here. How: This reads curRecObj's own padTopNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+		padBotNum : curRecObj.padBotNum ?? rhyPixFun( 'm02' ), // What: Pad Bottom Number. Why: A column group member's own side pads are forced to 0 elsewhere, but its top and bottom pads still apply normally here. How: This reads curRecObj's own padBotNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+		padLefNum : curRecObj.padLefNum ?? rhyPixFun( 'm02' ), // What: Pad Left Number. Why: A clipped side keeps only the pad that survived. How: This reads curRecObj's own padLefNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+		padRigNum : curRecObj.padRigNum ?? rhyPixFun( 'm02' ), // What: Pad Right Number. Why: A clipped side keeps only the pad that survived. How: This reads curRecObj's own padRigNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+		padTopNum : curRecObj.padTopNum ?? rhyPixFun( 'm02' )  // What: Pad Top Number. Why: A column group member's own side pads are forced to 0 elsewhere, but its top and bottom pads still apply normally here. How: This reads curRecObj's own padTopNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 
 	};
@@ -447,7 +447,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
-					const shaRadObj = shaRadFun( curTarEle, eleWidNum + rhyPxlFun( 'm02' ) * 2, eleHeiNum + rhyPxlFun( 'm02' ) * 2, typeof curIteObj.shaStr === 'string' ? curIteObj.shaStr : undefined ); // What: Shape Radius Object. Why: Each mulBoo instance reads its own border-radius independently. How: This calls shaRadFun with curTarEle's own padded box size, passing shaStr only when it's a string, since a shape function is only used for unions. // Vertical Rhythm Base Minus 2 ~= 8.304px
+					const shaRadObj = shaRadFun( curTarEle, eleWidNum + rhyPixFun( 'm02' ) * 2, eleHeiNum + rhyPixFun( 'm02' ) * 2, typeof curIteObj.shaStr === 'string' ? curIteObj.shaStr : undefined ); // What: Shape Radius Object. Why: Each mulBoo instance reads its own border-radius independently. How: This calls shaRadFun with curTarEle's own padded box size, passing shaStr only when it's a string, since a shape function is only used for unions. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 					// #endregion Element Measurements
 
@@ -459,7 +459,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 						? ( curTarEle.querySelector( curIteObj.labStr )?.textContent || curTarEle.querySelector< HTMLInputElement >( curIteObj.labStr )?.value ) // What: Live Label Read. Why: A row's own name is its text, or an input's value while it is being edited. How: This queries labStr inside curTarEle and reads either.
 						: undefined; // What: No Label Fallback. Why: An item without labStr has no per-row name. How: This leaves the label undefined.
 
-					const padSurObj = claPadFun( tarRecObj, curIteObj.padXcoNum ?? rhyPxlFun( 'm02' ), curIteObj.padYcoNum ?? rhyPxlFun( 'm02' ), chrIteArr, [ curTarEle ] ); // What: Pad Surviving Object. Why: This element's own surviving per-side padding must be computed the same way as the ordinary single-union case below. How: This calls claPadFun with curIteObj's own padXcoNum/padYcoNum override, or the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+					const padSurObj = claPadFun( tarRecObj, curIteObj.padXcoNum ?? rhyPixFun( 'm02' ), curIteObj.padYcoNum ?? rhyPixFun( 'm02' ), chrIteArr, [ curTarEle ] ); // What: Pad Surviving Object. Why: This element's own surviving per-side padding must be computed the same way as the ordinary single-union case below. How: This calls claPadFun with curIteObj's own padXcoNum/padYcoNum override, or the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 
 					nexMapObj[ `${ curIteObj.ideStr }::${ curIndNum }` ] = { // What: Sub Identifier Map Write. Why: Each mulBoo instance is stored under its own synthesized sub-id, all sharing the parent item's own titStr/bodEle when opened. How: This writes the merged rect/shape/pad/label into nexMapObj.
@@ -528,13 +528,13 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 			// #region Highlight Sizing
 
-			const padHorNum = curIteObj.padXcoNum ?? rhyPxlFun( 'm02' ); // What: Pad Horizontal Number. Why: The shape function branch below needs this item's own resolved horizontal pad, not just the flat default. How: This reads curIteObj's own padXcoNum override, or the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
-			const padVerNum = curIteObj.padYcoNum ?? rhyPxlFun( 'm02' ); // What: Pad Vertical Number. Why: The shape function branch below needs this item's own resolved vertical pad, not just the flat default. How: This reads curIteObj's own padYcoNum override, or the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+			const padHorNum = curIteObj.padXcoNum ?? rhyPixFun( 'm02' ); // What: Pad Horizontal Number. Why: The shape function branch below needs this item's own resolved horizontal pad, not just the flat default. How: This reads curIteObj's own padXcoNum override, or the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+			const padVerNum = curIteObj.padYcoNum ?? rhyPixFun( 'm02' ); // What: Pad Vertical Number. Why: The shape function branch below needs this item's own resolved vertical pad, not just the flat default. How: This reads curIteObj's own padYcoNum override, or the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 			const shaRadObj = typeof curIteObj.shaStr === 'function'                                                                               // What: Shape Radius Object. Why: A multi-element union like the nav bar has no single source element's own border-radius to read, so its own shape function (passed the box's own padded dimensions) computes a radius directly instead. How: This calls curIteObj.shaStr when it is a function; otherwise a single-element union still reads a real border-radius via shaRadFun, and anything wider falls back to no shape at all.
 				? curIteObj.shaStr( tarRecObj.width + padHorNum * 2, tarRecObj.height + padVerNum * 2 ) // What: Shape Function Call. Why: A multi-element union computes its own radius from the padded box size. How: This calls curIteObj.shaStr with the padded width and height.
 				: tarEleArr.length === 1                                                                // What: Single Element Check. Why: Only a single element has one real border-radius to read. How: This checks tarEleArr's own length.
-					? shaRadFun( tarEleArr[ 0 ], tarRecObj.width + rhyPxlFun( 'm02' ) * 2, tarRecObj.height + rhyPxlFun( 'm02' ) * 2, curIteObj.shaStr ) // What: Element Radius Read. Why: A single element's own rounding should carry over to its highlight. How: This calls shaRadFun with the padded box size. // Vertical Rhythm Base Minus 2 ~= 8.304px
+					? shaRadFun( tarEleArr[ 0 ], tarRecObj.width + rhyPixFun( 'm02' ) * 2, tarRecObj.height + rhyPixFun( 'm02' ) * 2, curIteObj.shaStr ) // What: Element Radius Read. Why: A single element's own rounding should carry over to its highlight. How: This calls shaRadFun with the padded box size. // Vertical Rhythm Base Minus 2 ~= 8.304px
 					: null; // What: No Shape Fallback. Why: A wider union has no one radius to reuse. How: This leaves the shape null so the default radius applies.
 
 			const matWidEle = curIteObj.mwsStr ? document.querySelector( curIteObj.mwsStr ) : null; // What: Match Width Element. Why: mwsStr sizes the open tip to a DIFFERENT element's own width than whatever is highlighted, e.g. the nav tip's own .appTabNav container. How: This looks mwsStr up directly, independent of tarEleArr.
@@ -624,14 +624,14 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 				// #region Edge Adjustments
 
-				if ( curIndNum === 0 ) curRecObj.left -= rhyPxlFun( 'm02' ); // What: First Column Guard. Why: Only the group's own leftmost outer edge should get normal breathing room, since it has no left neighbor to snap flush against. How: This subtracts the flat pad margin from curRecObj's own left only on the first iteration. // Vertical Rhythm Base Minus 2 ~= 8.304px
+				if ( curIndNum === 0 ) curRecObj.left -= rhyPixFun( 'm02' ); // What: First Column Guard. Why: Only the group's own leftmost outer edge should get normal breathing room, since it has no left neighbor to snap flush against. How: This subtracts the flat pad margin from curRecObj's own left only on the first iteration. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 
 
 				if ( curIndNum === groIdeArr.length - 1 ) { // What: Last Column Guard. Why: The group's own rightmost outer edge also needs normal breathing room, since it has no right neighbor either. How: This adds the flat pad margin to curRecObj's own right only on the last iteration.
 
 
-					curRecObj.right += rhyPxlFun( 'm02' ); // What: Last Column Pad Add. Why: The group's own rightmost outer edge needs the same normal breathing room a non-grouped item would get. How: This adds the flat pad margin back onto curRecObj's own right edge. // Vertical Rhythm Base Minus 2 ~= 8.304px
+					curRecObj.right += rhyPixFun( 'm02' ); // What: Last Column Pad Add. Why: The group's own rightmost outer edge needs the same normal breathing room a non-grouped item would get. How: This adds the flat pad margin back onto curRecObj's own right edge. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 
 				}
@@ -958,12 +958,12 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 						<rect
 							fill='#000'
-							height={ togRecObj.height + rhyPxlFun( 'm02' ) * 2 } // Vertical Rhythm Base Minus 2 ~= 8.304px
-							rx={ ( togRecObj.height + rhyPxlFun( 'm02' ) * 2 ) / 2 } // Vertical Rhythm Base Minus 2 ~= 8.304px
-							ry={ ( togRecObj.height + rhyPxlFun( 'm02' ) * 2 ) / 2 } // Vertical Rhythm Base Minus 2 ~= 8.304px
-							width={ togRecObj.width + rhyPxlFun( 'm02' ) * 2 } // Vertical Rhythm Base Minus 2 ~= 8.304px
-							x={ togRecObj.left - rhyPxlFun( 'm02' ) } // Vertical Rhythm Base Minus 2 ~= 8.304px
-							y={ togRecObj.top - rhyPxlFun( 'm02' ) } // Vertical Rhythm Base Minus 2 ~= 8.304px
+							height={ togRecObj.height + rhyPixFun( 'm02' ) * 2 } // Vertical Rhythm Base Minus 2 ~= 8.304px
+							rx={ ( togRecObj.height + rhyPixFun( 'm02' ) * 2 ) / 2 } // Vertical Rhythm Base Minus 2 ~= 8.304px
+							ry={ ( togRecObj.height + rhyPixFun( 'm02' ) * 2 ) / 2 } // Vertical Rhythm Base Minus 2 ~= 8.304px
+							width={ togRecObj.width + rhyPixFun( 'm02' ) * 2 } // Vertical Rhythm Base Minus 2 ~= 8.304px
+							x={ togRecObj.left - rhyPixFun( 'm02' ) } // Vertical Rhythm Base Minus 2 ~= 8.304px
+							y={ togRecObj.top - rhyPixFun( 'm02' ) } // Vertical Rhythm Base Minus 2 ~= 8.304px
 						/> // What: Toggle Cutout Rect Element. Why: The toggle button's own cutout needs the same treatment as every other target, just always circular and flatly padded. How: This is punched as a circle (rx/ry set to half the padded height) at togRecObj's own padded position/size.
 
 					) }

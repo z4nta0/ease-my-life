@@ -7,7 +7,7 @@ import cssModObj from './tooltip.module.css'; // What: CSS Module Object. Why: T
 import React     from 'react';                // What: React. Why: HelTipCom is built directly on React's own APIs. How: This is used directly (React.useLayoutEffect, React.useRef, React.useState) instead of importing individual named hooks.
 
 
-import { rhyPxlFun } from '../utils/rhythm.ts'; // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
+import { rhyPixFun } from '../utils/rhythm.ts'; // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 
 
 import type { HelIteTyp } from './catalog-item.ts'; // What: Help Item Type. Why: The tip renders one catalog item's title and body. How: This types HtcProTyp's item.
@@ -88,7 +88,7 @@ function plaTipFun ( tarRecObj : HelRecTyp, tipWidNum : number, tipHeiNum : numb
 
 	const vieWidNum = window.innerWidth;  // What: Viewport Width Number. Why: Every clamp below needs the current viewport's own width. How: This is read once from window.innerWidth and reused throughout.
 	const vieHeiNum = window.innerHeight; // What: Viewport Height Number. Why: Every clamp below needs the current viewport's own height. How: This is read once from window.innerHeight and reused throughout.
-	const edgMarNum = rhyPxlFun( 'm02' ); // What: Edge Margin Number. Why: The tip should never sit flush against the very edge of the viewport. How: This is the fixed pixel margin every clamp below keeps clear. // Vertical Rhythm Base Minus 2 ~= 8.304px
+	const edgMarNum = rhyPixFun( 'm02' ); // What: Edge Margin Number. Why: The tip should never sit flush against the very edge of the viewport. How: This is the fixed pixel margin every clamp below keeps clear. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 	// #endregion Viewport Limits
 
@@ -104,8 +104,8 @@ function plaTipFun ( tarRecObj : HelRecTyp, tipWidNum : number, tipHeiNum : numb
 
 	const useBadBoo = tarRecObj.badAncNum != null;                         // What: Use Badge Boolean. Why: A column group member's own badge sits well above tarRecObj.top itself, so an above-placed tip anchored to tarRecObj.top would point its own arrow at empty space instead of the badge. How: This checks whether tarRecObj carries a badAncNum at all.
 	const aboAncNum = tarRecObj.badAncNum ?? tarRecObj.top;                // What: Above Anchor Number. Why: The "flips above" branch below needs one single Y to anchor against, whichever is correct for this target. How: This picks badAncNum when it's set, the same check as useBadBoo, otherwise the target's own top edge.
-	const gapAboNum = useBadBoo ? rhyPxlFun( 'm02' ) : rhyPxlFun( 'bas' ); // What: Gap Above Number. Why: The usual base-step breathing room reads as "detached" for a small round badge specifically, so a badge anchor uses a tighter m02 step instead. How: This picks the m02 step when anchored to a badge, otherwise the app's own normal base-step gap. // Vertical Rhythm Base Minus 2 ~= 8.304px, Vertical Rhythm Base ~= 14.572px
-	const spaBelNum = vieHeiNum - tarRecObj.bottom - rhyPxlFun( 'bas' );   // What: Space Below Number. Why: This is how much room the "below" placement actually has to work with. How: This subtracts the target's own bottom edge and the normal base-step gap from the viewport's own height. // Vertical Rhythm Base ~= 14.572px
+	const gapAboNum = useBadBoo ? rhyPixFun( 'm02' ) : rhyPixFun( 'bas' ); // What: Gap Above Number. Why: The usual base-step breathing room reads as "detached" for a small round badge specifically, so a badge anchor uses a tighter m02 step instead. How: This picks the m02 step when anchored to a badge, otherwise the app's own normal base-step gap. // Vertical Rhythm Base Minus 2 ~= 8.304px, Vertical Rhythm Base ~= 14.572px
+	const spaBelNum = vieHeiNum - tarRecObj.bottom - rhyPixFun( 'bas' );   // What: Space Below Number. Why: This is how much room the "below" placement actually has to work with. How: This subtracts the target's own bottom edge and the normal base-step gap from the viewport's own height. // Vertical Rhythm Base ~= 14.572px
 	const spaAboNum = aboAncNum - gapAboNum - edgMarNum;                   // What: Space Above Number. Why: This is how much room the "above" placement actually has to work with. How: This subtracts gapAboNum and the edge margin from aboAncNum.
 
 	const alwBelBoo = !!tarRecObj.alwBelBoo;  // What: Always Below Boolean. Why: A target spanning nearly the whole viewport itself (the nav tip's own 'side'/'top' placements) has essentially zero room above no matter what. How: This reads the target's own always-below flag.
@@ -118,7 +118,7 @@ function plaTipFun ( tarRecObj : HelRecTyp, tipWidNum : number, tipHeiNum : numb
 	if ( plaBelBoo ) { // What: Below Branch. Why: Below is the tip's usual side. How: This places the tip a base step under the target, capped by the viewport's own bottom.
 
 
-		topTipNum = tarRecObj.bottom + rhyPxlFun( 'bas' ); // What: Below Top Set. Why: The below branch places the tip a fixed base step under the target, whether it always sits below or has the room there. How: This sets topTipNum to the target's own bottom plus the base step. // Vertical Rhythm Base ~= 14.572px
+		topTipNum = tarRecObj.bottom + rhyPixFun( 'bas' ); // What: Below Top Set. Why: The below branch places the tip a fixed base step under the target, whether it always sits below or has the room there. How: This sets topTipNum to the target's own bottom plus the base step. // Vertical Rhythm Base ~= 14.572px
 		tipClaStr = 'helTipDiv--up';                       // What: Up Arrow Set. Why: A tip below the target points its arrow up at it. How: This sets tipClaStr to the up-pointing arrow class.
 		maxHeiNum = vieHeiNum - topTipNum - edgMarNum;     // What: Max Height Cap. Why: A below-placed tip must still not overflow past the bottom of the viewport. How: This subtracts topTipNum and the edge margin from the viewport's own height.
 
@@ -243,7 +243,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element 
 
 
 		setArrClaStr( tipClaStr );                                                    // What: Arrow Class Update. Why: The rendered tip needs its own up/down arrow modifier class. How: This writes tipClaStr into arrClaStr.
-		setScrMaxNum( tipIteObj.scrBoo ? maxHeiNum - rhyPxlFun( 'bas' ) * 2 : null ); // What: Scroll Max Update. Why: A scrollable tip's own inner wrapper must leave room for .helTipDiv's own top and bottom padding. How: This writes maxHeiNum minus that padding, or null when this item is not scrollable at all. // Vertical Rhythm Base ~= 14.572px
+		setScrMaxNum( tipIteObj.scrBoo ? maxHeiNum - rhyPixFun( 'bas' ) * 2 : null ); // What: Scroll Max Update. Why: A scrollable tip's own inner wrapper must leave room for .helTipDiv's own top and bottom padding. How: This writes maxHeiNum minus that padding, or null when this item is not scrollable at all. // Vertical Rhythm Base ~= 14.572px
 
 		// #endregion Placement State Updates
 

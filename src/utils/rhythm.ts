@@ -72,10 +72,10 @@ const durMilFun = ( durSteStr : string ) : number => Math.pow( COR_DES_NUM, 18 +
 
 
 
-// #region rhyPxlFun
+// #region rhyPixFun
 
 /**
- * rhyPxlFun = Rhythm Pixel Function
+ * rhyPixFun = Rhythm Pixel Function
  *
  * @summary
  * The pixel size of one vertical rhythm step, named the way the stylesheet
@@ -94,25 +94,25 @@ const durMilFun = ( durSteStr : string ) : number => Math.pow( COR_DES_NUM, 18 +
  *
  * @example
  * ```ts
- * rhyPxlFun('bas') // => about 14.57 at an 11px root font size
+ * rhyPixFun('bas') // => about 14.57 at an 11px root font size
  * ```
  *
 */
 
-const rhyPxlFun = ( rhySteStr : string ) : number => { // What: Rhythm Pixel Function. Why: Layout math that works in pixels needs the same step sizes the stylesheet uses. How: This turns the step's name into a power of the core design number and multiplies the root font size by it.
+const rhyPixFun = ( rhySteStr : string ) : number => { // What: Rhythm Pixel Function. Why: Layout math that works in pixels needs the same step sizes the stylesheet uses. How: This turns the step's name into a power of the core design number and multiplies the root font size by it.
 
 
 	const powValNum = 1 + steOffFun( rhySteStr );                                                // What: Power Value Number. Why: Each step is a power of the core design number, counted from the base step's first power. How: This adds the step's offset to that first power.
-	const rooPxlNum = parseFloat( getComputedStyle( document.documentElement ).fontSize ) || 11; // What: Root Pixel Number. Why: Every step scales with the root font size, which follows the browser's own font size setting. How: This reads the root element's computed font size, falling back to the 11px default.
+	const rooPixNum = parseFloat( getComputedStyle( document.documentElement ).fontSize ) || 11; // What: Root Pixel Number. Why: Every step scales with the root font size, which follows the browser's own font size setting. How: This reads the root element's computed font size, falling back to the 11px default.
 
 
 
-	return rooPxlNum * Math.pow( COR_DES_NUM, powValNum ); // What: Step Pixel Return. Why: The caller needs the step's size in pixels. How: This scales the root pixel size by the core design number raised to the step's power.
+	return rooPixNum * Math.pow( COR_DES_NUM, powValNum ); // What: Step Pixel Return. Why: The caller needs the step's size in pixels. How: This scales the root pixel size by the core design number raised to the step's power.
 
 
 };
 
-// #endregion rhyPxlFun
+// #endregion rhyPixFun
 
 // #endregion Helpers
 
@@ -120,7 +120,7 @@ const rhyPxlFun = ( rhySteStr : string ) : number => { // What: Rhythm Pixel Fun
 
 // #region Exports
 
-export { durMilFun, rhyPxlFun }; // What: Named Exports. Why: Every piece of pixel layout math and every animation-matched timer reads the stylesheet's scales through the same helpers. How: This exports durMilFun and rhyPxlFun by name.
+export { durMilFun, rhyPixFun }; // What: Named Exports. Why: Every piece of pixel layout math and every animation-matched timer reads the stylesheet's scales through the same helpers. How: This exports durMilFun and rhyPixFun by name.
 
 // #endregion Exports
 
