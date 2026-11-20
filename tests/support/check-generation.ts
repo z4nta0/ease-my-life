@@ -640,8 +640,6 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 
 
-	// #region Conditional And Daily Walks
-
 	for ( const curConObj of genStaObj.conditionals ) { // What: Conditional Resolve Loop. Why: Generation clears every daily charge and keeps Ease triggers. How: This checks each conditional against its previous self.
 
 
@@ -809,8 +807,6 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 
 	}
-
-	// #endregion Conditional And Daily Walks
 
 
 
