@@ -217,6 +217,117 @@ function reaPhrFun ( visResObj : TodVisTyp ) : string {
 
 // #region Components
 
+type DlcProTyp = { desIdeStr : string, ediValBoo : boolean, isoValStr : string, labTexStr : string, minIsoStr? : string, onChange : ( datIsoStr : string ) => void, onEdiSetFun : ( ediValBoo : boolean ) => void }; // What: Date-Link-Component Props Type. Why: Each date link shows its own date and editing state and hands back each change. How: This types DatLinCom's props.
+
+// #region DatLinCom
+
+/**
+ * DatLinCom = Date Link Component
+ *
+ * @summary
+ * Draws a hint's date as a plain link followed by a period, or, while it's
+ * being edited, as an inline date input in its place. Clicking the link
+ * starts editing, and leaving the input or pressing Enter or Escape ends
+ * it. Each non-empty date the input takes is handed back as it changes,
+ * while clearing the input commits nothing.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.desIdeStr   - Describe Identifier String: The id of the note
+ *                            describing the link.
+ * @param props.ediValBoo   - Edit Value Boolean: Whether the input shows.
+ * @param props.isoValStr   - ISO Value String: The date, as an ISO day.
+ * @param props.labTexStr   - Label Text String: The link's formatted date.
+ * @param props.minIsoStr   - Minimum ISO String: The earliest date the
+ *                            input's picker offers, when it has one.
+ * @param props.onChange    - On Change: Called with each non-empty date.
+ * @param props.onEdiSetFun - On Edit Set Function: Called to start or end
+ *                            editing.
+ *
+ * @returns The date link or the inline date input.
+ *
+ * @example
+ * ```tsx
+ * DatLinCom({ desIdeStr, ediValBoo, isoValStr, ... }) // => <DatLinCom />
+ * ```
+ *
+*/
+
+function DatLinCom ( { desIdeStr, ediValBoo, isoValStr, labTexStr, minIsoStr, onChange, onEdiSetFun } : DlcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<>{ /* What: Date Link Fragment. Why: The link or the input sits inside its caller's own hint sentence. How: This holds whichever one shows without a wrapper of its own. */ }
+
+
+			{ ediValBoo ? ( // What: Editing Check. Why: The date swaps between a plain link and a live inline input depending on whether editing is active. How: This renders the inline date input while ediValBoo is true, the plain link otherwise.
+
+
+				<input
+					className={ cssModObj.datInlInp }
+
+					autoFocus
+					min={ minIsoStr }
+					type='date'
+					value={ isoValStr }
+
+					onBlur={ () => onEdiSetFun( false ) }
+					onChange={ ( chaEveObj ) => { if ( chaEveObj.target.value ) onChange( chaEveObj.target.value ); } } // What: Date Change Guard. Why: Clearing the native date input must not commit an empty date. How: This hands on only a non-empty value.
+					onKeyDown={ ( keyEveObj ) => { // What: Date Key Down Handler. Why: Enter/Escape both need to close the inline input, matching onBlur's own behavior. How: This checks for either key and, when matched, prevents the default action and closes the input.
+
+
+						if ( keyEveObj.key === 'Enter' || keyEveObj.key === 'Escape' ) { // What: Commit Key Guard. Why: Enter and Escape should both close the inline input; the value already committed via onChange. How: This prevents the default action and closes the input.
+
+
+							keyEveObj.preventDefault(); // What: Default Prevent Call. Why: The native date input shouldn't perform its own default Enter/Escape behavior on top of this handler's own close. How: This calls keyEveObj's own preventDefault.
+
+							onEdiSetFun( false ); // What: Edit Close Call. Why: Both keys should close the inline input back to the plain link. How: This ends editing.
+
+
+						}
+
+
+					} }
+				/> // What: Date Inline Input Element. Why: This lets the user amend the date directly, in place. How: This is a native date input, focused immediately, committing on change and closing on blur/Enter/Escape.
+
+
+			) : ( // What: Date Link Branch. Why: Outside editing, the plain clickable date link belongs here instead. How: This renders the else branch, taken while ediValBoo is false.
+
+
+				<>{ /* What: Date Link Period Fragment. Why: The date link and its trailing period render together as one branch. How: This groups the button and the period with no wrapper element. */ }
+
+
+					<button
+						className={ cssModObj.datLinBut }
+
+						type='button'
+
+						aria-describedby={ desIdeStr }
+
+						onClick={ () => onEdiSetFun( true ) }
+					>{ labTexStr }</button>{ /* What: Date Link Button Element. Why: This is the plain-text entry point into editing the date. How: This shows labTexStr and opens the inline input when clicked. */ }.
+
+
+				</>
+
+
+			) }
+
+
+		</>
+
+
+	);
+
+
+}
+
+// #endregion DatLinCom
+
+
+
 type DocProTyp = { desIdeStr : string, onChange : ( modKeyStr : DatModTyp ) => void, value : DatModTyp }; // What: Date-Mode-Component Props Type. Why: The toggle shows the reminder's date mode, points at its note, and hands back the mode chosen. How: This types DatModCom's props.
 
 // #region DatModCom
@@ -845,57 +956,16 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 		<p className={ cssModObj.fieHinPar }>{ /* What: Anchor Hint Paragraph Element. Why: This is the shared hint every interval-based schedule below reuses unmodified. How: This renders the counted-from sentence, swapping in a live link or an inline input based on ancEdiBoo. */ }
 			Counted from{ ' ' }
-			{ ancEdiBoo ? ( // What: Anchor Editing Check. Why: The anchor date swaps between a plain link and a live inline input depending on whether editing is active. How: This renders the inline date input while ancEdiBoo is true, the plain link otherwise.
+			<DatLinCom
+				ediValBoo={ ancEdiBoo }
+				isoValStr={ ancIsoStr }
+				labTexStr={ ancLabStr }
 
+				desIdeStr={ schNotStr }
 
-				<input
-					className={ cssModObj.datInlInp }
-
-					autoFocus
-					type='date'
-					value={ ancIsoStr }
-
-					onBlur={ () => setAncEdiBoo( false ) }
-					onChange={ ( chaEveObj ) => { if ( chaEveObj.target.value ) onPatTasFun( { anchor : chaEveObj.target.value } ); } } // What: Anchor Change Guard. Why: Clearing the native date input must not commit an empty anchor. How: This commits only a non-empty value.
-					onKeyDown={ ( keyEveObj ) => { // What: Anchor Key Down Handler. Why: Enter/Escape both need to close the inline anchor input, matching onBlur's own behavior. How: This checks for either key and, when matched, prevents the default action and closes the input.
-
-
-						if ( keyEveObj.key === 'Enter' || keyEveObj.key === 'Escape' ) { // What: Commit Key Guard. Why: Enter and Escape should both close the inline anchor input; the value already committed via onChange. How: This prevents the default action and closes the input.
-
-
-							keyEveObj.preventDefault(); // What: Default Prevent Call. Why: The native date input shouldn't perform its own default Enter/Escape behavior on top of this handler's own close. How: This calls keyEveObj's own preventDefault.
-
-							setAncEdiBoo( false ); // What: Anchor Edit Close Call. Why: Both keys should close the inline input back to the plain link. How: This flips ancEdiBoo back to false.
-
-
-						}
-
-
-					} }
-				/> // What: Anchor Inline Input Element. Why: This lets the user amend the anchor date directly, in place. How: This is a native date input, focused immediately, committing on change and closing on blur/Enter/Escape.
-
-
-			) : ( // What: Anchor Link Branch. Why: Outside editing, the plain clickable date link belongs here instead. How: This renders the else branch, taken while ancEdiBoo is false.
-
-
-				<>{ /* What: Anchor Link Fragment Element. Why: The date link and its trailing period render together as one branch. How: This groups the button and the period with no wrapper element. */ }
-
-
-					<button
-						className={ cssModObj.datLinBut }
-
-						type='button'
-
-						aria-describedby={ schNotStr }
-
-						onClick={ () => setAncEdiBoo( true ) }
-					>{ ancLabStr }</button>{ /* What: Anchor Date Link Element. Why: This is the plain-text entry point into editing the anchor date. How: This shows ancLabStr and opens the inline input above when clicked. */ }.
-
-
-				</>
-
-
-			) }
+				onChange={ ( datIsoStr ) => onPatTasFun( { anchor : datIsoStr } ) }
+				onEdiSetFun={ setAncEdiBoo }
+			/>{ /* What: Date Link Component. Why: The anchor date can be amended in place. How: This shows ancLabStr as a link, or an inline date input while ancEdiBoo is true, committing each new anchor through onPatTasFun. */ }
 		</p>
 
 
@@ -933,64 +1003,17 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 			<p className={ cssModObj.fieHinPar }>{ /* What: Once Hint Paragraph Element. Why: This is the same "starting on" link/input pattern ancHinEle uses, for the once-specific start date field. How: This renders the live link or inline input based on oncEdiBoo. */ }
 				Starting on{ ' ' }
-				{ oncEdiBoo ? ( // What: Once Editing Check. Why: The once start date swaps between a plain link and a live inline input depending on whether editing is active. How: This renders the inline date input while oncEdiBoo is true, the plain link otherwise.
+				<DatLinCom
+					ediValBoo={ oncEdiBoo }
+					isoValStr={ oncIsoStr }
+					labTexStr={ oncLabStr }
+					minIsoStr={ TAS_NAM_OBJ.curIsoFun() }
 
+					desIdeStr={ schNotStr }
 
-					<input
-						className={ cssModObj.datInlInp }
-
-						autoFocus
-						min={ TAS_NAM_OBJ.curIsoFun() }
-						type='date'
-						value={ oncIsoStr }
-
-						onBlur={ () => setOncEdiBoo( false ) }
-						onChange={ ( chaEveObj ) => { // What: Once Date Change Handler. Why: `min` only disables the picker UI's own earlier dates; typing a date by hand bypasses it in every browser, so a past pick still has to be clamped here. How: This commits chaEveObj's own value, clamped up to today when it's earlier.
-
-
-							if ( chaEveObj.target.value ) onPatTasFun( { onceDate : chaEveObj.target.value < TAS_NAM_OBJ.curIsoFun() ? TAS_NAM_OBJ.curIsoFun() : chaEveObj.target.value } ); // What: Clamped Commit Guard. Why: A typed-in date must still commit, but never earlier than today. How: This calls onPatTasFun only when a value exists, clamping it up to today when needed.
-
-
-						} }
-						onKeyDown={ ( keyEveObj ) => { // What: Once Key Down Handler. Why: Enter/Escape both need to close the inline once-date input, matching onBlur's own behavior. How: This checks for either key and, when matched, prevents the default action and closes the input.
-
-
-							if ( keyEveObj.key === 'Enter' || keyEveObj.key === 'Escape' ) { // What: Commit Key Guard. Why: Enter and Escape should both close the inline once-date input; the value already committed via onChange. How: This prevents the default action and closes the input.
-
-
-								keyEveObj.preventDefault(); // What: Default Prevent Call. Why: The native date input shouldn't perform its own default Enter/Escape behavior on top of this handler's own close. How: This calls keyEveObj's own preventDefault.
-
-								setOncEdiBoo( false ); // What: Once Edit Close Call. Why: Both keys should close the inline input back to the plain link. How: This flips oncEdiBoo back to false.
-
-
-							}
-
-
-						} }
-					/> // What: Once Date Inline Input Element. Why: This lets the user amend the start date directly, in place, never earlier than today. How: This is a native date input, focused immediately, committing (clamped) on change and closing on blur/Enter/Escape.
-
-
-				) : ( // What: Once Link Branch. Why: Outside editing, the plain clickable date link belongs here instead. How: This renders the else branch, taken while oncEdiBoo is false.
-
-
-					<>{ /* What: Once Link Fragment Element. Why: The date link and its trailing period render together as one branch. How: This groups the button and the period with no wrapper element. */ }
-
-
-						<button
-							className={ cssModObj.datLinBut }
-
-							type='button'
-
-							aria-describedby={ schNotStr }
-
-							onClick={ () => setOncEdiBoo( true ) }
-						>{ oncLabStr }</button>{ /* What: Once Date Link Element. Why: This is the plain-text entry point into editing the start date. How: This shows oncLabStr and opens the inline input above when clicked. */ }.
-
-
-					</>
-
-
-				) }
+					onChange={ ( datIsoStr ) => onPatTasFun( { onceDate : datIsoStr < TAS_NAM_OBJ.curIsoFun() ? TAS_NAM_OBJ.curIsoFun() : datIsoStr } ) } // What: Clamped Once Date Commit. Why: The input's min only disables the picker UI's own earlier dates, and typing a date by hand bypasses it in every browser, so a past pick still has to be clamped here. How: This commits the date, clamped up to today when it's earlier.
+					onEdiSetFun={ setOncEdiBoo }
+				/>{ /* What: Date Link Component. Why: A one-time reminder's start date can be amended in place, never earlier than today. How: This shows oncLabStr as a link, or an inline date input while oncEdiBoo is true. */ }
 			</p>
 
 
