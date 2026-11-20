@@ -655,12 +655,12 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 
-		const nexMapObj = new Map(); // What: Next Map Object. Why: The NEXT run of this effect needs this run's own final positions as its own "previous" baseline. How: This starts empty and is filled by the loop just below.
+		const nexPosMap = new Map(); // What: Next Position Map. Why: The NEXT run of this effect needs this run's own final positions as its own "previous" baseline. How: This starts empty and is filled by the loop just below.
 
 
-		pilNodArr.forEach( ( pilCurEle ) => nexMapObj.set( pilCurEle.dataset.g, pilCurEle.offsetLeft ) ); // What: Next Map Populate. Why: Every pill's own current position must be recorded for next time. How: This records each pill's own current offsetLeft, keyed by its own group name.
+		pilNodArr.forEach( ( pilCurEle ) => nexPosMap.set( pilCurEle.dataset.g, pilCurEle.offsetLeft ) ); // What: Next Map Populate. Why: Every pill's own current position must be recorded for next time. How: This records each pill's own current offsetLeft, keyed by its own group name.
 
-		groFliRef.current = nexMapObj; // What: Group Flip Update. Why: This run's own positions must replace whatever the previous run recorded. How: This overwrites groFliRef.current with nexMapObj.
+		groFliRef.current = nexPosMap; // What: Group Flip Update. Why: This run's own positions must replace whatever the previous run recorded. How: This overwrites groFliRef.current with nexPosMap.
 
 
 		if ( groCurEle.scrollLeft > 1 ) { // What: Group Scroll Reset Guard. Why: A pin-to-front reorder means the selected group is now the leftmost pill, which should be visible. How: This glides the row back to its own left edge whenever it wasn't already there.

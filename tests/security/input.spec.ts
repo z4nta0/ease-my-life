@@ -48,7 +48,7 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The text check
 
 // #region Constants
 
-const PAY_LOA_STR = '<img src=x onerror=__xssRanNum=1>'; // What: Payload String. Why: Markup rendered as HTML would add an image whose failed load runs its handler. How: This is an image tag with an inline error handler, short enough for the picker name field's 40-character limit.
+const INJ_PAY_STR = '<img src=x onerror=__xssRanNum=1>'; // What: Injection Payload String. Why: Markup rendered as HTML would add an image whose failed load runs its handler. How: This is an image tag with an inline error handler, short enough for the picker name field's 40-character limit.
 
 // #endregion Constants
 
@@ -87,7 +87,7 @@ let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's pa
  *
  * @example
  * ```ts
- * texCheFun(page, PAY_LOA_STR) // => Promise<void>
+ * texCheFun(page, INJ_PAY_STR) // => Promise<void>
  * ```
  *
 */
@@ -153,7 +153,7 @@ test( 'a picker name typed as markup is tidied and shows as text', async ( { pag
 
 	// #region Payload Save
 
-	await carSecLoc.locator( '[data-element-name-hook~="basNamInp"]' ).fill( PAY_LOA_STR ); // What: Name Fill Call. Why: The payload is typed where a name goes. How: This fills the name field.
+	await carSecLoc.locator( '[data-element-name-hook~="basNamInp"]' ).fill( INJ_PAY_STR ); // What: Name Fill Call. Why: The payload is typed where a name goes. How: This fills the name field.
 
 	await carSecLoc.locator( '[data-element-name-hook~="picFooDiv"]' ).getByRole( 'button', { exact : true, name : 'Save' } ).click(); // What: Save Click Call. Why: Save commits the draft. How: This clicks it.
 
@@ -183,13 +183,13 @@ test( 'a reminder name typed as markup shows as text', async ( { page : curPagOb
 
 	await curPagObj.locator( '[data-element-name-hook~="remAddBut"]' ).click(); // What: Add Open Click. Why: New reminders start from the add button. How: This opens the form.
 
-	await curPagObj.locator( '[data-element-name-hook~="addNamInp"]' ).fill( PAY_LOA_STR ); // What: Name Fill Call. Why: The payload is typed where a name goes. How: This fills the name field.
+	await curPagObj.locator( '[data-element-name-hook~="addNamInp"]' ).fill( INJ_PAY_STR ); // What: Name Fill Call. Why: The payload is typed where a name goes. How: This fills the name field.
 
 	await curPagObj.locator( '[data-element-name-hook~="remSavBut"]' ).click(); // What: Save Click Call. Why: The reminder is created on save. How: This clicks it.
 
-	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.tasks.some( ( curTasObj ) => curTasObj.name === PAY_LOA_STR ), 'reminder added' ); // What: Name Save Wait. Why: The name is checked once saved. How: This waits for it in IndexedDB.
+	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.tasks.some( ( curTasObj ) => curTasObj.name === INJ_PAY_STR ), 'reminder added' ); // What: Name Save Wait. Why: The name is checked once saved. How: This waits for it in IndexedDB.
 
-	await texCheFun( curPagObj, PAY_LOA_STR ); // What: Text Check Call. Why: The saved name shows on the reminder's card. How: This checks it shows as text and ran nothing.
+	await texCheFun( curPagObj, INJ_PAY_STR ); // What: Text Check Call. Why: The saved name shows on the reminder's card. How: This checks it shows as text and ran nothing.
 
 
 } );
@@ -201,11 +201,11 @@ test( 'a holiday name typed as markup shows as text', async ( { page : curPagObj
 
 	await selTabFun( curPagObj, 'settings' ); // What: Tab Switch Call. Why: Holidays are added on the Settings tab. How: This switches to it.
 
-	await subHolFun( curPagObj, PAY_LOA_STR, '2026-11-03' ); // What: Holiday Submit Call. Why: The payload is typed where a holiday's name goes. How: This names, dates, and adds the holiday.
+	await subHolFun( curPagObj, INJ_PAY_STR, '2026-11-03' ); // What: Holiday Submit Call. Why: The payload is typed where a holiday's name goes. How: This names, dates, and adds the holiday.
 
-	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.holidays.custom.some( ( holCusObj ) => holCusObj.name === PAY_LOA_STR ), 'holiday added' ); // What: Name Save Wait. Why: The name is checked once saved. How: This waits for it in IndexedDB.
+	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.holidays.custom.some( ( holCusObj ) => holCusObj.name === INJ_PAY_STR ), 'holiday added' ); // What: Name Save Wait. Why: The name is checked once saved. How: This waits for it in IndexedDB.
 
-	await texCheFun( curPagObj, PAY_LOA_STR ); // What: Text Check Call. Why: The saved name shows in the holiday list. How: This checks it shows as text and ran nothing.
+	await texCheFun( curPagObj, INJ_PAY_STR ); // What: Text Check Call. Why: The saved name shows in the holiday list. How: This checks it shows as text and ran nothing.
 
 
 } );

@@ -462,12 +462,12 @@ function IcoSetCom ( { className, icoKeyStr, strWidNum = 2 } : IecProTyp ) : Rea
 		cheEle : <><path d='M20 6 9 17l-5-5' /></>,                                                                                      // What: Check Element. Why: This marks a completed status. How: This draws a single checkmark stroke.
 		chvEle : <><path d='m6 9 6 6 6-6' /></>,                                                                                         // What: Chevron Element. Why: This marks PicBloCom's own expand/collapse toggle. How: This draws a plain downward chevron, keyed chvEle (escalated past the usual che truncation, since that collides with cheEle just above, per the Naming-conflict resolution rule).
 		clcEle : <><path d='M12 8v4l3 3' /><circle cx='12' cy='12' r='9' /></>,                                                          // What: Clock Element. Why: This marks RemLogCom's own kicker. How: This draws a plain clock face, keyed clcEle (escalated past the usual clo truncation, since clo already heavily means Close throughout this codebase, per the Naming-conflict resolution rule).
+		croEle : <><path d='M18 6 6 18M6 6l12 12' /></>,                                                                                 // What: Cross Element. Why: This marks a skipped status, and a close button. How: This draws a plain X shape.
 		logEle : <><path d='M3 5h18M3 12h18M3 19h18' /></>,                                                                              // What: Log Element. Why: This marks the LogChiCom toggle and every panel's own kicker. How: This draws 3 stacked horizontal lines.
 		mooEle : <><path d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z' /></>,                                                                   // What: Moon Element. Why: This marks a picker resting today under a triggered conditional. How: This draws a crescent moon shape.
 		pusEle : <><path d='M12 19V5M5 12l7-7 7 7' /></>,                                                                                // What: Push Element. Why: This marks a manually pushed/rerolled status. How: This draws an upward arrow.
 		rolEle : <><path d='M3 2v6h6' /><path d='M3 8a9 9 0 1 0 3-5' /></>,                                                              // What: Roll Element. Why: This marks a rolled-off status. How: This draws a counter-clockwise arrow.
-		shuEle : <><path d='M16 3h5v5' /><path d='M4 20 21 3' /><path d='M21 16v5h-5' /><path d='m15 15 6 6' /><path d='m4 4 5 5' /></>, // What: Shuffle Element. Why: This marks an auto-picked status. How: This draws a pair of crossing shuffle-style arrows.
-		xEle   : <><path d='M18 6 6 18M6 6l12 12' /></>                                                                                  // What: X Element. Why: This marks a skipped status, and a close button. How: This draws a plain X shape.
+		shuEle : <><path d='M16 3h5v5' /><path d='M4 20 21 3' /><path d='M21 16v5h-5' /><path d='m15 15 6 6' /><path d='m4 4 5 5' /></>  // What: Shuffle Element. Why: This marks an auto-picked status. How: This draws a pair of crossing shuffle-style arrows.
 
 
 	};
@@ -557,7 +557,7 @@ function LogCloCom ( { onCloLogFun } : LlcProTyp ) : React.JSX.Element | null {
 			<IcoSetCom
 				className={ cssModObj.cloIcoSvg }
 
-				icoKeyStr='xEle'
+				icoKeyStr='croEle'
 				strWidNum={ 2 }
 			/>{ /* What: Icon Set Component. Why: An X glyph marks the close control. How: This draws the X shape. */ }
 
@@ -703,7 +703,7 @@ function StaChiCom ( { iteFlaObj } : ShcProTyp ) : React.JSX.Element {
 
 
 
-	if ( iteFlaObj.skiBoo ) chiTupArr.push( [ 'skip', 'xEle', 'Skipped', 2.6 ] ); // What: Skipped Chip Push. Why: A skipped item needs its own chip. How: This appends a [key, icon, title, width] tuple when skiBoo is true.
+	if ( iteFlaObj.skiBoo ) chiTupArr.push( [ 'skip', 'croEle', 'Skipped', 2.6 ] ); // What: Skipped Chip Push. Why: A skipped item needs its own chip. How: This appends a [key, icon, title, width] tuple when skiBoo is true.
 
 
 
@@ -1673,9 +1673,9 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React
 							<IcoSetCom
 								className={ cssModObj.icoGlySvg }
 
-								icoKeyStr='xEle'
+								icoKeyStr='croEle'
 								strWidNum={ 2.6 }
-							/>{ /* What: Icon Set Component. Why: The legend shows the same glyph the chip uses. How: This draws the xEle shape. */ }
+							/>{ /* What: Icon Set Component. Why: The legend shows the same glyph the chip uses. How: This draws the croEle shape. */ }
 
 
 						</span>
@@ -2086,9 +2086,9 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 										<IcoSetCom
 											className={ cssModObj.icoGlySvg }
 
-											icoKeyStr='xEle'
+											icoKeyStr='croEle'
 											strWidNum={ 2.6 }
-										/>{ /* What: Icon Set Component. Why: The status glyph matches the Day Log legend. How: This draws the xEle shape. */ }
+										/>{ /* What: Icon Set Component. Why: The status glyph matches the Day Log legend. How: This draws the croEle shape. */ }
 
 
 									</span>

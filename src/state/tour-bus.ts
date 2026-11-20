@@ -6,9 +6,9 @@
 import React from 'react'; // What: React. Why: This is the UI library the hook exported from this module is built on. How: This is used directly (React.useState, React.useEffect) inside useEmlTouFun below, instead of importing individual named hooks.
 
 
-import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: A sample picker prefill carries its items. How: This types PreFilTyp's items.
-import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record Type. Why: A prefill can carry any picker field. How: This is part of PreFilTyp.
-import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Type. Why: A prefill can carry any reminder field. How: This is part of PreFilTyp.
+import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: A sample picker prefill carries its items. How: This types PrePayTyp's items.
+import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record Type. Why: A prefill can carry any picker field. How: This is part of PrePayTyp.
+import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Type. Why: A prefill can carry any reminder field. How: This is part of PrePayTyp.
 
 // #endregion Imports
 
@@ -44,7 +44,7 @@ import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Typ
 
 // #region Types
 
-type PreFilTyp = Partial< PicRcdTyp & TasRcdTyp > & { items? : Partial< IteRcdTyp >[], step? : number }; // What: Prefill Type. Why: A tour can prefill the real create form with a sample picker or reminder. How: This allows any picker or reminder field, plus a sample picker's items and the form step to open on.
+type PrePayTyp = Partial< PicRcdTyp & TasRcdTyp > & { items? : Partial< IteRcdTyp >[], step? : number }; // What: Prefill Payload Type. Why: A tour can prefill the real create form with a sample picker or reminder. How: This allows any picker or reminder field, plus a sample picker's items and the form step to open on.
 
 type TouBusTyp = { // What: Tour Bus Type. Why: The tours, the tour runner, and the tabs coordinate through one shared state. How: This describes it, every field optional since each is written by whichever module needs it.
 
@@ -55,7 +55,7 @@ type TouBusTyp = { // What: Tour Bus Type. Why: The tours, the tour runner, and 
 	iteMaxNum? : number | null;                                                   // What: Item Max Number. Why: A tour can stage an added item's ease band. How: This holds its easeMax, or null once a tour clears it.
 	iteMinNum? : number | null;                                                   // What: Item Min Number. Why: A tour can stage an added item's ease band. How: This holds its easeMin, or null once a tour clears it.
 	itePreStr? : string | null;                                                   // What: Item Prefill String. Why: A tour can stage an added item's name. How: This holds it, or null once a tour clears it.
-	preFilObj? : PreFilTyp | null;                                                // What: Prefill Object. Why: A tour prefills the real create form. How: This holds the prefill, or null once consumed.
+	preFilObj? : PrePayTyp | null;                                                // What: Prefill Object. Why: A tour prefills the real create form. How: This holds the prefill, or null once consumed.
 	redNonNum? : number;                                                          // What: Redo Nonce Number. Why: Going back in a tour asks the Pickers tab for a fresh pick. How: Each change of this number is one request.
 	reoNonNum? : number;                                                          // What: Reopen Nonce Number. Why: Going back in a tour can reopen a form. How: Each change of this number is one request.
 	resNonNum? : number;                                                          // What: Reset Nonce Number. Why: A tour can ask a page to reset to its starting state. How: Each change of this number is one request.

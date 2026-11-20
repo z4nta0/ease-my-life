@@ -38,7 +38,7 @@ rules_version = '2'; // What: Rules Version. Why: Version 2 allows functions wit
 service cloud.firestore { // What: Firestore Service. Why: These rules cover the Firestore database. How: This scopes them to it.
 
 
-	match /databases/{database}/documents { // What: Documents Match. Why: Every rule applies inside the project's database. How: This matches its documents.
+	match /databases/{datNamStr}/documents { // What: Documents Match. Why: Every rule applies inside the project's database. How: This matches its documents.
 
 
 		// #region isaManFun

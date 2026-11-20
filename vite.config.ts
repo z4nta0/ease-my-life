@@ -54,7 +54,7 @@ import type { Plugin            } from 'vite';  // What: Plugin. Why: The legal 
 // #region Constants
 
 const LEG_DOC_REG = /data-legal-document-body='(privacy|terms)'\s*>(?=<\/article>)/;                         // What: Legal Document Regular Expression. Why: A legal page marks where its document goes. How: This matches the end of an empty article's opening tag that names a document, capturing the name.
-const LEG_TEX_PAT = fileURLToPath( new URL( './src/tabs/settings/legal-text.tsx', import.meta.url ) ); // What: Legal Text Path. Why: The documents live in one module the Settings modal shares. How: This is that module's absolute path, built from this config's own address.
+const LEG_PAT_STR = fileURLToPath( new URL( './src/tabs/settings/legal-text.tsx', import.meta.url ) ); // What: Legal Path String. Why: The documents live in one module the Settings modal shares. How: This is that module's absolute path, built from this config's own address.
 const MIN_SCR_ARR = [ 'boot-splash.js', 'sw-notify.js' ];                                            // What: Minify Script Array. Why: Scripts in public/ ship exactly as written unless the build minifies them. How: This lists every public/ script minShiFun's closeBundle step minifies, by its name in the output folder.
 
 // #endregion Constants
@@ -63,7 +63,7 @@ const MIN_SCR_ARR = [ 'boot-splash.js', 'sw-notify.js' ];                       
 
 // #region Module State
 
-const pacJsoObj = JSON.parse( readFileSync( new URL( './package.json', import.meta.url ), 'utf-8' ) ); // What: Package Json Object. Why: The About section and the support form's diagnostic field should report the version npm version set, rather than a hardcoded string that drifts. How: This reads package.json at build time for its version field.
+const PAC_JSO_OBJ = JSON.parse( readFileSync( new URL( './package.json', import.meta.url ), 'utf-8' ) ); // What: Package JSON Object. Why: The About section and the support form's diagnostic field should report the version npm version set, rather than a hardcoded string that drifts. How: This reads package.json at build time for its version field.
 
 // #endregion Module State
 
@@ -116,13 +116,13 @@ const legPagFun = () : Plugin => ({ // What: Legal Pages Function. Why: The lega
 
 
 
-		const { module : legTexObj } = await runnerImport< LegTexTyp >( LEG_TEX_PAT, { configFile : false } ); // What: Legal Text Object. Why: The documents are TSX, which Node can't load on its own. How: This loads the module through Vite's runner, without loading this config again inside it.
+		const { module : legTexObj } = await runnerImport< LegTexTyp >( LEG_PAT_STR, { configFile : false } ); // What: Legal Text Object. Why: The documents are TSX, which Node can't load on its own. How: This loads the module through Vite's runner, without loading this config again inside it.
 
-		const docComFun = docMatArr[ 1 ] === 'privacy' ? legTexObj.PriPolCom : legTexObj.TerSerCom; // What: Document Component Function. Why: Each page shows its own document. How: This picks the component the marker names.
+		const LegDocCom = docMatArr[ 1 ] === 'privacy' ? legTexObj.PriPolCom : legTexObj.TerSerCom; // What: Legal Document Component. Why: Each page shows its own document. How: This picks the component the marker names.
 
 
 
-		return htmTexStr.replace( LEG_DOC_REG, ( matTexStr ) => matTexStr + renderToStaticMarkup( createElement( docComFun ) ) ); // What: Filled Page Return. Why: Vite serves or writes whatever this returns. How: This places the document's static HTML right after the article's opening tag.
+		return htmTexStr.replace( LEG_DOC_REG, ( matTexStr ) => matTexStr + renderToStaticMarkup( createElement( LegDocCom ) ) ); // What: Filled Page Return. Why: Vite serves or writes whatever this returns. How: This places the document's static HTML right after the article's opening tag.
 
 
 	}
@@ -256,7 +256,7 @@ const vitConObj = defineConfig({ // What: Vite Config Object. Why: Vite reads it
 
 
 	css    : { modules : { localsConvention : 'camelCaseOnly' } },                         // What: Css. Why: CSS modules expose their kebab-case class names as camelCase keys only, so .prog--warm is read as cssModObj.progWarm, per CLAUDE.md's "CSS modules and JS hooks" rules. How: This sets the locals convention.
-	define : { __APP_VERSION__ : JSON.stringify( pacJsoObj.version ) },                    // What: Define. Why: The app reports its own version without a hardcoded string. How: This replaces __APP_VERSION__ with the package version at build time.
+	define : { __APP_VERSION__ : JSON.stringify( PAC_JSO_OBJ.version ) },                    // What: Define. Why: The app reports its own version without a hardcoded string. How: This replaces __APP_VERSION__ with the package version at build time.
 	server : { watch : { ignored : [ '**/*.log', '**/dist/**', '**/tests/output/**' ] } }, // What: Server. Why: A test run writes thousands of trace frames into the test output, which kept every dev server watching the project busy for hours (measured 2026-11-13 in tech-geek-cards), and none of those files is source. How: This keeps the dev server's file watcher off logs, the build output, and the test output.
 
 	build : { // What: Build. Why: The production build needs its asset inlining, its pages, and its warning threshold set. How: This lists all three.
