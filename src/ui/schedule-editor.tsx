@@ -1067,6 +1067,18 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 	);
 
+	const schNotEle = staAppObj && ( // What: Schedule Note Element. Why: Every schedule subsection shows the same schedule-placement advisory, so it's built once here. How: This renders VisNotCom, gated on kinValStr 'schedule', only while staAppObj was actually passed.
+
+
+		<VisNotCom
+			kinValStr='schedule'
+			notIdeStr={ schNotStr }
+			staAppObj={ staAppObj }
+			tasRcdObj={ tasRcdObj }
+		/> // What: Visibility Note Component. Why: This is the schedule-placement advisory, which only ever shows when a schedule-based cause applies. How: This passes kinValStr 'schedule' and schNotStr as its own note id.
+
+
+	);
 
 	const oncFieEle = ( // What: Once Fields Element. Why: A one-time reminder is due immediately by default, and this subsection lets picking a later start date defer that. How: This renders the start-date label plus the same live link/inline-input pattern as ancHinEle.
 
@@ -1114,18 +1126,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 
 
-			{ staAppObj && ( // What: Once Visibility Check. Why: The once schedule's own advisory only makes sense once a real staAppObj is available. How: This renders VisNotCom, gated on kinValStr 'schedule', only while staAppObj was actually passed.
-
-
-				<VisNotCom
-					kinValStr='schedule'
-					notIdeStr={ schNotStr }
-					staAppObj={ staAppObj }
-					tasRcdObj={ tasRcdObj }
-				/> // What: Visibility Note Component. Why: This is the schedule-placement advisory, which only ever shows when a schedule-based cause applies. How: This passes kinValStr 'schedule' and schNotStr as its own note id.
-
-
-			) }
+			{ schNotEle }{ /* What: Schedule Note Render. Why: Each schedule subsection carries the same schedule-placement advisory beneath its controls. How: This renders schNotEle, already built once above, directly as a JSX child. */ }
 
 
 		</div>
@@ -1211,18 +1212,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 
 
-						{ staAppObj && ( // What: Weekly Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kinValStr 'schedule', only while staAppObj was actually passed.
-
-
-							<VisNotCom
-								kinValStr='schedule'
-								notIdeStr={ schNotStr }
-								staAppObj={ staAppObj }
-								tasRcdObj={ tasRcdObj }
-							/> // What: Visibility Note Component. Why: This is the schedule-placement advisory, which only ever shows when a schedule-based cause applies. How: This passes kinValStr 'schedule' and schNotStr as its own note id.
-
-
-						) }
+						{ schNotEle }{ /* What: Schedule Note Render. Why: Each schedule subsection carries the same schedule-placement advisory beneath its controls. How: This renders schNotEle, already built once above, directly as a JSX child. */ }
 
 
 					</div>
@@ -1266,18 +1256,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 
 
-						{ staAppObj && ( // What: Interval Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kinValStr 'schedule', only while staAppObj was actually passed.
-
-
-							<VisNotCom
-								kinValStr='schedule'
-								notIdeStr={ schNotStr }
-								staAppObj={ staAppObj }
-								tasRcdObj={ tasRcdObj }
-							/> // What: Visibility Note Component. Why: This is the schedule-placement advisory, which only ever shows when a schedule-based cause applies. How: This passes kinValStr 'schedule' and schNotStr as its own note id.
-
-
-						) }
+						{ schNotEle }{ /* What: Schedule Note Render. Why: Each schedule subsection carries the same schedule-placement advisory beneath its controls. How: This renders schNotEle, already built once above, directly as a JSX child. */ }
 
 
 					</div>
@@ -1415,18 +1394,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 
 
-						{ staAppObj && ( // What: Monthly Day Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kinValStr 'schedule', only while staAppObj was actually passed.
-
-
-							<VisNotCom
-								kinValStr='schedule'
-								notIdeStr={ schNotStr }
-								staAppObj={ staAppObj }
-								tasRcdObj={ tasRcdObj }
-							/> // What: Visibility Note Component. Why: This is the schedule-placement advisory, which only ever shows when a schedule-based cause applies. How: This passes kinValStr 'schedule' and schNotStr as its own note id.
-
-
-						) }
+						{ schNotEle }{ /* What: Schedule Note Render. Why: Each schedule subsection carries the same schedule-placement advisory beneath its controls. How: This renders schNotEle, already built once above, directly as a JSX child. */ }
 
 
 					</div>
@@ -1585,18 +1553,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 
 
-						{ staAppObj && ( // What: Annual Date Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kinValStr 'schedule', only while staAppObj was actually passed.
-
-
-							<VisNotCom
-								kinValStr='schedule'
-								notIdeStr={ schNotStr }
-								staAppObj={ staAppObj }
-								tasRcdObj={ tasRcdObj }
-							/> // What: Visibility Note Component. Why: This is the schedule-placement advisory, which only ever shows when a schedule-based cause applies. How: This passes kinValStr 'schedule' and schNotStr as its own note id.
-
-
-						) }
+						{ schNotEle }{ /* What: Schedule Note Render. Why: Each schedule subsection carries the same schedule-placement advisory beneath its controls. How: This renders schNotEle, already built once above, directly as a JSX child. */ }
 
 
 					</div>
