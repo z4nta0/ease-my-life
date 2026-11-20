@@ -26,7 +26,7 @@ import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Inf
 import { isaTruFun    } from '../../utils/guard.ts';                // What: Is-A Truthy Function. Why: The scroll-fade rows drop any that aren't mounted. How: This filters them so the rest read as real elements.
 import { modDefFun    } from '../../state/new-item.ts';             // What: Mode Defaults Function. Why: A draft picker's type change resets its items the same way a saved picker's does. How: This is called by patNewFun.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Several add/edit controls in this tab must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutProFun throughout TabDatCom.
-import { PIC_NAM_OBJ  } from '../../core/pickers.ts';               // What: Pickers Namespace Object. Why: An ease-mode picker's item list needs the same fallback ease-band math the picking engine itself uses. How: This is called once per picker via PIC_NAM_OBJ.aveEasFun, through driDayFun for each ease item's days, and read for THR_VAL_NUM, a draft's full-charge ceiling.
+import { PIC_NAM_OBJ  } from '../../core/pickers.ts';               // What: Pickers Namespace Object. Why: An ease-mode picker's item list needs the same fallback ease-band math the picking engine itself uses. How: This is called once per picker via PIC_NAM_OBJ.aveEasFun, through driDayFun for each ease item's days, and read for THR_VAL_NUM, a draft's full-charge ceiling, and DEF_EAS_OBJ, the default band an item with none falls back to.
 import { PicConCom    } from './picker-controls.tsx';               // What: Picker Controls Component. Why: Each picker card's Controls disclosure needs its own how-it-picks/when-it-runs/item-controls body. How: This is rendered inside TabDatCom's picker card whenever that card's Controls disclosure is open.
 import { ranIdeFun    } from '../../utils/random-id.ts';            // What: Random Identifier Function. Why: A new draft picker needs a stable id before it's created. How: This mints a 'pkr_' id.
 import { redMotFun    } from '../../utils/motion.ts';               // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see any of this tab's own FLIP, scroll, or collapse animations. How: This is checked before every animation in TabDatCom.
@@ -1977,7 +1977,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 					const iteEntFun = ( iteCurObj : IteRcdTyp ) : SorRowTyp => { // What: Item Entry Function. Why: Every item needs the same comparable shape before sorEntFun can sort them. How: This builds a { name, type, group, count, range, boost, isActive } entry per item, mode-dependent per pisOptFun.
 
 
-						const easMaxNum = iteCurObj.easeMax ?? falEasObj?.easeMax ?? 20; // What: Ease Max Number. Why: The Range field below needs this item's own (or the fallback) ease-max value. How: This reads iteCurObj.easeMax, falling back to falEasObj's own easeMax, then a hardcoded 20.
+						const easMaxNum = iteCurObj.easeMax ?? falEasObj?.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax; // What: Ease Max Number. Why: The Range field below needs this item's own (or the fallback) ease-max value. How: This reads iteCurObj.easeMax, falling back to falEasObj's own easeMax, then PIC_NAM_OBJ.DEF_EAS_OBJ's easeMax, the engine's own default band.
 
 
 
@@ -2385,11 +2385,11 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 											{ disIteArr.map( ( iteCurObj ) => { // What: Item Row Map. Why: One collapsible row is needed per item, in disIteArr's own (freeze-aware) order. How: This computes this item's own meta text, then renders its closed/open row and editor below.
 
 
-												const iteOpeBoo = opeIteStr === iteCurObj.id;                    // What: Item Open Boolean. Why: This specific row needs to know whether IT is the currently-open one. How: This compares iteCurObj.id against opeIteStr.
-												const easMinNum = iteCurObj.easeMin ?? falEasObj?.easeMin ?? 10; // What: Ease Min Number. Why: The meta text below needs this item's own (or the fallback) ease-min value, same fallback the picking engine itself uses. How: This reads iteCurObj.easeMin, falling back to falEasObj's own easeMin, then a hardcoded 10.
-												const easMaxNum = iteCurObj.easeMax ?? falEasObj?.easeMax ?? 20; // What: Ease Max Number. Why: Same reasoning as easMinNum, for the max end. How: This reads iteCurObj.easeMax, falling back to falEasObj's own easeMax, then a hardcoded 20.
-												const sooValNum = PIC_NAM_OBJ.driDayFun( easMaxNum );            // What: Soonest Value Number. Why: The meta text's own day-band needs its own near end. How: This converts easMaxNum into a day count.
-												const latValNum = PIC_NAM_OBJ.driDayFun( easMinNum );            // What: Latest Value Number. Why: Same reasoning as sooValNum, for the far end. How: This converts easMinNum into a day count.
+												const iteOpeBoo = opeIteStr === iteCurObj.id;                                                 // What: Item Open Boolean. Why: This specific row needs to know whether IT is the currently-open one. How: This compares iteCurObj.id against opeIteStr.
+												const easMinNum = iteCurObj.easeMin ?? falEasObj?.easeMin ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin; // What: Ease Min Number. Why: The meta text below needs this item's own (or the fallback) ease-min value, same fallback the picking engine itself uses. How: This reads iteCurObj.easeMin, falling back to falEasObj's own easeMin, then PIC_NAM_OBJ.DEF_EAS_OBJ's easeMin, the engine's own default band.
+												const easMaxNum = iteCurObj.easeMax ?? falEasObj?.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax; // What: Ease Max Number. Why: Same reasoning as easMinNum, for the max end. How: This reads iteCurObj.easeMax, falling back to falEasObj's own easeMax, then PIC_NAM_OBJ.DEF_EAS_OBJ's easeMax, the engine's own default band.
+												const sooValNum = PIC_NAM_OBJ.driDayFun( easMaxNum );                                         // What: Soonest Value Number. Why: The meta text's own day-band needs its own near end. How: This converts easMaxNum into a day count.
+												const latValNum = PIC_NAM_OBJ.driDayFun( easMinNum );                                         // What: Latest Value Number. Why: Same reasoning as sooValNum, for the far end. How: This converts easMinNum into a day count.
 
 
 												const rowSumStr = iteCurObj.vacation // What: Row Summary String. Why: The closed row's own summary line depends entirely on whether the item is on vacation, then on the picker's own mode. How: This picks 'Inactive', an ease-band range, a weight, or "Equal chance".
