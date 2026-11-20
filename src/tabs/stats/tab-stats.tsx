@@ -28,6 +28,10 @@ import { useEmlTouFun } from '../../state/tour-bus.ts';       // What: Use Ease 
 
 import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The Stats tab changes its saved filters through the store's actions. How: This types TtcProTyp's actStoObj.
 import type { IteRcdTyp } from '../../core/data-model.ts'; // What: Item Record Type. Why: The per-item breakdown mixes live items with deleted ones rebuilt from the log. How: This types that combined list as partial items.
+import type { PclOutTyp } from '../../core/data-model.ts'; // What: Pick-Log Outcome Type. Why: outCouFun counts the rows with one outcome. How: This types its outcome parameter.
+import type { PclRowTyp } from '../../core/data-model.ts'; // What: Pick-Log Row Type. Why: outCouFun walks the pick log. How: This types its log parameter.
+import type { RemKinTyp } from '../../core/data-model.ts'; // What: Reminder Kind Type. Why: A reminder total keeps its reminder's latest type. How: This types RemTotTyp's type field.
+import type { RmlRowTyp } from '../../core/data-model.ts'; // What: Reminder-Log Row Type. Why: remTalFun counts one logged reminder row. How: This types the row fields it reads.
 import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The Stats tab reads every log in the app state. How: This types TtcProTyp's staAppObj.
 import type { VclRowTyp } from '../../core/data-model.ts'; // What: Vacation-Log Row Type. Why: The inactive-day checks replay each item's vacation toggles. How: This types the events grouped per item.
 
@@ -247,6 +251,85 @@ function couLevFun ( donCouNum : number ) : number {
 
 
 
+// #region outCouFun
+
+/**
+ * outCouFun = Outcome Count Function
+ *
+ * @summary
+ * Counts, per item, the pick-log rows that ended with one outcome (a
+ * re-roll's 'rejected' or a skip's 'skipped') under the Pick breakdown's
+ * own filters: hidden pickers left out, the active picker scope, and the
+ * range cutoff. The Reminders scope has no pick rows, so it counts none.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param outValStr - Outcome Value String: The outcome to count.
+ * @param picLogArr - Pick Log Array: The raw pick log.
+ * @param hidPicSet - Hidden Picker Set: The ids of hidden pickers.
+ * @param scoValStr - Scope Value String: The active scope, 'all' or a picker
+ *                    id.
+ * @param cutIsoStr - Cutoff Iso String: The range's first day, or null for
+ *                    all time.
+ * @param isaRemBoo - Is-A Reminder Boolean: Whether the Reminders scope is
+ *                    active.
+ *
+ * @returns A map of item id to its count of rows with that outcome.
+ * @see {@link outMapObj}
+ *
+ * @example
+ * ```ts
+ * outCouFun('skipped', picLogArr, hidPicSet, ...) // => outMapObj
+ * ```
+ *
+*/
+
+function outCouFun ( outValStr : PclOutTyp, picLogArr : PclRowTyp[], hidPicSet : Set< string >, scoValStr : string, cutIsoStr : string | null, isaRemBoo : boolean ) : Map< string, number > {
+
+
+	const outMapObj = new Map< string, number >(); // What: Out Map Object. Why: The counts need a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by the loop.
+
+
+
+	if ( isaRemBoo ) return outMapObj; // What: Reminders Scope Guard. Why: The Reminders scope has no pick rows with an outcome to count. How: This returns the still-empty map whenever the Reminders scope is active.
+
+
+
+	for ( const rowCurObj of picLogArr ) { // What: Outcome Count Loop. Why: Every logged row must be checked against the same outcome/hidden/scope/range rules picRowArr itself uses. How: This skips any row that doesn't match, then increments that item's own running count.
+
+
+		if ( rowCurObj.outcome !== outValStr ) continue; // What: Outcome Guard. Why: Only a row with the counted outcome counts toward this metric. How: This skips any row whose own outcome isn't outValStr.
+
+
+
+		if ( hidPicSet.has( rowCurObj.pickerId ) ) continue; // What: Hidden Picker Guard. Why: A hidden picker's own history must not surface in this count. How: This skips any row belonging to a hidden picker.
+
+
+
+		if ( scoValStr !== 'all' && rowCurObj.pickerId !== scoValStr ) continue; // What: Scope Guard. Why: A single-picker scope must only count that picker's own rows. How: This skips any row from a different picker while scoValStr isn't 'all'.
+
+
+
+		if ( cutIsoStr && rowCurObj.date < cutIsoStr ) continue; // What: Range Guard. Why: Only rows inside the active range should count. How: This skips any row dated before cutIsoStr.
+
+
+
+		outMapObj.set( rowCurObj.itemId, ( outMapObj.get( rowCurObj.itemId ) || 0 ) + 1 ); // What: Count Increment. Why: This is the actual per-item tally the metric reads. How: This increments the row's own itemId entry, defaulting a first-seen item to zero.
+
+
+	}
+
+
+
+	return outMapObj; // What: Outcome Count Return. Why: This is the finished per-item map the breakdown's Re-Rolled Away or Skipped column reads. How: This returns the map built above.
+
+
+}
+
+// #endregion outCouFun
+
+
+
 // #region relWheFun
 
 /**
@@ -286,6 +369,53 @@ function relWheFun ( wheIsoStr : string ) : string {
 }
 
 // #endregion relWheFun
+
+
+
+type RemTotTyp = { couNum : number, namStr : string, typStr : RemKinTyp }; // What: Reminder Total Type. Why: The Completions and Skipped pivots total each reminder under its latest name and type. How: This describes one reminder's running total.
+
+// #region remTalFun
+
+/**
+ * remTalFun = Reminder Tally Function
+ *
+ * @summary
+ * Adds one logged completion or skip to its reminder's running total in
+ * remTotMap, creating the total on the reminder's first row and refreshing
+ * its name and type from each row, since the reminder may have been renamed
+ * or retyped between log entries.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param remTotMap - Reminder Total Map: The totals keyed by task id, which
+ *                    this updates in place.
+ * @param rowCurObj - Row Current Object: The logged row to count.
+ *
+ * @returns This function does not return anything.
+ *
+ * @example
+ * ```ts
+ * remTalFun(remTotMap, rowCurObj) // => void
+ * ```
+ *
+*/
+
+function remTalFun ( remTotMap : Map< string, RemTotTyp >, rowCurObj : Pick< RmlRowTyp, 'name' | 'taskId' | 'type' > ) : void {
+
+
+	const remEntObj = remTotMap.get( rowCurObj.taskId ) || { couNum : 0, namStr : rowCurObj.name, typStr : rowCurObj.type }; // What: Reminder Entry Object. Why: A reminder's own accumulator might already exist from an earlier row. How: This looks it up, or starts a fresh zeroed entry using the row's own denormalized name/type.
+
+	remEntObj.couNum++; // What: Reminder Count Increment. Why: Every logged row counts toward this reminder's own total. How: This increments couNum.
+
+	remEntObj.namStr = rowCurObj.name; // What: Reminder Name Refresh. Why: The reminder may have been renamed between log entries. How: This overwrites namStr from the current row.
+	remEntObj.typStr = rowCurObj.type; // What: Reminder Type Refresh. Why: The reminder's type may have changed between log entries. How: This overwrites typStr from the current row.
+
+	remTotMap.set( rowCurObj.taskId, remEntObj ); // What: Reminder Entry Store. Why: The freshly-updated entry must be written back, since it may have just been created above. How: This sets the entry back under its own taskId key.
+
+
+}
+
+// #endregion remTalFun
 
 // #endregion Helpers
 
@@ -1358,87 +1488,19 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This filtered view only ever needs recomputing when the raw log, the active scope, the range cutoff, the Reminders-scope flag, or the hidden-picker set changes. How: Each dependency corresponds to one of the four filter conditions above (or the log itself).
 
 
-	const rejCouMap = React.useMemo( () => { // What: Rejected Count Map Memo. Why: The Pick breakdown's own "Re-Rolled Away" metric needs a per-item rejection count under the same scope/range rules as picRowArr. How: This walks the raw log once, counting only 'rejected'-outcome rows matching the active filters. // Per-item count of re-rolled-away (rejected) rows, range + scope aware.
+	const rejCouMap = React.useMemo( () => { // What: Rejected Count Map Memo. Why: The Pick breakdown's own "Re-Rolled Away" metric needs a per-item rejection count under the same scope/range rules as picRowArr. How: This counts, through outCouFun, only 'rejected'-outcome rows matching the active filters. // Per-item count of re-rolled-away (rejected) rows, range + scope aware.
 
 
-		const outMapObj = new Map(); // What: Out Map Object. Why: The counts need a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by the loop.
-
-
-
-		if ( isaRemBoo ) return outMapObj; // What: Reminders Scope Guard. Why: The Reminders scope has no rejected pick rows to count. How: This returns the still-empty map whenever the Reminders scope is active.
-
-
-
-		for ( const rowCurObj of picLogArr ) { // What: Rejection Count Loop. Why: Every logged row must be checked against the same outcome/hidden/scope/range rules picRowArr itself uses. How: This skips any row that doesn't match, then increments that item's own running count.
-
-
-			if ( rowCurObj.outcome !== 'rejected' ) continue; // What: Outcome Guard. Why: Only a re-rolled-away row counts toward this metric. How: This skips any row whose own outcome isn't 'rejected'.
-
-
-
-			if ( hidPicSet.has( rowCurObj.pickerId ) ) continue; // What: Hidden Picker Guard. Why: A hidden picker's own history must not surface in this count. How: This skips any row belonging to a hidden picker.
-
-
-
-			if ( scoValStr !== 'all' && rowCurObj.pickerId !== scoValStr ) continue; // What: Scope Guard. Why: A single-picker scope must only count that picker's own rows. How: This skips any row from a different picker while scoValStr isn't 'all'.
-
-
-
-			if ( cutIsoStr && rowCurObj.date < cutIsoStr ) continue; // What: Range Guard. Why: Only rows inside the active range should count. How: This skips any row dated before cutIsoStr.
-
-
-
-			outMapObj.set( rowCurObj.itemId, ( outMapObj.get( rowCurObj.itemId ) || 0 ) + 1 ); // What: Count Increment. Why: This is the actual per-item tally the metric reads. How: This increments the row's own itemId entry, defaulting a first-seen item to zero.
-
-
-		}
-
-
-
-		return outMapObj; // What: Rejected Count Return. Why: This is the finished per-item map the breakdown's Re-Rolled Away column reads. How: This returns the map built above.
+		return outCouFun( 'rejected', picLogArr, hidPicSet, scoValStr, cutIsoStr, isaRemBoo ); // What: Rejected Count Return. Why: The breakdown's Re-Rolled Away column reads this per-item map. How: This counts the 'rejected' rows through outCouFun.
 
 
 	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the same inputs picRowArr itself depends on change. How: Each dependency gates one of the same four filter conditions.
 
 
-	const skiCouMap = React.useMemo( () => { // What: Skipped Count Map Memo. Why: The Pick breakdown's own "Skipped" metric needs a per-item skip count under the same scope/range rules as picRowArr. How: This walks the raw log once, counting only 'skipped'-outcome rows matching the active filters. // Per-item count of skipped rows, range + scope aware.
+	const skiCouMap = React.useMemo( () => { // What: Skipped Count Map Memo. Why: The Pick breakdown's own "Skipped" metric needs a per-item skip count under the same scope/range rules as picRowArr. How: This counts, through outCouFun, only 'skipped'-outcome rows matching the active filters. // Per-item count of skipped rows, range + scope aware.
 
 
-		const outMapObj = new Map(); // What: Out Map Object. Why: The counts need a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by the loop.
-
-
-
-		if ( isaRemBoo ) return outMapObj; // What: Reminders Scope Guard. Why: The Reminders scope has no skipped pick rows to count. How: This returns the still-empty map whenever the Reminders scope is active.
-
-
-
-		for ( const rowCurObj of picLogArr ) { // What: Skip Count Loop. Why: Every logged row must be checked against the same outcome/hidden/scope/range rules picRowArr itself uses. How: This skips any row that doesn't match, then increments that item's own running count.
-
-
-			if ( rowCurObj.outcome !== 'skipped' ) continue; // What: Outcome Guard. Why: Only a skipped row counts toward this metric. How: This skips any row whose own outcome isn't 'skipped'.
-
-
-
-			if ( hidPicSet.has( rowCurObj.pickerId ) ) continue; // What: Hidden Picker Guard. Why: A hidden picker's own history must not surface in this count. How: This skips any row belonging to a hidden picker.
-
-
-
-			if ( scoValStr !== 'all' && rowCurObj.pickerId !== scoValStr ) continue; // What: Scope Guard. Why: A single-picker scope must only count that picker's own rows. How: This skips any row from a different picker while scoValStr isn't 'all'.
-
-
-
-			if ( cutIsoStr && rowCurObj.date < cutIsoStr ) continue; // What: Range Guard. Why: Only rows inside the active range should count. How: This skips any row dated before cutIsoStr.
-
-
-
-			outMapObj.set( rowCurObj.itemId, ( outMapObj.get( rowCurObj.itemId ) || 0 ) + 1 ); // What: Count Increment. Why: This is the actual per-item tally the metric reads. How: This increments the row's own itemId entry, defaulting a first-seen item to zero.
-
-
-		}
-
-
-
-		return outMapObj; // What: Skipped Count Return. Why: This is the finished per-item map the breakdown's Skipped column reads. How: This returns the map built above.
+		return outCouFun( 'skipped', picLogArr, hidPicSet, scoValStr, cutIsoStr, isaRemBoo ); // What: Skipped Count Return. Why: The breakdown's Skipped column reads this per-item map. How: This counts the 'skipped' rows through outCouFun.
 
 
 	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the same inputs picRowArr itself depends on change. How: Each dependency gates one of the same four filter conditions.
@@ -2525,17 +2587,10 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 		const remTotMap = new Map(); // What: Reminder Total Map. Why: Every completion needs filing under its own reminder before the totals can be sorted. How: This starts empty and is filled by the loop below.
 
-		for ( const rowCurObj of remRowArr ) { // What: Completion Grouping Loop. Why: Every logged completion contributes one to its own reminder's running total. How: This looks up (or lazily creates) the reminder's own accumulator, then increments it.
+		for ( const rowCurObj of remRowArr ) { // What: Completion Grouping Loop. Why: Every logged completion contributes one to its own reminder's running total. How: This tallies each row through remTalFun.
 
 
-			const remEntObj = remTotMap.get( rowCurObj.taskId ) || { couNum : 0, namStr : rowCurObj.name, typStr : rowCurObj.type }; // What: Reminder Entry Object. Why: A reminder's own accumulator might already exist from an earlier completion. How: This looks it up, or starts a fresh zeroed entry using the row's own denormalized name/type.
-
-			remEntObj.couNum++; // What: Reminder Count Increment. Why: Every logged row counts toward this reminder's own total. How: This increments couNum.
-
-			remEntObj.namStr = rowCurObj.name; // What: Reminder Name Refresh. Why: The reminder may have been renamed between log entries. How: This overwrites namStr from the current row.
-			remEntObj.typStr = rowCurObj.type; // What: Reminder Type Refresh. Why: The reminder's type may have changed between log entries. How: This overwrites typStr from the current row.
-
-			remTotMap.set( rowCurObj.taskId, remEntObj ); // What: Reminder Entry Store. Why: The freshly-updated entry must be written back, since it may have just been created above. How: This sets the entry back under its own taskId key.
+			remTalFun( remTotMap, rowCurObj ); // What: Reminder Tally Call. Why: Every logged row counts toward its own reminder's running total. How: This adds the row to remTotMap through remTalFun.
 
 
 		}
@@ -2561,7 +2616,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 		const remTotMap = new Map(); // What: Reminder Total Map. Why: Every skip needs filing under its own reminder before the totals can be sorted. How: This starts empty and is filled by the loop below.
 
-		for ( const rowCurObj of ( staAppObj.reminderSkipLog || [] ) ) { // What: Skip Grouping Loop. Why: Every logged skip contributes one to its own reminder's running total, subject to the same type/hidden/range rules as remRowArr. How: This filters non-matching rows, then increments the reminder's own accumulator.
+		for ( const rowCurObj of ( staAppObj.reminderSkipLog || [] ) ) { // What: Skip Grouping Loop. Why: Every logged skip contributes one to its own reminder's running total, subject to the same type/hidden/range rules as remRowArr. How: This filters non-matching rows, then tallies each remaining row through remTalFun.
 
 
 			if ( !enaTypArr.includes( rowCurObj.type ) ) continue; // What: Type Guard. Why: Only a skip whose own type opts into Stats should count. How: This skips any row whose type isn't in enaTypArr.
@@ -2576,14 +2631,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-			const remEntObj = remTotMap.get( rowCurObj.taskId ) || { couNum : 0, namStr : rowCurObj.name, typStr : rowCurObj.type }; // What: Reminder Entry Object. Why: A reminder's own accumulator might already exist from an earlier skip. How: This looks it up, or starts a fresh zeroed entry using the row's own denormalized name/type.
-
-			remEntObj.couNum++; // What: Reminder Count Increment. Why: Every logged row counts toward this reminder's own total. How: This increments couNum.
-
-			remEntObj.namStr = rowCurObj.name; // What: Reminder Name Refresh. Why: The reminder may have been renamed between log entries. How: This overwrites namStr from the current row.
-			remEntObj.typStr = rowCurObj.type; // What: Reminder Type Refresh. Why: The reminder's type may have changed between log entries. How: This overwrites typStr from the current row.
-
-			remTotMap.set( rowCurObj.taskId, remEntObj ); // What: Reminder Entry Store. Why: The freshly-updated entry must be written back, since it may have just been created above. How: This sets the entry back under its own taskId key.
+			remTalFun( remTotMap, rowCurObj ); // What: Reminder Tally Call. Why: Every logged row counts toward its own reminder's running total. How: This adds the row to remTotMap through remTalFun.
 
 
 		}
