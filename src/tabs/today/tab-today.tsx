@@ -1847,7 +1847,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const [ banCloBoo, setBanCloBoo ] = React.useState( false );                                         // What: Banner Closing Boolean And Setter. Why: See the doc comment just above. How: This is set true right when Edit Mode ends and cleared once the collapse animation finishes.
 	const [ merProObj, setMerProObj ] = React.useState< { from : string, to : string } | null >( null ); // What: Merge Prompt Object And Setter. Why: A pending group-rename that would MERGE into an existing group is held here until the user confirms. How: This is set by reqRenFun below and read by GroHeaCom's own merPenObj prop.
 
-	const groDndRef = React.useRef< HTMLDivElement | null >( null );                                             // What: Group Dnd Reference. Why: groDraFun below needs a handle on the groups wrapper to scope the drag container to. How: This is attached to the .groDraDiv div's own ref prop further down.
+	const groDraRef = React.useRef< HTMLDivElement | null >( null );                                             // What: Group Drag Reference. Why: groDraFun below needs a handle on the groups wrapper to scope the drag container to. How: This is attached to the .groDraDiv div's own ref prop further down.
 	const shoOrdRef = React.useRef< string[] >( [] );                                                            // What: Shown Order Reference. Why: Drop indices from REO_NAM_OBJ are DOM positions, so they must resolve against whatever order the content column was LAST rendered from, not the unpadded bloOrdArr. How: This is written just before the return JSX below and read by groDraFun's own onDroOrdFun.
 	const ordSnaRef = React.useRef< { groArr : string[], picObj : Record< string, string[] > } | null >( null ); // What: Order Snapshot Reference. Why: A snapshot taken on entering Edit Mode lets Cancel/Escape discard every drag made during the whole session. How: This is populated by opeModFun and read/cleared by cloModFun.
 
@@ -2008,7 +2008,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const groDraFun = ( poiEveObj : React.PointerEvent< HTMLElement > ) => { // What: Group Drag Function. Why: This is the actual pointerdown handler behind every GroHeaCom's own grip. How: This resolves the drag container/handle, then hands off to REO_NAM_OBJ.staDraFun with the group-specific drop callback.
 
 
-		const wraCurEle = groDndRef.current;                                                           // What: Wrapper Current Element. Why: This is the drag container REO_NAM_OBJ needs. How: This reads groDndRef.current.
+		const wraCurEle = groDraRef.current;                                                           // What: Wrapper Current Element. Why: This is the drag container REO_NAM_OBJ needs. How: This reads groDraRef.current.
 		const griCurEle = poiEveObj.currentTarget;                                                     // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads poiEveObj.currentTarget.
 		const secCurEle = griCurEle.closest< HTMLElement >( '[data-element-name-hook~="todGroSec"]' ); // What: Section Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the group's own section), not just its grip. How: This walks up from griCurEle to its nearest todGroSec ancestor.
 		const misWraBoo = !wraCurEle;                                                                  // What: Missing Wrapper Boolean. Why: A drag needs the groups' shared wrapper as its container. How: This negates wraCurEle.
@@ -2832,7 +2832,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const [ synChkNum, setSynChkNum ] = React.useState( 0 ); // What: Sync Check Number And Setter. Why: Once the wait for sync ends, the boundary has to be checked again on the newest state. How: Bumping this reruns the effect below.
+	const [ synCheNum, setSynCheNum ] = React.useState( 0 ); // What: Sync Check Number And Setter. Why: Once the wait for sync ends, the boundary has to be checked again on the newest state. How: Bumping this reruns the effect below.
 
 	const picLenNum = staAppObj.pickers.length;  // What: Picker Length Number. Why: The auto-generator only runs with at least one picker, and has to recheck when the count changes. How: This reads how many pickers exist, so the effect below can read and list one plain number.
 	const synBefRef = React.useRef( synBefFun ); // What: Sync Before Reference. Why: The effect below calls the newest wait without rerunning each render, since the hook rebuilds it every render. How: This holds synBefFun, kept current by the line below.
@@ -2903,7 +2903,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 					synWaiRef.current = false; // What: Sync Wait Clear. Why: The wait is over. How: This lets the next check run.
 
 
-					setSynChkNum( ( curChkNum ) => curChkNum + 1 ); // What: Sync Check Bump. Why: The rerun sees the newest state, which may already hold this period's list. How: This reruns the effect.
+					setSynCheNum( ( curCheNum ) => curCheNum + 1 ); // What: Sync Check Bump. Why: The rerun sees the newest state, which may already hold this period's list. How: This reruns the effect.
 
 
 				} );
@@ -2944,7 +2944,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		return () => clearInterval( cheIntNum ); // What: Effect Cleanup Return. Why: The interval must not outlive this effect run. How: This clears cheIntNum.
 
 
-	}, [ genTimStr, picLenNum, staAppObj.daily, synChkNum ] ); // What: Effect Dependency Array. Why: A changed daily-generator config, a fresh generation, the picker count itself, or a finished wait for sync all need this effect to re-evaluate. How: Each of these 4 can change whether/when the next auto-run should fire, and each is a plain value so the effect only re-runs when one actually changes.
+	}, [ genTimStr, picLenNum, staAppObj.daily, synCheNum ] ); // What: Effect Dependency Array. Why: A changed daily-generator config, a fresh generation, the picker count itself, or a finished wait for sync all need this effect to re-evaluate. How: Each of these 4 can change whether/when the next auto-run should fire, and each is a plain value so the effect only re-runs when one actually changes.
 
 	// #endregion Daily Auto-Generator Effect
 
@@ -4293,7 +4293,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 						<div
-							ref={ groDndRef }
+							ref={ groDraRef }
 
 							className={ cssModObj.groDraDiv }
 

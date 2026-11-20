@@ -5,7 +5,7 @@
 
 import { CAD_NAM_OBJ } from '../core/cadence.ts';  // What: Cadence Namespace Object. Why: A picker's own saved cadence must be normalized to the current shape. How: This is called (enfWeeFun/norCadFun/isaCadFun) from migStaFun.
 import { HOL_NAM_OBJ } from '../core/holidays.ts'; // What: Holidays Namespace Object. Why: A save with no holiday list gets the canonical empty holidays shape. How: This is called (defStaFun) from migStaFun.
-import { newEidFun   } from './ids.ts';            // What: New Entry-Id Function. Why: Migrated entries and new Today entries both need unique ids. How: This is called once per entry that needs one.
+import { newIdeFun   } from './ids.ts';            // What: New Identifier Function. Why: Migrated entries and new Today entries both need unique ids. How: This is called once per entry that needs one.
 import { norGroFun   } from '../core/pickers.ts';  // What: Normalize Group Function. Why: Every saved picker's group label is tidied and de-duplicated on load. How: This is called from migStaFun.
 import { norPicFun   } from '../core/pickers.ts';  // What: Normalize Picker Function. Why: Every saved picker's display name is tidied on load. How: This is called from migStaFun.
 import { TAS_NAM_OBJ } from '../core/tasks.ts';    // What: Tasks Namespace Object. Why: Saved reminders and reminder options are normalized by the reminders engine, not this file. How: This is called (isaStaFun/norOptFun) from migStaFun.
@@ -129,7 +129,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	if ( curStaObj && curStaObj.today && Array.isArray( curStaObj.today.entries ) ) { // What: Entry-Id Backfill Guard. Why: Older state (and the seed) predates per-entry eids, needed to support more than one entry per picker. How: This mints a fresh eid for any entry that doesn't already have one.
 
 
-		for ( const curEntObj of curStaObj.today.entries ) { if ( !curEntObj.eid ) curEntObj.eid = newEidFun(); } // What: Entry-Id Backfill Loop. Why: Every entry needs its own stable eid, whether or not it already had one. How: This mints a fresh eid for any entry currently missing one, in place.
+		for ( const curEntObj of curStaObj.today.entries ) { if ( !curEntObj.eid ) curEntObj.eid = newIdeFun(); } // What: Entry-Id Backfill Loop. Why: Every entry needs its own stable eid, whether or not it already had one. How: This mints a fresh eid for any entry currently missing one, in place.
 
 
 	}

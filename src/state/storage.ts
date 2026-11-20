@@ -794,13 +794,13 @@ function mirAdoFun ( idbStaObj : RawSavTyp, mirStaObj : RawSavTyp ) : RawSavTyp 
 
 	const idbTimNum = idbStaObj.__savedAt;                                            // What: IndexedDB Time Number. Why: IndexedDB's copy is kept unless the mirror was saved after it. How: This is IndexedDB's own save stamp, undefined for a copy saved before stamps existed.
 	const mirTimNum = mirStaObj ? mirStaObj.__savedAt : null;                         // What: Mirror Time Number. Why: The mirror only wins when it was saved later. How: This is the mirror's own save stamp, or null when there is no mirror.
-	const bthStaBoo = typeof idbTimNum === 'number' && typeof mirTimNum === 'number'; // What: Both Stamped Boolean. Why: Two copies can only be compared when both carry a stamp. How: This is true when both stamps are numbers.
+	const botStaBoo = typeof idbTimNum === 'number' && typeof mirTimNum === 'number'; // What: Both Stamped Boolean. Why: Two copies can only be compared when both carry a stamp. How: This is true when both stamps are numbers.
 
 	// #endregion Freshness Comparison
 
 
 
-	if ( !bthStaBoo || mirTimNum <= idbTimNum ) return null; // What: Keep IndexedDB Guard. Why: An unstamped or older mirror must never replace IndexedDB's copy. How: This returns null so the caller keeps IndexedDB's state.
+	if ( !botStaBoo || mirTimNum <= idbTimNum ) return null; // What: Keep IndexedDB Guard. Why: An unstamped or older mirror must never replace IndexedDB's copy. How: This returns null so the caller keeps IndexedDB's state.
 
 
 

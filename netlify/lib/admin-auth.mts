@@ -70,7 +70,7 @@ const LIV_PRO_STR = 'ease-my-life-4ce18'; // What: Live Project String. Why: Pro
  *
  * @example
  * ```ts
- * admAutFun().verifyIdToken(idTokStr) // => Promise<DecodedIdToken>
+ * admAutFun().verifyIdToken(ideTokStr) // => Promise<DecodedIdToken>
  * ```
  *
 */

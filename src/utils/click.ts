@@ -48,7 +48,7 @@ type CliEveTyp = Pick< MouseEvent, 'altKey' | 'button' | 'ctrlKey' | 'metaKey' |
  *
 */
 
-const modCliFun = ( { altKey : altKeyBoo, button : butIndNum, ctrlKey : ctrKeyBoo, metaKey : metKeyBoo, shiftKey : shiKeyBoo } : CliEveTyp ) : boolean => butIndNum !== 0 || altKeyBoo || ctrKeyBoo || metKeyBoo || shiKeyBoo; // What: Modified Click Function. Why: A modified click belongs to the browser. How: This is true for any button but the main one, or with a modifier key held.
+const modCliFun = ( { altKey : altKeyBoo, button : butIndNum, ctrlKey : conKeyBoo, metaKey : metKeyBoo, shiftKey : shiKeyBoo } : CliEveTyp ) : boolean => butIndNum !== 0 || altKeyBoo || conKeyBoo || metKeyBoo || shiKeyBoo; // What: Modified Click Function. Why: A modified click belongs to the browser. How: This is true for any button but the main one, or with a modifier key held.
 
 // #endregion modCliFun
 

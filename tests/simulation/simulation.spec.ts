@@ -536,11 +536,11 @@ const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : numb
 
 
 
-		const entEidStr = cliResObj.aftStaObj.today.entries.find( ( curEntObj ) => curEntObj.done && !cliResObj.preStaObj.today.entries.find( ( oldEntObj ) => oldEntObj.eid === curEntObj.eid )?.done )!.eid; // What: Entry Eid String. Why: The click is identified by which entry became done. How: This finds it. // What: Non-Null Note. Why: The done count just rose by one. How: The ! tells TypeScript the entry exists.
+		const entIdeStr = cliResObj.aftStaObj.today.entries.find( ( curEntObj ) => curEntObj.done && !cliResObj.preStaObj.today.entries.find( ( oldEntObj ) => oldEntObj.eid === curEntObj.eid )?.done )!.eid; // What: Entry Eid String. Why: The click is identified by which entry became done. How: This finds it. // What: Non-Null Note. Why: The done count just rose by one. How: The ! tells TypeScript the entry exists.
 
 
 
-		issMesArr.push( ...cheDonFun( cliResObj.preStaObj, cliResObj.aftStaObj, entEidStr, dayIsoStr ) ); // What: Check-Off Check Call. Why: The completion must apply exactly what was staged. How: This checks the states around the click.
+		issMesArr.push( ...cheDonFun( cliResObj.preStaObj, cliResObj.aftStaObj, entIdeStr, dayIsoStr ) ); // What: Check-Off Check Call. Why: The completion must apply exactly what was staged. How: This checks the states around the click.
 
 
 
@@ -555,7 +555,7 @@ const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : numb
 
 
 
-			issMesArr.push( ...cheUndFun( cliResObj.preStaObj, await waiStaFun( curPagObj, ( staAppObj ) => donCouFun( staAppObj ) === donCouFun( cliResObj.preStaObj ), 'undo saved' ), entEidStr, dayIsoStr ) ); // What: Undo Check Call. Why: The state must return to before the check. How: This waits for the undo and compares.
+			issMesArr.push( ...cheUndFun( cliResObj.preStaObj, await waiStaFun( curPagObj, ( staAppObj ) => donCouFun( staAppObj ) === donCouFun( cliResObj.preStaObj ), 'undo saved' ), entIdeStr, dayIsoStr ) ); // What: Undo Check Call. Why: The state must return to before the check. How: This waits for the undo and compares.
 
 
 
@@ -648,12 +648,12 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 	const issMesArr : string[] = [];                      // What: Issue Message Array. Why: Every problem across the run is reported together. How: This collects them.
 	const proMapObj = new Map< string, ProRolTyp >();     // What: Probability Map Object. Why: Probability gates are checked across the run. How: This tallies their rolls.
 	const traDayArr : DayTraTyp[] = [];                   // What: Trace Day Array. Why: The run leaves a trace for comparison. How: This collects each day.
-	const fstDayStr = SEG_DEF_ARR[ 0 ].staIsoStr;         // What: First Day String. Why: The clock starts on the run's first day. How: This reads the first segment's start.
+	const firDayStr = SEG_DEF_ARR[ 0 ].staIsoStr;         // What: First Day String. Why: The clock starts on the run's first day. How: This reads the first segment's start.
 	const errMesArr = watErrFun( curPagObj );             // What: Error Message Array. Why: A page error anywhere in the run is a problem. How: This collects page and console errors.
 
 	let preStaObj : StaAppTyp | null = null; // What: Previous State Object. Why: Each day is checked against the one before. How: This starts null for the warm-up day.
 	let dayIndNum = 0;                       // What: Day Index Number. Why: Variations follow each day's position. How: This counts days across segments.
-	let lasDayStr = fstDayStr;               // What: Last Day String. Why: Stats are checked as of the last day. How: This tracks it.
+	let lasDayStr = firDayStr;               // What: Last Day String. Why: Stats are checked as of the last day. How: This tracks it.
 
 	// #endregion Run State
 
@@ -661,7 +661,7 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 	// #region Run Setup
 
-	await insClcFun( curPagObj, fstDayStr, 10 ); // What: Clock Install Call. Why: The run starts on its first day. How: This installs the fake clock on it.
+	await insClcFun( curPagObj, firDayStr, 10 ); // What: Clock Install Call. Why: The run starts on its first day. How: This installs the fake clock on it.
 
 
 

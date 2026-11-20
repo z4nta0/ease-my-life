@@ -303,7 +303,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 	// #region Account Watching
 
-	const lodFirFun = () => ( firModRef.current ??= import( '../platform/firebase.ts' ) ); // What: Load Firebase Function. Why: Firebase loads only for someone using an account. How: This imports it once, sharing the promise.
+	const loaFirFun = () => ( firModRef.current ??= import( '../platform/firebase.ts' ) ); // What: Load Firebase Function. Why: Firebase loads only for someone using an account. How: This imports it once, sharing the promise.
 
 
 
@@ -334,7 +334,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	const staWatFun = async () => {
 
 
-		const firModObj = await lodFirFun(); // What: Firebase Module Object. Why: Every account call goes through it. How: This loads it.
+		const firModObj = await loaFirFun(); // What: Firebase Module Object. Why: Every account call goes through it. How: This loads it.
 
 
 
@@ -802,7 +802,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 		refOncRef.current = true; // What: Renewal Mark. Why: The renewal reports a new token, which mustn't trigger another. How: This marks it done.
 
 
-		lodFirFun().then( ( firModObj ) => firModObj.refTokFun() ).catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Token Renewal Call. Why: A late purchase shows up on the next launch. How: This forces a fresh token, logging a failure rather than leaving it unhandled.
+		loaFirFun().then( ( firModObj ) => firModObj.refTokFun() ).catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Token Renewal Call. Why: A late purchase shows up on the next launch. How: This forces a fresh token, logging a failure rather than leaving it unhandled.
 
 
 	}, [ accUseObj ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the account changes. How: accUseObj changes once the account is known.
@@ -854,7 +854,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
-			lodFirFun().then( ( firModObj ) => firModObj.refTokFun() ).catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Token Renewal Call. Why: A renewed token carries a newly set claim. How: This forces one, logging a failure rather than leaving it unhandled.
+			loaFirFun().then( ( firModObj ) => firModObj.refTokFun() ).catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Token Renewal Call. Why: A renewed token carries a newly set claim. How: This forces one, logging a failure rather than leaving it unhandled.
 
 
 		}, PUR_GAP_NUM );

@@ -20,7 +20,7 @@ import { logRowFun   } from './pick-log.ts';             // What: Log Row Functi
 import { migStaFun   } from './migrate.ts';              // What: Migrate State Function. Why: Every loaded or imported state must be brought up to the current shape. How: This is called on load and on import.
 import { MIR_KEY_STR } from './storage.ts';              // What: Mirror Key String. Why: The fallback paths keep the warm mirror's own key when the storage engine can't be used. How: This is the localStorage key the fallback reads and writes under.
 import { modDefFun   } from './new-item.ts';             // What: Mode Defaults Function. Why: savEdiFun resets a picker's items to its new type's defaults the same way the Data tab's draft picker does. How: This is called with the new mode and threshold.
-import { newEidFun   } from './ids.ts';                  // What: New Entry-Id Function. Why: Migrated entries and new Today entries both need unique ids. How: This is called once per entry that needs one.
+import { newIdeFun   } from './ids.ts';                  // What: New Identifier Function. Why: Migrated entries and new Today entries both need unique ids. How: This is called once per entry that needs one.
 import { norConFun   } from '../core/pickers.ts';        // What: Normalize Conditional Function. Why: A newly-authored inline conditional's own name needs the same tidy Title-Case treatment as a picker's. How: This is called from addPicFun and savEdiFun below.
 import { norGroFun   } from '../core/pickers.ts';        // What: Normalize Group Function. Why: A picker's own group label needs tidying/de-duplication in several places. How: This is called from renGroFun/renTouFun and the picker-authoring actions below.
 import { norPicFun   } from '../core/pickers.ts';        // What: Normalize Picker Function. Why: A picker's own display name needs tidying wherever one is created or renamed. How: This is called from addPicFun, savEdiFun, and renPicFun below.
@@ -1628,24 +1628,24 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 			nexOrdArr = nexOrdArr.filter( ( curGroStr, curIndNum ) => nexOrdArr.indexOf( curGroStr ) === curIndNum ); // What: Merge De-Duplicate. Why: A MERGE (renaming onto an existing group) would otherwise leave 2 entries for the same name in groupOrder. How: This keeps only each group name's own first occurrence.
 
-			const nexPodObj = { ...curStaObj.pickerOrder }; // What: Next Picker-Order Object. Why: The per-group row order must be remapped (and merged, on a collision) the same way groupOrder itself was above. How: This starts as a shallow copy of curStaObj.pickerOrder, patched below.
+			const nexPioObj = { ...curStaObj.pickerOrder }; // What: Next Picker-Order Object. Why: The per-group row order must be remapped (and merged, on a collision) the same way groupOrder itself was above. How: This starts as a shallow copy of curStaObj.pickerOrder, patched below.
 
 
-			if ( nexPodObj[ oldNamStr ] ) { // What: Old-Key Remap Guard. Why: Only a group that actually had its own saved row order needs remapping at all. How: This merges oldNamStr's own order into nexNamStr's own (deduped), then drops the old key entirely.
+			if ( nexPioObj[ oldNamStr ] ) { // What: Old-Key Remap Guard. Why: Only a group that actually had its own saved row order needs remapping at all. How: This merges oldNamStr's own order into nexNamStr's own (deduped), then drops the old key entirely.
 
 
-				const exiIdeArr = nexPodObj[ nexNamStr ] || []; // What: Existing Identifier Array. Why: A MERGE must append oldNamStr's own order onto whatever nexNamStr already had, not overwrite it. How: This reads nexPodObj's own current entry for nexNamStr, defaulting to empty.
+				const exiIdeArr = nexPioObj[ nexNamStr ] || []; // What: Existing Identifier Array. Why: A MERGE must append oldNamStr's own order onto whatever nexNamStr already had, not overwrite it. How: This reads nexPioObj's own current entry for nexNamStr, defaulting to empty.
 
-				nexPodObj[ nexNamStr ] = exiIdeArr.concat( nexPodObj[ oldNamStr ].filter( ( curIdeStr ) => !exiIdeArr.includes( curIdeStr ) ) ); // What: Merged Order Write. Why: Every id from oldNamStr's own order must join nexNamStr's own, without duplicating one already present. How: This concatenates exiIdeArr with oldNamStr's own order filtered to non-duplicates.
+				nexPioObj[ nexNamStr ] = exiIdeArr.concat( nexPioObj[ oldNamStr ].filter( ( curIdeStr ) => !exiIdeArr.includes( curIdeStr ) ) ); // What: Merged Order Write. Why: Every id from oldNamStr's own order must join nexNamStr's own, without duplicating one already present. How: This concatenates exiIdeArr with oldNamStr's own order filtered to non-duplicates.
 
-				delete nexPodObj[ oldNamStr ]; // What: Old Key Drop. Why: oldNamStr no longer exists as a group, so its own pickerOrder key must be removed entirely. How: This deletes nexPodObj's own oldNamStr key.
+				delete nexPioObj[ oldNamStr ]; // What: Old Key Drop. Why: oldNamStr no longer exists as a group, so its own pickerOrder key must be removed entirely. How: This deletes nexPioObj's own oldNamStr key.
 
 
 			}
 
 
 
-			return { ...curStaObj, groupOrder : nexOrdArr, pickerOrder : nexPodObj, pickers : nexPicArr }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with pickers/groupOrder/pickerOrder all replaced.
+			return { ...curStaObj, groupOrder : nexOrdArr, pickerOrder : nexPioObj, pickers : nexPicArr }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with pickers/groupOrder/pickerOrder all replaced.
 
 
 		} ),
@@ -3533,9 +3533,9 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === picIdeStr ); // What: Current Picker Object And Guard. Why: Every branch below needs to know this picker's own mode/activeItemId/conditionalId. How: This looks up picIdeStr in curStaObj.pickers.
 			const easDowBoo = curPicObj && curPicObj.mode === 'ease-down';                           // What: Ease-Down Boolean. Why: Ease Down's own single-entry-per-picker replace behavior branches everywhere below. How: This is true only when curPicObj exists and its own mode is 'ease-down'.
 
-			const entIdeStr = easDowBoo // What: Entry Identifier String. Why: Ease Down reuses its own existing entry's eid (so a replace, not a stack); every other mode always mints a fresh one. How: This reuses the picker's own current entry's eid when found, else mints a new one via newEidFun.
-				? ( curStaObj.today.entries.find( ( curEntObj ) => curEntObj.pickerId === picIdeStr )?.eid || newEidFun() ) // What: Reused Eid Branch. Why: Ease Down replaces its own existing entry. How: This reuses that entry's eid, minting one when there is none.
-				: newEidFun();                                                                                              // What: Fresh Eid Branch. Why: Every other mode stacks a new entry. How: This mints a new eid.
+			const entIdeStr = easDowBoo // What: Entry Identifier String. Why: Ease Down reuses its own existing entry's eid (so a replace, not a stack); every other mode always mints a fresh one. How: This reuses the picker's own current entry's eid when found, else mints a new one via newIdeFun.
+				? ( curStaObj.today.entries.find( ( curEntObj ) => curEntObj.pickerId === picIdeStr )?.eid || newIdeFun() ) // What: Reused Eid Branch. Why: Ease Down replaces its own existing entry. How: This reuses that entry's eid, minting one when there is none.
+				: newIdeFun();                                                                                              // What: Fresh Eid Branch. Why: Every other mode stacks a new entry. How: This mints a new eid.
 
 
 
@@ -3586,10 +3586,10 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 			const conIdeStr = curPicObj && curPicObj.conditionalId; // What: Conditional Identifier String. Why: The day-off-card check below needs to know which conditional (if any) gates this picker. How: This reads curPicObj's own conditionalId, or stays falsy when curPicObj is missing.
 
-			const hasDofBoo = easDowBoo && conIdeStr && // What: Has Day-Off Boolean. Why: An ease-down picker that's currently suppressed behind its own day-off card must NOT have that card silently replaced by this manual override. How: This is true only when this is ease-down, gated, and today already shows a live day-off card for that same conditional.
+			const hasDaoBoo = easDowBoo && conIdeStr && // What: Has Day-Off Boolean. Why: An ease-down picker that's currently suppressed behind its own day-off card must NOT have that card silently replaced by this manual override. How: This is true only when this is ease-down, gated, and today already shows a live day-off card for that same conditional.
 				curStaObj.today.entries.some( ( curEntObj ) => curEntObj.kind === 'dayoff' && curEntObj.conditionalId === conIdeStr ); // What: Day-Off Card Test. Why: The picker is suppressed only when its own conditional's day-off card is on Today. How: This looks for a day-off entry with conIdeStr.
 
-			const nexEntArr = ( easDowBoo && !hasDofBoo ) // What: Next Entry Array. Why: Ease Down normally REPLACES its own picker's existing entry; the day-off-card exception instead ADDS an extra entry alongside the still-showing card. How: This filters out this picker's own prior entry (unless the exception applies) before appending newEntObj.
+			const nexEntArr = ( easDowBoo && !hasDaoBoo ) // What: Next Entry Array. Why: Ease Down normally REPLACES its own picker's existing entry; the day-off-card exception instead ADDS an extra entry alongside the still-showing card. How: This filters out this picker's own prior entry (unless the exception applies) before appending newEntObj.
 				? [ ...curStaObj.today.entries.filter( ( curEntObj ) => curEntObj.pickerId !== picIdeStr ), newEntObj ] // What: Replace Entry Branch. Why: Ease Down replaces its own picker's entry. How: This drops the old entry and appends newEntObj.
 				: [ ...curStaObj.today.entries, newEntObj ];                                                            // What: Add Entry Branch. Why: Every other case adds an entry. How: This appends newEntObj.
 
@@ -3680,13 +3680,13 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			// #region Entry Merge
 
 			const carEntArr = lisEntArr.filter( ( curDesObj ) => curDesObj._carry ).map( ( curDesObj ) => curDesObj.entry! ); // What: Carried Entry Array. Why: A carried descriptor's own already-formed entry must be kept verbatim, unwrapped from its own _carry marker. How: This filters lisEntArr to _carry descriptors and unwraps each one's own entry. // What: Non-Null Note. Why: The generator only flags a descriptor _carry when it wraps an existing entry. How: The ! tells TypeScript entry is set here.
-			const carEidSet = new Set< string | null >( carEntArr.map( ( curEntObj ) => curEntObj.eid ) );                    // What: Carried Eid Set. Why: The pick-log purge below must never drop a carried entry's own still-live row. How: This collects every carried entry's own eid.
+			const carIdeSet = new Set< string | null >( carEntArr.map( ( curEntObj ) => curEntObj.eid ) );                    // What: Carried Identifier Set. Why: The pick-log purge below must never drop a carried entry's own still-live row. How: This collects every carried entry's own eid.
 
 			const freEntArr = lisEntArr.filter( ( curDesObj ) => !curDesObj._carry ).map( ( curDesObj ) : TodEntTyp => ( { // What: Fresh Entry Array. Why: Every non-carried descriptor becomes a brand-new Today entry with its own fresh eid. How: This maps each descriptor into a full entry, spreading in periodKey/day-off-card fields only when present.
 
 
 				done     : false,                      // What: Done. Why: A freshly generated entry always starts not-done. How: This is false.
-				eid      : newEidFun(),                // What: Entry Identifier. Why: Every fresh entry needs its own brand-new id. How: This mints one via newEidFun.
+				eid      : newIdeFun(),                // What: Entry Identifier. Why: Every fresh entry needs its own brand-new id. How: This mints one via newIdeFun.
 				itemId   : curDesObj.itemId || null,   // What: Item Id. Why: This is the item the generator picked for this entry, if any. How: This reads curDesObj.itemId, defaulting to null.
 				pending  : curDesObj.pending || null,  // What: Pending. Why: The pick's own value consequences stay staged until the entry is completed. How: This reads curDesObj.pending, defaulting to null.
 				pickerId : curDesObj.pickerId || null, // What: Picker Id. Why: Every entry records which picker produced it. How: This reads curDesObj.pickerId, defaulting to null.
@@ -3722,7 +3722,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			const newRowArr = freEntArr.filter( ( curEntObj ) => !curEntObj.kind && curEntObj.pickerId ).map( ( curEntObj ) => // What: New Row Array. Why: Only a real (non-day-off-card) fresh entry needs its own auto pick-log row; depletedEnd is deliberately NOT written here, since it's a value consequence recorded only on completion. How: This builds one logRowFun row per qualifying fresh entry, source:'auto'.
 				logRowFun( curStaObj, { date : curDayStr, eid : curEntObj.eid, itemId : curEntObj.itemId!, pickerId : curEntObj.pickerId!, source : 'auto' } ) ); // What: Auto Row Build. Why: Every fresh entry logs as an automatic pick. How: This builds the row from the entry's own eid, item and picker. // What: Non-Null Note. Why: The filter above keeps only ordinary picks with a picker, and an ordinary pick always holds its item. How: The ! tells TypeScript itemId and pickerId are set here.
 
-			const nexLogArr = ( curStaObj.pickLog || [] ).filter( ( curRowObj ) => curRowObj.date !== curDayStr || carEidSet.has( curRowObj.eid ) ).concat( newRowArr ); // What: Next Log Array. Why: The generator owns today, so every OTHER row logged today (auto or manual) must be dropped, except a carried entry's own still-live row. How: This keeps every row not dated today (or belonging to a carried eid), then appends newRowArr.
+			const nexLogArr = ( curStaObj.pickLog || [] ).filter( ( curRowObj ) => curRowObj.date !== curDayStr || carIdeSet.has( curRowObj.eid ) ).concat( newRowArr ); // What: Next Log Array. Why: The generator owns today, so every OTHER row logged today (auto or manual) must be dropped, except a carried entry's own still-live row. How: This keeps every row not dated today (or belonging to a carried eid), then appends newRowArr.
 
 			// #endregion Pick Log Rebuild
 

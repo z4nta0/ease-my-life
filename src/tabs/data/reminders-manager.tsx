@@ -528,7 +528,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 					{ ( [ 'once', 'recurring' ] as const ).map( ( tasClaStr ) => { // What: Switch Cell List Render. Why: Every row needs exactly 2 switch cells, one per participation class. How: This maps the 2 literal class keys to one switch cell each. // What: Type Assertion Note. Why: Each class name indexes the draft options. How: The two names are read as a constant tuple so each one is a real class key.
 
 
-						const swtEnaBoo = !!draOptObj[ tasClaStr ][ optDefObj.keyStr ]; // What: Switch Enabled Boolean. Why: Each cell's own switch needs to know whether this specific class/setting pair is currently on. How: This reads draOptObj indexed first by tasClaStr, then by optDefObj's own keyStr.
+						const swiEnaBoo = !!draOptObj[ tasClaStr ][ optDefObj.keyStr ]; // What: Switch Enabled Boolean. Why: Each cell's own switch needs to know whether this specific class/setting pair is currently on. How: This reads draOptObj indexed first by tasClaStr, then by optDefObj's own keyStr.
 
 
 
@@ -548,7 +548,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 									data-element-name-hook='togSwiBut'
 
 									aria-label={ `${ tasClaStr === 'once' ? 'One-time' : 'Recurring' }: ${ optDefObj.labStr }` } // What: Switch Label Pick. Why: Each switch's accessible name must say which class and setting it controls. How: This joins the class name with the row's own label.
-									aria-pressed={ swtEnaBoo }
+									aria-pressed={ swiEnaBoo }
 
 									onClick={ () => setDraOptObj( ( preOptObj ) => ( { // What: On Click Handler. Why: A toggle changes the draft, not the live settings. How: This flips this class/setting pair in draOptObj.
 
@@ -560,7 +560,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 
 											...preOptObj[ tasClaStr ], // What: Previous Class Options Spread. Why: This class's other settings must carry over unchanged. How: This spreads the class's current options first.
 
-											[ optDefObj.keyStr ] : !swtEnaBoo // What: Option Definition Key String Key. Why: This is the one setting the switch controls. How: This sets it to the opposite of swtEnaBoo.
+											[ optDefObj.keyStr ] : !swiEnaBoo // What: Option Definition Key String Key. Why: This is the one setting the switch controls. How: This sets it to the opposite of swiEnaBoo.
 
 
 										}
@@ -990,7 +990,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 	// #region Row Actions
 
-	const kepCloFun = ( tasIdeStr : string ) => { // What: Keep Close Function. Why: The row's own collapse chevron AND EdiFooCom's own Save mean "keep this, I'm done", and both need the exact same cleanup so the chevron can't drift out of sync with what Save already does. How: This keeps the open draft, then closes the row only while it's still this exact one.
+	const keeCloFun = ( tasIdeStr : string ) => { // What: Keep Close Function. Why: The row's own collapse chevron AND EdiFooCom's own Save mean "keep this, I'm done", and both need the exact same cleanup so the chevron can't drift out of sync with what Save already does. How: This keeps the open draft, then closes the row only while it's still this exact one.
 
 
 		keeTasFun(); // What: Keep Task Call. Why: The collapse chevron and Save both keep the row's edits. How: This commits the open draft, adding a brand-new reminder to the store first.
@@ -1322,8 +1322,8 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 															aria-label='Collapse'
 
-															onClick={ () => kepCloFun( curTasObj.id ) }
-														>{ /* What: Collapse Chevron Button Element. Why: This is the row's own real, separate close affordance (see the row-editing div's own comment above for why it can't be the button itself). How: This calls kepCloFun, which marks the editor kept before closing it. */ }
+															onClick={ () => keeCloFun( curTasObj.id ) }
+														>{ /* What: Collapse Chevron Button Element. Why: This is the row's own real, separate close affordance (see the row-editing div's own comment above for why it can't be the button itself). How: This calls keeCloFun, which marks the editor kept before closing it. */ }
 
 
 															<IcoSvgCom
@@ -1473,8 +1473,8 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 
 																} }
-																onDonTasFun={ () => kepCloFun( curTasObj.id ) }
-															/>{ /* What: Editor Footer Component. Why: This is the shared Cancel/Save/Delete footer, same component InlEdiCom uses on Today. How: Cancel drops the draft (a new reminder after its collapse), Delete removes the reminder after its collapse, and Save keeps the draft through kepCloFun. */ }
+																onDonTasFun={ () => keeCloFun( curTasObj.id ) }
+															/>{ /* What: Editor Footer Component. Why: This is the shared Cancel/Save/Delete footer, same component InlEdiCom uses on Today. How: Cancel drops the draft (a new reminder after its collapse), Delete removes the reminder after its collapse, and Save keeps the draft through keeCloFun. */ }
 
 
 

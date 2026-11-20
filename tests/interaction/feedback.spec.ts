@@ -719,14 +719,14 @@ function stiConFun ( conCurEle : Element, conSelStr : string ) : { hovBoo : bool
 	const cheRadBoo = conCurEle.matches( '[role="radio"][aria-checked="true"], input[type="radio"]:checked' ); // What: Checked Radio Boolean. Why: The user decided on 2026-11-18 that a chosen theme row or mode card stays still, since clicking it re-chooses the same one. How: This is true for a radio role marked checked or a native radio that is.
 	const curMarBoo = ( conCurEle.hasAttribute( 'aria-current' ) && conCurEle.getAttribute( 'aria-current' ) !== 'false' ) || [ ...conCurEle.attributes ].some( ( attCurObj ) => /^data-[a-z-]+-current-active$/.test( attCurObj.name ) ); // What: Current Marked Boolean. Why: The user decided on 2026-11-18 that a control marked current, such as the current tab, stays still, since clicking it opens what's already open. How: This is true for an element carrying aria-current, or a data-*-current-active attribute such as the picker form's current step.
 	const disWraBoo = conCurEle.matches( '[aria-disabled="true"]' ) || [ ...conCurEle.attributes ].some( ( attCurObj ) => /^data-[a-z-]+-disabled-active$/.test( attCurObj.name ) ) || !!conCurEle.querySelector( ':disabled' );           // What: Disabled Wrap Boolean. Why: The user decided on 2026-11-18 that an info tip trigger around a disabled control stays still on hover and on press, since its action can't run. How: This is true for an element marked aria-disabled or by a data-*-disabled-active attribute, such as the already-included Send's tip, or one holding a disabled control.
-	const ptrOffBoo = !conCurEle.matches( conSelStr ) && getComputedStyle( conCurEle ).cursor !== 'pointer'; // What: Pointer Off Boolean. Why: A card that isn't a control and shows no pointer cursor, such as an open row's header, does nothing on a click, so it stays still per the user's decision of 2026-11-18. How: This is true for a non-control whose computed cursor isn't the pointer.
+	const poiOffBoo = !conCurEle.matches( conSelStr ) && getComputedStyle( conCurEle ).cursor !== 'pointer'; // What: Pointer Off Boolean. Why: A card that isn't a control and shows no pointer cursor, such as an open row's header, does nothing on a click, so it stays still per the user's decision of 2026-11-18. How: This is true for a non-control whose computed cursor isn't the pointer.
 
 
 
 	return { // What: Still Verdict Return. Why: The probe skips only the look the decision exempts. How: This frees the hover look for every still case and the press look for a disabled wrapper alone.
 
 
-		hovBoo : cheRadBoo || curMarBoo || disWraBoo || ptrOffBoo, // What: Hover Boolean. Why: Every still case may skip the hover look. How: This is true when any of the four holds.
+		hovBoo : cheRadBoo || curMarBoo || disWraBoo || poiOffBoo, // What: Hover Boolean. Why: Every still case may skip the hover look. How: This is true when any of the four holds.
 		preBoo : disWraBoo                                         // What: Press Boolean. Why: Only a control whose action can't run may skip the press look too. How: This is true for a disabled wrapper.
 
 

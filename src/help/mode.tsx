@@ -698,7 +698,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
-	const safRecFun = React.useCallback( () => { // What: Safe Recompute Function. Why: A thrown error from a single bad measurement (e.g. a target mid-reflow) must not kill the rAF loop permanently, since an uncaught exception would skip the requestAnimationFrame call after it and silently stop all per-frame tracking. How: This wraps recTarFun in a try/catch, logging and swallowing any error instead of letting it propagate.
+	const safMeaFun = React.useCallback( () => { // What: Safe Measure Function. Why: A thrown error from a single bad measurement (e.g. a target mid-reflow) must not kill the rAF loop permanently, since an uncaught exception would skip the requestAnimationFrame call after it and silently stop all per-frame tracking. How: This wraps recTarFun in a try/catch, logging and swallowing any error instead of letting it propagate.
 
 
 		try { recTarFun(); } // What: Recompute Try. Why: A thrown error from a single bad measurement must not escape this wrapper uncaught. How: This calls recTarFun inside the guarded block.
@@ -740,7 +740,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
-			safRecFun(); // What: Safe Recompute Call. Why: This is the actual per-frame work, wrapped so one bad frame cannot kill the whole loop. How: This calls safRecFun, which itself calls recTarFun inside a try/catch.
+			safMeaFun(); // What: Safe Measure Call. Why: This is the actual per-frame work, wrapped so one bad frame cannot kill the whole loop. How: This calls safMeaFun, which itself calls recTarFun inside a try/catch.
 
 
 			rafIdeNum = requestAnimationFrame( looRafFun ); // What: Next Frame Schedule. Why: The loop must keep going every frame while still active. How: This schedules looRafFun itself again and stashes the new frame id.
@@ -765,7 +765,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 		};
 
 
-	}, [ actModBoo, allIteArr, safRecFun ] ); // What: Effect Dependency Array. Why: This effect must restart whenever help mode itself toggles, and re-close over a fresh safRecFun/allIteArr whenever either changes identity. How: actModBoo gates whether the loop runs at all, and the other two are read directly inside looRafFun/safRecFun above.
+	}, [ actModBoo, allIteArr, safMeaFun ] ); // What: Effect Dependency Array. Why: This effect must restart whenever help mode itself toggles, and re-close over a fresh safMeaFun/allIteArr whenever either changes identity. How: actModBoo gates whether the loop runs at all, and the other two are read directly inside looRafFun/safMeaFun above.
 
 	// #endregion Rect Tracking
 
@@ -800,7 +800,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 			if ( hitTarFun( cliEveObj ) ) { // What: On Target Branch. Why: A click that lands on a real target (e.g. Save/Cancel/Delete closing an editor) must not be blocked, just re-measured. How: This defers to a macrotask so the resulting DOM/React commit has already landed before recomputing.
 
 
-				setTimeout( safRecFun, 0 ); // What: Deferred Recompute Schedule. Why: The click's own resulting DOM/React commit (e.g. an editor closing) needs a tick to actually land before recomputing rects. How: This schedules safRecFun on a macrotask via a 0ms timeout.
+				setTimeout( safMeaFun, 0 ); // What: Deferred Recompute Schedule. Why: The click's own resulting DOM/React commit (e.g. an editor closing) needs a tick to actually land before recomputing rects. How: This schedules safMeaFun on a macrotask via a 0ms timeout.
 
 
 
@@ -877,7 +877,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 		};
 
 
-	}, [ actModBoo, allIteArr, onCloAllFun, opeIdeStr, safRecFun ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever help mode itself toggles, or close over a fresh reference to any of the values its own handlers read. How: actModBoo gates registration, allIteArr/safRecFun are read inside hitTarFun/cliCapFun, onCloAllFun/opeIdeStr are read inside keyDowFun.
+	}, [ actModBoo, allIteArr, onCloAllFun, opeIdeStr, safMeaFun ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever help mode itself toggles, or close over a fresh reference to any of the values its own handlers read. How: actModBoo gates registration, allIteArr/safMeaFun are read inside hitTarFun/cliCapFun, onCloAllFun/opeIdeStr are read inside keyDowFun.
 
 
 

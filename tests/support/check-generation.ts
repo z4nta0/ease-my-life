@@ -629,10 +629,10 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 	const conMapObj = new Map< string, ConRcdTyp >( genStaObj.conditionals.map( ( curConObj ) => [ curConObj.id, curConObj ] ) ); // What: Conditional Map Object. Why: Gates read the conditionals as resolved for today. How: This keys them by id.
 	const preConMap = new Map< string, ConRcdTyp >( preStaObj.conditionals.map( ( curConObj ) => [ curConObj.id, curConObj ] ) ); // What: Previous Conditional Map. Why: Ease triggers must carry over from before. How: This keys the previous conditionals by id.
 	const entRcdArr = genStaObj.today.entries;                                                                                    // What: Entry Record Array. Why: Every check reads the generated entries. How: This is today's list.
-	const accEidSet = new Set< string >();                                                                                        // What: Accounted Eid Set. Why: Entries no rule called for are failures. How: This collects every entry a rule explained.
+	const accIdeSet = new Set< string >();                                                                                        // What: Accounted Identifier Set. Why: Entries no rule called for are failures. How: This collects every entry a rule explained.
 	const expDaoSet = new Set< string >();                                                                                        // What: Expected Day-Off Set. Why: Each triggered conditional shows one day-off card. How: This collects their ids.
 	const picNamSet = new Set< string >();                                                                                        // What: Pick Name Set. Why: Avoiding duplicates reads the names picked so far. How: This collects them in list order.
-	const freEidSet = new Set< string >();                                                                                        // What: Fresh Eid Set. Why: Only fresh picks get a new log row. How: This collects their entry ids.
+	const freIdeSet = new Set< string >();                                                                                        // What: Fresh Identifier Set. Why: Only fresh picks get a new log row. How: This collects their entry ids.
 	const dowValNum = dowValFun( dayIsoStr );                                                                                     // What: Day-Of-Week Value Number. Why: Pickers can be limited to weekdays. How: This reads the day's weekday.
 	const holDayBoo = isaHolFun( genStaObj.holidays, dayIsoStr );                                                                 // What: Holiday Day Boolean. Why: Pickers can skip holidays. How: This checks the day.
 
@@ -720,7 +720,7 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 
 
-				if ( carEntObj ) { accEidSet.add( carEntObj.eid ); if ( carEntObj.itemId ) picNamSet.add( ( preStaObj.items.find( ( curIteObj ) => curIteObj.id === carEntObj.itemId )?.name || '' ).toLowerCase() ); } // What: Carried Accounting. Why: A carried pick counts toward duplicates. How: This marks it explained and records its name.
+				if ( carEntObj ) { accIdeSet.add( carEntObj.eid ); if ( carEntObj.itemId ) picNamSet.add( ( preStaObj.items.find( ( curIteObj ) => curIteObj.id === carEntObj.itemId )?.name || '' ).toLowerCase() ); } // What: Carried Accounting. Why: A carried pick counts toward duplicates. How: This marks it explained and records its name.
 
 
 
@@ -796,11 +796,11 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 
 
-			accEidSet.add( curEntObj.eid ); // What: Fresh Accounting. Why: This entry is explained. How: This marks it.
+			accIdeSet.add( curEntObj.eid ); // What: Fresh Accounting. Why: This entry is explained. How: This marks it.
 
 
 
-			if ( curEntObj.itemId ) { freEidSet.add( curEntObj.eid ); picNamSet.add( ( preStaObj.items.find( ( curIteObj ) => curIteObj.id === curEntObj.itemId )?.name || '' ).toLowerCase() ); } // What: Fresh Pick Record. Why: Fresh picks get log rows and count toward duplicates. How: This records the entry and its item's name.
+			if ( curEntObj.itemId ) { freIdeSet.add( curEntObj.eid ); picNamSet.add( ( preStaObj.items.find( ( curIteObj ) => curIteObj.id === curEntObj.itemId )?.name || '' ).toLowerCase() ); } // What: Fresh Pick Record. Why: Fresh picks get log rows and count toward duplicates. How: This records the entry and its item's name.
 
 
 		}
@@ -842,7 +842,7 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 
 
-		accEidSet.add( daoEntObj.eid ); // What: Card Accounting. Why: This entry is explained. How: This marks it.
+		accIdeSet.add( daoEntObj.eid ); // What: Card Accounting. Why: This entry is explained. How: This marks it.
 
 
 	}
@@ -855,7 +855,7 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 
 
-	for ( const curEntObj of entRcdArr ) if ( !accEidSet.has( curEntObj.eid ) ) issAddFun( `unexpected entry ${ curEntObj.kind || 'pick' } for picker ${ curEntObj.pickerId }` ); // What: Stray Entry Loop. Why: Every entry must come from a rule. How: This reports any that didn't.
+	for ( const curEntObj of entRcdArr ) if ( !accIdeSet.has( curEntObj.eid ) ) issAddFun( `unexpected entry ${ curEntObj.kind || 'pick' } for picker ${ curEntObj.pickerId }` ); // What: Stray Entry Loop. Why: Every entry must come from a rule. How: This reports any that didn't.
 
 
 
@@ -865,21 +865,21 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 
 
-	for ( const freEidStr of freEidSet ) { // What: Fresh Row Loop. Why: Each fresh pick logs one auto row. How: This checks each pick's row.
+	for ( const freIdeStr of freIdeSet ) { // What: Fresh Row Loop. Why: Each fresh pick logs one auto row. How: This checks each pick's row.
 
 
-		const freRowArr = dayRowArr.filter( ( logRowObj ) => logRowObj.eid === freEidStr ); // What: Fresh Row Array. Why: The pick's rows. How: This filters today's rows by its entry.
+		const freRowArr = dayRowArr.filter( ( logRowObj ) => logRowObj.eid === freIdeStr ); // What: Fresh Row Array. Why: The pick's rows. How: This filters today's rows by its entry.
 
 
 
-		if ( freRowArr.length !== 1 || freRowArr[ 0 ].source !== 'auto' || freRowArr[ 0 ].done || freRowArr[ 0 ].outcome ) issAddFun( `fresh pick ${ freEidStr } should have one clean auto log row, has ${ freRowArr.length }` ); // What: Fresh Row Check. Why: A fresh pick logs one undone auto row. How: This reports anything else.
+		if ( freRowArr.length !== 1 || freRowArr[ 0 ].source !== 'auto' || freRowArr[ 0 ].done || freRowArr[ 0 ].outcome ) issAddFun( `fresh pick ${ freIdeStr } should have one clean auto log row, has ${ freRowArr.length }` ); // What: Fresh Row Check. Why: A fresh pick logs one undone auto row. How: This reports anything else.
 
 
 	}
 
 
 
-	for ( const logRowObj of dayRowArr ) if ( !freEidSet.has( logRowObj.eid || '' ) && !accEidSet.has( logRowObj.eid || '' ) ) issAddFun( `stray log row ${ logRowObj.id } dated today` ); // What: Stray Row Loop. Why: Generation purges other rows dated today. How: This reports any left.
+	for ( const logRowObj of dayRowArr ) if ( !freIdeSet.has( logRowObj.eid || '' ) && !accIdeSet.has( logRowObj.eid || '' ) ) issAddFun( `stray log row ${ logRowObj.id } dated today` ); // What: Stray Row Loop. Why: Generation purges other rows dated today. How: This reports any left.
 
 	// #endregion Pick Log Checks
 

@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { ideMakFun } from '../utils/sequence-id.ts'; // What: Identifier Make Function. Why: Each Today entry ID joins a time stamp and a counter of this file's own. How: This makes newEidFun once, in Module State.
+import { ideMakFun } from '../utils/sequence-id.ts'; // What: Identifier Make Function. Why: Each Today entry ID joins a time stamp and a counter of this file's own. How: This makes newIdeFun once, in Module State.
 
 // #endregion Imports
 
@@ -29,10 +29,10 @@ import { ideMakFun } from '../utils/sequence-id.ts'; // What: Identifier Make Fu
 
 // #region Module State
 
-// #region newEidFun
+// #region newIdeFun
 
 /**
- * newEidFun = New Entry-Id Function
+ * newIdeFun = New Identifier Function
  *
  * @summary
  * Mints a new, distinct id for one Today entry. Entries are keyed by
@@ -48,14 +48,14 @@ import { ideMakFun } from '../utils/sequence-id.ts'; // What: Identifier Make Fu
  *
  * @example
  * ```ts
- * newEidFun() // => 'e_abc123xy'
+ * newIdeFun() // => 'e_abc123xy'
  * ```
  *
 */
 
-const newEidFun = ideMakFun( 'e_' ); // What: New Entry-Id Function. Why: The caller needs a short, sortable, collision-resistant id. How: This is the factory's id function, joining the 'e_' prefix, the current time in base 36, and this file's own counter in base 36.
+const newIdeFun = ideMakFun( 'e_' ); // What: New Identifier Function. Why: The caller needs a short, sortable, collision-resistant id. How: This is the factory's id function, joining the 'e_' prefix, the current time in base 36, and this file's own counter in base 36.
 
-// #endregion newEidFun
+// #endregion newIdeFun
 
 // #endregion Module State
 
@@ -63,7 +63,7 @@ const newEidFun = ideMakFun( 'e_' ); // What: New Entry-Id Function. Why: The ca
 
 // #region Exports
 
-export { newEidFun }; // What: Named Export. Why: Migration and the Today-entry actions both mint entry ids. How: This exports newEidFun by name; its counter stays private to it.
+export { newIdeFun }; // What: Named Export. Why: Migration and the Today-entry actions both mint entry ids. How: This exports newIdeFun by name; its counter stays private to it.
 
 // #endregion Exports
 

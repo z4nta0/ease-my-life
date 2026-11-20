@@ -78,12 +78,12 @@ const WEB_SEC_STR = 'test-webhook-secret';                       // What: Webhoo
  *
  * @example
  * ```ts
- * await accNewFun(true, { beta: true }) // => { emaStr, idTokStr, uidStr }
+ * await accNewFun(true, { beta: true }) // => { emaStr, tokStr, uidStr }
  * ```
  *
 */
 
-async function accNewFun ( verEmaBoo : boolean, staClaObj : object = {} ) : Promise< { emaStr : string, idTokStr : string, uidStr : string } > {
+async function accNewFun ( verEmaBoo : boolean, staClaObj : object = {} ) : Promise< { emaStr : string, tokStr : string, uidStr : string } > {
 
 
 	const emaAdrStr = `pay-${ Date.now() }-${ Math.random().toString( 36 ).slice( 2 ) }@example.com`;                                                                                          // What: Email Address String. Why: Each case needs its own account. How: This builds a unique address.
@@ -97,7 +97,7 @@ async function accNewFun ( verEmaBoo : boolean, staClaObj : object = {} ) : Prom
 
 
 
-	return { emaStr : emaAdrStr, idTokStr : sigInnObj.idToken, uidStr : sigUpcObj.localId }; // What: Account Return. Why: Cases use the email, token, and id. How: This returns them.
+	return { emaStr : emaAdrStr, tokStr : sigInnObj.idToken, uidStr : sigUpcObj.localId }; // What: Account Return. Why: Cases use the email, token, and id. How: This returns them.
 
 
 }
@@ -141,14 +141,14 @@ function webReqFun ( webEveObj : object, sigSecStr : string | Buffer = WEB_SEC_S
 
 
 	const bodTexStr = JSON.stringify( webEveObj );                           // What: Body Text String. Why: The signature covers the exact text. How: This serializes the event.
-	const msgIdeStr = `msg_${ Date.now() }`;                                 // What: Message Identifier String. Why: Each webhook has an id. How: This builds one.
-	const msgTimStr = String( Math.floor( Date.now() / 1000 ) - ageSecNum ); // What: Message Timestamp String. Why: The timestamp is signed and checked. How: This is now, minus the chosen age.
+	const mesIdeStr = `msg_${ Date.now() }`;                                 // What: Message Identifier String. Why: Each webhook has an id. How: This builds one.
+	const mesTimStr = String( Math.floor( Date.now() / 1000 ) - ageSecNum ); // What: Message Timestamp String. Why: The timestamp is signed and checked. How: This is now, minus the chosen age.
 
-	const sigValStr = createHmac( 'sha256', typeof sigSecStr === 'string' ? Buffer.from( sigSecStr, 'utf8' ) : sigSecStr ).update( `${ msgIdeStr }.${ msgTimStr }.${ bodTexStr }` ).digest( 'base64' ); // What: Signature Value String. Why: The webhook is signed as Polar signs it. How: This signs the id, timestamp, and body.
+	const sigValStr = createHmac( 'sha256', typeof sigSecStr === 'string' ? Buffer.from( sigSecStr, 'utf8' ) : sigSecStr ).update( `${ mesIdeStr }.${ mesTimStr }.${ bodTexStr }` ).digest( 'base64' ); // What: Signature Value String. Why: The webhook is signed as Polar signs it. How: This signs the id, timestamp, and body.
 
 
 
-	return new Request( 'https://easemylife.app/.netlify/functions/polar-webhook', { body : bodTexStr, headers : { 'webhook-id' : msgIdeStr, 'webhook-signature' : `v1,${ sigValStr }`, 'webhook-timestamp' : msgTimStr }, method : 'POST' } ); // What: Request Return. Why: The handler takes a Request. How: This builds it with Polar's three headers.
+	return new Request( 'https://easemylife.app/.netlify/functions/polar-webhook', { body : bodTexStr, headers : { 'webhook-id' : mesIdeStr, 'webhook-signature' : `v1,${ sigValStr }`, 'webhook-timestamp' : mesTimStr }, method : 'POST' } ); // What: Request Return. Why: The handler takes a Request. How: This builds it with Polar's three headers.
 
 
 }
@@ -211,11 +211,11 @@ test( 'a whsec_ secret signs with its decoded key, as Polar signs', async () => 
 
 	// #region Signed Delivery Setup
 
-	const keyRawBuf = Buffer.from( 'polar-test-signing-key-bytes-0001' ); // What: Key Raw Buffer. Why: The signature is made with the raw key. How: This is a known key.
+	const keyRawObj = Buffer.from( 'polar-test-signing-key-bytes-0001' ); // What: Key Raw Object. Why: The signature is made with the raw key. How: This is a known key.
 	const accNewObj = await accNewFun( true );                            // What: Account New Object. Why: The buyer's account. How: This creates it.
 
 
-	process.env.POLAR_WEBHOOK_SECRET = `whsec_${ keyRawBuf.toString( 'base64' ) }`; // What: Base64 Secret Setting. Why: This is the shape of a Polar secret. How: This writes the key as whsec_ plus base64.
+	process.env.POLAR_WEBHOOK_SECRET = `whsec_${ keyRawObj.toString( 'base64' ) }`; // What: Base64 Secret Setting. Why: This is the shape of a Polar secret. How: This writes the key as whsec_ plus base64.
 
 	// #endregion Signed Delivery Setup
 
@@ -223,7 +223,7 @@ test( 'a whsec_ secret signs with its decoded key, as Polar signs', async () => 
 
 	// #region Webhook Delivery
 
-	const webResObj = await webSerFun( webReqFun( { data : { customer : { external_id : accNewObj.uidStr }, id : 'ord5', product_id : PRO_LIV_STR, status : 'paid' }, type : 'order.paid' }, keyRawBuf ), LIV_COT_OBJ ); // What: Webhook Response Object. Why: The order is signed with the decoded key. How: This delivers it.
+	const webResObj = await webSerFun( webReqFun( { data : { customer : { external_id : accNewObj.uidStr }, id : 'ord5', product_id : PRO_LIV_STR, status : 'paid' }, type : 'order.paid' }, keyRawObj ), LIV_COT_OBJ ); // What: Webhook Response Object. Why: The order is signed with the decoded key. How: This delivers it.
 
 
 	process.env.POLAR_WEBHOOK_SECRET = WEB_SEC_STR; // What: Secret Restore. Why: Later cases sign with the plain secret. How: This puts it back.
@@ -311,7 +311,7 @@ test( 'the checkout refuses a missing or unverified sign-in and a deploy without
 	const unvAccObj = await accNewFun( false ); // What: Unverified Account Object. Why: An account without a verified email. How: This creates it.
 	const verAccObj = await accNewFun( true );  // What: Verified Account Object. Why: A verified account, refused only where the token is missing. How: This creates it.
 
-	const cheReqFun = ( idTokStr : string ) => new Request( 'https://easemylife.app/.netlify/functions/checkout', { headers : { 'Authorization' : `Bearer ${ idTokStr }` }, method : 'POST' } ); // What: Checkout Request Function. Why: Each case posts with a different token. How: This builds the request.
+	const cheReqFun = ( ideTokStr : string ) => new Request( 'https://easemylife.app/.netlify/functions/checkout', { headers : { 'Authorization' : `Bearer ${ ideTokStr }` }, method : 'POST' } ); // What: Checkout Request Function. Why: Each case posts with a different token. How: This builds the request.
 
 	// #endregion Test Accounts
 
@@ -319,8 +319,8 @@ test( 'the checkout refuses a missing or unverified sign-in and a deploy without
 
 	// #region Sign-In Refusals
 
-	assert.equal( ( await cheSerFun( cheReqFun( '' ), LIV_COT_OBJ ) ).status, 401 );                 // What: No Token Assertion. Why: Nobody signed in can't buy. How: This expects 401.
-	assert.equal( ( await cheSerFun( cheReqFun( unvAccObj.idTokStr ), LIV_COT_OBJ ) ).status, 403 ); // What: Unverified Assertion. Why: An unverified email couldn't sync anyway. How: This expects 403.
+	assert.equal( ( await cheSerFun( cheReqFun( '' ), LIV_COT_OBJ ) ).status, 401 );              // What: No Token Assertion. Why: Nobody signed in can't buy. How: This expects 401.
+	assert.equal( ( await cheSerFun( cheReqFun( unvAccObj.tokStr ), LIV_COT_OBJ ) ).status, 403 ); // What: Unverified Assertion. Why: An unverified email couldn't sync anyway. How: This expects 403.
 
 	// #endregion Sign-In Refusals
 
@@ -331,7 +331,7 @@ test( 'the checkout refuses a missing or unverified sign-in and a deploy without
 	delete process.env.POLAR_ACCESS_TOKEN; // What: Token Removal. Why: A deploy context without its token must say checkout isn't set up. How: This removes it for the next check.
 
 
-	assert.equal( ( await cheSerFun( cheReqFun( verAccObj.idTokStr ), PRE_COT_OBJ ) ).status, 503 ); // What: Missing Token Assertion. Why: A deploy without its token can't sell. How: This expects 503.
+	assert.equal( ( await cheSerFun( cheReqFun( verAccObj.tokStr ), PRE_COT_OBJ ) ).status, 503 ); // What: Missing Token Assertion. Why: A deploy without its token can't sell. How: This expects 503.
 
 
 	process.env.POLAR_ACCESS_TOKEN = 'test-polar-token'; // What: Token Restore. Why: Later cases need it. How: This puts the fake token back.
@@ -374,7 +374,7 @@ test( "the checkout asks Polar for the sync product tagged with the buyer's acco
 	try { // What: Checkout Call Try. Why: The real fetch has to come back even if the checkout fails. How: This calls the function and restores fetch after.
 
 
-		const cheResObj = await cheSerFun( new Request( 'https://easemylife.app/.netlify/functions/checkout', { headers : { 'Authorization' : `Bearer ${ accNewObj.idTokStr }` }, method : 'POST' } ), LIV_COT_OBJ ); // What: Checkout Response Object. Why: The checkout is started. How: This calls the handler.
+		const cheResObj = await cheSerFun( new Request( 'https://easemylife.app/.netlify/functions/checkout', { headers : { 'Authorization' : `Bearer ${ accNewObj.tokStr }` }, method : 'POST' } ), LIV_COT_OBJ ); // What: Checkout Response Object. Why: The checkout is started. How: This calls the handler.
 
 
 
@@ -384,7 +384,7 @@ test( "the checkout asks Polar for the sync product tagged with the buyer's acco
 
 
 
-		await cheSerFun( new Request( 'https://paid-sync-accounts--ease-my-life.netlify.app/.netlify/functions/checkout', { headers : { 'Authorization' : `Bearer ${ accNewObj.idTokStr }` }, method : 'POST' } ), PRE_COT_OBJ ); // What: Preview Checkout Call. Why: A preview must never reach live Polar. How: This starts a checkout as a preview.
+		await cheSerFun( new Request( 'https://paid-sync-accounts--ease-my-life.netlify.app/.netlify/functions/checkout', { headers : { 'Authorization' : `Bearer ${ accNewObj.tokStr }` }, method : 'POST' } ), PRE_COT_OBJ ); // What: Preview Checkout Call. Why: A preview must never reach live Polar. How: This starts a checkout as a preview.
 
 
 		assert.equal( polReqObj!.url, 'https://sandbox-api.polar.sh/v1/checkouts/' ); // What: Sandbox Endpoint Assertion. Why: Previews use the sandbox. How: This checks the address. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.

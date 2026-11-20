@@ -124,13 +124,13 @@ const SUP_EMA_STR = 'support@easemylife.app'; // What: Support Email String. Why
 function detBroFun () : string {
 
 
-	const useAgeStr = navigator.userAgent; // What: User Agent String. Why: Every pattern below is matched against the browser's own real user-agent string. How: This reads navigator.userAgent once, reused by every pattern check below.
+	const usrAgeStr = navigator.userAgent; // What: User Agent String. Why: Every pattern below is matched against the browser's own real user-agent string. How: This reads navigator.userAgent once, reused by every pattern check below.
 
 
 	for ( const broPatObj of BRO_PAT_ARR ) { // What: Pattern Match Loop. Why: The first pattern that actually matches the real user-agent string wins. How: This iterates BRO_PAT_ARR in order, returning as soon as one pattern matches.
 
 
-		const matResArr = useAgeStr.match( broPatObj.regObj ); // What: Match Result Array. Why: This is the actual test of whether this pattern recognizes the current browser. How: This runs broPatObj's own regObj against useAgeStr, producing null or a match array with the captured version in [1].
+		const matResArr = usrAgeStr.match( broPatObj.regObj ); // What: Match Result Array. Why: This is the actual test of whether this pattern recognizes the current browser. How: This runs broPatObj's own regObj against usrAgeStr, producing null or a match array with the captured version in [1].
 
 
 		if ( matResArr ) return `${ broPatObj.namStr } ${ matResArr[ 1 ].split( '.' ).slice( 0, 2 ).join( '.' ) }`; // What: Recognized Browser Return. Why: A recognized browser should report its own name and a short major.minor version, not the full patch string. How: This returns "Name X.Y", trimming the captured version down to its first 2 dot-separated parts.
@@ -140,7 +140,7 @@ function detBroFun () : string {
 
 
 
-	return useAgeStr; // What: Unrecognized Fallback Return. Why: An unrecognized browser is still worth reporting for diagnostics, even without a friendly name. How: This returns the raw user-agent string as-is.
+	return usrAgeStr; // What: Unrecognized Fallback Return. Why: An unrecognized browser is still worth reporting for diagnostics, even without a friendly name. How: This returns the raw user-agent string as-is.
 
 
 }

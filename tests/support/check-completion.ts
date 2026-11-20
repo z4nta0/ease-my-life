@@ -403,7 +403,7 @@ const unpConFun = ( conRcdObj : ConRcdTyp ) : string => { const { _cardPrev : ca
  *
  * @param preStaObj - Previous State Object: The state just before the click.
  * @param aftStaObj - After State Object: The state just after the click.
- * @param entEidStr - Entry Eid String: The id of the entry checked off.
+ * @param entIdeStr - Entry Identifier String: The id of the entry checked off.
  * @param dayIsoStr - Day ISO String: The simulated day, as YYYY-MM-DD.
  *
  * @returns Every problem found.
@@ -416,15 +416,15 @@ const unpConFun = ( conRcdObj : ConRcdTyp ) : string => { const { _cardPrev : ca
  *
 */
 
-const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entEidStr : string, dayIsoStr : string ) : string[] => { // What: Check Done Function. Why: Every check-off must apply exactly what was staged. How: This compares the state around one click.
+const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entIdeStr : string, dayIsoStr : string ) : string[] => { // What: Check Done Function. Why: Every check-off must apply exactly what was staged. How: This compares the state around one click.
 
 
 	// #region Check Setup
 
 	const issMesArr : string[] = [];                                                                                 // What: Issue Message Array. Why: Every problem is reported. How: This collects them.
-	const preEntObj = preStaObj.today.entries.find( ( curEntObj ) => curEntObj.eid === entEidStr );                  // What: Previous Entry Object. Why: The staged effects come from the entry before the click. How: This looks it up.
-	const aftEntObj = aftStaObj.today.entries.find( ( curEntObj ) => curEntObj.eid === entEidStr );                  // What: After Entry Object. Why: The entry must now be done. How: This looks it up after.
-	const labTexStr = `${ dayIsoStr } check-off ${ preEntObj ? ( preEntObj.kind || 'pick' ) : '?' } ${ entEidStr }`; // What: Label Text String. Why: Reports name the day and entry. How: This builds the prefix.
+	const preEntObj = preStaObj.today.entries.find( ( curEntObj ) => curEntObj.eid === entIdeStr );                  // What: Previous Entry Object. Why: The staged effects come from the entry before the click. How: This looks it up.
+	const aftEntObj = aftStaObj.today.entries.find( ( curEntObj ) => curEntObj.eid === entIdeStr );                  // What: After Entry Object. Why: The entry must now be done. How: This looks it up after.
+	const labTexStr = `${ dayIsoStr } check-off ${ preEntObj ? ( preEntObj.kind || 'pick' ) : '?' } ${ entIdeStr }`; // What: Label Text String. Why: Reports name the day and entry. How: This builds the prefix.
 	const issAddFun = ( issMesStr : string ) => issMesArr.push( `${ labTexStr }: ${ issMesStr }` );                  // What: Issue Add Function. Why: Every report carries the label. How: This prefixes and stores a message.
 
 	// #endregion Check Setup
@@ -568,7 +568,7 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entEidStr : st
 
 	// #region Live Log Row Check
 
-	const livRowObj = aftStaObj.pickLog.find( ( logRowObj ) => logRowObj.eid === entEidStr && !logRowObj.outcome ); // What: Live Row Object. Why: A pick's live log row records its completion. How: This finds it.
+	const livRowObj = aftStaObj.pickLog.find( ( logRowObj ) => logRowObj.eid === entIdeStr && !logRowObj.outcome ); // What: Live Row Object. Why: A pick's live log row records its completion. How: This finds it.
 
 
 
@@ -607,7 +607,7 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entEidStr : st
  *
  * @param preStaObj - Previous State Object: The state before the check-off.
  * @param undStaObj - Undo State Object: The state after unchecking.
- * @param entEidStr - Entry Eid String: The id of the entry toggled.
+ * @param entIdeStr - Entry Identifier String: The id of the entry toggled.
  * @param dayIsoStr - Day ISO String: The simulated day, as YYYY-MM-DD.
  *
  * @returns Every problem found.
@@ -620,13 +620,13 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entEidStr : st
  *
 */
 
-const cheUndFun = ( preStaObj : StaAppTyp, undStaObj : StaAppTyp, entEidStr : string, dayIsoStr : string ) : string[] => { // What: Check Undo Function. Why: Unchecking must undo a check-off exactly. How: This compares the state before the check with the state after the uncheck.
+const cheUndFun = ( preStaObj : StaAppTyp, undStaObj : StaAppTyp, entIdeStr : string, dayIsoStr : string ) : string[] => { // What: Check Undo Function. Why: Unchecking must undo a check-off exactly. How: This compares the state before the check with the state after the uncheck.
 
 
 	// #region Undo Setup
 
 	const issMesArr : string[] = [];                                                                                    // What: Issue Message Array. Why: Every problem is reported. How: This collects them.
-	const issAddFun = ( issMesStr : string ) => issMesArr.push( `${ dayIsoStr } undo ${ entEidStr }: ${ issMesStr }` ); // What: Issue Add Function. Why: Every report names the day and entry. How: This prefixes and stores a message.
+	const issAddFun = ( issMesStr : string ) => issMesArr.push( `${ dayIsoStr } undo ${ entIdeStr }: ${ issMesStr }` ); // What: Issue Add Function. Why: Every report names the day and entry. How: This prefixes and stores a message.
 
 
 
@@ -654,7 +654,7 @@ const cheUndFun = ( preStaObj : StaAppTyp, undStaObj : StaAppTyp, entEidStr : st
 
 
 
-	const undEntObj = undStaObj.today.entries.find( ( curEntObj ) => curEntObj.eid === entEidStr ); // What: Undo Entry Object. Why: The entry must be undone again. How: This looks it up.
+	const undEntObj = undStaObj.today.entries.find( ( curEntObj ) => curEntObj.eid === entIdeStr ); // What: Undo Entry Object. Why: The entry must be undone again. How: This looks it up.
 
 
 

@@ -766,17 +766,17 @@ function weiPicFun ( itePooArr : IteRcdTyp[], weiGetFun : ( iteRcdObj : IteRcdTy
 
 	// #region Roulette Draw
 
-	let rouRemNum = Math.random() * totWeiNum; // What: Roulette Remaining Number. Why: This is the single random point rolled on the roulette wheel's own number line, decremented below until it lands inside the winning item's own band. How: This scales Math.random()'s own [0,1) output by totWeiNum.
+	let rouRmnNum = Math.random() * totWeiNum; // What: Roulette Remaining Number. Why: This is the single random point rolled on the roulette wheel's own number line, decremented below until it lands inside the winning item's own band. How: This scales Math.random()'s own [0,1) output by totWeiNum.
 
 
-	for ( let curIndNum = 0; curIndNum < itePooArr.length; curIndNum++ ) { // What: Roulette Walk Loop. Why: Every item's own band must be walked in order until the one containing rouRemNum's own point is found. How: This walks curIndNum across itePooArr, subtracting each item's own weight from rouRemNum in turn.
+	for ( let curIndNum = 0; curIndNum < itePooArr.length; curIndNum++ ) { // What: Roulette Walk Loop. Why: Every item's own band must be walked in order until the one containing rouRmnNum's own point is found. How: This walks curIndNum across itePooArr, subtracting each item's own weight from rouRmnNum in turn.
 
 
-		rouRemNum -= weiValArr[ curIndNum ]; // What: Roulette Remaining Decrement. Why: Subtracting this item's own weight moves the remaining point past this item's own band. How: This subtracts weiValArr's own value at curIndNum from rouRemNum.
+		rouRmnNum -= weiValArr[ curIndNum ]; // What: Roulette Remaining Decrement. Why: Subtracting this item's own weight moves the remaining point past this item's own band. How: This subtracts weiValArr's own value at curIndNum from rouRmnNum.
 
 
 
-		if ( rouRemNum <= 0 ) return itePooArr[ curIndNum ]; // What: Roulette Winner Guard. Why: rouRemNum crossing to zero or below means the rolled point landed inside this item's own band. How: This returns itePooArr's own item at curIndNum the moment that happens.
+		if ( rouRmnNum <= 0 ) return itePooArr[ curIndNum ]; // What: Roulette Winner Guard. Why: rouRmnNum crossing to zero or below means the rolled point landed inside this item's own band. How: This returns itePooArr's own item at curIndNum the moment that happens.
 
 
 	}
@@ -785,7 +785,7 @@ function weiPicFun ( itePooArr : IteRcdTyp[], weiGetFun : ( iteRcdObj : IteRcdTy
 
 
 
-	return itePooArr[ itePooArr.length - 1 ]; // What: Roulette Fallback Return. Why: Floating-point rounding could in rare cases leave rouRemNum still positive after every band has been walked. How: This returns the very last item in itePooArr as a safe fallback.
+	return itePooArr[ itePooArr.length - 1 ]; // What: Roulette Fallback Return. Why: Floating-point rounding could in rare cases leave rouRmnNum still positive after every band has been walked. How: This returns the very last item in itePooArr as a safe fallback.
 
 
 }

@@ -339,7 +339,7 @@ const sedPicFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 			group : curPicObj.group,                                                          // What: Group Field. Why: The copy should sit in the same group as the onboarding sample it mirrors. How: This carries curPicObj's own group through unchanged.
 			id    : copIdeStr,                                                                // What: Id Field. Why: The added picker must live under its own help-namespaced id, not the onboarding sample's real id. How: This assigns copIdeStr, computed above via helIdeFun.
-			items : curPicObj.items.map( ( { id : oldIdeStr, ...iteRstObj } ) => iteRstObj ), // What: Items Field. Why: Each item needs to drop its own onboarding-only id so the copy doesn't collide with the sample it mirrors. How: This maps every curPicObj item down to iteRstObj, its own fields minus id.
+			items : curPicObj.items.map( ( { id : oldIdeStr, ...iteResObj } ) => iteResObj ), // What: Items Field. Why: Each item needs to drop its own onboarding-only id so the copy doesn't collide with the sample it mirrors. How: This maps every curPicObj item down to iteResObj, its own fields minus id.
 			mode  : curPicObj.mode,                                                           // What: Mode Field. Why: The copy must use the same picker-engine algorithm as the onboarding sample it mirrors. How: This carries curPicObj's own mode through unchanged.
 			name  : curPicObj.name                                                            // What: Name Field. Why: The copy should display exactly like the onboarding sample it mirrors. How: This carries curPicObj's own name through unchanged.
 

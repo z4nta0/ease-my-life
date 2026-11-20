@@ -324,7 +324,7 @@ function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' |
 
 	// #region Offset Calculation
 
-	const modSgnNum = modKeyStr === 'dark' ? 1 : -1; // What: Mode Sign Number. Why: The mutStr/aceStr tokens need to move toward the page background in dark mode but away from it in light mode. How: This flips the sign of their lightness offset below based on the given mode.
+	const modSigNum = modKeyStr === 'dark' ? 1 : -1; // What: Mode Sign Number. Why: The mutStr/aceStr tokens need to move toward the page background in dark mode but away from it in light mode. How: This flips the sign of their lightness offset below based on the given mode.
 
 	const calOffFun = ( offAmoNum : number, floValNum : number ) => ( modKeyStr === 'dark' // What: Calc Offset Function. Why: Dark mode needs a floored lightness offset to avoid the near-black gamma-encoding hazard described above, while light mode can use a plain one. How: This returns the appropriate CSS calc() expression string for whichever mode is active.
 
@@ -340,10 +340,10 @@ function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' |
 
 
 		accStr : accColStr,                                                                      // What: Accent String. Why: The user's own chosen accent color is used as-is, no derivation needed. How: This is just accColStr, computed above from usrColObj.accent.
-		aceStr : `oklch(from ${ accColStr } calc(l + ${ modSgnNum * -0.42 }) calc(c - 0.08) h)`, // What: Accent String. Why: The softened accent token needs a lighter or darker, less saturated version of the chosen accent. How: This computes an oklch relative-color expression off accColStr, shifting both lightness (via modSgnNum) and chroma.
+		aceStr : `oklch(from ${ accColStr } calc(l + ${ modSigNum * -0.42 }) calc(c - 0.08) h)`, // What: Accent String. Why: The softened accent token needs a lighter or darker, less saturated version of the chosen accent. How: This computes an oklch relative-color expression off accColStr, shifting both lightness (via modSigNum) and chroma.
 		bacStr : bacColStr,                                                                      // What: Background String. Why: The user's own chosen background color is used as-is, no derivation needed. How: This is just bacColStr, computed above from usrColObj.bg.
 		borStr : `oklch(from ${ bacColStr } ${ calOffFun( 0.12, 0.26 ) } c h)`,                  // What: Border String. Why: The border token needs a stronger lightness shift off the background than surface does. How: This computes an oklch relative-color expression off bacColStr using calOffFun's larger offset/floor pair.
-		mutStr : `oklch(from ${ texColStr } calc(l + ${ modSgnNum * -0.32 }) c h)`,              // What: Muted String. Why: The muted token needs to sit between text and background in lightness. How: This computes an oklch relative-color expression off texColStr, shifted by modSgnNum's signed offset.
+		mutStr : `oklch(from ${ texColStr } calc(l + ${ modSigNum * -0.32 }) c h)`,              // What: Muted String. Why: The muted token needs to sit between text and background in lightness. How: This computes an oklch relative-color expression off texColStr, shifted by modSigNum's signed offset.
 		surStr : `oklch(from ${ bacColStr } ${ calOffFun( 0.04, 0.17 ) } c h)`,                  // What: Surface String. Why: The surface token needs to sit slightly toward/away from the background depending on mode. How: This computes an oklch relative-color expression off bacColStr using calOffFun's smaller offset/floor pair.
 		texStr : texColStr,                                                                      // What: Text String. Why: The user's own chosen text color is used as-is, no derivation needed. How: This is just texColStr, computed above from usrColObj.text.
 		warStr : modKeyStr === 'dark' ? 'oklch(0.78 0.13 60)' : 'oklch(0.62 0.13 50)'            // What: Warm String. Why: The warm/celebration token isn't derived from user input at all, unlike the other 7. How: This picks one of 2 fixed oklch values based on whether modKeyStr is 'dark' or 'light'.

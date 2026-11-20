@@ -94,7 +94,7 @@ let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's pa
  *
  * @example
  * ```ts
- * await picCarFun(curPagObj, ['random']) // => { carLoc, entEidStr }
+ * await picCarFun(curPagObj, ['random']) // => { carLoc, entIdeStr }
  * ```
  *
 */
@@ -126,7 +126,7 @@ const picCarFun = async ( curPagObj : Page, modNamArr : string[] ) => { // What:
 
 
 			carLoc    : curPagObj.locator( ENT_CAR_STR ).filter( { has : curPagObj.locator( `[aria-label="Mark ${ namTexStr } complete"]` ) } ), // What: Card Locator. Why: The caller clicks within it. How: This finds the card holding the named check button.
-			entEidStr : curEntObj.eid // What: Entry Entry-Identifier String. Why: The caller checks the saved entry afterward. How: This is the entry's id.
+			entIdeStr : curEntObj.eid // What: Entry Identifier String. Why: The caller checks the saved entry afterward. How: This is the entry's id.
 
 
 		};
@@ -360,7 +360,7 @@ test( 're-rolling and skipping animate and save', async ( { page : curPagObj } )
 
 
 
-	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.pickLog.some( ( logRowObj ) => logRowObj.eid === rolCarObj.entEidStr && logRowObj.outcome === 'rejected' ), 're-roll saved' ); // What: Re-Roll Save Wait. Why: The old pick must be rejected in the log. How: This waits for the rejected row.
+	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.pickLog.some( ( logRowObj ) => logRowObj.eid === rolCarObj.entIdeStr && logRowObj.outcome === 'rejected' ), 're-roll saved' ); // What: Re-Roll Save Wait. Why: The old pick must be rejected in the log. How: This waits for the rejected row.
 
 
 
@@ -384,7 +384,7 @@ test( 're-rolling and skipping animate and save', async ( { page : curPagObj } )
 
 
 
-	await waiStaFun( curPagObj, ( staAppObj ) => !staAppObj.today.entries.some( ( curEntObj ) => curEntObj.eid === skiCarObj.entEidStr ), 'skip saved' ); // What: Skip Save Wait. Why: The entry must leave the list. How: This waits for it to go.
+	await waiStaFun( curPagObj, ( staAppObj ) => !staAppObj.today.entries.some( ( curEntObj ) => curEntObj.eid === skiCarObj.entIdeStr ), 'skip saved' ); // What: Skip Save Wait. Why: The entry must leave the list. How: This waits for it to go.
 
 
 
