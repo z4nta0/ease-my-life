@@ -182,6 +182,336 @@ const dayCouFun = ( monOneNum : number ) : number => new Date( 2024, monOneNum, 
 
 // #region Components
 
+type AlcProTyp = { cadNamStr : CadNamTyp, labTexStr : string }; // What: Anchor-Label-Component Props Type. Why: Each anchor subsection's label names its own question and its own cadence's tip. How: This types AncLabCom's props.
+
+// #region AncLabCom
+
+/**
+ * AncLabCom = Anchor Label Component
+ *
+ * @summary
+ * Draws one anchor subsection's plain label, the question it asks followed
+ * by an inline "?" help bubble whose copy explains how that cadence's
+ * anchor day interacts with a picker's own Days control.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.cadNamStr - Cadence Name String: The cadence whose tip copy
+ *                          the bubble shows.
+ * @param props.labTexStr - Label Text String: The label's own question.
+ *
+ * @returns The label span with its help bubble.
+ *
+ * @example
+ * ```tsx
+ * AncLabCom({ cadNamStr, labTexStr }) // => <AncLabCom />
+ * ```
+ *
+*/
+
+function AncLabCom ( { cadNamStr, labTexStr } : AlcProTyp ) : JSX.Element {
+
+
+	return (
+
+
+		<span className={ cssModObj.fieLabSpa }>{ /* What: Field Label Span Element. Why: This is an anchor subsection's own plain label, with an inline "?" help bubble. How: This renders labTexStr followed by the InfTipCom below. */ }
+
+
+			{ labTexStr }
+			<InfTipCom
+				className={ cssModObj.helBubSpa }
+
+				labTexStr={ CAD_NAM_OBJ.tipMesFun( cadNamStr, 'Which days?' ) } // What: Cadence Tip Copy. Why: The tip names the picker's own days control, whose visible label on the schedule editor is 'Which days?'. How: This passes that label as tipMesFun's own second argument, alongside the subsection's cadence.
+			>?</InfTipCom>{ /* What: Info Tip Component. Why: The cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
+
+
+		</span>
+
+
+	);
+
+
+}
+
+// #endregion AncLabCom
+
+
+
+type DmcProTyp = { onChange : ( modKeyStr : DatModTyp ) => void, value : DatModTyp }; // What: Date-Mode-Component Props Type. Why: The picker shows the current date mode and hands back the one chosen. How: This types DatModCom's props.
+
+// #region DatModCom
+
+/**
+ * DatModCom = Date Mode Component
+ *
+ * @summary
+ * Draws the Date-vs-Weekday picker the monthly and yearly subsections share,
+ * set snug at its content's width.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.onChange - On Change: Called with the clicked date mode's key.
+ * @param props.value    - Value: The current date mode.
+ *
+ * @returns The date mode picker.
+ *
+ * @example
+ * ```tsx
+ * DatModCom({ onChange, value }) // => <DatModCom />
+ * ```
+ *
+*/
+
+function DatModCom ( { onChange, value } : DmcProTyp ) : JSX.Element {
+
+
+	return (
+
+
+		<SegConCom
+			layVarStr='snug' // What: Layout Variant String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
+			optIteArr={ DAT_MOD_ARR }
+			value={ value }
+
+			ariLabStr='Day selection'
+
+			onChange={ onChange }
+		/> // What: Segment Control Component. Why: This is the Date-vs-Weekday picker. How: This hands the clicked date-mode key straight to onChange.
+
+
+	);
+
+
+}
+
+// #endregion DatModCom
+
+
+
+type DscProTyp = { ariLabStr : string, onChange : ( dowValNum : number ) => void, value : number }; // What: Day-Of-Week-Select-Component Props Type. Why: Each weekday select names its own role and hands back the chosen weekday. How: This types DowSelCom's props.
+
+// #region DowSelCom
+
+/**
+ * DowSelCom = Day-Of-Week Select Component
+ *
+ * @summary
+ * Draws a select of every weekday, named in full and valued by its index
+ * from Sunday, for the weekly anchor day and the nth-weekday rules.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.ariLabStr - Aria Label String: The select's accessible name.
+ * @param props.onChange  - On Change: Called with the chosen weekday's index.
+ * @param props.value     - Value: The current weekday's index.
+ *
+ * @returns The weekday select.
+ *
+ * @example
+ * ```tsx
+ * DowSelCom({ ariLabStr, onChange, value }) // => <DowSelCom />
+ * ```
+ *
+*/
+
+function DowSelCom ( { ariLabStr, onChange, value } : DscProTyp ) : JSX.Element {
+
+
+	return (
+
+
+		<select
+			className={ cssModObj.ancPicSel }
+
+			value={ value }
+
+			aria-label={ ariLabStr }
+
+			onChange={ ( chaEveObj ) => onChange( parseInt( chaEveObj.target.value ) ) }
+		>{ /* What: Anchor Picker Select Element. Why: This is the actual control for choosing a weekday. How: This hands the chosen weekday's own index to onChange. */ }
+
+
+			{ DAY_FUL_ARR.map( ( dayNamStr, dowIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dowIndNum.
+
+
+				<option
+					key={ dowIndNum }
+
+					value={ dowIndNum }
+				>{ dayNamStr }</option> // What: Weekday Option Element. Why: One option is needed per real weekday. How: This renders dayNamStr, valued by its own dowIndNum.
+
+
+			) ) }
+
+
+		</select>
+
+
+	);
+
+
+}
+
+// #endregion DowSelCom
+
+
+
+type MscProTyp = { onChange : ( monValNum : number ) => void, value : number }; // What: Month-Select-Component Props Type. Why: The month select shows the anchor month and hands back the one chosen. How: This types MonSelCom's props.
+
+// #region MonSelCom
+
+/**
+ * MonSelCom = Month Select Component
+ *
+ * @summary
+ * Draws the yearly anchor month select, every month named in full and
+ * valued by its 1-indexed number, shared by both yearly date modes.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.onChange - On Change: Called with the chosen month's 1-indexed
+ *                         number.
+ * @param props.value    - Value: The current anchor month's 1-indexed number.
+ *
+ * @returns The month select.
+ *
+ * @example
+ * ```tsx
+ * MonSelCom({ onChange, value }) // => <MonSelCom />
+ * ```
+ *
+*/
+
+function MonSelCom ( { onChange, value } : MscProTyp ) : JSX.Element {
+
+
+	return (
+
+
+		<select
+			className={ cssModObj.ancPicSel }
+
+			value={ value }
+
+			aria-label='Anchor month'
+
+			onChange={ ( chaEveObj ) => onChange( parseInt( chaEveObj.target.value ) ) }
+		>{ /* What: Anchor Picker Select Element. Why: This is the actual control for choosing the yearly anchor month. How: This hands the chosen month's own 1-indexed number to onChange. */ }
+
+
+			{ MON_FUL_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps MON_FUL_ARR to one option per entry, keyed by its own 1-indexed monIndNum.
+
+
+				<option
+					key={ monIndNum }
+
+					value={ monIndNum + 1 }
+				>{ monNamStr }</option> // What: Month Option Element. Why: One option is needed per real month. How: This renders monNamStr, valued by its own 1-indexed monIndNum.
+
+
+			) ) }
+
+
+		</select>
+
+
+	);
+
+
+}
+
+// #endregion MonSelCom
+
+
+
+type NecProTyp = { dowValNum : number, onPatChaFun : ( patValObj : CadFieTyp ) => void, ordValNum : number }; // What: Nth-Select-Component Props Type. Why: The pair shows the rule's occurrence and weekday and hands back each change as a patch. How: This types NthSelCom's props.
+
+// #region NthSelCom
+
+/**
+ * NthSelCom = Nth Select Component
+ *
+ * @summary
+ * Draws the nth-weekday rule's two selects, which occurrence (1st through
+ * 5th) and which weekday, as siblings in whatever row holds them, for the
+ * monthly and yearly subsections alike.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.dowValNum   - Day-Of-Week Value Number: The rule's weekday
+ *                            index.
+ * @param props.onPatChaFun - On Patch Change Function: Called with a patch
+ *                            naming the changed field.
+ * @param props.ordValNum   - Ordinal Value Number: The rule's occurrence.
+ *
+ * @returns The ordinal and weekday selects.
+ *
+ * @example
+ * ```tsx
+ * NthSelCom({ dowValNum, onPatChaFun, ordValNum }) // => <NthSelCom />
+ * ```
+ *
+*/
+
+function NthSelCom ( { dowValNum, onPatChaFun, ordValNum } : NecProTyp ) : JSX.Element {
+
+
+	return (
+
+
+		<>{ /* What: Nth Selects Fragment. Why: The two selects sit in their caller's own row, beside its other words and selects. How: This groups them without a wrapper of its own. */ }
+
+
+			<select
+				className={ cssModObj.ancPicSel }
+
+				value={ ordValNum }
+
+				aria-label='Week of the month'
+
+				onChange={ ( chaEveObj ) => onPatChaFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
+			>{ /* What: Anchor Picker Select Element. Why: This is the actual control for choosing which occurrence (1st through 5th) of the weekday to target. How: This commits the chosen ordinal straight through onPatChaFun. */ }
+
+
+				{ [ 1, 2, 3, 4, 5 ].map( ( ordOptNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordOptNum.
+
+
+					<option
+						key={ ordOptNum }
+
+						value={ ordOptNum }
+					>{ ordSufFun( ordOptNum ) }</option> // What: Ordinal Option Element. Why: One option is needed per possible occurrence, 1st through 5th. How: This renders ordSufFun's own suffixed label, valued by ordOptNum.
+
+
+				) ) }
+
+
+			</select>
+
+
+
+			<DowSelCom
+				value={ dowValNum }
+
+				ariLabStr='Weekday'
+
+				onChange={ ( newDowNum ) => onPatChaFun( { nthWeekday : newDowNum } ) }
+			/>{ /* What: Day-Of-Week Select Component. Why: This is the actual control for choosing which weekday to target. How: This commits the chosen weekday's own index straight through onPatChaFun. */ }
+
+
+		</>
+
+
+	);
+
+
+}
+
+// #endregion NthSelCom
+
+
+
 type CccProTyp = { onChange : ( patValObj : CadFieTyp ) => void, value : CadFieTyp | null | undefined }; // What: Cadence-Control-Component Props Type. Why: The editor shows a picker's cadence fields and hands each change back as a patch. How: This types CadConCom's props.
 
 // #region CadConCom
@@ -304,54 +634,34 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 							<div className={ cssModObj.fieLabDiv }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the plain summary span below. */ }
 
 
-								<span className={ cssModObj.fieLabSpa }>{ /* What: On Which Day Label Span Element. Why: This is the weekly subsection's own plain label, with an inline "?" help bubble. How: This renders the literal text "On which day?" followed by the InfTipCom below. */ }
+								<AncLabCom
+									cadNamStr='weekly'
+									labTexStr='On which day?'
+								/>{ /* What: Anchor Label Component. Why: This is the weekly subsection's own plain label, with an inline "?" help bubble. How: This asks "On which day?" and feeds the bubble the weekly cadence's tip. */ }
 
 
-									On which day?
-									<InfTipCom
-										className={ cssModObj.helBubSpa }
-
-										labTexStr={ CAD_NAM_OBJ.tipMesFun( 'weekly', 'Which days?' ) } // What: Cadence Tip Copy. Why: The tip names the picker's own days control, whose visible label on the schedule editor is 'Which days?'. How: This passes that label as tipMesFun's own second argument, alongside the weekly cadence.
-									>?</InfTipCom>{ /* What: Info Tip Component. Why: The weekly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
-
-
-								</span>
 
 								<span className={ cssModObj.fieSubSpa }>surfaces <strong>every { DAY_FUL_ARR[ norCadObj.anchorDow ] }</strong></span>{ /* What: Weekly Sub Span Element. Why: This is the plain summary of which weekday the picker surfaces on. How: This names norCadObj's own anchorDow, looked up in DAY_FUL_ARR. */ }
 
 
 							</div>
 
+
+
 							<div className={ cssModObj.fieRowDiv }>{ /* What: Weekly Inline Div Element. Why: The anchor-weekday select reads best inline with its own leading word. How: This wraps the "Every" span and the weekday select below. */ }
 
 
 								<span>Every</span>{ /* What: Every Span Element. Why: This is the inline control's own leading word. How: This renders the literal text "Every". */ }
 
-								<select
-									className={ cssModObj.ancPicSel }
 
+
+								<DowSelCom
 									value={ norCadObj.anchorDow }
 
-									aria-label='Anchor weekday'
+									ariLabStr='Anchor weekday'
 
-									onChange={ ( chaEveObj ) => setPatFun( { anchorDow : parseInt( chaEveObj.target.value ) } ) }
-								>{ /* What: Anchor Weekday Select Element. Why: This is the actual control for choosing the weekly anchor day. How: This commits the chosen weekday's own index straight through setPatFun. */ }
-
-
-									{ DAY_FUL_ARR.map( ( dayNamStr, dowIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dowIndNum.
-
-
-										<option
-											key={ dowIndNum }
-
-											value={ dowIndNum }
-										>{ dayNamStr }</option> // What: Weekday Option Element. Why: One option is needed per real weekday. How: This renders dayNamStr, valued by its own dowIndNum.
-
-
-									) ) }
-
-
-								</select>
+									onChange={ ( dowValNum ) => setPatFun( { anchorDow : dowValNum } ) }
+								/>{ /* What: Day-Of-Week Select Component. Why: This is the actual control for choosing the weekly anchor day. How: This commits the chosen weekday's own index straight through setPatFun. */ }
 
 
 							</div>
@@ -363,6 +673,8 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 					) }
 
 
+
+
 					{ norCadObj.cadence === 'monthly' && ( // What: Monthly Visibility Check. Why: Only the monthly cadence's own anchor subsection belongs here. How: This renders it only while norCadObj.cadence is 'monthly'.
 
 
@@ -372,18 +684,12 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 							<div className={ cssModObj.fieLabDiv }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the fading summary span below. */ }
 
 
-								<span className={ cssModObj.fieLabSpa }>{ /* What: On Which Day Label Span Element. Why: This is the monthly subsection's own plain label, with an inline "?" help bubble. How: This renders the literal text "On which day?" followed by the InfTipCom below. */ }
+								<AncLabCom
+									cadNamStr='monthly'
+									labTexStr='On which day?'
+								/>{ /* What: Anchor Label Component. Why: This is the monthly subsection's own plain label, with an inline "?" help bubble. How: This asks "On which day?" and feeds the bubble the monthly cadence's tip. */ }
 
 
-									On which day?
-									<InfTipCom
-										className={ cssModObj.helBubSpa }
-
-										labTexStr={ CAD_NAM_OBJ.tipMesFun( 'monthly', 'Which days?' ) } // What: Cadence Tip Copy. Why: The tip names the picker's own days control, whose visible label on the schedule editor is 'Which days?'. How: This passes that label as tipMesFun's own second argument, alongside the monthly cadence.
-									>?</InfTipCom>{ /* What: Info Tip Component. Why: The monthly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
-
-
-								</span>
 
 								<span
 									key={ norCadObj.dateMode }
@@ -396,15 +702,11 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 
 
 
-							<SegConCom
-								layVarStr='snug' // What: Layout Variant String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
-								optIteArr={ DAT_MOD_ARR }
+							<DatModCom
 								value={ norCadObj.dateMode }
 
-								ariLabStr='Day selection'
-
 								onChange={ ( modKeyStr ) => setPatFun( { dateMode : modKeyStr } ) }
-							/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday picker shared by the monthly and yearly subsections. How: This commits the clicked date-mode key straight through setPatFun. */ }
+							/>{ /* What: Date Mode Component. Why: This is the Date-vs-Weekday picker shared by the monthly and yearly subsections. How: This commits the clicked date-mode key straight through setPatFun. */ }
 
 
 
@@ -416,57 +718,14 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 
 									<span>On the</span>{ /* What: On The Span Element. Why: This is the inline control's own leading words. How: This renders the literal text "On the". */ }
 
-									<select
-										className={ cssModObj.ancPicSel }
-
-										value={ norCadObj.nthOrdinal }
-
-										aria-label='Week of the month'
-
-										onChange={ ( chaEveObj ) => setPatFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
-									>{ /* What: Nth Ordinal Select Element. Why: This is the actual control for choosing which occurrence (1st through 5th) of the weekday to target. How: This commits the chosen ordinal straight through setPatFun. */ }
 
 
-										{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum.
+									<NthSelCom
+										dowValNum={ norCadObj.nthWeekday }
+										ordValNum={ norCadObj.nthOrdinal }
 
-
-											<option
-												key={ ordValNum }
-
-												value={ ordValNum }
-											>{ ordSufFun( ordValNum ) }</option> // What: Ordinal Option Element. Why: One option is needed per possible occurrence, 1st through 5th. How: This renders ordSufFun's own suffixed label, valued by ordValNum.
-
-
-										) ) }
-
-
-									</select>
-
-									<select
-										className={ cssModObj.ancPicSel }
-
-										value={ norCadObj.nthWeekday }
-
-										aria-label='Weekday'
-
-										onChange={ ( chaEveObj ) => setPatFun( { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
-									>{ /* What: Nth Weekday Select Element. Why: This is the actual control for choosing which weekday to target. How: This commits the chosen weekday's own index straight through setPatFun. */ }
-
-
-										{ DAY_FUL_ARR.map( ( dayNamStr, dowIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dowIndNum.
-
-
-											<option
-												key={ dowIndNum }
-
-												value={ dowIndNum }
-											>{ dayNamStr }</option> // What: Weekday Option Element. Why: One option is needed per real weekday. How: This renders dayNamStr, valued by its own dowIndNum.
-
-
-										) ) }
-
-
-									</select>
+										onPatChaFun={ setPatFun }
+									/>{ /* What: Nth Select Component. Why: These are the actual controls for choosing which occurrence of which weekday to target. How: This renders the ordinal and weekday selects, committing each change straight through setPatFun. */ }
 
 
 								</div>
@@ -524,6 +783,8 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 					) }
 
 
+
+
 					{ norCadObj.cadence === 'yearly' && ( // What: Yearly Visibility Check. Why: Only the yearly cadence's own anchor subsection belongs here. How: This renders it only while norCadObj.cadence is 'yearly'.
 
 
@@ -533,18 +794,12 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 							<div className={ cssModObj.fieLabDiv }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the fading summary span below. */ }
 
 
-								<span className={ cssModObj.fieLabSpa }>{ /* What: On Which Date Label Span Element. Why: This is the yearly subsection's own plain label, with an inline "?" help bubble. How: This renders the literal text "On which date?" followed by the InfTipCom below. */ }
+								<AncLabCom
+									cadNamStr='yearly'
+									labTexStr='On which date?'
+								/>{ /* What: Anchor Label Component. Why: This is the yearly subsection's own plain label, with an inline "?" help bubble. How: This asks "On which date?" and feeds the bubble the yearly cadence's tip. */ }
 
 
-									On which date?
-									<InfTipCom
-										className={ cssModObj.helBubSpa }
-
-										labTexStr={ CAD_NAM_OBJ.tipMesFun( 'yearly', 'Which days?' ) } // What: Cadence Tip Copy. Why: The tip names the picker's own days control, whose visible label on the schedule editor is 'Which days?'. How: This passes that label as tipMesFun's own second argument, alongside the yearly cadence.
-									>?</InfTipCom>{ /* What: Info Tip Component. Why: The yearly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
-
-
-								</span>
 
 								<span
 									key={ norCadObj.dateMode }
@@ -557,15 +812,11 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 
 
 
-							<SegConCom
-								layVarStr='snug' // What: Layout Variant String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
-								optIteArr={ DAT_MOD_ARR }
+							<DatModCom
 								value={ norCadObj.dateMode }
 
-								ariLabStr='Day selection'
-
 								onChange={ ( modKeyStr ) => setPatFun( { dateMode : modKeyStr } ) }
-							/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday picker shared by the monthly and yearly subsections. How: This commits the clicked date-mode key straight through setPatFun. */ }
+							/>{ /* What: Date Mode Component. Why: This is the Date-vs-Weekday picker shared by the monthly and yearly subsections. How: This commits the clicked date-mode key straight through setPatFun. */ }
 
 
 
@@ -575,85 +826,24 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 								<div className={ cssModObj.fieRowDiv }>{ /* What: Yearly Nth-Weekday Inline Div Element. Why: The ordinal, weekday, and month selects read best inline together. How: This wraps all 3 selects below. */ }
 
 
-									<select
-										className={ cssModObj.ancPicSel }
+									<NthSelCom
+										dowValNum={ norCadObj.nthWeekday }
+										ordValNum={ norCadObj.nthOrdinal }
 
-										value={ norCadObj.nthOrdinal }
-
-										aria-label='Week of the month'
-
-										onChange={ ( chaEveObj ) => setPatFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
-									>{ /* What: Nth Ordinal Select Element. Why: This is the actual control for choosing which occurrence (1st through 5th) of the weekday to target. How: This commits the chosen ordinal straight through setPatFun. */ }
+										onPatChaFun={ setPatFun }
+									/>{ /* What: Nth Select Component. Why: These are the actual controls for choosing which occurrence of which weekday to target. How: This renders the ordinal and weekday selects, committing each change straight through setPatFun. */ }
 
 
-										{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum.
-
-
-											<option
-												key={ ordValNum }
-
-												value={ ordValNum }
-											>{ ordSufFun( ordValNum ) }</option> // What: Ordinal Option Element. Why: One option is needed per possible occurrence, 1st through 5th. How: This renders ordSufFun's own suffixed label, valued by ordValNum.
-
-
-										) ) }
-
-
-									</select>
-
-									<select
-										className={ cssModObj.ancPicSel }
-
-										value={ norCadObj.nthWeekday }
-
-										aria-label='Weekday'
-
-										onChange={ ( chaEveObj ) => setPatFun( { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
-									>{ /* What: Nth Weekday Select Element. Why: This is the actual control for choosing which weekday to target. How: This commits the chosen weekday's own index straight through setPatFun. */ }
-
-
-										{ DAY_FUL_ARR.map( ( dayNamStr, dowIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dowIndNum.
-
-
-											<option
-												key={ dowIndNum }
-
-												value={ dowIndNum }
-											>{ dayNamStr }</option> // What: Weekday Option Element. Why: One option is needed per real weekday. How: This renders dayNamStr, valued by its own dowIndNum.
-
-
-										) ) }
-
-
-									</select>
 
 									<span>of</span>{ /* What: Of Span Element. Why: This is the inline control's own connecting word between the weekday and month selects. How: This renders the literal text "of". */ }
 
-									<select
-										className={ cssModObj.ancPicSel }
 
+
+									<MonSelCom
 										value={ norCadObj.anchorMonth }
 
-										aria-label='Anchor month'
-
-										onChange={ ( chaEveObj ) => setPatFun( { anchorMonth : parseInt( chaEveObj.target.value ) } ) }
-									>{ /* What: Anchor Month Select Element. Why: This is the actual control for choosing the yearly anchor month. How: This commits the chosen month's own 1-indexed number straight through setPatFun. */ }
-
-
-										{ MON_FUL_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps MON_FUL_ARR to one option per entry, keyed by its own 1-indexed monIndNum.
-
-
-											<option
-												key={ monIndNum }
-
-												value={ monIndNum + 1 }
-											>{ monNamStr }</option> // What: Month Option Element. Why: One option is needed per real month. How: This renders monNamStr, valued by its own 1-indexed monIndNum.
-
-
-										) ) }
-
-
-									</select>
+										onChange={ ( monValNum ) => setPatFun( { anchorMonth : monValNum } ) }
+									/>{ /* What: Month Select Component. Why: This is the actual control for choosing the yearly anchor month. How: This commits the chosen month's own 1-indexed number straight through setPatFun. */ }
 
 
 								</div>
@@ -667,31 +857,15 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 
 									<span>Every</span>{ /* What: Every Span Element. Why: This is the inline control's own leading word. How: This renders the literal text "Every". */ }
 
-									<select
-										className={ cssModObj.ancPicSel }
 
+
+									<MonSelCom
 										value={ norCadObj.anchorMonth }
 
-										aria-label='Anchor month'
-
-										onChange={ ( chaEveObj ) => setPatFun( { anchorMonth : parseInt( chaEveObj.target.value ) } ) }
-									>{ /* What: Anchor Month Select Element. Why: This is the actual control for choosing the yearly anchor month. How: This commits the chosen month's own 1-indexed number straight through setPatFun. */ }
+										onChange={ ( monValNum ) => setPatFun( { anchorMonth : monValNum } ) }
+									/>{ /* What: Month Select Component. Why: This is the actual control for choosing the yearly anchor month. How: This commits the chosen month's own 1-indexed number straight through setPatFun. */ }
 
 
-										{ MON_FUL_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps MON_FUL_ARR to one option per entry, keyed by its own 1-indexed monIndNum.
-
-
-											<option
-												key={ monIndNum }
-
-												value={ monIndNum + 1 }
-											>{ monNamStr }</option> // What: Month Option Element. Why: One option is needed per real month. How: This renders monNamStr, valued by its own 1-indexed monIndNum.
-
-
-										) ) }
-
-
-									</select>
 
 									<select
 										className={ cssModObj.ancPicSel }
