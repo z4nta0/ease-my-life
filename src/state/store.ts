@@ -2840,7 +2840,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 			// #region Item Defaults
 
-			const iniValNum = picArgObj.mode === 'ease-down' ? 100 : 0;                       // What: Initial Value Number. Why: Every new item's own starting drift value depends on the picker's own mode. How: This is 100 for ease-down (starts "charged"), else 0.
+			const iniValNum = picArgObj.mode === 'ease-down' ? PIC_NAM_OBJ.THR_VAL_NUM : 0;   // What: Initial Value Number. Why: Every new item's own starting drift value depends on the picker's own mode. How: This is the full-charge ceiling, PIC_NAM_OBJ.THR_VAL_NUM, for ease-down (starts "charged"), else 0.
 			const isaEasBoo = picArgObj.mode === 'ease-up' || picArgObj.mode === 'ease-down'; // What: Is-An Ease Boolean. Why: Only an ease-mode item carries its own per-item drift band. How: This is true when mode is either ease-up or ease-down.
 			const isaDowBoo = picArgObj.mode === 'ease-down';                                 // What: Is-A Down Boolean. Why: Only ease-down forces every item to a uniform starting weight of 1 regardless of any user-supplied weight. How: This is true only when mode is 'ease-down'.
 
