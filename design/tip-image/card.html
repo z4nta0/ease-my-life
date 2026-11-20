@@ -1,21 +1,27 @@
 
 
 
-<!doctype html>
+<!doctype html><!-- What: Document Type Declaration. Why: Browsers render the page in standards mode only with a doctype. How: This declares HTML5. -->
 
 
 
-<html lang='en'>
+<html lang='en'><!-- What: Root HTML Element. Why: The card is set in English text. How: This marks the document as English. -->
 
 
-	<head>
+	<head><!-- What: Document Head Element. Why: The card's fonts and layout load before it's captured. How: This holds them in the sections below. -->
 
-		<meta charset='utf-8' />
 
-		<title>Buy Me a Coffee Card</title>
+		<!-- #region Document -->
 
-		<link rel='stylesheet' href='/src/styles/fonts.css' />
-		<link rel='stylesheet' href='/src/styles/styles.css' />
+		<meta charset='utf-8' />                                <!-- What: Character Set Meta. Why: The card's text has to decode as UTF-8. How: This sits first in the head. -->
+		<title>Buy Me a Coffee Card</title>                     <!-- What: Page Title Element. Why: The file should say what it is when opened in a browser. How: This names it. -->
+		<link rel='stylesheet' href='/src/styles/fonts.css' />  <!-- What: Fonts Stylesheet Link. Why: The card should be set in the app's own typefaces. How: This loads its font faces from the render server. -->
+		<link rel='stylesheet' href='/src/styles/styles.css' /> <!-- What: Styles Stylesheet Link. Why: The card should read the app's colors and sizes, and its 11px root. How: This loads the global stylesheet and its tokens after the font faces. -->
+
+		<!-- #endregion Document -->
+
+
+		<!-- #region Card Styles -->
 
 		<style>/* What: Card Styles. Why: The card is drawn from the app's own tokens so it looks like the app. How: This lays out the square card, its cup illustration, and its two lines of text. */
 
@@ -28,6 +34,9 @@
 
 
 			}
+
+
+			/* #region carSqaDiv */
 
 			.carSqaDiv { /* What: Card Square Div. Why: Polar shows the image square, so everything sits in one 1,200px square. How: This stacks the cup and the text in the center over the icon's own faint grid. */
 
@@ -94,14 +103,19 @@
 
 			}
 
+			/* #endregion carSqaDiv */
+
 
 		</style>
+
+		<!-- #endregion Card Styles -->
+
 
 	</head>
 
 
 
-	<body>
+	<body><!-- What: Page Body Element. Why: The page holds only the Buy Me a Coffee product image. How: This holds the card square the render script captures. -->
 
 
 		<div
