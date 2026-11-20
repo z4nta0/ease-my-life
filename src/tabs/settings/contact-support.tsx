@@ -212,7 +212,7 @@ function ConSupCom () : React.JSX.Element {
 	const conSupRef = React.useRef< HTMLButtonElement | null >( null ); // What: Contact Support Reference. Why: A sent form collapses with focus on its Send button, so focus needs somewhere to land. How: This is attached to the Contact Support button, which a successful send focuses.
 	const refSenRef = React.useRef( false );                            // What: Refocus Send Reference. Why: A failed send ends with the Send button still disabled, so it can't take focus until it re-enables. How: The failure sets this, and the Send Refocus effect reads it once sending ends.
 	const senButRef = React.useRef< HTMLButtonElement | null >( null ); // What: Send Button Reference. Why: A failed send should hand focus back to Send. How: This is attached to the Send button, which the Send Refocus effect focuses.
-	const canSenBoo = draSubStr.trim() && draMesStr.trim();             // What: Can Send Boolean. Why: The Send button's own enabled state, and the validation guard, both depend on both drafts actually holding text. How: This is true only while both draSubStr and draMesStr trim to something non-empty.
+	const canSenBoo = !!( draSubStr.trim() && draMesStr.trim() );       // What: Can Send Boolean. Why: The Send button's own enabled state, and the validation guard, both depend on both drafts actually holding text. How: This is true only while both draSubStr and draMesStr trim to something non-empty.
 
 	// #endregion Form State
 
