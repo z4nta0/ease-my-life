@@ -43,6 +43,265 @@ import type { TodRowTyp } from './group-entries.ts';       // What: Today Row Ty
 
 // #region Components
 
+type DacProTyp = { actNamStr : string, icoNamStr : string, labTexStr : string }; // What: Disabled-Action-Component Props Type. Why: Each disabled action names itself, its glyph, and why it can't be used. How: This types DisActCom's props.
+
+// #region DisActCom
+
+/**
+ * DisActCom = Disabled Action Component
+ *
+ * @summary
+ * Renders one card action that can't be used on this row: its glyph,
+ * wrapped in a tip that stands in for the disabled action and explains why
+ * it's unavailable.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.actNamStr - Action Name String: The action the tip stands in
+ *                          for.
+ * @param props.icoNamStr - Icon Name String: The action's own glyph.
+ * @param props.labTexStr - Label Text String: Why the action is unavailable.
+ *
+ * @returns The disabled action tip.
+ *
+ * @example
+ * ```tsx
+ * DisActCom({ actNamStr, icoNamStr, labTexStr }) // => <DisActCom />
+ * ```
+ *
+*/
+
+function DisActCom ( { actNamStr, icoNamStr, labTexStr } : DacProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<InfTipCom
+			className={ cssModObj.actIcoSpa }
+
+			actNamStr={ actNamStr }
+			labTexStr={ labTexStr }
+		>{ /* What: Info Tip Component. Why: An action that doesn't apply to this row is explained rather than removed. How: This wraps the action's disabled-looking glyph with labTexStr. */ }
+
+
+			<IcoSvgCom
+				icoNamStr={ icoNamStr }
+				sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
+			/>{ /* What: Icon Svg Component. Why: The disabled action still needs its own recognizable glyph. How: This renders icoNamStr at a fixed size. */ }
+
+
+		</InfTipCom>
+
+
+	);
+
+
+}
+
+// #endregion DisActCom
+
+
+
+type LocProTyp = { ariSubStr : string, ediModBoo : boolean, entRecObj : TodRowTyp[ 'entRecObj' ], onGriDowFun : ( poiEveObj : React.PointerEvent< HTMLElement > ) => void, onTogDonFun : ( entRecObj : TodRowTyp[ 'entRecObj' ] ) => void }; // What: Lead-Control-Component Props Type. Why: A card's leading control drags it in Edit Mode and checks it off otherwise, naming what it marks. How: This types LeaConCom's props.
+
+// #region LeaConCom
+
+/**
+ * LeaConCom = Lead Control Component
+ *
+ * @summary
+ * Renders a card's leading control: a drag grip that forwards its pointer
+ * down while Edit Mode is on, and otherwise a check button that toggles the
+ * row's done state without also clicking the card, showing a checkmark once
+ * the row is done.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.ariSubStr   - Aria Subject String: What the check button
+ *                            marks complete, in its accessible name.
+ * @param props.ediModBoo   - Edit Mode Boolean: Whether Edit Mode is on.
+ * @param props.entRecObj   - Entry Record Object: The row's own entry.
+ * @param props.onGriDowFun - On Grip Down Function: Called with the grip's
+ *                            pointer down.
+ * @param props.onTogDonFun - On Toggle Done Function: Called with the entry
+ *                            when the check button is pressed.
+ *
+ * @returns The grip or the check button.
+ *
+ * @example
+ * ```tsx
+ * LeaConCom({ ariSubStr, ediModBoo, entRecObj, ... }) // => <LeaConCom />
+ * ```
+ *
+*/
+
+function LeaConCom ( { ariSubStr, ediModBoo, entRecObj, onGriDowFun, onTogDonFun } : LocProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<>{ /* What: Lead Control Fragment. Why: The grip or the check button sits straight inside its card. How: This holds whichever one shows without a wrapper of its own. */ }
+
+
+			{ ediModBoo ? ( // What: Edit Mode Check. Why: The row's own leading control swaps between a drag grip and a check button depending on whether Edit Mode is active. How: This renders the grip handle while ediModBoo is true, the check button otherwise.
+
+
+				<span
+					className={ cssModObj.carGriSpa }
+
+					data-element-name-hook='carGriSpa'
+
+					draggable={ false }
+
+					aria-label='Drag to reorder'
+					role='button'
+					tabIndex={ 0 }
+
+					onDragStart={ ( draEveObj ) => draEveObj.preventDefault() }
+					onPointerDown={ ( poiEveObj ) => onGriDowFun( poiEveObj ) }
+				>{ /* What: Card Grip Span Element. Why: This is the actual pointer-drag handle for reordering this row within its group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. Its data-element-name-hook is read by help mode's Today catalog. */ }
+
+
+					<IcoSvgCom
+						icoNamStr='griEle'
+						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
+					/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
+
+
+				</span>
+
+
+			) : ( // What: Check Button Branch. Why: Outside Edit Mode, the row needs its own working done-toggle checkbox instead. How: This renders the else branch, taken while ediModBoo is false.
+
+
+				<button
+					className={ cssModObj.carCheBut }
+
+					data-element-name-hook='carCheBut'
+
+					type='button'
+
+					aria-label={ `${ entRecObj.done ? 'Unmark' : 'Mark' } ${ ariSubStr } complete` }
+					aria-pressed={ !!entRecObj.done }
+
+					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
+
+
+						cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
+						onTogDonFun( entRecObj );    // What: Check Toggle Call. Why: This button toggles the row's own done state. How: This calls onTogDonFun with the row's own entry.
+
+
+					} }
+				>{ /* What: Check Button Element. Why: This is the actual done-toggle control for the row. How: This calls onTogDonFun, and shows a checkmark only once entRecObj.done is true. Its data-element-name-hook is read by help mode's Today catalog. */ }
+
+
+					<span
+						className={ cssModObj.cheRipSpa }
+
+						aria-hidden='true'
+					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
+
+					{ entRecObj.done && ( // What: Done IcoSvgCom Check. Why: A completed card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the IcoSvgCom only while entRecObj.done is true.
+
+
+						<IcoSvgCom
+							className={ cssModObj.cheIcoSvg }
+
+							icoNamStr='cheEle'
+							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
+						/> // What: Icon Svg Component. Why: A completed card needs a checkmark glyph. How: This renders the 'cheEle' icon only while entRecObj.done is true.
+
+
+					) }
+
+
+				</button>
+
+
+			) }
+
+
+		</>
+
+
+	);
+
+
+}
+
+// #endregion LeaConCom
+
+
+
+type SbcProTyp = { entIdeStr : string, onSkiEntFun : ( entIdeStr : string ) => void }; // What: Skip-Button-Component Props Type. Why: The skip button skips its own row. How: This types SkiButCom's props.
+
+// #region SkiButCom
+
+/**
+ * SkiButCom = Skip Button Component
+ *
+ * @summary
+ * Renders a card's working Skip action, which skips the row without also
+ * clicking the card.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.entIdeStr   - Entry Identifier String: The row's own eid.
+ * @param props.onSkiEntFun - On Skip Entry Function: Called with the eid
+ *                            when the button is pressed.
+ *
+ * @returns The skip button.
+ *
+ * @example
+ * ```tsx
+ * SkiButCom({ entIdeStr, onSkiEntFun }) // => <SkiButCom />
+ * ```
+ *
+*/
+
+function SkiButCom ( { entIdeStr, onSkiEntFun } : SbcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<button
+			className={ cssModObj.actIcoBut }
+
+			aria-label='Skip'
+			title='Skip'
+
+			onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
+
+
+				cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
+				onSkiEntFun( entIdeStr );    // What: Skip Call. Why: This button skips the row entirely. How: This calls onSkiEntFun with the row's own eid.
+
+
+			} }
+		>{ /* What: Skip Icon Button Element. Why: This is the row's own working skip control. How: This calls onSkiEntFun with entIdeStr. */ }
+
+
+			<IcoSvgCom
+				icoNamStr='skiEle'
+				sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
+			/>{ /* What: Icon Svg Component. Why: The Skip action needs a recognizable glyph. How: This renders the 'skiEle' icon at a fixed size. */ }
+
+
+		</button>
+
+
+	);
+
+
+}
+
+// #endregion SkiButCom
+
+
+
 type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : string, ediModBoo : boolean, entRecObj : TodRowTyp[ 'entRecObj' ], isaEdiBoo : boolean, isaRmvBoo : boolean, isaRolBoo : boolean, jusCheStr : string | null, onGriDowFun : ( poiEveObj : React.PointerEvent< HTMLElement > ) => void, onPlaTutFun : ( kinStr : string, ideStr : string ) => void, onRenIteFun : ( curNamStr : string ) => void, onRerEntFun : ( entRecObj : TodRowTyp[ 'entRecObj' ], picRecObj : TodRowTyp[ 'picRecObj' ] ) => void, onSkiEntFun : ( entIdeStr : string ) => void, onTogDonFun : ( entRecObj : TodRowTyp[ 'entRecObj' ] ) => void, onTogEdiFun : () => void, onUncTutFun : ( ideStr : string ) => void, picRecObj : TodRowTyp[ 'picRecObj' ], staAppObj : StaAppTyp }; // What: Entry-Card-Component Props Type. Why: An entry card renders one Today row, a pick, day-off, charging, or tutorial card, with its check, skip, reroll, rename, and drag actions. How: This types EntCarCom's props, its entry and picker taken from the grouped row they come from.
 
 // #region EntCarCom
@@ -354,82 +613,16 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 			>{ /* What: Day-Off Card Article Element. Why: This is EntCarCom's own root for a day-off row. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) a disabled re-roll/edit plus a working Skip. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
-				{ ediModBoo ? ( // What: Edit Mode Check. Why: The row's own leading control swaps between a drag grip and a check button depending on whether Edit Mode is active. How: This renders the grip handle while ediModBoo is true, the check button otherwise.
 
+				<LeaConCom
+					ariSubStr='day off'
+					ediModBoo={ ediModBoo }
+					entRecObj={ entRecObj }
 
-					<span
-						className={ cssModObj.carGriSpa }
+					onGriDowFun={ onGriDowFun }
+					onTogDonFun={ onTogDonFun }
+				/>{ /* What: Lead Control Component. Why: The row's own leading control swaps between a drag grip and a check button depending on whether Edit Mode is active. How: This renders the grip handle while ediModBoo is true, the check button otherwise. */ }
 
-						data-element-name-hook='carGriSpa'
-
-						draggable={ false }
-
-						aria-label='Drag to reorder'
-						role='button'
-						tabIndex={ 0 }
-
-						onDragStart={ ( draEveObj ) => draEveObj.preventDefault() }
-						onPointerDown={ ( poiEveObj ) => onGriDowFun( poiEveObj ) }
-					>{ /* What: Card Grip Span Element. Why: This is the actual pointer-drag handle for reordering this row within its group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. Its data-element-name-hook is read by help mode's Today catalog. */ }
-
-
-						<IcoSvgCom
-							icoNamStr='griEle'
-							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-						/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
-
-
-					</span>
-
-
-				) : ( // What: Check Button Branch. Why: Outside Edit Mode, the row needs its own working done-toggle checkbox instead. How: This renders the else branch, taken while ediModBoo is false.
-
-
-					<button
-						className={ cssModObj.carCheBut }
-
-						data-element-name-hook='carCheBut'
-
-						type='button'
-
-						aria-label={ `${ entRecObj.done ? 'Unmark' : 'Mark' } day off complete` }
-						aria-pressed={ !!entRecObj.done }
-
-						onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
-
-
-							cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-							onTogDonFun( entRecObj );    // What: Check Toggle Call. Why: This button toggles the row's own done state. How: This calls onTogDonFun with the row's own entry.
-
-
-						} }
-					>{ /* What: Check Button Element. Why: This is the actual done-toggle control for a day-off row. How: This calls onTogDonFun, and shows a checkmark only once entRecObj.done is true. Its data-element-name-hook is read by help mode's Today catalog. */ }
-
-
-						<span
-							className={ cssModObj.cheRipSpa }
-
-							aria-hidden='true'
-						/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
-
-						{ entRecObj.done && ( // What: Done IcoSvgCom Check. Why: A completed day-off card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the IcoSvgCom only while entRecObj.done is true.
-
-
-							<IcoSvgCom
-								className={ cssModObj.cheIcoSvg }
-
-								icoNamStr='cheEle'
-								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/> // What: Icon Svg Component. Why: A completed day-off card needs a checkmark glyph. How: This renders the 'cheEle' icon only while entRecObj.done is true.
-
-
-						) }
-
-
-					</button>
-
-
-				) }
 
 
 				<div className={ cssModObj.carBodDiv }>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
@@ -470,66 +663,29 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 					>{ /* What: Card Actions Div Element. Why: A day-off row still shows the full 3-icon action strip for layout parity, but re-roll/edit are disabled since neither concept applies. How: This wraps the disabled Re-Roll InfTipCom, a working Skip button, and the disabled Edit InfTipCom. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
 
 
-						<InfTipCom
-							className={ cssModObj.actIcoSpa }
 
+						<DisActCom
 							actNamStr='Re-Roll'
+							icoNamStr='refEle'
 							labTexStr={ disTipStr }
-						>{ /* What: Info Tip Component. Why: A day-off card has no items to re-roll between, so this action is explained rather than removed. How: This wraps a disabled-looking refresh icon with disTipStr. */ }
-
-
-							<IcoSvgCom
-								icoNamStr='refEle'
-								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refEle' icon at a fixed size. */ }
-
-
-						</InfTipCom>
+						/>{ /* What: Disabled Action Component. Why: A day-off card has no items to re-roll between, so this action is explained rather than removed. How: This renders the disabled-looking Re-Roll glyph with disTipStr. */ }
 
 
 
-						<button
-							className={ cssModObj.actIcoBut }
+						<SkiButCom
+							entIdeStr={ entRecObj.eid }
 
-							aria-label='Skip'
-							title='Skip'
-
-							onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
-
-
-								cliEveObj.stopPropagation();  // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-								onSkiEntFun( entRecObj.eid ); // What: Skip Call. Why: This button skips the row entirely. How: This calls onSkiEntFun with the row's own eid.
-
-
-							} }
-						>{ /* What: Skip Icon Button Element. Why: Skip is the one action that DOES still apply to a day-off row. How: This calls onSkiEntFun with entRecObj's own eid. */ }
-
-
-							<IcoSvgCom
-								icoNamStr='skiEle'
-								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The Skip action needs a recognizable glyph. How: This renders the 'skiEle' icon at a fixed size. */ }
-
-
-						</button>
+							onSkiEntFun={ onSkiEntFun }
+						/>{ /* What: Skip Button Component. Why: Skip is the one action that DOES still apply to a day-off row. How: This calls onSkiEntFun with entRecObj's own eid. */ }
 
 
 
-						<InfTipCom
-							className={ cssModObj.actIcoSpa }
-
+						<DisActCom
 							actNamStr='Edit'
+							icoNamStr='ediEle'
 							labTexStr={ disTipStr }
-						>{ /* What: Info Tip Component. Why: A day-off card has no editable name of its own, so this action is explained rather than removed. How: This wraps a disabled-looking edit icon with disTipStr. */ }
+						/>{ /* What: Disabled Action Component. Why: A day-off card has no editable name of its own, so this action is explained rather than removed. How: This renders the disabled-looking Edit glyph with disTipStr. */ }
 
-
-							<IcoSvgCom
-								icoNamStr='ediEle'
-								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
-
-
-						</InfTipCom>
 
 
 					</div>
@@ -587,82 +743,16 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 			>{ /* What: Charging Card Article Element. Why: This is EntCarCom's own root for a charging row. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) 3 fully-disabled actions. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
-				{ ediModBoo ? ( // What: Edit Mode Check. Why: The row's own leading control swaps between a drag grip and a check button depending on whether Edit Mode is active. How: This renders the grip handle while ediModBoo is true, the check button otherwise.
 
+				<LeaConCom
+					ariSubStr={ `${ picRecObj.name } charging card` }
+					ediModBoo={ ediModBoo }
+					entRecObj={ entRecObj }
 
-					<span
-						className={ cssModObj.carGriSpa }
+					onGriDowFun={ onGriDowFun }
+					onTogDonFun={ onTogDonFun }
+				/>{ /* What: Lead Control Component. Why: The row's own leading control swaps between a drag grip and a check button depending on whether Edit Mode is active. How: This renders the grip handle while ediModBoo is true, the check button otherwise. */ }
 
-						data-element-name-hook='carGriSpa'
-
-						draggable={ false }
-
-						aria-label='Drag to reorder'
-						role='button'
-						tabIndex={ 0 }
-
-						onDragStart={ ( draEveObj ) => draEveObj.preventDefault() }
-						onPointerDown={ ( poiEveObj ) => onGriDowFun( poiEveObj ) }
-					>{ /* What: Card Grip Span Element. Why: This is the actual pointer-drag handle for reordering this row within its group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. Its data-element-name-hook is read by help mode's Today catalog. */ }
-
-
-						<IcoSvgCom
-							icoNamStr='griEle'
-							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-						/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
-
-
-					</span>
-
-
-				) : ( // What: Check Button Branch. Why: Outside Edit Mode, the row needs its own working done-toggle checkbox instead. How: This renders the else branch, taken while ediModBoo is false.
-
-
-					<button
-						className={ cssModObj.carCheBut }
-
-						data-element-name-hook='carCheBut'
-
-						type='button'
-
-						aria-label={ `${ entRecObj.done ? 'Unmark' : 'Mark' } ${ picRecObj.name } charging card complete` }
-						aria-pressed={ !!entRecObj.done }
-
-						onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
-
-
-							cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-							onTogDonFun( entRecObj );    // What: Check Toggle Call. Why: This button toggles the row's own done state. How: This calls onTogDonFun with the row's own entry.
-
-
-						} }
-					>{ /* What: Check Button Element. Why: This is the actual done-toggle control for a charging row, applying the day's own staged drift once checked. How: This calls onTogDonFun, and shows a checkmark only once entRecObj.done is true. Its data-element-name-hook is read by help mode's Today catalog. */ }
-
-
-						<span
-							className={ cssModObj.cheRipSpa }
-
-							aria-hidden='true'
-						/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
-
-						{ entRecObj.done && ( // What: Done IcoSvgCom Check. Why: A completed charging card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the IcoSvgCom only while entRecObj.done is true.
-
-
-							<IcoSvgCom
-								className={ cssModObj.cheIcoSvg }
-
-								icoNamStr='cheEle'
-								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/> // What: Icon Svg Component. Why: A completed charging card needs a checkmark glyph. How: This renders the 'cheEle' icon only while entRecObj.done is true.
-
-
-						) }
-
-
-					</button>
-
-
-				) }
 
 
 				<div className={ cssModObj.carBodDiv }>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
@@ -692,57 +782,29 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 					>{ /* What: Card Actions Div Element. Why: A charging row still shows the full 3-icon action strip for layout parity, but every one of them is disabled since none of those concepts apply here. How: This wraps 3 disabled InfTipCom-wrapped icons. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
 
 
-						<InfTipCom
-							className={ cssModObj.actIcoSpa }
 
+						<DisActCom
 							actNamStr='Re-Roll'
+							icoNamStr='refEle'
 							labTexStr={ disTipStr }
-						>{ /* What: Info Tip Component. Why: A charging card has no items to re-roll between yet. How: This wraps a disabled-looking refresh icon with disTipStr. */ }
-
-
-							<IcoSvgCom
-								icoNamStr='refEle'
-								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refEle' icon at a fixed size. */ }
-
-
-						</InfTipCom>
+						/>{ /* What: Disabled Action Component. Why: A charging card has no items to re-roll between yet. How: This renders the disabled-looking Re-Roll glyph with disTipStr. */ }
 
 
 
-						<InfTipCom
-							className={ cssModObj.actIcoSpa }
-
+						<DisActCom
 							actNamStr='Skip'
+							icoNamStr='skiEle'
 							labTexStr={ disTipStr }
-						>{ /* What: Info Tip Component. Why: Skipping a charging card would discard the day's own staged drift instead of applying it. How: This wraps a disabled-looking skip icon with disTipStr. */ }
-
-
-							<IcoSvgCom
-								icoNamStr='skiEle'
-								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skiEle' icon at a fixed size. */ }
-
-
-						</InfTipCom>
+						/>{ /* What: Disabled Action Component. Why: Skipping a charging card would discard the day's own staged drift instead of applying it. How: This renders the disabled-looking Skip glyph with disTipStr. */ }
 
 
 
-						<InfTipCom
-							className={ cssModObj.actIcoSpa }
-
+						<DisActCom
 							actNamStr='Edit'
+							icoNamStr='ediEle'
 							labTexStr={ disTipStr }
-						>{ /* What: Info Tip Component. Why: A charging card has no item of its own yet to edit. How: This wraps a disabled-looking edit icon with disTipStr. */ }
+						/>{ /* What: Disabled Action Component. Why: A charging card has no item of its own yet to edit. How: This renders the disabled-looking Edit glyph with disTipStr. */ }
 
-
-							<IcoSvgCom
-								icoNamStr='ediEle'
-								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
-
-
-						</InfTipCom>
 
 
 					</div>
@@ -870,82 +932,16 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 		>{ /* What: Real Pick Card Article Element. Why: This is EntCarCom's own root for an ordinary picked-item row. How: This renders a grip (Edit Mode) or check button, the meta/name body (a text field while editing), and (outside Edit Mode) the re-roll/skip/edit actions. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
-			{ ediModBoo ? ( // What: Edit Mode Check. Why: The row's own leading control swaps between a drag grip and a check button depending on whether Edit Mode is active. How: This renders the grip handle while ediModBoo is true, the check button otherwise.
 
+			<LeaConCom
+				ariSubStr={ curIteObj.name }
+				ediModBoo={ ediModBoo }
+				entRecObj={ entRecObj }
 
-				<span
-					className={ cssModObj.carGriSpa }
+				onGriDowFun={ onGriDowFun }
+				onTogDonFun={ onTogDonFun }
+			/>{ /* What: Lead Control Component. Why: The row's own leading control swaps between a drag grip and a check button depending on whether Edit Mode is active. How: This renders the grip handle while ediModBoo is true, the check button otherwise. */ }
 
-					data-element-name-hook='carGriSpa'
-
-					draggable={ false }
-
-					aria-label='Drag to reorder'
-					role='button'
-					tabIndex={ 0 }
-
-					onDragStart={ ( draEveObj ) => draEveObj.preventDefault() }
-					onPointerDown={ ( poiEveObj ) => onGriDowFun( poiEveObj ) }
-				>{ /* What: Card Grip Span Element. Why: This is the actual pointer-drag handle for reordering this row within its group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. Its data-element-name-hook is read by help mode's Today catalog. */ }
-
-
-					<IcoSvgCom
-						icoNamStr='griEle'
-						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-					/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
-
-
-				</span>
-
-
-			) : ( // What: Check Button Branch. Why: Outside Edit Mode, the row needs its own working done-toggle checkbox instead. How: This renders the else branch, taken while ediModBoo is false.
-
-
-				<button
-					className={ cssModObj.carCheBut }
-
-					data-element-name-hook='carCheBut'
-
-					type='button'
-
-					aria-label={ `${ entRecObj.done ? 'Unmark' : 'Mark' } ${ curIteObj.name } complete` }
-					aria-pressed={ !!entRecObj.done }
-
-					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
-
-
-						cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-						onTogDonFun( entRecObj );    // What: Check Toggle Call. Why: This button toggles the row's own done state. How: This calls onTogDonFun with the row's own entry.
-
-
-					} }
-				>{ /* What: Check Button Element. Why: This is the actual done-toggle control for an ordinary picked row. How: This calls onTogDonFun, and shows a checkmark only once entRecObj.done is true. Its data-element-name-hook is read by help mode's Today catalog. */ }
-
-
-					<span
-						className={ cssModObj.cheRipSpa }
-
-						aria-hidden='true'
-					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
-
-					{ entRecObj.done && ( // What: Done IcoSvgCom Check. Why: A completed pick card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the IcoSvgCom only while entRecObj.done is true.
-
-
-						<IcoSvgCom
-							className={ cssModObj.cheIcoSvg }
-
-							icoNamStr='cheEle'
-							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-						/> // What: Icon Svg Component. Why: A completed pick card needs a checkmark glyph. How: This renders the 'cheEle' icon only while entRecObj.done is true.
-
-
-					) }
-
-
-				</button>
-
-
-			) }
 
 
 			<div className={ cssModObj.carBodDiv }>{ /* What: Card Body Div Element. Why: The meta row and name row (or its editable field) read as one grouped block. How: This wraps the meta row and either the name field or the plain name div below. */ }
@@ -1038,21 +1034,12 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 					) : ( // What: Disabled Reroll Branch. Why: A blocked re-roll needs an explained disabled control instead. How: This renders the else branch, taken while canRerBoo is false.
 
 
-						<InfTipCom
-							className={ cssModObj.actIcoSpa }
 
+						<DisActCom
 							actNamStr='Re-Roll'
+							icoNamStr='refEle'
 							labTexStr={ actRerStr }
-						>{ /* What: Info Tip Component. Why: A blocked re-roll (too few candidates, or already completed) still needs to explain itself. How: This wraps a disabled-looking refresh icon with actRerStr. */ }
-
-
-							<IcoSvgCom
-								icoNamStr='refEle'
-								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refEle' icon at a fixed size. */ }
-
-
-						</InfTipCom>
+						/> // What: Disabled Action Component. Why: A blocked re-roll (too few candidates, or already completed) still needs to explain itself. How: This renders the disabled-looking Re-Roll glyph with actRerStr.
 
 
 					) }
@@ -1062,50 +1049,23 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 					{ entDonBoo ? ( // What: Entry Done Check. Why: Skip only makes sense while the row isn't already completed. How: This renders an explained disabled Skip while entDonBoo is true, the working button otherwise.
 
 
-						<InfTipCom
-							className={ cssModObj.actIcoSpa }
 
+						<DisActCom
 							actNamStr='Skip'
+							icoNamStr='skiEle'
 							labTexStr={ donSkiStr }
-						>{ /* What: Info Tip Component. Why: A completed row's own skip is explained rather than removed, matching re-roll's own lockout above. How: This wraps a disabled-looking skip icon with donSkiStr. */ }
-
-
-							<IcoSvgCom
-								icoNamStr='skiEle'
-								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skiEle' icon at a fixed size. */ }
-
-
-						</InfTipCom>
+						/> // What: Disabled Action Component. Why: A completed row's own skip is explained rather than removed, matching re-roll's own lockout above. How: This renders the disabled-looking Skip glyph with donSkiStr.
 
 
 					) : ( // What: Working Skip Branch. Why: An uncompleted row needs its own real, working Skip control instead. How: This renders the else branch, taken while entDonBoo is false.
 
 
-						<button
-							className={ cssModObj.actIcoBut }
 
-							aria-label='Skip'
-							title='Skip'
+						<SkiButCom
+							entIdeStr={ entRecObj.eid }
 
-							onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
-
-
-								cliEveObj.stopPropagation();  // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-								onSkiEntFun( entRecObj.eid ); // What: Skip Call. Why: This button skips the row entirely. How: This calls onSkiEntFun with the row's own eid.
-
-
-							} }
-						>{ /* What: Skip Icon Button Element. Why: This is the actual working skip control, available whenever the row is not yet completed. How: This calls onSkiEntFun with entRecObj's own eid. */ }
-
-
-							<IcoSvgCom
-								icoNamStr='skiEle'
-								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The Skip action needs a recognizable glyph. How: This renders the 'skiEle' icon at a fixed size. */ }
-
-
-						</button>
+							onSkiEntFun={ onSkiEntFun }
+						/> // What: Skip Button Component. Why: This is the actual working skip control, available whenever the row is not yet completed. How: This calls onSkiEntFun with entRecObj's own eid.
 
 
 					) }
