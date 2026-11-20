@@ -364,6 +364,8 @@ async function genNotFun () : Promise< boolean > {
 
 
 
+	// #region Notification Delivery
+
 	try { // What: Service Worker Notification Attempt. Why: The service worker's own showNotification() is the only path that works at all on Android Chrome, where the page-level constructor throws. How: This tries the service-worker path first and falls through to the page-level constructor below on any failure.
 
 
@@ -438,6 +440,8 @@ async function genNotFun () : Promise< boolean > {
 
 
 	}
+
+	// #endregion Notification Delivery
 
 
 }
