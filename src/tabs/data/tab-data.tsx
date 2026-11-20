@@ -233,6 +233,99 @@ function pisOptFun ( picModStr : string ) : { keyStr : string, labStr : string }
 
 // #region Components
 
+type CgcProTyp = { colValBoo : boolean, disValBoo : boolean, kicTexStr : string, onClick : () => void, sumTexStr : string, touValBoo : boolean }; // What: Category-Toggle-Component Props Type. Why: Each nested disclosure names itself, shows whether it's collapsed, and hints at what it hides. How: This types CatTogCom's props.
+
+// #region CatTogCom
+
+/**
+ * CatTogCom = Category Toggle Component
+ *
+ * @summary
+ * Renders a nested disclosure's toggle: a chevron that points down while
+ * the disclosure is open, its kicker, and, while it's collapsed, a short
+ * summary of what it hides. A tour pointing at the toggle gives it its own
+ * modifier, and it can be disabled.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.colValBoo - Collapsed Value Boolean: Whether the disclosure
+ *                          is collapsed.
+ * @param props.disValBoo - Disabled Value Boolean: Whether the toggle is
+ *                          disabled.
+ * @param props.kicTexStr - Kicker Text String: The disclosure's own label.
+ * @param props.onClick   - On Click: Called when the toggle is pressed.
+ * @param props.sumTexStr - Summary Text String: The hint shown while
+ *                          collapsed.
+ * @param props.touValBoo - Tour Value Boolean: Whether a tour is pointing
+ *                          at the toggle.
+ *
+ * @returns The disclosure toggle button.
+ *
+ * @example
+ * ```tsx
+ * CatTogCom({ colValBoo, kicTexStr, onClick, ... }) // => <CatTogCom />
+ * ```
+ *
+*/
+
+function CatTogCom ( { colValBoo, disValBoo, kicTexStr, onClick, sumTexStr, touValBoo } : CgcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<button
+			className={` ${ cssModObj.catTogBut }   ${ touValBoo ? cssModObj.catTogButTour : '' } `}
+
+			data-element-name-hook='catTogBut'
+
+			disabled={ disValBoo }
+			type='button'
+
+			aria-expanded={ !colValBoo }
+
+			onClick={ onClick }
+		>{ /* What: Category Toggle Button Element. Why: A nested disclosure needs its own toggle. How: This calls onClick, which flips its collapsed state. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+
+
+			<span className={ cssModObj.togLabSpa }>{ /* What: Toggle Label Span Element. Why: The chevron and the kicker read together as one unit. How: This wraps both spans below. */ }
+
+
+				<span
+					className={ cssModObj.chvDisSpa }
+
+					data-chevron-open-active={ !colValBoo || undefined } // What: Chevron Open Active Attribute. Why: An open disclosure points its chevron down. How: This sets the presence-only attribute while colValBoo is false.
+				>{ /* What: Chevron Span Element. Why: The chevron's own rotation communicates whether the disclosure is currently open. How: This rotates via data-chevron-open-active while colValBoo is false. */ }
+
+
+					<IcoSvgCom
+						icoNamStr='chvEle'
+						sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
+					/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at the m01 rhythm step. */ }
+
+
+				</span>
+
+				<span className={ cssModObj.togKicSpa }>{ kicTexStr }</span>{ /* What: Toggle Kicker Span Element. Why: This is the disclosure's own plain label. How: This renders kicTexStr. */ }
+
+
+			</span>
+
+			{ colValBoo && <span className={ cssModObj.togSumSpa }>{ sumTexStr }</span> }{ /* What: Toggle Summary Span Element. Why: A collapsed disclosure still needs a hint of how much content it's hiding. How: This renders sumTexStr only while colValBoo is true. */ }
+
+
+		</button>
+
+
+	);
+
+
+}
+
+// #endregion CatTogCom
+
+
+
 type DatScoTyp = { cliFun : () => void, ideStr? : string, keyStr : string, labStr : string, namStr : string, selBoo : boolean };                           // What: Data Scope Type. Why: The Show row mixes the Conditionals and Reminders boxes with one box per picker, and only a picker box carries a picker id. How: This describes one scope box entry.
 type SecEntTyp = SorRowTyp & { draBoo? : boolean, kinStr : 'conditionals' | 'picker' | 'reminders', picObj? : PicRcdTyp & { includeInDaily? : boolean } }; // What: Section Entry Type. Why: The Data tab sorts its Conditionals, Reminders, and picker sections together, then renders each by kind, with the draft picker appended last. How: This adds the kind, the picker record, and the draft flag to a sortable row.
 type TdcProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp };               // What: Tab-Data-Component Props Type. Why: The Data tab reads and edits the whole app state and can navigate to other tabs. How: This types TabDatCom's props.
@@ -2308,47 +2401,16 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 								>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures both belong in one grouped body. How: This wraps both nested disclosures below. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
-									<button
-										className={` ${ cssModObj.catTogBut }   ${ hetConBoo ? cssModObj.catTogButTour : '' } `}
 
-										data-element-name-hook='catTogBut'
-
-										disabled={ detConBoo }
-										type='button'
-
-										aria-expanded={ !conColBoo }
+									<CatTogCom
+										colValBoo={ conColBoo }
+										disValBoo={ detConBoo }
+										kicTexStr='Controls'
+										sumTexStr={ `${ Object.keys( SED_NAM_OBJ.MOD_DEF_OBJ ).length } options` }
+										touValBoo={ hetConBoo }
 
 										onClick={ () => actStoObj.togColFun( picCurObj.id + ':controls' ) }
-									>{ /* What: Controls Toggle Button Element. Why: This picker's own pick-algorithm/schedule config moved here from Settings, so it needs its own nested disclosure toggle. How: This toggles the persisted ':controls' entry, disabled during the guarded tour step. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
-
-
-										<span className={ cssModObj.togLabSpa }>{ /* What: Controls Toggle Label Span Element. Why: The chevron and the "Controls" kicker belong together. How: This wraps both spans below. */ }
-
-
-											<span
-												className={ cssModObj.chvDisSpa }
-
-												data-chevron-open-active={ !conColBoo || undefined } // What: Chevron Open Active Attribute. Why: An open disclosure points its chevron down. How: This sets the presence-only attribute while conColBoo is false.
-											>{ /* What: Chevron Span Element. Why: The disclosure's own open/closed state needs a visible directional indicator. How: This wraps the chevron icon, rotated via data-chevron-open-active. */ }
-
-
-												<IcoSvgCom
-													icoNamStr='chvEle'
-													sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
-												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
-
-
-											</span>
-
-											<span className={ cssModObj.togKicSpa }>Controls</span>{ /* What: Controls Kicker Span Element. Why: The disclosure needs its own visible label. How: This renders the literal text "Controls". */ }
-
-
-										</span>
-
-										{ conColBoo && <span className={ cssModObj.togSumSpa }>{ Object.keys( SED_NAM_OBJ.MOD_DEF_OBJ ).length } options</span> }{ /* What: Controls Summary Check. Why: A collapsed disclosure still needs a hint of what's inside. How: This renders only while conColBoo is true. */ }
-
-
-									</button>
+									/>{ /* What: Category Toggle Component. Why: This picker's own pick-algorithm/schedule config moved here from Settings, so it needs its own nested disclosure toggle. How: This toggles the persisted ':controls' entry, disabled during the guarded tour step, hinting at the number of pick options while collapsed. */ }
 
 
 
@@ -2389,47 +2451,15 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 
-									<button
-										className={` ${ cssModObj.catTogBut }   ${ hetIteBoo ? cssModObj.catTogButTour : '' } `}
+									<CatTogCom
+										colValBoo={ iteColBoo }
+										disValBoo={ detIteBoo }
+										kicTexStr='Items'
+										sumTexStr={ `${ picIteArr.length } items` }
+										touValBoo={ hetIteBoo }
 
-										data-element-name-hook='catTogBut'
-
-										disabled={ detIteBoo }
-										type='button'
-
-										aria-expanded={ !iteColBoo }
-
-										onClick={ () => isaDraBoo ? setDraIteBoo( ( preOpeBoo ) => !preOpeBoo ) : actStoObj.togColFun( picCurObj.id + ':items' ) }
-									>{ /* What: Items Toggle Button Element. Why: The item list needs its own nested disclosure toggle, defaulting open except for a fresh draft. How: This toggles draIteBoo for a draft, otherwise the persisted ':items' entry, disabled during the guarded tour step. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
-
-
-										<span className={ cssModObj.togLabSpa }>{ /* What: Controls Toggle Label Span Element. Why: The chevron and the label sit together on the toggle's left side. How: This wraps the chevron span and the kicker. */ }
-
-
-											<span
-												className={ cssModObj.chvDisSpa }
-
-												data-chevron-open-active={ !iteColBoo || undefined } // What: Chevron Open Active Attribute. Why: An open disclosure points its chevron down. How: This sets the presence-only attribute while iteColBoo is false.
-											>{ /* What: Chevron Span Element. Why: The disclosure's own open/closed state needs a visible directional indicator. How: This wraps the chevron icon, rotated via data-chevron-open-active. */ }
-
-
-												<IcoSvgCom
-													icoNamStr='chvEle'
-													sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
-												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
-
-
-											</span>
-
-											<span className={ cssModObj.togKicSpa }>Items</span>{ /* What: Items Kicker Span Element. Why: The disclosure needs its own visible label. How: This renders the literal text "Items". */ }
-
-
-										</span>
-
-										{ iteColBoo && <span className={ cssModObj.togSumSpa }>{ picIteArr.length } items</span> }{ /* What: Items Summary Check. Why: A collapsed disclosure still needs a hint of what's inside. How: This renders only while iteColBoo is true. */ }
-
-
-									</button>
+										onClick={ () => isaDraBoo ? setDraIteBoo( ( preOpeBoo ) => !preOpeBoo ) : actStoObj.togColFun( picCurObj.id + ':items' ) } // What: Items Toggle Click. Why: A fresh draft has no persisted entry to toggle yet. How: This flips draIteBoo for a draft, otherwise the persisted ':items' entry.
+									/>{ /* What: Category Toggle Component. Why: The item list needs its own nested disclosure toggle, defaulting open except for a fresh draft. How: This toggles draIteBoo for a draft, otherwise the persisted ':items' entry, disabled during the guarded tour step, hinting at the item count while collapsed. */ }
 
 
 
