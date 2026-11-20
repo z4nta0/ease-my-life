@@ -20,6 +20,7 @@ import { TAS_NAM_OBJ } from '../core/tasks.ts';        // What: Tasks Namespace 
 import { WeeChiCom   } from './weekday-chips.tsx';     // What: Weekday Chip Component. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This is rendered inside SchEdiCom's own weekly schedule subsection.
 
 
+import type { DatModTyp } from '../core/data-model.ts'; // What: Date Mode Type. Why: The date mode toggle shows and hands back one of the fixed modes. How: This types its value.
 import type { RepNamTyp } from '../core/data-model.ts'; // What: Repeat Name Type. Why: Each repeat option's key is one of the fixed repeat kinds. How: This types REP_OPT_ARR's keys, so the Repeat picker hands back a real kind.
 import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The visibility note reads the reminder options and holidays from app state. How: This types both components' staAppObj.
 import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Type. Why: The editor edits a draft reminder. How: This types both components' reminder and SchEdiCom's patches.
@@ -215,6 +216,316 @@ function reaPhrFun ( visResObj : TodVisTyp ) : string {
 
 
 // #region Components
+
+type DocProTyp = { desIdeStr : string, onChange : ( modKeyStr : DatModTyp ) => void, value : DatModTyp }; // What: Date-Mode-Component Props Type. Why: The toggle shows the reminder's date mode, points at its note, and hands back the mode chosen. How: This types DatModCom's props.
+
+// #region DatModCom
+
+/**
+ * DatModCom = Date Mode Component
+ *
+ * @summary
+ * Draws the Date-vs-Weekday targeting toggle the monthly and annual
+ * subsections share, set snug at its content's width. A reminder with any
+ * date mode other than nthWeekday, an older one with none included, shows
+ * as the plain date mode.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.desIdeStr - Describe Identifier String: The id of the note
+ *                          describing the toggle.
+ * @param props.onChange  - On Change: Called with the clicked date mode's key.
+ * @param props.value     - Value: The reminder's own date mode.
+ *
+ * @returns The date mode toggle.
+ *
+ * @example
+ * ```tsx
+ * DatModCom({ desIdeStr, onChange, value }) // => <DatModCom />
+ * ```
+ *
+*/
+
+function DatModCom ( { desIdeStr, onChange, value } : DocProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<SegConCom
+			layVarStr='snug' // What: Layout Variant String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
+			optIteArr={ DAT_MOD_ARR }
+			value={ value === 'nthWeekday' ? 'nthWeekday' : 'date' } // What: Date Mode Value. Why: An older task may carry no dateMode at all, which should read as the plain date mode. How: This maps anything other than 'nthWeekday' to 'date'.
+
+			ariLabStr='Day selection'
+			desIdeStr={ desIdeStr }
+
+			onChange={ onChange }
+		/> // What: Segment Control Component. Why: This is the Date-vs-Weekday targeting mode toggle. How: This hands the clicked option's own key to onChange.
+
+
+	);
+
+
+}
+
+// #endregion DatModCom
+
+
+
+type IrcProTyp = { ariLabStr : string, desIdeStr : string, maxValStr : string, onChange : ( intValNum : number ) => void, uniLabStr : string, value : number }; // What: Interval-Row-Component Props Type. Why: Each every-N row names its own unit, limit, and accessible name, and hands back the chosen interval. How: This types IntRowCom's props.
+
+// #region IntRowCom
+
+/**
+ * IntRowCom = Interval Row Component
+ *
+ * @summary
+ * Draws an every-N row: the word "Every", a number input for the interval,
+ * and the row's own unit word after it, read inline as one phrase. A typed
+ * value that's empty, invalid, or below 1 is handed back as 1.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.ariLabStr - Aria Label String: The input's accessible name.
+ * @param props.desIdeStr - Describe Identifier String: The id of the note
+ *                          describing the input.
+ * @param props.maxValStr - Maximum Value String: The largest interval the
+ *                          input offers.
+ * @param props.onChange  - On Change: Called with the interval, at least 1.
+ * @param props.uniLabStr - Unit Label String: The word after the input.
+ * @param props.value     - Value: The reminder's own interval, read as 1
+ *                          when unset.
+ *
+ * @returns The every-N row.
+ *
+ * @example
+ * ```tsx
+ * IntRowCom({ ariLabStr, desIdeStr, maxValStr, ... }) // => <IntRowCom />
+ * ```
+ *
+*/
+
+function IntRowCom ( { ariLabStr, desIdeStr, maxValStr, onChange, uniLabStr, value } : IrcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<div className={ cssModObj.fieRowDiv }>{ /* What: Field Row Div Element. Why: The every-N number input reads best inline with its own surrounding words. How: This wraps the "Every", the number input, and the unit word. */ }
+
+
+			<span>Every</span>{ /* What: Every Span Element. Why: This is the inline control's own leading word. How: This renders the literal text "Every". */ }
+
+			<input
+				className={` ${ cssModObj.eveNumInp } `}
+
+				max={ maxValStr }
+				min='1'
+				type='number'
+				value={ value || 1 }
+
+				aria-describedby={ desIdeStr }
+				aria-label={ ariLabStr }
+
+				onChange={ ( chaEveObj ) => onChange( Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) ) } // What: Interval Clamp Commit. Why: An empty or invalid number must never commit an interval below 1. How: This parses the typed value, falling back to 1 and clamping at 1.
+			/>{ /* What: Interval Number Input Element. Why: This is the actual every-N control. How: This clamps its own committed value to a minimum of 1. */ }
+
+			<span>{ uniLabStr }</span>{ /* What: Unit Label Span Element. Why: This is the inline control's own trailing word. How: This renders uniLabStr. */ }
+
+
+		</div>
+
+
+	);
+
+
+}
+
+// #endregion IntRowCom
+
+
+
+type MecProTyp = { desIdeStr : string, onChange : ( monValNum : number ) => void, value : number }; // What: Month-Select-Component Props Type. Why: The month select shows the reminder's month, points at its note, and hands back the month chosen. How: This types MonSelCom's props.
+
+// #region MonSelCom
+
+/**
+ * MonSelCom = Month Select Component
+ *
+ * @summary
+ * Draws the annual schedule's target-month select, every month abbreviated
+ * and valued by its 1-indexed number, shared by both annual date modes.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.desIdeStr - Describe Identifier String: The id of the note
+ *                          describing the select.
+ * @param props.onChange  - On Change: Called with the chosen month's 1-indexed
+ *                          number.
+ * @param props.value     - Value: The reminder's own month, read as January
+ *                          when unset.
+ *
+ * @returns The month select.
+ *
+ * @example
+ * ```tsx
+ * MonSelCom({ desIdeStr, onChange, value }) // => <MonSelCom />
+ * ```
+ *
+*/
+
+function MonSelCom ( { desIdeStr, onChange, value } : MecProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<select
+			className={` ${ cssModObj.ancPicSel } `}
+
+			value={ value || 1 }
+
+			aria-describedby={ desIdeStr }
+			aria-label='Month'
+
+			onChange={ ( chaEveObj ) => onChange( parseInt( chaEveObj.target.value ) ) }
+		>{ /* What: Anchor Picker Select Element. Why: This is the target-month picker. How: This hands the chosen option's own 1-indexed value to onChange. */ }
+
+
+			{ MON_ABB_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per month. How: This maps MON_ABB_ARR to one option per entry, keyed by its own monNamStr, valued by its own 1-indexed monIndNum.
+
+
+				<option
+					key={ monNamStr }
+
+					value={ monIndNum + 1 }
+				>{ monNamStr }</option> // What: Month Option Element. Why: This is one choice in the select. How: This renders its own label, valued by its own value above.
+
+
+			) ) }
+
+
+		</select>
+
+
+	);
+
+
+}
+
+// #endregion MonSelCom
+
+
+
+type NlcProTyp = { desIdeStr : string, dowValNum : number, onPatTasFun : ( patValObj : Partial< TasRcdTyp > ) => void, ordValNum : number }; // What: Nth-Select-Component Props Type. Why: The pair shows the reminder's occurrence and weekday, points at its note, and hands back each change as a patch. How: This types NthSelCom's props.
+
+// #region NthSelCom
+
+/**
+ * NthSelCom = Nth Select Component
+ *
+ * @summary
+ * Draws the Nth-weekday mode's two selects, which occurrence (1st through
+ * 5th) and which weekday, as siblings in whatever row holds them, for the
+ * monthly and annual subsections alike. An unset occurrence reads as the
+ * 1st and an unset weekday as Sunday.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.desIdeStr   - Describe Identifier String: The id of the note
+ *                            describing both selects.
+ * @param props.dowValNum   - Day-Of-Week Value Number: The reminder's own
+ *                            nthWeekday.
+ * @param props.onPatTasFun - On Patch Task Function: Called with a patch
+ *                            naming the changed field.
+ * @param props.ordValNum   - Ordinal Value Number: The reminder's own
+ *                            nthOrdinal.
+ *
+ * @returns The ordinal and weekday selects.
+ *
+ * @example
+ * ```tsx
+ * NthSelCom({ desIdeStr, dowValNum, onPatTasFun, ... }) // => <NthSelCom />
+ * ```
+ *
+*/
+
+function NthSelCom ( { desIdeStr, dowValNum, onPatTasFun, ordValNum } : NlcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<>{ /* What: Nth Selects Fragment. Why: The two selects sit in their caller's own row, beside its other words and selects. How: This groups them without a wrapper of its own. */ }
+
+
+			<select
+				className={` ${ cssModObj.ancPicSel } `}
+
+				value={ ordValNum || 1 }
+
+				aria-describedby={ desIdeStr }
+				aria-label='Week of the month'
+
+				onChange={ ( chaEveObj ) => onPatTasFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
+			>{ /* What: Anchor Picker Select Element. Why: This is the "1st through 5th" occurrence picker. How: This commits the chosen option's own numeric value as the reminder's new nthOrdinal. */ }
+
+
+				{ [ 1, 2, 3, 4, 5 ].map( ( nthOptNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per occurrence, 1st through 5th. How: This maps a literal 1-5 array to one option per entry, keyed by its own nthOptNum, labeled with its ordinal suffix.
+
+
+					<option
+						key={ nthOptNum }
+
+						value={ nthOptNum }
+					>{ ordSufFun( nthOptNum ) }</option> // What: Ordinal Option Element. Why: This is one choice in the select. How: This renders its own label, valued by its own value above.
+
+
+				) ) }
+
+
+			</select>
+
+			<select
+				className={` ${ cssModObj.ancPicSel } `}
+
+				value={ dowValNum ?? 0 }
+
+				aria-describedby={ desIdeStr }
+				aria-label='Weekday'
+
+				onChange={ ( chaEveObj ) => onPatTasFun( { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
+			>{ /* What: Anchor Picker Select Element. Why: This is the target-weekday picker for the Nth-weekday mode. How: This commits the chosen option's own numeric value as the reminder's new nthWeekday. */ }
+
+
+				{ DAY_FUL_ARR.map( ( dowNamStr, dowIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dowNamStr, valued by its own dowIndNum.
+
+
+					<option
+						key={ dowNamStr }
+
+						value={ dowIndNum }
+					>{ dowNamStr }</option> // What: Weekday Option Element. Why: This is one choice in the select. How: This renders its own label, valued by its own value above.
+
+
+				) ) }
+
+
+			</select>
+
+
+		</>
+
+
+	);
+
+
+}
+
+// #endregion NthSelCom
+
+
 
 type VncProTyp = { kinValStr : string, notIdeStr : string, staAppObj : StaAppTyp, tasRcdObj : TasRcdTyp }; // What: Visibility-Note-Component Props Type. Why: The note explains why a reminder won't show today, in one of two placements. How: This types VisNotCom's props.
 
@@ -746,29 +1057,18 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 						</div>
 
-						<div className={ cssModObj.fieRowDiv }>{ /* What: Weekly Inline Div Element. Why: The every-N-weeks number input reads best inline with its own surrounding words. How: This wraps the "Every", the number input, and the "week(s) on" label. */ }
 
 
-							<span>Every</span>{ /* What: Every Span Element. Why: This is the inline control's own leading word. How: This renders the literal text "Every". */ }
+						<IntRowCom
+							maxValStr='52'
+							uniLabStr={ ( tasRcdObj.interval || 1 ) === 1 ? 'week on' : 'weeks on' } // What: Unit Label Choice. Why: The unit word has to agree with the interval. How: This picks the singular word for an interval of 1 and the plural otherwise.
+							value={ tasRcdObj.interval }
 
-							<input
-								className={` ${ cssModObj.eveNumInp } `}
+							ariLabStr='Interval in weeks'
+							desIdeStr={ schNotStr }
 
-								max='52'
-								min='1'
-								type='number'
-								value={ tasRcdObj.interval || 1 }
-
-								aria-describedby={ schNotStr }
-								aria-label='Interval in weeks'
-
-								onChange={ ( chaEveObj ) => onPatTasFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) } // What: Interval Clamp Commit. Why: An empty or invalid number must never commit an interval below 1. How: This parses the typed value, falling back to 1 and clamping at 1.
-							/>{ /* What: Interval Number Input Element. Why: This is the actual every-N-weeks control. How: This clamps its own committed value to a minimum of 1 whole week. */ }
-
-							<span>{ ( tasRcdObj.interval || 1 ) === 1 ? 'week on' : 'weeks on' }</span>{ /* What: Weeks Label Span Element. Why: This is the inline control's own trailing word, singular or plural to match the current interval. How: This picks between 'week on' and 'weeks on' based on tasRcdObj's own interval. */ }
-
-
-						</div>
+							onChange={ ( intValNum ) => onPatTasFun( { interval : intValNum } ) }
+						/>{ /* What: Interval Row Component. Why: This is the actual every-N-weeks control, read inline with its own surrounding words. How: This renders "Every", the number input, and the unit word, committing the clamped interval through onPatTasFun. */ }
 
 
 
@@ -828,29 +1128,20 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 						</div>
 
-						<div className={ cssModObj.fieRowDiv }>{ /* What: Interval Inline Div Element. Why: The every-N-days number input reads best inline with its own surrounding words. How: This wraps the "Every", the number input, and the "days" label. */ }
 
 
-							<span>Every</span>{ /* What: Every Span Element. Why: This is the inline control's own leading word. How: This renders the literal text "Every". */ }
+						<IntRowCom
+							maxValStr='365'
+							uniLabStr='days'
+							value={ tasRcdObj.interval }
 
-							<input
-								className={` ${ cssModObj.eveNumInp } `}
+							ariLabStr='Interval in days'
+							desIdeStr={ schNotStr }
 
-								max='365'
-								min='1'
-								type='number'
-								value={ tasRcdObj.interval || 1 }
-
-								aria-describedby={ schNotStr }
-								aria-label='Interval in days'
-
-								onChange={ ( chaEveObj ) => onPatTasFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) } // What: Interval Clamp Commit. Why: An empty or invalid number must never commit an interval below 1. How: This parses the typed value, falling back to 1 and clamping at 1.
-							/>{ /* What: Interval Number Input Element. Why: This is the actual every-N-days control. How: This clamps its own committed value to a minimum of 1 whole day. */ }
-
-							<span>days</span>{ /* What: Days Label Span Element. Why: This is the inline control's own trailing word. How: This renders the literal, always-plural text "days". */ }
+							onChange={ ( intValNum ) => onPatTasFun( { interval : intValNum } ) }
+						/>{ /* What: Interval Row Component. Why: This is the actual every-N-days control, read inline with its own surrounding words. How: This renders "Every", the number input, and the unit word, committing the clamped interval through onPatTasFun. */ }
 
 
-						</div>
 
 						{ ancHinEle }{ /* What: Anchor Hint Render. Why: The every-N-days interval subsection reuses the same shared "counted from" hint every other interval-based subsection does. How: This renders ancHinEle, already fully built above, directly as a JSX child, unlike the weekly/monthly/annual subsections which additionally wrap it in a fade div. */ }
 
@@ -896,29 +1187,18 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 						</div>
 
-						<div className={ cssModObj.fieRowDiv }>{ /* What: Monthly Inline Div Element. Why: The every-N-months number input reads best inline with its own surrounding words. How: This wraps the "Every", the number input, and the "month(s)" label. */ }
 
 
-							<span>Every</span>{ /* What: Every Span Element. Why: This is the inline control's own leading word. How: This renders the literal text "Every". */ }
+						<IntRowCom
+							maxValStr='60'
+							uniLabStr={ ( tasRcdObj.interval || 1 ) === 1 ? 'month' : 'months' } // What: Unit Label Choice. Why: The unit word has to agree with the interval. How: This picks the singular word for an interval of 1 and the plural otherwise.
+							value={ tasRcdObj.interval }
 
-							<input
-								className={` ${ cssModObj.eveNumInp } `}
+							ariLabStr='Interval in months'
+							desIdeStr={ schNotStr }
 
-								max='60'
-								min='1'
-								type='number'
-								value={ tasRcdObj.interval || 1 }
-
-								aria-describedby={ schNotStr }
-								aria-label='Interval in months'
-
-								onChange={ ( chaEveObj ) => onPatTasFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) } // What: Interval Clamp Commit. Why: An empty or invalid number must never commit an interval below 1. How: This parses the typed value, falling back to 1 and clamping at 1.
-							/>{ /* What: Interval Number Input Element. Why: This is the actual every-N-months control. How: This clamps its own committed value to a minimum of 1 whole month. */ }
-
-							<span>{ ( tasRcdObj.interval || 1 ) === 1 ? 'month' : 'months' }</span>{ /* What: Months Label Span Element. Why: This is the inline control's own trailing word, singular or plural to match the current interval. How: This picks between 'month' and 'months' based on tasRcdObj's own interval. */ }
-
-
-						</div>
+							onChange={ ( intValNum ) => onPatTasFun( { interval : intValNum } ) }
+						/>{ /* What: Interval Row Component. Why: This is the actual every-N-months control, read inline with its own surrounding words. How: This renders "Every", the number input, and the unit word, committing the clamped interval through onPatTasFun. */ }
 
 
 
@@ -964,16 +1244,13 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 
 
-						<SegConCom
-							layVarStr='snug' // What: Layout Variant String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
-							optIteArr={ DAT_MOD_ARR }
-							value={ tasRcdObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' } // What: Date Mode Value. Why: An older task may carry no dateMode at all, which should read as the plain date mode. How: This maps anything other than 'nthWeekday' to 'date'.
+						<DatModCom
+							value={ tasRcdObj.dateMode }
 
-							ariLabStr='Day selection'
 							desIdeStr={ schNotStr }
 
 							onChange={ ( modKeyStr ) => onPatTasFun( { dateMode : modKeyStr } ) }
-						/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday targeting mode toggle. How: This commits the clicked option's own key as tasRcdObj's new dateMode. */ }
+						/>{ /* What: Date Mode Component. Why: This is the Date-vs-Weekday targeting mode toggle. How: This commits the clicked option's own key as tasRcdObj's new dateMode. */ }
 
 
 
@@ -985,59 +1262,16 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 								<span>On the</span>{ /* What: On-The Span Element. Why: This is the inline row's own leading words. How: This renders the literal text "On the". */ }
 
-								<select
-									className={` ${ cssModObj.ancPicSel } `}
-
-									value={ tasRcdObj.nthOrdinal || 1 }
-
-									aria-describedby={ schNotStr }
-									aria-label='Week of the month'
-
-									onChange={ ( chaEveObj ) => onPatTasFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
-								>{ /* What: Ordinal Select Element. Why: This is the "1st through 5th" occurrence picker. How: This commits the chosen option's own numeric value as tasRcdObj's new nthOrdinal. */ }
 
 
-									{ [ 1, 2, 3, 4, 5 ].map( ( nthOptNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per occurrence, 1st through 5th. How: This maps a literal 1-5 array to one option per entry, keyed by its own nthOptNum, labeled with its ordinal suffix.
+								<NthSelCom
+									dowValNum={ tasRcdObj.nthWeekday }
+									ordValNum={ tasRcdObj.nthOrdinal }
 
+									desIdeStr={ schNotStr }
 
-										<option
-											key={ nthOptNum }
-
-											value={ nthOptNum }
-										>{ ordSufFun( nthOptNum ) }</option> // What: Ordinal Option Element. Why: This is one choice in the select. How: This renders its own label, valued by its own value above.
-
-
-									) ) }
-
-
-								</select>
-
-								<select
-									className={` ${ cssModObj.ancPicSel } `}
-
-									value={ tasRcdObj.nthWeekday ?? 0 }
-
-									aria-describedby={ schNotStr }
-									aria-label='Weekday'
-
-									onChange={ ( chaEveObj ) => onPatTasFun( { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
-								>{ /* What: Weekday Select Element. Why: This is the target-weekday picker for the Nth-weekday mode. How: This commits the chosen option's own numeric value as tasRcdObj's new nthWeekday. */ }
-
-
-									{ DAY_FUL_ARR.map( ( dowNamStr, dowIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dowNamStr, valued by its own dowIndNum.
-
-
-										<option
-											key={ dowNamStr }
-
-											value={ dowIndNum }
-										>{ dowNamStr }</option> // What: Weekday Option Element. Why: This is one choice in the select. How: This renders its own label, valued by its own value above.
-
-
-									) ) }
-
-
-								</select>
+									onPatTasFun={ onPatTasFun }
+								/>{ /* What: Nth Select Component. Why: These are the occurrence and weekday pickers for the Nth-weekday mode. How: This renders both selects, committing each change through onPatTasFun. */ }
 
 
 							</div>
@@ -1131,29 +1365,18 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 						</div>
 
-						<div className={ cssModObj.fieRowDiv }>{ /* What: Annual Inline Div Element. Why: The every-N-years number input reads best inline with its own surrounding words. How: This wraps the "Every", the number input, and the "year(s)" label. */ }
 
 
-							<span>Every</span>{ /* What: Every Span Element. Why: This is the inline control's own leading word. How: This renders the literal text "Every". */ }
+						<IntRowCom
+							maxValStr='50'
+							uniLabStr={ ( tasRcdObj.interval || 1 ) === 1 ? 'year' : 'years' } // What: Unit Label Choice. Why: The unit word has to agree with the interval. How: This picks the singular word for an interval of 1 and the plural otherwise.
+							value={ tasRcdObj.interval }
 
-							<input
-								className={` ${ cssModObj.eveNumInp } `}
+							ariLabStr='Interval in years'
+							desIdeStr={ schNotStr }
 
-								max='50'
-								min='1'
-								type='number'
-								value={ tasRcdObj.interval || 1 }
-
-								aria-describedby={ schNotStr }
-								aria-label='Interval in years'
-
-								onChange={ ( chaEveObj ) => onPatTasFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) } // What: Interval Clamp Commit. Why: An empty or invalid number must never commit an interval below 1. How: This parses the typed value, falling back to 1 and clamping at 1.
-							/>{ /* What: Interval Number Input Element. Why: This is the actual every-N-years control. How: This clamps its own committed value to a minimum of 1 whole year. */ }
-
-							<span>{ ( tasRcdObj.interval || 1 ) === 1 ? 'year' : 'years' }</span>{ /* What: Years Label Span Element. Why: This is the inline control's own trailing word, singular or plural to match the current interval. How: This picks between 'year' and 'years' based on tasRcdObj's own interval. */ }
-
-
-						</div>
+							onChange={ ( intValNum ) => onPatTasFun( { interval : intValNum } ) }
+						/>{ /* What: Interval Row Component. Why: This is the actual every-N-years control, read inline with its own surrounding words. How: This renders "Every", the number input, and the unit word, committing the clamped interval through onPatTasFun. */ }
 
 
 
@@ -1199,16 +1422,13 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 
 
-						<SegConCom
-							layVarStr='snug' // What: Layout Variant String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
-							optIteArr={ DAT_MOD_ARR }
-							value={ tasRcdObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' } // What: Date Mode Value. Why: An older task may carry no dateMode at all, which should read as the plain date mode. How: This maps anything other than 'nthWeekday' to 'date'.
+						<DatModCom
+							value={ tasRcdObj.dateMode }
 
-							ariLabStr='Day selection'
 							desIdeStr={ schNotStr }
 
 							onChange={ ( modKeyStr ) => onPatTasFun( { dateMode : modKeyStr } ) }
-						/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday targeting mode toggle. How: This commits the clicked option's own key as tasRcdObj's new dateMode. */ }
+						/>{ /* What: Date Mode Component. Why: This is the Date-vs-Weekday targeting mode toggle. How: This commits the clicked option's own key as tasRcdObj's new dateMode. */ }
 
 
 
@@ -1218,88 +1438,28 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 							<div className={ cssModObj.fieRowDiv }>{ /* What: Nth-Weekday Inline Div Element. Why: This mode needs 3 selects (ordinal, weekday, month) read together as one sentence. How: This wraps both selects, the "of" word, and the month select below. */ }
 
 
-								<select
-									className={` ${ cssModObj.ancPicSel } `}
+								<NthSelCom
+									dowValNum={ tasRcdObj.nthWeekday }
+									ordValNum={ tasRcdObj.nthOrdinal }
 
-									value={ tasRcdObj.nthOrdinal || 1 }
+									desIdeStr={ schNotStr }
 
-									aria-describedby={ schNotStr }
-									aria-label='Week of the month'
-
-									onChange={ ( chaEveObj ) => onPatTasFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
-								>{ /* What: Ordinal Select Element. Why: This is the "1st through 5th" occurrence picker. How: This commits the chosen option's own numeric value as tasRcdObj's new nthOrdinal. */ }
+									onPatTasFun={ onPatTasFun }
+								/>{ /* What: Nth Select Component. Why: These are the occurrence and weekday pickers for the Nth-weekday mode. How: This renders both selects, committing each change through onPatTasFun. */ }
 
 
-									{ [ 1, 2, 3, 4, 5 ].map( ( nthOptNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per occurrence, 1st through 5th. How: This maps a literal 1-5 array to one option per entry, keyed by its own nthOptNum, labeled with its ordinal suffix.
-
-
-										<option
-											key={ nthOptNum }
-
-											value={ nthOptNum }
-										>{ ordSufFun( nthOptNum ) }</option> // What: Ordinal Option Element. Why: This is one choice in the select. How: This renders its own label, valued by its own value above.
-
-
-									) ) }
-
-
-								</select>
-
-								<select
-									className={` ${ cssModObj.ancPicSel } `}
-
-									value={ tasRcdObj.nthWeekday ?? 0 }
-
-									aria-describedby={ schNotStr }
-									aria-label='Weekday'
-
-									onChange={ ( chaEveObj ) => onPatTasFun( { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
-								>{ /* What: Weekday Select Element. Why: This is the target-weekday picker for the Nth-weekday mode. How: This commits the chosen option's own numeric value as tasRcdObj's new nthWeekday. */ }
-
-
-									{ DAY_FUL_ARR.map( ( dowNamStr, dowIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dowNamStr, valued by its own dowIndNum.
-
-
-										<option
-											key={ dowNamStr }
-
-											value={ dowIndNum }
-										>{ dowNamStr }</option> // What: Weekday Option Element. Why: This is one choice in the select. How: This renders its own label, valued by its own value above.
-
-
-									) ) }
-
-
-								</select>
 
 								<span>of</span>{ /* What: Of Span Element. Why: This joins the weekday selects to the month select below as one sentence. How: This renders the literal text "of". */ }
 
-								<select
-									className={` ${ cssModObj.ancPicSel } `}
-
-									value={ tasRcdObj.month || 1 }
-
-									aria-describedby={ schNotStr }
-									aria-label='Month'
-
-									onChange={ ( chaEveObj ) => onPatTasFun( { month : parseInt( chaEveObj.target.value ) } ) }
-								>{ /* What: Month Select Element. Why: This is the target-month picker for the Nth-weekday mode. How: This commits the chosen option's own 1-indexed value as tasRcdObj's new month. */ }
 
 
-									{ MON_ABB_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per month. How: This maps MON_ABB_ARR to one option per entry, keyed by its own monNamStr, valued by its own 1-indexed monIndNum.
+								<MonSelCom
+									value={ tasRcdObj.month }
 
+									desIdeStr={ schNotStr }
 
-										<option
-											key={ monNamStr }
-
-											value={ monIndNum + 1 }
-										>{ monNamStr }</option> // What: Month Option Element. Why: This is one choice in the select. How: This renders its own label, valued by its own value above.
-
-
-									) ) }
-
-
-								</select>
+									onChange={ ( monValNum ) => onPatTasFun( { month : monValNum } ) }
+								/>{ /* What: Month Select Component. Why: This is the target-month picker. How: This commits the chosen month's own 1-indexed number as tasRcdObj's new month. */ }
 
 
 							</div>
@@ -1311,32 +1471,15 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 							<div className={ cssModObj.fieRowDiv }>{ /* What: Plain Date Inline Div Element. Why: The default mode needs a month select and a day select read together. How: This wraps both selects below. */ }
 
 
-								<select
-									className={` ${ cssModObj.ancPicSel } `}
+								<MonSelCom
+									value={ tasRcdObj.month }
 
-									value={ tasRcdObj.month || 1 }
+									desIdeStr={ schNotStr }
 
-									aria-describedby={ schNotStr }
-									aria-label='Month'
-
-									onChange={ ( chaEveObj ) => onPatTasFun( { month : parseInt( chaEveObj.target.value ) } ) }
-								>{ /* What: Month Select Element. Why: This is the target-month picker for the default mode. How: This commits the chosen option's own 1-indexed value as tasRcdObj's new month. */ }
+									onChange={ ( monValNum ) => onPatTasFun( { month : monValNum } ) }
+								/>{ /* What: Month Select Component. Why: This is the target-month picker. How: This commits the chosen month's own 1-indexed number as tasRcdObj's new month. */ }
 
 
-									{ MON_ABB_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per month. How: This maps MON_ABB_ARR to one option per entry, keyed by its own monNamStr, valued by its own 1-indexed monIndNum.
-
-
-										<option
-											key={ monNamStr }
-
-											value={ monIndNum + 1 }
-										>{ monNamStr }</option> // What: Month Option Element. Why: This is one choice in the select. How: This renders its own label, valued by its own value above.
-
-
-									) ) }
-
-
-								</select>
 
 								<select
 									className={` ${ cssModObj.ancPicSel } `}
