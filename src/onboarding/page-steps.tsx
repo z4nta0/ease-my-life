@@ -373,7 +373,7 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
 
 	},
 
-	dtaObj : { // What: Data Object. Why: This is the target/content descriptor for the real Data Control section. How: This is spread into buiTesFun's own Data Control step object.
+	datObj : { // What: Data Object. Why: This is the target/content descriptor for the real Data Control section. How: This is spread into buiTesFun's own Data Control step object.
 
 
 		bodEle : <>This is where you can protect your data from browser deletion, <b>install the app directly to your device</b>, back up your data (export), restore your data (import), or erase all of your data.</>,
@@ -1218,10 +1218,10 @@ const buiTesFun = ( pagIdeStr : string, actStoObj : ActStoTyp ) : TouSteTyp[] =>
 
 			},
 
-			{ // What: Data Control Step. Why: This is the Settings tour's own 5th step. How: This spreads SET_TAR_OBJ.dtaObj with this flow's own navigation flags plus catBoo.
+			{ // What: Data Control Step. Why: This is the Settings tour's own 5th step. How: This spreads SET_TAR_OBJ.datObj with this flow's own navigation flags plus catBoo.
 
 
-				...SET_TAR_OBJ.dtaObj, // What: Data Control Target Spread. Why: This step reuses the Settings catalog's own dtaObj entry as its base selector/copy. How: This spreads SET_TAR_OBJ.dtaObj before this step's own navigation flags.
+				...SET_TAR_OBJ.datObj, // What: Data Control Target Spread. Why: This step reuses the Settings catalog's own datObj entry as its base selector/copy. How: This spreads SET_TAR_OBJ.datObj before this step's own navigation flags.
 
 				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
 				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead.

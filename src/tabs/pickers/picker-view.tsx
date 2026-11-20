@@ -1756,8 +1756,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 								<IteCarCom
-									cloBoo={ ediCloBoo }
 									ediKeyStr={ ediLivObj.id }
+									iteCloBoo={ ediCloBoo }
 									iteDatObj={ draIteObj && draIteObj.id === ediLivObj.id ? draIteObj : ediLivObj } // What: Item Data Object. Why: The open editor shows its draft, while a closing one shows the real item. How: This picks the draft only when it belongs to this item.
 									namValStr={ draIteObj && draIteObj.id === ediLivObj.id ? draIteObj.name : ediLivObj.name } // What: Name Value String. Why: The open editor's name lives in its draft until Save, while a closing editor shows the real name. How: This shows the draft's name when the draft belongs to this item, else the item's own.
 									picDatObj={ picDatObj }
@@ -1830,9 +1830,9 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 							<IteCarCom
-								cloBoo={ !!newCloStr }
+								iteCloBoo={ !!newCloStr }
 								iteDatObj={ newIteObj }
-								namRef={ selAllFun }
+								namInpRef={ selAllFun }
 								namValStr={ newIteObj.name }
 								picDatObj={ picDatObj }
 

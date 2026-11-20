@@ -438,7 +438,7 @@ const forValFun = ( rawValAny : unknown ) => { // What: Format Value Function. W
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param rowArrAny - Row Array Any: The rows to write.
+ * @param rowRcdArr - Row Record Array: The rows to write.
  * @param traTexStr - Trailing Text String: Text after the closing bracket,
  *                    such as a comma.
  * @param annTexStr - Annotation Text String: The array's own one-line comment.
@@ -452,19 +452,19 @@ const forValFun = ( rawValAny : unknown ) => { // What: Format Value Function. W
  *
 */
 
-const forArrFun = ( rowArrAny : Record< string, unknown >[], traTexStr : string, annTexStr : string ) : string => { // What: Format Array Function. Why: Each log is written as one aligned table. How: This orders, pads, and joins the rows.
+const forArrFun = ( rowRcdArr : Record< string, unknown >[], traTexStr : string, annTexStr : string ) : string => { // What: Format Array Function. Why: Each log is written as one aligned table. How: This orders, pads, and joins the rows.
 
 
-	if ( !rowArrAny.length ) return `[]${ traTexStr } ${ annTexStr }`; // What: Empty Array Guard. Why: An empty array needs no padding. How: This returns the tight brackets, the trailing text, and the comment.
+	if ( !rowRcdArr.length ) return `[]${ traTexStr } ${ annTexStr }`; // What: Empty Array Guard. Why: An empty array needs no padding. How: This returns the tight brackets, the trailing text, and the comment.
 
 
 
 	// #region Cell Building
 
-	const allKeyArr = [ ...new Set( rowArrAny.flatMap( ( curRowAny ) => Object.keys( curRowAny ) ) ) ];                                  // What: All Key Array. Why: Both key groups are drawn from every key any row carries. How: This collects each distinct key once.
-	const reqKeyArr = allKeyArr.filter( ( curKeyStr ) => rowArrAny.every( ( curRowAny ) => curKeyStr in curRowAny ) ).sort( forKeyFun ); // What: Required Key Array. Why: Keys every row carries form the aligned columns at the front. How: This keeps the keys present in every row, sorted.
+	const allKeyArr = [ ...new Set( rowRcdArr.flatMap( ( curRowObj ) => Object.keys( curRowObj ) ) ) ];                                  // What: All Key Array. Why: Both key groups are drawn from every key any row carries. How: This collects each distinct key once.
+	const reqKeyArr = allKeyArr.filter( ( curKeyStr ) => rowRcdArr.every( ( curRowObj ) => curKeyStr in curRowObj ) ).sort( forKeyFun ); // What: Required Key Array. Why: Keys every row carries form the aligned columns at the front. How: This keeps the keys present in every row, sorted.
 	const optKeyArr = allKeyArr.filter( ( curKeyStr ) => !reqKeyArr.includes( curKeyStr ) ).sort( forKeyFun );                           // What: Optional Key Array. Why: A key only some rows carry goes after the aligned columns, so it never shifts them. How: This keeps every other key, sorted.
-	const celArrArr = rowArrAny.map( ( curRowAny ) => [ ...reqKeyArr, ...optKeyArr ].filter( ( curKeyStr ) => curKeyStr in curRowAny ).map( ( curKeyStr ) => `${ curKeyStr } : ${ forValFun( curRowAny[ curKeyStr ] ) }` ) ); // What: Cell Array Array. Why: Each row needs its own "key : value" cells in the shared key order. How: This maps every row to its cells, skipping keys it lacks.
+	const celArrArr = rowRcdArr.map( ( curRowObj ) => [ ...reqKeyArr, ...optKeyArr ].filter( ( curKeyStr ) => curKeyStr in curRowObj ).map( ( curKeyStr ) => `${ curKeyStr } : ${ forValFun( curRowObj[ curKeyStr ] ) }` ) ); // What: Cell Array Array. Why: Each row needs its own "key : value" cells in the shared key order. How: This maps every row to its cells, skipping keys it lacks.
 	const colCouNum = Math.max( ...celArrArr.map( ( curCelArr ) => curCelArr.length ) );                                                 // What: Column Count Number. Why: The widest row decides how many positions get padded. How: This is the largest cell count.
 
 	// #endregion Cell Building

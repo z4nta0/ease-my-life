@@ -39,7 +39,7 @@ import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Recor
 
 // #region Components
 
-type IccProTyp = { cloBoo : boolean, ediKeyStr? : string, iteDatObj : IteRcdTyp, namRef? : ( namInpEle : HTMLInputElement | null ) => void, namValStr : string, onCanEdiFun : () => void, onCloEndFun : () => void, onNamChaFun : ( namValStr : string ) => void, onNamCmtFun? : ( namValStr : string ) => void, onPatIteFun : ( patValObj : Partial< IteRcdTyp > ) => void, onSavEdiFun : () => void, picDatObj : Partial< PicRcdTyp > | null, picIteArr? : IteRcdTyp[] }; // What: Item-Card-Component Props Type. Why: The card shows one item's name and editor, may key its editor and select its name on mount, and hands every edit, save, cancel, and close back to its parent. How: This types IteCarCom's props.
+type IccProTyp = { ediKeyStr? : string, iteCloBoo : boolean, iteDatObj : IteRcdTyp, namInpRef? : ( namInpEle : HTMLInputElement | null ) => void, namValStr : string, onCanEdiFun : () => void, onCloEndFun : () => void, onNamChaFun : ( namValStr : string ) => void, onNamCmtFun? : ( namValStr : string ) => void, onPatIteFun : ( patValObj : Partial< IteRcdTyp > ) => void, onSavEdiFun : () => void, picDatObj : Partial< PicRcdTyp > | null, picIteArr? : IteRcdTyp[] }; // What: Item-Card-Component Props Type. Why: The card shows one item's name and editor, may key its editor and select its name on mount, and hands every edit, save, cancel, and close back to its parent. How: This types IteCarCom's props.
 
 // #region IteCarCom
 
@@ -51,21 +51,21 @@ type IccProTyp = { cloBoo : boolean, ediKeyStr? : string, iteDatObj : IteRcdTyp,
  * each keystroke through onNamChaFun, blurring itself on Enter, above the
  * shared item editor for iteDatObj. When onNamCmtFun is given, leaving the
  * field commits its trimmed name through it, unless the name is blank.
- * While cloBoo is true the card plays its closing animation, and once that
+ * While iteCloBoo is true the card plays its closing animation, and once that
  * animation (not one of its children's) ends, it calls onCloEndFun. The
  * editor's own footer Delete stays hidden, since deleting an item is the
  * pool row's own trash icon and confirm.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.cloBoo      - Closing Boolean: Whether the card is playing its
- *                            closing animation.
  * @param props.ediKeyStr   - Editor Key String: The optional key for the
  *                            editor, so switching straight from one item to
  *                            another mounts a fresh editor.
+ * @param props.iteCloBoo   - Item Closing Boolean: Whether the card is
+ *                            playing its closing animation.
  * @param props.iteDatObj   - Item Data Object: The item the editor shows.
- * @param props.namRef      - Name Reference: The optional ref callback for
- *                            the name field.
+ * @param props.namInpRef   - Name Input Reference: The optional ref callback
+ *                            for the name field.
  * @param props.namValStr   - Name Value String: The name field's value.
  * @param props.onCanEdiFun - On Cancel Edit Function: Called by the editor's
  *                            Cancel.
@@ -88,26 +88,26 @@ type IccProTyp = { cloBoo : boolean, ediKeyStr? : string, iteDatObj : IteRcdTyp,
  *
  * @example
  * ```tsx
- * IteCarCom({ cloBoo, iteDatObj, namValStr, ... }) // => <IteCarCom />
+ * IteCarCom({ iteCloBoo, iteDatObj, namValStr, ... }) // => <IteCarCom />
  * ```
  *
 */
 
-function IteCarCom ( { cloBoo, ediKeyStr, iteDatObj, namRef, namValStr, onCanEdiFun, onCloEndFun, onNamChaFun, onNamCmtFun, onPatIteFun, onSavEdiFun, picDatObj, picIteArr } : IccProTyp ) : React.JSX.Element {
+function IteCarCom ( { ediKeyStr, iteCloBoo, iteDatObj, namInpRef, namValStr, onCanEdiFun, onCloEndFun, onNamChaFun, onNamCmtFun, onPatIteFun, onSavEdiFun, picDatObj, picIteArr } : IccProTyp ) : React.JSX.Element {
 
 
 	return (
 
 
 		<div
-			className={` ${ cssModObj.lisIteDiv }   ${ cloBoo ? cssModObj.lisIteDivClosing : '' } `}
+			className={` ${ cssModObj.lisIteDiv }   ${ iteCloBoo ? cssModObj.lisIteDivClosing : '' } `}
 
 			data-element-name-hook='lisIteDiv'
 
 			onAnimationEnd={ ( aniEveObj ) => { // What: On Animation End Handler. Why: The card's own close animation must finish before its parent clears or keeps the item. How: This hands the end to onCloEndFun once the closing animation is over.
 
 
-				if ( !cloBoo || aniEveObj.target !== aniEveObj.currentTarget ) return; // What: Not Closing Guard. Why: Only the card's own closing animation should finish the close. How: This bails out unless cloBoo is set and the event came from this element.
+				if ( !iteCloBoo || aniEveObj.target !== aniEveObj.currentTarget ) return; // What: Not Closing Guard. Why: Only the card's own closing animation should finish the close. How: This bails out unless iteCloBoo is set and the event came from this element.
 
 
 
@@ -129,7 +129,7 @@ function IteCarCom ( { cloBoo, ediKeyStr, iteDatObj, namRef, namValStr, onCanEdi
 
 
 					<input
-						ref={ namRef }
+						ref={ namInpRef }
 
 						className={ cssModObj.rowNamInp }
 

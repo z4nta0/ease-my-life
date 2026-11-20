@@ -69,7 +69,7 @@ import type { PicForTyp } from '../../core/data-model.ts'; // What: Picker Form 
 
 // #region Components
 
-type TwcProTyp = { 'data-element-name-hook' : string, className : string, ideValStr : string, labTexStr : string, offHelEle : React.ReactNode, onClick : () => void, onHelEle : React.ReactNode, value : boolean }; // What: Toggle-Row-Component Props Type. Why: Each toggle row names its own wrapper, id, label, and help wording, and shows and flips its own setting. How: This types TogRowCom's props.
+type TwcProTyp = { 'data-element-name-hook' : string, className : string, disHelEle : React.ReactNode, enaHelEle : React.ReactNode, ideValStr : string, labTexStr : string, onClick : () => void, value : boolean }; // What: Toggle-Row-Component Props Type. Why: Each toggle row names its own wrapper, id, label, and help wording, and shows and flips its own setting. How: This types TogRowCom's props.
 
 // #region TogRowCom
 
@@ -87,16 +87,16 @@ type TwcProTyp = { 'data-element-name-hook' : string, className : string, ideVal
  * @param props.data-element-name-hook - Data Element Name Hook: The row's own
  *                                       identity hook, forwarded onto it.
  * @param props.className              - Class Name: The row's own class.
+ * @param props.disHelEle              - Disabled Help Element: The help
+ *                                       wording while the setting is off.
+ * @param props.enaHelEle              - Enabled Help Element: The help
+ *                                       wording while the setting is on.
  * @param props.ideValStr              - Identifier Value String: The switch's
  *                                       id, which the label points at.
  * @param props.labTexStr              - Label Text String: The toggle's own
  *                                       label.
- * @param props.offHelEle              - Off Help Element: The help wording
- *                                       while the setting is off.
  * @param props.onClick                - On Click: Called when the switch is
  *                                       pressed.
- * @param props.onHelEle               - On Help Element: The help wording
- *                                       while the setting is on.
  * @param props.value                  - Value: Whether the setting is on.
  *
  * @returns The toggle row.
@@ -108,7 +108,7 @@ type TwcProTyp = { 'data-element-name-hook' : string, className : string, ideVal
  *
 */
 
-function TogRowCom ( { 'data-element-name-hook' : hooNamStr, className, ideValStr, labTexStr, offHelEle, onClick, onHelEle, value } : TwcProTyp ) : React.JSX.Element {
+function TogRowCom ( { 'data-element-name-hook' : hooNamStr, className, disHelEle, enaHelEle, ideValStr, labTexStr, onClick, value } : TwcProTyp ) : React.JSX.Element {
 
 
 	return (
@@ -133,7 +133,7 @@ function TogRowCom ( { 'data-element-name-hook' : hooNamStr, className, ideValSt
 					key={ value ? 'on' : 'off' }
 
 					className={` ${ cssModObj.forHelPar }   ${ cssModObj.forHelParFade } `}
-				>{ value ? onHelEle : offHelEle }</p>{ /* What: Form Help Paragraph Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by value so the text cross-fades on every flip, showing onHelEle or offHelEle. */ }
+				>{ value ? enaHelEle : disHelEle }</p>{ /* What: Form Help Paragraph Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by value so the text cross-fades on every flip, showing enaHelEle or disHelEle. */ }
 
 
 			</div>
@@ -1717,9 +1717,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 								data-element-name-hook='daiTogDiv'
 
+								disHelEle={ <React.Fragment>This picker <strong>will not run</strong> automatically, but you can still run it manually from this tab.</React.Fragment> } // What: Daily Disabled Phrase. Why: The daily-generator note needs its own live wording for the disabled state. How: This renders while incDaiBoo is false.
+								enaHelEle={ <React.Fragment>This picker <strong>will run</strong> automatically as part of your daily list or whenever you tap Regenerate in the Today tab.</React.Fragment> } // What: Daily Enabled Phrase. Why: The daily-generator note needs its own live wording for the enabled state. How: This renders while incDaiBoo is true.
 								labTexStr='Include in the daily generator'
-								offHelEle={ <React.Fragment>This picker <strong>will not run</strong> automatically, but you can still run it manually from this tab.</React.Fragment> } // What: Daily Disabled Phrase. Why: The daily-generator note needs its own live wording for the disabled state. How: This renders while incDaiBoo is false.
-								onHelEle={ <React.Fragment>This picker <strong>will run</strong> automatically as part of your daily list or whenever you tap Regenerate in the Today tab.</React.Fragment> } // What: Daily Enabled Phrase. Why: The daily-generator note needs its own live wording for the enabled state. How: This renders while incDaiBoo is true.
 								value={ incDaiBoo }
 
 								onClick={ () => { // What: On Click Handler. Why: The daily switch should also let the schedule scroll into view. How: This marks the toggle as user-driven, then flips incDaiBoo.
@@ -1836,9 +1836,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 										data-element-name-hook='schTogDiv'
 
+										disHelEle={ <React.Fragment>This picker <strong>will always run</strong>, even on major U.S. holidays.</React.Fragment> } // What: Holidays Run Phrase. Why: The holiday note needs its own live wording for the always-run state. How: This renders while skiHolBoo is false.
+										enaHelEle={ <React.Fragment>This picker <strong>will not run</strong> on major U.S. holidays. You can edit which days count as holidays, or even add your own, on the Settings page.</React.Fragment> } // What: Holidays Skip Phrase. Why: The holiday note needs its own live wording for the skip-enabled state. How: This renders while skiHolBoo is true.
 										labTexStr='Skip on holidays'
-										offHelEle={ <React.Fragment>This picker <strong>will always run</strong>, even on major U.S. holidays.</React.Fragment> } // What: Holidays Run Phrase. Why: The holiday note needs its own live wording for the always-run state. How: This renders while skiHolBoo is false.
-										onHelEle={ <React.Fragment>This picker <strong>will not run</strong> on major U.S. holidays. You can edit which days count as holidays, or even add your own, on the Settings page.</React.Fragment> } // What: Holidays Skip Phrase. Why: The holiday note needs its own live wording for the skip-enabled state. How: This renders while skiHolBoo is true.
 										value={ skiHolBoo }
 
 										onClick={ () => setSkiHolBoo( ( preValBoo ) => !preValBoo ) }
@@ -1853,9 +1853,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 										data-element-name-hook='schTogDiv'
 
+										disHelEle={ <React.Fragment>This picker <strong>may pick</strong> an item even if its name is already on today&rsquo;s todo list.</React.Fragment> } // What: Avoid Duplicates Off Phrase. Why: The duplicate-avoidance note needs its own live wording for the disabled state. How: This renders while avoDupBoo is false.
+										enaHelEle={ <React.Fragment>This picker <strong>won&rsquo;t pick</strong> an item whose name is already on today&rsquo;s todo list.</React.Fragment> } // What: Avoid Duplicates On Phrase. Why: The duplicate-avoidance note needs its own live wording for the enabled state. How: This renders while avoDupBoo is true.
 										labTexStr='Avoid duplicate items'
-										offHelEle={ <React.Fragment>This picker <strong>may pick</strong> an item even if its name is already on today&rsquo;s todo list.</React.Fragment> } // What: Avoid Duplicates Off Phrase. Why: The duplicate-avoidance note needs its own live wording for the disabled state. How: This renders while avoDupBoo is false.
-										onHelEle={ <React.Fragment>This picker <strong>won&rsquo;t pick</strong> an item whose name is already on today&rsquo;s todo list.</React.Fragment> } // What: Avoid Duplicates On Phrase. Why: The duplicate-avoidance note needs its own live wording for the enabled state. How: This renders while avoDupBoo is true.
 										value={ avoDupBoo }
 
 										onClick={ () => setAvoDupBoo( ( preValBoo ) => !preValBoo ) }
@@ -2290,8 +2290,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 										<IteCarCom
-											cloBoo={ ediCloBoo }
 											ediKeyStr={ ediLivObj.id }
+											iteCloBoo={ ediCloBoo }
 											iteDatObj={ draIteObj && draIteObj.id === ediLivObj.id ? draIteObj : ediLivObj } // What: Item Data Object. Why: The open editor shows its draft, while a closing one shows the pool item itself. How: This picks the draft only when it belongs to this item.
 											namValStr={ draIteObj && draIteObj.id === ediLivObj.id ? draIteObj.name : ediLivObj.name } // What: Name Value String. Why: The open editor's name lives in its draft until Save, while a closing editor shows the real name. How: This shows the draft's name when the draft belongs to this item, else the item's own.
 											picDatObj={ draPicObj }
@@ -2364,9 +2364,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 									<IteCarCom
-										cloBoo={ !!actCloStr }
+										iteCloBoo={ !!actCloStr }
 										iteDatObj={ newIteObj }
-										namRef={ selAllFun }
+										namInpRef={ selAllFun }
 										namValStr={ newIteObj.name }
 										picDatObj={ draPicObj }
 										picIteArr={ pooIteArr }
