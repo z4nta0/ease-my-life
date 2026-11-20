@@ -42,9 +42,14 @@ import { watErrFun   } from '../support/watch.ts';  // What: Watch Errors Functi
 test( 'the policy refuses an injected inline script', async ( { page : curPagObj } ) => { // What: Policy Live Test. Why: A clean run means nothing unless the policy was really applied and its violations really recorded. How: This loads the app under the policy, injects an inline script, and checks it didn't run and was reported.
 
 
+	// #region Page Load Under Policy
+
 	await polSetFun( curPagObj ); // What: Policy Setup Call. Why: The page has to load under the policy. How: This adds the headers and the violation listener.
 
 	await curPagObj.goto( '/' ); // What: App Open Call. Why: The script is injected into a real page. How: This loads the app's root.
+
+	// #endregion Page Load Under Policy
+
 
 
 	const injRanBoo = await curPagObj.evaluate( async () => { // What: Injection Ran Boolean. Why: A refused script never sets its flag. How: This adds an inline script that sets a flag, waits a moment for any violation event, and reports whether the flag was set.
@@ -68,8 +73,13 @@ test( 'the policy refuses an injected inline script', async ( { page : curPagObj
 	} );
 
 
+
+	// #region Policy Checks
+
 	expect( injRanBoo ).toBe( false );                                                                // What: Script Refused Assertion. Why: The policy has to stop inline script. How: This checks the injected script never ran.
 	expect( await polVioFun( curPagObj ) ).toContainEqual( expect.stringContaining( 'script-src' ) ); // What: Violation Reported Assertion. Why: The later checks rely on violations being recorded. How: This checks the refusal was recorded as a script-src violation.
+
+	// #endregion Policy Checks
 
 
 } );

@@ -149,10 +149,14 @@ async function twoDevFun ( broCurObj : Browser, emaPreStr : string ) : Promise< 
 test( 'two devices sign in to one paid account and sync each other', async ( { browser } ) => { // What: Two Device Test. Why: Paid sync has to carry one device's data and changes to another. How: This signs two contexts in to one account, syncs each way, and waits for each device to hold the other's changes, with no page errors.
 
 
+	// #region First Device Setup
+
 	const { emaAdrStr, fixStaObj, oneConObj, oneErrArr, onePagObj, twoConObj, twoErrArr, twoPagObj } = await twoDevFun( browser, 'sync' ); // What: Email Address String. Why: Both devices sign in to one account. How: This is its unique address. // What: Fixture State Object. Why: The first device starts on real data, which the second must receive. How: This is the backup. // What: One Context Object. Why: The first device has its own storage. How: This is its context. // What: One Error Array. Why: The first device is watched for errors. How: This is its list. // What: One Page Object. Why: The first device's app runs here. How: This is its page. // What: Two Context Object. Why: The second device has separate storage. How: This is its context. // What: Two Error Array. Why: The second device is watched for errors. How: This is its list. // What: Two Page Object. Why: The second device's app runs here. How: This is its page.
 
 
 	await bacUplFun( onePagObj, emaAdrStr, fixStaObj ); // What: First Device Upload Call. Why: An empty account takes the first device's real data. How: This writes the backup, opens the app, signs in, and waits for the upload.
+
+	// #endregion First Device Setup
 
 
 
