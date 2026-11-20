@@ -9,8 +9,9 @@
  * key every dated state field and log row is keyed by, the compact, long, and
  * time-of-day display formatters, and the calendar math behind monthly and
  * yearly schedules (days in a month, the nth weekday of a month, and ordinal
- * suffixes), plus the weekday and month names those schedules are read
- * by, and whether a date falls on a weekend. Nothing here knows about pickers, tasks, or app state.
+ * suffixes), plus the weekday and month names those schedules are read by, and
+ * whether a date falls on a weekend. Nothing here knows about pickers, tasks,
+ * or app state.
  *
  * Sections:
  *  - Constants

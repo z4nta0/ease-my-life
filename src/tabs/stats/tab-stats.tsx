@@ -1334,15 +1334,6 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	}, [ scoValStr, remEnaBoo ] ); // What: Effect Dependency Array. Why: This only ever needs re-checking when the active scope or the reminders-enabled flag changes. How: scoValStr is what's being validated, remEnaBoo is what it's validated against.
 
-
-	React.useEffect( () => { // What: Conditional Scope Guard Effect. Why: Deleting every conditional while the Conditionals scope is active would otherwise leave the page showing a now-unreachable scope. How: This falls back to 'all' whenever scoValStr is 'conditionals' but hasConBoo has gone false. // Same guard for a Conditionals scope once every conditional is gone.
-
-
-		if ( scoValStr === 'conditionals' && !hasConBoo ) setScoValStr( 'all' ); // What: Conditional Scope Fallback. Why: An empty Conditionals scope must not strand the view. How: This resets scoValStr to 'all' whenever no conditional remains but that scope is still selected.
-
-
-	}, [ scoValStr, hasConBoo ] ); // What: Effect Dependency Array. Why: This only ever needs re-checking when the active scope or the has-conditionals flag changes. How: scoValStr is what's being validated, hasConBoo is what it's validated against.
-
 	// #endregion Reminder Availability
 
 
@@ -1359,6 +1350,17 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 	const preFilRef = React.useRef( { staGroStr, typFilStr } ); // What: Previous Filter Reference. Why: The repair effect below needs to remember the last-seen filter pair across renders to detect an actual change. How: This starts at the current filter pair and is updated by the effect below on every run. // Keep scoValStr coherent with the Group + Type filters: within a specific group and/or type, All/Reminders aren't offered, so if the current scope isn't one of the filtered pickers, fall back to the first one, alphabetically, matching the Show row. Also jumps whenever either filter itself just changed, not only once the OLD scope happens to fall out of view (e.g. switching between two groups that both happen to contain the same picker used to leave the view stranded there instead of jumping to the new filter's own first card).
+
+
+
+	React.useEffect( () => { // What: Conditional Scope Guard Effect. Why: Deleting every conditional while the Conditionals scope is active would otherwise leave the page showing a now-unreachable scope. How: This falls back to 'all' whenever scoValStr is 'conditionals' but hasConBoo has gone false. // The Conditionals counterpart of the Reminder Scope Guard Effect above, run before the Scope Repair Effect so the repair's own fallback still has the final say.
+
+
+		if ( scoValStr === 'conditionals' && !hasConBoo ) setScoValStr( 'all' ); // What: Conditional Scope Fallback. Why: An empty Conditionals scope must not strand the view. How: This resets scoValStr to 'all' whenever no conditional remains but that scope is still selected.
+
+
+	}, [ scoValStr, hasConBoo ] ); // What: Effect Dependency Array. Why: This only ever needs re-checking when the active scope or the has-conditionals flag changes. How: scoValStr is what's being validated, hasConBoo is what it's validated against.
+
 
 
 	React.useEffect( () => { // What: Scope Repair Effect. Why: A stale or now-unreachable scope must be corrected, to All while both filters are on All, otherwise to the new filter's own first alphabetical picker. How: This detects a filter change or an out-of-view scope and reassigns scoValStr accordingly.
