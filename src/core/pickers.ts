@@ -196,7 +196,7 @@ function titCasFun ( rawNamStr : string | undefined ) : string {
  *
 */
 
-function norConFun ( rawNamStr : string | undefined ) : string { return titCasFun( rawNamStr ); } // What: Tidied Conditional Name Body. Why: A conditional name only ever needs the shared Title Case tidy-up; collision reuse happens at the call site instead. How: This is a thin wrapper straight over titCasFun.
+function norConFun ( rawNamStr : string | undefined ) : string { return titCasFun( rawNamStr ); } // What: Normalize Conditional Body. Why: A conditional name only ever needs the shared Title Case tidy-up; collision reuse happens at the call site instead. How: This is a thin wrapper straight over titCasFun.
 
 // #endregion norConFun
 
@@ -293,7 +293,7 @@ function norGroFun ( rawNamStr : string, exiGroArr? : string[] ) : string {
  *
 */
 
-function norPicFun ( rawNamStr : string | undefined ) : string { return titCasFun( rawNamStr ); } // What: Tidied Picker Name Body. Why: A picker name only ever needs the shared Title Case tidy-up, with no collision-reuse step. How: This is a thin wrapper straight over titCasFun.
+function norPicFun ( rawNamStr : string | undefined ) : string { return titCasFun( rawNamStr ); } // What: Normalize Picker Body. Why: A picker name only ever needs the shared Title Case tidy-up, with no collision-reuse step. How: This is a thin wrapper straight over titCasFun.
 
 // #endregion norPicFun
 

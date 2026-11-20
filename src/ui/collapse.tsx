@@ -7,7 +7,7 @@ import cssModObj from './collapse.module.css'; // What: CSS Module Object. Why: 
 import React     from 'react';                 // What: React. Why: ColDisCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useState) instead of importing individual named hooks.
 
 
-import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function. Why: Under reduced motion the closed panel unmounts at once instead of waiting for a transition that never fires. How: This is checked when the panel closes.
+import { redMotFun } from '../utils/motion.ts'; // What: Reduced Motion Function. Why: Under reduced motion the closed panel unmounts at once instead of waiting for a transition that never fires. How: This is checked when the panel closes.
 
 // #endregion Imports
 

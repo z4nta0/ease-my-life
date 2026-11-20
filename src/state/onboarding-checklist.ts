@@ -236,7 +236,7 @@ function cheStaFun ( appStaObj : StaAppTyp ) : { donNum : number, fulBoo : boole
  *
 */
 
-function othRemFun ( appStaObj : StaAppTyp ) : number { return CHE_IDE_ARR.filter( ( iteIdeStr ) => iteIdeStr !== ONB_GII_STR && !entLooFun( appStaObj, iteIdeStr ) ).length; } // What: Others Remaining Return. Why: The caller needs a plain count of every non-Generate item that still has no resolution. How: This filters CHE_IDE_ARR down to ids that are neither the Generate card nor already resolved, then takes the resulting count.
+function othRemFun ( appStaObj : StaAppTyp ) : number { return CHE_IDE_ARR.filter( ( iteIdeStr ) => iteIdeStr !== ONB_GII_STR && !entLooFun( appStaObj, iteIdeStr ) ).length; } // What: Others Remaining Body. Why: The caller needs a plain count of every non-Generate item that still has no resolution. How: This filters CHE_IDE_ARR down to ids that are neither the Generate card nor already resolved, then takes the resulting count.
 
 // #endregion othRemFun
 
@@ -281,7 +281,7 @@ function othRemFun ( appStaObj : StaAppTyp ) : number { return CHE_IDE_ARR.filte
  *
 */
 
-function reaPicFun ( appStaObj : StaAppTyp ) : number { return appStaObj.pickers.filter( ( curPicObj ) => !ONB_SPI_ARR.includes( curPicObj.id ) ).length; } // What: Real Picker Count Return. Why: The caller needs a plain count of every picker that isn't one of the seeded samples. How: This filters appStaObj.pickers down to ids absent from ONB_SPI_ARR, then takes the resulting count.
+function reaPicFun ( appStaObj : StaAppTyp ) : number { return appStaObj.pickers.filter( ( curPicObj ) => !ONB_SPI_ARR.includes( curPicObj.id ) ).length; } // What: Real Picker Body. Why: The caller needs a plain count of every picker that isn't one of the seeded samples. How: This filters appStaObj.pickers down to ids absent from ONB_SPI_ARR, then takes the resulting count.
 
 // #endregion reaPicFun
 
@@ -311,7 +311,7 @@ function reaPicFun ( appStaObj : StaAppTyp ) : number { return appStaObj.pickers
  *
 */
 
-function reaGenFun ( appStaObj : StaAppTyp ) : boolean { return othRemFun( appStaObj ) === 0 && reaPicFun( appStaObj ) >= 1; } // What: Ready-To-Generate Return. Why: The caller needs a single boolean saying whether the Generate card can actually be actioned yet. How: This combines othRemFun's own zero-check with reaPicFun's own >=1 check.
+function reaGenFun ( appStaObj : StaAppTyp ) : boolean { return othRemFun( appStaObj ) === 0 && reaPicFun( appStaObj ) >= 1; } // What: Ready Generate Body. Why: The caller needs a single boolean saying whether the Generate card can actually be actioned yet. How: This combines othRemFun's own zero-check with reaPicFun's own >=1 check.
 
 // #endregion reaGenFun
 

@@ -8,7 +8,7 @@ import React     from 'react';                    // What: React. Why: BooResCom
 
 
 import { durMilFun } from '../utils/rhythm.ts'; // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function. Why: Under reduced motion the boost value drops to 0 at once instead of ticking down. How: This is checked when Reset is pressed.
+import { redMotFun } from '../utils/motion.ts'; // What: Reduced Motion Function. Why: Under reduced motion the boost value drops to 0 at once instead of ticking down. How: This is checked when Reset is pressed.
 
 // #endregion Imports
 

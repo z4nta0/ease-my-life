@@ -7,7 +7,7 @@ import cssModObj from './picker-strip.module.css'; // What: CSS Module Object. W
 import React     from 'react';                     // What: React. Why: This is the UI library PicStrCom is built on. How: This is used directly (React.useState, React.useRef, React.useEffect, React.useMemo, ...) instead of importing individual named hooks.
 
 
-import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function. Why: Under reduced motion the strip skips its cycle and mounts straight into the settled end state. How: This is checked once on mount unless forMotBoo forces the animation.
+import { redMotFun } from '../utils/motion.ts'; // What: Reduced Motion Function. Why: Under reduced motion the strip skips its cycle and mounts straight into the settled end state. How: This is checked once on mount unless forMotBoo forces the animation.
 
 
 import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: The strip's candidates are items. How: This types PscProTyp's candidates by their id and name.

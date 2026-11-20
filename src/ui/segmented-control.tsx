@@ -31,7 +31,7 @@ import React     from 'react';                          // What: React. Why: Seg
 
 // #region Components
 
-type SccProTyp< T extends string > = { ariLabStr : string, desIdeStr? : string, layVarStr? : string, onChange : ( keyValStr : T ) => void, optIteArr : { keyStr : T, labStr : string }[], value : T }; // What: Segmented-Control-Component Props Type. Why: The control picks one of its options by key, with an accessible name and an optional description and layout. How: This types SegConCom's props, with T the options' own key type, so a caller whose keys are a fixed set gets one of them back.
+type SccProTyp< T extends string > = { ariLabStr : string, desIdeStr? : string, layVarStr? : string, onChange : ( keyValStr : T ) => void, optIteArr : { keyStr : T, labStr : string }[], value : T }; // What: Segment-Control-Component Props Type. Why: The control picks one of its options by key, with an accessible name and an optional description and layout. How: This types SegConCom's props, with T the options' own key type, so a caller whose keys are a fixed set gets one of them back.
 
 // #region SegConCom
 

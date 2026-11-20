@@ -447,7 +447,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 
 
 
-type PacProTyp = { repTokNum : number, styKeyStr : string }; // What: Pick-Animation-Component Props Type. Why: The preview replays one pick animation style each time its token changes. How: This types PicAniCom's props.
+type PacProTyp = { repTokNum : number, styKeyStr : string }; // What: Picker-Animation-Component Props Type. Why: The preview replays one pick animation style each time its token changes. How: This types PicAniCom's props.
 
 // #region PicAniCom
 

@@ -77,16 +77,16 @@ function invColFun ( hexColStr : string ) : string {
 
 		} )();
 
-		const srgLinFun = ( srgChaNum : number ) => srgChaNum <= 0.04045 ? srgChaNum / 12.92 : Math.pow( ( srgChaNum + 0.055 ) / 1.055, 2.4 ); // What: Srgb Linear Function. Why: sRGB's own gamma curve must be undone before OKLab's linear-light math applies. How: This applies the standard sRGB-to-linear piecewise formula to one channel.
+		const srgLinFun = ( srgChaNum : number ) => srgChaNum <= 0.04045 ? srgChaNum / 12.92 : Math.pow( ( srgChaNum + 0.055 ) / 1.055, 2.4 ); // What: sRGB Linear Function. Why: sRGB's own gamma curve must be undone before OKLab's linear-light math applies. How: This applies the standard sRGB-to-linear piecewise formula to one channel.
 
-		const linSrgFun = ( linChaNum : number ) => { // What: Linear Srgb Function. Why: The final result must be re-encoded back into sRGB gamma before it's a displayable hex color. How: This applies the standard linear-to-sRGB piecewise formula to one clamped channel.
+		const linSrgFun = ( linChaNum : number ) => { // What: Linear sRGB Function. Why: The final result must be re-encoded back into sRGB gamma before it's a displayable hex color. How: This applies the standard linear-to-sRGB piecewise formula to one clamped channel.
 
 
 			const claChaNum = Math.max( 0, Math.min( 1, linChaNum ) ); // What: Clamped Channel Number. Why: A channel driven outside 0-1 by the inversion math must be clamped before re-encoding. How: This clamps linChaNum into the [0,1] range.
 
 
 
-			return claChaNum <= 0.0031308 ? claChaNum * 12.92 : 1.055 * Math.pow( claChaNum, 1 / 2.4 ) - 0.055; // What: Linear To Srgb Return. Why: The caller needs one re-encoded sRGB channel. How: This applies the piecewise sRGB encoding formula to claChaNum.
+			return claChaNum <= 0.0031308 ? claChaNum * 12.92 : 1.055 * Math.pow( claChaNum, 1 / 2.4 ) - 0.055; // What: Linear To sRGB Return. Why: The caller needs one re-encoded sRGB channel. How: This applies the piecewise sRGB encoding formula to claChaNum.
 
 
 		};

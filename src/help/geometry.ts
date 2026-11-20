@@ -86,7 +86,7 @@ const CHR_PRI_OBJ : Record< string, number > = { '[data-element-name-hook~="appT
  *
  * @param tarRecObj - Target Rect Object: The element's own unclipped
  *                    bounding rect.
- * @param tarDomEle - Target Document-Object-Model Element: The element
+ * @param tarDomEle - Target DOM Element: The element
  *                    tarRecObj belongs to, needed to read its own and its
  *                    ancestors' overflow-x styling.
  *
@@ -826,7 +826,7 @@ function defRadFun () : ShaRadTyp {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tarDomEle - Target Document-Object-Model Element: The single
+ * @param tarDomEle - Target DOM Element: The single
  *                    matched element to read a radius from.
  * @param padWidNum - Padding Width Number: The padded box's own width, used to
  *                    scale a percentage radius.

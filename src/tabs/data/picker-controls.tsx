@@ -24,7 +24,7 @@ import { motEasFun    } from '../../utils/motion.ts';        // What: Motion Eas
 import { norGroFun    } from '../../core/pickers.ts';        // What: Normalize Group Function. Why: A newly-typed picker group needs the same tidy-casing rule picker names already use. How: This is called when committing PicConCom's own "+ New Group" inline input.
 import { ordSufFun    } from '../../utils/date.ts';          // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
 import { PIC_NAM_OBJ  } from '../../core/pickers.ts';        // What: Pickers Namespace Object. Why: The Fill and Refill summary counts items short of the shared full-charge ceiling when the picker has no threshold of its own. How: This reads PIC_NAM_OBJ.THR_VAL_NUM.
-import { redMotFun    } from '../../utils/motion.ts';        // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see PicConCom's own scroll or collapse animations. How: This is checked before each of those animations.
+import { redMotFun    } from '../../utils/motion.ts';        // What: Reduced Motion Function. Why: A user who prefers reduced motion shouldn't see PicConCom's own scroll or collapse animations. How: This is checked before each of those animations.
 import { scrBehFun    } from '../../utils/motion.ts';        // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';          // What: Seed Namespace Object. Why: Every picker mode's own label and hint text comes from this shared catalog. How: This is read (MOD_DEF_OBJ) in PicConCom for the mode radio group.
 import { togFadFun    } from '../../ui/edge-fade.ts';        // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
@@ -733,7 +733,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 
-		let rafIdeNum : number; // What: Raf Identifier Number. Why: The pin loop below needs to be cancellable on cleanup. How: This is assigned by every requestAnimationFrame call below and read by the cleanup return.
+		let rafIdeNum : number; // What: Request-Animation-Frame Identifier Number. Why: The pin loop below needs to be cancellable on cleanup. How: This is assigned by every requestAnimationFrame call below and read by the cleanup return.
 
 		const staTimNum = performance.now(); // What: Start Time Number. Why: The pin loop must stop after a fixed duration matching the unfurl animation, not run forever. How: This records the loop's own start time to compare against on every frame.
 

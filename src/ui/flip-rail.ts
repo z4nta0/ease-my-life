@@ -8,7 +8,7 @@ import React from 'react'; // What: React. Why: The hook below is built on React
 
 import { durMilFun } from '../utils/rhythm.ts'; // What: Duration Millisecond Function. Why: Both pill animations must last exactly as long as their own duration step. How: This returns a step's length in milliseconds.
 import { motEasFun } from '../utils/motion.ts'; // What: Motion Easing Function. Why: Element.animate curves should match the stylesheet. How: This reads a --mot-*-eas token as a CSS easing string.
-import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function. Why: A user who prefers reduced motion should see the pills snap instead of glide. How: This reports whether reduced motion is on.
+import { redMotFun } from '../utils/motion.ts'; // What: Reduced Motion Function. Why: A user who prefers reduced motion should see the pills snap instead of glide. How: This reports whether reduced motion is on.
 
 // #endregion Imports
 
@@ -97,7 +97,7 @@ function useFliRaiFun ( raiNodRef : React.RefObject< HTMLElement | null >, trgKe
 
 		const firMapObj = fliFirRef.current;                                                          // What: First Map Object. Why: This is the map of each pill's own previous x position, read and then overwritten below. How: This is read once from fliFirRef.current and reused throughout this effect run.
 		const pilNodArr = [ ...raiCurEle.querySelectorAll< HTMLElement >( '[data-flip-item-key]' ) ]; // What: Pill Node Array. Why: Every currently-rendered pill that takes part needs to be measured and possibly animated. How: This queries every element carrying data-flip-item-key inside the rail and spreads the NodeList into a real array.
-		const redMotBoo = redMotFun();                                                                // What: Reduce Motion Boolean. Why: A user who prefers reduced motion should never see this FLIP tween. How: This is checked once per run and read by every pill below.
+		const redMotBoo = redMotFun();                                                                // What: Reduced Motion Boolean. Why: A user who prefers reduced motion should never see this FLIP tween. How: This is checked once per run and read by every pill below.
 
 		// #endregion Flip Inputs
 

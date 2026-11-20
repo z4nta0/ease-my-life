@@ -8,7 +8,7 @@ import React     from 'react';                    // What: React. Why: This is t
 
 
 import { createPortal } from 'react-dom';            // What: Create Portal. Why: The modal must render into <body> so it lays over the whole app instead of being clipped by an ancestor's own overflow/stacking context. How: This is called with the modal's own JSX and document.body inside IntModCom's return.
-import { redMotFun    } from '../utils/motion.ts';   // What: Reduce Motion Function. Why: A user who prefers reduced motion should not see the card's own slide-in entrance animation. How: This is called below to decide whether the rise entrance modifier class is applied.
+import { redMotFun    } from '../utils/motion.ts';   // What: Reduced Motion Function. Why: A user who prefers reduced motion should not see the card's own slide-in entrance animation. How: This is called below to decide whether the rise entrance modifier class is applied.
 import { useModIneFun } from '../ui/modal-inert.ts'; // What: Use Modal Inert Function. Why: Tab must not leave the open modal for the page behind it. How: This is called with the primary button's ref, making everything outside the modal inert while it's open.
 
 // #endregion Imports

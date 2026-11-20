@@ -68,7 +68,7 @@ const isaLivFun = ( depCotStr : string ) => depCotStr === 'production'; // What:
 // #region ordUidFun
 
 /**
- * ordUidFun = Order User Identifier Function
+ * ordUidFun = Order UID Function
  *
  * @summary
  * Reads which Firebase account an order belongs to, from what the checkout
@@ -93,7 +93,7 @@ function ordUidFun ( ordCurObj : PolOrdTyp ) : string | null {
 
 
 	const extIdeStr = ordCurObj.customer?.external_id; // What: External Identifier String. Why: The checkout tags its customer with the account's id. How: This reads it.
-	const metUidAny = ordCurObj.metadata?.firebaseUid; // What: Metadata User Identifier Any. Why: The checkout also copies the id into the order's metadata. How: This reads it.
+	const metUidAny = ordCurObj.metadata?.firebaseUid; // What: Metadata UID Any. Why: The checkout also copies the id into the order's metadata. How: This reads it.
 
 
 

@@ -5,7 +5,7 @@
 
 import { admAutFun   } from '../lib/admin-auth.mts'; // What: Admin Auth Function. Why: The webhook sets and clears the paid claim. How: This returns Firebase's admin auth service.
 import { isaLivFun   } from '../lib/polar.mts';      // What: Is-A Live Function. Why: Production listens to live Polar and previews to the sandbox. How: This checks the deploy context.
-import { ordUidFun   } from '../lib/polar.mts';      // What: Order User Identifier Function. Why: An order names its account through the checkout's tags. How: This reads them.
+import { ordUidFun   } from '../lib/polar.mts';      // What: Order UID Function. Why: An order names its account through the checkout's tags. How: This reads them.
 import { PRO_LIV_STR } from '../lib/polar.mts';      // What: Product Live String. Why: Only the sync product unlocks sync. How: This is the live product's id.
 import { PRO_SAN_STR } from '../lib/polar.mts';      // What: Product Sandbox String. Why: Previews check the sandbox product. How: This is its id.
 import { verWebFun   } from '../lib/polar.mts';      // What: Verify Webhook Function. Why: Only Polar may mark an account paid. How: This checks the signature.
@@ -74,7 +74,7 @@ import type { PolOrdTyp } from '../lib/polar.mts'; // What: Polar Order Type. Wh
 async function ordAccFun ( ordCurObj : PolOrdTyp ) : Promise< string | null > {
 
 
-	const tagUidStr = ordUidFun( ordCurObj ); // What: Tagged User Identifier String. Why: A checkout from the app tags its account. How: This reads the tag.
+	const tagUidStr = ordUidFun( ordCurObj ); // What: Tagged UID String. Why: A checkout from the app tags its account. How: This reads the tag.
 
 
 
@@ -190,7 +190,7 @@ async function webSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 
 	// #region Account Lookup
 
-	const accUidStr = await ordAccFun( webEveObj.data ); // What: Account User Identifier String. Why: The claim belongs on the buyer's account. How: This finds it.
+	const accUidStr = await ordAccFun( webEveObj.data ); // What: Account UID String. Why: The claim belongs on the buyer's account. How: This finds it.
 
 
 

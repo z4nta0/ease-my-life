@@ -8,7 +8,7 @@ import React     from 'react';                    // What: React. Why: FilButCom
 
 
 import { ButBasCom } from './button.tsx';       // What: Button Base Component. Why: The Fill lever is a ghost-styled shared button. How: This renders the lever with its refresh icon and label.
-import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function. Why: The decorative icon spin is skipped for a user who prefers reduced motion. How: This is checked before the spin starts.
+import { redMotFun } from '../utils/motion.ts'; // What: Reduced Motion Function. Why: The decorative icon spin is skipped for a user who prefers reduced motion. How: This is checked before the spin starts.
 
 // #endregion Imports
 

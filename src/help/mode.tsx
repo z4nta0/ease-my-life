@@ -361,7 +361,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 			.map( ( [ chrSelStr, chrSidStr ] ) => { // What: Chrome Lookup Callback. Why: Each chrome selector needs its own live element found before it can be measured. How: This queries chrSelStr once and wraps the result with its own selector and side, or null when nothing matched.
 
 
-				const chrDomEle = document.querySelector< HTMLElement >( chrSelStr ); // What: Chrome Document-Object-Model Element. Why: The chrome item's own live element is what later gets measured and compared against targets. How: This queries chrSelStr once.
+				const chrDomEle = document.querySelector< HTMLElement >( chrSelStr ); // What: Chrome DOM Element. Why: The chrome item's own live element is what later gets measured and compared against targets. How: This queries chrSelStr once.
 
 
 
@@ -382,7 +382,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 				return { // What: Chrome Item Return. Why: cliChrFun reads every one of these fields per chrome item. How: This carries the element, rect and selector through, resolving the side.
 
 
-					chrDomEle,                                                            // What: Chrome Document-Object-Model Element. Why: cliChrFun checks whether a target sits inside this element. How: This passes the matched element through unchanged.
+					chrDomEle,                                                            // What: Chrome DOM Element. Why: cliChrFun checks whether a target sits inside this element. How: This passes the matched element through unchanged.
 					chrRecObj,                                                            // What: Chrome Rect Object. Why: cliChrFun clips targets against this rect. How: This passes the rect measured above.
 					chrSelStr,                                                            // What: Chrome Selector String. Why: cliChrFun looks this selector up in CHR_PRI_OBJ. How: This passes the selector through unchanged.
 					chrSidStr : chrSidStr === 'auto' ? detEdgFun( chrRecObj ) : chrSidStr // What: Chrome Side String. Why: Only the tab bar's own side varies at runtime. How: This resolves 'auto' via detEdgFun, otherwise keeps the fixed side.
@@ -710,7 +710,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
-	React.useEffect( () => { // What: Raf Tracking Effect. Why: Every tagged element's own rect must be recomputed every animation frame while help mode is active, to stay correct under scrolling/reflow. How: This starts a self-rescheduling requestAnimationFrame loop on activation and cancels it on cleanup.
+	React.useEffect( () => { // What: Request-Animation-Frame Tracking Effect. Why: Every tagged element's own rect must be recomputed every animation frame while help mode is active, to stay correct under scrolling/reflow. How: This starts a self-rescheduling requestAnimationFrame loop on activation and cancels it on cleanup.
 
 
 		if ( !actModBoo ) { // What: Inactive Cleanup Branch. Why: Turning help mode off must clear every piece of rendered state, not just stop the loop below. How: This resets the rect map, open tip, and toggle rect, then bails out before scheduling any frame.
@@ -729,7 +729,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
-		let rafIdeNum : number;          // What: Raf Identifier Number. Why: The cleanup below needs to cancel whichever pending frame is currently scheduled. How: This starts undefined and is (re)assigned every time looRafFun schedules its own next frame.
+		let rafIdeNum : number;          // What: Request-Animation-Frame Identifier Number. Why: The cleanup below needs to cancel whichever pending frame is currently scheduled. How: This starts undefined and is (re)assigned every time looRafFun schedules its own next frame.
 		let looCanBoo : boolean = false; // What: Loop Cancelled Boolean. Why: A frame already in flight when this effect is cleaned up must not schedule yet another one after it fires. How: This starts false and is flipped true by the cleanup function below.
 
 

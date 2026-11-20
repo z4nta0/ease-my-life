@@ -1464,7 +1464,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 		// #region Tracking Flags
 
-		let rafIdeNum : number; // What: Raf Identifier Number. Why: This holds the current requestAnimationFrame handle so the cleanup below can cancel it. How: This starts uninitialized and is only ever written inside this effect's own closures.
+		let rafIdeNum : number; // What: Request-Animation-Frame Identifier Number. Why: This holds the current requestAnimationFrame handle so the cleanup below can cancel it. How: This starts uninitialized and is only ever written inside this effect's own closures.
 
 		let isaCanBoo = false; // What: Is-A Cancelled Boolean. Why: This is the flag every scheduled callback checks before doing anything. How: This starts false and is only ever written inside this effect's own closures.
 		let resDecBoo = false; // What: Reserve Decided Boolean. Why: Whether THIS step's target needs top-space reserved above it is declared here (not down by decResFun's own definition, where it conceptually belongs) because briTarFun now needs to read/set it on its very first call, before decResFun's own code further down has even run. How: See decResFun's own comment for the full reasoning on what this tracks and why the decision only ever happens once per step.

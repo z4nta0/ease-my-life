@@ -4,7 +4,7 @@
 // #region Imports
 
 import { durMilFun } from '../utils/rhythm.ts'; // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { redMotFun } from '../utils/motion.ts'; // What: Reduce Motion Function. Why: The palette cross-fade should be skipped for a user who prefers reduced motion. How: This is called inside appPalFun to gate the theme fade attribute toggle.
+import { redMotFun } from '../utils/motion.ts'; // What: Reduced Motion Function. Why: The palette cross-fade should be skipped for a user who prefers reduced motion. How: This is called inside appPalFun to gate the theme fade attribute toggle.
 
 
 import type { AppSetTyp } from '../core/data-model.ts'; // What: Appearance Settings Type. Why: Picking the active theme reads the saved appearance settings. How: This types resTheFun's appSetObj.
@@ -326,7 +326,7 @@ function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' |
 
 	const modSigNum = modKeyStr === 'dark' ? 1 : -1; // What: Mode Sign Number. Why: The mutStr/acsStr tokens need to move toward the page background in dark mode but away from it in light mode. How: This flips the sign of their lightness offset below based on the given mode.
 
-	const calOffFun = ( offAmoNum : number, floValNum : number ) => ( modKeyStr === 'dark' // What: Calc Offset Function. Why: Dark mode needs a floored lightness offset to avoid the near-black gamma-encoding hazard described above, while light mode can use a plain one. How: This returns the appropriate CSS calc() expression string for whichever mode is active.
+	const calOffFun = ( offAmoNum : number, floValNum : number ) => ( modKeyStr === 'dark' // What: Calculate Offset Function. Why: Dark mode needs a floored lightness offset to avoid the near-black gamma-encoding hazard described above, while light mode can use a plain one. How: This returns the appropriate CSS calc() expression string for whichever mode is active.
 
 		? `calc(max(l + ${ offAmoNum }, ${ floValNum }))` // What: Dark Mode Calc Expression. Why: Flooring the result keeps surface/border from vanishing into true black. How: This raises the lightness by offAmoNum, but never below floValNum.
 
