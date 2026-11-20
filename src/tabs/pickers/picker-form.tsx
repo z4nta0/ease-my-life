@@ -575,10 +575,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const shoWeiBoo = selModStr === 'weighted' || selModStr === 'dynamic';       // What: Show Weight Boolean. Why: Weight is a lever only for these two modes; random/ease-* ignore it entirely, so the control stays hidden elsewhere to avoid asking for something irrelevant. How: This gates the weight column throughout Step 2.
 	const isaEasBoo = selModStr === 'ease-up' || selModStr === 'ease-down';      // What: Is-An Ease Boolean. Why: Only these two modes use the easeMin/easeMax drift band at all. How: This gates the ease controls throughout Step 2.
 
+	// #endregion Mode Derivations
+
+
 
 	const capStrFun = ( souTexStr : string ) => souTexStr.length ? souTexStr[ 0 ].toUpperCase() + souTexStr.slice( 1 ) : souTexStr; // What: Capitalize String Function. Why: Every item/picker name this form commits should read with a capitalized first letter, regardless of how the user actually typed it. How: This upper-cases just the first character and leaves the rest untouched.
-
-	// #endregion Mode Derivations
 
 
 
