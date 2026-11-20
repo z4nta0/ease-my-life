@@ -1,0 +1,224 @@
+
+
+
+/**
+ * item-card.module.css = Item Card Module
+ *
+ * @summary
+ * Styles for IteCarCom, the card a Pickers tab pool opens to add or edit an
+ * item: the rounded card that springs in and folds away, the name row with
+ * its underlined name field, and the flush slot holding the item editor. The
+ * card plays its closing animation through its --closing modifier, and it
+ * and the editor slot set the --ent-* properties the item editor reads.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region lisIteDiv */
+
+.lisIteDiv { /* What: List Item Div. Why: A new or edited item opens as its own card reusing the item editor, which drops its rows' top border and margin here since the name row already divides it, and a brand-new item's Delete is redundant. How: This draws a rounded bordered card that springs in, and sets the --ent-* properties the editor reads. */
+
+
+	--ent-del-dis : none;
+	--ent-foo-jus : flex-end;
+	--ent-lis-bor : 0;
+	--ent-lis-mar : 0;
+
+	animation     : lisIteDivOpenFadeIn var( --dur-ani-p02 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
+	background    : var( --bac-sur-col );                                                       /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );                            /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-med );                                                       /* Radius Border Medium = 11px */
+	overflow      : hidden;
+
+
+}
+.lisIteDiv.lisIteDiv--closing { /* What: Closing List Item Div. Why: The card folds away before the saved item appears in the pool. How: This plays the close, whose end drives the rest, with the base class chained in so it outranks the card's own reduced-motion animation : none. */
+
+
+	animation : lisIteDivCloseFadeOut var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+	overflow  : hidden;
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Add Item Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.lisIteDiv { /* What: Still List Item Div. Why: The card should simply appear. How: This turns its entrance off. */
+
+
+		animation : none;
+
+
+	}
+
+	.lisIteDiv.lisIteDiv--closing { /* What: Instant Closing List Item Div. Why: The card should close at once, while still ending the animation its handler waits on. How: This shortens the close to .01ms. */
+
+
+		animation-duration : .01ms;
+
+
+	}
+
+
+}
+
+@keyframes lisIteDivCloseFadeOut { /* What: List Item Div Close Fade Out Keyframes. Why: When the card closes, it should fold away before a saved item pops into the pool. How: This fades it out while lifting and shrinking it slightly. */
+
+
+	from {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+	to {
+
+
+		opacity   : 0;
+		transform : translateY( calc( var( --spa-ver-m03 ) * -1 ) ) scale( .98 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+
+
+	}
+
+
+}
+
+@keyframes lisIteDivOpenFadeIn { /* What: List Item Div Open Fade In Keyframes. Why: The item card should drop into place. How: This fades it in while lowering and growing it slightly. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY( calc( var( --spa-ver-m02 ) * -1 ) ) scale( .98 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+
+/* #region lisRowDiv */
+
+.lisRowDiv { /* What: List Row Div. Why: The item's name is edited in the row's header, which isn't clickable here. How: This lays the name field out in a padded row with the default cursor. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : default;
+	display            : flex;
+	font               : inherit;
+	gap                : var( --spa-hor-m01 );                      /* Spacing Horizontal Base Minus 1 = 11px */
+	padding            : var( --spa-ver-m01 ) var( --spa-hor-bas ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
+	text-align         : left;
+	user-select        : none;
+	width              : 100%;
+
+
+}
+
+
+/* #region rowMaiSpa */
+
+.rowMaiSpa { /* What: Row Main Span. Why: The name field takes the row's remaining width. How: This makes it a shrinkable column. */
+
+
+	display        : flex;
+	flex           : 1 1 auto;
+	flex-direction : column;
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	min-width      : 0;
+
+
+}
+
+.rowNamInp { /* What: Row Name Input. Why: The name is edited in place, styled like a name. How: This draws a borderless field with only an underline. */
+
+
+	background     : transparent;
+	border         : 0;
+	border-bottom  : var( --bor-wid-bas ) solid var( --bor-mai-col );        /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	font           : inherit;
+	font-size      : var( --fon-siz-p01 );                                   /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight    : 500;
+	letter-spacing : -0.005em;
+	padding        : var( --spa-ver-m09 ) 0;                                 /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	transition     : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
+	width          : 100%;
+
+
+}
+.rowNamInp:focus { /* What: Focused Add Item Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
+
+
+	border-bottom-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline             : none;
+
+
+}
+.rowNamInp::placeholder { /* What: Add Item Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+
+
+	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Add Item Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rowNamInp { /* What: Still Row Name Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion rowMaiSpa */
+
+/* #endregion lisRowDiv */
+
+
+
+.iteEdiDiv { /* What: Item Edit Div. Why: The item editor runs flush inside the card under a divider, without its own card chrome. How: This pads the slot and sets the --ent-* properties that strip the editor's chrome. */
+
+
+	--ent-edi-bac : none;
+	--ent-edi-bor : 0;
+	--ent-edi-mar : 0;
+	--ent-edi-pad : 0;
+	--ent-edi-rad : 0;
+
+	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col );                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	padding    : var( --spa-ver-m07 ) var( --spa-hor-bas ) var( --spa-ver-bas ); /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base ~= 14.572px, Spacing Vertical Base ~= 14.572px */
+
+
+}
+
+/* #endregion lisIteDiv */
+
+

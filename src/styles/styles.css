@@ -1037,54 +1037,6 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes newItemCloseFadeOut { /* What: New Item Close Fade Out Keyframes. Why: When an item is saved, its editor should fold away before the item pops into the pool. How: This fades it out while lifting and shrinking it slightly. */
-
-
-	from {
-
-
-		opacity   : 1;
-		transform : none;
-
-
-	}
-
-	to {
-
-
-		opacity   : 0;
-		transform : translateY( calc( var( --spa-ver-m03 ) * -1 ) ) scale( .98 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
-
-
-	}
-
-
-}
-
-@keyframes newItemOpenFadeIn { /* What: New Item Open Fade In Keyframes. Why: The add-item editor should drop into place. How: This fades it in while lowering and growing it slightly. */
-
-
-	from {
-
-
-		opacity   : 0;
-		transform : translateY( calc( var( --spa-ver-m02 ) * -1 ) ) scale( .98 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
-
-
-	}
-
-	to {
-
-
-		opacity   : 1;
-		transform : none;
-
-
-	}
-
-
-}
-
 @keyframes overlayOpenFadeIn { /* What: Overlay Open Fade In Keyframes. Why: Onboarding overlays should fade in rather than appear. How: This fades opacity from 0 to 1. */
 
 

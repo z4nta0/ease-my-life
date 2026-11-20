@@ -9,10 +9,10 @@ import React     from 'react';                    // What: React. Why: PicVieCom
 
 import { ButBasCom    } from '../../ui/button.tsx';       // What: Button Base Component. Why: Pick One, Re-roll, Done and the pool actions need consistently-styled controls. How: This is rendered for each of those actions.
 import { durMilFun    } from '../../utils/rhythm.ts';     // What: Duration Millisecond Function. Why: Exit timers must end with the animation they wait on. How: This returns a duration step's length in milliseconds.
-import { EntEdiCom    } from '../../ui/entry-editor.tsx'; // What: Entry Editor Component. Why: Adding or editing a pool item reuses the exact same weight/ease editor the Today tab uses. How: This is rendered inline below the pool list, wired to either the real store actions or a local draft-item actions object.
 import { IcoSvgCom    } from '../../ui/icon.tsx';         // What: Icon Svg Component. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
 import { InfTipCom    } from '../../ui/info-tip.tsx';     // What: Info Tip Component. Why: Several controls need an explanatory tooltip on hover/focus. How: This wraps the weight/value pills and the disabled Send/Delete buttons, given the tooltip's own label text.
 import { isaTruFun    } from '../../utils/guard.ts';      // What: Is-A Truthy Function. Why: Entries without an item drop out of the Today id set. How: This filters them so the set holds only real ids.
+import { IteCarCom    } from './item-card.tsx';           // What: Item Card Component. Why: Adding or editing a pool item opens the shared item card, holding the same weight/ease editor the Today tab uses. How: This is rendered below the pool list, wired to either the real store actions or the local draft-item actions.
 import { PIC_NAM_OBJ  } from '../../core/pickers.ts';     // What: Pickers Namespace Object. Why: This is the namespace of pure picking-engine functions this file drives every actual pick through. How: This is called throughout for PIC_NAM_OBJ.picIteFun/reaValFun/modEliFun/aveEasFun, and read for THR_VAL_NUM and DEF_EAS_OBJ.
 import { PicForCom    } from './picker-form.tsx';         // What: Picker Form Component. Why: Editing a picker's details reuses the create form's Details step. How: This is rendered in place of the view while ediOpeBoo is on.
 import { PicStrCom    } from '../../ui/picker-strip.tsx'; // What: Picker Strip Component. Why: Pick One plays the shared reel, spotlight, or dissolve reveal before showing its result. How: This is rendered in the run stage while a pick is cycling.
@@ -1754,16 +1754,15 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 							return (
 
 
-								<div
-									className={` ${ cssModObj.lisIteDiv }   ${ ediCloBoo ? cssModObj.lisIteDivClosing : '' } `}
+								<IteCarCom
+									cloBoo={ ediCloBoo }
+									ediKeyStr={ ediLivObj.id }
+									iteDatObj={ draIteObj && draIteObj.id === ediLivObj.id ? draIteObj : ediLivObj } // What: Item Data Object. Why: The open editor shows its draft, while a closing one shows the real item. How: This picks the draft only when it belongs to this item.
+									namValStr={ draIteObj && draIteObj.id === ediLivObj.id ? draIteObj.name : ediLivObj.name } // What: Name Value String. Why: The open editor's name lives in its draft until Save, while a closing editor shows the real name. How: This shows the draft's name when the draft belongs to this item, else the item's own.
+									picDatObj={ picDatObj }
 
-									data-element-name-hook='lisIteDiv'
-
-									onAnimationEnd={ ( aniEveObj ) => { // What: On Animation End Handler. Why: The item editor's own close animation must finish before its state clears. How: This clears the closing and open flags, then opens any editor requested meanwhile.
-
-
-										if ( !ediCloBoo || aniEveObj.target !== aniEveObj.currentTarget ) return; // What: Not Closing Guard. Why: Only the editor's own closing animation should finish the close. How: This bails out unless ediCloBoo is set and the event came from this element.
-
+									onCanEdiFun={ () => setEdiCloBoo( true ) } // What: On Cancel Edit Function. Why: Cancel only has to close the editor, since closing drops its draft. How: This starts the editor's closing animation.
+									onCloEndFun={ () => { // What: On Close End Function. Why: The item editor's own close animation must finish before its state clears. How: This clears the closing and open flags, then opens any editor requested meanwhile.
 
 
 										setEdiCloBoo( false ); // What: Closing Clear Call. Why: The close animation is over. How: This resets ediCloBoo to false.
@@ -1774,69 +1773,18 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 									} }
-								>{ /* What: Editing Item Wrap Div Element. Why: This is the whole existing-item editor slot, playing its own closing animation before actually unmounting. How: This reopens whatever edit staEdiFun staged in penEdiRef once its own closing keyframe finishes. Its data-element-name-hook is read by the App Features tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+									onNamChaFun={ ( namValStr ) => patDraFun( { name : namValStr } ) }
+									onPatIteFun={ patDraFun }
+									onSavEdiFun={ () => { // What: On Save Edit Function. Why: Save must apply the draft to the real item before the editor closes. How: This commits the draft, then starts the editor's closing animation.
 
 
-									<div
-										className={ cssModObj.lisRowDiv }
+										comDraFun(); // What: Commit Draft Call. Why: The draft's edits only reach the item on Save. How: This calls comDraFun.
 
-										onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() }
-									>{ /* What: Row Div Element. Why: A click inside the name row must not bubble up to whatever the pool row itself listens for. How: This stops propagation on every click. */ }
+										setEdiCloBoo( true ); // What: Start Closing Call. Why: A saved editor has nothing left to show. How: This flips ediCloBoo, which plays the closing animation.
 
 
-										<span className={ cssModObj.rowMaiSpa }>{ /* What: Main Span Element. Why: The name input needs the same wrapper the closed row's name uses. How: This wraps the input below. */ }
-
-
-											<input
-												className={ cssModObj.rowNamInp }
-
-												data-element-name-hook='rowNamInp'
-
-												autoFocus
-												maxLength={ 60 }
-												placeholder='Item name'
-												type='text'
-												value={ draIteObj && draIteObj.id === ediLivObj.id ? draIteObj.name : ediLivObj.name } // What: Value. Why: The open editor's name lives in its draft until Save, while a closing editor shows the real name. How: This shows the draft's name when the draft belongs to this item, else the item's own.
-
-												aria-label='Item name'
-
-												onChange={ ( chaEveObj ) => patDraFun( { name : chaEveObj.target.value } ) }
-												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-											/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This writes every change into the editor's draft through patDraFun, committed on Save, and blurs itself on Enter. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-										</span>
-
-
-									</div>
-
-									<div className={ cssModObj.iteEdiDiv }>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row. How: This wraps a single EntEdiCom instance. */ }
-
-
-										<EntEdiCom
-											key={ ediLivObj.id }
-
-											iteDatObj={ draIteObj && draIteObj.id === ediLivObj.id ? draIteObj : ediLivObj } // What: Item Data Object. Why: The open editor shows its draft, while a closing one shows the real item. How: This picks the draft only when it belongs to this item.
-											picDatObj={ picDatObj }
-
-											onCanEdiFun={ () => setEdiCloBoo( true ) } // What: On Cancel Edit Function. Why: Cancel only has to close the editor, since closing drops its draft. How: This starts the editor's closing animation.
-											onPatIteFun={ patDraFun }
-											onSavEdiFun={ () => { // What: On Save Edit Function. Why: Save must apply the draft to the real item before the editor closes. How: This commits the draft, then starts the editor's closing animation.
-
-
-												comDraFun(); // What: Commit Draft Call. Why: The draft's edits only reach the item on Save. How: This calls comDraFun.
-
-												setEdiCloBoo( true ); // What: Start Closing Call. Why: A saved editor has nothing left to show. How: This flips ediCloBoo, which plays the closing animation.
-
-
-											} }
-										/>{ /* What: Entry Editor Component. Why: Editing a pool item reuses the exact item editor Today and Data use. How: This is passed the item's draft (or the item itself while closing), the picker, and its cancel, patch, and save handlers. */ }{ /* What: No-Ondelete Design Note. Why: EntEdiCom's own footer Delete button is already hidden by the existing lisIteDiv rule (its --ent-del-dis : none), same as the new-item flow below. How: Deleting an existing item stays solely the row's own trash icon + confirm flow, one delete affordance per item instead of two that could disagree with each other, so no onDelIteFun prop is passed below. */ }{ /* What: Editor Key Design Note. Why: Without a key keyed to ediLivObj.id, switching ediIteStr straight from one item to another (see staEdiFun) can commit in a single React batch with no intervening null render, so this would stay the SAME EntEdiCom instance across the switch, carrying its own delete-confirm state over to the next item. How: The key below forces React to unmount the old instance and mount a fresh one whenever the id changes, even within one commit. */ }
-
-
-									</div>
-
-
-								</div>
+									} }
+								/> // What: Item Card Component. Why: This is the whole existing-item editor slot, playing its own closing animation before actually unmounting. How: This is passed the item's draft (or the item itself while closing) and the store-bound handlers, and reopens whatever edit staEdiFun staged in penEdiRef once its closing animation ends.
 
 
 							);
@@ -1880,16 +1828,15 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 						return (
 
 
-							<div
-								className={` ${ cssModObj.lisIteDiv }   ${ newCloStr ? cssModObj.lisIteDivClosing : '' } `}
+							<IteCarCom
+								cloBoo={ !!newCloStr }
+								iteDatObj={ newIteObj }
+								namRef={ selAllFun }
+								namValStr={ newIteObj.name }
+								picDatObj={ picDatObj }
 
-								data-element-name-hook='lisIteDiv'
-
-								onAnimationEnd={ ( aniEveObj ) => { // What: On Animation End Handler. Why: The new-item editor's own close animation must finish before the add is committed or dropped. How: This commits a saved draft, clears the draft state, then opens any editor requested meanwhile.
-
-
-									if ( !newCloStr || aniEveObj.target !== aniEveObj.currentTarget ) return; // What: Not Closing Guard. Why: Only the new item's own closing animation should finish the add. How: This bails out unless newCloStr is set and the event came from this element.
-
+								onCanEdiFun={ () => setNewCloStr( 'cancel' ) }
+								onCloEndFun={ () => { // What: On Close End Function. Why: The new-item editor's own close animation must finish before the add is committed or dropped. How: This commits a saved draft, clears the draft state, then opens any editor requested meanwhile.
 
 
 									if ( newCloStr === 'save' ) cmtDraFun( newIteObj ); // What: Save Commit Guard. Why: A saved new item becomes a real item, while a cancelled one is just dropped. How: This commits the draft only when newCloStr is 'save'.
@@ -1904,71 +1851,11 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 								} }
-							>{ /* What: New Item Wrap Div Element. Why: This is the whole new-item draft editor slot, playing its own closing animation before actually committing or discarding. How: This commits the draft via cmtDraFun only when newCloStr is 'save', then reopens whatever staEdiFun staged in penEdiRef. Its data-element-name-hook is read by the App Features tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-								<div
-									className={ cssModObj.lisRowDiv }
-
-									onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() }
-								>{ /* What: Row Div Element. Why: A click inside the name row must not bubble up to whatever the pool wrap itself listens for. How: This stops propagation on every click. */ }
-
-
-									<span className={ cssModObj.rowMaiSpa }>{ /* What: Main Span Element. Why: The name input needs the same wrapper the closed row's name uses. How: This wraps the input below. */ }
-
-
-										<input
-											ref={ selAllFun }
-
-											className={ cssModObj.rowNamInp }
-
-											data-element-name-hook='rowNamInp'
-
-											autoFocus
-											maxLength={ 60 }
-											placeholder='Item name'
-											type='text'
-											value={ newIteObj.name }
-
-											aria-label='Item name'
-
-											onBlur={ ( bluEveObj ) => { // What: On Blur Handler. Why: Leaving the name field commits a tidied name. How: This trims the value and renames the draft item when it's non-empty.
-
-
-												const newNamStr = bluEveObj.target.value.trim(); // What: New Name String. Why: A blur commit should tidy the name, not keep stray whitespace. How: This trims the input's current value.
-
-
-												if ( newNamStr ) patNewFun( { name : newNamStr } ); // What: Rename Item Guard. Why: A blank name must never be committed. How: This writes the tidied name into the draft only when newNamStr is non-empty.
-
-
-											} }
-											onChange={ ( chaEveObj ) => patNewFun( { name : chaEveObj.target.value } ) }
-											onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-										/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the draft being created. How: This writes into the draft through patNewFun (not the real store) on every change, and commits the rename on blur. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-									</span>
-
-
-								</div>
-
-								<div className={ cssModObj.iteEdiDiv }>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row, wired to the draft instead of the real store. How: This wraps a single EntEdiCom instance bound to patNewFun. */ }
-
-
-									<EntEdiCom
-										iteDatObj={ newIteObj }
-										picDatObj={ picDatObj }
-
-										onCanEdiFun={ () => setNewCloStr( 'cancel' ) }
-										onPatIteFun={ patNewFun }
-										onSavEdiFun={ () => setNewCloStr( 'save' ) }
-									/>{ /* What: Entry Editor Component. Why: The new-item draft reuses the exact item editor Today and Data use. How: This is passed the draft item, the picker, the draft's own patch function, and close handlers whose closing animation then commits or discards it. */ }
-
-
-								</div>
-
-
-							</div>
+								onNamChaFun={ ( namValStr ) => patNewFun( { name : namValStr } ) }
+								onNamComFun={ ( namValStr ) => patNewFun( { name : namValStr } ) } // What: On Name Commit Function. Why: Leaving the name field commits a tidied name. How: This writes the trimmed name into the draft through patNewFun.
+								onPatIteFun={ patNewFun }
+								onSavEdiFun={ () => setNewCloStr( 'save' ) }
+							/> // What: Item Card Component. Why: This is the whole new-item draft editor slot, playing its own closing animation before actually committing or discarding. How: This is passed the draft and its local patch function, commits the draft via cmtDraFun only when newCloStr is 'save', then reopens whatever staEdiFun staged in penEdiRef.
 
 
 						);
