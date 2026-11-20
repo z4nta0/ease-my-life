@@ -51,7 +51,7 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
 
 // #region Types
 
-type StoRepTyp = { dataBytes : number | null, engine : string, mirrorAt : string | null, mirrorOk : boolean, persisted : boolean, quota : number | null, usage : number | null }; // What: Storage Report Type. Why: The Settings storage panel shows which engine is active, how much is saved, whether the mirror and persistence are working, and the browser's headroom. How: This describes staRepFun's report, with null for anything the browser couldn't measure.
+type StoRepTyp = { bytNum : number | null, engStr : string, mirBoo : boolean, mirStr : string | null, perBoo : boolean, quoNum : number | null, usaNum : number | null }; // What: Storage Report Type. Why: The Settings storage panel shows which engine is active, how much is saved, whether the mirror and persistence are working, and the browser's headroom. How: This describes staRepFun's report, with null for anything the browser couldn't measure.
 
 // #endregion Types
 
@@ -1457,16 +1457,16 @@ async function staRepFun () : Promise< StoRepTyp > {
 
 
 
-	const outStaObj : StoRepTyp = { dataBytes : null, engine : curEngStr, mirrorAt : mirTimStr, mirrorOk : mirWriBoo, persisted : false, quota : null, usage : null }; // What: Output Status Object. Why: This is the full report shape the Settings storage panel expects, seeded with everything already known synchronously. How: This is built once here and then filled in further by the awaited calls below.
+	const outStaObj : StoRepTyp = { bytNum : null, engStr : curEngStr, mirBoo : mirWriBoo, mirStr : mirTimStr, perBoo : false, quoNum : null, usaNum : null }; // What: Output Status Object. Why: This is the full report shape the Settings storage panel expects, seeded with everything already known synchronously. How: This is built once here and then filled in further by the awaited calls below.
 
-	outStaObj.dataBytes = await datBytFun(); // What: Output Data Bytes Assignment. Why: The exact persisted byte size can only be known after an async measurement. How: This awaits datBytFun and assigns its result onto outStaObj.
+	outStaObj.bytNum = await datBytFun(); // What: Output Data Bytes Assignment. Why: The exact persisted byte size can only be known after an async measurement. How: This awaits datBytFun and assigns its result onto outStaObj.
 
 
 
 	try { // What: Storage Estimate Try. Why: navigator.storage itself, or its persisted/estimate methods, may not exist in every browser. How: This wraps both optional calls below so an unsupported environment simply leaves outStaObj's own defaults in place.
 
 
-		if ( navigator.storage && navigator.storage.persisted ) outStaObj.persisted = await navigator.storage.persisted(); // What: Output Persisted Assignment Check. Why: The Settings panel needs to know whether eviction-exempt persistence has already been granted. How: This awaits navigator.storage.persisted() only when that API exists, assigning its result onto outStaObj.
+		if ( navigator.storage && navigator.storage.persisted ) outStaObj.perBoo = await navigator.storage.persisted(); // What: Output Persisted Assignment Check. Why: The Settings panel needs to know whether eviction-exempt persistence has already been granted. How: This awaits navigator.storage.persisted() only when that API exists, assigning its result onto outStaObj.
 
 
 
@@ -1475,8 +1475,8 @@ async function staRepFun () : Promise< StoRepTyp > {
 
 			const estResObj = await navigator.storage.estimate(); // What: Estimate Result Object. Why: Both usage and quota come from the same single estimate() call. How: This awaits navigator.storage.estimate() once and reuses its result for both assignments below.
 
-			outStaObj.usage = estResObj.usage ?? null; // What: Output Usage Assignment. Why: This figure needs to reach the final report even though only headroom, not exact size, should ever be read from it. How: This copies estResObj's own usage onto outStaObj, or null when the browser leaves it out.
-			outStaObj.quota = estResObj.quota ?? null; // What: Output Quota Assignment. Why: This figure needs to reach the final report even though only headroom, not exact size, should ever be read from it. How: This copies estResObj's own quota onto outStaObj, or null when the browser leaves it out.
+			outStaObj.usaNum = estResObj.usage ?? null; // What: Output Usage Assignment. Why: This figure needs to reach the final report even though only headroom, not exact size, should ever be read from it. How: This copies estResObj's own usage onto outStaObj, or null when the browser leaves it out.
+			outStaObj.quoNum = estResObj.quota ?? null; // What: Output Quota Assignment. Why: This figure needs to reach the final report even though only headroom, not exact size, should ever be read from it. How: This copies estResObj's own quota onto outStaObj, or null when the browser leaves it out.
 
 
 		}

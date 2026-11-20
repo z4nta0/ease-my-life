@@ -49,7 +49,7 @@ type PalTokTyp = { // What: Palette Tokens Type. Why: Built-in and custom themes
 
 
 	accStr  : string; // What: Accent String. Why: Actions and selection use the primary accent. How: This is written onto --acc-mai-col.
-	aceStr  : string; // What: Accent Soft String. Why: Accent text sits on a softened accent background. How: This is written onto --acc-tin-col.
+	acsStr  : string; // What: Accent-Soft String. Why: Accent text sits on a softened accent background. How: This is written onto --acc-tin-col.
 	bacStr  : string; // What: Background String. Why: The page sits on its own base background. How: This is written onto --bac-pag-col.
 	borStr  : string; // What: Border String. Why: Borders and dividers share one color. How: This is written onto --bor-mai-col.
 	mutStr  : string; // What: Muted String. Why: De-emphasized text uses a muted color. How: This is written onto --tex-mut-col.
@@ -81,7 +81,7 @@ type PalTokTyp = { // What: Palette Tokens Type. Why: Built-in and custom themes
  * - `accStr` (String): Accent String, the primary accent color
  *   (--acc-mai-col).
  *
- * - `aceStr` (String): Accent Soft String, a softened accent background
+ * - `acsStr` (String): Accent-Soft String, a softened accent background
  *   (--acc-tin-col).
  *
  * - `bacStr` (String): Background String, the page's own base background
@@ -113,7 +113,7 @@ const PAL_SET_OBJ : Record< string, PalTokTyp > = { // What: Palette Set Object.
 
 
 		accStr : 'oklch(0.72 0.13 42)',
-		aceStr : 'oklch(0.32 0.05 42)',
+		acsStr : 'oklch(0.32 0.05 42)',
 		bacStr : 'oklch(0.17 0.014 45)',
 		borStr : 'oklch(0.28 0.018 45)',
 		mutStr : 'oklch(0.65 0.016 50)',
@@ -129,7 +129,7 @@ const PAL_SET_OBJ : Record< string, PalTokTyp > = { // What: Palette Set Object.
 
 
 		accStr : 'oklch(0.5 0.14 250)',
-		aceStr : 'oklch(0.95 0.025 250)',
+		acsStr : 'oklch(0.95 0.025 250)',
 		bacStr : 'oklch(0.985 0.003 240)',
 		borStr : 'oklch(0.91 0.005 240)',
 		mutStr : 'oklch(0.5 0.012 250)',
@@ -145,7 +145,7 @@ const PAL_SET_OBJ : Record< string, PalTokTyp > = { // What: Palette Set Object.
 
 
 		accStr : 'oklch(0.7 0.1 155)',
-		aceStr : 'oklch(0.3 0.035 150)',
+		acsStr : 'oklch(0.3 0.035 150)',
 		bacStr : 'oklch(0.17 0.01 150)',
 		borStr : 'oklch(0.28 0.016 150)',
 		mutStr : 'oklch(0.65 0.012 150)',
@@ -161,7 +161,7 @@ const PAL_SET_OBJ : Record< string, PalTokTyp > = { // What: Palette Set Object.
 
 
 		accStr : 'oklch(0.75 0.14 250)',
-		aceStr : 'oklch(0.3 0.04 250)',
+		acsStr : 'oklch(0.3 0.04 250)',
 		bacStr : 'oklch(0.18 0.012 250)',
 		borStr : 'oklch(0.3 0.014 250)',
 		mutStr : 'oklch(0.65 0.012 250)',
@@ -177,7 +177,7 @@ const PAL_SET_OBJ : Record< string, PalTokTyp > = { // What: Palette Set Object.
 
 
 		accStr : 'oklch(0.48 0.09 155)',
-		aceStr : 'oklch(0.95 0.03 150)',
+		acsStr : 'oklch(0.95 0.03 150)',
 		bacStr : 'oklch(0.985 0.005 130)',
 		borStr : 'oklch(0.9 0.012 130)',
 		mutStr : 'oklch(0.5 0.012 150)',
@@ -193,7 +193,7 @@ const PAL_SET_OBJ : Record< string, PalTokTyp > = { // What: Palette Set Object.
 
 
 		accStr : 'oklch(0.5 0.12 40)',
-		aceStr : 'oklch(0.94 0.03 60)',
+		acsStr : 'oklch(0.94 0.03 60)',
 		bacStr : 'oklch(0.98 0.008 80)',
 		borStr : 'oklch(0.9 0.015 75)',
 		mutStr : 'oklch(0.5 0.018 50)',
@@ -316,7 +316,7 @@ function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' |
 
 	const bacColStr = usrColObj.bg;     // What: Background Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.bg and reused in the returned object and the relative-color expressions below.
 	const texColStr = usrColObj.text;   // What: Text Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.text and reused in the returned object and the muted expression below.
-	const accColStr = usrColObj.accent; // What: Accent Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.accent and reused in the returned object and the aceStr expression below.
+	const accColStr = usrColObj.accent; // What: Accent Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.accent and reused in the returned object and the acsStr expression below.
 
 	// #endregion Anchor Colors
 
@@ -324,7 +324,7 @@ function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' |
 
 	// #region Offset Calculation
 
-	const modSigNum = modKeyStr === 'dark' ? 1 : -1; // What: Mode Sign Number. Why: The mutStr/aceStr tokens need to move toward the page background in dark mode but away from it in light mode. How: This flips the sign of their lightness offset below based on the given mode.
+	const modSigNum = modKeyStr === 'dark' ? 1 : -1; // What: Mode Sign Number. Why: The mutStr/acsStr tokens need to move toward the page background in dark mode but away from it in light mode. How: This flips the sign of their lightness offset below based on the given mode.
 
 	const calOffFun = ( offAmoNum : number, floValNum : number ) => ( modKeyStr === 'dark' // What: Calc Offset Function. Why: Dark mode needs a floored lightness offset to avoid the near-black gamma-encoding hazard described above, while light mode can use a plain one. How: This returns the appropriate CSS calc() expression string for whichever mode is active.
 
@@ -340,7 +340,7 @@ function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' |
 
 
 		accStr : accColStr,                                                                      // What: Accent String. Why: The user's own chosen accent color is used as-is, no derivation needed. How: This is just accColStr, computed above from usrColObj.accent.
-		aceStr : `oklch(from ${ accColStr } calc(l + ${ modSigNum * -0.42 }) calc(c - 0.08) h)`, // What: Accent String. Why: The softened accent token needs a lighter or darker, less saturated version of the chosen accent. How: This computes an oklch relative-color expression off accColStr, shifting both lightness (via modSigNum) and chroma.
+		acsStr : `oklch(from ${ accColStr } calc(l + ${ modSigNum * -0.42 }) calc(c - 0.08) h)`, // What: Accent-Soft String. Why: The softened accent token needs a lighter or darker, less saturated version of the chosen accent. How: This computes an oklch relative-color expression off accColStr, shifting both lightness (via modSigNum) and chroma.
 		bacStr : bacColStr,                                                                      // What: Background String. Why: The user's own chosen background color is used as-is, no derivation needed. How: This is just bacColStr, computed above from usrColObj.bg.
 		borStr : `oklch(from ${ bacColStr } ${ calOffFun( 0.12, 0.26 ) } c h)`,                  // What: Border String. Why: The border token needs a stronger lightness shift off the background than surface does. How: This computes an oklch relative-color expression off bacColStr using calOffFun's larger offset/floor pair.
 		mutStr : `oklch(from ${ texColStr } calc(l + ${ modSigNum * -0.32 }) c h)`,              // What: Muted String. Why: The muted token needs to sit between text and background in lightness. How: This computes an oklch relative-color expression off texColStr, shifted by modSigNum's signed offset.
@@ -633,7 +633,7 @@ function synTinFun ( bacColStr : string ) : void {
  *
  * @param palResObj - Palette Resolved Object: The full 8-token palette object
  *                    to apply (bacStr, surStr, borStr, texStr, mutStr, accStr,
- *                    aceStr, warStr), either a PAL_SET_OBJ entry or a derived
+ *                    acsStr, warStr), either a PAL_SET_OBJ entry or a derived
  *                    custom palette from resCusFun.
  * @param theKeyStr - Theme Key String: The resolved theme key this palette
  *                    corresponds to (e.g. 'ink', 'customLight'), written onto
@@ -653,7 +653,7 @@ function appPalFun ( palResObj : PalTokTyp, theKeyStr : string ) : void {
 
 	// #region Palette Change Detection
 
-	const palSigStr = [ palResObj.bacStr, palResObj.surStr, palResObj.texStr, palResObj.accStr, palResObj.aceStr, palResObj.borStr, palResObj.mutStr, palResObj.warStr ].join( '|' ); // What: Palette Signature String. Why: Detecting an actual color change requires comparing against what was last applied, not just re-running on every call. How: This joins every token into one comparable string.
+	const palSigStr = [ palResObj.bacStr, palResObj.surStr, palResObj.texStr, palResObj.accStr, palResObj.acsStr, palResObj.borStr, palResObj.mutStr, palResObj.warStr ].join( '|' ); // What: Palette Signature String. Why: Detecting an actual color change requires comparing against what was last applied, not just re-running on every call. How: This joins every token into one comparable string.
 	const palChaBoo = palSigStr !== __lasPalStr; // What: Palette Changed Boolean. Why: The cross-fade must only run when the resolved colors actually differ from last time. How: This compares the freshly-built signature against the previous call's stored one.
 
 	__lasPalStr = palSigStr; // What: Last Palette String Update. Why: The next call needs to compare against what is current now. How: This overwrites __lasPalStr with the freshly-computed signature.
@@ -693,7 +693,7 @@ function appPalFun ( palResObj : PalTokTyp, theKeyStr : string ) : void {
 	rooStyObj.setProperty( '--tex-mai-col', palResObj.texStr ); // What: Text Property Write. Why: This is the actual CSS custom property the app's stylesheets read for body text color. How: This writes the palette's texStr token onto the root element's inline style.
 	rooStyObj.setProperty( '--tex-mut-col', palResObj.mutStr ); // What: Muted Property Write. Why: This is the actual CSS custom property the app's stylesheets read for de-emphasized text color. How: This writes the palette's mutStr token onto the root element's inline style.
 	rooStyObj.setProperty( '--acc-mai-col', palResObj.accStr ); // What: Accent Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the primary accent color. How: This writes the palette's accStr token onto the root element's inline style.
-	rooStyObj.setProperty( '--acc-tin-col', palResObj.aceStr ); // What: Accent Soft Property Write. Why: This is the actual CSS custom property the app's stylesheets read for a softened accent background. How: This writes the palette's aceStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--acc-tin-col', palResObj.acsStr ); // What: Accent Soft Property Write. Why: This is the actual CSS custom property the app's stylesheets read for a softened accent background. How: This writes the palette's acsStr token onto the root element's inline style.
 	rooStyObj.setProperty( '--acc-sec-col', palResObj.warStr ); // What: Warm Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the warm/celebration accent color. How: This writes the palette's warStr token onto the root element's inline style.
 
 	// #endregion Palette Property Writes

@@ -1107,25 +1107,25 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 		const resEntArr = [ // What: Rest Entry Array. Why: Conditionals/Reminders/every visible picker all sort together alphabetically, after any pinned "All" entry. How: This spreads in a Conditionals entry, a Reminders entry, and every visPicArr entry, each only when applicable, then sorts the combined list.
 
 
-			...( ( filTypStr === 'all' || filTypStr === 'conditionals' ) && conIteArr.length > 0 ? [ { name : 'Conditionals', scope : 'conditionals' } ] : [] ), // What: Conditionals Entry Spread. Why: The Conditionals box shows when the Type filter allows it and at least one conditional exists. How: This spreads in one entry or nothing.
-			...( filTypStr === 'all' || filTypStr === 'reminders' ? [ { name : 'Reminders', scope : 'reminders' } ] : [] ),                                      // What: Reminders Entry Spread. Why: The Reminders box shows whenever the Type filter allows it. How: This spreads in one entry or nothing.
-			...visPicArr.map( ( picCurObj ) => ( { name : picCurObj.name, scope : picCurObj.id } ) )                                                             // What: Picker Entries Spread. Why: Every visible picker gets its own box. How: This maps visPicArr to one name/scope entry each.
+			...( ( filTypStr === 'all' || filTypStr === 'conditionals' ) && conIteArr.length > 0 ? [ { namStr : 'Conditionals', scoStr : 'conditionals' } ] : [] ), // What: Conditionals Entry Spread. Why: The Conditionals box shows when the Type filter allows it and at least one conditional exists. How: This spreads in one entry or nothing.
+			...( filTypStr === 'all' || filTypStr === 'reminders' ? [ { namStr : 'Reminders', scoStr : 'reminders' } ] : [] ),                                      // What: Reminders Entry Spread. Why: The Reminders box shows whenever the Type filter allows it. How: This spreads in one entry or nothing.
+			...visPicArr.map( ( picCurObj ) => ( { namStr : picCurObj.name, scoStr : picCurObj.id } ) )                                                             // What: Picker Entries Spread. Why: Every visible picker gets its own box. How: This maps visPicArr to one name/scope entry each.
 
 
-		].sort( ( entOneObj, entTwoObj ) => entOneObj.name.localeCompare( entTwoObj.name ) ); // What: Entry Sort Call. Why: The boxes list alphabetically by name. How: This sorts the combined entries with localeCompare.
+		].sort( ( entOneObj, entTwoObj ) => entOneObj.namStr.localeCompare( entTwoObj.namStr ) ); // What: Entry Sort Call. Why: The boxes list alphabetically by name. How: This sorts the combined entries with localeCompare.
 
 
 		const defFilBoo = filGroStr === 'all' && filTypStr === 'all'; // What: Default Filter Boolean. Why: "All" only needs pinning first when every filter is still at its default, or (see below) a real filter still leaves 2+ entries in view. How: This checks both filGroStr and filTypStr are 'all'.
 
 
 
-		return ( defFilBoo || resEntArr.length >= 2 ) ? [ { name : 'All', scope : 'all' }, ...resEntArr ] : resEntArr; // What: Show Entry Return. Why: A lone remaining entry would make "All" a redundant duplicate of that one card. How: This pins "All" first whenever defFilBoo holds or resEntArr still has 2+ entries, otherwise returns resEntArr as-is.
+		return ( defFilBoo || resEntArr.length >= 2 ) ? [ { namStr : 'All', scoStr : 'all' }, ...resEntArr ] : resEntArr; // What: Show Entry Return. Why: A lone remaining entry would make "All" a redundant duplicate of that one card. How: This pins "All" first whenever defFilBoo holds or resEntArr still has 2+ entries, otherwise returns resEntArr as-is.
 
 
 	}, [ filGroStr, filTypStr, conIteArr.length, visPicArr ] ); // What: Memo Dependency Array. Why: This only ever needs recomputing when a filter changes or the underlying conditional/picker lists themselves change. How: Each of these 4 values independently affects which entries appear or how many there are.
 
 
-	const shoAllBoo = shoEntArr.some( ( entCurObj ) => entCurObj.scope === 'all' ); // What: Show All Boolean. Why: The Show row's own render needs to know whether an "All" card is actually present this render. How: This checks shoEntArr for a 'all' scope entry.
+	const shoAllBoo = shoEntArr.some( ( entCurObj ) => entCurObj.scoStr === 'all' ); // What: Show All Boolean. Why: The Show row's own render needs to know whether an "All" card is actually present this render. How: This checks shoEntArr for a 'all' scope entry.
 
 
 	const preFilRef = React.useRef( { conStr : filConStr, groStr : filGroStr, typStr : filTypStr } ); // What: Previous Filter Reference. Why: Landing on the Show row's own first card needs to detect an ACTUAL filter change, not just any render. How: This starts at the initial filter values and is updated by the effect below.
@@ -1144,7 +1144,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 		preFilRef.current = { conStr : filConStr, groStr : filGroStr, typStr : filTypStr }; // What: Previous Filter Update. Why: The next run of this effect needs to compare against the filters that are current now. How: This overwrites preFilRef with the freshly-read values.
 
 
-		if ( filChaBoo || !shoEntArr.some( ( entCurObj ) => entCurObj.scope === curScoStr ) ) setCurScoStr( shoEntArr[ 0 ] ? shoEntArr[ 0 ].scope : 'all' ); // What: Reset Scope Guard. Why: Either an actual filter change, or the current scope simply no longer existing in the row, both call for landing on the first card. How: This sets curScoStr to shoEntArr's own first entry (or 'all' if the row is somehow empty).
+		if ( filChaBoo || !shoEntArr.some( ( entCurObj ) => entCurObj.scoStr === curScoStr ) ) setCurScoStr( shoEntArr[ 0 ] ? shoEntArr[ 0 ].scoStr : 'all' ); // What: Reset Scope Guard. Why: Either an actual filter change, or the current scope simply no longer existing in the row, both call for landing on the first card. How: This sets curScoStr to shoEntArr's own first entry (or 'all' if the row is somehow empty).
 
 
 	}, [ filGroStr, filConStr, filTypStr, shoEntArr, curScoStr ] ); // What: Effect Dependency Array. Why: This must re-run whenever any filter changes, the entry list itself changes, or the current scope changes (so its own no-longer-valid check stays accurate). How: Every one of these 5 values can affect whether curScoStr needs resetting.

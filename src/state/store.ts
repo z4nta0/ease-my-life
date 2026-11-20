@@ -92,7 +92,7 @@ import type { TodEntTyp } from '../core/data-model.ts'; // What: Today Entry Typ
 
 // #region Types
 
-type EntDesTyp = Partial< TodEntTyp > & { _carry? : boolean, entry? : TodEntTyp }; // What: Entry Descriptor Type. Why: Generating hands setEntFun both carried entries and fresh picks. How: A carried one is flagged _carry and wraps its existing entry, and a fresh one holds the new entry's fields.
+type EntDesTyp = Partial< TodEntTyp > & { carBoo? : boolean, entObj? : TodEntTyp }; // What: Entry Descriptor Type. Why: Generating hands setEntFun both carried entries and fresh picks. How: A carried one is flagged carBoo and wraps its existing entry, and a fresh one holds the new entry's fields.
 
 type ActStoTyp = { // What: Action Store Type. Why: Every tab changes state only through the actions useAppStaFun hands back, so their signatures are the app's own state API. How: This lists every action with its parameters and return.
 
@@ -132,7 +132,7 @@ type ActStoTyp = { // What: Action Store Type. Why: Every tab changes state only
 	setCarFun : ( iteIdeStr : string, patValObj : { status : CheStaTyp } | null ) => void;                // What: Set Card Function. Why: Each checklist card is resolved or reopened. How: This takes the card's id and its resolution, or null to reopen it.
 	setCelFun : ( celStyStr : string ) => void;                                                           // What: Set Celebration Function. Why: The user picks the completion celebration. How: This takes its name.
 	setCusFun : ( theModStr : string, cusColObj : Pick< CusPalTyp, 'accent' | 'bg' | 'text' > ) => void;  // What: Set Custom Function. Why: A custom theme's colors can be saved. How: This takes 'light' or 'dark' and the three colors.
-	setEntFun : ( lisEntArr : EntDesTyp[], optArgObj? : { resetStreak? : boolean } ) => void;             // What: Set Entries Function. Why: Generating rebuilds the Today list. How: This takes the new entries and whether to reset the streak claim.
+	setEntFun : ( lisEntArr : EntDesTyp[], optArgObj? : { resBoo? : boolean } ) => void;                  // What: Set Entries Function. Why: Generating rebuilds the Today list. How: This takes the new entries and whether to reset the streak claim.
 	setFeaFun : ( iteIdeStr : string, patValObj : { status : CheStaTyp } | null ) => void;                // What: Set Feature Function. Why: Each App Features tutorial is resolved or reopened. How: This takes the feature's id and its resolution, or null to reopen it.
 	setOnbFun : ( patValObj : Partial< OnbStaTyp > ) => void;                                             // What: Set Onboarding Function. Why: The tours flip individual onboarding flags. How: This takes the flags to change.
 	setOptFun : ( tasTypStr : RemKinTyp, optKeyStr : keyof RemClaTyp, optValBoo : boolean ) => void;      // What: Set Option Function. Why: Each reminder class has its own switches. How: This takes the class, the switch, and its new value.
@@ -686,9 +686,9 @@ function wriStaFun ( curStaObj : StaAppTyp ) : void {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param optArgObj - Option Argument Object: Optional. { initial, persist }:
- *                    initial supplies a non-persisted starting state (used by
- *                    the onboarding demo) instead of loaStaFun(); persist:
+ * @param optArgObj - Option Argument Object: Optional. { iniObj, perBoo }:
+ *                    iniObj supplies a non-persisted starting state (used by
+ *                    the onboarding demo) instead of loaStaFun(); perBoo:
  *                    false (used by the same demo) disables the idle-
  *                    save/flush effects entirely. Omitted entirely for every
  *                    normal, real-data caller.
@@ -703,14 +703,14 @@ function wriStaFun ( curStaObj : StaAppTyp ) : void {
  *
 */
 
-function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } ) : [ StaAppTyp, ActStoTyp ] {
+function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) : [ StaAppTyp, ActStoTyp ] {
 
 
-	const [ appStaObj, setAppStaObj ] = React.useState( () => ( optArgObj && optArgObj.initial ? migStaFun( optArgObj.initial ) : loaStaFun() ) ); // What: App State Object And Setter. Why: This one useState is the entire app's own persisted state. How: This lazily seeds from optArgObj.initial when given, else from loaStaFun()'s own migrated result.
+	const [ appStaObj, setAppStaObj ] = React.useState( () => ( optArgObj && optArgObj.iniObj ? migStaFun( optArgObj.iniObj ) : loaStaFun() ) ); // What: App State Object And Setter. Why: This one useState is the entire app's own persisted state. How: This lazily seeds from optArgObj.iniObj when given, else from loaStaFun()'s own migrated result.
 
 
 
-	const perActBoo = !( optArgObj && optArgObj.persist === false ); // What: Persist Active Boolean. Why: The onboarding demo needs to opt entirely out of the idle-save/flush effects below. How: This is false only when optArgObj.persist is explicitly false.
+	const perActBoo = !( optArgObj && optArgObj.perBoo === false ); // What: Persist Active Boolean. Why: The onboarding demo needs to opt entirely out of the idle-save/flush effects below. How: This is false only when optArgObj.perBoo is explicitly false.
 
 
 	const latStaRef = React.useRef( appStaObj ); // What: Latest State Reference And Guard. Why: The idle-save/flush effects below need the CURRENT state even when they fire outside a fresh render (e.g. from a pagehide handler). How: This starts pointing at appStaObj and is kept in sync on every render below.
@@ -3644,11 +3644,11 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * @summary
 		 * Rebuilds the entire entries list from scratch (used by
 		 * Generate). lisEntArr holds 2 kinds of descriptors: a CARRIED
-		 * entry (has _carry + entry) is kept VERBATIM (same eid/itemId/
+		 * entry (has carBoo + entObj) is kept VERBATIM (same eid/itemId/
 		 * pending/done/revert/periodKey) so a cadence pick persists across
 		 * days until completed, log row included; a FRESH descriptor (no
 		 * eid) gets a new eid and a fresh 'auto' log row. optArgObj.
-		 * resetStreak, only ever passed by the scheduled auto-run (never a
+		 * resBoo, only ever passed by the scheduled auto-run (never a
 		 * manual Regenerate, and deliberately not derived from the date),
 		 * clears today.streakClaimed so the new period starts unclaimed;
 		 * this is what stops a user from "farming" extra streak points by
@@ -3659,13 +3659,13 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 		 * @param lisEntArr - List Entry Array: The fresh entries this Generate
 		 *                    produced.
 		 * @param optArgObj - Option Argument Object: Optional flags;
-		 *                    resetStreak starts the new period unclaimed.
+		 *                    resBoo starts the new period unclaimed.
 		 *
 		 * @returns This function does not return anything.
 		 *
 		 * @example
 		 * ```ts
-		 * setEntFun(lisEntArr, { resetStreak: true }) // => void
+		 * setEntFun(lisEntArr, { resBoo: true }) // => void
 		 * ```
 		 *
 		*/
@@ -3679,10 +3679,10 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 			// #region Entry Merge
 
-			const carEntArr = lisEntArr.filter( ( curDesObj ) => curDesObj._carry ).map( ( curDesObj ) => curDesObj.entry! ); // What: Carried Entry Array. Why: A carried descriptor's own already-formed entry must be kept verbatim, unwrapped from its own _carry marker. How: This filters lisEntArr to _carry descriptors and unwraps each one's own entry. // What: Non-Null Note. Why: The generator only flags a descriptor _carry when it wraps an existing entry. How: The ! tells TypeScript entry is set here.
+			const carEntArr = lisEntArr.filter( ( curDesObj ) => curDesObj.carBoo ).map( ( curDesObj ) => curDesObj.entObj! ); // What: Carried Entry Array. Why: A carried descriptor's own already-formed entry must be kept verbatim, unwrapped from its own _carry marker. How: This filters lisEntArr to _carry descriptors and unwraps each one's own entry. // What: Non-Null Note. Why: The generator only flags a descriptor _carry when it wraps an existing entry. How: The ! tells TypeScript entry is set here.
 			const carIdeSet = new Set< string | null >( carEntArr.map( ( curEntObj ) => curEntObj.eid ) );                    // What: Carried Identifier Set. Why: The pick-log purge below must never drop a carried entry's own still-live row. How: This collects every carried entry's own eid.
 
-			const freEntArr = lisEntArr.filter( ( curDesObj ) => !curDesObj._carry ).map( ( curDesObj ) : TodEntTyp => ( { // What: Fresh Entry Array. Why: Every non-carried descriptor becomes a brand-new Today entry with its own fresh eid. How: This maps each descriptor into a full entry, spreading in periodKey/day-off-card fields only when present.
+			const freEntArr = lisEntArr.filter( ( curDesObj ) => !curDesObj.carBoo ).map( ( curDesObj ) : TodEntTyp => ( { // What: Fresh Entry Array. Why: Every non-carried descriptor becomes a brand-new Today entry with its own fresh eid. How: This maps each descriptor into a full entry, spreading in periodKey/day-off-card fields only when present.
 
 
 				done     : false,                      // What: Done. Why: A freshly generated entry always starts not-done. How: This is false.
@@ -3731,7 +3731,7 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 			const nexTodObj = { ...curStaObj.today, entries : nexEntArr }; // What: Next Today Object. Why: The caller needs a fresh today object carrying the new entries. How: This spreads curStaObj.today with entries replaced by nexEntArr.
 
 
-			if ( optArgObj && optArgObj.resetStreak ) nexTodObj.streakClaimed = false; // What: Streak-Claimed Reset Guard. Why: Only the scheduled auto-run (never a manual Regenerate) starts the new period unclaimed, per the design-rationale comment above. How: This sets nexTodObj.streakClaimed to false only when optArgObj.resetStreak is truthy.
+			if ( optArgObj && optArgObj.resBoo ) nexTodObj.streakClaimed = false; // What: Streak-Claimed Reset Guard. Why: Only the scheduled auto-run (never a manual Regenerate) starts the new period unclaimed, per the design-rationale comment above. How: This sets nexTodObj.streakClaimed to false only when optArgObj.resetStreak is truthy.
 
 
 

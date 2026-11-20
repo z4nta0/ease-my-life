@@ -37,7 +37,7 @@ import type { RawStaTyp } from '../src/state/onboarding-seed-data.ts'; // What: 
  * Simulating that live would be cheap, but it's precomputed and shipped as
  * static data instead. A year of history only means something relative to a
  * "today", and this script's today isn't the day someone installs the app,
- * so every row stores a daysAgo offset rather than an absolute date, and
+ * so every row stores a dayNum offset rather than an absolute date, and
  * hydStaFun in onboarding-seed-data.ts turns each offset back into a real
  * date relative to the actual day it seeds.
  *
@@ -243,9 +243,9 @@ const buiRemFun = ( todDatObj : Date ) : { remLogArr : RawStaTyp[ 'reminderLog' 
 		const minValNum = 10 + Math.floor( Math.random() * 40 ); // What: Minute Value Number. Why: Completion times should vary a little. How: This picks a minute from 10 to 49.
 
 
-		if ( Math.random() < 0.88 ) remLogArr.push( { daysAgo : dayAgoNum, h : houValNum, m : minValNum, name : TRA_TAS_OBJ.name, taskId : TRA_TAS_OBJ.id, type : 'recurring' } ); // What: Completed Row Push. Why: Most Mondays read as completed. How: This adds a reminder log row 88% of the time.
+		if ( Math.random() < 0.88 ) remLogArr.push( { dayNum : dayAgoNum, houNum : houValNum, minNum : minValNum, name : TRA_TAS_OBJ.name, taskId : TRA_TAS_OBJ.id, type : 'recurring' } ); // What: Completed Row Push. Why: Most Mondays read as completed. How: This adds a reminder log row 88% of the time.
 
-		else remSkiArr.push( { daysAgo : dayAgoNum, h : 7, m : 45, name : TRA_TAS_OBJ.name, taskId : TRA_TAS_OBJ.id, type : 'recurring' } ); // What: Skipped Row Push. Why: A handful of Mondays read as skipped, for realism. How: This adds a skip log row at a fixed 7:45 otherwise.
+		else remSkiArr.push( { dayNum : dayAgoNum, houNum : 7, minNum : 45, name : TRA_TAS_OBJ.name, taskId : TRA_TAS_OBJ.id, type : 'recurring' } ); // What: Skipped Row Push. Why: A handful of Mondays read as skipped, for realism. How: This adds a skip log row at a fixed 7:45 otherwise.
 
 
 	}
@@ -282,7 +282,7 @@ const isoIndFun = ( isoDayStr : string ) => { // What: Iso Index Function. Why: 
  *
  * @summary
  * Converts the simulator's pick-log rows from real dates to the portable
- * shape the generated file stores: a daysAgo offset from today, the hour and
+ * shape the generated file stores: a dayNum offset from today, the hour and
  * minute it was completed (null for a row never completed), and the row's
  * denormalized names passed through unchanged, plus the optional outcome and
  * depletedEnd fields only on the rows that carry them.
@@ -296,7 +296,7 @@ const isoIndFun = ( isoDayStr : string ) => { // What: Iso Index Function. Why: 
  *
  * @example
  * ```ts
- * conLogFun(hisRowArr, todIndNum) // => [ { daysAgo, done, group, h, ... } ]
+ * conLogFun(hisRowArr, todIndNum) // => [ { dayNum, done, group, ... } ]
  * ```
  *
 */
@@ -311,13 +311,13 @@ const conLogFun = ( hisRowArr : PclRowTyp[], todIndNum : number ) : RawStaTyp[ '
 	return { // What: Portable Row Return. Why: This is one row in the shape the generated file stores. How: This sets its day offset and completion time, passes its other fields through, and adds its optional fields only when set.
 
 
-		daysAgo    : todIndNum - isoIndFun( curRowObj.date ),   // What: Days Ago. Why: The row's date is stored relative to today. How: This subtracts its day index from today's.
+		dayNum     : todIndNum - isoIndFun( curRowObj.date ),   // What: Day Number. Why: The row's date is stored relative to today. How: This subtracts its day index from today's.
 		done       : curRowObj.done,                            // What: Done. Why: The row keeps whether it was completed. How: This copies it.
 		group      : curRowObj.group,                           // What: Group. Why: The row keeps its denormalized group name. How: This copies it.
-		h          : comDatObj ? comDatObj.getHours() : null,   // What: Hour. Why: A completed row is rebuilt with a realistic time of day. How: This reads the local hour, or null for a row never completed.
+		houNum     : comDatObj ? comDatObj.getHours() : null,   // What: Hour Number. Why: A completed row is rebuilt with a realistic time of day. How: This reads the local hour, or null for a row never completed.
 		itemId     : curRowObj.itemId,                          // What: Item Id. Why: The row keeps which item it picked. How: This copies it.
 		itemName   : curRowObj.itemName,                        // What: Item Name. Why: The row keeps its denormalized item name. How: This copies it.
-		m          : comDatObj ? comDatObj.getMinutes() : null, // What: Minute. Why: A completed row is rebuilt with a realistic time of day. How: This reads the local minute, or null for a row never completed.
+		minNum     : comDatObj ? comDatObj.getMinutes() : null, // What: Minute Number. Why: A completed row is rebuilt with a realistic time of day. How: This reads the local minute, or null for a row never completed.
 		pickerId   : curRowObj.pickerId,                        // What: Picker Id. Why: The row keeps which picker made it. How: This copies it.
 		pickerName : curRowObj.pickerName,                      // What: Picker Name. Why: The row keeps its denormalized picker name. How: This copies it.
 		source     : curRowObj.source,                          // What: Source. Why: The row keeps how it was picked. How: This copies it.
@@ -574,8 +574,8 @@ import type { RawStaTyp } from './onboarding-seed-data.ts'; // What: Raw Stats T
  * state.pickLog/.reminderLog/.reminderSkipLog, minus the fields hydStaFun in
  * onboarding-seed-data.ts fills in at hydration time (id/eid/completedAt for a
  * pick row, rowId plus completedAt or skippedAt for a reminder row) from each
- * row's own daysAgo/h/m. Their fields are described by RawPicTyp and
- * RawRemTyp in that same file.
+ * row's own dayNum, houNum, and minNum. Their fields are described by
+ * RawPicTyp and RawRemTyp in that same file.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -584,7 +584,7 @@ import type { RawStaTyp } from './onboarding-seed-data.ts'; // What: Raw Stats T
 const ONB_STA_OBJ : RawStaTyp = { // What: Onboarding Stats Object. Why: The Welcome Tour and help mode seed a year of realistic history into Stats. How: This holds the 3 precomputed logs, turned into real dated rows by hydStaFun.
 
 
-	pickLog : ${ forArrFun( outDatObj.pickLog, ',', '// What: Pick Log. Why: Stats needs a year of sample picks. How: This lists every simulated pick as a daysAgo-based row.' ) }
+	pickLog : ${ forArrFun( outDatObj.pickLog, ',', '// What: Pick Log. Why: Stats needs a year of sample picks. How: This lists every simulated pick as a dayNum-based row.' ) }
 
 	reminderLog : ${ forArrFun( outDatObj.reminderLog, ',', '// What: Reminder Log. Why: Stats needs a year of sample reminder completions. How: This lists every completed weekly trash reminder.' ) }
 

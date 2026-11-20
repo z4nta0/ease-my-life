@@ -2269,7 +2269,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 									<span className={ cssModObj.setSubSpa }>{ /* What: Set Data Sub Span Element. Why: This row's own description depends on which storage engine is actually in use. How: This renders one of 2 explanatory sentences depending on stoStaObj's own engine field. */ }
 
 
-										{ stoStaObj && stoStaObj.engine === 'idb' ? ( // What: Database Engine Check. Why: The description depends on which storage engine is actually in use. How: This renders the database copy while stoStaObj reports the 'idb' engine.
+										{ stoStaObj && stoStaObj.engStr === 'idb' ? ( // What: Database Engine Check. Why: The description depends on which storage engine is actually in use. How: This renders the database copy while stoStaObj reports the 'idb' engine.
 
 
 											<React.Fragment>Stored in this browser&rsquo;s database on this device.</React.Fragment> // What: Database Copy Fragment Element. Why: This confirms the sturdier IndexedDB storage is in use. How: This renders fixed copy.
@@ -2292,17 +2292,17 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 										<span
 											className={ cssModObj.stoChiSpa }
 
-											data-chip-ok-active={ ( stoStaObj && stoStaObj.persisted ) || undefined } // What: Chip Ok Active Attribute. Why: Protected storage reads as good news. How: This is present only while the storage is persisted.
-											data-chip-warn-active={ !( stoStaObj && stoStaObj.persisted ) || undefined } // What: Chip Warn Active Attribute. Why: Unprotected storage is worth acting on. How: This is present only while the storage isn't persisted.
-										>{ stoStaObj && stoStaObj.persisted ? 'Protected from cleanup' : 'Not protected yet' }</span>{ /* What: Persisted Chip Span Element. Why: Whether the browser has promised not to evict this app's own data is worth its own always-visible chip. How: This renders one of 2 labels, styled ok/warn, based on stoStaObj's own persisted field. */ }
+											data-chip-ok-active={ ( stoStaObj && stoStaObj.perBoo ) || undefined } // What: Chip Ok Active Attribute. Why: Protected storage reads as good news. How: This is present only while the storage is persisted.
+											data-chip-warn-active={ !( stoStaObj && stoStaObj.perBoo ) || undefined } // What: Chip Warn Active Attribute. Why: Unprotected storage is worth acting on. How: This is present only while the storage isn't persisted.
+										>{ stoStaObj && stoStaObj.perBoo ? 'Protected from cleanup' : 'Not protected yet' }</span>{ /* What: Persisted Chip Span Element. Why: Whether the browser has promised not to evict this app's own data is worth its own always-visible chip. How: This renders one of 2 labels, styled ok/warn, based on stoStaObj's own persisted field. */ }
 
-										<span className={ cssModObj.stoChiSpa }>{ forBytFun( stoStaObj && stoStaObj.dataBytes ) } of your data</span>{ /* What: Size Chip Span Element. Why: How much data is actually stored is worth its own always-visible chip. How: This renders forBytFun's own formatted size, reading stoStaObj's own dataBytes field. */ }
+										<span className={ cssModObj.stoChiSpa }>{ forBytFun( stoStaObj && stoStaObj.bytNum ) } of your data</span>{ /* What: Size Chip Span Element. Why: How much data is actually stored is worth its own always-visible chip. How: This renders forBytFun's own formatted size, reading stoStaObj's own dataBytes field. */ }
 
 										<span
 											className={ cssModObj.stoChiSpa }
 
-											data-chip-warn-active={ ( stoStaObj && stoStaObj.mirrorOk === false ) || undefined } // What: Chip Warn Active Attribute. Why: An out-of-date fallback copy is worth acting on. How: This is present only while mirrorOk is false.
-										>Fallback copy: { stoStaObj && stoStaObj.mirrorOk === false ? 'out of date' : forWheFun( stoStaObj && stoStaObj.mirrorAt ) }</span>{ /* What: Mirror Chip Span Element. Why: How fresh the localStorage fallback mirror is worth its own always-visible chip. How: This renders either a warning or forWheFun's own formatted timestamp, reading stoStaObj's own mirrorOk/mirrorAt fields. */ }
+											data-chip-warn-active={ ( stoStaObj && stoStaObj.mirBoo === false ) || undefined } // What: Chip Warn Active Attribute. Why: An out-of-date fallback copy is worth acting on. How: This is present only while mirrorOk is false.
+										>Fallback copy: { stoStaObj && stoStaObj.mirBoo === false ? 'out of date' : forWheFun( stoStaObj && stoStaObj.mirStr ) }</span>{ /* What: Mirror Chip Span Element. Why: How fresh the localStorage fallback mirror is worth its own always-visible chip. How: This renders either a warning or forWheFun's own formatted timestamp, reading stoStaObj's own mirBoo/mirStr fields. */ }
 
 										{ isaStaBoo && ( // What: Installed Chip Check. Why: An installed/standalone app deserves its own small confirmation chip alongside the others. How: This renders the chip only while isaStaBoo is true.
 
@@ -2371,7 +2371,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-									{ !( stoStaObj && stoStaObj.persisted ) && ( // What: Protect Data Button Check. Why: The Protect Data button only makes sense while persistence has not already been granted. How: This renders the ButBasCom only while stoStaObj reports persisted as falsy (or is not yet loaded).
+									{ !( stoStaObj && stoStaObj.perBoo ) && ( // What: Protect Data Button Check. Why: The Protect Data button only makes sense while persistence has not already been granted. How: This renders the ButBasCom only while stoStaObj reports persisted as falsy (or is not yet loaded).
 
 
 										<ButBasCom

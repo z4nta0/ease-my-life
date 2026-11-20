@@ -47,8 +47,8 @@ import type { TasArgTyp } from '../core/data-model.ts'; // What: Task Argument T
 
 // #region Types
 
-type RawPicTyp = Omit< PclRowTyp, 'completedAt' | 'date' | 'eid' | 'id' > & { daysAgo : number, h : number | null, m : number | null }; // What: Raw Pick Type. Why: A precomputed pick row stores how many days ago it happened instead of a date, and hydStaFun fills in the rest. How: This is a pick-log row without its completion time, date, entry id, and id, plus the day offset and the completion hour and minute (null when never done).
-type RawRemTyp = Omit< RmlRowTyp, 'completedAt' | 'rowId' > & { daysAgo : number, h : number, m : number };                             // What: Raw Reminder Type. Why: A precomputed reminder row, done or skipped, stores a day offset and time of day instead of a timestamp. How: This is a reminder-log row without its timestamp and row id, plus the day offset and the hour and minute.
+type RawPicTyp = Omit< PclRowTyp, 'completedAt' | 'date' | 'eid' | 'id' > & { dayNum : number, houNum : number | null, minNum : number | null }; // What: Raw Pick Type. Why: A precomputed pick row stores how many days ago it happened instead of a date, and hydStaFun fills in the rest. How: This is a pick-log row without its completion time, date, entry id, and id, plus the day offset and the completion hour and minute (null when never done).
+type RawRemTyp = Omit< RmlRowTyp, 'completedAt' | 'rowId' > & { dayNum : number, houNum : number, minNum : number };                             // What: Raw Reminder Type. Why: A precomputed reminder row, done or skipped, stores a day offset and time of day instead of a timestamp. How: This is a reminder-log row without its timestamp and row id, plus the day offset and the hour and minute.
 
 
 
@@ -582,7 +582,7 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 
 
 
-	const dayAgoFun = ( dayAgoNum : number ) => { // What: Day Ago Function. Why: Every row below needs to turn its own precomputed daysAgo offset into a real date. How: This subtracts dayAgoNum days from todMidObj and returns a fresh Date for that day.
+	const dayAgoFun = ( dayAgoNum : number ) => { // What: Day Ago Function. Why: Every row below needs to turn its own precomputed dayNum offset into a real date. How: This subtracts dayAgoNum days from todMidObj and returns a fresh Date for that day.
 
 
 		const offDatObj = new Date( todMidObj ); // What: Offset Date Object. Why: todMidObj itself must not be mutated by the offset below. How: This constructs a fresh copy of todMidObj to offset in place instead.
@@ -610,19 +610,19 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 	const picLogArr = ( staRawObj.pickLog || [] ).map( ( picRowObj ) : PclRowTyp => { // What: Pick Log Array. Why: Every precomputed pick-log row must become a real, dated pickLog row matching state.pickLog's own shape. How: This maps staRawObj's own pickLog array (or an empty array if missing) through the per-row logic below.
 
 
-		const rowDatObj = dayAgoFun( picRowObj.daysAgo ); // What: Row Date Object. Why: This row's own real calendar date is needed both for its own date field and, if done, to build its own completedAt timestamp below. How: This resolves picRowObj's own daysAgo offset via dayAgoFun.
+		const rowDatObj = dayAgoFun( picRowObj.dayNum ); // What: Row Date Object. Why: This row's own real calendar date is needed both for its own date field and, if done, to build its own completedAt timestamp below. How: This resolves picRowObj's own dayNum offset via dayAgoFun.
 
 		let comTimStr = null; // What: Completed Timestamp String And Guard. Why: An entry that was never actually completed has no completion time at all. How: This starts null and is only overwritten below when picRowObj is done and carries a recorded hour.
 
 
-		if ( picRowObj.done && picRowObj.h != null ) { // What: Done With Hour Check. Why: A completion timestamp only makes sense for a row that was actually completed and carries a recorded hour. How: This gates the timestamp construction below on both conditions holding at once.
+		if ( picRowObj.done && picRowObj.houNum != null ) { // What: Done With Hour Check. Why: A completion timestamp only makes sense for a row that was actually completed and carries a recorded hour. How: This gates the timestamp construction below on both conditions holding at once.
 
 
 			const rowTimObj = new Date( rowDatObj ); // What: Row Timestamp Object. Why: rowDatObj itself must not be mutated by the time-of-day below. How: This constructs a fresh copy of rowDatObj to set a specific time on instead.
 
 
 
-			rowTimObj.setHours( picRowObj.h, picRowObj.m!, 0, 0 ); // What: Row Timestamp Hours Set. Why: The source data's own recorded hour/minute is what makes this timestamp realistic rather than always midnight. How: This writes picRowObj's own h/m onto rowTimObj, zeroing seconds/milliseconds. // What: Non-Null Note. Why: The generator writes h and m from the same completion date, so a row with an hour always has a minute. How: The ! tells TypeScript m is set once h is.
+			rowTimObj.setHours( picRowObj.houNum, picRowObj.minNum!, 0, 0 ); // What: Row Timestamp Hours Set. Why: The source data's own recorded hour/minute is what makes this timestamp realistic rather than always midnight. How: This writes picRowObj's own houNum/minNum onto rowTimObj, zeroing seconds/milliseconds. // What: Non-Null Note. Why: The generator writes h and m from the same completion date, so a row with an hour always has a minute. How: The ! tells TypeScript m is set once h is.
 
 			comTimStr = rowTimObj.toISOString(); // What: Completed Timestamp String Assignment. Why: state.pickLog's own completedAt field expects an ISO string, not a date. How: This converts the just-set rowTimObj to its own ISO string form.
 
@@ -660,11 +660,11 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 	const remLogArr = ( staRawObj.reminderLog || [] ).map( ( remRowObj ) => { // What: Reminder Log Array. Why: Every precomputed reminder-log row must become a real, dated reminderLog row matching state.reminderLog's own shape. How: This maps staRawObj's own reminderLog array (or an empty array if missing) through the per-row logic below.
 
 
-		const rowTimObj = dayAgoFun( remRowObj.daysAgo ); // What: Row Timestamp Object. Why: This row's own real completion timestamp needs both a resolved calendar date and, below, a specific time of day. How: This resolves remRowObj's own daysAgo offset via dayAgoFun.
+		const rowTimObj = dayAgoFun( remRowObj.dayNum ); // What: Row Timestamp Object. Why: This row's own real completion timestamp needs both a resolved calendar date and, below, a specific time of day. How: This resolves remRowObj's own dayNum offset via dayAgoFun.
 
 
 
-		rowTimObj.setHours( remRowObj.h, remRowObj.m, 0, 0 ); // What: Row Timestamp Hours Set. Why: The source data's own recorded hour/minute is what makes this timestamp realistic rather than always midnight. How: This writes remRowObj's own h/m onto rowTimObj, zeroing seconds/milliseconds.
+		rowTimObj.setHours( remRowObj.houNum, remRowObj.minNum, 0, 0 ); // What: Row Timestamp Hours Set. Why: The source data's own recorded hour/minute is what makes this timestamp realistic rather than always midnight. How: This writes remRowObj's own houNum/minNum onto rowTimObj, zeroing seconds/milliseconds.
 
 
 
@@ -688,11 +688,11 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 	const rslRowArr = ( staRawObj.reminderSkipLog || [] ).map( ( skiRowObj ) => { // What: Reminder-Skip-Log Row Array. Why: Every precomputed reminder-skip-log row must become a real, dated reminderSkipLog row matching state.reminderSkipLog's own shape. How: This maps staRawObj's own reminderSkipLog array (or an empty array if missing) through the per-row logic below.
 
 
-		const rowTimObj = dayAgoFun( skiRowObj.daysAgo ); // What: Row Timestamp Object. Why: This row's own real skip timestamp needs both a resolved calendar date and, below, a specific time of day. How: This resolves skiRowObj's own daysAgo offset via dayAgoFun.
+		const rowTimObj = dayAgoFun( skiRowObj.dayNum ); // What: Row Timestamp Object. Why: This row's own real skip timestamp needs both a resolved calendar date and, below, a specific time of day. How: This resolves skiRowObj's own dayNum offset via dayAgoFun.
 
 
 
-		rowTimObj.setHours( skiRowObj.h, skiRowObj.m, 0, 0 ); // What: Row Timestamp Hours Set. Why: The source data's own recorded hour/minute is what makes this timestamp realistic rather than always midnight. How: This writes skiRowObj's own h/m onto rowTimObj, zeroing seconds/milliseconds.
+		rowTimObj.setHours( skiRowObj.houNum, skiRowObj.minNum, 0, 0 ); // What: Row Timestamp Hours Set. Why: The source data's own recorded hour/minute is what makes this timestamp realistic rather than always midnight. How: This writes skiRowObj's own houNum/minNum onto rowTimObj, zeroing seconds/milliseconds.
 
 
 

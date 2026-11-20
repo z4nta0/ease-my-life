@@ -434,7 +434,7 @@ function AppRooCom () : React.JSX.Element {
 	// #region App State Setup
 
 	const onbDemBoo                = typeof location !== 'undefined' && location.hash.indexOf( 'onboard' ) !== -1;                   // What: Onboard Demo Boolean. Why: This lets #onboard-demo/#onboard run the app against a fresh clean state without touching the user's real saved data. How: This checks the URL hash for the "onboard" substring.
-	const [ staAppObj, actStoObj ] = useAppStaFun( onbDemBoo ? { initial : SED_NAM_OBJ.buiCleFun(), persist : false } : undefined ); // What: State App Object And Action Store Object. Why: This is the entire app's persisted state and the actions that mutate it. How: This calls useAppStaFun, seeded with a clean, non-persisted state when the onboarding demo flag is set, otherwise loading the real persisted state normally.
+	const [ staAppObj, actStoObj ] = useAppStaFun( onbDemBoo ? { iniObj : SED_NAM_OBJ.buiCleFun(), perBoo : false } : undefined ); // What: State App Object And Action Store Object. Why: This is the entire app's persisted state and the actions that mutate it. How: This calls useAppStaFun, seeded with a clean, non-persisted state when the onboarding demo flag is set, otherwise loading the real persisted state normally.
 
 	const accSynObj = useSynRunFun( actStoObj, staAppObj, !onbDemBoo ); // What: Account Sync Object. Why: Paid sync follows the account and syncs the state from the app root, where both live. How: This runs the sync hook, switched off for the onboarding demo, whose state must never sync.
 

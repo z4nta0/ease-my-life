@@ -2338,7 +2338,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-					carEntArr.push( { _carry : true, entry : exiEntObj } ); // What: Carried Entry Push. Why: A not-yet-done entry from the current period must persist verbatim, locked, rather than being replaced. How: This wraps exiEntObj in a { _carry, entry } marker for the commit step below.
+					carEntArr.push( { carBoo : true, entObj : exiEntObj } ); // What: Carried Entry Push. Why: A not-yet-done entry from the current period must persist verbatim, locked, rather than being replaced. How: This wraps exiEntObj in a { _carry, entry } marker for the commit step below.
 
 					const carIteObj = staAppObj.items.find( ( curIteObj ) => curIteObj.id === exiEntObj.itemId ); // What: Carried Item Object. Why: The carried item's own name still needs to join picNamSet, same as a fresh pick would. How: This finds the item matching exiEntObj's own itemId.
 
@@ -2601,7 +2601,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const nexEntArr = [ // What: Next Entry Array. Why: This is the exact new today.entries this generation produces. How: This concatenates every carried entry, day-off card, empty-ease card, and fresh pick (staged as pending) into one array.
 
 
-			...carEntArr, // What: Carried Entries Spread. Why: A still-open non-daily entry persists verbatim (the store unwraps each _carry record). How: This spreads carEntArr in first.
+			...carEntArr, // What: Carried Entries Spread. Why: A still-open non-daily entry persists verbatim (the store unwraps each carBoo record). How: This spreads carEntArr in first.
 			...daoCarArr, // What: Day-Off Cards Spread. Why: Every triggered conditional's own card becomes a real entry. How: This spreads daoCarArr in next.
 			...empEasArr, // What: Charging Cards Spread. Why: Every empty ease-up picker's own charging card becomes a real entry. How: This spreads empEasArr in next.
 
@@ -2645,7 +2645,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		 * loader card is about to vanish. Playing the removal animation
 		 * first lets it leave the way a skipped or deleted card does. Two
 		 * card types need care: a carried cadence entry (pushed as a
-		 * `{ _carry, entry }` wrapper) keeps its own eid across the
+		 * `{ carBoo, entObj }` wrapper) keeps its own eid across the
 		 * commit, so it is NOT departing; a day-off card has no pickerId
 		 * (its own loader slot is registered under the suppressed
 		 * picker's id instead), so it is matched by conditionalId:
@@ -2655,7 +2655,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		 *
 		*/
 
-		const keeIdeSet = new Set( carEntArr.map( ( curCarObj ) => curCarObj._carry ? curCarObj.entry!.eid : curCarObj.eid ) ); // What: Keep Identifier Set. Why: A carried entry's own eid must never be treated as departing. How: This reads each carEntArr member's own eid (unwrapping the _carry marker where needed). // What: Non-Null Note. Why: The generator only flags a descriptor _carry when it wraps an existing entry. How: The ! tells TypeScript entry is set here.
+		const keeIdeSet = new Set( carEntArr.map( ( curCarObj ) => curCarObj.carBoo ? curCarObj.entObj!.eid : curCarObj.eid ) ); // What: Keep Identifier Set. Why: A carried entry's own eid must never be treated as departing. How: This reads each carEntArr member's own eid (unwrapping the _carry marker where needed). // What: Non-Null Note. Why: The generator only flags a descriptor _carry when it wraps an existing entry. How: The ! tells TypeScript entry is set here.
 		const nexDaoSet = new Set( daoCarArr.map( ( curDaoObj ) => curDaoObj.conditionalId ) );                                 // What: Next Day-Off Set. Why: A day-off card's own departure is judged by whether its conditional still produces one, not by eid. How: This collects every fresh day-off card's own conditionalId.
 
 
@@ -2733,8 +2733,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 		// #region Generated List Commit
 
-		actStoObj.setEntFun( nexEntArr, { resetStreak : isaAutBoo } ); // What: Replace Today Entries Call. Why: This is the actual commit, writing nexEntArr as the new staAppObj.today.entries. How: This calls actStoObj.setEntFun, resetting the streak claim only for an auto-run.
-		actStoObj.marGenFun();                                         // What: Mark Generated Call. Why: staAppObj.today.generatedAt (and every anchor/count derived from it) needs to reflect this fresh generation. How: This calls actStoObj.marGenFun.
+		actStoObj.setEntFun( nexEntArr, { resBoo : isaAutBoo } ); // What: Replace Today Entries Call. Why: This is the actual commit, writing nexEntArr as the new staAppObj.today.entries. How: This calls actStoObj.setEntFun, resetting the streak claim only for an auto-run.
+		actStoObj.marGenFun();                                    // What: Mark Generated Call. Why: staAppObj.today.generatedAt (and every anchor/count derived from it) needs to reflect this fresh generation. How: This calls actStoObj.marGenFun.
 
 		if ( cheDonBoo && APP_FEA_ARR.every( ( curFeaObj ) => feaStaObj[ curFeaObj.ideStr ] ) ) { // What: Feature Section Resolve Guard. Why: The App Features section (see shoFeaBoo's own doc comment above) is only allowed to finally disappear here, at a real generation boundary, not the instant the last tutorial resolves; checked fresh on every genLisFun call (both manual Regenerate and the Daily Generator funnel through this same function) rather than only once, so a generation that happens to land after the very last tutorial finishes is what actually hides it. How: This flips both resolution flags only once every App Feature is already done.
 
