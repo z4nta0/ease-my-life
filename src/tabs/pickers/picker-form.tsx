@@ -68,6 +68,110 @@ import type { PicForTyp } from '../../core/data-model.ts'; // What: Picker Form 
 
 // #region Components
 
+type TwcProTyp = { 'data-element-name-hook' : string, className : string, ideValStr : string, labTexStr : string, offHelEle : React.ReactNode, onClick : () => void, onHelEle : React.ReactNode, value : boolean }; // What: Toggle-Row-Component Props Type. Why: Each toggle row names its own wrapper, id, label, and help wording, and shows and flips its own setting. How: This types TogRowCom's props.
+
+// #region TogRowCom
+
+/**
+ * TogRowCom = Toggle Row Component
+ *
+ * @summary
+ * Renders one form toggle: a label and a live help paragraph beside an
+ * on/off switch. The paragraph shows the on or off wording for the
+ * setting's current state and cross-fades whenever the state flips, and the
+ * switch takes the label as its own accessible name.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.data-element-name-hook - Data Element Name Hook: The row's own
+ *                                       identity hook, forwarded onto it.
+ * @param props.className              - Class Name: The row's own class.
+ * @param props.ideValStr              - Identifier Value String: The switch's
+ *                                       id, which the label points at.
+ * @param props.labTexStr              - Label Text String: The toggle's own
+ *                                       label.
+ * @param props.offHelEle              - Off Help Element: The help wording
+ *                                       while the setting is off.
+ * @param props.onClick                - On Click: Called when the switch is
+ *                                       pressed.
+ * @param props.onHelEle               - On Help Element: The help wording
+ *                                       while the setting is on.
+ * @param props.value                  - Value: Whether the setting is on.
+ *
+ * @returns The toggle row.
+ *
+ * @example
+ * ```tsx
+ * TogRowCom({ className, ideValStr, labTexStr, ... }) // => <TogRowCom />
+ * ```
+ *
+*/
+
+function TogRowCom ( { 'data-element-name-hook' : hooNamStr, className, ideValStr, labTexStr, offHelEle, onClick, onHelEle, value } : TwcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<div
+			className={ className }
+
+			data-element-name-hook={ hooNamStr }
+		>{ /* What: Toggle Row Div Element. Why: The label/help text block and its own switch sit side by side. How: This wraps togTexDiv and the switch button. */ }
+
+
+			<div className={ cssModObj.togTexDiv }>{ /* What: Toggle Text Div Element. Why: The toggle's own label and live explanation belong together. How: This wraps the label and help paragraph below. */ }
+
+
+				<label
+					className={ cssModObj.forLabLab }
+					htmlFor={ ideValStr }
+				>{ labTexStr }</label>{ /* What: Form Label Element. Why: The switch below needs an associated, readable label. How: This is linked to the switch through ideValStr. */ }
+
+				<p
+					key={ value ? 'on' : 'off' }
+
+					className={` ${ cssModObj.forHelPar }   ${ cssModObj.forHelParFade } `}
+				>{ value ? onHelEle : offHelEle }</p>{ /* What: Form Help Paragraph Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by value so the text cross-fades on every flip, showing onHelEle or offHelEle. */ }
+
+
+			</div>
+
+			<button
+				id={ ideValStr }
+
+				className={ cssModObj.togSwiBut }
+
+				data-element-name-hook='togSwiBut'
+
+				type='button'
+
+				aria-checked={ value }
+				aria-label={ labTexStr }
+				role='switch'
+
+				onClick={ onClick }
+			>{ /* What: Toggle Switch Button Element. Why: This is the actual on/off control for the setting. How: This calls onClick when pressed. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+
+
+				<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent switch's own aria-checked state. */ }
+
+
+			</button>
+
+
+		</div>
+
+
+	);
+
+
+}
+
+// #endregion TogRowCom
+
+
+
 type PfcProTyp = { conObjArr? : ConRcdTyp[], exiGroArr : string[], iniForObj? : ( PicArgTyp & { focusName? : boolean } ) | null, iniGroStr? : string, isaEdiBoo? : boolean, onCanForFun : () => void, onCrePicFun? : ( payForObj : PicForTyp ) => void, onSavEdiFun? : ( payForObj : PicForTyp ) => void }; // What: Picker-Form-Component Props Type. Why: The form creates a new picker or edits an existing one's details, starting from an optional prefill. How: This types PicForCom's props, with the create and save callbacks both taking the finished payload.
 
 // #region PicForCom
@@ -1548,77 +1652,27 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						>{ /* What: Daily Field Div Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps forTogDiv and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-							<div
+							<TogRowCom
+								ideValStr='np-daily'
+
 								className={ cssModObj.forTogDiv }
 
 								data-element-name-hook='daiTogDiv'
-							>{ /* What: Toggle Div Element. Why: The label/help text block and the switch control sit side by side. How: This wraps togTexDiv and the switch button. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+
+								labTexStr='Include in the daily generator'
+								offHelEle={ <React.Fragment>This picker <strong>will not run</strong> automatically, but you can still run it manually from this tab.</React.Fragment> } // What: Daily Disabled Phrase. Why: The daily-generator note needs its own live wording for the disabled state. How: This renders while incDaiBoo is false.
+								onHelEle={ <React.Fragment>This picker <strong>will run</strong> automatically as part of your daily list or whenever you tap Regenerate in the Today tab.</React.Fragment> } // What: Daily Enabled Phrase. Why: The daily-generator note needs its own live wording for the enabled state. How: This renders while incDaiBoo is true.
+								value={ incDaiBoo }
+
+								onClick={ () => { // What: On Click Handler. Why: The daily switch should also let the schedule scroll into view. How: This marks the toggle as user-driven, then flips incDaiBoo.
 
 
-								<div className={ cssModObj.togTexDiv }>{ /* What: Toggle Text Div Element. Why: The label and its own live-updating help text read as one block. How: This wraps those two pieces. */ }
+									daiTogRef.current = true;                    // What: Daily Toggled Mark. Why: The schedule's scroll-into-view should only follow a real user toggle. How: This flags daiTogRef.
+									setIncDaiBoo( ( preValBoo ) => !preValBoo ); // What: Daily Toggle Call. Why: This is the actual daily-generator switch. How: This flips incDaiBoo.
 
 
-									<label
-										className={ cssModObj.forLabLab }
-
-										htmlFor='np-daily'
-									>Include in the daily generator</label>{ /* What: Daily Label Element. Why: The switch below needs an associated, readable label. How: This is linked to the switch via the shared 'np-daily' id. */ }
-
-									<p
-										key={ incDaiBoo ? 'on' : 'off' }
-
-										className={` ${ cssModObj.forHelPar }   ${ cssModObj.forHelParFade } `}
-									>{ /* What: Daily Help Paragraph Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by incDaiBoo so the text cross-fades on every change. */ }
-
-
-										{ incDaiBoo // What: Daily Membership Check. Why: The explanation depends on whether the picker joins the daily generator. How: This picks one of the two phrases below based on incDaiBoo.
-
-
-											? <React.Fragment>This picker <strong>will run</strong> automatically as part of your daily list or whenever you tap Regenerate in the Today tab.</React.Fragment> // What: Daily Enabled Phrase. Why: The daily-generator note needs its own live wording for the enabled state. How: This renders while incDaiBoo is true.
-
-											: <React.Fragment>This picker <strong>will not run</strong> automatically, but you can still run it manually from this tab.</React.Fragment> // What: Daily Disabled Phrase. Why: The daily-generator note needs its own live wording for the disabled state. How: This renders while incDaiBoo is false.
-
-
-										}
-
-
-									</p>
-
-
-								</div>
-
-
-								<button
-									id='np-daily'
-
-									className={ cssModObj.togSwiBut }
-
-									data-element-name-hook='togSwiBut'
-
-									type='button'
-
-									aria-checked={ incDaiBoo }
-									aria-label='Include in the daily generator'
-									role='switch'
-
-									onClick={ () => { // What: On Click Handler. Why: The daily switch should also let the schedule scroll into view. How: This marks the toggle as user-driven, then flips incDaiBoo.
-
-
-										daiTogRef.current = true;                    // What: Daily Toggled Mark. Why: The schedule's scroll-into-view should only follow a real user toggle. How: This flags daiTogRef.
-										setIncDaiBoo( ( preValBoo ) => !preValBoo ); // What: Daily Toggle Call. Why: This is the actual daily-generator switch. How: This flips incDaiBoo.
-
-
-									} }
-								>{ /* What: Daily Switch Button Element. Why: This is the actual on/off control for daily-generator membership. How: This marks daiTogRef true (so the reveal effect above knows this was a genuine user toggle) and flips incDaiBoo. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-									<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked. */ }
-
-
-								</button>
-
-
-							</div>
+								} }
+							/>{ /* What: Toggle Row Component. Why: The label/help text block and the switch control sit side by side. How: This renders the label, its live help paragraph, and the switch. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 
@@ -1717,137 +1771,37 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-									<div
+									<TogRowCom
+										ideValStr='np-skiphol'
+
 										className={ cssModObj.schTogDiv }
 
 										data-element-name-hook='schTogDiv'
-									>{ /* What: Skip Holidays Toggle Div Element. Why: The label/help text block and its own switch sit side by side. How: This wraps togTexDiv and the switch button. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
+										labTexStr='Skip on holidays'
+										offHelEle={ <React.Fragment>This picker <strong>will always run</strong>, even on major U.S. holidays.</React.Fragment> } // What: Holidays Run Phrase. Why: The holiday note needs its own live wording for the always-run state. How: This renders while skiHolBoo is false.
+										onHelEle={ <React.Fragment>This picker <strong>will not run</strong> on major U.S. holidays. You can edit which days count as holidays, or even add your own, on the Settings page.</React.Fragment> } // What: Holidays Skip Phrase. Why: The holiday note needs its own live wording for the skip-enabled state. How: This renders while skiHolBoo is true.
+										value={ skiHolBoo }
 
-										<div className={ cssModObj.togTexDiv }>{ /* What: Toggle Text Div Element. Why: The toggle's own label and live explanation belong together. How: This wraps the label and sub text below. */ }
-
-
-											<label
-												className={ cssModObj.forLabLab }
-
-												htmlFor='np-skiphol'
-											>Skip on holidays</label>{ /* What: Skip Holidays Label Element. Why: The switch below needs an associated, readable label. How: This is linked to the switch via the shared 'np-skiphol' id. */ }
-
-											<p
-												key={ skiHolBoo ? 'on' : 'off' }
-
-												className={` ${ cssModObj.forHelPar }   ${ cssModObj.forHelParFade } `}
-											>{ /* What: Skip Holidays Help Paragraph Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by skiHolBoo so the text cross-fades on every change. */ }
-
-
-												{ skiHolBoo // What: Skip Holidays Check. Why: The explanation depends on the holiday setting. How: This picks one of the two phrases below based on skiHolBoo.
-
-
-													? <React.Fragment>This picker <strong>will not run</strong> on major U.S. holidays. You can edit which days count as holidays, or even add your own, on the Settings page.</React.Fragment> // What: Holidays Skip Phrase. Why: The holiday note needs its own live wording for the skip-enabled state. How: This renders while skiHolBoo is true.
-
-													: <React.Fragment>This picker <strong>will always run</strong>, even on major U.S. holidays.</React.Fragment> // What: Holidays Run Phrase. Why: The holiday note needs its own live wording for the always-run state. How: This renders while skiHolBoo is false.
-
-
-												}
-
-
-											</p>
-
-
-										</div>
-
-
-										<button
-											id='np-skiphol'
-
-											className={ cssModObj.togSwiBut }
-
-											data-element-name-hook='togSwiBut'
-
-											type='button'
-
-											aria-checked={ skiHolBoo }
-											aria-label='Skip on holidays'
-											role='switch'
-
-											onClick={ () => setSkiHolBoo( ( preValBoo ) => !preValBoo ) }
-										>{ /* What: Holiday Switch Button Element. Why: This is the actual on/off control for skipping holidays. How: This flips skiHolBoo on click. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-											<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked. */ }
-
-
-										</button>
-
-
-									</div>
+										onClick={ () => setSkiHolBoo( ( preValBoo ) => !preValBoo ) }
+									/>{ /* What: Toggle Row Component. Why: The label/help text block and its own switch sit side by side. How: This renders the label, its live help paragraph, and the switch. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 
-									<div
+									<TogRowCom
+										ideValStr='np-avoiddupes'
+
 										className={ cssModObj.schTogDiv }
 
 										data-element-name-hook='schTogDiv'
-									>{ /* What: Avoid Duplicates Toggle Div Element. Why: The label/help text block and its own switch sit side by side. How: This wraps togTexDiv and the switch button. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
+										labTexStr='Avoid duplicate items'
+										offHelEle={ <React.Fragment>This picker <strong>may pick</strong> an item even if its name is already on today&rsquo;s todo list.</React.Fragment> } // What: Avoid Duplicates Off Phrase. Why: The duplicate-avoidance note needs its own live wording for the disabled state. How: This renders while avoDupBoo is false.
+										onHelEle={ <React.Fragment>This picker <strong>won&rsquo;t pick</strong> an item whose name is already on today&rsquo;s todo list.</React.Fragment> } // What: Avoid Duplicates On Phrase. Why: The duplicate-avoidance note needs its own live wording for the enabled state. How: This renders while avoDupBoo is true.
+										value={ avoDupBoo }
 
-										<div className={ cssModObj.togTexDiv }>{ /* What: Toggle Text Div Element. Why: The toggle's own label and live explanation belong together. How: This wraps the label and sub text below. */ }
-
-
-											<label
-												className={ cssModObj.forLabLab }
-
-												htmlFor='np-avoiddupes'
-											>Avoid duplicate items</label>{ /* What: Avoid Duplicates Label Element. Why: The switch below needs an associated, readable label. How: This is linked to the switch via the shared 'np-avoiddupes' id. */ }
-
-											<p
-												key={ avoDupBoo ? 'on' : 'off' }
-
-												className={` ${ cssModObj.forHelPar }   ${ cssModObj.forHelParFade } `}
-											>{ /* What: Avoid Duplicates Help Paragraph Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by avoDupBoo so the text cross-fades on every change. */ }
-
-
-												{ avoDupBoo // What: Avoid Duplicates Check. Why: The explanation depends on the duplicates setting. How: This picks one of the two phrases below based on avoDupBoo.
-
-
-													? <React.Fragment>This picker <strong>won&rsquo;t pick</strong> an item whose name is already on today&rsquo;s todo list.</React.Fragment> // What: Avoid Duplicates On Phrase. Why: The duplicate-avoidance note needs its own live wording for the enabled state. How: This renders while avoDupBoo is true.
-
-													: <React.Fragment>This picker <strong>may pick</strong> an item even if its name is already on today&rsquo;s todo list.</React.Fragment> // What: Avoid Duplicates Off Phrase. Why: The duplicate-avoidance note needs its own live wording for the disabled state. How: This renders while avoDupBoo is false.
-
-
-												}
-
-
-											</p>
-
-
-										</div>
-
-
-										<button
-											id='np-avoiddupes'
-
-											className={ cssModObj.togSwiBut }
-
-											data-element-name-hook='togSwiBut'
-
-											type='button'
-
-											aria-checked={ avoDupBoo }
-											aria-label='Avoid duplicate items'
-											role='switch'
-
-											onClick={ () => setAvoDupBoo( ( preValBoo ) => !preValBoo ) }
-										>{ /* What: Duplicates Switch Button Element. Why: This is the actual on/off control for avoiding duplicate items. How: This flips avoDupBoo on click. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-											<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked. */ }
-
-
-										</button>
-
-
-									</div>
+										onClick={ () => setAvoDupBoo( ( preValBoo ) => !preValBoo ) }
+									/>{ /* What: Toggle Row Component. Why: The label/help text block and its own switch sit side by side. How: This renders the label, its live help paragraph, and the switch. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 								</div>
