@@ -632,6 +632,66 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const draPicObj = { cadence : cadCurObj.cadence, mode : selModStr, threshold : PIC_NAM_OBJ.THR_VAL_NUM }; // What: Draft Picker Object. Why: EntEdiCom still expects a picker-shaped object to read mode/threshold/cadence off of, even though the real picker doesn't exist yet. How: No `id` -- deliberately, since draft items carry no pickerId either (both undefined), so EntEdiCom's own PIC_NAM_OBJ.aveEasFun(items, picDatObj.id) fallback still matches every draft item against this pseudo-picker's undefined id and averages them correctly, not a coincidence to "fix" by inventing ids here. No easeMin/easeMax here either, since EntEdiCom no longer reads those off the picker directly.
 
 
+	// #region scrAddFun
+
+	/**
+	 * scrAddFun = Scroll Add Function
+	 *
+	 * @summary
+	 * Scrolls the shared .main container just enough to bring the
+	 * below-the-list editor slot fully into view, plus a small margin, once
+	 * two animation frames have let the just-opened editor lay out. It does
+	 * nothing when the slot already fits or either element is gone.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * scrAddFun() // => void
+	 * ```
+	 *
+	*/
+
+	const scrAddFun = () => { // What: Scroll Add Function. Why: Opening a new item or an added item's editor both show it in the slot below a possibly long pool. How: This waits two animation frames for layout to settle, then scrolls the container by however far the slot sits below its fold.
+
+
+		requestAnimationFrame( () => requestAnimationFrame( () => { // What: Double Frame Wait Call. Why: The just-opened slot has to lay out before it can be measured. How: This waits two animation frames, then measures and scrolls.
+
+
+			const addWraEle = addWraRef.current;                                                         // What: Add Wrap Element. Why: The scroll calculation needs the actual DOM node, not just the ref object. How: This reads addWraRef.current once and reuses it below.
+			const scrConEle = addWraEle && addWraEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared scrollable container is what actually needs to move, not the slot itself. How: This walks up from addWraEle to the nearest .main ancestor.
+
+
+			if ( !addWraEle || !scrConEle ) return; // What: Missing Element Guard. Why: Either element may not exist yet if this fires after an unrelated unmount. How: This bails out of the scroll calculation entirely when either is missing.
+
+
+
+			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge. // Vertical Rhythm Base Plus 7 ~= 104.323px
+
+
+			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
+
+
+				behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
+				top      : scrConEle.scrollTop + oveBelNum  // What: Top. Why: The page scrolls just enough to reveal the editor's bottom edge. How: This adds oveBelNum to the current scroll.
+
+
+			});
+
+
+		} ) );
+
+
+	};
+
+	// #endregion scrAddFun
+
+
+
 	// #region addDraFun
 
 	/**
@@ -755,31 +815,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 		setActNewStr( newIdeStr ); // What: Open Editor Call. Why: This is the actual state change that shows the new-item editor. How: This writes newIdeStr into actNewStr.
 
-		requestAnimationFrame( () => requestAnimationFrame( () => { // What: Scroll Into View Call. Why: The just-opened creation slot can be well out of view at the bottom of a long pool. How: This waits two animation frames for layout to settle, then scrolls the shared .main container just enough to bring the slot fully into view.
-
-
-			const addWraEle = addWraRef.current;                                                         // What: Add Wrap Element. Why: The scroll calculation needs the actual DOM node, not just the ref object. How: This reads addWraRef.current once and reuses it below.
-			const scrConEle = addWraEle && addWraEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared scrollable container is what actually needs to move, not the slot itself. How: This walks up from addWraEle to the nearest .main ancestor.
-
-
-			if ( !addWraEle || !scrConEle ) return; // What: Missing Element Guard. Why: Either element may not exist yet if this fires after an unrelated unmount. How: This bails out of the scroll calculation entirely when either is missing.
-
-
-
-			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the new slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge. // Vertical Rhythm Base Plus 7 ~= 104.323px
-
-
-			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
-
-
-				behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
-				top      : scrConEle.scrollTop + oveBelNum  // What: Top. Why: The page scrolls just enough to reveal the editor's bottom edge. How: This adds oveBelNum to the current scroll.
-
-
-			});
-
-
-		} ) );
+		scrAddFun(); // What: Scroll Into View Call. Why: The just-opened creation slot can be well out of view at the bottom of a long pool. How: This scrolls the slot into view through scrAddFun.
 
 		// #endregion Editor Open And Scroll
 
@@ -825,36 +861,56 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 		setEdiIteStr( tarIdeStr ); // What: Open Editor Call. Why: This is the actual state change that shows the editor. How: This writes tarIdeStr into ediIteStr.
 
-		requestAnimationFrame( () => requestAnimationFrame( () => { // What: Scroll Into View Call. Why: The editor renders in the same below-the-list slot, which can be well out of view from wherever in a long pool the Edit button that opened it was. How: This waits two animation frames for layout to settle, then scrolls the shared .main container just enough to bring the slot fully into view.
-
-
-			const addWraEle = addWraRef.current;                                                         // What: Add Wrap Element. Why: The scroll calculation needs the actual DOM node, not just the ref object. How: This reads addWraRef.current once and reuses it below.
-			const scrConEle = addWraEle && addWraEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared scrollable container is what actually needs to move, not the slot itself. How: This walks up from addWraEle to the nearest .main ancestor.
-
-
-			if ( !addWraEle || !scrConEle ) return; // What: Missing Element Guard. Why: Either element may not exist yet if this fires after an unrelated unmount. How: This bails out of the scroll calculation entirely when either is missing.
-
-
-
-			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge. // Vertical Rhythm Base Plus 7 ~= 104.323px
-
-
-			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
-
-
-				behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
-				top      : scrConEle.scrollTop + oveBelNum  // What: Top. Why: The page scrolls just enough to reveal the editor's bottom edge. How: This adds oveBelNum to the current scroll.
-
-
-			});
-
-
-		} ) );
+		scrAddFun(); // What: Scroll Into View Call. Why: The editor renders in the same below-the-list slot, which can be well out of view from wherever in a long pool the Edit button that opened it was. How: This scrolls the slot into view through scrAddFun.
 
 
 	};
 
 	// #endregion opeDraFun
+
+
+	// #region opePenFun
+
+	/**
+	 * opePenFun = Open Pending Function
+	 *
+	 * @summary
+	 * Opens the editor staDraFun staged in penEdiRef while another editor or
+	 * the new-item form was closing, clearing the request first so it runs
+	 * once. It does nothing when no editor is pending.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * opePenFun() // => void
+	 * ```
+	 *
+	*/
+
+	const opePenFun = () => { // What: Open Pending Function. Why: Both closing editor slots finish by opening whatever edit was requested meanwhile. How: This reads and clears penEdiRef, then opens that editor through opeDraFun.
+
+
+		const tarIdeStr = penEdiRef.current; // What: Target Identifier String. Why: The pending editor request must be read before it's cleared. How: This copies penEdiRef.current.
+
+
+		if ( !tarIdeStr ) return; // What: No Pending Guard. Why: Most closes have no editor waiting. How: This bails out when penEdiRef held nothing.
+
+
+
+		penEdiRef.current = null; // What: Pending Clear. Why: The request is being handled now, so it must not run twice. How: This resets penEdiRef to null.
+
+		opeDraFun( tarIdeStr ); // What: Open Draft Call. Why: The editor the user asked for opens once the previous one has closed. How: This calls opeDraFun with tarIdeStr.
+
+
+	};
+
+	// #endregion opePenFun
+
 
 
 	// #region staDraFun
@@ -2247,17 +2303,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 												setEdiIteStr( null ); // What: Editor Clear Call. Why: No item's editor stays open. How: This resets ediIteStr to null.
 
-												if ( penEdiRef.current ) { // What: Pending Editor Guard. Why: A different item's editor may have been requested while this one was closing. How: This opens it once this editor has finished closing.
-
-
-													const tarIdeStr = penEdiRef.current; // What: Target Identifier String. Why: The pending editor request must be read before it's cleared. How: This copies penEdiRef.current.
-
-
-													penEdiRef.current = null; // What: Pending Clear. Why: The request is being handled now, so it must not run twice. How: This resets penEdiRef to null.
-													opeDraFun( tarIdeStr );   // What: Open Draft Call. Why: The editor the user asked for opens once the previous one has closed. How: This calls opeDraFun with tarIdeStr.
-
-
-												}
+												opePenFun(); // What: Pending Editor Open Call. Why: A different item's editor may have been requested while this one was closing. How: This opens it through opePenFun once this editor has finished closing.
 
 
 											} }
@@ -2392,17 +2438,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 											setActNewStr( null ); // What: Active New Clear Call. Why: No new item is being added anymore. How: This resets actNewStr to null.
 
-											if ( penEdiRef.current ) { // What: Pending Editor Guard. Why: A different item's editor may have been requested while this one was closing. How: This opens it once this editor has finished closing.
-
-
-												const tarIdeStr = penEdiRef.current; // What: Target Identifier String. Why: The pending editor request must be read before it's cleared. How: This copies penEdiRef.current.
-
-
-												penEdiRef.current = null; // What: Pending Clear. Why: The request is being handled now, so it must not run twice. How: This resets penEdiRef to null.
-												opeDraFun( tarIdeStr );   // What: Open Draft Call. Why: The editor the user asked for opens once the previous one has closed. How: This calls opeDraFun with tarIdeStr.
-
-
-											}
+											opePenFun(); // What: Pending Editor Open Call. Why: A different item's editor may have been requested while this one was closing. How: This opens it through opePenFun once this editor has finished closing.
 
 
 										} }
