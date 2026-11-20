@@ -9,9 +9,9 @@ import React     from 'react';                             // What: React. Why: 
 
 import { BooResCom   } from './boost-reset.tsx';    // What: Boost Reset Component. Why: The dynamic mode's own accrued miss-boost needs a display plus a manual reset control. How: This is rendered in the dynamic-mode Boost row below.
 import { ColDisCom   } from './collapse.tsx';       // What: Collapse Disclosure Component. Why: Every mode's own settings subsection needs to animate open and closed as the selected mode changes. How: This wraps the mode hint text and every per-mode settings block throughout this file.
-import { FilButCom   } from './fill-button.tsx';    // What: Fill Button Component. Why: The ease-up and ease-down modes both need a manual full-charge control. How: This is rendered once per direction in the ease-mode settings block below.
+import { FilButCom   } from './fill-button.tsx';    // What: Fill Button Component. Why: The ease-up and ease-down modes both need a manual full-charge control. How: This is rendered in FilRowCom below, once per direction.
 import { norConFun   } from '../core/pickers.ts';   // What: Normalize Conditional Function. Why: A typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on the name field's own blur and inside conDraFun below.
-import { NumSteCom   } from './number-stepper.tsx'; // What: Numeric Stepper Component. Why: The ease-up and ease-down modes both need a plain increment/decrement control for their own Soonest/Latest day counts. How: This is rendered once per bound in the ease-mode settings block below.
+import { NumSteCom   } from './number-stepper.tsx'; // What: Numeric Stepper Component. Why: The ease-up and ease-down modes both need a plain increment/decrement control for their own Soonest/Latest day counts. How: This is rendered in BouRowCom below, once per bound.
 import { PIC_NAM_OBJ } from '../core/pickers.ts';   // What: Pickers Namespace Object. Why: The ease steppers show a drift range as days and write typed days back as drift values, against the shared full-charge ceiling. How: This is called via PIC_NAM_OBJ.driDayFun and dayDriFun, and read for THR_VAL_NUM.
 import { SED_NAM_OBJ } from '../state/seed.ts';     // What: Seed Namespace Object. Why: The mode radio below must offer the exact same options and labels as the picker editor's own mode radio. How: This is walked (MOD_DEF_OBJ) via Object.entries to render one radio option per mode.
 
@@ -156,6 +156,194 @@ const conDraFun = ( picNamStr : string, exiNamArr : string[] = [] ) : Partial< C
 
 
 // #region Components
+
+type BocProTyp = { dayValNum : number, isaDowBoo : boolean, labTexStr : string, onSetValFun : ( dayCouNum : number ) => void, subTexStr : string }; // What: Bound-Row-Component Props Type. Why: Each drift bound row names its own bound and day count, with its own subtitle and setter. How: This types BouRowCom's props.
+
+// #region BouRowCom
+
+/**
+ * BouRowCom = Bound Row Component
+ *
+ * @summary
+ * Renders one drift bound row of the ease-mode settings, the
+ * Soonest/Shortest or Latest/Longest bound: its label, a live subtitle that
+ * fades whenever the day count changes, and a day count stepper with its
+ * unit word. The row is marked with its ease direction so help mode can
+ * tell the two apart.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.dayValNum   - Day Value Number: The bound's day count.
+ * @param props.isaDowBoo   - Is-A Down Boolean: Whether the conditional
+ *                            eases down.
+ * @param props.labTexStr   - Label Text String: The row's own label, also
+ *                            the stepper's accessible name.
+ * @param props.onSetValFun - On Set Value Function: Called with the new day
+ *                            count.
+ * @param props.subTexStr   - Sub Text String: The row's own subtitle.
+ *
+ * @returns The drift bound row.
+ *
+ * @example
+ * ```tsx
+ * BouRowCom({ dayValNum, isaDowBoo, labTexStr, ... }) // => <BouRowCom />
+ * ```
+ *
+*/
+
+function BouRowCom ( { dayValNum, isaDowBoo, labTexStr, onSetValFun, subTexStr } : BocProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<div
+			className={ cssModObj.ediRowDiv }
+
+			data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
+			data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
+			data-element-name-hook='ediRowDiv'
+		>{ /* What: Editor Row Div Element. Why: This is the shared row layout for one drift bound. How: This wraps the label block and the NumSteCom control below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+
+
+			<div className={ cssModObj.ediLabDiv }>{ /* What: Editor Label Div Element. Why: The row's own title and live day-count summary need to sit together. How: This wraps the title span and the fading summary span below. */ }
+
+
+				<span className={ cssModObj.namRowSpa }><span className={ cssModObj.ediNamSpa }>{ labTexStr }</span>{ /* What: Editor Name Span Element. Why: This is the label text itself, styled apart from its own row wrapper. How: This renders labTexStr. */ }</span>{ /* What: Name Row Span Element. Why: This names the row's own control. How: This wraps the label text span. */ }
+
+				<span
+					key={ dayValNum }
+
+					className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
+				>{ subTexStr }</span>{ /* What: Editor Sub Span Element. Why: The user needs a plain-English read of what this day count actually means for the current direction. How: This re-keys, and so re-fades, whenever dayValNum changes. */ }
+
+
+			</div>
+
+			<div className={ cssModObj.ediConDiv }>{ /* What: Editor Control Div Element. Why: The stepper control itself sits apart from the row's own label block. How: This wraps the NumSteCom and its own unit label below. */ }
+
+
+				<NumSteCom
+					maxValNum={ 100 }
+					minValNum={ 1 }
+					value={ dayValNum }
+
+					ariLabStr={ labTexStr }
+
+					onSetValFun={ onSetValFun }
+				/>{ /* What: Number Stepper Component. Why: This is the actual increment/decrement control for the drift bound. How: This commits every change through onSetValFun, clamped to [1, 100]. */ }
+
+
+
+				<span
+					className={ cssModObj.easUniSpa }
+
+					data-element-name-hook='easUniSpa'
+				>{ dayValNum === 1 ? 'day' : 'days' }</span>{ /* What: Ease Unit Span Element. Why: The stepper's own raw number needs a "day"/"days" unit alongside it. How: This pluralizes based on dayValNum. Its data-element-name-hook is read by the help items' own unit-word lookups. */ }
+
+
+			</div>
+
+
+		</div>
+
+
+	);
+
+
+}
+
+// #endregion BouRowCom
+
+
+
+type FrcProTyp = { chaValNum : number, isaDowBoo : boolean, labTexStr : string, onFilActFun : () => void, thrValNum : number }; // What: Fill-Row-Component Props Type. Why: Each full-charge row names its own action and direction and shows the charge against its ceiling. How: This types FilRowCom's props.
+
+// #region FilRowCom
+
+/**
+ * FilRowCom = Fill Row Component
+ *
+ * @summary
+ * Renders the ease-mode settings' full-charge row, "Fill" for ease-up and
+ * "Refill" for ease-down: its label, a live summary of the current charge
+ * that fades whenever the charge reaches or leaves full, and a button that
+ * jumps the charge straight to full, disabled once it's already full. The
+ * row is marked with its ease direction so help mode can tell the two
+ * apart.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.chaValNum   - Charge Value Number: The conditional's current
+ *                            charge.
+ * @param props.isaDowBoo   - Is-A Down Boolean: Whether the row is ease-down's
+ *                            Refill row rather than ease-up's Fill row.
+ * @param props.labTexStr   - Label Text String: The row's own label, also
+ *                            the button's text.
+ * @param props.onFilActFun - On Fill Action Function: Called when the button
+ *                            is pressed.
+ * @param props.thrValNum   - Threshold Value Number: The charge that counts
+ *                            as full.
+ *
+ * @returns The full-charge row.
+ *
+ * @example
+ * ```tsx
+ * FilRowCom({ chaValNum, isaDowBoo, labTexStr, ... }) // => <FilRowCom />
+ * ```
+ *
+*/
+
+function FilRowCom ( { chaValNum, isaDowBoo, labTexStr, onFilActFun, thrValNum } : FrcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<div
+			className={ cssModObj.ediRowDiv }
+
+			data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds the Refill row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
+			data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds the Fill row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
+			data-element-name-hook='ediRowDiv'
+		>{ /* What: Editor Row Div Element. Why: The conditional's own charge can be jumped straight to full instead of waiting out the drift or a fresh streak. How: This wraps the label block and the FilButCom button below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+
+
+			<div className={ cssModObj.ediLabDiv }>{ /* What: Editor Label Div Element. Why: The row's own title and live charge summary need to sit together. How: This wraps the title span and the fading charge summary span below. */ }
+
+
+				<span className={ cssModObj.ediNamSpa }>{ labTexStr }</span>{ /* What: Editor Name Span Element. Why: This names the row's own control. How: This renders labTexStr. */ }
+
+				<span
+					key={ chaValNum >= thrValNum ? 'full' : 'part' } // What: Charge State Key. Why: The summary should re-fade only when the charge reaches or leaves full, not on every value change. How: This keys on whether chaValNum has reached thrValNum.
+
+					className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
+				>{ chaValNum >= thrValNum ? <>conditional is <strong>fully charged</strong></> : <>conditional at <strong>{ Math.round( chaValNum ) } charge</strong></> }</span>{ /* What: Editor Sub Span Element. Why: The user needs to see the current charge, or know it is already full, before deciding to fill it. How: This re-keys, and so re-fades, whenever the full/part state flips. */ }
+
+
+			</div>
+
+
+
+			<FilButCom
+				isaDisBoo={ chaValNum >= thrValNum }
+				labTexStr={ labTexStr }
+
+				onFilActFun={ onFilActFun }
+			/>{ /* What: Fill Button Component. Why: This is the actual jump-to-full control. How: This calls onFilActFun, disabling itself once already full. */ }
+
+
+		</div>
+
+
+	);
+
+
+}
+
+// #endregion FilRowCom
+
+
 
 type CocProTyp = { conDraObj : Partial< ConRcdTyp >, hidNamBoo? : boolean, layVarStr? : string, namErrStr? : string | null, onChange : ( nexDraObj : Partial< ConRcdTyp > ) => void }; // What: Conditional-Control-Component Props Type. Why: The editor shows a conditional draft in one of two layouts, optionally without its name field or with a name error, and hands back the whole next draft. How: This types CodConCom's props.
 
@@ -697,185 +885,56 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 					>{ /* What: Ease Type Control Div Element. Why: Its rows carry data-ease-up-active/data-ease-down-active state so help mode's newCondEaseUp/newCondEaseDown can tell the two directions apart, split the same way EntEdiCom's own rows are, since Soonest/Latest/Fill and Shortest/Longest/Refill need entirely different tip copy. How: This groups the Soonest/Shortest row, the Latest/Longest row, and the direction-specific Fill/Refill row below. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
 
 
-						<div
-							className={ cssModObj.ediRowDiv }
+						<BouRowCom
+							dayValNum={ sooDayNum }
+							isaDowBoo={ isaDowBoo }
+							labTexStr={ sooLabStr }
+							subTexStr={ sooSubStr }
 
-							data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
-							data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
-							data-element-name-hook='ediRowDiv'
-						>{ /* What: Soonest Row Div Element. Why: This is the shared row layout for the lower drift bound, labeled Shortest instead for ease-down. How: This wraps the label block and the NumSteCom control below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-							<div className={ cssModObj.ediLabDiv }>{ /* What: Soonest Rowlabel Div Element. Why: The row's own title and live day-count summary need to sit together. How: This wraps the title span and the fading summary span below. */ }
-
-
-								<span className={ cssModObj.namRowSpa }><span className={ cssModObj.ediNamSpa }>{ sooLabStr }</span>{ /* What: Soonest Inner Label Span Element. Why: This is the label text itself, styled apart from its own row wrapper. How: This renders sooLabStr. */ }</span>{ /* What: Soonest Label Span Element. Why: This names the row's own control, Shortest or Soonest depending on direction. How: This renders sooLabStr. */ }
-
-								<span
-									key={ sooDayNum }
-
-									className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-								>{ sooSubStr }</span>{ /* What: Soonest Sub Span Element. Why: The user needs a plain-English read of what this day count actually means for the current direction. How: This re-keys, and so re-fades, whenever sooDayNum changes. */ }
-
-
-							</div>
-
-							<div className={ cssModObj.ediConDiv }>{ /* What: Soonest Control Div Element. Why: The stepper control itself sits apart from the row's own label block. How: This wraps the NumSteCom and its own unit label below. */ }
-
-
-								<NumSteCom
-									maxValNum={ 100 }
-									minValNum={ 1 }
-									value={ sooDayNum }
-
-									ariLabStr={ sooLabStr }
-
-									onSetValFun={ appSooFun }
-								/>{ /* What: Number Stepper Component. Why: This is the actual increment/decrement control for the lower drift bound. How: This commits every change through appSooFun. */ }
+							onSetValFun={ appSooFun }
+						/>{ /* What: Bound Row Component. Why: This is the row for the lower drift bound, labeled Shortest instead for ease-down. How: This renders the row's own label, subtitle, and day count stepper, committing every change through appSooFun. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 
-								<span
-									className={ cssModObj.easUniSpa }
+						<BouRowCom
+							dayValNum={ latDayNum }
+							isaDowBoo={ isaDowBoo }
+							labTexStr={ latLabStr }
+							subTexStr={ latSubStr }
 
-									data-element-name-hook='easUniSpa'
-								>{ sooDayNum === 1 ? 'day' : 'days' }</span>{ /* What: Soonest Unit Span Element. Why: The stepper's own raw number needs a "day"/"days" unit alongside it. How: This pluralizes based on sooDayNum. Its data-element-name-hook is read by the help items' own unit-word lookups. */ }
+							onSetValFun={ appLatFun }
+						/>{ /* What: Bound Row Component. Why: This is the row for the upper drift bound, labeled Longest instead for ease-down. How: This renders the row's own label, subtitle, and day count stepper, committing every change through appLatFun. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
-
-							</div>
-
-
-						</div>
-
-
-						<div
-							className={ cssModObj.ediRowDiv }
-
-							data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
-							data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
-							data-element-name-hook='ediRowDiv'
-						>{ /* What: Latest Row Div Element. Why: This is the shared row layout for the upper drift bound, labeled Longest instead for ease-down. How: This wraps the label block and the NumSteCom control below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-							<div className={ cssModObj.ediLabDiv }>{ /* What: Latest Rowlabel Div Element. Why: The row's own title and live day-count summary need to sit together. How: This wraps the title span and the fading summary span below. */ }
-
-
-								<span className={ cssModObj.namRowSpa }><span className={ cssModObj.ediNamSpa }>{ latLabStr }</span>{ /* What: Latest Inner Label Span Element. Why: This is the label text itself, styled apart from its own row wrapper. How: This renders latLabStr. */ }</span>{ /* What: Latest Label Span Element. Why: This names the row's own control, Longest or Latest depending on direction. How: This renders latLabStr. */ }
-
-								<span
-									key={ latDayNum }
-
-									className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-								>{ latSubStr }</span>{ /* What: Latest Sub Span Element. Why: The user needs a plain-English read of what this day count actually means for the current direction. How: This re-keys, and so re-fades, whenever latDayNum changes. */ }
-
-
-							</div>
-
-							<div className={ cssModObj.ediConDiv }>{ /* What: Latest Control Div Element. Why: The stepper control itself sits apart from the row's own label block. How: This wraps the NumSteCom and its own unit label below. */ }
-
-
-								<NumSteCom
-									maxValNum={ 100 }
-									minValNum={ 1 }
-									value={ latDayNum }
-
-									ariLabStr={ latLabStr }
-
-									onSetValFun={ appLatFun }
-								/>{ /* What: Number Stepper Component. Why: This is the actual increment/decrement control for the upper drift bound. How: This commits every change through appLatFun. */ }
-
-
-
-								<span
-									className={ cssModObj.easUniSpa }
-
-									data-element-name-hook='easUniSpa'
-								>{ latDayNum === 1 ? 'day' : 'days' }</span>{ /* What: Latest Unit Span Element. Why: The stepper's own raw number needs a "day"/"days" unit alongside it. How: This pluralizes based on latDayNum. Its data-element-name-hook is read by the help items' own unit-word lookups. */ }
-
-
-							</div>
-
-
-						</div>
 
 
 						{ !isaDowBoo && ( // What: Fill Row Visibility Check. Why: Only ease-up's own charge can be jumped straight to full via this shortcut. How: This renders the Fill row only while isaDowBoo is false.
 
 
-							<div
-								className={ cssModObj.ediRowDiv }
+							<FilRowCom
+								chaValNum={ conDraObj.value ?? 0 }
+								isaDowBoo={ false } // What: Ease Down Flag. Why: The Fill row belongs to ease-up. How: This marks the row as an ease-up row for help mode.
+								labTexStr='Fill'
+								thrValNum={ thrValNum }
 
-								data-ease-up-active // What: Ease Up Active Attribute. Why: Help mode finds this Fill row as an ease-up row without reading its classes. How: This is always present, since Fill only ever renders for an ease-up conditional.
-								data-element-name-hook='ediRowDiv'
-							>{ /* What: Fill Row Div Element. Why: Ease-up's own charge can be jumped straight to full instead of waiting out the drift. How: This wraps the label block and the Fill button below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-								<div className={ cssModObj.ediLabDiv }>{ /* What: Fill Rowlabel Div Element. Why: The row's own title and live charge summary need to sit together. How: This wraps the "Fill" title span and the fading charge summary span below. */ }
-
-
-									<span className={ cssModObj.ediNamSpa }>Fill</span>{ /* What: Fill Label Span Element. Why: This names the row's own control. How: This renders the literal text "Fill". */ }
-
-									<span
-										key={ ( conDraObj.value ?? 0 ) >= thrValNum ? 'full' : 'part' } // What: Charge State Key. Why: The summary should re-fade only when the charge reaches or leaves full, not on every value change. How: This keys on whether value has reached thrValNum.
-
-										className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-									>{ ( conDraObj.value ?? 0 ) >= thrValNum ? <>conditional is <strong>fully charged</strong></> : <>conditional at <strong>{ Math.round( conDraObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Fill Sub Span Element. Why: The user needs to see the current charge, or know it is already full, before deciding to fill it. How: This re-keys, and so re-fades, whenever the full/part state flips. */ }
-
-
-								</div>
-
-
-
-								<FilButCom
-									isaDisBoo={ ( conDraObj.value ?? 0 ) >= thrValNum }
-									labTexStr='Fill'
-
-									onFilActFun={ () => patSetFun( { triggered : true, value : thrValNum } ) } // What: Full Charge Patch. Why: A fully charged conditional is triggered in both ease directions, so filling must set both fields together. How: This sets value to thrValNum and triggered to true.
-								/>{ /* What: Fill Button Component. Why: This is the actual jump-to-full control for ease-up. How: This sets value to thrValNum and triggered to true, disabling itself once already full. */ }
-
-
-							</div>
+								onFilActFun={ () => patSetFun( { triggered : true, value : thrValNum } ) } // What: Full Charge Patch. Why: A fully charged conditional is triggered in both ease directions, so filling must set both fields together. How: This sets value to thrValNum and triggered to true.
+							/> // What: Fill Row Component. Why: Ease-up's own charge can be jumped straight to full instead of waiting out the drift. How: This renders the "Fill" row, marked as an ease-up row. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog.
 
 
 						) }
 
 
+
 						{ isaDowBoo && ( // What: Refill Row Visibility Check. Why: Only ease-down's own charge can be jumped straight back to full via this shortcut. How: This renders the Refill row only while isaDowBoo is true.
 
 
-							<div
-								className={ cssModObj.ediRowDiv }
+							<FilRowCom
+								chaValNum={ conDraObj.value ?? 0 }
+								isaDowBoo={ true } // What: Ease Down Flag. Why: The Refill row belongs to ease-down. How: This marks the row as an ease-down row for help mode.
+								labTexStr='Refill'
+								thrValNum={ thrValNum }
 
-								data-ease-down-active // What: Ease Down Active Attribute. Why: Help mode finds this Refill row as an ease-down row without reading its classes. How: This is always present, since Refill only ever renders for an ease-down conditional.
-								data-element-name-hook='ediRowDiv'
-							>{ /* What: Refill Row Div Element. Why: Ease-down's own charge can be jumped straight back to full instead of waiting out a fresh streak. How: This wraps the label block and the Refill button below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-								<div className={ cssModObj.ediLabDiv }>{ /* What: Refill Rowlabel Div Element. Why: The row's own title and live charge summary need to sit together. How: This wraps the "Refill" title span and the fading charge summary span below. */ }
-
-
-									<span className={ cssModObj.ediNamSpa }>Refill</span>{ /* What: Refill Label Span Element. Why: This names the row's own control. How: This renders the literal text "Refill". */ }
-
-									<span
-										key={ ( conDraObj.value ?? 0 ) >= thrValNum ? 'full' : 'part' } // What: Charge State Key. Why: The summary should re-fade only when the charge reaches or leaves full, not on every value change. How: This keys on whether value has reached thrValNum.
-
-										className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-									>{ ( conDraObj.value ?? 0 ) >= thrValNum ? <>conditional is <strong>fully charged</strong></> : <>conditional at <strong>{ Math.round( conDraObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Refill Sub Span Element. Why: The user needs to see the current charge, or know it is already full, before deciding to refill it. How: This re-keys, and so re-fades, whenever the full/part state flips. */ }
-
-
-								</div>
-
-
-
-								<FilButCom
-									isaDisBoo={ ( conDraObj.value ?? 0 ) >= thrValNum }
-									labTexStr='Refill'
-
-									onFilActFun={ () => patSetFun( { triggered : true, value : thrValNum } ) } // What: Full Charge Patch. Why: A fully charged conditional is triggered in both ease directions, so filling must set both fields together. How: This sets value to thrValNum and triggered to true.
-								/>{ /* What: Fill Button Component. Why: This is the actual jump-to-full control for ease-down. How: This sets value to thrValNum and triggered to true, disabling itself once already full. */ }
-
-
-							</div>
+								onFilActFun={ () => patSetFun( { triggered : true, value : thrValNum } ) } // What: Full Charge Patch. Why: A fully charged conditional is triggered in both ease directions, so filling must set both fields together. How: This sets value to thrValNum and triggered to true.
+							/> // What: Fill Row Component. Why: Ease-down's own charge can be jumped straight back to full instead of waiting out a fresh streak. How: This renders the "Refill" row, marked as an ease-down row. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog.
 
 
 						) }
