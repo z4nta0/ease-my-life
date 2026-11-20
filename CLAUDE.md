@@ -654,7 +654,11 @@ codebase, so it applies here and nowhere else.
   chosen for those action keys specifically. Scoped to ease-my-life
   ONLY, for the same reason as `rmn`. Other files' own `rem`-as-
   Remove/Removing names (e.g. `remIdeSet`) get fixed during each
-  file's own review.
+  file's own review. Decided 2026-11-20: Remapped takes `rmp` the same
+  way (`migrate.ts`'s `rmpOrdObj`), since `rem` is Reminder here and
+  Phase A's `rea` already means Ready and Real. Also decided
+  2026-11-20: User takes `usr` (`appearance.ts`'s `usrColObj`), since
+  its literal `use` would read as a hook name's prefix.
 - **A second project-scoped override, requested by the user, this
   time keeping the ORIGINAL unescalated abbreviation rather than
   accepting a genuinely clean escalated candidate**: `reorder.ts`'s
