@@ -16,7 +16,7 @@ import { IcoSvgCom    } from '../../ui/icon.tsx';             // What: Icon Svg 
 import { InfTipCom    } from '../../ui/info-tip.tsx';         // What: Info Tip Component. Why: The Spent metric's "no completed cycle yet" case needs a small inline explanation. How: This renders a "?" bubble with its own label text next to that N/A value.
 import { isaTruFun    } from '../../utils/guard.ts';          // What: Is-A Truthy Function. Why: The scroll-fade rows drop any that aren't mounted. How: This filters them so the rest read as real elements.
 import { isoDayFun    } from '../../utils/date.ts';           // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
-import { PIC_NAM_OBJ  } from '../../core/pickers.ts';         // What: Pickers Namespace Object. Why: Ease ranges in this file read as soonest and latest days. How: This is called via PIC_NAM_OBJ.driDayFun wherever a drift-to-days conversion happens.
+import { PIC_NAM_OBJ  } from '../../core/pickers.ts';         // What: Pickers Namespace Object. Why: Ease ranges in this file read as soonest and latest days. How: This is called via PIC_NAM_OBJ.driDayFun wherever a drift-to-days conversion happens, and read for the default drift band, DEF_EAS_OBJ.
 import { PilTagCom    } from '../../ui/pill-tag.tsx';         // What: Pill Tag Component. Why: The single-picker header needs a small labelled pill showing the picker's own mode. How: This renders that pill, toned as 'mode'.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';           // What: Seed Namespace Object. Why: Every picker mode's own display label and hint text live in this shared table. How: This is looked up (MOD_DEF_OBJ) by a picker's own mode key throughout the page.
 import { STA_HEL_ARR  } from '../../help/stats-catalog.tsx';  // What: Stats Help Array. Why: Help mode needs this page's own tooltip copy, keyed to its elements. How: This is passed straight through to HelOveCom.
@@ -1038,18 +1038,18 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 			conAccMap.set( conCurObj.id, { // What: Live Accumulator Seed Call. Why: This is the actual starting row for one live conditional. How: This stores a zeroed accumulator under the conditional's own id.
 
 
-				actBoo : conCurObj.active !== false, // What: Active Boolean. Why: A disabled conditional gets its own "inactive" tag. How: This treats a missing active flag as active.
-				delBoo : false,                      // What: Deleted Boolean. Why: A live conditional is never flagged deleted. How: This is always false here.
-				firArr : [],                         // What: Fire Array. Why: The average interval needs every fire date. How: This starts empty and is pushed to below.
-				firNum : 0,                          // What: Fired Number. Why: The fired count starts at zero. How: This is incremented per triggered row below.
-				ideStr : conCurObj.id,               // What: Identifier String. Why: Each row needs a stable React key. How: This copies the conditional's own id.
-				lasStr : null,                       // What: Last String. Why: Nothing has fired yet. How: This is advanced to the latest fire date below.
-				maxNum : conCurObj.easeMax ?? 14,    // What: Maximum Number. Why: An ease-mode conditional's own target band needs its max drift. How: This copies easeMax, defaulting to 14.
-				minNum : conCurObj.easeMin ?? 7,     // What: Minimum Number. Why: An ease-mode conditional's own target band needs its min drift. How: This copies easeMin, defaulting to 7.
-				modStr : conCurObj.mode,             // What: Mode String. Why: The row's own mode tag and target both read the mode. How: This copies the conditional's own mode.
-				namStr : conCurObj.name,             // What: Name String. Why: Every row needs a visible name. How: This copies the conditional's own name.
-				oddNum : conCurObj.oddsPct ?? 50,    // What: Odds Number. Why: A weighted or dynamic conditional's own target shows its trigger odds. How: This copies oddsPct, defaulting to 50.
-				totNum : 0                           // What: Total Number. Why: The evaluated-cycle count starts at zero. How: This is incremented per ranged row below.
+				actBoo : conCurObj.active !== false,                           // What: Active Boolean. Why: A disabled conditional gets its own "inactive" tag. How: This treats a missing active flag as active.
+				delBoo : false,                                                // What: Deleted Boolean. Why: A live conditional is never flagged deleted. How: This is always false here.
+				firArr : [],                                                   // What: Fire Array. Why: The average interval needs every fire date. How: This starts empty and is pushed to below.
+				firNum : 0,                                                    // What: Fired Number. Why: The fired count starts at zero. How: This is incremented per triggered row below.
+				ideStr : conCurObj.id,                                         // What: Identifier String. Why: Each row needs a stable React key. How: This copies the conditional's own id.
+				lasStr : null,                                                 // What: Last String. Why: Nothing has fired yet. How: This is advanced to the latest fire date below.
+				maxNum : conCurObj.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax, // What: Maximum Number. Why: An ease-mode conditional's own target band needs its max drift. How: This copies easeMax, defaulting to the pickers' default band, DEF_EAS_OBJ.
+				minNum : conCurObj.easeMin ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, // What: Minimum Number. Why: An ease-mode conditional's own target band needs its min drift. How: This copies easeMin, defaulting to the pickers' default band, DEF_EAS_OBJ.
+				modStr : conCurObj.mode,                                       // What: Mode String. Why: The row's own mode tag and target both read the mode. How: This copies the conditional's own mode.
+				namStr : conCurObj.name,                                       // What: Name String. Why: Every row needs a visible name. How: This copies the conditional's own name.
+				oddNum : conCurObj.oddsPct ?? 50,                              // What: Odds Number. Why: A weighted or dynamic conditional's own target shows its trigger odds. How: This copies oddsPct, defaulting to 50.
+				totNum : 0                                                     // What: Total Number. Why: The evaluated-cycle count starts at zero. How: This is incremented per ranged row below.
 
 
 			} );

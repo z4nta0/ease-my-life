@@ -12,7 +12,7 @@ import { ColDisCom   } from './collapse.tsx';       // What: Collapse Disclosure
 import { FilButCom   } from './fill-button.tsx';    // What: Fill Button Component. Why: The ease-up and ease-down modes both need a manual full-charge control. How: This is rendered in FilRowCom below, once per direction.
 import { norConFun   } from '../core/pickers.ts';   // What: Normalize Conditional Function. Why: A typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on the name field's own blur and inside conDraFun below.
 import { NumSteCom   } from './number-stepper.tsx'; // What: Numeric Stepper Component. Why: The ease-up and ease-down modes both need a plain increment/decrement control for their own Soonest/Latest day counts. How: This is rendered in BouRowCom below, once per bound.
-import { PIC_NAM_OBJ } from '../core/pickers.ts';   // What: Pickers Namespace Object. Why: The ease steppers show a drift range as days and write typed days back as drift values, against the shared full-charge ceiling. How: This is called via PIC_NAM_OBJ.driDayFun and dayDriFun, and read for THR_VAL_NUM.
+import { PIC_NAM_OBJ } from '../core/pickers.ts';   // What: Pickers Namespace Object. Why: The ease steppers show a drift range as days and write typed days back as drift values, against the shared full-charge ceiling. How: This is called via PIC_NAM_OBJ.driDayFun and dayDriFun, and read for THR_VAL_NUM and the default drift band, DEF_EAS_OBJ.
 import { SED_NAM_OBJ } from '../state/seed.ts';     // What: Seed Namespace Object. Why: The mode radio below must offer the exact same options and labels as the picker editor's own mode radio. How: This is walked (MOD_DEF_OBJ) via Object.entries to render one radio option per mode.
 
 
@@ -133,8 +133,8 @@ const conDraFun = ( picNamStr : string, exiNamArr : string[] = [] ) : Partial< C
 
 		active    : true,                            // What: Active. Why: A brand-new conditional should take effect immediately rather than starting disabled. How: This is a fixed starting value of true.
 		cardText  : 'Picker suppressed for today',   // What: Card Text. Why: A brand-new conditional needs a sensible default day-off card message. How: This is a fixed starting sentence the user can freely edit afterward.
-		easeMax   : 14,                              // What: Ease Maximum. Why: This matches the same 14-day fallback easMaxNum resolves to in CodConCom. How: This is a fixed starting value of 14.
-		easeMin   : 7,                               // What: Ease Minimum. Why: This matches the same 7-day fallback easMinNum resolves to in CodConCom. How: This is a fixed starting value of 7.
+		easeMax   : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax, // What: Ease Maximum. Why: This matches the same fallback easMaxNum resolves to in CodConCom. How: This starts at the pickers' default band, DEF_EAS_OBJ.
+		easeMin   : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, // What: Ease Minimum. Why: This matches the same fallback easMinNum resolves to in CodConCom. How: This starts at the pickers' default band, DEF_EAS_OBJ.
 		mode      : 'random',                        // What: Mode. Why: A brand-new conditional defaults to the simplest, no-configuration mode. How: This matches the same 'random' fallback curModStr resolves to in CodConCom.
 		name      : `${ basNamStr } ${ namCouNum }`, // What: Name. Why: This is the new conditional's own resolved, collision-free default name. How: This joins basNamStr and namCouNum with a space.
 		oddsPct   : 50,                              // What: Odds Percentage. Why: A brand-new weighted/dynamic-mode conditional should default to an even coin-flip odds value. How: This is a fixed starting value of 50.
@@ -413,10 +413,10 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 	// #region Ease Range Controls
 
-	const easMinNum = conDraObj.easeMin ?? 7;             // What: Ease Minimum Number. Why: The ease-mode settings block needs a resolved lower bound of the drift range, defaulting a brand-new conDraObj to 7 days. How: This reads conDraObj.easeMin, falling back to 7 when it is nullish.
-	const easMaxNum = conDraObj.easeMax ?? 14;            // What: Ease Maximum Number. Why: The ease-mode settings block needs a resolved upper bound of the drift range, defaulting a brand-new conDraObj to 14 days. How: This reads conDraObj.easeMax, falling back to 14 when it is nullish.
-	const sooDayNum = PIC_NAM_OBJ.driDayFun( easMaxNum ); // What: Soonest Day Number. Why: The Soonest/Shortest stepper below needs a plain day count, not the raw drift amount it is derived from. How: This calls PIC_NAM_OBJ.driDayFun against easMaxNum.
-	const latDayNum = PIC_NAM_OBJ.driDayFun( easMinNum ); // What: Latest Day Number. Why: The Latest/Longest stepper below needs a plain day count, not the raw drift amount it is derived from. How: This calls PIC_NAM_OBJ.driDayFun against easMinNum.
+	const easMinNum = conDraObj.easeMin ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin; // What: Ease Minimum Number. Why: The ease-mode settings block needs a resolved lower bound of the drift range, defaulting a brand-new conDraObj to the pickers' default band. How: This reads conDraObj.easeMin, falling back to DEF_EAS_OBJ's when it is nullish.
+	const easMaxNum = conDraObj.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax; // What: Ease Maximum Number. Why: The ease-mode settings block needs a resolved upper bound of the drift range, defaulting a brand-new conDraObj to the pickers' default band. How: This reads conDraObj.easeMax, falling back to DEF_EAS_OBJ's when it is nullish.
+	const sooDayNum = PIC_NAM_OBJ.driDayFun( easMaxNum );                   // What: Soonest Day Number. Why: The Soonest/Shortest stepper below needs a plain day count, not the raw drift amount it is derived from. How: This calls PIC_NAM_OBJ.driDayFun against easMaxNum.
+	const latDayNum = PIC_NAM_OBJ.driDayFun( easMinNum );                   // What: Latest Day Number. Why: The Latest/Longest stepper below needs a plain day count, not the raw drift amount it is derived from. How: This calls PIC_NAM_OBJ.driDayFun against easMinNum.
 
 
 	const appSooFun = ( dayCouNum : number ) => { // What: Apply Soonest Function. Why: Editing the Soonest/Shortest stepper must convert its own day count back into a drift amount and commit it. How: This clamps dayCouNum to [1, 100], converts it via PIC_NAM_OBJ.dayDriFun, and patches easeMax, raising easeMin to match if it would otherwise fall below it.
