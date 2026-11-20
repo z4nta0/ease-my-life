@@ -13,7 +13,7 @@ import { ordSufFun   } from '../utils/date.ts';  // What: Ordinal Suffix Functio
 
 
 import type { CadNamTyp } from './data-model.ts'; // What: Cadence Name Type. Why: isaCadFun narrows a checked string to a real cadence. How: This is its type guard's target.
-import type { PclRowTyp } from './data-model.ts'; // What: Pick-Log Row Type. Why: comPerFun searches the pick log for this period's completed run. How: This types its picLogArr parameter.
+import type { PclRowTyp } from './data-model.ts'; // What: Pick-Log Row Type. Why: fulPerFun searches the pick log for this period's completed run. How: This types its picLogArr parameter.
 import type { PicRcdTyp } from './data-model.ts'; // What: Picker Record Type. Why: Every cadence field read here is a picker field. How: This is picked from to build CadFieTyp and CadNorTyp.
 
 // #endregion Imports
@@ -444,10 +444,10 @@ function perKeyFun ( picCadObj : CadFieTyp, cheDatObj : Date = new Date() ) : st
 
 
 
-// #region comPerFun
+// #region fulPerFun
 
 /**
- * comPerFun = Completed Period Function
+ * fulPerFun = Full Period Function
  *
  * @summary
  * Has an item from picCadObj been COMPLETED within the current period?
@@ -472,12 +472,12 @@ function perKeyFun ( picCadObj : CadFieTyp, cheDatObj : Date = new Date() ) : st
  *
  * @example
  * ```ts
- * comPerFun(picCadObj, picLogArr, cheDatObj) // => true or false
+ * fulPerFun(picCadObj, picLogArr, cheDatObj) // => true or false
  * ```
  *
 */
 
-function comPerFun ( picCadObj : CadFieTyp, picLogArr : PclRowTyp[] | null | undefined, cheDatObj : Date = new Date() ) : boolean {
+function fulPerFun ( picCadObj : CadFieTyp, picLogArr : PclRowTyp[] | null | undefined, cheDatObj : Date = new Date() ) : boolean {
 
 
 	if ( ( picCadObj.cadence || 'daily' ) === 'daily' ) return false; // What: Daily Cadence Guard. Why: Daily pickers are handled entirely by a separate legacy path, not this period-based check. How: This returns false early whenever picCadObj's own (defaulted) cadence is 'daily'.
@@ -510,7 +510,7 @@ function comPerFun ( picCadObj : CadFieTyp, picLogArr : PclRowTyp[] | null | und
 
 }
 
-// #endregion comPerFun
+// #endregion fulPerFun
 
 // #endregion Period Resolution
 
@@ -732,8 +732,8 @@ function uniWorFun ( cadValStr : string | null | undefined, couValNum : number )
 const CAD_NAM_OBJ = { // What: Cadence Namespace Object. Why: store.ts, tab-today.tsx, tab-picker.tsx, tab-data.tsx, tab-stats.tsx, day-log.tsx, and cadence-control.tsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own internal implementations that another file uses onto an external property name matching it exactly.
 
 
-	comPerFun : comPerFun, // What: Completed Period Function. Why: Callers check whether a picker has already completed its own current period by this exact name. How: This re-exports comPerFun under its own matching name.
 	enfWeeFun : enfWeeFun, // What: Enforce Weekly Function. Why: Callers need a weekly picker's own anchor day folded back into its selected days by this exact name. How: This re-exports enfWeeFun under its own matching name.
+	fulPerFun : fulPerFun, // What: Full Period Function. Why: Callers check whether a picker has already completed its own current period by this exact name. How: This re-exports fulPerFun under its own matching name.
 	isaCadFun : isaCadFun, // What: Is-A Cadence Function. Why: Callers validate an arbitrary string as a real cadence value by this exact name. How: This re-exports isaCadFun under its own matching name.
 	locTipFun : locTipFun, // What: Locked Tip Function. Why: Callers need the explanatory tooltip text for a weekly cadence's own locked anchor day by this exact name. How: This re-exports locTipFun under its own matching name.
 	norCadFun : norCadFun, // What: Normalize Cadence Function. Why: store.ts calls this to fill in every cadence-related field a picker needs, defaulted consistently. How: This re-exports norCadFun under its own matching name.

@@ -13,7 +13,7 @@ import { nthDayFun } from './dates.ts';    // What: Nth Day Function. Why: Nth-w
 import { parIsoFun } from './dates.ts';    // What: Parts ISO Function. Why: Rules read a date's year, month, and day. How: This splits a date into numbers.
 
 
-import type { PclRowTyp } from '../../src/core/data-model.ts'; // What: Pick-Log Row Type. Why: A period counts as run once a done row falls in it. How: This types comPerFun's log parameter.
+import type { PclRowTyp } from '../../src/core/data-model.ts'; // What: Pick-Log Row Type. Why: A period counts as run once a done row falls in it. How: This types fulPerFun's log parameter.
 import type { PicRcdTyp } from '../../src/core/data-model.ts'; // What: Picker Record Type. Why: Cadence rules read a picker's schedule fields. How: This types the picker parameters.
 import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State App Type. Why: Reminder visibility reads the saved options and holidays. How: This types remVisFun's state parameter.
 import type { TasRcdTyp } from '../../src/core/data-model.ts'; // What: Task Record Type. Why: Reminder rules read a reminder's repeat fields. How: This types the reminder parameters.
@@ -296,10 +296,10 @@ const perStaFun = ( picRcdObj : PicRcdTyp, dayIsoStr : string ) : string => { //
 
 
 
-// #region comPerFun
+// #region fulPerFun
 
 /**
- * comPerFun = Completed Period Function
+ * fulPerFun = Full Period Function
  *
  * @summary
  * Whether a non-daily picker has already run in the period a date falls in:
@@ -316,12 +316,12 @@ const perStaFun = ( picRcdObj : PicRcdTyp, dayIsoStr : string ) : string => { //
  *
  * @example
  * ```ts
- * comPerFun(picRcdObj, staAppObj.pickLog, '2026-10-20') // => true or false
+ * fulPerFun(picRcdObj, staAppObj.pickLog, '2026-10-20') // => true or false
  * ```
  *
 */
 
-const comPerFun = ( picRcdObj : PicRcdTyp, picLogArr : PclRowTyp[], dayIsoStr : string ) : boolean => { // What: Completed Period Function. Why: A period that already ran produces no pick. How: This checks lastRunPeriod and the done log rows.
+const fulPerFun = ( picRcdObj : PicRcdTyp, picLogArr : PclRowTyp[], dayIsoStr : string ) : boolean => { // What: Full Period Function. Why: A period that already ran produces no pick. How: This checks lastRunPeriod and the done log rows.
 
 
 	if ( ( picRcdObj.cadence || 'daily' ) === 'daily' ) return false; // What: Daily Guard. Why: Daily pickers run every day. How: This returns false for them.
@@ -339,11 +339,11 @@ const comPerFun = ( picRcdObj : PicRcdTyp, picLogArr : PclRowTyp[], dayIsoStr : 
 		const isaDonBoo = logRowObj.done;                      // What: Is-A Done Boolean. Why: Only a done row finishes a run. How: This reads the row's done flag.
 		const aftStaBoo = logRowObj.date >= perStaStr;         // What: After Start Boolean. Why: Only rows since the period began count. How: This compares the row's date.
 
-		const comRowBoo = samPicBoo && isaDonBoo && aftStaBoo; // What: Completed Row Boolean. Why: A row finishes the period only when all three hold. How: This combines them.
+		const donRowBoo = samPicBoo && isaDonBoo && aftStaBoo; // What: Done Row Boolean. Why: A row finishes the period only when all three hold. How: This combines them.
 
 
 
-		return comRowBoo; // What: Completed Row Return. Why: The search stops at the first finishing row. How: This returns the combined check.
+		return donRowBoo; // What: Completed Row Return. Why: The search stops at the first finishing row. How: This returns the combined check.
 
 
 	} );
@@ -351,7 +351,7 @@ const comPerFun = ( picRcdObj : PicRcdTyp, picLogArr : PclRowTyp[], dayIsoStr : 
 
 };
 
-// #endregion comPerFun
+// #endregion fulPerFun
 
 // #endregion Helpers
 
@@ -359,7 +359,7 @@ const comPerFun = ( picRcdObj : PicRcdTyp, picLogArr : PclRowTyp[], dayIsoStr : 
 
 // #region Exports
 
-export { comPerFun, perStaFun, remVisFun }; // What: Named Exports. Why: The generation and reminder checks predict schedules through these. How: This exports the schedule helpers by name.
+export { fulPerFun, perStaFun, remVisFun }; // What: Named Exports. Why: The generation and reminder checks predict schedules through these. How: This exports the schedule helpers by name.
 
 // #endregion Exports
 

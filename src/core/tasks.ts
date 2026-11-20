@@ -359,36 +359,6 @@ const intCouFun = ( tasRcdObj : TasRcdTyp ) : number => Math.max( 1, tasRcdObj.i
 
 
 
-// #region isaComFun
-
-/**
- * isaComFun = Is-A Completed Function
- *
- * @summary
- * A completed one-time task, on any day including today. Generate
- * purges these outright rather than waiting for isaStaFun (which only
- * catches a PRIOR day's completion).
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param tasRcdObj - Task Record Object: The task/reminder record being
- *                    checked.
- *
- * @returns Whether tasRcdObj is a 'once' task with any lastDone at all.
- *
- * @example
- * ```ts
- * isaComFun(tasRcdObj) // => true or false
- * ```
- *
-*/
-
-function isaComFun ( tasRcdObj : TasRcdTyp ) : boolean { return tasRcdObj.repeat === 'once' && !!tasRcdObj.lastDone; } // What: Is-A Completed Body. Why: store.ts's own Generate action calls this to drop a one-time task the moment it's done, same day included. How: This checks tasRcdObj is a 'once' task with any lastDone value at all.
-
-// #endregion isaComFun
-
-
-
 // #region isaDonFun
 
 /**
@@ -416,6 +386,36 @@ function isaComFun ( tasRcdObj : TasRcdTyp ) : boolean { return tasRcdObj.repeat
 function isaDonFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : boolean { return !!tasRcdObj.lastDone && tasRcdObj.lastDone === isoDayFun( cheDatObj ); } // What: Is-A Done Body. Why: Every caller (Today's checkbox state, streak reconciliation) needs a single boolean answer, not lastDone's own raw string. How: This compares tasRcdObj's own lastDone against cheDatObj's own iso string.
 
 // #endregion isaDonFun
+
+
+
+// #region isaFulFun
+
+/**
+ * isaFulFun = Is-A Full Function
+ *
+ * @summary
+ * A completed one-time task, on any day including today. Generate
+ * purges these outright rather than waiting for isaStaFun (which only
+ * catches a PRIOR day's completion).
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param tasRcdObj - Task Record Object: The task/reminder record being
+ *                    checked.
+ *
+ * @returns Whether tasRcdObj is a 'once' task with any lastDone at all.
+ *
+ * @example
+ * ```ts
+ * isaFulFun(tasRcdObj) // => true or false
+ * ```
+ *
+*/
+
+function isaFulFun ( tasRcdObj : TasRcdTyp ) : boolean { return tasRcdObj.repeat === 'once' && !!tasRcdObj.lastDone; } // What: Is-A Full Body. Why: store.ts's own Generate action calls this to drop a one-time task the moment it's done, same day included. How: This checks tasRcdObj is a 'once' task with any lastDone value at all.
+
+// #endregion isaFulFun
 
 
 
@@ -1354,9 +1354,9 @@ const TAS_NAM_OBJ = { // What: Tasks Namespace Object. Why: store.ts, the remind
 	defOptFun : defOptFun, // What: Default Options Function. Why: Callers need the canonical default participation-options shape by this exact name. How: This re-exports defOptFun under its own matching name.
 	defTasFun : defTasFun, // What: Default Task Function. Why: Callers build a fully-defaulted task/reminder record by this exact name. How: This re-exports defTasFun under its own matching name.
 	dueTodFun : dueTodFun, // What: Due Today Function. Why: Callers need the due, non-hidden, stably-sorted task list by this exact name. How: This re-exports dueTodFun under its own matching name.
-	isaComFun : isaComFun, // What: Is-A Completed Function. Why: Callers drop a same-day completed one-time task by this exact name. How: This re-exports isaComFun under its own matching name.
 	isaDonFun : isaDonFun, // What: Is-A Done Function. Why: Callers check whether a task's own occurrence is already completed by this exact name. How: This re-exports isaDonFun under its own matching name.
 	isaDueFun : isaDueFun, // What: Is-A Due Function. Why: Callers check whether a task is due on a given date by this exact name. How: This re-exports isaDueFun under its own matching name.
+	isaFulFun : isaFulFun, // What: Is-A Full Function. Why: Callers drop a same-day completed one-time task by this exact name. How: This re-exports isaFulFun under its own matching name.
 	isaReuFun : isaReuFun, // What: Is-A Recurring Function. Why: Callers check whether a task belongs to the recurring (vs one-time) options class by this exact name. How: This re-exports isaReuFun under its own matching name.
 	isaStaFun : isaStaFun, // What: Is-A Stale Function. Why: migrate.ts's own migStaFun() drops a previous-day completed one-time task by this exact name. How: This re-exports isaStaFun under its own matching name.
 	nexEliFun : nexEliFun, // What: Next Eligible Function. Why: Callers need a task's own next eligible occurrence by this exact name. How: This re-exports nexEliFun under its own matching name.

@@ -329,7 +329,7 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
  * @summary
  * Resolves the conditional consequences of toggling one Today entry
  * done/undone. A day-off CARD entry (kind:'dayoff') drives its own
- * conditional's carComFun (ease-up/dynamic reset, ease-down
+ * conditional's carFulFun (ease-up/dynamic reset, ease-down
  * discharge) with an undo snapshot in _cardPrev. A dependent PICKER
  * entry (whose own picker.conditionalId is set) advances its
  * conditional's own value on the FIRST dependent completion of the day
@@ -371,20 +371,20 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 	const conModObj = CON_NAM_OBJ; // What: Conditional Module Object. Why: Every branch below repeatedly calls into this module's own resolution helpers. How: This aliases the imported CON_NAM_OBJ namespace for brevity below.
 
 
-	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card entry's own completion drives its conditional's carComFun instead of the dependent-picker charging logic below. How: This maps curConArr, resolving only the one matching conditional.
+	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card entry's own completion drives its conditional's carFulFun instead of the dependent-picker charging logic below. How: This maps curConArr, resolving only the one matching conditional.
 
 
-		return curConArr.map( ( curConObj ) => { // What: Card Toggle Conditionals Map. Why: Every conditional except the one matching togEntObj.conditionalId must pass through untouched, while the matching one needs its own day-off completion/reversion resolved. How: This maps curConArr, guarding on id first, then branching on nowDonBoo to apply carComFun's own patch (completion) or restore the earlier _cardPrev snapshot (reversion).
+		return curConArr.map( ( curConObj ) => { // What: Card Toggle Conditionals Map. Why: Every conditional except the one matching togEntObj.conditionalId must pass through untouched, while the matching one needs its own day-off completion/reversion resolved. How: This maps curConArr, guarding on id first, then branching on nowDonBoo to apply carFulFun's own patch (completion) or restore the earlier _cardPrev snapshot (reversion).
 
 
 			if ( curConObj.id !== togEntObj.conditionalId ) return curConObj; // What: Non-Matching Guard. Why: Every other conditional is untouched by this card's own toggle. How: This returns curConObj unchanged when its own id doesn't match.
 
 
 
-			if ( nowDonBoo ) { // What: Now-Done Branch. Why: Completing the card is what actually drives its own mode-specific completion effect. How: This calls carComFun and snapshots the pre-effect fields into _cardPrev before applying its own patch.
+			if ( nowDonBoo ) { // What: Now-Done Branch. Why: Completing the card is what actually drives its own mode-specific completion effect. How: This calls carFulFun and snapshots the pre-effect fields into _cardPrev before applying its own patch.
 
 
-				const patValObj = conModObj.carComFun( curConObj ); // What: Patch Value Object And Guard. Why: Some modes (probability) treat completion as informational only, returning no patch. How: This calls conModObj's own carComFun on curConObj.
+				const patValObj = conModObj.carFulFun( curConObj ); // What: Patch Value Object And Guard. Why: Some modes (probability) treat completion as informational only, returning no patch. How: This calls conModObj's own carFulFun on curConObj.
 
 
 				if ( !patValObj ) return curConObj; // What: No-Patch Guard. Why: A probability-mode card has nothing to actually mutate on completion. How: This returns curConObj unchanged when patValObj is falsy.
@@ -501,7 +501,7 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
  * a revert snapshot so the exact reverse can be replayed later. A
  * completed non-daily pick or charging card also records its periodKey
  * on its picker as lastRunPeriod, since a charging card writes no
- * pick-log row for cadence.ts's comPerFun to find; a day-off card never
+ * pick-log row for cadence.ts's fulPerFun to find; a day-off card never
  * counts as the picker's run.
  *
  * @author z4nta0 <https://github.com/z4nta0>

@@ -304,7 +304,7 @@ const isoIndFun = ( isoDayStr : string ) => { // What: ISO Index Function. Why: 
 const conLogFun = ( hisRowArr : PclRowTyp[], todIndNum : number ) : RawStaTyp[ 'pickLog' ] => hisRowArr.map( ( curRowObj ) => { // What: Convert Log Function. Why: The generated file stores day offsets rather than dates. How: This maps each history row to its portable shape.
 
 
-	const comDatObj = curRowObj.completedAt ? new Date( curRowObj.completedAt ) : null; // What: Completed Date Object. Why: Only a completed row has a time of day to record. How: This parses its completedAt, or stays null for a row never completed.
+	const donDatObj = curRowObj.completedAt ? new Date( curRowObj.completedAt ) : null; // What: Done Date Object. Why: Only a completed row has a time of day to record. How: This parses its completedAt, or stays null for a row never completed.
 
 
 
@@ -314,10 +314,10 @@ const conLogFun = ( hisRowArr : PclRowTyp[], todIndNum : number ) : RawStaTyp[ '
 		dayNum     : todIndNum - isoIndFun( curRowObj.date ),   // What: Day Number. Why: The row's date is stored relative to today. How: This subtracts its day index from today's.
 		done       : curRowObj.done,                            // What: Done. Why: The row keeps whether it was completed. How: This copies it.
 		group      : curRowObj.group,                           // What: Group. Why: The row keeps its denormalized group name. How: This copies it.
-		houNum     : comDatObj ? comDatObj.getHours() : null,   // What: Hour Number. Why: A completed row is rebuilt with a realistic time of day. How: This reads the local hour, or null for a row never completed.
+		houNum     : donDatObj ? donDatObj.getHours() : null,   // What: Hour Number. Why: A completed row is rebuilt with a realistic time of day. How: This reads the local hour, or null for a row never completed.
 		itemId     : curRowObj.itemId,                          // What: Item ID. Why: The row keeps which item it picked. How: This copies it.
 		itemName   : curRowObj.itemName,                        // What: Item Name. Why: The row keeps its denormalized item name. How: This copies it.
-		minNum     : comDatObj ? comDatObj.getMinutes() : null, // What: Minute Number. Why: A completed row is rebuilt with a realistic time of day. How: This reads the local minute, or null for a row never completed.
+		minNum     : donDatObj ? donDatObj.getMinutes() : null, // What: Minute Number. Why: A completed row is rebuilt with a realistic time of day. How: This reads the local minute, or null for a row never completed.
 		pickerId   : curRowObj.pickerId,                        // What: Picker ID. Why: The row keeps which picker made it. How: This copies it.
 		pickerName : curRowObj.pickerName,                      // What: Picker Name. Why: The row keeps its denormalized picker name. How: This copies it.
 		source     : curRowObj.source,                          // What: Source. Why: The row keeps how it was picked. How: This copies it.
@@ -441,7 +441,7 @@ const forValFun = ( rawValAny : unknown ) => { // What: Format Value Function. W
  * @param rowArrAny - Row Array Any: The rows to write.
  * @param traTexStr - Trailing Text String: Text after the closing bracket,
  *                    such as a comma.
- * @param comTexStr - Comment Text String: The array's own one-line comment.
+ * @param annTexStr - Annotation Text String: The array's own one-line comment.
  *
  * @returns The array's source text, ready to splice into the template.
  *
@@ -452,10 +452,10 @@ const forValFun = ( rawValAny : unknown ) => { // What: Format Value Function. W
  *
 */
 
-const forArrFun = ( rowArrAny : Record< string, unknown >[], traTexStr : string, comTexStr : string ) : string => { // What: Format Array Function. Why: Each log is written as one aligned table. How: This orders, pads, and joins the rows.
+const forArrFun = ( rowArrAny : Record< string, unknown >[], traTexStr : string, annTexStr : string ) : string => { // What: Format Array Function. Why: Each log is written as one aligned table. How: This orders, pads, and joins the rows.
 
 
-	if ( !rowArrAny.length ) return `[]${ traTexStr } ${ comTexStr }`; // What: Empty Array Guard. Why: An empty array needs no padding. How: This returns the tight brackets, the trailing text, and the comment.
+	if ( !rowArrAny.length ) return `[]${ traTexStr } ${ annTexStr }`; // What: Empty Array Guard. Why: An empty array needs no padding. How: This returns the tight brackets, the trailing text, and the comment.
 
 
 
@@ -493,7 +493,7 @@ const forArrFun = ( rowArrAny : Record< string, unknown >[], traTexStr : string,
 
 
 
-	return `[ ${ comTexStr }\n\n\n${ rowTexArr.map( ( curTexStr ) => `\t\t{ ${ curTexStr.padEnd( rowWidNum ) } }` ).join( ',\n' ) }\n\n\n\t]${ traTexStr }`; // What: Array Text Return. Why: The caller splices the finished table into the template. How: This wraps every padded row in braces, joins them, and adds the 2-blank padding, the trailing text, and the comment.
+	return `[ ${ annTexStr }\n\n\n${ rowTexArr.map( ( curTexStr ) => `\t\t{ ${ curTexStr.padEnd( rowWidNum ) } }` ).join( ',\n' ) }\n\n\n\t]${ traTexStr }`; // What: Array Text Return. Why: The caller splices the finished table into the template. How: This wraps every padded row in braces, joins them, and adds the 2-blank padding, the trailing text, and the comment.
 
 
 };

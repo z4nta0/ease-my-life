@@ -62,7 +62,7 @@ type HolDefTyp = { // What: Holiday Definition Type. Why: Every built-in holiday
 
 
 
-type HolRcdTyp = { // What: Holiday Record Type. Why: Callers need one resolved shape for a computed or custom holiday in a given year. How: This describes what comYeaFun, actYeaFun, and holInfFun return.
+type HolRcdTyp = { // What: Holiday Record Type. Why: Callers need one resolved shape for a computed or custom holiday in a given year. How: This describes what cmpYeaFun, actYeaFun, and holInfFun return.
 
 
 	actObj? : Date;    // What: Actual Object. Why: A caller wording around an observed shift needs the true date. How: This is the unshifted date, absent on custom days.
@@ -107,7 +107,7 @@ const THU_DAY_NUM = 4; // What: Thursday Day Number. Why: Same reasoning as MON_
  *
 */
 
-const HOL_DEF_ARR : HolDefTyp[] = [ // What: Holiday Definition Array. Why: This is the single source of truth every US holiday computation in this file reads from. How: This is read by comYeaFun below, resolving each entry's own rule via datDefFun into a concrete date for whatever year is requested.
+const HOL_DEF_ARR : HolDefTyp[] = [ // What: Holiday Definition Array. Why: This is the single source of truth every US holiday computation in this file reads from. How: This is read by cmpYeaFun below, resolving each entry's own rule via datDefFun into a concrete date for whatever year is requested.
 
 
 	{ keyStr : 'newyear',      namStr : 'New Year\'s Day',            fixArr : [ 1, 1 ]               }, // What: New Year Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to January 1st every year.
@@ -333,10 +333,10 @@ function datDefFun ( holDefObj : HolDefTyp, yeaValNum : number ) : Date | null {
 
 
 
-// #region comYeaFun
+// #region cmpYeaFun
 
 /**
- * comYeaFun = Compute Year Function
+ * cmpYeaFun = Compute Year Function
  *
  * @summary
  * Resolves every defined holiday for a country in a given year into a
@@ -357,12 +357,12 @@ function datDefFun ( holDefObj : HolDefTyp, yeaValNum : number ) : Date | null {
  *
  * @example
  * ```ts
- * comYeaFun(2026, 'US') // => array of resolved holiday records
+ * cmpYeaFun(2026, 'US') // => array of resolved holiday records
  * ```
  *
 */
 
-function comYeaFun ( yeaValNum : number, couCodStr : string = 'US' ) : HolRcdTyp[] {
+function cmpYeaFun ( yeaValNum : number, couCodStr : string = 'US' ) : HolRcdTyp[] {
 
 
 	const curRegObj = REG_DEF_OBJ[ couCodStr ] || REG_DEF_OBJ.US; // What: Current Region Object. Why: Every holiday needs resolving against its own region's own rule table, falling back to the US table when the given code is unrecognized. How: This looks up couCodStr in REG_DEF_OBJ, defaulting to the US entry.
@@ -396,7 +396,7 @@ function comYeaFun ( yeaValNum : number, couCodStr : string = 'US' ) : HolRcdTyp
 
 }
 
-// #endregion comYeaFun
+// #endregion cmpYeaFun
 
 
 
@@ -493,11 +493,11 @@ function actYeaFun ( holStaObj : HolStaTyp | null | undefined, yeaValNum : numbe
 	const disKeyArr = resHolObj.disabled || []; // What: Disabled Key Array. Why: A very old persisted state might be missing this field entirely. How: This falls back to an empty array when resHolObj.disabled is missing.
 
 
-	const comActArr = comYeaFun( yeaValNum, resHolObj.country ) // What: Computed Active Array. Why: The caller only wants every defined holiday for the year, as a starting point before disabled ones are dropped. How: This computes every holiday record for yeaValNum against resHolObj.country.
+	const cmpActArr = cmpYeaFun( yeaValNum, resHolObj.country ) // What: Computed Active Array. Why: The caller only wants every defined holiday for the year, as a starting point before disabled ones are dropped. How: This computes every holiday record for yeaValNum against resHolObj.country.
 
-		.filter( ( comRcdObj ) => !disKeyArr.includes( comRcdObj.keyStr ) ) // What: Disabled Filter. Why: A holiday the user has switched off must never appear in the active list. How: This keeps only records whose key is absent from disKeyArr.
+		.filter( ( cmpRcdObj ) => !disKeyArr.includes( cmpRcdObj.keyStr ) ) // What: Disabled Filter. Why: A holiday the user has switched off must never appear in the active list. How: This keeps only records whose key is absent from disKeyArr.
 
-		.map( ( comRcdObj ) => ( { ...comRcdObj, custom : false } ) ); // What: Custom Flag Map. Why: Every surviving record needs marking as a computed (non-custom) holiday, for callers that tell the two kinds apart. How: This spreads each record and overrides custom to false.
+		.map( ( cmpRcdObj ) => ( { ...cmpRcdObj, custom : false } ) ); // What: Custom Flag Map. Why: Every surviving record needs marking as a computed (non-custom) holiday, for callers that tell the two kinds apart. How: This spreads each record and overrides custom to false.
 
 
 	const cusDayArr = ( resHolObj.custom || [] ).map( ( cusDefObj ) => { // What: Custom Day Array. Why: The user's own recurring custom days off need resolving to this specific year too, each flagged as custom. How: This maps every saved custom definition to a concrete date for yeaValNum.
@@ -524,7 +524,7 @@ function actYeaFun ( holStaObj : HolStaTyp | null | undefined, yeaValNum : numbe
 
 
 
-	return [ ...comActArr, ...cusDayArr ]; // What: Active Holidays Return. Why: The caller wants one combined, flat list of every active day off for the year. How: This concatenates the computed and custom arrays via spread.
+	return [ ...cmpActArr, ...cusDayArr ]; // What: Active Holidays Return. Why: The caller wants one combined, flat list of every active day off for the year. How: This concatenates the computed and custom arrays via spread.
 
 
 }
@@ -571,7 +571,7 @@ function holInfFun ( holStaObj : HolStaTyp | null | undefined, cheDatObj : Date 
 	for ( const cheYeaNum of [ curYeaNum - 1, curYeaNum, curYeaNum + 1 ] ) { // What: Neighboring Year Loop. Why: An observed shift can push a holiday across a year boundary, so the year before and after must be checked too, not just curYeaNum itself. How: This walks the prior, current, and next calendar year in turn.
 
 
-		const hitHolObj = actYeaFun( holStaObj, cheYeaNum ).find( ( comRcdObj ) => comRcdObj.isoStr === tarIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches cheYeaNum's own active list for a matching iso string.
+		const hitHolObj = actYeaFun( holStaObj, cheYeaNum ).find( ( cmpRcdObj ) => cmpRcdObj.isoStr === tarIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches cheYeaNum's own active list for a matching iso string.
 
 
 		if ( hitHolObj ) return hitHolObj; // What: Hit Found Guard. Why: The first matching year's own record is enough; there's no need to keep searching once found. How: This returns the matched full record immediately.
@@ -640,7 +640,7 @@ function holDatFun ( holStaObj : HolStaTyp | null | undefined, cheDatObj : Date 
 const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is the module's whole public API, the single object every consuming file imports and calls through, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
 
 
-	comYeaFun : comYeaFun, // What: Compute Year Function. Why: tab-settings.tsx calls this for a specific year's own active holiday set. How: This re-exports comYeaFun under its own matching name.
+	cmpYeaFun : cmpYeaFun, // What: Compute Year Function. Why: tab-settings.tsx calls this for a specific year's own active holiday set. How: This re-exports cmpYeaFun under its own matching name.
 	defStaFun : defStaFun, // What: Default State Function. Why: The seed and the save migration call this for a fresh holidays-state shape. How: This re-exports defStaFun under its own matching name.
 	holDatFun : holDatFun, // What: Holiday Date Function. Why: tab-today.tsx and tasks.ts both call this to check whether a specific date is a holiday. How: This re-exports holDatFun under its own matching name.
 	holInfFun : holInfFun, // What: Holiday Info Function. Why: tasks.ts calls this for a specific date's own full holiday info. How: This re-exports holInfFun under its own matching name.

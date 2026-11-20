@@ -59,7 +59,7 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
 
 // #region Types
 
-type IteFlaTyp = { anyBoo : boolean, autBoo : boolean, comBoo : boolean, pusBoo : boolean, rolBoo : boolean, skiBoo : boolean }; // What: Item Flags Type. Why: Each item's row shows status chips for what happened to it today. How: This types the flags dayFlaFun builds and StaChiCom reads, each true once a pick log row sets it.
+type IteFlaTyp = { anyBoo : boolean, autBoo : boolean, donBoo : boolean, pusBoo : boolean, rolBoo : boolean, skiBoo : boolean }; // What: Item Flags Type. Why: Each item's row shows status chips for what happened to it today. How: This types the flags dayFlaFun builds and StaChiCom reads, each true once a pick log row sets it.
 
 // #endregion Types
 
@@ -147,7 +147,7 @@ function conSubFun ( conRcdObj : ConRcdTyp ) : string {
  * @param dayKeyStr - Day Key String: Which day's own rows to keep, as a
  *                    "YYYY-MM-DD" key from {@link isoDayFun}.
  *
- * @returns A Map from itemId to its own { anyBoo, autBoo, comBoo,
+ * @returns A Map from itemId to its own { anyBoo, autBoo, donBoo,
  * pusBoo, rolBoo, skiBoo } flags.
  * @see {@link iteFlaMap}
  *
@@ -177,7 +177,7 @@ function dayFlaFun ( picLogArr : PclRowTyp[], picIdeStr : string, dayKeyStr : st
 		if ( !iteFlaObj ) { // What: First Row Guard. Why: The very first matching row for an item must create its own fresh flags object. How: This builds and registers a new, all-false iteFlaObj only when none exists yet.
 
 
-			iteFlaObj = { anyBoo : false, autBoo : false, comBoo : false, pusBoo : false, rolBoo : false, skiBoo : false }; // What: Fresh Item Flags Object. Why: Every flag starts false until a real row below sets it. How: This is the initial shape stored into iteFlaMap for a newly-seen item.
+			iteFlaObj = { anyBoo : false, autBoo : false, donBoo : false, pusBoo : false, rolBoo : false, skiBoo : false }; // What: Fresh Item Flags Object. Why: Every flag starts false until a real row below sets it. How: This is the initial shape stored into iteFlaMap for a newly-seen item.
 
 			iteFlaMap.set( logRowObj.itemId, iteFlaObj ); // What: Item Flags Register Call. Why: Every later row for this same item must find and reuse this exact object. How: This stores iteFlaObj under logRowObj's own itemId.
 
@@ -201,7 +201,7 @@ function dayFlaFun ( picLogArr : PclRowTyp[], picIdeStr : string, dayKeyStr : st
 
 		else if ( logRowObj.outcome === 'skipped' ) iteFlaObj.skiBoo = true; // What: Skipped Flag Set. Why: A skipped outcome is a distinct status from a rejected one. How: This flips skiBoo true when logRowObj's own outcome is 'skipped'.
 
-		else if ( logRowObj.done ) iteFlaObj.comBoo = true; // What: Completed Flag Set. Why: A done row (neither rejected nor skipped) means this item was actually completed. How: This flips comBoo true when logRowObj's own done field is truthy.
+		else if ( logRowObj.done ) iteFlaObj.donBoo = true; // What: Completed Flag Set. Why: A done row (neither rejected nor skipped) means this item was actually completed. How: This flips donBoo true when logRowObj's own done field is truthy.
 
 
 	}
@@ -707,7 +707,7 @@ function StaChiCom ( { iteFlaObj } : ShcProTyp ) : React.JSX.Element {
 
 
 
-	if ( iteFlaObj.comBoo ) chiTupArr.push( [ 'done', 'cheEle', 'Completed', 3 ] ); // What: Completed Chip Push. Why: A completed item needs its own chip. How: This appends a [key, icon, title, width] tuple when comBoo is true.
+	if ( iteFlaObj.donBoo ) chiTupArr.push( [ 'done', 'cheEle', 'Completed', 3 ] ); // What: Completed Chip Push. Why: A completed item needs its own chip. How: This appends a [key, icon, title, width] tuple when donBoo is true.
 
 
 
@@ -1301,7 +1301,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 
 
 
-	const donCouNum = picIteArr.filter( ( iteRcdObj ) => ( iteFlaMap.get( iteRcdObj.id ) || {} ).comBoo ).length; // What: Done Count Number. Why: The header's own summary strip shows how many items are already completed today. How: This counts picIteArr entries whose own iteFlaMap flags (or an empty fallback) have comBoo set.
+	const donCouNum = picIteArr.filter( ( iteRcdObj ) => ( iteFlaMap.get( iteRcdObj.id ) || {} ).donBoo ).length; // What: Done Count Number. Why: The header's own summary strip shows how many items are already completed today. How: This counts picIteArr entries whose own iteFlaMap flags (or an empty fallback) have donBoo set.
 
 
 
@@ -1400,7 +1400,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 
 
 						const iteFlaObj = iteFlaMap.get( iteRcdObj.id );                      // What: Item Flags Object. Why: This row's own status chips and done state both read from the same flags object. How: This reads iteFlaMap's own entry for iteRcdObj's own id.
-						const iteDonBoo = iteFlaObj && iteFlaObj.comBoo;                      // What: Item Done Boolean. Why: A completed item gets its own done row styling. How: This is true only when iteFlaObj exists and its own comBoo flag is set.
+						const iteDonBoo = iteFlaObj && iteFlaObj.donBoo;                      // What: Item Done Boolean. Why: A completed item gets its own done row styling. How: This is true only when iteFlaObj exists and its own donBoo flag is set.
 						const hasValBoo = hasValFun( picRcdObj.mode ) && !iteRcdObj.vacation; // What: Has Value Boolean. Why: An item on vacation never shows a value, even under a value-tracking mode. How: This combines hasValFun's own mode check with iteRcdObj's own vacation flag.
 
 

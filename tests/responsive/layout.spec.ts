@@ -172,14 +172,14 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 	const visEleFun = ( curDomEle : Element ) => { // What: Visible Element Function. Why: Hidden things can't look wrong. How: This checks display, opacity, aria-hidden, and what shows once clipped.
 
 
-		const comStyObj = getComputedStyle( curDomEle ); // What: Computed Style Object. Why: Visibility comes from the element's styles. How: This reads them.
+		const cmpStyObj = getComputedStyle( curDomEle ); // What: Computed Style Object. Why: Visibility comes from the element's styles. How: This reads them.
 		const eleRecObj = cliRecFun( curDomEle );        // What: Element Rect Object. Why: Tiny, empty, or clipped-away boxes don't count. How: This measures what shows of the element.
 
 
 
-		const disShoBoo = comStyObj.display !== 'none';                 // What: Display Shown Boolean. Why: An element with no display isn't drawn. How: This checks its display.
-		const visShoBoo = comStyObj.visibility !== 'hidden';            // What: Visibility Shown Boolean. Why: A hidden element isn't drawn. How: This checks its visibility.
-		const opaShoBoo = Number( comStyObj.opacity ) > 0;              // What: Opacity Shown Boolean. Why: A fully transparent element can't be seen. How: This checks its opacity.
+		const disShoBoo = cmpStyObj.display !== 'none';                 // What: Display Shown Boolean. Why: An element with no display isn't drawn. How: This checks its display.
+		const visShoBoo = cmpStyObj.visibility !== 'hidden';            // What: Visibility Shown Boolean. Why: A hidden element isn't drawn. How: This checks its visibility.
+		const opaShoBoo = Number( cmpStyObj.opacity ) > 0;              // What: Opacity Shown Boolean. Why: A fully transparent element can't be seen. How: This checks its opacity.
 		const ariShoBoo = !curDomEle.closest( '[aria-hidden="true"]' ); // What: ARIA Shown Boolean. Why: Decorative, hidden content isn't part of the layout being judged. How: This checks no ancestor hides it.
 		const widShoBoo = eleRecObj.width > 1;                          // What: Width Shown Boolean. Why: An empty box can't crowd anything. How: This checks its width.
 		const heiShoBoo = eleRecObj.height > 1;                         // What: Height Shown Boolean. Why: An empty box can't crowd anything. How: This checks its height.

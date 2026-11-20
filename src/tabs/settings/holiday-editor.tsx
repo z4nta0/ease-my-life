@@ -9,7 +9,7 @@ import React     from 'react';                       // What: React. Why: HolEdi
 
 import { ButBasCom   } from '../../ui/button.tsx';    // What: Button Base Component. Why: Adding a custom holiday needs a consistently-styled button. How: This is rendered in HolEdiCom's own add form.
 import { durMilFun   } from '../../utils/rhythm.ts';  // What: Duration Millisecond Function. Why: The row's exit timer must end with its exit animation. How: This returns a duration step's length in milliseconds.
-import { HOL_NAM_OBJ } from '../../core/holidays.ts'; // What: Holidays Namespace Object. Why: The Holidays section needs a holidays state even on an old save without one, and the computed U.S. holiday list for the current year. How: This is called via HOL_NAM_OBJ.resStaFun() and HOL_NAM_OBJ.comYeaFun() inside HolEdiCom.
+import { HOL_NAM_OBJ } from '../../core/holidays.ts'; // What: Holidays Namespace Object. Why: The Holidays section needs a holidays state even on an old save without one, and the computed U.S. holiday list for the current year. How: This is called via HOL_NAM_OBJ.resStaFun() and HOL_NAM_OBJ.cmpYeaFun() inside HolEdiCom.
 import { IcoSvgCom   } from '../../ui/icon.tsx';      // What: Icon SVG Component. Why: The custom-holiday delete button needs a small trash glyph. How: This is rendered with a specific name/size prop.
 
 
@@ -75,9 +75,9 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 
 	// #region Holiday Data
 
-	const curYeaNum = new Date().getFullYear();                              // What: Current Year Number. Why: The computed U.S. holiday list is specific to a single calendar year. How: This reads the real device's current year and is passed to HOL_NAM_OBJ.comYeaFun below.
+	const curYeaNum = new Date().getFullYear();                              // What: Current Year Number. Why: The computed U.S. holiday list is specific to a single calendar year. How: This reads the real device's current year and is passed to HOL_NAM_OBJ.cmpYeaFun below.
 	const holStaObj = HOL_NAM_OBJ.resStaFun( staAppObj.holidays );           // What: Holiday State Object. Why: A very old persisted state might not carry a holidays sub-object at all. How: This falls back to HOL_NAM_OBJ's own default shape when staAppObj.holidays is missing.
-	const comHolArr = HOL_NAM_OBJ.comYeaFun( curYeaNum, holStaObj.country ); // What: Computed Holiday Array. Why: The list needs every rule-computed U.S. holiday for the current year and country. How: This calls HOL_NAM_OBJ.comYeaFun with the current year and the user's saved country.
+	const cmpHolArr = HOL_NAM_OBJ.cmpYeaFun( curYeaNum, holStaObj.country ); // What: Computed Holiday Array. Why: The list needs every rule-computed U.S. holiday for the current year and country. How: This calls HOL_NAM_OBJ.cmpYeaFun with the current year and the user's saved country.
 	const disKeyArr = holStaObj.disabled || [];                              // What: Disabled Key Array. Why: A toggled-off computed holiday must still render, just marked disabled. How: This is checked per-row below via .includes to decide each row's on/off state.
 	const cusHolArr = holStaObj.custom || [];                                // What: Custom Holiday Array. Why: The user's own added recurring days off need to render in their own list, below the computed ones. How: This is mapped below into its own set of rows.
 
@@ -188,10 +188,10 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 				className={ cssModObj.holLisUno }
 
 				data-element-name-hook='holLisUno'
-			>{ /* What: Holiday List Ul Element. Why: This is the whole editable list, computed holidays first, then any custom ones. How: This maps comHolArr and then cusHolArr into their own rows below. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+			>{ /* What: Holiday List Ul Element. Why: This is the whole editable list, computed holidays first, then any custom ones. How: This maps cmpHolArr and then cusHolArr into their own rows below. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-				{ comHolArr.map( ( holCurObj ) => { // What: Computed Holiday Map. Why: One row is needed per rule-computed holiday for the current year. How: This maps comHolArr, deriving each row's own on/off state from disKeyArr before rendering it.
+				{ cmpHolArr.map( ( holCurObj ) => { // What: Computed Holiday Map. Why: One row is needed per rule-computed holiday for the current year. How: This maps cmpHolArr, deriving each row's own on/off state from disKeyArr before rendering it.
 
 
 					const holEnaBoo = !disKeyArr.includes( holCurObj.keyStr ); // What: Holiday Enabled Boolean. Why: A row's own switch and label both depend on whether this specific holiday is currently enabled. How: This is true unless the holiday's own key appears in disKeyArr.

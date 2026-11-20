@@ -166,7 +166,7 @@ const entLooFun = ( appStaObj : StaAppTyp, iteIdeStr : string ) : { status : Che
  * cheStaFun = Checklist Status Function
  *
  * @summary
- * Computes { totNum, donNum, rmnNum, comBoo } across every known
+ * Computes { totNum, donNum, rmnNum, fulBoo } across every known
  * checklist item. "donNum" means resolved (any status), regardless of
  * which of the 3 resolution paths (finished/skipped/cancelled) actually
  * produced it.
@@ -180,12 +180,12 @@ const entLooFun = ( appStaObj : StaAppTyp, iteIdeStr : string ) : { status : Che
  *
  * @example
  * ```ts
- * cheStaFun(appStaObj) // => { totNum, donNum, rmnNum, comBoo }
+ * cheStaFun(appStaObj) // => { totNum, donNum, rmnNum, fulBoo }
  * ```
  *
 */
 
-function cheStaFun ( appStaObj : StaAppTyp ) : { comBoo : boolean, donNum : number, rmnNum : number, totNum : number } {
+function cheStaFun ( appStaObj : StaAppTyp ) : { donNum : number, fulBoo : boolean, rmnNum : number, totNum : number } {
 
 
 	const totIteNum = CHE_IDE_ARR.length;                                                                // What: Total Item Number. Why: Every summary needs to know how many checklist items exist at all, as the denominator for "done". How: This is simply CHE_IDE_ARR's own length.
@@ -193,11 +193,11 @@ function cheStaFun ( appStaObj : StaAppTyp ) : { comBoo : boolean, donNum : numb
 
 
 
-	return { // What: Checklist Status Return. Why: The caller needs all 4 summary counts at once, in one plain object. How: This builds totNum/donNum directly from totIteNum/donIteNum above, then derives rmnNum and comBoo from them.
+	return { // What: Checklist Status Return. Why: The caller needs all 4 summary counts at once, in one plain object. How: This builds totNum/donNum directly from totIteNum/donIteNum above, then derives fulBoo and rmnNum from them.
 
 
-		comBoo : donIteNum === totIteNum, // What: Complete Boolean. Why: The caller needs to know at a glance whether every checklist item has been resolved. How: This is true only when donIteNum equals totIteNum, meaning nothing is left unresolved.
 		donNum : donIteNum,               // What: Done Number. Why: The caller needs the raw resolved-item count as one of the summary's own fields. How: This is donIteNum above, assigned under its own external property name.
+		fulBoo : donIteNum === totIteNum, // What: Full Boolean. Why: The caller needs to know at a glance whether every checklist item has been resolved. How: This is true only when donIteNum equals totIteNum, meaning nothing is left unresolved.
 		rmnNum : totIteNum - donIteNum,   // What: Remaining Number. Why: The caller needs to know how many items are still unresolved. How: This subtracts donIteNum from totIteNum.
 		totNum : totIteNum                // What: Total Number. Why: The caller needs the raw total-item count as one of the summary's own fields. How: This is totIteNum above, assigned under its own external property name.
 

@@ -3,8 +3,8 @@
 
 // #region Imports
 
-import { comPerFun } from './schedule.ts'; // What: Completed Period Function. Why: A period that already ran produces no pick. How: This checks the period against the log.
 import { dowValFun } from './dates.ts';    // What: Day-Of-Week Value Function. Why: Pickers can be limited to weekdays. How: This reads the day's weekday.
+import { fulPerFun } from './schedule.ts'; // What: Full Period Function. Why: A period that already ran produces no pick. How: This checks the period against the log.
 import { isaHolFun } from './holidays.ts'; // What: Is-A Holiday Function. Why: Pickers can skip holidays. How: This checks the day against the saved holidays.
 import { perStaFun } from './schedule.ts'; // What: Period Start Function. Why: Non-daily entries carry a period key. How: This finds the day's period start.
 
@@ -731,7 +731,7 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 
 
-			if ( comPerFun( picRcdObj, preStaObj.pickLog, dayIsoStr ) ) { // What: Period Run Branch. Why: A period that already ran produces nothing. How: This expects no entry.
+			if ( fulPerFun( picRcdObj, preStaObj.pickLog, dayIsoStr ) ) { // What: Period Run Branch. Why: A period that already ran produces nothing. How: This expects no entry.
 
 
 				if ( picEntArr.length ) issAddFun( `${ picRcdObj.name } picked again in a period that already ran` ); // What: Period Run Report. Why: The period is done. How: This reports any entry.

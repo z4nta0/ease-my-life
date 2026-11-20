@@ -3735,7 +3735,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			const nexTasArr = ( curStaObj.tasks || [] ).filter( ( curTasObj ) => !TAS_NAM_OBJ.isaComFun( curTasObj ) ); // What: Next Task Array. Why: Every Generate also drops completed one-time reminders outright, rather than waiting for a future reload/day-change. How: This keeps every task TAS_NAM_OBJ.isaComFun reports false for.
+			const nexTasArr = ( curStaObj.tasks || [] ).filter( ( curTasObj ) => !TAS_NAM_OBJ.isaFulFun( curTasObj ) ); // What: Next Task Array. Why: Every Generate also drops completed one-time reminders outright, rather than waiting for a future reload/day-change. How: This keeps every task TAS_NAM_OBJ.isaFulFun reports false for.
 
 
 

@@ -612,7 +612,7 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 
 		const rowDatObj = dayAgoFun( picRowObj.dayNum ); // What: Row Date Object. Why: This row's own real calendar date is needed both for its own date field and, if done, to build its own completedAt timestamp below. How: This resolves picRowObj's own dayNum offset via dayAgoFun.
 
-		let comTimStr = null; // What: Completed Timestamp String And Guard. Why: An entry that was never actually completed has no completion time at all. How: This starts null and is only overwritten below when picRowObj is done and carries a recorded hour.
+		let donTimStr = null; // What: Done Timestamp String And Guard. Why: An entry that was never actually completed has no completion time at all. How: This starts null and is only overwritten below when picRowObj is done and carries a recorded hour.
 
 
 		if ( picRowObj.done && picRowObj.houNum != null ) { // What: Done With Hour Check. Why: A completion timestamp only makes sense for a row that was actually completed and carries a recorded hour. How: This gates the timestamp construction below on both conditions holding at once.
@@ -624,17 +624,17 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 
 			rowTimObj.setHours( picRowObj.houNum, picRowObj.minNum!, 0, 0 ); // What: Row Timestamp Hours Set. Why: The source data's own recorded hour/minute is what makes this timestamp realistic rather than always midnight. How: This writes picRowObj's own houNum/minNum onto rowTimObj, zeroing seconds/milliseconds. // What: Non-Null Note. Why: The generator writes h and m from the same completion date, so a row with an hour always has a minute. How: The ! tells TypeScript m is set once h is.
 
-			comTimStr = rowTimObj.toISOString(); // What: Completed Timestamp String Assignment. Why: state.pickLog's own completedAt field expects an ISO string, not a date. How: This converts the just-set rowTimObj to its own ISO string form.
+			donTimStr = rowTimObj.toISOString(); // What: Done Timestamp String Assignment. Why: state.pickLog's own completedAt field expects an ISO string, not a date. How: This converts the just-set rowTimObj to its own ISO string form.
 
 
 		}
 
 
 
-		return { // What: Pick Log Row Return. Why: This is one hydrated row, in the exact shape state.pickLog itself expects. How: This builds the row from rowDatObj/comTimStr above plus picRowObj's own denormalized fields, passed through unchanged.
+		return { // What: Pick Log Row Return. Why: This is one hydrated row, in the exact shape state.pickLog itself expects. How: This builds the row from rowDatObj/donTimStr above plus picRowObj's own denormalized fields, passed through unchanged.
 
 
-			completedAt : comTimStr,                                  // What: Completed At. Why: state.pickLog's own completedAt field expects an ISO string when the row was actually completed, else null. How: This is comTimStr, resolved above.
+			completedAt : donTimStr,                                  // What: Completed At. Why: state.pickLog's own completedAt field expects an ISO string when the row was actually completed, else null. How: This is donTimStr, resolved above.
 			date        : isoDayFun( rowDatObj ),                     // What: Date. Why: Every pickLog row needs its own real calendar day. How: This converts rowDatObj to an ISO day string via isoDayFun.
 			done        : picRowObj.done,                             // What: Done. Why: The row must record whether this pick was ever actually completed. How: This is copied straight from picRowObj's own done.
 			eid         : null,                                       // What: Eid. Why: A real pickLog row always carries an entry id linking it back to a live Today entry, but a precomputed sample row has none. How: This is always null, since no real Today entry ever backed this hydrated row.

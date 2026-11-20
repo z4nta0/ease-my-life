@@ -199,7 +199,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 	let tarIndNum : number        = oriIndNum; // What: Target Index Number. Why: This is the currently-computed drop target, read by onRelPoiFun once the gesture ends. How: This starts at oriIndNum (no movement yet) and is reassigned by appShiFun on every recomputation.
 	let edgLooNum : number | null = null;      // What: Edge Loop Number. Why: The auto-scroll rAF loop must be cancellable on cleanup. How: This holds the current requestAnimationFrame id, reassigned every frame by edgLooFun itself.
 	let edgDirNum : number        = 0;         // What: Edge Direction Number. Why: edgLooFun needs to know which way (if any) to auto-scroll on its next frame. How: This is -1 for up, +1 for down, or 0 for no auto-scroll, set by onMovPoiFun.
-	let scrComNum : number        = 0;         // What: Scroll Compensation Number. Why: Auto-scroll movement must be folded into delCliNum so the dragged element and its siblings stay visually anchored under the pointer. How: This accumulates every actual scroll movement edgLooFun applies.
+	let scrOffNum : number        = 0;         // What: Scroll Offset Number. Why: Auto-scroll movement must be folded into delCliNum so the dragged element and its siblings stay visually anchored under the pointer. How: This accumulates every actual scroll movement edgLooFun applies.
 	let cleDonBoo : boolean       = false;     // What: Cleanup Done Boolean. Why: cleDraFun can be reached from more than one path and must not tear things down twice. How: This starts false and is flipped true on cleDraFun's own first run.
 
 	// #endregion Gesture State
@@ -401,7 +401,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 	 * requestAnimationFrame for as long as the gesture is active. While
 	 * the pointer sits near scrConEle's own top/bottom edge, this nudges
 	 * scrConEle's scrollTop and feeds the resulting movement back into
-	 * delCliNum (via scrComNum), so the dragged element and its siblings
+	 * delCliNum (via scrOffNum), so the dragged element and its siblings
 	 * stay visually anchored under the pointer instead of drifting.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
@@ -433,7 +433,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 			if ( movDelNum !== 0 ) { // What: Real Movement Guard. Why: Only an actual scroll movement should feed back into the gesture's own delta/shift state. How: This skips the compensation block entirely when movDelNum came out to 0.
 
 
-				scrComNum += movDelNum; // What: Scroll Compensation Accumulate. Why: onMovPoiFun's own next delta computation needs to account for every bit of auto-scroll that has happened so far. How: This adds this frame's own movement onto the running total.
+				scrOffNum += movDelNum; // What: Scroll Offset Accumulate. Why: onMovPoiFun's own next delta computation needs to account for every bit of auto-scroll that has happened so far. How: This adds this frame's own movement onto the running total.
 				delCliNum += movDelNum; // What: Delta Client Y Accumulate. Why: The dragged element and its siblings must visually track the auto-scroll immediately, not wait for the next pointermove. How: This adds this frame's own movement directly onto the running delta.
 
 				appShiFun(); // What: Shift Reapply Call. Why: The just-updated delCliNum needs to be reflected on screen right away. How: This recomputes the target and reapplies every transform.
@@ -491,7 +491,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 	function onMovPoiFun ( movEveObj : PointerEvent ) {
 
 
-		delCliNum = ( movEveObj.clientY - staCliNum ) + scrComNum; // What: Delta Client Y Recompute. Why: This is the gesture's own core measurement, combining the raw pointer movement with however much auto-scroll has already been compensated for. How: This subtracts the gesture's own start position from the pointer's current one, then adds scrComNum.
+		delCliNum = ( movEveObj.clientY - staCliNum ) + scrOffNum; // What: Delta Client Y Recompute. Why: This is the gesture's own core measurement, combining the raw pointer movement with however much auto-scroll has already been compensated for. How: This subtracts the gesture's own start position from the pointer's current one, then adds scrOffNum.
 
 		if ( scrConEle ) { // What: Scroll Container Present Guard. Why: Deciding an auto-scroll direction is meaningless without a scroll container to act on. How: This gates the whole edge-proximity check below on scrConEle actually being given.
 

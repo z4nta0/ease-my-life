@@ -469,10 +469,10 @@ function advValFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRc
 
 
 
-// #region carComFun
+// #region carFulFun
 
 /**
- * carComFun = Card Complete Function
+ * carFulFun = Card Full Function
  *
  * @summary
  * Day-off card completion. Drives a reset for ease-up and dynamic, or
@@ -490,12 +490,12 @@ function advValFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRc
  *
  * @example
  * ```ts
- * carComFun(conCurObj) // => patch object or null
+ * carFulFun(conCurObj) // => patch object or null
  * ```
  *
 */
 
-function carComFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRcdTyp > | null {
+function carFulFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRcdTyp > | null {
 
 
 	if ( !conCurObj ) return null; // What: No Conditional Guard. Why: There is nothing to reset or discharge for a conditional that does not exist. How: This returns null immediately when conCurObj is nullish.
@@ -549,7 +549,7 @@ function carComFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRc
 
 }
 
-// #endregion carComFun
+// #endregion carFulFun
 
 // #endregion Value Charging
 
@@ -563,7 +563,7 @@ const CON_NAM_OBJ = { // What: Conditionals Namespace Object. Why: This is the s
 
 
 	advValFun   : advValFun,   // What: Advance Value Function. Why: store.ts calls this on a dependent picker's own first completion of the day. How: This re-exports advValFun under its own matching name.
-	carComFun   : carComFun,   // What: Card Complete Function. Why: store.ts calls this when a day-off card itself is completed. How: This re-exports carComFun under its own matching name.
+	carFulFun   : carFulFun,   // What: Card Full Function. Why: store.ts calls this when a day-off card itself is completed. How: This re-exports carFulFun under its own matching name.
 	DEF_ODD_NUM : DEF_ODD_NUM, // What: Default Odds Number. Why: The store, the tabs, and the conditional editor fall back to the same odds for a conditional saved without its own. How: This re-exports DEF_ODD_NUM under its own matching name.
 	modValFun   : modValFun,   // What: Mode Value Function. Why: day-log.tsx and store.ts both check this to classify a conditional's own mode. How: This re-exports modValFun under its own matching name.
 	resDayFun   : resDayFun,   // What: Resolve Day Function. Why: store.ts calls this once per generate to roll/carry every conditional's own triggered state for the day. How: This re-exports resDayFun under its own matching name.
