@@ -211,6 +211,8 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 
+	// #region Conditional Resolution
+
 	let conIdeStr = null;  // What: Conditional Identifier String And Guard. Why: Both branches below need somewhere to record which conditional (if any) this toggle concerns. How: This starts null and is set by whichever branch below actually matches.
 	let trgValBoo = false; // What: Triggered Value Boolean And Guard. Why: Both branches below need somewhere to record whether this toggle counts as triggered. How: This starts false and is set alongside conIdeStr by whichever branch below actually matches, so it's always a real boolean once conIdeStr is.
 
@@ -253,7 +255,11 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 	if ( !curConObj || curConObj.active === false ) return curLogArr; // What: Inactive Guard. Why: An inactive conditional (or one that vanished) runs no logic and logs nothing. How: This returns curLogArr unchanged when curConObj is missing or explicitly inactive.
 
+	// #endregion Conditional Resolution
 
+
+
+	// #region Log Update
 
 	const curDayStr = isoDayFun();                                                                                       // What: Current Day String. Why: A conditionalLog row is keyed by conditional id plus this exact calendar day. How: This reads today's own isoDayFun().
 	const exiRowObj = curLogArr.find( ( curRowObj ) => curRowObj.condId === conIdeStr && curRowObj.date === curDayStr ); // What: Existing Row Object And Guard. Why: Only one row per conditional per cycle is ever kept. How: This looks up an existing row sharing conIdeStr and curDayStr.
@@ -305,6 +311,8 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 	return curLogArr.filter( ( curRowObj ) => !( curRowObj.condId === conIdeStr && curRowObj.date === curDayStr ) ); // What: Row-Removed Return. Why: The confirming completion is gone, so this cycle's own row must be dropped. How: This filters out the one row sharing conIdeStr and curDayStr.
+
+	// #endregion Log Update
 
 
 }
