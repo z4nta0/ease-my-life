@@ -652,6 +652,69 @@ function LogCloCom ( { onCloLogFun } : LlcProTyp ) : React.JSX.Element | null {
 
 
 
+type NmcProTyp = { modLabStr : string, neuModBoo : boolean, picNamStr : string }; // What: Name-Mode-Component Props Type. Why: A picker block's header names the picker and its mode. How: This types NamModCom's props.
+
+// #region NamModCom
+
+/**
+ * NamModCom = Name Mode Component
+ *
+ * @summary
+ * Renders a picker block header's name and mode pill side by side, the pill
+ * neutral for weighted and random pickers and revealing its whole label
+ * when it's cut short.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.modLabStr - Mode Label String: The picker mode's label.
+ * @param props.neuModBoo - Neutral Mode Boolean: Whether the pill reads
+ *                          neutral.
+ * @param props.picNamStr - Picker Name String: The picker's own name.
+ *
+ * @returns The name and mode span.
+ *
+ * @example
+ * ```tsx
+ * NamModCom({ modLabStr, neuModBoo, picNamStr }) // => <NamModCom />
+ * ```
+ *
+*/
+
+function NamModCom ( { modLabStr, neuModBoo, picNamStr } : NmcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<span className={ cssModObj.namModSpa }>{ /* What: Name Mode Span Element. Why: The picker's own name and mode pill are grouped together. How: This renders picNamStr plus its modLabStr pill. */ }
+
+
+			<span className={ cssModObj.bloNamSpa }>{ picNamStr }</span>{ /* What: Block Name Span Element. Why: The picker's own name is always shown first. How: This renders picNamStr directly. */ }
+
+
+
+			<InfTipCom
+				className={ cssModObj.picModSpa }
+
+				data-mode-neutral-active={ neuModBoo || undefined } // What: Mode Neutral Active Attribute. Why: Weighted and random pickers read neutral. How: This sets the presence-only attribute while neuModBoo is true.
+
+				labTexStr={ modLabStr }
+				trnOnlBoo
+			>{ modLabStr }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
+
+
+		</span>
+
+
+	);
+
+
+}
+
+// #endregion NamModCom
+
+
+
 type RlcProTyp = { onCloLogFun : () => void, staAppObj : StaAppTyp }; // What: Reminder-Log-Component Props Type. Why: The reminders' log panel covers every reminder and can be closed. How: This types RemLogCom's props.
 
 // #region RemLogCom
@@ -1498,69 +1561,6 @@ function ConSecCom ( { picGroArr, staAppObj } : CtcProTyp ) : React.JSX.Element 
 }
 
 // #endregion ConSecCom
-
-
-
-type NmcProTyp = { modLabStr : string, neuModBoo : boolean, picNamStr : string }; // What: Name-Mode-Component Props Type. Why: A picker block's header names the picker and its mode. How: This types NamModCom's props.
-
-// #region NamModCom
-
-/**
- * NamModCom = Name Mode Component
- *
- * @summary
- * Renders a picker block header's name and mode pill side by side, the pill
- * neutral for weighted and random pickers and revealing its whole label
- * when it's cut short.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param props.modLabStr - Mode Label String: The picker mode's label.
- * @param props.neuModBoo - Neutral Mode Boolean: Whether the pill reads
- *                          neutral.
- * @param props.picNamStr - Picker Name String: The picker's own name.
- *
- * @returns The name and mode span.
- *
- * @example
- * ```tsx
- * NamModCom({ modLabStr, neuModBoo, picNamStr }) // => <NamModCom />
- * ```
- *
-*/
-
-function NamModCom ( { modLabStr, neuModBoo, picNamStr } : NmcProTyp ) : React.JSX.Element {
-
-
-	return (
-
-
-		<span className={ cssModObj.namModSpa }>{ /* What: Name Mode Span Element. Why: The picker's own name and mode pill are grouped together. How: This renders picNamStr plus its modLabStr pill. */ }
-
-
-			<span className={ cssModObj.bloNamSpa }>{ picNamStr }</span>{ /* What: Block Name Span Element. Why: The picker's own name is always shown first. How: This renders picNamStr directly. */ }
-
-
-
-			<InfTipCom
-				className={ cssModObj.picModSpa }
-
-				data-mode-neutral-active={ neuModBoo || undefined } // What: Mode Neutral Active Attribute. Why: Weighted and random pickers read neutral. How: This sets the presence-only attribute while neuModBoo is true.
-
-				labTexStr={ modLabStr }
-				trnOnlBoo
-			>{ modLabStr }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
-
-
-		</span>
-
-
-	);
-
-
-}
-
-// #endregion NamModCom
 
 
 

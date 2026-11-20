@@ -277,6 +277,93 @@ const REM_MAT_ARR : { dynFun : ( oncEnaBoo : boolean, reuEnaBoo : boolean ) => R
 
 // #region Components
 
+type DtcProTyp = { colValBoo : boolean, kicTexStr : string, onClick : () => void, sumTexStr : string }; // What: Disclosure-Toggle-Component Props Type. Why: Each nested disclosure names itself, shows whether it's collapsed, and hints at what it hides. How: This types DisTogCom's props.
+
+// #region DisTogCom
+
+/**
+ * DisTogCom = Disclosure Toggle Component
+ *
+ * @summary
+ * Renders a nested disclosure's toggle: a chevron that points down while
+ * the disclosure is open, its kicker, and, while it's collapsed, a short
+ * summary of what it hides.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.colValBoo - Collapsed Value Boolean: Whether the disclosure
+ *                          is collapsed.
+ * @param props.kicTexStr - Kicker Text String: The disclosure's own label.
+ * @param props.onClick   - On Click: Called when the toggle is pressed.
+ * @param props.sumTexStr - Summary Text String: The hint shown while
+ *                          collapsed.
+ *
+ * @returns The disclosure toggle button.
+ *
+ * @example
+ * ```tsx
+ * DisTogCom({ colValBoo, kicTexStr, onClick, ... }) // => <DisTogCom />
+ * ```
+ *
+*/
+
+function DisTogCom ( { colValBoo, kicTexStr, onClick, sumTexStr } : DtcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<button
+			className={ cssModObj.catTogBut }
+
+			data-element-name-hook='catTogBut'
+
+			type='button'
+
+			aria-expanded={ !colValBoo }
+
+			onClick={ onClick }
+		>{ /* What: Category Toggle Button Element. Why: A nested disclosure needs its own toggle. How: This calls onClick, which flips its collapsed state. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+
+
+			<span className={ cssModObj.togLabSpa }>{ /* What: Toggle Label Span Element. Why: The chevron and the kicker read together as one unit. How: This wraps both spans below. */ }
+
+
+				<span
+					className={ cssModObj.chvDisSpa }
+
+					data-chevron-open-active={ !colValBoo || undefined } // What: Chevron Open Active Attribute. Why: An open disclosure points its chevron down. How: This sets the presence-only attribute while colValBoo is false.
+				>{ /* What: Chevron Span Element. Why: The chevron's own rotation communicates whether the disclosure is currently open. How: This rotates via data-chevron-open-active while colValBoo is false. */ }
+
+
+					<IcoSvgCom
+						icoNamStr='chvEle'
+						sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
+					/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at the m01 rhythm step. */ }
+
+
+				</span>
+
+				<span className={ cssModObj.togKicSpa }>{ kicTexStr }</span>{ /* What: Toggle Kicker Span Element. Why: This is the disclosure's own plain label. How: This renders kicTexStr. */ }
+
+
+			</span>
+
+			{ colValBoo && <span className={ cssModObj.togSumSpa }>{ sumTexStr }</span> }{ /* What: Toggle Summary Span Element. Why: A collapsed disclosure still needs a hint of how much content it's hiding. How: This renders sumTexStr only while colValBoo is true. */ }
+
+
+		</button>
+
+
+	);
+
+
+}
+
+// #endregion DisTogCom
+
+
+
 type OmcProTyp = { actStoObj : ActStoTyp, onCloConFun : () => void, remOptObj : RemOptTyp }; // What: Option-Matrix-Component Props Type. Why: The participation matrix edits both reminder classes' switches and closes its Controls body. How: This types OptMatCom's props.
 
 // #region OptMatCom
@@ -607,93 +694,6 @@ function RowIcoCom ( { isaOncBoo } : RicProTyp ) : React.JSX.Element {
 }
 
 // #endregion RowIcoCom
-
-
-
-type DtcProTyp = { colValBoo : boolean, kicTexStr : string, onClick : () => void, sumTexStr : string }; // What: Disclosure-Toggle-Component Props Type. Why: Each nested disclosure names itself, shows whether it's collapsed, and hints at what it hides. How: This types DisTogCom's props.
-
-// #region DisTogCom
-
-/**
- * DisTogCom = Disclosure Toggle Component
- *
- * @summary
- * Renders a nested disclosure's toggle: a chevron that points down while
- * the disclosure is open, its kicker, and, while it's collapsed, a short
- * summary of what it hides.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param props.colValBoo - Collapsed Value Boolean: Whether the disclosure
- *                          is collapsed.
- * @param props.kicTexStr - Kicker Text String: The disclosure's own label.
- * @param props.onClick   - On Click: Called when the toggle is pressed.
- * @param props.sumTexStr - Summary Text String: The hint shown while
- *                          collapsed.
- *
- * @returns The disclosure toggle button.
- *
- * @example
- * ```tsx
- * DisTogCom({ colValBoo, kicTexStr, onClick, ... }) // => <DisTogCom />
- * ```
- *
-*/
-
-function DisTogCom ( { colValBoo, kicTexStr, onClick, sumTexStr } : DtcProTyp ) : React.JSX.Element {
-
-
-	return (
-
-
-		<button
-			className={ cssModObj.catTogBut }
-
-			data-element-name-hook='catTogBut'
-
-			type='button'
-
-			aria-expanded={ !colValBoo }
-
-			onClick={ onClick }
-		>{ /* What: Category Toggle Button Element. Why: A nested disclosure needs its own toggle. How: This calls onClick, which flips its collapsed state. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
-
-
-			<span className={ cssModObj.togLabSpa }>{ /* What: Toggle Label Span Element. Why: The chevron and the kicker read together as one unit. How: This wraps both spans below. */ }
-
-
-				<span
-					className={ cssModObj.chvDisSpa }
-
-					data-chevron-open-active={ !colValBoo || undefined } // What: Chevron Open Active Attribute. Why: An open disclosure points its chevron down. How: This sets the presence-only attribute while colValBoo is false.
-				>{ /* What: Chevron Span Element. Why: The chevron's own rotation communicates whether the disclosure is currently open. How: This rotates via data-chevron-open-active while colValBoo is false. */ }
-
-
-					<IcoSvgCom
-						icoNamStr='chvEle'
-						sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
-					/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at the m01 rhythm step. */ }
-
-
-				</span>
-
-				<span className={ cssModObj.togKicSpa }>{ kicTexStr }</span>{ /* What: Toggle Kicker Span Element. Why: This is the disclosure's own plain label. How: This renders kicTexStr. */ }
-
-
-			</span>
-
-			{ colValBoo && <span className={ cssModObj.togSumSpa }>{ sumTexStr }</span> }{ /* What: Toggle Summary Span Element. Why: A collapsed disclosure still needs a hint of how much content it's hiding. How: This renders sumTexStr only while colValBoo is true. */ }
-
-
-		</button>
-
-
-	);
-
-
-}
-
-// #endregion DisTogCom
 
 
 
