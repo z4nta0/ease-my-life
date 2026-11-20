@@ -974,6 +974,8 @@ type PucProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onCloTouFun : () =
 function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, staAppObj } : PucProTyp ) : React.JSX.Element {
 
 
+	// #region Tour Setup
+
 	const picRcdObj = ( staAppObj.pickers || [] ).find( ( curPicObj ) => curPicObj.id === picIdeStr )!;               // What: Picker Record Object. Why: The intro modal and every mode-gating check below need this sample's own live picker record. How: This searches staAppObj.pickers for the entry whose own id matches picIdeStr. // What: Non-Null Note. Why: A picker tour only opens from a sample picker's card, so that picker exists. How: The ! tells TypeScript the find returns its record.
 	const picCopObj = PIC_COP_OBJ[ picIdeStr ];                                                                       // What: Picker Copy Object. Why: The intro modal's own second paragraph needs this sample's own copy. How: This looks up PIC_COP_OBJ by picIdeStr.
 	const modLabStr = ( ( SED_NAM_OBJ.MOD_DEF_OBJ[ picRcdObj.mode ] || {} ).labStr || picRcdObj.mode ).toLowerCase(); // What: Mode Label String. Why: The intro modal's own pill needs a human-readable mode label, not the raw mode key. How: This looks up SED_NAM_OBJ.MOD_DEF_OBJ by picRcdObj's own mode, falling back to the raw mode key, then lower-cases the result.
@@ -984,6 +986,8 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `picker-${ picIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding/tour-runner.tsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this picker's own tour id, otherwise null.
 
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuiTouCom running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
+
+	// #endregion Tour Setup
 
 
 
@@ -1071,6 +1075,8 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 
 
 
+	// #region Step List Build
+
 	const isaEasBoo = picRcdObj.mode === 'ease-up' || picRcdObj.mode === 'ease-down'; // What: Is-An Ease Boolean. Why: The Soonest/Latest steps only apply to Ease Up/Ease Down samples; every other mode's item editor does not have those rows at all. How: This checks picRcdObj's own mode against both ease mode keys.
 	const useWeiBoo = picRcdObj.mode === 'weighted' || picRcdObj.mode === 'dynamic';  // What: Uses Weight Boolean. Why: The Weight step is the mirror image of isaEasBoo; only Weighted/Dynamic samples get it. How: This checks picRcdObj's own mode against both weight-using mode keys.
 	const isaDynBoo = picRcdObj.mode === 'dynamic';                                   // What: Is-A Dynamic Boolean. Why: The Boost step is narrower still; only Dynamic samples (not plain Weighted) get that row at all. How: This checks picRcdObj's own mode against the dynamic mode key.
@@ -1095,6 +1101,8 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 
 
 	];
+
+	// #endregion Step List Build
 
 
 
