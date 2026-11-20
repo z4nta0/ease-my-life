@@ -33,7 +33,6 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * cycles (every row), and the fire rate.
  *
  * Sections:
- *  - Types
  *  - Helpers
  *  - Exports
  *
@@ -43,7 +42,7 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
 
 
 
-// #region Types
+// #region Helpers
 
 type ExpStaTyp = { // What: Expected Stats Type. Why: The simulation compares each figure with the screen. How: This holds every expected figure as the text the tab shows.
 
@@ -63,12 +62,6 @@ type ExpStaTyp = { // What: Expected Stats Type. Why: The simulation compares ea
 
 
 };
-
-// #endregion Types
-
-
-
-// #region Helpers
 
 // #region expStaFun
 
@@ -256,7 +249,7 @@ const expStaFun = ( staAppObj : StaAppTyp, todIsoStr : string, ranDayNum : numbe
 
 // #region Exports
 
-export { expStaFun, type ExpStaTyp }; // What: Named Exports. Why: The simulation compares the Stats tab with these figures. How: This exports expStaFun and its result type by name.
+export { expStaFun }; // What: Named Export. Why: The simulation compares the Stats tab with these figures. How: This exports expStaFun by name.
 
 // #endregion Exports
 

@@ -24,7 +24,6 @@ import type { SynManTyp } from '../../src/state/sync-engine.ts'; // What: Sync M
  * deleted the cloud copy.
  *
  * Sections:
- *  - Types
  *  - Helpers
  *  - Exports
  *
@@ -34,7 +33,7 @@ import type { SynManTyp } from '../../src/state/sync-engine.ts'; // What: Sync M
 
 
 
-// #region Types
+// #region Helpers
 
 type FakBacTyp = SynBacTyp & { // What: Fake Backend Type. Why: Tests read what the fake holds and how it was called. How: This adds those to the backend's calls.
 
@@ -48,12 +47,6 @@ type FakBacTyp = SynBacTyp & { // What: Fake Backend Type. Why: Tests read what 
 
 
 };
-
-// #endregion Types
-
-
-
-// #region Helpers
 
 // #region fakBacFun
 
@@ -164,7 +157,7 @@ function fakBacFun () : FakBacTyp {
 
 // #region Exports
 
-export { fakBacFun, type FakBacTyp }; // What: Named Exports. Why: The sync spec creates fakes through fakBacFun. How: This exports it and its type by name.
+export { fakBacFun }; // What: Named Export. Why: The sync spec creates fakes through fakBacFun. How: This exports it by name.
 
 // #endregion Exports
 
