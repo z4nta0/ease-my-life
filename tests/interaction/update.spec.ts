@@ -54,6 +54,47 @@ const UPD_MOD_STR = '/src/platform/update.ts'; // What: Update Module String. Wh
 
 // #region Helpers
 
+// #region hidArrFun
+
+/**
+ * hidArrFun = Hidden Arrival Function
+ *
+ * @summary
+ * Brings a new version in while the app is out of sight: it hides the app,
+ * fires the faked control change, and shows the app again, so a test can
+ * check what a held-back update leaves on screen.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curPagObj - Current Page Object: The page whose app takes the
+ *                    update.
+ *
+ * @returns A promise that settles once the app is visible again, with no
+ * value.
+ *
+ * @example
+ * ```ts
+ * await hidArrFun(page) // => Promise<void>
+ * ```
+ *
+*/
+
+async function hidArrFun ( curPagObj : Page ) : Promise< void > {
+
+
+	await visSetFun( curPagObj, 'hidden' ); // What: Hide Call. Why: The app would reload at once if nothing were holding it back. How: This hides the app.
+
+	await conChaFun( curPagObj ); // What: Control Change Call. Why: A new version has taken over. How: This fires the event.
+
+	await visSetFun( curPagObj, 'visible' ); // What: Show Call. Why: The note shows once the person comes back. How: This shows the app again.
+
+
+}
+
+// #endregion hidArrFun
+
+
+
 // #region synSetFun
 
 /**
@@ -157,15 +198,7 @@ test( 'a new version reaching a hidden app with an editor open waits and shows t
 
 
 
-	// #region Hidden Update Arrival
-
-	await visSetFun( curPagObj, 'hidden' ); // What: Hide Call. Why: The app would reload if nothing were being edited. How: This hides the app.
-
-	await conChaFun( curPagObj ); // What: Control Change Call. Why: A new version has taken over. How: This fires the event.
-
-	await visSetFun( curPagObj, 'visible' ); // What: Show Call. Why: The person comes back to the form. How: This shows the app again.
-
-	// #endregion Hidden Update Arrival
+	await hidArrFun( curPagObj ); // What: Hidden Arrival Call. Why: The update has to reach the app while it's hidden, and its note shows once the person comes back. How: This hides the app, fires the control change, and shows the app again.
 
 
 
@@ -199,15 +232,7 @@ test( 'a new version reaching a hidden app waits while sync is busy, then reload
 
 
 
-	// #region Hidden Update Arrival
-
-	await visSetFun( curPagObj, 'hidden' ); // What: Hide Call. Why: The app would reload if sync weren't busy. How: This hides the app.
-
-	await conChaFun( curPagObj ); // What: Control Change Call. Why: A new version has taken over. How: This fires the event.
-
-	await visSetFun( curPagObj, 'visible' ); // What: Show Call. Why: The note confirms the update was held back. How: This shows the app again.
-
-	// #endregion Hidden Update Arrival
+	await hidArrFun( curPagObj ); // What: Hidden Arrival Call. Why: The update has to reach the app while it's hidden, and its note shows once the person comes back. How: This hides the app, fires the control change, and shows the app again.
 
 
 
