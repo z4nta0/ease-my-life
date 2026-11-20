@@ -387,14 +387,24 @@ test( 'the raw home page carries its full link preview', async ( { request : req
 test( 'every icon the head links to is served at its size', async ( { page : curPagObj, request : reqCotObj } ) => { // What: Icons Test. Why: Browsers and apps fetch the icons the head names, and some show them beside a link's card, so a missing or wrong-sized one shows a blank or blurry mark. How: This reads every icon link and checks each file is served, the SVG as an SVG, the ICO as an icon file, and each PNG at the size its link promises.
 
 
+	// #region Icon Link Reading
+
 	await curPagObj.goto( '/' ); // What: Home Load Call. Why: The icon links live in the page's head. How: This opens the app.
 
 
 	const icoLinArr = await curPagObj.locator( 'link[rel="icon"], link[rel="apple-touch-icon"]' ).evaluateAll( ( linEleArr ) => linEleArr.map( ( linCurEle ) => [ linCurEle.getAttribute( 'href' ) || '', linCurEle.getAttribute( 'sizes' ) || '' ] ) ); // What: Icon Link Array. Why: Each icon is checked against its own link. How: This reads every icon link's address and size.
 
+	// #endregion Icon Link Reading
+
+
+
+	// #region Icon List Checks
 
 	expect( icoLinArr.map( ( [ icoHreStr ] ) => icoHreStr ) ).toContain( 'assets/apple-touch-icon.png' ); // What: Touch Icon Assertion. Why: iOS and some apps draw the app's mark from this link. How: This checks it's linked.
 	expect( icoLinArr.length ).toBe( 6 );                                                                 // What: Icon Count Assertion. Why: The set is the SVG, two small PNGs, the ICO, the large PNG, and the Apple touch icon. How: This checks all six are linked.
+
+	// #endregion Icon List Checks
+
 
 
 	for ( const [ icoHreStr, icoSizStr ] of icoLinArr ) { // What: Icon Check Loop. Why: Every linked icon has to be real. How: This fetches each one in turn.
