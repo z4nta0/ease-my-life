@@ -46,7 +46,7 @@ type NscProTyp = { ariLabStr : string, maxValNum? : number, minValNum? : number,
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.ariLabStr   - Aria Label String: The accessible name for the
+ * @param props.ariLabStr   - ARIA Label String: The accessible name for the
  *                            whole stepper group and its own text input.
  * @param props.maxValNum   - Maximum Value Number: The highest allowed value;
  *                            defaults to 99.

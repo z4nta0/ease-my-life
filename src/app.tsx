@@ -11,7 +11,7 @@ import { APP_NAM_OBJ  } from './platform/appearance.ts';         // What: Appear
 import { BacFloCom    } from './ui/bg-flourish.tsx';             // What: Background Flourish Component. Why: The decorative background glyphs are rendered behind every non-Today tab. How: This is passed the shared maiInnDiv ref and the current tab id.
 import { durMilFun    } from './utils/rhythm.ts';                // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { FeaTouCom    } from './onboarding/app-features.tsx';    // What: Feature Tour Component. Why: This drives the App Features tutorial overlay. How: This is rendered while actFeaStr holds a feature id, passed the shared state/actions and a close handler.
-import { IcoSvgCom    } from './ui/icon.tsx';                    // What: Icon Svg Component. Why: Every tab button needs a recognizable glyph alongside its label. How: This is rendered inside TabBarCom with the name from each tab's own icoStr.
+import { IcoSvgCom    } from './ui/icon.tsx';                    // What: Icon SVG Component. Why: Every tab button needs a recognizable glyph alongside its label. How: This is rendered inside TabBarCom with the name from each tab's own icoStr.
 import { modCliFun    } from './utils/click.ts';                 // What: Modified Click Function. Why: The skip link leaves a modified click to the browser. How: This is checked first in the skip link's click handler.
 import { PagTouCom    } from './onboarding/page-tours.tsx';      // What: Page Tour Component. Why: This drives the currently-running "Explore the page" mini-tour. How: This is rendered while actPagStr holds a page id.
 import { PicTouCom    } from './onboarding/picker-tours.tsx';    // What: Picker Tour Component. Why: This drives the currently-running sample-picker mini-tour. How: This is rendered while actPicStr holds a picker id.
@@ -110,7 +110,7 @@ type TbcProTyp = { actIdeStr : string, className? : string, onChange : ( tabIdeS
  *                            closed.
  * @param props.raiOpeBoo   - Rail Open Boolean: {@link raiOpeBoo}
  * @param props.tabPlaStr   - Tab Placement String: {@link tabPlaStr}
- * @param props.tbcGhoBoo   - Tab-Bar-Com Ghost Boolean: Marks this as a
+ * @param props.tbcGhoBoo   - Tab-Bar-Component Ghost Boolean: Marks this as a
  *                            decorative ghost copy during a placement-change
  *                            animation; defaults to false.
  *
@@ -280,7 +280,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 							fill='none'
 							viewBox='8 8 528 528'
-						>{ /* What: Logo Svg Element. Why: This draws the small square logo mark that accompanies the wordmark text. How: This is a simplified copy of the tab headers' logo svg, without the grid lines or clipped badge outline. */ }
+						>{ /* What: Logo SVG Element. Why: This draws the small square logo mark that accompanies the wordmark text. How: This is a simplified copy of the tab headers' logo svg, without the grid lines or clipped badge outline. */ }
 
 
 							<path
@@ -341,7 +341,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 						icoNamStr={ tabConObj.icoStr }
 						sizSteStr='p01' // Vertical Rhythm Base Plus 1 ~= 19.304px
-					/>{ /* What: Icon Svg Component. Why: Every tab needs a recognizable glyph alongside its label. How: This renders the icon named by the tab's own icoStr at a fixed size. */ }
+					/>{ /* What: Icon SVG Component. Why: Every tab needs a recognizable glyph alongside its label. How: This renders the icon named by the tab's own icoStr at a fixed size. */ }
 
 					<span className={ cssModObj.tabLabSpa }>{ tabConObj.labStr }</span>{ /* What: Label Span Element. Why: Every tab needs its own visible text label. How: This renders the tab's own labStr. */ }
 
@@ -375,7 +375,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 					strokeWidth='2.2'
 					viewBox='0 0 24 24'
 					width='16'
-				>{ /* What: Chevron Svg Element. Why: The handle needs a small directional icon showing which way it will move. How: This is a fixed-viewBox icon whose single path flips direction based on raiOpeBoo. */ }
+				>{ /* What: Chevron SVG Element. Why: The handle needs a small directional icon showing which way it will move. How: This is a fixed-viewBox icon whose single path flips direction based on raiOpeBoo. */ }
 
 
 					<path d={ raiOpeBoo ? 'M 15 6 L 9 12 L 15 18' : 'M 9 6 L 15 12 L 9 18' } />{ /* What: Chevron Path Element. Why: This draws the actual arrow shape the handle icon shows. How: This switches between a left-pointing and right-pointing chevron based on raiOpeBoo. */ }
@@ -482,7 +482,7 @@ function AppRooCom () : React.JSX.Element {
 
 
 
-		return ( actTouObj && typeof actTouObj.id === 'string' && actTouObj.id.startsWith( 'picker-' ) ) ? actTouObj.id.slice( 'picker-'.length ) : null; // What: Resumed Picker Id Return. Why: Only a "picker-" prefixed activeTour id belongs to this state. How: This strips the "picker-" prefix and returns the remaining id, or null if no matching tour was active.
+		return ( actTouObj && typeof actTouObj.id === 'string' && actTouObj.id.startsWith( 'picker-' ) ) ? actTouObj.id.slice( 'picker-'.length ) : null; // What: Resumed Picker ID Return. Why: Only a "picker-" prefixed activeTour id belongs to this state. How: This strips the "picker-" prefix and returns the remaining id, or null if no matching tour was active.
 
 
 	} );
@@ -495,7 +495,7 @@ function AppRooCom () : React.JSX.Element {
 
 
 
-		return ( actTouObj && typeof actTouObj.id === 'string' && actTouObj.id.startsWith( 'page-' ) ) ? actTouObj.id.slice( 'page-'.length ) : null; // What: Resumed Page Id Return. Why: Only a "page-" prefixed activeTour id belongs to this state. How: This strips the "page-" prefix and returns the remaining id, or null if no matching tour was active.
+		return ( actTouObj && typeof actTouObj.id === 'string' && actTouObj.id.startsWith( 'page-' ) ) ? actTouObj.id.slice( 'page-'.length ) : null; // What: Resumed Page ID Return. Why: Only a "page-" prefixed activeTour id belongs to this state. How: This strips the "page-" prefix and returns the remaining id, or null if no matching tour was active.
 
 
 	} );
@@ -508,7 +508,7 @@ function AppRooCom () : React.JSX.Element {
 
 
 
-		return ( actTouObj && typeof actTouObj.id === 'string' && actTouObj.id.startsWith( 'appfeature-' ) ) ? actTouObj.id.slice( 'appfeature-'.length ) : null; // What: Resumed Feature Id Return. Why: Only an "appfeature-" prefixed activeTour id belongs to this state. How: This strips the "appfeature-" prefix and returns the remaining id, or null if no matching tour was active.
+		return ( actTouObj && typeof actTouObj.id === 'string' && actTouObj.id.startsWith( 'appfeature-' ) ) ? actTouObj.id.slice( 'appfeature-'.length ) : null; // What: Resumed Feature ID Return. Why: Only an "appfeature-" prefixed activeTour id belongs to this state. How: This strips the "appfeature-" prefix and returns the remaining id, or null if no matching tour was active.
 
 
 	} );

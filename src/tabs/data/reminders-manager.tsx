@@ -13,7 +13,7 @@ import { colMapFun    } from '../../state/store.ts';                // What: Col
 import { durMilFun    } from '../../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { EdiFooCom    } from '../../ui/editor-footer.tsx';          // What: Editor Footer Component. Why: Every reminder editor ends with the same Delete/Cancel/Save row. How: This is rendered at the bottom of each reminder editor.
 import { freEdiFun    } from './list-sorting.ts';                   // What: Freeze Edited Function. Why: The Data tab's reminder list must not visibly reorder out from under an open editor as its own fields change. How: This is called once to compute disTasArr from sorTasArr.
-import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon Svg Component. Why: Every reminder row and button needs a recognizable glyph. How: This is rendered throughout OptMatCom and RemManCom.
+import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: Every reminder row and button needs a recognizable glyph. How: This is rendered throughout OptMatCom and RemManCom.
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add button in RemManCom.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Adding a reminder must stay disabled while any onboarding tutorial is still in progress. How: This is read via its own tutProFun helper in RemManCom.
 import { redMotFun    } from '../../utils/motion.ts';               // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant close or remove instead of a timed animation. How: This is checked before every staged animation in RemManCom.
@@ -340,7 +340,7 @@ function DisTogCom ( { colValBoo, kicTexStr, onClick, sumTexStr } : DtcProTyp ) 
 					<IcoSvgCom
 						icoNamStr='chvEle'
 						sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
-					/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at the m01 rhythm step. */ }
+					/>{ /* What: Icon SVG Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at the m01 rhythm step. */ }
 
 
 				</span>
@@ -683,7 +683,7 @@ function RowIcoCom ( { isaOncBoo } : RicProTyp ) : React.JSX.Element {
 			<IcoSvgCom
 				icoNamStr={ isaOncBoo ? 'pinEle' : 'calEle' } // What: Type Icon Pick. Why: A one-time reminder and a recurring one look different at a glance. How: This picks the pin while isaOncBoo and the calendar otherwise.
 				sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-			/>{ /* What: Icon Svg Component. Why: The row's own icon needs to distinguish a one-time reminder from a recurring one at a glance. How: This renders 'pin' while isaOncBoo, 'calendar' otherwise, at a small 15px size. */ }
+			/>{ /* What: Icon SVG Component. Why: The row's own icon needs to distinguish a one-time reminder from a recurring one at a glance. How: This renders 'pin' while isaOncBoo, 'calendar' otherwise, at a small 15px size. */ }
 
 
 		</span>
@@ -1070,7 +1070,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 						<IcoSvgCom
 							icoNamStr='chvEle'
 							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-						/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the whole section's own disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at the bas rhythm step. */ }
+						/>{ /* What: Icon SVG Component. Why: A chevron glyph gives the whole section's own disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at the bas rhythm step. */ }
 
 
 					</span>
@@ -1172,7 +1172,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 									<IcoSvgCom
 										icoNamStr='pluEle'
 										sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-									/>{ /* What: Icon Svg Component. Why: This is the add control's own visible glyph, read together with the literal "New reminder" label right after it. How: This renders the 'pluEle' icon. */ } New reminder
+									/>{ /* What: Icon SVG Component. Why: This is the add control's own visible glyph, read together with the literal "New reminder" label right after it. How: This renders the 'pluEle' icon. */ } New reminder
 
 
 								</InfTipCom>
@@ -1193,7 +1193,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 									<IcoSvgCom
 										icoNamStr='pluEle'
 										sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-									/>{ /* What: Icon Svg Component. Why: This is the add control's own visible glyph, read together with the literal "New reminder" label right after it. How: This renders the 'pluEle' icon. */ } New reminder
+									/>{ /* What: Icon SVG Component. Why: This is the add control's own visible glyph, read together with the literal "New reminder" label right after it. How: This renders the 'pluEle' icon. */ } New reminder
 
 
 								</button>
@@ -1329,7 +1329,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 															<IcoSvgCom
 																icoNamStr='chvEle'
 																sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-															/>{ /* What: Icon Svg Component. Why: A chevron glyph gives this row's own open editor a recognizable close affordance. How: This renders the 'chvEle' icon at the bas rhythm step. */ }
+															/>{ /* What: Icon SVG Component. Why: A chevron glyph gives this row's own open editor a recognizable close affordance. How: This renders the 'chvEle' icon at the bas rhythm step. */ }
 
 
 														</button>
@@ -1390,7 +1390,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 															<IcoSvgCom
 																icoNamStr='chvEle'
 																sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-															/>{ /* What: Icon Svg Component. Why: A chevron glyph gives this closed row's own real toggle a recognizable open affordance. How: This renders the 'chvEle' icon at the bas rhythm step. */ }
+															/>{ /* What: Icon SVG Component. Why: A chevron glyph gives this closed row's own real toggle a recognizable open affordance. How: This renders the 'chvEle' icon at the bas rhythm step. */ }
 
 
 														</span>

@@ -15,7 +15,7 @@ import { createPortal } from 'react-dom';          // What: Create Portal. Why: 
 import { detEdgFun    } from './geometry.ts';      // What: Detect Edge Function. Why: A clipped highlight needs to know which of its edges touch chrome. How: This is called once per clipped target.
 import { finTarFun    } from './geometry.ts';      // What: Find Target Function. Why: Each help item names its target by selector, which may match several elements. How: This is called once per help item.
 import { HelTipCom    } from './tooltip.tsx';      // What: Help Tip Component. Why: A clicked badge reveals its own target's tip. How: This is rendered once for the open help item, given its target rect and item.
-import { IcoSvgCom    } from '../ui/icon.tsx';     // What: Icon Svg Component. Why: The navigation help item's own bodEle renders each tab's real nav icon next to its label. How: This is rendered once per tab entry inside NAV_HEL_OBJ's own bodEle JSX.
+import { IcoSvgCom    } from '../ui/icon.tsx';     // What: Icon SVG Component. Why: The navigation help item's own bodEle renders each tab's real nav icon next to its label. How: This is rendered once per tab entry inside NAV_HEL_OBJ's own bodEle JSX.
 import { isaTruFun    } from '../utils/guard.ts';  // What: Is-A Truthy Function. Why: The chrome matches drop their misses before being measured. How: This filters them so the rest read as real matches.
 import { rhyPixFun    } from '../utils/rhythm.ts'; // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { scrBehFun    } from '../utils/motion.ts'; // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
@@ -717,7 +717,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 			setRecMapObj( {} );   // What: Rect Map Clear. Why: No rect should stay considered on-screen once help mode is off. How: This resets recMapObj back to its own empty default.
-			setOpeIdeStr( null ); // What: Open Id Clear. Why: No tip should stay marked open once help mode is off. How: This resets opeIdeStr back to null.
+			setOpeIdeStr( null ); // What: Open ID Clear. Why: No tip should stay marked open once help mode is off. How: This resets opeIdeStr back to null.
 			setTogRecObj( null ); // What: Toggle Rect Clear. Why: The toggle button's own cutout must disappear along with everything else. How: This resets togRecObj back to null.
 
 
@@ -913,7 +913,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 				height={ vieHeiNum }
 				width={ vieWidNum }
-			>{ /* What: Help Dim Svg Element. Why: This paints the single dim layer with cutouts for every currently-highlighted target. How: This wraps a <mask> defining the cutouts and a full-viewport <rect> filled through that mask below. */ }
+			>{ /* What: Help Dim SVG Element. Why: This paints the single dim layer with cutouts for every currently-highlighted target. How: This wraps a <mask> defining the cutouts and a full-viewport <rect> filled through that mask below. */ }
 
 
 				<mask id='helDimMas'>{ /* What: Help Mask Element. Why: One shared SVG mask lets arbitrarily many cutouts coexist in a single dim layer, instead of the guided tour's own single-spotlight box-shadow trick. How: This paints a full white rect, then one black rounded-rect per highlighted target/toggle button below. */ }
@@ -1029,7 +1029,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
-				return badIdeArr.map( ( curIdeStr ) => { // What: Badge Id Map. Why: Every id this item resolved to above needs its own rendered badge button. How: This maps badIdeArr, reading each one's own current rect back out of recMapObj.
+				return badIdeArr.map( ( curIdeStr ) => { // What: Badge ID Map. Why: Every id this item resolved to above needs its own rendered badge button. How: This maps badIdeArr, reading each one's own current rect back out of recMapObj.
 
 
 					const curRecObj = recMapObj[ curIdeStr ];                     // What: Current Rect Object. Why: The badge's own position and its title function (if any) both need this id's own current rect. How: This reads curIdeStr straight out of recMapObj.

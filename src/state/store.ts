@@ -15,7 +15,7 @@ import { enpAplFun   } from './pending-mutations.ts';    // What: Entry-Pending 
 import { enpRevFun   } from './pending-mutations.ts';    // What: Entry-Pending Revert Function. Why: Unchecking a done entry must restore exactly what completing it changed. How: This is called when an entry is unchecked.
 import { HOL_NAM_OBJ } from '../core/holidays.ts';       // What: Holidays Namespace Object. Why: The holiday-editing actions need a holidays state even on an old save without one. How: This is called (resStaFun) from the holiday actions below.
 import { invColFun   } from '../utils/color.ts';         // What: Invert Color Function. Why: A custom theme's other half is derived from whichever color the user edited. How: This is called in setCusFun with the edited hex color.
-import { isoDayFun   } from '../utils/date.ts';          // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
+import { isoDayFun   } from '../utils/date.ts';          // What: ISO Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { logRowFun   } from './pick-log.ts';             // What: Log Row Function. Why: Every pick that lands on Today appends one pick-log row. How: This is called with the state and the pick's own fields.
 import { migStaFun   } from './migrate.ts';              // What: Migrate State Function. Why: Every loaded or imported state must be brought up to the current shape. How: This is called on load and on import.
 import { MIR_KEY_STR } from './storage.ts';              // What: Mirror Key String. Why: The fallback paths keep the warm mirror's own key when the storage engine can't be used. How: This is the localStorage key the fallback reads and writes under.
@@ -25,7 +25,7 @@ import { norConFun   } from '../core/pickers.ts';        // What: Normalize Cond
 import { norGroFun   } from '../core/pickers.ts';        // What: Normalize Group Function. Why: A picker's own group label needs tidying/de-duplication in several places. How: This is called from renGroFun/renTouFun and the picker-authoring actions below.
 import { norPicFun   } from '../core/pickers.ts';        // What: Normalize Picker Function. Why: A picker's own display name needs tidying wherever one is created or renamed. How: This is called from addPicFun, savEdiFun, and renPicFun below.
 import { ONB_CHE_OBJ } from './onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Resolving a checklist item can flip the closing Generate card's own readiness. How: This is called (reaGenFun) from setCarFun below.
-import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicFun below.
+import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-IDs Array. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicFun below.
 import { PIC_NAM_OBJ } from '../core/pickers.ts';        // What: Pickers Namespace Object. Why: Pickers, items, and conditionals with no threshold or drift band of their own fall back to the shared defaults. How: This reads PIC_NAM_OBJ.THR_VAL_NUM and DEF_EAS_OBJ wherever one is resolved.
 import { PWA_NAM_OBJ } from '../platform/pwa.ts';        // What: Progressive Web App Namespace Object. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (askFirFun) once, from inside addPicFun below.
 import { ranIdeFun   } from '../utils/random-id.ts';     // What: Random Identifier Function. Why: New pickers, items, conditionals, holidays, and log rows each need a fresh id. How: This mints one from each kind's own prefix.
@@ -318,7 +318,7 @@ function loaStaFun () {
 	try { // What: Localstorage Fallback Attempt. Why: This is the last-resort source when STG_NAM_OBJ itself failed to load at all. How: This returns migStaFun() of the parsed localStorage value, when there is one.
 
 
-		const rawJsoStr = localStorage.getItem( MIR_KEY_STR ); // What: Raw Json String And Guard. Why: There may be nothing stored under this key yet. How: This reads MIR_KEY_STR from localStorage, null when absent.
+		const rawJsoStr = localStorage.getItem( MIR_KEY_STR ); // What: Raw JSON String And Guard. Why: There may be nothing stored under this key yet. How: This reads MIR_KEY_STR from localStorage, null when absent.
 
 
 		if ( rawJsoStr ) return migStaFun( JSON.parse( rawJsoStr ) ); // What: Localstorage-Hit Return. Why: A parsed localStorage value is the fallback path's own normal case. How: This returns migStaFun() of the JSON-parsed rawJsoStr as soon as one exists.
@@ -379,7 +379,7 @@ function madConFun ( newConObj : Partial< ConRcdTyp > | null | undefined ) : Con
 		chargedToday : false,                                                                                        // What: Charged Today. Why: A brand-new conditional hasn't charged yet today, so its per-day charge guard starts clear. How: This is false.
 		easeMax      : newConObj.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax,                                         // What: Ease Max. Why: An ease-mode conditional needs the upper end of its own drift band. How: This reads newConObj.easeMax, defaulting to the pickers' default band, DEF_EAS_OBJ.
 		easeMin      : newConObj.easeMin ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin,                                         // What: Ease Min. Why: An ease-mode conditional needs the lower end of its own drift band. How: This reads newConObj.easeMin, defaulting to the pickers' default band, DEF_EAS_OBJ.
-		id           : ranIdeFun( 'cnd_' ),                                                                          // What: Id. Why: The picker below attaches to this conditional by id, so it must exist before the picker is built. How: This mints a random 'cnd_' id.
+		id           : ranIdeFun( 'cnd_' ),                                                                          // What: ID. Why: The picker below attaches to this conditional by id, so it must exist before the picker is built. How: This mints a random 'cnd_' id.
 		mode         : newConObj.mode || 'random',                                                                   // What: Mode. Why: The mode decides how this conditional rolls or charges each day. How: This reads newConObj.mode, defaulting to 'random'.
 		name         : norConFun( newConObj.name ) || newConObj.name || 'Conditional',                               // What: Name. Why: The conditional needs a tidied display name. How: This title-cases newConObj.name via norConFun, falling back to the raw name, then 'Conditional'.
 		oddsPct      : newConObj.oddsPct ?? CON_NAM_OBJ.DEF_ODD_NUM,                                                 // What: Odds Percent. Why: A probability-mode conditional needs its own daily firing odds. How: This reads newConObj.oddsPct, defaulting to CON_NAM_OBJ.DEF_ODD_NUM.
@@ -1263,7 +1263,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 					chargedToday : false,                                                                                        // What: Charged Today. Why: A brand-new conditional hasn't charged yet today, so its per-day charge guard starts clear. How: This is false.
 					easeMax      : conArgObj.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax,                                         // What: Ease Max. Why: An ease-mode conditional needs the upper end of its own drift band. How: This reads conArgObj.easeMax, defaulting to the pickers' default band, DEF_EAS_OBJ.
 					easeMin      : conArgObj.easeMin ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin,                                         // What: Ease Min. Why: An ease-mode conditional needs the lower end of its own drift band. How: This reads conArgObj.easeMin, defaulting to the pickers' default band, DEF_EAS_OBJ.
-					id           : conArgObj.id || ranIdeFun( 'cnd_' ),                                                          // What: Id. Why: Every conditional needs a stable id pickers can link to. How: This uses conArgObj.id when given, else mints a random 'cnd_' id.
+					id           : conArgObj.id || ranIdeFun( 'cnd_' ),                                                          // What: ID. Why: Every conditional needs a stable id pickers can link to. How: This uses conArgObj.id when given, else mints a random 'cnd_' id.
 					mode         : conArgObj.mode || 'ease-up',                                                                  // What: Mode. Why: The mode decides how this conditional rolls or charges each day. How: This reads conArgObj.mode, defaulting to 'ease-up'.
 					name         : conArgObj.name || 'Conditional',                                                              // What: Name. Why: The conditional needs a display name across the Data tab and its own day-off card. How: This reads conArgObj.name, defaulting to 'Conditional'.
 					oddsPct      : conArgObj.oddsPct ?? CON_NAM_OBJ.DEF_ODD_NUM,                                                 // What: Odds Percent. Why: A probability-mode conditional needs its own daily firing odds. How: This reads conArgObj.oddsPct, defaulting to CON_NAM_OBJ.DEF_ODD_NUM.
@@ -1728,7 +1728,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 				day   : dayValNum,            // What: Day. Why: The holiday recurs on this day of the month every year. How: This is dayValNum.
-				id    : ranIdeFun( 'h_', 5 ), // What: Id. Why: A custom holiday must be removable by its own unique id. How: This mints a random 'h_' id.
+				id    : ranIdeFun( 'h_', 5 ), // What: ID. Why: A custom holiday must be removable by its own unique id. How: This mints a random 'h_' id.
 				month : monValNum,            // What: Month. Why: The holiday recurs in this month every year. How: This is monValNum.
 				name  : holNamStr             // What: Name. Why: The holiday list shows the user's own name for it. How: This is holNamStr.
 
@@ -2415,7 +2415,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
 		 * @param tarIdeStr - Target Identifier String: The reminder to skip.
-		 * @param untIsoStr - Until Iso String: The next eligible day, as
+		 * @param untIsoStr - Until ISO String: The next eligible day, as
 		 *                    YYYY-MM-DD, computed by the caller.
 		 *
 		 * @returns This function does not return anything.
@@ -2439,9 +2439,9 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 					name      : curTasObj.name,                                           // What: Name. Why: The skip row keeps the reminder's own name, denormalized so history survives a later rename or delete. How: This is curTasObj.name.
-					rowId     : ranIdeFun( 'rs_', 7 ),                                    // What: Row Id. Why: Every log row needs its own unique id. How: This mints a random 'rs_' id.
+					rowId     : ranIdeFun( 'rs_', 7 ),                                    // What: Row ID. Why: Every log row needs its own unique id. How: This mints a random 'rs_' id.
 					skippedAt : new Date().toISOString(),                                 // What: Skipped At. Why: Stats needs the exact moment of the skip. How: This stamps the current time as an ISO string.
-					taskId    : tarIdeStr,                                                // What: Task Id. Why: The row must point back at the reminder it belongs to. How: This is tarIdeStr.
+					taskId    : tarIdeStr,                                                // What: Task ID. Why: The row must point back at the reminder it belongs to. How: This is tarIdeStr.
 					type      : TAS_NAM_OBJ.isaReuFun( curTasObj ) ? 'recurring' : 'once' // What: Type. Why: Stats tallies skips separately for one-time and recurring reminders. How: This is 'recurring' when TAS_NAM_OBJ.isaReuFun says so, else 'once'.
 
 
@@ -2543,8 +2543,8 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 						completedAt : new Date().toISOString(),                                 // What: Completed At. Why: Stats needs the exact moment of the completion. How: This stamps the current time as an ISO string.
 						name        : curTasObj.name,                                           // What: Name. Why: The row keeps the reminder's own name, denormalized so history survives a later rename or delete. How: This is curTasObj.name.
-						rowId       : ranIdeFun( 'rl_', 7 ),                                    // What: Row Id. Why: Every log row needs its own unique id. How: This mints a random 'rl_' id.
-						taskId      : tarIdeStr,                                                // What: Task Id. Why: The row must point back at the reminder it belongs to. How: This is tarIdeStr.
+						rowId       : ranIdeFun( 'rl_', 7 ),                                    // What: Row ID. Why: Every log row needs its own unique id. How: This mints a random 'rl_' id.
+						taskId      : tarIdeStr,                                                // What: Task ID. Why: The row must point back at the reminder it belongs to. How: This is tarIdeStr.
 						type        : TAS_NAM_OBJ.isaReuFun( curTasObj ) ? 'recurring' : 'once' // What: Type. Why: Stats tallies completions separately for one-time and recurring reminders. How: This is 'recurring' when TAS_NAM_OBJ.isaReuFun says so, else 'once'.
 
 
@@ -2855,10 +2855,10 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 			const newIteArr = ( picArgObj.items || [] ).map( ( curIteObj ) : IteRcdTyp => ( { // What: New Item Array. Why: Every typed item in the create form becomes a real item object owned by this picker. How: This maps each raw item into state.items' own shape, honoring a form-set value/vacation and defaulting the rest per mode.
 
 
-				id         : curIteObj.id || ranIdeFun( 'it_' ),                    // What: Id. Why: Every item needs a stable id. How: This keeps curIteObj.id when given, else mints a random 'it_' id.
+				id         : curIteObj.id || ranIdeFun( 'it_' ),                    // What: ID. Why: Every item needs a stable id. How: This keeps curIteObj.id when given, else mints a random 'it_' id.
 				lastPicked : null,                                                  // What: Last Picked. Why: A brand-new item has never been picked. How: This is null.
 				name       : curIteObj.name,                                        // What: Name. Why: The item keeps whatever name was typed into the create form. How: This is curIteObj.name.
-				pickerId   : picIdeStr,                                             // What: Picker Id. Why: Every item belongs to exactly this picker. How: This is picIdeStr.
+				pickerId   : picIdeStr,                                             // What: Picker ID. Why: Every item belongs to exactly this picker. How: This is picIdeStr.
 				picks      : 0,                                                     // What: Picks. Why: A brand-new item has never been picked. How: This is 0.
 				vacation   : !!curIteObj.vacation,                                  // What: Vacation. Why: A form-set vacation flag must be honored. How: This coerces curIteObj.vacation to a real boolean.
 				value      : curIteObj.value != null ? curIteObj.value : iniValNum, // What: Value Honor-Or-Default. Why: A value the create form already set (e.g. Fill/Refill charging an ease item to threshold) must be honored; otherwise the mode's own default applies. How: This uses curIteObj.value when it isn't null/undefined, else iniValNum.
@@ -2897,12 +2897,12 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 				avoidDuplicates : !!picArgObj.avoidDuplicates,                                    // What: Avoid-Duplicates Flag. Why: This excludes an item from this picker's own pool for the day if its name (case-insensitively) is already present elsewhere on today's list. How: This coerces picArgObj.avoidDuplicates to a real boolean; see pickers.ts's own pick() for how it's applied.
-				conditionalId   : madConObj ? madConObj.id : ( picArgObj.conditionalId || null ), // What: Conditional Id Resolve. Why: A freshly-made inline conditional wins over an explicitly-passed existing one. How: This prefers madConObj's own id, else picArgObj.conditionalId, else null.
+				conditionalId   : madConObj ? madConObj.id : ( picArgObj.conditionalId || null ), // What: Conditional ID Resolve. Why: A freshly-made inline conditional wins over an explicitly-passed existing one. How: This prefers madConObj's own id, else picArgObj.conditionalId, else null.
 				easeMax         : picArgObj.easeMax ?? 20,                                        // What: Ease Max. Why: The picker-level drift band is only a fallback span for its items. How: This reads picArgObj.easeMax, defaulting to 20.
 				easeMin         : picArgObj.easeMin ?? 10,                                        // What: Ease Min. Why: The picker-level drift band is only a fallback span for its items. How: This reads picArgObj.easeMin, defaulting to 10.
 				group           : picArgObj.group,                                                // What: Group. Why: The picker must land in the group chosen in the form. How: This is picArgObj.group.
 				hidden          : picArgObj.hidden === undefined ? false : picArgObj.hidden,      // What: Hidden Flag. Why: tab-picker.tsx passes true while the mini-tour checklist is up (mirrors reminders-section.tsx's own staAddFun) so a picker created during onboarding stays out of the real list until the closing Generate step. How: This copies picArgObj.hidden, defaulting to false when it was never given.
-				id              : picIdeStr,                                                      // What: Id. Why: The picker keeps whichever id was resolved above (replaceId, a given id, or a fresh one). How: This is picIdeStr.
+				id              : picIdeStr,                                                      // What: ID. Why: The picker keeps whichever id was resolved above (replaceId, a given id, or a fresh one). How: This is picIdeStr.
 				mode            : picArgObj.mode,                                                 // What: Mode. Why: The mode decides which selection algorithm this picker uses. How: This is picArgObj.mode.
 				name            : picArgObj.name,                                                 // What: Name. Why: This is the raw name; the de-duplicated one replaces it below, once state is available. How: This is picArgObj.name.
 				skipHolidays    : !!picArgObj.skipHolidays,                                       // What: Skip Holidays. Why: The generator must know whether this picker sits out public holidays. How: This coerces picArgObj.skipHolidays to a real boolean.
@@ -2981,7 +2981,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 				const finPicObj = { ...newPicObj, name : finNamStr }; // What: Final Picker Object. Why: The picker actually written to state must carry the de-duplicated name, not the raw one. How: This spreads newPicObj with name replaced by finNamStr.
 
-				const nexPidArr = ( picArgObj.includeInDaily === undefined ? true : picArgObj.includeInDaily ) // What: Next Picker-Ids Array. Why: picArgObj.includeInDaily (defaulting to true) decides whether this picker joins or leaves the Daily generator's own membership list. How: This adds picIdeStr when it's included and it isn't already present, else removes it.
+				const nexPidArr = ( picArgObj.includeInDaily === undefined ? true : picArgObj.includeInDaily ) // What: Next Picker-IDs Array. Why: picArgObj.includeInDaily (defaulting to true) decides whether this picker joins or leaves the Daily generator's own membership list. How: This adds picIdeStr when it's included and it isn't already present, else removes it.
 					? ( curStaObj.daily.pickerIds.includes( picIdeStr ) ? curStaObj.daily.pickerIds : [ ...curStaObj.daily.pickerIds, picIdeStr ] ) // What: Include Branch. Why: The picker joins the Daily generator. How: This appends picIdeStr unless it's already listed.
 					: curStaObj.daily.pickerIds.filter( ( curPidStr ) => curPidStr !== picIdeStr );                                                 // What: Exclude Branch. Why: The picker leaves the Daily generator. How: This filters picIdeStr out.
 
@@ -3011,7 +3011,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return picIdeStr; // What: Picker Id Return. Why: The caller (the Add-Picker form) needs the new or reused picker's own id back. How: This returns picIdeStr, resolved above.
+			return picIdeStr; // What: Picker ID Return. Why: The caller (the Add-Picker form) needs the new or reused picker's own id back. How: This returns picIdeStr, resolved above.
 
 
 		},
@@ -3064,7 +3064,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 					...curStaObj.daily, // What: Current Daily Spread. Why: Every other daily setting (mode, run time, ...) must carry over unchanged. How: This spreads curStaObj.daily before the pickerIds override below.
 
-					pickerIds : ( curStaObj.daily.pickerIds || [] ).filter( ( curPidStr ) => curPidStr !== picIdeStr ) // What: Picker Ids. Why: The deleted picker's id must not linger in the generator's list. How: This filters picIdeStr out of daily.pickerIds, defaulting to [].
+					pickerIds : ( curStaObj.daily.pickerIds || [] ).filter( ( curPidStr ) => curPidStr !== picIdeStr ) // What: Picker IDs. Why: The deleted picker's id must not linger in the generator's list. How: This filters picIdeStr out of daily.pickerIds, defaulting to [].
 
 
 				},
@@ -3286,7 +3286,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 				...curPicObj, // What: Current Picker Spread. Why: Every picker field this edit form can't change (id, threshold, activeItemId, ...) must carry over unchanged. How: This spreads curPicObj before the overrides below.
 
 				avoidDuplicates : !!picArgObj.avoidDuplicates,                                    // What: Avoid Duplicates. Why: The edit form can toggle whether this picker skips items already on today's list. How: This coerces picArgObj.avoidDuplicates to a real boolean.
-				conditionalId   : madConObj ? madConObj.id : ( picArgObj.conditionalId || null ), // What: Conditional Id Resolve. Why: Unlike addPicFun's own create-only flow, this can also DETACH a conditional the picker already had, so there's no bare "keep the old one" default to fall back on here. How: This prefers madConObj's own id, else the given conditionalId, else null.
+				conditionalId   : madConObj ? madConObj.id : ( picArgObj.conditionalId || null ), // What: Conditional ID Resolve. Why: Unlike addPicFun's own create-only flow, this can also DETACH a conditional the picker already had, so there's no bare "keep the old one" default to fall back on here. How: This prefers madConObj's own id, else the given conditionalId, else null.
 				group           : picArgObj.group,                                                // What: Group. Why: The edit form can move the picker to another group. How: This is picArgObj.group.
 				mode            : picArgObj.mode,                                                 // What: Mode. Why: The edit form can switch the picker's selection algorithm. How: This is picArgObj.mode.
 				name            : finNamStr,                                                      // What: Name. Why: The committed name must be tidied and de-duplicated. How: This is finNamStr.
@@ -3323,7 +3323,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			const nexPidArr = picArgObj.includeInDaily // What: Next Picker-Ids Array. Why: picArgObj.includeInDaily decides whether this picker joins or leaves the Daily generator's own membership list, same as addPicFun's own resolution. How: This adds picIdeStr when it's included and it isn't already present, else removes it.
+			const nexPidArr = picArgObj.includeInDaily // What: Next Picker-IDs Array. Why: picArgObj.includeInDaily decides whether this picker joins or leaves the Daily generator's own membership list, same as addPicFun's own resolution. How: This adds picIdeStr when it's included and it isn't already present, else removes it.
 				? ( curStaObj.daily.pickerIds.includes( picIdeStr ) ? curStaObj.daily.pickerIds : [ ...curStaObj.daily.pickerIds, picIdeStr ] ) // What: Include Branch. Why: The picker joins the Daily generator. How: This appends picIdeStr unless it's already listed.
 				: curStaObj.daily.pickerIds.filter( ( curPidStr ) => curPidStr !== picIdeStr );                                                 // What: Exclude Branch. Why: The picker leaves the Daily generator. How: This filters picIdeStr out.
 
@@ -3559,7 +3559,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 						bumpPick    : false,                                                                               // What: Bump Pick. Why: A re-activation is not a fresh pick, so the item's own pick count must not rise. How: This is always false here.
-						pickedId    : iteIdeStr,                                                                           // What: Picked Id. Why: The completion step needs to know which item this pending belongs to. How: This is iteIdeStr.
+						pickedId    : iteIdeStr,                                                                           // What: Picked ID. Why: The completion step needs to know which item this pending belongs to. How: This is iteIdeStr.
 						pickerPatch : { activeItemId : iteIdeStr },                                                        // What: Picker Patch. Why: Completing this entry must make iteIdeStr the picker's own active item. How: This stages activeItemId as iteIdeStr.
 						updates     : curPicObj.activeItemId ? [ { id : curPicObj.activeItemId, value : thrValNum } ] : [] // What: Updates. Why: The previously-active item (if any) must recharge to full on completion. How: This stages one value:thrValNum update for it, else none.
 
@@ -3687,9 +3687,9 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 				done     : false,                      // What: Done. Why: A freshly generated entry always starts not-done. How: This is false.
 				eid      : newIdeFun(),                // What: Entry Identifier. Why: Every fresh entry needs its own brand-new id. How: This mints one via newIdeFun.
-				itemId   : curDesObj.itemId || null,   // What: Item Id. Why: This is the item the generator picked for this entry, if any. How: This reads curDesObj.itemId, defaulting to null.
+				itemId   : curDesObj.itemId || null,   // What: Item ID. Why: This is the item the generator picked for this entry, if any. How: This reads curDesObj.itemId, defaulting to null.
 				pending  : curDesObj.pending || null,  // What: Pending. Why: The pick's own value consequences stay staged until the entry is completed. How: This reads curDesObj.pending, defaulting to null.
-				pickerId : curDesObj.pickerId || null, // What: Picker Id. Why: Every entry records which picker produced it. How: This reads curDesObj.pickerId, defaulting to null.
+				pickerId : curDesObj.pickerId || null, // What: Picker ID. Why: Every entry records which picker produced it. How: This reads curDesObj.pickerId, defaulting to null.
 				revert   : null,                       // What: Revert. Why: Nothing has been applied yet, so there is nothing to revert. How: This is null until the entry is completed.
 				skipped  : false,                      // What: Skipped. Why: A freshly generated entry always starts not-skipped. How: This is false.
 
@@ -3699,7 +3699,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 					cardText      : curDesObj.cardText || '',        // What: Card Text. Why: The day-off card shows its own explanatory line. How: This reads curDesObj.cardText, defaulting to ''.
-					conditionalId : curDesObj.conditionalId || null, // What: Conditional Id. Why: The card must stay linked to the conditional that suppressed its picker today. How: This reads curDesObj.conditionalId, defaulting to null.
+					conditionalId : curDesObj.conditionalId || null, // What: Conditional ID. Why: The card must stay linked to the conditional that suppressed its picker today. How: This reads curDesObj.conditionalId, defaulting to null.
 					condName      : curDesObj.condName || '',        // What: Conditional Name. Why: The card's own title shows the conditional's name, denormalized so it survives a later rename. How: This reads curDesObj.condName, defaulting to ''.
 					group         : curDesObj.group || 'Other',      // What: Group. Why: The card must render inside its picker's own Today group. How: This reads curDesObj.group, defaulting to 'Other'.
 					kind          : curDesObj.kind,                  // What: Kind. Why: This marks the entry as a day-off card rather than a real pick. How: This copies curDesObj.kind, which is always truthy on this branch.

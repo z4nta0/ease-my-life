@@ -6,7 +6,7 @@
 import cssModObj from './today-catalog.module.css'; // What: CSS Module Object. Why: The card actions tips' button blocks are styled from their own module. How: This maps each class name in today-catalog.module.css to its hashed module class.
 
 
-import { IcoSvgCom } from '../ui/icon.tsx'; // What: Icon Svg Component. Why: The card actions tips explain each button under a heading that carries its real icon, so a reader can match the tip back to the real control. How: This is rendered inside those tips' body JSX, beside each button's bold name.
+import { IcoSvgCom } from '../ui/icon.tsx'; // What: Icon SVG Component. Why: The card actions tips explain each button under a heading that carries its real icon, so a reader can match the tip back to the real control. How: This is rendered inside those tips' body JSX, beside each button's bold name.
 
 
 import type { HelIteTyp } from './catalog-item.ts'; // What: Help Item Type. Why: Every item in this catalog shares the one shape help mode reads. How: This types TOD_HEL_ARR.

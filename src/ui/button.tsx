@@ -6,7 +6,7 @@
 import cssModObj from './button.module.css'; // What: CSS Module Object. Why: The button's base, size, and kind styles live in its own module. How: This maps each class name in button.module.css to its hashed module class.
 
 
-import { IcoSvgCom } from './icon.tsx'; // What: Icon Svg Component. Why: A button can carry an optional leading icon. How: This renders icoNamStr's glyph ahead of the button's own label.
+import { IcoSvgCom } from './icon.tsx'; // What: Icon SVG Component. Why: A button can carry an optional leading icon. How: This renders icoNamStr's glyph ahead of the button's own label.
 
 
 import type { ComponentProps } from 'react'; // What: Component Props. Why: The base button forwards every native button prop. How: This types BbcProTyp's native part.
@@ -104,7 +104,7 @@ function ButBasCom ( { children, className = '', icoClaStr, icoNamStr, kinValStr
 
 					icoNamStr={ icoNamStr }
 					sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-				/> // What: Icon Svg Component. Why: This is the optional glyph shown ahead of the button's own text. How: This renders icoNamStr at the base rhythm step for every button size, carrying any icoClaStr class the caller passed.
+				/> // What: Icon SVG Component. Why: This is the optional glyph shown ahead of the button's own text. How: This renders icoNamStr at the base rhythm step for every button size, carrying any icoClaStr class the caller passed.
 
 
 			) }

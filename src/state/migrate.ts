@@ -126,10 +126,10 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
-	if ( curStaObj && curStaObj.today && Array.isArray( curStaObj.today.entries ) ) { // What: Entry-Id Backfill Guard. Why: Older state (and the seed) predates per-entry eids, needed to support more than one entry per picker. How: This mints a fresh eid for any entry that doesn't already have one.
+	if ( curStaObj && curStaObj.today && Array.isArray( curStaObj.today.entries ) ) { // What: Entry-ID Backfill Guard. Why: Older state (and the seed) predates per-entry eids, needed to support more than one entry per picker. How: This mints a fresh eid for any entry that doesn't already have one.
 
 
-		for ( const curEntObj of curStaObj.today.entries ) { if ( !curEntObj.eid ) curEntObj.eid = newIdeFun(); } // What: Entry-Id Backfill Loop. Why: Every entry needs its own stable eid, whether or not it already had one. How: This mints a fresh eid for any entry currently missing one, in place.
+		for ( const curEntObj of curStaObj.today.entries ) { if ( !curEntObj.eid ) curEntObj.eid = newIdeFun(); } // What: Entry-ID Backfill Loop. Why: Every entry needs its own stable eid, whether or not it already had one. How: This mints a fresh eid for any entry currently missing one, in place.
 
 
 	}
@@ -147,7 +147,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 		for ( const curPicObj of curStaObj.pickers ) { // What: Item-Picker Fill Loop. Why: Every old itemIds list must be inverted into itePicObj before the item map below can use it. How: This iterates every picker with an itemIds array, filing each listed id under this picker's own id.
 
 
-			if ( Array.isArray( curPicObj.itemIds ) ) for ( const ownIdeStr of curPicObj.itemIds ) itePicObj[ ownIdeStr ] = curPicObj.id; // What: Owned-Id Fill. Why: Every item id this picker used to own must map back to this picker's own id. How: This assigns curPicObj.id under ownIdeStr for every id in curPicObj.itemIds.
+			if ( Array.isArray( curPicObj.itemIds ) ) for ( const ownIdeStr of curPicObj.itemIds ) itePicObj[ ownIdeStr ] = curPicObj.id; // What: Owned-ID Fill. Why: Every item id this picker used to own must map back to this picker's own id. How: This assigns curPicObj.id under ownIdeStr for every id in curPicObj.itemIds.
 
 
 		}
@@ -389,7 +389,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
-		curStaObj.ui = { ...curUsiObj, controlsCollapsed : conColObj }; // What: Ui Object Writeback. Why: The (possibly-stripped) collapse-state copy must actually land back on curStaObj. How: This spreads curUsiObj with controlsCollapsed replaced by conColObj.
+		curStaObj.ui = { ...curUsiObj, controlsCollapsed : conColObj }; // What: UI Object Writeback. Why: The (possibly-stripped) collapse-state copy must actually land back on curStaObj. How: This spreads curUsiObj with controlsCollapsed replaced by conColObj.
 
 
 	}
@@ -810,7 +810,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 	// #region UI Backfills
 
-	if ( curStaObj && ( !curStaObj.ui || typeof curStaObj.ui !== 'object' ) ) curStaObj.ui = {}; // What: Ui Object Backfill. Why: Persisted UI prefs need a real object to build on. How: This backfills curStaObj.ui to {} when it's missing or not a plain object.
+	if ( curStaObj && ( !curStaObj.ui || typeof curStaObj.ui !== 'object' ) ) curStaObj.ui = {}; // What: UI Object Backfill. Why: Persisted UI prefs need a real object to build on. How: This backfills curStaObj.ui to {} when it's missing or not a plain object.
 
 
 

@@ -9,7 +9,7 @@ import React     from 'react';                   // What: React. Why: LegModCom 
 
 import { createPortal } from 'react-dom';               // What: Create Portal. Why: The modal must render into <body> so help mode's overlay and any ancestor's stacking can't bury it. How: This is called by LegModCom's own return.
 import { durMilFun    } from '../../utils/rhythm.ts';   // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { IcoSvgCom    } from '../../ui/icon.tsx';       // What: Icon Svg Component. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'x'.
+import { IcoSvgCom    } from '../../ui/icon.tsx';       // What: Icon SVG Component. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'x'.
 import { PriPolCom    } from './legal-text.tsx';        // What: Privacy Policy Component. Why: The modal shows the Privacy Policy's own text. How: This renders inside the panel's body when legDocStr is 'privacy'.
 import { redMotFun    } from '../../utils/motion.ts';   // What: Reduce Motion Function. Why: A user who prefers reduced motion should dismiss the modal instantly instead of playing its own closing animation. How: This is checked inside LegModCom's modDisFun to skip the animated delay.
 import { TerSerCom    } from './legal-text.tsx';        // What: Terms Service Component. Why: The modal shows the Terms of Service's own text. How: This renders inside the panel's body when legDocStr is 'terms'.
@@ -272,7 +272,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 						<IcoSvgCom
 							icoNamStr='croEle'
 							sizSteStr='p01' // Vertical Rhythm Base Plus 1 ~= 19.304px
-						/>{ /* What: Icon Svg Component. Why: The close button needs a recognizable "x" glyph rather than just its own aria-label text. How: This renders the shared IcoSvgCom component at the p01 rhythm step. */ }
+						/>{ /* What: Icon SVG Component. Why: The close button needs a recognizable "x" glyph rather than just its own aria-label text. How: This renders the shared IcoSvgCom component at the p01 rhythm step. */ }
 
 
 					</button>

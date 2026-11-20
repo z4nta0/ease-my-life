@@ -446,7 +446,7 @@ function resTheFun ( appSetObj : AppSetTyp, sysDarBoo : boolean ) : string {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param cssColStr - Css Color String: The CSS color string to resolve, e.g.
+ * @param cssColStr - CSS Color String: The CSS color string to resolve, e.g.
  *                    an oklch() palette token.
  *
  * @returns A hex color string (e.g. '#a1b2c3'), or null if the browser

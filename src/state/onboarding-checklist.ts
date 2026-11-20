@@ -3,8 +3,8 @@
 
 // #region Imports
 
-import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: This module needs every seeded sample picker's own id to list its own checklist entries below and to tell a real, user-created picker apart from a sample one. How: This is read directly by reaPicFun and tutProFun below, and spread into CHE_IDE_ARR.
-import { ONB_STI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Ids Array. Why: This module needs every seeded sample task's own id to list its own checklist entries below. How: This is spread into CHE_IDE_ARR below and read by tutProFun.
+import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-IDs Array. Why: This module needs every seeded sample picker's own id to list its own checklist entries below and to tell a real, user-created picker apart from a sample one. How: This is read directly by reaPicFun and tutProFun below, and spread into CHE_IDE_ARR.
+import { ONB_STI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Task-IDs Array. Why: This module needs every seeded sample task's own id to list its own checklist entries below. How: This is spread into CHE_IDE_ARR below and read by tutProFun.
 
 
 import type { CheStaTyp } from '../core/data-model.ts'; // What: Checklist Status Type. Why: Every checklist entry records how its item was resolved. How: This types entLooFun's returned entry.
@@ -106,17 +106,17 @@ const ONB_EPT_ARR = [ // What: Onboarding Explore-Page-Tours Array. Why: This is
 
 
 
-const ONB_GII_STR = 'ob_generate'; // What: Onboarding Generate-Item-Id String. Why: This is the fixed, load-bearing id for the single closing "Generate a real list" checklist card. How: This is CHE_IDE_ARR's own last entry and the checklist map's own key for that card's resolution.
+const ONB_GII_STR = 'ob_generate'; // What: Onboarding Generate-Item-ID String. Why: This is the fixed, load-bearing id for the single closing "Generate a real list" checklist card. How: This is CHE_IDE_ARR's own last entry and the checklist map's own key for that card's resolution.
 
 
 
 const CHE_IDE_ARR = [ // What: Checklist Identifier Array. Why: This is the full, flat manifest of every checklist item id the app currently knows about (every sample picker, every sample task, every page tour, plus the closing Generate card). How: This concatenates the sample picker ids, the sample task ids, the page tour ids and ONB_GII_STR, in that fixed order.
 
 
-	...ONB_SPI_ARR,                                          // What: Sample Picker Ids Spread. Why: Every seeded sample picker has its own checklist entry, resolved independently. How: This spreads ONB_SPI_ARR's own ids.
-	...ONB_STI_ARR,                                          // What: Sample Task Ids Spread. Why: Every seeded sample task has its own checklist entry too. How: This spreads ONB_STI_ARR's own ids.
-	...ONB_EPT_ARR.map( ( touConObj ) => touConObj.ideStr ), // What: Page Tour Ids Spread. Why: Every page tour has its own checklist entry, even with no sample data of its own. How: This maps ONB_EPT_ARR down to each tour's own ideStr.
-	ONB_GII_STR                                              // What: Generate Item Id. Why: The single closing Generate card needs its own checklist entry as well. How: This is the fixed ONB_GII_STR.
+	...ONB_SPI_ARR,                                          // What: Sample Picker IDs Spread. Why: Every seeded sample picker has its own checklist entry, resolved independently. How: This spreads ONB_SPI_ARR's own ids.
+	...ONB_STI_ARR,                                          // What: Sample Task IDs Spread. Why: Every seeded sample task has its own checklist entry too. How: This spreads ONB_STI_ARR's own ids.
+	...ONB_EPT_ARR.map( ( touConObj ) => touConObj.ideStr ), // What: Page Tour IDs Spread. Why: Every page tour has its own checklist entry, even with no sample data of its own. How: This maps ONB_EPT_ARR down to each tour's own ideStr.
+	ONB_GII_STR                                              // What: Generate Item ID. Why: The single closing Generate card needs its own checklist entry as well. How: This is the fixed ONB_GII_STR.
 
 
 ];

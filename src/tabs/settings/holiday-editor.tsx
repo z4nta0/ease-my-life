@@ -10,7 +10,7 @@ import React     from 'react';                       // What: React. Why: HolEdi
 import { ButBasCom   } from '../../ui/button.tsx';    // What: Button Base Component. Why: Adding a custom holiday needs a consistently-styled button. How: This is rendered in HolEdiCom's own add form.
 import { durMilFun   } from '../../utils/rhythm.ts';  // What: Duration Millisecond Function. Why: The row's exit timer must end with its exit animation. How: This returns a duration step's length in milliseconds.
 import { HOL_NAM_OBJ } from '../../core/holidays.ts'; // What: Holidays Namespace Object. Why: The Holidays section needs a holidays state even on an old save without one, and the computed U.S. holiday list for the current year. How: This is called via HOL_NAM_OBJ.resStaFun() and HOL_NAM_OBJ.comYeaFun() inside HolEdiCom.
-import { IcoSvgCom   } from '../../ui/icon.tsx';      // What: Icon Svg Component. Why: The custom-holiday delete button needs a small trash glyph. How: This is rendered with a specific name/size prop.
+import { IcoSvgCom   } from '../../ui/icon.tsx';      // What: Icon SVG Component. Why: The custom-holiday delete button needs a small trash glyph. How: This is rendered with a specific name/size prop.
 
 
 import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The component changes state through the store's actions. How: This types its actStoObj.
@@ -301,7 +301,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 							<IcoSvgCom
 								icoNamStr='traEle'
 								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The delete button needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed small size. */ }
+							/>{ /* What: Icon SVG Component. Why: The delete button needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed small size. */ }
 
 
 						</button>

@@ -29,12 +29,12 @@ import type { JSX } from 'react'; // What: JSX. Why: The icon table holds JSX el
 
 // #region Components
 
-type IscProTyp = { className? : string, icoNamStr : string, sizSteStr? : string }; // What: Icon-Svg-Component Props Type. Why: An icon is drawn by name, at a rhythm step, with an optional class from its parent. How: This types IcoSvgCom's props.
+type IscProTyp = { className? : string, icoNamStr : string, sizSteStr? : string }; // What: Icon-SVG-Component Props Type. Why: An icon is drawn by name, at a rhythm step, with an optional class from its parent. How: This types IcoSvgCom's props.
 
 // #region IcoSvgCom
 
 /**
- * IcoSvgCom = Icon Svg Component
+ * IcoSvgCom = Icon SVG Component
  *
  * @summary
  * Renders one of the app's built-in line icons as an inline SVG, looked
@@ -62,7 +62,7 @@ type IscProTyp = { className? : string, icoNamStr : string, sizSteStr? : string 
  *
 */
 
-const IcoSvgCom = ( { className, icoNamStr, sizSteStr = 'p01' } : IscProTyp ) : JSX.Element => { // What: Icon Svg Component. Why: Every tab button, list row, and control across the app needs a small recognizable glyph. How: This looks up icoNamStr in icoPatObj and renders the matching SVG shape at the sizSteStr rhythm step.
+const IcoSvgCom = ( { className, icoNamStr, sizSteStr = 'p01' } : IscProTyp ) : JSX.Element => { // What: Icon SVG Component. Why: Every tab button, list row, and control across the app needs a small recognizable glyph. How: This looks up icoNamStr in icoPatObj and renders the matching SVG shape at the sizSteStr rhythm step.
 
 
 	const icoPatObj : Record< string, JSX.Element > = { // What: Icon Path Object. Why: This is the lookup table mapping every icon name to its own inline SVG shape markup. How: This is indexed below by the icoNamStr prop to pick which shape the rendered svg actually draws.
@@ -104,7 +104,7 @@ const IcoSvgCom = ( { className, icoNamStr, sizSteStr = 'p01' } : IscProTyp ) : 
 
 
 
-	const sizCssStr = `calc( var( --ver-rhy-${ sizSteStr } ) * 1rem )`; // What: Size Css String. Why: The icon's width and height both follow the named vertical rhythm step. How: This builds the step's length once for the style below.
+	const sizCssStr = `calc( var( --ver-rhy-${ sizSteStr } ) * 1rem )`; // What: Size CSS String. Why: The icon's width and height both follow the named vertical rhythm step. How: This builds the step's length once for the style below.
 
 
 
@@ -127,7 +127,7 @@ const IcoSvgCom = ( { className, icoNamStr, sizSteStr = 'p01' } : IscProTyp ) : 
 			viewBox='0 0 24 24'
 
 			aria-hidden='true'
-		>{ /* What: Icon Svg Element. Why: This is IcoSvgCom's own single rendered element, sized and stroked identically for every glyph. How: This renders whichever shape icoPatObj[ icoNamStr ] resolves to. */ }
+		>{ /* What: Icon SVG Element. Why: This is IcoSvgCom's own single rendered element, sized and stroked identically for every glyph. How: This renders whichever shape icoPatObj[ icoNamStr ] resolves to. */ }
 
 
 			{ icoPatObj[ icoNamStr ] }{ /* What: Icon Shape Lookup. Why: The svg's only content is the one glyph this icon name maps to. How: This reads icoNamStr's own entry out of icoPatObj. */ }

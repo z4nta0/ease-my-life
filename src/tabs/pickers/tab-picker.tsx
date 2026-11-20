@@ -12,7 +12,7 @@ import { emlTouObj    } from '../../state/tour-bus.ts';             // What: Eas
 import { FilRaiCom    } from '../../ui/filter-rail.tsx';            // What: Filter Rail Component. Why: The Group and Type filter rows share one labeled pill rail. How: This is rendered once for each of those rows, fed its own entries and actions.
 import { HelButCom    } from '../../help/button.tsx';               // What: Help Button Component. Why: This page needs its own toggle for entering/exiting help mode. How: This is rendered in the page header, wired to the local helOpeBoo boolean.
 import { HelOveCom    } from '../../help/mode.tsx';                 // What: Help Overlay Component. Why: Help mode needs its own highlighted-tooltip overlay layered above the page. How: This is rendered once, fed this page's own PIC_HEL_ARR.
-import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon Svg Component. Why: The tab's header and add controls show small glyphs. How: This is rendered inside those controls.
+import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: The tab's header and add controls show small glyphs. How: This is rendered inside those controls.
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: The Add New Picker button is disabled until the tutorials are complete and must say so. How: This wraps that button with the reason as its tip.
 import { isaTruFun    } from '../../utils/guard.ts';                // What: Is-A Truthy Function. Why: The rail fade skips any filter rail that isn't mounted. How: This filters them so the rest read as real elements.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: The Add New Picker button must stay disabled while the guided-tour checklist is still in progress. How: This is checked via ONB_CHE_OBJ.tutProFun against the shared state.
@@ -100,7 +100,7 @@ function AddLabCom () : React.JSX.Element {
 				<IcoSvgCom
 					icoNamStr='pluEle'
 					sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-				/>{ /* What: Icon Svg Component. Why: The add tab needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
+				/>{ /* What: Icon SVG Component. Why: The add tab needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
 
 
 			</span>
@@ -522,7 +522,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 							viewBox='8 8 528 528'
 
 							aria-hidden='true'
-						>{ /* What: Logo Svg Element. Why: This draws the same small square "Ease My Life" logo mark app.tsx's own TabBarCom uses, so every page's own header reads as one product. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }
+						>{ /* What: Logo SVG Element. Why: This draws the same small square "Ease My Life" logo mark app.tsx's own TabBarCom uses, so every page's own header reads as one product. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }
 
 
 							<defs>{ /* What: Clip Defs Element. Why: An SVG clipPath can only be applied via a defined, referenced id, not inline. How: This holds the one clipPath definition the glyph path below references. */ }
@@ -870,7 +870,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 									hidden : !!touBusObj.shoCheBoo, // What: Hidden. Why: A picker made while the tour checklist is up stays out of sight until the tour finishes. How: This is true while the bus shows the checklist.
 
 									...( touBusObj.preFilObj ? { createdFromSample : touBusObj.samIdeStr! } : {} ), // What: Sample Tag Spread. Why: A tour-prefilled picker records which sample it came from. How: This adds createdFromSample only while a prefill is active. // What: Non-Null Note. Why: A picker tour sets its prefill and its sample id in the same bus write. How: The ! tells TypeScript samIdeStr is set whenever preFilObj is.
-									...( touBusObj.exiIdeStr ? { replaceId : touBusObj.exiIdeStr } : {} )           // What: Replace Id Spread. Why: A tour replay updates its earlier picker in place instead of adding a duplicate. How: This adds replaceId only while the bus names an existing picker.
+									...( touBusObj.exiIdeStr ? { replaceId : touBusObj.exiIdeStr } : {} )           // What: Replace ID Spread. Why: A tour replay updates its earlier picker in place instead of adding a duplicate. How: This adds replaceId only while the bus names an existing picker.
 
 
 								});

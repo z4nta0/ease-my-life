@@ -15,7 +15,7 @@ import { emlTouObj   } from '../state/tour-bus.ts';             // What: Ease My
 import { forNamFun   } from './page-steps.tsx';                 // What: Force Name Function. Why: A click racing an open rename input's delayed commit must not lose the tour's group name. How: This is called with the shared app actions object before a step advances.
 import { GuiTouCom   } from './tour-runner.tsx';                // What: Guided Tour Component. Why: This is the generic spotlight-tour engine that actually drives each page mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-page step array.
 import { hidHisFun   } from '../state/sample-history.ts';       // What: Hide History Function. Why: The real sample pickers borrowed by the Stats tour must go back to hidden the moment that tour ends. How: This is called when the Stats tour closes.
-import { IcoSvgCom   } from '../ui/icon.tsx';                   // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph matching the current page. How: This is rendered inside the intro modal's icon prop below.
+import { IcoSvgCom   } from '../ui/icon.tsx';                   // What: Icon SVG Component. Why: The intro modal needs a recognizable glyph matching the current page. How: This is rendered inside the intro modal's icon prop below.
 import { IntModCom   } from './intro-modal.tsx';                // What: Intro Modal Component. Why: Each page mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this page's own icon/title/paragraphs/pills.
 import { NAV_TAR_OBJ } from './targets.tsx';                    // What: Nav Target Object. Why: A page's own intro modal falls back to this shared nav-button catalog's copy. How: This is looked up by a page key inside PagTouCom.
 import { neeCopFun   } from './page-samples.ts';                // What: Needs Copies Function. Why: Only the Pickers and Data tours work on disposable copies. How: This is called with the page id to decide whether to seed or clear them.
@@ -298,7 +298,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 			<IcoSvgCom
 				icoNamStr={ touRcdObj.pagStr }
 				sizSteStr='p05' // Vertical Rhythm Base Plus 5 ~= 59.447px
-			/> // What: Icon Svg Component. Why: This is the glyph identifying which page this tour explores. How: This renders the page's own nav icon.
+			/> // What: Icon SVG Component. Why: This is the glyph identifying which page this tour explores. How: This renders the page's own nav icon.
 
 
 		);

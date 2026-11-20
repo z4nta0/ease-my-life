@@ -59,7 +59,7 @@ function invColFun ( hexColStr : string ) : string {
 	try { // What: Color Conversion Try. Why: Any malformed input must fall back to the original color instead of throwing. How: The catch below returns hexColStr unchanged.
 
 
-		const rgbZerArr = ( () => { // What: Rgb Zero-One Array. Why: The OKLab math below operates on linear-light RGB, not raw hex. How: This strips the leading '#', expands a 3-digit shorthand, parses the hex to an integer, and splits it into 0-1 channel values.
+		const rgbZerArr = ( () => { // What: RGB Zero-One Array. Why: The OKLab math below operates on linear-light RGB, not raw hex. How: This strips the leading '#', expands a 3-digit shorthand, parses the hex to an integer, and splits it into 0-1 channel values.
 
 
 			const hexBarStr = hexColStr.replace( '#', '' ); // What: Hex Bare String. Why: The '#' prefix isn't part of the actual hex digits parseInt below needs. How: This strips it from hexColStr.
@@ -72,7 +72,7 @@ function invColFun ( hexColStr : string ) : string {
 
 
 
-			return [ ( hexIntNum >> 16 & 255 ) / 255, ( hexIntNum >> 8 & 255 ) / 255, ( hexIntNum & 255 ) / 255 ]; // What: Rgb Zero-One Return. Why: The caller needs each channel scaled to the 0-1 range OKLab math expects. How: This bit-shifts/masks out red, green, then blue, each divided by 255.
+			return [ ( hexIntNum >> 16 & 255 ) / 255, ( hexIntNum >> 8 & 255 ) / 255, ( hexIntNum & 255 ) / 255 ]; // What: RGB Zero-One Return. Why: The caller needs each channel scaled to the 0-1 range OKLab math expects. How: This bit-shifts/masks out red, green, then blue, each divided by 255.
 
 
 		} )();
@@ -129,7 +129,7 @@ function invColFun ( hexColStr : string ) : string {
 
 
 
-			return [ // What: Linear Rgb Triple Return. Why: The caller needs plain linear-light RGB, ready for the sRGB re-encoding step. How: This applies Ottosson's own inverse LMS-to-linear-RGB matrix to lmsLonNum/lmsMedNum/lmsShoNum.
+			return [ // What: Linear RGB Triple Return. Why: The caller needs plain linear-light RGB, ready for the sRGB re-encoding step. How: This applies Ottosson's own inverse LMS-to-linear-RGB matrix to lmsLonNum/lmsMedNum/lmsShoNum.
 
 
 				4.0767416621 * lmsLonNum - 3.3077115913 * lmsMedNum + 0.2309699292 * lmsShoNum,  // What: Linear Red Channel. Why: The caller needs the red channel of the inverted color, still in linear light. How: This applies Ottosson's own inverse LMS-to-linear-RGB matrix's red row to lmsLonNum/lmsMedNum/lmsShoNum.
@@ -156,7 +156,7 @@ function invColFun ( hexColStr : string ) : string {
 
 
 
-		const invRgbArr = oklLinFun( [ 1 - oklLigNum, oklAaxNum, oklBaxNum ] ) // What: Inverted Rgb Array. Why: This is the actual lightness inversion (1 - L), converted back to a displayable channel range. How: This inverts oklLigNum, converts back to linear RGB, re-encodes to sRGB, then scales/rounds each channel to a 0-255 integer.
+		const invRgbArr = oklLinFun( [ 1 - oklLigNum, oklAaxNum, oklBaxNum ] ) // What: Inverted RGB Array. Why: This is the actual lightness inversion (1 - L), converted back to a displayable channel range. How: This inverts oklLigNum, converts back to linear RGB, re-encodes to sRGB, then scales/rounds each channel to a 0-255 integer.
 			.map( linSrgFun )                                       // What: Gamma Encode Step. Why: Screen colors are gamma-encoded sRGB, not linear light. How: This maps every channel through linSrgFun.
 			.map( ( srgChaNum ) => Math.round( srgChaNum * 255 ) ); // What: Byte Scale Step. Why: Hex output needs whole 0-255 channel values. How: This scales each 0-1 channel by 255 and rounds it.
 

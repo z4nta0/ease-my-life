@@ -9,7 +9,7 @@ import React     from 'react';                    // What: React. Why: PicVieCom
 
 import { ButBasCom    } from '../../ui/button.tsx';       // What: Button Base Component. Why: Pick One, Re-roll, Done and the pool actions need consistently-styled controls. How: This is rendered for each of those actions.
 import { durMilFun    } from '../../utils/rhythm.ts';     // What: Duration Millisecond Function. Why: Exit timers must end with the animation they wait on. How: This returns a duration step's length in milliseconds.
-import { IcoSvgCom    } from '../../ui/icon.tsx';         // What: Icon Svg Component. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
+import { IcoSvgCom    } from '../../ui/icon.tsx';         // What: Icon SVG Component. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
 import { InfTipCom    } from '../../ui/info-tip.tsx';     // What: Info Tip Component. Why: Several controls need an explanatory tooltip on hover/focus. How: This wraps the weight/value pills and the disabled Send/Delete buttons, given the tooltip's own label text.
 import { isaTruFun    } from '../../utils/guard.ts';      // What: Is-A Truthy Function. Why: Entries without an item drop out of the Today id set. How: This filters them so the set holds only real ids.
 import { IteCarCom    } from './item-card.tsx';           // What: Item Card Component. Why: Adding or editing a pool item opens the shared item card, holding the same weight/ease editor the Today tab uses. How: This is rendered below the pool list, wired to either the real store actions or the local draft-item actions.
@@ -263,7 +263,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 			bumpPick    : true,                // What: Bump Pick. Why: A manual send still counts as a pick. How: This is always true here.
 			depletedEnd : senResObj.depBoo,    // What: Depleted End. Why: An ease-down pick can empty the pool. How: This passes senResObj.depBoo.
-			pickedId    : senResObj.picObj.id, // What: Picked Id. Why: The entry records which item was chosen. How: This passes the picked item's id.
+			pickedId    : senResObj.picObj.id, // What: Picked ID. Why: The entry records which item was chosen. How: This passes the picked item's id.
 			pickerPatch : senResObj.patObj,    // What: Picker Patch. Why: Some modes also stage picker-level changes. How: This passes senResObj.patObj.
 			updates     : senResObj.updArr     // What: Updates. Why: The pick's item mutations are staged, not applied yet. How: This passes senResObj.updArr.
 
@@ -288,7 +288,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	const [ newCloStr, setNewCloStr ] = React.useState< false | 'cancel' | 'save' >( false ); // What: New Closing String And Setter. Why: The new-item draft's own editor needs to play a closing animation before it's actually torn down, distinguishing a Save close from a Cancel close. How: This holds 'save', 'cancel', or false, consumed by the draft wrap's own onAnimationEnd handler below.
 
 	const addWraRef = React.useRef< HTMLDivElement | null >( null );                  // What: Add Wrap Reference. Why: Both the new-item and edit-item flows render into this same below-the-list slot, which needs a stable handle so it can be scrolled into view. How: This is attached to the iteAddDiv div's own ref prop, below.
-	const useWeiBoo = picDatObj.mode === 'weighted' || picDatObj.mode === 'dynamic';  // What: Uses Weight Boolean. Why: Only these two modes treat an item's weight as a real lever; the others ignore it entirely. How: This gates whether weight fields are carried over/shown throughout this view.
+	const useWeiBoo = picDatObj.mode === 'weighted' || picDatObj.mode === 'dynamic';  // What: Use Weight Boolean. Why: Only these two modes treat an item's weight as a real lever; the others ignore it entirely. How: This gates whether weight fields are carried over/shown throughout this view.
 	const isaEasBoo = picDatObj.mode === 'ease-up' || picDatObj.mode === 'ease-down'; // What: Is-An Ease Boolean. Why: Only these two modes use the easeMin/easeMax drift band at all. How: This gates whether ease fields are carried over/shown throughout this view.
 
 
@@ -465,7 +465,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 			easeMax  : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax,                                                         // What: Ease Max. Why: Ease items start with a default upper drift, their soonest end. How: This is the pickers' default band's, DEF_EAS_OBJ.
 			easeMin  : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin,                                                         // What: Ease Min. Why: Ease items start with a default lower drift, their latest end. How: This is the pickers' default band's, DEF_EAS_OBJ.
-			id       : newIdeStr,                                                                               // What: Id. Why: The draft needs its own id before it's saved. How: This uses newIdeStr.
+			id       : newIdeStr,                                                                               // What: ID. Why: The draft needs its own id before it's saved. How: This uses newIdeStr.
 			name     : 'New item',                                                                              // What: Name. Why: The editor opens with a placeholder name. How: This is the literal 'New item'.
 			vacation : false,                                                                                   // What: Vacation. Why: A new item starts active. How: This is false.
 			value    : picDatObj.mode === 'ease-down' ? ( picDatObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM ) : 0, // What: Value. Why: An ease-down item starts fully charged, everything else at 0. How: This uses the picker's threshold for ease-down, otherwise 0.
@@ -681,7 +681,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	const todIdeSet = React.useMemo( // What: Today Identifier Set. Why: Item ids already on Today are used to disable per-item Send and to keep the "Pick One" spin from landing on a duplicate. How: This is memoized off state.today.entries, recomputed only when the entries themselves change.
 
-		() => new Set( ( staAppObj.today.entries || [] ).map( ( entCurObj ) => entCurObj.itemId ).filter( isaTruFun ) ), // What: Today Ids Build. Why: Only entries actually tied to an item (not a reminder or conditional row) belong in this set. How: This maps every entry to its itemId, then drops the empty ones.
+		() => new Set( ( staAppObj.today.entries || [] ).map( ( entCurObj ) => entCurObj.itemId ).filter( isaTruFun ) ), // What: Today IDs Build. Why: Only entries actually tied to an item (not a reminder or conditional row) belong in this set. How: This maps every entry to its itemId, then drops the empty ones.
 
 		[ staAppObj.today.entries ] // What: Memo Dependency Array. Why: The set only needs recomputing when today's own entries list changes. How: state.today.entries is the sole source this memo reads.
 
@@ -737,7 +737,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 		anchorMonth     : picDatObj.anchorMonth,                                                               // What: Anchor Month. Why: A yearly picker prefills its month. How: This copies picDatObj.anchorMonth.
 		avoidDuplicates : picDatObj.avoidDuplicates,                                                           // What: Avoid Duplicates. Why: The toggle prefills to the picker's current setting. How: This copies picDatObj.avoidDuplicates.
 		cadence         : picDatObj.cadence,                                                                   // What: Cadence. Why: The cadence control prefills to the picker's current cadence. How: This copies picDatObj.cadence.
-		conditionalId   : picDatObj.conditionalId || null,                                                     // What: Conditional Id. Why: The attach toggle and rail prefill to the attached conditional. How: This copies picDatObj.conditionalId, or null.
+		conditionalId   : picDatObj.conditionalId || null,                                                     // What: Conditional ID. Why: The attach toggle and rail prefill to the attached conditional. How: This copies picDatObj.conditionalId, or null.
 		dateMode        : picDatObj.dateMode,                                                                  // What: Date Mode. Why: A monthly/yearly picker prefills whether it anchors to a date or an nth weekday. How: This copies picDatObj.dateMode.
 		daysOfWeek      : picDatObj.daysOfWeek,                                                                // What: Days Of Week. Why: The weekday picker prefills to the picker's run days. How: This copies picDatObj.daysOfWeek.
 		includeInDaily  : ( ( staAppObj.daily && staAppObj.daily.pickerIds ) || [] ).includes( picDatObj.id ), // What: Include In Daily. Why: The daily switch prefills to the picker's real membership, which lives outside the picker record. How: This checks the daily generator's own id list.
@@ -964,7 +964,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 			bumpPick    : true,                // What: Bump Pick. Why: A run from this view counts as a pick. How: This is always true here.
 			depletedEnd : picResObj.depBoo,    // What: Depleted End. Why: An ease-down pick can empty the pool. How: This passes picResObj.depBoo.
-			pickedId    : picResObj.picObj.id, // What: Picked Id. Why: The entry records which item was chosen. How: This passes the picked item's id.
+			pickedId    : picResObj.picObj.id, // What: Picked ID. Why: The entry records which item was chosen. How: This passes the picked item's id.
 			pickerPatch : picResObj.patObj,    // What: Picker Patch. Why: Some modes also stage picker-level changes. How: This passes picResObj.patObj.
 			updates     : picResObj.updArr     // What: Updates. Why: The pick's item mutations are staged, not applied yet. How: This passes picResObj.updArr.
 
@@ -1174,7 +1174,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 								<IcoSvgCom
 									icoNamStr='cheEle'
 									sizSteStr='p02' // Vertical Rhythm Base Plus 2 ~= 25.572px
-								/>{ /* What: Icon Svg Component. Why: A checkmark is the clearest possible confirmation glyph. How: This renders the shared check icon at a fixed size. */ }
+								/>{ /* What: Icon SVG Component. Why: A checkmark is the clearest possible confirmation glyph. How: This renders the shared check icon at a fixed size. */ }
 
 
 							</div>
@@ -1375,7 +1375,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 								<IcoSvgCom
 									icoNamStr={ shoDriBoo ? 'eyoEle' : 'eyeEle' }
 									sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-								/>{ /* What: Icon Svg Component. Why: An eye/eye-off glyph reads faster than text alone for a show/hide toggle. How: This switches icon name based on shoDriBoo. */ }
+								/>{ /* What: Icon SVG Component. Why: An eye/eye-off glyph reads faster than text alone for a show/hide toggle. How: This switches icon name based on shoDriBoo. */ }
 
 								{ shoDriBoo ? 'Hide drift' : 'Show drift' }{ /* What: Drift Label Expression. Why: The toggle's text names what clicking it will do. How: This reads 'Hide drift' while shoDriBoo is on, otherwise 'Show drift'. */ }
 
@@ -1582,7 +1582,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 														icoNamStr='cheEle'
 														sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-													/>{ /* What: Icon Svg Component. Why: A sent row shows a checkmark instead of the send glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
+													/>{ /* What: Icon SVG Component. Why: A sent row shows a checkmark instead of the send glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
 												</button>
@@ -1603,7 +1603,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 													<IcoSvgCom
 														icoNamStr='calEle'
 														sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-													/>{ /* What: Icon Svg Component. Why: The send action needs a recognizable "to Today" glyph. How: This renders the 'calEle' icon at a fixed size. */ }
+													/>{ /* What: Icon SVG Component. Why: The send action needs a recognizable "to Today" glyph. How: This renders the 'calEle' icon at a fixed size. */ }
 
 
 												</InfTipCom>
@@ -1628,7 +1628,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 													<IcoSvgCom
 														icoNamStr='calEle'
 														sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-													/>{ /* What: Icon Svg Component. Why: The send action needs a recognizable "to Today" glyph. How: This renders the 'calEle' icon at a fixed size. */ }
+													/>{ /* What: Icon SVG Component. Why: The send action needs a recognizable "to Today" glyph. How: This renders the 'calEle' icon at a fixed size. */ }
 
 
 												</button>
@@ -1654,7 +1654,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 												<IcoSvgCom
 													icoNamStr='ediEle'
 													sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-												/>{ /* What: Icon Svg Component. Why: The edit action needs a recognizable pencil glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
+												/>{ /* What: Icon SVG Component. Why: The edit action needs a recognizable pencil glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
 											</button>
@@ -1675,7 +1675,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 													<IcoSvgCom
 														icoNamStr='traEle'
 														sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-													/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
+													/>{ /* What: Icon SVG Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
 												</InfTipCom>
@@ -1699,7 +1699,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 													<IcoSvgCom
 														icoNamStr='traEle'
 														sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-													/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
+													/>{ /* What: Icon SVG Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
 												</button>
@@ -1816,7 +1816,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 								<IcoSvgCom
 									icoNamStr='pluEle'
 									sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-								/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add Item
+								/>{ /* What: Icon SVG Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add Item
 
 
 							</button>

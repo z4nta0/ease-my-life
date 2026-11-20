@@ -29,7 +29,7 @@ import { GroLogCom    } from './day-log.tsx';                       // What: Gro
 import { HelButCom    } from '../../help/button.tsx';               // What: Help Button Component. Why: Today needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helModBoo.
 import { HelOveCom    } from '../../help/mode.tsx';                 // What: Help Overlay Component. Why: Help mode needs its own coach-mark overlay driven by this tab's own catalog of targets. How: This is rendered once, passed TOD_HEL_ARR and the helModBoo/helExiFun pair.
 import { HOL_NAM_OBJ  } from '../../core/holidays.ts';              // What: Holidays Namespace Object. Why: Both generate()'s own skipHolidays gate and the no-run-today empty state need to know if today is an active holiday. How: This is called via HOL_NAM_OBJ.holDatFun against staAppObj.holidays.
-import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon Svg Component. Why: Nearly every card/button in this file needs a small named glyph alongside its label. How: This is rendered throughout, given a name and a size.
+import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: Nearly every card/button in this file needs a small named glyph alongside its label. How: This is rendered throughout, given a name and a size.
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled action (a locked re-roll, a blocked tutorial, a disabled Regenerate) still needs to explain itself on hover/tap. How: This wraps whichever control needs an explanatory label throughout this file.
 import { isaTruFun    } from '../../utils/guard.ts';                // What: Is-A Truthy Function. Why: The drag-drop order and the loader's picker set both drop missing ids. How: This filters them through the shared truthy guard, so TypeScript sees only real ids.
 import { LoaCarCom    } from './regeneration-loader.tsx';           // What: Loader Card Component. Why: While a list generates, each picker's slot shows a cycling placeholder card. How: This is rendered once per slot until generation settles.
@@ -38,9 +38,9 @@ import { norGroFun    } from '../../core/pickers.ts';               // What: Nor
 import { NOT_NAM_OBJ  } from '../../platform/notify.ts';            // What: Notification Namespace Object. Why: An auto-generated list should still fire a best-effort system notification. How: This is called via NOT_NAM_OBJ.genNotFun() right after an auto run, its result deliberately ignored.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: The whole mini-tour checklist phase (launcher cards, readiness, done/total counts) is driven by this shared namespace. How: This is called throughout for entLooFun/cheStaFun/reaPicFun/reaGenFun/othRemFun/tutProFun.
 import { ONB_EPT_ARR  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Explore-Page-Tours Array. Why: The Page Tours section needs its own fixed manifest of tour cards, separate from sample pickers/tasks. How: This is mapped over to render one PagTouCom per entry and to compute that section's own counts.
-import { ONB_GII_STR  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Generate-Item-Id String. Why: The closing "Generate a real list" card needs the checklist's own fixed key for that single card. How: This is passed to ONB_CHE_OBJ.entLooFun/setCarFun wherever that specific card is read or resolved.
-import { ONB_SPI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: Every count/filter that distinguishes a real picker from a sample one needs this fixed id list. How: This is checked with .includes throughout TabTodCom's own counts.
-import { ONB_STI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Ids Array. Why: Every count/filter that distinguishes a real reminder from a sample one needs this fixed id list. How: This is checked with .includes throughout TabTodCom's own tutorial-task counts.
+import { ONB_GII_STR  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Generate-Item-ID String. Why: The closing "Generate a real list" card needs the checklist's own fixed key for that single card. How: This is passed to ONB_CHE_OBJ.entLooFun/setCarFun wherever that specific card is read or resolved.
+import { ONB_SPI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-IDs Array. Why: Every count/filter that distinguishes a real picker from a sample one needs this fixed id list. How: This is checked with .includes throughout TabTodCom's own counts.
+import { ONB_STI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Task-IDs Array. Why: Every count/filter that distinguishes a real reminder from a sample one needs this fixed id list. How: This is checked with .includes throughout TabTodCom's own tutorial-task counts.
 import { PagTouCom    } from './page-tour-card.tsx';                // What: Page Tour Component. Why: Each page tour gets a launcher card in the Page Tours group. How: This is rendered once per page tour.
 import { PIC_NAM_OBJ  } from '../../core/pickers.ts';               // What: Pickers Namespace Object. Why: Picking, re-rolling, and ease eligibility all funnel through this shared namespace. How: This is called for picIteFun/easEliFun throughout generate() and hanRerFun, and read for THR_VAL_NUM.
 import { redMotFun    } from '../../utils/motion.ts';               // What: Reduce Motion Function. Why: Nearly every animated sequence in this file (celebration, reel cascade, card flip, scroll) needs to skip or shorten itself for a user who prefers reduced motion. How: This is checked throughout as a plain function call.
@@ -1247,14 +1247,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		setRmvIdeSet( ( curSetObj ) => new Set( [ ...curSetObj, entIdeStr ] ) ); // What: Removing Id Add. Why: The card needs to start its own collapse animation immediately. How: This adds entIdeStr into a fresh copy of rmvIdeSet.
+		setRmvIdeSet( ( curSetObj ) => new Set( [ ...curSetObj, entIdeStr ] ) ); // What: Removing ID Add. Why: The card needs to start its own collapse animation immediately. How: This adds entIdeStr into a fresh copy of rmvIdeSet.
 
 		setTimeout( () => { // What: Skip Settle Timeout. Why: The actual data removal must wait for the collapse animation to finish playing. How: This runs after skiAniNum, matching the CSS animation's own duration.
 
 
 			actStoObj.skiEntFun( entIdeStr ); // What: Skip Entry Call. Why: This is the actual removal, applied only once the animation has had time to play. How: This calls actStoObj.skiEntFun with entIdeStr.
 
-			setRmvIdeSet( ( curSetObj ) => new Set( [ ...curSetObj ].filter( ( setIdeStr ) => setIdeStr !== entIdeStr ) ) ); // What: Removing Id Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of rmvIdeSet.
+			setRmvIdeSet( ( curSetObj ) => new Set( [ ...curSetObj ].filter( ( setIdeStr ) => setIdeStr !== entIdeStr ) ) ); // What: Removing ID Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of rmvIdeSet.
 
 
 		}, skiAniNum ); // What: Skip Settle Delay. Why: The removal waits for the collapse animation. How: This waits skiAniNum, matching the animation's duration.
@@ -1306,14 +1306,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		setRmvIdeSet( ( curSetObj ) => new Set( [ ...curSetObj, entIdeStr ] ) ); // What: Removing Id Add. Why: The card needs to start its own collapse animation immediately. How: This adds entIdeStr into a fresh copy of rmvIdeSet.
+		setRmvIdeSet( ( curSetObj ) => new Set( [ ...curSetObj, entIdeStr ] ) ); // What: Removing ID Add. Why: The card needs to start its own collapse animation immediately. How: This adds entIdeStr into a fresh copy of rmvIdeSet.
 
 		setTimeout( () => { // What: Delete Settle Timeout. Why: The actual item removal must wait for the collapse animation to finish playing. How: This runs after skiAniNum, matching the CSS animation's own duration.
 
 
 			actStoObj.delIteFun( iteIdeStr ); // What: Remove Item Call. Why: This is the actual removal, applied only once the animation has had time to play. How: This calls actStoObj.delIteFun with iteIdeStr.
 
-			setRmvIdeSet( ( curSetObj ) => new Set( [ ...curSetObj ].filter( ( setIdeStr ) => setIdeStr !== entIdeStr ) ) ); // What: Removing Id Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of rmvIdeSet.
+			setRmvIdeSet( ( curSetObj ) => new Set( [ ...curSetObj ].filter( ( setIdeStr ) => setIdeStr !== entIdeStr ) ) ); // What: Removing ID Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of rmvIdeSet.
 
 
 		}, skiAniNum ); // What: Delete Settle Delay. Why: The removal waits for the collapse animation. How: This waits skiAniNum, matching the animation's duration.
@@ -1387,7 +1387,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		setRolIdeSet( ( curSetObj ) => new Set( [ ...curSetObj, entRecObj.eid ] ) ); // What: Rolling Id Add. Why: The card needs to start its own flip animation immediately. How: This adds entRecObj's own eid into a fresh copy of rolIdeSet.
+		setRolIdeSet( ( curSetObj ) => new Set( [ ...curSetObj, entRecObj.eid ] ) ); // What: Rolling ID Add. Why: The card needs to start its own flip animation immediately. How: This adds entRecObj's own eid into a fresh copy of rolIdeSet.
 
 		setTimeout( () => { // What: Flip Apex Timeout. Why: The pick happens at the midpoint of the flip (when the card is fully upside-down), so the new content rolls in continuing the same direction. How: This runs at half of rolAniNum, computing and staging the new pick.
 
@@ -1447,7 +1447,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 						bumpPick    : true,             // What: Bump Pick. Why: A re-roll counts as a fresh pick once the entry is done. How: This asks the store to bump the item's own pick stats on completion.
 						depletedEnd : picResObj.depBoo, // What: Depleted End. Why: An ease-down item may have just run out. How: This passes the pick result's own depletion flag.
-						pickedId    : nexIteObj.id,     // What: Picked Id. Why: The store needs to know which item this pending mutation belongs to. How: This passes the newly picked item's own id.
+						pickedId    : nexIteObj.id,     // What: Picked ID. Why: The store needs to know which item this pending mutation belongs to. How: This passes the newly picked item's own id.
 						pickerPatch : picResObj.patObj, // What: Picker Patch. Why: Some modes update the picker itself on a pick. How: This passes the pick result's own picker patch.
 						updates     : picResObj.updArr  // What: Updates. Why: The per-item value/weight changes stay pending until the entry is done. How: This passes the pick result's own update list.
 
@@ -1474,7 +1474,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 						bumpPick    : true,                // What: Bump Pick. Why: A re-roll counts as a fresh pick once the entry is done. How: This asks the store to bump the item's own pick stats on completion.
 						depletedEnd : picResObj.depBoo,    // What: Depleted End. Why: An ease-down item may have just run out. How: This passes the pick result's own depletion flag.
-						pickedId    : picResObj.picObj.id, // What: Picked Id. Why: The store needs to know which item this pending mutation belongs to. How: This passes the newly picked item's own id.
+						pickedId    : picResObj.picObj.id, // What: Picked ID. Why: The store needs to know which item this pending mutation belongs to. How: This passes the newly picked item's own id.
 						pickerPatch : picResObj.patObj,    // What: Picker Patch. Why: Some modes update the picker itself on a pick. How: This passes the pick result's own picker patch.
 						updates     : picResObj.updArr     // What: Updates. Why: The per-item value/weight changes stay pending until the entry is done. How: This passes the pick result's own update list.
 
@@ -1493,7 +1493,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		setTimeout( () => { // What: Flip End Timeout. Why: The rolling flag must clear once the flip's own full animation has actually finished, not just at its apex. How: This runs after the full rolAniNum, clearing entRecObj's own eid from rolIdeSet.
 
 
-			setRolIdeSet( ( curSetObj ) => new Set( [ ...curSetObj ].filter( ( setIdeStr ) => setIdeStr !== entRecObj.eid ) ) ); // What: Rolling Id Delete. Why: The flip has finished, so the rolling flag must clear. How: This removes entRecObj's own eid from a fresh copy of rolIdeSet.
+			setRolIdeSet( ( curSetObj ) => new Set( [ ...curSetObj ].filter( ( setIdeStr ) => setIdeStr !== entRecObj.eid ) ) ); // What: Rolling ID Delete. Why: The flip has finished, so the rolling flag must clear. How: This removes entRecObj's own eid from a fresh copy of rolIdeSet.
 
 
 		}, rolAniNum ); // What: Flip End Delay. Why: The rolling flag clears once the whole flip finishes. How: This waits the full rolAniNum.
@@ -1627,7 +1627,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				const pinSecEle = secRefObj.current[ pinGroRef.current ];                  // What: Pinned Section Element. Why: The release check below needs the pinned section's own live DOM node. How: This reads secRefObj.current at pinGroRef's own key.
 				const vieTopNum = scrCurEle ? scrCurEle.getBoundingClientRect().top : 0;   // What: View Top Number. Why: The midline check below needs the scroller's own viewport top. How: This reads scrCurEle's own bounding rect top, or 0 without a scroller.
 				const vieHeiNum = scrCurEle ? scrCurEle.clientHeight : window.innerHeight; // What: View Height Number. Why: The midline check below needs the scroller's own viewport height. How: This reads scrCurEle.clientHeight, or the window's own innerHeight without a scroller.
-				const midLinNum = vieTopNum + vieHeiNum / 2;                               // What: Midline Number. Why: "Still in view" for a pinned group is judged against the viewport's own vertical middle. How: This adds half of vieHeiNum to vieTopNum.
+				const midLinNum = vieTopNum + vieHeiNum / 2;                               // What: Mid Line Number. Why: "Still in view" for a pinned group is judged against the viewport's own vertical middle. How: This adds half of vieHeiNum to vieTopNum.
 
 
 				if ( pinSecEle && ( botEdgBoo || pinSecEle.getBoundingClientRect().top <= midLinNum ) ) return; // What: Keep Pinned Guard. Why: The pin should hold while either condition still applies. How: This returns early, leaving actGroStr untouched, while pinSecEle exists and either botEdgBoo or its own top is still above midLinNum.
@@ -2395,7 +2395,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 						cardText      : carTexStr,                  // What: Card Text. Why: The card shows the conditional's own message. How: This passes carTexStr.
-						conditionalId : conRecObj.id,               // What: Conditional Id. Why: The card must know which conditional produced it. How: This passes conRecObj's own id.
+						conditionalId : conRecObj.id,               // What: Conditional ID. Why: The card must know which conditional produced it. How: This passes conRecObj's own id.
 						condName      : conRecObj.name,             // What: Condition Name. Why: The card's title names the conditional. How: This passes conRecObj's own name.
 						group         : picRecObj.group || 'Other', // What: Group. Why: The card sits in the suppressed picker's own group. How: This passes that group, falling back to Other.
 						kind          : 'dayoff',                   // What: Kind. Why: The entry must render as a day-off card. How: This is the fixed 'dayoff' kind.
@@ -2489,7 +2489,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 					group    : picRecObj.group || 'Other',     // What: Group. Why: The card sits in its picker's own group. How: This passes that group, falling back to Other.
 					kind     : 'charging',                     // What: Kind. Why: The entry must render as a charging card. How: This is the fixed 'charging' kind.
 					pending  : { updates : picResObj.updArr }, // What: Pending. Why: Today's drift still applies once the card is checked off. How: This stages the pick result's own updates.
-					pickerId : picIdeStr,                      // What: Picker Id. Why: The card belongs to one picker. How: This passes picIdeStr.
+					pickerId : picIdeStr,                      // What: Picker ID. Why: The card belongs to one picker. How: This passes picIdeStr.
 
 					...( perKeyStr ? { periodKey : perKeyStr } : {} ) // What: Period Key Spread. Why: A non-daily picker's card belongs to one specific period. How: This adds a periodKey only when perKeyStr is set.
 
@@ -2608,15 +2608,15 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			...newPicArr.map( ( curPikObj ) => ( { // What: Fresh Entries Spread. Why: Every fresh pick becomes a real entry, with its value/weight changes staged as pending until it is checked off. How: This maps each pick record to an entry-shaped object.
 
 
-				itemId   : curPikObj.ideStr, // What: Item Id. Why: The entry shows the picked item. How: This passes the pick record's own item id.
-				pickerId : curPikObj.picStr, // What: Picker Id. Why: The entry belongs to its picker. How: This passes the pick record's own picker id.
+				itemId   : curPikObj.ideStr, // What: Item ID. Why: The entry shows the picked item. How: This passes the pick record's own item id.
+				pickerId : curPikObj.picStr, // What: Picker ID. Why: The entry belongs to its picker. How: This passes the pick record's own picker id.
 
 				pending : { // What: Pending. Why: Nothing about the item changes until the entry is marked done. How: This stages every mutation the pick produced.
 
 
 					bumpPick    : true,                    // What: Bump Pick. Why: A checked-off pick counts toward the item's own pick stats. How: This asks the store to bump them on completion.
 					depletedEnd : curPikObj.resObj.depBoo, // What: Depleted End. Why: An ease-down item may have just run out. How: This passes the pick result's own depletion flag.
-					pickedId    : curPikObj.ideStr,        // What: Picked Id. Why: The store needs to know which item these mutations belong to. How: This passes the picked item's own id.
+					pickedId    : curPikObj.ideStr,        // What: Picked ID. Why: The store needs to know which item these mutations belong to. How: This passes the picked item's own id.
 					pickerPatch : curPikObj.resObj.patObj, // What: Picker Patch. Why: Some modes update the picker itself on a pick. How: This passes the pick result's own picker patch.
 					updates     : curPikObj.resObj.updArr  // What: Updates. Why: The per-item value/weight changes wait for completion. How: This passes the pick result's own update list.
 
@@ -3369,13 +3369,13 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		 *
 		*/
 
-		let rafTwoNum = 0; // What: Raf Two Number. Why: The cleanup below needs to cancel the SECOND, nested rAF too, not just the first. How: This starts at 0 and is assigned inside the first rAF's own callback below.
+		let rafTwoNum = 0; // What: Request-Animation-Frame Two Number. Why: The cleanup below needs to cancel the SECOND, nested rAF too, not just the first. How: This starts at 0 and is assigned inside the first rAF's own callback below.
 
 
-		const rafOneNum = requestAnimationFrame( () => { // What: Raf One Number. Why: This is the first of the two deferred frames described above. How: This schedules the second rAF inside its own callback.
+		const rafOneNum = requestAnimationFrame( () => { // What: Request-Animation-Frame One Number. Why: This is the first of the two deferred frames described above. How: This schedules the second rAF inside its own callback.
 
 
-			rafTwoNum = requestAnimationFrame( () => { // What: Raf Two Assignment. Why: This is the second, actually-scrolling frame. How: This measures genCarRef and scrolls once both its scroller and tab ancestors are found.
+			rafTwoNum = requestAnimationFrame( () => { // What: Request-Animation-Frame Two Assignment. Why: This is the second, actually-scrolling frame. How: This measures genCarRef and scrolls once both its scroller and tab ancestors are found.
 
 
 				const genCurEle = genCarRef.current;                                             // What: Generate Current Element. Why: Every measurement below reads this same node. How: This reads genCarRef.current.
@@ -3624,7 +3624,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 										icoNamStr='flaEle'
 										sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
-									/>{ /* What: Icon Svg Component. Why: The streak badge needs a recognizable glyph. How: This renders the 'flaEle' icon at a fixed size. */ }
+									/>{ /* What: Icon SVG Component. Why: The streak badge needs a recognizable glyph. How: This renders the 'flaEle' icon at a fixed size. */ }
 
 									<span className={ cssModObj.strCouSpa }>{ staAppObj.streak }-day streak</span>{ /* What: Streak Text Span Element. Why: The streak count needs its own plain text alongside the flame icon. How: This renders staAppObj.streak interpolated into the fixed phrase. */ }
 
@@ -3674,7 +3674,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									viewBox='8 8 528 528'
 
 									aria-hidden='true'
-								>{ /* What: Logo Svg Element. Why: This draws the small square "Ease My Life" logo mark. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }{ /* Same theme-wired logo as the Today header (currentColor -> accent, grid lines -> accent-soft) so the two tabs read as one product. */ }
+								>{ /* What: Logo SVG Element. Why: This draws the small square "Ease My Life" logo mark. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }{ /* Same theme-wired logo as the Today header (currentColor -> accent, grid lines -> accent-soft) so the two tabs read as one product. */ }
 
 
 									<defs>{ /* What: Clip Defs Element. Why: An SVG clipPath can only be applied via a defined, referenced id, not inline. How: This holds the one clipPath definition the glyph path below references. */ }
@@ -3815,7 +3815,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									className={ cssModObj.rinGraSvg }
 
 									viewBox='0 0 36 36'
-								>{ /* What: Ring Svg Element. Why: This draws the actual ring shape. How: This renders a background circle plus a foreground circle whose dash array reflects donCouNum over totCouNum. */ }
+								>{ /* What: Ring SVG Element. Why: This draws the actual ring shape. How: This renders a background circle plus a foreground circle whose dash array reflects donCouNum over totCouNum. */ }
 
 
 									<circle
@@ -3911,7 +3911,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 								icoNamStr='griEle'
 								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The banner needs a recognizable drag-affordance glyph alongside its own copy. How: This renders the 'griEle' icon at a fixed size. */ }
+							/>{ /* What: Icon SVG Component. Why: The banner needs a recognizable drag-affordance glyph alongside its own copy. How: This renders the 'griEle' icon at a fixed size. */ }
 
 							Edit Mode allows you to drag groups and items to rearrange them or to click group names to edit them.
 
@@ -4183,7 +4183,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								<IcoSvgCom
 									icoNamStr='griEle'
 									sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-								/>{ /* What: Icon Svg Component. Why: The toggle needs a recognizable drag-affordance glyph alongside its own label. How: This renders the 'griEle' icon at a fixed size. */ }
+								/>{ /* What: Icon SVG Component. Why: The toggle needs a recognizable drag-affordance glyph alongside its own label. How: This renders the 'griEle' icon at a fixed size. */ }
 
 								{ ediModBoo ? 'Done' : 'Edit Mode' }{ /* What: Edit Mode Label Expression. Why: The same rail button enters and leaves Edit Mode. How: This reads "Done" while Edit Mode is on, otherwise "Edit Mode". */ }
 
@@ -4697,7 +4697,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									<IcoSvgCom
 										icoNamStr='cheEle'
 										sizSteStr='p01' // Vertical Rhythm Base Plus 1 ~= 19.304px
-									/>{ /* What: Icon Svg Component. Why: The Generate card leads with a check mark, matching the other onboarding create cards. How: This renders the check glyph at the p01 rhythm step. */ }
+									/>{ /* What: Icon SVG Component. Why: The Generate card leads with a check mark, matching the other onboarding create cards. How: This renders the check glyph at the p01 rhythm step. */ }
 
 
 								</div>
@@ -4752,7 +4752,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									<IcoSvgCom
 										icoNamStr='pluEle'
 										sizSteStr='p01' // Vertical Rhythm Base Plus 1 ~= 19.304px
-									/>{ /* What: Icon Svg Component. Why: The no-pickers card leads with a plus, pointing at creating one. How: This renders the plus glyph at the p01 rhythm step. */ }
+									/>{ /* What: Icon SVG Component. Why: The no-pickers card leads with a plus, pointing at creating one. How: This renders the plus glyph at the p01 rhythm step. */ }
 
 
 								</div>
@@ -4790,7 +4790,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									<IcoSvgCom
 										icoNamStr='calEle'
 										sizSteStr='p01' // Vertical Rhythm Base Plus 1 ~= 19.304px
-									/>{ /* What: Icon Svg Component. Why: The idle card leads with a calendar, since nothing is scheduled today. How: This renders the calendar glyph at the p01 rhythm step. */ }
+									/>{ /* What: Icon SVG Component. Why: The idle card leads with a calendar, since nothing is scheduled today. How: This renders the calendar glyph at the p01 rhythm step. */ }
 
 
 								</div>
@@ -4945,7 +4945,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 												<IcoSvgCom
 													icoNamStr='refEle'
 													sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-												/>{ /* What: Icon Svg Component. Why: The disabled Regenerate control keeps the same refresh icon as the real button. How: This renders the refresh glyph at the bas rhythm step, followed by the label text. */ }Regenerate
+												/>{ /* What: Icon SVG Component. Why: The disabled Regenerate control keeps the same refresh icon as the real button. How: This renders the refresh glyph at the bas rhythm step, followed by the label text. */ }Regenerate
 
 
 											</InfTipCom>

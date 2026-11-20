@@ -8,7 +8,7 @@ import React     from 'react';                 // What: React. Why: This is the 
 
 
 import { durMilFun } from '../../utils/rhythm.ts';     // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { IcoSvgCom } from '../../ui/icon.tsx';         // What: Icon Svg Component. Why: The celebration preview's mock done-cards need the same check glyph the real Today list uses on a completed card. How: This is rendered inside CelPreCom's mock card rows, given the 'cheEle' icon name.
+import { IcoSvgCom } from '../../ui/icon.tsx';         // What: Icon SVG Component. Why: The celebration preview's mock done-cards need the same check glyph the real Today list uses on a completed card. How: This is rendered inside CelPreCom's mock card rows, given the 'cheEle' icon name.
 import { PicStrCom } from '../../ui/picker-strip.tsx'; // What: Picker Strip Component. Why: The picker-animation preview must show the exact reel/spotlight/dissolve cycle the real Pickers tab renders, not a separate copy of it. How: This is rendered directly inside PicAniCom once the user has pressed Play at least once.
 
 // #endregion Imports
@@ -343,7 +343,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 
 								icoNamStr='cheEle'
 								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: This is the actual check glyph shown on a completed card. How: This renders the 'cheEle' icon at a fixed size matching the real Today card. */ }
+							/>{ /* What: Icon SVG Component. Why: This is the actual check glyph shown on a completed card. How: This renders the 'cheEle' icon at a fixed size matching the real Today card. */ }
 
 
 						</span>

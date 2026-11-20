@@ -241,7 +241,7 @@ type DecProTyp = { ariLabStr : string, dayCouNum : number, onChange : ( dayValNu
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.ariLabStr - Aria Label String: The select's accessible name.
+ * @param props.ariLabStr - ARIA Label String: The select's accessible name.
  * @param props.dayCouNum - Day Count Number: How many days the select offers.
  * @param props.onChange  - On Change: Called with the chosen day of the month.
  * @param props.value     - Value: The current day of the month.
@@ -310,7 +310,7 @@ type DscProTyp = { ariLabStr : string, onChange : ( dowValNum : number ) => void
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.ariLabStr - Aria Label String: The select's accessible name.
+ * @param props.ariLabStr - ARIA Label String: The select's accessible name.
  * @param props.onChange  - On Change: Called with the chosen weekday's index.
  * @param props.value     - Value: The current weekday's index.
  *

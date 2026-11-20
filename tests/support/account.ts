@@ -102,7 +102,7 @@ async function creAccFun ( emaAdrStr : string, paiValBoo : boolean = true ) : Pr
 // #region sigLinFun
 
 /**
- * sigLinFun = Sign In Link Function
+ * sigLinFun = Sign-In Link Function
  *
  * @summary
  * Signs a device in the way a person does: types the address on the
@@ -160,7 +160,7 @@ async function sigLinFun ( curPagObj : Page, emaAdrStr : string ) : Promise< voi
 	await selTabFun( curPagObj, 'settings' ); // What: Tab Return Call. Why: The account shows on the Settings tab. How: This switches back to it.
 
 
-	await expect( curPagObj.locator( '[data-element-name-hook~="accOutBut"]' ) ).toBeVisible(); // What: Signed In Assertion. Why: The link must have signed the device in. How: This waits for the sign-out button.
+	await expect( curPagObj.locator( '[data-element-name-hook~="accOutBut"]' ) ).toBeVisible(); // What: Signed-In Assertion. Why: The link must have signed the device in. How: This waits for the sign-out button.
 
 	// #endregion Signed In Check
 
@@ -174,7 +174,7 @@ async function sigLinFun ( curPagObj : Page, emaAdrStr : string ) : Promise< voi
 // #region freSigFun
 
 /**
- * freSigFun = Fresh Sign In Function
+ * freSigFun = Fresh Sign-In Function
  *
  * @summary
  * Signs a fresh install in: opens the app, skips the welcome modal's tour,

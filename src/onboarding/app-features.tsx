@@ -10,7 +10,7 @@ import React     from 'react';                     // What: React. Why: This fil
 import { buiTs1Fun } from './page-steps.tsx';  // What: Build Tour-Step-1 Function. Why: Every App Feature tour reuses this exact shared Step 1, the real nav-button highlight, as its own opening step. How: This is called inside FeaTouCom below, passed this feature's own page, an optional run side effect, and a primary button label.
 import { colMapFun } from '../state/store.ts'; // What: Collapsed Map Function. Why: The saved section collapse state may be missing on an old save. How: This is called with the app state to read the collapse map, empty when there is none.
 import { GuiTouCom } from './tour-runner.tsx'; // What: Guided Tour Component. Why: This is the generic spotlight-tour engine that actually drives each App Feature tutorial once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-feature step array.
-import { IcoSvgCom } from '../ui/icon.tsx';    // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph matching the current feature's own page. How: This is rendered inside the intro modal's icon prop below.
+import { IcoSvgCom } from '../ui/icon.tsx';    // What: Icon SVG Component. Why: The intro modal needs a recognizable glyph matching the current feature's own page. How: This is rendered inside the intro modal's icon prop below.
 import { IntModCom } from './intro-modal.tsx'; // What: Intro Modal Component. Why: Each App Feature tutorial opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this feature's own icon/title/paragraphs/pills.
 
 
@@ -1106,7 +1106,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 			<IcoSvgCom
 				icoNamStr={ feaRcdObj.pagStr }
 				sizSteStr='p05' // Vertical Rhythm Base Plus 5 ~= 59.447px
-			/> // What: Icon Svg Component. Why: This is the glyph identifying the page this feature lives on. How: This renders that page's own nav icon.
+			/> // What: Icon SVG Component. Why: This is the glyph identifying the page this feature lives on. How: This renders that page's own nav icon.
 
 
 		);

@@ -104,10 +104,10 @@ function buiIteFun ( curPicObj : Pick< PicRcdTyp, 'id' > & Partial< PicRcdTyp >,
 	const newIteObj : IteRcdTyp = { // What: New Item Object. Why: This is the actual item being added, in state.items' own shape. How: This bundles a fresh id, the de-duplicated name, pickerId, the resolved weight/value, and (for ease modes) a fresh drift band.
 
 
-		id         : optIdeStr || ranIdeFun( 'it_' ),                                          // What: Id. Why: Every item needs a stable id. How: This uses optIdeStr when given, else mints a random 'it_' id.
+		id         : optIdeStr || ranIdeFun( 'it_' ),                                          // What: ID. Why: Every item needs a stable id. How: This uses optIdeStr when given, else mints a random 'it_' id.
 		lastPicked : null,                                                                     // What: Last Picked. Why: A brand-new item has never been picked. How: This is null.
 		name       : uniNamFun( newNamStr, sibIteArr.map( ( curIteObj ) => curIteObj.name ) ), // What: Name. Why: Two items in the same picker can't share a name. How: This de-duplicates newNamStr against every sibling item's own name via uniNamFun.
-		pickerId   : curPicObj.id,                                                             // What: Picker Id. Why: Every item belongs to exactly one picker. How: This is curPicObj's own id.
+		pickerId   : curPicObj.id,                                                             // What: Picker ID. Why: Every item belongs to exactly one picker. How: This is curPicObj's own id.
 		picks      : 0,                                                                        // What: Picks. Why: A brand-new item has never been picked. How: This is 0.
 		vacation   : false,                                                                    // What: Vacation. Why: A brand-new item starts active. How: This is false.
 		value      : iniValNum,                                                                // What: Value. Why: Ease Down items start fully charged while every other mode starts empty. How: This is iniValNum, resolved above.

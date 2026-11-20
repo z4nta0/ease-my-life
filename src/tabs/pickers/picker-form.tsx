@@ -15,7 +15,7 @@ import { ColDisCom    } from '../../ui/collapse.tsx';             // What: Colla
 import { conDraFun    } from '../../ui/conditional-controls.tsx'; // What: Conditional Draft Function. Why: Starting a new inline conditional needs a sensible starting draft shape. How: This is called whenever the user opens the Add New Conditional pill, seeded from the picker's own name.
 import { durMilFun    } from '../../utils/rhythm.ts';             // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { emlTouObj    } from '../../state/tour-bus.ts';           // What: Ease My Life Tour Object. Why: A couple of tour-driven behaviors need to read the shared tour bus's current value synchronously, not through React state. How: This is read via emlTouObj.get() when staging a new draft item's tour prefill, and written via emlTouObj.set() to clear a staged empty-state prefill.
-import { IcoSvgCom    } from '../../ui/icon.tsx';                 // What: Icon Svg Component. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
+import { IcoSvgCom    } from '../../ui/icon.tsx';                 // What: Icon SVG Component. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
 import { InfTipCom    } from '../../ui/info-tip.tsx';             // What: Info Tip Component. Why: A disabled Create button must explain that a picker needs at least 2 items. How: This wraps that button with the requirement as its tip.
 import { IteCarCom    } from './item-card.tsx';                   // What: Item Card Component. Why: Adding or editing a pool item opens the shared item card, holding the same weight/ease editor the Today tab uses. How: This is rendered below the pool list, wired to either the real store actions or the local draft-item actions.
 import { norConFun    } from '../../core/pickers.ts';             // What: Normalize Conditional Function. Why: A new inline conditional's name must be compared against existing ones the same way the store itself normalizes them. How: This is called on the conditional draft's own name before checking it for a collision.
@@ -796,7 +796,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 			{ // What: New Item Object. Why: The new item needs every field resolved above. How: This builds the item the editor opens on. // What: Type Assertion Note. Why: The new item lacks the fields only a saved item has. How: It's read as an item, since the store fills those in when the picker is created.
 
 
-				id     : newIdeStr,                               // What: Id. Why: The pool item needs its own id. How: This uses newIdeStr.
+				id     : newIdeStr,                               // What: ID. Why: The pool item needs its own id. How: This uses newIdeStr.
 				name   : newNamStr,                               // What: Name. Why: The item starts with its de-duplicated name. How: This uses newNamStr.
 				value  : fulChaBoo ? PIC_NAM_OBJ.THR_VAL_NUM : 0, // What: Value. Why: An item that should start full begins at the threshold, otherwise at 0. How: This uses THR_VAL_NUM when fulChaBoo, otherwise 0.
 				weight : 1,                                       // What: Weight. Why: Every item starts at the baseline weight. How: This is 1.
@@ -1235,7 +1235,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								<IcoSvgCom
 									icoNamStr='cheEle'
 									sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
-								/> // What: Icon Svg Component. Why: The finished step needs a recognizable checkmark. How: This renders the 'cheEle' icon at a fixed size.
+								/> // What: Icon SVG Component. Why: The finished step needs a recognizable checkmark. How: This renders the 'cheEle' icon at a fixed size.
 
 
 							) : ( // What: Step Number Branch. Why: An unfinished step shows its own number. How: This renders the else branch while forSteNum is 1.
@@ -1416,7 +1416,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									<IcoSvgCom
 										icoNamStr='pluEle'
 										sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-									/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } New Group
+									/>{ /* What: Icon SVG Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } New Group
 
 
 								</button>
@@ -1667,7 +1667,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											<IcoSvgCom
 												icoNamStr='pluEle'
 												sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-											/>{ /* What: Icon Svg Component. Why: The new-conditional pill needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
+											/>{ /* What: Icon SVG Component. Why: The new-conditional pill needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
 
 											<span className={ cssModObj.conNamSpa }>Add New Conditional</span>{ /* What: Pill Name Span Element. Why: The new-conditional pill needs its own visible label. How: This renders the literal text "Add New Conditional". */ }
 
@@ -2189,7 +2189,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 														<IcoSvgCom
 															icoNamStr='ediEle'
 															sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-														/>{ /* What: Icon Svg Component. Why: The edit action needs a recognizable pencil glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
+														/>{ /* What: Icon SVG Component. Why: The edit action needs a recognizable pencil glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
 													</button>
@@ -2210,7 +2210,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 															<IcoSvgCom
 																icoNamStr='traEle'
 																sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-															/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
+															/>{ /* What: Icon SVG Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
 														</InfTipCom>
@@ -2233,7 +2233,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 															<IcoSvgCom
 																icoNamStr='traEle'
 																sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-															/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
+															/>{ /* What: Icon SVG Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
 														</button>
@@ -2350,7 +2350,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										<IcoSvgCom
 											icoNamStr='pluEle'
 											sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-										/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add Item
+										/>{ /* What: Icon SVG Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add Item
 
 
 									</button>

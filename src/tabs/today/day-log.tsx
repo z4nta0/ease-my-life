@@ -11,7 +11,7 @@ import { CAD_NAM_OBJ } from '../../core/cadence.ts';      // What: Cadence Names
 import { ColDisCom   } from '../../ui/collapse.tsx';      // What: Collapse Disclosure Component. Why: PicBloCom's own item table only needs to exist in the DOM while its block is actually expanded. How: This wraps that table, driven by PicBloCom's own open/closed state.
 import { CON_NAM_OBJ } from '../../core/conditionals.ts'; // What: Conditional Namespace Object. Why: ConSecCom needs CON_NAM_OBJ.modValFun to know whether a given conditional's own mode even has a value to show, and the odds labels fall back to the shared default odds. How: This is called once per conditional row inside ConSecCom below, and read for DEF_ODD_NUM.
 import { InfTipCom   } from '../../ui/info-tip.tsx';      // What: Info Tip Component. Why: Every truncatable name/label in this file (item, conditional, reminder) needs the shared reveal-on-truncation tooltip. How: This wraps those names/labels throughout PicBloCom, ConSecCom and RemLogCom.
-import { isoDayFun   } from '../../utils/date.ts';        // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
+import { isoDayFun   } from '../../utils/date.ts';        // What: ISO Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { PIC_NAM_OBJ } from '../../core/pickers.ts';      // What: Pickers Namespace Object. Why: Ease day-range math in this file divides the shared full-charge ceiling by a drift band, falling back to the pickers' default band. How: This reads PIC_NAM_OBJ.THR_VAL_NUM and DEF_EAS_OBJ wherever a drift-to-days conversion happens.
 import { SED_NAM_OBJ } from '../../state/seed.ts';        // What: Seed Namespace Object. Why: PicBloCom and ConSecCom label a mode with the same display names the mode radios use. How: This reads MOD_DEF_OBJ's own labStr for a picker's or conditional's mode.
 import { TAS_NAM_OBJ } from '../../core/tasks.ts';        // What: Tasks Namespace Object. Why: RemLogCom needs the reminders engine's own scheduling helpers (ancDatFun, visTodFun, isaDonFun, nexEliFun, sumTasFun). How: These are called throughout RemLogCom below.
@@ -490,7 +490,7 @@ function IcoSetCom ( { className, icoKeyStr, strWidNum = 2 } : IecProTyp ) : Rea
 			viewBox='0 0 24 24'
 
 			aria-hidden='true'
-		>{ /* What: Icon Shape Svg Element. Why: This is IcoSetCom's own single rendered element, sized and stroked identically for every glyph. How: This renders whichever shape icoShaEle resolves to. */ }
+		>{ /* What: Icon Shape SVG Element. Why: This is IcoSetCom's own single rendered element, sized and stroked identically for every glyph. How: This renders whichever shape icoShaEle resolves to. */ }
 
 
 			{ icoShaEle }
@@ -1070,7 +1070,7 @@ function ConSecCom ( { picGroArr, staAppObj } : CtcProTyp ) : React.JSX.Element 
 					const genSnaObj = genConObj[ conRcdObj.id ];                                                    // What: Generation Snapshot Object. Why: The value cells below need this conditional's own at-generation snapshot, if any. How: This reads genConObj's own entry for conRcdObj's own id.
 					const neuModBoo = conRcdObj.mode === 'weighted' || conRcdObj.mode === 'random';                 // What: Neutral Mode Boolean. Why: These 2 modes get a visually neutral pill instead of a tinted one. How: This checks conRcdObj's own mode against both literal keys.
 					const modLabStr = ( SED_NAM_OBJ.MOD_DEF_OBJ[ conRcdObj.mode ] || {} ).labStr || conRcdObj.mode; // What: Mode Label String. Why: The row's own mode pill needs the final resolved label. How: This reads MOD_DEF_OBJ's own label for conRcdObj's own mode, falling back to the raw mode key for an unknown one.
-					const attJsxArr = attNamArr.map( ( curNamStr, curIndNum ) => <React.Fragment key={ curNamStr }>{ curIndNum ? ', ' : '' }<b className={ cssModObj.affNamBol }>{ curNamStr }</b></React.Fragment> ); // What: Attached Jsx Array. Why: Both branches of the affected-pickers strip below need this exact same comma-joined name list. How: This maps attNamArr into one comma-prefixed bold name per entry, computed once for reuse.
+					const attJsxArr = attNamArr.map( ( curNamStr, curIndNum ) => <React.Fragment key={ curNamStr }>{ curIndNum ? ', ' : '' }<b className={ cssModObj.affNamBol }>{ curNamStr }</b></React.Fragment> ); // What: Attached JSX Array. Why: Both branches of the affected-pickers strip below need this exact same comma-joined name list. How: This maps attNamArr into one comma-prefixed bold name per entry, computed once for reuse.
 
 
 
@@ -1880,7 +1880,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 
 		staAppObj.reminderSkipLog // What: Skip Log Source. Why: Every manual skip ever recorded is a candidate. How: This reads the skip log.
 			.filter( ( logRowObj ) => isoDayFun( new Date( logRowObj.skippedAt ) ) === dayKeyStr ) // What: Today Skip Filter. Why: Only a skip made on the anchor day counts. How: This keeps rows whose own skippedAt falls on dayKeyStr.
-			.map( ( logRowObj ) => logRowObj.taskId )                                              // What: Task Id Map. Why: The set only needs the skipped task ids. How: This maps each row to its own taskId.
+			.map( ( logRowObj ) => logRowObj.taskId )                                              // What: Task ID Map. Why: The set only needs the skipped task ids. How: This maps each row to its own taskId.
 
 
 	);

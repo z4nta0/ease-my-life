@@ -12,8 +12,8 @@ import { hydStaFun   } from '../state/onboarding-seed-data.ts'; // What: Hydrate
 import { IntModCom   } from './intro-modal.tsx';                // What: Intro Modal Component. Why: The Welcome Tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while onbPhaStr is 'welcome', passed this file's own copy and labels.
 import { NAV_TAR_OBJ } from './targets.tsx';                    // What: Nav Target Object. Why: Four of this tour's steps just spotlight a nav button, sharing the same selector/copy as each page's own future mini-tour. How: This is spread into the Pickers/Stats/Data/Settings step objects below.
 import { ONB_ASP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding All-Sample-Pickers Array. Why: The "Daily Chores" picker and the extra sample pickers make a generated day look like a fuller, more realistic todo list. How: The seeding effect below adds every entry through actStoObj.addPicFun, exactly like a real, user-created picker.
-import { ONB_SPI_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: The tour needs to recognize its own sample pickers by id, to hide/unhide them without touching a user's real ones. How: This is read by the settings step's runFun and by bacSteFun below.
-import { ONB_STI_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Ids Array. Why: The tour needs to recognize its own sample reminders by id, so a Replay never seeds duplicates. How: This is checked before ever calling actStoObj.addTasFun below.
+import { ONB_SPI_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-IDs Array. Why: The tour needs to recognize its own sample pickers by id, to hide/unhide them without touching a user's real ones. How: This is read by the settings step's runFun and by bacSteFun below.
+import { ONB_STI_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Task-IDs Array. Why: The tour needs to recognize its own sample reminders by id, so a Replay never seeds duplicates. How: This is checked before ever calling actStoObj.addTasFun below.
 import { ONB_TAS_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actStoObj.addTasFun by the Generate step's own runFun and by skiEndFun below.
 import { scrBehFun   } from '../utils/motion.ts';               // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { todTopFun   } from './tour-runner.tsx';                // What: Today Top Function. Why: Skipping the Welcome Tour should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This is called from the intro modal's own onSkiTouFun handler below.
@@ -78,7 +78,7 @@ const BRA_ICO_ELE = ( // What: Brand Icon Element. Why: The intro modal's own ic
 	<svg
 		fill='none'
 		viewBox='8 8 528 528'
-	>{ /* What: Brand Mark Svg Element. Why: This is the frame the brand glyph is drawn in. How: This sizes its viewBox to the glyph path's own bounds and fills nothing itself. */ }
+	>{ /* What: Brand Mark SVG Element. Why: This is the frame the brand glyph is drawn in. How: This sizes its viewBox to the glyph path's own bounds and fills nothing itself. */ }
 
 
 		<path

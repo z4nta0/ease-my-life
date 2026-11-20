@@ -6,7 +6,7 @@
 import { CON_NAM_OBJ } from '../core/conditionals.ts'; // What: Conditionals Namespace Object. Why: A day-off card's completion advances or reverts its conditional through this module's own logic. How: This is aliased to conModObj inside cotAplFun.
 import { ideMakFun   } from '../utils/sequence-id.ts'; // What: Identifier Make Function. Why: Each conditional-log row ID joins a time stamp and a counter of this file's own. How: This makes nclIdeFun once, in Module State.
 import { isaTruFun   } from '../utils/guard.ts';       // What: Is-A Truthy Function. Why: The touched-id set drops a missing picked id. How: This filters the ids through the shared truthy guard, so TypeScript sees only real ids.
-import { isoDayFun   } from '../utils/date.ts';        // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
+import { isoDayFun   } from '../utils/date.ts';        // What: ISO Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { PIC_NAM_OBJ } from '../core/pickers.ts';      // What: Pickers Namespace Object. Why: A reworked decay starts from the shared full-charge ceiling when its picker has no threshold of its own. How: This reads PIC_NAM_OBJ.THR_VAL_NUM in rebPenFun.
 
 
@@ -220,7 +220,7 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card's own completion always logs as triggered. How: This sets conIdeStr/trgValBoo directly from togEntObj.
 
 
-		conIdeStr = togEntObj.conditionalId; // What: Conditional Id String Set. Why: A day-off card's own log entry names the exact conditional it belongs to. How: This sets conIdeStr to togEntObj's own conditionalId.
+		conIdeStr = togEntObj.conditionalId; // What: Conditional ID String Set. Why: A day-off card's own log entry names the exact conditional it belongs to. How: This sets conIdeStr to togEntObj's own conditionalId.
 		trgValBoo = true;                    // What: Trigger Value Boolean Set. Why: A day-off card's own completion always counts as triggered. How: This sets trgValBoo true.
 
 
@@ -235,7 +235,7 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 		if ( curPicObj && curPicObj.conditionalId ) { // What: Gated-Picker Guard. Why: An ungated picker's entry logs nothing. How: This sets conIdeStr/trgValBoo only when curPicObj exists and carries a conditionalId.
 
 
-			conIdeStr = curPicObj.conditionalId; // What: Conditional Id String Set. Why: The log entry needs to know which conditional this dependent picker is actually gated by. How: This sets conIdeStr to curPicObj's own conditionalId.
+			conIdeStr = curPicObj.conditionalId; // What: Conditional ID String Set. Why: The log entry needs to know which conditional this dependent picker is actually gated by. How: This sets conIdeStr to curPicObj's own conditionalId.
 			trgValBoo = false;                   // What: Trigger Value Boolean Set. Why: A dependent entry always logs as not-yet-triggered. How: This sets trgValBoo false.
 
 
@@ -566,7 +566,7 @@ function enpAplFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 
 	// #region Item Patching
 
-	const nowIsoStr = new Date().toISOString(); // What: Now Iso String. Why: A picked-and-bumped item needs a real completion timestamp. How: This reads the current instant as an ISO string.
+	const nowIsoStr = new Date().toISOString(); // What: Now ISO String. Why: A picked-and-bumped item needs a real completion timestamp. How: This reads the current instant as an ISO string.
 
 	const nexIteArr = curStaObj.items.map( ( curIteObj ) => { // What: Next Item Array. Why: Every item must be checked for a staged update or a pick bump before the caller gets a fresh items array. How: This maps curStaObj.items, applying updIdeMap's own patch and/or the pick bump to a touched item, leaving everything else unchanged.
 
@@ -664,9 +664,9 @@ function enpAplFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 		revert : { // What: Revert. Why: The entry must be able to undo this apply exactly. How: This snapshots the touched items, the picker's previous activeItemId, and its previous lastRunPeriod when a run period was recorded.
 
 
-			activeItemId : praIdeStr,          // What: Active Item Id. Why: An applied pickerPatch may have moved the picker's active item. How: This is praIdeStr, undefined when there was no pickerPatch.
+			activeItemId : praIdeStr,          // What: Active Item ID. Why: An applied pickerPatch may have moved the picker's active item. How: This is praIdeStr, undefined when there was no pickerPatch.
 			items        : revIteArr,          // What: Items. Why: Every touched item needs its own pre-apply fields back. How: This is revIteArr.
-			pickerId     : curEntObj.pickerId, // What: Picker Id. Why: The revert must know which picker to restore. How: This is the entry's own pickerId.
+			pickerId     : curEntObj.pickerId, // What: Picker ID. Why: The revert must know which picker to restore. How: This is the entry's own pickerId.
 
 			...( perRunStr ? { lastRunPeriod : curPicObj.lastRunPeriod || null } : {} ) // What: Last Run Period Spread. Why: Unchecking a non-daily run must restore the period the picker last ran in. How: This snapshots the previous lastRunPeriod, null when it never ran, only when this apply recorded one.
 
@@ -876,7 +876,7 @@ function rebPenFun ( todEntArr : TodEntTyp[], picRcdArr : PicRcdTyp[], iteIdeStr
 
 					...curEntObj.pending.pickerPatch, // What: Current Picker Patch Spread. Why: Any other staged picker change must carry over unchanged. How: This spreads the existing pickerPatch before activeItemId.
 
-					activeItemId : depEndBoo ? null : iteIdeStr // What: Active Item Id. Why: An emptied item releases the picker for a new streak, and any other keeps it. How: This is null when depEndBoo, else iteIdeStr.
+					activeItemId : depEndBoo ? null : iteIdeStr // What: Active Item ID. Why: An emptied item releases the picker for a new streak, and any other keeps it. How: This is null when depEndBoo, else iteIdeStr.
 
 
 				},
@@ -936,7 +936,7 @@ function spuDroFun ( todEntArr : TodEntTyp[], iteIdeArr : string[] ) : TodEntTyp
 	const iteIdeSet = new Set( iteIdeArr ); // What: Item Identifier Set. Why: The scan below needs fast membership checks against the touched ids. How: This wraps iteIdeArr in a Set.
 
 
-	if ( !iteIdeSet.size ) return todEntArr; // What: No-Ids Guard. Why: Nothing was touched, so there's nothing stale to drop. How: This returns todEntArr unchanged when iteIdeSet is empty.
+	if ( !iteIdeSet.size ) return todEntArr; // What: No-IDs Guard. Why: Nothing was touched, so there's nothing stale to drop. How: This returns todEntArr unchanged when iteIdeSet is empty.
 
 
 

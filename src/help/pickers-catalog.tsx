@@ -6,7 +6,7 @@
 import cssModObj from './pickers-catalog.module.css'; // What: CSS Module Object. Why: The item pool tip drops small inline icons into its prose. How: This maps each class name in pickers-catalog.module.css to its hashed module class.
 
 
-import { IcoSvgCom } from '../ui/icon.tsx'; // What: Icon Svg Component. Why: The item pool tip's body names each row button beside a small inline icon, so a reader can match the tip back to the real control. How: This is rendered inside that tip's body JSX, wrapped in an inline icon span.
+import { IcoSvgCom } from '../ui/icon.tsx'; // What: Icon SVG Component. Why: The item pool tip's body names each row button beside a small inline icon, so a reader can match the tip back to the real control. How: This is rendered inside that tip's body JSX, wrapped in an inline icon span.
 
 
 import type { HelIteTyp } from './catalog-item.ts'; // What: Help Item Type. Why: Every item in this catalog shares the one shape help mode reads. How: This types PIC_HEL_ARR.

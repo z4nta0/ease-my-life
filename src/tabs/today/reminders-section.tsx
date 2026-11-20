@@ -12,14 +12,14 @@ import { ColDisCom    } from '../../ui/collapse.tsx';               // What: Col
 import { durMilFun    } from '../../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { EdiFooCom    } from '../../ui/editor-footer.tsx';          // What: Editor Footer Component. Why: Every reminder editor ends with the same Delete/Cancel/Save row. How: This is rendered at the bottom of each reminder editor.
 import { emlTouObj    } from '../../state/tour-bus.ts';             // What: Ease My Life Tour Object. Why: A reminder mini-tour publishes prefill data and reads the live draft's own repeat kind through this shared bus. How: This is read via .get() in staAddFun and written to via .set() below.
-import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon Svg Component. Why: Every reminder card and button needs a recognizable glyph. How: This is rendered throughout RemCarCom and RemSecCom.
+import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: Every reminder card and button needs a recognizable glyph. How: This is rendered throughout RemCarCom and RemSecCom.
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add button in RemSecCom.
-import { isoDayFun    } from '../../utils/date.ts';                 // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
+import { isoDayFun    } from '../../utils/date.ts';                 // What: ISO Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { LogChiCom    } from './day-log.tsx';                       // What: Log Chip Component. Why: The Reminders section's own header needs the same show-today's-log toggle chip as every other group. How: This is rendered in RemSecCom's header, gated on onTogLogFun being supplied.
 import { nexDatFun    } from '../../utils/date.ts';                 // What: Next Date Function. Why: A reminder's next occurrence reads as a full prose date. How: This is called with the date and whether the year must always show.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: The quick-add entry point must stay disabled while any onboarding tutorial is still in progress, and a tutorial card needs its own launch state. How: This is read via its own tutProFun and entLooFun helpers.
 import { ONB_RCT_OBJ  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Reminder-Card-Text Object. Why: A still-hidden sample reminder's own mini-tour launcher card needs copy distinct from its real schedule summary. How: This is looked up by sample task id inside RemCarCom's own isaTutBoo branch.
-import { ONB_STI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Ids Array. Why: Only the Welcome Tour's own seeded sample reminders should ever render as a mini-tour launcher card. How: This is checked against a hidden task's own id inside RemSecCom's tutTasArr filter.
+import { ONB_STI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Task-IDs Array. Why: Only the Welcome Tour's own seeded sample reminders should ever render as a mini-tour launcher card. How: This is checked against a hidden task's own id inside RemSecCom's tutTasArr filter.
 import { redMotFun    } from '../../utils/motion.ts';               // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant close, skip, or remove instead of a timed animation. How: This is checked before every staged animation in RemCarCom and RemSecCom.
 import { RemLogCom    } from './day-log.tsx';                       // What: Reminders Log Component. Why: The Reminders section's own header chip opens this exact audit panel. How: This is rendered inside RemSecCom, gated on logOpeBoo.
 import { SchEdiCom    } from '../../ui/schedule-editor.tsx';        // What: Schedule Editor Component. Why: A reminder's own repeat and schedule fields are edited with one shared editor. How: This is rendered for the add form and each open reminder.
@@ -288,7 +288,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 							icoNamStr='cheEle'
 							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-						/>{ /* What: Icon Svg Component. Why: A resolved sample's own checkbox needs the same checkmark glyph as a real completed card. How: This renders the 'cheEle' icon. */ }
+						/>{ /* What: Icon SVG Component. Why: A resolved sample's own checkbox needs the same checkmark glyph as a real completed card. How: This renders the 'cheEle' icon. */ }
 
 
 					</button>
@@ -321,7 +321,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 						<IcoSvgCom
 							icoNamStr='plaEle'
 							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-						/>{ /* What: Icon Svg Component. Why: An unresolved sample's own checkbox needs a play glyph instead of a checkmark, since clicking it starts the tour rather than completing anything. How: This renders the 'plaEle' icon. */ }
+						/>{ /* What: Icon SVG Component. Why: An unresolved sample's own checkbox needs a play glyph instead of a checkmark, since clicking it starts the tour rather than completing anything. How: This renders the 'plaEle' icon. */ }
 
 
 					</button>
@@ -394,7 +394,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 							<IcoSvgCom
 								icoNamStr='croEle'
 								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: This is the Cancel action's own glyph. How: This renders the 'croEle' icon. */ }
+							/>{ /* What: Icon SVG Component. Why: This is the Cancel action's own glyph. How: This renders the 'croEle' icon. */ }
 
 
 						</button>
@@ -490,7 +490,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 						icoNamStr='cheEle'
 						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-					/> // What: Icon Svg Component. Why: A done reminder's own checkbox needs a checkmark glyph. How: This renders the 'cheEle' icon only while isaDonBoo.
+					/> // What: Icon SVG Component. Why: A done reminder's own checkbox needs a checkmark glyph. How: This renders the 'cheEle' icon only while isaDonBoo.
 
 
 				) }
@@ -510,7 +510,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 						icoNamStr={ tasRcdObj.repeat === 'once' ? 'pinEle' : 'calEle' } // What: Type Icon Pick. Why: A one-time reminder and a recurring one look different at a glance. How: This picks the pin for 'once' and the calendar otherwise.
 						sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
-					/>{ /* What: Icon Svg Component. Why: This distinguishes a one-time reminder from a recurring one at a glance. How: This renders 'pin' for a 'once' repeat, otherwise 'calendar'. */ }
+					/>{ /* What: Icon SVG Component. Why: This distinguishes a one-time reminder from a recurring one at a glance. How: This renders 'pin' for a 'once' repeat, otherwise 'calendar'. */ }
 
 					<span className={ cssModObj.metLabSpa }>{ TAS_NAM_OBJ.sumTasFun( tasRcdObj ) }</span>{ /* What: Meta Picker Span Element. Why: This is the row's own schedule summary, reusing the same class a real entry's picker name uses. How: This calls TAS_NAM_OBJ.sumTasFun against tasRcdObj. */ }
 
@@ -580,7 +580,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 					<IcoSvgCom
 						icoNamStr='skiEle'
 						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-					/>{ /* What: Icon Svg Component. Why: This is the Skip action's own glyph. How: This renders the 'skiEle' icon. */ }
+					/>{ /* What: Icon SVG Component. Why: This is the Skip action's own glyph. How: This renders the 'skiEle' icon. */ }
 
 
 				</button>
@@ -607,7 +607,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 					<IcoSvgCom
 						icoNamStr='ediEle'
 						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-					/>{ /* What: Icon Svg Component. Why: This is the Edit action's own glyph. How: This renders the 'ediEle' icon. */ }
+					/>{ /* What: Icon SVG Component. Why: This is the Edit action's own glyph. How: This renders the 'ediEle' icon. */ }
 
 
 				</button>
@@ -670,7 +670,7 @@ type RscProTyp = { actEdiStr : string | null, actStoObj : ActStoTyp, ariTasSet :
  * @param props.secRefFun    - Section Reference Function: A ref callback
  *                             registering this section's own DOM node by group
  *                             key.
- * @param props.setActEdiStr - Setter Active Editor String: Updates
+ * @param props.setActEdiStr - Set Active Editor String: Updates
  *                             props.actEdiStr.
  * @param props.staAppObj    - State App Object: The entire app's own persisted
  *                             state.
@@ -728,7 +728,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 
 	const opeTasStr = ( typeof actEdiStr === 'string' && actEdiStr.startsWith( 'reminder:' ) ) // What: Open Task String. Why: This is the id of whichever SAVED reminder's own inline editor is currently open, distinct from the quick-add form. How: This strips the 'reminder:' prefix off actEdiStr when it has one, otherwise null.
-		? actEdiStr.slice( 'reminder:'.length ) // What: Prefixed Id Branch. Why: A saved reminder's editor slot is 'reminder:' plus its id. How: This strips the prefix to leave the id.
+		? actEdiStr.slice( 'reminder:'.length ) // What: Prefixed ID Branch. Why: A saved reminder's editor slot is 'reminder:' plus its id. How: This strips the prefix to leave the id.
 		: null;                                 // What: No Open Task Branch. Why: Any other slot value means no saved reminder's editor is open. How: This is null.
 
 
@@ -1140,7 +1140,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 							<IcoSvgCom
 								icoNamStr='griEle'
 								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: This is the grip's own visible glyph. How: This renders the 'griEle' icon. */ }
+							/>{ /* What: Icon SVG Component. Why: This is the grip's own visible glyph. How: This renders the 'griEle' icon. */ }
 
 
 						</span>
@@ -1222,7 +1222,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 								<IcoSvgCom
 									icoNamStr='pluEle'
 									sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-								/>{ /* What: Icon Svg Component. Why: This is the disabled control's own visible glyph, matching the real button's own icon. How: This renders the 'pluEle' icon. */ }
+								/>{ /* What: Icon SVG Component. Why: This is the disabled control's own visible glyph, matching the real button's own icon. How: This renders the 'pluEle' icon. */ }
 
 
 							</InfTipCom>
@@ -1254,7 +1254,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 								<IcoSvgCom
 									icoNamStr='pluEle'
 									sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-								/>{ /* What: Icon Svg Component. Why: This is the add button's own visible glyph. How: This renders the 'pluEle' icon. */ }
+								/>{ /* What: Icon SVG Component. Why: This is the add button's own visible glyph. How: This renders the 'pluEle' icon. */ }
 
 
 							</button>
@@ -1556,8 +1556,8 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 
 								const nexEliObj = TAS_NAM_OBJ.nexEliFun( curTasObj, staAppObj.reminderOpts, staAppObj.holidays ); // What: Next Eligible Object. Why: This is the actual date the Skip action would defer curTasObj to. How: This calls TAS_NAM_OBJ.nexEliFun against curTasObj.
-								const tomIsoStr = isoDayFun( new Date( Date.now() + 86400000 ) );                                 // What: Tomorrow Iso String. Why: The label below reads "tomorrow" instead of a full date when that's literally what nexEliObj resolves to. How: This computes tomorrow's own iso string from right now plus one day in milliseconds.
-								const nexIsoStr = nexEliObj ? isoDayFun( nexEliObj ) : null;                                      // What: Next Iso String. Why: This is compared against tomIsoStr to decide the label below. How: This calls isoDayFun against nexEliObj, or null when there's no eligible day at all.
+								const tomIsoStr = isoDayFun( new Date( Date.now() + 86400000 ) );                                 // What: Tomorrow ISO String. Why: The label below reads "tomorrow" instead of a full date when that's literally what nexEliObj resolves to. How: This computes tomorrow's own iso string from right now plus one day in milliseconds.
+								const nexIsoStr = nexEliObj ? isoDayFun( nexEliObj ) : null;                                      // What: Next ISO String. Why: This is compared against tomIsoStr to decide the label below. How: This calls isoDayFun against nexEliObj, or null when there's no eligible day at all.
 
 								const skiLabStr = !nexEliObj // What: Skip Label String. Why: This is the actual day named in the confirm prompt below, or null when there's nothing to skip to. How: This picks 'tomorrow' when nexIsoStr matches tomIsoStr, otherwise a full locale-formatted date, or null when nexEliObj itself is null.
 									? null                                                                                             // What: No Day Branch. Why: With no next eligible day there is nothing to name. How: This is null.

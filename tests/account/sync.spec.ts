@@ -10,7 +10,7 @@ import { DAY_ONE_STR } from '../support/account.ts';         // What: Day One St
 import { EMU_PRO_STR } from '../../src/emulator-project.ts'; // What: Emulator Project String. Why: The emulator's addresses name the project. How: This is the demo project.
 import { expect      } from '@playwright/test';              // What: Expect. Why: Every step asserts what synced. How: This makes the assertions.
 import { FIR_EMU_STR } from '../support/emulator.ts';        // What: Firestore Emulator String. Why: The test reads the cloud copy straight from the Firestore emulator. How: This is its address.
-import { freSigFun   } from '../support/account.ts';         // What: Fresh Sign In Function. Why: Fresh installs sign in the way a person does. How: This opens the app, skips the welcome tour, and signs in.
+import { freSigFun   } from '../support/account.ts';         // What: Fresh Sign-In Function. Why: Fresh installs sign in the way a person does. How: This opens the app, skips the welcome tour, and signs in.
 import { insClcFun   } from '../support/clock.ts';           // What: Install Clock Function. Why: The new-day flow runs both devices on chosen days. How: This fakes a page's clock before it loads.
 import { locDayFun   } from '../support/clock.ts';           // What: Local Day Function. Why: The new-day flow checks which day a list was built on. How: This reads a timestamp's Chicago date.
 import { reaFixFun   } from '../support/fixture.ts';         // What: Read Fixture Function. Why: The first device starts on real data. How: This reads the backup.
@@ -331,7 +331,7 @@ test( 'an unpaid account buys sync, and the app picks up the paid claim on its o
 
 	const emaAdrStr = `buy-${ Date.now() }@example.com`;   // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address.
 	const errMesArr = watErrFun( curPagObj );              // What: Error Message Array. Why: The flow fails on any page error. How: This starts watching.
-	const uidValStr = await creAccFun( emaAdrStr, false ); // What: User Identifier Value String. Why: The claim is set on this account mid-flow. How: This creates it unpaid.
+	const uidValStr = await creAccFun( emaAdrStr, false ); // What: UID Value String. Why: The claim is set on this account mid-flow. How: This creates it unpaid.
 
 
 
@@ -481,7 +481,7 @@ test( 'resetting a signed-in device can delete the cloud copy too, and signs the
 
 	const emaAdrStr = `wipe-${ Date.now() }@example.com`;                                                                      // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address.
 	const errMesArr = watErrFun( curPagObj );                                                                                  // What: Error Message Array. Why: The flow fails on any page error. How: This starts watching.
-	const uidValStr = await creAccFun( emaAdrStr );                                                                            // What: User Identifier Value String. Why: The cloud copy is checked by the account's id. How: This creates the paid account.
+	const uidValStr = await creAccFun( emaAdrStr );                                                                            // What: UID Value String. Why: The cloud copy is checked by the account's id. How: This creates the paid account.
 	const manUrlStr = `${ FIR_EMU_STR }/v1/projects/${ EMU_PRO_STR }/databases/(default)/documents/users/${ uidValStr }`; // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
 
 

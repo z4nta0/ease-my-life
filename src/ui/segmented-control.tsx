@@ -48,7 +48,7 @@ type SccProTyp< T extends string > = { ariLabStr : string, desIdeStr? : string, 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.ariLabStr - Aria Label String: The control's own accessible
+ * @param props.ariLabStr - ARIA Label String: The control's own accessible
  *                          group label.
  * @param props.desIdeStr - Description Identifier String: An optional id of an
  *                          external element (an advisory note) that describes

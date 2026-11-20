@@ -797,9 +797,9 @@ function weiPicFun ( itePooArr : IteRcdTyp[], weiGetFun : ( iteRcdObj : IteRcdTy
 type PicOptTyp = { // What: Pick Option Type. Why: A single pick can be steered by the caller. How: This describes picIteFun's options, every one optional.
 
 
-	excludeIds?   : Set< string >; // What: Exclude Ids. Why: A manual spin mustn't land on an item already live on Today. How: This holds those items' ids.
+	excludeIds?   : Set< string >; // What: Exclude IDs. Why: A manual spin mustn't land on an item already live on Today. How: This holds those items' ids.
 	excludeNames? : Set< string >; // What: Exclude Names. Why: An avoidDuplicates picker mustn't repeat a name already on today's list. How: This holds those names, lower-cased.
-	forceItemId?  : string;        // What: Force Item Id. Why: A manual send targets one specific item. How: This is that item's id, bypassing the draw.
+	forceItemId?  : string;        // What: Force Item ID. Why: A manual send targets one specific item. How: This is that item's id, bypassing the draw.
 	forceNew?     : boolean;       // What: Force New. Why: An Ease Down re-roll has to abandon the active item. How: This starts a fresh streak when true.
 
 
@@ -862,10 +862,10 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 	const excIdeSet = optConObj && optConObj.excludeIds; // What: Exclude Identifier Set. Why: A manual "Pick One" spin must not land on an item already live on Today. How: This reads optConObj's own excludeIds Set, if any was given.
 
 
-	if ( excIdeSet && excIdeSet.size && !( optConObj && optConObj.forceItemId ) ) { // What: Exclude Ids Check. Why: A direct forceItemId send bypasses this drop entirely, since its own button is already disabled in the UI whenever the target item is on Today. How: This gates the filter below on a real, non-empty excIdeSet and the absence of a forced pick.
+	if ( excIdeSet && excIdeSet.size && !( optConObj && optConObj.forceItemId ) ) { // What: Exclude IDs Check. Why: A direct forceItemId send bypasses this drop entirely, since its own button is already disabled in the UI whenever the target item is on Today. How: This gates the filter below on a real, non-empty excIdeSet and the absence of a forced pick.
 
 
-		itePooArr = itePooArr.filter( ( curIteObj ) => !excIdeSet.has( curIteObj.id ) ); // What: Item Pool Exclude-Ids Filter. Why: Every id already live on Today must actually be dropped from the pool a normal draw can land on. How: This keeps only items whose own id is absent from excIdeSet.
+		itePooArr = itePooArr.filter( ( curIteObj ) => !excIdeSet.has( curIteObj.id ) ); // What: Item Pool Exclude-IDs Filter. Why: Every id already live on Today must actually be dropped from the pool a normal draw can land on. How: This keeps only items whose own id is absent from excIdeSet.
 
 
 	}
@@ -953,7 +953,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 					updIteArr.push({ // What: Other Item Drift Push. Why: The caller needs this item's own incremented drift value collected alongside every other update. How: This pushes an update carrying curIteObj's own id and its value incremented by 1.
 
 
-						id    : curIteObj.id,       // What: Id. Why: The caller needs to know which item this update applies to. How: This carries curIteObj's own id through unchanged.
+						id    : curIteObj.id,       // What: ID. Why: The caller needs to know which item this update applies to. How: This carries curIteObj's own id through unchanged.
 						value : curIteObj.value + 1 // What: Value. Why: This is the actual drifted value the caller needs to persist. How: This adds a flat +1 onto curIteObj's own current value.
 
 
@@ -1015,7 +1015,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 
 					chargeStep : curSteNum,                  // What: Charge Step. Why: Next cycle must keep charging by this exact same step, not roll a new one. How: This carries curSteNum through unchanged for getSteFun to find on the next pass.
-					id         : curIteObj.id,               // What: Id. Why: The caller needs to know which item this update applies to. How: This carries curIteObj's own id through unchanged.
+					id         : curIteObj.id,               // What: ID. Why: The caller needs to know which item this update applies to. How: This carries curIteObj's own id through unchanged.
 					value      : curIteObj.value + curSteNum // What: Value. Why: This is the actual charged value the caller needs to persist. How: This adds curSteNum onto curIteObj's own current value.
 
 
@@ -1074,7 +1074,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 
 				chargeStep : rolSteFun( curIteObj, thrValNum, falEasObj ), // What: Charge Step. Why: The picked item resets to a brand new plan, never reusing whatever step it charged under before. How: This rolls a fresh step via rolSteFun.
-				id         : curIteObj.id,                                 // What: Id. Why: The caller needs to know which item this update applies to. How: This carries curIteObj's own id through unchanged.
+				id         : curIteObj.id,                                 // What: ID. Why: The caller needs to know which item this update applies to. How: This carries curIteObj's own id through unchanged.
 				value      : 0                                             // What: Value. Why: The picked item's own drift resets to 0 the moment it's picked. How: This is a fixed literal 0.
 
 
@@ -1223,7 +1223,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 
 					chargeStep : decValNum,                        // What: Charge Step. Why: Next cycle must keep decaying by this exact same step, not roll a new one. How: This carries decValNum through unchanged for the next pass to find.
-					id         : actIteObj.id,                     // What: Id. Why: The caller needs to know which item this update applies to. How: This carries actIteObj's own id through unchanged.
+					id         : actIteObj.id,                     // What: ID. Why: The caller needs to know which item this update applies to. How: This carries actIteObj's own id through unchanged.
 					value      : depEndBoo ? thrValNum : newValNum // What: Value. Why: A depleted item auto-recharges to full instead of sitting at (or below) 0. How: This is thrValNum when depEndBoo, otherwise the freshly-decayed newValNum.
 
 
@@ -1292,7 +1292,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 				updIteArr.push({ // What: Other Item Weight Increment Push. Why: Every item not chosen this draw should become steadily more likely on a future one. How: This pushes a weight update one higher than curIteObj's own current (or defaulted) weight.
 
 
-					id     : curIteObj.id,                 // What: Id. Why: The caller needs to know which item this update applies to. How: This carries curIteObj's own id through unchanged.
+					id     : curIteObj.id,                 // What: ID. Why: The caller needs to know which item this update applies to. How: This carries curIteObj's own id through unchanged.
 					weight : ( curIteObj.weight ?? 1 ) + 1 // What: Weight. Why: Every item not chosen this draw should become steadily more likely on a future one. How: This adds 1 onto curIteObj's own (or defaulted) weight.
 
 
@@ -1312,7 +1312,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 
 				chargeStep : decValNum,                         // What: Charge Step. Why: Next cycle must keep decaying by this exact same step, not roll a new one. How: This carries decValNum through unchanged for the next pass to find.
-				id         : choIteObj.id,                      // What: Id. Why: The caller needs to know which item this update applies to. How: This carries choIteObj's own id through unchanged.
+				id         : choIteObj.id,                      // What: ID. Why: The caller needs to know which item this update applies to. How: This carries choIteObj's own id through unchanged.
 				value      : depEndBoo ? thrValNum : newValNum, // What: Value. Why: A single-cycle plan could in rare cases empty immediately, so the chosen item still needs the same auto-recharge as the continue branch. How: This is thrValNum when depEndBoo, otherwise the freshly-decayed newValNum.
 				weight     : 0                                  // What: Weight. Why: The just-chosen item must be excluded from the very next draw, the same fairness rule the loop above relies on. How: This is a fixed literal 0.
 

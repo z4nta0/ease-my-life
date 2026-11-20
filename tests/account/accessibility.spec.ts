@@ -11,11 +11,11 @@ import { creAccFun   } from '../support/account.ts';         // What: Create Acc
 import { EMU_PRO_STR } from '../../src/emulator-project.ts'; // What: Emulator Project String. Why: The first-sync choice needs a cloud copy written into the emulator. How: This names its project.
 import { expect      } from '@playwright/test';              // What: Expect. Why: A screen passes only with no violations and no sideways scroll. How: This makes the assertions.
 import { FIR_EMU_STR } from '../support/emulator.ts';        // What: Firestore Emulator String. Why: The first-sync choice's cloud copy is written straight into the Firestore emulator. How: This is its address.
-import { freSigFun   } from '../support/account.ts';         // What: Fresh Sign In Function. Why: The unpaid screen starts on a fresh install. How: This opens the app, skips the welcome tour, and signs in.
+import { freSigFun   } from '../support/account.ts';         // What: Fresh Sign-In Function. Why: The unpaid screen starts on a fresh install. How: This opens the app, skips the welcome tour, and signs in.
 import { reaFixFun   } from '../support/fixture.ts';         // What: Read Fixture Function. Why: The first-sync choice needs a device with its own data. How: This reads the backup.
 import { REF_WID_NUM } from '../support/accessibility.ts';   // What: Reflow Width Number. Why: WCAG's reflow criterion asks for no sideways scrolling at 320 CSS pixels, as the main suite checks. How: This is the width the reflow check opens each screen at.
 import { sidOveFun   } from '../support/accessibility.ts';   // What: Sideways Overflow Function. Why: The reflow check measures overflow the way the main suite does. How: This reads how far the page reaches past the viewport.
-import { sigLinFun   } from '../support/account.ts';         // What: Sign In Link Function. Why: Each screen is reached by signing in. How: This signs a device in with an emailed link.
+import { sigLinFun   } from '../support/account.ts';         // What: Sign-In Link Function. Why: Each screen is reached by signing in. How: This signs a device in with an emailed link.
 import { synWaiFun   } from '../support/account.ts';         // What: Sync Wait Function. Why: The paid screens are scanned once synced. How: This waits for the status to read Synced.
 import { test        } from '@playwright/test';              // What: Test. Why: Each screen is its own test. How: This declares them.
 import { vioLinFun   } from '../support/accessibility.ts';   // What: Violation Lines Function. Why: A failure should say what broke and where. How: This lists each violation by rule and target.
@@ -192,7 +192,7 @@ test( 'the first-sync choice passes the accessibility checks', async ( { page : 
 
 	const emaAdrStr = `a11y-choice-${ Date.now() }@example.com`; // What: Email Address String. Why: The screen needs its own account. How: This builds a unique address.
 	const errMesArr = watErrFun( curPagObj );                    // What: Error Message Array. Why: A screen fails on any page error. How: This starts watching.
-	const uidValStr = await creAccFun( emaAdrStr );              // What: User Identifier Value String. Why: The cloud copy is written under the account's id. How: This creates the paid account.
+	const uidValStr = await creAccFun( emaAdrStr );              // What: UID Value String. Why: The cloud copy is written under the account's id. How: This creates the paid account.
 
 
 	await fetch( `${ FIR_EMU_STR }/v1/projects/${ EMU_PRO_STR }/databases/(default)/documents/users/${ uidValStr }`, { body : JSON.stringify( { fields : { docs : { mapValue : { fields : {} } }, prior : { mapValue : { fields : {} } }, rev : { integerValue : '1' }, savedAt : { integerValue : '1' }, v : { integerValue : '1' } } } ), headers : { 'Authorization' : 'Bearer owner', 'Content-Type' : 'application/json' }, method : 'PATCH' } ); // What: Cloud Copy Write. Why: The choice only appears when the account already has a copy. How: This writes an empty manifest into the emulator as its owner.

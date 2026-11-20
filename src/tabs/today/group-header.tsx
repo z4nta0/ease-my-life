@@ -9,7 +9,7 @@ import React     from 'react';                     // What: React. Why: GroHeaCo
 
 import { ButBasCom } from '../../ui/button.tsx';   // What: Button Base Component. Why: The merge confirmation's buttons are shared styled buttons. How: This renders its Merge and Cancel actions.
 import { durMilFun } from '../../utils/rhythm.ts'; // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { IcoSvgCom } from '../../ui/icon.tsx';     // What: Icon Svg Component. Why: The header's Edit Mode grip and rename controls show small glyphs. How: This is rendered inside those controls.
+import { IcoSvgCom } from '../../ui/icon.tsx';     // What: Icon SVG Component. Why: The header's Edit Mode grip and rename controls show small glyphs. How: This is rendered inside those controls.
 import { LogChiCom } from './day-log.tsx';         // What: Log Chip Component. Why: Each group header toggles its own Day Log panel. How: This is rendered next to the done/total count.
 
 // #endregion Imports
@@ -315,7 +315,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 							<IcoSvgCom
 								icoNamStr='griEle'
 								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
+							/>{ /* What: Icon SVG Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
 
 
 						</span>
@@ -394,7 +394,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 								icoNamStr='ediEle'
 								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The rename button needs a recognizable edit-affordance glyph next to the name. How: This renders the 'ediEle' icon at a fixed size. */ }
+							/>{ /* What: Icon SVG Component. Why: The rename button needs a recognizable edit-affordance glyph next to the name. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
 						</button>

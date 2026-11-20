@@ -4,7 +4,7 @@
 // #region Imports
 
 import { HOL_NAM_OBJ } from '../core/holidays.ts'; // What: Holidays Namespace Object. Why: The clean state needs the canonical empty holidays shape. How: This is called (defStaFun) by buiCleFun below.
-import { isoDayFun   } from '../utils/date.ts';    // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
+import { isoDayFun   } from '../utils/date.ts';    // What: ISO Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { PIC_NAM_OBJ } from '../core/pickers.ts';  // What: Pickers Namespace Object. Why: The Ease Down history simulation charges toward the shared full-charge ceiling when a picker has no threshold of its own. How: This reads PIC_NAM_OBJ.THR_VAL_NUM.
 import { TAS_NAM_OBJ } from '../core/tasks.ts';    // What: Tasks Namespace Object. Why: The clean state needs the reminders engine's own default options shape. How: This is called (defOptFun) by buiCleFun below.
 
@@ -419,10 +419,10 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 			done        : outValStr === 'rejected' ? false : donValBoo,                               // What: Done. Why: A rejected toss was never actually completed, regardless of what donValBoo says. How: This forces false for a rejected row, otherwise uses donValBoo as given.
 			eid         : null,                                                                       // What: Entry Identifier. Why: A simulated historical row was never a live Today entry, so it has no entry to reference. How: This is always null for a row built by this simulation.
 			group       : curPicObj.group,                                                            // What: Group. Why: Stats groups rows by their own picker's group. How: This is copied straight from curPicObj's own group.
-			id          : 'pls_' + ( seqCouNum++ ).toString( 36 ),                                    // What: Id. Why: Every row needs its own stable, unique identifier. How: This mints one from a running counter, prefixed 'pls_'.
-			itemId      : curIteObj.id,                                                               // What: Item Id. Why: Every row must record which item it belongs to. How: This is copied straight from curIteObj's own id.
+			id          : 'pls_' + ( seqCouNum++ ).toString( 36 ),                                    // What: ID. Why: Every row needs its own stable, unique identifier. How: This mints one from a running counter, prefixed 'pls_'.
+			itemId      : curIteObj.id,                                                               // What: Item ID. Why: Every row must record which item it belongs to. How: This is copied straight from curIteObj's own id.
 			itemName    : curIteObj.name,                                                             // What: Item Name. Why: This denormalized copy lets the row survive a later rename or deletion of the item itself. How: This is copied straight from curIteObj's own name.
-			pickerId    : curPicObj.id,                                                               // What: Picker Id. Why: Every row must record which picker it belongs to. How: This is copied straight from curPicObj's own id.
+			pickerId    : curPicObj.id,                                                               // What: Picker ID. Why: Every row must record which picker it belongs to. How: This is copied straight from curPicObj's own id.
 			pickerName  : curPicObj.name,                                                             // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This is copied straight from curPicObj's own name.
 			source      : souValStr,                                                                  // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from souValStr.
 
@@ -462,7 +462,7 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 
 
-			const dayIsoStr = isoDayFun( curDatObj );            // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via isoDayFun.
+			const dayIsoStr = isoDayFun( curDatObj );            // What: Day ISO String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via isoDayFun.
 			const itePooArr = dayPooFun( curPicObj, dayIsoStr ); // What: Item Pool Array And Guard. Why: An item inactive on this simulated day must not be eligible for it. How: This filters curPicObj's own pool through dayPooFun.
 
 
@@ -555,7 +555,7 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 
 
-			const dayIsoStr = isoDayFun( curDatObj );            // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via isoDayFun.
+			const dayIsoStr = isoDayFun( curDatObj );            // What: Day ISO String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via isoDayFun.
 			const itePooArr = dayPooFun( curPicObj, dayIsoStr ); // What: Item Pool Array And Guard. Why: An item inactive on this simulated day must not be eligible to become (or remain) active. How: This filters curPicObj's own pool through dayPooFun.
 
 

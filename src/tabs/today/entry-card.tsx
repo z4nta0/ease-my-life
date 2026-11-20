@@ -7,7 +7,7 @@ import cssModObj from './entry-card.module.css'; // What: CSS Module Object. Why
 import React     from 'react';                   // What: React. Why: EntCarCom is built directly on React's own APIs. How: This is used directly (React.Fragment) instead of importing individual named hooks.
 
 
-import { IcoSvgCom   } from '../../ui/icon.tsx';                   // What: Icon Svg Component. Why: The card's check, grip and action buttons show small glyphs. How: This is rendered inside those controls.
+import { IcoSvgCom   } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: The card's check, grip and action buttons show small glyphs. How: This is rendered inside those controls.
 import { InfTipCom   } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: Disabled actions and several card states need an inline explanation. How: This wraps those controls with their explanatory tips.
 import { ONB_CHE_OBJ } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: A tutorial card needs attention while no real picker exists yet. How: This is called via ONB_CHE_OBJ.reaPicFun.
 import { ONB_PCT_OBJ } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Picker-Card-Time Object. Why: A sample picker's tutorial card shows an estimated time. How: This is looked up by the card's picker id.
@@ -88,7 +88,7 @@ function DisActCom ( { actNamStr, icoNamStr, labTexStr } : DacProTyp ) : React.J
 			<IcoSvgCom
 				icoNamStr={ icoNamStr }
 				sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-			/>{ /* What: Icon Svg Component. Why: The disabled action still needs its own recognizable glyph. How: This renders icoNamStr at a fixed size. */ }
+			/>{ /* What: Icon SVG Component. Why: The disabled action still needs its own recognizable glyph. How: This renders icoNamStr at a fixed size. */ }
 
 
 		</InfTipCom>
@@ -118,7 +118,7 @@ type LocProTyp = { ariSubStr : string, ediModBoo : boolean, entRecObj : TodRowTy
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.ariSubStr   - Aria Subject String: What the check button
+ * @param props.ariSubStr   - ARIA Subject String: What the check button
  *                            marks complete, in its accessible name.
  * @param props.ediModBoo   - Edit Mode Boolean: Whether Edit Mode is on.
  * @param props.entRecObj   - Entry Record Object: The row's own entry.
@@ -167,7 +167,7 @@ function LeaConCom ( { ariSubStr, ediModBoo, entRecObj, onGriDowFun, onTogDonFun
 					<IcoSvgCom
 						icoNamStr='griEle'
 						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-					/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
+					/>{ /* What: Icon SVG Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
 
 
 				</span>
@@ -211,7 +211,7 @@ function LeaConCom ( { ariSubStr, ediModBoo, entRecObj, onGriDowFun, onTogDonFun
 
 							icoNamStr='cheEle'
 							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-						/> // What: Icon Svg Component. Why: A completed card needs a checkmark glyph. How: This renders the 'cheEle' icon only while entRecObj.done is true.
+						/> // What: Icon SVG Component. Why: A completed card needs a checkmark glyph. How: This renders the 'cheEle' icon only while entRecObj.done is true.
 
 
 					) }
@@ -287,7 +287,7 @@ function SkiButCom ( { entIdeStr, onSkiEntFun } : SbcProTyp ) : React.JSX.Elemen
 			<IcoSvgCom
 				icoNamStr='skiEle'
 				sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-			/>{ /* What: Icon Svg Component. Why: The Skip action needs a recognizable glyph. How: This renders the 'skiEle' icon at a fixed size. */ }
+			/>{ /* What: Icon SVG Component. Why: The Skip action needs a recognizable glyph. How: This renders the 'skiEle' icon at a fixed size. */ }
 
 
 		</button>
@@ -467,7 +467,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 							icoNamStr='cheEle'
 							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-						/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
+						/>{ /* What: Icon SVG Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
 					</button>
@@ -499,7 +499,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 						<IcoSvgCom
 							icoNamStr='plaEle'
 							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-						/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'plaEle' icon at a fixed size. */ }
+						/>{ /* What: Icon SVG Component. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'plaEle' icon at a fixed size. */ }
 
 
 					</button>
@@ -573,7 +573,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 							<IcoSvgCom
 								icoNamStr='croEle'
 								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'croEle' icon at a fixed size. */ }
+							/>{ /* What: Icon SVG Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'croEle' icon at a fixed size. */ }
 
 
 						</button>
@@ -1011,7 +1011,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 								icoNamStr='refEle'
 								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The Re-Roll action needs a recognizable glyph. How: This renders the 'refEle' icon at a fixed size. */ }
+							/>{ /* What: Icon SVG Component. Why: The Re-Roll action needs a recognizable glyph. How: This renders the 'refEle' icon at a fixed size. */ }
 
 
 						</button>
@@ -1079,7 +1079,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 						<IcoSvgCom
 							icoNamStr='ediEle'
 							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-						/>{ /* What: Icon Svg Component. Why: The Edit action needs a recognizable glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
+						/>{ /* What: Icon SVG Component. Why: The Edit action needs a recognizable glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
 					</button>

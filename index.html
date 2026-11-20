@@ -5,7 +5,7 @@
 
 
 
-<html lang='en'><!-- What: Root Html Element. Why: Screen readers and translation tools need the page's language. How: This marks the document as English. -->
+<html lang='en'><!-- What: Root HTML Element. Why: Screen readers and translation tools need the page's language. How: This marks the document as English. -->
 
 
 	<head><!-- What: Document Head Element. Why: The page's metadata, links, and boot styles load before the body paints. How: This holds them in the sections below. -->
@@ -56,11 +56,11 @@
 
 
 
-		<link href='assets/icon.svg' rel='icon' type='image/svg+xml' />                 <!-- What: Svg Icon Link. Why: Modern browsers prefer a vector favicon that stays sharp at any tab density. How: This lists the SVG first. -->
-		<link href='assets/favicon-32.png' rel='icon' sizes='32x32' type='image/png' /> <!-- What: Large Png Icon Link. Why: A browser without SVG favicons needs a raster fallback. How: This offers the 32px PNG. -->
-		<link href='assets/favicon-16.png' rel='icon' sizes='16x16' type='image/png' /> <!-- What: Small Png Icon Link. Why: Small tab icons look crisper drawn at their own size. How: This offers the 16px PNG. -->
+		<link href='assets/icon.svg' rel='icon' type='image/svg+xml' />                 <!-- What: SVG Icon Link. Why: Modern browsers prefer a vector favicon that stays sharp at any tab density. How: This lists the SVG first. -->
+		<link href='assets/favicon-32.png' rel='icon' sizes='32x32' type='image/png' /> <!-- What: Large PNG Icon Link. Why: A browser without SVG favicons needs a raster fallback. How: This offers the 32px PNG. -->
+		<link href='assets/favicon-16.png' rel='icon' sizes='16x16' type='image/png' /> <!-- What: Small PNG Icon Link. Why: Small tab icons look crisper drawn at their own size. How: This offers the 16px PNG. -->
 		<link href='favicon.ico' rel='icon' sizes='48x48 32x32 16x16' />                <!-- What: Ico Icon Link. Why: Older browsers read only a .ico favicon. How: This points at the root favicon.ico, which also answers the request browsers make for it on their own. -->
-		<link href='assets/icon-192.png' rel='icon' sizes='192x192' type='image/png' /> <!-- What: Large Png App Icon Link. Why: Some browsers pick a large icon for shortcuts and tab previews. How: This offers the 192px PNG. -->
+		<link href='assets/icon-192.png' rel='icon' sizes='192x192' type='image/png' /> <!-- What: Large PNG App Icon Link. Why: Some browsers pick a large icon for shortcuts and tab previews. How: This offers the 192px PNG. -->
 
 		<!-- #endregion Icons -->
 
@@ -102,7 +102,7 @@
 		<meta property='og:site_name'    content='Ease My Life' />                                           <!-- What: Open Graph Site Name Meta. Why: A preview names the site the link belongs to. How: This gives the app's name. -->
 		<meta property='og:title'        content='Ease My Life' />                                           <!-- What: Open Graph Title Meta. Why: A preview leads with a title. How: This gives the app's name. -->
 		<meta property='og:type'         content='website' />                                                <!-- What: Open Graph Type Meta. Why: Scrapers lay a preview out by the kind of page it is. How: This marks the page as a website. -->
-		<meta property='og:url'          content='https://easemylife.app/' />                                <!-- What: Open Graph Url Meta. Why: Every share of the page should resolve to one address. How: This gives the canonical URL. --><!-- og:url and og:image must be absolute URLs, since social scrapers do not resolve relative paths. -->
+		<meta property='og:url'          content='https://easemylife.app/' />                                <!-- What: Open Graph URL Meta. Why: Every share of the page should resolve to one address. How: This gives the canonical URL. --><!-- og:url and og:image must be absolute URLs, since social scrapers do not resolve relative paths. -->
 
 		<!-- #endregion Open Graph -->
 
@@ -384,7 +384,7 @@
 
 			/* #region cheMarSvg */
 
-			.cheMarSvg { /* What: Check Mark Svg. Why: The check fills its token's square. How: This sizes the svg to the full box. */
+			.cheMarSvg { /* What: Check Mark SVG. Why: The check fills its token's square. How: This sizes the svg to the full box. */
 
 
 				height : 100%;
@@ -548,7 +548,7 @@
 						class='cheMarSvg'
 
 						viewBox='0 0 26 26'
-					><!-- What: Check Mark Svg Element. Why: This draws the checkmark. How: This scales the path's own 26-unit box to its token. -->
+					><!-- What: Check Mark SVG Element. Why: This draws the checkmark. How: This scales the path's own 26-unit box to its token. -->
 
 
 						<path

@@ -4,7 +4,7 @@
 // #region Imports
 
 import { ONB_CHE_OBJ } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: A sample picker keeps its launcher card only until its tutorial is done. How: This is called via ONB_CHE_OBJ.entLooFun.
-import { ONB_SPI_ARR } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: Sample pickers get launcher cards instead of picked entries. How: This is checked with .includes for each picker.
+import { ONB_SPI_ARR } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-IDs Array. Why: Sample pickers get launcher cards instead of picked entries. How: This is checked with .includes for each picker.
 
 
 import type { EntKinTyp } from '../../core/data-model.ts'; // What: Entry Kind Type. Why: A row's entry kind extends the saved kinds with a tutorial launcher. How: This types TodRowTyp's kind.
@@ -115,7 +115,7 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 
 
 					group : groNamStr,                           // What: Group. Why: The stand-in sorts into the same group as the card. How: This passes groNamStr.
-					id    : 'dayoff_' + curEntObj.conditionalId, // What: Id. Why: The stand-in needs a stable id that can't collide with a real picker's. How: This prefixes the conditional's own id with dayoff_.
+					id    : 'dayoff_' + curEntObj.conditionalId, // What: ID. Why: The stand-in needs a stable id that can't collide with a real picker's. How: This prefixes the conditional's own id with dayoff_.
 					name  : curEntObj.cardText                   // What: Name. Why: The stand-in sorts and labels by the card's own text. How: This passes the entry's own cardText.
 
 

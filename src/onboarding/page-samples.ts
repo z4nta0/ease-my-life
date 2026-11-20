@@ -166,7 +166,7 @@ const seePicFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 
 			group : samPicObj.group,                                                          // What: Group Field. Why: The disposable copy must sit in the same group as the real sample picker. How: This copies samPicObj's own group verbatim.
-			id    : copIdeStr,                                                                // What: Id Field. Why: This copy's own id must be copIdeStr, not the real sample's own id, so it can never collide with it. How: This uses the already-derived copIdeStr.
+			id    : copIdeStr,                                                                // What: ID Field. Why: This copy's own id must be copIdeStr, not the real sample's own id, so it can never collide with it. How: This uses the already-derived copIdeStr.
 			items : samPicObj.items.map( ( { id : oldIdeStr, ...iteResObj } ) => iteResObj ), // What: Items Field. Why: Items keep their own name/weight/ease fields but must drop their real id, passing the real sample's own item ids through would collide with the real hidden picker's own items in state.items. How: This destructures each item, discarding its own id and keeping the rest.
 			mode  : samPicObj.mode,                                                           // What: Mode Field. Why: The disposable copy must use the same picker mode as the real sample. How: This copies samPicObj's own mode verbatim.
 			name  : samPicObj.name                                                            // What: Name Field. Why: The disposable copy should display with the real sample's own name. How: This copies samPicObj's own name verbatim.
@@ -275,7 +275,7 @@ const seeTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 		actStoObj.addTasFun({ // What: Add Task Call. Why: This is the real, interactive disposable copy the Data tour's own Reminders step points at. How: This adds a task under copIdeStr, copying samTasObj's own name/repeat, and this weekday when it recurs weekly.
 
 
-			id     : copIdeStr,        // What: Id Field. Why: This copy's own id must be copIdeStr, not the real sample's own id, so it can never collide with it. How: This uses the already-derived copIdeStr.
+			id     : copIdeStr,        // What: ID Field. Why: This copy's own id must be copIdeStr, not the real sample's own id, so it can never collide with it. How: This uses the already-derived copIdeStr.
 			name   : samTasObj.name,   // What: Name Field. Why: The disposable copy should display with the real sample's own name. How: This copies samTasObj's own name verbatim.
 			repeat : samTasObj.repeat, // What: Repeat Field. Why: The disposable copy must use the same repeat schedule as the real sample. How: This copies samTasObj's own repeat verbatim.
 

@@ -4,7 +4,7 @@
 // #region Imports
 
 import { ideMakFun } from '../utils/sequence-id.ts'; // What: Identifier Make Function. Why: Each pick-log row ID joins a time stamp and a counter of this file's own. How: This makes newLogFun once, in Module State.
-import { isoDayFun } from '../utils/date.ts';        // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
+import { isoDayFun } from '../utils/date.ts';        // What: ISO Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 
 
 import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: logRowFun builds one pick-log row. How: This types its return.
@@ -103,8 +103,8 @@ const newLogFun = ideMakFun( 'pl_' ); // What: New Log Function. Why: The caller
  *                                Down depletion streak; defaults to false.
  * @param logFieObj.eid         - Entry Identifier: Links the row to its
  *                                live today.entries row; defaults to null.
- * @param logFieObj.itemId      - Item Id: The item that was picked.
- * @param logFieObj.pickerId    - Picker Id: The picker the pick belongs to.
+ * @param logFieObj.itemId      - Item ID: The item that was picked.
+ * @param logFieObj.pickerId    - Picker ID: The picker the pick belongs to.
  * @param logFieObj.source      - Source: How the pick was made: 'auto' |
  *                                'manual' | 'reroll'.
  *
@@ -133,10 +133,10 @@ function logRowFun ( curStaObj : StaAppTyp, logFieObj : { date? : string, deplet
 		done        : false,                                              // What: Done. Why: A freshly-logged pick was never yet completed. How: This is always false for a brand-new row.
 		eid         : logFieObj.eid === undefined ? null : logFieObj.eid, // What: Entry Identifier. Why: This links the row back to its live today.entries row, until the day rolls. How: This copies logFieObj.eid, defaulting to null when omitted.
 		group       : curPicObj ? curPicObj.group : '',                   // What: Group. Why: Stats groups rows by their own picker's group. How: This reads curPicObj's own group, else empty when the picker is gone.
-		id          : newLogFun(),                                        // What: Id. Why: Every row needs its own stable, unique identifier. How: This mints one via newLogFun.
-		itemId      : logFieObj.itemId,                                   // What: Item Id. Why: Every row must record which item it belongs to. How: This is copied straight from logFieObj.itemId.
+		id          : newLogFun(),                                        // What: ID. Why: Every row needs its own stable, unique identifier. How: This mints one via newLogFun.
+		itemId      : logFieObj.itemId,                                   // What: Item ID. Why: Every row must record which item it belongs to. How: This is copied straight from logFieObj.itemId.
 		itemName    : curIteObj ? curIteObj.name : '(removed)',           // What: Item Name. Why: This denormalized copy lets the row survive a later rename or deletion of the item itself. How: This reads curIteObj's own name, else a removed-item placeholder.
-		pickerId    : logFieObj.pickerId,                                 // What: Picker Id. Why: Every row must record which picker it belongs to. How: This is copied straight from logFieObj.pickerId.
+		pickerId    : logFieObj.pickerId,                                 // What: Picker ID. Why: Every row must record which picker it belongs to. How: This is copied straight from logFieObj.pickerId.
 		pickerName  : curPicObj ? curPicObj.name : '(removed)',           // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This reads curPicObj's own name, else a removed-picker placeholder.
 		source      : logFieObj.source,                                   // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from logFieObj.source.
 

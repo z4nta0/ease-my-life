@@ -100,7 +100,7 @@ async function devSetFun ( curPagObj : Page ) : Promise< { errMesArr : string[],
 
 	const emaAdrStr = `update-${ Date.now() }@example.com`;                                                                // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address.
 	const errMesArr = watErrFun( curPagObj );                                                                              // What: Error Message Array. Why: The flow fails on any page error. How: This starts watching.
-	const uidValStr = await creAccFun( emaAdrStr );                                                                        // What: User Identifier Value String. Why: The manifest is read by the account's id. How: This creates the paid account.
+	const uidValStr = await creAccFun( emaAdrStr );                                                                        // What: UID Value String. Why: The manifest is read by the account's id. How: This creates the paid account.
 	const manUrlStr = `${ FIR_EMU_STR }/v1/projects/${ EMU_PRO_STR }/databases/(default)/documents/users/${ uidValStr }`; // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
 
 	// #endregion Account Setup

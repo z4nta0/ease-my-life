@@ -94,13 +94,13 @@ const { notSubFun, subAddFun } = subMakFun(); // What: Notify Subscribers Functi
 
 // #region Platform Detection
 
-const iosPlaBoo = /iP(hone|ad|od)/.test( navigator.platform || '' );                        // What: Ios Platform Boolean. Why: navigator.platform is the most direct signal an iPhone/iPad/iPod can offer. How: This tests it against an iOS-device pattern, falling back to an empty string when platform itself is unavailable.
-const iosUsrBoo = /iPhone|iPad|iPod/.test( navigator.userAgent );                           // What: Ios User Boolean. Why: Some environments carry the real device family in the user agent string even when navigator.platform does not. How: This tests navigator.userAgent directly against the same device-family pattern.
+const iosPlaBoo = /iP(hone|ad|od)/.test( navigator.platform || '' );                        // What: iOS Platform Boolean. Why: navigator.platform is the most direct signal an iPhone/iPad/iPod can offer. How: This tests it against an iOS-device pattern, falling back to an empty string when platform itself is unavailable.
+const iosUsrBoo = /iPhone|iPad|iPod/.test( navigator.userAgent );                           // What: iOS User Boolean. Why: Some environments carry the real device family in the user agent string even when navigator.platform does not. How: This tests navigator.userAgent directly against the same device-family pattern.
 const isaMacBoo = /Mac/.test( navigator.userAgent ) && !( navigator.maxTouchPoints > 1 );   // What: Is-A Mac Boolean. Why: Genuine desktop macOS, excluding any touch-capable device isaIosBoo claims, also never fires beforeinstallprompt; installation there is File menu, then Add to Dock. How: This combines a Mac user-agent match with the negation of the same multi-touch check isaIosBoo uses.
 const isaSafBoo = /^((?!chrome|android|crios|fxios).)*safari/i.test( navigator.userAgent ); // What: Is-A Safari Boolean. Why: Safari is the specific browser whose own install path differs by platform (Share sheet on iOS, File menu on macOS), so it has to be told apart from every Chromium/Firefox-based browser that also happens to mention "Safari" in its own user agent. How: This matches 'safari' while excluding every user agent that also contains a known non-Safari browser token.
 const padMacBoo = /Mac/.test( navigator.userAgent ) && navigator.maxTouchPoints > 1;        // What: iPad Mac Boolean. Why: iPadOS 13+ deliberately reports itself as a desktop Mac in its own user agent string, so a touch-capable "Mac" is really an iPad. How: This combines a Mac user-agent match with a real multi-touch capability check.
 
-const isaIosBoo = iosPlaBoo || padMacBoo || iosUsrBoo; // What: Is-An Ios Boolean. Why: iOS/iPadOS Safari never fires beforeinstallprompt at all, so the UI must show manual Share-to-Home-Screen instructions instead of a dead install button. How: This is true whenever any one of the three device-detection checks above holds.
+const isaIosBoo = iosPlaBoo || padMacBoo || iosUsrBoo; // What: Is-An iOS Boolean. Why: iOS/iPadOS Safari never fires beforeinstallprompt at all, so the UI must show manual Share-to-Home-Screen instructions instead of a dead install button. How: This is true whenever any one of the three device-detection checks above holds.
 
 // #endregion Platform Detection
 
@@ -253,7 +253,7 @@ function insStaFun () : InsStaTyp {
 
 
 
-	if ( isaIosBoo && isaSafBoo ) return 'ios'; // What: Ios Guard. Why: iOS/iPadOS Safari never fires beforeinstallprompt at all, so its own manual instructions are needed instead. How: This returns 'ios' whenever both isaIosBoo and isaSafBoo hold.
+	if ( isaIosBoo && isaSafBoo ) return 'ios'; // What: iOS Guard. Why: iOS/iPadOS Safari never fires beforeinstallprompt at all, so its own manual instructions are needed instead. How: This returns 'ios' whenever both isaIosBoo and isaSafBoo hold.
 
 
 
@@ -309,7 +309,7 @@ function proRelFun () : void {
 	try { // What: Probe Related Try. Why: navigator.getInstalledRelatedApps itself may not exist, and calling a missing method would throw. How: This wraps the whole check-and-query sequence below, silently giving up in its own catch.
 
 
-		if ( !navigator.getInstalledRelatedApps ) return; // What: No Related Apps Api Guard. Why: There is nothing to query at all in a browser without this API. How: This returns immediately when navigator.getInstalledRelatedApps is missing.
+		if ( !navigator.getInstalledRelatedApps ) return; // What: No Related Apps API Guard. Why: There is nothing to query at all in a browser without this API. How: This returns immediately when navigator.getInstalledRelatedApps is missing.
 
 
 
@@ -646,7 +646,7 @@ const PWA_NAM_OBJ = { // What: Progressive Web App Namespace Object. Why: This i
 	askPerFun : askPerFun, // What: Ask Persist Function. Why: tab-settings.tsx calls this directly, forced, from its own Settings action. How: This re-exports askPerFun under its own matching name.
 	canInsFun : canInsFun, // What: Can Install Function. Why: tab-settings.tsx calls this to decide whether to render its own install button at all. How: This re-exports canInsFun under its own matching name.
 	insStaFun : insStaFun, // What: Install State Function. Why: tab-settings.tsx calls this to choose which install-instructions copy to show. How: This re-exports insStaFun under its own matching name.
-	isaIosBoo : isaIosBoo, // What: Is-An Ios Boolean. Why: tab-settings.tsx reads this directly, not called, to decide whether to show the manual Share-to-Home-Screen instructions. How: This re-exports isaIosBoo under its own matching name.
+	isaIosBoo : isaIosBoo, // What: Is-An iOS Boolean. Why: tab-settings.tsx reads this directly, not called, to decide whether to show the manual Share-to-Home-Screen instructions. How: This re-exports isaIosBoo under its own matching name.
 	isaMacBoo : isaMacBoo, // What: Is-A Mac Boolean. Why: tab-settings.tsx reads this directly, not called, to decide whether to show the manual File-menu-Add-to-Dock instructions. How: This re-exports isaMacBoo under its own matching name.
 	isaStaFun : isaStaFun, // What: Is-A Standalone Function. Why: tab-settings.tsx calls this to decide whether the app is already running installed. How: This re-exports isaStaFun under its own matching name.
 	subscribe : subAddFun  // What: Subscribe. Why: tab-settings.tsx listens for install and persistence changes through this, keeping the conventional observer name. How: This maps onto subAddFun.

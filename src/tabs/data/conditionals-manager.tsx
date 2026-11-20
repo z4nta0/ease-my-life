@@ -14,7 +14,7 @@ import { colMapFun    } from '../../state/store.ts';                // What: Col
 import { CON_NAM_OBJ  } from '../../core/conditionals.ts';          // What: Conditionals Namespace Object. Why: A conditional's sortable Odds falls back to the shared default odds. How: This reads CON_NAM_OBJ.DEF_ODD_NUM in conOddFun.
 import { conDraFun    } from '../../ui/conditional-controls.tsx';   // What: Conditional Draft Function. Why: A brand-new conditional started from ConManCom needs the same sensible starting draft the Pickers create-flow uses. How: This is called once when the "Add a conditional" button is clicked.
 import { durMilFun    } from '../../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon Svg Component. Why: The rows and buttons in this file need recognizable glyphs. How: This is rendered throughout both components below.
+import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: The rows and buttons in this file need recognizable glyphs. How: This is rendered throughout both components below.
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled add button or a truncated type label still needs to explain itself on demand. How: This wraps those controls in ConManCom.
 import { norConFun    } from '../../core/pickers.ts';               // What: Normalize Conditional Function. Why: A newly-typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on ConManCom's own in-progress draft name.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Adding a conditional must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutProFun in ConManCom.
@@ -630,7 +630,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 
 
-		setCloIdeStr( conIdeStr ); // What: Closing Id Set. Why: The editor must stay mounted (via cloIdeStr) through its own collapse animation instead of unmounting immediately. How: This flags conIdeStr as the row currently mid-delete-animation.
+		setCloIdeStr( conIdeStr ); // What: Closing ID Set. Why: The editor must stay mounted (via cloIdeStr) through its own collapse animation instead of unmounting immediately. How: This flags conIdeStr as the row currently mid-delete-animation.
 
 		setOpeIdeStr( null ); // What: Row Collapse Call. Why: Collapsing the row's own open state is what actually triggers its ColDisCom to animate shut. How: This clears opeIdeStr.
 
@@ -829,7 +829,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 						<IcoSvgCom
 							icoNamStr='chvEle'
 							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-						/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
+						/>{ /* What: Icon SVG Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
 					</span>
@@ -888,7 +888,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 							<IcoSvgCom
 								icoNamStr='pluEle'
 								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add a conditional
+							/>{ /* What: Icon SVG Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add a conditional
 
 
 						</InfTipCom>
@@ -935,7 +935,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 							<IcoSvgCom
 								icoNamStr='pluEle'
 								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-							/>{ /* What: Icon Svg Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add a conditional
+							/>{ /* What: Icon SVG Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add a conditional
 
 
 						</button>
@@ -1071,7 +1071,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 												<IcoSvgCom
 													icoNamStr='chvEle'
 													sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
+												/>{ /* What: Icon SVG Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
 											</span>
@@ -1144,7 +1144,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 												<IcoSvgCom
 													icoNamStr='chvEle'
 													sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
+												/>{ /* What: Icon SVG Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
 											</span>

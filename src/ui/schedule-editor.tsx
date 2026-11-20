@@ -341,7 +341,7 @@ type IrcProTyp = { ariLabStr : string, desIdeStr : string, maxValStr : string, o
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.ariLabStr - Aria Label String: The input's accessible name.
+ * @param props.ariLabStr - ARIA Label String: The input's accessible name.
  * @param props.desIdeStr - Describe Identifier String: The id of the note
  *                          describing the input.
  * @param props.maxValStr - Maximum Value String: The largest interval the
@@ -416,7 +416,7 @@ type FfcProTyp = { ancHinEle : React.ReactNode, ariLabStr : string, desIdeStr : 
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.ancHinEle - Anchor Hint Element: The counted-from hint.
- * @param props.ariLabStr - Aria Label String: The interval input's
+ * @param props.ariLabStr - ARIA Label String: The interval input's
  *                          accessible name.
  * @param props.desIdeStr - Describe Identifier String: The id of the note
  *                          describing the input.
@@ -934,7 +934,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 	const [ ancEdiBoo, setAncEdiBoo ] = React.useState( false ); // What: Anchor Editing Boolean And Setter. Why: Interval reminders count from a start date the user can amend if they got it wrong; this tracks whether that inline date picker is open. How: This toggles between the plain date link and a native date input in ancHinEle below.
 
-	const ancIsoStr = tasRcdObj.anchor || tasRcdObj.createdAt; // What: Anchor Iso String. Why: Every anchor-related read below needs a single resolved ISO date, since anchor itself may be unset on an older task. How: This falls back to tasRcdObj's own createdAt when anchor is missing.
+	const ancIsoStr = tasRcdObj.anchor || tasRcdObj.createdAt; // What: Anchor ISO String. Why: Every anchor-related read below needs a single resolved ISO date, since anchor itself may be unset on an older task. How: This falls back to tasRcdObj's own createdAt when anchor is missing.
 
 
 	const ancLabStr = ( () => { // What: Anchor Label String. Why: The anchor link's own visible text needs a locale-formatted date, not the raw ISO string. How: This parses ancIsoStr into a real Date and formats it.
@@ -959,7 +959,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 	const [ oncEdiBoo, setOncEdiBoo ] = React.useState( false ); // What: Once Editing Boolean And Setter. Why: A one-time reminder's own start date can likewise be amended inline. How: This toggles between the plain date link and a native date input in oncFieEle below.
 
-	const oncIsoStr = tasRcdObj.onceDate || TAS_NAM_OBJ.curIsoFun(); // What: Once Iso String. Why: An older task may have no onceDate set at all. How: This falls back to TAS_NAM_OBJ.curIsoFun() when onceDate is missing.
+	const oncIsoStr = tasRcdObj.onceDate || TAS_NAM_OBJ.curIsoFun(); // What: Once ISO String. Why: An older task may have no onceDate set at all. How: This falls back to TAS_NAM_OBJ.curIsoFun() when onceDate is missing.
 	const oncFutBoo = oncIsoStr > TAS_NAM_OBJ.curIsoFun();           // What: Once Future Boolean. Why: A one-time reminder defaults to due right away; this decides whether it's instead deferred to a future start date. How: This compares oncIsoStr against today's own iso string.
 
 

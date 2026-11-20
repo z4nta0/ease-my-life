@@ -21,7 +21,7 @@ import { FilRaiCom    } from '../../ui/filter-rail.tsx';            // What: Fil
 import { freEdiFun    } from './list-sorting.ts';                   // What: Freeze Edited Function. Why: An item mid-edit must not visually jump position if its own sort key changes underneath it. How: This is called once per picker's item list, given the sorted list and the currently-open item id.
 import { HelButCom    } from '../../help/button.tsx';               // What: Help Button Component. Why: This tab needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helOpeBoo.
 import { HelOveCom    } from '../../help/mode.tsx';                 // What: Help Overlay Component. Why: This tab needs the same help-mode badge overlay every other tab exposes. How: This is rendered once, driven by helOpeBoo and DAT_HEL_ARR.
-import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon Svg Component. Why: Nearly every button and row in this tab needs a recognizable glyph. How: This is rendered throughout TabDatCom.
+import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: Nearly every button and row in this tab needs a recognizable glyph. How: This is rendered throughout TabDatCom.
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled control or a truncated pill still needs to explain itself on demand. How: This wraps disabled add buttons and truncatable type/group labels throughout TabDatCom.
 import { isaTruFun    } from '../../utils/guard.ts';                // What: Is-A Truthy Function. Why: The scroll-fade rows drop any that aren't mounted. How: This filters them so the rest read as real elements.
 import { modDefFun    } from '../../state/new-item.ts';             // What: Mode Defaults Function. Why: A draft picker's type change resets its items the same way a saved picker's does. How: This is called by patNewFun.
@@ -304,7 +304,7 @@ function CatTogCom ( { colValBoo, disValBoo, kicTexStr, onClick, sumTexStr, touV
 					<IcoSvgCom
 						icoNamStr='chvEle'
 						sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
-					/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at the m01 rhythm step. */ }
+					/>{ /* What: Icon SVG Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at the m01 rhythm step. */ }
 
 
 				</span>
@@ -825,12 +825,12 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 			avoidDuplicates : false,                                         // What: Avoid Duplicates. Why: A new picker allows duplicates until told otherwise. How: This is false.
-			conditionalId   : filConStr !== 'all' ? filConStr : null,        // What: Conditional Id. Why: An active Conditionals filter pre-attaches that conditional. How: This uses filConStr unless it's 'all'.
+			conditionalId   : filConStr !== 'all' ? filConStr : null,        // What: Conditional ID. Why: An active Conditionals filter pre-attaches that conditional. How: This uses filConStr unless it's 'all'.
 			daysOfWeek      : [ 0, 1, 2, 3, 4, 5, 6 ],                       // What: Days Of Week. Why: A new picker runs every day until narrowed. How: This lists all 7 weekdays.
 			easeMax         : 20,                                            // What: Ease Max. Why: The picker-level drift band is only its items' fallback span. How: This is addPicFun's own default, 20.
 			easeMin         : 10,                                            // What: Ease Min. Why: The picker-level drift band is only its items' fallback span. How: This is addPicFun's own default, 10.
 			group           : filGroStr !== 'all' ? filGroStr : '',          // What: Group. Why: An active Group filter pre-fills the group. How: This uses filGroStr unless it's 'all'.
-			id              : ranIdeFun( 'pkr_' ),                           // What: Id. Why: The draft's card and its items need a stable id, kept when the picker is created. How: This mints a random 'pkr_' id.
+			id              : ranIdeFun( 'pkr_' ),                           // What: ID. Why: The draft's card and its items need a stable id, kept when the picker is created. How: This mints a random 'pkr_' id.
 			includeInDaily  : true,                                          // What: Include In Daily. Why: A new picker joins the daily generator unless told otherwise. How: This is true.
 			mode            : isaReaBoo ? filTypStr as ModNamTyp : 'random', // What: Mode. Why: An active Type filter pre-fills the mode when it's a real picker mode. How: This uses filTypStr when isaReaBoo, otherwise 'random'. // What: Type Assertion Note. Why: filTypStr is a plain filter string. How: It's read as a mode name only once isaReaBoo has confirmed it is one.
 			name            : '',                                            // What: Name. Why: The draft's name is typed in its own card. How: This starts empty.
@@ -1441,7 +1441,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 							viewBox='8 8 528 528'
 
 							aria-hidden='true'
-						>{ /* What: Brand Mark Svg Element. Why: This draws the small square "Ease My Life" logo mark, matching the Today/Stats headers (currentColor to accent, grid lines to accent-soft) so every tab reads as one product. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }
+						>{ /* What: Brand Mark SVG Element. Why: This draws the small square "Ease My Life" logo mark, matching the Today/Stats headers (currentColor to accent, grid lines to accent-soft) so every tab reads as one product. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }
 
 
 							<defs>{ /* What: Clip Defs Element. Why: An SVG clipPath can only be applied via a defined, referenced id, not inline. How: This holds the one clipPath definition the glyph path below references. */ }
@@ -1947,7 +1947,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 					const allVacBoo = picIteArr.length > 0 && picIteArr.every( ( iteCurObj ) => iteCurObj.vacation );                         // What: All Vacation Boolean. Why: A card whose every item is on vacation gets its own visual "inactive" treatment. How: This is true only when there's at least one item and every one of them is on vacation.
 					const secOpeBoo = isaDraBoo || colMapObj[ picCurObj.id ] === false;                                                       // What: Section Open Boolean. Why: A draft is always expanded (no toggle at all, see the header button's disabled prop below); an existing picker reads its own persisted state. How: This is true for a draft, or when the persisted entry is explicitly false.
 					const isaEasBoo = picCurObj.mode === 'ease-up' || picCurObj.mode === 'ease-down';                                         // What: Is-A Ease Boolean. Why: The item sort options and the meta text per item both depend on this. How: This is true whenever picCurObj.mode is 'ease-up' or 'ease-down'.
-					const useWeiBoo = picCurObj.mode === 'weighted' || picCurObj.mode === 'dynamic';                                          // What: Uses Weight Boolean. Why: Same reasoning as isaEasBoo, for the weighted/dynamic modes. How: This is true whenever picCurObj.mode is 'weighted' or 'dynamic'.
+					const useWeiBoo = picCurObj.mode === 'weighted' || picCurObj.mode === 'dynamic';                                          // What: Use Weight Boolean. Why: Same reasoning as isaEasBoo, for the weighted/dynamic modes. How: This is true whenever picCurObj.mode is 'weighted' or 'dynamic'.
 					const incDaiBoo = isaDraBoo ? picCurObj.includeInDaily! : staAppObj.daily.pickerIds.includes( picCurObj.id );             // What: Included Daily Boolean. Why: PicConCom needs to know this picker's own current daily-generator membership. How: This reads the draft's own includeInDaily for the draft card, else checks staAppObj.daily.pickerIds for picCurObj.id. // What: Non-Null Note. Why: staNewFun always sets the draft's includeInDaily, and its edits only ever replace it with another boolean. How: The ! tells TypeScript it's set on a draft.
 					const conColBoo = !!colMapObj[ picCurObj.id + ':controls' ];                                                              // What: Controls Collapsed Boolean. Why: The Controls disclosure's own persisted state is keyed separately from the card's own open/closed state. How: This reads colMapObj at the ':controls' suffix key.
 					const iteColBoo = isaDraBoo ? !draIteBoo : !!colMapObj[ picCurObj.id + ':items' ];                                        // What: Items Collapsed Boolean. Why: A draft's own Items section tracks draIteBoo instead of the normal persisted map. How: This reads draIteBoo for a draft, otherwise the persisted entry at the ':items' suffix key.
@@ -2127,7 +2127,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 										<IcoSvgCom
 											icoNamStr='chvEle'
 											sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-										/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
+										/>{ /* What: Icon SVG Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
 									</span>
@@ -2215,7 +2215,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 										<IcoSvgCom
 											icoNamStr={ allVacBoo ? 'mooEle' : 'spaEle' }
 											sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-										/>{ /* What: Icon Svg Component. Why: The bulk active/inactive toggle needs a recognizable glyph reflecting its own current state. How: This renders 'moon' while allVacBoo, 'sparkle' otherwise. */ }
+										/>{ /* What: Icon SVG Component. Why: The bulk active/inactive toggle needs a recognizable glyph reflecting its own current state. How: This renders 'moon' while allVacBoo, 'sparkle' otherwise. */ }
 
 										<span
 											key={ allVacBoo ? 'inactive' : 'active' }
@@ -2332,7 +2332,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 													<IcoSvgCom
 														icoNamStr='pluEle'
 														sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-													/>{ /* What: Icon Svg Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
+													/>{ /* What: Icon SVG Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
 
 
 												</InfTipCom>
@@ -2355,7 +2355,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 													<IcoSvgCom
 														icoNamStr='pluEle'
 														sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-													/>{ /* What: Icon Svg Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
+													/>{ /* What: Icon SVG Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
 
 
 												</button>
@@ -2488,7 +2488,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 																	<IcoSvgCom
 																		icoNamStr='chvEle'
 																		sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-																	/>{ /* What: Icon Svg Component. Why: The chevron button needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
+																	/>{ /* What: Icon SVG Component. Why: The chevron button needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
 																</button>
@@ -2545,7 +2545,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 																	<IcoSvgCom
 																		icoNamStr='chvEle'
 																		sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-																	/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
+																	/>{ /* What: Icon SVG Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
 																</span>
@@ -2678,7 +2678,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 						<IcoSvgCom
 							icoNamStr='pluEle'
 							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-						/>{ /* What: Icon Svg Component. Why: The create control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Create Picker
+						/>{ /* What: Icon SVG Component. Why: The create control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Create Picker
 
 
 					</button>

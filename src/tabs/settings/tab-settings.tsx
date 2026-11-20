@@ -21,7 +21,7 @@ import { HolEdiCom    } from './holiday-editor.tsx';                // What: Hol
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled Export/Reset button still needs to explain why it is disabled. How: This wraps those buttons, given a label prop with the explanation.
 import { LegModCom    } from './legal-docs.tsx';                    // What: Legal Modal Component. Why: The Legal section's View buttons need somewhere to actually show the Privacy Policy/Terms of Service text. How: This is rendered once, driven by legDocStr, and closed by clearing that state back to null.
 import { NOT_NAM_OBJ  } from '../../platform/notify.ts';            // What: Notification Namespace Object. Why: The Daily generator's notify-me row needs to read/request the browser's notification permission. How: This is called via its own perCheFun()/askOncFun()/reqPerFun()/subAddFun() methods.
-import { ONB_SPI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: Replaying the welcome tour needs to tell a real, established account apart from one still holding only seeded sample pickers. How: This is checked against staAppObj.pickers to decide whether to self-heal stale onboarding flags before the tour starts.
+import { ONB_SPI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-IDs Array. Why: Replaying the welcome tour needs to tell a real, established account apart from one still holding only seeded sample pickers. How: This is checked against staAppObj.pickers to decide whether to self-heal stale onboarding flags before the tour starts.
 import { PicAniCom    } from './previews.tsx';                      // What: Picker Animation Component. Why: The picker-animation style picker needs a live preview the user can play. How: This is rendered inside the Picker Animation card, driven by picPreStr/picTokNum.
 import { PWA_NAM_OBJ  } from '../../platform/pwa.ts';               // What: Progressive Web App Namespace Object. Why: The Data Control section reports install/persistence state and drives the install prompt. How: This is called via its own subscribe()/isaStaFun()/canInsFun()/insStaFun()/askInsFun()/askPerFun() methods.
 import { redMotFun    } from '../../utils/motion.ts';               // What: Reduce Motion Function. Why: A jump-to-section scroll and both preview stages must not animate for a user who prefers reduced motion. How: This is checked before choosing 'smooth' vs 'auto' scroll behavior, and to track the note shown above each style picker.
@@ -1167,7 +1167,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 		const entCouNum = ( expPayObj.pickLog || [] ).length;                                                  // What: Entry Count Number. Why: Both the announcement and the on-screen status line need to say how many history entries the export actually included. How: This reads the length of expPayObj's own (possibly swapped-in) pickLog.
 		const expBloObj = new Blob( [ JSON.stringify( expPayObj, null, 2 ) ], { type : 'application/json' } ); // What: Export Blob Object. Why: A downloadable file needs to exist as a real Blob, not just a JS object. How: This serializes expPayObj as pretty-printed JSON inside a JSON-typed Blob.
-		const expUrlStr = URL.createObjectURL( expBloObj );                                                    // What: Export Url String. Why: A Blob needs an object URL before a real download link can reference it. How: This creates a temporary object URL for expBloObj, revoked further below once the download has started.
+		const expUrlStr = URL.createObjectURL( expBloObj );                                                    // What: Export URL String. Why: A Blob needs an object URL before a real download link can reference it. How: This creates a temporary object URL for expBloObj, revoked further below once the download has started.
 		const dowLinEle = document.createElement( 'a' );                                                       // What: Download Link Element. Why: Triggering a file download from script requires a real, if never-inserted, anchor element. How: This is configured below with its own href/download attributes, then clicked without ever being appended to the document.
 		const datStaStr = new Date().toISOString().slice( 0, 10 );                                             // What: Date Stamp String. Why: The downloaded filename should carry today's own date for easy identification. How: This takes the first 10 characters of an ISO timestamp, i.e. its own "YYYY-MM-DD" date portion.
 
@@ -1205,7 +1205,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-			setTimeout( () => URL.revokeObjectURL( expUrlStr ), 1000 ); // What: Object Url Revoke Timeout. Why: The temporary object URL must eventually be released, but not before the browser has had time to actually start the download. How: This revokes expUrlStr 1000ms after the click.
+			setTimeout( () => URL.revokeObjectURL( expUrlStr ), 1000 ); // What: Object URL Revoke Timeout. Why: The temporary object URL must eventually be released, but not before the browser has had time to actually start the download. How: This revokes expUrlStr 1000ms after the click.
 
 
 		}, 220 ); // What: Announcement Head Start. Why: The screen-reader announcement should land before the download steals focus. How: This waits 220ms before clicking the link.
@@ -1476,7 +1476,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 							viewBox='8 8 528 528'
 
 							aria-hidden='true'
-						>{ /* What: Logo Svg Element. Why: This draws the small square "Ease My Life" logo mark. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }{ /* Same theme-wired logo as the Today + Stats + Data headers. */ }
+						>{ /* What: Logo SVG Element. Why: This draws the small square "Ease My Life" logo mark. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }{ /* Same theme-wired logo as the Today + Stats + Data headers. */ }
 
 
 							<defs>{ /* What: Clip Defs Element. Why: An SVG clipPath can only be applied via a defined, referenced id, not inline. How: This holds the one clipPath definition the glyph path below references. */ }

@@ -7,7 +7,7 @@ import cssModObj from './page-tour-card.module.css'; // What: CSS Module Object.
 import React     from 'react';                       // What: React. Why: PagTouCom is built directly on React's own APIs. How: This is used directly (React.Fragment) instead of importing individual named hooks.
 
 
-import { IcoSvgCom   } from '../../ui/icon.tsx';                   // What: Icon Svg Component. Why: The card's Play and uncheck controls show small glyphs. How: This is rendered inside those buttons.
+import { IcoSvgCom   } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: The card's Play and uncheck controls show small glyphs. How: This is rendered inside those buttons.
 import { ONB_CHE_OBJ } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: A page tour's card shows whether that tour is already done. How: This is called via ONB_CHE_OBJ.entLooFun.
 
 
@@ -144,7 +144,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 						icoNamStr='cheEle'
 						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-					/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
+					/>{ /* What: Icon SVG Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
 				</button>
@@ -176,7 +176,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 					<IcoSvgCom
 						icoNamStr='plaEle'
 						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-					/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start the tour. How: This renders the 'plaEle' icon at a fixed size. */ }
+					/>{ /* What: Icon SVG Component. Why: A pending card needs a play glyph inviting the user to start the tour. How: This renders the 'plaEle' icon at a fixed size. */ }
 
 
 				</button>
@@ -250,7 +250,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 						<IcoSvgCom
 							icoNamStr='croEle'
 							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-						/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'croEle' icon at a fixed size. */ }
+						/>{ /* What: Icon SVG Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'croEle' icon at a fixed size. */ }
 
 
 					</button>

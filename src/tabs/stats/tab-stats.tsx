@@ -14,10 +14,10 @@ import { FilRaiCom    } from '../../ui/filter-rail.tsx';      // What: Filter Ra
 import { HelButCom    } from '../../help/button.tsx';         // What: Help Button Component. Why: This page needs its own header toggle for entering and leaving help mode. How: This is rendered in the header, flipping helModBoo on click.
 import { HelOveCom    } from '../../help/mode.tsx';           // What: Help Overlay Component. Why: Help mode needs a dimmed overlay with per-element tooltips layered above the real page. How: This is rendered while helModBoo is true, fed STA_HEL_ARR as its copy source.
 import { hidHisFun    } from '../../state/sample-history.ts'; // What: Hide History Function. Why: The real hidden sample pickers borrowed for help mode must be re-hidden once help mode ends. How: This is called whenever helModBoo turns false, and again on unmount.
-import { IcoSvgCom    } from '../../ui/icon.tsx';             // What: Icon Svg Component. Why: Several small glyphs (sort-direction arrows, the streak flame) are needed throughout this page. How: This is rendered with a specific name and size wherever one of those glyphs is shown.
+import { IcoSvgCom    } from '../../ui/icon.tsx';             // What: Icon SVG Component. Why: Several small glyphs (sort-direction arrows, the streak flame) are needed throughout this page. How: This is rendered with a specific name and size wherever one of those glyphs is shown.
 import { InfTipCom    } from '../../ui/info-tip.tsx';         // What: Info Tip Component. Why: The Spent metric's "no completed cycle yet" case needs a small inline explanation. How: This renders a "?" bubble with its own label text next to that N/A value.
 import { isaTruFun    } from '../../utils/guard.ts';          // What: Is-A Truthy Function. Why: The scroll-fade rows drop any that aren't mounted. How: This filters them so the rest read as real elements.
-import { isoDayFun    } from '../../utils/date.ts';           // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
+import { isoDayFun    } from '../../utils/date.ts';           // What: ISO Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { PIC_NAM_OBJ  } from '../../core/pickers.ts';         // What: Pickers Namespace Object. Why: Ease ranges in this file read as soonest and latest days. How: This is called via PIC_NAM_OBJ.driDayFun wherever a drift-to-days conversion happens, and read for the default drift band, DEF_EAS_OBJ.
 import { PilTagCom    } from '../../ui/pill-tag.tsx';         // What: Pill Tag Component. Why: The single-picker header needs a small labelled pill showing the picker's own mode. How: This renders that pill, toned as 'mode'.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';           // What: Seed Namespace Object. Why: Every picker mode's own display label and hint text live in this shared table. How: This is looked up (MOD_DEF_OBJ) by a picker's own mode key throughout the page.
@@ -271,7 +271,7 @@ function couLevFun ( donCouNum : number ) : number {
  * @param hidPicSet - Hidden Picker Set: The ids of hidden pickers.
  * @param scoValStr - Scope Value String: The active scope, 'all' or a picker
  *                    id.
- * @param cutIsoStr - Cutoff Iso String: The range's first day, or null for
+ * @param cutIsoStr - Cutoff ISO String: The range's first day, or null for
  *                    all time.
  * @param isaRemBoo - Is-A Reminder Boolean: Whether the Reminders scope is
  *                    active.
@@ -347,7 +347,7 @@ function outCouFun ( outValStr : PclOutTyp, picLogArr : PclRowTyp[], hidPicSet :
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param wheIsoStr - When Iso String: The ISO timestamp string to format.
+ * @param wheIsoStr - When ISO String: The ISO timestamp string to format.
  *
  * @returns A short "weekday, month day" label.
  *
@@ -965,10 +965,10 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	}, [] ); // What: Effect Dependency Array. Why: Today only needs computing once, on mount. How: An empty array means it never recomputes.
 
 
-	const todIsoStr = isoDayFun( todDatObj ); // What: Today Iso String. Why: The streak, heatmap, and "last picked" math all need today's own calendar day as a plain string. How: This converts todDatObj via the shared isoDayFun helper.
+	const todIsoStr = isoDayFun( todDatObj ); // What: Today ISO String. Why: The streak, heatmap, and "last picked" math all need today's own calendar day as a plain string. How: This converts todDatObj via the shared isoDayFun helper.
 
 
-	const cutIsoStr = React.useMemo( () => { // What: Cutoff Iso String Memo. Why: Every range-filtered query below needs one shared lower-bound date to compare a row's own date against. How: This computes today minus the active range's own day count, or null for "All time"'s no-cutoff case.
+	const cutIsoStr = React.useMemo( () => { // What: Cutoff ISO String Memo. Why: Every range-filtered query below needs one shared lower-bound date to compare a row's own date against. How: This computes today minus the active range's own day count, or null for "All time"'s no-cutoff case.
 
 
 		if ( ranDefObj.dayNum === Infinity ) return null; // What: No Cutoff Guard. Why: "All time" has no lower bound at all. How: This returns null, which every range-filtered query below treats as "include everything".
@@ -981,7 +981,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-		return isoDayFun( cutDatObj ); // What: Cutoff Iso Return. Why: Every comparison against this cutoff elsewhere compares against a plain date string, not a Date object. How: This converts cutDatObj via the shared isoDayFun helper.
+		return isoDayFun( cutDatObj ); // What: Cutoff ISO Return. Why: Every comparison against this cutoff elsewhere compares against a plain date string, not a Date object. How: This converts cutDatObj via the shared isoDayFun helper.
 
 
 	}, [ ranDefObj, todDatObj ] ); // What: Memo Dependency Array. Why: The cutoff only ever needs recomputing when the active range definition or today's own date changes. How: ranDefObj changes the day-count subtracted, todDatObj changes the date it's subtracted from.
@@ -999,7 +999,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const hidPicSet = React.useMemo( () => ( // What: Hidden Picker Set Memo. Why: Excluding a hidden picker's own rows from every rollup needs a fast id lookup, not a repeated array scan. How: This collects every picker flagged hidden into a Set of ids. // Hidden pickers/tasks (see store.ts's own hidden flag) keep their history rows in picLogArr/reminderLog/reminderSkipLog (nothing here is ever deleted), but every rollup below excludes them by id so the numbers reflect only what's currently visible, same as Today/Pickers/ Data.
 
 
-		new Set( picLisArr.filter( ( picCurObj ) => picCurObj.hidden ).map( ( picCurObj ) => picCurObj.id ) ) // What: Hidden Picker Id Set. Why: This is the finished lookup. How: This keeps hidden pickers, maps them to ids, and wraps the ids in a Set.
+		new Set( picLisArr.filter( ( picCurObj ) => picCurObj.hidden ).map( ( picCurObj ) => picCurObj.id ) ) // What: Hidden Picker ID Set. Why: This is the finished lookup. How: This keeps hidden pickers, maps them to ids, and wraps the ids in a Set.
 
 
 	), [ picLisArr ] ); // What: Memo Dependency Array. Why: This set only ever needs rebuilding when the picker list itself changes. How: picLisArr is the sole source the filter/map above reads from.
@@ -1008,7 +1008,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const hidTasSet = React.useMemo( () => ( // What: Hidden Task Set Memo. Why: Excluding a hidden reminder task's own rows from every reminder rollup needs the same fast id lookup. How: This collects every task flagged hidden into a Set of ids.
 
 
-		new Set( ( staAppObj.tasks || [] ).filter( ( tasCurObj ) => tasCurObj.hidden ).map( ( tasCurObj ) => tasCurObj.id ) ) // What: Hidden Task Id Set. Why: This is the finished lookup. How: This keeps hidden tasks, maps them to ids, and wraps the ids in a Set.
+		new Set( ( staAppObj.tasks || [] ).filter( ( tasCurObj ) => tasCurObj.hidden ).map( ( tasCurObj ) => tasCurObj.id ) ) // What: Hidden Task ID Set. Why: This is the finished lookup. How: This keeps hidden tasks, maps them to ids, and wraps the ids in a Set.
 
 
 	), [ staAppObj.tasks ] ); // What: Memo Dependency Array. Why: This set only ever needs rebuilding when the persisted task list itself changes. How: staAppObj.tasks is the sole source the filter/map above reads from.
@@ -1698,7 +1698,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 		// #region Start Bound
 
-		let staIsoStr = cutIsoStr; // What: Start Iso String. Why: The grid's own first day defaults to the active range's own cutoff. How: This starts from cutIsoStr and may be overridden below for an "All time" view with no cutoff at all.
+		let staIsoStr = cutIsoStr; // What: Start ISO String. Why: The grid's own first day defaults to the active range's own cutoff. How: This starts from cutIsoStr and may be overridden below for an "All time" view with no cutoff at all.
 
 
 		if ( !staIsoStr ) { // What: No Cutoff Check. Why: "All time" has no cutIsoStr to start from, so the earliest logged day must be found instead. How: This falls back to the earliest key in dayAggMap, or today when nothing has been logged at all.
@@ -1707,7 +1707,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 			const dayKeyArr = [ ...dayAggMap.keys() ]; // What: Day Key Array. Why: The earliest logged day needs to be found from the actual keys present. How: This spreads dayAggMap's own keys into a plain array.
 
 
-			staIsoStr = dayKeyArr.length ? dayKeyArr.reduce( ( earKeyStr, dayKeyStr ) => ( dayKeyStr < earKeyStr ? dayKeyStr : earKeyStr ), dayKeyArr[ 0 ] ) : todIsoStr; // What: Start Iso Fallback. Why: A truly empty history still needs some concrete starting day for the loop below. How: This reduces to the earliest key, or falls back to todIsoStr when there are none at all.
+			staIsoStr = dayKeyArr.length ? dayKeyArr.reduce( ( earKeyStr, dayKeyStr ) => ( dayKeyStr < earKeyStr ? dayKeyStr : earKeyStr ), dayKeyArr[ 0 ] ) : todIsoStr; // What: Start ISO Fallback. Why: A truly empty history still needs some concrete starting day for the loop below. How: This reduces to the earliest key, or falls back to todIsoStr when there are none at all.
 
 
 		}
@@ -1718,7 +1718,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 		// #region End Bound
 
-		let endIsoStr = todIsoStr; // What: End Iso String. Why: The grid's own last day defaults to today. How: This may be overridden below when a specific year is being paged.
+		let endIsoStr = todIsoStr; // What: End ISO String. Why: The grid's own last day defaults to today. How: This may be overridden below when a specific year is being paged.
 
 
 		if ( actYeaNum != null ) { // What: Year Clamp Check. Why: A paged single-year view must not show days outside that year at all. How: This clamps both staIsoStr and endIsoStr to the active year's own January 1 and December 31.
@@ -1869,7 +1869,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	const easDowBoo = isaPicBoo && scoPicObj && scoPicObj.mode === 'ease-down';                                    // What: Ease Down Boolean. Why: An ease-down picker swaps the Frequency metric for Spent and measures things differently below. How: This checks the scoped picker's own mode.
 	const easUpwBoo = isaPicBoo && scoPicObj && scoPicObj.mode === 'ease-up';                                      // What: Ease Upward Boolean. Why: An ease-up picker's own items show a range suffix the same way an ease-down picker's do. How: This checks the scoped picker's own mode.
-	const useWeiBoo = isaPicBoo && scoPicObj && ( scoPicObj.mode === 'weighted' || scoPicObj.mode === 'dynamic' ); // What: Uses Weight Boolean. Why: Only a weighted or dynamic picker's items have a meaningful weight suffix to show. How: This checks the scoped picker's own mode against both weight-driven modes.
+	const useWeiBoo = isaPicBoo && scoPicObj && ( scoPicObj.mode === 'weighted' || scoPicObj.mode === 'dynamic' ); // What: Use Weight Boolean. Why: Only a weighted or dynamic picker's items have a meaningful weight suffix to show. How: This checks the scoped picker's own mode against both weight-driven modes.
 
 
 	const vacCheObj = React.useMemo( () => { // What: Vacation Check Object Memo. Why: Several metrics below need to know an item's own active/inactive state on an arbitrary past day, not just its current state. How: This replays staAppObj.vacationLog into a per-item sorted event list, then exposes two small lookup functions closing over it. // Inactive-state replay from the event log: vacCheObj.inaDayFun(itemId, date) answers whether that item was inactive that day; vacCheObj.retAftFun answers whether an 'on' (return-from-vacation) transition happened after that date.
@@ -2746,7 +2746,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 							viewBox='8 8 528 528'
 
 							aria-hidden='true'
-						>{ /* What: Logo Svg Element. Why: This draws the small square "Ease My Life" logo mark. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }{ /* Same theme-wired logo as the Today header (currentColor -> accent, grid lines -> accent-soft) so the two tabs read as one product. */ }
+						>{ /* What: Logo SVG Element. Why: This draws the small square "Ease My Life" logo mark. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }{ /* Same theme-wired logo as the Today header (currentColor -> accent, grid lines -> accent-soft) so the two tabs read as one product. */ }
 
 
 							<defs>{ /* What: Clip Defs Element. Why: An SVG clipPath can only be applied via a defined, referenced id, not inline. How: This holds the one clipPath definition the glyph path below references. */ }
@@ -3355,7 +3355,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 											<IcoSvgCom
 												icoNamStr={ conSorStr === 'desc' ? 'ardEle' : 'aruEle' }
 												sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-											/>{ /* What: Icon Svg Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on conSorStr. */ }
+											/>{ /* What: Icon SVG Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on conSorStr. */ }
 
 
 										</button>
@@ -3680,7 +3680,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 											icoNamStr='flaEle'
 											sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-										/>{ /* What: Icon Svg Component. Why: The streak card needs a small flame glyph reinforcing its own meaning. How: This renders the 'flaEle' icon at a fixed size. */ }
+										/>{ /* What: Icon SVG Component. Why: The streak card needs a small flame glyph reinforcing its own meaning. How: This renders the 'flaEle' icon at a fixed size. */ }
 
 
 									</CarSurCom>
@@ -4162,7 +4162,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 										<IcoSvgCom
 											icoNamStr={ remSorStr === 'desc' ? 'ardEle' : 'aruEle' }
 											sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-										/>{ /* What: Icon Svg Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on remSorStr. */ }
+										/>{ /* What: Icon SVG Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on remSorStr. */ }
 
 
 									</button>
@@ -4479,7 +4479,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 									<IcoSvgCom
 										icoNamStr={ sorDirStr === 'desc' ? 'ardEle' : 'aruEle' }
 										sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-									/>{ /* What: Icon Svg Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on sorDirStr. */ }
+									/>{ /* What: Icon SVG Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on sorDirStr. */ }
 
 
 								</button>

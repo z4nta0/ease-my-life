@@ -70,7 +70,7 @@ const CON_GAT_OBJ : Partial< ConRcdTyp > = { // What: Conditional Gate Object. W
 
 
 	cardText : 'Take a rest day, no yard work today!', // What: Card Text String. Why: This is the message shown on Today whenever this conditional actually gates PIC_GAT_OBJ off for the day. How: This is read wherever a gated-off picker's own card text needs displaying.
-	id       : CON_GAT_STR,                            // What: Id String. Why: This must match the id PIC_GAT_OBJ's own conditionalId points at. How: This is CON_GAT_STR, the identifier string declared just above.
+	id       : CON_GAT_STR,                            // What: ID String. Why: This must match the id PIC_GAT_OBJ's own conditionalId points at. How: This is CON_GAT_STR, the identifier string declared just above.
 	mode     : 'ease-up',                              // What: Mode String. Why: This selects which of conditionals.ts's own gating modes (probability/ease-up/ease-down/dynamic) this sample conditional uses. How: This is read by the conditional engine exactly like any real conditional's own mode.
 	name     : 'Rest Day'                              // What: Name String. Why: This is the conditional's own display name shown throughout the app. How: This is read wherever a conditional's name needs displaying, exactly like any real, user-created conditional.
 
@@ -84,7 +84,7 @@ const PIC_GAT_OBJ : PicForTyp & { id : string } = { // What: Picker Gate Object.
 
 	conditionalId : CON_GAT_STR,        // What: Conditional Identifier String. Why: This is what actually gates this picker off on the conditional's own down days. How: This is CON_GAT_STR, matching CON_GAT_OBJ's own id.
 	group         : 'Chores',           // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
-	id            : 'hlp_pkr_yardwork', // What: Id String. Why: This is this sample picker's own stable identifier, already living in help mode's own hlp_-prefixed namespace. How: This is a literal, load-bearing string, never generated at runtime.
+	id            : 'hlp_pkr_yardwork', // What: ID String. Why: This is this sample picker's own stable identifier, already living in help mode's own hlp_-prefixed namespace. How: This is a literal, load-bearing string, never generated at runtime.
 	mode          : 'ease-up',          // What: Mode String. Why: This selects which of pickers.ts's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
 	name          : 'Yard Work',        // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
 
@@ -128,7 +128,7 @@ const EXT_PIC_ARR : ( PicForTyp & { id : string } )[] = [ // What: Extra Picker 
 
 
 		group : 'Entertainment',         // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
-		id    : 'hlp_pkr_icebreaker',    // What: Id String. Why: This is this sample picker's own stable identifier, already living in help mode's own hlp_-prefixed namespace. How: This is a literal, load-bearing string, never generated at runtime.
+		id    : 'hlp_pkr_icebreaker',    // What: ID String. Why: This is this sample picker's own stable identifier, already living in help mode's own hlp_-prefixed namespace. How: This is a literal, load-bearing string, never generated at runtime.
 		mode  : 'random',                // What: Mode String. Why: This selects which of pickers.ts's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
 		name  : 'Ice Breaker Questions', // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
 
@@ -150,7 +150,7 @@ const EXT_PIC_ARR : ( PicForTyp & { id : string } )[] = [ // What: Extra Picker 
 
 
 		group : 'Entertainment',      // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
-		id    : 'hlp_pkr_movienight', // What: Id String. Why: This is this sample picker's own stable identifier, already living in help mode's own hlp_-prefixed namespace. How: This is a literal, load-bearing string, never generated at runtime.
+		id    : 'hlp_pkr_movienight', // What: ID String. Why: This is this sample picker's own stable identifier, already living in help mode's own hlp_-prefixed namespace. How: This is a literal, load-bearing string, never generated at runtime.
 		mode  : 'weighted',           // What: Mode String. Why: This selects which of pickers.ts's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
 		name  : 'Movie Night Pick',   // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
 
@@ -338,7 +338,7 @@ const sedPicFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 
 			group : curPicObj.group,                                                          // What: Group Field. Why: The copy should sit in the same group as the onboarding sample it mirrors. How: This carries curPicObj's own group through unchanged.
-			id    : copIdeStr,                                                                // What: Id Field. Why: The added picker must live under its own help-namespaced id, not the onboarding sample's real id. How: This assigns copIdeStr, computed above via helIdeFun.
+			id    : copIdeStr,                                                                // What: ID Field. Why: The added picker must live under its own help-namespaced id, not the onboarding sample's real id. How: This assigns copIdeStr, computed above via helIdeFun.
 			items : curPicObj.items.map( ( { id : oldIdeStr, ...iteResObj } ) => iteResObj ), // What: Items Field. Why: Each item needs to drop its own onboarding-only id so the copy doesn't collide with the sample it mirrors. How: This maps every curPicObj item down to iteResObj, its own fields minus id.
 			mode  : curPicObj.mode,                                                           // What: Mode Field. Why: The copy must use the same picker-engine algorithm as the onboarding sample it mirrors. How: This carries curPicObj's own mode through unchanged.
 			name  : curPicObj.name                                                            // What: Name Field. Why: The copy should display exactly like the onboarding sample it mirrors. How: This carries curPicObj's own name through unchanged.

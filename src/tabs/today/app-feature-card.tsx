@@ -8,7 +8,7 @@ import React     from 'react';                         // What: React. Why: AppF
 
 
 import { bloReaFun   } from '../../onboarding/app-features.tsx'; // What: Blocked Reason Function. Why: An app-feature tour can require an earlier one first, and its card must explain why it can't start yet. How: This is called with the card's feature id.
-import { IcoSvgCom   } from '../../ui/icon.tsx';                 // What: Icon Svg Component. Why: The card's Play and uncheck controls show small glyphs. How: This is rendered inside those buttons.
+import { IcoSvgCom   } from '../../ui/icon.tsx';                 // What: Icon SVG Component. Why: The card's Play and uncheck controls show small glyphs. How: This is rendered inside those buttons.
 import { InfTipCom   } from '../../ui/info-tip.tsx';             // What: Info Tip Component. Why: A blocked tour's Play button needs to explain why it is disabled. How: This wraps that button with the blocked reason as its tip.
 import { PAG_LAB_OBJ } from '../../onboarding/app-features.tsx'; // What: Page Label Object. Why: The card's meta row names the page its feature lives on. How: This is looked up by the feature's page.
 
@@ -150,7 +150,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 						icoNamStr='cheEle'
 						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-					/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
+					/>{ /* What: Icon SVG Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
 				</button>
@@ -172,7 +172,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 					<IcoSvgCom
 						icoNamStr='plaEle'
 						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-					/>{ /* What: Icon Svg Component. Why: The disabled check button still needs its own recognizable play glyph. How: This renders the 'plaEle' icon at a fixed size. */ }
+					/>{ /* What: Icon SVG Component. Why: The disabled check button still needs its own recognizable play glyph. How: This renders the 'plaEle' icon at a fixed size. */ }
 
 
 				</InfTipCom>
@@ -204,7 +204,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 					<IcoSvgCom
 						icoNamStr='plaEle'
 						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-					/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'plaEle' icon at a fixed size. */ }
+					/>{ /* What: Icon SVG Component. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'plaEle' icon at a fixed size. */ }
 
 
 				</button>
@@ -279,7 +279,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 						<IcoSvgCom
 							icoNamStr='croEle'
 							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-						/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'croEle' icon at a fixed size. */ }
+						/>{ /* What: Icon SVG Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'croEle' icon at a fixed size. */ }
 
 
 					</button>

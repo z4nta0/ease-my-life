@@ -7,7 +7,7 @@ import { DAY_ABB_ARR } from '../utils/date.ts';      // What: Day Abbreviation A
 import { DAY_FUL_ARR } from '../utils/date.ts';      // What: Day Full Array. Why: Single-day weekly and nth-weekday summaries name their weekday in full. How: This is indexed by a weekday number from daysOfWeek or nthWeekday.
 import { dimCouFun   } from '../utils/date.ts';      // What: Days-In-Month Count Function. Why: Monthly and yearly clamping need a month's real length. How: This is called with a year and 1-based month.
 import { HOL_NAM_OBJ } from './holidays.ts';         // What: Holidays Namespace Object. Why: A reminder's own weekend/holiday participation switches need to know whether a given date is an active day off. How: This is called (guarded, since it's an external module) inside visTodFun/todVisFun/nexEliFun below.
-import { isoDayFun   } from '../utils/date.ts';      // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
+import { isoDayFun   } from '../utils/date.ts';      // What: ISO Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { nwmDayFun   } from '../utils/date.ts';      // What: Nth-Weekday-Month Day Function. Why: An nth-weekday schedule needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
 import { ordSufFun   } from '../utils/date.ts';      // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
 import { ranIdeFun   } from '../utils/random-id.ts'; // What: Random Identifier Function. Why: A new reminder with no id of its own needs a fresh one. How: This mints a 'tk_' id.
@@ -144,7 +144,7 @@ const ancDatFun = ( genTimStr? : string | null ) : Date => genTimStr ? new Date(
 // #region curIsoFun
 
 /**
- * curIsoFun = Current Iso Function
+ * curIsoFun = Current ISO Function
  *
  * @summary
  * Today's own local YYYY-MM-DD string, from the live clock. This is
@@ -165,7 +165,7 @@ const ancDatFun = ( genTimStr? : string | null ) : Date => genTimStr ? new Date(
  *
 */
 
-const curIsoFun = () : string => isoDayFun( new Date() ); // What: Current Iso Function. Why: A brand new task's own anchor/onceDate/createdAt fields, and every "is this in the past" comparison, need today's own date as a plain string. How: This calls isoDayFun against a freshly constructed Date.
+const curIsoFun = () : string => isoDayFun( new Date() ); // What: Current ISO Function. Why: A brand new task's own anchor/onceDate/createdAt fields, and every "is this in the past" comparison, need today's own date as a plain string. How: This calls isoDayFun against a freshly constructed Date.
 
 // #endregion curIsoFun
 
@@ -207,14 +207,14 @@ const eveNthFun = ( nthValNum : number, uniCouNum : number ) : boolean => nthVal
 
 
 
-const parIsoFun = ( isoValStr : string ) => { // What: Parse Iso Function. Why: Every anchor/onceDate comparison in this file needs a stored ISO string turned back into a real local-midnight Date. How: This splits the string into its 3 numeric parts and builds a Date from them.
+const parIsoFun = ( isoValStr : string ) => { // What: Parse ISO Function. Why: Every anchor/onceDate comparison in this file needs a stored ISO string turned back into a real local-midnight Date. How: This splits the string into its 3 numeric parts and builds a Date from them.
 
 
 	const [ yeaValNum, monValNum, dayValNum ] = ( isoValStr || '' ).split( '-' ).map( Number ); // What: Year Value Month Value Day Value Destructure. Why: An anchor/onceDate ISO string needs splitting into its 3 numeric parts before a local-midnight Date can be built from it. How: This splits isoValStr (or an empty string when falsy) on '-' and maps each segment through Number.
 
 
 
-	return new Date( yeaValNum, ( monValNum || 1 ) - 1, dayValNum || 1 ); // What: Parsed Iso Date Return. Why: Every anchor/onceDate comparison elsewhere in this file needs a real local-midnight Date, not a string (this avoids the UTC-parsing drift a bare `new Date(isoValStr)` would introduce). How: This builds a Date from the 3 destructured parts, each falling back to a safe default (month 1, day 1) when isoValStr was malformed or empty.
+	return new Date( yeaValNum, ( monValNum || 1 ) - 1, dayValNum || 1 ); // What: Parsed ISO Date Return. Why: Every anchor/onceDate comparison elsewhere in this file needs a real local-midnight Date, not a string (this avoids the UTC-parsing drift a bare `new Date(isoValStr)` would introduce). How: This builds a Date from the 3 destructured parts, each falling back to a safe default (month 1, day 1) when isoValStr was malformed or empty.
 
 
 };
@@ -308,7 +308,7 @@ function defTasFun ( tasInpObj : Partial< TasRcdTyp > = {} ) : TasRcdTyp {
 		dayOfMonth : tasInpObj.dayOfMonth || curDatObj.getDate(),                                           // What: Day Of Month. Why: A monthly task in plain-date mode needs a target day-of-month. How: This keeps tasInpObj's own dayOfMonth when given, otherwise defaults to today's own date.
 		daysOfWeek : Array.isArray( tasInpObj.daysOfWeek ) ? tasInpObj.daysOfWeek : [ curDatObj.getDay() ], // What: Days Of Week. Why: A weekly task needs at least one selected weekday to start from. How: This keeps tasInpObj's own daysOfWeek only when it's a real array, defaulting to today's own weekday otherwise.
 		hidden     : !!tasInpObj.hidden,                                                                    // What: Hidden. Why: A task created mid-mini-tour-checklist needs to stay out of dueTodFun's own list until the checklist's own closing Generate step. How: This coerces tasInpObj's own hidden to a real boolean.
-		id         : tasInpObj.id || ranIdeFun( 'tk_' ),                                                    // What: Id. Why: Every task needs a stable identifier, generated fresh when tasInpObj carries none of its own. How: This keeps tasInpObj's own id when given, otherwise mints a random 'tk_' prefixed one.
+		id         : tasInpObj.id || ranIdeFun( 'tk_' ),                                                    // What: ID. Why: Every task needs a stable identifier, generated fresh when tasInpObj carries none of its own. How: This keeps tasInpObj's own id when given, otherwise mints a random 'tk_' prefixed one.
 		interval   : tasInpObj.interval || ( tasInpObj.repeat === 'interval' ? 2 : 1 ),                     // What: Interval. Why: Shared by interval/weekly/monthly/annual, each its own "every N ___"; only 'interval' itself defaults to 2, every other kind to 1 (see this function's own @summary above). How: This keeps tasInpObj's own interval when given, otherwise picks 2 or 1 based on tasInpObj's own repeat.
 		lastDone   : tasInpObj.lastDone ?? null,                                                            // What: Last Done. Why: Every task needs a defined (if empty) completion marker for isaDueFun/isaDonFun to read. How: This keeps tasInpObj's own lastDone when given, otherwise defaults to null.
 		month      : tasInpObj.month || curDatObj.getMonth() + 1,                                           // What: Month. Why: An annual task needs its own target month. How: This keeps tasInpObj's own month when given, otherwise defaults to today's own 1-indexed month.
@@ -449,7 +449,7 @@ function isaDonFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : bo
 function isaDueFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : boolean {
 
 
-	const todIsoStr = isoDayFun( cheDatObj ); // What: Today Iso String. Why: The 'once' case below compares tasRcdObj's own onceDate/lastDone against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
+	const todIsoStr = isoDayFun( cheDatObj ); // What: Today ISO String. Why: The 'once' case below compares tasRcdObj's own onceDate/lastDone against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
 
 
 
@@ -1213,7 +1213,7 @@ function todVisFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 	const isaWkdBoo = wkdDayFun( cheDatObj );                        // What: Is-A Weekend Boolean. Why: The weekend-exclusion check further below needs to know whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
 	const holInfObj = HOL_NAM_OBJ.holInfFun( holStaObj, cheDatObj ); // What: Holiday Info Object. Why: A caller distinguishing a built-in holiday from a custom one needs the full record, not just its name. How: This calls holInfFun, which returns the matched holiday's record, or null when cheDatObj isn't a holiday.
 	const isaHolBoo = !!holInfObj;                                   // What: Is-A Holiday Boolean. Why: The holiday-exclusion check further below only needs a plain boolean, not the full record. How: This coerces holInfObj to a real boolean.
-	const cheIsoStr = isoDayFun( cheDatObj );                        // What: Check Iso String. Why: The manual-skip check further below compares tasRcdObj's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
+	const cheIsoStr = isoDayFun( cheDatObj );                        // What: Check ISO String. Why: The manual-skip check further below compares tasRcdObj's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
 
 	// #endregion Exclusion Inputs
 
@@ -1306,7 +1306,7 @@ function visTodFun ( tasLisArr : TasRcdTyp[], remOptObj : RemOptTyp | null | und
 
 	const isaWkdBoo = wkdDayFun( cheDatObj );                                             // What: Is-A Weekend Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
 	const isaHolBoo = !!( HOL_NAM_OBJ && HOL_NAM_OBJ.holDatFun( holStaObj, cheDatObj ) ); // What: Is-A Holiday Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself is an active holiday. How: This guards on HOL_NAM_OBJ existing before calling its own holDatFun, coercing the result to a real boolean.
-	const cheIsoStr = isoDayFun( cheDatObj );                                             // What: Check Iso String. Why: The filter below compares a task's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
+	const cheIsoStr = isoDayFun( cheDatObj );                                             // What: Check ISO String. Why: The filter below compares a task's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
 
 
 
@@ -1350,7 +1350,7 @@ const TAS_NAM_OBJ = { // What: Tasks Namespace Object. Why: store.ts, the remind
 
 
 	ancDatFun : ancDatFun, // What: Anchor Date Function. Why: Callers need the generator-anchored "what day is it" Date by this exact name. How: This re-exports ancDatFun under its own matching name.
-	curIsoFun : curIsoFun, // What: Current Iso Function. Why: Callers need today's own ISO date string by this exact name. How: This re-exports curIsoFun under its own matching name.
+	curIsoFun : curIsoFun, // What: Current ISO Function. Why: Callers need today's own ISO date string by this exact name. How: This re-exports curIsoFun under its own matching name.
 	defOptFun : defOptFun, // What: Default Options Function. Why: Callers need the canonical default participation-options shape by this exact name. How: This re-exports defOptFun under its own matching name.
 	defTasFun : defTasFun, // What: Default Task Function. Why: Callers build a fully-defaulted task/reminder record by this exact name. How: This re-exports defTasFun under its own matching name.
 	dueTodFun : dueTodFun, // What: Due Today Function. Why: Callers need the due, non-hidden, stably-sorted task list by this exact name. How: This re-exports dueTodFun under its own matching name.

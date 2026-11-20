@@ -70,7 +70,7 @@ const dimCouFun = ( yeaValNum : number, monOneNum : number ) : number => new Dat
 // #region isoDayFun
 
 /**
- * isoDayFun = Iso Day Function
+ * isoDayFun = ISO Day Function
  *
  * @summary
  * Converts a Date into its own local-timezone calendar day, as a plain
@@ -92,7 +92,7 @@ const dimCouFun = ( yeaValNum : number, monOneNum : number ) : number => new Dat
  *
 */
 
-const isoDayFun = ( datInpObj : Date = new Date() ) : string => { // What: Iso Day Function. Why: Every dated state field (pick-log dates, reminder dates) needs one local-calendar day format. How: This formats datInpObj, defaulting to now, as a local YYYY-MM-DD string.
+const isoDayFun = ( datInpObj : Date = new Date() ) : string => { // What: ISO Day Function. Why: Every dated state field (pick-log dates, reminder dates) needs one local-calendar day format. How: This formats datInpObj, defaulting to now, as a local YYYY-MM-DD string.
 
 
 	const datCopObj = new Date( datInpObj ); // What: Date Copy Object. Why: datInpObj itself must not be mutated by the timezone shift below. How: This constructs a fresh Date instance from datInpObj.
@@ -101,7 +101,7 @@ const isoDayFun = ( datInpObj : Date = new Date() ) : string => { // What: Iso D
 
 
 
-	return datCopObj.toISOString().slice( 0, 10 ); // What: Iso Day String Return. Why: The caller only wants the calendar-day portion, not a full timestamp. How: This takes the shifted copy's own ISO string and slices off everything after the first 10 characters.
+	return datCopObj.toISOString().slice( 0, 10 ); // What: ISO Day String Return. Why: The caller only wants the calendar-day portion, not a full timestamp. How: This takes the shifted copy's own ISO string and slices off everything after the first 10 characters.
 
 
 };
@@ -279,7 +279,7 @@ const parDatFun = ( isoDatStr? : string | null ) : Date => isoDatStr ? new Date(
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param isoDatStr - Iso Date String: The date to format, or omitted for now.
+ * @param isoDatStr - ISO Date String: The date to format, or omitted for now.
  *
  * @returns The formatted date, e.g. 'Sun, Sep 27'.
  *
@@ -317,7 +317,7 @@ const forDatFun = ( isoDatStr? : string ) : string => { // What: Format Date Fun
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param isoDatStr - Iso Date String: The date to format, or omitted or null
+ * @param isoDatStr - ISO Date String: The date to format, or omitted or null
  *                    for now.
  *
  * @returns The formatted date, e.g. 'Sunday, Sep 27'.
@@ -356,7 +356,7 @@ const forLonFun = ( isoDatStr? : string | null ) : string => { // What: Format L
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param isoDatStr - Iso Date String: The moment to format, or omitted or
+ * @param isoDatStr - ISO Date String: The moment to format, or omitted or
  *                    null for now.
  *
  * @returns The formatted time, e.g. '3:42 PM'.

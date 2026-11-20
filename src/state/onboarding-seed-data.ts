@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { isoDayFun } from '../utils/date.ts'; // What: Iso Day Function. Why: Period keys and generated log rows are local-calendar YYYY-MM-DD strings. How: This formats a Date as that key.
+import { isoDayFun } from '../utils/date.ts'; // What: ISO Day Function. Why: Period keys and generated log rows are local-calendar YYYY-MM-DD strings. How: This formats a Date as that key.
 
 
 import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: A precomputed pick row is a saved pick-log row minus its dated fields. How: This is the base of RawPicTyp and part of hydStaFun's return.
@@ -639,10 +639,10 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 			done        : picRowObj.done,                             // What: Done. Why: The row must record whether this pick was ever actually completed. How: This is copied straight from picRowObj's own done.
 			eid         : null,                                       // What: Eid. Why: A real pickLog row always carries an entry id linking it back to a live Today entry, but a precomputed sample row has none. How: This is always null, since no real Today entry ever backed this hydrated row.
 			group       : picRowObj.group,                            // What: Group. Why: This denormalized copy lets the row survive a later rename or deletion of the picker's own group. How: This is copied straight from picRowObj's own group.
-			id          : 'pls_ob_' + ( seqCouNum++ ).toString( 36 ), // What: Id. Why: Every pickLog row needs its own unique identifier. How: This mints one from the shared seqCouNum counter, prefixed and base-36 encoded.
-			itemId      : picRowObj.itemId,                           // What: Item Id. Why: Stats and other consumers filter/group pickLog rows by the item they belong to. How: This is copied straight from picRowObj's own itemId.
+			id          : 'pls_ob_' + ( seqCouNum++ ).toString( 36 ), // What: ID. Why: Every pickLog row needs its own unique identifier. How: This mints one from the shared seqCouNum counter, prefixed and base-36 encoded.
+			itemId      : picRowObj.itemId,                           // What: Item ID. Why: Stats and other consumers filter/group pickLog rows by the item they belong to. How: This is copied straight from picRowObj's own itemId.
 			itemName    : picRowObj.itemName,                         // What: Item Name. Why: This denormalized copy lets the row survive a later rename or deletion of the item itself. How: This is copied straight from picRowObj's own itemName.
-			pickerId    : picRowObj.pickerId,                         // What: Picker Id. Why: Stats and other consumers filter/group pickLog rows by the picker they belong to. How: This is copied straight from picRowObj's own pickerId.
+			pickerId    : picRowObj.pickerId,                         // What: Picker ID. Why: Stats and other consumers filter/group pickLog rows by the picker they belong to. How: This is copied straight from picRowObj's own pickerId.
 			pickerName  : picRowObj.pickerName,                       // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This is copied straight from picRowObj's own pickerName.
 			source      : picRowObj.source,                           // What: Source. Why: Stats distinguishes how a pick actually happened (generated, manual, re-roll, ...). How: This is copied straight from picRowObj's own source.
 
@@ -673,8 +673,8 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 
 			completedAt : rowTimObj.toISOString(),                   // What: Completed At. Why: state.reminderLog's own completedAt field expects a real ISO string. How: This is rowTimObj's own ISO string, resolved above.
 			name        : remRowObj.name,                            // What: Name. Why: This denormalized copy lets the row survive a later rename or deletion of the task itself. How: This is copied straight from remRowObj's own name.
-			rowId       : 'rl_ob_' + ( seqCouNum++ ).toString( 36 ), // What: Row Id. Why: Every reminderLog row needs its own unique identifier. How: This mints one from the shared seqCouNum counter, prefixed and base-36 encoded.
-			taskId      : remRowObj.taskId,                          // What: Task Id. Why: Stats and other consumers filter/group reminderLog rows by the task they belong to. How: This is copied straight from remRowObj's own taskId.
+			rowId       : 'rl_ob_' + ( seqCouNum++ ).toString( 36 ), // What: Row ID. Why: Every reminderLog row needs its own unique identifier. How: This mints one from the shared seqCouNum counter, prefixed and base-36 encoded.
+			taskId      : remRowObj.taskId,                          // What: Task ID. Why: Stats and other consumers filter/group reminderLog rows by the task they belong to. How: This is copied straight from remRowObj's own taskId.
 			type        : remRowObj.type                             // What: Type. Why: Stats distinguishes a one-time completion from a recurring one. How: This is copied straight from remRowObj's own type.
 
 
@@ -700,9 +700,9 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 
 
 			name      : skiRowObj.name,                            // What: Name. Why: This denormalized copy lets the row survive a later rename or deletion of the task itself. How: This is copied straight from skiRowObj's own name.
-			rowId     : 'rs_ob_' + ( seqCouNum++ ).toString( 36 ), // What: Row Id. Why: Every reminderSkipLog row needs its own unique identifier. How: This mints one from the shared seqCouNum counter, prefixed and base-36 encoded.
+			rowId     : 'rs_ob_' + ( seqCouNum++ ).toString( 36 ), // What: Row ID. Why: Every reminderSkipLog row needs its own unique identifier. How: This mints one from the shared seqCouNum counter, prefixed and base-36 encoded.
 			skippedAt : rowTimObj.toISOString(),                   // What: Skipped At. Why: state.reminderSkipLog's own skippedAt field expects a real ISO string. How: This is rowTimObj's own ISO string, resolved above.
-			taskId    : skiRowObj.taskId,                          // What: Task Id. Why: Stats and other consumers filter/group reminderSkipLog rows by the task they belong to. How: This is copied straight from skiRowObj's own taskId.
+			taskId    : skiRowObj.taskId,                          // What: Task ID. Why: Stats and other consumers filter/group reminderSkipLog rows by the task they belong to. How: This is copied straight from skiRowObj's own taskId.
 			type      : skiRowObj.type                             // What: Type. Why: Stats distinguishes a one-time skip from a recurring one. How: This is copied straight from skiRowObj's own type.
 
 

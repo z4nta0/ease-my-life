@@ -51,7 +51,7 @@ type FacProTyp = { allCouNum : number, allSelBoo : boolean, ariLabStr : string, 
  *                                       count.
  * @param props.allSelBoo              - All Selected Boolean: Whether the
  *                                       "All" pill is the selected one.
- * @param props.ariLabStr              - Aria Label String: The rail's
+ * @param props.ariLabStr              - ARIA Label String: The rail's
  *                                       accessible name.
  * @param props.data-element-name-hook - Data Element Name Hook: The rail's
  *                                       identity hook.

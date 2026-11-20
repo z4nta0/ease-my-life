@@ -16,7 +16,7 @@ import { DAY_FUL_ARR  } from '../../utils/date.ts';          // What: Day Full A
 import { dimCouFun    } from '../../utils/date.ts';          // What: Days-In-Month Count Function. Why: Monthly and yearly clamping need a month's real length. How: This is called with a year and 1-based month.
 import { durMilFun    } from '../../utils/rhythm.ts';        // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { FilButCom    } from '../../ui/fill-button.tsx';     // What: Fill Button Component. Why: An ease-up/ease-down picker's Item Controls need the same Fill/Refill-all control Today's own boost tools use. How: This is rendered inside PicConCom's Item Controls group.
-import { IcoSvgCom    } from '../../ui/icon.tsx';            // What: Icon Svg Component. Why: PicConCom's own buttons and rows need recognizable glyphs. How: This is rendered throughout PicConCom.
+import { IcoSvgCom    } from '../../ui/icon.tsx';            // What: Icon SVG Component. Why: PicConCom's own buttons and rows need recognizable glyphs. How: This is rendered throughout PicConCom.
 import { InfTipCom    } from '../../ui/info-tip.tsx';        // What: Info Tip Component. Why: A disabled control or a truncated label still needs to explain itself on demand. How: This wraps those controls throughout PicConCom.
 import { MON_ABB_ARR  } from '../../utils/date.ts';          // What: Month Abbreviation Array. Why: The yearly month selects need a short label per month. How: This is mapped to one option per month.
 import { MON_FUL_ARR  } from '../../utils/date.ts';          // What: Month Full Array. Why: The yearly cadence summary names its month in full. How: This is indexed by anchorMonth minus 1.
@@ -81,7 +81,7 @@ type DwcProTyp = { ariLabStr : string, onChange : ( dowValNum : number ) => void
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.ariLabStr - Aria Label String: The select's accessible name.
+ * @param props.ariLabStr - ARIA Label String: The select's accessible name.
  * @param props.onChange  - On Change: Called with the chosen weekday's index.
  * @param props.value     - Value: The current weekday's index.
  *
@@ -1035,7 +1035,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 									<IcoSvgCom
 										icoNamStr='cheEle'
 										sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-									/>{ /* What: Icon Svg Component. Why: The confirm button needs a recognizable checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
+									/>{ /* What: Icon SVG Component. Why: The confirm button needs a recognizable checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
 								</button>
@@ -1054,7 +1054,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 									<IcoSvgCom
 										icoNamStr='croEle'
 										sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-									/>{ /* What: Icon Svg Component. Why: The cancel button needs a recognizable close glyph. How: This renders the 'croEle' icon at a fixed size. */ }
+									/>{ /* What: Icon SVG Component. Why: The cancel button needs a recognizable close glyph. How: This renders the 'croEle' icon at a fixed size. */ }
 
 
 								</button>
@@ -1080,7 +1080,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 								<IcoSvgCom
 									icoNamStr='pluEle'
 									sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-								/>{ /* What: Icon Svg Component. Why: The trigger pill needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } New Group
+								/>{ /* What: Icon SVG Component. Why: The trigger pill needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } New Group
 
 
 							</button>

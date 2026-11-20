@@ -180,7 +180,7 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 		const disShoBoo = comStyObj.display !== 'none';                 // What: Display Shown Boolean. Why: An element with no display isn't drawn. How: This checks its display.
 		const visShoBoo = comStyObj.visibility !== 'hidden';            // What: Visibility Shown Boolean. Why: A hidden element isn't drawn. How: This checks its visibility.
 		const opaShoBoo = Number( comStyObj.opacity ) > 0;              // What: Opacity Shown Boolean. Why: A fully transparent element can't be seen. How: This checks its opacity.
-		const ariShoBoo = !curDomEle.closest( '[aria-hidden="true"]' ); // What: Aria Shown Boolean. Why: Decorative, hidden content isn't part of the layout being judged. How: This checks no ancestor hides it.
+		const ariShoBoo = !curDomEle.closest( '[aria-hidden="true"]' ); // What: ARIA Shown Boolean. Why: Decorative, hidden content isn't part of the layout being judged. How: This checks no ancestor hides it.
 		const widShoBoo = eleRecObj.width > 1;                          // What: Width Shown Boolean. Why: An empty box can't crowd anything. How: This checks its width.
 		const heiShoBoo = eleRecObj.height > 1;                         // What: Height Shown Boolean. Why: An empty box can't crowd anything. How: This checks its height.
 
@@ -213,7 +213,7 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 
 
 		const hooNamStr = curDomEle.getAttribute( 'data-element-name-hook' ); // What: Hook Name String. Why: A hook names an element most clearly. How: This reads it.
-		const ariLabStr = curDomEle.getAttribute( 'aria-label' );             // What: Aria Label String. Why: A label is the next best name. How: This reads it.
+		const ariLabStr = curDomEle.getAttribute( 'aria-label' );             // What: ARIA Label String. Why: A label is the next best name. How: This reads it.
 		const tagNamStr = curDomEle.tagName.toLowerCase();                    // What: Tag Name String. Why: Every element has a tag to fall back on. How: This reads it.
 
 		const eleNamStr = hooNamStr || ariLabStr || tagNamStr; // What: Element Name String. Why: The report names the element as clearly as it can. How: This takes the hook, then the label, then the tag.

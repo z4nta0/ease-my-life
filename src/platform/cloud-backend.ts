@@ -80,7 +80,7 @@ const verKeyFun = ( docIdeStr : string, docHasStr : string ) => `${ docIdeStr }~
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param uidValStr - User Identifier Value String: The account's id.
+ * @param uidValStr - UID Value String: The account's id.
  * @param verEntArr - Version Entry Array: Each version's key with its JSON
  *                    text, or null to delete it.
  *
@@ -165,7 +165,7 @@ type CloManTyp = SynManTyp & { prior : Record< string, string > }; // What: Clou
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param uidValStr - User Identifier Value String: The account's id.
+ * @param uidValStr - UID Value String: The account's id.
  *
  * @returns The backend.
  *
@@ -311,7 +311,7 @@ function cloBacFun ( uidValStr : string ) : SynBacTyp {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param uidValStr - User Identifier Value String: The account's id.
+ * @param uidValStr - UID Value String: The account's id.
  *
  * @returns A promise that settles once the copy is gone, with no value.
  *

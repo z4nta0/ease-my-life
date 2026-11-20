@@ -6,8 +6,8 @@
 import path from 'node:path'; // What: Path. Why: The output file's absolute path is built from this script's own folder. How: This joins and resolves the path parts for OUT_PAT_STR.
 
 
-import { fileURLToPath } from 'node:url';                             // What: File Url To Path. Why: ESM modules have no __dirname, so this script reconstructs its own folder. How: This converts import.meta.url for CUR_DIR_STR.
-import { isoDayFun     } from '../src/utils/date.ts';                 // What: Iso Day Function. Why: Today's day index needs the same local-calendar YYYY-MM-DD key the app stores. How: This formats today's date as that key in simDatFun.
+import { fileURLToPath } from 'node:url';                             // What: File URL To Path. Why: ESM modules have no __dirname, so this script reconstructs its own folder. How: This converts import.meta.url for CUR_DIR_STR.
+import { isoDayFun     } from '../src/utils/date.ts';                 // What: ISO Day Function. Why: Today's day index needs the same local-calendar YYYY-MM-DD key the app stores. How: This formats today's date as that key in simDatFun.
 import { ONB_ASP_ARR   } from '../src/state/onboarding-seed-data.ts'; // What: Onboarding All-Sample-Pickers Array. Why: These are the Welcome Tour's sample picker definitions, the first one leading. How: The picker and item records are both built from it.
 import { ONB_TAS_ARR   } from '../src/state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: The sample reminder history needs the real "Take trash out" task definition. How: This is searched by id for TRA_TAS_OBJ.
 import { SED_NAM_OBJ   } from '../src/state/seed.ts';                 // What: Seed Namespace Object. Why: The sample history should come from the same pick simulator the app's own seeding uses. How: Its picLogFun runs once in simDatFun over a 365-day span.
@@ -117,9 +117,9 @@ const buiIteFun = () : Partial< IteRcdTyp >[] => ONB_ASP_ARR.flatMap( ( curPicOb
 	return { // What: Item Record Return. Why: This is one item in the record shape addPicFun builds. How: This sets its ids, name, weight, and value, then the drift fields for an ease item.
 
 
-		id       : curIteObj.id,                                                        // What: Id. Why: Each item keeps its own id. How: This copies it from the definition.
+		id       : curIteObj.id,                                                        // What: ID. Why: Each item keeps its own id. How: This copies it from the definition.
 		name     : curIteObj.name,                                                      // What: Name. Why: Each item keeps its own name. How: This copies it from the definition.
-		pickerId : curPicObj.id,                                                        // What: Picker Id. Why: Each item points at its picker. How: This copies the picker's id.
+		pickerId : curPicObj.id,                                                        // What: Picker ID. Why: Each item points at its picker. How: This copies the picker's id.
 		value    : curIteObj.value != null ? curIteObj.value : ( isaDowBoo ? 100 : 0 ), // What: Value. Why: An item without a set value starts full for ease-down and empty otherwise. How: This keeps the definition's value or falls back by mode.
 		weight   : isaDowBoo ? 1 : ( curIteObj.weight || 1 ),                           // What: Weight. Why: Ease-down items all weigh the same, and others default to 1. How: This forces 1 for ease-down and otherwise keeps the definition's weight.
 
@@ -172,7 +172,7 @@ const buiPicFun = () : Partial< PicRcdTyp >[] => ONB_ASP_ARR.map( ( curPicObj ) 
 	easeMax    : 20,                      // What: Ease Max. Why: Every new picker starts with the default latest drift. How: This mirrors addPicFun's default.
 	easeMin    : 10,                      // What: Ease Min. Why: Every new picker starts with the default soonest drift. How: This mirrors addPicFun's default.
 	group      : curPicObj.group,         // What: Group. Why: Each sample picker keeps its own group. How: This copies it from the definition.
-	id         : curPicObj.id,            // What: Id. Why: Each sample picker keeps its own id, which its items point at. How: This copies it from the definition.
+	id         : curPicObj.id,            // What: ID. Why: Each sample picker keeps its own id, which its items point at. How: This copies it from the definition.
 	mode       : curPicObj.mode,          // What: Mode. Why: Each sample picker keeps its own picking mode. How: This copies it from the definition.
 	name       : curPicObj.name,          // What: Name. Why: Each sample picker keeps its own name. How: This copies it from the definition.
 	threshold  : 100                      // What: Threshold. Why: Every new picker starts with the default charge threshold. How: This mirrors addPicFun's default.
@@ -261,7 +261,7 @@ const buiRemFun = ( todDatObj : Date ) : { remLogArr : RawStaTyp[ 'reminderLog' 
 
 
 
-const isoIndFun = ( isoDayStr : string ) => { // What: Iso Index Function. Why: Day offsets need a comparable, timezone-safe day count rather than an ISO string. How: This parses the date's parts and converts them to whole UTC days since the epoch.
+const isoIndFun = ( isoDayStr : string ) => { // What: ISO Index Function. Why: Day offsets need a comparable, timezone-safe day count rather than an ISO string. How: This parses the date's parts and converts them to whole UTC days since the epoch.
 
 
 	const [ yeaValNum, monValNum, dayValNum ] = isoDayStr.split( '-' ).map( Number ); // What: Year Month Day Numbers. Why: Date.UTC needs each part as a number. How: This splits the ISO string on its dashes and parses each piece.
@@ -315,10 +315,10 @@ const conLogFun = ( hisRowArr : PclRowTyp[], todIndNum : number ) : RawStaTyp[ '
 		done       : curRowObj.done,                            // What: Done. Why: The row keeps whether it was completed. How: This copies it.
 		group      : curRowObj.group,                           // What: Group. Why: The row keeps its denormalized group name. How: This copies it.
 		houNum     : comDatObj ? comDatObj.getHours() : null,   // What: Hour Number. Why: A completed row is rebuilt with a realistic time of day. How: This reads the local hour, or null for a row never completed.
-		itemId     : curRowObj.itemId,                          // What: Item Id. Why: The row keeps which item it picked. How: This copies it.
+		itemId     : curRowObj.itemId,                          // What: Item ID. Why: The row keeps which item it picked. How: This copies it.
 		itemName   : curRowObj.itemName,                        // What: Item Name. Why: The row keeps its denormalized item name. How: This copies it.
 		minNum     : comDatObj ? comDatObj.getMinutes() : null, // What: Minute Number. Why: A completed row is rebuilt with a realistic time of day. How: This reads the local minute, or null for a row never completed.
-		pickerId   : curRowObj.pickerId,                        // What: Picker Id. Why: The row keeps which picker made it. How: This copies it.
+		pickerId   : curRowObj.pickerId,                        // What: Picker ID. Why: The row keeps which picker made it. How: This copies it.
 		pickerName : curRowObj.pickerName,                      // What: Picker Name. Why: The row keeps its denormalized picker name. How: This copies it.
 		source     : curRowObj.source,                          // What: Source. Why: The row keeps how it was picked. How: This copies it.
 

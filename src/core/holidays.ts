@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { isoDayFun } from '../utils/date.ts'; // What: Iso Day Function. Why: Holiday dates are matched against local-calendar YYYY-MM-DD keys. How: This formats each computed holiday date as that key.
+import { isoDayFun } from '../utils/date.ts'; // What: ISO Day Function. Why: Holiday dates are matched against local-calendar YYYY-MM-DD keys. How: This formats each computed holiday date as that key.
 
 
 import type { HolStaTyp } from './data-model.ts'; // What: Holiday State Type. Why: Every resolver reads the saved holiday settings. How: This types each holStaObj parameter.
@@ -68,7 +68,7 @@ type HolRcdTyp = { // What: Holiday Record Type. Why: Callers need one resolved 
 	actObj? : Date;    // What: Actual Object. Why: A caller wording around an observed shift needs the true date. How: This is the unshifted date, absent on custom days.
 	custom? : boolean; // What: Custom. Why: Callers tell the user's own days apart from computed ones. How: This is true on a custom day and false on a computed one.
 	datObj  : Date;    // What: Date Object. Why: Most callers care about the day actually taken off. How: This is the observed date.
-	isoStr  : string;  // What: Iso String. Why: Callers match a holiday to a calendar day as text. How: This is the observed day as 'YYYY-MM-DD'.
+	isoStr  : string;  // What: ISO String. Why: Callers match a holiday to a calendar day as text. How: This is the observed day as 'YYYY-MM-DD'.
 	keyStr  : string;  // What: Key String. Why: A holiday is disabled by its key. How: This is its identifier, prefixed 'custom:' on custom days.
 	namStr  : string;  // What: Name String. Why: The holiday is shown by name. How: This is its display name.
 	obsBoo? : boolean; // What: Observed Boolean. Why: A caller words a shifted holiday differently. How: This is true when the observed day differs from the actual one.
@@ -382,7 +382,7 @@ function comYeaFun ( yeaValNum : number, couCodStr : string = 'US' ) : HolRcdTyp
 
 			actObj : actDatObj,                                        // What: Actual Object. Why: A caller wording itself around an observed shift needs the true calendar date too. How: This is actDatObj, resolved above.
 			datObj : obsDatObj,                                        // What: Date Object. Why: This is the OBSERVED day, what people actually get off, which is what most callers care about. How: This is obsDatObj, resolved above.
-			isoStr : isoDayFun( obsDatObj ),                           // What: Iso String. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts obsDatObj via isoDayFun.
+			isoStr : isoDayFun( obsDatObj ),                           // What: ISO String. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts obsDatObj via isoDayFun.
 			keyStr : holDefObj.keyStr,                                 // What: Key String. Why: This is the stable identifier callers use to reference this specific holiday, e.g. to disable it. How: This is copied straight from holDefObj.keyStr.
 			namStr : holDefObj.namStr,                                 // What: Name String. Why: This is the human-readable label callers display for this holiday. How: This is copied straight from holDefObj.namStr.
 			obsBoo : isoDayFun( obsDatObj ) !== isoDayFun( actDatObj ) // What: Observed Boolean. Why: A caller needs to know whether the observed and actual dates actually differ, to word itself accordingly. How: This compares the two dates' own iso strings for inequality.
@@ -512,7 +512,7 @@ function actYeaFun ( holStaObj : HolStaTyp | null | undefined, yeaValNum : numbe
 
 			custom : true,                     // What: Custom. Why: A caller needs to tell this record apart from a computed built-in holiday. How: This is always true for a record built from the user's own custom list.
 			datObj : cusDatObj,                // What: Date Object. Why: This is the resolved concrete date for yeaValNum. How: This is cusDatObj, resolved above.
-			isoStr : isoDayFun( cusDatObj ),   // What: Iso String. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts cusDatObj via isoDayFun.
+			isoStr : isoDayFun( cusDatObj ),   // What: ISO String. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts cusDatObj via isoDayFun.
 			keyStr : 'custom:' + cusDefObj.id, // What: Key String. Why: This is the stable identifier for this custom day, namespaced so it can never collide with a computed holiday's own key. How: This prefixes cusDefObj.id with 'custom:'.
 			namStr : cusDefObj.name            // What: Name String. Why: This is the human-readable label callers display for this custom day. How: This is copied straight from cusDefObj.name.
 
@@ -564,7 +564,7 @@ function actYeaFun ( holStaObj : HolStaTyp | null | undefined, yeaValNum : numbe
 function holInfFun ( holStaObj : HolStaTyp | null | undefined, cheDatObj : Date ) : HolRcdTyp | null {
 
 
-	const tarIsoStr = isoDayFun( cheDatObj );  // What: Target Iso String. Why: Every candidate year's own active list needs comparing against the queried date as a plain string, not a Date instance. How: This converts cheDatObj via isoDayFun once, reused across every loop iteration below.
+	const tarIsoStr = isoDayFun( cheDatObj );  // What: Target ISO String. Why: Every candidate year's own active list needs comparing against the queried date as a plain string, not a Date instance. How: This converts cheDatObj via isoDayFun once, reused across every loop iteration below.
 	const curYeaNum = cheDatObj.getFullYear(); // What: Current Year Number. Why: The neighboring-year search below needs an anchor year to offset from. How: This reads cheDatObj's own calendar year.
 
 

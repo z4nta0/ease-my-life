@@ -6,7 +6,7 @@
 import { DAY_FUL_ARR } from '../utils/date.ts';  // What: Day Full Array. Why: Cadence summaries and the locked-day tip name a weekday in full. How: This is indexed by a weekday number such as anchorDow or nthWeekday.
 import { dimCouFun   } from '../utils/date.ts';  // What: Days-In-Month Count Function. Why: Monthly and yearly anchors clamp to the month's real length. How: This is called with a year and 1-based month.
 import { isaIntFun   } from '../utils/guard.ts'; // What: Is-An Integer Function. Why: Saved anchor fields may be missing, and normalizing them needs TypeScript to know a passing value is a number. How: This replaces Number.isInteger in every anchor check.
-import { isoDayFun   } from '../utils/date.ts';  // What: Iso Day Function. Why: Period keys and generated log rows are local-calendar YYYY-MM-DD strings. How: This formats a Date as that key.
+import { isoDayFun   } from '../utils/date.ts';  // What: ISO Day Function. Why: Period keys and generated log rows are local-calendar YYYY-MM-DD strings. How: This formats a Date as that key.
 import { MON_ABB_ARR } from '../utils/date.ts';  // What: Month Abbreviation Array. Why: A yearly nth-weekday summary names its month in short form. How: This is indexed by anchorMonth minus 1.
 import { nwmDayFun   } from '../utils/date.ts';  // What: Nth-Weekday-Month Day Function. Why: An nth-weekday cadence needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
 import { ordSufFun   } from '../utils/date.ts';  // What: Ordinal Suffix Function. Why: Cadence summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
@@ -484,7 +484,7 @@ function comPerFun ( picCadObj : CadFieTyp, picLogArr : PclRowTyp[] | null | und
 
 
 
-	const staIsoStr = perKeyFun( picCadObj, cheDatObj ); // What: Start Iso String. Why: Both the picker's own recorded period and every pick-log row's own date are compared against the current period's start as a plain string. How: This calls perKeyFun once and reuses the result below.
+	const staIsoStr = perKeyFun( picCadObj, cheDatObj ); // What: Start ISO String. Why: Both the picker's own recorded period and every pick-log row's own date are compared against the current period's start as a plain string. How: This calls perKeyFun once and reuses the result below.
 
 
 	if ( picCadObj.lastRunPeriod === staIsoStr ) return true; // What: Recorded Period Guard. Why: A completed charging card has no pick-log row, so the picker's own recorded period is the only trace of it. How: This returns true when lastRunPeriod matches this period's own start.

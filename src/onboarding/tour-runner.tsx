@@ -62,7 +62,7 @@ type TouSteTyp = { // What: Tour Step Type. Why: Every guided tour is a list of 
 	advSelStr? : string;     // What: Advance Selector String. Why: A click can start something whose result is the next step's target. How: A cirBoo step waits for this selector to appear before advancing.
 	bacBoo?    : boolean;    // What: Back Boolean. Why: Some steps can be revisited. How: This shows the Back button.
 	bodEle     : ReactNode;  // What: Body Element. Why: The coach card explains the step. How: This is its body copy.
-	catBoo?    : boolean;    // What: Can-Avoid-Tallness Boolean. Why: A target taller than the viewport can't have the coach reserve space beside it. How: This skips that reserve and scrolls the target to start below the coach.
+	catBoo?    : boolean;    // What: Coach-At-Top Boolean. Why: A target taller than the viewport can't have the coach reserve space beside it. How: This skips that reserve and scrolls the target to start below the coach.
 	cirBoo?    : boolean;    // What: Click-In-Real Boolean. Why: Some steps teach the real control rather than narrate it. How: Next is disabled and only a click on the target advances.
 	cliSelStr? : string;     // What: Click Selector String. Why: A highlight can be wider than what should be clicked. How: This narrows what counts as an on-target click, defaulting to selStr.
 	cptSelStr? : string;     // What: Click Pass-Through Selector String. Why: A repeatable action inside a step must stay usable without advancing it. How: Clicks on this selector reach their own handler untouched.

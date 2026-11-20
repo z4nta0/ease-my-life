@@ -501,10 +501,10 @@ function reaLocFun () : RawSavTyp {
 	try { // What: Local Read Try. Why: Both localStorage.getItem and JSON.parse can throw (a blocked origin, corrupted data), and either failure should be treated the same way. How: This wraps the whole read-and-parse sequence below so any such error falls through to the catch's own null return.
 
 
-		const rawJsoStr = localStorage.getItem( MIR_KEY_STR ); // What: Raw Json String. Why: The mirror's own raw text must be read before it can be parsed. How: This reads whatever is currently stored under MIR_KEY_STR.
+		const rawJsoStr = localStorage.getItem( MIR_KEY_STR ); // What: Raw JSON String. Why: The mirror's own raw text must be read before it can be parsed. How: This reads whatever is currently stored under MIR_KEY_STR.
 
 
-		if ( !rawJsoStr ) return null; // What: No Raw Json Guard. Why: A fresh install (or one that has never fallen back to localStorage) has nothing stored under MIR_KEY_STR at all. How: This returns null immediately rather than attempting to parse an empty value.
+		if ( !rawJsoStr ) return null; // What: No Raw JSON Guard. Why: A fresh install (or one that has never fallen back to localStorage) has nothing stored under MIR_KEY_STR at all. How: This returns null immediately rather than attempting to parse an empty value.
 
 
 
@@ -1053,7 +1053,7 @@ async function iniStoFun () : Promise< RawSavTyp > {
 
 
 
-	if ( curEngStr === 'idb' && cacStaObj && Array.isArray( cacStaObj.pickers ) ) { // What: Clean Idb Boot Check. Why: The migration snapshot and dead pre-IDB generations should only ever be retired once IDB itself has proven trustworthy, not on a fallback boot. How: This gates the whole boot-counting and sweep block below on IDB actually being the live engine with real, readable state.
+	if ( curEngStr === 'idb' && cacStaObj && Array.isArray( cacStaObj.pickers ) ) { // What: Clean IndexedDB Boot Check. Why: The migration snapshot and dead pre-IDB generations should only ever be retired once IDB itself has proven trustworthy, not on a fallback boot. How: This gates the whole boot-counting and sweep block below on IDB actually being the live engine with real, readable state.
 
 
 		try { // What: Boot Count Try. Why: Reading and writing the boot counter can itself throw (a blocked origin), and that must not abort boot. How: This wraps the counting and sweeping sequence below, silently giving up in its own catch.
@@ -1132,7 +1132,7 @@ async function iniStoFun () : Promise< RawSavTyp > {
 function savStaFun ( appStaObj : StaAppTyp ) : void {
 
 
-	if ( curEngStr === 'idb' && datConObj ) { // What: Idb Engine Check. Why: The IDB write path and the localStorage-only path are mutually exclusive; only one of them should run per call. How: This gates the IDB write attempt below, falling through to the plain wriLocFun call at the end when it does not hold.
+	if ( curEngStr === 'idb' && datConObj ) { // What: IndexedDB Engine Check. Why: The IDB write path and the localStorage-only path are mutually exclusive; only one of them should run per call. How: This gates the IDB write attempt below, falling through to the plain wriLocFun call at the end when it does not hold.
 
 
 		wriDatFun( appStaObj ).catch( () => { // What: State Write Catch. Why: A failed IDB write must not silently lose data. How: This falls back to a full localStorage write, and also demotes curEngStr so every later call goes straight to localStorage instead of retrying a broken IDB connection.
@@ -1149,7 +1149,7 @@ function savStaFun ( appStaObj : StaAppTyp ) : void {
 
 
 
-		return; // What: Idb Path Return. Why: The IDB write above is already in flight (or has already failed and fallen back), so the plain localStorage call below must not also run. How: This exits before reaching wriLocFun's own unconditional call.
+		return; // What: IndexedDB Path Return. Why: The IDB write above is already in flight (or has already failed and fallen back), so the plain localStorage call below must not also run. How: This exits before reaching wriLocFun's own unconditional call.
 
 
 	}
@@ -1204,10 +1204,10 @@ async function wipDatFun () : Promise< void > {
 
 
 
-	if ( curEngStr === 'idb' && datConObj ) { // What: Idb Clear Check. Why: The two IDB object stores only need clearing when IDB is actually the engine currently in use. How: This gates the clear calls below on that condition.
+	if ( curEngStr === 'idb' && datConObj ) { // What: IndexedDB Clear Check. Why: The two IDB object stores only need clearing when IDB is actually the engine currently in use. How: This gates the clear calls below on that condition.
 
 
-		try { // What: Idb Clear Try. Why: A clear() call can itself fail (a torn-down connection, a blocked transaction), and that must not abort the rest of this teardown either. How: This wraps both store clears below in one try/catch.
+		try { // What: IndexedDB Clear Try. Why: A clear() call can itself fail (a torn-down connection, a blocked transaction), and that must not abort the rest of this teardown either. How: This wraps both store clears below in one try/catch.
 
 
 			await reqProFun( traStoFun( STA_STO_STR, 'readwrite' ).clear() ); // What: State Store Clear Call. Why: This is the actual clear of the non-pickLog portion of state. How: This awaits reqProFun wrapping a clear() request against the state object store.
@@ -1216,7 +1216,7 @@ async function wipDatFun () : Promise< void > {
 
 		}
 
-		catch ( errCatObj ) { console.warn( errCatObj ); } // What: Idb Clear Guard. Why: The clean state written by the very next save overwrites whatever is left either way, so a failed clear here is not fatal. How: This silently ignores any error from the two clear calls above. It logs the error as a warning so the failure stays visible in the console.
+		catch ( errCatObj ) { console.warn( errCatObj ); } // What: IndexedDB Clear Guard. Why: The clean state written by the very next save overwrites whatever is left either way, so a failed clear here is not fatal. How: This silently ignores any error from the two clear calls above. It logs the error as a warning so the failure stays visible in the console.
 
 
 	}
@@ -1264,7 +1264,7 @@ async function wipDatFun () : Promise< void > {
 async function reaPerFun () : Promise< RawSavTyp > {
 
 
-	if ( curEngStr === 'idb' && datConObj ) { // What: Idb Engine Check. Why: IDB is the actual store of record whenever it is the current engine, so it must be read directly rather than relying on any in-memory copy. How: This gates the direct reaDatFun read below on that condition.
+	if ( curEngStr === 'idb' && datConObj ) { // What: IndexedDB Engine Check. Why: IDB is the actual store of record whenever it is the current engine, so it must be read directly rather than relying on any in-memory copy. How: This gates the direct reaDatFun read below on that condition.
 
 
 		try { return await reaDatFun(); } // What: Database Read Try. Why: The actual IDB read must be attempted before any fallback can be considered. How: This awaits reaDatFun and returns its own resolved value directly.
@@ -1341,7 +1341,7 @@ async function datBytFun () : Promise< number | null > {
 
 
 
-		const jsoTexStr = JSON.stringify( curStaObj ); // What: Json Text String. Why: The byte-size measurement below needs the exact serialized text that would actually be written to storage. How: This serializes curStaObj to JSON text.
+		const jsoTexStr = JSON.stringify( curStaObj ); // What: JSON Text String. Why: The byte-size measurement below needs the exact serialized text that would actually be written to storage. How: This serializes curStaObj to JSON text.
 
 
 
@@ -1397,7 +1397,7 @@ async function reqPerFun () : Promise< boolean > {
 	try { // What: Request Persist Try. Why: navigator.storage itself, or its persist/persisted methods, may not exist in every browser. How: This wraps the whole check-then-request sequence below, falling back to false in its own catch.
 
 
-		if ( !navigator.storage || !navigator.storage.persist ) return false; // What: No Persist Api Guard. Why: There is nothing to request at all in a browser without this API. How: This returns false immediately when either navigator.storage or its own persist method is missing.
+		if ( !navigator.storage || !navigator.storage.persist ) return false; // What: No Persist API Guard. Why: There is nothing to request at all in a browser without this API. How: This returns false immediately when either navigator.storage or its own persist method is missing.
 
 
 

@@ -8,7 +8,7 @@ import React from 'react'; // What: React. Why: This file's own PicTouCom compon
 
 import { emlTouObj   } from '../state/tour-bus.ts';             // What: Ease My Life Tour Object. Why: This publishes the running tour's prefill data for the real create-picker form and clears it again on every exit path. How: This is written to via .set() in buiNewFun's/buiAddFun's own runFun() and cloTouFun below, and read via .get() inside GuiTouCom's own onBacTouFun handler.
 import { GuiTouCom   } from './tour-runner.tsx';                // What: Guided Tour Component. Why: This is the generic spotlight-tour engine that actually drives this picker mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-picker step array.
-import { IcoSvgCom   } from '../ui/icon.tsx';                   // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph identifying this as a picker tutorial. How: This is rendered inside the intro modal's icon prop below.
+import { IcoSvgCom   } from '../ui/icon.tsx';                   // What: Icon SVG Component. Why: The intro modal needs a recognizable glyph identifying this as a picker tutorial. How: This is rendered inside the intro modal's icon prop below.
 import { IntModCom   } from './intro-modal.tsx';                // What: Intro Modal Component. Why: Each picker mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this picker's own icon/title/paragraphs/pills.
 import { ONB_ASP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding All-Sample-Pickers Array. Why: This is every sample picker's own template, the full set PIC_SAM_OBJ below indexes by id. How: This is PIC_SAM_OBJ's own source array below.
 import { PIC_NAM_OBJ } from '../core/pickers.ts';               // What: Pickers Namespace Object. Why: A sample's day overrides become the drift values the item editor stores. How: This is called via PIC_NAM_OBJ.dayDriFun.
@@ -217,7 +217,7 @@ const PIC_ICO_ELE = ( // What: Picker Icon Element. Why: The intro modal's own i
 	<IcoSvgCom
 		icoNamStr='picker'
 		sizSteStr='p05' // Vertical Rhythm Base Plus 5 ~= 59.447px
-	/> // What: Icon Svg Component. Why: Every picker tutorial's intro modal shows the same picker glyph. How: This renders the shared 'picker' icon at the p05 rhythm step.
+	/> // What: Icon SVG Component. Why: Every picker tutorial's intro modal shows the same picker glyph. How: This renders the shared 'picker' icon at the p05 rhythm step.
 
 
 );
@@ -1078,7 +1078,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 	// #region Step List Build
 
 	const isaEasBoo = picRcdObj.mode === 'ease-up' || picRcdObj.mode === 'ease-down'; // What: Is-An Ease Boolean. Why: The Soonest/Latest steps only apply to Ease Up/Ease Down samples; every other mode's item editor does not have those rows at all. How: This checks picRcdObj's own mode against both ease mode keys.
-	const useWeiBoo = picRcdObj.mode === 'weighted' || picRcdObj.mode === 'dynamic';  // What: Uses Weight Boolean. Why: The Weight step is the mirror image of isaEasBoo; only Weighted/Dynamic samples get it. How: This checks picRcdObj's own mode against both weight-using mode keys.
+	const useWeiBoo = picRcdObj.mode === 'weighted' || picRcdObj.mode === 'dynamic';  // What: Use Weight Boolean. Why: The Weight step is the mirror image of isaEasBoo; only Weighted/Dynamic samples get it. How: This checks picRcdObj's own mode against both weight-using mode keys.
 	const isaDynBoo = picRcdObj.mode === 'dynamic';                                   // What: Is-A Dynamic Boolean. Why: The Boost step is narrower still; only Dynamic samples (not plain Weighted) get that row at all. How: This checks picRcdObj's own mode against the dynamic mode key.
 
 

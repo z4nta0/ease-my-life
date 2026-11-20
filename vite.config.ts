@@ -13,7 +13,7 @@ import { minify                 } from 'vite';             // What: Minify. Why:
 import { readFileSync           } from 'node:fs';          // What: Read File Sync. Why: The config reads package.json, and the build step reads the copied boot-splash.js. How: This reads each file as UTF-8 text.
 import { renderToStaticMarkup   } from 'react-dom/server'; // What: Render To Static Markup. Why: The legal pages have to carry their document as plain HTML, readable without JavaScript. How: This is called in legPagFun's page step.
 import { runnerImport           } from 'vite';             // What: Runner Import. Why: The legal documents are TSX, which Node can't load on its own. How: This loads them through Vite's module runner in legPagFun's page step.
-import { transform as traCssFun } from 'lightningcss';     // What: Transform Css Function. Why: index.html's inline styles need minifying, and Vite already depends on lightningcss. How: This is called through minCssFun in minShiFun's index.html step.
+import { transform as traCssFun } from 'lightningcss';     // What: Transform CSS Function. Why: index.html's inline styles need minifying, and Vite already depends on lightningcss. How: This is called through minCssFun in minShiFun's index.html step.
 import { VitePWA                } from 'vite-plugin-pwa';  // What: Vite PWA. Why: The app installs and works offline through a generated service worker. How: This is called in the plugins array with its options.
 import { writeFileSync          } from 'node:fs';          // What: Write File Sync. Why: The minified boot-splash.js replaces the copy Vite wrote. How: This writes it back to the output folder.
 
@@ -106,7 +106,7 @@ const legPagFun = () : Plugin => ({ // What: Legal Pages Function. Why: The lega
 
 	name : 'legal-pages', // What: Name. Why: Vite reports a plugin's warnings and errors under its name. How: This names the plugin.
 
-	transformIndexHtml : async ( htmTexStr ) => { // What: Transform Index Html Hook. Why: Vite hands every page it serves or builds to this hook. How: This renders a legal page's document into it and returns the page.
+	transformIndexHtml : async ( htmTexStr ) => { // What: Transform Index HTML Hook. Why: Vite hands every page it serves or builds to this hook. How: This renders a legal page's document into it and returns the page.
 
 
 		const docMatArr = htmTexStr.match( LEG_DOC_REG ); // What: Document Match Array. Why: Only a page that names a document has one to render. How: This finds the article's marker and captures the document's name.
@@ -134,7 +134,7 @@ const legPagFun = () : Plugin => ({ // What: Legal Pages Function. Why: The lega
 
 
 
-const minCssFun = ( styTexStr : string ) => traCssFun({ // What: Minify Css Function. Why: Each inline style in index.html is minified the same way. How: This runs lightningcss on the style's text and returns the result as a string.
+const minCssFun = ( styTexStr : string ) => traCssFun({ // What: Minify CSS Function. Why: Each inline style in index.html is minified the same way. How: This runs lightningcss on the style's text and returns the result as a string.
 
 
 	code     : Buffer.from( styTexStr ), // What: Code. Why: lightningcss reads its input as bytes. How: This passes the style's text as a buffer.
@@ -218,7 +218,7 @@ const minShiFun = () : Plugin => { // What: Minify Shipped Function. Why: index.
 
 		},
 
-		transformIndexHtml : { // What: Transform Index Html Hook. Why: Vite processes index.html but doesn't minify it. How: This compacts the page after Vite's own changes.
+		transformIndexHtml : { // What: Transform Index HTML Hook. Why: Vite processes index.html but doesn't minify it. How: This compacts the page after Vite's own changes.
 
 
 			order : 'post', // What: Order. Why: The page should be compacted only after Vite has injected the bundle's script and stylesheet tags. How: This runs after Vite's own transforms.
@@ -228,9 +228,9 @@ const minShiFun = () : Plugin => { // What: Minify Shipped Function. Why: index.
 
 				return htmTexStr                                                                               // What: Compacted Page Return. Why: Vite writes whatever this returns as the shipped page. How: This chains each compaction over the page's text.
 					.replace( /(?<=<style>)[\s\S]*?(?=<\/style>)/g, minCssFun )                                // What: Style Minify. Why: Inline styles would ship with their comments and formatting. How: This minifies each style's text with minCssFun.
-					.replace( /(?<=<script type=["']application\/ld\+json["']>)[\s\S]*?(?=<\/script>)/g, ( jsoTexStr ) => JSON.stringify( JSON.parse( jsoTexStr ) ) ) // What: Json-Ld Minify. Why: The structured data would ship indented. How: This parses and restringifies it without whitespace.
+					.replace( /(?<=<script type=["']application\/ld\+json["']>)[\s\S]*?(?=<\/script>)/g, ( jsoTexStr ) => JSON.stringify( JSON.parse( jsoTexStr ) ) ) // What: JSON-LD Minify. Why: The structured data would ship indented. How: This parses and restringifies it without whitespace.
 					.replace( /(<script\b[^>]*\bsrc=[^>]*>)\s*(?:\/\*[\s\S]*?\*\/\s*)+(<\/script>)/g, '$1$2' ) // What: External Script Comment Strip. Why: An external script's only content is its comment. How: This empties the tag.
-					.replace( /<!--[\s\S]*?-->/g, '' )                                                         // What: Html Comment Strip. Why: Comments mean nothing to the browser. How: This removes every HTML comment.
+					.replace( /<!--[\s\S]*?-->/g, '' )                                                         // What: HTML Comment Strip. Why: Comments mean nothing to the browser. How: This removes every HTML comment.
 					.split( '\n' )                                                                             // What: Line Split. Why: Indentation and blank lines are dropped line by line. How: This splits the page into lines.
 					.map( ( linTexStr ) => linTexStr.trim() )                                                  // What: Indentation Trim. Why: Indentation means nothing to the browser. How: This trims each line.
 					.filter( Boolean )                                                                         // What: Blank Line Filter. Why: Blank lines mean nothing to the browser. How: This drops every empty line.
@@ -255,7 +255,7 @@ const minShiFun = () : Plugin => { // What: Minify Shipped Function. Why: index.
 const vitConObj = defineConfig({ // What: Vite Config Object. Why: Vite reads its whole configuration from this file's default export. How: This builds the config, including the minShiFun plugin above.
 
 
-	css    : { modules : { localsConvention : 'camelCaseOnly' } },                         // What: Css. Why: CSS modules expose their kebab-case class names as camelCase keys only, so .prog--warm is read as cssModObj.progWarm, per CLAUDE.md's "CSS modules and JS hooks" rules. How: This sets the locals convention.
+	css    : { modules : { localsConvention : 'camelCaseOnly' } },                         // What: CSS. Why: CSS modules expose their kebab-case class names as camelCase keys only, so .prog--warm is read as cssModObj.progWarm, per CLAUDE.md's "CSS modules and JS hooks" rules. How: This sets the locals convention.
 	define : { __APP_VERSION__ : JSON.stringify( PAC_JSO_OBJ.version ) },                    // What: Define. Why: The app reports its own version without a hardcoded string. How: This replaces __APP_VERSION__ with the package version at build time.
 	server : { watch : { ignored : [ '**/*.log', '**/dist/**', '**/tests/output/**' ] } }, // What: Server. Why: A test run writes thousands of trace frames into the test output, which kept every dev server watching the project busy for hours (measured 2026-11-13 in tech-geek-cards), and none of those files is source. How: This keeps the dev server's file watcher off logs, the build output, and the test output.
 

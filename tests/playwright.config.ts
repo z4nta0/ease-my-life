@@ -220,7 +220,7 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 
 
 		[ 'list' ],                                                    // What: List Reporter. Why: The terminal shows each test as it finishes. How: This is Playwright's list reporter.
-		[ 'html', { open : 'never', outputFolder : 'output/report' } ] // What: Html Reporter. Why: A failure is easier to read with its screenshot and trace. How: This writes the report to tests/output/report without opening a browser.
+		[ 'html', { open : 'never', outputFolder : 'output/report' } ] // What: HTML Reporter. Why: A failure is easier to read with its screenshot and trace. How: This writes the report to tests/output/report without opening a browser.
 
 
 	],

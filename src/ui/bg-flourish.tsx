@@ -298,7 +298,7 @@ function makCycFun< T > ( pooFacFun : () => T[] ) : () => T {
  *
 */
 
-function ranArrFun ( lenValNum : number ) : number[] { return Array.from( Array( lenValNum ).keys() ); } // What: Range Array Body. Why: A plain sequential-integer array is needed repeatedly throughout this file to drive shuffled row/column walks. How: This spreads the keys() iterator of an empty array of that length, whose keys are exactly those indices.
+function ranArrFun ( lenValNum : number ) : number[] { return Array.from( Array( lenValNum ).keys() ); } // What: Range Array Function. Why: A plain sequential-integer array is needed repeatedly throughout this file to drive shuffled row/column walks. How: This spreads the keys() iterator of an empty array of that length, whose keys are exactly those indices.
 
 // #endregion ranArrFun
 

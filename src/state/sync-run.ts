@@ -7,8 +7,8 @@ import React from 'react'; // What: React. Why: Sync runs as a hook beside the s
 
 
 import { isoDayFun   } from '../utils/date.ts';          // What: ISO Day Function. Why: The merge needs today's local date. How: This formats it as 'YYYY-MM-DD'.
-import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Ids Array. Why: The onboarding's sample pickers aren't the person's data. How: This lists their ids.
-import { ONB_STI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Ids Array. Why: The onboarding's sample reminders aren't the person's data. How: This lists their ids.
+import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-IDs Array. Why: The onboarding's sample pickers aren't the person's data. How: This lists their ids.
+import { ONB_STI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Task-IDs Array. Why: The onboarding's sample reminders aren't the person's data. How: This lists their ids.
 import { STG_NAM_OBJ } from './storage.ts';              // What: Storage Namespace Object. Why: The sync's own localStorage keys live in storage, beside the sweep that keeps them. How: This reads their names.
 import { synRunFun   } from './sync-engine.ts';          // What: Sync Run Function. Why: Each sync runs through the engine. How: This runs one.
 import { UPD_NAM_OBJ } from '../platform/update.ts';     // What: Update Namespace Object. Why: An app update must not reload over a sync uploading a change or waiting to. How: This tells the update handling when sync is busy.
@@ -145,8 +145,7 @@ const reaKeyFun = ( keyNamStr : string ) => { // What: Read Key Function. Why: B
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param uidValStr - User Identifier Value String: The signed-in account's
- *                    id.
+ * @param uidValStr - UID Value String: The signed-in account's id.
  *
  * @returns The record, with changedAt 0 and no docs when there is none.
  *
@@ -493,7 +492,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 		if ( linOpeBoo ) { // What: Link Arrival Check. Why: A sign-in link has to be finished, and its code removed from the address. How: This hands it on and cleans the address.
 
 
-			const linHreStr = window.location.href;                 // What: Link Address String. Why: The code is read before the address is cleaned. How: This keeps it.
+			const linHreStr = window.location.href;                 // What: Link Hypertext-Reference String. Why: The code is read before the address is cleaned. How: This keeps it.
 			const remAdrStr = reaKeyFun( STG_NAM_OBJ.SIG_EMA_STR ); // What: Remembered Address String. Why: The link finishes at once when this browser requested it. How: This reads the remembered address.
 
 
