@@ -16,6 +16,7 @@ import { ConManCom    } from './conditionals-manager.tsx';          // What: Con
 import { DAT_HEL_ARR  } from '../../help/data-catalog.tsx';         // What: Data Help Array. Why: Help mode needs this tab's own catalog of labeled elements to badge. How: This is passed straight through to HelOveCom's own items prop.
 import { durMilFun    } from '../../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { EntEdiCom    } from '../../ui/entry-editor.tsx';           // What: Entry Editor Component. Why: A picker's own item editor must stay an exact copy of Today's, so this file reuses it rather than a second implementation. How: This is aliased to IteEdiCom and rendered once per open item row.
+import { FilRaiCom    } from '../../ui/filter-rail.tsx';            // What: Filter Rail Component. Why: The Group, Type, and Conditionals filter rows share one labeled pill rail. How: This is rendered once for each of those rows, fed its own entries and actions.
 import { freEdiFun    } from './list-sorting.ts';                   // What: Freeze Edited Function. Why: An item mid-edit must not visually jump position if its own sort key changes underneath it. How: This is called once per picker's item list, given the sorted list and the currently-open item id.
 import { HelButCom    } from '../../help/button.tsx';               // What: Help Button Component. Why: This tab needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helOpeBoo.
 import { HelOveCom    } from '../../help/mode.tsx';                 // What: Help Overlay Component. Why: This tab needs the same help-mode badge overlay every other tab exposes. How: This is rendered once, driven by helOpeBoo and DAT_HEL_ARR.
@@ -1557,316 +1558,159 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 				{ exiGroArr.length > 1 && ( // What: Group Row Check. Why: A single-group app has nothing to filter by group. How: This renders the Group row only while exiGroArr has 2 or more entries.
 
 
-					<div className={ cssModObj.filRowDiv }>{ /* What: Group Filter Row Div Element. Why: The Group label and its own pill rail belong together. How: This wraps the lbl span and the pill rail below. */ }
+					<FilRaiCom
+						ref={ groRowRef }
+
+						data-element-name-hook='groFilDiv'
+
+						allCouNum={ allPicArr.filter( ( picCurObj ) => !picCurObj.hidden ).length } // What: All Count Number. Why: The "All" pill needs its own live total. How: This counts every non-hidden picker.
+						allSelBoo={ filGroStr === 'all' }
+						disBoo={ disGroBoo }
+						entIteArr={ exiGroArr.map( ( groCurStr ) => ( { // What: Group Entry Map. Why: One pill is needed per existing group. How: This maps exiGroArr to one entry each, keyed by its own name.
 
 
-						<span className={ cssModObj.filLabSpa }>Group</span>{ /* What: Group Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Group". */ }
-
-						<div
-							ref={ groRowRef }
-
-							className={ cssModObj.filRaiDiv }
-
-							data-element-name-hook='groFilDiv'
-							data-rail-wheel-scroll
-
-							aria-label='Filter pickers by group'
-							role='tablist'
-						>{ /* What: Group Pills Div Element. Why: This is the actual scrollable tablist of "All" plus every existing group. How: This renders the All pill, then maps exiGroArr to one pill each. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+							cliFun : () => setFilGroStr( groCurStr ),                                                                // What: Click Function. Why: Clicking a pill narrows the list to just that group. How: This sets filGroStr to groCurStr.
+							couNum : allPicArr.filter( ( picCurObj ) => picCurObj.group === groCurStr && !picCurObj.hidden ).length, // What: Count Number. Why: Every group pill needs its own live count. How: This counts every non-hidden picker whose own group matches groCurStr.
+							keyStr : groCurStr,                                                                                      // What: Key String. Why: React needs a stable key per pill. How: This is the group name.
+							namStr : groCurStr,                                                                                      // What: Name String. Why: Every group pill needs its own visible label. How: This is the group name.
+							selBoo : filGroStr === groCurStr                                                                         // What: Selected Boolean. Why: The active pill is highlighted. How: This checks filGroStr against the group.
 
 
-							<button
-								className={ cssModObj.filPilBut }
+						} ) ) }
+						labTexStr='Group'
 
-								data-element-name-hook='filPilBut'
+						ariLabStr='Filter pickers by group'
 
-								disabled={ disGroBoo }
-								type='button'
-
-								aria-selected={ filGroStr === 'all' }
-								role='tab'
-
-								onClick={ () => setFilGroStr( 'all' ) }
-							>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the group filter entirely. How: This sets filGroStr to 'all' on click, disabled during the matching tour step. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-								All
-
-								<span className={ cssModObj.filCouSpa }>{ allPicArr.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: The All pill needs its own live total. How: This counts every non-hidden picker. */ }
-
-
-							</button>
-
-							{ exiGroArr.map( ( groCurStr ) => ( // What: Group Pill Map. Why: One pill is needed per existing group. How: This maps exiGroArr to one tab-role button each, keyed by its own name.
-
-
-								<button
-									key={ groCurStr }
-
-									className={ cssModObj.filPilBut }
-
-									data-element-name-hook='filPilBut'
-
-									disabled={ disGroBoo }
-									type='button'
-
-									aria-selected={ filGroStr === groCurStr }
-									role='tab'
-
-									onClick={ () => setFilGroStr( groCurStr ) }
-								>{ /* What: Group Pill Button Element. Why: Clicking a pill narrows the list to just that group. How: This sets filGroStr to groCurStr on click, disabled during the matching tour step. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-									{ groCurStr }{ /* What: Pill Name Expression. Why: Every group pill needs its own visible label. How: This renders groCurStr. */ }
-
-									<span className={ cssModObj.filCouSpa }>{ allPicArr.filter( ( picCurObj ) => picCurObj.group === groCurStr && !picCurObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: Every group pill needs its own live count. How: This counts every non-hidden picker whose own group matches groCurStr. */ }
-
-
-								</button>
-
-
-							) ) }
-
-
-						</div>
-
-
-					</div>
+						onAllFun={ () => setFilGroStr( 'all' ) }
+					/> // What: Filter Rail Component. Why: The Group label and its own pill rail narrow the list by group. How: This renders the shared rail with an "All" pill and one pill per entry in exiGroArr, disabled during the matching tour step.
 
 
 				) }
+
 
 
 				{ ( exiModArr.length > 1 || conIteArr.length > 0 ) && ( // What: Type Row Check. Why: A single-mode app with no conditionals has nothing meaningful to filter by type. How: This renders the Type row only while there's more than one mode or at least one conditional.
 
 
-					<div className={ cssModObj.filRowDiv }>{ /* What: Type Filter Row Div Element. Why: The Type label and its own pill rail belong together. How: This wraps the lbl span and the pill rail below. */ }
+					<FilRaiCom
+						ref={ typRowRef }
+
+						data-element-name-hook='typFilDiv'
+
+						allCouNum={ allPicArr.filter( ( picCurObj ) => !picCurObj.hidden ).length } // What: All Count Number. Why: The "All" pill needs its own live total. How: This counts every non-hidden picker.
+						allSelBoo={ filTypStr === 'all' }
+						disBoo={ disGroBoo }
+						entIteArr={ [ // What: Type Entry Build. Why: Conditionals/Reminders sort in alphabetically alongside the real modes instead of being pinned, matching the Show row's own vocabulary. How: This builds one entry per mode plus (when applicable) Conditionals and Reminders, then sorts them below.
 
 
-						<span className={ cssModObj.filLabSpa }>Type</span>{ /* What: Type Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Type". */ }
-
-						<div
-							ref={ typRowRef }
-
-							className={ cssModObj.filRaiDiv }
-
-							data-element-name-hook='typFilDiv'
-							data-rail-wheel-scroll
-
-							aria-label='Filter pickers by type'
-							role='tablist'
-						>{ /* What: Type Pills Div Element. Why: This is the actual scrollable tablist of "All" plus every mode/Conditionals/Reminders pill, sorted together alphabetically. How: This renders the All pill, then maps the combined, sorted entry list to one pill each. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+							...exiModArr.map( ( modCurStr ) => ( { // What: Mode Entries Spread. Why: Every mode in use gets its own pill. How: This maps exiModArr to one entry each.
 
 
-							<button
-								className={ cssModObj.filPilBut }
-
-								data-element-name-hook='filPilBut'
-
-								disabled={ disGroBoo }
-								type='button'
-
-								aria-selected={ filTypStr === 'all' }
-								role='tab'
-
-								onClick={ () => setFilTypStr( 'all' ) }
-							>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the type filter entirely. How: This sets filTypStr to 'all' on click, disabled during the matching tour step. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+								cliFun : () => setFilTypStr( modCurStr ),                                                               // What: Click Function. Why: Clicking the pill applies this type filter. How: This sets filTypStr to modCurStr.
+								couNum : allPicArr.filter( ( picCurObj ) => picCurObj.mode === modCurStr && !picCurObj.hidden ).length, // What: Count Number. Why: The pill shows how many visible pickers use this mode. How: This counts non-hidden pickers with a matching mode.
+								keyStr : modCurStr,                                                                                     // What: Key String. Why: React needs a stable key per pill. How: This is the mode id.
+								namStr : SED_NAM_OBJ.MOD_DEF_OBJ[ modCurStr ].labStr,                                                   // What: Name String. Why: The pill shows the mode's display name. How: This reads the mode's label.
+								selBoo : filTypStr === modCurStr                                                                        // What: Selected Boolean. Why: The active pill is highlighted. How: This checks filTypStr against the mode.
 
 
-								All
+							} ) ),
 
-								<span className={ cssModObj.filCouSpa }>{ allPicArr.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Type Count Span Element. Why: The All pill needs its own live total. How: This counts every non-hidden picker. */ }
-
-
-							</button>
-
-							{ [ // What: Type Entry Build. Why: Conditionals/Reminders sort in alphabetically alongside the real modes instead of being pinned, matching the Show row's own vocabulary. How: This builds one entry per mode plus (when applicable) Conditionals and Reminders, then sorts and maps them below.
+							...( conIteArr.length > 0 ? [ { // What: Conditionals Entry Spread. Why: The Conditionals pill only shows once a conditional exists. How: This spreads in one entry or nothing.
 
 
-								...exiModArr.map( ( modCurStr ) => ( { // What: Mode Entries Spread. Why: Every mode in use gets its own pill. How: This maps exiModArr to one entry each.
+								couNum : conIteArr.length,             // What: Count Number. Why: The pill shows how many conditionals exist. How: This is conIteArr's length.
+								keyStr : 'conditionals',               // What: Key String. Why: React needs a stable key per pill. How: This is the literal 'conditionals'.
+								namStr : 'Conditionals',               // What: Name String. Why: The pill needs its own label. How: This is the literal "Conditionals".
+								selBoo : filTypStr === 'conditionals', // What: Selected Boolean. Why: The active pill is highlighted. How: This checks filTypStr against 'conditionals'.
+
+								cliFun : () => { // What: Click Function. Why: The Conditionals pill applies its type filter and jumps the Show row to the Conditionals box. How: This sets both in one click.
 
 
-									cliFun : () => setFilTypStr( modCurStr ),                                                               // What: Click Function. Why: Clicking the pill applies this type filter. How: This sets filTypStr to modCurStr.
-									couNum : allPicArr.filter( ( picCurObj ) => picCurObj.mode === modCurStr && !picCurObj.hidden ).length, // What: Count Number. Why: The pill shows how many visible pickers use this mode. How: This counts non-hidden pickers with a matching mode.
-									keyStr : modCurStr,                                                                                     // What: Key String. Why: React needs a stable key per pill. How: This is the mode id.
-									namStr : SED_NAM_OBJ.MOD_DEF_OBJ[ modCurStr ].labStr,                                                   // What: Name String. Why: The pill shows the mode's display name. How: This reads the mode's label.
-									selBoo : filTypStr === modCurStr                                                                        // What: Selected Boolean. Why: The active pill is highlighted. How: This checks filTypStr against the mode.
-
-
-								} ) ),
-
-								...( conIteArr.length > 0 ? [ { // What: Conditionals Entry Spread. Why: The Conditionals pill only shows once a conditional exists. How: This spreads in one entry or nothing.
-
-
-									couNum : conIteArr.length,             // What: Count Number. Why: The pill shows how many conditionals exist. How: This is conIteArr's length.
-									keyStr : 'conditionals',               // What: Key String. Why: React needs a stable key per pill. How: This is the literal 'conditionals'.
-									namStr : 'Conditionals',               // What: Name String. Why: The pill needs its own label. How: This is the literal "Conditionals".
-									selBoo : filTypStr === 'conditionals', // What: Selected Boolean. Why: The active pill is highlighted. How: This checks filTypStr against 'conditionals'.
-
-									cliFun : () => { // What: Click Function. Why: The Conditionals pill applies its type filter and jumps the Show row to the Conditionals box. How: This sets both in one click.
-
-
-										setFilTypStr( 'conditionals' ); // What: Type Filter Set Call. Why: The pill filters to conditionals. How: This sets filTypStr to 'conditionals'.
-										selScoFun( 'conditionals' );    // What: Scope Select Call. Why: The Show row should land on the Conditionals box too. How: This selects the 'conditionals' scope.
-
-
-									}
-
-
-								} ] : [] ),
-
-								{ // What: Reminders Entry Object. Why: The Reminders pill always shows. How: This is one entry for the Reminders section.
-
-
-									couNum : ( staAppObj.tasks || [] ).filter( ( tasCurObj ) => !tasCurObj.hidden ).length, // What: Count Number. Why: The pill shows how many visible reminders exist. How: This counts non-hidden tasks.
-									keyStr : 'reminders',                                                                   // What: Key String. Why: React needs a stable key per pill. How: This is the literal 'reminders'.
-									namStr : 'Reminders',                                                                   // What: Name String. Why: The pill needs its own label. How: This is the literal "Reminders".
-									selBoo : filTypStr === 'reminders',                                                     // What: Selected Boolean. Why: The active pill is highlighted. How: This checks filTypStr against 'reminders'.
-
-									cliFun : () => { // What: Click Function. Why: The Reminders pill applies its type filter and jumps the Show row to the Reminders box. How: This sets both in one click.
-
-
-										setFilTypStr( 'reminders' ); // What: Type Filter Set Call. Why: The pill filters to reminders. How: This sets filTypStr to 'reminders'.
-										selScoFun( 'reminders' );    // What: Scope Select Call. Why: The Show row should land on the Reminders box too. How: This selects the 'reminders' scope.
-
-
-									}
+									setFilTypStr( 'conditionals' ); // What: Type Filter Set Call. Why: The pill filters to conditionals. How: This sets filTypStr to 'conditionals'.
+									selScoFun( 'conditionals' );    // What: Scope Select Call. Why: The Show row should land on the Conditionals box too. How: This selects the 'conditionals' scope.
 
 
 								}
 
 
-							]
-								.sort( ( entOneObj, entTwoObj ) => entOneObj.namStr.localeCompare( entTwoObj.namStr ) ) // What: Entry Sort Call. Why: The pills list alphabetically by name. How: This sorts the entries with localeCompare.
-								.map( ( filEntObj ) => (                                                                // What: Type Pill Map. Why: Every entry renders as one pill. How: This maps each sorted entry to a tab-role button.
+							} ] : [] ),
+
+							{ // What: Reminders Entry Object. Why: The Reminders pill always shows. How: This is one entry for the Reminders section.
 
 
-									<button
-										key={ filEntObj.keyStr }
+								couNum : ( staAppObj.tasks || [] ).filter( ( tasCurObj ) => !tasCurObj.hidden ).length, // What: Count Number. Why: The pill shows how many visible reminders exist. How: This counts non-hidden tasks.
+								keyStr : 'reminders',                                                                   // What: Key String. Why: React needs a stable key per pill. How: This is the literal 'reminders'.
+								namStr : 'Reminders',                                                                   // What: Name String. Why: The pill needs its own label. How: This is the literal "Reminders".
+								selBoo : filTypStr === 'reminders',                                                     // What: Selected Boolean. Why: The active pill is highlighted. How: This checks filTypStr against 'reminders'.
 
-										className={ cssModObj.filPilBut }
-
-										data-element-name-hook='filPilBut'
-
-										disabled={ disGroBoo }
-										type='button'
-
-										aria-selected={ filEntObj.selBoo }
-										role='tab'
-
-										onClick={ filEntObj.cliFun }
-									>{ /* What: Type Pill Button Element. Why: Clicking a pill narrows the list to that type. How: This marks itself selected when filEntObj.selBoo and runs filEntObj.cliFun. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+								cliFun : () => { // What: Click Function. Why: The Reminders pill applies its type filter and jumps the Show row to the Reminders box. How: This sets both in one click.
 
 
-										{ filEntObj.namStr }{ /* What: Pill Name Expression. Why: Every pill needs its own visible label. How: This renders filEntObj.namStr. */ }
-
-										<span className={ cssModObj.filCouSpa }>{ filEntObj.couNum }</span>{ /* What: Pill Count Span Element. Why: Each pill shows how many entries it holds. How: This renders filEntObj.couNum. */ }
-
-
-									</button>
+									setFilTypStr( 'reminders' ); // What: Type Filter Set Call. Why: The pill filters to reminders. How: This sets filTypStr to 'reminders'.
+									selScoFun( 'reminders' );    // What: Scope Select Call. Why: The Show row should land on the Reminders box too. How: This selects the 'reminders' scope.
 
 
-								) ) }
+								}
 
 
-						</div>
+							}
 
 
-					</div>
+						]
+							.sort( ( entOneObj, entTwoObj ) => entOneObj.namStr.localeCompare( entTwoObj.namStr ) ) } // What: Entry Sort Call. Why: The pills list alphabetically by name. How: This sorts the entries with localeCompare.
+						labTexStr='Type'
+
+						ariLabStr='Filter pickers by type'
+
+						onAllFun={ () => setFilTypStr( 'all' ) }
+					/> // What: Filter Rail Component. Why: The Type label and its own pill rail narrow the list by type. How: This renders the shared rail with an "All" pill, then every mode, Conditionals, and Reminders entry sorted together by name, disabled during the matching tour step.
 
 
 				) }
+
 
 
 				{ conIteArr.length > 0 && ( // What: Conditional Row Check. Why: A conditional-free app has nothing to filter by conditional. How: This renders the Conditionals row only while conIteArr has at least one entry.
 
 
-					<div className={ cssModObj.filRowDiv }>{ /* What: Conditional Filter Row Div Element. Why: The Conditionals label and its own pill rail belong together. How: This wraps the lbl span and the pill rail below. */ }
+					<FilRaiCom
+						ref={ conRowRef }
+
+						data-element-name-hook='conFilDiv'
+
+						allCouNum={ allPicArr.length }
+						allSelBoo={ filConStr === 'all' }
+						disBoo={ disGroBoo }
+						entIteArr={ [ ...conIteArr ].sort( ( conOneObj, conTwoObj ) => conOneObj.name.localeCompare( conTwoObj.name ) ).map( ( conCurObj ) => ( { // What: Conditional Entry Map. Why: One pill is needed per existing conditional, alphabetical. How: This maps the sorted list to one entry each, keyed by its own id.
 
 
-						<span className={ cssModObj.filLabSpa }>Conditionals</span>{ /* What: Conditional Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Conditionals". */ }
+							couNum : conCouFun( conCurObj.id ),  // What: Count Number. Why: Every conditional pill needs its own live usage count. How: This calls conCouFun for conCurObj.id.
+							keyStr : conCurObj.id,               // What: Key String. Why: React needs a stable key per pill. How: This is the conditional's id.
+							namStr : conCurObj.name,             // What: Name String. Why: Every conditional pill needs its own visible label. How: This is the conditional's name.
+							selBoo : filConStr === conCurObj.id, // What: Selected Boolean. Why: The active pill is highlighted. How: This checks filConStr against the conditional's id.
 
-						<div
-							ref={ conRowRef }
-
-							className={ cssModObj.filRaiDiv }
-
-							data-element-name-hook='conFilDiv'
-							data-rail-wheel-scroll
-
-							aria-label='Filter pickers by conditional'
-							role='tablist'
-						>{ /* What: Conditional Pills Div Element. Why: This is the actual scrollable tablist of "All" plus every conditional. How: This renders the All pill, then maps the alphabetized conditional list to one pill each. Its data-element-name-hook is read by help mode's Data catalog. */ }
+							cliFun : () => { // What: Click Function. Why: Picking a conditional pill switches the list to that conditional alone. How: This sets the conditional filter and resets the group and type filters.
 
 
-							<button
-								className={ cssModObj.filPilBut }
-
-								data-element-name-hook='filPilBut'
-
-								disabled={ disGroBoo }
-								type='button'
-
-								aria-selected={ filConStr === 'all' }
-								role='tab'
-
-								onClick={ () => setFilConStr( 'all' ) }
-							>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the conditional filter entirely. How: This sets filConStr to 'all' on click, disabled during the matching tour step. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+								setFilConStr( conCurObj.id ); // What: Conditional Filter Set Call. Why: The pill narrows the list to pickers using this conditional. How: This sets filConStr to conCurObj.id.
+								setFilGroStr( 'all' );        // What: Group Filter Reset Call. Why: A conditional filter shouldn't stack on an old group filter. How: This resets filGroStr to 'all'.
+								setFilTypStr( 'all' );        // What: Type Filter Reset Call. Why: A conditional filter shouldn't stack on an old type filter either. How: This resets filTypStr to 'all'.
 
 
-								All
-
-								<span className={ cssModObj.filCouSpa }>{ allPicArr.length }</span>{ /* What: Conditional Count Span Element. Why: The All pill needs its own live total. How: This is allPicArr's own total length. */ }
+							}
 
 
-							</button>
+						} ) ) }
+						labTexStr='Conditionals'
 
-							{ [ ...conIteArr ].sort( ( conOneObj, conTwoObj ) => conOneObj.name.localeCompare( conTwoObj.name ) ).map( ( conCurObj ) => ( // What: Conditional Pill Map. Why: One pill is needed per existing conditional, alphabetical. How: This maps the sorted list to one tab-role button each, keyed by its own id.
+						ariLabStr='Filter pickers by conditional'
 
-
-								<button
-									key={ conCurObj.id }
-
-									className={ cssModObj.filPilBut }
-
-									data-element-name-hook='filPilBut'
-
-									disabled={ disGroBoo }
-									type='button'
-
-									aria-selected={ filConStr === conCurObj.id }
-									role='tab'
-
-									onClick={ () => { // What: On Click Handler. Why: Picking a conditional pill switches the list to that conditional alone. How: This sets the conditional filter and resets the group and type filters.
-
-
-										setFilConStr( conCurObj.id ); // What: Conditional Filter Set Call. Why: The pill narrows the list to pickers using this conditional. How: This sets filConStr to conCurObj.id.
-										setFilGroStr( 'all' );        // What: Group Filter Reset Call. Why: A conditional filter shouldn't stack on an old group filter. How: This resets filGroStr to 'all'.
-										setFilTypStr( 'all' );        // What: Type Filter Reset Call. Why: A conditional filter shouldn't stack on an old type filter either. How: This resets filTypStr to 'all'.
-
-
-									} }
-								>{ /* What: Conditional Pill Button Element. Why: Clicking a pill narrows the list to pickers gated by just that conditional, resetting the other 2 filters. How: This commits filConStr, resets filGroStr/filTypStr, disabled during the matching tour step. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-									{ conCurObj.name }{ /* What: Pill Name Expression. Why: Every conditional pill needs its own visible label. How: This renders conCurObj.name. */ }
-
-									<span className={ cssModObj.filCouSpa }>{ conCouFun( conCurObj.id ) }</span>{ /* What: Conditional Count Span Element. Why: Every conditional pill needs its own live usage count. How: This calls conCouFun for conCurObj.id. */ }
-
-
-								</button>
-
-
-							) ) }
-
-
-						</div>
-
-
-					</div>
+						onAllFun={ () => setFilConStr( 'all' ) }
+					/> // What: Filter Rail Component. Why: The Conditionals label and its own pill rail narrow the list to pickers gated by one conditional. How: This renders the shared rail with an "All" pill and one pill per conditional, disabled during the matching tour step.
 
 
 				) }
+
 
 
 				<div className={ cssModObj.filRowDiv }>{ /* What: Show Filter Row Div Element. Why: The Show label and its own box rail belong together. How: This wraps the lbl span and the box rail below. */ }

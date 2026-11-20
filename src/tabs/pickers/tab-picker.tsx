@@ -9,6 +9,7 @@ import React     from 'react';                   // What: React. Why: TabPicCom 
 
 import { clePicFun    } from '../../help/sample-data.ts';           // What: Clear Pickers Function. Why: Help mode's disposable sample pickers/conditionals must be torn down the moment help mode turns off or this tab unmounts. How: This is called from TabPicCom's own help-mode effect and its unmount cleanup.
 import { emlTouObj    } from '../../state/tour-bus.ts';             // What: Ease My Life Tour Object. Why: A couple of tour-driven behaviors need to read the shared tour bus's current value synchronously, not through React state. How: This is read via emlTouObj.get() when staging a new draft item's tour prefill, and written via emlTouObj.set() to clear a staged empty-state prefill.
+import { FilRaiCom    } from '../../ui/filter-rail.tsx';            // What: Filter Rail Component. Why: The Group and Type filter rows share one labeled pill rail. How: This is rendered once for each of those rows, fed its own entries and actions.
 import { HelButCom    } from '../../help/button.tsx';               // What: Help Button Component. Why: This page needs its own toggle for entering/exiting help mode. How: This is rendered in the page header, wired to the local helOpeBoo boolean.
 import { HelOveCom    } from '../../help/mode.tsx';                 // What: Help Overlay Component. Why: Help mode needs its own highlighted-tooltip overlay layered above the page. How: This is rendered once, fed this page's own PIC_HEL_ARR.
 import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon Svg Component. Why: The tab's header and add controls show small glyphs. How: This is rendered inside those controls.
@@ -644,196 +645,79 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 					{ exiGroArr.length > 1 && ( // What: Group Row Check. Why: A single-group install has nothing to actually filter by. How: This renders the whole Group filter row only once more than one distinct group exists.
 
 
-						<div className={ cssModObj.filRowDiv }>{ /* What: Group Filter Row Div Element. Why: The "Group" label and its own pill rail sit side by side. How: This wraps filLabSpa and the filRaiDiv rail. */ }
+						<FilRaiCom
+							ref={ groRaiRef }
+
+							data-element-name-hook='groFilDiv'
+
+							allCouNum={ staAppObj.pickers.filter( ( picCurObj ) => !picCurObj.hidden ).length } // What: All Count Number. Why: The "All" pill needs its own total count. How: This counts every visible picker regardless of group.
+							allSelBoo={ groFilStr === 'all' }
+							entIteArr={ exiGroArr.map( ( curGroStr ) => ( { // What: Group Entry Map. Why: Every existing group needs its own selectable filter pill with its own count. How: This maps exiGroArr to one entry per curGroStr.
 
 
-							<span className={ cssModObj.filLabSpa }>Group</span>{ /* What: Group Filter Label Span Element. Why: The rail below needs a readable label. How: This renders the literal word "Group". */ }
-
-							<div
-								ref={ groRaiRef }
-
-								className={ cssModObj.filRaiDiv }
-
-								data-element-name-hook='groFilDiv'
-								data-rail-wheel-scroll
-
-								aria-label='Filter pickers by group'
-								role='tablist'
-							>{ /* What: Group Rail Div Element. Why: Every distinct group plus the fixed "All" pill need a horizontally-scrolling tab list. How: This wraps the "All" pill and one pill per entry in exiGroArr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+								cliFun : () => setGroFilStr( curGroStr ),                                                                     // What: Click Function. Why: Tapping a group pill should narrow the Show row down to just that group. How: This writes curGroStr into groFilStr.
+								couNum : staAppObj.pickers.filter( ( picCurObj ) => picCurObj.group === curGroStr && !picCurObj.hidden ).length, // What: Count Number. Why: Each group pill needs to show how many visible pickers actually belong to it. How: This counts staAppObj.pickers matching both curGroStr and visibility.
+								keyStr : curGroStr,                                                                                            // What: Key String. Why: React needs a stable key per pill. How: This is the group name.
+								namStr : curGroStr,                                                                                            // What: Name String. Why: Every group pill needs its own visible label. How: This is the group name.
+								selBoo : groFilStr === curGroStr                                                                               // What: Selected Boolean. Why: The active pill is highlighted. How: This checks groFilStr against the group.
 
 
-								<button
-									className={ cssModObj.filPilBut }
+							} ) ) }
+							labTexStr='Group'
 
-									data-element-name-hook='filPilBut'
+							ariLabStr='Filter pickers by group'
 
-									type='button'
-
-									aria-selected={ groFilStr === 'all' }
-									role='tab'
-
-									onClick={ () => { // What: On Click Handler. Why: The All pill clears the group filter. How: This resets the filter, closes the create form, and selects the first visible picker.
+							onAllFun={ () => { // What: On All Function. Why: The All pill clears the group filter. How: This resets the filter, closes the create form, and selects the first visible picker.
 
 
-										setGroFilStr( 'all' );                                                            // What: Group Filter Reset Call. Why: The All pill clears the group filter. How: This writes 'all' into groFilStr.
-										setCreOpeBoo( false );                                                            // What: Create Close Call. Why: Choosing a filter or picker closes the create form. How: This resets creOpeBoo to false.
-										setActPicStr( staAppObj.pickers.find( ( picCurObj ) => !picCurObj.hidden )?.id ); // What: Active Picker Reset Call. Why: The Show row should land on a real picker. How: This selects the first visible picker's id.
+								setGroFilStr( 'all' );                                                            // What: Group Filter Reset Call. Why: The All pill clears the group filter. How: This writes 'all' into groFilStr.
+								setCreOpeBoo( false );                                                            // What: Create Close Call. Why: Choosing a filter or picker closes the create form. How: This resets creOpeBoo to false.
+								setActPicStr( staAppObj.pickers.find( ( picCurObj ) => !picCurObj.hidden )?.id ); // What: Active Picker Reset Call. Why: The Show row should land on a real picker. How: This selects the first visible picker's id.
 
 
-									} }
-								>{ /* What: All Group Pill Button Element. Why: The user needs a way to clear the Group filter back to unfiltered. How: This resets groFilStr to 'all', closes the create form, and jumps to the first visible picker. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-									All
-
-									<span className={ cssModObj.filCouSpa }>{ staAppObj.pickers.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Count Span Element. Why: The "All" pill needs its own total count. How: This counts every visible picker regardless of group. */ }
-
-
-								</button>
-
-								{ exiGroArr.map( ( curGroStr ) => { // What: Group Pill List Render. Why: Every existing group needs its own selectable filter pill with its own count. How: This maps exiGroArr to one button per curGroStr.
-
-
-									const picCouNum = staAppObj.pickers.filter( ( picCurObj ) => picCurObj.group === curGroStr && !picCurObj.hidden ).length; // What: Picker Count Number. Why: Each group pill needs to show how many visible pickers actually belong to it. How: This counts staAppObj.pickers matching both curGroStr and visibility.
-
-
-
-									return (
-
-
-										<button
-											key={ curGroStr }
-
-											className={ cssModObj.filPilBut }
-
-											data-element-name-hook='filPilBut'
-
-											type='button'
-
-											aria-selected={ groFilStr === curGroStr }
-											role='tab'
-
-											onClick={ () => setGroFilStr( curGroStr ) }
-										>{ /* What: Group Pill Button Element. Why: Tapping a group pill should narrow the Show row down to just that group. How: This writes curGroStr into groFilStr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-											{ curGroStr }{ /* What: Pill Name Expression. Why: Every group pill needs its own visible label. How: This renders curGroStr. */ }
-
-											<span className={ cssModObj.filCouSpa }>{ picCouNum }</span>{ /* What: Pill Count Span Element. Why: Each pill shows how many pickers it holds. How: This renders picCouNum. */ }
-
-
-										</button>
-
-
-									);
-
-
-								} ) }
-
-
-							</div>
-
-
-						</div>
+							} }
+						/> // What: Filter Rail Component. Why: The Group label and its own pill rail filter the Show row by group. How: This renders the shared rail with an "All" pill and one pill per entry in exiGroArr.
 
 
 					) }
 
 
+
 					{ exiModArr.length > 1 && ( // What: Type Row Check. Why: A single-mode install has nothing to actually filter by. How: This renders the whole Type filter row only once more than one distinct mode exists.
 
 
-						<div className={ cssModObj.filRowDiv }>{ /* What: Type Filter Row Div Element. Why: The "Type" label and its own pill rail sit side by side. How: This wraps filLabSpa and the type filRaiDiv rail. */ }
+						<FilRaiCom
+							ref={ typRaiRef }
+
+							data-element-name-hook='typFilDiv'
+
+							allCouNum={ staAppObj.pickers.filter( ( picCurObj ) => !picCurObj.hidden ).length } // What: All Count Number. Why: The "All" pill needs its own total count. How: This counts every visible picker regardless of mode.
+							allSelBoo={ typFilStr === 'all' }
+							entIteArr={ exiModArr.map( ( curModStr ) => ( { // What: Type Entry Map. Why: Every existing mode needs its own selectable filter pill with its own count. How: This maps exiModArr to one entry per curModStr.
 
 
-							<span className={ cssModObj.filLabSpa }>Type</span>{ /* What: Type Filter Label Span Element. Why: The rail below needs a readable label. How: This renders the literal word "Type". */ }
-
-							<div
-								ref={ typRaiRef }
-
-								className={ cssModObj.filRaiDiv }
-
-								data-element-name-hook='typFilDiv'
-								data-rail-wheel-scroll
-
-								aria-label='Filter pickers by type'
-								role='tablist'
-							>{ /* What: Type Rail Div Element. Why: Every distinct mode plus the fixed "All" pill need a horizontally-scrolling tab list. How: This wraps the "All" pill and one pill per entry in exiModArr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+								cliFun : () => setTypFilStr( curModStr ),                                                                    // What: Click Function. Why: Tapping a type pill should narrow the Show row down to just that mode. How: This writes curModStr into typFilStr.
+								couNum : staAppObj.pickers.filter( ( picCurObj ) => picCurObj.mode === curModStr && !picCurObj.hidden ).length, // What: Count Number. Why: Each type pill needs to show how many visible pickers actually use that mode. How: This counts staAppObj.pickers matching both curModStr and visibility.
+								keyStr : curModStr,                                                                                           // What: Key String. Why: React needs a stable key per pill. How: This is the mode id.
+								namStr : SED_NAM_OBJ.MOD_DEF_OBJ[ curModStr ].labStr,                                                         // What: Name String. Why: Every type pill needs its mode's visible label. How: This reads the mode's label.
+								selBoo : typFilStr === curModStr                                                                              // What: Selected Boolean. Why: The active pill is highlighted. How: This checks typFilStr against the mode.
 
 
-								<button
-									className={ cssModObj.filPilBut }
+							} ) ) }
+							labTexStr='Type'
 
-									data-element-name-hook='filPilBut'
+							ariLabStr='Filter pickers by type'
 
-									type='button'
-
-									aria-selected={ typFilStr === 'all' }
-									role='tab'
-
-									onClick={ () => { // What: On Click Handler. Why: The All pill clears the type filter. How: This resets the filter, closes the create form, and selects the first visible picker.
+							onAllFun={ () => { // What: On All Function. Why: The All pill clears the type filter. How: This resets the filter, closes the create form, and selects the first visible picker.
 
 
-										setTypFilStr( 'all' );                                                            // What: Type Filter Reset Call. Why: The All pill clears the type filter. How: This writes 'all' into typFilStr.
-										setCreOpeBoo( false );                                                            // What: Create Close Call. Why: Choosing a filter or picker closes the create form. How: This resets creOpeBoo to false.
-										setActPicStr( staAppObj.pickers.find( ( picCurObj ) => !picCurObj.hidden )?.id ); // What: Active Picker Reset Call. Why: The Show row should land on a real picker. How: This selects the first visible picker's id.
+								setTypFilStr( 'all' );                                                            // What: Type Filter Reset Call. Why: The All pill clears the type filter. How: This writes 'all' into typFilStr.
+								setCreOpeBoo( false );                                                            // What: Create Close Call. Why: Choosing a filter or picker closes the create form. How: This resets creOpeBoo to false.
+								setActPicStr( staAppObj.pickers.find( ( picCurObj ) => !picCurObj.hidden )?.id ); // What: Active Picker Reset Call. Why: The Show row should land on a real picker. How: This selects the first visible picker's id.
 
 
-									} }
-								>{ /* What: All Type Pill Button Element. Why: The user needs a way to clear the Type filter back to unfiltered. How: This resets typFilStr to 'all', closes the create form, and jumps to the first visible picker. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-									All
-
-									<span className={ cssModObj.filCouSpa }>{ staAppObj.pickers.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Count Span Element. Why: The "All" pill needs its own total count. How: This counts every visible picker regardless of mode. */ }
-
-
-								</button>
-
-								{ exiModArr.map( ( curModStr ) => { // What: Type Pill List Render. Why: Every existing mode needs its own selectable filter pill with its own count. How: This maps exiModArr to one button per curModStr.
-
-
-									const picCouNum = staAppObj.pickers.filter( ( picCurObj ) => picCurObj.mode === curModStr && !picCurObj.hidden ).length; // What: Picker Count Number. Why: Each type pill needs to show how many visible pickers actually use that mode. How: This counts staAppObj.pickers matching both curModStr and visibility.
-
-
-
-									return (
-
-
-										<button
-											key={ curModStr }
-
-											className={ cssModObj.filPilBut }
-
-											data-element-name-hook='filPilBut'
-
-											type='button'
-
-											aria-selected={ typFilStr === curModStr }
-											role='tab'
-
-											onClick={ () => setTypFilStr( curModStr ) }
-										>{ /* What: Type Pill Button Element. Why: Tapping a type pill should narrow the Show row down to just that mode. How: This writes curModStr into typFilStr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-											{ SED_NAM_OBJ.MOD_DEF_OBJ[ curModStr ].labStr }{ /* What: Pill Name Expression. Why: Every type pill needs its mode's visible label. How: This renders the mode's label. */ }
-
-											<span className={ cssModObj.filCouSpa }>{ picCouNum }</span>{ /* What: Pill Count Span Element. Why: Each pill shows how many pickers it holds. How: This renders picCouNum. */ }
-
-
-										</button>
-
-
-									);
-
-
-								} ) }
-
-
-							</div>
-
-
-						</div>
+							} }
+						/> // What: Filter Rail Component. Why: The Type label and its own pill rail filter the Show row by mode. How: This renders the shared rail with an "All" pill and one pill per entry in exiModArr.
 
 
 					) }

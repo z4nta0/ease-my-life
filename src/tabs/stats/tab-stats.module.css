@@ -5,16 +5,16 @@
  * tab-stats.module.css = Stats Tab Module
  *
  * @summary
- * Styles for TabStaCom, the Stats tab: its header and scope filters (the
- * Group and Type pill rails, the Show tab strip, and the Range pills), then
- * the body that fades in under them, holding the single-picker identity
- * block, the headline stat cards, the stacked breakdown bars, the heatmap
- * with its year pager and tapped-day detail, the rank and breakdown lists
- * with their metric pills and unit toggles, the reminder and conditional
- * logs, and the range pagNavDiv. Selected filters key off aria-selected,
- * data-tab-select-active, and data-pill-select-active, a selected heat cell
- * off data-cell-select-active, a unit toggle off data-link-select-active,
- * and list rows off data-row-vacation-active, data-row-deleted-active, and
+ * Styles for TabStaCom, the Stats tab: its header and scope filters (the Show
+ * tab strip and the Range pills, beside the Group and Type rows the shared
+ * filter rail styles), then the body that fades in under them, holding the
+ * single-picker identity block, the headline stat cards, the stacked breakdown
+ * bars, the heatmap with its year pager and tapped-day detail, the rank and
+ * breakdown lists with their metric pills and unit toggles, the reminder and
+ * conditional logs, and the range pagNavDiv. Selected filters key off
+ * data-tab-select-active and data-pill-select-active, a selected heat cell off
+ * data-cell-select-active, a unit toggle off data-link-select-active, and list
+ * rows off data-row-vacation-active, data-row-deleted-active, and
  * data-row-done-active, with dimmed values off data-value-dim-active.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -363,166 +363,6 @@
 
 
 }
-
-
-/* #region filRaiDiv */
-
-.filRaiDiv { /* What: Filter Rail Div. Why: The rail scrolls sideways when its pills outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row that takes the row's width, with its scrollbar hidden and a gradient mask on each end. */
-
-
-	--fad-edg-off : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the rail. How: --fad-lef-off and --fad-rig-off start from it. */
-	--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.ts zeroes it via data-scroll-start-active. */
-	--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.ts zeroes it via data-scroll-end-active. */
-
-	-webkit-mask-image : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
-	display            : flex;
-	flex               : 1 1 auto;
-	gap                : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
-	mask-image         : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
-	min-width          : 0;
-	overflow-x         : auto;
-	padding-bottom     : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
-	scrollbar-width    : none;
-
-
-}
-.filRaiDiv::-webkit-scrollbar { /* What: Pill Rail Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
-
-
-	display : none;
-
-
-}
-.filRaiDiv[data-scroll-start-active] { /* What: Pill Rail At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
-
-
-	--fad-lef-off : 0px;
-
-
-}
-.filRaiDiv[data-scroll-end-active] { /* What: Pill Rail At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
-
-
-	--fad-rig-off : 0px;
-
-
-}
-
-
-/* #region filPilBut */
-
-.filPilBut { /* What: Filter Pill Button. Why: Each group or type is a pill that scopes the stats. How: This draws an outlined pill that fades between colors, and eases its press and focus ring. */
-
-
-	align-items    : center;
-	background     : transparent;
-	border         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius  : 999px;
-	color          : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	cursor         : pointer;
-	display        : inline-flex;
-	flex-shrink    : 0;
-	font-size      : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
-	font-weight    : 500;
-	gap            : var( --spa-hor-m03 );                            /* Spacing Horizontal Base Minus 3 ~= 6.268px */
-	height         : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
-	letter-spacing : -0.01em;
-	padding        : 0 var( --spa-hor-bas );                          /* Spacing Horizontal Base ~= 14.572px */
-	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
-
-
-}
-.filPilBut:hover { /* What: Hovered Filter Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
-
-
-	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	color        : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
-
-
-}
-.filPilBut[aria-selected='true'] { /* What: Selected Filter Pill. Why: The active filter should stand out. How: This fills it in the soft accent, keying off the aria-selected the pill already sets. */
-
-
-	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
-	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-
-
-}
-.filPilBut[aria-selected='true']:hover { /* What: Hovered Selected Filter Pill Button. Why: A chosen control a person can still click should still answer the pointer. How: This darkens its accent a step. */
-
-
-	border-color : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ), darkened by 0.1 */
-	color        : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ), darkened by 0.1 */
-
-
-}
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Filter Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
-
-
-	.filPilBut { /* What: Still Filter Pill. Why: The change should happen at once. How: This turns its transition off. */
-
-
-		transition : none;
-
-
-	}
-
-
-}
-.filPilBut:active { /* What: Pressed Filter Pill Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
-
-
-	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
-
-
-}
-
-.filCouSpa { /* What: Filter Count Span. Why: Each pill shows how many pickers it covers. How: This sets the number in a small tinted mono capsule, easing its fill and color with its pill's. */
-
-
-	align-items          : center;
-	background           : var( --bor-fil-col );                                                                                  /* Border Fill Color = oklch( 0.93 0.005 240 ) */
-	border-radius        : 999px;
-	color                : var( --tex-mut-col );                                                                                  /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	display              : inline-flex;
-	font-family          : var( --fon-fam-sec );                                                                                  /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size            : var( --fon-siz-bas );                                                                                  /* Font Size Base = 11px */
-	font-variant-numeric : tabular-nums;
-	height               : calc( var( --ver-rhy-p01 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 1 ~= 19.304px */
-	justify-content      : center;
-	min-width            : calc( var( --ver-rhy-p01 ) * 1rem );                                                                   /* Vertical Rhythm Base Plus 1 ~= 19.304px */
-	padding              : 0 var( --spa-hor-m03 );                                                                                /* Spacing Horizontal Base Minus 3 ~= 6.268px */
-	text-align           : center;
-	transition           : background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
-
-
-}
-.filPilBut[aria-selected='true'] .filCouSpa { /* What: Selected Pill Count. Why: The count follows its pill's accent. How: This tints the capsule in the accent color. */
-
-
-	background : oklch( from var( --acc-mai-col ) l c h / 0.16 );            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	color      : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ), darkened by 0.1 */ /* What: Darkened Accent Text. Why: The plain accent on its own tint falls just short of text contrast at this small size. How: This darkens it by the same step the app's link hover uses. */
-
-
-}
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Filter Count Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
-
-
-	.filCouSpa { /* What: Still Filter Count Span. Why: The change should happen at once. How: This turns its transition off. */
-
-
-		transition : none;
-
-
-	}
-
-
-}
-
-/* #endregion filPilBut */
-
-/* #endregion filRaiDiv */
 
 
 
