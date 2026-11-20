@@ -460,14 +460,14 @@ const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : numb
 	if ( dayIndNum % 13 === 6 ) { // What: Reminder Skip Variation. Why: Skipping a reminder must hide it until its next eligible day. How: This skips the first recurring reminder.
 
 
-		const preStaSki = ( await reaStaFun( curPagObj ) )!;                                                                                                                              // What: Previous State Skip. Why: The skip is checked around the click. How: This reads the state first. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
+		const skiStaObj = ( await reaStaFun( curPagObj ) )!;                                                                                                                              // What: Skip State Object. Why: The skip is checked around the click. How: This reads the state first. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 
 
-		const skiTasObj = preStaSki.tasks.find( ( curTasObj ) => { // What: Skip Task Object. Why: Only a shown, unchecked recurring reminder is skipped. How: This finds the first.
+		const skiTasObj = skiStaObj.tasks.find( ( curTasObj ) => { // What: Skip Task Object. Why: Only a shown, unchecked recurring reminder is skipped. How: This finds the first.
 
 
 			const isaReuBoo = curTasObj.repeat !== 'once';                  // What: Is-A Recurring Boolean. Why: Only recurring reminders can be skipped. How: This checks the repeat rule.
-			const isaVisBoo = remVisFun( curTasObj, preStaSki, dayIsoStr ); // What: Is-A Visible Boolean. Why: Only a shown reminder has a Skip button. How: This applies the visibility rule.
+			const isaVisBoo = remVisFun( curTasObj, skiStaObj, dayIsoStr ); // What: Is-A Visible Boolean. Why: Only a shown reminder has a Skip button. How: This applies the visibility rule.
 			const notDonBoo = curTasObj.lastDone !== dayIsoStr;             // What: Not Done Boolean. Why: A checked reminder isn't skipped. How: This compares its last done day.
 
 			const canSkiBoo = isaReuBoo && isaVisBoo && notDonBoo; // What: Can Skip Boolean. Why: A reminder qualifies only when all three hold. How: This combines them.
@@ -492,7 +492,7 @@ const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : numb
 
 
 
-			const aftStaObj = await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.reminderSkipLog.length === preStaSki.reminderSkipLog.length + 1, 'reminder skip saved' ); // What: After State Object. Why: The skip is checked once saved. How: This waits for the skip row.
+			const aftStaObj = await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.reminderSkipLog.length === skiStaObj.reminderSkipLog.length + 1, 'reminder skip saved' ); // What: After State Object. Why: The skip is checked once saved. How: This waits for the skip row.
 			const aftTasObj = aftStaObj.tasks.find( ( curTasObj ) => curTasObj.id === skiTasObj.id );                                                                          // What: After Task Object. Why: The reminder now holds a skip date. How: This looks it up.
 			const logMisBoo = aftStaObj.reminderSkipLog[ aftStaObj.reminderSkipLog.length - 1 ].taskId !== skiTasObj.id;                                                       // What: Log Mismatch Boolean. Why: The new skip row names the reminder. How: This compares the last row's reminder.
 
@@ -811,7 +811,7 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 
 
-		for ( const [ dayIndVal, traDayObj ] of traDayArr.entries() ) if ( JSON.stringify( traDayObj ) !== JSON.stringify( basDayArr[ dayIndVal ] ) ) issMesArr.push( `baseline: ${ traDayObj.dayIsoStr } differs from the baseline run` ); // What: Baseline Compare Loop. Why: Any differing day is a behavior change. How: This compares each day.
+		for ( const [ traIndNum, traDayObj ] of traDayArr.entries() ) if ( JSON.stringify( traDayObj ) !== JSON.stringify( basDayArr[ traIndNum ] ) ) issMesArr.push( `baseline: ${ traDayObj.dayIsoStr } differs from the baseline run` ); // What: Baseline Compare Loop. Why: Any differing day is a behavior change. How: This compares each day.
 
 
 	}

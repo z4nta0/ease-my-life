@@ -20,8 +20,8 @@ import { IntModCom   } from './intro-modal.tsx';                // What: Intro M
 import { NAV_TAR_OBJ } from './targets.tsx';                    // What: Nav Target Object. Why: A page's own intro modal falls back to this shared nav-button catalog's copy. How: This is looked up by a page key inside PagTouCom.
 import { neeCopFun   } from './page-samples.ts';                // What: Needs Copies Function. Why: Only the Pickers and Data tours work on disposable copies. How: This is called with the page id to decide whether to seed or clear them.
 import { ONB_EPT_ARR } from '../state/onboarding-checklist.ts'; // What: Onboarding Explore-Page-Tours Array. Why: PagTouCom below needs this page tour's own id/page/label manifest entry. How: This is searched by pagIdeStr inside PagTouCom below.
-import { seePicFun   } from './page-samples.ts';                // What: Seed Picker Function. Why: The Pickers and Data tours need real, disposable picker copies to demonstrate on. How: This is called when one of those tours opens.
-import { seeTasFun   } from './page-samples.ts';                // What: Seed Task Function. Why: The Data tour needs real, disposable reminder copies to demonstrate on. How: This is called when that tour opens.
+import { sedPicFun   } from './page-samples.ts';                // What: Seed Picker Function. Why: The Pickers and Data tours need real, disposable picker copies to demonstrate on. How: This is called when one of those tours opens.
+import { sedTasFun   } from './page-samples.ts';                // What: Seed Task Function. Why: The Data tour needs real, disposable reminder copies to demonstrate on. How: This is called when that tour opens.
 import { unhHisFun   } from '../state/sample-history.ts';       // What: Unhide History Function. Why: The Stats tour's own heatmap and breakdown need the real sample pickers and their history. How: This is called when the Stats tour starts.
 
 
@@ -339,7 +339,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 	 * seed disposable picker copies, the Stats tour unhides the real samples
 	 * and their history, and the Data tour also seeds disposable reminder
 	 * copies. Only passed to buiTs1Fun for a page tour that needs one of these
-	 * (see seeNeeBoo), so Today and Settings get no Step 1 side effect at all.
+	 * (see sedNeeBoo), so Today and Settings get no Step 1 side effect at all.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -357,13 +357,13 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 	const oneRunFun = () => { // What: One Run Function. Why: Step 1's own click must set up the sample data this page tour's later steps point at. How: This seeds picker copies or unhides the real samples, then also seeds reminder copies for the Data tour.
 
 
-		if ( neeCopFun( pagIdeStr ) ) seePicFun( staAppObj, actStoObj ); // What: Picker Copy Seed Call. Why: The Pickers/Data tours need disposable picker copies to point at. How: This calls seePicFun.
+		if ( neeCopFun( pagIdeStr ) ) sedPicFun( staAppObj, actStoObj ); // What: Picker Copy Seed Call. Why: The Pickers/Data tours need disposable picker copies to point at. How: This calls sedPicFun.
 
 		else if ( pagIdeStr === 'explore_stats' ) unhHisFun( staAppObj, actStoObj ); // What: Sample History Unhide Call. Why: The Stats tour borrows the real samples and their history instead. How: This calls unhHisFun.
 
 
 
-		if ( pagIdeStr === 'explore_data' ) seeTasFun( staAppObj, actStoObj ); // What: Task Copy Seed Call. Why: The Data tour's own Reminders step also needs disposable reminder copies. How: This calls seeTasFun.
+		if ( pagIdeStr === 'explore_data' ) sedTasFun( staAppObj, actStoObj ); // What: Task Copy Seed Call. Why: The Data tour's own Reminders step also needs disposable reminder copies. How: This calls sedTasFun.
 
 
 	};
@@ -372,12 +372,12 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 
 
 
-	const seeNeeBoo = neeCopFun( pagIdeStr ) || pagIdeStr === 'explore_stats'; // What: Seed Needed Boolean. Why: Only the Pickers, Data, and Stats tours need a Step 1 side effect. How: This is true for a page that needs copies seeded or the real samples unhidden.
+	const sedNeeBoo = neeCopFun( pagIdeStr ) || pagIdeStr === 'explore_stats'; // What: Seed Needed Boolean. Why: Only the Pickers, Data, and Stats tours need a Step 1 side effect. How: This is true for a page that needs copies seeded or the real samples unhidden.
 
 	const steObjArr = [ // What: Step Object Array. Why: GuiTouCom needs this page's own full ordered step list, Step 1 plus every step buiTesFun returns beyond it. How: This combines buiTs1Fun's own Step 1 with buiTesFun's own spread result.
 
 
-		buiTs1Fun( touRcdObj.pagStr, seeNeeBoo ? oneRunFun : undefined, 'Next', touRcdObj.labStr ), // What: Step One Call. Why: Every page tour opens on its own nav-button highlight. How: This builds Step 1 with oneRunFun only when seeNeeBoo says it is needed, naming the button by touRcdObj.labStr.
+		buiTs1Fun( touRcdObj.pagStr, sedNeeBoo ? oneRunFun : undefined, 'Next', touRcdObj.labStr ), // What: Step One Call. Why: Every page tour opens on its own nav-button highlight. How: This builds Step 1 with oneRunFun only when sedNeeBoo says it is needed, naming the button by touRcdObj.labStr.
 
 		...buiTesFun( pagIdeStr, actStoObj ) // What: Extra Steps Spread. Why: Every step after Step 1 is page-specific. How: This spreads buiTesFun's own step array for pagIdeStr.
 

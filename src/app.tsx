@@ -519,16 +519,16 @@ function AppRooCom () : React.JSX.Element {
 
 	// #region Tour Rail Sync
 
-	const onbEveBus = useEmlTouFun(); // What: Onboarding Event Bus. Why: The Welcome Tour needs to auto-open/close the rail while running, even outside the user's own manual toggling. How: This subscribes to the shared tour event bus's touPhaStr/wanRaiBoo/touSteNum fields, read by the effect right below.
+	const onbEveObj = useEmlTouFun(); // What: Onboarding Event Object. Why: The Welcome Tour needs to auto-open/close the rail while running, even outside the user's own manual toggling. How: This subscribes to the shared tour event bus's touPhaStr/wanRaiBoo/touSteNum fields, read by the effect right below.
 
 
-	React.useEffect( () => { // What: Rail Sync Effect. Why: A running tour needs to force the rail open/closed to spotlight nav buttons, without fighting the user's own manual toggle outside of a tour. How: This applies onbEveBus.wanRaiBoo to raiOpeBoo whenever the bus reports an active tour phase.
+	React.useEffect( () => { // What: Rail Sync Effect. Why: A running tour needs to force the rail open/closed to spotlight nav buttons, without fighting the user's own manual toggle outside of a tour. How: This applies onbEveObj.wanRaiBoo to raiOpeBoo whenever the bus reports an active tour phase.
 
 
-		if ( onbEveBus.touPhaStr === 'tour' && typeof onbEveBus.wanRaiBoo === 'boolean' ) setRaiOpeBoo( onbEveBus.wanRaiBoo ); // What: Tour Rail Sync Guard. Why: Only a tour actively publishing a boolean wanRaiBoo should override the rail's state. How: This applies the bus's requested open/closed value to raiOpeBoo when both conditions hold.
+		if ( onbEveObj.touPhaStr === 'tour' && typeof onbEveObj.wanRaiBoo === 'boolean' ) setRaiOpeBoo( onbEveObj.wanRaiBoo ); // What: Tour Rail Sync Guard. Why: Only a tour actively publishing a boolean wanRaiBoo should override the rail's state. How: This applies the bus's requested open/closed value to raiOpeBoo when both conditions hold.
 
 
-	}, [ onbEveBus.touPhaStr, onbEveBus.wanRaiBoo, onbEveBus.touSteNum ] ); // What: Effect Dependency Array. Why: Re-run whenever the tour's phase, desired rail state, or step changes. How: touPhaStr/wanRaiBoo changes are the obvious triggers; touSteNum is included too so two consecutive nav-button steps (which both want the rail open, an unchanged value) still get re-evaluated and re-corrected.
+	}, [ onbEveObj.touPhaStr, onbEveObj.wanRaiBoo, onbEveObj.touSteNum ] ); // What: Effect Dependency Array. Why: Re-run whenever the tour's phase, desired rail state, or step changes. How: touPhaStr/wanRaiBoo changes are the obvious triggers; touSteNum is included too so two consecutive nav-button steps (which both want the rail open, an unchanged value) still get re-evaluated and re-corrected.
 
 	// #endregion Tour Rail Sync
 

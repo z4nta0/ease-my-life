@@ -1581,7 +1581,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	const [ actGroStr, setActGroStr ] = React.useState( '__reminders' ); // What: Active Group String And Setter. Why: This is the single source of truth for which rail button is highlighted. How: This starts on the Reminders sentinel and is updated by the scroll-spy effect below.
 
-	const secRefObj = React.useRef< Record< string, HTMLElement | null > >( {} ); // What: Section Reference Object. Why: The scroll-spy effect below needs a live handle on every rendered group/Reminders/Page-Tours section element. How: This is populated by each section's own ref callback further down and read here.
+	const secEleRef = React.useRef< Record< string, HTMLElement | null > >( {} ); // What: Section Element Reference. Why: The scroll-spy effect below needs a live handle on every rendered group/Reminders/Page-Tours section element. How: This is populated by each section's own ref callback further down and read here.
 	const skiSpyRef = React.useRef( false );                                      // What: Skip Spy Reference. Why: A programmatic scroll (jumGroFun, or generate's own scroll-to-top) must not have the scroll-spy effect immediately fight back and reassign actGroStr mid-animation. How: This is set true right before such a scroll starts and cleared shortly after it settles.
 	const pinGroRef = React.useRef< string | null >( null );                      // What: Pinned Group Reference. Why: See the doc comment just above. How: This is set by jumGroFun and read/cleared by the scroll-spy effect below.
 
@@ -1589,7 +1589,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	React.useEffect( () => { // What: Scroll Spy Effect. Why: See the doc comment just above. How: This computes, on every scroll, which section's own header sits closest to (without crossing) the sticky offset line, honoring any pinned bottom-cluster group first.
 
 
-		const secEntArr = Object.entries( secRefObj.current )                                         // What: Section Entry Array. Why: Sorting by actual document position keeps the first/last entries (used for the top default and the bottomed-out case) matching the real on-screen order, even after groups/Reminders have been reordered in Edit Mode. How: This collects every mounted section ref and sorts by offsetTop.
+		const secEntArr = Object.entries( secEleRef.current )                                         // What: Section Entry Array. Why: Sorting by actual document position keeps the first/last entries (used for the top default and the bottomed-out case) matching the real on-screen order, even after groups/Reminders have been reordered in Edit Mode. How: This collects every mounted section ref and sorts by offsetTop.
 			.filter( ( secEntTup ) : secEntTup is [ string, HTMLElement ] => !!secEntTup[ 1 ] )       // What: Mounted Section Filter. Why: A section that has unmounted leaves a null ref behind. How: This keeps only entries whose element still exists.
 			.sort( ( entOneArr, entTwoArr ) => entOneArr[ 1 ].offsetTop - entTwoArr[ 1 ].offsetTop ); // What: Document Order Sort. Why: The spy walks sections top to bottom. How: This sorts entries by each element's own offsetTop.
 
@@ -1624,7 +1624,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			if ( pinGroRef.current ) { // What: Pinned Group Branch. Why: A pinned bottom-cluster group should stay active while bottomed out or while its own header is still above the viewport midline. How: This releases the pin once neither condition holds any more, otherwise returns early to keep it active.
 
 
-				const pinSecEle = secRefObj.current[ pinGroRef.current ];                  // What: Pinned Section Element. Why: The release check below needs the pinned section's own live DOM node. How: This reads secRefObj.current at pinGroRef's own key.
+				const pinSecEle = secEleRef.current[ pinGroRef.current ];                  // What: Pinned Section Element. Why: The release check below needs the pinned section's own live DOM node. How: This reads secEleRef.current at pinGroRef's own key.
 				const vieTopNum = scrCurEle ? scrCurEle.getBoundingClientRect().top : 0;   // What: View Top Number. Why: The midline check below needs the scroller's own viewport top. How: This reads scrCurEle's own bounding rect top, or 0 without a scroller.
 				const vieHeiNum = scrCurEle ? scrCurEle.clientHeight : window.innerHeight; // What: View Height Number. Why: The midline check below needs the scroller's own viewport height. How: This reads scrCurEle.clientHeight, or the window's own innerHeight without a scroller.
 				const midLinNum = vieTopNum + vieHeiNum / 2;                               // What: Mid Line Number. Why: "Still in view" for a pinned group is judged against the viewport's own vertical middle. How: This adds half of vieHeiNum to vieTopNum.
@@ -1706,7 +1706,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const jumGroFun = ( groIdeStr : string ) => { // What: Jump Group Function. Why: This is the actual click handler behind every rail button, smooth-scrolling the content column to the named section. How: This resolves the sticky offset, computes a target scroll position, pins the group if it can't reach the spy line, then scrolls.
 
 
-		const tarSecEle = secRefObj.current[ groIdeStr ]; // What: Target Section Element. Why: There is nothing to scroll to without a real mounted section. How: This reads secRefObj.current at groIdeStr.
+		const tarSecEle = secEleRef.current[ groIdeStr ]; // What: Target Section Element. Why: There is nothing to scroll to without a real mounted section. How: This reads secEleRef.current at groIdeStr.
 
 
 		if ( !tarSecEle ) return; // What: No Target Guard. Why: A stale or not-yet-mounted section must not attempt a scroll at all. How: This bails out early when tarSecEle is missing.
@@ -2525,16 +2525,16 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 		// #region Cascade Initialization
 
-		const iniSloMap : Record< string, GenSloTyp > = {}; // What: Initial Slot Map. Why: Every slot must start pending, before the loop below flips each to active then settled in turn. How: This is populated just below from ordSloArr.
+		const iniSloObj : Record< string, GenSloTyp > = {}; // What: Initial Slot Object. Why: Every slot must start pending, before the loop below flips each to active then settled in turn. How: This is populated just below from ordSloArr.
 
 
-		for ( const curSloObj of ordSloArr ) iniSloMap[ curSloObj.picStr ] = { staStr : 'pending', ...curSloObj.infObj }; // What: Initial Slot Populate. Why: This is the actual per-slot seed every LoaCarCom reads from at the very start of the cascade. How: This writes one { status: 'pending', ...info } entry per ordSloArr member.
+		for ( const curSloObj of ordSloArr ) iniSloObj[ curSloObj.picStr ] = { staStr : 'pending', ...curSloObj.infObj }; // What: Initial Slot Populate. Why: This is the actual per-slot seed every LoaCarCom reads from at the very start of the cascade. How: This writes one { status: 'pending', ...info } entry per ordSloArr member.
 
 
 
-		genMapRef.current = iniSloMap; // What: Generate Map Reference Set. Why: The departing-entry computation further below needs to read this synchronously, before React has necessarily committed the matching state update. How: This mirrors iniSloMap into genMapRef.
+		genMapRef.current = iniSloObj; // What: Generate Map Reference Set. Why: The departing-entry computation further below needs to read this synchronously, before React has necessarily committed the matching state update. How: This mirrors iniSloObj into genMapRef.
 
-		setGenMapObj( iniSloMap ); // What: Generate Map Set. Why: Every LoaCarCom needs this initial map to render its own pending state. How: This publishes iniSloMap into genMapObj.
+		setGenMapObj( iniSloObj ); // What: Generate Map Set. Why: Every LoaCarCom needs this initial map to render its own pending state. How: This publishes iniSloObj into genMapObj.
 		setOpeLogStr( null );      // What: Open Log Clear. Why: A Day Log panel left open during a regeneration would show stale data mid-cascade. How: This clears opeLogStr.
 		setGenActBoo( true );      // What: Generate Active Set. Why: The footer/rail need to know a cascade is now playing. How: This flips genActBoo to true.
 
@@ -2545,14 +2545,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		if ( redMotFun() ) { // What: Reduced Motion Branch. Why: The picks are already fully computed above, so the pending-active-settled cascade is pure theatre for a user who won't perceive it as smooth anyway; this commits every slot straight to settled instead of making them wait genTotNum for a list that already exists. How: This builds and publishes an all-settled map immediately.
 
 
-			const finSloMap : Record< string, GenSloTyp > = {}; // What: Final Slot Map. Why: Every slot needs to land at 'settled' in one shot. How: This is populated just below from ordSloArr.
+			const finSloObj : Record< string, GenSloTyp > = {}; // What: Final Slot Object. Why: Every slot needs to land at 'settled' in one shot. How: This is populated just below from ordSloArr.
 
 
-			for ( const curSloObj of ordSloArr ) finSloMap[ curSloObj.picStr ] = { staStr : 'settled', ...curSloObj.infObj }; // What: Settled Slot Populate. Why: This is the actual all-settled map. How: This writes one { staStr: 'settled', ...infObj } entry per ordSloArr member.
+			for ( const curSloObj of ordSloArr ) finSloObj[ curSloObj.picStr ] = { staStr : 'settled', ...curSloObj.infObj }; // What: Settled Slot Populate. Why: This is the actual all-settled map. How: This writes one { staStr: 'settled', ...infObj } entry per ordSloArr member.
 
 
 
-			setGenMapObj( finSloMap ); // What: Generate Map Set. Why: Every LoaCarCom needs to render its own final settled state immediately. How: This publishes finSloMap into genMapObj.
+			setGenMapObj( finSloObj ); // What: Generate Map Set. Why: Every LoaCarCom needs to render its own final settled state immediately. How: This publishes finSloObj into genMapObj.
 
 
 		}
@@ -2783,12 +2783,12 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	// #endregion genLisFun
 
 
-	const genRefObj = React.useRef( genLisFun ); // What: Generate Reference Object. Why: The onboarding tour's own "Generate now" step needs to call the LATEST genLisFun closure directly, skipping the footer's own replace-confirmation dialog. How: This is kept in sync by the line just below on every render.
+	const genLatRef = React.useRef( genLisFun ); // What: Generate Latest Reference. Why: The onboarding tour's own "Generate now" step needs to call the LATEST genLisFun closure directly, skipping the footer's own replace-confirmation dialog. How: This is kept in sync by the line just below on every render.
 
 
-	genRefObj.current = genLisFun; // What: Generate Reference Update. Why: Every render's own fresh genLisFun closure must replace whatever this ref held before. How: This overwrites genRefObj.current unconditionally.
+	genLatRef.current = genLisFun; // What: Generate Reference Update. Why: Every render's own fresh genLisFun closure must replace whatever this ref held before. How: This overwrites genLatRef.current unconditionally.
 
-	React.useEffect( () => { window.__emlGenerate = () => genRefObj.current && genRefObj.current(); }, [] ); // What: Global Generate Expose Effect. Why: The onboarding tour drives generation through this documented window global (see this file's own "Runtime globals on window" convention). How: This assigns a thin wrapper calling genRefObj's own current function, once on mount.
+	React.useEffect( () => { window.__emlGenerate = () => genLatRef.current && genLatRef.current(); }, [] ); // What: Global Generate Expose Effect. Why: The onboarding tour drives generation through this documented window global (see this file's own "Runtime globals on window" convention). How: This assigns a thin wrapper calling genLatRef's own current function, once on mount.
 
 	// #endregion Regenerate
 
@@ -2855,7 +2855,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		const cheGenFun = () => { // What: Check Generate Function. Why: This is the actual boundary check, run both immediately and on a recurring interval below. How: This resolves the most recent run-time boundary and calls genRefObj's own current function only when this period hasn't been generated yet.
+		const cheGenFun = () => { // What: Check Generate Function. Why: This is the actual boundary check, run both immediately and on a recurring interval below. How: This resolves the most recent run-time boundary and calls genLatRef's own current function only when this period hasn't been generated yet.
 
 
 			if ( genBusRef.current || synWaiRef.current ) return; // What: Already Generating Guard. Why: A cascade already in flight, or a list already waiting on sync, must not be double-triggered. How: This bails out early while genBusRef or synWaiRef is true.
@@ -2917,10 +2917,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-			if ( genRefObj.current ) { // What: Trigger Branch. Why: Everything above has now confirmed this period genuinely needs generating. How: This calls genRefObj's own current function with autBoo true, then fires a best-effort notification.
+			if ( genLatRef.current ) { // What: Trigger Branch. Why: Everything above has now confirmed this period genuinely needs generating. How: This calls genLatRef's own current function with autBoo true, then fires a best-effort notification.
 
 
-				genRefObj.current( { autBoo : true } ); // What: Auto Generate Call. Why: This is the actual trigger. How: This calls genRefObj.current with { autBoo: true }.
+				genLatRef.current( { autBoo : true } ); // What: Auto Generate Call. Why: This is the actual trigger. How: This calls genLatRef.current with { autBoo: true }.
 
 
 
@@ -3502,7 +3502,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				 * tab-today.tsx = Deferred Regenerate
 				 *
 				 * @summary
-				 * Deferred, and via genRefObj rather than calling genLisFun
+				 * Deferred, and via genLatRef rather than calling genLisFun
 				 * directly: the three actStoObj.* calls just above are
 				 * async state updates that haven't re-rendered yet at
 				 * this point in the callback, so a bare genLisFun() here
@@ -3513,18 +3513,18 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				 * silently produce nothing, only reminders would show,
 				 * since those render live off staAppObj.tasks rather than
 				 * being baked into entries by a one-time genLisFun run.
-				 * genRefObj always points at the LATEST genLisFun closure
+				 * genLatRef always points at the LATEST genLisFun closure
 				 * (see its own comment above); scheduling this on a new
 				 * macrotask gives React a chance to flush the batched
 				 * updates from the three actStoObj.* calls into a fresh
-				 * render first, so by the time this fires, genRefObj's
+				 * render first, so by the time this fires, genLatRef's
 				 * own current function sees the real state.
 				 *
 				 * @author z4nta0 <https://github.com/z4nta0>
 				 *
 				*/
 
-				setTimeout( () => genRefObj.current(), 0 ); // What: Deferred Regenerate Call. Why: The real list should generate only after this tick's state updates settle (see the comment just above). How: This schedules genRefObj's own current generator on the next task.
+				setTimeout( () => genLatRef.current(), 0 ); // What: Deferred Regenerate Call. Why: The real list should generate only after this tick's state updates settle (see the comment just above). How: This schedules genLatRef's own current generator on the next task.
 
 				// #endregion Deferred Regenerate
 
@@ -4320,7 +4320,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											ediModBoo={ ediModBoo }
 											leaTasSet={ leaTasSet }
 											logOpeBoo={ opeLogStr === '__reminders' }
-											secRefFun={ ( secCurEle ) => { secRefObj.current[ '__reminders' ] = secCurEle; } }
+											secRefFun={ ( secCurEle ) => { secEleRef.current[ '__reminders' ] = secCurEle; } }
 											setActEdiStr={ setActEdiStr }
 											staAppObj={ staAppObj }
 
@@ -4358,7 +4358,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 										<section
 											key='__pageTours'
-											ref={ ( secCurEle ) => { secRefObj.current[ '__pageTours' ] = secCurEle; } }
+											ref={ ( secCurEle ) => { secEleRef.current[ '__pageTours' ] = secCurEle; } }
 
 											className={ cssModObj.todGroSec }
 
@@ -4434,7 +4434,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<section
 										key={ curGroObj.namStr }
-										ref={ ( secCurEle ) => { secRefObj.current[ curGroObj.namStr ] = secCurEle; } }
+										ref={ ( secCurEle ) => { secEleRef.current[ curGroObj.namStr ] = secCurEle; } }
 
 										className={ cssModObj.todGroSec }
 
@@ -4628,7 +4628,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 							<section
-								ref={ ( secCurEle ) => { secRefObj.current[ '__appFeatures' ] = secCurEle; } }
+								ref={ ( secCurEle ) => { secEleRef.current[ '__appFeatures' ] = secCurEle; } }
 
 								className={ cssModObj.todGroSec }
 

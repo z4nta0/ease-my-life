@@ -3,8 +3,8 @@
 
 // #region Imports
 
-import { ONB_ASP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding All-Sample-Pickers Array. Why: This is every sample picker's own template, the full set the page tours seed and clear disposable copies of. How: This is iterated by seePicFun and clePicFun below.
-import { ONB_TAS_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: The Data tour needs real reminders to point at, seeded/cleared as disposable copies the same way the sample pickers are. How: This is iterated by seeTasFun/cleTasFun below.
+import { ONB_ASP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding All-Sample-Pickers Array. Why: This is every sample picker's own template, the full set the page tours seed and clear disposable copies of. How: This is iterated by sedPicFun and clePicFun below.
+import { ONB_TAS_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: The Data tour needs real reminders to point at, seeded/cleared as disposable copies the same way the sample pickers are. How: This is iterated by sedTasFun/cleTasFun below.
 
 
 import type { ActStoTyp } from '../state/store.ts';     // What: Action Store Type. Why: The seed and clear helpers change pickers and reminders through the store's actions. How: This types their actStoObj.
@@ -20,7 +20,7 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  * @summary
  * Disposable copies of the onboarding sample pickers and reminders for the
  * page mini-tours: the Pickers and Data tours edit and delete things, so they
- * work on pt_-prefixed copies (seePicFun, seeTasFun) that are torn back down
+ * work on pt_-prefixed copies (sedPicFun, sedTasFun) that are torn back down
  * when the tour closes (clePicFun, cleTasFun), keeping the real hidden samples
  * untouched.
  *
@@ -78,7 +78,7 @@ const picCopFun = ( samIdeStr : string ) => `pt_${ samIdeStr }`; // What: Picker
  * clePicFun = Clear Picker Function
  *
  * @summary
- * Discards the copies seePicFun makes, called whenever a tour that seeded them
+ * Discards the copies sedPicFun makes, called whenever a tour that seeded them
  * ends (Skip or Done), so they never linger as clutter in the user's real
  * picker list. Harmless no-op for any copy that was never actually seeded
  * (e.g. Skip from the intro modal, before Step 1's own runFun ever fires).
@@ -108,10 +108,10 @@ const clePicFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Picker Fu
 
 
 
-// #region seePicFun
+// #region sedPicFun
 
 /**
- * seePicFun = Seed Picker Function
+ * sedPicFun = Seed Picker Function
  *
  * @summary
  * Fired from Step 1's runFun (see PagTouCom below), between the nav click and
@@ -144,12 +144,12 @@ const clePicFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Picker Fu
  *
  * @example
  * ```ts
- * seePicFun(staAppObj, actStoObj) // => void
+ * sedPicFun(staAppObj, actStoObj) // => void
  * ```
  *
 */
 
-const seePicFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { // What: Seed Picker Function. Why: The Pickers/Data tours need real, disposable copies of every sample picker seeded before their own steps can point at them. How: This adds one copy per ONB_ASP_ARR entry, skipping any already seeded.
+const sedPicFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { // What: Seed Picker Function. Why: The Pickers/Data tours need real, disposable copies of every sample picker seeded before their own steps can point at them. How: This adds one copy per ONB_ASP_ARR entry, skipping any already seeded.
 
 
 	ONB_ASP_ARR.forEach( ( samPicObj ) => { // What: Sample Picker Object Loop. Why: Every sample picker's own template needs its own disposable copy. How: This iterates ONB_ASP_ARR, seeding one copy per entry.
@@ -180,7 +180,7 @@ const seePicFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 };
 
-// #endregion seePicFun
+// #endregion sedPicFun
 
 // #endregion Picker Copies
 
@@ -198,7 +198,7 @@ const tasCopFun = ( samIdeStr : string ) => `pt_${ samIdeStr }`; // What: Task C
  * cleTasFun = Clear Task Function
  *
  * @summary
- * Discards the reminder copies seeTasFun makes, called whenever the Data tour
+ * Discards the reminder copies sedTasFun makes, called whenever the Data tour
  * ends (Skip or Done), so they never linger in the user's real reminder list.
  * Harmless no-op for any copy that was never actually seeded.
  *
@@ -227,19 +227,19 @@ const cleTasFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Task Func
 
 
 
-// #region seeTasFun
+// #region sedTasFun
 
 /**
- * seeTasFun = Seed Task Function
+ * sedTasFun = Seed Task Function
  *
  * @summary
  * The Data tour's own Reminders step needs real reminders to point at, same
- * reasoning as seePicFun above (real edit/delete controls are exposed there
+ * reasoning as sedPicFun above (real edit/delete controls are exposed there
  * too, so a disposable copy protects the real hidden samples), just for
  * ONB_TAS_ARR instead of pickers. Data-only, the Pickers tour never touches
  * reminders at all.
  *
- * Fired from the Data tour's own Step 1 runFun alongside seePicFun, guarded by
+ * Fired from the Data tour's own Step 1 runFun alongside sedPicFun, guarded by
  * existence so navigating back to Step 1 and forward again can't create
  * duplicate-id reminders. A weekly sample's copy is pinned to today's weekday,
  * the same way the Welcome Tour seeds the real one.
@@ -254,12 +254,12 @@ const cleTasFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Task Func
  *
  * @example
  * ```ts
- * seeTasFun(staAppObj, actStoObj) // => void
+ * sedTasFun(staAppObj, actStoObj) // => void
  * ```
  *
 */
 
-const seeTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { // What: Seed Task Function. Why: The Data tour needs real, disposable copies of every sample reminder seeded before its Reminders step can point at them. How: This adds one copy per ONB_TAS_ARR entry, skipping any already seeded.
+const sedTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { // What: Seed Task Function. Why: The Data tour needs real, disposable copies of every sample reminder seeded before its Reminders step can point at them. How: This adds one copy per ONB_TAS_ARR entry, skipping any already seeded.
 
 
 	ONB_TAS_ARR.forEach( ( samTasObj ) => { // What: Sample Task Object Loop. Why: Every sample reminder's own template needs its own disposable copy. How: This iterates ONB_TAS_ARR, seeding one copy per entry.
@@ -290,7 +290,7 @@ const seeTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 };
 
-// #endregion seeTasFun
+// #endregion sedTasFun
 
 // #endregion Reminder Copies
 
@@ -300,7 +300,7 @@ const seeTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 // #region Exports
 
-export { clePicFun, cleTasFun, neeCopFun, seePicFun, seeTasFun }; // What: Named Exports. Why: PagTouCom seeds and clears the copies as a page tour opens and closes. How: This exports the seed, clear, and needs-copies functions by name; the id helpers stay private to this file.
+export { clePicFun, cleTasFun, neeCopFun, sedPicFun, sedTasFun }; // What: Named Exports. Why: PagTouCom seeds and clears the copies as a page tour opens and closes. How: This exports the seed, clear, and needs-copies functions by name; the id helpers stay private to this file.
 
 // #endregion Exports
 

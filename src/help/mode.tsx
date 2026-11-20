@@ -325,9 +325,9 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 	const allIteArr = React.useMemo( () => [ NAV_HEL_OBJ, RAI_HAN_OBJ, ...helIteArr ], [ helIteArr ] ); // What: All Items Array And Memo. Why: The nav item and rail handle item are shared by every page, ahead of whatever page-specific items the caller passed. How: This concatenates the 2 shared items ahead of helIteArr, recomputed only when helIteArr itself changes.
 
-	const [ recMapObj, setRecMapObj ] = React.useState< Record< string, HelRecTyp > >( {} );                                               // What: Rect Map Object And Setter. Why: Every tagged element's own current rect (keyed by its own catalog id) drives the whole rendered overlay. How: This starts empty and is written wholesale by recTarFun below on every animation frame while actModBoo.
+	const [ recMapObj, setRecMapObj ] = React.useState< Record< string, HelRecTyp > >( {} );                                               // What: Rect Map Object And Setter. Why: Every tagged element's own current rect (keyed by its own catalog id) drives the whole rendered overlay. How: This starts empty and is written wholesale by meaTarFun below on every animation frame while actModBoo.
 	const [ opeIdeStr, setOpeIdeStr ] = React.useState< string | null >( null );                                                           // What: Open Identifier String And Setter. Why: At most one tip can be open at a time, tracked by its own (possibly mulBoo-suffixed) id. How: This starts null (no tip open) and is toggled by a badge's own onClick below.
-	const [ togRecObj, setTogRecObj ] = React.useState< { height : number, left : number, top : number, width : number } | null >( null ); // What: Toggle Rect Object And Setter. Why: The page's own help toggle button needs a mask cutout too, even though it is never one of allIteArr. How: This is written by recTarFun below whenever a .helTogBut is found on the page.
+	const [ togRecObj, setTogRecObj ] = React.useState< { height : number, left : number, top : number, width : number } | null >( null ); // What: Toggle Rect Object And Setter. Why: The page's own help toggle button needs a mask cutout too, even though it is never one of allIteArr. How: This is written by meaTarFun below whenever a .helTogBut is found on the page.
 
 	// #endregion Overlay State Setup
 
@@ -335,7 +335,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 	// #region Rect Tracking
 
-	const recTarFun = React.useCallback( () => { // What: Recompute Target Function. Why: Every tagged element's own rect must be recomputed every frame while active, to stay correct under scrolling/reflow, and also right after a click that could have changed the DOM. How: This rebuilds the whole rect map from scratch and writes it via setRecMapObj.
+	const meaTarFun = React.useCallback( () => { // What: Measure Target Function. Why: Every tagged element's own rect must be recomputed every frame while active, to stay correct under scrolling/reflow, and also right after a click that could have changed the DOM. How: This rebuilds the whole rect map from scratch and writes it via setRecMapObj.
 
 
 		const nexMapObj : Record< string, HelRecTyp > = {}; // What: Next Map Object. Why: The whole rect map is rebuilt from scratch every call rather than patched incrementally. How: This starts empty and is filled in by the loops below before being committed via setRecMapObj.
@@ -698,15 +698,15 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
-	const safMeaFun = React.useCallback( () => { // What: Safe Measure Function. Why: A thrown error from a single bad measurement (e.g. a target mid-reflow) must not kill the rAF loop permanently, since an uncaught exception would skip the requestAnimationFrame call after it and silently stop all per-frame tracking. How: This wraps recTarFun in a try/catch, logging and swallowing any error instead of letting it propagate.
+	const safMeaFun = React.useCallback( () => { // What: Safe Measure Function. Why: A thrown error from a single bad measurement (e.g. a target mid-reflow) must not kill the rAF loop permanently, since an uncaught exception would skip the requestAnimationFrame call after it and silently stop all per-frame tracking. How: This wraps meaTarFun in a try/catch, logging and swallowing any error instead of letting it propagate.
 
 
-		try { recTarFun(); } // What: Recompute Try. Why: A thrown error from a single bad measurement must not escape this wrapper uncaught. How: This calls recTarFun inside the guarded block.
+		try { meaTarFun(); } // What: Recompute Try. Why: A thrown error from a single bad measurement must not escape this wrapper uncaught. How: This calls meaTarFun inside the guarded block.
 
 		catch ( errCatObj ) { console.error( '[help-mode] recompute failed', errCatObj ); } // What: Recompute Catch. Why: Swallowing the error here, instead of letting it propagate, is what keeps the rAF loop alive for every later frame. How: This logs errCatObj to the console and does nothing else.
 
 
-	}, [ recTarFun ] ); // What: Callback Dependency Array. Why: This callback's own identity only needs to change when recTarFun's own identity does. How: recTarFun is called directly inside the try block above.
+	}, [ meaTarFun ] ); // What: Callback Dependency Array. Why: This callback's own identity only needs to change when meaTarFun's own identity does. How: meaTarFun is called directly inside the try block above.
 
 
 
@@ -740,7 +740,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
-			safMeaFun(); // What: Safe Measure Call. Why: This is the actual per-frame work, wrapped so one bad frame cannot kill the whole loop. How: This calls safMeaFun, which itself calls recTarFun inside a try/catch.
+			safMeaFun(); // What: Safe Measure Call. Why: This is the actual per-frame work, wrapped so one bad frame cannot kill the whole loop. How: This calls safMeaFun, which itself calls meaTarFun inside a try/catch.
 
 
 			rafIdeNum = requestAnimationFrame( looRafFun ); // What: Next Frame Schedule. Why: The loop must keep going every frame while still active. How: This schedules looRafFun itself again and stashes the new frame id.

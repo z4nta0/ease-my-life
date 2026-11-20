@@ -26,7 +26,7 @@ import type { TasArgTyp } from '../core/data-model.ts'; // What: Task Argument T
  * picker, and reminders covering every recurrence type), and torn back down
  * the moment it turns off. Stats borrows the real sample pickers' own year of
  * history instead, through state/sample-history.ts. Same "real, interactive,
- * but disposable" idea as onboarding/page-samples.ts's own seePicFun, kept
+ * but disposable" idea as onboarding/page-samples.ts's own sedPicFun, kept
  * as an entirely separate hlp_-prefixed id namespace (rather than reusing that
  * file's own pt_ copies) so the two features can never collide even if both
  * happened to be active at once.

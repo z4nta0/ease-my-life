@@ -2981,9 +2981,9 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 				const finPicObj = { ...newPicObj, name : finNamStr }; // What: Final Picker Object. Why: The picker actually written to state must carry the de-duplicated name, not the raw one. How: This spreads newPicObj with name replaced by finNamStr.
 
-				const nexPidArr = ( picArgObj.includeInDaily === undefined ? true : picArgObj.includeInDaily ) // What: Next Picker-IDs Array. Why: picArgObj.includeInDaily (defaulting to true) decides whether this picker joins or leaves the Daily generator's own membership list. How: This adds picIdeStr when it's included and it isn't already present, else removes it.
+				const nexPiiArr = ( picArgObj.includeInDaily === undefined ? true : picArgObj.includeInDaily ) // What: Next Picker-Identifier Array. Why: picArgObj.includeInDaily (defaulting to true) decides whether this picker joins or leaves the Daily generator's own membership list. How: This adds picIdeStr when it's included and it isn't already present, else removes it.
 					? ( curStaObj.daily.pickerIds.includes( picIdeStr ) ? curStaObj.daily.pickerIds : [ ...curStaObj.daily.pickerIds, picIdeStr ] ) // What: Include Branch. Why: The picker joins the Daily generator. How: This appends picIdeStr unless it's already listed.
-					: curStaObj.daily.pickerIds.filter( ( curPidStr ) => curPidStr !== picIdeStr );                                                 // What: Exclude Branch. Why: The picker leaves the Daily generator. How: This filters picIdeStr out.
+					: curStaObj.daily.pickerIds.filter( ( curPiiStr ) => curPiiStr !== picIdeStr );                                                 // What: Exclude Branch. Why: The picker leaves the Daily generator. How: This filters picIdeStr out.
 
 
 
@@ -2993,7 +2993,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 					...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
 
 					conditionals : madConObj ? [ ...( curStaObj.conditionals || [] ), madConObj ] : ( curStaObj.conditionals || [] ), // What: Conditionals. Why: A freshly-made inline conditional must be saved alongside the picker that uses it. How: This appends madConObj when there is one, else keeps the existing list.
-					daily        : { ...curStaObj.daily, pickerIds : nexPidArr },                                                     // What: Daily. Why: The picker's own daily-generator membership must be updated. How: This spreads curStaObj.daily with pickerIds replaced by nexPidArr.
+					daily        : { ...curStaObj.daily, pickerIds : nexPiiArr },                                                     // What: Daily. Why: The picker's own daily-generator membership must be updated. How: This spreads curStaObj.daily with pickerIds replaced by nexPiiArr.
 
 					items : picArgObj.replaceId // What: Items Replace-Or-Append. Why: On a replace, the picker's own OLD items are dropped wholesale and rebuilt from this run's own payload, not merged with whatever was there before. How: This drops picArgObj.replaceId's own old items then appends newIteArr, or simply appends newIteArr when there's no picArgObj.replaceId.
 						? [ ...curStaObj.items.filter( ( curIteObj ) => curIteObj.pickerId !== picArgObj.replaceId ), ...newIteArr ] // What: Replace Items Branch. Why: A replayed tour rebuilds its picker's items from scratch. How: This drops the old picker's items, then appends the new ones.
@@ -3064,7 +3064,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 					...curStaObj.daily, // What: Current Daily Spread. Why: Every other daily setting (mode, run time, ...) must carry over unchanged. How: This spreads curStaObj.daily before the pickerIds override below.
 
-					pickerIds : ( curStaObj.daily.pickerIds || [] ).filter( ( curPidStr ) => curPidStr !== picIdeStr ) // What: Picker IDs. Why: The deleted picker's id must not linger in the generator's list. How: This filters picIdeStr out of daily.pickerIds, defaulting to [].
+					pickerIds : ( curStaObj.daily.pickerIds || [] ).filter( ( curPiiStr ) => curPiiStr !== picIdeStr ) // What: Picker IDs. Why: The deleted picker's id must not linger in the generator's list. How: This filters picIdeStr out of daily.pickerIds, defaulting to [].
 
 
 				},
@@ -3323,9 +3323,9 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			const nexPidArr = picArgObj.includeInDaily // What: Next Picker-IDs Array. Why: picArgObj.includeInDaily decides whether this picker joins or leaves the Daily generator's own membership list, same as addPicFun's own resolution. How: This adds picIdeStr when it's included and it isn't already present, else removes it.
+			const nexPiiArr = picArgObj.includeInDaily // What: Next Picker-Identifier Array. Why: picArgObj.includeInDaily decides whether this picker joins or leaves the Daily generator's own membership list, same as addPicFun's own resolution. How: This adds picIdeStr when it's included and it isn't already present, else removes it.
 				? ( curStaObj.daily.pickerIds.includes( picIdeStr ) ? curStaObj.daily.pickerIds : [ ...curStaObj.daily.pickerIds, picIdeStr ] ) // What: Include Branch. Why: The picker joins the Daily generator. How: This appends picIdeStr unless it's already listed.
-				: curStaObj.daily.pickerIds.filter( ( curPidStr ) => curPidStr !== picIdeStr );                                                 // What: Exclude Branch. Why: The picker leaves the Daily generator. How: This filters picIdeStr out.
+				: curStaObj.daily.pickerIds.filter( ( curPiiStr ) => curPiiStr !== picIdeStr );                                                 // What: Exclude Branch. Why: The picker leaves the Daily generator. How: This filters picIdeStr out.
 
 
 
@@ -3335,7 +3335,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
 
 				conditionals : madConObj ? [ ...( curStaObj.conditionals || [] ), madConObj ] : ( curStaObj.conditionals || [] ), // What: Conditionals. Why: A freshly-made inline conditional must be saved alongside the picker that uses it. How: This appends madConObj when there is one, else keeps the existing list.
-				daily        : { ...curStaObj.daily, pickerIds : nexPidArr },                                                     // What: Daily. Why: The picker's own daily-generator membership must be updated. How: This spreads curStaObj.daily with pickerIds replaced by nexPidArr.
+				daily        : { ...curStaObj.daily, pickerIds : nexPiiArr },                                                     // What: Daily. Why: The picker's own daily-generator membership must be updated. How: This spreads curStaObj.daily with pickerIds replaced by nexPiiArr.
 				items        : nexIteArr,                                                                                         // What: Items. Why: A mode change resets this picker's own items. How: This is nexIteArr.
 				pickers      : curStaObj.pickers.map( ( picMapObj ) => picMapObj.id === picIdeStr ? finPicObj : picMapObj )       // What: Pickers. Why: Only the edited picker is replaced. How: This swaps finPicObj in for the picker matching picIdeStr.
 

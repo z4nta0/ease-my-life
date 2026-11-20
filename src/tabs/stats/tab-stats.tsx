@@ -277,11 +277,11 @@ function couLevFun ( donCouNum : number ) : number {
  *                    active.
  *
  * @returns A map of item id to its count of rows with that outcome.
- * @see {@link outMapObj}
+ * @see {@link outCouMap}
  *
  * @example
  * ```ts
- * outCouFun('skipped', picLogArr, hidPicSet, ...) // => outMapObj
+ * outCouFun('skipped', picLogArr, hidPicSet, ...) // => outCouMap
  * ```
  *
 */
@@ -289,11 +289,11 @@ function couLevFun ( donCouNum : number ) : number {
 function outCouFun ( outValStr : PclOutTyp, picLogArr : PclRowTyp[], hidPicSet : Set< string >, scoValStr : string, cutIsoStr : string | null, isaRemBoo : boolean ) : Map< string, number > {
 
 
-	const outMapObj = new Map< string, number >(); // What: Out Map Object. Why: The counts need a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by the loop.
+	const outCouMap = new Map< string, number >(); // What: Out Count Map. Why: The counts need a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by the loop.
 
 
 
-	if ( isaRemBoo ) return outMapObj; // What: Reminders Scope Guard. Why: The Reminders scope has no pick rows with an outcome to count. How: This returns the still-empty map whenever the Reminders scope is active.
+	if ( isaRemBoo ) return outCouMap; // What: Reminders Scope Guard. Why: The Reminders scope has no pick rows with an outcome to count. How: This returns the still-empty map whenever the Reminders scope is active.
 
 
 
@@ -316,14 +316,14 @@ function outCouFun ( outValStr : PclOutTyp, picLogArr : PclRowTyp[], hidPicSet :
 
 
 
-		outMapObj.set( rowCurObj.itemId, ( outMapObj.get( rowCurObj.itemId ) || 0 ) + 1 ); // What: Count Increment. Why: This is the actual per-item tally the metric reads. How: This increments the row's own itemId entry, defaulting a first-seen item to zero.
+		outCouMap.set( rowCurObj.itemId, ( outCouMap.get( rowCurObj.itemId ) || 0 ) + 1 ); // What: Count Increment. Why: This is the actual per-item tally the metric reads. How: This increments the row's own itemId entry, defaulting a first-seen item to zero.
 
 
 	}
 
 
 
-	return outMapObj; // What: Outcome Count Return. Why: This is the finished per-item map the breakdown's Re-Rolled Away or Skipped column reads. How: This returns the map built above.
+	return outCouMap; // What: Outcome Count Return. Why: This is the finished per-item map the breakdown's Re-Rolled Away or Skipped column reads. How: This returns the map built above.
 
 
 }
@@ -926,8 +926,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const [ speModStr, setSpeModStr ] = React.useState( 'eligible' ); // What: Spent Mode String And Setter. Why: "Spent" can likewise be read in calendar days or the picker's own eligible run-days. How: This selects which of speGapMap's two values (cal/elig) is shown. // And for the ease-down "Spent" metric.
 	const [ couModStr, setCouModStr ] = React.useState( 'total' );    // What: Count Mode String And Setter. Why: The Count metric's own percentage column can read against either the whole picker's total or just this item's own eligible window. How: This is read inside the breLisArr JSX where the Count metric's percent/fraction is rendered. // Count denominator mode: 'total' (share of all picks, sums to 100%) vs. 'eligible' (share of picks made while the item was active).
 
-	const [ remMetStr, setRemMetStr ] = React.useState( 'recent' ); // What: Reminder Metric String And Setter. Why: The Reminders breakdown card can pivot between its recent-completions log and per-reminder completion/skip totals. How: This selects which of remRecArr/remDonArr/remSkiArr feeds remBreArr below. // Reminders "Reminders breakdown" card: which metric it pivots on, its own sort direction, and the current pager page (0-indexed).
-	const [ remSorStr, setRemSorStr ] = React.useState( 'desc' );   // What: Reminder Sort String And Setter. Why: Every one of remMetStr's own shapes still needs a shared High/Low or Newest/Oldest toggle. How: This is applied inside remRecArr/remDonArr/remSkiArr's own sort and flipped by the card's sort button.
+	const [ remMetStr, setRemMetStr ] = React.useState( 'recent' ); // What: Reminder Metric String And Setter. Why: The Reminders breakdown card can pivot between its recent-completions log and per-reminder completion/skip totals. How: This selects which of remLatArr/remDonArr/remSkiArr feeds remBreArr below. // Reminders "Reminders breakdown" card: which metric it pivots on, its own sort direction, and the current pager page (0-indexed).
+	const [ remSorStr, setRemSorStr ] = React.useState( 'desc' );   // What: Reminder Sort String And Setter. Why: Every one of remMetStr's own shapes still needs a shared High/Low or Newest/Oldest toggle. How: This is applied inside remLatArr/remDonArr/remSkiArr's own sort and flipped by the card's sort button.
 	const [ remIndNum, setRemIndNum ] = React.useState( 0 );        // What: Reminder Index Number And Setter. Why: The Reminders breakdown card's own list is paged, so the current 0-indexed page must be tracked. How: This is clamped into remSafNum below and reset to 0 whenever the underlying list's shape changes.
 
 	const [ conMetStr, setConMetStr ] = React.useState( 'rate' ); // What: Conditional Metric String And Setter. Why: The Conditionals breakdown list can pivot across fire rate, trigger count, cycle count, average interval, or last-fired date. How: This selects the sort key used inside conBreArr below. // Conditionals scope breakdown: which metric its own list pivots on, plus its sort direction.
@@ -1525,7 +1525,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const dayAggMap = React.useMemo( () => { // What: Day Aggregate Map Memo. Why: The heatmap, streak, and full-days count all need one shared per-day rollup, built once instead of separately per card. How: This walks either remRowArr or picRowArr (whichever scope is active) into a Map keyed by calendar day. // Per-day aggregation, one { donNum, iteArr, totNum } entry per calendar day, each iteArr entry a { donBoo, namStr } pair. A pick day counts every logged row toward totNum and only completed ones toward donNum; a reminder day counts every completion toward both.
 
 
-		const outMapObj = new Map< string, { donNum : number, iteArr : { donBoo : boolean, namStr : string }[], totNum : number } >(); // What: Out Map Object. Why: The per-day rollup needs a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by whichever branch below runs.
+		const outDayMap = new Map< string, { donNum : number, iteArr : { donBoo : boolean, namStr : string }[], totNum : number } >(); // What: Out Day Map. Why: The per-day rollup needs a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by whichever branch below runs.
 
 		if ( isaRemBoo ) { // What: Reminders Aggregation Branch. Why: A reminder completion has no "possible total" the way a pick day does, so its own day entry counts done and total identically. How: This walks remRowArr, incrementing both done and total for every completion on its own day.
 
@@ -1534,7 +1534,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 				const dayKeyStr = isoDayFun( new Date( rowCurObj.completedAt ) );                        // What: Day Key String. Why: The Map needs a plain calendar-day string to key each entry by. How: This converts the row's own completedAt timestamp via isoDayFun.
-				const dayEntObj = outMapObj.get( dayKeyStr ) || { donNum : 0, iteArr : [], totNum : 0 }; // What: Day Entry Object. Why: A day's own entry might already exist from an earlier completion the same day. How: This looks it up, or starts a fresh zeroed entry.
+				const dayEntObj = outDayMap.get( dayKeyStr ) || { donNum : 0, iteArr : [], totNum : 0 }; // What: Day Entry Object. Why: A day's own entry might already exist from an earlier completion the same day. How: This looks it up, or starts a fresh zeroed entry.
 
 
 				dayEntObj.donNum++; // What: Done Increment. Why: Every reminder completion counts as done. How: This increments donNum.
@@ -1549,7 +1549,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 				});
 
-				outMapObj.set( dayKeyStr, dayEntObj ); // What: Day Entry Store. Why: The freshly-updated entry must be written back, since it may have just been created above. How: This sets the entry back under its own day key.
+				outDayMap.set( dayKeyStr, dayEntObj ); // What: Day Entry Store. Why: The freshly-updated entry must be written back, since it may have just been created above. How: This sets the entry back under its own day key.
 
 
 			}
@@ -1563,7 +1563,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 			for ( const rowCurObj of picRowArr ) { // What: Pick Row Aggregation Loop. Why: Every logged pick needs folding into its own calendar day's entry. How: This looks up (or lazily creates) that day's entry, then increments it and appends the item's own name/done state.
 
 
-				const dayEntObj = outMapObj.get( rowCurObj.date ) || { donNum : 0, iteArr : [], totNum : 0 }; // What: Day Entry Object. Why: A day's own entry might already exist from an earlier pick the same day. How: This looks it up, or starts a fresh zeroed entry.
+				const dayEntObj = outDayMap.get( rowCurObj.date ) || { donNum : 0, iteArr : [], totNum : 0 }; // What: Day Entry Object. Why: A day's own entry might already exist from an earlier pick the same day. How: This looks it up, or starts a fresh zeroed entry.
 
 
 				dayEntObj.totNum++; // What: Total Increment. Why: Every logged row counts toward the day's total. How: This increments totNum.
@@ -1583,7 +1583,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 				});
 
-				outMapObj.set( rowCurObj.date, dayEntObj ); // What: Day Entry Store. Why: The freshly-updated entry must be written back, since it may have just been created above. How: This sets the entry back under its own date key.
+				outDayMap.set( rowCurObj.date, dayEntObj ); // What: Day Entry Store. Why: The freshly-updated entry must be written back, since it may have just been created above. How: This sets the entry back under its own date key.
 
 
 			}
@@ -1593,7 +1593,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-		return outMapObj; // What: Day Aggregate Return. Why: This is the finished per-day rollup every heatmap/streak/full-days computation below reads from. How: This returns the map built by whichever branch ran above.
+		return outDayMap; // What: Day Aggregate Return. Why: This is the finished per-day rollup every heatmap/streak/full-days computation below reads from. How: This returns the map built by whichever branch ran above.
 
 
 	}, [ picRowArr, remRowArr, isaRemBoo ] ); // What: Memo Dependency Array. Why: The rollup only ever needs rebuilding when the underlying pick rows, reminder rows, or which scope is active changes. How: picRowArr/remRowArr each feed one branch, isaRemBoo picks which branch runs.
@@ -1776,13 +1776,13 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const picCouMap = React.useMemo( () => { // What: Pick Count Map Memo. Why: The Most Picked/Coldest rankings and the single-picker breakdown all need one shared per-item pick count, joined with its own source split. How: This walks picRowArr once, accumulating a count plus a per-source tally per itemId.
 
 
-		const outMapObj = new Map(); // What: Out Map Object. Why: The per-item counts need a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by the loop.
+		const outCouMap = new Map(); // What: Out Count Map. Why: The per-item counts need a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by the loop.
 
 
 		for ( const rowCurObj of picRowArr ) { // What: Pick Count Loop. Why: Every logged pick contributes one to its own item's total, and one to whichever source produced it. How: This looks up (or lazily creates) the item's own accumulator, then increments it.
 
 
-			const iteEntObj = outMapObj.get( rowCurObj.itemId ) || { autNum : 0, couNum : 0, manNum : 0, namStr : rowCurObj.itemName, rerNum : 0 }; // What: Item Entry Object. Why: An item's own accumulator might already exist from an earlier pick. How: This looks it up, or starts a fresh zeroed entry using the row's own denormalized name.
+			const iteEntObj = outCouMap.get( rowCurObj.itemId ) || { autNum : 0, couNum : 0, manNum : 0, namStr : rowCurObj.itemName, rerNum : 0 }; // What: Item Entry Object. Why: An item's own accumulator might already exist from an earlier pick. How: This looks it up, or starts a fresh zeroed entry using the row's own denormalized name.
 
 
 			iteEntObj.couNum++; // What: Item Total Increment. Why: Every pick counts toward the item's own total. How: This increments couNum.
@@ -1794,14 +1794,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-			outMapObj.set( rowCurObj.itemId, iteEntObj ); // What: Item Entry Store. Why: The freshly-updated entry must be written back, since it may have just been created above. How: This sets the entry back under its own itemId key.
+			outCouMap.set( rowCurObj.itemId, iteEntObj ); // What: Item Entry Store. Why: The freshly-updated entry must be written back, since it may have just been created above. How: This sets the entry back under its own itemId key.
 
 
 		}
 
 
 
-		return outMapObj; // What: Pick Count Return. Why: This is the finished per-item map both rankings and the breakdown card read from. How: This returns the map built above.
+		return outCouMap; // What: Pick Count Return. Why: This is the finished per-item map both rankings and the breakdown card read from. How: This returns the map built above.
 
 
 	}, [ picRowArr ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the underlying pick rows themselves change. How: picRowArr is the sole source the loop above reads from.
@@ -1972,11 +1972,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const freGapMap = React.useMemo( () => { // What: Frequency Gap Map Memo. Why: The Frequency metric needs a per-item average gap, in both calendar and eligible-day units, between its own consecutive picks. How: This groups picRowArr's own dates per item, then averages consecutive gaps in each unit. // Eligible-day gap per item (used by the Frequency metric). The eligible index is per-item: picker run days MINUS that item's own inactive days, so an inactive stretch can't inflate the gap. Calendar gap stays literal wall-clock time.
 
 
-		const outMapObj = new Map(); // What: Out Map Object. Why: The per-item gap results need a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled below.
+		const outGapMap = new Map(); // What: Out Gap Map. Why: The per-item gap results need a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled below.
 
 
 
-		if ( !isaPicBoo || easDowBoo ) return outMapObj; // What: Scope Guard. Why: Frequency only applies to a single-picker, non-ease-down scope; an ease-down picker uses Spent instead. How: This returns the still-empty map otherwise.
+		if ( !isaPicBoo || easDowBoo ) return outGapMap; // What: Scope Guard. Why: Frequency only applies to a single-picker, non-ease-down scope; an ease-down picker uses Spent instead. How: This returns the still-empty map otherwise.
 
 
 
@@ -2034,14 +2034,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-			outMapObj.set( iteIdeStr, { calNum : gapCalNum, couNum : sorDatArr.length, eliNum : gapEliNum } ); // What: Item Gap Store. Why: The Frequency metric needs both averages plus the raw pick count per item. How: This sets the finished per-item result under its own iteIdeStr key.
+			outGapMap.set( iteIdeStr, { calNum : gapCalNum, couNum : sorDatArr.length, eliNum : gapEliNum } ); // What: Item Gap Store. Why: The Frequency metric needs both averages plus the raw pick count per item. How: This sets the finished per-item result under its own iteIdeStr key.
 
 
 		}
 
 
 
-		return outMapObj; // What: Frequency Gap Return. Why: This is the finished per-item gap map the Frequency metric reads from. How: This returns the map built above.
+		return outGapMap; // What: Frequency Gap Return. Why: This is the finished per-item gap map the Frequency metric reads from. How: This returns the map built above.
 
 
 	}, [ isaPicBoo, easDowBoo, picRowArr, actDatArr, vacCheObj ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the picker scope, the ease-down flag, the pick rows, the active dates, or the vacation-check api changes. How: Each dependency feeds one part of the grouping/averaging above.
@@ -2050,11 +2050,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const speGapMap = React.useMemo( () => { // What: Spent Gap Map Memo. Why: The ease-down Spent metric needs a per-item average completed-cycle length, in both run-count and calendar-day units. How: This walks picRowArr's own dates in order, grouping consecutive same-item runs and keeping only ones that ended depleted. // Ease Down "Spent": measured from ACTUAL history, the average length of a completed depletion streak (consecutive runs of the same active item that ended when its charge hit 0, flagged depletedEnd). Abandoned streaks (re-roll / inactive / manual) never reach 0, so they're excluded, which is why recharging an abandoned item can't skew this. elig = runs; cal = calendar days spanned. null when the item has no completed cycle in range.
 
 
-		const outMapObj = new Map(); // What: Out Map Object. Why: The per-item spent results need a fresh accumulator to build up below. How: This starts empty and is filled below.
+		const outSpeMap = new Map(); // What: Out Spent Map. Why: The per-item spent results need a fresh accumulator to build up below. How: This starts empty and is filled below.
 
 
 
-		if ( !easDowBoo ) return outMapObj; // What: Ease Down Guard. Why: Spent only applies to an ease-down picker. How: This returns the still-empty map otherwise.
+		if ( !easDowBoo ) return outSpeMap; // What: Ease Down Guard. Why: Spent only applies to an ease-down picker. How: This returns the still-empty map otherwise.
 
 
 
@@ -2130,7 +2130,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-			outMapObj.set( iteIdeStr, { // What: Item Spent Store. Why: The Spent metric needs both unit averages per item. How: This averages every streak's own calNum/runNum field.
+			outSpeMap.set( iteIdeStr, { // What: Item Spent Store. Why: The Spent metric needs both unit averages per item. How: This averages every streak's own calNum/runNum field.
 
 
 				calNum : stkRunArr.reduce( ( sumRunNum, stkRunObj ) => sumRunNum + stkRunObj.calNum, 0 ) / stkRunArr.length, // What: Calendar Number. Why: The calendar-mode Spent value is the average wall-clock span. How: This averages every streak's own calNum.
@@ -2144,7 +2144,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-		return outMapObj; // What: Spent Gap Return. Why: This is the finished per-item spent map the Spent metric reads from. How: This returns the map built above.
+		return outSpeMap; // What: Spent Gap Return. Why: This is the finished per-item spent map the Spent metric reads from. How: This returns the map built above.
 
 
 	}, [ easDowBoo, picRowArr ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the ease-down flag or the underlying pick rows change. How: Both feed the run-detection and averaging logic above.
@@ -2153,23 +2153,23 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const lasPicMap = React.useMemo( () => { // What: Last Pick Map Memo. Why: The Last Picked metric needs each item's own most recent active-pick date. How: This walks picRowArr once, keeping only the latest date seen per item. // Most-recent active pick date per item (used by the "Last picked" metric). Range + scope aware via picRowArr; rejected rows are already excluded there.
 
 
-		const outMapObj = new Map(); // What: Out Map Object. Why: The per-item latest-date results need a fresh accumulator to build up below. How: This starts empty and is filled by the loop below.
+		const outDatMap = new Map(); // What: Out Date Map. Why: The per-item latest-date results need a fresh accumulator to build up below. How: This starts empty and is filled by the loop below.
 
 
 		for ( const rowCurObj of picRowArr ) { // What: Latest Date Loop. Why: Every logged pick might be a new latest date for its own item. How: This overwrites the item's own entry whenever a later date is seen.
 
 
-			const preDatStr = outMapObj.get( rowCurObj.itemId ); // What: Previous Date String. Why: The comparison below needs whatever date was previously recorded for this item, if any. How: This looks up the item's own current entry.
+			const preDatStr = outDatMap.get( rowCurObj.itemId ); // What: Previous Date String. Why: The comparison below needs whatever date was previously recorded for this item, if any. How: This looks up the item's own current entry.
 
 
-			if ( !preDatStr || rowCurObj.date > preDatStr ) outMapObj.set( rowCurObj.itemId, rowCurObj.date ); // What: Latest Date Update. Why: Only a later (or first-ever) date should overwrite the item's own entry. How: This sets rowCurObj.date when there's no previous entry or this one is later.
+			if ( !preDatStr || rowCurObj.date > preDatStr ) outDatMap.set( rowCurObj.itemId, rowCurObj.date ); // What: Latest Date Update. Why: Only a later (or first-ever) date should overwrite the item's own entry. How: This sets rowCurObj.date when there's no previous entry or this one is later.
 
 
 		}
 
 
 
-		return outMapObj; // What: Last Pick Return. Why: This is the finished per-item latest-date map the Last Picked metric reads from. How: This returns the map built above.
+		return outDatMap; // What: Last Pick Return. Why: This is the finished per-item latest-date map the Last Picked metric reads from. How: This returns the map built above.
 
 
 	}, [ picRowArr ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the underlying pick rows themselves change. How: picRowArr is the sole source the loop above reads from.
@@ -2490,14 +2490,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const iteObjMap = React.useMemo( () => { // What: Item Object Map Memo. Why: The breakdown list's own rows don't carry every raw item field, so a suffix needs to look the real item back up by id. How: This maps every live item's own id to itself. // Per-item lookup so the card can fetch the raw item for its suffix.
 
 
-		const outMapObj = new Map(); // What: Out Map Object. Why: The lookup needs a fresh map to fill. How: This starts empty and is filled by the loop below.
+		const outIteMap = new Map(); // What: Out Item Map. Why: The lookup needs a fresh map to fill. How: This starts empty and is filled by the loop below.
 
 
-		for ( const iteCurObj of ( staAppObj.items || [] ) ) outMapObj.set( iteCurObj.id, iteCurObj ); // What: Item Map Loop. Why: Every live item needs its own id entry. How: This maps each item's own id to the item itself.
+		for ( const iteCurObj of ( staAppObj.items || [] ) ) outIteMap.set( iteCurObj.id, iteCurObj ); // What: Item Map Loop. Why: Every live item needs its own id entry. How: This maps each item's own id to the item itself.
 
 
 
-		return outMapObj; // What: Item Map Return. Why: This is the finished id-to-item lookup. How: This returns outMapObj.
+		return outIteMap; // What: Item Map Return. Why: This is the finished id-to-item lookup. How: This returns outIteMap.
 
 
 	}, [ staAppObj.items ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the live item list itself changes. How: staAppObj.items is the sole source the loop above reads from.
@@ -2657,7 +2657,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-	const remRecArr = React.useMemo( () => { // What: Reminder Recent Array Memo. Why: The Recent metric pivot needs the raw completion event log, not a grouped total, sorted by the shared direction toggle. How: This sorts a copy of remRowArr by completedAt, applying remSorStr's own direction. // "Recent" is the chronological completion event log (one row per check-off), sorted by the shared sort direction: desc = newest first. Completions/Skipped are per-reminder aggregate counts: desc = highest first.
+	const remLatArr = React.useMemo( () => { // What: Reminder Latest Array Memo. Why: The Recent metric pivot needs the raw completion event log, not a grouped total, sorted by the shared direction toggle. How: This sorts a copy of remRowArr by completedAt, applying remSorStr's own direction. // "Recent" is the chronological completion event log (one row per check-off), sorted by the shared sort direction: desc = newest first. Completions/Skipped are per-reminder aggregate counts: desc = highest first.
 
 
 		const sorDirNum = remSorStr === 'desc' ? -1 : 1; // What: Sort Direction Number. Why: The sort below needs a plain +1/-1 multiplier instead of re-checking the string per comparison. How: This is -1 for descending, 1 for ascending.
@@ -2670,7 +2670,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	}, [ remRowArr, remSorStr ] ); // What: Memo Dependency Array. Why: This only ever needs resorting when the underlying reminder rows or the sort direction changes. How: Both feed the sort comparator above.
 
 
-	const remBreArr = remMetStr === 'skipped' ? remSkiArr : remMetStr === 'completions' ? remDonArr : remRecArr; // What: Reminder Breakdown Array. Why: The card's own rendered list depends on which of the three metric pivots is active. How: This selects remSkiArr/remDonArr/remRecArr by remMetStr.
+	const remBreArr = remMetStr === 'skipped' ? remSkiArr : remMetStr === 'completions' ? remDonArr : remLatArr; // What: Reminder Breakdown Array. Why: The card's own rendered list depends on which of the three metric pivots is active. How: This selects remSkiArr/remDonArr/remLatArr by remMetStr.
 	const remPagNum = Math.max( 1, Math.ceil( remBreArr.length / REM_SIZ_NUM ) );                                // What: Reminder Page Number. Why: PagNavCom needs the total page count to disable the next arrow on the last page. How: This divides remBreArr's own length by REM_SIZ_NUM, rounding up, floored at 1.
 	const remSafNum = Math.min( remIndNum, remPagNum - 1 );                                                      // What: Reminder Safe Number. Why: remIndNum can go stale if the underlying list shrinks (e.g. switching metric pivots), landing past the new last page. How: This clamps remIndNum down to the highest valid page index.
 	const remIteArr = remBreArr.slice( remSafNum * REM_SIZ_NUM, ( remSafNum + 1 ) * REM_SIZ_NUM );               // What: Reminder Item Array. Why: Only the current page's own slice of remBreArr should actually render. How: This slices remBreArr from the safe page's own start to its own end.

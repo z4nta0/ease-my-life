@@ -234,7 +234,7 @@ test( 'finishing every card celebrates', async ( { page : curPagObj } ) => { // 
 
 
 
-	for ( let cliNumVal = 0; cliNumVal < 60 && await curPagObj.locator( `${ ENT_CAR_STR } ${ UNC_BUT_STR }, ${ REM_CAR_STR } ${ UNC_BUT_STR }` ).count(); cliNumVal++ ) { // What: Check-Off Loop. Why: Every card must be done. How: This clicks the next unchecked card until none remain.
+	for ( let cliCouNum = 0; cliCouNum < 60 && await curPagObj.locator( `${ ENT_CAR_STR } ${ UNC_BUT_STR }, ${ REM_CAR_STR } ${ UNC_BUT_STR }` ).count(); cliCouNum++ ) { // What: Check-Off Loop. Why: Every card must be done. How: This clicks the next unchecked card until none remain.
 
 
 		await curPagObj.locator( `${ ENT_CAR_STR } ${ UNC_BUT_STR }, ${ REM_CAR_STR } ${ UNC_BUT_STR }` ).first().click(); // What: Next Click Call. Why: Each card is checked off in turn. How: This clicks the first unchecked one.
@@ -276,7 +276,7 @@ test( 'pushing an item onto a finished day gives the streak back', async ( { pag
 
 	// #region Finish The Day
 
-	for ( let cliNumVal = 0; cliNumVal < 60 && await curPagObj.locator( `${ ENT_CAR_STR } ${ UNC_BUT_STR }, ${ REM_CAR_STR } ${ UNC_BUT_STR }` ).count(); cliNumVal++ ) { // What: Check-Off Loop. Why: The day must be finished first. How: This clicks the next unchecked card until none remain.
+	for ( let cliCouNum = 0; cliCouNum < 60 && await curPagObj.locator( `${ ENT_CAR_STR } ${ UNC_BUT_STR }, ${ REM_CAR_STR } ${ UNC_BUT_STR }` ).count(); cliCouNum++ ) { // What: Check-Off Loop. Why: The day must be finished first. How: This clicks the next unchecked card until none remain.
 
 
 		await curPagObj.locator( `${ ENT_CAR_STR } ${ UNC_BUT_STR }, ${ REM_CAR_STR } ${ UNC_BUT_STR }` ).first().click(); // What: Next Click Call. Why: Each card is checked off in turn. How: This clicks the first unchecked one.

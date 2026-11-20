@@ -144,7 +144,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 
 	const shoDatFun = ( holDatObj : Date ) => holDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'short' } );                                     // What: Short Date Function. Why: Every computed holiday row needs a compact "Weekday, Month Day" label for when it lands. How: This formats holDatObj via toLocaleDateString with short weekday/month and numeric day.
 	const reaDayFun = ( holDatObj : Date ) => holDatObj.toLocaleDateString( 'en-US', { weekday : 'long' } );                                                                        // What: Real Day Function. Why: An observed holiday (one shifted off a weekend) needs to also say which weekday it actually falls on. How: This formats holDatObj as just its own full weekday name.
-	const recDatFun = ( monValNum : number, dayValNum : number ) => new Date( 2001, monValNum - 1, dayValNum ).toLocaleDateString( 'en-US', { day : 'numeric', month : 'short' } ); // What: Recur Date Function. Why: A custom holiday recurs every year on the same month/day, so it needs a year-agnostic "Month Day" label instead of a real date. How: This builds a throwaway Date in a fixed dummy year purely to reuse toLocaleDateString's own formatting.
+	const reuDatFun = ( monValNum : number, dayValNum : number ) => new Date( 2001, monValNum - 1, dayValNum ).toLocaleDateString( 'en-US', { day : 'numeric', month : 'short' } ); // What: Recurring Date Function. Why: A custom holiday recurs every year on the same month/day, so it needs a year-agnostic "Month Day" label instead of a real date. How: This builds a throwaway Date in a fixed dummy year purely to reuse toLocaleDateString's own formatting.
 
 	// #endregion Date Formatting
 
@@ -279,7 +279,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 							<span className={` ${ cssModObj.holDatSpa }   ${ cssModObj.holDatSpaCustom } `}>{ /* What: Holiday Date Span Element. Why: A custom holiday's recurrence label needs its own grouping. How: This wraps the recurrence label and the "every year" note below. */ }
 
 
-								<span>{ recDatFun( cusCurObj.month, cusCurObj.day ) }</span>{ /* What: Recur Label Span Element. Why: Every custom row needs a year-agnostic "Month Day" label. How: This renders cusCurObj's own month/day, formatted via recDatFun. */ }
+								<span>{ reuDatFun( cusCurObj.month, cusCurObj.day ) }</span>{ /* What: Recur Label Span Element. Why: Every custom row needs a year-agnostic "Month Day" label. How: This renders cusCurObj's own month/day, formatted via reuDatFun. */ }
 
 								<span className={ cssModObj.holReuSpa }>&middot; every year</span>{ /* What: Holiday Recur Span Element. Why: A custom holiday recurs annually, and that is not otherwise obvious from the date label alone. How: This renders a fixed "every year" note. */ }
 
