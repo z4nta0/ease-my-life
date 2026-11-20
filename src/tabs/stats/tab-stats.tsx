@@ -2419,6 +2419,10 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	};
 
+
+
+	const gapForFun = ( gapValNum : number ) => ( gapValNum >= 10 ? Math.round( gapValNum ) : Math.round( gapValNum * 10 ) / 10 ); // What: Gap Format Function. Why: The Frequency metric's own displayed gap should show one decimal for a small, precise value but round to a whole number once the gap is large enough that a decimal adds no useful precision. How: This rounds to the nearest whole number at or above 10, otherwise to one decimal place.
+
 	// #endregion Cadence-Aware Formatting
 
 
@@ -2495,11 +2499,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	}, [ staAppObj.items ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the live item list itself changes. How: staAppObj.items is the sole source the loop above reads from.
 
+	// #endregion Suffix Helpers
 
 
-	const gapForFun = ( gapValNum : number ) => ( gapValNum >= 10 ? Math.round( gapValNum ) : Math.round( gapValNum * 10 ) / 10 ); // What: Gap Format Function. Why: The Frequency metric's own displayed gap should show one decimal for a small, precise value but round to a whole number once the gap is large enough that a decimal adds no useful precision. How: This rounds to the nearest whole number at or above 10, otherwise to one decimal place.
 
-
+	// #region Metric Pills
 
 	const freSpeObj = easDowBoo ? { keyStr : 'spent', labStr : 'Spent' } : { keyStr : 'freq', labStr : 'Frequency' }; // What: Frequency Spent Object. Why: An ease-down picker measures Spent in place of Frequency, and pulling this choice out of metPilArr keeps that array's plain rows aligned. How: This picks whichever pill object fits the scoped picker's own mode.
 
@@ -2518,7 +2522,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	];
 
-	// #endregion Suffix Helpers
+	// #endregion Metric Pills
 
 
 
