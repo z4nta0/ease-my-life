@@ -922,6 +922,45 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 	const cloAddFun = () => setActEdiStr( ( curEdiStr ) => curEdiStr === 'reminder-add' ? null : curEdiStr ); // What: Close Add Function. Why: The shared actEdiStr slot may have already moved on to a different editor by the time a scheduled close finishes; only clear it if it's still ours. How: This clears actEdiStr only while it still equals the 'reminder-add' sentinel.
 
 
+
+	// #region endAddFun
+
+	/**
+	 * endAddFun = End Add Function
+	 *
+	 * @summary
+	 * Ends the quick-add form: it clears the draft, hides the form, releases
+	 * the shared editor slot if this form still holds it, and resets the
+	 * closing flag so the next open doesn't start mid-close.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * endAddFun() // => void
+	 * ```
+	 *
+	*/
+
+	const endAddFun = () => { // What: End Add Function. Why: Cancelling and committing the quick-add form both end it the same way. How: This calls the four state resets below in order.
+
+
+		setDraTasObj( null );  // What: Draft Clear Call. Why: The form's draft is spent or discarded. How: This resets draTasObj to null.
+		setVisForBoo( false ); // What: Form Hide Call. Why: The form stops rendering. How: This flips visForBoo false.
+		cloAddFun();           // What: Close Add Call. Why: The shared editor slot must be released. How: This clears actEdiStr while it is still this form's own sentinel.
+		setAddCloBoo( false ); // What: Add Closing Flag Reset. Why: The next open must not start mid-close. How: This clears addCloBoo.
+
+
+	};
+
+	// #endregion endAddFun
+
+
+
 	const canAddFun = () => { // What: Cancel Add Function. Why: Cancel (and Escape) both discard the in-progress draft, playing the same collapse animation the forced-close effect above uses. How: This flags selCloRef first, then either discards instantly (reduced motion) or stages the animated close.
 
 
@@ -932,10 +971,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 		if ( redMotFun() ) { // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant discard instead of an animated close. How: This clears the draft, closes the editor slot, and returns early.
 
 
-			setDraTasObj( null );  // What: Draft Clear Call. Why: Cancel discards the in-progress draft. How: This resets draTasObj to null.
-			setVisForBoo( false ); // What: Form Hide Call. Why: With motion reduced the form hides at once. How: This flips visForBoo false.
-			cloAddFun();           // What: Close Add Call. Why: The shared editor slot must be released. How: This clears actEdiStr while it is still this form's own sentinel.
-			setAddCloBoo( false ); // What: Add Closing Flag Reset. Why: The next open must not start mid-close. How: This clears addCloBoo.
+			endAddFun(); // What: End Add Call. Why: Cancel discards the in-progress draft and closes the form. How: This clears the draft, hides the form, and releases the editor slot through endAddFun.
 
 
 
@@ -951,10 +987,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 		cloTimRef.current = setTimeout( () => { // What: Deferred Discard Call. Why: The actual unmount must wait for the .18s close animation to finish first. How: This schedules the draft clear/editor close, then stores the timeout id for possible cancellation.
 
 
-			setDraTasObj( null );  // What: Draft Clear Call. Why: The cancelled draft is discarded. How: This resets draTasObj to null.
-			setVisForBoo( false ); // What: Form Hide Call. Why: The close animation has finished, so the form can unmount. How: This flips visForBoo false.
-			cloAddFun();           // What: Close Add Call. Why: The shared editor slot must be released. How: This clears actEdiStr while it is still this form's own sentinel.
-			setAddCloBoo( false ); // What: Add Closing Flag Reset. Why: The next open must not start mid-close. How: This clears addCloBoo.
+			endAddFun(); // What: End Add Call. Why: Cancel discards the in-progress draft and closes the form. How: This clears the draft, hides the form, and releases the editor slot through endAddFun.
 
 
 		}, durMilFun( 'p01' ) ); // What: Close Animation Delay. Why: The cancelled form must finish its close fade before it unmounts. How: This waits the same p01 duration step its closing keyframes play over. // Duration Base Plus 1 ~= 209.1ms
@@ -994,10 +1027,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 			annAddFun( { ...draTasObj, name : tasNamStr } ); // What: Announce Add Call. Why: The user needs to know whether the just-added reminder will actually show up today. How: This calls annAddFun against the same committed shape.
 			setInsIdeStr( newIdeStr );                       // What: Insert Identifier Stage Call. Why: The committed reminder needs to play its own entrance animation exactly once. How: This sets insIdeStr to newIdeStr.
-			setDraTasObj( null );                            // What: Draft Clear Call. Why: The quick-add form's own draft is fully spent once committed. How: This resets draTasObj back to null.
-			setVisForBoo( false );                           // What: Visible Form Flag Clear. Why: The form must stop rendering once the commit finishes. How: This flips visForBoo false.
-			cloAddFun();                                     // What: Close Add Call. Why: The shared actEdiStr slot must be released now that the commit is done. How: This calls cloAddFun, which clears actEdiStr only while it's still this form's own sentinel.
-			setAddCloBoo( false );                           // What: Add Closing Flag Reset. Why: The next open must not start out mid-close. How: This clears addCloBoo back to false.
+			endAddFun();                                     // What: End Add Call. Why: The quick-add form's own draft is fully spent once committed. How: This clears the draft, hides the form, and releases the editor slot through endAddFun.
 
 			setTimeout( () => { comTasRef.current = false; }, 500 ); // What: Commit Flag Release Call. Why: A later, genuinely new commit must be allowed once this one has fully settled. How: This clears comTasRef back to false after 500ms.
 
