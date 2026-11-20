@@ -85,10 +85,14 @@ import type { TodEntTyp } from '../../src/core/data-model.ts'; // What: Today En
 const expConFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, curEntObj : TodEntTyp, issAddFun : IssAddTyp ) : ConRcdTyp | null => { // What: Expected Conditional Function. Why: Check-offs drive the day-off conditionals. How: This builds the expected conditional for a card or the day's first dependent.
 
 
+	// #region Conditional Lookup
+
 	const picRcdObj = aftStaObj.pickers.find( ( curPicObj ) => curPicObj.id === curEntObj.pickerId );               // What: Picker Record Object. Why: A dependent's conditional comes from its picker. How: This looks the picker up.
 	const conIdeStr = curEntObj.kind === 'dayoff' ? curEntObj.conditionalId : picRcdObj && picRcdObj.conditionalId; // What: Conditional Identifier String. Why: Cards name their conditional; picks reach it through their picker. How: This reads whichever applies.
 	const preConObj = preStaObj.conditionals.find( ( curConObj ) => curConObj.id === conIdeStr );                   // What: Previous Conditional Object. Why: The expectation builds on the conditional before the click. How: This looks it up.
 	const aftConObj = aftStaObj.conditionals.find( ( curConObj ) => curConObj.id === conIdeStr );                   // What: After Conditional Object. Why: Rolled steps are read from the result. How: This looks it up after the click.
+
+	// #endregion Conditional Lookup
 
 
 
@@ -96,10 +100,14 @@ const expConFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, curEntObj : To
 
 
 
+	// #region Step Constants
+
 	const thrValNum = preConObj.threshold ?? 100;                                                                                               // What: Threshold Value Number. Why: Ease conditionals charge toward the threshold. How: This reads it, defaulting to 100.
 	const rolOkaFun = ( steValNum : number | undefined ) => steOkaFun( steValNum, thrValNum, preConObj.easeMax ?? 14, preConObj.easeMin ?? 7 ); // What: Roll Okay Function. Why: A conditional rolls within its own range. How: This checks a step against it.
 	const steResNum = ( preConObj.chargeStep ?? 0 ) > 0 ? preConObj.chargeStep! : aftConObj.chargeStep;                                         // What: Step Reserved Number. Why: A set step is kept, an unset one is rolled. How: This uses the set step or the rolled result. // What: Non-Null Note. Why: The branch only reads chargeStep after checking it's above 0. How: The ! tells TypeScript it's set here.
 	const valFamBoo = [ 'dynamic', 'ease-down', 'ease-up' ].includes( preConObj.mode );                                                         // What: Value Family Boolean. Why: Only value modes charge and resolve. How: This checks the mode.
+
+	// #endregion Step Constants
 
 
 
@@ -306,12 +314,18 @@ const jsoStrFun = ( valAny : unknown ) : string => JSON.stringify( valAny ); // 
 const cheRemFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, tasIdeStr : string, dayIsoStr : string ) : string[] => { // What: Check Reminder Function. Why: Every reminder check-off must record exactly one completion. How: This compares the reminders and their log around the click.
 
 
+	// #region Reminder Reading
+
 	const issMesArr : string[] = [];                                                                                        // What: Issue Message Array. Why: Every problem is reported. How: This collects them.
 	const issAddFun = ( issMesStr : string ) => issMesArr.push( `${ dayIsoStr } reminder ${ tasIdeStr }: ${ issMesStr }` ); // What: Issue Add Function. Why: Every report names the day and reminder. How: This prefixes and stores a message.
 	const tasRcdObj = aftStaObj.tasks.find( ( curTasObj ) => curTasObj.id === tasIdeStr );                                  // What: Task Record Object. Why: The reminder after the click. How: This looks it up.
 	const newRowArr = aftStaObj.reminderLog.slice( preStaObj.reminderLog.length );                                          // What: New Row Array. Why: The click appends one row. How: This takes the rows added since before.
 
+	// #endregion Reminder Reading
 
+
+
+	// #region Reminder Checks
 
 	if ( !tasRcdObj || tasRcdObj.lastDone !== dayIsoStr ) issAddFun( `lastDone ${ tasRcdObj && tasRcdObj.lastDone }, expected ${ dayIsoStr }` ); // What: Last Done Check. Why: The reminder records today as done. How: This compares lastDone.
 
@@ -322,6 +336,8 @@ const cheRemFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, tasIdeStr : st
 
 
 	for ( const preTasObj of preStaObj.tasks ) if ( preTasObj.id !== tasIdeStr && jsoStrFun( preTasObj ) !== jsoStrFun( aftStaObj.tasks.find( ( curTasObj ) => curTasObj.id === preTasObj.id ) ) ) issAddFun( `other reminder ${ preTasObj.name } changed` ); // What: Other Reminder Loop. Why: A check-off touches only its reminder. How: This compares every other one.
+
+	// #endregion Reminder Checks
 
 
 
@@ -371,11 +387,15 @@ const unpConFun = ( conRcdObj : ConRcdTyp ) : string => { const { _cardPrev : ca
 const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entEidStr : string, dayIsoStr : string ) : string[] => { // What: Check Done Function. Why: Every check-off must apply exactly what was staged. How: This compares the state around one click.
 
 
+	// #region Check Setup
+
 	const issMesArr : string[] = [];                                                                                 // What: Issue Message Array. Why: Every problem is reported. How: This collects them.
 	const preEntObj = preStaObj.today.entries.find( ( curEntObj ) => curEntObj.eid === entEidStr );                  // What: Previous Entry Object. Why: The staged effects come from the entry before the click. How: This looks it up.
 	const aftEntObj = aftStaObj.today.entries.find( ( curEntObj ) => curEntObj.eid === entEidStr );                  // What: After Entry Object. Why: The entry must now be done. How: This looks it up after.
 	const labTexStr = `${ dayIsoStr } check-off ${ preEntObj ? ( preEntObj.kind || 'pick' ) : '?' } ${ entEidStr }`; // What: Label Text String. Why: Reports name the day and entry. How: This builds the prefix.
 	const issAddFun = ( issMesStr : string ) => issMesArr.push( `${ labTexStr }: ${ issMesStr }` );                  // What: Issue Add Function. Why: Every report carries the label. How: This prefixes and stores a message.
+
+	// #endregion Check Setup
 
 
 
@@ -588,6 +608,8 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entEidStr : st
 const cheUndFun = ( preStaObj : StaAppTyp, undStaObj : StaAppTyp, entEidStr : string, dayIsoStr : string ) : string[] => { // What: Check Undo Function. Why: Unchecking must undo a check-off exactly. How: This compares the state before the check with the state after the uncheck.
 
 
+	// #region Undo Setup
+
 	const issMesArr : string[] = [];                                                                                    // What: Issue Message Array. Why: Every problem is reported. How: This collects them.
 	const issAddFun = ( issMesStr : string ) => issMesArr.push( `${ dayIsoStr } undo ${ entEidStr }: ${ issMesStr }` ); // What: Issue Add Function. Why: Every report names the day and entry. How: This prefixes and stores a message.
 
@@ -603,7 +625,11 @@ const cheUndFun = ( preStaObj : StaAppTyp, undStaObj : StaAppTyp, entEidStr : st
 
 	});
 
+	// #endregion Undo Setup
 
+
+
+	// #region Undo Checks
 
 	if ( jsoStrFun( undStaObj.items ) !== jsoStrFun( preStaObj.items ) ) issAddFun( 'items weren\'t restored' );                                                // What: Item Restore Check. Why: Every item returns to its earlier state. How: This compares them whole.
 	if ( jsoStrFun( undStaObj.pickers ) !== jsoStrFun( preStaObj.pickers ) ) issAddFun( 'pickers weren\'t restored' );                                          // What: Picker Restore Check. Why: The patch and period mark are undone. How: This compares them whole.
@@ -618,6 +644,8 @@ const cheUndFun = ( preStaObj : StaAppTyp, undStaObj : StaAppTyp, entEidStr : st
 
 
 	if ( !undEntObj || undEntObj.done || undEntObj.revert ) issAddFun( 'entry isn\'t undone cleanly' ); // What: Entry Undone Check. Why: An unchecked entry is undone with no snapshot. How: This reports anything else.
+
+	// #endregion Undo Checks
 
 
 

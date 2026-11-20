@@ -107,12 +107,18 @@ async function aniFinFun ( eleCurEle : Element ) : Promise< void > {
 
 
 
+	// #region Ancestor Collection
+
 	const ancEleArr : Element[] = []; // What: Ancestor Element Array. Why: An ancestor's fading color reaches the element through inheritance. How: This collects every element above it.
 
 
 	for ( let ancCurEle = eleCurEle.parentElement; ancCurEle; ancCurEle = ancCurEle.parentElement ) ancEleArr.push( ancCurEle ); // What: Ancestor Walk Loop. Why: Each level up can pass a color down. How: This climbs from the parent to the root, recording each element.
 
+	// #endregion Ancestor Collection
 
+
+
+	// #region Animation Records
 
 	const aniProMap = new Map< Element, Record< string, number > >(); // What: Animation Property Map. Why: The next snapshot has to know which properties an animation moved, even once it has ended. How: This collects them by element, for the window to hold.
 	const finAniArr = [ ...eleCurEle.getAnimations( { subtree : true } ), ...ancEleArr.flatMap( ( ancCurEle ) => ancCurEle.getAnimations() ) ].filter( ( aniCurObj ) => aniCurObj.effect?.getTiming().iterations !== Infinity ); // What: Finite Animation Array. Why: A loop never finishes, so waiting on one would hang. How: This lists the animations and transitions of the element, its descendants, and its ancestors' own that end.
@@ -141,12 +147,18 @@ async function aniFinFun ( eleCurEle : Element ) : Promise< void > {
 
 	}
 
+	// #endregion Animation Records
 
+
+
+	// #region Animation Handoff
 
 	window.__aniProMap = aniProMap; // What: Animation Map Assignment. Why: The snapshot runs in its own call, so it can only read what the page holds. How: This hands the map to the window, replacing the last settle's.
 
 
 	await Promise.all( finAniArr.map( ( aniCurObj ) => aniCurObj.finished.catch( () => undefined ) ) ); // What: Animation Finish Wait. Why: The look is read only once every entrance and transition has ended. How: This waits on each one's finished promise, treating one cancelled midway, such as a transition a new one replaced, as ended too, since its promise rejects rather than resolves.
+
+	// #endregion Animation Handoff
 
 
 }

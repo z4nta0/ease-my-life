@@ -403,6 +403,8 @@ const ALL_STA_ARR = [ ...STA_REC_ARR, ...EXT_STA_ARR, ...REA_STA_ARR ]; // What:
 async function opeStaFun ( curPagObj : Page, staRecObj : StaRecTyp ) : Promise< void > {
 
 
+	// #region State Load
+
 	await curPagObj.setViewportSize( { height : staRecObj.heiNum, width : staRecObj.widNum } ); // What: Viewport Size Call. Why: The state's layout depends on its width. How: This sizes the page before it loads, so breakpoints apply from the first paint.
 
 
@@ -443,7 +445,11 @@ async function opeStaFun ( curPagObj : Page, staRecObj : StaRecTyp ) : Promise< 
 
 	}
 
+	// #endregion State Load
 
+
+
+	// #region Settling Waits
 
 	await curPagObj.evaluate( () => document.fonts.ready.then( () => undefined ) ); // What: Fonts Ready Wait. Why: Text measured before its web font loads would have the wrong size and wrapping. How: This waits until every font face has loaded.
 
@@ -458,6 +464,8 @@ async function opeStaFun ( curPagObj : Page, staRecObj : StaRecTyp ) : Promise< 
 
 
 	await curPagObj.waitForFunction( () => document.getAnimations().every( ( aniCurObj ) => aniCurObj.playState !== 'running' || aniCurObj.effect?.getTiming().iterations === Infinity ), undefined, { timeout : 5000 } ); // What: Animations Settled Wait. Why: A check should see the state at rest, not mid-fade. How: This waits until every finite animation and transition has finished, failing after 5 seconds.
+
+	// #endregion Settling Waits
 
 
 }

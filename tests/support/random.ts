@@ -78,6 +78,8 @@ const insSeeFun = async ( curPagObj : Page, seeValNum : number ) : Promise< void
 	await curPagObj.addInitScript( ( iniSeeNum : number ) => { // What: Seed Init Script. Why: The replacement must exist before the app's first module runs. How: Playwright runs this in the page on every load, before the page's own scripts.
 
 
+		// #region Load Counter
+
 		let loaCouNum = 0; // What: Load Count Number. Why: Two loads on the same day must not start the generator at the same point. How: This starts at zero and is read from the tab's session storage below.
 
 
@@ -93,7 +95,11 @@ const insSeeFun = async ( curPagObj : Page, seeValNum : number ) : Promise< void
 
 		catch { loaCouNum = 0; } // What: Load Count Fallback. Why: A blank page has no session storage. How: This keeps the count at zero there.
 
+		// #endregion Load Counter
 
+
+
+		// #region Seeded Generator
 
 		let genStaNum = ( iniSeeNum ^ Math.imul( loaCouNum + 1, 2654435761 ) ) >>> 0; // What: Generator State Number. Why: mulberry32 advances one 32-bit state per draw, and no load may replay another's draws. How: This starts at the seed mixed with the load count, read as an unsigned 32-bit integer.
 
@@ -116,6 +122,8 @@ const insSeeFun = async ( curPagObj : Page, seeValNum : number ) : Promise< void
 
 
 		};
+
+		// #endregion Seeded Generator
 
 
 

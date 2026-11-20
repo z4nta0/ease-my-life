@@ -88,12 +88,16 @@ const eveNthFun = ( intValNum : number, uniCouNum : number ) : boolean => intVal
 const remDueFun = ( tasRcdObj : TasRcdTyp, dayIsoStr : string ) : boolean => { // What: Reminder Due Function. Why: The checker predicts which reminders Today shows. How: This applies the reminder's repeat rule to the date.
 
 
+	// #region Due Date Setup
+
 	const [ yeaValNum, monValNum, dayValNum ] = parIsoFun( dayIsoStr ); // What: Year Month Day Numbers. Why: Monthly and yearly rules read the date's parts. How: This splits the date.
 
 	const intValNum = Math.max( 1, tasRcdObj.interval || 1 );                     // What: Interval Value Number. Why: Every repeat can skip units. How: This reads N, at least 1.
 	const ancDayStr = ( tasRcdObj.anchor || tasRcdObj.createdAt ).slice( 0, 10 ); // What: Anchor Day String. Why: Every-N counts start from the anchor. How: This reads the anchor, falling back to the creation date.
 	const [ ancYeaNum, ancMonNum ] = parIsoFun( ancDayStr );                      // What: Anchor Year Month Numbers. Why: Monthly and yearly counts are in whole months and years. How: This splits the anchor.
 	const nthModBoo = tasRcdObj.dateMode === 'nthWeekday';                        // What: Nth Mode Boolean. Why: Monthly and yearly reminders can fall on an nth weekday. How: This reads the date mode.
+
+	// #endregion Due Date Setup
 
 
 
@@ -108,6 +112,8 @@ const remDueFun = ( tasRcdObj : TasRcdTyp, dayIsoStr : string ) : boolean => { /
 	if ( tasRcdObj.repeat === 'interval' ) return difDayFun( ancDayStr, dayIsoStr ) >= 0 && difDayFun( ancDayStr, dayIsoStr ) % intValNum === 0; // What: Interval Return. Why: An interval reminder falls every N days from its anchor. How: This checks the day count.
 
 
+
+	// #region Calendar Rule Branches
 
 	if ( tasRcdObj.repeat === 'monthly' ) { // What: Monthly Branch. Why: A monthly reminder falls on one day every N months. How: This checks the month count, then the day.
 
@@ -134,6 +140,8 @@ const remDueFun = ( tasRcdObj : TasRcdTyp, dayIsoStr : string ) : boolean => { /
 
 
 	}
+
+	// #endregion Calendar Rule Branches
 
 
 

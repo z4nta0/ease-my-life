@@ -622,6 +622,8 @@ const chePicFun = ( picRcdObj : PicRcdTyp, preIteArr : IteRcdTyp[], curEntObj : 
 const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : string ) : string[] => { // What: Check Generation Function. Why: Every generated day must follow the rules. How: This walks the daily list and compares each picker's result.
 
 
+	// #region Check State
+
 	const issMesArr : string[] = [];                                                                                              // What: Issue Message Array. Why: Every problem is reported, not just the first. How: This collects them.
 	const issAddFun = ( issMesStr : string ) => issMesArr.push( `${ dayIsoStr } generation: ${ issMesStr }` );                    // What: Issue Add Function. Why: Every report names the day and phase. How: This prefixes and stores a message.
 	const conMapObj = new Map< string, ConRcdTyp >( genStaObj.conditionals.map( ( curConObj ) => [ curConObj.id, curConObj ] ) ); // What: Conditional Map Object. Why: Gates read the conditionals as resolved for today. How: This keys them by id.
@@ -634,7 +636,11 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 	const dowValNum = dowValFun( dayIsoStr );                                                                                     // What: Day-Of-Week Value Number. Why: Pickers can be limited to weekdays. How: This reads the day's weekday.
 	const holDayBoo = isaHolFun( genStaObj.holidays, dayIsoStr );                                                                 // What: Holiday Day Boolean. Why: Pickers can skip holidays. How: This checks the day.
 
+	// #endregion Check State
 
+
+
+	// #region Conditional And Daily Walks
 
 	for ( const curConObj of genStaObj.conditionals ) { // What: Conditional Resolve Loop. Why: Generation clears every daily charge and keeps Ease triggers. How: This checks each conditional against its previous self.
 
@@ -803,6 +809,8 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 
 	}
+
+	// #endregion Conditional And Daily Walks
 
 
 

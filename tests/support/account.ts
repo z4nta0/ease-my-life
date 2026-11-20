@@ -128,6 +128,8 @@ async function creAccFun ( emaAdrStr : string, paiValBoo : boolean = true ) : Pr
 async function sigLinFun ( curPagObj : Page, emaAdrStr : string ) : Promise< void > {
 
 
+	// #region Link Request
+
 	await selTabFun( curPagObj, 'settings' ); // What: Tab Switch Call. Why: The sign-in form is on the Settings tab. How: This switches to it.
 
 
@@ -135,7 +137,11 @@ async function sigLinFun ( curPagObj : Page, emaAdrStr : string ) : Promise< voi
 	await curPagObj.locator( '[data-element-name-hook~="accLinFor"]' ).getByRole( 'button' ).click();               // What: Send Click Call. Why: The link is requested on click. How: This clicks Email me a link.
 	await expect( curPagObj.locator( '[data-element-name-hook~="accStaPar"]' ) ).toHaveText( /Sign-in link sent/ ); // What: Sent Assertion. Why: The link must have gone out before it's read back. How: This waits for the status region's news.
 
+	// #endregion Link Request
 
+
+
+	// #region Emailed Link Follow
 
 	const oobResObj = await fetch( `${ AUT_EMU_STR }/emulator/v1/projects/${ EMU_PRO_STR }/oobCodes` ).then( ( resCurObj ) => resCurObj.json() );                                                          // What: Out-Of-Band Result Object. Why: The emulator records every sign-in link instead of emailing it. How: This reads them.
 	const oobCodStr = oobResObj.oobCodes.filter( ( oobCurObj : { email : string, requestType : string } ) => oobCurObj.email === emaAdrStr && oobCurObj.requestType === 'EMAIL_SIGNIN' ).at( -1 ).oobCode; // What: Out-Of-Band Code String. Why: The newest link for this address is this device's. How: This picks its code.
@@ -143,12 +149,18 @@ async function sigLinFun ( curPagObj : Page, emaAdrStr : string ) : Promise< voi
 
 	await curPagObj.goto( `/?apiKey=fake-api-key&lang=en&mode=signIn&oobCode=${ oobCodStr }` ); // What: Link Open Call. Why: Opening the emailed link is what finishes signing in. How: This opens the app's address with the link's code.
 
+	// #endregion Emailed Link Follow
 
+
+
+	// #region Signed In Check
 
 	await selTabFun( curPagObj, 'settings' ); // What: Tab Return Call. Why: The account shows on the Settings tab. How: This switches back to it.
 
 
 	await expect( curPagObj.locator( '[data-element-name-hook~="accOutBut"]' ) ).toBeVisible(); // What: Signed In Assertion. Why: The link must have signed the device in. How: This waits for the sign-out button.
+
+	// #endregion Signed In Check
 
 
 }

@@ -80,6 +80,8 @@ const TAB_MAX_NUM = 300;                                    // What: Tab Maximum
 async function namProFun ( curPagObj : Page ) : Promise< string[] > {
 
 
+	// #region Control Name Check
+
 	const ariSnaStr = await curPagObj.locator( 'body' ).ariaSnapshot();    // What: ARIA Snapshot String. Why: The accessibility tree shows each control's role and announced name. How: This reads the body's tree as text, one node per line.
 	const conLinArr = ariSnaStr.match( /- (link|button)\b[^\n]*/g ) || []; // What: Control Line Array. Why: Only links and buttons are checked here. How: This keeps every tree line for one of those roles.
 
@@ -103,7 +105,11 @@ async function namProFun ( curPagObj : Page ) : Promise< string[] > {
 
 	}
 
+	// #endregion Control Name Check
 
+
+
+	// #region Tab Link Check
 
 	const tabLinArr = await curPagObj.locator( 'a[target="_blank"]' ).all(); // What: Tab Link Array. Why: A link that opens a new tab has to say so in its name. How: This lists every link with a blank target.
 
@@ -124,6 +130,8 @@ async function namProFun ( curPagObj : Page ) : Promise< string[] > {
 
 
 	}
+
+	// #endregion Tab Link Check
 
 
 
@@ -469,9 +477,17 @@ function tabStoFun ( colSkiBoo : boolean ) : string[] {
 	return [ ...document.querySelectorAll< HTMLElement >( 'a[href], button, input, select, textarea, [tabindex]' ) ].filter( ( tabCurEle ) => { // What: Missing Stops Return. Why: The walk compares the stops it reached with every one it should have. How: This keeps each focusable element Tab should reach from the first stop on and never did, then describes each.
 
 
+		// #region Radio Stop Lookup
+
 		const radNamStr = tabCurEle instanceof HTMLInputElement && tabCurEle.type === 'radio' ? tabCurEle.name : '';                         // What: Radio Name String. Why: Tab reaches one radio per named group, the checked one, or the first when none is. How: This reads a radio's group name, empty for anything else.
 		const radSelStr = `input[type="radio"][name="${ CSS.escape( radNamStr ) }"]`;                                                        // What: Radio Selector String. Why: The group's radios are found by their shared name. How: This builds a selector matching every radio named like this one.
 		const radStoEle = radNamStr ? document.querySelector( `${ radSelStr }:checked` ) || document.querySelector( radSelStr ) : tabCurEle; // What: Radio Stop Element. Why: The group's one Tab stop is its checked radio, or its first when none is checked. How: This finds it for a radio in a group, and is the element itself for anything else.
+
+		// #endregion Radio Stop Lookup
+
+
+
+		// #region Missing Stop Conditions
 
 		const aftFirBoo = tabCurEle === firStoEle || !!( firStoEle.compareDocumentPosition( tabCurEle ) & Node.DOCUMENT_POSITION_FOLLOWING ); // What: After First Boolean. Why: The walk starts at its first stop. How: This is true for the first stop and anything after it in the document.
 		const enaTabBoo = tabCurEle.tabIndex >= 0 && !tabCurEle.matches( ':disabled' );                                                       // What: Enabled Tab Boolean. Why: Only an enabled element in the Tab order is a stop. How: This is true when its tabindex is 0 or more and it isn't disabled.
@@ -484,6 +500,8 @@ function tabStoFun ( colSkiBoo : boolean ) : string[] {
 		const shoEleBoo = tabCurEle.checkVisibility( { visibilityProperty : true } );                                                         // What: Shown Element Boolean. Why: An element that isn't drawn can't take focus. How: This is true when it's rendered and not hidden by visibility.
 
 		const misStoBoo = aftFirBoo && enaTabBoo && insModBoo && notColBoo && notIneBoo && notLivBoo && notReaBoo && radStoBoo && shoEleBoo; // What: Missing Stop Boolean. Why: An element is missing only when every condition holds. How: This combines them.
+
+		// #endregion Missing Stop Conditions
 
 
 
@@ -547,6 +565,8 @@ function tabStoFun ( colSkiBoo : boolean ) : string[] {
 async function keyProFun ( curPagObj : Page, engNamStr : string, popSelStr : string | null ) : Promise< string[] > {
 
 
+	// #region Walk Setup
+
 	const tabKeyStr = engNamStr === 'webkit' ? 'Alt+Tab' : 'Tab'; // What: Tab Key String. Why: WebKit skips links on a plain Tab, the way Safari does by default. How: This picks Alt+Tab there and Tab everywhere else.
 
 
@@ -558,6 +578,11 @@ async function keyProFun ( curPagObj : Page, engNamStr : string, popSelStr : str
 
 	const staFocBoo = await curPagObj.evaluate( () => document.activeElement !== document.body && ( document.activeElement as HTMLElement ).tabIndex >= 0 ); // What: Start Focused Boolean. Why: A state's action can leave a control focused by a click, such as help mode's toggle, which a plain Tab would step past unchecked, while a panel focused by script to be announced is no stop, so Tab and Shift+Tab wouldn't come back to it. How: This is true when a stop in the Tab order holds focus before the walk. // What: Type Assertion Note. Why: activeElement types as Element, which has no tabIndex. How: Every element that can hold focus in this app is an HTMLElement.
 
+	// #endregion Walk Setup
+
+
+
+	// #region Tab Walk
 
 	for ( let tabCouNum = 0; tabCouNum < TAB_MAX_NUM; tabCouNum++ ) { // What: Tab Walk Loop. Why: Every stop is checked in the order a keyboard user meets it. How: This presses Tab once per pass, up to the cap.
 
@@ -605,6 +630,8 @@ async function keyProFun ( curPagObj : Page, engNamStr : string, popSelStr : str
 
 
 	proLisArr.push( `focus never left the page within ${ TAB_MAX_NUM } presses, a likely keyboard trap` ); // What: Trap Record Call. Why: A keyboard user must always be able to Tab away. How: The loop returns as soon as the walk ends, so reaching this line means it never did.
+
+	// #endregion Tab Walk
 
 
 
