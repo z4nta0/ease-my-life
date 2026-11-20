@@ -56,6 +56,68 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
 
 // #region Components
 
+// #region AddLabCom
+
+/**
+ * AddLabCom = Add Label Component
+ *
+ * @summary
+ * Renders the Add New Picker tab's own contents, a decorative plus glyph
+ * followed by its visible label, for the working tab and the disabled one
+ * alike.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props - This component does not use any props.
+ *
+ * @returns The plus glyph and the label.
+ *
+ * @example
+ * ```tsx
+ * AddLabCom() // => <AddLabCom />
+ * ```
+ *
+*/
+
+function AddLabCom () : React.JSX.Element {
+
+
+	return (
+
+
+		<>{ /* What: Add Label Fragment. Why: The glyph and label sit straight inside whichever tab holds them. How: This groups them without a wrapper of its own. */ }
+
+
+			<span
+				className={ cssModObj.addIcoSpa }
+
+				aria-hidden='true'
+			>{ /* What: Add Icon Span Element. Why: The add tab leads with a decorative plus glyph. How: This is hidden from screen readers and wraps the icon. */ }
+
+
+				<IcoSvgCom
+					icoNamStr='pluEle'
+					sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
+				/>{ /* What: Icon Svg Component. Why: The add tab needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
+
+
+			</span>
+
+			<span className={ cssModObj.tabNamSpa }>Add New Picker</span>{ /* What: Tab Name Span Element. Why: The add tab needs its own visible label. How: This renders the literal text "Add New Picker". */ }
+
+
+		</>
+
+
+	);
+
+
+}
+
+// #endregion AddLabCom
+
+
+
 type TpcProTyp = { actStoObj : ActStoTyp, aniStyStr : string, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Picker-Component Props Type. Why: The Pickers tab reads and edits the whole app state, picks with the chosen animation, and can navigate to other tabs. How: This types TabPicCom's props.
 
 // #region TabPicCom
@@ -809,22 +871,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 								>{ /* What: Info Tip Component. Why: A disabled add tab still needs to explain why it can't be clicked yet. How: This wraps the same visible label the real tab uses. Its data-element-name-hook is read by the Pickers page tour, the picker mini-tours, and help mode's Pickers catalog. */ }
 
 
-									<span
-										className={ cssModObj.addIcoSpa }
-
-										aria-hidden='true'
-									>{ /* What: Add Icon Span Element. Why: The add tab leads with a decorative plus glyph. How: This is hidden from screen readers and wraps the icon. */ }
-
-
-										<IcoSvgCom
-											icoNamStr='pluEle'
-											sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-										/>{ /* What: Icon Svg Component. Why: The add tab needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
-
-
-									</span>
-
-									<span className={ cssModObj.tabNamSpa }>Add New Picker</span>{ /* What: Tab Name Span Element. Why: The add tab needs its own visible label. How: This renders the literal text "Add New Picker". */ }
+									<AddLabCom />{ /* What: Add Label Component. Why: The add tab needs its plus glyph and visible label. How: This renders both. */ }
 
 
 								</InfTipCom>
@@ -848,22 +895,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 								>{ /* What: Add Picker Tab Button Element. Why: This is the real entry point into PicForCom's own create flow. How: This opens creOpeBoo, disabled only during the page tour's own intercepted step. Its data-element-name-hook is read by the Pickers page tour, the picker mini-tours, and help mode's Pickers catalog. */ }
 
 
-									<span
-										className={ cssModObj.addIcoSpa }
-
-										aria-hidden='true'
-									>{ /* What: Add Icon Span Element. Why: The add tab leads with a decorative plus glyph. How: This is hidden from screen readers and wraps the icon. */ }
-
-
-										<IcoSvgCom
-											icoNamStr='pluEle'
-											sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-										/>{ /* What: Icon Svg Component. Why: The add tab needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
-
-
-									</span>
-
-									<span className={ cssModObj.tabNamSpa }>Add New Picker</span>{ /* What: Tab Name Span Element. Why: The add tab needs its own visible label. How: This renders the literal text "Add New Picker". */ }
+									<AddLabCom />{ /* What: Add Label Component. Why: The add tab needs its plus glyph and visible label. How: This renders both. */ }
 
 
 								</button>
