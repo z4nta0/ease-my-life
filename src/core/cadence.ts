@@ -90,10 +90,6 @@ import type { PicRcdTyp } from './data-model.ts'; // What: Picker Record Type. W
 
 type CadFieTyp = Partial< Pick< PicRcdTyp, 'anchorDay' | 'anchorDom' | 'anchorDow' | 'anchorMonth' | 'cadence' | 'dateMode' | 'daysOfWeek' | 'id' | 'lastRunPeriod' | 'nthOrdinal' | 'nthWeekday' > >; // What: Cadence Field Type. Why: Every cadence helper reads only a picker's cadence fields, from saved pickers and half-filled drafts alike. How: This picks those fields from PicRcdTyp, every one optional, since each helper falls back to a default.
 
-
-
-type CadNorTyp = Required< Pick< PicRcdTyp, 'anchorDay' | 'anchorDom' | 'anchorDow' | 'anchorMonth' | 'cadence' | 'dateMode' | 'nthOrdinal' | 'nthWeekday' > >; // What: Cadence Normalized Type. Why: norCadFun hands back a complete, defaulted set of cadence fields. How: This picks those eight fields from PicRcdTyp, every one required.
-
 // #endregion Types
 
 
@@ -192,6 +188,8 @@ const isaCadFun   = ( cadValStr : string | undefined ) : cadValStr is CadNamTyp 
 // #endregion isaCadFun
 
 
+
+type CadNorTyp = Required< Pick< PicRcdTyp, 'anchorDay' | 'anchorDom' | 'anchorDow' | 'anchorMonth' | 'cadence' | 'dateMode' | 'nthOrdinal' | 'nthWeekday' > >; // What: Cadence Normalized Type. Why: norCadFun hands back a complete, defaulted set of cadence fields. How: This picks those eight fields from PicRcdTyp, every one required.
 
 // #region norCadFun
 
@@ -749,7 +747,7 @@ const CAD_NAM_OBJ = { // What: Cadence Namespace Object. Why: store.ts, tab-toda
 
 
 
-export { CAD_NAM_OBJ, type CadFieTyp, type CadNorTyp }; // What: Cadence Namespace Export. Why: Every consumer reaches this file's cadence logic through the one namespace object, and the editors type their cadence state with CadFieTyp and CadNorTyp. How: This exports CAD_NAM_OBJ by name at the very end of the file.
+export { CAD_NAM_OBJ, type CadFieTyp }; // What: Cadence Namespace Export. Why: Every consumer reaches this file's cadence logic through the one namespace object, and the editors type their cadence state with CadFieTyp. How: This exports CAD_NAM_OBJ by name at the very end of the file.
 
 // #endregion Exports
 

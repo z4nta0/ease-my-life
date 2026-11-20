@@ -42,8 +42,6 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
 
 // #region Types
 
-type LogKeyTyp = 'conditionalLog' | 'pickLog' | 'reminderLog' | 'reminderSkipLog' | 'vacationLog'; // What: Log Key Type. Why: Five state fields are append-only history logs, each split by month. How: This names them.
-
 type SynDocTyp = Record< string, RawSavTyp >; // What: Sync Document Type. Why: The cloud copy is a set of named documents. How: This maps each document's id to its content.
 
 // #endregion Types
@@ -59,6 +57,8 @@ const COR_DOC_STR = 'core'; // What: Core Document String. Why: Everything excep
 const DEV_KEY_ARR : ( keyof StaAppTyp )[] = [ 'appearance', 'ui' ]; // What: Device Key Array. Why: Theme, animations, tab bar placement, and how the Data tab is collapsed and sorted suit one screen, so each device keeps its own. How: This names the state fields that never sync.
 
 
+
+type LogKeyTyp = 'conditionalLog' | 'pickLog' | 'reminderLog' | 'reminderSkipLog' | 'vacationLog'; // What: Log Key Type. Why: Five state fields are append-only history logs, each split by month. How: This names them.
 
 type LogSpeTyp = { dayFun : ( logRowObj : RawSavTyp ) => string, ideFun : ( logRowObj : RawSavTyp ) => string, keyStr : LogKeyTyp }; // What: Log Specification Type. Why: Each log is described by the same three facts. How: This types one row of LOG_SPE_ARR.
 
@@ -332,7 +332,7 @@ function splStaFun ( staAppObj : StaAppTyp ) : SynDocTyp {
 
 // #region Exports
 
-export { canJsoFun, COR_DOC_STR, DEV_KEY_ARR, hasDocFun, joiDocFun, LOG_SPE_ARR, type LogKeyTyp, splStaFun, type SynDocTyp }; // What: Named Exports. Why: The merge and sync engine split, fingerprint, and join documents through these. How: This exports them by name.
+export { canJsoFun, COR_DOC_STR, DEV_KEY_ARR, hasDocFun, joiDocFun, LOG_SPE_ARR, splStaFun, type SynDocTyp }; // What: Named Exports. Why: The merge and sync engine split, fingerprint, and join documents through these. How: This exports them by name.
 
 // #endregion Exports
 

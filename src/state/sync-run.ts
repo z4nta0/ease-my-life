@@ -1262,7 +1262,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 // #region Exports
 
-export { type AccSynTyp, type SynStaTyp, useSynRunFun }; // What: Named Exports. Why: app.tsx runs sync through the hook, and the Settings tab types its account props. How: This exports them by name.
+export { type AccSynTyp, useSynRunFun }; // What: Named Exports. Why: app.tsx runs sync through the hook, and the Settings tab types its account props. How: This exports them by name.
 
 // #endregion Exports
 

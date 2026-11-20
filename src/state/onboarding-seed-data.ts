@@ -143,7 +143,7 @@ type RawStaTyp = { pickLog : RawPicTyp[], reminderLog : RawRemTyp[], reminderSki
  *
 */
 
-const ONB_ESP_ARR : ( PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > )[] = [ // What: Onboarding Extra-Sample-Pickers Array. Why: This is the extra sample-picker pool described above, seeded alongside ONB_EXA_OBJ. How: This is spread into actStoObj.addPicFun by onboarding/welcome-tour.tsx's own seeding effect, exactly like a real, user-created picker.
+const ONB_ESP_ARR : ( PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > )[] = [ // What: Onboarding Extra-Sample-Pickers Array. Why: This is the extra sample-picker pool described above, seeded alongside ONB_EXA_OBJ. How: This joins ONB_EXA_OBJ in ONB_ASP_ARR, which onboarding/welcome-tour.tsx's own seeding effect spreads into actStoObj.addPicFun, exactly like a real, user-created picker.
 
 
 	{ // What: Monthly Chores Entry. Why: This is a second, less-frequent Chores-group picker alongside ONB_EXA_OBJ's own "Daily Chores," rounding out a generated day with deeper, longer-cycle cleaning tasks. How: This is read by the picker engine exactly like any real picker, its own 5 items (oven, whole-house dust, fridge, under-furniture vacuum, mop) themed around chores done far less often than the Daily Chores picker's own pool.
@@ -728,7 +728,7 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 
 // #region Exports
 
-export { hydStaFun, ONB_ASP_ARR, ONB_ESP_ARR, ONB_EXA_OBJ, ONB_PCT_OBJ, ONB_RCT_OBJ, ONB_SPI_ARR, ONB_STI_ARR, ONB_TAS_ARR, type RawStaTyp }; // What: Named Exports. Why: The onboarding tours, help mode, store.ts, the Today and Settings tabs, and scripts/build-onboarding-stats.mts each read some of this sample data by name. How: This exports the sample pickers, their combined list, tasks, id lists, card copy tables and the stats hydrator.
+export { hydStaFun, ONB_ASP_ARR, ONB_EXA_OBJ, ONB_PCT_OBJ, ONB_RCT_OBJ, ONB_SPI_ARR, ONB_STI_ARR, ONB_TAS_ARR, type RawStaTyp }; // What: Named Exports. Why: The onboarding tours, help mode, store.ts, the Today and Settings tabs, and scripts/build-onboarding-stats.mts each read some of this sample data by name. How: This exports the sample pickers, their combined list, tasks, id lists, card copy tables and the stats hydrator.
 
 // #endregion Exports
 

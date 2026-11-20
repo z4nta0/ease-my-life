@@ -83,19 +83,6 @@ import type { PicRcdTyp } from './data-model.ts'; // What: Picker Record Type. W
 
 type PicUpdTyp = { chargeStep? : number, id : string, value? : number, weight? : number }; // What: Pick Update Type. Why: A pick can change other items' charge, weight, or step as a side effect. How: This describes one item's change, keyed by the saved field names, since the update is saved as is into a pending Today entry.
 
-type PicOptTyp = { // What: Pick Option Type. Why: A single pick can be steered by the caller. How: This describes picIteFun's options, every one optional.
-
-
-	excludeIds?   : Set< string >; // What: Exclude Ids. Why: A manual spin mustn't land on an item already live on Today. How: This holds those items' ids.
-	excludeNames? : Set< string >; // What: Exclude Names. Why: An avoidDuplicates picker mustn't repeat a name already on today's list. How: This holds those names, lower-cased.
-	forceItemId?  : string;        // What: Force Item Id. Why: A manual send targets one specific item. How: This is that item's id, bypassing the draw.
-	forceNew?     : boolean;       // What: Force New. Why: An Ease Down re-roll has to abandon the active item. How: This starts a fresh streak when true.
-
-
-};
-
-
-
 type PicResTyp = { // What: Pick Result Type. Why: Every mode's branch hands back the same shape. How: This describes what picIteFun returns.
 
 
@@ -695,6 +682,17 @@ function weiPicFun ( itePooArr : IteRcdTyp[], weiGetFun : ( iteRcdObj : IteRcdTy
 // #endregion weiPicFun
 
 
+
+type PicOptTyp = { // What: Pick Option Type. Why: A single pick can be steered by the caller. How: This describes picIteFun's options, every one optional.
+
+
+	excludeIds?   : Set< string >; // What: Exclude Ids. Why: A manual spin mustn't land on an item already live on Today. How: This holds those items' ids.
+	excludeNames? : Set< string >; // What: Exclude Names. Why: An avoidDuplicates picker mustn't repeat a name already on today's list. How: This holds those names, lower-cased.
+	forceItemId?  : string;        // What: Force Item Id. Why: A manual send targets one specific item. How: This is that item's id, bypassing the draw.
+	forceNew?     : boolean;       // What: Force New. Why: An Ease Down re-roll has to abandon the active item. How: This starts a fresh streak when true.
+
+
+};
 
 // #region picIteFun
 
@@ -1300,7 +1298,7 @@ const PIC_NAM_OBJ = { // What: Pickers Namespace Object. Why: store.ts, tab-toda
 
 
 
-export { norConFun, norGroFun, norPicFun, PIC_NAM_OBJ, type PicOptTyp, type PicResTyp, type PicUpdTyp }; // What: Named Exports. Why: store.ts and the tab files import the three name normalizers individually and reach everything else through the PIC_NAM_OBJ namespace. How: This exports all four bindings, plus the pick option, result, and update types, by name in one statement at the very end of the file.
+export { norConFun, norGroFun, norPicFun, PIC_NAM_OBJ, type PicResTyp, type PicUpdTyp }; // What: Named Exports. Why: store.ts and the tab files import the three name normalizers individually and reach everything else through the PIC_NAM_OBJ namespace. How: This exports all four bindings, plus the pick result and update types, by name in one statement at the very end of the file.
 
 // #endregion Exports
 
