@@ -189,7 +189,7 @@ function LeaConCom ( { ariSubStr, ediModBoo, entRecObj, onGriDowFun, onTogDonFun
 					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
 
-						cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
+						cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The card's own row click handler would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
 						onTogDonFun( entRecObj );    // What: Check Toggle Call. Why: This button toggles the row's own done state. How: This calls onTogDonFun with the row's own entry.
 
 
@@ -276,7 +276,7 @@ function SkiButCom ( { entIdeStr, onSkiEntFun } : SbcProTyp ) : React.JSX.Elemen
 			onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
 
-				cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
+				cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The card's own row click handler would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
 				onSkiEntFun( entIdeStr );    // What: Skip Call. Why: This button skips the row entirely. How: This calls onSkiEntFun with the row's own eid.
 
 
@@ -371,6 +371,28 @@ type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : stri
 */
 
 function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, isaEdiBoo, isaRmvBoo, isaRolBoo, jusCheStr, onGriDowFun, onPlaTutFun, onRenIteFun, onRerEntFun, onSkiEntFun, onTogDonFun, onTogEdiFun, onUncTutFun, picRecObj, staAppObj } : EccProTyp ) : React.JSX.Element | null {
+
+
+	const disTipStr = 'This action is disabled for this type of item.'; // What: Disabled Tip String. Why: Every disabled action icon on a day-off or charging row shares the exact same explanation. How: This is passed as each of those rows' InfTipCom labels below.
+
+
+
+	const onPlaCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Placeholder Click Function. Why: Clicking anywhere on a day-off or charging row (other than its own actions area) should toggle done, but only outside Edit Mode and while not mid-removal. How: This checks both exclusion conditions first, then calls onTogDonFun.
+
+
+		if ( ediModBoo || isaRmvBoo ) return; // What: Busy Row Guard. Why: A row being dragged in Edit Mode, or already animating out, must not toggle. How: This bails out while ediModBoo or isaRmvBoo is true.
+
+
+
+		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside carActDiv. // What: Type Assertion Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on a card always lands on one.
+
+
+
+		onTogDonFun( entRecObj ); // What: Check Toggle Call. Why: A plain row click toggles the row's own done state. How: This calls onTogDonFun with the row's own entry.
+
+
+	};
+
 
 
 	if ( entRecObj.kind === 'tutorial' ) { // What: Tutorial Branch. Why: A mini-tour launcher card renders entirely differently from a real pick, with no item/reroll/skip of its own. How: This returns a dedicated article and skips every other branch below.
@@ -577,25 +599,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 
 
 		const daoFreBoo = jusCheStr === entRecObj.eid && entRecObj.done;                                                         // What: Day-Off Fresh Boolean. Why: This row's own brief "fresh" cue only plays right after IT specifically was just checked done. How: This compares jusCheStr against entRecObj's own eid, and requires done to already be true.
-		const disTipStr = 'This action is disabled for this type of item.';                                                      // What: Disabled Tip String. Why: Every disabled action icon on this row shares the exact same explanation. How: This is passed as every InfTipCom's own label below.
 		const daoTitStr = entRecObj.pickerName ? `${ entRecObj.pickerName }, ${ entRecObj.condName || 'Day off' }` : 'Day off'; // What: Day-Off Title String. Why: The truncatable title's tooltip and its screen-reader name need the full "{picker}, {conditional}" text even when the visible row itself wraps or truncates it, joined by a comma rather than the visible middle dot, which a screen reader can read aloud as a symbol. How: This combines entRecObj's own pickerName/condName, falling back to a plain "Day off" when no picker name is recorded.
-
-
-		const onRowCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Row Click Function. Why: Clicking anywhere on the row (other than its own actions area) should toggle done, but only outside Edit Mode and while not mid-removal. How: This checks both exclusion conditions first, then calls onTogDonFun.
-
-
-			if ( ediModBoo || isaRmvBoo ) return; // What: Busy Row Guard. Why: A row being dragged in Edit Mode, or already animating out, must not toggle. How: This bails out while ediModBoo or isaRmvBoo is true.
-
-
-
-			if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside carActDiv. // What: Type Assertion Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on a card always lands on one.
-
-
-
-			onTogDonFun( entRecObj ); // What: Check Toggle Call. Why: A plain row click toggles the row's own done state. How: This calls onTogDonFun with the row's own entry.
-
-
-		};
 
 
 
@@ -609,7 +613,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 				data-card-reorder-active={ ediModBoo || undefined } // What: Card Reorder Active Attribute. Why: In Edit Mode the card turns into a dashed, draggable outline. How: This sets the presence-only attribute while ediModBoo is true.
 				data-element-name-hook='todCarArt daoCarArt'
 
-				onClick={ onRowCliFun }
+				onClick={ onPlaCliFun }
 			>{ /* What: Day-Off Card Article Element. Why: This is EntCarCom's own root for a day-off row. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) a disabled re-roll/edit plus a working Skip. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
@@ -707,25 +711,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 	if ( entRecObj.kind === 'charging' ) { // What: Charging Branch. Why: An ease-up picker with nothing charged to its own threshold today still needs a completable placeholder row that applies the day's drift once checked. How: This returns a dedicated article and skips the real-pick branch below.
 
 
-		const chrFreBoo = jusCheStr === entRecObj.eid && entRecObj.done;    // What: Charging Fresh Boolean. Why: This row's own brief "fresh" cue only plays right after IT specifically was just checked done. How: This compares jusCheStr against entRecObj's own eid, and requires done to already be true.
-		const disTipStr = 'This action is disabled for this type of item.'; // What: Disabled Tip String. Why: Every disabled action icon on this row shares the exact same explanation. How: This is passed as every InfTipCom's own label below.
-
-
-		const onRowCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Row Click Function. Why: Clicking anywhere on the row (other than its own actions area) should toggle done, but only outside Edit Mode and while not mid-removal. How: This checks both exclusion conditions first, then calls onTogDonFun.
-
-
-			if ( ediModBoo || isaRmvBoo ) return; // What: Busy Row Guard. Why: A row being dragged in Edit Mode, or already animating out, must not toggle. How: This bails out while ediModBoo or isaRmvBoo is true.
-
-
-
-			if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside carActDiv. // What: Type Assertion Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on a card always lands on one.
-
-
-
-			onTogDonFun( entRecObj ); // What: Check Toggle Call. Why: A plain row click toggles the row's own done state. How: This calls onTogDonFun with the row's own entry.
-
-
-		};
+		const chrFreBoo = jusCheStr === entRecObj.eid && entRecObj.done; // What: Charging Fresh Boolean. Why: This row's own brief "fresh" cue only plays right after IT specifically was just checked done. How: This compares jusCheStr against entRecObj's own eid, and requires done to already be true.
 
 
 
@@ -739,7 +725,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, is
 				data-card-reorder-active={ ediModBoo || undefined } // What: Card Reorder Active Attribute. Why: In Edit Mode the card turns into a dashed, draggable outline. How: This sets the presence-only attribute while ediModBoo is true.
 				data-element-name-hook='todCarArt chrCarArt'
 
-				onClick={ onRowCliFun }
+				onClick={ onPlaCliFun }
 			>{ /* What: Charging Card Article Element. Why: This is EntCarCom's own root for a charging row. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) 3 fully-disabled actions. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
