@@ -84,9 +84,17 @@ import type { HelRecTyp } from './geometry.ts';     // What: Help Rect Type. Why
 function plaTipFun ( tarRecObj : HelRecTyp, tipWidNum : number, tipHeiNum : number ) : { arrHorNum : number, lefTipNum : number, maxHeiNum : number, tipClaStr : string, topTipNum : number } {
 
 
+	// #region Viewport Limits
+
 	const vieWidNum = window.innerWidth;  // What: Viewport Width Number. Why: Every clamp below needs the current viewport's own width. How: This is read once from window.innerWidth and reused throughout.
 	const vieHeiNum = window.innerHeight; // What: Viewport Height Number. Why: Every clamp below needs the current viewport's own height. How: This is read once from window.innerHeight and reused throughout.
 	const edgMarNum = rhyPxlFun( 'm02' ); // What: Edge Margin Number. Why: The tip should never sit flush against the very edge of the viewport. How: This is the fixed pixel margin every clamp below keeps clear. // Vertical Rhythm Base Minus 2 ~= 8.304px
+
+	// #endregion Viewport Limits
+
+
+
+	// #region Vertical Placement
 
 	let maxHeiNum; // What: Max Height Number. Why: Exactly one of the branches below assigns the tip's own scroll cap. How: This is returned as-is once that branch has run.
 	let tipClaStr; // What: Tip Class String. Why: Exactly one of the branches below picks the arrow direction class. How: This is returned as-is once that branch has run.
@@ -137,11 +145,17 @@ function plaTipFun ( tarRecObj : HelRecTyp, tipWidNum : number, tipHeiNum : numb
 
 	}
 
+	// #endregion Vertical Placement
 
+
+
+	// #region Horizontal Placement
 
 	const cenHorNum = tarRecObj.left + tarRecObj.width / 2;                                                            // What: Center Horizontal Number. Why: The tip's own arrow always centers on the target's own horizontal midpoint. How: This adds half the target's own width to its left edge.
 	const lefTipNum = Math.max( edgMarNum, Math.min( cenHorNum - tipWidNum / 2, vieWidNum - tipWidNum - edgMarNum ) ); // What: Left Tip Number. Why: The tip box itself must clamp within the viewport even while its arrow stays centered on cenHorNum. How: This centers the tip on cenHorNum, then clamps between the edge margin and the viewport's own right-edge margin.
 	const arrHorNum = Math.max( 18, Math.min( cenHorNum - lefTipNum, tipWidNum - 26 ) );                               // What: Arrow Horizontal Number. Why: The arrow's own horizontal offset inside the tip box must stay clear of the tip's own rounded corners. How: This computes the arrow's position relative to lefTipNum, clamped to a safe inset range.
+
+	// #endregion Horizontal Placement
 
 
 
@@ -210,6 +224,8 @@ function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element 
 	React.useLayoutEffect( () => { // What: Placement Effect. Why: The tip's own position, arrow direction, and scroll cap must all be recomputed whenever the target it is anchored to changes. How: This measures the mounted tip element and runs plaTipFun against tarRecObj.
 
 
+		// #region Tip Measurement
+
 		const tipCurEle = tipEleRef.current; // What: Tip Current Element. Why: The measurement below needs a stable local reference to the live tip DOM node. How: This is read once from tipEleRef.current.
 
 
@@ -219,6 +235,11 @@ function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element 
 
 		const { arrHorNum, lefTipNum, maxHeiNum, tipClaStr, topTipNum } = plaTipFun( tarRecObj, tipCurEle.offsetWidth, tipCurEle.offsetHeight ); // What: Placement Result. Why: This is the whole positioning answer for this render. How: This calls plaTipFun with the tip's own real measured size.
 
+		// #endregion Tip Measurement
+
+
+
+		// #region Placement State Updates
 
 		setTipStyObj({ // What: Tip Style Update. Why: The rendered tip needs its own top/left plus the CSS custom property its own arrow reads. How: This writes the freshly-computed position into tipStyObj.
 
@@ -233,6 +254,8 @@ function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element 
 
 		setArrClaStr( tipClaStr );                                                    // What: Arrow Class Update. Why: The rendered tip needs its own up/down arrow modifier class. How: This writes tipClaStr into arrClaStr.
 		setScrMaxNum( tipIteObj.scrBoo ? maxHeiNum - rhyPxlFun( 'bas' ) * 2 : null ); // What: Scroll Max Update. Why: A scrollable tip's own inner wrapper must leave room for .helTipDiv's own top and bottom padding. How: This writes maxHeiNum minus that padding, or null when this item is not scrollable at all. // Vertical Rhythm Base ~= 14.572px
+
+		// #endregion Placement State Updates
 
 
 	}, [ tarRecObj, tipIteObj.mtwBoo, tipIteObj.scrBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the target it is anchored to moves or resizes, or whenever the item's own width/scroll behavior could change. How: tarRecObj changing means a new position is needed, and tipIteObj.mtwBoo/tipIteObj.scrBoo changing means the sizing rules themselves changed.

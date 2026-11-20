@@ -100,11 +100,19 @@ const CHR_PRI_OBJ : Record< string, number > = { '[data-element-name-hook~="appT
 function cliHorFun ( tarRecObj : EdgRecTyp, tarDomEle : HTMLElement ) : EdgRecTyp | null {
 
 
+	// #region Working Rect
+
 	const topCurNum = tarRecObj.top;    // What: Top Current Number. Why: The returned rect needs the incoming top edge, which this horizontal clamp never changes. How: This copies tarRecObj's own top.
 	const botCurNum = tarRecObj.bottom; // What: Bottom Current Number. Why: The returned rect needs the incoming bottom edge, which this horizontal clamp never changes. How: This copies tarRecObj's own bottom.
 
 	let lefCurNum = tarRecObj.left;  // What: Left Current Number. Why: The clamp below needs its own mutable copy of the incoming rect's own left edge. How: This starts as a plain copy of tarRecObj's own left.
 	let rigCurNum = tarRecObj.right; // What: Right Current Number. Why: The clamp below needs its own mutable copy of the incoming rect's own right edge. How: This starts as a plain copy of tarRecObj's own right.
+
+	// #endregion Working Rect
+
+
+
+	// #region Own Overflow Clip
 
 	const ownOveStr = getComputedStyle( tarDomEle ).overflowX; // What: Own Overflow String. Why: A target that is itself a horizontally-scrollable box must be clipped to its own visible client width, not its full scrollable content width. How: This reads tarDomEle's own computed overflow-x style.
 
@@ -124,7 +132,11 @@ function cliHorFun ( tarRecObj : EdgRecTyp, tarDomEle : HTMLElement ) : EdgRecTy
 
 	}
 
+	// #endregion Own Overflow Clip
 
+
+
+	// #region Ancestor Walk
 
 	let curAncEle = tarDomEle.parentElement; // What: Current Ancestor Element. Why: A target nested inside a DIFFERENT scrollable ancestor also needs clipping against that ancestor's own visible bounds. How: This starts at tarDomEle's own parent and is reassigned by the loop below.
 
@@ -162,6 +174,8 @@ function cliHorFun ( tarRecObj : EdgRecTyp, tarDomEle : HTMLElement ) : EdgRecTy
 
 
 	}
+
+	// #endregion Ancestor Walk
 
 
 
@@ -276,17 +290,25 @@ function uniRecFun ( tarEleArr : HTMLElement[] ) : BoxRecTyp {
 	tarEleArr.forEach( ( curTarEle ) => { // What: Element Union Loop. Why: Every matched element contributes to the overall union. How: This walks tarEleArr, folding each element's own clipped rect into the accumulator numbers above.
 
 
+		// #region Element Clipping
+
 		const cliRecObj = cliHorFun( curTarEle.getBoundingClientRect(), curTarEle ); // What: Clipped Rect Object. Why: A scrolled-away portion of this element must not stretch the union. How: This runs curTarEle's own bounding rect through cliHorFun.
 
 
 		if ( !cliRecObj ) return; // What: Fully Clipped Guard. Why: An element clipped away entirely contributes nothing to the union. How: This skips the rest of this iteration when cliHorFun returned null.
 
+		// #endregion Element Clipping
 
+
+
+		// #region Union Folding
 
 		topCurNum = Math.min( topCurNum, cliRecObj.top );    // What: Top Fold. Why: The union's own top edge is whichever top is furthest out among every element seen so far. How: This narrows topCurNum to the smaller of the running value and this element's own top.
 		lefCurNum = Math.min( lefCurNum, cliRecObj.left );   // What: Left Fold. Why: The union's own left edge is whichever left is furthest out among every element seen so far. How: This narrows lefCurNum to the smaller of the running value and this element's own left.
 		rigCurNum = Math.max( rigCurNum, cliRecObj.right );  // What: Right Fold. Why: The union's own right edge is whichever right is furthest out among every element seen so far. How: This widens rigCurNum to the larger of the running value and this element's own right.
 		botCurNum = Math.max( botCurNum, cliRecObj.bottom ); // What: Bottom Fold. Why: The union's own bottom edge is whichever bottom is furthest out among every element seen so far. How: This widens botCurNum to the larger of the running value and this element's own bottom.
+
+		// #endregion Union Folding
 
 
 	} );
@@ -644,9 +666,14 @@ type BadRecTyp = { bottom : number, height : number, left : number, top : number
 function badRecFun ( tarRecObj : BoxRecTyp & Partial< PadSidTyp >, cenBadBoo : boolean ) : BadRecTyp {
 
 
+	// #region Vertical Position
+
 	const padTopNum = tarRecObj.padTopNum ?? rhyPxlFun( 'm02' );                                               // What: Pad Top Number. Why: The badge's own vertical anchor must match whatever pad actually survived clipping on this target's own top side, not the flat default. How: This reads tarRecObj's own padTopNum, falling back to the flat pad margin. // Vertical Rhythm Base Minus 2 ~= 8.304px
 	const rawTopNum = tarRecObj.top - padTopNum - rhyPxlFun( 'p02' ) / 2;                                      // What: Raw Top Number. Why: The badge's own natural vertical position overlaps up into the highlight box's own top-right corner. How: This subtracts the pad and half the badge's own size from the target's own top edge. // Vertical Rhythm Base Plus 2 ~= 25.572px
 	const topBadNum = rawTopNum < -rhyPxlFun( 'p02' ) ? rawTopNum : Math.max( rhyPxlFun( 'm05' ), rawTopNum ); // What: Top Badge Number. Why: A badge only ALMOST on screen (within one badge-height of the top edge) should nudge down to stay visible, but a badge genuinely scrolled far above the viewport must not get dragged all the way down to that same floor. How: This only applies the 4px floor once rawTopNum is no further than one badge-height above 0. // Vertical Rhythm Base Plus 2 ~= 25.572px, Vertical Rhythm Base Minus 5 ~= 3.571px
+
+	// #endregion Vertical Position
+
 
 
 	if ( cenBadBoo ) { // What: Center Mode Branch. Why: A column group member's own badge centers over its column's top edge instead of using the usual corner placement. How: This returns early with a horizontally-centered badge rect.
@@ -673,11 +700,15 @@ function badRecFun ( tarRecObj : BoxRecTyp & Partial< PadSidTyp >, cenBadBoo : b
 
 
 
+	// #region Horizontal Position
+
 	const padRigNum = tarRecObj.padRigNum ?? rhyPxlFun( 'm02' );                                   // What: Pad Right Number. Why: The right-corner placement below needs whichever pad actually survived clipping on its own right side. How: This reads tarRecObj's own padRigNum, falling back to the flat pad margin. // Vertical Rhythm Base Minus 2 ~= 8.304px
 	const padLefNum = tarRecObj.padLefNum ?? rhyPxlFun( 'm02' );                                   // What: Pad Left Number. Why: The left-corner fallback below needs whichever pad actually survived clipping on its own left side. How: This reads tarRecObj's own padLefNum, falling back to the flat pad margin. // Vertical Rhythm Base Minus 2 ~= 8.304px
 	const rigLefNum = tarRecObj.right + padRigNum - rhyPxlFun( 'p02' ) / 2;                        // What: Right Left Number. Why: This is the badge's own candidate left position for the usual top-right corner placement. How: This adds the surviving right pad to the target's own right edge, then centers the badge on that point. // Vertical Rhythm Base Plus 2 ~= 25.572px
 	const oveRigBoo = rigLefNum + rhyPxlFun( 'p02' ) > window.innerWidth;                          // What: Overflows Right Boolean. Why: A target rect already clipped flush to the viewport can still overflow once the badge's own pad gap and half-width are added on top. How: This checks whether the right-corner candidate's own far edge would cross the viewport's own width. // Vertical Rhythm Base Plus 2 ~= 25.572px
 	const lefBadNum = oveRigBoo ? tarRecObj.left - padLefNum - rhyPxlFun( 'p02' ) / 2 : rigLefNum; // What: Left Badge Number. Why: The badge must fall back to the target's own top-LEFT corner whenever the right corner would overflow. How: This picks the left-corner candidate when oveRigBoo is true, otherwise the right-corner candidate. // Vertical Rhythm Base Plus 2 ~= 25.572px
+
+	// #endregion Horizontal Position
 
 
 

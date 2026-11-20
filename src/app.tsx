@@ -142,6 +142,8 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 		const meaPosFun = () => { // What: Measure Position Function. Why: This centralizes the logic for locating the active tab button and computing the indicator's rect. How: This queries the active button, bails out if none exists, then sets indRecObj from its bounding rect relative to the nav.
 
 
+			// #region Active Tab Lookup
+
 			const navCurEle = navEleRef.current; // What: Nav Current Element. Why: This gives a stable local reference to the live nav DOM node for this measurement pass. How: This is read once from navEleRef.current and reused for the querySelector and rect calls below.
 
 
@@ -154,7 +156,11 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 			if ( !butActEle ) { setIndRecObj( null ); return; } // What: No Active Button Guard. Why: No tab is currently marked active, such as mid-transition. How: This clears the indicator to hide it and bails out of the rest of the measurement.
 
+			// #endregion Active Tab Lookup
 
+
+
+			// #region Indicator Measurement
 
 			const navRecObj = navCurEle.getBoundingClientRect(); // What: Nav Rect Object. Why: The indicator's position must be relative to the nav rather than the viewport. How: This is used to subtract the nav's own offset from the active button's rect below.
 			const butRecObj = butActEle.getBoundingClientRect(); // What: Button Rect Object. Why: This gives the raw viewport position and size of the active tab. How: This is combined with navRecObj to compute the nav-relative position stored in indRecObj.
@@ -171,6 +177,8 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 			});
 
+			// #endregion Indicator Measurement
+
 
 		};
 
@@ -181,6 +189,8 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 
 
+		// #region Resize Observation
+
 		const navCurEle = navEleRef.current;                                                           // What: Nav Current Element. Why: This is needed here to set up the resize observation below. How: This is read once and reused for the ResizeObserver's observe call and the guard on the next line.
 		const resObsObj = navCurEle && window.ResizeObserver ? new ResizeObserver( meaPosFun ) : null; // What: Resize Observer Object. Why: The indicator must re-measure whenever the nav's own layout changes size, not just the window. How: This is created only when both the nav element and the ResizeObserver API are available, and it calls meaPosFun on every observed resize.
 
@@ -190,6 +200,8 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 
 		window.addEventListener( 'resize', meaPosFun ); // What: Window Resize Listener. Why: This catches viewport-level resizes that would not necessarily change the nav element's own size but could still shift the tab layout. How: This re-runs meaPosFun on every window resize event.
+
+		// #endregion Resize Observation
 
 
 
@@ -644,6 +656,8 @@ function AppRooCom () : React.JSX.Element {
 	React.useLayoutEffect( () => { // What: Layout Switch Animation Effect. Why: Moving the tab bar to a new placement needs a ghost of the old bar to play an exit keyframe while the real bar enters from its new edge. How: This detects an actual placement change, stages the ghost's exit and the real bar's enter flags, then clears them after their keyframes finish.
 
 
+		// #region Placement Change Detection
+
 		const prePlaStr = prePlaRef.current; // What: Previous Placement String. Why: Detecting an actual change requires comparing against what was last recorded, not just the current value. How: This reads prePlaRef.current, the placement recorded on the previous run.
 
 
@@ -653,11 +667,15 @@ function AppRooCom () : React.JSX.Element {
 
 		prePlaRef.current = tabPlaStr; // What: Previous Placement Update. Why: The next run of this effect needs to compare against the placement that's current now. How: This overwrites prePlaRef with the newly-confirmed placement.
 
+		// #endregion Placement Change Detection
+
 
 
 		if ( redMotFun() ) return; // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't see the ghost/enter animation at all. How: This bails out of the effect, skipping the animation entirely, when the shared redMotFun check reports true.
 
 
+
+		// #region Ghost Animation Start
 
 		setExiPlaStr( prePlaStr ); // What: Ghost Exit Trigger. Why: The old nav bar's ghost copy needs to know which placement it's animating away from. How: This mounts the ghost TabBarCom at the previous placement so it can play its exit keyframe.
 
@@ -667,6 +685,8 @@ function AppRooCom () : React.JSX.Element {
 
 		const exiEndTim = setTimeout( () => setExiPlaStr( null ), durMilFun( 'p03' ) );                       // What: Exit End Timeout. Why: The ghost bar must be unmounted once its own exit keyframe has actually finished playing. How: This clears exiPlaStr, removing the ghost, after the exit animation's own p03 duration step. // Duration Base Plus 3 ~= 366.9ms
 		const entEndTim = setTimeout( () => setNavEntBoo( false ), durMilFun( 'p04' ) + durMilFun( 'm01' ) ); // What: Enter End Timeout. Why: The entering module class only needs to apply for the duration of the enter keyframe. How: This clears navEntBoo after the enter animation's own p04 duration plus its m01 delay. // Duration Base Plus 4 ~= 486.1ms, Duration Base Minus 1 ~= 119.2ms
+
+		// #endregion Ghost Animation Start
 
 
 

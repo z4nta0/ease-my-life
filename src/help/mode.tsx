@@ -253,11 +253,15 @@ type HocProTyp = { actModBoo : boolean, helIteArr : HelIteTyp[], onCloAllFun : (
 function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React.JSX.Element | null {
 
 
+	// #region Overlay State Setup
+
 	const allIteArr = React.useMemo( () => [ NAV_HEL_OBJ, RAI_HAN_OBJ, ...helIteArr ], [ helIteArr ] ); // What: All Items Array And Memo. Why: The nav item and rail handle item are shared by every page, ahead of whatever page-specific items the caller passed. How: This concatenates the 2 shared items ahead of helIteArr, recomputed only when helIteArr itself changes.
 
 	const [ recMapObj, setRecMapObj ] = React.useState< Record< string, HelRecTyp > >( {} );                                               // What: Rect Map Object And Setter. Why: Every tagged element's own current rect (keyed by its own catalog id) drives the whole rendered overlay. How: This starts empty and is written wholesale by recTarFun below on every animation frame while actModBoo.
 	const [ opeIdeStr, setOpeIdeStr ] = React.useState< string | null >( null );                                                           // What: Open Identifier String And Setter. Why: At most one tip can be open at a time, tracked by its own (possibly mulBoo-suffixed) id. How: This starts null (no tip open) and is toggled by a badge's own onClick below.
 	const [ togRecObj, setTogRecObj ] = React.useState< { height : number, left : number, top : number, width : number } | null >( null ); // What: Toggle Rect Object And Setter. Why: The page's own help toggle button needs a mask cutout too, even though it is never one of allIteArr. How: This is written by recTarFun below whenever a .helTogBut is found on the page.
+
+	// #endregion Overlay State Setup
 
 
 
@@ -329,10 +333,14 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 		allIteArr.forEach( ( curIteObj ) => { // What: Item Rect Loop. Why: Every catalog item's own current rect must be measured fresh this frame. How: This walks allIteArr, branching on mulBoo/feoBoo before falling through to the ordinary single-union case.
 
 
+			// #region Target Lookup
+
 			let tarEleArr = finTarFun( curIteObj.selStr ); // What: Target Element Array. Why: A catalog item's own selector might currently match nothing at all (e.g. a conditional row that is not rendered right now). How: This runs curIteObj's own selStr through finTarFun.
 
 
 			if ( !tarEleArr.length ) return; // What: No Match Guard. Why: An item with no currently-matched elements has nothing to highlight this frame. How: This skips the rest of this iteration once tarEleArr is empty.
+
+			// #endregion Target Lookup
 
 
 
@@ -341,6 +349,8 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 				tarEleArr.forEach( ( curTarEle, curIndNum ) => { // What: Per Element Loop. Why: Every one of this item's own matched elements needs its own rect computed and stored under its own sub-id. How: This walks tarEleArr, writing one nexMapObj entry per element.
 
+
+					// #region Element Clipping
 
 					let tarRecObj = cliHorFun( curTarEle.getBoundingClientRect(), curTarEle ); // What: Target Rect Object. Why: A scrolled-out-of-view instance (e.g. a card off the bottom of a scrollable list) must not draw a bogus highlight. How: This runs curTarEle's own bounding rect through cliHorFun.
 
@@ -355,7 +365,11 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 					if ( !tarRecObj ) return; // What: Fully Clipped Guard. Why: An element clipped away by chrome has nothing to highlight. How: This skips this element once cliChrFun returned null.
 
+					// #endregion Element Clipping
 
+
+
+					// #region Element Measurements
 
 					const eleWidNum = tarRecObj.right - tarRecObj.left; // What: Element Width Number. Why: The shape/pad math below both need this element's own final width. How: This subtracts tarRecObj's own left from its right.
 					const eleHeiNum = tarRecObj.bottom - tarRecObj.top; // What: Element Height Number. Why: The shape/pad math below both need this element's own final height. How: This subtracts tarRecObj's own top from its bottom.
@@ -366,6 +380,12 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 					const shaRadObj = shaRadFun( curTarEle, eleWidNum + rhyPxlFun( 'm02' ) * 2, eleHeiNum + rhyPxlFun( 'm02' ) * 2, typeof curIteObj.shaStr === 'string' ? curIteObj.shaStr : undefined ); // What: Shape Radius Object. Why: Each mulBoo instance reads its own border-radius independently. How: This calls shaRadFun with curTarEle's own padded box size, passing shaStr only when it's a string, since a shape function is only used for unions. // Vertical Rhythm Base Minus 2 ~= 8.304px
+
+					// #endregion Element Measurements
+
+
+
+					// #region Sub Entry Write
 
 					const curLabStr = curIteObj.labStr // What: Current Label String. Why: A mulBoo conditional/reminder/item row's own title should read as "{its own name} Conditional" rather than one generic title shared by every instance. How: This reads text (or an input's own value, for a row currently open/editing) from within curTarEle only, when curIteObj.labStr is set.
 						? ( curTarEle.querySelector( curIteObj.labStr )?.textContent || curTarEle.querySelector< HTMLInputElement >( curIteObj.labStr )?.value ) // What: Live Label Read. Why: A row's own name is its text, or an input's value while it is being edited. How: This queries labStr inside curTarEle and reads either.
@@ -389,6 +409,8 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 					};
 
+					// #endregion Sub Entry Write
+
 
 				} );
 
@@ -400,6 +422,8 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 			}
 
 
+
+			// #region Union And Clipping
 
 			if ( curIteObj.feoBoo ) tarEleArr = tarEleArr.slice( 0, 1 ); // What: First Only Slice. Why: Some selectors match one entry per section (one per-group card, say), where CSS's own :first-of-type cannot express "first anywhere on the page". How: This keeps only the first document-order match when curIteObj.feoBoo is set.
 
@@ -430,6 +454,11 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 			};
 
+			// #endregion Union And Clipping
+
+
+
+			// #region Highlight Sizing
 
 			const padHorNum = curIteObj.padXcoNum ?? rhyPxlFun( 'm02' ); // What: Pad Horizontal Number. Why: The shape function branch below needs this item's own resolved horizontal pad, not just the flat default. How: This reads curIteObj's own padXcoNum override, or the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
 			const padVerNum = curIteObj.padYcoNum ?? rhyPxlFun( 'm02' ); // What: Pad Vertical Number. Why: The shape function branch below needs this item's own resolved vertical pad, not just the flat default. How: This reads curIteObj's own padYcoNum override, or the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
@@ -448,6 +477,9 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 			const alwBelBoo = curIteObj.absStr ? !!document.querySelector( curIteObj.absStr ) : false; // What: Always Below Boolean. Why: Only a page/placement where absStr's own target actually exists (e.g. the nav on side placement) should skip the normal above/below choice. How: This checks whether absStr currently matches anything at all.
 			const padSurObj = claPadFun( tarRecObj, padHorNum, padVerNum, chrIteArr, tarEleArr );      // What: Pad Surviving Object. Why: This item's own surviving per-side padding must be computed the same way as the mulBoo branch above. How: This calls claPadFun with the same padHorNum/padVerNum already resolved above.
+
+			// #endregion Highlight Sizing
+
 
 
 			nexMapObj[ curIteObj.ideStr ] = { // What: Item Map Write. Why: The rendered overlay reads this exact merged shape back for its own mask cutout, highlight spot, badge, and (once opened) its own tip. How: This writes the finalized rect plus every derived field into nexMapObj.
@@ -511,11 +543,18 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 			groIdeArr.forEach( ( curIdeStr, curIndNum ) => { // What: Horizontal Snap Loop. Why: Interior boundaries between neighboring columns must meet at the exact midpoint between them, with no gap and no overlap. How: This walks groIdeArr in left-to-right order, adjusting each member's own left/right in place.
 
 
+				// #region Pad Reset
+
 				const curRecObj = nexMapObj[ curIdeStr ]; // What: Current Rect Object. Why: This member's own rect is read and mutated repeatedly below. How: This is a direct reference into nexMapObj, so mutating it here mutates the map itself.
 
 				curRecObj.padLefNum = 0; // What: Left Pad Reset. Why: This member's own left already carries its final, edge-to-edge-adjusted value; padding it again would reopen the exact gap/overlap this snap exists to close. How: This zeroes the left pad.
 				curRecObj.padRigNum = 0; // What: Right Pad Reset. Why: This member's own right already carries its final, edge-to-edge-adjusted value; padding it again would reopen the exact gap/overlap this snap exists to close. How: This zeroes the right pad.
 
+				// #endregion Pad Reset
+
+
+
+				// #region Edge Adjustments
 
 				if ( curIndNum === 0 ) curRecObj.left -= rhyPxlFun( 'm02' ); // What: First Column Guard. Why: Only the group's own leftmost outer edge should get normal breathing room, since it has no left neighbor to snap flush against. How: This subtracts the flat pad margin from curRecObj's own left only on the first iteration. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
@@ -542,11 +581,17 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 				}
 
+				// #endregion Edge Adjustments
 
+
+
+				// #region Width And Badge Update
 
 				curRecObj.width = curRecObj.right - curRecObj.left; // What: Width Recompute. Why: curRecObj's own width must reflect whatever its left/right just settled to. How: This recomputes width directly from the just-adjusted edges.
 
 				nexMapObj[ curIdeStr ].badAncNum = badRecFun( curRecObj, true ).top; // What: Badge Anchor Stash. Why: plaTipFun's own "flips above" branch needs to know where this member's own centered badge sits, well above curRecObj.top itself. How: This computes the centered badge rect (badRecFun's own cenBadBoo mode) now that curRecObj's own group-adjusted top/width are both final, and stashes just its own top as badAncNum.
+
+				// #endregion Width And Badge Update
 
 
 			} );
@@ -665,6 +710,8 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
+		// #region Event Handlers
+
 		const hitTarFun = ( cliEveObj : MouseEvent ) => { // What: Hit Target Function. Why: A click is allowed through only when it lands on something help mode itself recognizes. How: This checks the app's own always-exempt chrome first, then falls back to checking every catalog item's own matched elements.
 
 
@@ -737,11 +784,17 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 		};
 
+		// #endregion Event Handlers
 
+
+
+		// #region Listener Registration
 
 		document.addEventListener( 'click', cliCapFun, true ); // What: Click Listener Add. Why: The capture phase ensures this guard runs before any inner element's own handler could otherwise fire. How: This registers cliCapFun for every click in the document.
 		document.addEventListener( 'keydown', keyDowFun );     // What: Keydown Listener Add. Why: Escape must close something regardless of which element currently has focus. How: This registers keyDowFun for every keydown in the document.
 		document.addEventListener( 'focusin', focMovFun );     // What: Focusin Listener Add. Why: Focus moving anywhere must be seen, and focusin bubbles from every focused element. How: This registers focMovFun on the document.
+
+		// #endregion Listener Registration
 
 
 

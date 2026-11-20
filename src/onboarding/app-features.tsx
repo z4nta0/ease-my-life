@@ -510,11 +510,18 @@ const buiTesFun = ( feaIdeStr : string, actStoObj : ActStoTyp, alrProBoo : boole
 					const tryColFun = () => { // What: Try Collapse Function. Why: The just-expanded picker's own header buttons may not have mounted yet, so this must re-poll a frame at a time. How: This looks up the open picker's own header/buttons, retrying via requestAnimationFrame until they exist or the try cap is hit.
 
 
+						// #region Open Picker Lookup
+
 						const opeHeaEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="datLisDiv"] [data-element-name-hook~="catHeaBut"][aria-expanded="true"]' ); // What: Open Header Element. Why: This must find whichever picker header the user just clicked open. How: This looks up the one .catHeaBut currently marked expanded.
 						const catSecEle = opeHeaEle && opeHeaEle.closest< HTMLElement >( '[data-element-name-hook~="datCatSec"]' );                                                     // What: Category Section Element. Why: The picker's own id and Controls/Items buttons live on its enclosing .cat section. How: This walks up from opeHeaEle to its closest .cat ancestor.
 						const picIdeStr = catSecEle && catSecEle.dataset.pickerId; // What: Picker Identifier String. Why: actStoObj.togColFun needs this picker's own real id. How: This reads catSecEle's own data-picker-id attribute.
 						const heaButArr = catSecEle ? [ ...catSecEle.querySelectorAll< HTMLElement >( '[data-element-name-hook~="catTogBut"]' ) ] : [];                                 // What: Header Button Array. Why: The Controls header (index 0) and Items header (index 1) both need checking. How: This collects every .catTogBut button inside catSecEle into a plain array.
 
+						// #endregion Open Picker Lookup
+
+
+
+						// #region Retry Guards
 
 						if ( ( !picIdeStr || heaButArr.length < 2 ) && tryCouNum++ < 20 ) { requestAnimationFrame( tryColFun ); return; } // What: Retry Guard. Why: The picker's own header/buttons may not have mounted on the very first frame checked. How: This re-schedules tryColFun a frame later, up to 20 tries, whenever picIdeStr or both buttons are still missing. // Re-polls a frame later whenever the expected DOM hasn't mounted yet and the try cap hasn't been hit. Left inline rather than extracted into named consts: tryCouNum++ is a side effect that must stay inside this short-circuited check, extracting it would change how often it increments.
 
@@ -522,13 +529,19 @@ const buiTesFun = ( feaIdeStr : string, actStoObj : ActStoTyp, alrProBoo : boole
 
 						if ( !picIdeStr ) return; // What: Missing Picker Guard. Why: A try cap hit with no picker found at all has nothing left to collapse. How: This returns early whenever picIdeStr was never resolved.
 
+						// #endregion Retry Guards
 
+
+
+						// #region Section Collapse
 
 						if ( heaButArr[ 0 ] && heaButArr[ 0 ].getAttribute( 'aria-expanded' ) === 'true' ) actStoObj.togColFun( picIdeStr + ':controls' ); // What: Controls Collapse Call. Why: Controls must start collapsed if it defaulted open. How: This toggles the picker's own ':controls' section only when it's currently expanded.
 
 
 
 						if ( heaButArr[ 1 ] && heaButArr[ 1 ].getAttribute( 'aria-expanded' ) === 'true' ) actStoObj.togColFun( picIdeStr + ':items' ); // What: Items Collapse Call. Why: Items must start collapsed if it defaulted open. How: This toggles the picker's own ':items' section only when it's currently expanded.
+
+						// #endregion Section Collapse
 
 
 					};
