@@ -8,16 +8,16 @@ import cssModObj from './cadence-control.module.css'; // What: CSS Module Object
 
 import { CAD_NAM_OBJ } from '../core/cadence.ts';      // What: Cadence Namespace Object. Why: Every cadence field this component reads or writes (mode, anchors, dateMode, nthOrdinal, nthWeekday) is normalized and summarized through this one domain namespace instead of duplicating that logic locally. How: This is called below for its own norCadFun and tipMesFun entries.
 import { ColDisCom   } from './collapse.tsx';          // What: Collapse Disclosure Component. Why: The anchor subsection needs to animate open and closed as the selected cadence changes, instead of snapping. How: This wraps the whole non-daily anchor block below, gated on the current cadence.
+import { DatModCom   } from './date-mode.tsx';         // What: Date Mode Component. Why: The monthly and yearly subsections offer the shared Date-vs-Weekday toggle. How: This is rendered once inside each of those subsections.
 import { DAY_FUL_ARR } from '../utils/date.ts';        // What: Day Full Array. Why: The weekday selects and live summaries name each weekday in full. How: This is mapped to one option per weekday and indexed by anchorDow or nthWeekday.
 import { InfTipCom   } from './info-tip.tsx';          // What: Info Tip Component. Why: Every cadence row's own "?" control needs an explanatory tooltip beside its label. How: This is rendered once per cadence row below, fed by CAD_NAM_OBJ's own tipMesFun copy.
 import { MON_FUL_ARR } from '../utils/date.ts';        // What: Month Full Array. Why: The yearly month selects and live summary name each month in full. How: This is mapped to one option per month and indexed by anchorMonth minus 1.
 import { ordSufFun   } from '../utils/date.ts';        // What: Ordinal Suffix Function. Why: Every day-of-month, week-ordinal, and weekday-of-month summary needs the correct English ordinal. How: This is called with the day number.
-import { SegConCom   } from './segmented-control.tsx'; // What: Segment Control Component. Why: The top-level cadence picker and the monthly/yearly Date-vs-Weekday picker both need the same animated segmented control. How: This is rendered once for the cadence choice and once more inside each of the monthly and yearly subsections.
+import { SegConCom   } from './segmented-control.tsx'; // What: Segment Control Component. Why: The top-level cadence picker uses the shared animated segmented control. How: This is rendered once for the cadence choice.
 
 
 import type { CadFieTyp } from '../core/cadence.ts';    // What: Cadence Fields Type. Why: The editor reads and patches a picker's cadence fields. How: This types CccProTyp's value and patches.
 import type { CadNamTyp } from '../core/data-model.ts'; // What: Cadence Name Type. Why: Each cadence option's key is one of the fixed cadences. How: This types CAD_OPT_ARR's keys, so the cadence picker hands back a real cadence.
-import type { DatModTyp } from '../core/data-model.ts'; // What: Date Mode Type. Why: Each date mode option's key is one of the fixed modes. How: This types DAT_MOD_ARR's keys, so the mode picker hands back a real mode.
 import type { JSX       } from 'react';                 // What: JSX. Why: The component declares the element it returns. How: This types its return as a JSX element.
 
 // #endregion Imports
@@ -130,17 +130,6 @@ const CAD_OPT_ARR : { keyStr : CadNamTyp, labStr : string, subEle : JSX.Element 
 
 // #endregion CAD_OPT_ARR
 
-
-
-const DAT_MOD_ARR : { keyStr : DatModTyp, labStr : string }[] = [ // What: Date Mode Array. Why: The monthly and yearly subsections below both offer the same Date-vs-Weekday choice, driven by one shared SegConCom control. How: This is passed as that SegConCom's own optIteArr prop in both subsections below.
-
-
-	{ keyStr : 'date',       labStr : 'Date'    }, // What: Key String. Why: This is the default day-of-month/day targeting mode's own value. How: SegConCom compares this against the current dateMode and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
-	{ keyStr : 'nthWeekday', labStr : 'Weekday' }  // What: Key String. Why: This lets the user target e.g. "the 2nd Tuesday" instead of a fixed day number. How: SegConCom compares this against the current dateMode and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
-
-
-];
-
 // #endregion Constants
 
 
@@ -235,57 +224,6 @@ function AncLabCom ( { cadNamStr, labTexStr } : AlcProTyp ) : JSX.Element {
 }
 
 // #endregion AncLabCom
-
-
-
-type DmcProTyp = { onChange : ( modKeyStr : DatModTyp ) => void, value : DatModTyp }; // What: Date-Mode-Component Props Type. Why: The picker shows the current date mode and hands back the one chosen. How: This types DatModCom's props.
-
-// #region DatModCom
-
-/**
- * DatModCom = Date Mode Component
- *
- * @summary
- * Draws the Date-vs-Weekday picker the monthly and yearly subsections share,
- * set snug at its content's width.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param props.onChange - On Change: Called with the clicked date mode's key.
- * @param props.value    - Value: The current date mode.
- *
- * @returns The date mode picker.
- *
- * @example
- * ```tsx
- * DatModCom({ onChange, value }) // => <DatModCom />
- * ```
- *
-*/
-
-function DatModCom ( { onChange, value } : DmcProTyp ) : JSX.Element {
-
-
-	return (
-
-
-		<SegConCom
-			layVarStr='snug' // What: Layout Variant String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
-			optIteArr={ DAT_MOD_ARR }
-			value={ value }
-
-			ariLabStr='Day selection'
-
-			onChange={ onChange }
-		/> // What: Segment Control Component. Why: This is the Date-vs-Weekday picker. How: This hands the clicked date-mode key straight to onChange.
-
-
-	);
-
-
-}
-
-// #endregion DatModCom
 
 
 
@@ -971,7 +909,7 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 
 // #region Exports
 
-export { CAD_OPT_ARR, CadConCom, DAT_MOD_ARR }; // What: Named Exports. Why: Other editors render this cadence editor or reuse its cadence and date mode option lists. How: This exports the component and both option arrays by name.
+export { CAD_OPT_ARR, CadConCom }; // What: Named Exports. Why: Other editors render this cadence editor or reuse its cadence option list. How: This exports the component and the option array by name.
 
 // #endregion Exports
 

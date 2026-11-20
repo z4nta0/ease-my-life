@@ -8,7 +8,7 @@ import React     from 'react';                        // What: React. Why: Every
 
 
 import { ColDisCom   } from './collapse.tsx';          // What: Collapse Disclosure Component. Why: The editor's own schedule subsections need to animate open and closed instead of snapping. How: This wraps the anchor hint and each repeat kind's own fields in SchEdiCom and FreFieCom.
-import { DAT_MOD_ARR } from './cadence-control.tsx';   // What: Date Mode Array. Why: The monthly and annual subsections offer the same Date-vs-Weekday choice the cadence editor does. How: This is passed as each subsection's SegConCom optIteArr.
+import { DatModCom   } from './date-mode.tsx';         // What: Date Mode Component. Why: The monthly and annual subsections offer the same Date-vs-Weekday toggle the cadence editor does. How: This is rendered once inside each of those subsections.
 import { DAY_ABB_ARR } from '../utils/date.ts';        // What: Day Abbreviation Array. Why: The weekly summary names a multi-day list in short form. How: This is indexed by each daysOfWeek entry.
 import { DAY_FUL_ARR } from '../utils/date.ts';        // What: Day Full Array. Why: The weekday selects and the single-day and nth-weekday summaries name a weekday in full. How: This is mapped to one option per weekday and indexed by a weekday number.
 import { MON_ABB_ARR } from '../utils/date.ts';        // What: Month Abbreviation Array. Why: The annual schedule's month selects need a short label per month. How: This is mapped to one option per month.
@@ -20,7 +20,6 @@ import { TAS_NAM_OBJ } from '../core/tasks.ts';        // What: Tasks Namespace 
 import { WeeChiCom   } from './weekday-chips.tsx';     // What: Weekday Chip Component. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This is rendered inside SchEdiCom's own weekly schedule subsection.
 
 
-import type { DatModTyp } from '../core/data-model.ts'; // What: Date Mode Type. Why: The date mode toggle shows and hands back one of the fixed modes. How: This types its value.
 import type { RepNamTyp } from '../core/data-model.ts'; // What: Repeat Name Type. Why: Each repeat option's key is one of the fixed repeat kinds. How: This types REP_OPT_ARR's keys, so the Repeat picker hands back a real kind.
 import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The visibility note reads the reminder options and holidays from app state. How: This types both components' staAppObj.
 import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Type. Why: The editor edits a draft reminder. How: This types both components' reminder and SchEdiCom's patches.
@@ -325,62 +324,6 @@ function DatLinCom ( { desIdeStr, ediValBoo, isoValStr, labTexStr, minIsoStr, on
 }
 
 // #endregion DatLinCom
-
-
-
-type DocProTyp = { desIdeStr : string, onChange : ( modKeyStr : DatModTyp ) => void, value : DatModTyp }; // What: Date-Mode-Component Props Type. Why: The toggle shows the reminder's date mode, points at its note, and hands back the mode chosen. How: This types DatModCom's props.
-
-// #region DatModCom
-
-/**
- * DatModCom = Date Mode Component
- *
- * @summary
- * Draws the Date-vs-Weekday targeting toggle the monthly and annual
- * subsections share, set snug at its content's width. A reminder with any
- * date mode other than nthWeekday, an older one with none included, shows
- * as the plain date mode.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param props.desIdeStr - Describe Identifier String: The id of the note
- *                          describing the toggle.
- * @param props.onChange  - On Change: Called with the clicked date mode's key.
- * @param props.value     - Value: The reminder's own date mode.
- *
- * @returns The date mode toggle.
- *
- * @example
- * ```tsx
- * DatModCom({ desIdeStr, onChange, value }) // => <DatModCom />
- * ```
- *
-*/
-
-function DatModCom ( { desIdeStr, onChange, value } : DocProTyp ) : React.JSX.Element {
-
-
-	return (
-
-
-		<SegConCom
-			layVarStr='snug' // What: Layout Variant String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
-			optIteArr={ DAT_MOD_ARR }
-			value={ value === 'nthWeekday' ? 'nthWeekday' : 'date' } // What: Date Mode Value. Why: An older task may carry no dateMode at all, which should read as the plain date mode. How: This maps anything other than 'nthWeekday' to 'date'.
-
-			ariLabStr='Day selection'
-			desIdeStr={ desIdeStr }
-
-			onChange={ onChange }
-		/> // What: Segment Control Component. Why: This is the Date-vs-Weekday targeting mode toggle. How: This hands the clicked option's own key to onChange.
-
-
-	);
-
-
-}
-
-// #endregion DatModCom
 
 
 
