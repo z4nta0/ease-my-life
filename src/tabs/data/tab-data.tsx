@@ -940,7 +940,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 		const opeDraBoo = draExiBoo && draInsBoo && draUnhBoo; // What: Open Draft Boolean. Why: An item row still open inside the draft keeps its edits along with the picker. How: This is true when the open row's unhandled draft belongs to the draft picker.
 
 
-		const keeIteArr = opeDraBoo ? [ ...draIteArr.filter( ( curIteObj ) => curIteObj.id !== draIteObj.id ), draIteObj ] : draIteArr; // What: Kept Item Array. Why: The open row's draft replaces (or joins) its item. How: This swaps the open draft into draIteArr when opeDraBoo, else keeps draIteArr.
+		const keeIteArr = opeDraBoo ? [ ...draIteArr.filter( ( curIteObj ) => curIteObj.id !== draIteObj.id ), draIteObj ] : draIteArr; // What: Keep Item Array. Why: The open row's draft replaces (or joins) its item. How: This swaps the open draft into draIteArr when opeDraBoo, else keeps draIteArr.
 		const thrValNum = picArgObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM;                                                               // What: Threshold Value Number. Why: A pending Fill all charges each item up to this. How: This reads the draft's threshold, defaulting to THR_VAL_NUM.
 
 
