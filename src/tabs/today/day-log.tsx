@@ -586,6 +586,72 @@ function LogChiCom ( { onTogLogFun, open } : LccProTyp ) : React.JSX.Element {
 
 
 
+type LlcProTyp = { onCloLogFun : () => void }; // What: Log-Close-Component Props Type. Why: The close button dismisses its log panel. How: This types LogCloCom's props, named Llc since Lcc already belongs to LogChiCom.
+
+// #region LogCloCom
+
+/**
+ * LogCloCom = Log Close Component
+ *
+ * @summary
+ * Renders a log panel's own close button, an X glyph that calls the panel's
+ * close handler, or nothing for a panel opened without one.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.onCloLogFun - On Close Log Function: The panel's own close
+ *                            handler.
+ *
+ * @returns The close button, or null without a close handler.
+ *
+ * @example
+ * ```tsx
+ * LogCloCom({ onCloLogFun }) // => <LogCloCom />
+ * ```
+ *
+*/
+
+function LogCloCom ( { onCloLogFun } : LlcProTyp ) : React.JSX.Element | null {
+
+
+	if ( !onCloLogFun ) return null; // What: Close Handler Guard. Why: A panel opened without a real close handler (none in this codebase today, but supported) needs no close button at all. How: This renders nothing when onCloLogFun is missing.
+
+
+
+	return (
+
+
+		<button
+			className={ cssModObj.panCloBut }
+
+			type='button'
+
+			aria-label='Close log'
+
+			onClick={ onCloLogFun }
+		>{ /* What: Close Button Element. Why: This is the panel's own dismiss control. How: This calls onCloLogFun on click. */ }
+
+
+			<IcoSetCom
+				className={ cssModObj.cloIcoSvg }
+
+				icoKeyStr='xEle'
+				strWidNum={ 2 }
+			/>{ /* What: Icon Set Component. Why: An X glyph marks the close control. How: This draws the X shape. */ }
+
+
+		</button>
+
+
+	);
+
+
+}
+
+// #endregion LogCloCom
+
+
+
 type RlcProTyp = { onCloLogFun : () => void, staAppObj : StaAppTyp }; // What: Reminder-Log-Component Props Type. Why: The reminders' log panel covers every reminder and can be closed. How: This types RemLogCom's props.
 
 // #region RemLogCom
@@ -726,32 +792,9 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 
 				</span>
 
-				{ onCloLogFun && ( // What: Close Button Visibility Check. Why: A panel opened without a real close handler (none in this codebase today, but supported) needs no close button at all. How: This renders the close button only while onCloLogFun is truthy.
 
 
-					<button
-						className={ cssModObj.panCloBut }
-
-						type='button'
-
-						aria-label='Close log'
-
-						onClick={ onCloLogFun }
-					>{ /* What: Close Button Element. Why: This is the panel's own dismiss control. How: This calls onCloLogFun on click. */ }
-
-
-						<IcoSetCom
-							className={ cssModObj.cloIcoSvg }
-
-							icoKeyStr='xEle'
-							strWidNum={ 2 }
-						/>{ /* What: Icon Set Component. Why: An X glyph marks the close control. How: This draws the X shape. */ }
-
-
-					</button> // What: Close Button Element. Why: This is the panel's own dismiss control. How: This calls onCloLogFun on click.
-
-
-				) }
+				<LogCloCom onCloLogFun={ onCloLogFun } />{ /* What: Log Close Component. Why: This is the panel's own dismiss control. How: This renders the close button, which calls onCloLogFun on click. */ }
 
 
 			</div>
@@ -1458,6 +1501,69 @@ function ConSecCom ( { picGroArr, staAppObj } : CtcProTyp ) : React.JSX.Element 
 
 
 
+type NmcProTyp = { modLabStr : string, neuModBoo : boolean, picNamStr : string }; // What: Name-Mode-Component Props Type. Why: A picker block's header names the picker and its mode. How: This types NamModCom's props.
+
+// #region NamModCom
+
+/**
+ * NamModCom = Name Mode Component
+ *
+ * @summary
+ * Renders a picker block header's name and mode pill side by side, the pill
+ * neutral for weighted and random pickers and revealing its whole label
+ * when it's cut short.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.modLabStr - Mode Label String: The picker mode's label.
+ * @param props.neuModBoo - Neutral Mode Boolean: Whether the pill reads
+ *                          neutral.
+ * @param props.picNamStr - Picker Name String: The picker's own name.
+ *
+ * @returns The name and mode span.
+ *
+ * @example
+ * ```tsx
+ * NamModCom({ modLabStr, neuModBoo, picNamStr }) // => <NamModCom />
+ * ```
+ *
+*/
+
+function NamModCom ( { modLabStr, neuModBoo, picNamStr } : NmcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<span className={ cssModObj.namModSpa }>{ /* What: Name Mode Span Element. Why: The picker's own name and mode pill are grouped together. How: This renders picNamStr plus its modLabStr pill. */ }
+
+
+			<span className={ cssModObj.bloNamSpa }>{ picNamStr }</span>{ /* What: Block Name Span Element. Why: The picker's own name is always shown first. How: This renders picNamStr directly. */ }
+
+
+
+			<InfTipCom
+				className={ cssModObj.picModSpa }
+
+				data-mode-neutral-active={ neuModBoo || undefined } // What: Mode Neutral Active Attribute. Why: Weighted and random pickers read neutral. How: This sets the presence-only attribute while neuModBoo is true.
+
+				labTexStr={ modLabStr }
+				trnOnlBoo
+			>{ modLabStr }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
+
+
+		</span>
+
+
+	);
+
+
+}
+
+// #endregion NamModCom
+
+
+
 type PlcProTyp = { dayKeyStr : string, isaSupBoo : boolean, picRcdObj : PicRcdTyp, staAppObj : StaAppTyp }; // What: Picker-Block-Component Props Type. Why: A picker block shows one picker's items and what happened to each today. How: This types PicBloCom's props, named Plc since Pbc already belongs to ProBarCom.
 
 // #region PicBloCom
@@ -1527,24 +1633,13 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 				<div className={ cssModObj.bloHeaDiv }>{ /* What: Rested Block Header Div Element. Why: This mirrors the interactive header's own layout without being a button. How: This renders the picker's own name/mode pill plus the rested strip. */ }
 
 
-					<span className={ cssModObj.namModSpa }>{ /* What: Name Mode Span Element. Why: The picker's own name and mode pill are grouped together. How: This renders picRcdObj's own name plus its modLabStr pill. */ }
+					<NamModCom
+						modLabStr={ modLabStr }
+						neuModBoo={ neuModBoo }
+						picNamStr={ picRcdObj.name }
+					/>{ /* What: Name Mode Component. Why: The picker's own name and mode pill are grouped together. How: This renders picRcdObj's own name plus its modLabStr pill. */ }
 
 
-						<span className={ cssModObj.bloNamSpa }>{ picRcdObj.name }</span>{ /* What: Block Name Span Element. Why: The picker's own name is always shown first. How: This renders picRcdObj's own name directly. */ }
-
-
-
-						<InfTipCom
-							className={ cssModObj.picModSpa }
-
-							data-mode-neutral-active={ neuModBoo || undefined } // What: Mode Neutral Active Attribute. Why: Weighted and random pickers read neutral. How: This sets the presence-only attribute while neuModBoo is true, which InfTipCom forwards to its trigger.
-
-							labTexStr={ modLabStr }
-							trnOnlBoo
-						>{ modLabStr }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
-
-
-					</span>
 
 					<span className={ cssModObj.bloResSpa }>{ /* What: Rest Span Element. Why: This groups the rested icon/text with which conditional caused it. How: This renders the "Rested" strip plus conRcdObj's own name when found. */ }
 
@@ -1619,24 +1714,15 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 
 				</span>
 
-				<span className={ cssModObj.namModSpa }>{ /* What: Name Mode Span Element. Why: The picker's own name and mode pill are grouped together. How: This renders picRcdObj's own name plus its modLabStr pill. */ }
 
 
-					<span className={ cssModObj.bloNamSpa }>{ picRcdObj.name }</span>{ /* What: Block Name Span Element. Why: The picker's own name is always shown first. How: This renders picRcdObj's own name directly. */ }
+				<NamModCom
+					modLabStr={ modLabStr }
+					neuModBoo={ neuModBoo }
+					picNamStr={ picRcdObj.name }
+				/>{ /* What: Name Mode Component. Why: The picker's own name and mode pill are grouped together. How: This renders picRcdObj's own name plus its modLabStr pill. */ }
 
 
-
-					<InfTipCom
-						className={ cssModObj.picModSpa }
-
-						data-mode-neutral-active={ neuModBoo || undefined } // What: Mode Neutral Active Attribute. Why: Weighted and random pickers read neutral. How: This sets the presence-only attribute while neuModBoo is true, which InfTipCom forwards to its trigger.
-
-						labTexStr={ modLabStr }
-						trnOnlBoo
-					>{ modLabStr }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
-
-
-				</span>
 
 				<span className={ cssModObj.bloSumSpa }>{ /* What: Summary Span Element. Why: The header's own right-hand side summarizes this picker's own item/done counts. How: This renders the item count, plus a done chip once donCouNum is positive. */ }
 
@@ -1873,32 +1959,9 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React
 
 				</span>
 
-				{ onCloLogFun && ( // What: Close Button Visibility Check. Why: A panel opened without a real close handler (none in this codebase today, but supported) needs no close button at all. How: This renders the close button only while onCloLogFun is truthy.
 
 
-					<button
-						className={ cssModObj.panCloBut }
-
-						type='button'
-
-						aria-label='Close log'
-
-						onClick={ onCloLogFun }
-					>{ /* What: Close Button Element. Why: This is the panel's own dismiss control. How: This calls onCloLogFun on click. */ }
-
-
-						<IcoSetCom
-							className={ cssModObj.cloIcoSvg }
-
-							icoKeyStr='xEle'
-							strWidNum={ 2 }
-						/>{ /* What: Icon Set Component. Why: An X glyph marks the close control. How: This draws the X shape. */ }
-
-
-					</button> // What: Close Button Element. Why: This is the panel's own dismiss control. How: This calls onCloLogFun on click.
-
-
-				) }
+				<LogCloCom onCloLogFun={ onCloLogFun } />{ /* What: Log Close Component. Why: This is the panel's own dismiss control. How: This renders the close button, which calls onCloLogFun on click. */ }
 
 
 			</div>
