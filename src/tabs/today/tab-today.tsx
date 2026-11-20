@@ -665,7 +665,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-	// #region Editor And Log State
+	// #region Item Editor State
 
 	const [ actEdiStr, setActEdiStr ] = React.useState< string | null >( null ); // What: Active Editor String And Setter. Why: Only one inline editor on this tab should be open at a time. How: This is read/written by every inline editor this tab renders, directly or via RemSecCom. // actEdiStr/setActEdiStr: a picker item's inline editor (`item:<eid>`), a reminder's inline editor, or its quick-add form (owned by RemSecCom, passed down below) all read/write this same lifted slot, so opening any one of them collapses whichever of the others was open (each keeps its unsaved edits in a local draft that collapsing drops, see useIteDraFun below and RemSecCom's own useTasDraFun).
 
@@ -674,11 +674,17 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	const { comDraFun, draIteObj, patDraFun } = useIteDraFun( actStoObj, ediIteObj ); // What: Item Draft Destructure. Why: The open card's name input and its editor both edit one local draft, committed only on Save. How: This calls useIteDraFun with the open item.
 
+	// #endregion Item Editor State
+
+
+
+	// #region Day Log State
+
 	const [ opeLogStr, setOpeLogStr ] = React.useState< string | null >( null ); // What: Open Log String And Setter. Why: Only one group's (or the Reminders block's) Day Log panel may be open at a time. How: This holds whichever single key is currently open, or null.
 
 	const togLogFun = ( logKeyStr : string ) => setOpeLogStr( ( curKeyStr ) => curKeyStr === logKeyStr ? null : logKeyStr ); // What: Toggle Log Function. Why: Clicking an already-open group's own chip should close it, not just re-open it. How: This flips opeLogStr to null when logKeyStr is already open, otherwise to logKeyStr.
 
-	// #endregion Editor And Log State
+	// #endregion Day Log State
 
 
 
@@ -2704,6 +2710,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
+		// #region List Change Animations
+
 		setLeaEntSet( new Set() ); // What: Leaving Entry Clear. Why: The commit above already applied, so nothing is departing any more. How: This clears leaEntSet back to empty.
 		setLeaTasSet( new Set() ); // What: Leaving Task Clear. Why: Same reasoning as leaving entries, for reminders. How: This clears leaTasSet back to empty.
 
@@ -2716,6 +2724,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 		}
+
+		// #endregion List Change Animations
 
 
 

@@ -877,11 +877,11 @@ type TtcProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
 function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcProTyp ) : React.JSX.Element {
 
 
-	// #region Page Tour And Help Mode
-
 	const touBusObj = useEmlTouFun(); // What: Tour Bus Object. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit above/below the highlighted area. How: This is read for its own resTopNum field and applied as top padding on the page body below.
 
 
+
+	// #region Help Mode
 
 	const [ helModBoo, setHelModBoo ] = React.useState( false ); // What: Help Mode Boolean And Setter. Why: This page needs its own toggle for entering and leaving help mode, since nothing here is editable the way Pickers/Data are. How: This is flipped by the header's HelButCom and read by the effect below.
 
@@ -909,7 +909,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	React.useEffect( () => () => hidHisFun( actStoObj ), [ actStoObj ] ); // What: Unmount Cleanup Effect. Why: The borrowed samples must not stay revealed if this page unmounts while help mode happens to still be on. How: This registers a cleanup-only effect that hides the samples on unmount, with no setup of its own, listing actStoObj, which never changes identity, so it still runs only once.
 
-	// #endregion Page Tour And Help Mode
+	// #endregion Help Mode
 
 
 
