@@ -25,11 +25,9 @@
 
 declare const __APP_VERSION__ : string; // What: App Version Constant. Why: vite.config.ts replaces __APP_VERSION__ with package.json's version at build time, so TypeScript never sees it defined. How: This declares it as a string for constants.ts to read.
 
-
-
 type BipEveTyp = Event & { prompt : () => Promise< void >, userChoice : Promise< { outcome : 'accepted' | 'dismissed', platform : string } > }; // What: Before-Install-Prompt Event Type. Why: Chromium hands the app its install prompt as this event, which TypeScript doesn't know. How: This is an Event plus its prompt() method and the userChoice promise naming what the user chose.
-
-
+type EscEntTyp = { runFun : () => void };                            // What: Escape Entry Type. Why: Every open editor that Escape should cancel puts one entry on the shared escape stack. How: This describes an entry, whose runFun cancels that editor.
+type RelAppTyp = { id? : string, platform : string, url? : string }; // What: Related App Type. Why: getInstalledRelatedApps reports each installed copy of the app it finds. How: This describes one of them.
 
 interface ImportMetaEnv { // What: Import Meta Env Interface. Why: Vite's own types don't know this app's build settings. How: This merges them into ImportMetaEnv, each optional since a build may leave it unset.
 
@@ -43,8 +41,6 @@ interface ImportMetaEnv { // What: Import Meta Env Interface. Why: Vite's own ty
 
 
 
-type RelAppTyp = { id? : string, platform : string, url? : string }; // What: Related App Type. Why: getInstalledRelatedApps reports each installed copy of the app it finds. How: This describes one of them.
-
 interface Navigator { // What: Navigator Interface. Why: pwa.ts reads two navigator features TypeScript's DOM types lack. How: This merges both into Navigator, each optional since most browsers don't have them.
 
 
@@ -55,8 +51,6 @@ interface Navigator { // What: Navigator Interface. Why: pwa.ts reads two naviga
 }
 
 
-
-type EscEntTyp = { runFun : () => void }; // What: Escape Entry Type. Why: Every open editor that Escape should cancel puts one entry on the shared escape stack. How: This describes an entry, whose runFun cancels that editor.
 
 interface Window { // What: Window Interface. Why: TypeScript's built-in Window doesn't know the app's own window.__ globals or the App Check debug token, so every use of one is an error. How: This merges them into Window, each optional since each exists only once its own code has run.
 
