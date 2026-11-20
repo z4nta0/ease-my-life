@@ -605,6 +605,104 @@ function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIte
 
 
 
+type RacProTyp = { 'data-element-name-hook' : string, colRanBoo? : boolean, empMesStr : string, kicTexStr : string, ranIteArr : { couNum : number, namStr : string }[] }; // What: Ranking-Card-Component Props Type. Why: Each ranking card names its own kicker, items, and empty message. How: This types RanCarCom's props.
+
+// #region RanCarCom
+
+/**
+ * RanCarCom = Ranking Card Component
+ *
+ * @summary
+ * Renders one ranking card: its kicker, then a list of items with each
+ * one's name and pick count, or an empty message when there are none. The
+ * coldest list takes its own modifier.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.data-element-name-hook - Data Element Name Hook: The card's
+ *                                       own identity hook, forwarded onto it.
+ * @param props.colRanBoo              - Cold Ranking Boolean: Whether the
+ *                                       list is the coldest one, defaulting
+ *                                       to false.
+ * @param props.empMesStr              - Empty Message String: The message
+ *                                       shown when there are no items.
+ * @param props.kicTexStr              - Kicker Text String: The card's own
+ *                                       kicker text.
+ * @param props.ranIteArr              - Ranking Item Array: The items in
+ *                                       ranked order.
+ *
+ * @returns The ranking card.
+ *
+ * @example
+ * ```tsx
+ * RanCarCom({ empMesStr, kicTexStr, ranIteArr, ... }) // => <RanCarCom />
+ * ```
+ *
+*/
+
+function RanCarCom ( { 'data-element-name-hook' : hooNamStr, colRanBoo = false, empMesStr, kicTexStr, ranIteArr } : RacProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<CarSurCom data-element-name-hook={ hooNamStr }>{ /* What: Card Surface Component. Why: A ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. */ }
+
+
+			<div className={ cssModObj.pagKicDiv }>{ kicTexStr }</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders kicTexStr. */ }
+
+
+			{ ranIteArr.length ? ( // What: Ranking List Visibility Check. Why: An empty ranking needs its own message instead of a bare empty list. How: This renders the real list only while ranIteArr has at least one entry, the empty state otherwise.
+
+
+				<ul className={` ${ cssModObj.ranLisUno }   ${ colRanBoo ? cssModObj.ranLisUnoCold : '' } `}>{ /* What: Ranking List Unordered Element. Why: This is the actual ranked list. How: This maps ranIteArr to one list item per item. */ }
+
+
+					{ ranIteArr.map( ( iteCurObj, iteIndNum ) => ( // What: Ranking Row Render. Why: Every ranked item needs its own row showing its name and count. How: This maps ranIteArr to one list item per entry, keyed by its own iteIndNum.
+
+
+						<li
+							key={ iteIndNum }
+
+							className={ cssModObj.ranIteIte }
+						>{ /* What: Ranking Item Element. Why: Each item needs its own name on one side and its own count on the other. How: This renders a plain name span and the count span. */ }
+
+
+							<span>{ iteCurObj.namStr }</span>{ /* What: Item Name Span Element. Why: The row needs its own visible item name. How: This renders iteCurObj.namStr. */ }
+
+							<span className={ cssModObj.ranNumSpa }>{ iteCurObj.couNum }</span>{ /* What: Rank Number Span Element. Why: The row needs its own visible pick count. How: This renders iteCurObj.couNum. */ }
+
+
+						</li>
+
+
+					))}
+
+
+				</ul>
+
+
+			) : ( // What: Empty State Branch. Why: With nothing to list, the card needs its own message instead. How: This renders the else branch.
+
+
+				<div className={ cssModObj.staEmpDiv }>{ empMesStr }</div> // What: Ranking Empty State Div Element. Why: An empty ranking needs to explain why the list is missing instead of showing nothing. How: This renders empMesStr.
+
+
+			) }
+
+
+		</CarSurCom>
+
+
+	);
+
+
+}
+
+// #endregion RanCarCom
+
+
+
 type PibRowTyp = { autNum : number, couNum : number, delBoo : boolean, denNum : number, freNum : number, gapNum : number | null, ideStr : string, lasNum : number | null, manNum : number, namStr : string, rejNum : number, skiNum : number, speNum : number | null, vacBoo : boolean, wasBoo : boolean }; // What: Pick-Breakdown Row Type. Why: The Pick breakdown card renders, sorts, and labels one combined row per item, live or deleted. How: This types that row's identity flags and every metric it can show, with the gap, last-picked, and spent values null when an item has none.
 type ScoTabTyp = { cliFun : () => void, keyStr : string, labStr : string, namStr : string, picStr? : string, selBoo : boolean };             // What: Scope Tab Type. Why: The Show row mixes the Conditionals and Reminders tabs with one tab per picker, and only a picker tab carries a picker id. How: This describes one scope tab entry.
 type TtcProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: Tab-Stats-Component Props Type. Why: The Stats tab reads the whole app state, filters it, and can navigate to other tabs. How: This types TabStaCom's props, named Ttc since Tsc already belongs to TheSecCom.
@@ -4378,105 +4476,24 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 						<div className={` ${ cssModObj.staRowDiv }   ${ cssModObj.staRowDivTwo } `}>{ /* What: Rankings Row Div Element. Why: The two ranking cards sit side by side in their own row. How: This wraps the Most Picked and Coldest items Cards. */ }
 
 
-							<CarSurCom
+							<RanCarCom
 								data-element-name-hook='mosPicDiv'
-							>{ /* What: Card Surface Component. Why: The Most Picked ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
-
-								<div className={ cssModObj.pagKicDiv }>Most picked</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Most picked". */ }
-
-
-								{ topPicArr.length ? ( // What: Top List Visibility Check. Why: An empty ranking needs its own message instead of a bare empty list. How: This renders the real list only while topPicArr has at least one entry.
-
-
-									<ul className={ cssModObj.ranLisUno }>{ /* What: Top Ranking List Element. Why: This is the actual top-5 most-picked list. How: This maps topPicArr to one list item per item. */ }
-
-
-										{ topPicArr.map( ( iteCurObj, iteIndNum ) => ( // What: Top Ranking Row Render. Why: Every one of the top 5 items needs its own row showing its name and count. How: This maps topPicArr to one list item, keyed by its own position since these are plain aggregate values with no stable id here.
-
-
-											<li
-												key={ iteIndNum }
-
-												className={ cssModObj.ranIteIte }
-											>{ /* What: Top Ranking Item Element. Why: Each item needs its own name on one side and its own count on the other. How: This renders a plain name span and the count span. */ }
-
-
-												<span>{ iteCurObj.namStr }</span>{ /* What: Item Name Span Element. Why: The row needs its own visible item name. How: This renders iteCurObj.namStr. */ }
-
-												<span className={ cssModObj.ranNumSpa }>{ iteCurObj.couNum }</span>{ /* What: Rank Number Span Element. Why: The row needs its own visible pick count. How: This renders iteCurObj.couNum. */ }
-
-
-											</li>
-
-
-										))}
-
-
-									</ul>
-
-
-								) : ( // What: Empty State Branch. Why: With nothing to list, the card needs its own message instead. How: This renders the else branch.
-
-
-									<div className={ cssModObj.staEmpDiv }>Nothing picked in { ranNouStr } yet.</div> // What: Top Ranking Empty State Div Element. Why: An empty ranking needs to explain why the list is missing instead of showing nothing at all. How: This renders only while topPicArr is empty.
-
-
-								) }
-
-
-							</CarSurCom>
+								empMesStr={ `Nothing picked in ${ ranNouStr } yet.` }
+								kicTexStr='Most picked'
+								ranIteArr={ topPicArr }
+							/>{ /* What: Ranking Card Component. Why: This is the Most Picked ranking, the 5 highest-count items. How: This renders topPicArr, or a message naming the range when nothing was picked. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 
-							<CarSurCom
+							<RanCarCom
 								data-element-name-hook='colIteDiv'
-							>{ /* What: Card Surface Component. Why: The Coldest items ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
-
-								<div className={ cssModObj.pagKicDiv }>Coldest items</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Coldest items". */ }
-
-
-								{ colIteArr.length ? ( // What: Cold List Visibility Check. Why: An empty ranking needs its own message instead of a bare empty list. How: This renders the real list only while colIteArr has at least one entry.
-
-
-									<ul className={` ${ cssModObj.ranLisUno }   ${ cssModObj.ranLisUnoCold } `}>{ /* What: Cold Ranking List Element. Why: This is the actual bottom-5 least-picked list. How: This maps colIteArr to one list item per item. */ }
-
-
-										{ colIteArr.map( ( iteCurObj, iteIndNum ) => ( // What: Cold Ranking Row Render. Why: Every one of the bottom 5 items needs its own row showing its name and count. How: This maps colIteArr to one list item, keyed by its own position since these are plain aggregate values with no stable id here.
-
-
-											<li
-												key={ iteIndNum }
-
-												className={ cssModObj.ranIteIte }
-											>{ /* What: Cold Ranking Item Element. Why: Each item needs its own name on one side and its own count on the other. How: This renders a plain name span and the count span. */ }
-
-
-												<span>{ iteCurObj.namStr }</span>{ /* What: Item Name Span Element. Why: The row needs its own visible item name. How: This renders iteCurObj.namStr. */ }
-
-												<span className={ cssModObj.ranNumSpa }>{ iteCurObj.couNum }</span>{ /* What: Rank Number Span Element. Why: The row needs its own visible pick count. How: This renders iteCurObj.couNum. */ }
-
-
-											</li>
-
-
-										))}
-
-
-									</ul>
-
-
-								) : ( // What: Empty State Branch. Why: With nothing to list, the card needs its own message instead. How: This renders the else branch.
-
-
-									<div className={ cssModObj.staEmpDiv }>No items in this scope.</div> // What: Cold Ranking Empty State Div Element. Why: An empty ranking needs to explain why the list is missing instead of showing nothing at all. How: This renders only while colIteArr is empty.
-
-
-								) }
-
-
-							</CarSurCom>
+								colRanBoo
+								empMesStr='No items in this scope.'
+								kicTexStr='Coldest items'
+								ranIteArr={ colIteArr }
+							/>{ /* What: Ranking Card Component. Why: This is the Coldest items ranking, the 5 lowest-count live items. How: This renders colIteArr with the cold list's modifier, or a message when the scope has no items. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 						</div>
