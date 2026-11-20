@@ -75,13 +75,19 @@ const DAT_DIR_STR = resolve( fileURLToPath( new URL( '../../..', import.meta.url
 const fixPatFun = () : string => { // What: Fixture Path Function. Why: The tests need one backup file to run on. How: This returns the environment's path or the newest file in the data folder.
 
 
+	// #region Pinned Path
+
 	const envPatStr = process.env.EML_TEST_FIXTURE; // What: Environment Path String. Why: A run can pin an exact backup. How: This reads EML_TEST_FIXTURE.
 
 
 
 	if ( envPatStr ) return resolve( envPatStr ); // What: Environment Path Return. Why: An explicit path always wins. How: This returns it resolved.
 
+	// #endregion Pinned Path
 
+
+
+	// #region Newest Backup Search
 
 	let datNamArr : string[] = []; // What: Data Name Array. Why: The folder may not exist on a machine without test data. How: This starts empty and is filled when the folder can be read.
 
@@ -102,6 +108,8 @@ const fixPatFun = () : string => { // What: Fixture Path Function. Why: The test
 
 
 	return resolve( DAT_DIR_STR, newNamArr[ 0 ] ); // What: Newest Path Return. Why: The newest export is the default. How: This returns its full path.
+
+	// #endregion Newest Backup Search
 
 
 };
