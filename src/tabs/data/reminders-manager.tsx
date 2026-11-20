@@ -552,6 +552,64 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 
 
 
+type RicProTyp = { isaOncBoo : boolean }; // What: Row-Icon-Component Props Type. Why: A reminder row's icon shows whether the reminder is one-time. How: This types RowIcoCom's props.
+
+// #region RowIcoCom
+
+/**
+ * RowIcoCom = Row Icon Component
+ *
+ * @summary
+ * Renders a reminder row's type icon in its own wrapper: a pin for a
+ * one-time reminder and a calendar for a recurring one, the wrapper marked
+ * as one-time so help mode can find that row by its icon.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.isaOncBoo - Is-A Once Boolean: Whether the reminder is
+ *                          one-time.
+ *
+ * @returns The row's icon span.
+ *
+ * @example
+ * ```tsx
+ * RowIcoCom({ isaOncBoo }) // => <RowIcoCom />
+ * ```
+ *
+*/
+
+function RowIcoCom ( { isaOncBoo } : RicProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<span
+			className={ cssModObj.rowIcoSpa }
+
+			data-element-name-hook='rowIcoSpa'
+			data-reminder-once-active={ isaOncBoo || undefined } // What: Reminder Once Active Attribute. Why: Help mode finds a one-time reminder's row by its icon without reading its classes. How: This is present only while isaOncBoo is true, since undefined drops the attribute entirely.
+		>{ /* What: Row Icon Span Element. Why: The type icon needs its own wrapper for styling. How: This wraps the single IcoSvgCom below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+
+
+			<IcoSvgCom
+				icoNamStr={ isaOncBoo ? 'pinEle' : 'calEle' } // What: Type Icon Pick. Why: A one-time reminder and a recurring one look different at a glance. How: This picks the pin while isaOncBoo and the calendar otherwise.
+				sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
+			/>{ /* What: Icon Svg Component. Why: The row's own icon needs to distinguish a one-time reminder from a recurring one at a glance. How: This renders 'pin' while isaOncBoo, 'calendar' otherwise, at a small 15px size. */ }
+
+
+		</span>
+
+
+	);
+
+
+}
+
+// #endregion RowIcoCom
+
+
+
 type RmcProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Reminder-Manager-Component Props Type. Why: The Reminders section reads the saved reminders and changes them through the store. How: This types RemManCom's props.
 
 // #region RemManCom
@@ -1185,21 +1243,9 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 													>{ /* What: Row Editing Div Element. Why: While editing, this is a plain div rather than a button, since a button can't legally contain the input below it (interactive-in-interactive), which also cost it an accessible name of its own. How: This renders the type icon, the live name input, and a real, separate collapse-chevron button. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
-														<span
-															className={ cssModObj.rowIcoSpa }
-
-															data-element-name-hook='rowIcoSpa'
-															data-reminder-once-active={ isaOncBoo || undefined } // What: Reminder Once Active Attribute. Why: Help mode finds a one-time reminder's row by its icon without reading its classes. How: This is present only while isaOncBoo is true, since undefined drops the attribute entirely.
-														>{ /* What: Row Icon Span Element. Why: The type icon needs its own wrapper for styling. How: This wraps the single IcoSvgCom below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+														<RowIcoCom isaOncBoo={ isaOncBoo } />{ /* What: Row Icon Component. Why: The type icon needs its own wrapper for styling. How: This renders a pin while isaOncBoo is true, a calendar otherwise. */ }
 
 
-															<IcoSvgCom
-																icoNamStr={ isaOncBoo ? 'pinEle' : 'calEle' } // What: Type Icon Pick. Why: A one-time reminder and a recurring one look different at a glance. How: This picks the pin while isaOncBoo and the calendar otherwise.
-																sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-															/>{ /* What: Icon Svg Component. Why: The row's own icon needs to distinguish a one-time reminder from a recurring one at a glance. How: This renders 'pin' while isaOncBoo, 'calendar' otherwise, at a small 15px size. */ }
-
-
-														</span>
 
 														<span className={ cssModObj.rowMaiSpa }>{ /* What: Row Main Span Element. Why: The live name input needs its own wrapper matching the closed row's own layout. How: This wraps the single input below. */ }
 
@@ -1293,21 +1339,9 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 													>{ /* What: Row Toggle Button Element. Why: The plain, non-editing state is itself the clickable control that opens the editor. How: This keeps any other open row's edits, then opens this one. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
-														<span
-															className={ cssModObj.rowIcoSpa }
-
-															data-element-name-hook='rowIcoSpa'
-															data-reminder-once-active={ isaOncBoo || undefined } // What: Reminder Once Active Attribute. Why: Help mode finds a one-time reminder's row by its icon without reading its classes. How: This is present only while isaOncBoo is true, since undefined drops the attribute entirely.
-														>{ /* What: Row Icon Span Element. Why: The type icon needs its own wrapper for styling. How: This wraps the single IcoSvgCom below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+														<RowIcoCom isaOncBoo={ isaOncBoo } />{ /* What: Row Icon Component. Why: The type icon needs its own wrapper for styling. How: This renders a pin while isaOncBoo is true, a calendar otherwise. */ }
 
 
-															<IcoSvgCom
-																icoNamStr={ isaOncBoo ? 'pinEle' : 'calEle' } // What: Type Icon Pick. Why: A one-time reminder and a recurring one look different at a glance. How: This picks the pin while isaOncBoo and the calendar otherwise.
-																sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-															/>{ /* What: Icon Svg Component. Why: The row's own icon needs to distinguish a one-time reminder from a recurring one at a glance. How: This renders 'pin' while isaOncBoo, 'calendar' otherwise, at a small 15px size. */ }
-
-
-														</span>
 
 														<span className={ cssModObj.rowMaiSpa }>{ /* What: Row Main Span Element. Why: The name and schedule summary read together as one unit, matching the editing state's own layout. How: This wraps both spans below. */ }
 
