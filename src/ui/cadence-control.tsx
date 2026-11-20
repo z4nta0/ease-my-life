@@ -289,6 +289,76 @@ function DatModCom ( { onChange, value } : DmcProTyp ) : JSX.Element {
 
 
 
+type DecProTyp = { ariLabStr : string, dayCouNum : number, onChange : ( dayValNum : number ) => void, value : number }; // What: Day-Of-Month-Select-Component Props Type. Why: Each day select names its own role and month length and hands back the chosen day. How: This types DomSelCom's props.
+
+// #region DomSelCom
+
+/**
+ * DomSelCom = Day-Of-Month Select Component
+ *
+ * @summary
+ * Draws a select of the days of a month, from the 1st up to the given day
+ * count, each labeled with its ordinal suffix, for the monthly and yearly
+ * anchor days.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.ariLabStr - Aria Label String: The select's accessible name.
+ * @param props.dayCouNum - Day Count Number: How many days the select offers.
+ * @param props.onChange  - On Change: Called with the chosen day of the month.
+ * @param props.value     - Value: The current day of the month.
+ *
+ * @returns The day select.
+ *
+ * @example
+ * ```tsx
+ * DomSelCom({ ariLabStr, dayCouNum, onChange, value }) // => <DomSelCom />
+ * ```
+ *
+*/
+
+function DomSelCom ( { ariLabStr, dayCouNum, onChange, value } : DecProTyp ) : JSX.Element {
+
+
+	return (
+
+
+		<select
+			className={ cssModObj.ancPicSel }
+
+			value={ value }
+
+			aria-label={ ariLabStr }
+
+			onChange={ ( chaEveObj ) => onChange( parseInt( chaEveObj.target.value ) ) }
+		>{ /* What: Anchor Picker Select Element. Why: This is the actual control for choosing an anchor day of the month. How: This hands the chosen day to onChange. */ }
+
+
+			{ Array.from( Array( dayCouNum ).keys(), ( dayIndNum ) => dayIndNum + 1 ).map( ( dayValNum ) => ( // What: Day Option List Render. Why: One option is needed per day the select offers. How: This maps a generated array sized by dayCouNum to one option per entry, keyed by its own dayValNum.
+
+
+				<option
+					key={ dayValNum }
+
+					value={ dayValNum }
+				>{ ordSufFun( dayValNum ) }</option> // What: Day Option Element. Why: One option is needed per day the select offers. How: This renders ordSufFun's own suffixed label, valued by dayValNum.
+
+
+			) ) }
+
+
+		</select>
+
+
+	);
+
+
+}
+
+// #endregion DomSelCom
+
+
+
 type DscProTyp = { ariLabStr : string, onChange : ( dowValNum : number ) => void, value : number }; // What: Day-Of-Week-Select-Component Props Type. Why: Each weekday select names its own role and hands back the chosen weekday. How: This types DowSelCom's props.
 
 // #region DowSelCom
@@ -739,31 +809,16 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 
 									<span>On the</span>{ /* What: On The Span Element. Why: This is the inline control's own leading words. How: This renders the literal text "On the". */ }
 
-									<select
-										className={ cssModObj.ancPicSel }
 
+
+									<DomSelCom
+										dayCouNum={ 31 }
 										value={ norCadObj.anchorDom }
 
-										aria-label='Anchor day of month'
+										ariLabStr='Anchor day of month'
 
-										onChange={ ( chaEveObj ) => setPatFun( { anchorDom : parseInt( chaEveObj.target.value ) } ) }
-									>{ /* What: Anchor Day Of Month Select Element. Why: This is the actual control for choosing the monthly anchor day. How: This commits the chosen day-of-month straight through setPatFun. */ }
-
-
-										{ Array.from( Array( 31 ).keys(), ( dayIndNum ) => dayIndNum + 1 ).map( ( dayValNum ) => ( // What: Day Of Month Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own dayValNum.
-
-
-											<option
-												key={ dayValNum }
-
-												value={ dayValNum }
-											>{ ordSufFun( dayValNum ) }</option> // What: Day Of Month Option Element. Why: One option is needed per possible day of month, 1 through 31. How: This renders ordSufFun's own suffixed label, valued by dayValNum.
-
-
-										) ) }
-
-
-									</select>
+										onChange={ ( dayValNum ) => setPatFun( { anchorDom : dayValNum } ) }
+									/>{ /* What: Day-Of-Month Select Component. Why: This is the actual control for choosing the monthly anchor day. How: This offers the 1st through the 31st and commits the chosen day straight through setPatFun. */ }
 
 
 								</div>
@@ -867,31 +922,14 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 
 
 
-									<select
-										className={ cssModObj.ancPicSel }
-
+									<DomSelCom
+										dayCouNum={ dayCouFun( norCadObj.anchorMonth ) } // What: Anchor Month Day Count. Why: The yearly anchor day can't run past the anchor month's own real length. How: This offers as many days as dayCouFun gives the anchor month.
 										value={ Math.min( norCadObj.anchorDay, dayCouFun( norCadObj.anchorMonth ) ) } // What: Clamped Anchor Day Value. Why: A stored anchor day can outlast a month change (e.g. the 31st after switching to April), which would leave the select with no matching option. How: This shows the anchor day capped at the anchor month's own day count.
 
-										aria-label='Anchor day'
+										ariLabStr='Anchor day'
 
-										onChange={ ( chaEveObj ) => setPatFun( { anchorDay : parseInt( chaEveObj.target.value ) } ) }
-									>{ /* What: Anchor Day Select Element. Why: This is the actual control for choosing the yearly anchor day, clamped to whatever the anchor month's own real length allows. How: This commits the chosen day-of-month straight through setPatFun. */ }
-
-
-										{ Array.from( Array( dayCouFun( norCadObj.anchorMonth ) ).keys(), ( dayIndNum ) => dayIndNum + 1 ).map( ( dayValNum ) => ( // What: Anchor Day Option List Render. Why: One option is needed per possible day within the anchor month's own real length. How: This maps a generated array sized by dayCouFun to one option per entry, keyed by its own dayValNum.
-
-
-											<option
-												key={ dayValNum }
-
-												value={ dayValNum }
-											>{ ordSufFun( dayValNum ) }</option> // What: Anchor Day Option Element. Why: One option is needed per possible day within the anchor month's own real length. How: This renders ordSufFun's own suffixed label, valued by dayValNum.
-
-
-										) ) }
-
-
-									</select>
+										onChange={ ( dayValNum ) => setPatFun( { anchorDay : dayValNum } ) }
+									/>{ /* What: Day-Of-Month Select Component. Why: This is the actual control for choosing the yearly anchor day, clamped to whatever the anchor month's own real length allows. How: This commits the chosen day straight through setPatFun. */ }
 
 
 								</div>
