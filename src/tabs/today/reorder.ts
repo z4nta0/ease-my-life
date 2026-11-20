@@ -555,6 +555,9 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 		cleDonBoo = true; // What: Cleanup Done Boolean Update. Why: Every call after this one must be caught by the guard above. How: This flips cleDonBoo true before any of the actual teardown below runs.
 
 
+
+		// #region Gesture Release
+
 		cancelAnimationFrame( edgLooNum! ); // What: Auto-Scroll Loop Cancel. Why: edgLooFun would otherwise keep rescheduling itself forever. How: This cancels whatever frame id edgLooNum currently holds. // What: Non-Null Note. Why: The loop is scheduled as soon as the gesture starts, before any cleanup can run. How: The ! tells TypeScript a frame id is set here.
 
 
@@ -571,7 +574,11 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 
 		}
 
+		// #endregion Gesture Release
 
+
+
+		// #region Listener Removal
 
 		capTarEle.removeEventListener( 'pointermove', onMovPoiFun );        // What: Grip Pointermove Unsubscribe. Why: This is one of the two listener paths staDraFun bound for reliability, and both must be undone. How: This removes onMovPoiFun from capTarEle's own pointermove.
 		capTarEle.removeEventListener( 'pointerup', onRelPoiFun );          // What: Grip Pointerup Unsubscribe. Why: Same reasoning as the pointermove removal above, for the up path instead. How: This removes onRelPoiFun from capTarEle's own pointerup.
@@ -580,6 +587,11 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 		document.removeEventListener( 'pointerup', onRelPoiFun, true );     // What: Document Pointerup Unsubscribe. Why: Same reasoning as the document pointermove removal above, for the up path instead. How: This removes onRelPoiFun from the document's own capture-phase pointerup.
 		document.removeEventListener( 'pointercancel', onRelPoiFun, true ); // What: Document Pointercancel Unsubscribe. Why: A cancelled gesture must clean up exactly like a completed one. How: This removes onRelPoiFun from the document's own capture-phase pointercancel.
 
+		// #endregion Listener Removal
+
+
+
+		// #region Style Restore
 
 		iteEleArr.forEach( ( iteCurEle ) => { // What: Sibling Restore Loop. Why: Every inline style/class the prep loop and appShiFun added must be fully reverted, or a sibling could be left visually stuck. How: This clears every property staDraFun's own setup wrote, on every sibling.
 
@@ -595,6 +607,10 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 		} );
 
 		document.body.removeAttribute( 'data-page-reorder-active' ); // What: Page Reorder Attribute Remove. Why: The global gesture-active hook added at the very start of staDraFun must not outlive it. How: This removes the attribute from the document body.
+
+		// #endregion Style Restore
+
+
 
 		if ( onEndDraFun ) onEndDraFun(); // What: On End Callback Guard. Why: The caller's own lifecycle hook is optional. How: This calls onEndDraFun only when the caller actually provided one.
 

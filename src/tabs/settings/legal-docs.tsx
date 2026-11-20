@@ -150,6 +150,8 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 
 
 
+		// #region Escape Key Handling
+
 		const onKeyEscFun = ( keyEveObj : KeyboardEvent ) => { // What: On Key Escape Function. Why: Esc must dismiss the modal from anywhere on the page while it is open, and only the modal, not help mode underneath it. How: This dismisses the modal on Escape and marks the key handled.
 
 
@@ -167,7 +169,11 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 
 		document.addEventListener( 'keydown', onKeyEscFun, true ); // What: Escape Key Subscribe Call. Why: onKeyEscFun must run for as long as the modal is open, ahead of help mode's own document listener. How: This registers onKeyEscFun in the capture phase, which runs before any listener added in the bubble phase.
 
+		// #endregion Escape Key Handling
 
+
+
+		// #region Scroll Lock
 
 		const maiScrEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="appConMai"]' ); // What: Main Scroll Element. Why: The app scrolls inside this element, not the document body, so this is what actually needs locking. How: This is queried once and reused for both the lock below and the cleanup's own restore.
 		const scrTopNum = maiScrEle ? maiScrEle.scrollTop : 0;                                              // What: Scroll Top Number. Why: The scroller's exact offset at open time must be restored on close, even past the panel's own top/bottom. How: This is read once here and reused in the cleanup's own restore below.
@@ -175,6 +181,8 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 
 
 		if ( maiScrEle ) maiScrEle.style.overflow = 'hidden'; // What: Scroll Lock Guard. Why: Nothing behind the modal should scroll while it is open. How: This sets the scroller's own inline overflow to hidden, only when the scroller actually exists.
+
+		// #endregion Scroll Lock
 
 
 

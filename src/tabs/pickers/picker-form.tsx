@@ -564,6 +564,10 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 		const newIdeStr = ranIdeFun( 'it_' ); // What: New Identifier String. Why: The new item needs a stable id from the moment it's added, and it keeps that id once the picker is created. How: This builds a short random suffix onto the same 'it_' prefix every other item id uses.
 
+
+
+		// #region Draft Name Resolution
+
 		const curBusObj = emlTouObj.get();                                       // What: Current Bus Object. Why: The synchronous read described above needs the bus's own live snapshot. How: This calls emlTouObj.get() directly. // What: Tour Prefill Read Note. Why: This reads straight off the bus (emlTouObj.get()), not the React-state touBusObj, since this fires as the NATIVE bubble-phase handler of the same click whose CAPTURE-phase handling just ran a picker-tour step's own run() (which sets itePreStr on the bus synchronously), but useEmlTouFun's subscriber-driven setState is batched and hasn't actually landed in this component's own render yet, so touBusObj here would still be the PREVIOUS render's snapshot, from before itePreStr was set. How: Reading the bus's own synchronous getter instead (the same fix reminders-section.tsx's own prefill already uses) is what actually lands the tour's staged name/ease on the item it creates.
 		const curTouBoo = curBusObj.touPhaStr === 'tour' && curBusObj.itePreStr; // What: Current Tour Boolean. Why: Only an actively-running tour that staged a specific item name should override the generated default below. How: This checks both the bus's own phase and its itePreStr field.
 
@@ -604,7 +608,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 		}
 
+		// #endregion Draft Name Resolution
 
+
+
+		// #region Seed Item Build
 
 		const fulChaBoo = selModStr === 'ease-down' || ( curTouBoo && selModStr === 'ease-up' ); // What: Full Charge Boolean. Why: Ease Down items start fully charged (mirrors addPicFun's own iniValNum), otherwise the editor would show a spent item needing a Refill it never needed; the tour's own Ease Up item is also given a full charge (like the rest of the sample pool) so the later generation demo step has something eligible to pick, but this doesn't apply to Weighted/Dynamic/Random tour samples, since those modes have no eligibility gate at all (value there is a weight boost, not a charge), so forcing 100 would just unfairly skew the new item's odds against its siblings for no reason. How: This is true for Ease Down items, and for Ease Up items added during a tour.
 
@@ -635,6 +643,12 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 		] );
 
+		// #endregion Seed Item Build
+
+
+
+		// #region Editor Open And Scroll
+
 		setActNewStr( newIdeStr ); // What: Open Editor Call. Why: This is the actual state change that shows the new-item editor. How: This writes newIdeStr into actNewStr.
 
 		requestAnimationFrame( () => requestAnimationFrame( () => { // What: Scroll Into View Call. Why: The just-opened creation slot can be well out of view at the bottom of a long pool. How: This waits two animation frames for layout to settle, then scrolls the shared .main container just enough to bring the slot fully into view.
@@ -662,6 +676,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 		} ) );
+
+		// #endregion Editor Open And Scroll
 
 
 	};

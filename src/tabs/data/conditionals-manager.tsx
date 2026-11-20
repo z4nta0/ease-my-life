@@ -900,14 +900,23 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 
 
+								// #region Draft Build
+
 								const basDraObj = conDraFun( '', conIteArr.map( ( conCurObj ) => conCurObj.name ) ); // What: Base Draft Object. Why: A brand-new conditional needs a sensible starting draft, with a name that won't collide with any existing one. How: This calls the shared conDraFun helper.
 								const nexIdeStr = ranIdeFun( 'cnd_' );                                               // What: Next Identifier String. Why: The brand-new draft needs its own id immediately, even before it's ever written to the store. How: This generates a short random id with a 'cnd_' prefix.
 								const nexDraObj = { ...basDraObj, id : nexIdeStr };                                  // What: Next Draft Object. Why: The draft object itself needs to carry its own freshly-generated id. How: This spreads basDraObj with id set to nexIdeStr.
 
+								// #endregion Draft Build
+
+
+
+								// #region Draft State Staging
 
 								setPenConObj( nexDraObj ); // What: Pending Set Call. Why: This is held locally, not written to the store, until Save. How: This sets penConObj to nexDraObj.
 								setConDraObj( nexDraObj ); // What: Draft Set Call. Why: The editor below needs the same object as its own in-progress draft. How: This sets conDraObj to the same nexDraObj.
 								setOpeIdeStr( nexIdeStr ); // What: Open Set Call. Why: The brand-new row must open immediately so its own editor is visible. How: This sets opeIdeStr to nexIdeStr.
+
+								// #endregion Draft State Staging
 
 
 							} }

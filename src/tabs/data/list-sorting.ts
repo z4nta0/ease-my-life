@@ -192,10 +192,17 @@ function freEdiFun< T extends { id : string } > ( sorLisArr : T[], opeIdeVal : s
 function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : string ) : number {
 
 
+	// #region Sort Key Parsing
+
 	const [ fieNamStr, sorDirStr ] = sorKeyStr.split( '-' ); // What: Field Name String And Direction String. Why: Every sort key packs both which field to compare and which way, joined by a dash. How: This splits sorKeyStr once into the two pieces every branch below reads.
 
 	const revSorBoo = sorDirStr === 'desc'; // What: Reverse Sort Boolean. Why: Every branch below needs to know whether to flip its own comparison. How: This is true only when sorDirStr is exactly 'desc'.
 
+	// #endregion Sort Key Parsing
+
+
+
+	// #region Comparison Helpers
 
 	const namSorFun = () => rowOneObj.name.localeCompare( rowTwoObj.name ); // What: Name Sort Function. Why: Every field's own tie-break, and the fallback for an unrecognized field, both need the same plain A-Z name comparison. How: This calls String.localeCompare between the two rows' own name fields.
 
@@ -268,6 +275,9 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 
 
 	};
+
+	// #endregion Comparison Helpers
+
 
 
 	switch ( fieNamStr ) { // What: Field Switch. Why: Each sortable field has its own distinct comparison rule, keyed by name. How: This dispatches to one of the branches below, falling back to a plain name comparison for any unrecognized field.

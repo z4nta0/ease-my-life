@@ -180,6 +180,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	// #endregion Help Mode State
 
+
+
+	// #region Group Display Data
+
 	const groDisArr = React.useMemo( () => groEntFun( staAppObj ), [ staAppObj ] ); // What: Group Display Array. Why: This is the actual bucketed/sorted group list the content column and rail both render from. How: This calls groEntFun, recomputed whenever state itself changes.
 
 
@@ -202,6 +206,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const bloOrdArr = React.useMemo( () => { // What: Block Order Array. Why: See the doc comment just above. How: This walks staAppObj.groupOrder, keeping every recognized group/sentinel and appending anything new, then defaults Page Tours to right after Reminders the first time it appears.
 
 
+		// #region Order Setup
+
 		const savOrdArr = staAppObj.groupOrder || [];                         // What: Saved Order Array. Why: The user's own Edit Mode drags are the primary source of block order. How: This reads staAppObj.groupOrder, falling back to an empty array.
 		const groNamArr = groDisArr.map( ( curGroObj ) => curGroObj.namStr ); // What: Group Name Array. Why: The walk below needs a fast way to confirm a saved name still refers to a real, currently-rendered group. How: This maps groDisArr down to just each group's own name.
 
@@ -222,6 +228,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 		};
 
+		// #endregion Order Setup
+
+
+
+		// #region Order Passes
 
 		if ( !savOrdArr.includes( '__reminders' ) ) pusIdeFun( '__reminders' ); // What: Reminders Default Guard. Why: A saved order predating the Reminders sentinel still needs Reminders to lead. How: This pushes '__reminders' up front only when savOrdArr doesn't already mention it.
 
@@ -246,6 +257,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		pusIdeFun( '__reminders' ); // What: Reminders Trailing Guard. Why: On the very first render (an empty savOrdArr), the front-guard above never ran, so this second call is what actually seeds Reminders at all; pusIdeFun's own dedupe makes this a no-op on every later render. How: This pushes '__reminders' again, harmlessly, if it somehow still isn't collected.
 
 		if ( !seeNamSet.has( '__pageTours' ) ) ideOrdArr.splice( ideOrdArr.indexOf( '__reminders' ) + 1, 0, '__pageTours' ); // What: Page Tours Default Splice. Why: Page Tours defaults to right after Reminders the first time it shows up (e.g. a saved order predating Page Tours entirely), so it needs no backfill in migStaFun(); once the user drags it in Edit Mode, its own saved position takes over like any other group. How: This splices '__pageTours' in right after '__reminders' only when it wasn't already collected above.
+
+		// #endregion Order Passes
 
 
 
@@ -284,6 +297,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 	}, [ staAppObj.today.entries, staAppObj.pickers ] ); // What: Memo Dependency Array. Why: The filtered list only changes when today's entries or the pickers' hidden flags change. How: staAppObj.today.entries is the list being filtered, and staAppObj.pickers supplies hidPicSet.
+
+	// #endregion Group Display Data
 
 
 
@@ -437,6 +452,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	React.useEffect( () => { emlTouObj.set( { shoCheBoo : shoCheBoo } ); }, [ shoCheBoo ] ); // What: Checklist Bus Publish Effect. Why: reminders-section.tsx's staAddFun needs to hide ANY reminder created while the checklist is up, not just ones a mini-tour itself creates, so a user manually clicking "+" mid-onboarding doesn't clutter the list alongside the still-open launcher cards either (see the unhide side in the genResBoo effect further below). How: This republishes shoCheBoo onto the shared tour bus under its own shoCheBoo field.
 
+
+
+	// #region Page Tours Naming
+
 	const pagNamStr = staAppObj.onboarding.pageToursName || 'Page Tours'; // What: Page Name String. Why: The Page Tours section header needs its own, possibly user-renamed, display name. How: This reads staAppObj.onboarding.pageToursName, falling back to the fixed default.
 
 
@@ -492,6 +511,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	};
 
 	// #endregion pagColFun
+
+	// #endregion Page Tours Naming
 
 
 
@@ -747,6 +768,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	React.useEffect( () => { // What: Celebration Effect. Why: This is the actual celebration trigger, described in the doc comment above this whole region. How: This detects either a fresh transition into complete (the richer celebration) or an ordinary done-count rise (the plain pulse), fires the matching CSS/particle sequence, then cleans up after a fixed duration.
 
 
+		// #region Full Completion Check
+
 		const fulNowBoo = totCouNum > 0 && donCouNum === totCouNum; // What: Full Now Boolean. Why: This effect's own fresh completion check must be computed here, not read from isaFulBoo, since it needs to compare against preFulRef before that ref is updated. How: This mirrors isaFulBoo's own computation.
 
 
@@ -899,7 +922,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 		}
 
+		// #endregion Full Completion Check
 
+
+
+		// #region Tick Pulse
 
 		const donRisBoo = donCouNum > preDonRef.current; // What: Done Rise Boolean. Why: A pulse only plays when the done count actually went up. How: This compares donCouNum against preDonRef's own prior value.
 		const notFulBoo = !fulNowBoo;                    // What: Not Full Boolean. Why: A rise that completes the whole day already got the full celebration above. How: This negates fulNowBoo.
@@ -931,10 +958,16 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 		}
 
+		// #endregion Tick Pulse
 
+
+
+		// #region Previous Value Tracking
 
 		preDonRef.current = donCouNum; // What: Previous Done Update. Why: Even a non-rise (a drop, or a no-op re-render) still needs preDonRef to track the latest value for next time. How: This overwrites preDonRef with the current donCouNum.
 		preFulRef.current = fulNowBoo; // What: Previous Complete Update. Why: Same reasoning as preDonRef just above, for the completion state. How: This overwrites preFulRef with the current fulNowBoo.
+
+		// #endregion Previous Value Tracking
 
 
 	}, [ celStyStr, donCouNum, totCouNum ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when the ring's own numerator or denominator changes. How: donCouNum/totCouNum are exactly what preDonRef/preFulRef are compared against, and a re-run from a celebration style change finds no rise and only refreshes the refs.
@@ -1017,15 +1050,24 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const aplVarFun = () => { // What: Apply Variables Function. Why: Every trigger below (mount, either ResizeObserver, window resize) needs this exact same measure-and-publish step. How: This measures heaCurEle/raiEleRef, then writes 3 CSS custom properties onto tabCurEle.
 
 
+			// #region Height Measurement
+
 			const heaHeiNum = heaCurEle.offsetHeight; // What: Header Height Number. Why: This is the header's own real rendered height. How: This reads heaCurEle.offsetHeight.
 
 			const raiCurEle = raiEleRef.current;                                                  // What: Rail Current Element. Why: The rail only contributes to the sticky offset while it is stacked horizontally, which needs its own live check below. How: This reads raiEleRef.current.
 			const raiHorBoo = raiCurEle && getComputedStyle( raiCurEle ).flexDirection === 'row'; // What: Rail Horizontal Boolean. Why: On mobile the rail flips to flex-direction: row and stacks below the header as a horizontal pill bar; this detects that state via computed style so it works whether triggered by the viewport breakpoint or the mobile-preview tweak. How: This reads raiCurEle's own live computed flexDirection.
 			const raiHeiNum = raiHorBoo ? raiCurEle.offsetHeight : 0;                             // What: Rail Height Number. Why: Only a horizontally-stacked rail contributes its own height to the sticky offset. How: This reads raiCurEle.offsetHeight only while raiHorBoo, otherwise 0.
 
+			// #endregion Height Measurement
+
+
+
+			// #region Offset Publishing
 
 			tabCurEle.style.setProperty( '--tod-hea-hei', `${ heaHeiNum }px` );             // What: Header Height Property. Why: CSS elsewhere needs the header's own real height as a custom property. How: This writes heaHeiNum in pixels.
 			tabCurEle.style.setProperty( '--sti-top-hei', `${ heaHeiNum + raiHeiNum }px` ); // What: Sticky Top Height Property. Why: jumGroFun and the scroll-spy effect below both need this exact combined offset. How: This writes the sum of heaHeiNum and raiHeiNum in pixels.
+
+			// #endregion Offset Publishing
 
 
 		};
@@ -1519,6 +1561,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
+			// #region Spy Measurements
+
 			const tabCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="todTabDiv"]' );                                                                    // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from maiScrRef.current to its nearest todTabDiv hook ancestor.
 			const stiHeiNum = tabCurEle ? ( parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sti-top-hei' ) ) || rhyPxlFun( 'p09' ) ) : rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: This is the exact offset the sticky-offset effect above publishes. How: This reads the --sti-top-hei custom property, falling back to the p09 rhythm step. // Vertical Rhythm Base Plus 9 ~= 183.074px
 			const biaLinNum = stiHeiNum + 20; // What: Bias Line Number. Why: A small extra margin beyond the raw sticky offset reads as more natural than snapping exactly at the pixel boundary. How: This adds a fixed 20px to stiHeiNum.
@@ -1528,6 +1572,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			const botEdgBoo = scrCurEle // What: Bottom Edge Boolean. Why: A user scrolled all the way to the end should always spy the LAST section, even if its own header can never reach the spy line. How: This checks either the scroller's own metrics or, without one, the window's.
 				? scrCurEle.scrollTop + scrCurEle.clientHeight >= scrCurEle.scrollHeight - 2        // What: Scroller Bottom Branch. Why: The list normally scrolls inside .main. How: This checks whether that scroller is within 2px of its own end.
 				: window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2; // What: Window Bottom Branch. Why: Without a scroll container the page itself scrolls. How: This checks whether the window is within 2px of the document end.
+
+			// #endregion Spy Measurements
+
 
 
 			if ( pinGroRef.current ) { // What: Pinned Group Branch. Why: A pinned bottom-cluster group should stay active while bottomed out or while its own header is still above the viewport midline. How: This releases the pin once neither condition holds any more, otherwise returns early to keep it active.
@@ -1554,6 +1601,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
+			// #region Closest Section Search
+
 			let besGroStr = secEntArr[ 0 ][ 0 ]; // What: Best Group String And Reassignment. Why: The search loop below needs a running best-match default, starting at the first section. How: This starts at secEntArr's own first entry's own key.
 			let besDisNum = Infinity;            // What: Best Distance Number And Reassignment. Why: The search loop below needs a running best-match distance, starting unbeaten. How: This starts at Infinity so the very first real candidate always replaces it.
 
@@ -1576,6 +1625,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 			}
+
+			// #endregion Closest Section Search
 
 
 
@@ -1618,14 +1669,25 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
+		// #region Spy Suppression
+
 		setActGroStr( groIdeStr ); // What: Active Group Set. Why: The clicked rail button should highlight immediately, without waiting for the scroll-spy effect to catch up. How: This publishes groIdeStr into actGroStr directly.
 		skiSpyRef.current = true;  // What: Skip Spy Set. Why: The scroll-spy effect must not fight this programmatic scroll while it is in flight. How: This flags skiSpyRef true for the duration of the scroll below.
+
+		// #endregion Spy Suppression
+
+
+
+		// #region Scroll Target Values
 
 		const maiScrEle = tarSecEle.closest( '[data-element-name-hook~="appConMai"]' );                                        // What: Main Scroll Element. Why: The scroll target depends on whether a real scroll container exists. How: This walks up from tarSecEle to its nearest appConMai hook ancestor.
 		const tabCurEle = tarSecEle.closest( '[data-element-name-hook~="todTabDiv"]' )!;                                       // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from tarSecEle to its nearest todTabDiv hook ancestor. // What: Non-Null Note. Why: Every group section renders inside Today's own tab root. How: The ! tells TypeScript the root is found.
 		const stiHeiNum = parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sti-top-hei' ) ) || rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail, not at the section's own raw offset. How: This reads the --sti-top-hei custom property, falling back to the p09 rhythm step. // Vertical Rhythm Base Plus 9 ~= 183.074px
 		const extPadNum = rhyPxlFun( 'bas' );                                                                                  // What: Extra Padding Number. Why: A small extra gap beyond the sticky offset reads as more natural than a section's header touching the sticky edge exactly. How: This is a base rhythm step added to the scroll target below. // Vertical Rhythm Base ~= 14.572px
 		const scrBehStr = redMotFun() ? 'auto' : 'smooth';                                                                     // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
+
+		// #endregion Scroll Target Values
+
 
 
 		if ( maiScrEle ) { // What: Scroller Branch. Why: A real scroll container needs its own scrollTo call, distinct from the window fallback. How: This computes the target, checks whether it can even be reached, pins if not, then scrolls maiScrEle.
@@ -2417,6 +2479,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
+		// #region Cascade Initialization
+
 		const iniSloMap : Record< string, GenSloTyp > = {}; // What: Initial Slot Map. Why: Every slot must start pending, before the loop below flips each to active then settled in turn. How: This is populated just below from ordSloArr.
 
 
@@ -2429,6 +2493,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		setGenMapObj( iniSloMap ); // What: Generate Map Set. Why: Every LoaCarCom needs this initial map to render its own pending state. How: This publishes iniSloMap into genMapObj.
 		setOpeLogStr( null );      // What: Open Log Clear. Why: A Day Log panel left open during a regeneration would show stale data mid-cascade. How: This clears opeLogStr.
 		setGenActBoo( true );      // What: Generate Active Set. Why: The footer/rail need to know a cascade is now playing. How: This flips genActBoo to true.
+
+		// #endregion Cascade Initialization
+
 
 
 		if ( redMotFun() ) { // What: Reduced Motion Branch. Why: The picks are already fully computed above, so the pending-active-settled cascade is pure theatre for a user who won't perceive it as smooth anyway; this commits every slot straight to settled instead of making them wait genTotNum for a list that already exists. How: This builds and publishes an all-settled map immediately.
@@ -2620,6 +2687,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
+		// #region Generated List Commit
+
 		actStoObj.setEntFun( nexEntArr, { resetStreak : isaAutBoo } ); // What: Replace Today Entries Call. Why: This is the actual commit, writing nexEntArr as the new staAppObj.today.entries. How: This calls actStoObj.setEntFun, resetting the streak claim only for an auto-run.
 		actStoObj.marGenFun();                                         // What: Mark Generated Call. Why: staAppObj.today.generatedAt (and every anchor/count derived from it) needs to reflect this fresh generation. How: This calls actStoObj.marGenFun.
 
@@ -2630,6 +2699,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 		}
+
+		// #endregion Generated List Commit
 
 
 
@@ -2648,11 +2719,15 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
+		// #region Cascade Teardown
+
 		setGenActBoo( false );     // What: Generate Active Clear. Why: The cascade has now fully finished. How: This flips genActBoo back to false.
 		setGenMapObj( null );      // What: Generate Map Clear. Why: No LoaCarCom needs to render any more once the commit has landed. How: This clears genMapObj back to null.
 		genMapRef.current = null;  // What: Generate Map Reference Clear. Why: The synchronous mirror must clear alongside the state it mirrors. How: This clears genMapRef.
 		genBusRef.current = false; // What: Generate Busy Clear. Why: A future call is now free to proceed. How: This clears genBusRef.
 		setConGenBoo( false );     // What: Confirm Generate Clear. Why: Any still-open confirm prompt is now moot, since the generation it was confirming has already run. How: This clears conGenBoo.
+
+		// #endregion Cascade Teardown
 
 
 	};

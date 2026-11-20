@@ -373,10 +373,17 @@ function ConSupCom () : React.JSX.Element {
 
 
 
+		// #region Send State Start
+
 		setShoErrBoo( false ); // What: Show Error Reset. Why: A fresh send attempt must not carry over a stale validation message. How: This clears the validation-error flag.
 		setSenFaiBoo( false ); // What: Send Failed Reset. Why: A fresh send attempt must not carry over a stale failure state. How: This clears the send-failed flag.
 		setIsaSenBoo( true );  // What: Sending Flag Set. Why: The request is now in flight. How: This marks isaSenBoo true until the request settles.
 
+		// #endregion Send State Start
+
+
+
+		// #region Form Submission
 
 		const reqBodStr = new URLSearchParams({ // What: Request Body String. Why: Netlify Forms expects a standard form-encoded POST body, matching the static form's own field names in index.html. How: This builds that body from the form-name, the honeypot, and the 4 real fields.
 
@@ -433,6 +440,8 @@ function ConSupCom () : React.JSX.Element {
 
 
 		} );
+
+		// #endregion Form Submission
 
 
 	};

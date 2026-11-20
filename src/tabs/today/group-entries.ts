@@ -381,8 +381,13 @@ function merOrdFun ( fulOrdArr : string[] | null | undefined, preNewArr : string
 
 
 
+	// #region Result Seed
+
 	const preKeySet = new Set( preKeyArr ); // What: Present Key Set. Why: The splice loop below needs a fast membership check against every present key. How: This wraps preKeyArr in a Set.
 	const resKeyArr = preKeyArr.slice();    // What: Result Key Array. Why: The final merged order starts as a copy of the present keys' own new order; absent keys are spliced back into this same array below. How: This copies preKeyArr so the splices below never mutate preKeyArr itself.
+
+	// #endregion Result Seed
+
 
 
 	// #region Splice Back Absent Keys

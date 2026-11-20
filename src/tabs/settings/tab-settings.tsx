@@ -507,12 +507,23 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
+		// #region Spy Suppression
+
 		setActSecStr( secIdeStr ); // What: Active Section Update Call. Why: The rail should highlight the target section immediately, not wait for the scroll to finish. How: This writes secIdeStr into actSecStr.
 
 		skiSpyRef.current = true; // What: Skip Spy Set. Why: The scroll-spy handler must not fight this deliberate jump while it is still animating. How: This flags skiSpyRef true, checked as a guard at the top of onScrEveFun above.
 
+		// #endregion Spy Suppression
+
+
+
+		// #region Jump Target Values
+
 		const scrConEle = secCurEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared '.appConMai' scroller, not the window, is what actually needs scrolling in the normal case. How: This walks up from secCurEle to its nearest '.appConMai' ancestor.
 		const jumTopBoo = secIdeStr === SET_SEC_ARR[ 0 ].ideStr;                        // What: Jump Top Boolean. Why: Jumping to the very first section should reveal the tab's own header too, not just that section. How: This is true only when secIdeStr matches SET_SEC_ARR's own first entry. // The first section is the top of the tab; scroll all the way up so the header comes back into view rather than stopping at the section.
+
+		// #endregion Jump Target Values
+
 
 
 		if ( scrConEle ) { // What: Container Scroll Check. Why: The normal case scrolls inside '.appConMai', while the fallback scrolls the window. How: This takes the container branch whenever a '.appConMai' ancestor was found.
@@ -914,6 +925,8 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	const resRunFun = async ( cloDelBoo : boolean ) : Promise< void > => {
 
 
+		// #region Account Wipe
+
 		setResBusBoo( true ); // What: Busy Mark. Why: The buttons wait while the account part runs. How: This disables them.
 
 
@@ -922,6 +935,8 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 		setResBusBoo( false ); // What: Busy Clear. Why: The buttons can be used again. How: This re-enables them.
+
+		// #endregion Account Wipe
 
 
 
@@ -935,12 +950,15 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
+		// #region Reset Result
 
 		setConResBoo( false );             // What: Confirm Close. Why: The confirm pair's job is done. How: This flips conResBoo back to false.
 		setResLeaBoo( false );             // What: Reset Leaving Clear. Why: No leave animation should linger after a real reset. How: This flips resLeaBoo back to false.
 		setResMesStr( 'All data reset.' ); // What: Reset Message Set. Why: The row should confirm the reset on screen. How: This writes a fixed confirmation into resMesStr.
 
 		annStaFun( 'All data reset.' ); // What: Reset Announce Call. Why: A screen-reader user needs to hear the reset happened too. How: This announces a fixed confirmation.
+
+		// #endregion Reset Result
 
 
 	};
@@ -976,6 +994,8 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	const expDatFun = async () => { // What: Export Data Function. Why: The Export button needs to build and download a full backup, sourced from the true persisted state rather than only in-memory state. How: This reads the freshest available pick log, builds a JSON blob, announces the result, then triggers the download.
 
 
+		// #region Payload Read
+
 		let expPayObj = staAppObj; // What: Export Payload Object. Why: The exported backup needs one single object to serialize, defaulting to the in-memory state. How: This starts as staAppObj itself and is only replaced below if a fresher persisted pick log is actually found. // Export from the STORE OF RECORD, not just memory. If this session booted from the warm localStorage mirror (which omits the pick log), the in-memory log is empty and a naive export would silently drop all history, so the Stats tab would come back blank after a round-trip.
 
 
@@ -999,7 +1019,11 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 		catch {} // What: Persisted Read Failure Guard. Why: A failed read must never block the export. How: This silently swallows the error, falling back to in-memory state.
 
+		// #endregion Payload Read
 
+
+
+		// #region File Build
 
 		const entCouNum = ( expPayObj.pickLog || [] ).length;                                                  // What: Entry Count Number. Why: Both the announcement and the on-screen status line need to say how many history entries the export actually included. How: This reads the length of expPayObj's own (possibly swapped-in) pickLog.
 		const expBloObj = new Blob( [ JSON.stringify( expPayObj, null, 2 ) ], { type : 'application/json' } ); // What: Export Blob Object. Why: A downloadable file needs to exist as a real Blob, not just a JS object. How: This serializes expPayObj as pretty-printed JSON inside a JSON-typed Blob.
@@ -1011,6 +1035,12 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 		dowLinEle.href     = expUrlStr;                          // What: Download Href Assignment. Why: This is what actually points the anchor at the freshly-built backup blob. How: This sets dowLinEle's own href to expUrlStr.
 		dowLinEle.download = `ease-my-life-${ datStaStr }.json`; // What: Download Filename Assignment. Why: A named download attribute is what gives the saved file a sensible name instead of a random blob id. How: This sets dowLinEle's own download attribute to a dated, app-branded filename.
 
+		// #endregion File Build
+
+
+
+		// #region Export Report
+
 		setExpMesObj({ // What: Export Message Update. Why: The on-screen status line needs both a fresh React key and the actual entry count. How: This writes a timestamp/entries pair into expMesObj.
 
 
@@ -1021,6 +1051,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 		});
 
 		annStaFun( `Backup exported, including ${ entCouNum } history ${ entCouNum === 1 ? 'entry' : 'entries' }.`, { assertive : true } ); // What: Export Announce Call. Why: A screen-reader user needs to hear the export actually happened, including how much history it carried. How: This announces the entry count assertively, pluralized correctly for exactly 1 entry. // Announce BEFORE firing the download. The browser's own download UI takes focus the moment the link is clicked, and a screen reader that follows focus into browser chrome drops any pending polite announcement, so the speech has to be assertive and already under way. The file is fully built by this point, so "exported" is true when it is said.
+
+		// #endregion Export Report
+
+
 
 		setTimeout( () => { // What: Download Trigger Timeout. Why: The announcement above needs a brief head start before the download link steals focus. How: This waits 220ms, then clicks the anchor, restores focus, and schedules the object URL's own cleanup.
 

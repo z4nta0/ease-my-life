@@ -324,6 +324,9 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 		actStoObj.addIteFun( picDatObj.id, draIteObj.name, draIteObj.id ); // What: Add Item Call. Why: The draft only exists locally until this point; this is what actually creates it in the store. How: This passes the draft's own id through so the created item keeps the same id the draft UI was already using.
 
 
+
+		// #region Patch Build
+
 		const patIteObj : Partial< IteRcdTyp > = { vacation : draIteObj.vacation }; // What: Patch Item Object. Why: actions.addIteFun always creates the item active, so the draft's own Active toggle must be carried over too, not just weight/ease fields, or turning it off is silently lost. How: This starts from just the vacation field and gains weight/ease fields below when relevant.
 
 
@@ -341,13 +344,19 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 		}
 
+		// #endregion Patch Build
 
+
+
+		// #region Store Update
 
 		actStoObj.updIteFun( draIteObj.id, patIteObj ); // What: Update Item Call. Why: actions.addIteFun alone doesn't accept these extra fields, so a follow-up patch is needed to apply them. How: This applies patIteObj to the freshly-created item.
 
 		actStoObj.movIteFun( draIteObj.id ); // What: Move To End Call. Why: A newly-added item should land at the end of the pool's own display order, not wherever the store happened to insert it. How: This reorders the freshly-created item to the end.
 
 		setInsSavStr( draIteObj.id ); // What: Insert Saved Flag Call. Why: The freshly-committed row needs its own insert animation. How: This writes the new item's id into insSavStr, consumed by that row's own onAnimationEnd handler.
+
+		// #endregion Store Update
 
 
 	};
@@ -720,6 +729,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 
+		// #region Pick Computation
+
 		const iteSnaArr = staAppObj.items;                                                                            // What: Item Snapshot Array. Why: The pick engine needs a stable snapshot of items to compute against. How: This is just staAppObj.items, captured under a clearer local name for the call below.
 		const runResObj = PIC_NAM_OBJ.picIteFun( picDatObj, iteSnaArr, { excludeIds : todIdeSet, forceNew : true } ); // What: Run Result Object. Why: This is the actual computed outcome the rest of this function and the stage below render from. How: This calls the shared picking engine with this picker's own current pool. // What: Force New Note. Why: This button is a manual "pick/roll again" action, so for ease-down it should offer a real choice, not just re-confirm whatever item is already active; abandoning it recharges it, same as re-roll. How: forceNew is passed through to PIC_NAM_OBJ.picIteFun below.
 
@@ -737,7 +748,11 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 		}
 
+		// #endregion Pick Computation
 
+
+
+		// #region Run State Staging
 
 		setPicResObj( runResObj ); // What: Result Store Call. Why: The stage and Send/Re-roll buttons both need this exact outcome once the cycle settles. How: This writes runResObj into picResObj.
 
@@ -746,6 +761,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 		setBusPicBoo( true ); // What: Busy Start Call. Why: The button must disable itself and show a busy label while the cycle plays. How: This flips busPicBoo true.
 
 		setRunPhaStr( 'running' ); // What: Running Phase Call. Why: The stage must switch to rendering PicStrCom's own cycle animation. How: This writes 'running' into runPhaStr.
+
+		// #endregion Run State Staging
 
 
 	};
@@ -810,6 +827,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 
+		// #region Redo Pick Computation
+
 		const runResObj = PIC_NAM_OBJ.picIteFun( picDatObj, staAppObj.items, { excludeIds : todIdeSet, forceNew : true } ); // What: Run Result Object. Why: The revisited step still needs a real, current pick result to show. How: This calls the shared picking engine exactly like runPicFun does.
 
 
@@ -826,13 +845,20 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 		}
 
+		// #endregion Redo Pick Computation
 
+
+
+		// #region Redo State Staging
 
 		setPicResObj( runResObj ); // What: Result Store Call. Why: The stage needs this exact synthesized outcome to render the revisited 'done' state from. How: This writes runResObj into picResObj.
 
 		setBusPicBoo( false ); // What: Busy Clear Call. Why: This is a synthesized revisit, not a real spin, so nothing should ever appear busy. How: This keeps busPicBoo false.
 
 		setRunPhaStr( 'done' ); // What: Done Phase Call. Why: Step 8's own target needs runPhaStr to genuinely be 'done'. How: This writes 'done' into runPhaStr directly, skipping 'running' entirely.
+
+		// #endregion Redo State Staging
+
 
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: The redo pick must run only on a genuine nonce bump, so the values it reads fresh stay out of the array. How: This silences the react-hooks exhaustive-deps warning for the dependency array below.

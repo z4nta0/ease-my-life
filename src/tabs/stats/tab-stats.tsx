@@ -798,6 +798,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const conStaArr = React.useMemo( () => { // What: Conditional Stats Array Memo. Why: The Conditionals headline numbers and breakdown list both need one summarized row per conditional (live or deleted), joined against its own range-filtered trigger history. How: This walks conLogArr once, accumulating totals/fired counts/fire dates per conditional id, then finalizes rate/interval fields.
 
 
+		// #region Accumulator Build
+
 		const ranRowArr = conLogArr.filter( ( rowCurObj ) => !cutIsoStr || rowCurObj.date >= cutIsoStr ); // What: Ranged Row Array. Why: Only trigger evaluations inside the active range should count toward the summarized stats. How: This keeps every log row whose own date is on or after cutIsoStr, or every row at all when there's no cutoff.
 		const conAccMap = new Map();                                                                      // What: Conditional Accumulator Map. Why: Both live and deleted conditionals need one shared accumulator, keyed by id, to build up their own totals into. How: This starts empty and is populated by the two loops below.
 
@@ -912,7 +914,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 		}
 
+		// #endregion Accumulator Build
 
+
+
+		// #region Output Ordering
 
 		const outConArr = []; // What: Out Conditional Array. Why: The finished stats need a stable, deterministic order rather than the Map's own insertion order. How: This starts empty and is filled below, live conditionals first in their own definition order, then deleted ones.
 
@@ -922,6 +928,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 		for ( const conRowObj of conAccMap.values() ) if ( conRowObj.delBoo ) outConArr.push( conRowObj ); // What: Deleted Append Loop. Why: A deleted conditional's history should still surface, appended after every live one. How: This appends every accumulator flagged deleted.
+
+		// #endregion Output Ordering
 
 
 
@@ -1524,6 +1532,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const heaDayArr = React.useMemo( () => { // What: Heat Day Array Memo. Why: The heatmap grid needs one cell per calendar day across its own bounded window, not just the days that happen to have logged activity. How: This computes a start/end day (clamped to actYeaNum when paging), then fills every day in between from dayAggMap.
 
 
+		// #region Start Bound
+
 		let staIsoStr = cutIsoStr; // What: Start Iso String. Why: The grid's own first day defaults to the active range's own cutoff. How: This starts from cutIsoStr and may be overridden below for an "All time" view with no cutoff at all.
 
 
@@ -1538,7 +1548,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 		}
 
+		// #endregion Start Bound
 
+
+
+		// #region End Bound
 
 		let endIsoStr = todIsoStr; // What: End Iso String. Why: The grid's own last day defaults to today. How: This may be overridden below when a specific year is being paged.
 
@@ -1559,7 +1573,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 		}
 
+		// #endregion End Bound
 
+
+
+		// #region Day Fill
 
 		const staDatObj = new Date( staIsoStr + 'T00:00:00' ); // What: Start Date Object. Why: The fill loop below needs a real Date to step forward one day at a time from. How: This parses staIsoStr at local midnight.
 		const outDayArr = [];                                  // What: Out Day Array. Why: The finished grid needs building up one day at a time between the bounds computed above. How: This starts empty and is filled by the loop below.
@@ -1575,6 +1593,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 		}
+
+		// #endregion Day Fill
 
 
 
@@ -1691,6 +1711,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const vacCheObj = React.useMemo( () => { // What: Vacation Check Object Memo. Why: Several metrics below need to know an item's own active/inactive state on an arbitrary past day, not just its current state. How: This replays staAppObj.vacationLog into a per-item sorted event list, then exposes two small lookup functions closing over it. // Inactive-state replay from the event log: vacCheObj.inaDayFun(itemId, date) answers whether that item was inactive that day; vacCheObj.retAftFun answers whether an 'on' (return-from-vacation) transition happened after that date.
 
 
+		// #region Event Grouping
+
 		const iteEveMap = new Map< string, VclRowTyp[] >(); // What: Item Event Map. Why: Each item's own vacation-toggle history needs to be grouped before it can be replayed. How: This starts empty and is filled by the loop below.
 
 		for ( const rowCurObj of ( staAppObj.vacationLog || [] ) ) { // What: Vacation Row Grouping Loop. Why: Every logged toggle event needs filing under its own item. How: This appends each row to that item's own array, lazily creating it on first use.
@@ -1709,7 +1731,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 		for ( const iteEveArr of iteEveMap.values() ) iteEveArr.sort( ( eveOneObj, eveTwoObj ) => ( eveOneObj.date < eveTwoObj.date ? -1 : 1 ) ); // What: Chronological Sort Loop. Why: The replay functions below assume each item's own events are in chronological order. How: This sorts every item's own array by its own date field.
 
+		// #endregion Event Grouping
 
+
+
+		// #region Replay Functions
 
 		const inaDayFun = ( iteIdeStr : string, dayIsoStr : string ) => { // What: Inactive Day Function. Why: Several metrics need to ask "was this item inactive on this specific day", replayed from its own toggle history. How: This walks the item's own sorted events up through dayIsoStr, remembering the most recent on/off state.
 
@@ -1753,6 +1779,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 		};
+
+		// #endregion Replay Functions
 
 
 
@@ -1866,6 +1894,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
+		// #region Day Info Build
+
 		const dayInfMap = new Map(); // What: Day Info Map. Why: The run-detection loop below needs each date's own item and depleted-end flag, keyed for lookup. How: This maps each pick date to a small { itemId, depletedEnd } record.
 
 
@@ -1878,7 +1908,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 		} );
 
+		// #endregion Day Info Build
 
+
+
+		// #region Run Detection
 
 		const sorDatArr = [ ...dayInfMap.keys() ].sort();                              // What: Sorted Date Array. Why: Run detection below depends on walking the picker's own dates in chronological order. How: This spreads and sorts dayInfMap's own keys.
 		const iteStkMap = new Map< string, { calNum : number, runNum : number }[] >(); // What: Item Streak Map. Why: Every completed depletion streak needs filing under its own item before it can be averaged. How: This starts empty and is filled by the run-walk loop below.
@@ -1920,6 +1954,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 		}
+
+		// #endregion Run Detection
 
 
 

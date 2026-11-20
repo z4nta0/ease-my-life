@@ -61,6 +61,8 @@ let annStaFun : ( mesTexStr : string, mesOptObj? : { assertive? : boolean } ) =>
 (() => { // What: Announce Status Setup IIFE. Why: The live region must be created exactly once, at module load, since a region that mounts together with its own text is announced unreliably (or not at all) in several browser/screen-reader pairs. How: This builds the live region, attaches it to <body> (immediately or on DOMContentLoaded), and assigns the real implementation into the module-level annStaFun binding declared just above.
 
 
+	// #region Live Region Element
+
 	const livRegEle = document.createElement( 'div' ); // What: Live Region Element. Why: This is the actual DOM node screen readers watch for status announcements. How: This is a plain div, styled invisibly by CSS via its own class below, that persists for the app's whole lifetime.
 
 
@@ -69,6 +71,11 @@ let annStaFun : ( mesTexStr : string, mesOptObj? : { assertive? : boolean } ) =>
 	livRegEle.setAttribute( 'aria-live', 'polite' ); // What: Live Region Live Attribute. Why: A default politeness level is needed before any real annStaFun() call can override it per-call. How: This starts the region at "polite", overwritten per-call below.
 	livRegEle.setAttribute( 'aria-atomic', 'true' ); // What: Live Region Atomic Attribute. Why: A screen reader should read the whole message, not just whatever text node changed. How: This tells assistive tech to treat content changes as replacing the whole region.
 
+	// #endregion Live Region Element
+
+
+
+	// #region Region Attachment
 
 	const attRegFun = () => document.body && document.body.appendChild( livRegEle ); // What: Attach Region Function. Why: The live region does nothing until it's actually in the document. How: This appends livRegEle to document.body, guarded in case body doesn't exist yet.
 
@@ -77,7 +84,11 @@ let annStaFun : ( mesTexStr : string, mesOptObj? : { assertive? : boolean } ) =>
 
 	else document.addEventListener( 'DOMContentLoaded', attRegFun ); // What: Deferred Attach Branch. Why: A load order where document.body doesn't exist yet must wait for the DOM to finish parsing. How: This defers attRegFun until DOMContentLoaded fires.
 
+	// #endregion Region Attachment
 
+
+
+	// #region Status Announcement
 
 	let annTimNum : number | undefined = undefined; // What: Announce Timeout Number. Why: A rapid-fire annStaFun() call must debounce against the previous call's own pending timeout. How: This holds the current setTimeout id, cleared and reassigned on every call below.
 
@@ -128,6 +139,8 @@ let annStaFun : ( mesTexStr : string, mesOptObj? : { assertive? : boolean } ) =>
 	};
 
 	// #endregion annStaFun
+
+	// #endregion Status Announcement
 
 
 } )();

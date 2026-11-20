@@ -835,6 +835,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	const savNewFun = ( picArgObj : PicForTyp, filAllBoo : boolean ) => { // What: Save New Function. Why: Save creates the draft picker and its items for real, in one step. How: This folds in any open draft row, applies a pending Fill all, then calls addPicFun.
 
 
+		// #region Final Item Build
+
 		const draExiBoo = !!draIteObj;                       // What: Draft Existing Boolean. Why: Only an open row has a draft that could still need keeping. How: This is true whenever an item row is open.
 		const draInsBoo = draIteObj?.pickerId === newDraStr; // What: Draft Inside Boolean. Why: Only a row inside the draft picker belongs to this save. How: This compares the open draft's pickerId with the draft picker's id, safely false with no open row.
 		const draUnhBoo = hanDraRef.current !== draIteObj;   // What: Draft Unhandled Boolean. Why: A draft already folded in by the row's own close must not be kept twice. How: This checks the open draft isn't the one hanDraRef already handled.
@@ -857,7 +859,11 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 		} ) );
 
+		// #endregion Final Item Build
 
+
+
+		// #region Picker Creation
 
 		if ( opeDraBoo ) hanDraRef.current = draIteObj; // What: Handled Draft Mark. Why: The open row's unmount must not keep a draft already folded in here. How: This records it as handled.
 
@@ -874,12 +880,20 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 		});
 
+		// #endregion Picker Creation
+
+
+
+		// #region Draft Reset
+
 		newIteRef.current = null; // What: New Item Clear. Why: No new item is in progress once the draft is saved. How: This clears newIteRef.
 		setNewIteObj( null );     // What: New Item Object Clear. Why: Any local new item went with the draft. How: This clears newIteObj.
 		setNewPicObj( null );     // What: New Picker Clear Call. Why: This is no longer a draft once saved; it's just a normal picker now. How: This resets newPicObj to null.
 		setDraIteArr( [] );       // What: Draft Items Clear Call. Why: The draft's items now live in the store. How: This resets draIteArr to an empty array.
 		setDraIteBoo( false );    // What: Draft Items Reset Call. Why: A future new draft should start fresh. How: This resets draIteBoo to false.
 		setOpeIteStr( null );     // What: Open Item Clear. Why: No draft row stays open. How: This resets opeIteStr to null.
+
+		// #endregion Draft Reset
 
 
 	};
@@ -1984,6 +1998,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 
+					// #region Card Values
+
 					const picCurObj = entCurObj.picObj!;                                                                                      // What: Picker Current Object. Why: Every remaining branch below is a real picker card and needs its own record. How: This reads entCurObj.pk. // What: Non-Null Note. Why: The Conditionals and Reminders entries already returned above, and every picker entry carries its record. How: The ! tells TypeScript picObj is set here.
 					const isaDraBoo = !!entCurObj.draBoo;                                                                                     // What: Is-A Draft Boolean. Why: The draft's own card renders slightly differently (always expanded, no collapse toggle, Items starts closed). How: This checks entCurObj.isDraft.
 					const stoIteArr = isaDraBoo ? draIteArr : staAppObj.items.filter( ( iteCurObj ) => iteCurObj.pickerId === picCurObj.id ); // What: Stored Item Array. Why: This picker's own kept items are the base of its list. How: This is the draft's own local items for the draft card, else the whole app's items filtered down to this picker's own.
@@ -1997,6 +2013,11 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 					const conColBoo = !!colMapObj[ picCurObj.id + ':controls' ];                                                              // What: Controls Collapsed Boolean. Why: The Controls disclosure's own persisted state is keyed separately from the card's own open/closed state. How: This reads colMapObj at the ':controls' suffix key.
 					const iteColBoo = isaDraBoo ? !draIteBoo : !!colMapObj[ picCurObj.id + ':items' ];                                        // What: Items Collapsed Boolean. Why: A draft's own Items section tracks draIteBoo instead of the normal persisted map. How: This reads draIteBoo for a draft, otherwise the persisted entry at the ':items' suffix key.
 
+					// #endregion Card Values
+
+
+
+					// #region New Item Open Check
 
 					const opeSetBoo = opeIteStr != null;                                             // What: Open Set Boolean. Why: Some item has to be open for a new one to be in progress. How: This checks opeIteStr isn't null.
 					const newOpeBoo = newIteRef.current === opeIteStr;                               // What: New Open Boolean. Why: The open item must be the brand-new one. How: This compares newIteRef to opeIteStr.
@@ -2004,6 +2025,11 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 					const ownNewBoo = opeSetBoo && newOpeBoo && ownOpeBoo; // What: Own New Boolean. Why: PicConCom's footer must know when this picker has an unsaved new item open. How: This ANDs the 3 checks above.
 
+					// #endregion New Item Open Check
+
+
+
+					// #region Item Sorting
 
 					const iteSorStr = staAppObj.ui?.dataSort?.[ picCurObj.id ] || 'name-asc';              // What: Item Sort String. Why: Every picker's own item list needs its own persisted sort choice. How: This reads staAppObj.ui.dataSort at this picker's own id, falling back to 'name-asc'.
 					const falEasObj = isaEasBoo ? PIC_NAM_OBJ.aveEasFun( picIteArr, picCurObj.id ) : null; // What: Fallback Ease Object. Why: An item with no ease band of its own falls back to the same average the picking engine itself uses. How: This is computed once per card, shared by both the sort entries and every item row below.
@@ -2037,7 +2063,11 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 					const sorIteArr = [ ...picIteArr ].sort( ( iteOneObj, iteTwoObj ) => sorEntFun( iteEntFun( iteOneObj ), iteEntFun( iteTwoObj ), iteSorStr ) ); // What: Sorted Item Array. Why: The rendered item list needs to actually be in iteSorStr's own order. How: This sorts a copy of picIteArr via sorEntFun.
 					const disIteArr = freEdiFun( sorIteArr, opeIteStr, newIteRef.current, froIndRef );                                                             // What: Display Item Array. Why: An item mid-edit must not visually jump position if its own sort key changes underneath it. How: This calls the shared freEdiFun helper.
 
+					// #endregion Item Sorting
 
+
+
+					// #region Card Item Actions
 
 					const staAddFun = () => { // What: Start Add Function. Why: This is the "+ Add to X" button's own action, factored out so a brand-new draft's "Add Items" footer button can trigger the exact same first-item flow. How: This creates a fresh item and opens its own editor.
 
@@ -2071,6 +2101,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 					};
+
+					// #endregion Card Item Actions
 
 
 

@@ -621,6 +621,8 @@ type RlcProTyp = { onCloLogFun : () => void, staAppObj : StaAppTyp }; // What: R
 function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Element {
 
 
+	// #region Reminder Task Sets
+
 	const ancDatObj = TAS_NAM_OBJ.ancDatFun( staAppObj.today && staAppObj.today.generatedAt );                         // What: Anchor Date Object. Why: Every lookup below must use the same frozen anchor the Reminders section above this panel already used. How: This calls TAS_NAM_OBJ.ancDatFun with staAppObj's own today.generatedAt, if any.
 	const dayKeyStr = isoDayFun( ancDatObj );                                                                          // What: Day Key String. Why: The skipped-lookup below needs a plain date key to match against, scoped to ancDatObj rather than live "now". How: This calls isoDayFun with ancDatObj.
 	const tasLisArr = staAppObj.tasks.filter( ( curTasObj ) => !curTasObj.hidden );                                    // What: Task List Array. Why: A hidden task/reminder never belongs in this log at all. How: This filters staAppObj's own tasks down to the non-hidden ones.
@@ -637,6 +639,9 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 
 
 	);
+
+	// #endregion Reminder Task Sets
+
 
 
 	const remRowArr = tasLisArr.map( ( curTasObj ) => { // What: Reminder Row Array. Why: One display row is needed per task/reminder in tasLisArr. How: This computes each row's own status and (once not-yet-due) its own due label before returning its shape below.
@@ -686,9 +691,13 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 
 
 
+	// #region Status Sorting
+
 	const staRanObj : Record< string, number > = { done : 0, due : 1, notdue : 3, skip : 2 }; // What: Status Rank Object. Why: The sort below needs a numeric priority per status to order the rows sensibly. How: This is indexed just below by each row's own rowStaStr.
 
 	remRowArr.sort( ( rowOneObj, rowTwoObj ) => ( staRanObj[ rowOneObj.rowStaStr ] - staRanObj[ rowTwoObj.rowStaStr ] ) || ( rowOneObj.tasRcdObj.name < rowTwoObj.tasRcdObj.name ? -1 : 1 ) ); // What: Reminder Row Sort Call. Why: Rows should group by status first, then alphabetically within a status. How: This sorts remRowArr by staRanObj's own rank difference, falling back to a plain name comparison when ranks tie.
+
+	// #endregion Status Sorting
 
 
 
