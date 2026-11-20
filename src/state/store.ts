@@ -337,60 +337,6 @@ function madConFun ( newConObj : Partial< ConRcdTyp > | null | undefined ) : Con
 
 
 
-// #region nexStaFun
-
-/**
- * nexStaFun = Next State Function
- *
- * @summary
- * Builds the next state after a Today entry action that touched the items,
- * pickers, logs, and conditionals: it lays the changed lists over the
- * current state, replaces today's entries, and reconciles the streak and
- * today's claimed flag against those entries and the changed items and
- * pickers.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param curStaObj - Current State Object: The state the action started from.
- * @param nexEntArr - Next Entry Array: Today's entries after the action.
- * @param chaStaObj - Changed State Object: The action's conditional log,
- *                    conditionals, items, pickers, and pick log.
- *
- * @returns The next state.
- *
- * @example
- * ```ts
- * nexStaFun(curStaObj, nexEntArr, chaStaObj) // => next state
- * ```
- *
-*/
-
-function nexStaFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], chaStaObj : Pick< StaAppTyp, 'conditionalLog' | 'conditionals' | 'items' | 'pickers' | 'pickLog' > ) : StaAppTyp {
-
-
-	const { stkClaBoo, stkValNum } = stkSynFun( { ...curStaObj, items : chaStaObj.items, pickers : chaStaObj.pickers }, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: The action's entries and changed lists can flip whether today counts as fully done. How: This calls stkSynFun with the changed items and pickers laid over the current state.
-
-
-
-	return { // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj, then the changed lists, the streak, and today.
-
-
-		...curStaObj, // What: Current State Spread. Why: Every field the action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
-		...chaStaObj, // What: Changed State Spread. Why: The action's changed lists replace the current ones. How: This spreads chaStaObj, whose keys curStaObj already holds, so each keeps its place.
-
-		streak : stkValNum,                                                             // What: Streak. Why: The persisted streak count must reflect the reconcile. How: This is stkValNum.
-		today  : { ...curStaObj.today, entries : nexEntArr, streakClaimed : stkClaBoo } // What: Today. Why: Today's own entries and claimed flag change with the action. How: This spreads today with nexEntArr and stkClaBoo.
-
-
-	};
-
-
-}
-
-// #endregion nexStaFun
-
-
-
 // #region stkSynFun
 
 /**
@@ -492,6 +438,60 @@ function stkSynFun ( curStaObj : StaAppTyp, entArgArr : TodEntTyp[], tasArgArr :
 }
 
 // #endregion stkSynFun
+
+
+
+// #region nexStaFun
+
+/**
+ * nexStaFun = Next State Function
+ *
+ * @summary
+ * Builds the next state after a Today entry action that touched the items,
+ * pickers, logs, and conditionals: it lays the changed lists over the
+ * current state, replaces today's entries, and reconciles the streak and
+ * today's claimed flag against those entries and the changed items and
+ * pickers.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curStaObj - Current State Object: The state the action started from.
+ * @param nexEntArr - Next Entry Array: Today's entries after the action.
+ * @param chaStaObj - Changed State Object: The action's conditional log,
+ *                    conditionals, items, pickers, and pick log.
+ *
+ * @returns The next state.
+ *
+ * @example
+ * ```ts
+ * nexStaFun(curStaObj, nexEntArr, chaStaObj) // => next state
+ * ```
+ *
+*/
+
+function nexStaFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], chaStaObj : Pick< StaAppTyp, 'conditionalLog' | 'conditionals' | 'items' | 'pickers' | 'pickLog' > ) : StaAppTyp {
+
+
+	const { stkClaBoo, stkValNum } = stkSynFun( { ...curStaObj, items : chaStaObj.items, pickers : chaStaObj.pickers }, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: The action's entries and changed lists can flip whether today counts as fully done. How: This calls stkSynFun with the changed items and pickers laid over the current state.
+
+
+
+	return { // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj, then the changed lists, the streak, and today.
+
+
+		...curStaObj, // What: Current State Spread. Why: Every field the action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
+		...chaStaObj, // What: Changed State Spread. Why: The action's changed lists replace the current ones. How: This spreads chaStaObj, whose keys curStaObj already holds, so each keeps its place.
+
+		streak : stkValNum,                                                             // What: Streak. Why: The persisted streak count must reflect the reconcile. How: This is stkValNum.
+		today  : { ...curStaObj.today, entries : nexEntArr, streakClaimed : stkClaBoo } // What: Today. Why: Today's own entries and claimed flag change with the action. How: This spreads today with nexEntArr and stkClaBoo.
+
+
+	};
+
+
+}
+
+// #endregion nexStaFun
 
 
 
