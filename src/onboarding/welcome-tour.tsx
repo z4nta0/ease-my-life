@@ -643,7 +643,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 
 
 				} }
-				onRetUseFun={ () => { // What: On Returning User Handler. Why: Someone who has used the app before is restoring a backup or signing in to sync, and needs neither the tour nor the tutorials. How: This does everything a skip does, then opens Settings at the Account section, with Import just above it.
+				onRetUsrFun={ () => { // What: On Returning User Handler. Why: Someone who has used the app before is restoring a backup or signing in to sync, and needs neither the tour nor the tutorials. How: This does everything a skip does, then opens Settings at the Account section, with Import just above it.
 
 
 					welDonFun(); // What: Welcome Done Call. Why: The welcome modal should never show again. How: This persists onboarding.welcomed as true.

@@ -38,7 +38,7 @@ import { useModIneFun } from '../ui/modal-inert.ts'; // What: Use Modal Inert Fu
 
 // #region Components
 
-type ImcProTyp = { begLabStr? : string, icoTopEle : React.ReactNode, onBegTouFun : () => void, onRetUseFun? : () => void, onSkiTouFun : () => void, parEleArr : React.ReactNode[], pilLabArr? : string[], retLabStr? : string, skiLabStr? : string, titHeaStr : string }; // What: Intro-Modal-Component Props Type. Why: Every tour opens with the same intro modal, filled with its own icon, heading, paragraphs, pills, and button labels. How: This types IntModCom's props.
+type ImcProTyp = { begLabStr? : string, icoTopEle : React.ReactNode, onBegTouFun : () => void, onRetUsrFun? : () => void, onSkiTouFun : () => void, parEleArr : React.ReactNode[], pilLabArr? : string[], retLabStr? : string, skiLabStr? : string, titHeaStr : string }; // What: Intro-Modal-Component Props Type. Why: Every tour opens with the same intro modal, filled with its own icon, heading, paragraphs, pills, and button labels. How: This types IntModCom's props.
 
 // #region IntModCom
 
@@ -68,7 +68,7 @@ type ImcProTyp = { begLabStr? : string, icoTopEle : React.ReactNode, onBegTouFun
  *                            inline <svg>.
  * @param props.onBegTouFun - On Begin Tour Function: Called when the primary
  *                            action button is activated.
- * @param props.onRetUseFun - On Returning User Function: Called when the
+ * @param props.onRetUsrFun - On Returning User Function: Called when the
  *                            returning-user text button is activated; without
  *                            it, that button isn't shown.
  * @param props.onSkiTouFun - On Skip Tour Function: Called when the secondary,
@@ -99,7 +99,7 @@ type ImcProTyp = { begLabStr? : string, icoTopEle : React.ReactNode, onBegTouFun
  *
 */
 
-function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetUseFun, onSkiTouFun, parEleArr, pilLabArr, retLabStr = "I've used Ease My Life before", skiLabStr = 'Skip', titHeaStr } : ImcProTyp ) : React.ReactPortal {
+function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetUsrFun, onSkiTouFun, parEleArr, pilLabArr, retLabStr = "I've used Ease My Life before", skiLabStr = 'Skip', titHeaStr } : ImcProTyp ) : React.ReactPortal {
 
 
 	const redMotBoo = redMotFun(); // What: Reduced Motion Boolean. Why: The card's own slide-in entrance animation should be skipped when the user prefers reduced motion. How: This calls the shared redMotFun() check once per render.
@@ -191,7 +191,7 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetU
 						onClick={ onSkiTouFun }
 					>{ skiLabStr }</button>{ /* What: Skip Action Button Element. Why: A user must always be able to decline a tour instead of taking it. How: This calls onSkiTouFun when clicked. */ }
 
-					{ onRetUseFun && ( // What: Returning User Check. Why: Only the Welcome Tour offers a way past onboarding for someone who has used the app before. How: This shows the text button when the caller passes its handler.
+					{ onRetUsrFun && ( // What: Returning User Check. Why: Only the Welcome Tour offers a way past onboarding for someone who has used the app before. How: This shows the text button when the caller passes its handler.
 
 
 						<button
@@ -199,8 +199,8 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetU
 
 							data-element-name-hook='intRetBut'
 
-							onClick={ onRetUseFun }
-						>{ retLabStr }</button> // What: Returning User Button Element. Why: Someone restoring a backup or signing in to sync doesn't need onboarding. How: This calls onRetUseFun when clicked.
+							onClick={ onRetUsrFun }
+						>{ retLabStr }</button> // What: Returning User Button Element. Why: Someone restoring a backup or signing in to sync doesn't need onboarding. How: This calls onRetUsrFun when clicked.
 
 
 					) }

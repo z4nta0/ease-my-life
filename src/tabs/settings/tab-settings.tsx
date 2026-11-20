@@ -2674,7 +2674,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 										id='set-reset-confirm-msg'
 
 										className={ cssModObj.setSubSpa }
-									>{ accSynObj.accUseObj ? <>Wipes everything on this device and signs you out. Your cloud copy stays, so signing back in restores it, unless you delete it too. A device still signed in uploads its own copy again when it next syncs. <strong>This can't be undone.</strong></> : <>Wipes everything and restores the app to a clean state. <strong>This can't be undone.</strong></> }</span>{ /* What: Set Data Sub Span Element. Why: The destructive and irreversible nature of reset needs to be stated plainly up front, and is also referenced by the confirm button's own aria-describedby below. How: This renders the fixed description. */ }
+									>{ accSynObj.accUsrObj ? <>Wipes everything on this device and signs you out. Your cloud copy stays, so signing back in restores it, unless you delete it too. A device still signed in uploads its own copy again when it next syncs. <strong>This can't be undone.</strong></> : <>Wipes everything and restores the app to a clean state. <strong>This can't be undone.</strong></> }</span>{ /* What: Set Data Sub Span Element. Why: The destructive and irreversible nature of reset needs to be stated plainly up front, and is also referenced by the confirm button's own aria-describedby below. How: This renders the fixed description. */ }
 
 									{ resMesStr && ( // What: Reset Message Check. Why: A message should only exist right after an actual reset just happened. How: This renders the message span only while resMesStr holds a value.
 
@@ -2712,11 +2712,11 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 											aria-describedby='set-reset-confirm-msg'
 
 											onClick={ () => void resRunFun( false ) } // What: Reset Confirm Click Handler. Why: Confirming wipes this device, and signs it out first when an account is signed in. How: This runs the reset without deleting the cloud copy.
-										>{ accSynObj.accUseObj ? 'Reset this device' : 'Reset' }</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final confirmation that wipes this device's data. How: This runs the reset, its label naming the device when an account's cloud copy would stay. */ }
+										>{ accSynObj.accUsrObj ? 'Reset this device' : 'Reset' }</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final confirmation that wipes this device's data. How: This runs the reset, its label naming the device when an account's cloud copy would stay. */ }
 
 
 
-										{ accSynObj.accUseObj && ( // What: Cloud Delete Check. Why: Only a signed-in account has a cloud copy to delete. How: This offers the second reset then.
+										{ accSynObj.accUsrObj && ( // What: Cloud Delete Check. Why: Only a signed-in account has a cloud copy to delete. How: This offers the second reset then.
 
 
 											<ButBasCom

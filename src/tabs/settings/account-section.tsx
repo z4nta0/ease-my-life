@@ -144,7 +144,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 	const [ linSenStr, setLinSenStr ] = React.useState( '' ); // What: Link Sent String And Setter. Why: After sending, the section says where the link went. How: This holds that address.
 	const [ pasUrlStr, setPasUrlStr ] = React.useState( '' ); // What: Pasted URL String And Setter. Why: The paste field is controlled. How: This holds its text.
 
-	const accUseObj = accSynObj.accUseObj; // What: Account User Object. Why: Most rows depend on who is signed in. How: This reads the account.
+	const accUsrObj = accSynObj.accUsrObj; // What: Account User Object. Why: Most rows depend on who is signed in. How: This reads the account.
 
 	// #endregion Form State
 
@@ -245,7 +245,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 
 
-				{ !accSynObj.accLoaBoo && !accUseObj && accSynObj.linNeeBoo && ( // What: Link Needs Address Check. Why: A link opened where it wasn't requested needs its address before anything else. How: This shows the finish form.
+				{ !accSynObj.accLoaBoo && !accUsrObj && accSynObj.linNeeBoo && ( // What: Link Needs Address Check. Why: A link opened where it wasn't requested needs its address before anything else. How: This shows the finish form.
 
 
 					<form
@@ -313,7 +313,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 
 
-				{ !accSynObj.accLoaBoo && !accUseObj && ( // What: Signed Out Check. Why: Nobody is signed in. How: This shows both ways to sign in.
+				{ !accSynObj.accLoaBoo && !accUsrObj && ( // What: Signed Out Check. Why: Nobody is signed in. How: This shows both ways to sign in.
 
 
 					<>{ /* What: Signed Out Fragment. Why: The Google row and the email form show together. How: This groups them. */ }
@@ -493,7 +493,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 
 
-				{ accUseObj && ( // What: Signed In Check. Why: An account is signed in. How: This shows it, then the upgrade or the sync rows.
+				{ accUsrObj && ( // What: Signed In Check. Why: An account is signed in. How: This shows it, then the upgrade or the sync rows.
 
 
 					<>{ /* What: Signed In Fragment. Why: The account row and the sync rows show together. How: This groups them. */ }
@@ -507,7 +507,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 								<span className={ cssModObj.setNamSpa }>Signed in</span>{ /* What: Settings Name Span Element. Why: The row says who is signed in. How: This renders its name. */ }
 
-								<span className={ cssModObj.setSubSpa }>{ accUseObj.emaStr || 'Your account' }. Signing out keeps everything on this device.</span>{ /* What: Settings Sub Span Element. Why: Signing out should feel safe. How: This names the account and says nothing is lost. */ }
+								<span className={ cssModObj.setSubSpa }>{ accUsrObj.emaStr || 'Your account' }. Signing out keeps everything on this device.</span>{ /* What: Settings Sub Span Element. Why: Signing out should feel safe. How: This names the account and says nothing is lost. */ }
 
 
 							</div>
@@ -617,7 +617,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 						) }
 
 
-						{ accUseObj.paiBoo && accSynObj.synStaStr !== 'choose' && ( // What: Sync Status Check. Why: A paid account shows how sync is going. How: This shows the status row.
+						{ accUsrObj.paiBoo && accSynObj.synStaStr !== 'choose' && ( // What: Sync Status Check. Why: A paid account shows how sync is going. How: This shows the status row.
 
 
 							<div className={ cssModObj.setRowDiv }>{ /* What: Settings Row Div Element. Why: The status sits in the tab's usual text-and-control row. How: This holds its text and the Sync now button. */ }
@@ -682,7 +682,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 				data-element-name-hook='accStaPar'
 
 				role='status'
-			>{ accSynObj.purPenBoo ? 'Finishing your purchase.' : accUseObj ? `Signed in as ${ accUseObj.emaStr || 'your account' }.` : linSenStr ? `Sign-in link sent to ${ linSenStr }.` : '' }</p>{ /* What: Account Status Paragraph Element. Why: Signing in and sending a link change the section without moving focus, so screen readers need to hear it. How: This visually hidden status region is in the page and empty from the first render, gaining each result's sentence, the purchase finishing included. */ }
+			>{ accSynObj.purPenBoo ? 'Finishing your purchase.' : accUsrObj ? `Signed in as ${ accUsrObj.emaStr || 'your account' }.` : linSenStr ? `Sign-in link sent to ${ linSenStr }.` : '' }</p>{ /* What: Account Status Paragraph Element. Why: Signing in and sending a link change the section without moving focus, so screen readers need to hear it. How: This visually hidden status region is in the page and empty from the first render, gaining each result's sentence, the purchase finishing included. */ }
 
 
 		</>

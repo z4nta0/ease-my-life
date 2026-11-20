@@ -54,7 +54,7 @@ import { signOut                     } from 'firebase/auth';          // What: S
 
 // #region Types
 
-type AccUseTyp = { emaStr : string | null, paiBoo : boolean, uidStr : string }; // What: Account User Type. Why: The app only needs to know who is signed in and whether they've paid. How: This holds the email, the paid claim, and the account's id.
+type AccUsrTyp = { emaStr : string | null, paiBoo : boolean, uidStr : string }; // What: Account User Type. Why: The app only needs to know who is signed in and whether they've paid. How: This holds the email, the paid claim, and the account's id.
 
 // #endregion Types
 
@@ -143,7 +143,7 @@ const isaLinFun = ( linUrlStr : string ) => isSignInWithEmailLink( firAutObj, li
  * @summary
  * Fetches a fresh ID token for the signed-in account, so a purchase made a
  * moment ago shows up: the paid claim is set on the server, and the device's
- * cached token doesn't carry it until it's refreshed. watUseFun's callback
+ * cached token doesn't carry it until it's refreshed. watUsrFun's callback
  * runs again once the new token arrives.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -217,10 +217,10 @@ const tokGetFun = () => firAutObj.currentUser ? firAutObj.currentUser.getIdToken
 
 
 
-// #region watUseFun
+// #region watUsrFun
 
 /**
- * watUseFun = Watch User Function
+ * watUsrFun = Watch User Function
  *
  * @summary
  * Calls back with the signed-in account whenever it changes: on sign-in, on
@@ -230,37 +230,37 @@ const tokGetFun = () => firAutObj.currentUser ? firAutObj.currentUser.getIdToken
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param useCalFun - User Callback Function: Receives the account, or null.
+ * @param usrCalFun - User Callback Function: Receives the account, or null.
  *
  * @returns The function that stops watching.
  *
  * @example
  * ```ts
- * const stoWatFun = watUseFun((accUseObj) => ...) // => () => void
+ * const stoWatFun = watUsrFun((accUsrObj) => ...) // => () => void
  * ```
  *
 */
 
-function watUseFun ( useCalFun : ( accUseObj : AccUseTyp | null ) => void ) : () => void {
+function watUsrFun ( usrCalFun : ( accUsrObj : AccUsrTyp | null ) => void ) : () => void {
 
 
 
-	return onIdTokenChanged( firAutObj, async ( firUseObj ) => { // What: Token Watch Return. Why: The paid claim lives in the token, so a token change is the moment to report. How: This reads each new token's claims and calls back.
+	return onIdTokenChanged( firAutObj, async ( firUsrObj ) => { // What: Token Watch Return. Why: The paid claim lives in the token, so a token change is the moment to report. How: This reads each new token's claims and calls back.
 
 
-		if ( !firUseObj ) { useCalFun( null ); return; } // What: Signed Out Guard. Why: Nobody is signed in. How: This reports null.
+		if ( !firUsrObj ) { usrCalFun( null ); return; } // What: Signed Out Guard. Why: Nobody is signed in. How: This reports null.
 
 
 
-		const tokResObj = await firUseObj.getIdTokenResult(); // What: Token Result Object. Why: The paid claim is read from the token. How: This decodes the current token.
+		const tokResObj = await firUsrObj.getIdTokenResult(); // What: Token Result Object. Why: The paid claim is read from the token. How: This decodes the current token.
 
 
-		useCalFun({ // What: Account Report Call. Why: The caller follows the account. How: This reports its email, paid claim, and id.
+		usrCalFun({ // What: Account Report Call. Why: The caller follows the account. How: This reports its email, paid claim, and id.
 
 
-			emaStr : firUseObj.email,                // What: Email String. Why: The account screen shows who is signed in. How: This is the account's address, null for none.
+			emaStr : firUsrObj.email,                // What: Email String. Why: The account screen shows who is signed in. How: This is the account's address, null for none.
 			paiBoo : tokResObj.claims.paid === true, // What: Paid Boolean. Why: Only a paid account syncs. How: This is true when the token carries the paid claim.
-			uidStr : firUseObj.uid                   // What: User Identifier String. Why: The cloud copy is stored under it. How: This is the account's id.
+			uidStr : firUsrObj.uid                   // What: User Identifier String. Why: The cloud copy is stored under it. How: This is the account's id.
 
 
 		});
@@ -271,7 +271,7 @@ function watUseFun ( useCalFun : ( accUseObj : AccUseTyp | null ) => void ) : ()
 
 }
 
-// #endregion watUseFun
+// #endregion watUsrFun
 
 // #endregion Helpers
 
@@ -279,7 +279,7 @@ function watUseFun ( useCalFun : ( accUseObj : AccUseTyp | null ) => void ) : ()
 
 // #region Exports
 
-export { type AccUseTyp, finLinFun, firStoObj, isaLinFun, refTokFun, senLinFun, sigGooFun, sigOutFun, tokGetFun, watUseFun }; // What: Named Exports. Why: The account screen signs in and out through these, and the cloud backend uses firStoObj. How: This exports them by name, tokGetFun for the purchase.
+export { type AccUsrTyp, finLinFun, firStoObj, isaLinFun, refTokFun, senLinFun, sigGooFun, sigOutFun, tokGetFun, watUsrFun }; // What: Named Exports. Why: The account screen signs in and out through these, and the cloud backend uses firStoObj. How: This exports them by name, tokGetFun for the purchase.
 
 // #endregion Exports
 

@@ -14,7 +14,7 @@ import { synRunFun   } from './sync-engine.ts';          // What: Sync Run Funct
 import { UPD_NAM_OBJ } from '../platform/update.ts';     // What: Update Namespace Object. Why: An app update must not reload over a sync uploading a change or waiting to. How: This tells the update handling when sync is busy.
 
 
-import type { AccUseTyp } from '../platform/firebase.ts'; // What: Account User Type. Why: The hook follows who is signed in. How: This types that account.
+import type { AccUsrTyp } from '../platform/firebase.ts'; // What: Account User Type. Why: The hook follows who is signed in. How: This types that account.
 import type { ActStoTyp } from './store.ts';              // What: Action Store Type. Why: A merged state is applied through the store's import action. How: This types the actions.
 import type { StaAppTyp } from '../core/data-model.ts';   // What: State App Type. Why: Sync reads and replaces the app state. How: This types it.
 import type { SynMetTyp } from './sync-engine.ts';        // What: Sync Meta Type. Why: The engine compares against the last sync. How: This types that record.
@@ -74,7 +74,7 @@ type AccSynTyp = { // What: Account Sync Type. Why: The account screen shows the
 
 	accErrStr : string | null;                                       // What: Account Error String. Why: A failed sign-in or sync says what went wrong. How: This is a sentence for the account screen, or null.
 	accLoaBoo : boolean;                                             // What: Account Loading Boolean. Why: The account screen waits while Firebase loads. How: This is true until the signed-in account is known.
-	accUseObj : AccUseTyp | null;                                    // What: Account User Object. Why: The screen shows who is signed in. How: This is the account, or null.
+	accUsrObj : AccUsrTyp | null;                                    // What: Account User Object. Why: The screen shows who is signed in. How: This is the account, or null.
 	buySynFun : () => Promise< void >;                               // What: Buy Sync Function. Why: An unpaid account can buy sync. How: This starts a checkout and sends the person to it.
 	choAccFun : () => void;                                          // What: Choose Account Function. Why: A first sync can keep the account's data. How: This runs it that way.
 	choDevFun : () => void;                                          // What: Choose Device Function. Why: A first sync can keep this device's data instead. How: This runs it, replacing the account's copy.
@@ -270,13 +270,13 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 	const [ accErrStr, setAccErrStr ] = React.useState< string | null >( null );    // What: Account Error String And Setter. Why: The screen shows the last failure. How: This holds its sentence.
 	const [ accLoaBoo, setAccLoaBoo ] = React.useState( false );                    // What: Account Loading Boolean And Setter. Why: The screen waits while Firebase loads. How: This is true until the account is known.
-	const [ accUseObj, setAccUseObj ] = React.useState< AccUseTyp | null >( null ); // What: Account User Object And Setter. Why: The screen and sync follow the account. How: This holds it.
+	const [ accUsrObj, setAccUsrObj ] = React.useState< AccUsrTyp | null >( null ); // What: Account User Object And Setter. Why: The screen and sync follow the account. How: This holds it.
 	const [ linUrlStr, setLinUrlStr ] = React.useState< string | null >( null );    // What: Link URL String And Setter. Why: A link opened without its remembered address waits for one. How: This holds the link.
 	const [ purPenBoo, setPurPenBoo ] = React.useState( false );                    // What: Purchase Pending Boolean And Setter. Why: The screen shows the purchase finishing. How: This is true from the return until the claim arrives.
 	const [ synLasNum, setSynLasNum ] = React.useState< number | null >( null );    // What: Sync Last Number And Setter. Why: The screen says when it last synced. How: This holds that time.
 	const [ synRawStr, setSynRawStr ] = React.useState< SynStaTyp >( null );        // What: Sync Raw String And Setter. Why: The status of the last sync, before the account decides what it means. How: This holds it.
 
-	const accCurRef = React.useRef< AccUseTyp | null >( null );                                                   // What: Account Current Reference. Why: Listeners and timers read the latest account. How: This mirrors accUseObj.
+	const accCurRef = React.useRef< AccUsrTyp | null >( null );                                                   // What: Account Current Reference. Why: Listeners and timers read the latest account. How: This mirrors accUsrObj.
 	const accKnoRef = React.useRef( false );                                                                      // What: Account Known Reference. Why: A new day's list waits until the account is known, which arrives in a callback. How: This is true once the first account callback has run.
 	const aplPenRef = React.useRef( false );                                                                      // What: Apply Pending Reference. Why: A state the hook applied isn't a change to sync. How: This marks the next state change as the hook's own.
 	const firModRef = React.useRef< Promise< typeof import( '../platform/firebase.ts' ) > | null >( null );       // What: Firebase Module Reference. Why: Firebase loads at most once, and only when needed. How: This holds the import's promise.
@@ -293,7 +293,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
-	accCurRef.current = accUseObj; // What: Account Mirror. Why: Callbacks read the latest account. How: This copies it each render.
+	accCurRef.current = accUsrObj; // What: Account Mirror. Why: Callbacks read the latest account. How: This copies it each render.
 	staCurRef.current = staAppObj; // What: State Mirror. Why: A sync reads the latest state. How: This copies it each render.
 
 	// #endregion Account And Sync State
@@ -345,13 +345,13 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 		setAccLoaBoo( true );     // What: Loading Mark. Why: The account isn't known until the first callback. How: This shows loading.
 
 
-		firModObj.watUseFun( ( nexUseObj ) => { // What: Account Watch Call. Why: Sign-ins, sign-outs, and the paid claim all arrive here. How: This updates the screen and the signed-in flag.
+		firModObj.watUsrFun( ( nexUsrObj ) => { // What: Account Watch Call. Why: Sign-ins, sign-outs, and the paid claim all arrive here. How: This updates the screen and the signed-in flag.
 
 
 			accKnoRef.current = true; // What: Account Known Mark. Why: A new day's list waiting on the account can go on. How: This records that the account is known, signed in or not.
 
 
-			setAccUseObj( nexUseObj ); // What: Account Update. Why: The screen and sync follow it. How: This stores it.
+			setAccUsrObj( nexUsrObj ); // What: Account Update. Why: The screen and sync follow it. How: This stores it.
 
 			setAccLoaBoo( false ); // What: Loading Clear. Why: The account is known now. How: This ends loading.
 
@@ -359,7 +359,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 			try { // What: Signed-In Flag Try. Why: The next launch loads Firebase only when this device is signed in. How: This sets or clears the flag.
 
 
-				if ( nexUseObj ) localStorage.setItem( STG_NAM_OBJ.ACC_SIG_STR, '1' ); // What: Flag Set Branch. Why: Someone is signed in. How: This sets the flag.
+				if ( nexUsrObj ) localStorage.setItem( STG_NAM_OBJ.ACC_SIG_STR, '1' ); // What: Flag Set Branch. Why: Someone is signed in. How: This sets the flag.
 
 				else localStorage.removeItem( STG_NAM_OBJ.ACC_SIG_STR ); // What: Flag Clear Branch. Why: Nobody is. How: This clears it.
 
@@ -782,10 +782,10 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	React.useEffect( () => { // What: Paid Start Effect. Why: A paid account syncs as soon as it's known, which is the launch pull. How: This runs a sync when the account or its paid claim changes.
 
 
-		if ( accUseObj && accUseObj.paiBoo ) void synRunRef.current(); // What: Paid Sync Call. Why: The account is ready to sync. How: This runs one.
+		if ( accUsrObj && accUsrObj.paiBoo ) void synRunRef.current(); // What: Paid Sync Call. Why: The account is ready to sync. How: This runs one.
 
 
-	}, [ accUseObj ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the account changes. How: accUseObj changes on sign-in, sign-out, and a renewed token.
+	}, [ accUsrObj ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the account changes. How: accUsrObj changes on sign-in, sign-out, and a renewed token.
 
 
 
@@ -794,7 +794,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	React.useEffect( () => { // What: Launch Renewal Effect. Why: The paid claim only reaches a device when its token is renewed, which otherwise happens hourly, so a purchase that landed late would wait. How: This renews an unpaid account's token once per launch.
 
 
-		if ( !accUseObj || accUseObj.paiBoo || refOncRef.current ) return; // What: Renewal Guard. Why: Only an unpaid account needs it, and only once. How: This returns otherwise.
+		if ( !accUsrObj || accUsrObj.paiBoo || refOncRef.current ) return; // What: Renewal Guard. Why: Only an unpaid account needs it, and only once. How: This returns otherwise.
 
 
 
@@ -804,12 +804,12 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 		loaFirFun().then( ( firModObj ) => firModObj.refTokFun() ).catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Token Renewal Call. Why: A late purchase shows up on the next launch. How: This forces a fresh token, logging a failure rather than leaving it unhandled.
 
 
-	}, [ accUseObj ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the account changes. How: accUseObj changes once the account is known.
+	}, [ accUsrObj ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the account changes. How: accUsrObj changes once the account is known.
 
 
 
-	const paiNowBoo = !!accUseObj && accUseObj.paiBoo; // What: Paid Now Boolean. Why: The purchase wait follows whether the account is paid, not each renewed token. How: This is true for a paid account.
-	const sigNowBoo = !!accUseObj;                     // What: Signed Now Boolean. Why: The wait needs someone signed in. How: This is true while one is.
+	const paiNowBoo = !!accUsrObj && accUsrObj.paiBoo; // What: Paid Now Boolean. Why: The purchase wait follows whether the account is paid, not each renewed token. How: This is true for a paid account.
+	const sigNowBoo = !!accUsrObj;                     // What: Signed Now Boolean. Why: The wait needs someone signed in. How: This is true while one is.
 
 
 
@@ -1225,7 +1225,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
-	const synStaStr : SynStaTyp = !accUseObj ? null : accUseObj.paiBoo ? synRawStr : 'unpaid'; // What: Sync Status String. Why: The status means nothing while signed out, and sync waits for a purchase. How: This derives it from the account and the last sync.
+	const synStaStr : SynStaTyp = !accUsrObj ? null : accUsrObj.paiBoo ? synRawStr : 'unpaid'; // What: Sync Status String. Why: The status means nothing while signed out, and sync waits for a purchase. How: This derives it from the account and the last sync.
 
 
 
@@ -1234,12 +1234,12 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 		accErrStr,                                                                      // What: Account Error String. Why: The screen shows the last failure. How: This passes it.
 		accLoaBoo,                                                                      // What: Account Loading Boolean. Why: The screen waits for the account. How: This passes it.
-		accUseObj,                                                                      // What: Account User Object. Why: The screen shows who is signed in. How: This passes it.
+		accUsrObj,                                                                      // What: Account User Object. Why: The screen shows who is signed in. How: This passes it.
 		buySynFun,                                                                      // What: Buy Sync Function. Why: The screen starts a purchase. How: This passes the action.
 		choAccFun : () => void synRunRef.current( 'account' ),                          // What: Choose Account Function. Why: The person kept the account's data. How: This runs the first sync that way.
 		choDevFun : () => void synRunRef.current( 'device' ),                           // What: Choose Device Function. Why: The person kept this device's data. How: This runs the first sync that way.
 		finLinFun : ( emaAdrStr, linUrlStr ) => void finLinFun( emaAdrStr, linUrlStr ), // What: Finish Link Function. Why: The screen finishes a waiting or pasted link. How: This calls the finisher.
-		linNeeBoo : !!linUrlStr && !accUseObj,                                          // What: Link Needs Boolean. Why: A waiting link needs an address only until someone is signed in. How: This is true while one waits.
+		linNeeBoo : !!linUrlStr && !accUsrObj,                                          // What: Link Needs Boolean. Why: A waiting link needs an address only until someone is signed in. How: This is true while one waits.
 		purPenBoo,                                                                      // What: Purchase Pending Boolean. Why: The screen shows the purchase finishing. How: This passes it.
 		senLinFun,                                                                      // What: Send Link Function. Why: The screen sends links and confirms them. How: This passes the sender.
 		sigGooFun : () => void sigGooFun(),                                             // What: Sign Google Function. Why: The screen signs in with Google. How: This calls it.
