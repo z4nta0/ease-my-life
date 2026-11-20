@@ -7,7 +7,7 @@ import cssModObj from './schedule-editor.module.css'; // What: CSS Module Object
 import React     from 'react';                        // What: React. Why: Every component in this file is built directly on React's own APIs. How: This is used directly (React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
-import { ColDisCom   } from './collapse.tsx';          // What: Collapse Disclosure Component. Why: The editor's own schedule subsections need to animate open and closed instead of snapping. How: This wraps the anchor hint and each repeat kind's own fields in SchEdiCom.
+import { ColDisCom   } from './collapse.tsx';          // What: Collapse Disclosure Component. Why: The editor's own schedule subsections need to animate open and closed instead of snapping. How: This wraps the anchor hint and each repeat kind's own fields in SchEdiCom and FreFieCom.
 import { DAT_MOD_ARR } from './cadence-control.tsx';   // What: Date Mode Array. Why: The monthly and annual subsections offer the same Date-vs-Weekday choice the cadence editor does. How: This is passed as each subsection's SegConCom optIteArr.
 import { DAY_ABB_ARR } from '../utils/date.ts';        // What: Day Abbreviation Array. Why: The weekly summary names a multi-day list in short form. How: This is indexed by each daysOfWeek entry.
 import { DAY_FUL_ARR } from '../utils/date.ts';        // What: Day Full Array. Why: The weekday selects and the single-day and nth-weekday summaries name a weekday in full. How: This is mapped to one option per weekday and indexed by a weekday number.
@@ -454,6 +454,102 @@ function IntRowCom ( { ariLabStr, desIdeStr, maxValStr, onChange, uniLabStr, val
 }
 
 // #endregion IntRowCom
+
+
+
+type FfcProTyp = { ancHinEle : React.ReactNode, ariLabStr : string, desIdeStr : string, intValNum : number, maxValStr : string, onChange : ( intValNum : number ) => void, uniWorStr : string }; // What: Frequency-Field-Component Props Type. Why: Each every-N subsection names its own unit, limit, and accessible name, shows the shared anchor hint, and hands back the chosen interval. How: This types FreFieCom's props.
+
+// #region FreFieCom
+
+/**
+ * FreFieCom = Frequency Field Component
+ *
+ * @summary
+ * Draws a "Frequency" subsection of the schedule editor: its label, a live
+ * summary of how often the reminder shows that fades whenever the interval
+ * changes, the every-N row, and the counted-from hint, which opens only
+ * once the interval is above 1. An unset interval reads as 1.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.ancHinEle - Anchor Hint Element: The counted-from hint.
+ * @param props.ariLabStr - Aria Label String: The interval input's
+ *                          accessible name.
+ * @param props.desIdeStr - Describe Identifier String: The id of the note
+ *                          describing the input.
+ * @param props.intValNum - Interval Value Number: The reminder's own
+ *                          interval.
+ * @param props.maxValStr - Maximum Value String: The largest interval the
+ *                          input offers.
+ * @param props.onChange  - On Change: Called with the interval, at least 1.
+ * @param props.uniWorStr - Unit Word String: The singular unit word, made
+ *                          plural with an s.
+ *
+ * @returns The frequency subsection.
+ *
+ * @example
+ * ```tsx
+ * FreFieCom({ ancHinEle, ariLabStr, desIdeStr, ... }) // => <FreFieCom />
+ * ```
+ *
+*/
+
+function FreFieCom ( { ancHinEle, ariLabStr, desIdeStr, intValNum, maxValStr, onChange, uniWorStr } : FfcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the every-N control and its own anchor hint as one schedule subsection. How: This renders the number input plus the shared anchor hint, collapsed until the interval is above 1. */ }
+
+
+			<div className={ cssModObj.fieLabDiv }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
+
+
+				<span className={ cssModObj.fieLabSpa }>Frequency</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Frequency". */ }
+
+				<span
+					key={ intValNum || 1 }
+
+					className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
+				>shows on the Today page <strong>every { ( intValNum || 1 ) > 1 ? `${ intValNum } ${ uniWorStr }s` : uniWorStr }</strong></span>{ /* What: Flabel Sub Span Element. Why: This is the live cadence summary, re-fading whenever the interval changes. How: This picks between the plain unit word and an "every N" phrase with the plural unit word, based on intValNum. */ }
+
+
+			</div>
+
+
+
+			<IntRowCom
+				maxValStr={ maxValStr }
+				uniLabStr={ ( intValNum || 1 ) === 1 ? uniWorStr : `${ uniWorStr }s` } // What: Unit Label Choice. Why: The unit word has to agree with the interval. How: This picks the singular word for an interval of 1 and the plural otherwise.
+				value={ intValNum }
+
+				ariLabStr={ ariLabStr }
+				desIdeStr={ desIdeStr }
+
+				onChange={ onChange }
+			/>{ /* What: Interval Row Component. Why: This is the actual every-N control, read inline with its own surrounding words. How: This renders "Every", the number input, and the unit word, handing the clamped interval to onChange. */ }
+
+
+
+			<ColDisCom open={ ( intValNum || 1 ) > 1 }>{ /* What: Collapse Disclosure Component. Why: The counted-from hint is only meaningful once the interval is above 1. How: This animates ancHinEle open only while that condition holds. */ }
+
+
+				<div className={ cssModObj.ancFadDiv }>{ ancHinEle }</div>{ /* What: Anchor Fade Div Element. Why: The counted-from hint needs its own fade wrapper distinct from ColDisCom's own height animation. How: This renders ancHinEle inside a plain div that CSS cross-fades on interval change. */ }
+
+
+			</ColDisCom>
+
+
+		</div>
+
+
+	);
+
+
+}
+
+// #endregion FreFieCom
 
 
 
@@ -1190,54 +1286,25 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 				) }
 
 
+
 				{ curRepStr === 'monthly' && ( // What: Monthly Frequency Visibility Check. Why: The monthly kind splits into 2 independent subsections; this is the first, the every-N-months control. How: This renders it only while curRepStr is 'monthly'.
 
 
-					<div className={ cssModObj.forFieDiv }>{ /* What: Monthly Frequency Field Div Element. Why: This groups the every-N-months control and its own anchor hint as one schedule subsection. How: This renders the number input plus the shared anchor hint, collapsed until interval is above 1. */ }
+					<FreFieCom
+						ancHinEle={ ancHinEle }
+						intValNum={ tasRcdObj.interval }
+						maxValStr='60'
+						uniWorStr='month'
 
+						ariLabStr='Interval in months'
+						desIdeStr={ schNotStr }
 
-						<div className={ cssModObj.fieLabDiv }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
-
-
-							<span className={ cssModObj.fieLabSpa }>Frequency</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Frequency". */ }
-
-							<span
-								key={ tasRcdObj.interval || 1 }
-
-								className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
-							>shows on the Today page <strong>every { ( tasRcdObj.interval || 1 ) > 1 ? `${ tasRcdObj.interval } months` : 'month' }</strong></span>{ /* What: Flabel Sub Span Element. Why: This is the live cadence summary, re-fading whenever interval changes. How: This picks between a plain "month" and an "every N months" phrase based on tasRcdObj's own interval. */ }
-
-
-						</div>
-
-
-
-						<IntRowCom
-							maxValStr='60'
-							uniLabStr={ ( tasRcdObj.interval || 1 ) === 1 ? 'month' : 'months' } // What: Unit Label Choice. Why: The unit word has to agree with the interval. How: This picks the singular word for an interval of 1 and the plural otherwise.
-							value={ tasRcdObj.interval }
-
-							ariLabStr='Interval in months'
-							desIdeStr={ schNotStr }
-
-							onChange={ ( intValNum ) => onPatTasFun( { interval : intValNum } ) }
-						/>{ /* What: Interval Row Component. Why: This is the actual every-N-months control, read inline with its own surrounding words. How: This renders "Every", the number input, and the unit word, committing the clamped interval through onPatTasFun. */ }
-
-
-
-						<ColDisCom open={ ( tasRcdObj.interval || 1 ) > 1 }>{ /* What: Collapse Disclosure Component. Why: The counted-from hint is only meaningful once interval is above 1 month. How: This animates ancHinEle open only while that condition holds. */ }
-
-
-							<div className={ cssModObj.ancFadDiv }>{ ancHinEle }</div>{ /* What: Anchor Fade Div Element. Why: The counted-from hint needs its own fade wrapper distinct from ColDisCom's own height animation. How: This renders ancHinEle inside a plain div that CSS cross-fades on interval change. */ }
-
-
-						</ColDisCom>
-
-
-					</div>
+						onChange={ ( intValNum ) => onPatTasFun( { interval : intValNum } ) }
+					/> // What: Frequency Field Component. Why: This groups the every-N-months control and its own anchor hint as one schedule subsection. How: This renders the "Frequency" label, its live summary, the every-N row, and the counted-from hint, committing the clamped interval through onPatTasFun.
 
 
 				) }
+
 
 
 				{ curRepStr === 'monthly' && ( // What: Monthly Day Visibility Check. Why: This is the monthly kind's own second, independent subsection, targeting which day of the month. How: This renders it only while curRepStr is 'monthly', right after the frequency subsection above.
@@ -1368,54 +1435,25 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 				) }
 
 
+
 				{ curRepStr === 'annual' && ( // What: Annual Frequency Visibility Check. Why: The annual kind splits into 2 independent subsections; this is the first, the every-N-years control. How: This renders it only while curRepStr is 'annual'.
 
 
-					<div className={ cssModObj.forFieDiv }>{ /* What: Annual Frequency Field Div Element. Why: This groups the every-N-years control and its own anchor hint as one schedule subsection. How: This renders the number input plus the shared anchor hint, collapsed until interval is above 1. */ }
+					<FreFieCom
+						ancHinEle={ ancHinEle }
+						intValNum={ tasRcdObj.interval }
+						maxValStr='50'
+						uniWorStr='year'
 
+						ariLabStr='Interval in years'
+						desIdeStr={ schNotStr }
 
-						<div className={ cssModObj.fieLabDiv }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
-
-
-							<span className={ cssModObj.fieLabSpa }>Frequency</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Frequency". */ }
-
-							<span
-								key={ tasRcdObj.interval || 1 }
-
-								className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
-							>shows on the Today page <strong>every { ( tasRcdObj.interval || 1 ) > 1 ? `${ tasRcdObj.interval } years` : 'year' }</strong></span>{ /* What: Flabel Sub Span Element. Why: This is the live cadence summary, re-fading whenever interval changes. How: This picks between a plain "year" and an "every N years" phrase based on tasRcdObj's own interval. */ }
-
-
-						</div>
-
-
-
-						<IntRowCom
-							maxValStr='50'
-							uniLabStr={ ( tasRcdObj.interval || 1 ) === 1 ? 'year' : 'years' } // What: Unit Label Choice. Why: The unit word has to agree with the interval. How: This picks the singular word for an interval of 1 and the plural otherwise.
-							value={ tasRcdObj.interval }
-
-							ariLabStr='Interval in years'
-							desIdeStr={ schNotStr }
-
-							onChange={ ( intValNum ) => onPatTasFun( { interval : intValNum } ) }
-						/>{ /* What: Interval Row Component. Why: This is the actual every-N-years control, read inline with its own surrounding words. How: This renders "Every", the number input, and the unit word, committing the clamped interval through onPatTasFun. */ }
-
-
-
-						<ColDisCom open={ ( tasRcdObj.interval || 1 ) > 1 }>{ /* What: Collapse Disclosure Component. Why: The counted-from hint is only meaningful once interval is above 1 year. How: This animates ancHinEle open only while that condition holds. */ }
-
-
-							<div className={ cssModObj.ancFadDiv }>{ ancHinEle }</div>{ /* What: Anchor Fade Div Element. Why: The counted-from hint needs its own fade wrapper distinct from ColDisCom's own height animation. How: This renders ancHinEle inside a plain div that CSS cross-fades on interval change. */ }
-
-
-						</ColDisCom>
-
-
-					</div>
+						onChange={ ( intValNum ) => onPatTasFun( { interval : intValNum } ) }
+					/> // What: Frequency Field Component. Why: This groups the every-N-years control and its own anchor hint as one schedule subsection. How: This renders the "Frequency" label, its live summary, the every-N row, and the counted-from hint, committing the clamped interval through onPatTasFun.
 
 
 				) }
+
 
 
 				{ curRepStr === 'annual' && ( // What: Annual Date Visibility Check. Why: This is the annual kind's own second, independent subsection, targeting which date each year. How: This renders it only while curRepStr is 'annual', right after the frequency subsection above.
