@@ -71,8 +71,6 @@ type FloIteTyp = { // What: Flourish Item Type. Why: genSidFun builds each decor
 
 };
 
-
-
 type FloSidTyp = { left : FloIteTyp[], right : FloIteTyp[] }; // What: Flourish Sides Type. Why: Each tab's glyphs are generated once per gutter and cached. How: This holds the left and right gutters' glyphs.
 
 // #endregion Types
