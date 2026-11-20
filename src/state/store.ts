@@ -2791,6 +2791,8 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 
+			// #region Picker Build
+
 			const newConObj = picArgObj.newConditional; // What: New Conditional Object. Why: The inline-conditional build below reads many of this one field's own properties. How: This reads picArgObj.newConditional, which is null/undefined when no inline conditional was authored.
 
 			const newIteArr = ( picArgObj.items || [] ).map( ( curIteObj ) : IteRcdTyp => ( { // What: New Item Array. Why: Every typed item in the create form becomes a real item object owned by this picker. How: This maps each raw item into state.items' own shape, honoring a form-set value/vacation and defaulting the rest per mode.
@@ -2864,6 +2866,9 @@ function useAppStaFun ( optArgObj? : { initial? : object, persist? : boolean } )
 
 
 			};
+
+			// #endregion Picker Build
+
 
 
 			setAppStaObj( ( curStaObj ) => { // What: State Update Call. Why: The name de-duplication and the replace-or-append writes all need the latest state. How: This runs an updater that finalizes the picker's name, then writes items/pickers/conditionals/daily together.
