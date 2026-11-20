@@ -9,6 +9,7 @@ import React     from 'react';                  // What: React. Why: This is the
 
 import { CAD_NAM_OBJ  } from '../../core/cadence.ts';         // What: Cadence Namespace Object. Why: A cadence-scoped picker's run gaps need relabeling into real period words instead of raw day counts. How: This is called via CAD_NAM_OBJ.uniWorFun to turn a day/period count into "week"/"month"/"year" wording.
 import { CarSurCom    } from '../../ui/card-surface.tsx';     // What: Card Surface Component. Why: Every stat card on this page shares the same rounded container chrome. How: This wraps each headline/breakdown/heatmap block rendered below.
+import { CON_NAM_OBJ  } from '../../core/conditionals.ts';    // What: Conditionals Namespace Object. Why: A conditional's own target falls back to the shared default odds. How: This reads CON_NAM_OBJ.DEF_ODD_NUM.
 import { HelButCom    } from '../../help/button.tsx';         // What: Help Button Component. Why: This page needs its own header toggle for entering and leaving help mode. How: This is rendered in the header, flipping helModBoo on click.
 import { HelOveCom    } from '../../help/mode.tsx';           // What: Help Overlay Component. Why: Help mode needs a dimmed overlay with per-element tooltips layered above the real page. How: This is rendered while helModBoo is true, fed STA_HEL_ARR as its copy source.
 import { hidHisFun    } from '../../state/sample-history.ts'; // What: Hide History Function. Why: The real hidden sample pickers borrowed for help mode must be re-hidden once help mode ends. How: This is called whenever helModBoo turns false, and again on unmount.
@@ -1048,7 +1049,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 				minNum : conCurObj.easeMin ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, // What: Minimum Number. Why: An ease-mode conditional's own target band needs its min drift. How: This copies easeMin, defaulting to the pickers' default band, DEF_EAS_OBJ.
 				modStr : conCurObj.mode,                                       // What: Mode String. Why: The row's own mode tag and target both read the mode. How: This copies the conditional's own mode.
 				namStr : conCurObj.name,                                       // What: Name String. Why: Every row needs a visible name. How: This copies the conditional's own name.
-				oddNum : conCurObj.oddsPct ?? 50,                              // What: Odds Number. Why: A weighted or dynamic conditional's own target shows its trigger odds. How: This copies oddsPct, defaulting to 50.
+				oddNum : conCurObj.oddsPct ?? CON_NAM_OBJ.DEF_ODD_NUM,         // What: Odds Number. Why: A weighted or dynamic conditional's own target shows its trigger odds. How: This copies oddsPct, defaulting to CON_NAM_OBJ.DEF_ODD_NUM.
 				totNum : 0                                                     // What: Total Number. Why: The evaluated-cycle count starts at zero. How: This is incremented per ranged row below.
 
 

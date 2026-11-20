@@ -9,7 +9,7 @@ import React     from 'react';                // What: React. Why: This is the U
 
 import { CAD_NAM_OBJ } from '../../core/cadence.ts';      // What: Cadence Namespace Object. Why: An ease-mode item's subline needs CAD_NAM_OBJ.uniWorFun to phrase its range in the picker's own cadence unit (days/weeks/months/years) instead of always "days". How: This is called once inside iteSubFun below.
 import { ColDisCom   } from '../../ui/collapse.tsx';      // What: Collapse Disclosure Component. Why: PicBloCom's own item table only needs to exist in the DOM while its block is actually expanded. How: This wraps that table, driven by PicBloCom's own open/closed state.
-import { CON_NAM_OBJ } from '../../core/conditionals.ts'; // What: Conditional Namespace Object. Why: ConSecCom needs CON_NAM_OBJ.modValFun to know whether a given conditional's own mode even has a value to show. How: This is called once per conditional row inside ConSecCom below.
+import { CON_NAM_OBJ } from '../../core/conditionals.ts'; // What: Conditional Namespace Object. Why: ConSecCom needs CON_NAM_OBJ.modValFun to know whether a given conditional's own mode even has a value to show, and the odds labels fall back to the shared default odds. How: This is called once per conditional row inside ConSecCom below, and read for DEF_ODD_NUM.
 import { InfTipCom   } from '../../ui/info-tip.tsx';      // What: Info Tip Component. Why: Every truncatable name/label in this file (item, conditional, reminder) needs the shared reveal-on-truncation tooltip. How: This wraps those names/labels throughout PicBloCom, ConSecCom and RemLogCom.
 import { isoDayFun   } from '../../utils/date.ts';        // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { PIC_NAM_OBJ } from '../../core/pickers.ts';      // What: Pickers Namespace Object. Why: Ease day-range math in this file divides the shared full-charge ceiling by a drift band, falling back to the pickers' default band. How: This reads PIC_NAM_OBJ.THR_VAL_NUM and DEF_EAS_OBJ wherever a drift-to-days conversion happens.
@@ -109,11 +109,11 @@ function conSubFun ( conRcdObj : ConRcdTyp ) : string {
 
 
 
-	if ( conRcdObj.mode === 'dynamic' ) return `${ conRcdObj.oddsPct ?? 50 }%+ odds`; // What: Dynamic Mode Return. Why: Dynamic odds are a floor rather than a fixed value. How: This reads conRcdObj's own oddsPct, defaulting to 50, with a trailing "+" to signal it only ever climbs.
+	if ( conRcdObj.mode === 'dynamic' ) return `${ conRcdObj.oddsPct ?? CON_NAM_OBJ.DEF_ODD_NUM }%+ odds`; // What: Dynamic Mode Return. Why: Dynamic odds are a floor rather than a fixed value. How: This reads conRcdObj's own oddsPct, defaulting to CON_NAM_OBJ.DEF_ODD_NUM, with a trailing "+" to signal it only ever climbs.
 
 
 
-	if ( conRcdObj.mode === 'weighted' ) return `${ conRcdObj.oddsPct ?? 50 }% odds`; // What: Weighted Mode Return. Why: Weighted odds are a fixed value, unlike dynamic's floor. How: This reads conRcdObj's own oddsPct, defaulting to 50.
+	if ( conRcdObj.mode === 'weighted' ) return `${ conRcdObj.oddsPct ?? CON_NAM_OBJ.DEF_ODD_NUM }% odds`; // What: Weighted Mode Return. Why: Weighted odds are a fixed value, unlike dynamic's floor. How: This reads conRcdObj's own oddsPct, defaulting to CON_NAM_OBJ.DEF_ODD_NUM.
 
 
 

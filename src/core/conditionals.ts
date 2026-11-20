@@ -57,20 +57,29 @@ import type { ConRcdTyp } from './data-model.ts'; // What: Conditional Record Ty
  * card resets it, same as ease-up.
  *
  * The exported CON_NAM_OBJ namespace object's own property names are a
- * cross-file contract read directly by store.ts, day-log.tsx, and
- * tab-today.tsx. Its own blast radius (6 external call sites total, all
+ * cross-file contract read directly by the store, the tabs, and the
+ * shared editors. Its own blast radius (6 external call sites total, all
  * plain JS resolved at call time, never persisted) was checked first,
  * the same way CADENCE's was in cadence.ts before that one was renamed,
  * so its external names were swept to match its internal implementation
  * exactly, with every external call site updated to match.
  *
  * Sections:
+ *  - Constants
  *  - Helpers
  *  - Exports
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Constants
+
+const DEF_ODD_NUM = 50; // What: Default Odds Number. Why: A weighted or dynamic conditional saved without its own odds, and a brand-new draft, both need one shared starting value. How: This is the odds percentage every oddsPct fallback reads.
+
+// #endregion Constants
 
 
 
@@ -186,7 +195,7 @@ function truOddFun ( conCurObj : ConRcdTyp ) : number {
 
 
 
-	const basPerNum = conCurObj.oddsPct ?? 50;                                                         // What: Base Percentage Number. Why: Every non-random mode starts from the conditional's own configured odds, defaulting to 50 for a legacy conditional with none. How: This reads conCurObj.oddsPct, falling back to 50 when it is nullish.
+	const basPerNum = conCurObj.oddsPct ?? DEF_ODD_NUM;                                                // What: Base Percentage Number. Why: Every non-random mode starts from the conditional's own configured odds, defaulting to DEF_ODD_NUM for a legacy conditional with none. How: This reads conCurObj.oddsPct, falling back to DEF_ODD_NUM when it is nullish.
 	const finPerNum = conCurObj.mode === 'dynamic' ? basPerNum + ( conCurObj.value || 0 ) : basPerNum; // What: Final Percentage Number. Why: A dynamic-mode conditional's own odds climb by its own accrued value (a miss boost), while every other mode stays at its base. How: This adds conCurObj.value on top of basPerNum only when conCurObj's own mode is 'dynamic'.
 
 
@@ -550,14 +559,15 @@ function carComFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRc
 
 // #region Exports
 
-const CON_NAM_OBJ = { // What: Conditionals Namespace Object. Why: This is the single public entry point store.ts, day-log.tsx, and tab-today.tsx all import, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal functions another file uses onto an external property name matching it exactly.
+const CON_NAM_OBJ = { // What: Conditionals Namespace Object. Why: This is the single public entry point other files import, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal functions another file uses onto an external property name matching it exactly.
 
 
-	advValFun : advValFun, // What: Advance Value Function. Why: store.ts calls this on a dependent picker's own first completion of the day. How: This re-exports advValFun under its own matching name.
-	carComFun : carComFun, // What: Card Complete Function. Why: store.ts calls this when a day-off card itself is completed. How: This re-exports carComFun under its own matching name.
-	modValFun : modValFun, // What: Mode Value Function. Why: day-log.tsx and store.ts both check this to classify a conditional's own mode. How: This re-exports modValFun under its own matching name.
-	resDayFun : resDayFun, // What: Resolve Day Function. Why: store.ts calls this once per generate to roll/carry every conditional's own triggered state for the day. How: This re-exports resDayFun under its own matching name.
-	supGatFun : supGatFun  // What: Suppress Gate Function. Why: tab-today.tsx calls this to decide whether a dependent picker's own day-off card should show instead of a real pick. How: This re-exports supGatFun under its own matching name.
+	advValFun   : advValFun,   // What: Advance Value Function. Why: store.ts calls this on a dependent picker's own first completion of the day. How: This re-exports advValFun under its own matching name.
+	carComFun   : carComFun,   // What: Card Complete Function. Why: store.ts calls this when a day-off card itself is completed. How: This re-exports carComFun under its own matching name.
+	DEF_ODD_NUM : DEF_ODD_NUM, // What: Default Odds Number. Why: The store, the tabs, and the conditional editor fall back to the same odds for a conditional saved without its own. How: This re-exports DEF_ODD_NUM under its own matching name.
+	modValFun   : modValFun,   // What: Mode Value Function. Why: day-log.tsx and store.ts both check this to classify a conditional's own mode. How: This re-exports modValFun under its own matching name.
+	resDayFun   : resDayFun,   // What: Resolve Day Function. Why: store.ts calls this once per generate to roll/carry every conditional's own triggered state for the day. How: This re-exports resDayFun under its own matching name.
+	supGatFun   : supGatFun    // What: Suppress Gate Function. Why: tab-today.tsx calls this to decide whether a dependent picker's own day-off card should show instead of a real pick. How: This re-exports supGatFun under its own matching name.
 
 
 };

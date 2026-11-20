@@ -7,13 +7,14 @@ import cssModObj from './conditional-controls.module.css'; // What: CSS Module O
 import React     from 'react';                             // What: React. Why: This file's single component is built directly on React's own APIs. How: This is used directly (React.useId) below, instead of importing an individual named hook.
 
 
-import { BooResCom   } from './boost-reset.tsx';    // What: Boost Reset Component. Why: The dynamic mode's own accrued miss-boost needs a display plus a manual reset control. How: This is rendered in the dynamic-mode Boost row below.
-import { ColDisCom   } from './collapse.tsx';       // What: Collapse Disclosure Component. Why: Every mode's own settings subsection needs to animate open and closed as the selected mode changes. How: This wraps the mode hint text and every per-mode settings block throughout this file.
-import { FilButCom   } from './fill-button.tsx';    // What: Fill Button Component. Why: The ease-up and ease-down modes both need a manual full-charge control. How: This is rendered in FilRowCom below, once per direction.
-import { norConFun   } from '../core/pickers.ts';   // What: Normalize Conditional Function. Why: A typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on the name field's own blur and inside conDraFun below.
-import { NumSteCom   } from './number-stepper.tsx'; // What: Numeric Stepper Component. Why: The ease-up and ease-down modes both need a plain increment/decrement control for their own Soonest/Latest day counts. How: This is rendered in BouRowCom below, once per bound.
-import { PIC_NAM_OBJ } from '../core/pickers.ts';   // What: Pickers Namespace Object. Why: The ease steppers show a drift range as days and write typed days back as drift values, against the shared full-charge ceiling. How: This is called via PIC_NAM_OBJ.driDayFun and dayDriFun, and read for THR_VAL_NUM and the default drift band, DEF_EAS_OBJ.
-import { SED_NAM_OBJ } from '../state/seed.ts';     // What: Seed Namespace Object. Why: The mode radio below must offer the exact same options and labels as the picker editor's own mode radio. How: This is walked (MOD_DEF_OBJ) via Object.entries to render one radio option per mode.
+import { BooResCom   } from './boost-reset.tsx';       // What: Boost Reset Component. Why: The dynamic mode's own accrued miss-boost needs a display plus a manual reset control. How: This is rendered in the dynamic-mode Boost row below.
+import { ColDisCom   } from './collapse.tsx';          // What: Collapse Disclosure Component. Why: Every mode's own settings subsection needs to animate open and closed as the selected mode changes. How: This wraps the mode hint text and every per-mode settings block throughout this file.
+import { CON_NAM_OBJ } from '../core/conditionals.ts'; // What: Conditionals Namespace Object. Why: The odds stepper and a brand-new draft fall back to the shared default odds. How: This reads CON_NAM_OBJ.DEF_ODD_NUM.
+import { FilButCom   } from './fill-button.tsx';       // What: Fill Button Component. Why: The ease-up and ease-down modes both need a manual full-charge control. How: This is rendered in FilRowCom below, once per direction.
+import { norConFun   } from '../core/pickers.ts';      // What: Normalize Conditional Function. Why: A typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on the name field's own blur and inside conDraFun below.
+import { NumSteCom   } from './number-stepper.tsx';    // What: Numeric Stepper Component. Why: The ease-up and ease-down modes both need a plain increment/decrement control for their own Soonest/Latest day counts. How: This is rendered in BouRowCom below, once per bound.
+import { PIC_NAM_OBJ } from '../core/pickers.ts';      // What: Pickers Namespace Object. Why: The ease steppers show a drift range as days and write typed days back as drift values, against the shared full-charge ceiling. How: This is called via PIC_NAM_OBJ.driDayFun and dayDriFun, and read for THR_VAL_NUM and the default drift band, DEF_EAS_OBJ.
+import { SED_NAM_OBJ } from '../state/seed.ts';        // What: Seed Namespace Object. Why: The mode radio below must offer the exact same options and labels as the picker editor's own mode radio. How: This is walked (MOD_DEF_OBJ) via Object.entries to render one radio option per mode.
 
 
 import type { ConRcdTyp } from '../core/data-model.ts'; // What: Conditional Record Type. Why: The editor builds and edits a conditional draft. How: This types conDraFun's draft and CocProTyp's draft and patches.
@@ -137,7 +138,7 @@ const conDraFun = ( picNamStr : string, exiNamArr : string[] = [] ) : Partial< C
 		easeMin   : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, // What: Ease Minimum. Why: This matches the same fallback easMinNum resolves to in CodConCom. How: This starts at the pickers' default band, DEF_EAS_OBJ.
 		mode      : 'random',                        // What: Mode. Why: A brand-new conditional defaults to the simplest, no-configuration mode. How: This matches the same 'random' fallback curModStr resolves to in CodConCom.
 		name      : `${ basNamStr } ${ namCouNum }`, // What: Name. Why: This is the new conditional's own resolved, collision-free default name. How: This joins basNamStr and namCouNum with a space.
-		oddsPct   : 50,                              // What: Odds Percentage. Why: A brand-new weighted/dynamic-mode conditional should default to an even coin-flip odds value. How: This is a fixed starting value of 50.
+		oddsPct   : CON_NAM_OBJ.DEF_ODD_NUM,         // What: Odds Percentage. Why: A brand-new weighted/dynamic-mode conditional should default to an even coin-flip odds value. How: This starts at the shared default odds, DEF_ODD_NUM.
 		threshold : PIC_NAM_OBJ.THR_VAL_NUM,         // What: Threshold. Why: This matches the same fallback thrValNum resolves to in CodConCom. How: This starts at the shared full-charge value, THR_VAL_NUM.
 		triggered : false,                           // What: Triggered. Why: A brand-new conditional has not yet resolved a triggered state for any day. How: This is a fixed starting value of false.
 		value     : 0,                               // What: Value. Why: A brand-new value-family-mode conditional starts fully uncharged. How: This is a fixed starting value of 0.
@@ -782,7 +783,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 								<span className={ cssModObj.ediNamSpa }>Odds</span>{ /* What: Odds Label Span Element. Why: This names the row's own control. How: This renders the literal text "Odds". */ }
 
-								<span className={ cssModObj.ediSubSpa }><strong>{ conDraObj.oddsPct ?? 50 }%</strong>{ ` chance to trigger${ isaDynBoo ? ' (before boost)' : '' }` }</span>{ /* What: Odds Sub Span Element. Why: The user needs to see the current odds value plainly, with a dynamic-mode caveat that boost adds on top of it. How: This bolds the resolved oddsPct and appends the caveat only while isaDynBoo is true. */ }
+								<span className={ cssModObj.ediSubSpa }><strong>{ conDraObj.oddsPct ?? CON_NAM_OBJ.DEF_ODD_NUM }%</strong>{ ` chance to trigger${ isaDynBoo ? ' (before boost)' : '' }` }</span>{ /* What: Odds Sub Span Element. Why: The user needs to see the current odds value plainly, with a dynamic-mode caveat that boost adds on top of it. How: This bolds the resolved oddsPct and appends the caveat only while isaDynBoo is true. */ }
 
 
 							</div>
@@ -797,23 +798,23 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 								<button
 									className={ cssModObj.weiSteBut }
 
-									disabled={ ( conDraObj.oddsPct ?? 50 ) <= 10 }
+									disabled={ ( conDraObj.oddsPct ?? CON_NAM_OBJ.DEF_ODD_NUM ) <= 10 }
 
 									aria-label='Lower odds'
 
-									onClick={ () => patSetFun( { oddsPct : Math.max( 10, ( conDraObj.oddsPct ?? 50 ) - 10 ) } ) } // What: Odds Step Down. Why: Odds move in 10-point steps and never drop below 10%. How: This lowers the resolved oddsPct by 10, clamped at 10.
+									onClick={ () => patSetFun( { oddsPct : Math.max( 10, ( conDraObj.oddsPct ?? CON_NAM_OBJ.DEF_ODD_NUM ) - 10 ) } ) } // What: Odds Step Down. Why: Odds move in 10-point steps and never drop below 10%. How: This lowers the resolved oddsPct by 10, clamped at 10.
 								>−</button>{ /* What: Odds Lower Button Element. Why: This is the actual control for decreasing the odds percentage. How: This steps oddsPct down by 10, disabling itself at the 10 floor. */ }
 
-								<span className={ cssModObj.weiValSpa }>{ conDraObj.oddsPct ?? 50 }%</span>{ /* What: Odds Value Span Element. Why: The stepper needs its own plain numeric readout between the two buttons. How: This renders the resolved oddsPct directly. */ }
+								<span className={ cssModObj.weiValSpa }>{ conDraObj.oddsPct ?? CON_NAM_OBJ.DEF_ODD_NUM }%</span>{ /* What: Odds Value Span Element. Why: The stepper needs its own plain numeric readout between the two buttons. How: This renders the resolved oddsPct directly. */ }
 
 								<button
 									className={ cssModObj.weiSteBut }
 
-									disabled={ ( conDraObj.oddsPct ?? 50 ) >= 90 }
+									disabled={ ( conDraObj.oddsPct ?? CON_NAM_OBJ.DEF_ODD_NUM ) >= 90 }
 
 									aria-label='Raise odds'
 
-									onClick={ () => patSetFun( { oddsPct : Math.min( 90, ( conDraObj.oddsPct ?? 50 ) + 10 ) } ) } // What: Odds Step Up. Why: Odds move in 10-point steps and never rise above 90%. How: This raises the resolved oddsPct by 10, clamped at 90.
+									onClick={ () => patSetFun( { oddsPct : Math.min( 90, ( conDraObj.oddsPct ?? CON_NAM_OBJ.DEF_ODD_NUM ) + 10 ) } ) } // What: Odds Step Up. Why: Odds move in 10-point steps and never rise above 90%. How: This raises the resolved oddsPct by 10, clamped at 90.
 								>+</button>{ /* What: Odds Raise Button Element. Why: This is the actual control for increasing the odds percentage. How: This steps oddsPct up by 10, disabling itself at the 90 ceiling. */ }
 
 
