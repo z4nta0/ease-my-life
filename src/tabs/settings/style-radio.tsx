@@ -34,7 +34,7 @@ import type { JSX } from 'react'; // What: JSX. Why: The component declares the 
 
 // #region Components
 
-type SrcProTyp = { groLabStr : string, groNamStr : string, onChange : ( valStr : string ) => void, onPreStyFun? : ( valStr : string ) => void, radOptArr : { hinStr : string, labStr : string, valStr : string }[], value : string }; // What: Style-Radio-Component Props Type. Why: A style list picks one option, with an optional live preview per row. How: This types StyRadCom's props.
+type SrcProTyp = { groLabStr : string, groNamStr : string, onChange : ( optValStr : string ) => void, onPreStyFun? : ( optValStr : string ) => void, radOptArr : { hinStr : string, labStr : string, valStr : string }[], value : string }; // What: Style-Radio-Component Props Type. Why: A style list picks one option, with an optional live preview per row. How: This types StyRadCom's props.
 
 // #region StyRadCom
 

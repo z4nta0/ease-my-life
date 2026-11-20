@@ -137,7 +137,7 @@ function InlEdiCom ( { draTasObj, onCloEdiFun, onDelTasFun, onPatTasFun, onSavTa
 
 
 
-type RccProTyp = { actStoObj : ActStoTyp, cheDatObj? : Date, draNamStr? : string, extClaStr? : string, isaOpeBoo? : boolean, isaTutBoo? : boolean, jusCheStr? : string | null, onAniEndFun? : ( aniEveObj : React.AnimationEvent ) => void, onEdiTasFun? : () => void, onPlaTutFun? : ( kinStr : string, ideStr : string ) => void, onRenTasFun? : ( renNamStr : string ) => void, onSkiTasFun? : () => void, onTogTasFun? : ( tasRcdObj : TasRcdTyp ) => void, onUncTutFun? : ( ideStr : string ) => void, tasRcdObj : TasRcdTyp, tutDonBoo? : boolean }; // What: Reminder-Card-Component Props Type. Why: A reminder card renders either a due reminder with its check, edit, rename, and skip actions, or a sample's tutorial launcher, which passes only a few of them. How: This types RemCarCom's props, with everything beyond the actions bag and the reminder optional.
+type RccProTyp = { actStoObj : ActStoTyp, cheDatObj? : Date, draNamStr? : string, extClaStr? : string, isaOpeBoo? : boolean, isaTutBoo? : boolean, jusCheStr? : string | null, onAniEndFun? : ( aniEveObj : React.AnimationEvent ) => void, onEdiTasFun? : () => void, onPlaTutFun? : ( touKinStr : string, touIdeStr : string ) => void, onRenTasFun? : ( renNamStr : string ) => void, onSkiTasFun? : () => void, onTogTasFun? : ( tasRcdObj : TasRcdTyp ) => void, onUncTutFun? : ( touIdeStr : string ) => void, tasRcdObj : TasRcdTyp, tutDonBoo? : boolean }; // What: Reminder-Card-Component Props Type. Why: A reminder card renders either a due reminder with its check, edit, rename, and skip actions, or a sample's tutorial launcher, which passes only a few of them. How: This types RemCarCom's props, with everything beyond the actions bag and the reminder optional.
 
 // #region RemCarCom
 
@@ -628,7 +628,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 
 
-type RscProTyp = { actEdiStr : string | null, actStoObj : ActStoTyp, ariTasSet : Set< string >, cheExiBoo : boolean, ediModBoo : boolean, leaTasSet : Set< string >, logOpeBoo : boolean, onGriDowFun : ( poiEveObj : React.PointerEvent< HTMLElement > ) => void, onPlaTutFun : ( kinStr : string, ideStr : string ) => void, onTogLogFun : () => void, onUncTutFun : ( ideStr : string ) => void, secRefFun : ( secCurEle : HTMLElement | null ) => void, setActEdiStr : React.Dispatch< React.SetStateAction< string | null > >, staAppObj : StaAppTyp }; // What: Reminder-Section-Component Props Type. Why: The Reminders section lists today's reminders and shares Today's single open-editor slot, Edit Mode, and log panel. How: This types RemSecCom's props.
+type RscProTyp = { actEdiStr : string | null, actStoObj : ActStoTyp, ariTasSet : Set< string >, cheExiBoo : boolean, ediModBoo : boolean, leaTasSet : Set< string >, logOpeBoo : boolean, onGriDowFun : ( poiEveObj : React.PointerEvent< HTMLElement > ) => void, onPlaTutFun : ( touKinStr : string, touIdeStr : string ) => void, onTogLogFun : () => void, onUncTutFun : ( touIdeStr : string ) => void, secRefFun : ( secCurEle : HTMLElement | null ) => void, setActEdiStr : React.Dispatch< React.SetStateAction< string | null > >, staAppObj : StaAppTyp }; // What: Reminder-Section-Component Props Type. Why: The Reminders section lists today's reminders and shares Today's single open-editor slot, Edit Mode, and log panel. How: This types RemSecCom's props.
 
 // #region RemSecCom
 

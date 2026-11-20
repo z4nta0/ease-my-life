@@ -31,7 +31,7 @@ import type { JSX } from 'react'; // What: JSX. Why: The component declares the 
 
 // #region Components
 
-type SscProTyp = { labTexStr : string, onChange : ( keyStr : string ) => void, optLisArr : { keyStr : string, labStr : string }[], selIdeStr : string, value : string }; // What: Sort-Select-Component Props Type. Why: A sort control picks one of its options by key under a visible label. How: This types SorSelCom's props.
+type SscProTyp = { labTexStr : string, onChange : ( keyValStr : string ) => void, optLisArr : { keyStr : string, labStr : string }[], selIdeStr : string, value : string }; // What: Sort-Select-Component Props Type. Why: A sort control picks one of its options by key under a visible label. How: This types SorSelCom's props.
 
 // #region SorSelCom
 

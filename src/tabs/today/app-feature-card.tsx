@@ -40,7 +40,7 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
 
 // #region Components
 
-type AfcProTyp = { actStoObj : ActStoTyp, feaRecObj : { ideStr : string, labStr : string, pagStr : string, timStr : string }, onPlaTutFun : ( kinStr : string, ideStr : string ) => void, onUncFeaFun : ( ideStr : string ) => void, staAppObj : StaAppTyp }; // What: App-Feature-Component Props Type. Why: An App Features launcher card starts or un-resolves its tutorial and reads whether it's done. How: This types AppFeaCom's props.
+type AfcProTyp = { actStoObj : ActStoTyp, feaRecObj : { ideStr : string, labStr : string, pagStr : string, timStr : string }, onPlaTutFun : ( touKinStr : string, touIdeStr : string ) => void, onUncFeaFun : ( feaIdeStr : string ) => void, staAppObj : StaAppTyp }; // What: App-Feature-Component Props Type. Why: An App Features launcher card starts or un-resolves its tutorial and reads whether it's done. How: This types AppFeaCom's props.
 
 // #region AppFeaCom
 

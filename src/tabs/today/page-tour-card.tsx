@@ -38,7 +38,7 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
 
 // #region Components
 
-type PrcProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, onPlaTutFun : ( kinStr : string, ideStr : string ) => void, onUncTutFun : ( ideStr : string ) => void, staAppObj : StaAppTyp, touRecObj : { ideStr : string, labStr : string, timStr : string } }; // What: Page-Tour-Component Props Type. Why: A page tour's launcher card starts or un-resolves its tour and reads whether it's done. How: This types PagTouCom's props, named Pto since Ptc, Poc, and Puc already belong to other components.
+type PrcProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, onPlaTutFun : ( touKinStr : string, touIdeStr : string ) => void, onUncTutFun : ( touIdeStr : string ) => void, staAppObj : StaAppTyp, touRecObj : { ideStr : string, labStr : string, timStr : string } }; // What: Page-Tour-Component Props Type. Why: A page tour's launcher card starts or un-resolves its tour and reads whether it's done. How: This types PagTouCom's props, named Pto since Ptc, Poc, and Puc already belong to other components.
 
 // #region PagTouCom
 
