@@ -48,6 +48,93 @@ import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record T
 
 // #region Components
 
+type CrcProTyp = { chaValNum : number, isaDowBoo : boolean, labTexStr : string, onFilActFun : () => void, thrValNum : number }; // What: Charge-Row-Component Props Type. Why: Each full-charge row names its own action and direction and shows the item's charge against its picker's ceiling. How: This types ChaRowCom's props.
+
+// #region ChaRowCom
+
+/**
+ * ChaRowCom = Charge Row Component
+ *
+ * @summary
+ * Renders an ease item's full-charge row, "Fill" for ease-up and "Refill"
+ * for ease-down: its label, a live summary of the item's charge that fades
+ * whenever the charge reaches or leaves the shared full-charge ceiling
+ * (Fill's full summary also gives the charge), and a button that raises the
+ * charge to the picker's own threshold, disabled once it's there. The row
+ * is marked with its ease direction so help mode can tell the two apart.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.chaValNum   - Charge Value Number: The item's current charge.
+ * @param props.isaDowBoo   - Is-A Down Boolean: Whether the row is ease-down's
+ *                            Refill row rather than ease-up's Fill row.
+ * @param props.labTexStr   - Label Text String: The row's own label, also
+ *                            the button's text.
+ * @param props.onFilActFun - On Fill Action Function: Called when the button
+ *                            is pressed.
+ * @param props.thrValNum   - Threshold Value Number: The picker's own charge
+ *                            ceiling, which disables the button once reached.
+ *
+ * @returns The full-charge row.
+ *
+ * @example
+ * ```tsx
+ * ChaRowCom({ chaValNum, isaDowBoo, labTexStr, ... }) // => <ChaRowCom />
+ * ```
+ *
+*/
+
+function ChaRowCom ( { chaValNum, isaDowBoo, labTexStr, onFilActFun, thrValNum } : CrcProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<div
+			className={ cssModObj.ediRowDiv }
+
+			data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds the Refill row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
+			data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds the Fill row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
+			data-element-name-hook='ediRowDiv'
+		>{ /* What: Editor Row Div Element. Why: An ease item offers an instant full-charge shortcut. How: This renders the label and subtitle plus its FilButCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+
+
+			<div className={ cssModObj.ediLabDiv }>{ /* What: Editor Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+
+
+				<span className={ cssModObj.ediNamSpa }>{ labTexStr }</span>{ /* What: Editor Name Span Element. Why: This is the row's own heading text. How: This renders labTexStr. */ }
+
+				<span
+					key={ chaValNum >= PIC_NAM_OBJ.THR_VAL_NUM ? 'full' : 'part' } // What: Charge State Key. Why: The summary should re-fade only when the charge reaches or leaves full, not on every value change. How: This keys on whether chaValNum has reached THR_VAL_NUM.
+
+					className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
+				>{ chaValNum < PIC_NAM_OBJ.THR_VAL_NUM ? <>item at <strong>{ Math.round( chaValNum ) } charge</strong></> : isaDowBoo ? <>item is <strong>fully charged</strong></> : <>item is <strong>fully charged</strong> at { Math.round( chaValNum ) }</> }</span>{ /* What: Editor Sub Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders the partial phrasing below THR_VAL_NUM, and otherwise the full phrasing, which Fill follows with the charge. */ }
+
+
+			</div>
+
+
+
+			<FilButCom
+				isaDisBoo={ chaValNum >= thrValNum }
+				labTexStr={ labTexStr }
+
+				onFilActFun={ onFilActFun }
+			/>{ /* What: Fill Button Component. Why: This is the actual instant-charge shortcut for an ease item. How: This calls onFilActFun, disabling itself once the charge meets thrValNum. */ }
+
+
+		</div>
+
+
+	);
+
+
+}
+
+// #endregion ChaRowCom
+
+
+
 type ErcProTyp = { dayValNum : number, isaDowBoo : boolean, iteNamStr : string, labTexStr : string, maxValNum : number, onSetValFun : ( dayValNum : number ) => void, picModStr : string, subTexEle : React.ReactNode, uniWorStr : string }; // What: Ease-Row-Component Props Type. Why: Each ease row names its own bound and day count, with its own subtitle and limit. How: This types EasRowCom's props.
 
 // #region EasRowCom
@@ -449,80 +536,31 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 						{ picModStr === 'ease-up' && ( // What: Fill Row Visibility Check. Why: Only ease-up offers an instant-fill shortcut for its own charge. How: This renders the Fill row only while picModStr is 'ease-up'.
 
 
-							<div
-								className={ cssModObj.ediRowDiv }
+							<ChaRowCom
+								chaValNum={ iteDatObj.value ?? 0 }
+								isaDowBoo={ false }
+								labTexStr='Fill'
+								thrValNum={ picDatObj!.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
 
-								data-ease-up-active // What: Ease Up Active Attribute. Why: Help mode finds this Fill row as an ease-up row without reading its classes. How: This is always present, since Fill only ever renders for an ease-up picker.
-								data-element-name-hook='ediRowDiv'
-							>{ /* What: Fill Row Div Element. Why: Ease-up specifically offers an instant-fill shortcut. How: This renders the Fill label/subtitle plus its FilButCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-								<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
-
-
-									<span className={ cssModObj.ediNamSpa }>Fill</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Fill". */ }
-
-									<span
-										key={ ( iteDatObj.value ?? 0 ) >= PIC_NAM_OBJ.THR_VAL_NUM ? 'full' : 'part' }
-
-										className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-									>{ ( iteDatObj.value ?? 0 ) >= PIC_NAM_OBJ.THR_VAL_NUM ? <>item is <strong>fully charged</strong> at { Math.round( iteDatObj.value ?? 0 ) }</> : <>item at <strong>{ Math.round( iteDatObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached THR_VAL_NUM, keyed by which one is showing. */ }
-
-
-								</div>
-
-
-
-								<FilButCom
-									isaDisBoo={ ( iteDatObj.value ?? 0 ) >= ( picDatObj!.threshold ?? 100 ) } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
-									labTexStr='Fill'
-
-									onFilActFun={ () => onPatIteFun( { value : Math.max( iteDatObj.value ?? 0, picDatObj!.threshold ?? 100 ) } ) } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
-								/>{ /* What: Fill Button Component. Why: This is the actual instant-fill shortcut for an ease-up item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
-
-
-							</div>
+								onFilActFun={ () => onPatIteFun( { value : Math.max( iteDatObj.value ?? 0, picDatObj!.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM ) } ) } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
+							/> // What: Charge Row Component. Why: This is ease-up's Fill row. How: This raises the item's charge to its picker's threshold, falling back to the shared ceiling.
 
 
 						) }
 
 
+
 						{ picModStr === 'ease-down' && ( // What: Refill Row Visibility Check. Why: Only ease-down offers an instant-refill shortcut for its own charge. How: This renders the Refill row only while picModStr is 'ease-down'.
 
 
-							<div
-								className={ cssModObj.ediRowDiv }
+							<ChaRowCom
+								chaValNum={ iteDatObj.value ?? 0 }
+								isaDowBoo={ true }
+								labTexStr='Refill'
+								thrValNum={ picDatObj!.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
 
-								data-ease-down-active // What: Ease Down Active Attribute. Why: Help mode finds this Refill row as an ease-down row without reading its classes. How: This is always present, since Refill only ever renders for an ease-down picker.
-								data-element-name-hook='ediRowDiv'
-							>{ /* What: Refill Row Div Element. Why: Ease-down specifically offers an instant-refill shortcut. How: This renders the Refill label/subtitle plus its FilButCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
-
-
-								<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
-
-
-									<span className={ cssModObj.ediNamSpa }>Refill</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Refill". */ }
-
-									<span
-										key={ ( iteDatObj.value ?? 0 ) >= PIC_NAM_OBJ.THR_VAL_NUM ? 'full' : 'part' }
-
-										className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-									>{ ( iteDatObj.value ?? 0 ) >= PIC_NAM_OBJ.THR_VAL_NUM ? <>item is <strong>fully charged</strong></> : <>item at <strong>{ Math.round( iteDatObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached THR_VAL_NUM, keyed by which one is showing. */ }
-
-
-								</div>
-
-
-
-								<FilButCom
-									isaDisBoo={ ( iteDatObj.value ?? 0 ) >= ( picDatObj!.threshold ?? 100 ) } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
-									labTexStr='Refill'
-
-									onFilActFun={ () => onPatIteFun( { value : Math.max( iteDatObj.value ?? 0, picDatObj!.threshold ?? 100 ) } ) } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
-								/>{ /* What: Fill Button Component. Why: This is the actual instant-refill shortcut for an ease-down item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
-
-
-							</div>
+								onFilActFun={ () => onPatIteFun( { value : Math.max( iteDatObj.value ?? 0, picDatObj!.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM ) } ) } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
+							/> // What: Charge Row Component. Why: This is ease-down's Refill row. How: This raises the item's charge to its picker's threshold, falling back to the shared ceiling.
 
 
 						) }
