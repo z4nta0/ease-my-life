@@ -508,84 +508,6 @@ function IcoSetCom ( { className, icoKeyStr, strWidNum = 2 } : IecProTyp ) : Rea
 
 
 
-type LccProTyp = { onTogLogFun : () => void, open : boolean }; // What: Log-Chip-Component Props Type. Why: The log chip opens and closes a section's log panel. How: This types LogChiCom's props.
-
-// #region LogChiCom
-
-/**
- * LogChiCom = Log Chip Component
- *
- * @summary
- * The small "Log" chip shown on a group header (and the Reminders
- * header) that opens/closes that section's own log panel below it.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param props.onTogLogFun - On Toggle Log Function: Called when the chip is
- *                            clicked; the caller owns actually toggling its
- *                            own log panel open state.
- * @param props.open        - Open: Whether this section's own log panel is
- *                            currently open; drives the chip's own
- *                            aria-pressed state, which its styling keys off.
- *
- * @returns This component's own single rendered button.
- *
- * @example
- * ```tsx
- * LogChiCom({ onTogLogFun, open }) // => <LogChiCom />
- * ```
- *
-*/
-
-function LogChiCom ( { onTogLogFun, open } : LccProTyp ) : React.JSX.Element {
-
-
-	return (
-
-
-		<button
-			className={ cssModObj.logChiBut }
-
-			data-element-name-hook='logChiBut'
-
-			type='button'
-
-			aria-label={ open ? 'Hide day log' : 'Show day log' } // What: Chip Label Pick. Why: The screen reader label names the action the chip will take. How: This says Hide while open and Show otherwise.
-			aria-pressed={ open }
-
-			onClick={ ( cliEveObj ) => { // What: Chip Click Handler. Why: The chip sits inside a clickable group header whose own click must not also fire. How: This stops the click from bubbling, then toggles the panel.
-
-
-				cliEveObj.stopPropagation(); // What: Header Click Isolation. Why: The group header has its own click behavior. How: This stops the click from bubbling to it.
-
-				onTogLogFun(); // What: Log Toggle Call. Why: The caller owns the panel's open state. How: This calls onTogLogFun.
-
-
-			} }
-		>{ /* What: Day Log Toggle Button Element. Why: This is LogChiCom's own single rendered element. How: This shows open through its aria-pressed state, which its styling keys off, and toggles the panel without the click reaching the group header. Its data-element-name-hook is read by help mode's Today catalog. */ }
-
-
-			<IcoSetCom
-				className={ cssModObj.chiIcoSvg }
-
-				icoKeyStr='logEle'
-			/>{ /* What: Icon Set Component. Why: The chip needs a small recognizable log glyph next to its own label. How: This renders IcoSetCom's own "log" shape. */ }
-
-			{ ' Log' }{ /* What: Chip Label Text. Why: The chip needs a plain visible label alongside its own icon. How: This renders the literal text " Log". */ }
-
-
-		</button>
-
-
-	);
-
-
-}
-
-// #endregion LogChiCom
-
-
-
 type LlcProTyp = { onCloLogFun : () => void }; // What: Log-Close-Component Props Type. Why: The close button dismisses its log panel. How: This types LogCloCom's props, named Llc since Lcc already belongs to LogChiCom.
 
 // #region LogCloCom
@@ -712,304 +634,6 @@ function NamModCom ( { modLabStr, neuModBoo, picNamStr } : NmcProTyp ) : React.J
 }
 
 // #endregion NamModCom
-
-
-
-type RlcProTyp = { onCloLogFun : () => void, staAppObj : StaAppTyp }; // What: Reminder-Log-Component Props Type. Why: The reminders' log panel covers every reminder and can be closed. How: This types RemLogCom's props.
-
-// #region RemLogCom
-
-/**
- * RemLogCom = Reminders Log Component
- *
- * @summary
- * The Reminders section's own log panel, listing every non-hidden
- * task/reminder with its own current status (done/due today/skipped/
- * not yet due) and, for a not-yet-due one, a short relative due label.
- * Pinned to the last generation's own anchor date (TAS_NAM_OBJ.ancDatFun),
- * not live "now", since this panel is a snapshot of the Reminders
- * section right above it, itself frozen to the last generate() call
- * until the next one runs.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param props.onCloLogFun - On Close Log Function: Called when the panel's
- *                            own close button is pressed; omitted entirely
- *                            suppresses that button.
- * @param props.staAppObj   - State App Object: The whole app state object.
- *
- * @returns This panel's own full reminders log.
- *
- * @example
- * ```tsx
- * RemLogCom({ onCloLogFun, staAppObj }) // => <RemLogCom />
- * ```
- *
-*/
-
-function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Element {
-
-
-	// #region Reminder Task Sets
-
-	const ancDatObj = TAS_NAM_OBJ.ancDatFun( staAppObj.today && staAppObj.today.generatedAt );                         // What: Anchor Date Object. Why: Every lookup below must use the same frozen anchor the Reminders section above this panel already used. How: This calls TAS_NAM_OBJ.ancDatFun with staAppObj's own today.generatedAt, if any.
-	const dayKeyStr = isoDayFun( ancDatObj );                                                                          // What: Day Key String. Why: The skipped-lookup below needs a plain date key to match against, scoped to ancDatObj rather than live "now". How: This calls isoDayFun with ancDatObj.
-	const tasLisArr = staAppObj.tasks.filter( ( curTasObj ) => !curTasObj.hidden );                                    // What: Task List Array. Why: A hidden task/reminder never belongs in this log at all. How: This filters staAppObj's own tasks down to the non-hidden ones.
-	const visTasArr = TAS_NAM_OBJ.visTodFun( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, ancDatObj ); // What: Visible Task Array. Why: The status below needs to know which tasks are actually due today. How: This calls TAS_NAM_OBJ.visTodFun with staAppObj's own tasks/reminderOpts/holidays and ancDatObj.
-	const visIdeSet = new Set( visTasArr.map( ( curTasObj ) => curTasObj.id ) );                                       // What: Visible Identifier Set. Why: The status below needs a fast membership check, not a repeated array scan. How: This maps visTasArr down to just its own ids.
-
-
-	const skiIdeSet = new Set( // What: Skipped Identifier Set. Why: The status below needs to know which tasks were manually skipped specifically today. How: This filters staAppObj's own reminderSkipLog down to today's own rows, then maps to their own taskId.
-
-
-		staAppObj.reminderSkipLog // What: Skip Log Source. Why: Every manual skip ever recorded is a candidate. How: This reads the skip log.
-			.filter( ( logRowObj ) => isoDayFun( new Date( logRowObj.skippedAt ) ) === dayKeyStr ) // What: Today Skip Filter. Why: Only a skip made on the anchor day counts. How: This keeps rows whose own skippedAt falls on dayKeyStr.
-			.map( ( logRowObj ) => logRowObj.taskId )                                              // What: Task Id Map. Why: The set only needs the skipped task ids. How: This maps each row to its own taskId.
-
-
-	);
-
-	// #endregion Reminder Task Sets
-
-
-
-	const remRowArr = tasLisArr.map( ( curTasObj ) => { // What: Reminder Row Array. Why: One display row is needed per task/reminder in tasLisArr. How: This computes each row's own status and (once not-yet-due) its own due label before returning its shape below.
-
-
-		const tasDonBoo = TAS_NAM_OBJ.isaDonFun( curTasObj, ancDatObj ); // What: Task Done Boolean. Why: A done task always outranks every other status below. How: This calls TAS_NAM_OBJ.isaDonFun for curTasObj/ancDatObj.
-
-		let rowStaStr = 'notdue'; // What: Row Status String And Fallthrough. Why: Every task starts as not-yet-due until one of the checks below says otherwise. How: This is overwritten by whichever of the 3 checks below matches first.
-
-
-		if ( tasDonBoo ) rowStaStr = 'done'; // What: Done Status Check. Why: Done always wins over every other status. How: This sets rowStaStr to 'done' once tasDonBoo is true.
-
-		else if ( skiIdeSet.has( curTasObj.id ) ) rowStaStr = 'skip'; // What: Skip Status Check. Why: A manually-skipped task (that wasn't also done) is its own distinct status. How: This sets rowStaStr to 'skip' once curTasObj's own id is in skiIdeSet.
-
-		else if ( visIdeSet.has( curTasObj.id ) ) rowStaStr = 'due'; // What: Due Status Check. Why: A currently-visible task (neither done nor skipped) is due today. How: This sets rowStaStr to 'due' once curTasObj's own id is in visIdeSet.
-
-
-
-		let dueLabStr = null; // What: Due Label String And Fallthrough. Why: Only a genuinely not-yet-due task ever gets a relative due label at all. How: This stays null unless the guard below overwrites it.
-
-
-		if ( rowStaStr === 'notdue' ) { // What: Not Due Guard. Why: A relative due label only makes sense for a task that is neither done, skipped, nor due today. How: This computes and assigns dueLabStr only while rowStaStr is still 'notdue'.
-
-
-			const nexDatObj = TAS_NAM_OBJ.nexEliFun( curTasObj, staAppObj.reminderOpts, staAppObj.holidays, ancDatObj, true ); // What: Next Date Object. Why: This is the raw next-occurrence Date forDueFun below needs, honoring an active manual skip so the label reflects when the reminder actually reappears. How: This calls TAS_NAM_OBJ.nexEliFun with resSkiBoo set true.
-
-			dueLabStr = forDueFun( nexDatObj, dayKeyStr ); // What: Due Label String Assign. Why: The row below needs the final short relative label, not the raw Date. How: This calls forDueFun with nexDatObj and dayKeyStr.
-
-
-		}
-
-
-
-		return { // What: Reminder Row Return. Why: The render below destructures exactly these 4 fields per row. How: This bundles curTasObj with its own status, due label and schedule summary.
-
-
-			dueLabStr : dueLabStr,                         // What: Due Label String. Why: A not-yet-due row shows when it next appears. How: This is the forDueFun label, or null.
-			rowStaStr : rowStaStr,                         // What: Row Status String. Why: The row's own status decides its pill and class. How: This is one of done, due, skip or notdue.
-			tasRcdObj : curTasObj,                         // What: Task Record Object. Why: The row renders the task's own name and id. How: This is curTasObj itself.
-			wheSumStr : TAS_NAM_OBJ.sumTasFun( curTasObj ) // What: When Summary String. Why: Every row shows its own schedule in words. How: This calls TAS_NAM_OBJ.sumTasFun for curTasObj.
-
-
-		};
-
-
-	} );
-
-
-
-	// #region Status Sorting
-
-	const staRanObj : Record< string, number > = { done : 0, due : 1, notdue : 3, skip : 2 }; // What: Status Rank Object. Why: The sort below needs a numeric priority per status to order the rows sensibly. How: This is indexed just below by each row's own rowStaStr.
-
-	remRowArr.sort( ( rowOneObj, rowTwoObj ) => ( staRanObj[ rowOneObj.rowStaStr ] - staRanObj[ rowTwoObj.rowStaStr ] ) || ( rowOneObj.tasRcdObj.name < rowTwoObj.tasRcdObj.name ? -1 : 1 ) ); // What: Reminder Row Sort Call. Why: Rows should group by status first, then alphabetically within a status. How: This sorts remRowArr by staRanObj's own rank difference, falling back to a plain name comparison when ranks tie.
-
-	// #endregion Status Sorting
-
-
-
-	return (
-
-
-		<div className={ cssModObj.logPanDiv }>{ /* What: Reminders Log Panel Div Element. Why: This is RemLogCom's own root element. How: This renders the panel header plus the reminder rows body below. */ }
-
-
-			<div className={ cssModObj.panHeaDiv }>{ /* What: Panel Header Div Element. Why: This groups the panel's own kicker with its optional close button. How: This renders the kicker span plus onCloLogFun's own button when provided. */ }
-
-
-				<span className={ cssModObj.panKicSpa }>{ /* What: Kicker Span Element. Why: The panel names which anchor date this snapshot covers. How: This renders a clock glyph plus ancDatObj's own formatted weekday/date. */ }
-
-
-					<IcoSetCom
-						className={ cssModObj.kicIcoSvg }
-
-						icoKeyStr='clcEle'
-					/>{ /* What: Icon Set Component. Why: The kicker needs a small recognizable clock glyph. How: This renders IcoSetCom's own "clock" shape. */ }
-
-
-
-					<span>Reminders log · { ancDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'short' } ) }</span>{ /* What: Kicker Text Span Element. Why: The kicker's own text names which day this snapshot covers. How: This formats ancDatObj as e.g. "Wed, Jun 12". */ }
-
-
-				</span>
-
-
-
-				<LogCloCom onCloLogFun={ onCloLogFun } />{ /* What: Log Close Component. Why: This is the panel's own dismiss control. How: This renders the close button, which calls onCloLogFun on click. */ }
-
-
-			</div>
-
-
-			<div className={` ${ cssModObj.logBodDiv }   ${ cssModObj.logBodDivRem } `}>{ /* What: Reminders Body Div Element. Why: The reminders table sits inset under the panel header, its header cells carrying their own data-element-name-hook values for help mode instead of borrowing the data rows' styled classes. How: This renders the header row plus one row per remRowArr entry below. */ }
-
-
-				<div className={ cssModObj.remHeaDiv }>{ /* What: Reminders Table Head Div Element. Why: This table needs its own 3-column header row. How: This renders the 3 shared column-header spans. */ }
-
-
-					<span data-element-name-hook='remNamSpa'>Reminder</span>{ /* What: Reminder Header Span Element. Why: This labels the name column. How: This renders the literal text "Reminder". Its data-element-name-hook is read by help mode's Today catalog. */ }
-
-					<span
-						className={ cssModObj.heaWheSpa }
-
-						data-element-name-hook='remWheSpa'
-					>When</span>{ /* What: When Header Span Element. Why: This labels the schedule column. How: This renders the literal text "When". Its data-element-name-hook is read by help mode's Today catalog. */ }
-
-					<span
-						className={ cssModObj.heaStaSpa }
-
-						data-element-name-hook='remStaSpa'
-					>Status</span>{ /* What: Status Header Span Element. Why: This labels the status column. How: This renders the literal text "Status". Its data-element-name-hook is read by help mode's Today catalog. */ }
-
-
-				</div>
-
-				{ remRowArr.length === 0 && <div className={ cssModObj.logEmpDiv }>No reminders yet.</div> }{ /* What: Empty Reminders Visibility Check. Why: No non-hidden tasks at all needs an explanatory row instead of an empty table. How: This renders only while remRowArr's own length is 0. */ }
-
-				{ remRowArr.map( ( { dueLabStr, rowStaStr, tasRcdObj, wheSumStr } ) => ( // What: Reminder Row Map Callback. Why: One row is needed per remRowArr entry. How: This destructures each row and renders its own name/when/status cells.
-
-
-					<div
-						key={ tasRcdObj.id }
-
-						className={ cssModObj.remRowDiv }
-
-						data-row-done-active={ rowStaStr === 'done' || undefined } // What: Row Done Active Attribute. Why: A done reminder's row reads green. How: This sets the presence-only attribute while rowStaStr is 'done'.
-						data-row-due-active={ rowStaStr === 'due' || undefined } // What: Row Due Active Attribute. Why: A reminder due today reads in the accent. How: This sets the presence-only attribute while rowStaStr is 'due'.
-						data-row-upcoming-active={ rowStaStr === 'notdue' || undefined } // What: Row Upcoming Active Attribute. Why: A reminder not due yet reads quieter. How: This sets the presence-only attribute while rowStaStr is 'notdue'.
-					>{ /* What: Reminder Row Div Element. Why: This is one task/reminder's own full row. How: This marks itself with data-row-done-active, data-row-due-active, or data-row-upcoming-active from rowStaStr. */ }
-
-
-						<InfTipCom
-							className={ cssModObj.remNamSpa }
-
-							data-element-name-hook='remNamSpa'
-
-							labTexStr={ tasRcdObj.name }
-							trnOnlBoo
-						>{ tasRcdObj.name }</InfTipCom>{ /* What: Info Tip Component. Why: A long reminder name can truncate in a narrow layout. How: This renders tasRcdObj's own name as a truncation-revealing InfTipCom. Its data-element-name-hook is read by help mode's Today catalog. */ }
-
-
-
-						<span
-							className={ cssModObj.remWheSpa }
-
-							data-element-name-hook='remWheSpa'
-						>{ wheSumStr }</span>{ /* What: Reminder When Span Element. Why: Every row shows its own plain schedule summary. How: This renders wheSumStr directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
-
-						<span
-							className={ cssModObj.remStaSpa }
-
-							data-element-name-hook='remStaSpa'
-						>{ /* What: Reminder Status Span Element. Why: The last column shows this row's own current status, differently per rowStaStr. How: This renders one of 4 status variants below, matched on rowStaStr. Its data-element-name-hook is read by help mode's Today catalog. */ }
-
-
-							{ rowStaStr === 'done' && ( // What: Done Status Visibility Check. Why: A done row shows its own check icon plus a Done pill. How: This renders only while rowStaStr is 'done'.
-
-
-								<React.Fragment>{ /* What: Done Status Fragment Element. Why: The check icon and its own Done pill are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
-
-
-									<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaDone } `}>{ /* What: Done Icon Span Element. Why: A done row's own status needs a recognizable check glyph before its pill. How: This renders IcoSetCom's own "check" shape. */ }
-
-
-										<IcoSetCom
-											className={ cssModObj.icoGlySvg }
-
-											icoKeyStr='cheEle'
-											strWidNum={ 3 }
-										/>{ /* What: Icon Set Component. Why: The status glyph matches the Day Log legend. How: This draws the cheEle shape. */ }
-
-
-									</span>
-
-									<span className={` ${ cssModObj.staPilSpa }   ${ cssModObj.staPilSpaDone } `}>Done</span>{ /* What: Done Pill Span Element. Why: The done row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Done". */ }
-
-
-								</React.Fragment>
-
-							) }
-
-
-
-							{ rowStaStr === 'due' && <span className={` ${ cssModObj.staPilSpa }   ${ cssModObj.staPilSpaDue } `}>Due today</span> }{ /* What: Due Status Visibility Check. Why: A due-today row shows a plain Due pill. How: This renders only while rowStaStr is 'due'. */ }
-
-
-
-							{ rowStaStr === 'skip' && ( // What: Skip Status Visibility Check. Why: A skipped row shows its own x icon plus a Skipped pill. How: This renders only while rowStaStr is 'skip'.
-
-
-								<React.Fragment>{ /* What: Skip Status Fragment Element. Why: The x icon and its own Skipped pill are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
-
-
-									<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaSkip } `}>{ /* What: Skip Icon Span Element. Why: A skipped row's own status needs a recognizable x glyph before its pill. How: This renders IcoSetCom's own "x" shape. */ }
-
-
-										<IcoSetCom
-											className={ cssModObj.icoGlySvg }
-
-											icoKeyStr='xEle'
-											strWidNum={ 2.6 }
-										/>{ /* What: Icon Set Component. Why: The status glyph matches the Day Log legend. How: This draws the xEle shape. */ }
-
-
-									</span>
-
-									<span className={` ${ cssModObj.staPilSpa }   ${ cssModObj.staPilSpaSkipped } `}>Skipped</span>{ /* What: Skip Pill Span Element. Why: The skipped row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Skipped". */ }
-
-
-								</React.Fragment>
-
-							) }
-
-
-
-							{ rowStaStr === 'notdue' && <span className={ cssModObj.notDueSpa }>{ dueLabStr }</span> }{ /* What: Not Due Status Visibility Check. Why: A not-yet-due row shows its own relative due label instead of a pill. How: This renders only while rowStaStr is 'notdue'. */ }
-
-
-						</span>
-
-
-					</div>
-
-
-				) ) }
-
-
-			</div>
-
-
-		</div>
-
-
-	);
-
-
-}
-
-// #endregion RemLogCom
 
 
 
@@ -2126,6 +1750,382 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React
 }
 
 // #endregion GroLogCom
+
+
+
+type LccProTyp = { onTogLogFun : () => void, open : boolean }; // What: Log-Chip-Component Props Type. Why: The log chip opens and closes a section's log panel. How: This types LogChiCom's props.
+
+// #region LogChiCom
+
+/**
+ * LogChiCom = Log Chip Component
+ *
+ * @summary
+ * The small "Log" chip shown on a group header (and the Reminders
+ * header) that opens/closes that section's own log panel below it.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.onTogLogFun - On Toggle Log Function: Called when the chip is
+ *                            clicked; the caller owns actually toggling its
+ *                            own log panel open state.
+ * @param props.open        - Open: Whether this section's own log panel is
+ *                            currently open; drives the chip's own
+ *                            aria-pressed state, which its styling keys off.
+ *
+ * @returns This component's own single rendered button.
+ *
+ * @example
+ * ```tsx
+ * LogChiCom({ onTogLogFun, open }) // => <LogChiCom />
+ * ```
+ *
+*/
+
+function LogChiCom ( { onTogLogFun, open } : LccProTyp ) : React.JSX.Element {
+
+
+	return (
+
+
+		<button
+			className={ cssModObj.logChiBut }
+
+			data-element-name-hook='logChiBut'
+
+			type='button'
+
+			aria-label={ open ? 'Hide day log' : 'Show day log' } // What: Chip Label Pick. Why: The screen reader label names the action the chip will take. How: This says Hide while open and Show otherwise.
+			aria-pressed={ open }
+
+			onClick={ ( cliEveObj ) => { // What: Chip Click Handler. Why: The chip sits inside a clickable group header whose own click must not also fire. How: This stops the click from bubbling, then toggles the panel.
+
+
+				cliEveObj.stopPropagation(); // What: Header Click Isolation. Why: The group header has its own click behavior. How: This stops the click from bubbling to it.
+
+				onTogLogFun(); // What: Log Toggle Call. Why: The caller owns the panel's open state. How: This calls onTogLogFun.
+
+
+			} }
+		>{ /* What: Day Log Toggle Button Element. Why: This is LogChiCom's own single rendered element. How: This shows open through its aria-pressed state, which its styling keys off, and toggles the panel without the click reaching the group header. Its data-element-name-hook is read by help mode's Today catalog. */ }
+
+
+			<IcoSetCom
+				className={ cssModObj.chiIcoSvg }
+
+				icoKeyStr='logEle'
+			/>{ /* What: Icon Set Component. Why: The chip needs a small recognizable log glyph next to its own label. How: This renders IcoSetCom's own "log" shape. */ }
+
+			{ ' Log' }{ /* What: Chip Label Text. Why: The chip needs a plain visible label alongside its own icon. How: This renders the literal text " Log". */ }
+
+
+		</button>
+
+
+	);
+
+
+}
+
+// #endregion LogChiCom
+
+
+
+type RlcProTyp = { onCloLogFun : () => void, staAppObj : StaAppTyp }; // What: Reminder-Log-Component Props Type. Why: The reminders' log panel covers every reminder and can be closed. How: This types RemLogCom's props.
+
+// #region RemLogCom
+
+/**
+ * RemLogCom = Reminders Log Component
+ *
+ * @summary
+ * The Reminders section's own log panel, listing every non-hidden
+ * task/reminder with its own current status (done/due today/skipped/
+ * not yet due) and, for a not-yet-due one, a short relative due label.
+ * Pinned to the last generation's own anchor date (TAS_NAM_OBJ.ancDatFun),
+ * not live "now", since this panel is a snapshot of the Reminders
+ * section right above it, itself frozen to the last generate() call
+ * until the next one runs.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.onCloLogFun - On Close Log Function: Called when the panel's
+ *                            own close button is pressed; omitted entirely
+ *                            suppresses that button.
+ * @param props.staAppObj   - State App Object: The whole app state object.
+ *
+ * @returns This panel's own full reminders log.
+ *
+ * @example
+ * ```tsx
+ * RemLogCom({ onCloLogFun, staAppObj }) // => <RemLogCom />
+ * ```
+ *
+*/
+
+function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Element {
+
+
+	// #region Reminder Task Sets
+
+	const ancDatObj = TAS_NAM_OBJ.ancDatFun( staAppObj.today && staAppObj.today.generatedAt );                         // What: Anchor Date Object. Why: Every lookup below must use the same frozen anchor the Reminders section above this panel already used. How: This calls TAS_NAM_OBJ.ancDatFun with staAppObj's own today.generatedAt, if any.
+	const dayKeyStr = isoDayFun( ancDatObj );                                                                          // What: Day Key String. Why: The skipped-lookup below needs a plain date key to match against, scoped to ancDatObj rather than live "now". How: This calls isoDayFun with ancDatObj.
+	const tasLisArr = staAppObj.tasks.filter( ( curTasObj ) => !curTasObj.hidden );                                    // What: Task List Array. Why: A hidden task/reminder never belongs in this log at all. How: This filters staAppObj's own tasks down to the non-hidden ones.
+	const visTasArr = TAS_NAM_OBJ.visTodFun( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, ancDatObj ); // What: Visible Task Array. Why: The status below needs to know which tasks are actually due today. How: This calls TAS_NAM_OBJ.visTodFun with staAppObj's own tasks/reminderOpts/holidays and ancDatObj.
+	const visIdeSet = new Set( visTasArr.map( ( curTasObj ) => curTasObj.id ) );                                       // What: Visible Identifier Set. Why: The status below needs a fast membership check, not a repeated array scan. How: This maps visTasArr down to just its own ids.
+
+
+	const skiIdeSet = new Set( // What: Skipped Identifier Set. Why: The status below needs to know which tasks were manually skipped specifically today. How: This filters staAppObj's own reminderSkipLog down to today's own rows, then maps to their own taskId.
+
+
+		staAppObj.reminderSkipLog // What: Skip Log Source. Why: Every manual skip ever recorded is a candidate. How: This reads the skip log.
+			.filter( ( logRowObj ) => isoDayFun( new Date( logRowObj.skippedAt ) ) === dayKeyStr ) // What: Today Skip Filter. Why: Only a skip made on the anchor day counts. How: This keeps rows whose own skippedAt falls on dayKeyStr.
+			.map( ( logRowObj ) => logRowObj.taskId )                                              // What: Task Id Map. Why: The set only needs the skipped task ids. How: This maps each row to its own taskId.
+
+
+	);
+
+	// #endregion Reminder Task Sets
+
+
+
+	const remRowArr = tasLisArr.map( ( curTasObj ) => { // What: Reminder Row Array. Why: One display row is needed per task/reminder in tasLisArr. How: This computes each row's own status and (once not-yet-due) its own due label before returning its shape below.
+
+
+		const tasDonBoo = TAS_NAM_OBJ.isaDonFun( curTasObj, ancDatObj ); // What: Task Done Boolean. Why: A done task always outranks every other status below. How: This calls TAS_NAM_OBJ.isaDonFun for curTasObj/ancDatObj.
+
+		let rowStaStr = 'notdue'; // What: Row Status String And Fallthrough. Why: Every task starts as not-yet-due until one of the checks below says otherwise. How: This is overwritten by whichever of the 3 checks below matches first.
+
+
+		if ( tasDonBoo ) rowStaStr = 'done'; // What: Done Status Check. Why: Done always wins over every other status. How: This sets rowStaStr to 'done' once tasDonBoo is true.
+
+		else if ( skiIdeSet.has( curTasObj.id ) ) rowStaStr = 'skip'; // What: Skip Status Check. Why: A manually-skipped task (that wasn't also done) is its own distinct status. How: This sets rowStaStr to 'skip' once curTasObj's own id is in skiIdeSet.
+
+		else if ( visIdeSet.has( curTasObj.id ) ) rowStaStr = 'due'; // What: Due Status Check. Why: A currently-visible task (neither done nor skipped) is due today. How: This sets rowStaStr to 'due' once curTasObj's own id is in visIdeSet.
+
+
+
+		let dueLabStr = null; // What: Due Label String And Fallthrough. Why: Only a genuinely not-yet-due task ever gets a relative due label at all. How: This stays null unless the guard below overwrites it.
+
+
+		if ( rowStaStr === 'notdue' ) { // What: Not Due Guard. Why: A relative due label only makes sense for a task that is neither done, skipped, nor due today. How: This computes and assigns dueLabStr only while rowStaStr is still 'notdue'.
+
+
+			const nexDatObj = TAS_NAM_OBJ.nexEliFun( curTasObj, staAppObj.reminderOpts, staAppObj.holidays, ancDatObj, true ); // What: Next Date Object. Why: This is the raw next-occurrence Date forDueFun below needs, honoring an active manual skip so the label reflects when the reminder actually reappears. How: This calls TAS_NAM_OBJ.nexEliFun with resSkiBoo set true.
+
+			dueLabStr = forDueFun( nexDatObj, dayKeyStr ); // What: Due Label String Assign. Why: The row below needs the final short relative label, not the raw Date. How: This calls forDueFun with nexDatObj and dayKeyStr.
+
+
+		}
+
+
+
+		return { // What: Reminder Row Return. Why: The render below destructures exactly these 4 fields per row. How: This bundles curTasObj with its own status, due label and schedule summary.
+
+
+			dueLabStr : dueLabStr,                         // What: Due Label String. Why: A not-yet-due row shows when it next appears. How: This is the forDueFun label, or null.
+			rowStaStr : rowStaStr,                         // What: Row Status String. Why: The row's own status decides its pill and class. How: This is one of done, due, skip or notdue.
+			tasRcdObj : curTasObj,                         // What: Task Record Object. Why: The row renders the task's own name and id. How: This is curTasObj itself.
+			wheSumStr : TAS_NAM_OBJ.sumTasFun( curTasObj ) // What: When Summary String. Why: Every row shows its own schedule in words. How: This calls TAS_NAM_OBJ.sumTasFun for curTasObj.
+
+
+		};
+
+
+	} );
+
+
+
+	// #region Status Sorting
+
+	const staRanObj : Record< string, number > = { done : 0, due : 1, notdue : 3, skip : 2 }; // What: Status Rank Object. Why: The sort below needs a numeric priority per status to order the rows sensibly. How: This is indexed just below by each row's own rowStaStr.
+
+	remRowArr.sort( ( rowOneObj, rowTwoObj ) => ( staRanObj[ rowOneObj.rowStaStr ] - staRanObj[ rowTwoObj.rowStaStr ] ) || ( rowOneObj.tasRcdObj.name < rowTwoObj.tasRcdObj.name ? -1 : 1 ) ); // What: Reminder Row Sort Call. Why: Rows should group by status first, then alphabetically within a status. How: This sorts remRowArr by staRanObj's own rank difference, falling back to a plain name comparison when ranks tie.
+
+	// #endregion Status Sorting
+
+
+
+	return (
+
+
+		<div className={ cssModObj.logPanDiv }>{ /* What: Reminders Log Panel Div Element. Why: This is RemLogCom's own root element. How: This renders the panel header plus the reminder rows body below. */ }
+
+
+			<div className={ cssModObj.panHeaDiv }>{ /* What: Panel Header Div Element. Why: This groups the panel's own kicker with its optional close button. How: This renders the kicker span plus onCloLogFun's own button when provided. */ }
+
+
+				<span className={ cssModObj.panKicSpa }>{ /* What: Kicker Span Element. Why: The panel names which anchor date this snapshot covers. How: This renders a clock glyph plus ancDatObj's own formatted weekday/date. */ }
+
+
+					<IcoSetCom
+						className={ cssModObj.kicIcoSvg }
+
+						icoKeyStr='clcEle'
+					/>{ /* What: Icon Set Component. Why: The kicker needs a small recognizable clock glyph. How: This renders IcoSetCom's own "clock" shape. */ }
+
+
+
+					<span>Reminders log · { ancDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'short' } ) }</span>{ /* What: Kicker Text Span Element. Why: The kicker's own text names which day this snapshot covers. How: This formats ancDatObj as e.g. "Wed, Jun 12". */ }
+
+
+				</span>
+
+
+
+				<LogCloCom onCloLogFun={ onCloLogFun } />{ /* What: Log Close Component. Why: This is the panel's own dismiss control. How: This renders the close button, which calls onCloLogFun on click. */ }
+
+
+			</div>
+
+
+			<div className={` ${ cssModObj.logBodDiv }   ${ cssModObj.logBodDivRem } `}>{ /* What: Reminders Body Div Element. Why: The reminders table sits inset under the panel header, its header cells carrying their own data-element-name-hook values for help mode instead of borrowing the data rows' styled classes. How: This renders the header row plus one row per remRowArr entry below. */ }
+
+
+				<div className={ cssModObj.remHeaDiv }>{ /* What: Reminders Table Head Div Element. Why: This table needs its own 3-column header row. How: This renders the 3 shared column-header spans. */ }
+
+
+					<span data-element-name-hook='remNamSpa'>Reminder</span>{ /* What: Reminder Header Span Element. Why: This labels the name column. How: This renders the literal text "Reminder". Its data-element-name-hook is read by help mode's Today catalog. */ }
+
+					<span
+						className={ cssModObj.heaWheSpa }
+
+						data-element-name-hook='remWheSpa'
+					>When</span>{ /* What: When Header Span Element. Why: This labels the schedule column. How: This renders the literal text "When". Its data-element-name-hook is read by help mode's Today catalog. */ }
+
+					<span
+						className={ cssModObj.heaStaSpa }
+
+						data-element-name-hook='remStaSpa'
+					>Status</span>{ /* What: Status Header Span Element. Why: This labels the status column. How: This renders the literal text "Status". Its data-element-name-hook is read by help mode's Today catalog. */ }
+
+
+				</div>
+
+				{ remRowArr.length === 0 && <div className={ cssModObj.logEmpDiv }>No reminders yet.</div> }{ /* What: Empty Reminders Visibility Check. Why: No non-hidden tasks at all needs an explanatory row instead of an empty table. How: This renders only while remRowArr's own length is 0. */ }
+
+				{ remRowArr.map( ( { dueLabStr, rowStaStr, tasRcdObj, wheSumStr } ) => ( // What: Reminder Row Map Callback. Why: One row is needed per remRowArr entry. How: This destructures each row and renders its own name/when/status cells.
+
+
+					<div
+						key={ tasRcdObj.id }
+
+						className={ cssModObj.remRowDiv }
+
+						data-row-done-active={ rowStaStr === 'done' || undefined } // What: Row Done Active Attribute. Why: A done reminder's row reads green. How: This sets the presence-only attribute while rowStaStr is 'done'.
+						data-row-due-active={ rowStaStr === 'due' || undefined } // What: Row Due Active Attribute. Why: A reminder due today reads in the accent. How: This sets the presence-only attribute while rowStaStr is 'due'.
+						data-row-upcoming-active={ rowStaStr === 'notdue' || undefined } // What: Row Upcoming Active Attribute. Why: A reminder not due yet reads quieter. How: This sets the presence-only attribute while rowStaStr is 'notdue'.
+					>{ /* What: Reminder Row Div Element. Why: This is one task/reminder's own full row. How: This marks itself with data-row-done-active, data-row-due-active, or data-row-upcoming-active from rowStaStr. */ }
+
+
+						<InfTipCom
+							className={ cssModObj.remNamSpa }
+
+							data-element-name-hook='remNamSpa'
+
+							labTexStr={ tasRcdObj.name }
+							trnOnlBoo
+						>{ tasRcdObj.name }</InfTipCom>{ /* What: Info Tip Component. Why: A long reminder name can truncate in a narrow layout. How: This renders tasRcdObj's own name as a truncation-revealing InfTipCom. Its data-element-name-hook is read by help mode's Today catalog. */ }
+
+
+
+						<span
+							className={ cssModObj.remWheSpa }
+
+							data-element-name-hook='remWheSpa'
+						>{ wheSumStr }</span>{ /* What: Reminder When Span Element. Why: Every row shows its own plain schedule summary. How: This renders wheSumStr directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
+
+						<span
+							className={ cssModObj.remStaSpa }
+
+							data-element-name-hook='remStaSpa'
+						>{ /* What: Reminder Status Span Element. Why: The last column shows this row's own current status, differently per rowStaStr. How: This renders one of 4 status variants below, matched on rowStaStr. Its data-element-name-hook is read by help mode's Today catalog. */ }
+
+
+							{ rowStaStr === 'done' && ( // What: Done Status Visibility Check. Why: A done row shows its own check icon plus a Done pill. How: This renders only while rowStaStr is 'done'.
+
+
+								<React.Fragment>{ /* What: Done Status Fragment Element. Why: The check icon and its own Done pill are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
+
+
+									<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaDone } `}>{ /* What: Done Icon Span Element. Why: A done row's own status needs a recognizable check glyph before its pill. How: This renders IcoSetCom's own "check" shape. */ }
+
+
+										<IcoSetCom
+											className={ cssModObj.icoGlySvg }
+
+											icoKeyStr='cheEle'
+											strWidNum={ 3 }
+										/>{ /* What: Icon Set Component. Why: The status glyph matches the Day Log legend. How: This draws the cheEle shape. */ }
+
+
+									</span>
+
+									<span className={` ${ cssModObj.staPilSpa }   ${ cssModObj.staPilSpaDone } `}>Done</span>{ /* What: Done Pill Span Element. Why: The done row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Done". */ }
+
+
+								</React.Fragment>
+
+							) }
+
+
+
+							{ rowStaStr === 'due' && <span className={` ${ cssModObj.staPilSpa }   ${ cssModObj.staPilSpaDue } `}>Due today</span> }{ /* What: Due Status Visibility Check. Why: A due-today row shows a plain Due pill. How: This renders only while rowStaStr is 'due'. */ }
+
+
+
+							{ rowStaStr === 'skip' && ( // What: Skip Status Visibility Check. Why: A skipped row shows its own x icon plus a Skipped pill. How: This renders only while rowStaStr is 'skip'.
+
+
+								<React.Fragment>{ /* What: Skip Status Fragment Element. Why: The x icon and its own Skipped pill are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
+
+
+									<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaSkip } `}>{ /* What: Skip Icon Span Element. Why: A skipped row's own status needs a recognizable x glyph before its pill. How: This renders IcoSetCom's own "x" shape. */ }
+
+
+										<IcoSetCom
+											className={ cssModObj.icoGlySvg }
+
+											icoKeyStr='xEle'
+											strWidNum={ 2.6 }
+										/>{ /* What: Icon Set Component. Why: The status glyph matches the Day Log legend. How: This draws the xEle shape. */ }
+
+
+									</span>
+
+									<span className={` ${ cssModObj.staPilSpa }   ${ cssModObj.staPilSpaSkipped } `}>Skipped</span>{ /* What: Skip Pill Span Element. Why: The skipped row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Skipped". */ }
+
+
+								</React.Fragment>
+
+							) }
+
+
+
+							{ rowStaStr === 'notdue' && <span className={ cssModObj.notDueSpa }>{ dueLabStr }</span> }{ /* What: Not Due Status Visibility Check. Why: A not-yet-due row shows its own relative due label instead of a pill. How: This renders only while rowStaStr is 'notdue'. */ }
+
+
+						</span>
+
+
+					</div>
+
+
+				) ) }
+
+
+			</div>
+
+
+		</div>
+
+
+	);
+
+
+}
+
+// #endregion RemLogCom
 
 // #endregion Components
 
