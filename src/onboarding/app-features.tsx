@@ -1039,10 +1039,10 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 
 		let aliMouBoo = true; // What: Alive Mounted Boolean. Why: A resolved promise must not update state after this effect's own cleanup has already fired. How: This starts true, then this effect's own cleanup below flips it false.
 
-		const perProObj = Promise.resolve( navigator.storage && navigator.storage.persisted ? navigator.storage.persisted() : false ); // What: Persisted Promise Object. Why: A browser without the Storage API at all must resolve to false rather than throwing. How: This wraps navigator.storage.persisted() in a promise, or resolves false straight away when the API is missing.
+		const perStoPro = Promise.resolve( navigator.storage && navigator.storage.persisted ? navigator.storage.persisted() : false ); // What: Persisted Storage Promise. Why: A browser without the Storage API at all must resolve to false rather than throwing. How: This wraps navigator.storage.persisted() in a promise, or resolves false straight away when the API is missing.
 
 
-		perProObj.then( ( curValBoo ) => { if ( aliMouBoo ) setAlrProBoo( curValBoo ); } ); // What: Persisted Resolve Call. Why: The real persisted state is only known once the promise settles. How: This stores the resolved value in alrProBoo, unless this effect has already been cleaned up.
+		perStoPro.then( ( curValBoo ) => { if ( aliMouBoo ) setAlrProBoo( curValBoo ); } ); // What: Persisted Resolve Call. Why: The real persisted state is only known once the promise settles. How: This stores the resolved value in alrProBoo, unless this effect has already been cleaned up.
 
 
 

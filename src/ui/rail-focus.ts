@@ -66,15 +66,15 @@ import { scrBehFun } from '../utils/motion.ts'; // What: Scroll Behavior Functio
 const focScrFun = ( focEveObj : FocusEvent ) : void => { // What: Focus Scroll Function. Why: A pill focused at a rail's edge stayed half clipped. How: This scrolls a focused control inside a marked rail fully into view.
 
 
-	const tarEleObj = focEveObj.target instanceof Element ? focEveObj.target : null; // What: Target Element Object. Why: Only an element can be scrolled into view. How: This reads the focused element, or null for anything else.
+	const tarCurEle = focEveObj.target instanceof Element ? focEveObj.target : null; // What: Target Current Element. Why: Only an element can be scrolled into view. How: This reads the focused element, or null for anything else.
 
 
 
-	if ( !tarEleObj?.closest( '[data-rail-wheel-scroll]' ) ) return; // What: Outside Rail Guard. Why: Focus anywhere else is left to the browser. How: This returns unless the focused element sits inside a marked rail.
+	if ( !tarCurEle?.closest( '[data-rail-wheel-scroll]' ) ) return; // What: Outside Rail Guard. Why: Focus anywhere else is left to the browser. How: This returns unless the focused element sits inside a marked rail.
 
 
 
-	tarEleObj.scrollIntoView({ // What: Into View Call. Why: The focused pill has to be fully visible. How: This scrolls it to the nearest edge of its rail, jumping under reduced motion.
+	tarCurEle.scrollIntoView({ // What: Into View Call. Why: The focused pill has to be fully visible. How: This scrolls it to the nearest edge of its rail, jumping under reduced motion.
 
 
 		behavior : scrBehFun(), // What: Behavior. Why: The scroll should glide unless less motion was asked for. How: This jumps under reduced motion and glides otherwise.

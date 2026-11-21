@@ -75,19 +75,19 @@ function useModIneFun ( insEleRef : React.RefObject< HTMLElement | null >, isaOp
 
 		// #region Modal Root Lookup
 
-		let topEleObj : Element | null = insEleRef.current; // What: Top Element Object. Why: The siblings to make inert are those of the modal's own body-level node. How: This starts at the ref's element and climbs below.
+		let topCurEle : Element | null = insEleRef.current; // What: Top Current Element. Why: The siblings to make inert are those of the modal's own body-level node. How: This starts at the ref's element and climbs below.
 
 
 
-		while ( topEleObj && topEleObj.parentElement !== document.body ) topEleObj = topEleObj.parentElement; // What: Body Child Climb. Why: The portal's root is the ancestor sitting directly in the body. How: This climbs until the parent is the body, or runs out at null when the modal isn't in the body.
+		while ( topCurEle && topCurEle.parentElement !== document.body ) topCurEle = topCurEle.parentElement; // What: Body Child Climb. Why: The portal's root is the ancestor sitting directly in the body. How: This climbs until the parent is the body, or runs out at null when the modal isn't in the body.
 
 
 
-		if ( !topEleObj ) return; // What: Missing Modal Guard. Why: A modal that isn't mounted in the body has no siblings to make inert. How: This returns early.
+		if ( !topCurEle ) return; // What: Missing Modal Guard. Why: A modal that isn't mounted in the body has no siblings to make inert. How: This returns early.
 
 
 
-		const modTopEle = topEleObj; // What: Modal Top Element. Why: The filter below runs in a callback, which can't rely on the loop variable's narrowed type. How: This holds the found node.
+		const modTopEle = topCurEle; // What: Modal Top Element. Why: The filter below runs in a callback, which can't rely on the loop variable's narrowed type. How: This holds the found node.
 
 		// #endregion Modal Root Lookup
 

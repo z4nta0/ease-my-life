@@ -1247,14 +1247,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		setRmvIdeSet( ( curSetObj ) => new Set( [ ...curSetObj, entIdeStr ] ) ); // What: Removing ID Add. Why: The card needs to start its own collapse animation immediately. How: This adds entIdeStr into a fresh copy of rmvIdeSet.
+		setRmvIdeSet( ( curIdeSet ) => new Set( [ ...curIdeSet, entIdeStr ] ) ); // What: Removing ID Add. Why: The card needs to start its own collapse animation immediately. How: This adds entIdeStr into a fresh copy of rmvIdeSet.
 
 		setTimeout( () => { // What: Skip Settle Timeout. Why: The actual data removal must wait for the collapse animation to finish playing. How: This runs after skiAniNum, matching the CSS animation's own duration.
 
 
 			actStoObj.skiEntFun( entIdeStr ); // What: Skip Entry Call. Why: This is the actual removal, applied only once the animation has had time to play. How: This calls actStoObj.skiEntFun with entIdeStr.
 
-			setRmvIdeSet( ( curSetObj ) => new Set( [ ...curSetObj ].filter( ( setIdeStr ) => setIdeStr !== entIdeStr ) ) ); // What: Removing ID Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of rmvIdeSet.
+			setRmvIdeSet( ( curIdeSet ) => new Set( [ ...curIdeSet ].filter( ( setIdeStr ) => setIdeStr !== entIdeStr ) ) ); // What: Removing ID Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of rmvIdeSet.
 
 
 		}, skiAniNum ); // What: Skip Settle Delay. Why: The removal waits for the collapse animation. How: This waits skiAniNum, matching the animation's duration.
@@ -1306,14 +1306,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		setRmvIdeSet( ( curSetObj ) => new Set( [ ...curSetObj, entIdeStr ] ) ); // What: Removing ID Add. Why: The card needs to start its own collapse animation immediately. How: This adds entIdeStr into a fresh copy of rmvIdeSet.
+		setRmvIdeSet( ( curIdeSet ) => new Set( [ ...curIdeSet, entIdeStr ] ) ); // What: Removing ID Add. Why: The card needs to start its own collapse animation immediately. How: This adds entIdeStr into a fresh copy of rmvIdeSet.
 
 		setTimeout( () => { // What: Delete Settle Timeout. Why: The actual item removal must wait for the collapse animation to finish playing. How: This runs after skiAniNum, matching the CSS animation's own duration.
 
 
 			actStoObj.delIteFun( iteIdeStr ); // What: Remove Item Call. Why: This is the actual removal, applied only once the animation has had time to play. How: This calls actStoObj.delIteFun with iteIdeStr.
 
-			setRmvIdeSet( ( curSetObj ) => new Set( [ ...curSetObj ].filter( ( setIdeStr ) => setIdeStr !== entIdeStr ) ) ); // What: Removing ID Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of rmvIdeSet.
+			setRmvIdeSet( ( curIdeSet ) => new Set( [ ...curIdeSet ].filter( ( setIdeStr ) => setIdeStr !== entIdeStr ) ) ); // What: Removing ID Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of rmvIdeSet.
 
 
 		}, skiAniNum ); // What: Delete Settle Delay. Why: The removal waits for the collapse animation. How: This waits skiAniNum, matching the animation's duration.
@@ -1387,7 +1387,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		setRolIdeSet( ( curSetObj ) => new Set( [ ...curSetObj, entRcdObj.eid ] ) ); // What: Rolling ID Add. Why: The card needs to start its own flip animation immediately. How: This adds entRcdObj's own eid into a fresh copy of rolIdeSet.
+		setRolIdeSet( ( curIdeSet ) => new Set( [ ...curIdeSet, entRcdObj.eid ] ) ); // What: Rolling ID Add. Why: The card needs to start its own flip animation immediately. How: This adds entRcdObj's own eid into a fresh copy of rolIdeSet.
 
 		setTimeout( () => { // What: Flip Apex Timeout. Why: The pick happens at the midpoint of the flip (when the card is fully upside-down), so the new content rolls in continuing the same direction. How: This runs at half of rolAniNum, computing and staging the new pick.
 
@@ -1493,7 +1493,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		setTimeout( () => { // What: Flip End Timeout. Why: The rolling flag must clear once the flip's own full animation has actually finished, not just at its apex. How: This runs after the full rolAniNum, clearing entRcdObj's own eid from rolIdeSet.
 
 
-			setRolIdeSet( ( curSetObj ) => new Set( [ ...curSetObj ].filter( ( setIdeStr ) => setIdeStr !== entRcdObj.eid ) ) ); // What: Rolling ID Delete. Why: The flip has finished, so the rolling flag must clear. How: This removes entRcdObj's own eid from a fresh copy of rolIdeSet.
+			setRolIdeSet( ( curIdeSet ) => new Set( [ ...curIdeSet ].filter( ( setIdeStr ) => setIdeStr !== entRcdObj.eid ) ) ); // What: Rolling ID Delete. Why: The flip has finished, so the rolling flag must clear. How: This removes entRcdObj's own eid from a fresh copy of rolIdeSet.
 
 
 		}, rolAniNum ); // What: Flip End Delay. Why: The rolling flag clears once the whole flip finishes. How: This waits the full rolAniNum.
@@ -1590,7 +1590,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 		const secEntArr = Object.entries( secEleRef.current )                                         // What: Section Entry Array. Why: Sorting by actual document position keeps the first/last entries (used for the top default and the bottomed-out case) matching the real on-screen order, even after groups/Reminders have been reordered in Edit Mode. How: This collects every mounted section ref and sorts by offsetTop.
-			.filter( ( secEntTup ) : secEntTup is [ string, HTMLElement ] => !!secEntTup[ 1 ] )       // What: Mounted Section Filter. Why: A section that has unmounted leaves a null ref behind. How: This keeps only entries whose element still exists.
+			.filter( ( secPaiArr ) : secPaiArr is [ string, HTMLElement ] => !!secPaiArr[ 1 ] )       // What: Mounted Section Filter. Why: A section that has unmounted leaves a null ref behind. How: This keeps only entries whose element still exists.
 			.sort( ( entOneArr, entTwoArr ) => entOneArr[ 1 ].offsetTop - entTwoArr[ 1 ].offsetTop ); // What: Document Order Sort. Why: The spy walks sections top to bottom. How: This sorts entries by each element's own offsetTop.
 
 
