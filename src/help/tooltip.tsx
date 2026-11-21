@@ -86,9 +86,9 @@ function plaTipFun ( tarRecObj : HelRecTyp, tipWidNum : number, tipHeiNum : numb
 
 	// #region Viewport Limits
 
-	const vieWidNum = window.innerWidth;  // What: Viewport Width Number. Why: Every clamp below needs the current viewport's own width. How: This is read once from window.innerWidth and reused throughout.
-	const vieHeiNum = window.innerHeight; // What: Viewport Height Number. Why: Every clamp below needs the current viewport's own height. How: This is read once from window.innerHeight and reused throughout.
-	const edgMarNum = rhyPixFun( 'm02' ); // What: Edge Margin Number. Why: The tip should never sit flush against the very edge of the viewport. How: This is the fixed pixel margin every clamp below keeps clear. // Vertical Rhythm Base Minus 2 ~= 8.304px
+	const vieWidNum = window.innerWidth;  // What: Viewport Width Number. Why: The horizontal clamp below needs the current viewport's own width. How: This is read once from window.innerWidth and reused throughout.
+	const vieHeiNum = window.innerHeight; // What: Viewport Height Number. Why: The vertical placement below needs the current viewport's own height. How: This is read once from window.innerHeight and reused throughout.
+	const edgMarNum = rhyPixFun( 'm02' ); // What: Edge Margin Number. Why: The tip should keep a small margin from the edge of the viewport. How: This is the fixed pixel margin the tip's position and height limits below keep clear. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 	// #endregion Viewport Limits
 
@@ -141,15 +141,15 @@ function plaTipFun ( tarRecObj : HelRecTyp, tipWidNum : number, tipHeiNum : numb
 
 	// #region Horizontal Placement
 
-	const cenHorNum = tarRecObj.left + tarRecObj.width / 2;                                                            // What: Center Horizontal Number. Why: The tip's own arrow always centers on the target's own horizontal midpoint. How: This adds half the target's own width to its left edge.
-	const lefTipNum = Math.max( edgMarNum, Math.min( cenHorNum - tipWidNum / 2, vieWidNum - tipWidNum - edgMarNum ) ); // What: Left Tip Number. Why: The tip box itself must clamp within the viewport even while its arrow stays centered on cenHorNum. How: This centers the tip on cenHorNum, then clamps between the edge margin and the viewport's own right-edge margin.
+	const cenHorNum = tarRecObj.left + tarRecObj.width / 2;                                                            // What: Center Horizontal Number. Why: The tip's own arrow points at the target's own horizontal midpoint, as far as the tip's corners allow. How: This adds half the target's own width to its left edge.
+	const lefTipNum = Math.max( edgMarNum, Math.min( cenHorNum - tipWidNum / 2, vieWidNum - tipWidNum - edgMarNum ) ); // What: Left Tip Number. Why: The tip box itself must clamp within the viewport even while its arrow still points at cenHorNum. How: This centers the tip on cenHorNum, then clamps between the edge margin and the viewport's own right-edge margin.
 	const arrHorNum = Math.max( 18, Math.min( cenHorNum - lefTipNum, tipWidNum - 26 ) );                               // What: Arrow Horizontal Number. Why: The arrow's own horizontal offset inside the tip box must stay clear of the tip's own rounded corners. How: This computes the arrow's position relative to lefTipNum, clamped to a safe inset range.
 
 	// #endregion Horizontal Placement
 
 
 
-	return { arrHorNum, lefTipNum, maxHeiNum, tipClaStr, topTipNum }; // What: Placement Return. Why: The caller needs the tip's own final position, arrow direction/offset, and scroll cap all together. How: This builds the shape HelTipCom's own layout effect applies directly.
+	return { arrHorNum, lefTipNum, maxHeiNum, tipClaStr, topTipNum }; // What: Placement Return. Why: The tip's position, arrow direction and offset, and scroll cap are worked out together. How: This returns them as one object.
 
 
 }
@@ -175,7 +175,7 @@ type HtcProTyp = { tarRecObj : HelRecTyp, tipIteObj : HelIteTyp }; // What: Help
  * permanent hidden measurer since at most one of these ever exists at
  * a time. tipIteObj.mtwBoo (e.g. the nav tip, once it grew to 5
  * paragraphs) sizes the tip to tarRecObj.tipWidNum instead of the usual
- * fixed 280px, applied as an inline style so it already wins by the
+ * fixed width, applied as an inline style so it already wins by the
  * time offsetWidth first measures it. tipIteObj.scrBoo caps the tip
  * to whatever vertical room plaTipFun found and scrolls internally
  * past that instead of overflowing the viewport; it is applied to an
@@ -208,7 +208,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element 
 	const [ arrClaStr, setArrClaStr ] = React.useState( 'helTipDiv--up' );                    // What: Arrow Class String And Setter. Why: The tip's own arrow direction depends on whether it landed above or below the target. How: This starts pointing up (the "below target" case) and is written by the layout effect below.
 	const [ scrMaxNum, setScrMaxNum ] = React.useState< number | null >( null );              // What: Scroll Maximum Number And Setter. Why: A scrollable tip needs its own inner cap recomputed alongside its position. How: This starts null (uncapped) and is written by the layout effect below.
 
-	const widStyObj = tipIteObj.mtwBoo && tarRecObj.tipWidNum != null ? { width : tarRecObj.tipWidNum } : null; // What: Width Style Object. Why: Only a tip whose own catalog item opts in, AND whose target actually computed a tipWidNum, should override the usual fixed 280px. How: This reads tarRecObj.tipWidNum only under that combined condition, otherwise falls through to no override at all.
+	const widStyObj = tipIteObj.mtwBoo && tarRecObj.tipWidNum != null ? { width : tarRecObj.tipWidNum } : null; // What: Width Style Object. Why: Only a tip whose own catalog item opts in, AND whose target actually computed a tipWidNum, should override the usual fixed width. How: This reads tarRecObj.tipWidNum only under that combined condition, otherwise falls through to no override at all.
 
 
 	React.useLayoutEffect( () => { // What: Placement Effect. Why: The tip's own position, arrow direction, and scroll cap must all be recomputed whenever the target it is anchored to changes. How: This measures the mounted tip element and runs plaTipFun against tarRecObj.
@@ -223,7 +223,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element 
 
 
 
-		const { arrHorNum, lefTipNum, maxHeiNum, tipClaStr, topTipNum } = plaTipFun( tarRecObj, tipCurEle.offsetWidth, tipCurEle.offsetHeight ); // What: Arrow Horizontal Number. Why: The arrow points at the target from wherever the tip lands. How: This reads its offset from plaTipFun, called with the tip's own real measured size. // What: Left Tip Number. Why: The tip's horizontal position for this render. How: This reads it from plaTipFun. // What: Maximum Height Number. Why: A tip taller than the room left scrolls instead. How: This reads its cap from plaTipFun. // What: Tip Class String. Why: The tip's side decides its arrow's look. How: This reads the class plaTipFun picks. // What: Top Tip Number. Why: The tip's vertical position for this render. How: This reads it from plaTipFun.
+		const { arrHorNum, lefTipNum, maxHeiNum, tipClaStr, topTipNum } = plaTipFun( tarRecObj, tipCurEle.offsetWidth, tipCurEle.offsetHeight ); // What: Arrow Horizontal Number. Why: The arrow points at the target from wherever the tip lands. How: This reads its offset from plaTipFun, called with the tip's own real measured size. // What: Left Tip Number. Why: The tip's horizontal position for this render. How: This reads it from plaTipFun. // What: Maximum Height Number. Why: A scrollable tip taller than the room left scrolls instead. How: This reads its cap from plaTipFun. // What: Tip Class String. Why: The tip's side decides its arrow's look. How: This reads the class plaTipFun picks. // What: Top Tip Number. Why: The tip's vertical position for this render. How: This reads it from plaTipFun.
 
 		// #endregion Tip Measurement
 
@@ -272,7 +272,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element 
 			data-element-name-hook='helTipDiv coaCarDiv'
 
 			role='tooltip'
-		>{ /* What: Container Help Tip Div Element. Why: This is HelTipCom's own root rendered element, positioned via tipStyObj/widStyObj and pointed via arrClaStr. How: This wraps the inner scroll-capped content below. Its data-element-name-hook is read by help mode's own outside-click check and the tour runner's own outside-click checks. */ }
+		>{ /* What: Help Tip Div Element. Why: This is HelTipCom's own root rendered element, positioned via tipStyObj/widStyObj and pointed via arrClaStr. How: This wraps the inner scroll-capped content below. Its data-element-name-hook is read by help mode's own outside-click check and the tour runner's own outside-click checks. */ }
 
 
 			<div style={ innStyObj }>{ /* What: Inner Scroll Div Element. Why: The scroll cap must live on an inner wrapper so it never clips the outer box's own arrow. How: This applies innStyObj only while this item is scrollable and a cap has been computed. */ }
@@ -302,7 +302,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element 
 
 // #region Exports
 
-export { HelTipCom }; // What: Named Export. Why: HelOveCom renders the tip for whichever badge is open. How: This exports HelTipCom by name; plaTipFun stays private to this file.
+export { HelTipCom }; // What: Named Export. Why: HelTipCom is this file's public component. How: This exports HelTipCom by name; plaTipFun stays private to this file.
 
 // #endregion Exports
 

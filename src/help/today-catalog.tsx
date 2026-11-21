@@ -40,7 +40,7 @@ import type { HelIteTyp } from './catalog-item.ts'; // What: Help Item Type. Why
 
 // #region Constants
 
-const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the on-demand help catalog for the Today tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-today.tsx and passed to HelOveCom as its own helIteArr prop, prepended there with the shared nav/rail items every page gets.
+const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the on-demand help catalog for the Today tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is the item list help mode reads for the Today tab.
 
 
 	// #region Today Header
@@ -100,7 +100,7 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 
 
 		ideStr    : 'editMode',
-		padXcoNum : 4, // padXcoNum: 4 exists because fooEdiBut sits right next to genLisBut (Regenerate) with only a 10px gap between them, and the default 8px pad on each side would overlap by 6px.
+		padXcoNum : 4, // padXcoNum: 4 exists because fooEdiBut sits right next to genLisBut (Regenerate) with only an 11px gap between them, and the default 8px pad on each side would overlap by 5px.
 		selStr    : '[data-element-name-hook~="ediRaiBut"], [data-element-name-hook~="fooEdiBut"]',
 
 		titStr : () => document.querySelector( '[data-element-name-hook~="ediRaiBut"]' )?.hasAttribute( 'data-edit-mode-active' ) ? 'Done Button' : 'Edit Mode', // title/body are functions (see help/tooltip.tsx's HelTipCom for this pattern, e.g. the Charge Controls items) because ediRaiBut is the SAME button throughout, relabeled "Done" once Edit Mode is on rather than being swapped for a different element, so a static "Edit Mode" tip would otherwise keep showing even after the button (and its real behavior) had already become Done; fooEdiBut only ever matches while NOT editing (it unmounts entirely once editMode is true, see the editModeFootActions item below for what replaces it), so reading ediRaiBut's own data-edit-mode-active attribute here correctly reflects either case regardless of which of the two elements actually got matched.
@@ -172,7 +172,7 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 		bodEle    : <>While Edit Mode is on, drag this handle to change this group's position in your todo list.</>,
 		ideStr    : 'groupGrip',
 		mulBoo    : true,
-		padXcoNum : 1, // padXcoNum: 1 exists because groGriSpa and groNamBut sit only 4px apart in practice (the negative margin on groGriSpa eats into heaLefDiv's own 10px gap); the default 8px pad on each side, and even editMode's own padXcoNum:4 fix above, both still overlap here, so 1px each side leaves 2px of real clearance instead.
+		padXcoNum : 1, // padXcoNum: 1 exists because groGriSpa and groNamBut sit only about 5px apart in practice (the negative margin on groNamBut eats into heaLefDiv's own 11px gap); the default 8px pad on each side, and even editMode's own padXcoNum:4 fix above, both still overlap here, so 1px each side leaves about 3px of real clearance instead.
 		selStr    : '[data-element-name-hook~="groGriSpa"]',
 		titStr    : 'Reorder Group'
 
@@ -252,10 +252,10 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 			<>{ /* What: Body Fragment. Why: This tip's own body groups several lines as one element. How: This wraps them without adding a wrapper element to the tip. */ }
 
 
-				<div className={ cssModObj.butIteDiv }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+				<div className={ cssModObj.butIteDiv }>{ /* What: Button Item Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
 
 
-					<div className={ cssModObj.butLabDiv }><IcoSvgCom className={ cssModObj.butLabSvg } icoNamStr='refEle' sizSteStr='bas' /><b>Re-Roll:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
+					<div className={ cssModObj.butLabDiv }><IcoSvgCom className={ cssModObj.butLabSvg } icoNamStr='refEle' sizSteStr='bas' /><b>Re-Roll:</b></div>{ /* What: Button Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
 
 					<p>This button swaps this item for a different one from the same picker, without waiting for the next generation.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
@@ -263,10 +263,10 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 				</div>
 
 
-				<div className={ cssModObj.butIteDiv }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+				<div className={ cssModObj.butIteDiv }>{ /* What: Button Item Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
 
 
-					<div className={ cssModObj.butLabDiv }><IcoSvgCom className={ cssModObj.butLabSvg } icoNamStr='skiEle' sizSteStr='bas' /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
+					<div className={ cssModObj.butLabDiv }><IcoSvgCom className={ cssModObj.butLabSvg } icoNamStr='skiEle' sizSteStr='bas' /><b>Skip:</b></div>{ /* What: Button Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
 
 					<p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
@@ -274,10 +274,10 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 				</div>
 
 
-				<div className={ cssModObj.butIteDiv }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+				<div className={ cssModObj.butIteDiv }>{ /* What: Button Item Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
 
 
-					<div className={ cssModObj.butLabDiv }><IcoSvgCom className={ cssModObj.butLabSvg } icoNamStr='ediEle' sizSteStr='bas' /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
+					<div className={ cssModObj.butLabDiv }><IcoSvgCom className={ cssModObj.butLabSvg } icoNamStr='ediEle' sizSteStr='bas' /><b>Edit:</b></div>{ /* What: Button Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
 
 					<p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
@@ -307,10 +307,10 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 			<>{ /* What: Body Fragment. Why: This tip's own body groups several lines as one element. How: This wraps them without adding a wrapper element to the tip. */ }
 
 
-				<div className={ cssModObj.butIteDiv }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+				<div className={ cssModObj.butIteDiv }>{ /* What: Button Item Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
 
 
-					<div className={ cssModObj.butLabDiv }><IcoSvgCom className={ cssModObj.butLabSvg } icoNamStr='skiEle' sizSteStr='bas' /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
+					<div className={ cssModObj.butLabDiv }><IcoSvgCom className={ cssModObj.butLabSvg } icoNamStr='skiEle' sizSteStr='bas' /><b>Skip:</b></div>{ /* What: Button Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
 
 					<p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
@@ -318,10 +318,10 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 				</div>
 
 
-				<div className={ cssModObj.butIteDiv }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+				<div className={ cssModObj.butIteDiv }>{ /* What: Button Item Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
 
 
-					<div className={ cssModObj.butLabDiv }><IcoSvgCom className={ cssModObj.butLabSvg } icoNamStr='ediEle' sizSteStr='bas' /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
+					<div className={ cssModObj.butLabDiv }><IcoSvgCom className={ cssModObj.butLabSvg } icoNamStr='ediEle' sizSteStr='bas' /><b>Edit:</b></div>{ /* What: Button Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
 
 					<p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
@@ -614,7 +614,7 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 
 	},
 
-	{ // What: Reminder Schedule Help Item. Why: This is the on-demand help tip for the Reminder Schedule element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // inlEdiDiv is shared markup used by THREE different editors: the Add Reminder quick-add form, an existing reminder's own editor (this item), AND a picker item's EntEdiCom (tab-today.tsx). The picker-item case is excluded via :not(.entEdiDiv) (its root carries that extra class), but :not(.remAddDiv *) is ALSO required: remAddDiv merely WRAPS its own inlEdiDiv, it doesn't stop the bare :not(.entEdiDiv) check from still matching that inner element too, which produced two overlapping "Reminder Schedule" badges at once whenever the Add Reminder form was open (found via live testing, addReminderRepeat's own comment above claiming this was "already covered, doesn't conflict" was wrong).
+	{ // What: Reminder Schedule Help Item. Why: This is the on-demand help tip for the Reminder Schedule element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // inlEdiDiv is shared markup used by the Add Reminder quick-add form and by an existing reminder's own editor (this item). :not([data-element-name-hook~="remAddDiv"] *) excludes the quick-add form, since remAddDiv wraps its own inlEdiDiv and would otherwise show a second "Reminder Schedule" badge whenever that form is open.
 
 
 		ideStr : 'editReminderRepeat',
@@ -647,7 +647,7 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 
 	},
 
-	{ // What: Delete / Cancel / Save Help Item. Why: This is the on-demand help tip for the Delete / Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // BUG FIXED HERE: this used to be the unscoped '.rd-edit-foot .btn', which, since .rd-edit-foot is the SAME class a picker item's own EntEdiCom footer uses, was ALSO matching that footer on the Today tab, showing this reminder-specific copy ("this reminder...") on a picker item's Delete/Cancel/Save instead of itemFoot's own "this item..." copy just below. inlEdiDiv:not(.entEdiDiv) (see editReminderRepeat's own comment) properly scopes this to an actual reminder's editor. selStr targets .ediFooDiv (the shared wrapper), not the plain footer alone, Delete's own confirm prompt swaps in a DIFFERENT sibling class (.ediFooDiv--confirm), which a selector scoped to the plain footer would miss entirely: no dim-mask hole, AND the click-guard would treat its Cancel/Delete buttons as off-target and block them, making the confirmation genuinely unreachable while help mode is on, this was wrongly assumed harmless ("gracefully has nothing to highlight") until the user found it actually blocks the click too, not just the highlight. // :not(.remAddDiv *) is also needed since the Add Reminder quickadd form (Today only) uses this exact same inlEdiDiv > ediFooDiv structure for its own Cancel/Add buttons (no plain/confirm footer distinction there, since a brand-new draft has nothing to delete yet); widening from the plain footer to the shared .ediFooDiv wrapper (see the comment above) would otherwise ALSO match those, duplicating this badge the same way editReminderRepeat's own selector once did.
+	{ // What: Delete / Cancel / Save Help Item. Why: This is the on-demand help tip for the Delete / Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // selStr targets the ediFooDiv hook (the shared wrapper), not the plain footer alone: Delete's confirm prompt swaps in a different footer (with the .ediFooDiv--confirm modifier), which a selector scoped to the plain footer would miss, leaving no dim-mask hole and letting the click-guard block its Cancel/Delete buttons while help mode is on. // :not([data-element-name-hook~="remAddDiv"] *) excludes the Add Reminder quick-add form, which uses the same inlEdiDiv > ediFooDiv structure for its own Cancel/Add buttons, so widening to the shared wrapper would otherwise duplicate this badge.
 
 
 		ideStr : 'editReminderFoot',
@@ -931,7 +931,7 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 
 // #region Exports
 
-export { TOD_HEL_ARR }; // What: Named Export. Why: The Today tab renders its own help toggle and hands help mode this catalog. How: This exports the catalog by name.
+export { TOD_HEL_ARR }; // What: Named Export. Why: This catalog is the file's one public binding. How: This exports the catalog by name.
 
 // #endregion Exports
 

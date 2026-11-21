@@ -40,7 +40,7 @@ import type { HelIteTyp } from './catalog-item.ts'; // What: Help Item Type. Why
 
 // #region Constants
 
-const SET_HEL_ARR : HelIteTyp[] = [ // What: Settings Help Array. Why: This is the on-demand help catalog for the Settings tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-settings.tsx and passed to HelOveCom as its own helIteArr prop.
+const SET_HEL_ARR : HelIteTyp[] = [ // What: Settings Help Array. Why: This is the on-demand help catalog for the Settings tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is the item list help mode reads for the Settings tab.
 
 
 	// #region Settings Header
@@ -56,12 +56,12 @@ const SET_HEL_ARR : HelIteTyp[] = [ // What: Settings Help Array. Why: This is t
 
 	},
 
-	{ // What: Sections Navigation Help Item. Why: This is the on-demand help tip for the Sections Navigation element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Section rail, on mobile this collapses into a horizontal sticky pill bar pinned above the sections (see setRaiAsi's own @container rule in tab-settings.module.css); on desktop it's a vertical sidebar. One combined highlight over the whole rail rather than per-button, matching the nav bar's own precedent.
+	{ // What: Sections Navigation Help Item. Why: This is the on-demand help tip for the Sections Navigation element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Section rail, at 760px and below this collapses into a horizontal sticky pill bar pinned above the sections (see setRaiAsi's own @container rule in tab-settings.module.css); above 760px it's a vertical sidebar. One combined highlight over the whole rail rather than per-button, matching the nav bar's own precedent.
 
 
 		bodEle    : <>This will let you jump straight to any section of the Settings page. On mobile devices, this will stay pinned to the top of the page no matter how far down you have scrolled.</>,
 		ideStr    : 'settingsRail',
-		padYcoNum : 0, // padYcoNum:0, on narrow viewports this is sticky (position:sticky; top:0) with its own opaque background; the default pad extended the mask cutout past the rail's own real bottom edge, revealing whatever page content had scrolled underneath it in that gap (nothing there covers it, the dim overlay sits above the rail's own z-index:18, and the cutout hole doesn't care that the rail's own box doesn't reach that far).
+		padYcoNum : 0, // padYcoNum:0, on narrow viewports this is sticky (position:sticky; top:0) with its own opaque background; the default pad extended the mask cutout past the rail's own real bottom edge, revealing whatever page content had scrolled underneath it in that gap (nothing there covers it, the dim overlay sits above the rail's own z-index:11, and the cutout hole doesn't care that the rail's own box doesn't reach that far).
 		selStr    : '[data-element-name-hook~="setRaiAsi"]',
 		titStr    : 'Sections Navigation'
 
@@ -432,7 +432,7 @@ const SET_HEL_ARR : HelIteTyp[] = [ // What: Settings Help Array. Why: This is t
 
 // #region Exports
 
-export { SET_HEL_ARR }; // What: Named Export. Why: The Settings tab renders its own help toggle and hands help mode this catalog. How: This exports the catalog by name.
+export { SET_HEL_ARR }; // What: Named Export. Why: This catalog is the file's one public binding. How: This exports the catalog by name.
 
 // #endregion Exports
 
