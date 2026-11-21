@@ -6,7 +6,7 @@
 import cssModObj from './item-card.module.css'; // What: CSS Module Object. Why: The item card, its name row, and its editor slot are styled from their own module. How: This maps each class name in item-card.module.css to its hashed module class.
 
 
-import { EntEdiCom } from '../../ui/entry-editor.tsx'; // What: Entry Editor Component. Why: Adding or editing a pool item reuses the exact same weight/ease editor the Today tab uses. How: This is rendered once below the card's name row.
+import { EntEdiCom } from '../../ui/entry-editor.tsx'; // What: Entry Editor Component. Why: Adding or editing a pool item reuses the shared item editor. How: This is rendered once below the card's name row.
 
 
 import type { IteRcdTyp } from '../../core/data-model.ts'; // What: Item Record Type. Why: The card edits one pool item. How: This types IccProTyp's item, pool, and patches.
@@ -121,11 +121,11 @@ function IteCarCom ( { ediKeyStr, iteCloBoo, iteDatObj, namInpRef, namValStr, on
 			<div
 				className={ cssModObj.lisRowDiv }
 
-				onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() }
+				onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() } // What: Stop Propagation Click Handler. Why: A click in the name row must not reach the pool wrap around it. How: This calls stopPropagation on the click event.
 			>{ /* What: List Row Div Element. Why: A click inside the name row must not bubble up to whatever the pool wrap itself listens for. How: This stops propagation on every click. */ }
 
 
-				<span className={ cssModObj.rowMaiSpa }>{ /* What: Row Main Span Element. Why: The name input needs the same wrapper the closed row's name uses. How: This wraps the input below. */ }
+				<span className={ cssModObj.rowMaiSpa }>{ /* What: Row Main Span Element. Why: The name input sits in a span that takes the row's remaining width. How: This wraps the input below. */ }
 
 
 					<input
@@ -154,7 +154,7 @@ function IteCarCom ( { ediKeyStr, iteCloBoo, iteDatObj, namInpRef, namValStr, on
 
 						} ) }
 						onChange={ ( chaEveObj ) => onNamChaFun( chaEveObj.target.value ) }
-						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
+						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Handler. Why: Pressing Enter should finish editing the name. How: This blurs the input when the key is Enter, which runs the blur commit where one is set.
 					/>{ /* What: Row Name Input Element. Why: This is the actual live-typed name field for the item being added or edited. How: This reports every change through onNamChaFun and blurs itself on Enter. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
@@ -176,7 +176,7 @@ function IteCarCom ( { ediKeyStr, iteCloBoo, iteDatObj, namInpRef, namValStr, on
 					onCanEdiFun={ onCanEdiFun }
 					onPatIteFun={ onPatIteFun }
 					onSavEdiFun={ onSavEdiFun }
-				/>{ /* What: Entry Editor Component. Why: Adding or editing a pool item reuses the exact item editor Today and Data use. How: This is passed the item, its picker and pool, and the cancel, patch, and save handlers. */ }{ /* What: No-Ondelete Design Note. Why: EntEdiCom's own footer Delete button is already hidden by the lisIteDiv rule (its --ent-del-dis : none). How: Deleting an item stays solely the pool row's own trash icon + confirm flow, one delete affordance per item instead of two that could disagree with each other, so no onDelIteFun prop is passed. */ }{ /* What: Editor Key Design Note. Why: Without a key keyed to the item's id, switching straight from one item's editor to another can commit in a single React batch with no intervening null render, so this would stay the SAME EntEdiCom instance across the switch, carrying its own delete-confirm state over to the next item. How: The key above, ediKeyStr, forces React to unmount the old instance and mount a fresh one whenever the id changes, even within one commit. */ }
+				/>{ /* What: Entry Editor Component. Why: Adding or editing a pool item reuses the shared item editor. How: This is passed the item, its picker and pool, and the cancel, patch, and save handlers. */ }{ /* What: No-Ondelete Design Note. Why: EntEdiCom's own footer Delete button is already hidden by the lisIteDiv rule (its --ent-del-dis : none). How: Deleting an item stays solely the pool row's own trash icon + confirm flow, one delete affordance per item instead of two that could disagree with each other, so no onDelIteFun prop is passed. */ }{ /* What: Editor Key Design Note. Why: Without a key keyed to the item's id, switching straight from one item's editor to another can commit in a single React batch with no intervening null render, so this would stay the SAME EntEdiCom instance across the switch, carrying its own delete-confirm state over to the next item. How: The key above, ediKeyStr, forces React to unmount the old instance and mount a fresh one whenever the id changes, even within one commit. */ }
 
 
 			</div>

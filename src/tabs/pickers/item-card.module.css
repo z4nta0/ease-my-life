@@ -19,7 +19,7 @@
 
 /* #region lisIteDiv */
 
-.lisIteDiv { /* What: List Item Div. Why: A new or edited item opens as its own card reusing the item editor, which drops its rows' top border and margin here since the name row already divides it, and a brand-new item's Delete is redundant. How: This draws a rounded bordered card that springs in, and sets the --ent-* properties the editor reads. */
+.lisIteDiv { /* What: List Item Div. Why: A new or edited item opens as its own card reusing the item editor, which drops its rows' top border and margin here since the name row already divides it, and the pool row already has its own Delete. How: This draws a rounded bordered card that springs in, and sets the --ent-* properties the editor reads. */
 
 
 	--ent-del-dis : none;
@@ -152,7 +152,7 @@
 
 }
 
-.rowNamInp { /* What: Row Name Input. Why: The name is edited in place, styled like a name. How: This draws a borderless field with only an underline. */
+.rowNamInp { /* What: Row Name Input. Why: The name is edited in place, styled like a name. How: This draws a borderless field with only an underline, and eases the underline's color change on focus. */
 
 
 	background     : transparent;
