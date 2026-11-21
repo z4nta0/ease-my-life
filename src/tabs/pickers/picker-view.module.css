@@ -193,7 +193,7 @@
 @container appRooDiv ( max-width : 560px ) { /* What: Narrow Stage Number Div. Why: A narrow app needs a smaller figure. How: This applies only when the app matches ( max-width : 560px ). */
 
 
-	.staNumDiv { /* What: Smaller Stage Number Div. Why: The figure has less room. How: This drops it one step, to the extra large 4 font size. */
+	.staNumDiv { /* What: Smaller Stage Number Div. Why: The figure has less room. How: This drops it one step, to Font Size Base Plus 5. */
 
 
 		font-size : var( --fon-siz-p05 ); /* Font Size Base Plus 5 ~= 44.876px */
@@ -372,7 +372,7 @@
 .picActDiv .picDonBut,
 .picActDiv .picSenBut,
 .picActDiv .picRerBut,
-.picActDiv .picOneBut { /* What: Picker Action, Send, Re-Roll, And Pick One Buttons In Picker Actions Div. Why: The buttons rise in, staggered by their inline delay, when a pick resolves. How: This plays the action entrance. */
+.picActDiv .picOneBut { /* What: Picker Done, Send, Re-Roll, And Pick One Buttons In Picker Actions Div. Why: The buttons rise in, staggered by their inline delay, when a pick resolves. How: This plays the action entrance. */
 
 
 	animation : picActButEnterFadeIn var( --dur-ani-p01 ) var( --mot-ove-eas ) backwards; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */ /* What: Backwards Fill. Why: A fill that held the last frame would hold the button's transform and keep its press from showing. How: The button holds the first frame while its inline delay runs, and its own styles, which match the last frame, take over once it ends. */
@@ -397,7 +397,7 @@
 .picDonBut[data-tour-disabled-active],
 .picSenBut[data-tour-disabled-active],
 .picRerBut[data-tour-disabled-active],
-.picOneBut[data-tour-disabled-active] { /* What: Tour-Disabled Picker Action, Send, Re-Roll, And Pick One Buttons. Why: While the tour asks for Send to Today, Re-Roll and Done must look and act unavailable, since a disabled button alone looks no different. How: This dims them and stops them taking the pointer. */
+.picOneBut[data-tour-disabled-active] { /* What: Tour-Disabled Picker Done, Send, Re-Roll, And Pick One Buttons. Why: While the tour asks for Send to Today, Re-Roll and Done must look and act unavailable, since a disabled button alone looks no different. How: This dims them and stops them taking the pointer. */
 
 
 	cursor         : default;
@@ -406,7 +406,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Picker Action, Send, Re-Roll, And Pick One Buttons In Picker Actions Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Picker Done, Send, Re-Roll, And Pick One Buttons In Picker Actions Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.picActDiv .picDonBut,
@@ -414,7 +414,7 @@
 	.picActDiv .picRerBut,
 	.picActDiv .picOneBut,
 	.picActDiv .picDonBut--leaving,
-	.picActDiv .picRerBut--leaving { /* What: Instant Picker Action, Send, Re-Roll, And Pick One Buttons In Picker Actions Div. Why: The buttons should arrive and leave at once. How: This shortens both animations to .01ms. */
+	.picActDiv .picRerBut--leaving { /* What: Instant Picker Done, Send, Re-Roll, And Pick One Buttons In Picker Actions Div. Why: The buttons should arrive and leave at once. How: This shortens both animations to .01ms. */
 
 
 		animation-duration : .01ms;
@@ -518,7 +518,7 @@
 .senLabSpa--fade { /* What: Send Label Span Fade. Why: The label fades in each time its text changes. How: This plays the shared fade whenever its keyed span remounts. */
 
 
-	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live label, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with other live labels, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -572,7 +572,7 @@
 
 /* #region pooHeaDiv */
 
-.pooHeaDiv { /* What: Pool Header Div. Why: The pool's count and its reset link sit on one line at opposite ends. How: This spreads them across a centered row. */
+.pooHeaDiv { /* What: Pool Header Div. Why: The pool's count and its drift toggle sit on one line at opposite ends. How: This spreads them across a centered row. */
 
 
 	align-items     : center;
@@ -582,7 +582,7 @@
 
 }
 
-.driTogBut { /* What: Drift Toggle Button. Why: Resetting the pool is a quiet text action. How: This sets an uppercase mono label beside its icon that darkens on hover, easing its hover color, and eases its press and focus ring. */
+.driTogBut { /* What: Drift Toggle Button. Why: Showing or hiding each row's drift is a quiet text action. How: This sets an uppercase mono label beside its icon that darkens on hover, easing its hover color, and eases its press and focus ring. */
 
 
 	align-items    : center;
@@ -597,7 +597,7 @@
 
 
 }
-.driTogBut:hover { /* What: Hovered Drift Toggle Button. Why: The link should respond to the pointer. How: This darkens it. */
+.driTogBut:hover { /* What: Hovered Drift Toggle Button. Why: The toggle should respond to the pointer. How: This darkens it. */
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
@@ -786,7 +786,7 @@
 
 
 	align-items     : center;
-	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with other editor footers, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display         : flex;
 	flex-wrap       : wrap;
 	gap             : var( --spa-ver-m01 ) var( --spa-hor-m01 );                                 /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
@@ -797,7 +797,7 @@
 .delConDiv--leaving { /* What: Delete Confirm Div Leaving. Why: A cancelled confirm slides back out. How: This plays the shared swap-out while it carries its leaving class. */
 
 
-	animation : global( footerSwapFadeOut ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with the Settings reset confirm, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( footerSwapFadeOut ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with other confirm rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -816,7 +816,7 @@
 
 }
 
-.delMesSpa { /* What: Delete Message Span. Why: The question reads as body text, the item's name in bold. How: This sets it with balanced wrapping. */
+.delMesSpa { /* What: Delete Message Span. Why: The question reads as body text, the item's name in bold. How: This sets it at the body text size with pretty wrapping. */
 
 
 	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
@@ -841,7 +841,7 @@
 
 /* #region pooNamDiv */
 
-.pooNamDiv { /* What: Pool Name Div. Why: The name and its status pill share the row's flexible column, which must be allowed to shrink or a long word pushes the buttons off the row on a narrow phone. How: This lines them up in a row that can shrink, and sizes the pill to a fixed, centered 80px so every row's pill lines up in one column. */
+.pooNamDiv { /* What: Pool Name Div. Why: The name and its status pill share the row's flexible column, which must be allowed to shrink or a long word pushes the buttons off the row on a narrow phone. How: This lines them up in a row that can shrink, and sizes the pill to a fixed, centered width so the pills line up in one column. */
 
 
 	--pil-tag-fle : 0 0 calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
@@ -1073,7 +1073,7 @@
 
 
 }
-.pooSenBut:active { /* What: Pressed Pool Send Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.pooSenBut:active { /* What: Pressed Pool Send Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -1177,7 +1177,7 @@
 
 
 }
-.pooEdiBut:active { /* What: Pressed Pool Edit Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.pooEdiBut:active { /* What: Pressed Pool Edit Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -1238,7 +1238,7 @@
 
 
 }
-.pooDelBut:active { /* What: Pressed Pool Delete Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.pooDelBut:active { /* What: Pressed Pool Delete Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -1310,7 +1310,7 @@
 
 
 }
-.iteAddBut:active { /* What: Pressed Item Add Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.iteAddBut:active { /* What: Pressed Item Add Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */

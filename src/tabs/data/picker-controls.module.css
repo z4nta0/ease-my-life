@@ -111,7 +111,7 @@
 
 
 }
-.conGroDiv--basics .conSubDiv { /* What: Controls Subhead Div In Controls Group Div Basics. Why: The group's heading sits inset over its full-bleed rows. How: This pads it base horizontal spacing at the sides and extra small 1 vertical spacing below. */
+.conGroDiv--basics .conSubDiv { /* What: Controls Subhead Div In Controls Group Div Basics. Why: The group's heading sits inset over its full-bleed rows. How: This pads it base horizontal spacing at the sides and base minus 2 vertical spacing below. */
 
 
 	padding : 0 var( --spa-hor-bas ) var( --spa-ver-m02 ); /* Spacing Horizontal Base ~= 14.572px, Spacing Vertical Base Minus 2 ~= 8.304px */
@@ -185,7 +185,7 @@
 
 }
 
-.basNamInp { /* What: Basics Name Input. Why: The picker is renamed in place in a field that takes the row's width. How: This draws a rounded outlined field that borders in the accent on focus. */
+.basNamInp { /* What: Basics Name Input. Why: The picker is renamed in place in a field that takes the row's width. How: This draws a rounded outlined field that eases its border to the accent on focus. */
 
 
 	background    : var( --bac-sur-col );                                   /* Background Surface Color = oklch( 0.975 0.004 240 ) */
@@ -255,8 +255,8 @@
 
 
 		--fad-edg-off : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the rail. How: --fad-lef-off and --fad-rig-off start from it. */
-		--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.ts zeroes it via data-scroll-start-active. */
-		--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.ts zeroes it via data-scroll-end-active. */
+		--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and the data-scroll-start-active rule below zeroes it. */
+		--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and the data-scroll-end-active rule below zeroes it. */
 
 		-webkit-mask-image : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
 		flex-wrap          : nowrap;
@@ -393,7 +393,7 @@
 
 
 }
-.groPilBut:active { /* What: Pressed Group Pill Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.groPilBut:active { /* What: Pressed Group Pill Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -1023,7 +1023,7 @@
 .setSubSpa--fade { /* What: Setting Sub Span Fade. Why: An explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
 
 
-	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with other live explanation lines, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -1096,7 +1096,7 @@
 
 
 }
-.togSwiBut:active { /* What: Pressed Toggle Switch Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.togSwiBut:active { /* What: Pressed Toggle Switch Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -1163,8 +1163,8 @@
 
 
 	--fad-edg-off : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the rail. How: --fad-lef-off and --fad-rig-off start from it. */
-	--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.ts zeroes it via data-scroll-start-active. */
-	--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.ts zeroes it via data-scroll-end-active. */
+	--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and the data-scroll-start-active rule below zeroes it. */
+	--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and the data-scroll-end-active rule below zeroes it. */
 
 	-webkit-mask-image : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
 	display            : flex;
@@ -1470,7 +1470,7 @@
 
 
 	align-items     : center;
-	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with other editor footers, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display         : flex;
 	flex-direction  : row;
 	gap             : var( --spa-hor-bas );                                                      /* Spacing Horizontal Base ~= 14.572px */
@@ -1526,7 +1526,7 @@
 
 
 	align-items     : center;
-	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with other editor footers, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display         : flex;
 	justify-content : space-between;
 	width           : 100%;
