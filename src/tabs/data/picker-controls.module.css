@@ -246,7 +246,7 @@
 
 
 }
-@container app ( max-width : 640px ) { /* What: Narrow Group Row. Why: On a narrow app the group pills scroll sideways instead of wrapping. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Group Row. Why: On a narrow app the group pills scroll sideways instead of wrapping. How: This applies only when the app is 640px wide or less. */
 
 
 	.groPilDiv { /* What: Scrolling Group Pill Div. Why: The pills stay on one line and scroll, with their edges faded as a cue. How: This stops wrapping, hides the scrollbar, and masks each end. */
@@ -438,7 +438,7 @@
 
 
 }
-@container app ( max-width : 640px ) { /* What: Narrow Group Row. Why: On a narrow app the group pills scroll sideways instead of wrapping. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Group Row. Why: On a narrow app the group pills scroll sideways instead of wrapping. How: This applies only when the app is 640px wide or less. */
 
 
 	.groNewSpa { /* What: Unshrinking Group New Span. Why: In the scrolling rail the control keeps its size. How: This stops it shrinking. */

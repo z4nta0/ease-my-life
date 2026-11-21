@@ -92,7 +92,7 @@
 
 
 }
-@container app ( max-width : 640px ) { /* What: Narrow Header Lead. Why: On a narrow screen the mark and title sit closer. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Header Lead. Why: On a narrow screen the mark and title sit closer. How: This applies only when the app is 640px wide or less. */
 
 
 	.heaLeaDiv { /* What: Tighter Header Lead Div. Why: The row has less room. How: This tightens its gap. */
@@ -139,7 +139,7 @@
 
 
 }
-@container app ( max-width : 640px ) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the app is 640px wide or less. */
 
 
 	.braMarBut { /* What: Smaller Brand Mark Button. Why: The title needs the room. How: This shrinks the mark one rhythm step, to p05. */
@@ -217,7 +217,7 @@
 
 
 }
-@container app ( max-width : 560px ) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
+@container appRooDiv ( max-width : 560px ) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
 
 
 	.pagTitHea { /* What: Smaller Page Title Heading. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
@@ -322,7 +322,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Settings Layout. Why: On a narrow app the rail sits above the sections. How: This applies only when the app matches ( max-width : 760px ). */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Settings Layout. Why: On a narrow app the rail sits above the sections. How: This applies only when the app matches ( max-width : 760px ). */
 
 
 	.setGriDiv { /* What: Stacked Settings Grid Div. Why: The rail becomes a bar above the sections. How: This drops to one column with a smaller gap. */
@@ -359,7 +359,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Section Rail. Why: On a narrow app the rail becomes a sticky pill bar above the sections. How: This applies only when the app matches ( max-width : 760px ). */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Section Rail. Why: On a narrow app the rail becomes a sticky pill bar above the sections. How: This applies only when the app matches ( max-width : 760px ). */
 
 
 	.setRaiAsi { /* What: Pill Settings Rail Aside. Why: The bar stays pinned over the sections without clipping its own edge fades. How: This sticks it to the top on an opaque background, with overflow visible and min-width 0 so it neither turns into a second scroll container nor stretches past its grid track. */
@@ -436,7 +436,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Rail Kicker. Why: The pill row has no room for a heading. How: This applies only when the app matches ( max-width : 760px ). */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Rail Kicker. Why: The pill row has no room for a heading. How: This applies only when the app matches ( max-width : 760px ). */
 
 
 	.raiKicDiv { /* What: Hidden Rail Kicker Div. Why: The pill row has no room for a heading. How: This hides it. */
@@ -454,7 +454,7 @@
 
 /* #region raiScrDiv */
 
-@container app ( max-width : 760px ) { /* What: Narrow Rail Scroller. Why: On a narrow app the pill row scrolls sideways inside the sticky rail. How: This applies only when the app matches ( max-width : 760px ). */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Rail Scroller. Why: On a narrow app the pill row scrolls sideways inside the sticky rail. How: This applies only when the app matches ( max-width : 760px ). */
 
 
 	.raiScrDiv { /* What: Scrolling Rail Scroll Div. Why: The pills scroll inside this wrapper rather than the rail itself, so the rail's fades and background stay pinned. How: This scrolls horizontally with its scrollbar hidden. */
@@ -490,7 +490,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Rail List. Why: On a narrow app the buttons run across in one scrolling row. How: This applies only when the app matches ( max-width : 760px ). */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Rail List. Why: On a narrow app the buttons run across in one scrolling row. How: This applies only when the app matches ( max-width : 760px ). */
 
 
 	.raiLisUno { /* What: Pill Row Rail List Unordered. Why: The pills sit in one line as wide as they need, so the wrapper can scroll them. How: This lays them out in an unwrapped row sized to its content. */
@@ -553,7 +553,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Rail Button. Why: On a narrow app the rail is a row of pills. How: This applies only when the app matches ( max-width : 760px ). */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Rail Button. Why: On a narrow app the rail is a row of pills. How: This applies only when the app matches ( max-width : 760px ). */
 
 
 	.raiSecBut { /* What: Pill Rail Section Button. Why: In the narrow pill row each section is an outlined pill. How: This turns the button into a compact bordered pill that never shrinks or wraps. */
@@ -776,7 +776,7 @@
 
 
 }
-@container app ( max-width : 500px ) { /* What: Narrow Stacking Settings Row. Why: A row with a wide control squeezes its text into a narrow column on a phone. How: This applies only when the app is 500px wide or less. */
+@container appRooDiv ( max-width : 500px ) { /* What: Narrow Stacking Settings Row. Why: A row with a wide control squeezes its text into a narrow column on a phone. How: This applies only when the app is 500px wide or less. */
 
 
 	.setRowDiv--stack { /* What: Stacked Settings Row Div. Why: The text should get the row's full width, with the control underneath. How: This stacks the text above the control, keeping the control at its natural width on the left. */
@@ -875,7 +875,7 @@
 
 
 }
-@container app ( max-width : 500px ) { /* What: Narrow Stacked Layout Description. Why: Once its row stacks, the description no longer shares its line with the control. How: This applies only when the app is 500px wide or less. */
+@container appRooDiv ( max-width : 500px ) { /* What: Narrow Stacked Layout Description. Why: Once its row stacks, the description no longer shares its line with the control. How: This applies only when the app is 500px wide or less. */
 
 
 	.setRowDiv--stack .setSubSpa--layout { /* What: Full Width Layout Description. Why: The stacked description can use the row's full width. How: This lifts the 190px cap. */

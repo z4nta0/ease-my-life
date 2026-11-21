@@ -53,7 +53,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.todPagHed { /* What: Trimmed Today Header. Why: The narrow header needs less padding. How: This tightens its padding. */
@@ -139,7 +139,7 @@
 
 
 }
-@container app ( max-width : 440px ) { /* What: Very Narrow Kicker. Why: On a very narrow app the time drops under the date. How: This applies only when the app is 440px wide or less. */
+@container appRooDiv ( max-width : 440px ) { /* What: Very Narrow Kicker. Why: On a very narrow app the time drops under the date. How: This applies only when the app is 440px wide or less. */
 
 
 	.kicTimSpa { /* What: Stacked Kicker Time. Why: The time needs its own line. How: This makes it a centered block without its divider. */
@@ -417,7 +417,7 @@
 
 
 }
-@container app ( max-width : 640px ) { /* What: Narrow Header Lead. Why: On a narrow screen the row sits tighter. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Header Lead. Why: On a narrow screen the row sits tighter. How: This applies only when the app is 640px wide or less. */
 
 
 	.heaLeaDiv { /* What: Tighter Header Lead. Why: The row has less room. How: This tightens its gap. */
@@ -514,7 +514,7 @@
 
 
 }
-@container app ( max-width : 560px ) { /* What: Narrow Today Title. Why: A narrow app needs a smaller heading. How: This applies only when the app is 560px wide or less. */
+@container appRooDiv ( max-width : 560px ) { /* What: Narrow Today Title. Why: A narrow app needs a smaller heading. How: This applies only when the app is 560px wide or less. */
 
 
 	.todTitHea { /* What: Smaller Today Title. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
@@ -1148,7 +1148,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.todBodDiv { /* What: Flush Today Body. Why: The narrow pill row's own padding already spaces it from the header. How: This drops the top padding. */
@@ -1322,7 +1322,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.todLayDiv { /* What: Stacked Today Layout. Why: The rail becomes a row above the list. How: This collapses the grid to one column. */
@@ -1362,7 +1362,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.groRaiAsi { /* What: Group Pill Row. Why: The rail becomes a frosted, sticky pill row under the header that scrolls sideways, its edges faded as a cue. How: This turns it into a full-bleed scrolling row with a blurred translucent background and a gradient mask on each end. */
@@ -1419,7 +1419,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.raiKicDiv { /* What: Hidden Rail Kicker. Why: The pill row has no room for a heading. How: This hides it. */
@@ -1446,7 +1446,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.raiLisUno { /* What: Rail Pill List. Why: The pills sit in one row as wide as they need. How: This lays them out in a row at its content width. */
@@ -1509,7 +1509,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.raiGroBut { /* What: Rail Pill. Why: In the narrow pill row each group is an outlined pill. How: This turns the button into a compact bordered pill that never shrinks or wraps. */
@@ -1608,7 +1608,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.raiEdiDiv { /* What: Hidden Rail Edit Mode Block. Why: The pill row has no room for it, so the footer button takes over. How: This hides it. */
@@ -1819,7 +1819,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.groDraDiv > .todGroSec:not( :first-child ) { /* What: Tighter Following Group Section. Why: The narrow list needs less room above each divider. How: This trims the space to large vertical spacing. */
@@ -2252,7 +2252,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.fooEdiBut { /* What: Shown Footer Edit Mode Button. Why: The narrow pill row has no room for Edit Mode, so the footer takes over. How: This sets --but-bas-dis back to inline-flex. */

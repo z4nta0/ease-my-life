@@ -47,7 +47,7 @@
 
 
 }
-@container app ( max-width : 760px ) { /* What: Narrow Reminders Section. Why: On a narrow screen the sections sit closer. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Reminders Section. Why: On a narrow screen the sections sit closer. How: This applies only when the app is 760px wide or less. */
 
 
 	.todGroSec:not( :first-child ) { /* What: Tighter Following Reminders Section. Why: The divider needs less room. How: This shrinks the padding above the section. */

@@ -190,7 +190,7 @@
 
 
 }
-@container app ( max-width : 560px ) { /* What: Narrow Stage Count. Why: A narrow app needs a smaller figure. How: This applies only when the app matches ( max-width : 560px ). */
+@container appRooDiv ( max-width : 560px ) { /* What: Narrow Stage Count. Why: A narrow app needs a smaller figure. How: This applies only when the app matches ( max-width : 560px ). */
 
 
 	.staNumDiv { /* What: Smaller Stage Number Div. Why: The figure has less room. How: This drops it one step, to the extra large 4 font size. */
@@ -648,7 +648,7 @@
 
 
 }
-@container app ( max-width : 440px ) { /* What: Narrow Pool Row. Why: A very narrow app needs tighter columns. How: This applies only when the app matches ( max-width : 440px ). */
+@container appRooDiv ( max-width : 440px ) { /* What: Narrow Pool Row. Why: A very narrow app needs tighter columns. How: This applies only when the app matches ( max-width : 440px ). */
 
 
 	.pooRowDiv { /* What: Tight Pool Row Div. Why: The columns need the room. How: This tightens the gap. */
@@ -846,7 +846,7 @@
 
 
 }
-@container app ( max-width : 640px ) { /* What: Narrow Pool Item Name. Why: On a narrow row the pill drops under the name instead of competing with it for width. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Pool Item Name. Why: On a narrow row the pill drops under the name instead of competing with it for width. How: This applies only when the app is 640px wide or less. */
 
 
 	.pooNamDiv { /* What: Wrapped Pool Name Div. Why: Once wrapped, the pill has nothing to line up with, and its text should sit flush under the name. How: This wraps the row, lets the pill size to its text from the left, and pulls it left by its own side padding to cancel it. */
@@ -873,7 +873,7 @@
 
 
 }
-@container app ( max-width : 640px ) { /* What: Narrow Pool Item Name Text. Why: The name claims the whole first line so the pill wraps below it. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Pool Item Name Text. Why: The name claims the whole first line so the pill wraps below it. How: This applies only when the app is 640px wide or less. */
 
 
 	.iteNamSpa { /* What: Full-Width Item Name Span. Why: The pill belongs on its own line. How: This makes the name take the full row. */
@@ -926,7 +926,7 @@
 
 
 }
-@container app ( max-width : 640px ) { /* What: Narrow Pool Item Progress. Why: On a phone the full width leaves too little room for the name. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Pool Item Progress. Why: On a phone the full width leaves too little room for the name. How: This applies only when the app is 640px wide or less. */
 
 
 	.pooProSpa { /* What: Narrower Pool Progress Span. Why: The name needs the room. How: This lowers the minimum by one rhythm step. */

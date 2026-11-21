@@ -454,7 +454,7 @@
 
 
 }
-@container app ( max-width : 500px ) { /* What: Narrow Block Header. Why: A narrow app gives the summary column less room. How: This applies only when the app is 500px wide or less. */
+@container appRooDiv ( max-width : 500px ) { /* What: Narrow Block Header. Why: A narrow app gives the summary column less room. How: This applies only when the app is 500px wide or less. */
 
 
 	.bloHeaBut,
@@ -632,7 +632,7 @@
 
 
 }
-@container app ( max-width : 440px ) { /* What: Very Narrow Block Summary. Why: On a very narrow app the wrapped summary reads better centered. How: This applies only when the app is 440px wide or less. */
+@container appRooDiv ( max-width : 440px ) { /* What: Very Narrow Block Summary. Why: On a very narrow app the wrapped summary reads better centered. How: This applies only when the app is 440px wide or less. */
 
 
 	.bloSumSpa { /* What: Centered Block Summary. Why: The wrapped lines center under each other. How: This centers its text. */
@@ -767,7 +767,7 @@
 
 
 }
-@container app ( max-width : 560px ) { /* What: Narrow Log Table. Why: At 560px and below the value columns tighten. How: This applies only when the app is 560px wide or less. */
+@container appRooDiv ( max-width : 560px ) { /* What: Narrow Log Table. Why: At 560px and below the value columns tighten. How: This applies only when the app is 560px wide or less. */
 
 
 	.tabHeaDiv,
@@ -783,7 +783,7 @@
 
 
 }
-@container app ( max-width : 500px ) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
+@container appRooDiv ( max-width : 500px ) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
 
 
 	.tabHeaDiv,
@@ -811,7 +811,7 @@
 
 
 }
-@container app ( max-width : 500px ) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
+@container appRooDiv ( max-width : 500px ) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
 
 
 	.logConDiv .tabHeaDiv { /* What: Conditionals Table Header. Why: The Conditionals header keeps room for its Triggered pills. How: This narrows the three value columns so the wider status column still fits. */
@@ -944,7 +944,7 @@
 
 
 }
-@container app ( max-width : 500px ) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
+@container appRooDiv ( max-width : 500px ) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
 
 
 	.conRowDiv { /* What: Tightest Conditional Row. Why: The row keeps room for its Triggered pill. How: This narrows the three value columns so the wider status column still fits. */
@@ -1012,7 +1012,7 @@
 
 
 }
-@container app ( min-width : 761px ) and ( max-width : 880px ) { /* What: Mid-Width Log. Why: Just above the 760px layout switch, the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is in that range. */
+@container appRooDiv ( min-width : 761px ) and ( max-width : 880px ) { /* What: Mid-Width Log. Why: Just above the 760px layout switch, the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is in that range. */
 
 
 	.conRowDiv .namRowSpa { /* What: Wrapped Conditional Name Row. Why: The name and its mode pill stack instead of squeezing. How: This lets the row wrap with a tighter gap. */
@@ -1035,7 +1035,7 @@
 
 
 }
-@container app ( max-width : 640px ) { /* What: Narrow Log. Why: At 640px and below the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Log. Why: At 640px and below the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is 640px wide or less. */
 
 
 	.conRowDiv .namRowSpa { /* What: Wrapped Conditional Name Row. Why: The name and its mode pill stack instead of squeezing. How: This lets the row wrap with a tighter gap. */
@@ -1082,7 +1082,7 @@
 
 
 }
-@container app ( min-width : 761px ) and ( max-width : 880px ) { /* What: Mid-Width Log. Why: Just above the 760px layout switch, the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is in that range. */
+@container appRooDiv ( min-width : 761px ) and ( max-width : 880px ) { /* What: Mid-Width Log. Why: Just above the 760px layout switch, the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is in that range. */
 
 
 	.conRowDiv .conModSpa { /* What: Wrapped Conditional Mode Pill. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at a rhythm step, nudged left to align. */
@@ -1099,7 +1099,7 @@
 
 
 }
-@container app ( max-width : 640px ) { /* What: Narrow Log. Why: At 640px and below the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Log. Why: At 640px and below the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is 640px wide or less. */
 
 
 	.conRowDiv .conModSpa { /* What: Wrapped Conditional Mode Pill. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at a rhythm step, nudged left to align. */
@@ -1287,7 +1287,7 @@
 
 
 }
-@container app ( max-width : 500px ) { /* What: Very Narrow Untriggered Status Pill. Why: At 500px and below "Not Triggered" on one line is wider than the status column and spills over the After value. How: This applies only when the app is 500px wide or less. */
+@container appRooDiv ( max-width : 500px ) { /* What: Very Narrow Untriggered Status Pill. Why: At 500px and below "Not Triggered" on one line is wider than the status column and spills over the After value. How: This applies only when the app is 500px wide or less. */
 
 
 	.staPilSpa--untriggered { /* What: Wrapped Untriggered Status Pill. Why: The whole status should stay readable inside its column. How: This wraps the text onto two centered lines and lets the pill grow to fit, never shorter than its one-line height. */
@@ -1422,7 +1422,7 @@
 
 
 }
-@container app ( max-width : 560px ) { /* What: Narrow Log Table. Why: At 560px and below the value columns tighten. How: This applies only when the app is 560px wide or less. */
+@container appRooDiv ( max-width : 560px ) { /* What: Narrow Log Table. Why: At 560px and below the value columns tighten. How: This applies only when the app is 560px wide or less. */
 
 
 	.remHeaDiv,

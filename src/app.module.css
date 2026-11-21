@@ -6,15 +6,15 @@
  *
  * @summary
  * Styles for the app shell: AppRooCom's full-height root, which is also the
- * "app" size container every @container query in the app measures, the skip
- * link that slides in on focus, the scrolling main area, and TabBarCom's
- * navigation bar in its three placements. At the bottom it's a floating pill
- * of tab buttons; at the side it's a rail with the Ease My Life wordmark,
- * which becomes an off-canvas drawer with a pull handle and scrim on a narrow
- * screen; at the top it's a bar with the wordmark and tabs on one line. A
- * single indicator pill slides behind the active tab. When the placement
- * changes, a ghost copy of the old bar exits toward its edge while the real
- * one enters from its new edge.
+ * size container every @container query in the app measures (named appRooDiv,
+ * after its class), the skip link that slides in on focus, the scrolling main
+ * area, and TabBarCom's navigation bar in its three placements. At the bottom
+ * it's a floating pill of tab buttons; at the side it's a rail with the Ease
+ * My Life wordmark, which becomes an off-canvas drawer with a pull handle and
+ * scrim on a narrow screen; at the top it's a bar with the wordmark and tabs
+ * on one line. A single indicator pill slides behind the active tab. When the
+ * placement changes, a ghost copy of the old bar exits toward its edge while
+ * the real one enters from its new edge.
  *
  * The main area reads data-tab-today-active, set while the Today tab shows,
  * since Today runs edge to edge.
@@ -27,10 +27,10 @@
 
 /* #region appRooDiv */
 
-.appRooDiv { /* What: App Root. Why: The app fills the viewport, and its width drives every container query in the app. How: This makes it a full-height flex column that clips overflow and names it the "app" inline-size container. */
+.appRooDiv { /* What: App Root. Why: The app fills the viewport, and its width drives every container query in the app. How: This makes it a full-height flex column that clips overflow and names it the appRooDiv inline-size container, after its own class. */
 
 
-	container      : app / inline-size;
+	container      : appRooDiv / inline-size;
 	display        : flex;
 	flex-direction : column;
 	height         : 100dvh;
@@ -233,7 +233,7 @@
 
 
 }
-@container app ( min-width : 720px ) { /* What: Wide Bottom Tab Bar. Why: On a wide screen the pill floats well clear of the bottom edge. How: This applies only when the app is at least 720px wide. */
+@container appRooDiv ( min-width : 720px ) { /* What: Wide Bottom Tab Bar. Why: On a wide screen the pill floats well clear of the bottom edge. How: This applies only when the app is at least 720px wide. */
 
 
 	.appTabNav--bottom { /* What: Floating Bottom Tab Bar. Why: A wide screen has room to lift the pill off the edge. How: This sets it the p01 vertical spacing step above the bottom edge. */
@@ -246,7 +246,7 @@
 
 
 }
-@container app ( max-width : 719.98px ) { /* What: Narrow Bottom Tab Bar. Why: On a small screen the pill has to fit the phone and clear its home indicator. How: This applies only when the app is narrower than 720px. */
+@container appRooDiv ( max-width : 719.98px ) { /* What: Narrow Bottom Tab Bar. Why: On a small screen the pill has to fit the phone and clear its home indicator. How: This applies only when the app is narrower than 720px. */
 
 
 	.appTabNav--bottom { /* What: Floating Narrow Bottom Tab Bar. Why: The pill must fit a phone and clear its home indicator. How: This sets it just above the safe area and caps its width to the screen. */
@@ -275,7 +275,7 @@
 
 
 }
-@container app ( max-width : 720px ) { /* What: Narrow Side Tab Bar. Why: On a small screen the side rail becomes an off-canvas drawer overlaying the content instead of taking its width. How: This applies only when the app is 720px wide or less. */
+@container appRooDiv ( max-width : 720px ) { /* What: Narrow Side Tab Bar. Why: On a small screen the side rail becomes an off-canvas drawer overlaying the content instead of taking its width. How: This applies only when the app is 720px wide or less. */
 
 
 	.appTabNav--side { /* What: Drawer Side Tab Bar. Why: The rail should sit off the left edge until its handle opens it. How: This fixes the rail to the left edge, translated fully off screen, sliding when it opens. */
@@ -546,7 +546,7 @@
 
 
 }
-@container app ( max-width : 720px ) { /* What: Narrow Top Tab Bar Brand. Why: On a small screen the top bar must fit on one line. How: This applies only when the app is 720px wide or less. */
+@container appRooDiv ( max-width : 720px ) { /* What: Narrow Top Tab Bar Brand. Why: On a small screen the top bar must fit on one line. How: This applies only when the app is 720px wide or less. */
 
 
 	.appTabNav--top .tabBraBut { /* What: Tight Top Tab Bar Brand. Why: The brand should give the icon-only tabs more room. How: This tightens its divider spacing. */
@@ -584,7 +584,7 @@
 
 
 }
-@container app ( max-width : 500px ) { /* What: Narrowest Top Wordmark. Why: On the narrowest screens the top bar keeps only the mark so five tabs still fit. How: This applies only when the app is 500px wide or less. */
+@container appRooDiv ( max-width : 500px ) { /* What: Narrowest Top Wordmark. Why: On the narrowest screens the top bar keeps only the mark so five tabs still fit. How: This applies only when the app is 500px wide or less. */
 
 
 	.appTabNav--top .braWorSpa { /* What: Mark-Only Top Wordmark. Why: With the text gone, the gap is empty space. How: This drops the gap. */
@@ -640,7 +640,7 @@
 
 
 }
-@container app ( max-width : 500px ) { /* What: Narrowest Top Wordmark Lines. Why: On the narrowest screens the top bar keeps only the mark. How: This applies only when the app is 500px wide or less. */
+@container appRooDiv ( max-width : 500px ) { /* What: Narrowest Top Wordmark Lines. Why: On the narrowest screens the top bar keeps only the mark. How: This applies only when the app is 500px wide or less. */
 
 
 	.appTabNav--top .braWorSpa .worLinSpa { /* What: Hidden Top Wordmark Lines. Why: Five tabs and the brand must fit on one line. How: This hides the text. */
@@ -728,7 +728,7 @@
 
 
 }
-@container app ( min-width : 720px ) { /* What: Wide Bottom Tab Button. Why: In the floating wide pill, tabs sit as compact rounded pills with the icon beside the label. How: This applies only when the app is at least 720px wide. */
+@container appRooDiv ( min-width : 720px ) { /* What: Wide Bottom Tab Button. Why: In the floating wide pill, tabs sit as compact rounded pills with the icon beside the label. How: This applies only when the app is at least 720px wide. */
 
 
 	.appTabNav--bottom .navTabBut { /* What: Pill Bottom Tab Button. Why: Each tab sizes to its icon and label. How: This sets the large text, the label gap, its side padding, and the p03 rhythm height. */
@@ -744,7 +744,7 @@
 
 
 }
-@container app ( max-width : 719.98px ) { /* What: Narrow Bottom Tab Button. Why: In the floating narrow pill, tabs are icon-only pills. How: This applies only when the app is narrower than 720px. */
+@container appRooDiv ( max-width : 719.98px ) { /* What: Narrow Bottom Tab Button. Why: In the floating narrow pill, tabs are icon-only pills. How: This applies only when the app is narrower than 720px. */
 
 
 	.appTabNav--bottom .navTabBut { /* What: Icon Pill Bottom Tab Button. Why: Each tab is a roomy icon-only pill. How: This drops the label gap and sets roomy side padding and the p04 touch-target height. */
@@ -759,7 +759,7 @@
 
 
 }
-@container app ( max-width : 440px ) { /* What: Narrowest Bottom Tab Button. Why: Below about 430px, five buttons at their full side padding overflow the pill's rounded edges. How: This applies only when the app is 440px wide or less. */
+@container appRooDiv ( max-width : 440px ) { /* What: Narrowest Bottom Tab Button. Why: Below about 430px, five buttons at their full side padding overflow the pill's rounded edges. How: This applies only when the app is 440px wide or less. */
 
 
 	.appTabNav--bottom .navTabBut { /* What: Tight Bottom Tab Button. Why: Every button should stay inside the pill down to the narrowest phones. How: This trims the side padding to the p01 step. */
@@ -818,7 +818,7 @@
 
 
 }
-@container app ( max-width : 720px ) { /* What: Narrow Top Tab Button. Why: On a small screen the top bar keeps everything on one line with icon-only tabs. How: This applies only when the app is 720px wide or less. */
+@container appRooDiv ( max-width : 720px ) { /* What: Narrow Top Tab Button. Why: On a small screen the top bar keeps everything on one line with icon-only tabs. How: This applies only when the app is 720px wide or less. */
 
 
 	.appTabNav--top .navTabBut { /* What: Icon Top Tab Button. Why: With the label gone the tab only needs room for its icon. How: This tightens its padding and drops the gap. */
@@ -853,7 +853,7 @@
 
 }
 
-@container app ( max-width : 719.98px ) { /* What: Narrow Bottom Tab Label. Why: The narrow pill is icon-only. How: This applies only when the app is narrower than 720px. */
+@container appRooDiv ( max-width : 719.98px ) { /* What: Narrow Bottom Tab Label. Why: The narrow pill is icon-only. How: This applies only when the app is narrower than 720px. */
 
 
 	.appTabNav--bottom .navTabBut .tabLabSpa { /* What: Hidden Bottom Tab Label. Why: Five labels don't fit a phone-width pill. How: This hides the label. */
@@ -866,7 +866,7 @@
 
 
 }
-@container app ( max-width : 720px ) { /* What: Narrow Top Tab Label. Why: The narrow top bar is icon-only. How: This applies only when the app is 720px wide or less. */
+@container appRooDiv ( max-width : 720px ) { /* What: Narrow Top Tab Label. Why: The narrow top bar is icon-only. How: This applies only when the app is 720px wide or less. */
 
 
 	.appTabNav--top .navTabBut .tabLabSpa { /* What: Hidden Top Tab Label. Why: The brand and five labels don't fit on one line. How: This hides the label. */
@@ -924,7 +924,7 @@
 
 
 }
-@container app ( max-width : 720px ) { /* What: Narrow Rail Pull Handle. Why: The handle only exists while the rail is a drawer. How: This applies only when the app is 720px wide or less. */
+@container appRooDiv ( max-width : 720px ) { /* What: Narrow Rail Pull Handle. Why: The handle only exists while the rail is a drawer. How: This applies only when the app is 720px wide or less. */
 
 
 	.appTabNav--side .raiHanBut { /* What: Shown Rail Pull Handle. Why: The drawer needs its handle. How: This shows it. */
@@ -953,7 +953,7 @@
 
 
 }
-@container app ( max-width : 720px ) { /* What: Narrow Rail Scrim. Why: The scrim only belongs to the drawer rail. How: This applies only when the app is 720px wide or less. */
+@container appRooDiv ( max-width : 720px ) { /* What: Narrow Rail Scrim. Why: The scrim only belongs to the drawer rail. How: This applies only when the app is 720px wide or less. */
 
 
 	.appRooDiv[data-placement='side'] .raiScrDiv { /* What: Shown Rail Scrim. Why: With the side placement as a drawer, an open rail dims the content. How: This shows the scrim. */
@@ -1010,7 +1010,7 @@
 
 
 }
-@container app ( min-width : 720px ) { /* What: Wide Bottom Placement Main Area. Why: The floating wide pill sits higher, so the content needs more room to clear it. How: This applies only when the app is at least 720px wide. */
+@container appRooDiv ( min-width : 720px ) { /* What: Wide Bottom Placement Main Area. Why: The floating wide pill sits higher, so the content needs more room to clear it. How: This applies only when the app is at least 720px wide. */
 
 
 	.appRooDiv[data-placement='bottom'] .appConMai { /* What: Clear Wide Pill Main Area. Why: The last content should scroll clear of the pill. How: This deepens the bottom padding. */
@@ -1023,7 +1023,7 @@
 
 
 }
-@container app ( max-width : 719.98px ) { /* What: Narrow Bottom Placement Main Area. Why: The narrow pill floats above the home indicator. How: This applies only when the app is narrower than 720px. */
+@container appRooDiv ( max-width : 719.98px ) { /* What: Narrow Bottom Placement Main Area. Why: The narrow pill floats above the home indicator. How: This applies only when the app is narrower than 720px. */
 
 
 	.appRooDiv[data-placement='bottom'] .appConMai { /* What: Clear Narrow Pill Main Area. Why: The last content should scroll clear of the pill and the safe area. How: This pads the bottom by the pill plus the safe area. */
@@ -1036,7 +1036,7 @@
 
 
 }
-@container app ( min-width : 880px ) { /* What: Widest Bottom Placement Main Area. Why: On a wide screen the content can take more side padding. How: This applies only when the app is at least 880px wide. */
+@container appRooDiv ( min-width : 880px ) { /* What: Widest Bottom Placement Main Area. Why: On a wide screen the content can take more side padding. How: This applies only when the app is at least 880px wide. */
 
 
 	.appRooDiv[data-placement='bottom'] .appConMai { /* What: Roomy Main Area. Why: Wider screens read better with more margin. How: This widens the side padding and keeps room to clear the pill. */
@@ -1051,7 +1051,7 @@
 
 
 }
-@container app ( max-width : 720px ) { /* What: Narrow Side Placement Main Area. Why: With the rail as an overlay drawer, the content takes the full width again. How: This applies only when the app is 720px wide or less. */
+@container appRooDiv ( max-width : 720px ) { /* What: Narrow Side Placement Main Area. Why: With the rail as an overlay drawer, the content takes the full width again. How: This applies only when the app is 720px wide or less. */
 
 
 	.appRooDiv[data-placement='side'] .appConMai { /* What: Full-Width Main Area. Why: The content no longer shares the row with the rail. How: This returns to the standard side padding. */
