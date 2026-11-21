@@ -19,8 +19,7 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduced Motion Function
  *
  * @summary
  * The dynamic-mode Boost value and its Reset lever: clicking Reset commits the
- * value to 0 and animates the shown number ticking down to zero. Picker items
- * and conditionals both use it.
+ * value to 0 and animates the shown number ticking down to zero.
  *
  * Sections:
  *  - Components
@@ -44,8 +43,7 @@ type BrcProTyp = { booValNum : number, onResBooFun : () => void, sufTexStr? : st
  * @summary
  * The dynamic-mode "+N" Boost value plus its Reset lever. Clicking
  * Reset commits the value to 0 (via onResBooFun) AND animates the shown
- * number ticking down to zero. Used by picker items (tab-today's
- * EntEdiCom) and conditionals.
+ * number ticking down to zero.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -158,14 +156,14 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } : BrcProTyp ) : 
 	return (
 
 
-		<React.Fragment>{ /* What: Boost Reset Fragment Element. Why: The booValNum span and reset button are true siblings with no shared wrapper element of their own. How: This groups the two below without adding an extra DOM node. */ }
+		<React.Fragment>{ /* What: Boost Reset Fragment. Why: The booValNum span and reset button are true siblings with no shared wrapper element of their own. How: This groups the two below without adding an extra DOM node. */ }
 
 
 			<span
 				className={ cssModObj.booValSpa }
 
 				data-element-name-hook='booValSpa'
-			>+{ disValNum }{ sufTexStr }</span>{ /* What: Boost Value Span Element. Why: This shows the current (possibly mid-animation) boost number. How: This renders a literal "+" followed by disValNum and the caller's own sufTexStr. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+			>+{ disValNum }{ sufTexStr }</span>{ /* What: Boost Value Span Element. Why: This shows the current (possibly mid-animation) boost number. How: This renders a literal "+" followed by disValNum and the caller's own sufTexStr. Its data-element-name-hook is read by help mode's catalogs. */ }
 
 			<button
 				className={ cssModObj.booResBut }
@@ -175,7 +173,7 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } : BrcProTyp ) : 
 				aria-label='Reset boost to zero'
 
 				onClick={ runResFun }
-			>Reset</button>{ /* What: Reset Button Element. Why: This is the actual lever that commits the boost back to 0. How: This is disabled while already at 0, otherwise runs runResFun on click. */ }
+			>Reset</button>{ /* What: Boost Reset Button Element. Why: This is the actual lever that commits the boost back to 0. How: This is disabled while already at 0, otherwise runs runResFun on click. */ }
 
 
 		</React.Fragment>
@@ -194,7 +192,7 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } : BrcProTyp ) : 
 
 // #region Exports
 
-export { BooResCom }; // What: Named Export. Why: The item editor and the conditional controls both show this boost control. How: This exports BooResCom by name.
+export { BooResCom }; // What: Named Export. Why: Other files show this boost control. How: This exports BooResCom by name.
 
 // #endregion Exports
 

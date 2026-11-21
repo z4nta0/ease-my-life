@@ -5,8 +5,8 @@
  * card-surface.module.css = Card Surface Module
  *
  * @summary
- * Styles for CarSurCom's shared surface: the rounded, bordered panel every tab
- * builds its cards on, plus the padded variant most of them use.
+ * Styles for CarSurCom's shared surface: the rounded, bordered panel cards are
+ * built on, plus the padded variant most of them use.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -14,7 +14,7 @@
 
 
 
-.carSurDiv { /* What: Card Surface Div. Why: Every tab's panels share one surface look. How: This gives the panel the surface color, a hairline border, and the large corner radius. */
+.carSurDiv { /* What: Card Surface Div. Why: Cards share one surface look. How: This gives the panel the surface color, a hairline border, and the large corner radius. */
 
 
 	background    : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */

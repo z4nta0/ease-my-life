@@ -93,7 +93,7 @@ function ButBasCom ( { children, className = '', icoClaStr, icoNamStr, kinValStr
 			className={` ${ cssModObj.butBasBut }   ${ kinValStr === 'primary' ? cssModObj.butBasButPrimary : '' }   ${ kinValStr === 'ghost' ? cssModObj.butBasButGhost : '' }   ${ kinValStr === 'danger' ? cssModObj.butBasButDanger : '' }   ${ kinValStr === 'secondary' ? cssModObj.butBasButSecondary : '' }   ${ sizValStr === 'sm' ? cssModObj.butBasButSm : '' }   ${ className } `}
 
 			{ ...resProObj }
-		>{ /* What: Base Button Element. Why: This is ButBasCom's own root rendered element, a real <button> so it keeps native semantics/keyboard behavior. How: This applies the kind/size modifier classes plus any caller className, forwards the ref, and spreads every other passed prop (onClick, disabled, aria-*, ...) directly onto the DOM node. */ }
+		>{ /* What: Button Base Button Element. Why: This is ButBasCom's own root rendered element, a real <button> so it keeps native semantics/keyboard behavior. How: This applies the kind/size modifier classes plus any caller className, forwards the ref, and spreads every other passed prop (onClick, disabled, aria-*, ...) directly onto the DOM node. */ }
 
 
 			{ icoNamStr && ( // What: Icon Visibility Check. Why: An icon is optional, only some ButBasCom callers pass one. How: This renders an IcoSvgCom at the base rhythm step, only while icoNamStr holds a name.
@@ -128,7 +128,7 @@ function ButBasCom ( { children, className = '', icoClaStr, icoNamStr, kinValStr
 
 // #region Exports
 
-export { ButBasCom }; // What: Named Export. Why: Nearly every action button in the app renders this base. How: This exports ButBasCom by name.
+export { ButBasCom }; // What: Named Export. Why: Action buttons render this base. How: This exports ButBasCom by name.
 
 // #endregion Exports
 

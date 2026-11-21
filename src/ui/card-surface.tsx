@@ -17,9 +17,9 @@ import type { JSX            } from 'react'; // What: JSX. Why: The component de
  * card-surface.tsx = Card Surface
  *
  * @summary
- * The shared surface wrapper used throughout every tab: it adds the card
- * classes, plus inner padding unless turned off, and forwards every other prop
- * to its root element.
+ * The shared surface wrapper used across the tabs: it adds the card classes,
+ * plus inner padding unless turned off, and forwards every other prop to its
+ * root element.
  *
  * Sections:
  *  - Components
@@ -41,7 +41,7 @@ type CscProTyp = ComponentProps< 'div' > & { isaPadBoo? : boolean }; // What: Ca
  * CarSurCom = Card Surface Component
  *
  * @summary
- * The shared surface/panel wrapper used throughout every tab. It adds
+ * The shared surface/panel wrapper used across the tabs. It adds
  * the card classes (plus inner padding unless turned off) and forwards
  * every other prop to its root div, so a caller can still pass
  * attributes like an id or an aria label.
@@ -65,14 +65,14 @@ type CscProTyp = ComponentProps< 'div' > & { isaPadBoo? : boolean }; // What: Ca
  *
 */
 
-const CarSurCom = ( { children, className = '', isaPadBoo = true, ...resProObj } : CscProTyp ) : JSX.Element => ( // What: Card Surface Component. Why: CarSurCom is the shared surface/panel wrapper used throughout every tab. How: This renders a div with the isaPadBoo/className modifier classes, spreading every other passed prop onto the DOM node.
+const CarSurCom = ( { children, className = '', isaPadBoo = true, ...resProObj } : CscProTyp ) : JSX.Element => ( // What: Card Surface Component. Why: CarSurCom is the shared surface/panel wrapper used across the tabs. How: This renders a div with the isaPadBoo/className modifier classes, spreading every other passed prop onto the DOM node.
 
 
 	<div
 		className={` ${ cssModObj.carSurDiv }   ${ isaPadBoo ? cssModObj.carSurDivPadded : '' }   ${ className } `}
 
 		{ ...resProObj }
-	>{ /* What: Surface Div Element. Why: This is CarSurCom's own root rendered element. How: This applies the isaPadBoo/className modifier classes, spreads any other passed props, and renders whatever children the caller passed. */ }
+	>{ /* What: Card Surface Div Element. Why: This is CarSurCom's own root rendered element. How: This applies the isaPadBoo/className modifier classes, spreads any other passed props, and renders whatever children the caller passed. */ }
 
 
 		{ children }{ /* What: Card Content. Why: CarSurCom is only the surface; everything shown on the card comes from its caller. How: This renders whatever children the caller passed, unchanged. */ }
@@ -91,7 +91,7 @@ const CarSurCom = ( { children, className = '', isaPadBoo = true, ...resProObj }
 
 // #region Exports
 
-export { CarSurCom }; // What: Named Export. Why: Every tab wraps its panels in this surface. How: This exports CarSurCom by name.
+export { CarSurCom }; // What: Named Export. Why: Tabs wrap their panels in this surface. How: This exports CarSurCom by name.
 
 // #endregion Exports
 

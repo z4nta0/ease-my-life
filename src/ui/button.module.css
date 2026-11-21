@@ -8,9 +8,8 @@
  * Styles for ButBasCom, the app's shared pill button: the base shape, the
  * pressed and disabled states, the small size, and the primary, ghost,
  * danger, and secondary kinds. A parent that needs a button to fit its row
- * differently sets the --but-* custom properties on itself (flex sizing, text
- * wrapping, tabular figures, or hiding a danger button) instead of styling
- * the button from outside.
+ * differently sets the --but-* custom properties on itself (such as flex
+ * sizing) instead of styling the button from outside.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -18,7 +17,7 @@
 
 
 
-.butBasBut { /* What: Button Base Button. Why: Every action button in the app shares one pill shape. How: This lays out the icon and label in a rounded pill, reading its fit from --but-* properties a parent may set, each falling back to a button's normal behavior, and eases its press and focus ring. */
+.butBasBut { /* What: Button Base Button. Why: The base button gives action buttons one pill shape. How: This lays out the icon and label in a rounded pill, reading its fit from --but-* properties a parent may set, each falling back to a button's normal behavior, and eases its hover look, press, and focus ring. */
 
 
 	align-items          : center;
@@ -112,7 +111,7 @@
 	background : transparent;
 	border     : var( --bor-wid-sma ) solid currentColor; /* Border Width Small ~= 0.499px */
 	color      : var( --err-dar-col );                    /* Error Dark Color = oklch( 0.5 0.18 25 ) */
-	display    : var( --but-dan-dis, inline-flex );       /* Button Danger Display, set by its parent, falling back to inline-flex */ /* What: Danger Button Display. Why: A brand-new item's editor is discarded with Cancel, so its footer Delete button is redundant there. How: That form's footer sets --but-dan-dis to none, falling back to the button's normal inline-flex. */
+	display    : var( --but-dan-dis, inline-flex );       /* Button Danger Display, set by its parent, falling back to inline-flex */ /* What: Danger Button Display. Why: A danger button may need hiding where its action is redundant. How: A caller sets --but-dan-dis, falling back to the button's normal inline-flex. */
 
 
 }

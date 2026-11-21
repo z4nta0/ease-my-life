@@ -46,8 +46,8 @@ type CdcProTyp = { children : React.ReactNode, className? : string, isaInsBoo? :
  * transitions 0fr<->1fr, so it eases height to/from auto without
  * hardcoded max-heights, plus a fade+slide on the inner content.
  * Crucially it UNMOUNTS children after the close animation and
- * remounts them on open, which preserves the snapshot-on-open behavior
- * that the Controls panels and item editors rely on for Cancel.
+ * remounts them on open, which gives editors inside a fresh snapshot
+ * each time they open.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -161,10 +161,10 @@ function ColDisCom ( { children, className = '', isaInsBoo = false, open } : Cdc
 			data-collapse-open-active={ expStaBoo || undefined } // What: Collapse Open Active Attribute. Why: The disclosure's open state drives its CSS row and fade transitions. How: This is present only while expStaBoo is true, since undefined drops the attribute entirely.
 
 			onTransitionEnd={ onTraEndFun }
-		>{ /* What: Disclosure Div Element. Why: This is ColDisCom's own root wrapper, whose CSS grid-template-rows transition drives the whole expand/collapse animation. How: This sets its data-collapse-open-active attribute per expStaBoo and reacts to its own transitionend via onTraEndFun. */ }
+		>{ /* What: Collapse Disclosure Div Element. Why: This is ColDisCom's own root wrapper, whose CSS grid-template-rows transition drives the whole expand/collapse animation. How: This sets its data-collapse-open-active attribute per expStaBoo and reacts to its own transitionend via onTraEndFun. */ }
 
 
-			<div className={ cssModObj.colInnDiv }>{ children }</div>{ /* What: Disclosure Inner Div Element. Why: The fade+slide-on-content animation needs its own inner element separate from the row-height transition on the outer div. How: This wraps whatever children the caller passed. */ }
+			<div className={ cssModObj.colInnDiv }>{ children }</div>{ /* What: Collapse Inner Div Element. Why: The fade+slide-on-content animation needs its own inner element separate from the row-height transition on the outer div. How: This wraps whatever children the caller passed. */ }
 
 
 		</div>
@@ -183,7 +183,7 @@ function ColDisCom ( { children, className = '', isaInsBoo = false, open } : Cdc
 
 // #region Exports
 
-export { ColDisCom }; // What: Named Export. Why: Every expandable panel in the app opens and closes through this disclosure. How: This exports ColDisCom by name.
+export { ColDisCom }; // What: Named Export. Why: Expandable panels open and close through this disclosure. How: This exports ColDisCom by name.
 
 // #endregion Exports
 

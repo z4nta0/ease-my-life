@@ -83,14 +83,14 @@ type FloSidTyp = { lefArr : FloIteTyp[], rigArr : FloIteTyp[] }; // What: Flouri
  * BIG_CHA_NUM = Big Chance Number
  *
  * @summary
- * Chance, per available row, of attempting a 2x2 "big" glyph there instead of
- * (or in addition to, in other cells) a normal one.
+ * Chance, for each cell where a 2x2 glyph fits, of placing a 2x2 "big" glyph
+ * there instead of a normal one.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const BIG_CHA_NUM = 0.12; // What: Big Chance Number. Why: A minority of glyphs should render noticeably larger, for visual variety. How: This is the probability, checked once per eligible row in plaGriFun, of that row's glyph claiming a 2x2 block instead of a single cell.
+const BIG_CHA_NUM = 0.12; // What: Big Chance Number. Why: A minority of glyphs should render noticeably larger, for visual variety. How: This is the probability, rolled in plaGriFun for each cell where a 2x2 glyph fits, that the glyph claims a 2x2 block instead of a single cell.
 
 
 
@@ -111,8 +111,8 @@ const BIG_CHA_NUM = 0.12; // What: Big Chance Number. Why: A minority of glyphs 
  *
 */
 
-const COL_WID_NUM = 50; // What: Column Width Number. Why: This is the fixed pixel width every full placement column is divided into. How: This is used throughout genSidFun/plaGriFun to convert the measured gutter width into a column count and per-column pixel offsets.
-const ROW_HEI_NUM = 40; // What: Row Height Number. Why: This is the fixed pixel height every placement row is divided into. How: This is used throughout genSidFun/plaGriFun to convert the measured content height into a row count and per-row pixel offsets.
+const COL_WID_NUM = 50; // What: Column Width Number. Why: This is the fixed pixel width every full placement column is divided into. How: This is used in genSidFun to convert the measured gutter width into a column count and per-column pixel offsets.
+const ROW_HEI_NUM = 40; // What: Row Height Number. Why: This is the fixed pixel height every placement row is divided into. How: This is used in genSidFun to convert the measured content height into a row count and per-row pixel offsets.
 
 
 
@@ -222,8 +222,8 @@ function bloAroFun ( bloGriArr : boolean[][], rowIndNum : number, colIndNum : nu
  * @summary
  * Builds a "cycler": a zero-argument function that hands out values from
  * a shuffled pool, reshuffling a fresh pool once the current one is
- * exhausted. This keeps values well-distributed over any window without
- * needing to know the total count of calls up front, unlike a
+ * exhausted. This keeps values well-distributed across a run of calls
+ * without needing to know the total count of calls up front, unlike a
  * fixed-total "generate N unique values" approach.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -298,7 +298,7 @@ function makCycFun< T > ( pooFacFun : () => T[] ) : () => T {
  *
 */
 
-function ranArrFun ( lenValNum : number ) : number[] { return Array.from( Array( lenValNum ).keys() ); } // What: Range Array Function. Why: A plain sequential-integer array is needed repeatedly throughout this file to drive shuffled row/column walks. How: This spreads the keys() iterator of an empty array of that length, whose keys are exactly those indices.
+function ranArrFun ( lenValNum : number ) : number[] { return Array.from( Array( lenValNum ).keys() ); } // What: Range Array Function. Why: A plain sequential-integer array is needed repeatedly throughout this file to drive shuffled row/column walks. How: This collects the keys() iterator of an empty array of that length into an array, its keys being exactly those indices.
 
 // #endregion ranArrFun
 
@@ -505,10 +505,9 @@ function plaGriFun ( colCouNum : number, rowCouNum : number ) : { colIndNum : nu
  * which (since gutter width rarely divides evenly by COL_WID_NUM) would
  * usually end up short of the true gutter edge and leave a strip of dead
  * space beyond it, defeating the bleed entirely. Anchoring flush against
- * the real edge instead means a glyph's own rendered width (up to 92px,
- * much wider than that leftover band) does the bleeding on its own;
- * body's own overflow-x: hidden clips whatever crosses the actual
- * viewport edge.
+ * the real edge instead means a glyph's own rendered width can exceed
+ * that leftover band and does the bleeding on its own; body's own
+ * overflow-x: hidden clips whatever crosses the actual viewport edge.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -622,7 +621,7 @@ function genSidFun ( gutWidNum : number, conHeiNum : number ) : FloIteTyp[] {
  *                    own centered-column container, whose real measured
  *                    width/height the grid is generated against.
  *
- * @returns The tab's own { left, right } generated flourish items, or
+ * @returns The tab's own { lefArr, rigArr } generated flourish items, or
  * null before the first measurement has completed.
  * @see {@link floIteObj}
  *
@@ -639,7 +638,7 @@ function useFloIteFun ( tabIdeStr : string, meaEleRef : React.RefObject< HTMLEle
 	const [ floIteObj, setFloIteObj ] = React.useState< FloSidTyp | null >( () => floCacMap.get( tabIdeStr ) || null ); // What: Flourish Item Object And Setter. Why: A tab already generated earlier in this session should render immediately, without waiting on the effect below. How: This seeds itself from floCacMap if this tab's own entry already exists, null otherwise.
 
 
-	React.useEffect( () => { // What: Generate Effect. Why: A tab not already cached needs its own gutters measured and generated exactly once. How: This checks the cache first, then measures meaEleRef's own parent .main and generates both sides if nothing was cached.
+	React.useEffect( () => { // What: Generate Effect. Why: A tab not already cached needs its own gutters measured and generated exactly once. How: This checks the cache first, then measures meaEleRef's own parent appConMai element and generates both sides if nothing was cached.
 
 
 		if ( floCacMap.has( tabIdeStr ) ) { setFloIteObj( floCacMap.get( tabIdeStr )! ); return; } // What: Cache Hit Guard. Why: A tab generated earlier in this session must not be regenerated. How: This applies the cached entry directly and bails out of the rest of the effect. // What: Non-Null Note. Why: The has check just found this tab in the cache. How: The ! tells TypeScript the get returns its entry.
@@ -649,7 +648,7 @@ function useFloIteFun ( tabIdeStr : string, meaEleRef : React.RefObject< HTMLEle
 		// #region Measure Elements
 
 		const meaCurEle = meaEleRef.current;                                                         // What: Measure Current Element. Why: This is the actual DOM node whose real size the grid is generated against. How: This is read once from meaEleRef.current and reused for every measurement below.
-		const maiCurEle = meaCurEle && meaCurEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Main Current Element. Why: The gutter width is measured relative to the shared .main wrapper, not the centered column itself. How: This walks up from meaCurEle to its nearest .main ancestor.
+		const maiCurEle = meaCurEle && meaCurEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Main Current Element. Why: The gutter width is measured relative to the shared appConMai wrapper, not the centered column itself. How: This walks up from meaCurEle to its nearest appConMai ancestor.
 
 
 		if ( !meaCurEle || !maiCurEle ) return; // What: No Element Guard. Why: Without both elements mounted there is nothing real to measure yet. How: This bails out of the effect early, leaving floIteObj at its prior (likely null) value.
@@ -660,9 +659,9 @@ function useFloIteFun ( tabIdeStr : string, meaEleRef : React.RefObject< HTMLEle
 
 		// #region Gutter Measurement
 
-		const maiStyObj = getComputedStyle( maiCurEle );                                                                                        // What: Main Style Object. Why: The gutter width calculation below needs .main's own actual left/right padding. How: This reads .main's live computed style once, reused for both padding reads.
-		const padSumNum = ( parseFloat( maiStyObj.paddingLeft ) || 0 ) + ( parseFloat( maiStyObj.paddingRight ) || 0 );                         // What: Padding Sum Number. Why: The measured gutter width must exclude .main's own inner padding on both sides. How: This adds maiStyObj's own left and right padding together, falling back to 0 for either if unparseable.
-		const gutWidNum = Math.max( 0, ( maiCurEle.getBoundingClientRect().width - padSumNum - meaCurEle.getBoundingClientRect().width ) / 2 ); // What: Gutter Width Number. Why: This is the actual per-side gutter width every placement below is generated against. How: This subtracts the padding and the centered column's own width from .main's total width, then halves what remains.
+		const maiStyObj = getComputedStyle( maiCurEle );                                                                                        // What: Main Style Object. Why: The gutter width calculation below needs the appConMai element's own actual left/right padding. How: This reads its live computed style once, reused for both padding reads.
+		const padSumNum = ( parseFloat( maiStyObj.paddingLeft ) || 0 ) + ( parseFloat( maiStyObj.paddingRight ) || 0 );                         // What: Padding Sum Number. Why: The measured gutter width must exclude the appConMai element's own inner padding on both sides. How: This adds maiStyObj's own left and right padding together, falling back to 0 for either if unparseable.
+		const gutWidNum = Math.max( 0, ( maiCurEle.getBoundingClientRect().width - padSumNum - meaCurEle.getBoundingClientRect().width ) / 2 ); // What: Gutter Width Number. Why: This is the actual per-side gutter width every placement below is generated against. How: This subtracts the padding and the centered column's own width from the appConMai element's total width, then halves what remains.
 		const conHeiNum = meaCurEle.scrollHeight;                                                                                               // What: Content Height Number. Why: Row placement needs to know how tall the tab's own real content actually is. How: This reads meaCurEle's own scrollHeight, which (unlike a pure-CSS approach) reflects the true rendered content height.
 
 		// #endregion Gutter Measurement
@@ -768,7 +767,7 @@ function FloColCom ( { floIteArr, sidKeyStr } : FccProTyp ) : React.JSX.Element 
 						top       : `${ floCurObj.topNum }px`,
 						transform : `rotate(${ floCurObj.rotNum }deg)`
 					}}
-				>{ /* What: Flourish Item Span Element. Why: This is the actual decorative glyph, absolutely positioned within its own parent gutter. How: This renders floCurObj's own symbol, sized/rotated/positioned entirely via the inline style above. */ }
+				>{ /* What: Flourish Glyph Span Element. Why: This is the actual decorative glyph, absolutely positioned within its own parent gutter. How: This renders floCurObj's own symbol, sized/rotated/positioned entirely via the inline style above. */ }
 
 
 					{ floCurObj.symStr }
@@ -836,7 +835,7 @@ function BacFloCom ( { meaEleRef, tabIdeStr } : BfcProTyp ) : React.JSX.Element 
 	return (
 
 
-		<React.Fragment>{ /* What: Flourish Fragment Element. Why: The two gutters are true siblings with no shared wrapper element of their own. How: This groups FloColCom's own left and right instances without adding an extra DOM node. */ }
+		<React.Fragment>{ /* What: Flourish Fragment. Why: The two gutters are true siblings with no shared wrapper element of their own. How: This groups FloColCom's own left and right instances without adding an extra DOM node. */ }
 
 
 			<FloColCom
@@ -868,7 +867,7 @@ function BacFloCom ( { meaEleRef, tabIdeStr } : BfcProTyp ) : React.JSX.Element 
 
 // #region Exports
 
-export { BacFloCom }; // What: Named Export. Why: app.tsx and tab-today.tsx both render this behind their own tab content. How: This re-exports BacFloCom; every other binding in this file is internal-only.
+export { BacFloCom }; // What: Named Export. Why: The tab files render this behind their own content. How: This re-exports BacFloCom; every other binding in this file is internal-only.
 
 // #endregion Exports
 

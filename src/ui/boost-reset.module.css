@@ -6,8 +6,7 @@
  *
  * @summary
  * Styles for BooResCom's pair: the accrued boost value, shown in mono type,
- * and the small outlined Reset lever beside it. The same pair appears in the
- * item editor and in a conditional's controls, styled the same in both.
+ * and the small outlined Reset lever beside it.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -26,7 +25,7 @@
 
 }
 
-.booResBut { /* What: Boost Reset Button. Why: Resetting the boost is a small secondary action beside the value. How: This styles it as a compact outlined button in muted text, and eases its press and focus ring. */
+.booResBut { /* What: Boost Reset Button. Why: Resetting the boost is a small secondary action beside the value. How: This styles it as a compact outlined button in muted text, and eases its hover colors, press, and focus ring. */
 
 
 	background    : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */

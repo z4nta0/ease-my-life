@@ -12,9 +12,8 @@
  *
  * Its fields share their look with the reminder schedule editor and the app's
  * other forms, so their declarations are copied here, under the names those
- * editors share, until the design-system pass merges them. The segmented
- * controls inside it get their extra bottom space through --seg-bot-mar rather
- * than being styled from here.
+ * editors share. The segmented controls inside it get their extra bottom
+ * space through --seg-bot-mar rather than being styled from here.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -76,7 +75,7 @@
 
 }
 
-.helBubSpa { /* What: Help Bubble Span. Why: A small circled "?" beside the label opens its explanation without competing with the label. How: This draws a muted round badge that brightens on hover, and eases its press and focus ring. */
+.helBubSpa { /* What: Help Bubble Span. Why: A small circled "?" beside the label opens its explanation without competing with the label. How: This draws a muted round badge that brightens on hover, and eases its hover colors, press dim, and focus ring. */
 
 
 	align-items     : center;

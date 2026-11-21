@@ -50,7 +50,7 @@
 
 }
 
-.colInnDiv { /* What: Collapse Inner Div. Why: The content should fade and slide in while the row grows, not just get uncovered. How: This clips the content to the growing row and holds it faded and nudged up until the disclosure opens. */
+.colInnDiv { /* What: Collapse Inner Div. Why: The content should fade and slide in while the row grows, not just get uncovered. How: This clips the content to the growing row, holds it faded and nudged up until the disclosure opens, and eases its fade and slide. */
 
 
 	min-height : 0;
