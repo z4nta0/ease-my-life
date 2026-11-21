@@ -26,13 +26,14 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
  * Checks that nothing saved during a launch where IndexedDB was slow or hung
  * is lost on the next normal launch. When IndexedDB misses the boot
  * deadline, a whole session runs on the localStorage mirror; custom holidays
- * added in such a session used to vanish once IndexedDB answered again,
- * since its older copy always won. Each flow opens the real backup, adds a
- * custom holiday in a launch whose IndexedDB hangs or answers late, then
- * relaunches normally twice and checks that the holiday is still listed,
- * that IndexedDB holds it, and that IndexedDB kept every Stats history row.
- * An init script slows or hangs IndexedDB while the emlTesIdbMod key is set,
- * a name the app's own key sweep never matches.
+ * added in such a session used to vanish once IndexedDB answered again, since
+ * its older copy won. Two flows open the real backup, add a custom holiday in
+ * a launch whose IndexedDB hangs or answers late, then relaunch normally twice
+ * and check that the holiday is still listed, that IndexedDB holds it, and
+ * that IndexedDB kept every Stats history row. A third flow checks that the
+ * boot sweep of old storage keeps the persistence prompt key. An init script
+ * slows or hangs IndexedDB while the emlTesIdbMod key is set, a name the app's
+ * own key sweep never matches.
  *
  * Sections:
  *  - Constants
@@ -81,7 +82,7 @@ let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's pa
  * @param holNamStr - Holiday Name String: The custom holiday's name.
  *
  * @returns A promise that settles once the mirror holds the holiday, with
- * no value.
+ *          no value.
  *
  * @example
  * ```ts
@@ -135,7 +136,7 @@ const addHolFun = async ( curPagObj : Page, holNamStr : string ) : Promise< void
  *
 */
 
-const relAppFun = async ( curPagObj : Page, fauModStr : string | null ) : Promise< void > => { // What: Relaunch App Function. Why: Each flow relaunches with and without a fault. How: This sets or clears the fault, reloads the app, and waits for Today.
+const relAppFun = async ( curPagObj : Page, fauModStr : string | null ) : Promise< void > => { // What: Relaunch App Function. Why: Flows relaunch with a fault or without one. How: This sets or clears the fault, reloads the app, and waits for Today.
 
 
 	await curPagObj.goto( '/robots.txt' ); // What: Plain Page Navigation. Why: Leaving the app fires its pagehide flush, and the fault must be set while no app code runs. How: This opens a same-origin file that runs no app code.
@@ -188,7 +189,7 @@ const relAppFun = async ( curPagObj : Page, fauModStr : string | null ) : Promis
 const cheSurFun = async ( curPagObj : Page, holNamStr : string, logCouNum : number ) : Promise< void > => { // What: Check Survival Function. Why: Both flows check the same outcome. How: This relaunches twice, checking the holiday and the pick log each time.
 
 
-	for ( const lauIndNum of [ 1, 2 ] ) { // What: Launch Loop. Why: The holiday must survive the first normal launch and every one after it. How: This runs the checks after two launches.
+	for ( const lauIndNum of [ 1, 2 ] ) { // What: Launch Loop. Why: The holiday must survive the first normal launch and the one after it. How: This runs the checks after two launches.
 
 
 		await relAppFun( curPagObj, null ); // What: Healthy Relaunch Call. Why: The lost data used to vanish on a normal launch. How: This relaunches without a fault.
@@ -223,7 +224,7 @@ const cheSurFun = async ( curPagObj : Page, holNamStr : string, logCouNum : numb
 test.beforeEach( async ( { page : curPagObj } ) => { // What: Setup Hook. Why: Every flow can fake an IndexedDB fault and starts on real data. How: This installs the fault script, starts the watcher, and opens the backup.
 
 
-	await curPagObj.addInitScript( () => { // What: Fault Script. Why: A slow or hung IndexedDB can't be produced on demand otherwise. How: This wraps indexedDB.open, and IDBObjectStore.prototype.get for a slow launch, while emlTesIdbMod is set.
+	await curPagObj.addInitScript( () => { // What: Fault Script. Why: A slow or hung IndexedDB can't be produced on demand otherwise. How: This wraps IDBFactory.prototype.open, and IDBObjectStore.prototype.get for a slow launch, while emlTesIdbMod is set.
 
 
 		const modValStr = localStorage.getItem( 'emlTesIdbMod' ); // What: Mode Value String. Why: Only a launch with a fault set is changed. How: This reads 'hang', 'slow', or null.
@@ -236,7 +237,7 @@ test.beforeEach( async ( { page : curPagObj } ) => { // What: Setup Hook. Why: E
 
 		// #region Original IDB Handles
 
-		const sucSetFun = Object.getOwnPropertyDescriptor( IDBRequest.prototype, 'onsuccess' )!.set!; // What: Success Setter Function. Why: A delayed request still has to deliver its success to the real handler. How: This is the native onsuccess setter. // What: Non-Null Note. Why: Every engine defines onsuccess as an accessor on IDBRequest.prototype. How: The two ! tell TypeScript the descriptor and its setter exist.
+		const sucSetFun = Object.getOwnPropertyDescriptor( IDBRequest.prototype, 'onsuccess' )!.set!; // What: Success Setter Function. Why: A delayed request still has to deliver its success to the real handler. How: This is the native onsuccess setter. // What: Non-Null Note. Why: Chromium, Firefox, and WebKit each define onsuccess as an accessor on IDBRequest.prototype. How: The two ! tell TypeScript the descriptor and its setter exist.
 		const oriOpeFun = IDBFactory.prototype.open;                                                   // What: Original Open Function. Why: The wrapper still opens the real database. How: This is the native open, read from IDBFactory's prototype.
 		const oriGetFun = IDBObjectStore.prototype.get;                                                // What: Original Get Function. Why: The slow wrapper still reads the real store. How: This is the native get.
 

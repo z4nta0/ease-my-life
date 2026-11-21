@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { expect    } from '@playwright/test';      // What: Expect. Why: Every flow asserts what it changed. How: This makes the assertions.
+import { expect    } from '@playwright/test';      // What: Expect. Why: Flows and the error check assert on what they changed and on page errors. How: This makes the assertions.
 import { opeFixFun } from '../support/app.ts';     // What: Open Fixture Function. Why: Each flow starts from real data. How: This opens the backup on a fixed day.
 import { rcdAniFun } from '../support/watch.ts';   // What: Record Animations Function. Why: Flows confirm their animations played. How: This starts recording.
 import { reaStaFun } from '../support/storage.ts'; // What: Read State Function. Why: Flows compare saved state before and after. How: This reads it.

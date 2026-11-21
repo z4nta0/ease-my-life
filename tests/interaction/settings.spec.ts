@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { expect      } from '@playwright/test';      // What: Expect. Why: Every flow asserts what it changed. How: This makes the assertions.
+import { expect      } from '@playwright/test';      // What: Expect. Why: Flows and the error check assert on what they changed and on page errors. How: This makes the assertions.
 import { opeFixFun   } from '../support/app.ts';     // What: Open Fixture Function. Why: Each flow starts from real data. How: This opens the backup on a fixed day.
 import { rcdAniFun   } from '../support/watch.ts';   // What: Record Animations Function. Why: Flows confirm their animations played. How: This starts recording.
 import { reaStaFun   } from '../support/storage.ts'; // What: Read State Function. Why: Flows compare saved state before and after. How: This reads it.
@@ -30,8 +30,8 @@ import { watErrFun   } from '../support/watch.ts';   // What: Watch Errors Funct
  * and removed with its exit animation; a backup exported here imports back
  * cleanly; the Buy Me a Coffee button opens its tip page in a new tab; the
  * legal panels open and close with their closing animation; and cancelling a
- * reset leaves the data alone. Every flow checks the saved state in IndexedDB,
- * and fails on any page or console error.
+ * reset leaves the data alone. A flow that changes data checks the saved state
+ * in IndexedDB, and every flow fails on any page or console error.
  *
  * Sections:
  *  - Module State
@@ -163,7 +163,7 @@ test( 'the daily generator switch and run time save', async ( { page : curPagObj
 
 
 
-test( 'holidays can be turned off, added, and removed', async ( { page : curPagObj } ) => { // What: Holiday Test. Why: Every holiday action must save. How: This disables one, adds one, and removes it, checking IndexedDB and the row animations at each step.
+test( 'holidays can be turned off, added, and removed', async ( { page : curPagObj } ) => { // What: Holiday Test. Why: Disabling, adding, and removing a holiday must each save. How: This disables one, adds one, and removes it, checking IndexedDB and the row animations at each step.
 
 
 	// #region Holiday Disable
@@ -252,7 +252,7 @@ test( 'an exported backup imports back', async ( { page : curPagObj }, tesInfObj
 
 
 
-	expect( [ impStaObj.items.length, impStaObj.tasks.length, impStaObj.pickLog.length ], 'round trip' ).toEqual( [ preStaObj.items.length, preStaObj.tasks.length, preStaObj.pickLog.length ] ); // What: Round Trip Assertion. Why: Nothing is lost on the way. How: This compares the record counts.
+	expect( [ impStaObj.items.length, impStaObj.tasks.length, impStaObj.pickLog.length ], 'round trip' ).toEqual( [ preStaObj.items.length, preStaObj.tasks.length, preStaObj.pickLog.length ] ); // What: Round Trip Assertion. Why: The record counts survive the round trip. How: This compares the record counts.
 
 	// #endregion Backup Import
 

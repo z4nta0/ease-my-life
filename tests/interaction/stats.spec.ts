@@ -17,12 +17,13 @@ import { watErrFun } from '../support/watch.ts'; // What: Watch Errors Function.
  * stats.spec.ts = Stats Spec
  *
  * @summary
- * Drives the Stats tab on real data: every scope tab and every range pill is
- * selected in turn, each showing its headline cards without errors, and a
- * heatmap day opens its detail panel. A mouse wheel scrolls a pill rail
- * sideways, then scrolls the page once the rail reaches its end. The figures
- * themselves are checked against the logs by the simulation; this suite checks
- * the controls. Every flow fails on any page or console error.
+ * Drives the Stats tab on real data: every scope tab is selected in turn with
+ * each of six range pills, All Time through Week, each showing its headline
+ * cards without errors, and a heatmap day opens its detail panel. A mouse
+ * wheel scrolls a pill rail sideways, then scrolls the page once the rail
+ * reaches its end. The figures themselves are checked against the logs by the
+ * simulation; this suite checks the controls. Every flow fails on any page or
+ * console error.
  *
  * Sections:
  *  - Module State
@@ -141,7 +142,7 @@ test( 'a rail scrolls sideways with the mouse wheel', async ( { page : curPagObj
 	// #region Rail Setup
 
 	const raiDivLoc = curPagObj.locator( '[data-element-name-hook~="typFilDiv"]' );                                                   // What: Rail Div Locator. Why: The Type rail overflows on the fixed day's data. How: This finds it.
-	const maiTopFun = () => curPagObj.evaluate( () => document.querySelector( '[data-element-name-hook~="appConMai"]' )!.scrollTop ); // What: Main Top Function. Why: The page scrolls inside its main area. How: This reads that area's scroll position. // What: Non-Null Note. Why: The main area is always mounted. How: The ! tells TypeScript it exists.
+	const maiTopFun = () => curPagObj.evaluate( () => document.querySelector( '[data-element-name-hook~="appConMai"]' )!.scrollTop ); // What: Main Top Function. Why: The page scrolls inside its main area. How: This reads that area's scroll position. // What: Non-Null Note. Why: The main area is mounted while a tab shows. How: The ! tells TypeScript it exists.
 
 
 

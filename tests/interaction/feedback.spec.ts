@@ -36,9 +36,9 @@ import type { Page          } from '@playwright/test'; // What: Page. Why: The h
  * dozens of identical cards), so the probe samples by kind: on each state it
  * groups every reachable link, button, form field, label-wrapped radio, and
  * focusable role by its tag, class list, type, role, and state attributes, and
- * probes the first one of each kind it can reach with the pointer, so every
- * kind of control on every tab is read without probing every row. A kind it
- * couldn't reach is printed as a note. Each probed control has to look
+ * probes the first one of each kind it can reach with the pointer, so each
+ * kind of control the checked states show is read without probing every row. A
+ * kind it couldn't reach is printed as a note. Each probed control has to look
  * different hovered than at rest, pressed than hovered, and focused the
  * keyboard way than unfocused, and a text field focused than unfocused, and
  * every probed property each of those changes, on it, its pseudo-elements, or
@@ -53,7 +53,7 @@ import type { Page          } from '@playwright/test'; // What: Page. Why: The h
  * whose click changes nothing, such as the current tab, may stay still on
  * hover, per the user's decision of 2026-11-18. Under reduced motion every
  * change stays but switches at once. Real clicks are blocked during the
- * checks, so pressing a control never runs its action. The snapshot and
+ * checks, so a press doesn't run a control's click action. The snapshot and
  * comparison helpers live in tests/support/feedback.ts. Adapted from
  * TechGeek.support's own.
  *
@@ -73,14 +73,14 @@ import type { Page          } from '@playwright/test'; // What: Page. Why: The h
 const CON_SEL_STR = 'a[href], button, input:not([type="hidden"]), select, textarea, [role="button"], [role="radio"], [role="switch"], [role="tab"], [tabindex="0"]'; // What: Control Selector String. Why: Every element a person can press or focus is an interaction, the theme rows' radios and the info tips' trigger spans included. How: This matches the links, buttons, form fields, and focusable roles.
 const FEE_STA_ARR = [ ...STA_RCD_ARR, ...EXT_STA_ARR ]; // What: Feedback State Array. Why: Every shared state is checked, and so is each opened one, since each holds controls the plain tabs don't. How: This lists the shared states first, then the opened ones.
 const FIE_SEL_STR = 'input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select, textarea';                                                         // What: Field Selector String. Why: A text field has no hover or press look of its own, since pressing one only focuses it. How: This matches the fields, which the probe reads for focus alone.
-const HOV_TAR_STR = '[class*="todCarArt"], [class*="preCarDiv"], [class*="lisRowDiv"]';                                                                              // What: Hover Target String. Why: Today's cards and the Data tab's item rows respond to hover without being controls, so the control probe never reaches them. How: This matches each by its CSS module class, whose name Vite keeps inside the hashed class.
+const HOV_TAR_STR = '[class*="todCarArt"], [class*="preCarDiv"], [class*="lisRowDiv"]';                                                                              // What: Hover Target String. Why: Today's cards and the Data tab's item rows respond to hover without being controls, so the control probe doesn't reach them. How: This matches each by its CSS module class, whose name Vite keeps inside the hashed class.
 const IDE_LIS_ARR = FEE_STA_ARR.map( ( staRcdObj ) => staRcdObj.ideStr );                                                                                            // What: Identifier List Array. Why: Each toggle row names the states it has to be found in, and most rows name every state of a tab. How: This lists every checked state's name, for the tab lists below.
 const DAT_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'data-' ) );                                                                          // What: Data Identifier Array. Why: The Data tab's chevrons, scope tabs, and vacation buttons show on its states. How: This lists the Data states' names.
 const PIC_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'picker' ) );                                                                         // What: Pickers Identifier Array. Why: The Pickers tab's picker tabs and add button show on its states, the form's included. How: This lists the Pickers states' names.
 const PIL_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => /^(data|picker|stats)-?/.test( ideCurStr ) );                                                               // What: Pill Identifier Array. Why: The filter rails' pills show on the Data, Pickers, and Stats states. How: This lists those states' names.
-const SET_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'settings-' ) );                                                                      // What: Settings Identifier Array. Why: The Settings rail, theme rows, and switches show on its states. How: This lists the Settings states' names.
+const SET_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'settings-' ) );                                                                      // What: Settings Identifier Array. Why: The Settings tab's rail and its toggled controls, such as the theme rows, show on its states. How: This lists the Settings states' names.
 const SKI_STA_ARR = [ 'today-desktop', 'today-phone', 'pickers-desktop', 'pickers-phone', 'stats-desktop', 'stats-phone', 'data-desktop', 'data-phone', 'settings-desktop', 'settings-phone' ]; // What: Skip State Array. Why: The skip link waits above the screen on every plain tab, while an open modal or help mode makes it unreachable. How: This names the states where the probe has to find it.
-const STA_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'stats-' ) );                                                                         // What: Stats Identifier Array. Why: The Stats tab's range pills and heat cells show on its states. How: This lists the Stats states' names.
+const STA_IDE_ARR = IDE_LIS_ARR.filter( ( ideCurStr ) => ideCurStr.startsWith( 'stats-' ) );                                                                         // What: Stats Identifier Array. Why: The Stats tab's scope tabs, range pills, and heat cells show on its states. How: This lists the Stats states' names.
 const TAB_IDE_ARR = FEE_STA_ARR.filter( ( staRcdObj ) => staRcdObj.fixBoo && !staRcdObj.ideStr.startsWith( 'privacy' ) ).map( ( staRcdObj ) => staRcdObj.ideStr );   // What: Tab Identifier Array. Why: The tab bar and its help button show on every state with the backup loaded, except under the Privacy panel, which covers them. How: This lists those states' names.
 const TOD_IDE_ARR = FEE_STA_ARR.filter( ( staRcdObj ) => staRcdObj.fixBoo && staRcdObj.tabStr === 'today' ).map( ( staRcdObj ) => staRcdObj.ideStr );                // What: Today Identifier Array. Why: Today's cards, rail, and log chips show on every Today state with the backup loaded. How: This lists those states' names.
 
@@ -450,7 +450,7 @@ async function attSetFun ( hanCurObj : ElementHandle< Element >, attNamStr : str
 
 		if ( attArgArr[ 1 ] === null ) hanCurEle.removeAttribute( attArgArr[ 0 ] ); // What: Attribute Remove Branch. Why: A null value means the state is off. How: This removes the attribute.
 
-		else hanCurEle.setAttribute( attArgArr[ 0 ], attArgArr[ 1 ] ); // What: Attribute Set Branch. Why: Any other value marks the state on. How: This sets the attribute to it.
+		else hanCurEle.setAttribute( attArgArr[ 0 ], attArgArr[ 1 ] ); // What: Attribute Set Branch. Why: A string value, whether it marks the state on or off, is written as the attribute's value. How: This sets the attribute to it.
 
 
 	}, [ attNamStr, attValStr ] as const ); // What: Attribute Pair Argument. Why: The page function reads the name and value from one argument. How: This hands them over as a pair. // What: Type Assertion Note. Why: Without it the array widens to a mixed array, so the page function's argument loses its pairing. How: as const keeps it a tuple, its first slot a string and its second a string or null.
@@ -471,12 +471,12 @@ async function attSetFun ( hanCurObj : ElementHandle< Element >, attNamStr : str
  * Collects a sample of the elements a person can reach on the page as it
  * stands: each element the selector matches that's drawn with a size, not
  * taken out of the tab order with tabindex -1, not disabled, and not inside
- * inert or hidden content, grouped into kinds by its tag, its class list, and
- * its type, and returns up to a few of each kind in page order, so a later
- * step can take the first of a kind the pointer reaches. Handles are taken
- * once, so the list stays fixed while the checks scroll. It marks the chosen
- * elements with a numbered attribute of its own inside the page to hand them
- * back, clearing the marks of the call before.
+ * inert or hidden content, grouped into kinds by its tag, class list, type,
+ * role, and state attributes, and returns up to a few of each kind in page
+ * order, so a later step can take the first of a kind the pointer reaches.
+ * Handles are taken once, so the list stays fixed while the checks scroll. It
+ * marks the chosen elements with a numbered attribute of its own inside the
+ * page to hand them back, clearing the marks of the call before.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -487,7 +487,6 @@ async function attSetFun ( hanCurObj : ElementHandle< Element >, attNamStr : str
  *
  * @returns A promise that resolves with each kind's sampled elements, in page
  *          order.
- * @see {@link kinHanArr}
  *
  * @example
  * ```ts
@@ -499,7 +498,7 @@ async function attSetFun ( hanCurObj : ElementHandle< Element >, attNamStr : str
 async function kinLisFun ( curPagObj : Page, conSelStr : string, perKinNum : number ) : Promise< ElementHandle< Element >[][] > {
 
 
-	const kinIndArr = await curPagObj.evaluate( ( kinArgArr ) => { // What: Kind Index Array. Why: Judging thousands of elements one call at a time would be slow, so the page sorts them in one pass. How: This marks the sampled elements and returns each kind's mark numbers.
+	const kinIndArr = await curPagObj.evaluate( ( kinArgArr ) => { // What: Kind Index Array. Why: Judging each element in its own call would be slow, so the page sorts them in one pass. How: This marks the sampled elements and returns each kind's mark numbers.
 
 
 		for ( const marCurEle of document.querySelectorAll( '[data-feedback-probe-mark]' ) ) marCurEle.removeAttribute( 'data-feedback-probe-mark' ); // What: Old Mark Loop. Why: A previous call's marks would mix into this one's. How: This clears every mark.
@@ -604,10 +603,10 @@ async function parMovFun ( curPagObj : Page ) : Promise< void > {
 
 
 
-		return canPoiArr.find( ( canCurArr ) => !document.elementFromPoint( canCurArr[ 0 ], canCurArr[ 1 ] )?.closest( conSelStr ) ) || [ 0, 0 ]; // What: Clear Point Return. Why: The pointer rests where it hovers nothing a person presses. How: This returns the first candidate whose topmost element has no control around it, or the corner.
+		return canPoiArr.find( ( canCurArr ) => !document.elementFromPoint( canCurArr[ 0 ], canCurArr[ 1 ] )?.closest( conSelStr ) ) || [ 0, 0 ]; // What: Clear Point Return. Why: The pointer rests where it hovers nothing a person presses. How: This returns the first candidate whose topmost element has no control around it, or the top left corner.
 
 
-	}, CON_SEL_STR );
+	}, CON_SEL_STR ); // What: Control Selector Argument. Why: The page function can't read this file's constants. How: This hands it the selector that matches controls.
 
 
 
@@ -766,8 +765,8 @@ function stiConFun ( conCurEle : Element, conSelStr : string ) : { dowBoo : bool
  * pressed, or hovered for a field, must all be no longer than {@link
  * MIN_DUR_NUM}. A control {@link stiConFun} finds still, since a click on it
  * changes nothing, may skip its hover look, or its press look, and in WebKit a
- * radio pointed at through its label skips its press look, since WebKit
- * doesn't mark a pressed label :active. It expects real clicks already
+ * radio or checkbox pointed at through its label skips its press look, since
+ * WebKit doesn't mark a pressed label :active. It expects real clicks already
  * blocked, so releasing the mouse does nothing, and it returns the kinds it
  * couldn't reach as notes.
  *
@@ -1017,7 +1016,7 @@ async function hovProFun ( curPagObj : Page, redMotBoo : boolean ) : Promise< st
 			return { x : tarRecObj.width / 2, y : tarRecObj.height / 2 }; // What: Center Fallback Return. Why: A card covered in controls still has to be hovered somewhere. How: This returns its center.
 
 
-		}, CON_SEL_STR );
+		}, CON_SEL_STR ); // What: Control Selector Argument. Why: The page function can't read this file's constants. How: This hands it the selector that matches controls.
 
 
 		await tarCurObj.hover( { force : true, position : tarPoiObj } ); // What: Target Hover Call. Why: Hover is the one interaction a card has. How: This moves the pointer onto the clear spot on the card.

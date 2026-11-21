@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { expect    } from '@playwright/test';      // What: Expect. Why: Every flow asserts what it changed. How: This makes the assertions.
+import { expect    } from '@playwright/test';      // What: Expect. Why: The error check hook asserts that no page error was logged. How: This makes the assertion.
 import { opeFixFun } from '../support/app.ts';     // What: Open Fixture Function. Why: Each flow starts from real data. How: This opens the backup on a fixed day.
 import { reaStaFun } from '../support/storage.ts'; // What: Read State Function. Why: Flows compare saved state before and after. How: This reads it.
 import { selTabFun } from '../support/app.ts';     // What: Select Tab Function. Why: Every flow runs on the Data tab. How: This switches to it.
@@ -59,9 +59,10 @@ let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's pa
  * opeSecFun = Open Section Function
  *
  * @summary
- * Opens a Data card and, when asked, one of its inner sections: index 0 is
- * Controls and index 1 is Items. Closed parts are opened; open ones are left
- * alone, so the helper can be called on a card in any state.
+ * Opens a Data card and, when asked, one of its inner sections by index: on a
+ * picker card 0 is Controls and 1 is Items, and on the reminders card 0 is the
+ * options matrix. Closed parts are opened; open ones are left alone, so the
+ * helper can be called on a card in any state.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -73,7 +74,7 @@ let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's pa
  *
  * @example
  * ```ts
- * await opeSecFun(picCarFun(curPagObj), 0) // => void
+ * await opeSecFun(picCarFun(curPagObj), 0) // => Promise<void>
  * ```
  *
 */
@@ -329,7 +330,7 @@ test( 'the section sort is remembered', async ( { page : curPagObj } ) => { // W
 	const sorSelLoc = curPagObj.locator( '[data-element-name-hook~="sorBarDiv"] [data-element-name-hook~="sorDroSel"]' ).first();                                     // What: Sort Select Locator. Why: The section sort is the top dropdown. How: This finds it.
 	const optValArr = await sorSelLoc.locator( 'option' ).evaluateAll( ( optEleArr ) => optEleArr.map( ( optDomEle ) => ( optDomEle as HTMLOptionElement ).value ) ); // What: Option Value Array. Why: A different option is chosen. How: This lists the values. // What: Type Assertion Note. Why: Every match is an option element. How: It's read as an option, since the selector names option.
 	const curValStr = await sorSelLoc.inputValue(); // What: Current Value String. Why: The new choice must differ. How: This reads the current one.
-	const newValStr = optValArr.find( ( optValStr ) => optValStr !== curValStr )!;                                                                                    // What: New Value String. Why: A different sort is chosen. How: This takes the first other value. // What: Non-Null Note. Why: The sort always offers several options. How: The ! tells TypeScript one exists.
+	const newValStr = optValArr.find( ( optValStr ) => optValStr !== curValStr )!;                                                                                    // What: New Value String. Why: A different sort is chosen. How: This takes the first other value. // What: Non-Null Note. Why: The sort offers more than one option. How: The ! tells TypeScript one exists.
 
 	// #endregion Sort Options Lookup
 
