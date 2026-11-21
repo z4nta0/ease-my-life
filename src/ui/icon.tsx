@@ -1,14 +1,6 @@
 
 
 
-// #region Imports
-
-import type { JSX } from 'react'; // What: JSX. Why: The icon table holds JSX elements, and IcoSvgCom returns one. How: This types both.
-
-// #endregion Imports
-
-
-
 /**
  * icon.tsx = Icon
  *
@@ -62,10 +54,10 @@ type IscProTyp = { className? : string, icoNamStr : string, sizSteStr? : string 
  *
 */
 
-const IcoSvgCom = ( { className, icoNamStr, sizSteStr = 'p01' } : IscProTyp ) : JSX.Element => { // What: Icon SVG Component. Why: Every tab button, list row, and control across the app needs a small recognizable glyph. How: This looks up icoNamStr in icoPatObj and renders the matching SVG shape at the sizSteStr rhythm step.
+const IcoSvgCom = ( { className, icoNamStr, sizSteStr = 'p01' } : IscProTyp ) : React.JSX.Element => { // What: Icon SVG Component. Why: The app's buttons, rows, and controls need small recognizable glyphs. How: This looks up icoNamStr in icoPatObj and renders the matching SVG shape at the sizSteStr rhythm step.
 
 
-	const icoPatObj : Record< string, JSX.Element > = { // What: Icon Path Object. Why: This is the lookup table mapping every icon name to its own inline SVG shape markup. How: This is indexed below by the icoNamStr prop to pick which shape the rendered svg actually draws.
+	const icoPatObj : Record< string, React.JSX.Element > = { // What: Icon Path Object. Why: This is the lookup table mapping every icon name to its own inline SVG shape markup. How: This is indexed below by the icoNamStr prop to pick which shape the rendered svg actually draws.
 
 
 		ardEle : <><path d='M12 5v14M6 13l6 6 6-6' /></>,                                                                     // What: Arrow-Down Element. Why: This marks a downward move/sort action. How: This draws a vertical line ending in a downward arrowhead.
@@ -149,7 +141,7 @@ const IcoSvgCom = ( { className, icoNamStr, sizSteStr = 'p01' } : IscProTyp ) : 
 
 // #region Exports
 
-export { IcoSvgCom }; // What: Named Export. Why: Every button, label and tab that shows a glyph renders this icon. How: This exports IcoSvgCom by name.
+export { IcoSvgCom }; // What: Named Export. Why: Other files render icons by name through this component. How: This exports IcoSvgCom by name.
 
 // #endregion Exports
 

@@ -31,7 +31,7 @@
 
 }
 
-.numSteBut { /* What: Number Step Button. Why: The minus and plus buttons need to read as quiet, round, tappable controls. How: This centers the glyph in a small round button with no border of its own, and eases its press and focus ring. */
+.numSteBut { /* What: Number Step Button. Why: The minus and plus buttons need to read as quiet, round, tappable controls. How: This centers the glyph in a small round button with no border of its own, and eases its hover colors, press, and focus ring. */
 
 
 	align-items     : center;
@@ -92,7 +92,7 @@
 .numSteInp { /* What: Number Stepper Input. Why: The number can also be typed directly, so it's a real input styled to look like plain text. How: This removes the input's own chrome and centers the number in the stepper's mono type, and eases its focus fill. */
 
 
-	-moz-appearance : textfield;                                            /* What: Firefox Appearance. Why: Firefox only honors its own prefixed property for dropping a field's native styling. How: This resets the input to a plain text field in Firefox, the same as the standard appearance line below. */
+	-moz-appearance : textfield;                                            /* What: Firefox Appearance. Why: The prefixed property resets the field's native styling in Firefox. How: This resets the input to a plain text field, the same as the standard appearance line below. */
 	appearance      : textfield;
 	background      : transparent;
 	border          : 0;

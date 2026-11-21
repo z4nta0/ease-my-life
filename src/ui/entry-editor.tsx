@@ -10,12 +10,12 @@ import React     from 'react';                     // What: React. Why: This is 
 import { BooResCom    } from './boost-reset.tsx';    // What: Boost Reset Component. Why: A dynamic-mode item's inline editor needs a control for resetting its boost value back to 0. How: This is rendered inside EntEdiCom's own Boost row.
 import { ButBasCom    } from './button.tsx';         // What: Button Base Component. Why: The editor's own Save, Cancel and Delete actions are shared styled buttons. How: This is rendered for each footer action and the delete confirm.
 import { CAD_NAM_OBJ  } from '../core/cadence.ts';   // What: Cadence Namespace Object. Why: An ease item's day range reads in its picker's own cadence unit. How: This is called via CAD_NAM_OBJ.uniWorFun to word the Soonest/Latest range as days, weeks or months.
-import { EUR_WAR_STR  } from '../constants.ts';      // What: Ease-Up-Range Warning String. Why: An ease-up item's Soonest/Latest row needs its own explanatory warning text. How: This is passed as an InfTipCom's own label prop inside EntEdiCom.
-import { FilButCom    } from './fill-button.tsx';    // What: Fill Button Component. Why: Ease-up and ease-down items each need a button that instantly fills the item to its threshold. How: This is rendered inside EntEdiCom's own Fill/Refill row, labeled per direction.
+import { EUR_WAR_STR  } from '../constants.ts';      // What: Ease-Up-Range Warning String. Why: An ease-up item's Soonest/Latest row needs its own explanatory warning text. How: This is passed as an InfTipCom's own label prop inside EasRowCom.
+import { FilButCom    } from './fill-button.tsx';    // What: Fill Button Component. Why: Ease-up and ease-down items each need a button that instantly fills the item to its threshold. How: This is rendered inside ChrRowCom's own full-charge row, labeled per direction.
 import { InfTipCom    } from './info-tip.tsx';       // What: Info Tip Component. Why: The ease range rows need an inline explanation of what their values mean. How: This renders an info bubble carrying EUR_WAR_STR next to those rows.
-import { NumSteCom    } from './number-stepper.tsx'; // What: Number Stepper Component. Why: An ease-mode item's Soonest/Latest values need a shared plus/minus numeric control. How: This is rendered twice inside EntEdiCom's own ease rows.
+import { NumSteCom    } from './number-stepper.tsx'; // What: Number Stepper Component. Why: An ease-mode item's Soonest/Latest values need a shared plus/minus numeric control. How: This is rendered inside EasRowCom's own control cluster, once per ease bound.
 import { PIC_NAM_OBJ  } from '../core/pickers.ts';   // What: Pickers Namespace Object. Why: An item with no ease band of its own falls back to its picker's average band, and the ease day range converts between drift values and days. How: This is called via PIC_NAM_OBJ.aveEasFun, driDayFun, and dayDriFun, and read for THR_VAL_NUM, the full-charge ceiling its subtitle checks, and DEF_EAS_OBJ, the default band an item with none falls back to.
-import { useEscCanFun } from './escape-cancel.ts';   // What: Use Escape Cancel Function. Why: EntEdiCom's own Escape key needs to cancel the edit (or back out of a delete confirm) exactly like every other inline editor in the app. How: This is called once inside EntEdiCom with a handler that checks conDelBoo first.
+import { useEscCanFun } from './escape-cancel.ts';   // What: Use Escape Cancel Function. Why: EntEdiCom's own Escape key needs to cancel the edit (or back out of a delete confirm), as the other inline editors do. How: This is called once inside EntEdiCom with a handler that checks conDelBoo first.
 
 
 import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: The editor edits one item and averages its picker's items. How: This types EecProTyp's item, patches, and item list.
@@ -190,13 +190,13 @@ function EasRowCom ( { dayValNum, isaDowBoo, iteNamStr, labTexStr, maxValNum, on
 		>{ /* What: Editor Row Div Element. Why: This is one Soonest/Shortest or Latest/Longest control row. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-			<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
+			<div className={ cssModObj.ediLabDiv }>{ /* What: Editor Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
 
 
-				<span className={ cssModObj.namRowSpa }>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfTipCom sit side by side. How: This wraps the label span and, for ease-up only, the warning InfTipCom. */ }
+				<span className={ cssModObj.namRowSpa }>{ /* What: Name Row Span Element. Why: The label text and its optional warning InfTipCom sit side by side. How: This wraps the label span and, for ease-up only, the warning InfTipCom. */ }
 
 
-					<span className={ cssModObj.ediNamSpa }>{ labTexStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders labTexStr directly. */ }
+					<span className={ cssModObj.ediNamSpa }>{ labTexStr }</span>{ /* What: Editor Name Span Element. Why: This is the row's own heading text. How: This renders labTexStr directly. */ }
 
 
 
@@ -219,12 +219,12 @@ function EasRowCom ( { dayValNum, isaDowBoo, iteNamStr, labTexStr, maxValNum, on
 					key={ `${ isaDowBoo }-${ dayValNum }-${ uniWorStr }` }
 
 					className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-				>{ subTexEle }</span>{ /* What: Subtitle Span Element. Why: The live day count/unit-word combination needs its own fade-replace key so a change visibly refreshes. How: This renders subTexEle, keyed by direction/value/unit-word together. */ }
+				>{ subTexEle }</span>{ /* What: Editor Sub Span Element. Why: The live day count/unit-word combination needs its own fade-replace key so a change visibly refreshes. How: This renders subTexEle, keyed by direction/value/unit-word together. */ }
 
 
 			</div>
 
-			<div className={ cssModObj.ediConDiv }>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumSteCom and the unit-word span below. */ }
+			<div className={ cssModObj.ediConDiv }>{ /* What: Editor Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumSteCom and the unit-word span below. */ }
 
 
 				<NumSteCom
@@ -384,7 +384,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 		const newMaxNum = PIC_NAM_OBJ.dayDriFun( Math.max( 1, Math.min( 60, dayCouNum ) ) ); // What: New Maximum Number. Why: The typed day count needs converting back into the drift value item.easeMax actually stores. How: This clamps dayCouNum to [1, 60] then converts it via PIC_NAM_OBJ.dayDriFun.
 
 
-		onPatIteFun({ // What: Patch Item Call. Why: Raising easeMax can push it below the existing easeMin, which would invert the band. How: This writes the new easeMax into the draft, clamping easeMin down to match if it would otherwise exceed the new easeMax.
+		onPatIteFun({ // What: Patch Item Call. Why: Lowering easeMax can push it below the existing easeMin, which would invert the band. How: This writes the new easeMax into the draft, clamping easeMin down to match if it would otherwise exceed the new easeMax.
 
 
 			easeMax : newMaxNum,                       // What: Ease Maximum. Why: This is the new upper drift bound the user just typed. How: This writes newMaxNum.
@@ -428,7 +428,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 		const newMinNum = PIC_NAM_OBJ.dayDriFun( Math.max( 1, Math.min( 90, dayCouNum ) ) ); // What: New Minimum Number. Why: The typed day count needs converting back into the drift value item.easeMin actually stores. How: This clamps dayCouNum to [1, 90] then converts it via PIC_NAM_OBJ.dayDriFun.
 
 
-		onPatIteFun({ // What: Patch Item Call. Why: Lowering easeMin can push it above the existing easeMax, which would invert the band. How: This writes the new easeMin into the draft, clamping easeMax up to match if it would otherwise fall under the new easeMin.
+		onPatIteFun({ // What: Patch Item Call. Why: Raising easeMin can push it above the existing easeMax, which would invert the band. How: This writes the new easeMin into the draft, clamping easeMax up to match if it would otherwise fall under the new easeMin.
 
 
 			easeMax : Math.max( easMaxNum, newMinNum ), // What: Ease Maximum. Why: The band must never invert. How: This keeps the current easeMax unless it now falls under newMinNum.
@@ -472,7 +472,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 		>{ /* What: Entry Editor Div Element. Why: This is EntEdiCom's own root wrapper. How: This renders the mode-specific rows above a confirm-gated footer. Its data-element-name-hook is read by help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-			<div className={ cssModObj.ediLisDiv }>{ /* What: Pie Rows Div Element. Why: Every mode-specific control row shares this one column. How: This renders exactly one of the ease/weight/no-weight branches, plus the optional Boost row and the always-present Active/Inactive row. */ }
+			<div className={ cssModObj.ediLisDiv }>{ /* What: Editor List Div Element. Why: Every mode-specific control row shares this one column. How: This renders exactly one of the ease/weight/no-weight branches, plus the optional Boost row and the always-present Active/Inactive row. */ }
 
 
 				{ isaEasBoo ? ( // What: Ease Rows Branch. Why: Ease-up/ease-down show a cadence range instead of a weight stepper. How: This renders the Soonest/Latest rows while isaEasBoo is true.
@@ -484,23 +484,23 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 					 * entry-editor.tsx = Ease Direction Split
 					 *
 					 * @summary
-					 * data-ease-up-active/data-ease-down-active (on every
-					 * relevant row below) let help mode tell the two
-					 * directions apart (see the help catalogs'
-					 * itemChargeRangeUp/Down), split by direction rather than
-					 * one shared marker, since Soonest/Latest/Fill (ease-up)
-					 * and Shortest/Longest/Refill (ease-down) get entirely
+					 * data-ease-up-active/data-ease-down-active (on each ease
+					 * row) let help mode tell the two directions apart (see
+					 * the help catalogs' itemChargeRangeUp/Down), split by
+					 * direction rather than one shared marker, since
+					 * Soonest/Latest/Fill (ease-up) and
+					 * Shortest/Longest/Refill (ease-down) get entirely
 					 * different tip copy, not just relabeled headings.
-					 * FilButCom (ui.jsx) has no identity of its own to
-					 * distinguish it by, and it only renders for ONE direction
-					 * at a time, so nothing else marks exactly "this
+					 * FilButCom (fill-button.tsx) has no identity of its own
+					 * to distinguish it by, and it only renders for ONE
+					 * direction at a time, so nothing else marks exactly "this
 					 * direction's ease rows".
 					 *
 					 * @author z4nta0 <https://github.com/z4nta0>
 					 *
 					*/
 
-					<React.Fragment>{ /* What: Ease Rows Fragment Element. Why: The Soonest/Latest rows plus one direction-specific Fill/Refill row are true siblings with no shared wrapper of their own. How: This groups all 3 without adding an extra DOM node. */ }
+					<React.Fragment>{ /* What: Ease Rows Fragment. Why: The Soonest/Latest rows plus one direction-specific Fill/Refill row are true siblings with no shared wrapper of their own. How: This groups all 3 without adding an extra DOM node. */ }
 
 
 						<EasRowCom
@@ -514,7 +514,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 							uniWorStr={ uniWorFun( sooDayNum ) }
 
 							onSetValFun={ setSooFun }
-						/>{ /* What: Ease Row Component. Why: This is the Soonest/Shortest control row. How: This renders the row's own label, subtitle, and day count stepper, clamped to [1, 60]. Its data-element-name-hook is read by the picker mini-tours, help mode's catalogs, and the help items' own unit-word lookups. */ }
+						/>{ /* What: Ease Row Component. Why: This is the Soonest/Shortest control row. How: This renders the row's own label, subtitle, and day count stepper, clamped to [1, 60]. The row it renders carries a data-element-name-hook that the tours and help mode read. */ }
 
 
 
@@ -529,7 +529,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 							uniWorStr={ uniWorFun( latDayNum ) }
 
 							onSetValFun={ setLatFun }
-						/>{ /* What: Ease Row Component. Why: This is the Latest/Longest control row. How: This renders the row's own label, subtitle, and day count stepper, clamped to [1, 90]. Its data-element-name-hook is read by the picker mini-tours, help mode's catalogs, and the help items' own unit-word lookups. */ }
+						/>{ /* What: Ease Row Component. Why: This is the Latest/Longest control row. How: This renders the row's own label, subtitle, and day count stepper, clamped to [1, 90]. The row it renders carries a data-element-name-hook that the tours and help mode read. */ }
 
 
 
@@ -578,19 +578,19 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 						className={ cssModObj.ediRowDiv }
 
 						data-element-name-hook='ediRowDiv'
-					>{ /* What: Weight Row Div Element. Why: This is the weighted/dynamic weight control row. How: This renders the label/subtitle plus the plus/minus weight stepper below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+					>{ /* What: Editor Row Div Element. Why: This is the weighted/dynamic weight control row. How: This renders the label/subtitle plus the plus/minus weight stepper below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-						<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label and the live weight subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+						<div className={ cssModObj.ediLabDiv }>{ /* What: Editor Label Div Element. Why: The label and the live weight subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
 
 
-							<span className={ cssModObj.ediNamSpa }>Weight</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Weight". */ }
+							<span className={ cssModObj.ediNamSpa }>Weight</span>{ /* What: Editor Name Span Element. Why: This is the row's own heading text. How: This renders the literal word "Weight". */ }
 
 							<span
 								key={ iteDatObj.weight }
 
 								className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-							>{ iteDatObj.weight === 1 ? <><strong>baseline</strong> pick chance</> : <><strong>{ iteDatObj.weight }&times;</strong> more likely than w1</> }</span>{ /* What: Subtitle Span Element. Why: The live weight subtitle needs its own fade-replace key so a change visibly refreshes it. How: This renders one of two phrasings depending on whether item.weight is the baseline 1, keyed by weight. */ }
+							>{ iteDatObj.weight === 1 ? <><strong>baseline</strong> pick chance</> : <><strong>{ iteDatObj.weight }&times;</strong> more likely than w1</> }</span>{ /* What: Editor Sub Span Element. Why: The live weight subtitle needs its own fade-replace key so a change visibly refreshes it. How: This renders one of two phrasings depending on whether item.weight is the baseline 1, keyed by weight. */ }
 
 
 						</div>
@@ -610,7 +610,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 								aria-label='Less weight'
 
 								onClick={ () => onPatIteFun( { weight : Math.max( 1, iteDatObj.weight - 1 ) } ) }
-							>&minus;</button>{ /* What: Less Weight Button Element. Why: This is the actual decrement control. How: This clamps the draft's weight down to a minimum of 1 via onPatIteFun. */ }
+							>&minus;</button>{ /* What: Weight Step Button Element. Why: This is the actual decrement control. How: This clamps the draft's weight down to a minimum of 1 via onPatIteFun. */ }
 
 							<span className={ cssModObj.weiValSpa }>w{ iteDatObj.weight }</span>{ /* What: Weight Value Span Element. Why: The current weight needs a plain numeric display between the two buttons. How: This renders the literal "w" prefix plus item.weight. */ }
 
@@ -622,7 +622,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 								aria-label='More weight'
 
 								onClick={ () => onPatIteFun( { weight : Math.min( 9, iteDatObj.weight + 1 ) } ) }
-							>+</button>{ /* What: More Weight Button Element. Why: This is the actual increment control. How: This clamps the draft's weight up to a maximum of 9 via onPatIteFun. */ }
+							>+</button>{ /* What: Weight Step Button Element. Why: This is the actual increment control. How: This clamps the draft's weight up to a maximum of 9 via onPatIteFun. */ }
 
 
 						</div>
@@ -638,20 +638,20 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 						className={ cssModObj.ediRowDiv }
 
 						data-element-name-hook='ediRowDiv'
-					>{ /* What: No Weight Row Div Element. Why: Random mode still needs a Weight row for layout parity, but with no editable control. How: This renders a fixed explanatory subtitle and a plain "No weight" note instead of any stepper. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+					>{ /* What: Editor Row Div Element. Why: Random mode still needs a Weight row for layout parity, but with no editable control. How: This renders a fixed explanatory subtitle and a plain "No weight" note instead of any stepper. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-						<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label and its fixed explanatory subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+						<div className={ cssModObj.ediLabDiv }>{ /* What: Editor Label Div Element. Why: The label and its fixed explanatory subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
 
 
-							<span className={ cssModObj.ediNamSpa }>Weight</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Weight". */ }
+							<span className={ cssModObj.ediNamSpa }>Weight</span>{ /* What: Editor Name Span Element. Why: This is the row's own heading text. How: This renders the literal word "Weight". */ }
 
-							<span className={ cssModObj.ediSubSpa }>truly random items have equal chance</span>{ /* What: Subtitle Span Element. Why: The user still deserves an explanation for why no weight control appears. How: This renders a fixed explanatory sentence. */ }
+							<span className={ cssModObj.ediSubSpa }>truly random items have equal chance</span>{ /* What: Editor Sub Span Element. Why: The user still deserves an explanation for why no weight control appears. How: This renders a fixed explanatory sentence. */ }
 
 
 						</div>
 
-						<span className={ cssModObj.weiNonSpa }>No weight</span>{ /* What: Note Span Element. Why: This row still needs SOME visible content where a control would otherwise sit. How: This renders the literal phrase "No weight". */ }
+						<span className={ cssModObj.weiNonSpa }>No weight</span>{ /* What: Weight None Span Element. Why: This row still needs SOME visible content where a control would otherwise sit. How: This renders the literal phrase "No weight". */ }
 
 
 					</div>
@@ -668,24 +668,24 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 						className={ cssModObj.ediRowDiv }
 
 						data-element-name-hook='ediRowDiv'
-					>{ /* What: Boost Row Div Element. Why: This is the dynamic-mode boost control row. How: This renders the label/subtitle plus a BooResCom control. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+					>{ /* What: Editor Row Div Element. Why: This is the dynamic-mode boost control row. How: This renders the label/subtitle plus a BooResCom control. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-						<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label and the live boost subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+						<div className={ cssModObj.ediLabDiv }>{ /* What: Editor Label Div Element. Why: The label and the live boost subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
 
 
-							<span className={ cssModObj.ediNamSpa }>Boost</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Boost". */ }
+							<span className={ cssModObj.ediNamSpa }>Boost</span>{ /* What: Editor Name Span Element. Why: This is the row's own heading text. How: This renders the literal word "Boost". */ }
 
 							<span
 								key={ ( iteDatObj.value || 0 ) > 0 ? 'boost' : 'none' }
 
 								className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-							>{ ( iteDatObj.value || 0 ) > 0 ? <><strong>+{ iteDatObj.value }</strong> to weight, resets when picked</> : <><strong>no bonus</strong> to weight, will increase when not picked</> }</span>{ /* What: Subtitle Span Element. Why: The live boost subtitle needs its own fade-replace key so a change visibly refreshes it. How: This renders one of two phrasings depending on whether item.value is currently positive, keyed by which one is showing. */ }
+							>{ ( iteDatObj.value || 0 ) > 0 ? <><strong>+{ iteDatObj.value }</strong> to weight, resets when picked</> : <><strong>no bonus</strong> to weight, will increase when not picked</> }</span>{ /* What: Editor Sub Span Element. Why: The live boost subtitle needs its own fade-replace key so a change visibly refreshes it. How: This renders one of two phrasings depending on whether item.value is currently positive, keyed by which one is showing. */ }
 
 
 						</div>
 
-						<div className={ cssModObj.ediConDiv }>{ /* What: Control Div Element. Why: The boost row's own reset control needs a consistent control-column slot, matching every other row. How: This wraps the BooResCom below. */ }
+						<div className={ cssModObj.ediConDiv }>{ /* What: Editor Control Div Element. Why: The boost row's own reset control needs a consistent control-column slot, matching every other row. How: This wraps the BooResCom below. */ }
 
 
 							<BooResCom
@@ -708,23 +708,23 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 					className={ cssModObj.ediRowDiv }
 
 					data-element-name-hook='ediRowDiv'
-				>{ /* What: Active Row Div Element. Why: Every mode, regardless of the branches above, still needs the same Active/Inactive toggle row. How: This renders the label/subtitle plus a plain switch button. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+				>{ /* What: Editor Row Div Element. Why: Every mode, regardless of the branches above, still needs the same Active/Inactive toggle row. How: This renders the label/subtitle plus a plain switch button. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-					<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label and the live active-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+					<div className={ cssModObj.ediLabDiv }>{ /* What: Editor Label Div Element. Why: The label and the live active-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
 
 
 						<span
 							key={ `lbl-${ !!iteDatObj.vacation }` }
 
 							className={` ${ cssModObj.ediNamSpa }   ${ cssModObj.ediNamSpaFade } `}
-						>{ iteDatObj.vacation ? 'Inactive' : 'Active' }</span>{ /* What: Label Span Element. Why: The row's own heading text itself flips with the item's own current state. How: This renders "Inactive" or "Active" depending on item.vacation, keyed so the flip fades. */ }
+						>{ iteDatObj.vacation ? 'Inactive' : 'Active' }</span>{ /* What: Editor Name Span Element. Why: The row's own heading text itself flips with the item's own current state. How: This renders "Inactive" or "Active" depending on item.vacation, keyed so the flip fades. */ }
 
 						<span
 							key={ `sub-${ !!iteDatObj.vacation }` }
 
 							className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-						>{ iteDatObj.vacation ? <><strong>not eligible</strong> to be picked</> : <><strong>eligible</strong> to be picked</> }</span>{ /* What: Subtitle Span Element. Why: The live eligibility subtitle needs its own fade-replace key so a toggle visibly refreshes it. How: This renders one of two phrasings depending on item.vacation, keyed the same way as the label above. */ }
+						>{ iteDatObj.vacation ? <><strong>not eligible</strong> to be picked</> : <><strong>eligible</strong> to be picked</> }</span>{ /* What: Editor Sub Span Element. Why: The live eligibility subtitle needs its own fade-replace key so a toggle visibly refreshes it. How: This renders one of two phrasings depending on item.vacation, keyed the same way as the label above. */ }
 
 
 					</div>
@@ -738,10 +738,10 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 						aria-pressed={ !iteDatObj.vacation }
 
 						onClick={ () => onPatIteFun( { vacation : !iteDatObj.vacation } ) }
-					>{ /* What: Active Switch Button Element. Why: This is the actual Active/Inactive toggle control. How: This flips the draft's vacation flag via onPatIteFun. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+					>{ /* What: Toggle Switch Button Element. Why: This is the actual Active/Inactive toggle control. How: This flips the draft's vacation flag via onPatIteFun. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-						<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-pressed. */ }
+						<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-pressed. */ }
 
 
 					</button>
@@ -763,7 +763,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 					className={` ${ cssModObj.ediFooDiv }   ${ cssModObj.ediFooDivConfirm } `}
 
 					data-element-name-hook='ediFooDiv'
-				>{ /* What: Confirm Foot Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+				>{ /* What: Editor Footer Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 					<span className={ cssModObj.delMesSpa }>Delete this item?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
@@ -805,7 +805,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 					className={ cssModObj.ediFooDiv }
 
 					data-element-name-hook='ediFooDiv'
-				>{ /* What: Plain Foot Div Element. Why: This is the normal footer, holding an optional Delete button (suppressed for a brand-new item) plus the Cancel/Save actions. The Pickers tab's new-item row hides the Delete button entirely by setting --ent-del-dis, which this footer passes to ButBasCom's danger variant, and enforces the 2-item minimum on its own row-level trash icon instead, so it never passes iteCouNum here, keeping minIteBoo false and this branch's extra InfTipCom wrapper out of the way of that selector. How: This renders Delete (plain, or InfTipCom-wrapped and disabled while minIteBoo) unless isaNewBoo, then the Cancel/Save pair. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+				>{ /* What: Editor Footer Div Element. Why: This is the normal footer, holding an optional Delete button (suppressed for a brand-new item) plus the Cancel/Save actions. A parent can hide the Delete button by setting --ent-del-dis, which this footer hands to ButBasCom's danger variant. How: This renders Delete (plain, or InfTipCom-wrapped and disabled while minIteBoo) unless isaNewBoo, then the Cancel/Save pair. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 					{ !isaNewBoo && ( minIteBoo ? ( // What: Delete Visibility Check. Why: A brand-new item has nothing to delete yet, only to discard via Cancel/implicit-close; an existing item at the 2-item floor gets a disabled, explained Delete instead of a working one. How: This hides Delete for a new item, and otherwise shows the blocked-delete tip while minIteBoo holds, or the real Delete button.
@@ -831,7 +831,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 						</InfTipCom>
 
 
-					) : ( // What: Working Delete Branch. Why: With more than 2 items still in the pool, a real working Delete button belongs here instead. How: This renders the else branch, taken while minIteBoo is false.
+					) : ( // What: Working Delete Branch. Why: With more than 2 items in the pool, or no count given, a real working Delete button belongs here instead. How: This renders the else branch, taken while minIteBoo is false.
 
 
 						<ButBasCom
@@ -849,7 +849,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 
 
 
-					<div className={ cssModObj.fooRigDiv }>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both ButBasCom elements below. */ }
+					<div className={ cssModObj.fooRigDiv }>{ /* What: Footer Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both ButBasCom elements below. */ }
 
 
 						<ButBasCom
@@ -898,7 +898,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 
 // #region Exports
 
-export { EntEdiCom }; // What: Named Export. Why: The Today, Pickers and Data tabs all render this editor for an item. How: This exports EntEdiCom by name.
+export { EntEdiCom }; // What: Named Export. Why: The shared item editor is rendered by other files. How: This exports EntEdiCom by name.
 
 // #endregion Exports
 

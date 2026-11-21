@@ -13,10 +13,10 @@ import cssModObj from './filter-rail.module.css'; // What: CSS Module Object. Wh
  * filter-rail.tsx = Filter Rail
  *
  * @summary
- * The labeled row of filter pills the Pickers, Stats, and Data tabs offer
- * for narrowing by group or by type: an "All" pill that clears the filter,
- * then one pill per choice, each with its own count, in a rail that scrolls
- * sideways once its pills outgrow the row. Each tab decides which choices
+ * The labeled row of filter pills a tab offers for narrowing by group or by
+ * type: an "All" pill that clears the filter, then one pill per choice, each
+ * with its own count, in a rail that scrolls sideways once its pills outgrow
+ * the row. Each tab decides which choices
  * and counts the rail shows and what a pill does when chosen.
  *
  * Sections:
@@ -170,6 +170,10 @@ function FilRaiCom ( { allCouNum, allSelBoo, ariLabStr, 'data-element-name-hook'
 
 
 
-export { FilRaiCom }; // What: Named Export. Why: The Pickers, Stats, and Data tabs each draw their Group and Type rails with it. How: This exports FilRaiCom by name.
+// #region Exports
+
+export { FilRaiCom }; // What: Named Export. Why: The shared filter rail is drawn by other files. How: This exports FilRaiCom by name.
+
+// #endregion Exports
 
 

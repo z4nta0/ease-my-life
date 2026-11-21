@@ -15,8 +15,7 @@ import React     from 'react';                       // What: React. Why: NumSte
  *
  * @summary
  * A minus, editable number, plus stepper. The value can also be typed
- * directly, committing on blur or Enter clamped to its range. Every ease
- * Soonest/Latest control uses it.
+ * directly, committing on blur or Enter clamped to its range.
  *
  * Sections:
  *  - Components
@@ -42,7 +41,6 @@ type NscProTyp = { ariLabStr : string, maxValNum? : number, minValNum? : number,
  * (handy for big jumps the +/- buttons make tedious); typing commits
  * on blur/Enter, clamped to [minValNum,maxValNum]. onSetValFun receives
  * the new integer.
- * Used by every ease Soonest/Latest control.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -103,7 +101,7 @@ function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, va
 
 			aria-label={ ariLabStr }
 			role='group'
-		>{ /* What: Container Stepper Div Element. Why: This groups the -/text/+ trio as one accessible group. How: This renders the decrement button, the editable text input, and the increment button below. */ }
+		>{ /* What: Number Stepper Div Element. Why: This groups the -/text/+ trio as one accessible group. How: This renders the decrement button, the editable text input, and the increment button below. */ }
 
 
 			<button
@@ -114,7 +112,7 @@ function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, va
 				aria-label='Fewer days'
 
 				onClick={ () => onSetValFun( Math.max( minValNum, value - 1 ) ) } // What: Decrement Click. Why: The stepper must never go below its minimum. How: This sets the value one lower, clamped at minValNum.
-			>−</button>{ /* What: Decrement Button Element. Why: This is the "-" side of the stepper. How: This is disabled once value reaches minValNum, otherwise steps it down by 1 on click. */ }
+			>−</button>{ /* What: Number Step Button Element. Why: This is the "-" side of the stepper. How: This is disabled once value reaches minValNum, otherwise steps it down by 1 on click. */ }
 
 			<input
 				className={ cssModObj.numSteInp }
@@ -129,7 +127,7 @@ function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, va
 				onChange={ ( chaEveObj ) => setTexValStr( chaEveObj.target.value.replace( /[^0-9]/g, '' ) ) }       // What: Digits-Only Change. Why: The field only accepts whole numbers. How: This strips every non-digit before storing the typed text.
 				onFocus={ ( focEveObj ) => focEveObj.target.select() }                                              // What: Select On Focus. Why: A user typing a new number shouldn't have to delete the old one first. How: This selects the field's whole text on focus.
 				onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Commit. Why: Enter should commit the typed value like leaving the field does. How: This blurs the field on Enter, which runs the onBlur commit.
-			/>{ /* What: Stepper Input Element. Why: This lets the value be typed directly, handy for big jumps the +/- buttons make tedious. How: This mirrors texValStr, strips non-digit characters as the user types, selects-all on focus, commits on blur, and commits early on Enter. */ }
+			/>{ /* What: Number Stepper Input Element. Why: This lets the value be typed directly, handy for big jumps the +/- buttons make tedious. How: This mirrors texValStr, strips non-digit characters as the user types, selects-all on focus, commits on blur, and commits early on Enter. */ }
 
 			<button
 				className={ cssModObj.numSteBut }
@@ -139,7 +137,7 @@ function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, va
 				aria-label='More days'
 
 				onClick={ () => onSetValFun( Math.min( maxValNum, value + 1 ) ) } // What: Increment Click. Why: The stepper must never go above its maximum. How: This sets the value one higher, clamped at maxValNum.
-			>+</button>{ /* What: Increment Button Element. Why: This is the "+" side of the stepper. How: This is disabled once value reaches maxValNum, otherwise steps it up by 1 on click. */ }
+			>+</button>{ /* What: Number Step Button Element. Why: This is the "+" side of the stepper. How: This is disabled once value reaches maxValNum, otherwise steps it up by 1 on click. */ }
 
 
 		</div>
@@ -158,7 +156,7 @@ function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, va
 
 // #region Exports
 
-export { NumSteCom }; // What: Named Export. Why: The item editor and the conditional controls both render this stepper. How: This exports NumSteCom by name.
+export { NumSteCom }; // What: Named Export. Why: The shared stepper is rendered by other files. How: This exports NumSteCom by name.
 
 // #endregion Exports
 

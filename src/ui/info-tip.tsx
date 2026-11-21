@@ -19,9 +19,8 @@ import { rhyPixFun    } from '../utils/rhythm.ts'; // What: Rhythm Pixel Functio
  *
  * @summary
  * The app's custom tooltip. Unlike a native title attribute it matches the UI,
- * opens on tap as well as hover (most users are on mobile), and renders
- * through a portal to the body so it is clamped to the viewport and never
- * clipped by the app frame.
+ * opens on tap as well as hover, and renders through a portal to the body so
+ * it is clamped to the viewport and never clipped by the app frame.
  *
  * Sections:
  *  - Components
@@ -44,10 +43,9 @@ type ItcProTyp = { actNamStr? : string | null, children : React.ReactNode, class
  *
  * @summary
  * Custom tooltip. Unlike the native title attribute, this one is
- * styled to match the UI, opens on tap as well as hover (most users
- * are on mobile), and renders through a portal to <body> so it's
- * clamped to the viewport and never clipped by the app frame or
- * pushed off-screen.
+ * styled to match the UI, opens on tap as well as hover, and renders
+ * through a portal to <body> so it's clamped to the viewport and never
+ * clipped by the app frame or pushed off-screen.
  *
  * Interaction model, tuned to avoid the classic hover/tap conflict:
  * mouse hovers to show (pointerenter/leave, clicks ignored),
@@ -59,7 +57,7 @@ type ItcProTyp = { actNamStr? : string | null, children : React.ReactNode, class
  * aria-disabled, which announces the disabled state without removing
  * focusability or replacing the name, so the tip's explanation is
  * still read out. (These triggers are deliberately focusable: focus
- * plus Enter is the only way a keyboard user can learn why the action
+ * plus Enter or Space is how a keyboard user can learn why the action
  * is unavailable.)
  *
  * trnOnlBoo is for the "reveal a CSS-ellipsis-truncated name" use
@@ -110,7 +108,7 @@ type ItcProTyp = { actNamStr? : string | null, children : React.ReactNode, class
  *
 */
 
-const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-name-hook' : hooNamStr, labTexStr, trnOnlBoo = false, ...datAttObj } : ItcProTyp ) : React.JSX.Element => { // What: Info Tip Component. Why: See the design-rationale block above. How: This tracks its own open/position/truncation state and renders either an inert span or the full interactive trigger plus its portaled tooltip below.
+const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-name-hook' : hooNamStr, labTexStr, trnOnlBoo = false, ...datAttObj } : ItcProTyp ) : React.JSX.Element => { // What: Info Tip Component. Why: The tooltip needs one component that owns its own open, position, and truncation state. How: This tracks its own open/position/truncation state and renders either an inert span or the full interactive trigger plus its portaled tooltip below.
 
 
 	// #region Tip State
@@ -122,7 +120,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 	const trgEleRef = React.useRef< HTMLSpanElement | null >( null ); // What: Trigger Element Reference. Why: Both the truncation measurement and the positioning math need a handle on the real trigger DOM node. How: This is attached to the trigger span's own ref prop in both the inert and interactive render branches below.
 	const tipEleRef = React.useRef< HTMLSpanElement | null >( null ); // What: Tip Element Reference. Why: The positioning math needs to measure the portaled tooltip's own rendered size. How: This is attached to the portaled tooltip span's own ref prop below.
 	const lasPoiRef = React.useRef( 'mouse' );                        // What: Last Pointer Reference. Why: The click handler needs to know whether the interaction so far has been mouse-driven (where clicks are ignored) or touch/pen-driven (where a tap should toggle). How: This is updated on every pointerdown and read by the click handler below.
-	const actTipBoo = trnOnlBoo ? texTrnBoo : true;                   // What: Active Tip Boolean. Why: Every other piece of this component needs one single answer for whether the tip should behave as a real, focusable, interactive trigger at all. How: This is texTrnBoo itself under trnOnlBoo, otherwise always true.
+	const actTipBoo = trnOnlBoo ? texTrnBoo : true;                   // What: Active Tip Boolean. Why: The rest of this component needs one single answer for whether the tip should behave as a real, focusable, interactive trigger at all. How: This is texTrnBoo itself under trnOnlBoo, otherwise always true.
 
 	// #endregion Tip State
 
@@ -159,7 +157,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 
 		// #region Resize Watching
 
-		if ( typeof ResizeObserver === 'function' ) { // What: Resize Observer Support Check. Why: ResizeObserver catches every real cause of a width change, including ones that never fire a window resize event. How: This prefers ResizeObserver when the browser actually supports it.
+		if ( typeof ResizeObserver === 'function' ) { // What: Resize Observer Support Check. Why: ResizeObserver reports any change to the trigger's own box size, including ones that never fire a window resize event. How: This prefers ResizeObserver when the browser actually supports it.
 
 
 			const resObsObj = new ResizeObserver( cheTrnFun ); // What: Resize Observer Object. Why: The trigger's own box (not just the viewport) needs to be watched. How: This creates an observer that re-runs cheTrnFun on every observed size change.
@@ -236,7 +234,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 
 
 
-		if ( tipTopNum + tipHeiNum > vieHeiNum - edgMarNum ) tipTopNum = Math.max( edgMarNum, vieHeiNum - tipHeiNum - edgMarNum ); // What: Bottom Clip Guard. Why: A below-placement (or an above one that's still too tall) must not run past the bottom of the viewport either. How: This clamps tipTopNum so the tooltip's own bottom edge never crosses vieHeiNum - edgMarNum.
+		if ( tipTopNum + tipHeiNum > vieHeiNum - edgMarNum ) tipTopNum = Math.max( edgMarNum, vieHeiNum - tipHeiNum - edgMarNum ); // What: Bottom Clip Guard. Why: A below-placement (or an above one that's still too tall) must not run past the bottom of the viewport either. How: This clamps tipTopNum so the tooltip's bottom edge stays within vieHeiNum - edgMarNum where the tooltip fits.
 
 		// #endregion Vertical Placement
 
@@ -413,9 +411,9 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 
 			} }
 			onPointerDown={ ( poiDowObj ) => { lasPoiRef.current = poiDowObj.pointerType || 'mouse'; } }                           // What: Pointer Type Record. Why: The click handler must know whether a touch or a mouse triggered it. How: This only stores the pointer type in lasPoiRef for that handler to read.
-			onPointerEnter={ ( poiEntObj ) => { if ( ( poiEntObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( true ); } }  // What: Mouse Hover Open. Why: Only a mouse hovers; a touch must toggle on tap instead. How: This opens the tip only for a mouse pointer.
+			onPointerEnter={ ( poiEntObj ) => { if ( ( poiEntObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( true ); } }  // What: Mouse Hover Open. Why: A mouse hovers, and a touch or pen opens the tip on tap instead. How: This opens the tip only for a mouse pointer.
 			onPointerLeave={ ( poiLeaObj ) => { if ( ( poiLeaObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( false ); } } // What: Mouse Hover Close. Why: A tip opened by hovering must close when the mouse leaves, while a tapped tip stays open. How: This closes the tip only for a mouse pointer.
-		>{ /* What: Container Infotip Trigger Span Element. Why: This is the actual focusable, interactive trigger, wrapping the caller's own children and (while open) the portaled tooltip. How: This handles hover for mouse, tap for touch/pen, and Enter/Space/Escape/blur for keyboard, per the design-rationale block above. */ }
+		>{ /* What: Info Trigger Span Element. Why: This is the actual focusable, interactive trigger, wrapping the caller's own children and (while open) the portaled tooltip. How: This handles hover for mouse, tap for touch/pen, and Enter/Space/Escape/blur for keyboard, per the design-rationale block above. */ }
 
 
 			{ children }{ /* What: Trigger Content. Why: InfTipCom wraps whatever the caller wants the tip attached to (a word, an icon, a chip). How: This renders the caller's own children inside the interactive trigger. */ }
@@ -436,7 +434,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 					data-element-name-hook='infTipSpa'
 
 					aria-hidden='true' // What: Hidden Bubble Flag. Why: The trigger's own name already carries labTexStr, so a screen reader would hear the text twice, and the bubble, portaled into the body, would sit outside every landmark. How: This hides the bubble from assistive technology, leaving it a sighted reader's copy of the trigger's name.
-				>{ /* What: Tip Span Element. Why: This is the actual floating tooltip bubble, positioned via tipPosObj. How: This renders the caller's own labTexStr text, placed per its own infotip--{placement} modifier class, and stays out of the accessibility tree, since the trigger's name already says it. Its data-element-name-hook is read by the shared Escape-key handler. */ }
+				>{ /* What: Info Tip Span Element. Why: This is the actual floating tooltip bubble, positioned via tipPosObj. How: This renders the caller's own labTexStr text, placed per its own infTipSpa--top or infTipSpa--bottom modifier class, and stays out of the accessibility tree, since the trigger's name already says it. Its data-element-name-hook is read by the shared Escape-key handler. */ }
 
 
 					{ labTexStr }
@@ -465,7 +463,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 
 // #region Exports
 
-export { InfTipCom }; // What: Named Export. Why: Any control or label that needs an inline explanation renders this tooltip. How: This exports InfTipCom by name.
+export { InfTipCom }; // What: Named Export. Why: The shared tooltip is rendered by other files. How: This exports InfTipCom by name.
 
 // #endregion Exports
 

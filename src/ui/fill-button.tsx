@@ -20,7 +20,7 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduced Motion Function
  * @summary
  * The ghost Fill / Refill lever for ease modes. It spins its refresh icon once
  * on click and takes a disabled flag for when the target is already fully
- * charged. Picker items, pickers and conditionals share it.
+ * charged.
  *
  * Sections:
  *  - Components
@@ -42,11 +42,9 @@ type FbcProTyp = { isaDisBoo : boolean, labTexStr : string, onFilActFun : () => 
  * FilButCom = Fill Button Component
  *
  * @summary
- * The ghost "Fill / Refill / Fill all / Refill all" lever for ease
- * modes. Spins its refresh icon once on click for subtle feedback, and
- * takes a disabled flag (callers pass true when already at full
- * charge, so a filled item/picker can't be re-filled). Shared by
- * picker items, pickers, and conditionals.
+ * The ghost lever for an ease mode's Fill or Refill action. Spins its
+ * refresh icon once on click for subtle feedback, and takes a disabled
+ * flag so a target already at full charge can't be re-filled.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -80,13 +78,13 @@ function FilButCom ( { isaDisBoo, labTexStr, onFilActFun } : FbcProTyp ) : React
 
 		<ButBasCom
 			disabled={ isaDisBoo }
-			icoClaStr={ spiAniBoo ? cssModObj.refIcoSvgSpinning : '' }
+			icoClaStr={ spiAniBoo ? cssModObj.refIcoSvgSpinning : '' } // What: Icon Class String. Why: The refresh icon should turn only while the spin is on. How: This hands ButBasCom the spin class while spiAniBoo is true, otherwise an empty string.
 			icoNamStr='refEle'
 			kinValStr='ghost'
 			sizValStr='sm'
 
 			onAnimationEnd={ () => setSpiAniBoo( false ) } // What: Spin End Reset. Why: The spin is a self-ending CSS animation that must be re-armable for the next click. How: This clears the spinning flag once the animation finishes.
-			onClick={ () => { // What: On Click Handler. Why: A disabled FilButCom must be fully inert, and clicking a live one should spin the icon (unless reduced motion) before performing the real action. How: This guards on disabled, conditionally starts the spin, then always calls the caller's own onFilActFun.
+			onClick={ () => { // What: On Click Handler. Why: A disabled FilButCom must be fully inert, and clicking a live one should spin the icon (unless reduced motion) before performing the real action. How: This guards on disabled, conditionally starts the spin, then calls the caller's own onFilActFun.
 
 
 				if ( isaDisBoo ) return; // What: Disabled Guard. Why: A disabled button must not spin or fire its own action at all. How: This bails out before touching spiAniBoo or calling onFilActFun.
@@ -123,7 +121,7 @@ function FilButCom ( { isaDisBoo, labTexStr, onFilActFun } : FbcProTyp ) : React
 
 // #region Exports
 
-export { FilButCom }; // What: Named Export. Why: The item editor, the Data tab and the conditional controls render this lever. How: This exports FilButCom by name.
+export { FilButCom }; // What: Named Export. Why: The shared Fill and Refill lever is rendered by other files. How: This exports FilButCom by name.
 
 // #endregion Exports
 
