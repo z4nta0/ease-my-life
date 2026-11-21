@@ -8,14 +8,13 @@
  * Styles for StyRadCom, the radio list behind Appearance's Picker animation
  * and Completion celebration pickers. It reuses the look of the Data tab's
  * picker-mode selector: full-bleed rows split by dividers, each with a dot,
- * a name, and an optional Preview button, where the selected row gets an
- * accent tint and left bar and slowly reveals its hint. The hint is one short
- * line, so a height glide would read as janky; it rides a stronger, slower
- * fade instead.
+ * a name, and an optional Preview button. The selected row gets an accent
+ * tint and left bar, and its hint glides open on a slow grid-row transition
+ * while it fades and drops in.
  *
  * The rows' declarations are copied from the Data tab's own mode radio rules
  * (modRadDiv and modOptLab), resolved for the unpadded Appearance card this
- * list always sits in, until the design-system pass merges them.
+ * list sits in.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -99,7 +98,7 @@
 
 
 }
-.modOptLab:has( .modOptInp:focus-visible ) { /* What: Mode Option Label With Focused Mode Option Input. Why: The native radio is hidden, so a keyboard user needs to see focus on the whole row. How: This draws the accent outline inside the row while its radio has keyboard focus. */
+.modOptLab:has( .modOptInp:focus-visible ) { /* What: Focused Mode Option Label. Why: The native radio is hidden, so a keyboard user needs to see focus on the whole row. How: This draws the accent outline inside the row while its radio has keyboard focus. */
 
 
 	outline-offset : calc( var( --bor-wid-lar ) * -1 ); /* Border Width Large ~= 2.035px */
@@ -316,7 +315,7 @@
 
 /* #region colInnDiv */
 
-.colInnDiv { /* What: Collapse Inner Div. Why: The one-line hint should arrive on a strong, slow fade rather than the height glide. How: This clips the content and fades and lifts it in, slightly delayed. */
+.colInnDiv { /* What: Collapse Inner Div. Why: The one-line hint should arrive on a strong, slow fade beside the height glide. How: This clips the content and holds it faded out and raised slightly, easing both back after a short delay. */
 
 
 	min-height : 0;
@@ -327,7 +326,7 @@
 
 
 }
-.colDisDiv[data-collapse-open-active] > .colInnDiv { /* What: Collapse Inner Div In Open Collapse Disclosure Div. Why: The open hint should settle fully visible. How: This fades it in and drops its lift. */
+.colDisDiv[data-collapse-open-active] > .colInnDiv { /* What: Collapse Inner Div In Open Collapse Disclosure Div. Why: The open hint should settle fully visible. How: This fades it in and drops it to rest. */
 
 
 	opacity   : 1;
@@ -335,10 +334,10 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Collapse Inner Div. Why: Someone who asked for less motion shouldn't see the hint fade and lift. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Collapse Inner Div. Why: Someone who asked for less motion shouldn't see the hint fade and drop in. How: This applies only when the reduced-motion preference is set. */
 
 
-	.colInnDiv { /* What: Still Collapse Inner Div. Why: The hint should simply appear. How: This turns the fade and lift off. */
+	.colInnDiv { /* What: Still Collapse Inner Div. Why: The hint should simply appear. How: This turns the fade and drop off. */
 
 
 		transition : none;
@@ -349,7 +348,7 @@
 
 }
 
-.modHinSpa { /* What: Mode Hint Span. Why: The hint reads as quiet supporting text under the name. How: This sets it small and muted with balanced wrapping. */
+.modHinSpa { /* What: Mode Hint Span. Why: The hint reads as quiet supporting text under the name. How: This sets it small and muted with pretty text wrapping. */
 
 
 	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -369,7 +368,7 @@
 
 
 
-.styPreBut { /* What: Style Preview Button. Why: Each row can play a live preview of its style without selecting it. How: This draws a small outlined accent button pushed to the row's right edge, and eases its press and focus ring. */
+.styPreBut { /* What: Style Preview Button. Why: Each row can play a live preview of its style without selecting it. How: This draws a small outlined accent button pushed to the row's right edge, and eases its hover fill, disabled dimming, press, and focus ring. */
 
 
 	align-self     : center;
@@ -417,7 +416,7 @@
 
 
 }
-.styPreBut:active { /* What: Pressed Style Preview Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.styPreBut:active { /* What: Pressed Style Preview Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */

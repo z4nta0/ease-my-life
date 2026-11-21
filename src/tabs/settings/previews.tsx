@@ -32,9 +32,7 @@ import { PicStrCom } from '../../ui/picker-strip.tsx'; // What: Picker Strip Com
  * stages play even under a system-level prefers-reduced-motion setting:
  * the motion is consented to, labeled, and contained in these stages, whose
  * own module leaves the previewed animations running, and PicStrCom's
- * forMotBoo does the same for the pick animation. The Settings copy itself
- * states that the app will not animate on its own while the OS setting
- * is on.
+ * forMotBoo does the same for the pick animation.
  *
  * An earlier version of these two stages instead honored prefers-
  * reduced-motion directly, rendering a static end-state with their own
@@ -69,7 +67,7 @@ import { PicStrCom } from '../../ui/picker-strip.tsx'; // What: Picker Strip Com
  * same fields' own boilerplate comments on their own lines (see the
  * "Repeated-shape object literals" comment exception in CLAUDE.md):
  *
- * - `id` (String): Id is PicStrCom's own required identifier field
+ * - `id` (String): ID is PicStrCom's own required identifier field
  *   for this mock candidate, compared against the picked candidate's
  *   own id to find its row/position.
  *
@@ -193,7 +191,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 
 		const carEleArr = carConRef.current ? [ ...carConRef.current.querySelectorAll< HTMLElement >( '[data-element-name-hook~="preCarDiv"]' ) ] : []; // What: Card Element Array. Why: The ripple style needs the actual rendered card DOM elements to animate directly. How: This queries every preCarDiv hook inside carConRef's own current element, or an empty array before it has mounted.
 
-		let ripCleTim : number; // What: Ripple Clear Timeout. Why: The ripple branch below may schedule a cleanup timeout that this same effect's own cleanup function later needs to be able to cancel. How: This starts undefined and is assigned only inside the ripple branch below.
+		let ripCleTim : number; // What: Ripple Cleanup Timeout. Why: The ripple branch below may schedule a cleanup timeout that this same effect's own cleanup function later needs to be able to cancel. How: This starts undefined and is assigned only inside the ripple branch below.
 
 
 		if ( styKeyStr === 'ripple' ) { // What: Ripple Style Check. Why: The exhale cascade below only applies when this preview is actually showing the ripple style. How: This restarts every mock card's own staggered exhale animation and schedules its cleanup.
@@ -204,7 +202,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 
 				carCurEle.classList.remove( cssModObj.preCarDivExhaling ); // What: Exhale Class Reset. Why: A card already mid-animation from a previous Play press must be reset before it can replay. How: This removes the module's preCarDivExhaling class so it can be re-added below to actually restart the CSS animation.
 
-				void carCurEle.offsetWidth; // What: Reflow Force. Why: Re-adding the same class immediately after removing it would otherwise be batched by the browser and never restart the animation. How: Reading offsetWidth forces a synchronous layout flush between the remove above and the add below.
+				void carCurEle.offsetWidth; // What: Reflow Force. Why: The class is removed and re-added on the same card, and this read sits between the two changes so the animation can restart. How: Reading offsetWidth makes the browser lay the card out between the remove above and the add below.
 
 				carCurEle.style.setProperty( '--exh-car-del', `${ iteIndNum * durMilFun( 'm03' ) }ms` ); // What: Exhale Delay Set. Why: Each card's own cascade position needs its own staggered start time. How: This writes the '--exh-car-del' custom property, read by the CSS animation, proportional to this card's own index. // Duration Base Minus 3 ~= 67.9ms
 
@@ -286,7 +284,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 
 
 
-		const parCleTim = setTimeout( () => setParIteArr( [] ), durMilFun( 'p09' ) ); // What: Particle Clear Timeout. Why: A rolled batch of particles must not linger onscreen forever once its own fly-out/glint animation has finished. How: This schedules parIteArr back to empty after the p09 duration step, which outlasts every particle's own p06 animation plus its random delay. // Duration Base Plus 9 ~= 1983.0ms
+		const parCleTim = setTimeout( () => setParIteArr( [] ), durMilFun( 'p09' ) ); // What: Particle Cleanup Timeout. Why: A rolled batch of particles must not linger onscreen forever once its own fly-out/glint animation has finished. How: This schedules parIteArr back to empty after the p09 duration step, which outlasts every particle's own p06 animation plus its random delay. // Duration Base Plus 9 ~= 1983.0ms
 
 
 
@@ -309,14 +307,14 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 	return (
 
 
-		<div className={ cssModObj.celPreDiv }>{ /* What: Celebration Preview Stage Div Element. Why: This is CelPreCom's own root element, sized to match the Today cards area so the preview reads as a faithful copy. How: This wraps the mock done-cards row and the particle overlay that plays on top of it. */ }
+		<div className={ cssModObj.celPreDiv }>{ /* What: Celebration Preview Div Element. Why: This is CelPreCom's own root element, sized to match the Today cards area so the preview reads as a faithful copy. How: This wraps the mock done-cards row and the particle overlay that plays on top of it. */ }
 
 
 			<div
 				ref={ carConRef }
 
 				className={ cssModObj.preLisDiv }
-			>{ /* What: Celebration Preview Cards Div Element. Why: The ripple style animates these specific card elements directly, so they need a stable container carConRef can query into. How: This renders one mock done-card per entry in PRE_CAR_ARR. */ }
+			>{ /* What: Preview List Div Element. Why: The ripple style animates these specific card elements directly, so they need a stable container carConRef can query into. How: This renders one mock done-card per entry in PRE_CAR_ARR. */ }
 
 
 				{ PRE_CAR_ARR.map( ( carCurObj ) => ( // What: Preview Card Map. Why: One mock done-card is needed per entry in PRE_CAR_ARR. How: This maps PRE_CAR_ARR to one preCarDiv row per entry, keyed by its own ideStr.
@@ -328,14 +326,14 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 						className={ cssModObj.preCarDiv }
 
 						data-element-name-hook='preCarDiv'
-					>{ /* What: Preview Card Div Element. Why: This mirrors the real Today tab's own done-card markup so the ripple/confetti/sparkle effects render identically here. How: This renders the check glyph and the card's own picker/name text. Its data-element-name-hook is read by the completion-celebration preview. */ }
+					>{ /* What: Preview Card Div Element. Why: This mirrors the real Today tab's own done-card markup so the ripple/confetti/sparkle effects render identically here. How: This renders the check glyph and the card's own picker/name text. Its data-element-name-hook is read by this component's own replay effect. */ }
 
 
 						<span
 							className={ cssModObj.carCheSpa }
 
 							aria-hidden='true'
-						>{ /* What: Check Span Element. Why: A completed Today card always shows a check glyph. How: This wraps the IcoSvgCom component rendering the 'cheEle' glyph. */ }
+						>{ /* What: Card Check Span Element. Why: A completed Today card shows a check glyph, so the mock card draws one. How: This wraps the IcoSvgCom component rendering the 'cheEle' glyph. */ }
 
 
 							<IcoSvgCom
@@ -355,12 +353,12 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 							<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: The picker name needs its own row, matching the real Today card markup. How: This wraps the single picker name span below. */ }
 
 
-								<span>{ carCurObj.picStr }</span>{ /* What: Meta Picker Span Element. Why: Every real Today card shows which picker an item came from. How: This renders the mock card's own picStr. */ }
+								<span>{ carCurObj.picStr }</span>{ /* What: Meta Picker Span Element. Why: A real Today card shows which picker an item came from. How: This renders the mock card's own picStr. */ }
 
 
 							</div>
 
-							<div className={ cssModObj.carNamDiv }>{ carCurObj.namStr }</div>{ /* What: Card Name Div Element. Why: Every real Today card shows the item's own name. How: This renders the mock card's own namStr. */ }
+							<div className={ cssModObj.carNamDiv }>{ carCurObj.namStr }</div>{ /* What: Card Name Div Element. Why: A real Today card shows the item's own name. How: This renders the mock card's own namStr. */ }
 
 
 						</div>
@@ -380,7 +378,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 				className={ cssModObj.preParDiv }
 
 				aria-hidden='true'
-			>{ /* What: Celebration Preview Particles Div Element. Why: The confetti/sparkle overlay renders above the mock cards but must never be exposed to assistive tech, since it is purely decorative. How: This renders one piece per entry in parIteArr, each already fully styled/positioned. */ }
+			>{ /* What: Preview Particle Div Element. Why: The confetti/sparkle overlay renders above the mock cards but must never be exposed to assistive tech, since it is purely decorative. How: This renders one piece per entry in parIteArr, each already fully styled/positioned. */ }
 
 
 				{ parIteArr.map( ( parCurObj ) => ( // What: Particle Item Map. Why: One piece is needed per entry in parIteArr. How: This maps parIteArr to one confetti or sparkle piece per entry, keyed by its own ideStr.
@@ -401,7 +399,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 								'--con-tra-off' : parCurObj.disNum + 'px',
 								animationDelay  : parCurObj.delNum + 'ms'
 							}}
-						/> // What: Confetti Piece Element. Why: This is one falling confetti piece of the celebration. How: This is styled entirely via CSS custom properties read by the conPieIta animation.
+						/> // What: Confetti Piece Italic Element. Why: This is one confetti piece of the celebration, flung outward from the center. How: This is styled by the CSS custom properties its animation reads, plus its own animationDelay.
 
 
 					) : ( // What: Sparkle Piece Branch. Why: A non-confetti particle renders as a sparkle piece instead. How: This renders the else branch, taken whenever parCurObj.kinStr isn't 'confetti'.
@@ -417,7 +415,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 								left           : parCurObj.lefNum + '%',
 								top            : parCurObj.topNum + '%'
 							}}
-						>{ /* What: Sparkle Piece Element. Why: This is one glinting sparkle piece of the celebration. How: This is positioned via inline style and renders the fixed sparkle glyph. */ }
+						>{ /* What: Sparkle Piece Span Element. Why: This is one glinting sparkle piece of the celebration. How: This is positioned via inline style and renders the fixed sparkle glyph. */ }
 
 
 							✦
@@ -491,7 +489,7 @@ function PicAniCom ( { repTokNum, styKeyStr } : PacProTyp ) : React.JSX.Element 
 	return (
 
 
-		<div className={ cssModObj.aniStaDiv }>{ /* What: Picker Animation Stage Div Element. Why: This is PicAniCom's own root element, matching the Pickers tab's real stage sizing so the preview reads as a faithful copy. How: This renders either the live PicStrCom cycle or a static fallback, based on whether Play has been pressed. */ }
+		<div className={ cssModObj.aniStaDiv }>{ /* What: Animation Stage Div Element. Why: This is PicAniCom's own root element, matching the Pickers tab's real stage sizing so the preview reads as a faithful copy. How: This renders either the live PicStrCom cycle or a static fallback, based on whether Play has been pressed. */ }
 
 
 			{ repTokNum > 0 ? ( // What: Play Pressed Check. Why: The real cycle animation should only mount once the user has actually pressed Play at least once. How: This renders PicStrCom while repTokNum is greater than 0, a static preview of the landing candidate's own name otherwise.
@@ -510,7 +508,7 @@ function PicAniCom ( { repTokNum, styKeyStr } : PacProTyp ) : React.JSX.Element 
 			) : ( // What: Static Pick Branch. Why: Before Play is first pressed, the stage still needs something meaningful to show instead of the cycling strip. How: This renders the else branch, taken while repTokNum is still 0.
 
 
-				<span className={ cssModObj.aniPicSpa }>{ picCanObj.name }</span> // What: Picker Preview Pick Span Element. Why: Before Play is first pressed, the stage still needs to show something meaningful. How: This renders the fixed landing candidate's own name as a static placeholder.
+				<span className={ cssModObj.aniPicSpa }>{ picCanObj.name }</span> // What: Animation Pick Span Element. Why: Before Play is first pressed, the stage still needs to show something meaningful. How: This renders the fixed landing candidate's own name as a static placeholder.
 
 
 			) }
@@ -532,7 +530,7 @@ function PicAniCom ( { repTokNum, styKeyStr } : PacProTyp ) : React.JSX.Element 
 
 // #region Exports
 
-export { CelPreCom, PicAniCom }; // What: Named Exports. Why: tab-settings.tsx renders both as the live previews for its own Completion Celebration and Picker Animation style pickers. How: This re-exports the 2 declared above; every other binding in this file is internal-only.
+export { CelPreCom, PicAniCom }; // What: Named Exports. Why: These are the two preview stages other files render. How: This exports the 2 components declared above by name.
 
 // #endregion Exports
 

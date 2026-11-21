@@ -15,8 +15,7 @@
  * the previewed animations here keep their motion under reduced motion, per
  * the Reduced motion rule's preview exception; the cards' ordinary transitions
  * still turn off. The card declarations are copied from the shared Today card
- * classes, resolved for these always-done mock cards, until the design-system
- * pass merges them.
+ * classes, resolved for these done mock cards.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -56,7 +55,7 @@
 
 /* #region preCarDiv */
 
-.preCarDiv { /* What: Preview Card Div. Why: Each mock card should look exactly like a done Today card, so the celebration renders the same as the real one. How: This lays out the check and body in the Today card's grid, with the done card's dimmed surface. */
+.preCarDiv { /* What: Preview Card Div. Why: Each mock card should look like a done Today card, so the celebration renders like the real one. How: This lays out the check and body in the Today card's grid, with the done card's dimmed surface, and eases its background, opacity, and hover border color. */
 
 
 	align-items           : center;
@@ -113,10 +112,10 @@
 
 /* #region carCheSpa */
 
-.carCheSpa { /* What: Card Check Span. Why: A done card shows a filled accent check. How: This draws the rounded check box with the button chrome reset, filled with the accent color and its glyph in the background color. */
+.carCheSpa { /* What: Card Check Span. Why: A done card shows a filled accent check. How: This draws the rounded check box with the button chrome reset, filled with the accent color and its glyph in the background color, and eases changes to its background, border, and glyph colors. */
 
 
-	-webkit-appearance : none;                                            /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping native control styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
+	-webkit-appearance : none;                                            /* What: WebKit Appearance. Why: This drops native control styling through the prefixed property. How: This resets the chrome through the prefixed property, the same as the standard appearance line below. */
 	align-items        : center;
 	appearance         : none;
 	background         : var( --acc-mai-col );                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -157,7 +156,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Check Icon SVG. Why: The spring only plays as the preview mounts, never on a Play press, so it isn't the previewed animation and someone who asked for less motion shouldn't see it. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Check Icon SVG. Why: The spring plays as the preview mounts, so it isn't the previewed animation and someone who asked for less motion shouldn't see it. How: This applies only when the reduced-motion preference is set. */
 
 
 	.cheIcoSvg { /* What: Still Check Icon SVG. Why: The check should simply appear. How: This turns the spring off. */
@@ -237,7 +236,7 @@
 
 }
 
-.conPieIta { /* What: Confetti Piece Italic. Why: Each piece bursts out from the center like the real confetti celebration. How: This draws a small accent chip at the stage's center, flung outward by the shared burst animation using its own --con-dir-ang, --con-tra-off, and --con-spi-ang. */
+.conPieIta { /* What: Confetti Piece Italic. Why: Each piece bursts out from the center like the real confetti celebration. How: This draws a small accent chip at the stage's center, flung outward by the shared burst animation using its own --con-dir-ang, --con-tra-off, --con-spi-ang, and --con-pie-opa. */
 
 
 	animation     : global( confettiCelebrateBurst ) var( --dur-ani-p06 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global confettiCelebrateBurst Keyframes. Why: The confettiCelebrateBurst keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */

@@ -15,9 +15,9 @@ import React from 'react'; // What: React. Why: Both documents are React compone
  * @summary
  * The Privacy Policy and Terms of Service themselves, each a component that
  * owns its document's full body copy and nothing else, so the text lives in
- * one place. The Settings modal renders them in its panel, and the build
- * renders them into the standalone /privacy and /terms pages, which load
- * them outside the browser, so this file imports only React.
+ * one place. The Settings modal renders them in its panel, and the build,
+ * which loads them outside the browser (so this file imports only React),
+ * renders them into the standalone /privacy and /terms pages.
  *
  * Sections:
  *  - Components
@@ -50,7 +50,7 @@ import React from 'react'; // What: React. Why: Both documents are React compone
  *
  * @example
  * ```tsx
- * PriPolCom({}) // => <PriPolCom />
+ * PriPolCom() // => <PriPolCom />
  * ```
  *
 */
@@ -61,7 +61,7 @@ function PriPolCom () : React.JSX.Element {
 	return (
 
 
-		<React.Fragment>{ /* What: Container Fragment Element. Why: The document's own top-level elements need one wrapper so whichever container shows the document can render them as a single child, without adding an extra DOM node of its own. How: This wraps the policy's own heading, sections, and lists below. */ }
+		<React.Fragment>{ /* What: Policy Body Fragment. Why: The document's own top-level elements need one wrapper so whichever container shows the document can render them as a single child, without adding an extra DOM node of its own. How: This wraps the policy's own heading, sections, and lists below. */ }
 
 
 			<h1>Privacy Policy</h1>{ /* What: Document Title Heading Element. Why: This is the document's own top-level heading naming which legal document this is. How: This renders as a plain h1 at the top of the document body. */ }
@@ -425,7 +425,7 @@ function PriPolCom () : React.JSX.Element {
  *
  * @example
  * ```tsx
- * TerSerCom({}) // => <TerSerCom />
+ * TerSerCom() // => <TerSerCom />
  * ```
  *
 */
@@ -436,7 +436,7 @@ function TerSerCom () : React.JSX.Element {
 	return (
 
 
-		<React.Fragment>{ /* What: Container Fragment Element. Why: The document's own top-level elements need one wrapper so whichever container shows the document can render them as a single child, without adding an extra DOM node of its own. How: This wraps the terms' own heading, sections, and lists below. */ }
+		<React.Fragment>{ /* What: Terms Body Fragment. Why: The document's own top-level elements need one wrapper so whichever container shows the document can render them as a single child, without adding an extra DOM node of its own. How: This wraps the terms' own heading, sections, and lists below. */ }
 
 
 			<h1>Terms and Conditions</h1>{ /* What: Document Title Heading Element. Why: This is the document's own top-level heading naming which legal document this is. How: This renders as a plain h1 at the top of the document body. */ }

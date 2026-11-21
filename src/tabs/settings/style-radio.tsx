@@ -5,9 +5,6 @@
 
 import cssModObj from './style-radio.module.css'; // What: CSS Module Object. Why: The style radio list is styled from its own module. How: This maps each class name in style-radio.module.css to its hashed module class.
 
-
-import type { JSX } from 'react'; // What: JSX. Why: The component declares the element it returns. How: This types its return as a JSX element.
-
 // #endregion Imports
 
 
@@ -42,12 +39,12 @@ type SrcProTyp = { groLabStr : string, groNamStr : string, onChange : ( optValSt
  * StyRadCom = Style Radio Component
  *
  * @summary
- * A named-style radio list (used for both the Picker animation and
- * Completion celebration pickers), reusing the exact same full-bleed
- * radio rows the Data tab's picker-mode selector uses (a dot, a name,
- * and a hint that expands only on the selected row), so Appearance's
- * style pickers look and behave consistently with the rest of the app
- * rather than introducing a new control pattern.
+ * A named-style radio list (used for both the Picker animation and Completion
+ * celebration pickers), mirroring the full-bleed radio rows the Data tab's
+ * picker-mode selector uses (a dot, a name, and a hint that expands only on
+ * the selected row), so Appearance's style pickers look and behave
+ * consistently with the rest of the app rather than introducing a new control
+ * pattern.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -80,18 +77,18 @@ type SrcProTyp = { groLabStr : string, groNamStr : string, onChange : ( optValSt
  *
 */
 
-function StyRadCom ( { groLabStr, groNamStr, onChange, onPreStyFun, radOptArr, value } : SrcProTyp ) : JSX.Element {
+function StyRadCom ( { groLabStr, groNamStr, onChange, onPreStyFun, radOptArr, value } : SrcProTyp ) : React.JSX.Element {
 
 
 	return (
 
 
-		<fieldset className={ cssModObj.styRadFie }>{ /* What: Style Radio Fieldset Element. Why: A native radio group needs a real fieldset/legend pairing for assistive tech, even though the legend itself stays visually hidden. How: This wraps the visually-hidden legend and the radio rows below. */ }{ /* A dedicated wrapper fieldset (rather than making modRadDiv itself a fieldset) since that class name is shared with the Data tab's picker-mode list, which renders it as a plain div nested inside its own fieldset, so this reset is scoped to just this usage. The legend is visually hidden, since the section's own visible heading (just above, outside this CarSurCom) already shows this same text, and a visible legend here would just duplicate it right above the radio rows. */ }
+		<fieldset className={ cssModObj.styRadFie }>{ /* What: Style Radio Fieldset Element. Why: A native radio group needs a real fieldset/legend pairing for assistive tech, even though the legend itself stays visually hidden. How: This wraps the visually-hidden legend and the radio rows below. */ }{ /* A dedicated wrapper fieldset rather than making modRadDiv itself a fieldset, so the reset applies only to this list. The legend is visually hidden, since the section's own visible heading, just above and outside this StyRadCom, already shows the same text. */ }
 
 
 			<legend className={ cssModObj.styRadLeg }>{ groLabStr }</legend>{ /* What: Style Radio Legend Element. Why: The group still needs a real accessible name, even with no visible legend text. How: This renders groLabStr, hidden visually but still exposed to assistive tech. */ }
 
-			<div className={ cssModObj.modRadDiv }>{ /* What: Radio Mode Div Element. Why: The actual rows need their own shared layout wrapper, reused from the Data tab's own picker-mode selector. How: This maps radOptArr into one label/row per option. */ }
+			<div className={ cssModObj.modRadDiv }>{ /* What: Mode Radio Div Element. Why: The actual rows need their own shared layout wrapper, reused from the Data tab's own picker-mode selector. How: This maps radOptArr into one label/row per option. */ }
 
 
 				{ radOptArr.map( ( optCurObj ) => { // What: Radio Option Map. Why: One full-bleed row is needed per entry in radOptArr. How: This maps radOptArr, deriving each row's own selected state before rendering it.
@@ -110,7 +107,7 @@ function StyRadCom ( { groLabStr, groNamStr, onChange, onPreStyFun, radOptArr, v
 							className={ cssModObj.modOptLab }
 
 							data-option-select-active={ optSelBoo || undefined } // What: Option Select Active Attribute. Why: The selected row is tinted and marked by its module, and a label has no aria state of its own to key that off. How: This sets the presence-only attribute while optSelBoo is true and removes it otherwise.
-						>{ /* What: Radio Mode Opt Label Element. Why: The native radio input, the dot, and the name/hint text all need to sit inside one clickable label. How: This wraps the hidden radio input, the visual dot, the name/hint block, and (optionally) a Preview button. */ }
+						>{ /* What: Mode Option Label Element. Why: The native radio input, the dot, and the name/hint text all need to sit inside one clickable label. How: This wraps the hidden radio input, the visual dot, the name/hint block, and (optionally) a Preview button. */ }
 
 
 							<input
@@ -122,33 +119,33 @@ function StyRadCom ( { groLabStr, groNamStr, onChange, onPreStyFun, radOptArr, v
 								type='radio'
 
 								onChange={ () => onChange( optCurObj.valStr ) }
-							/>{ /* What: Radio Option Input Element. Why: This is the actual native control backing the row's own selected state. How: This is checked while optSelBoo is true and selects this option's value on change. */ }
+							/>{ /* What: Mode Option Input Element. Why: This is the actual native control backing the row's own selected state. How: This is checked while optSelBoo is true and selects this option's value on change. */ }
 
 							<span
 								className={ cssModObj.modDotSpa }
 
 								aria-hidden='true'
-							></span>{ /* What: Radio Mode Dot Span Element. Why: The visual selected/unselected indicator is a styled dot, not the native radio's own default appearance. How: This is purely decorative, styled by its module off the parent label's own data-option-select-active attribute. */ }
+							></span>{ /* What: Mode Dot Span Element. Why: The visual selected/unselected indicator is a styled dot, not the native radio's own default appearance. How: This is purely decorative, styled by its module off the parent label's own data-option-select-active attribute. */ }
 
 
 
-							<span className={ cssModObj.modTexSpa }>{ /* What: Radio Mode Text Span Element. Why: The option's own name and its expanding hint need their own grouping. How: This wraps the name span and the always-mounted hint collapse below. */ }
+							<span className={ cssModObj.modTexSpa }>{ /* What: Mode Text Span Element. Why: The option's own name and its expanding hint need their own grouping. How: This wraps the name span and the always-mounted hint collapse below. */ }
 
 
-								<span className={ cssModObj.modNamSpa }>{ optCurObj.labStr }</span>{ /* What: Radio Mode Name Span Element. Why: Every row needs its own visible option name. How: This renders optCurObj's own labStr. */ }
+								<span className={ cssModObj.modNamSpa }>{ optCurObj.labStr }</span>{ /* What: Mode Name Span Element. Why: Every row needs its own visible option name. How: This renders optCurObj's own labStr. */ }
 
 
 								<div
 									className={ cssModObj.colDisDiv }
 
 									data-collapse-open-active={ optSelBoo || undefined } // What: Collapse Open Active Attribute. Why: Only the selected row's hint should be open, and its module keys the open state off this attribute. How: This sets the presence-only attribute while optSelBoo is true and removes it otherwise.
-								>{ /* What: Collapse Div Element. Why: The hint text needs to expand/collapse in place without ever unmounting, so its own height transition can actually animate. How: This sets its own data-collapse-open-active attribute from optSelBoo, driving a CSS grid-template-rows transition. */ }{ /* Always-mounted collapse (not <ColDisCom>, which unmounts the hint on deselect, since a freshly-inserted node can't transition its own grid-template-rows and the height would snap). Keeping it mounted lets the 0fr<->1fr glide run every time. */ }
+								>{ /* What: Collapse Disclosure Div Element. Why: The hint text needs to expand/collapse in place without ever unmounting, so its own height transition can actually animate. How: This sets its own data-collapse-open-active attribute from optSelBoo, driving a CSS grid-template-rows transition. */ }{ /* This collapse stays mounted, so the hint never unmounts and its grid-template-rows glide runs on each selection. */ }
 
 
 									<div className={ cssModObj.colInnDiv }>{ /* What: Collapse Inner Div Element. Why: The CSS grid-row transition needs an inner wrapper to measure/clip against. How: This wraps the hint span inside the collapsing region. */ }
 
 
-										<span className={ cssModObj.modHinSpa }>{ optCurObj.hinStr }</span>{ /* What: Radio Mode Hint Span Element. Why: Every row needs its own explanatory hint, shown only while selected. How: This renders optCurObj's own hinStr. */ }
+										<span className={ cssModObj.modHinSpa }>{ optCurObj.hinStr }</span>{ /* What: Mode Hint Span Element. Why: Every row needs its own explanatory hint, shown only while selected. How: This renders optCurObj's own hinStr. */ }
 
 
 									</div>
@@ -161,7 +158,7 @@ function StyRadCom ( { groLabStr, groNamStr, onChange, onPreStyFun, radOptArr, v
 
 
 
-							{ onPreStyFun && ( // What: Preview Button Check. Why: Not every caller wants a Preview button on each row. How: This renders the button only while the caller actually passed an onPreStyFun handler.
+							{ onPreStyFun && ( // What: Preview Button Check. Why: The Preview button is optional. How: This renders the button only while the caller actually passed an onPreStyFun handler.
 
 
 								<button
@@ -212,7 +209,7 @@ function StyRadCom ( { groLabStr, groNamStr, onChange, onPreStyFun, radOptArr, v
 
 // #region Exports
 
-export { StyRadCom }; // What: Named Export. Why: TabSetCom renders this list for both of its style pickers. How: This exports StyRadCom by name.
+export { StyRadCom }; // What: Named Export. Why: The Settings tab renders this list for its style pickers. How: This exports StyRadCom by name.
 
 // #endregion Exports
 
