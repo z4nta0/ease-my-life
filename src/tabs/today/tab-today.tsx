@@ -139,7 +139,7 @@ const stiHeiFun = ( tabCurEle : Element | null | undefined ) : number => tabCurE
 // #region Components
 
 type CelParTyp = { angNum? : number, delNum : number, disNum? : number, ideNum : number, opaStr? : string, posXcoNum? : number, posYcoNum? : number, rotNum? : number }; // What: Celebration Particle Type. Why: The confetti and sparkle celebrations each roll a batch of pieces into one list, read by whichever style is playing. How: Every piece has a delay and a key, a confetti piece adds its angle, distance, opacity, and spin, and a sparkle adds its position.
-type TocProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, onStaFeaFun : ( feaIdeStr : string ) => void, onStaPagFun : ( pagIdeStr : string ) => void, onStaPicFun : ( picIdeStr : string ) => void, staAppObj : StaAppTyp, synBefFun : () => Promise< void >, synNeeFun : () => boolean }; // What: Tab-Today-Component Props Type. Why: The Today tab reads and edits the whole app state, navigates to other tabs, starts tours that run at the app level, and waits for sync before building a new day's list. How: This types TabTodCom's props, named Ttd since Ttc already belongs to TabStaCom.
+type TocProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun? : ( tabIdeStr : string ) => void, onStaFeaFun : ( feaIdeStr : string ) => void, onStaPagFun : ( pagIdeStr : string ) => void, onStaPicFun : ( picIdeStr : string ) => void, staAppObj : StaAppTyp, synBefFun : () => Promise< void >, synNeeFun : () => boolean }; // What: Tab-Today-Component Props Type. Why: The Today tab reads and edits the whole app state, navigates to other tabs, starts tours that run at the app level, and waits for sync before building a new day's list. How: This types TabTodCom's props, named Toc since Ttc already belongs to TabStaCom.
 
 // #region TabTodCom
 
@@ -584,6 +584,35 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const repActBoo = cheDonBoo && maiEndBoo; // What: Replay Active Boolean. Why: This is the shared gate every count below branches on. How: This combines cheDonBoo with maiEndBoo.
 
 
+	// #region samVisFun
+
+	/**
+	 * samVisFun = Sample Visible Function
+	 *
+	 * @summary
+	 * Whether a sample picker or task's launcher card is on screen, and so
+	 * counts toward the ring and rail. It has to be a hidden sample, and
+	 * outside the first-time checklist phase it also has to be unresolved and
+	 * not share its name with a real record of its kind.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param rcdCurObj - Record Current Object: The sample picker or task
+	 *                    being checked.
+	 * @param samIdeArr - Sample Identifier Array: The sample ids of that kind,
+	 *                    ONB_SPI_ARR or ONB_STI_ARR.
+	 * @param allRcdArr - All Record Array: Every picker or task of that kind.
+	 *
+	 * @returns Whether the sample's launcher card counts toward the ring and
+	 * rail.
+	 *
+	 * @example
+	 * ```ts
+	 * samVisFun(rcdCurObj, samIdeArr, allRcdArr) // => true
+	 * ```
+	 *
+	*/
+
 	const samVisFun = ( rcdCurObj : { hidden? : boolean, id : string, name : string }, samIdeArr : string[], allRcdArr : { id : string, name : string }[] ) => { // What: Sample Visible Function. Why: A sample picker or task card only counts toward the ring while its own card is actually on screen, and that rule is identical for both kinds. How: This checks that rcdCurObj is a hidden sample, then (only once cheDonBoo) that it is still unresolved and not name-collided with a real record.
 
 
@@ -598,6 +627,33 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	};
 
+	// #endregion samVisFun
+
+
+	// #region samDonFun
+
+	/**
+	 * samDonFun = Sample Done Function
+	 *
+	 * @summary
+	 * Whether a sample picker or task's card counts as done in the first-time
+	 * phase: it has to be a hidden sample with a checklist entry.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param rcdCurObj - Record Current Object: The sample picker or task
+	 *                    being checked.
+	 * @param samIdeArr - Sample Identifier Array: The sample ids of that kind,
+	 *                    ONB_SPI_ARR or ONB_STI_ARR.
+	 *
+	 * @returns Whether the sample's card counts as done.
+	 *
+	 * @example
+	 * ```ts
+	 * samDonFun(rcdCurObj, samIdeArr) // => false
+	 * ```
+	 *
+	*/
 
 	const samDonFun = ( rcdCurObj : { hidden? : boolean, id : string }, samIdeArr : string[] ) => { // What: Sample Done Function. Why: The first-time phase counts a resolved sample card as done, the same way for pickers and tasks. How: This checks that rcdCurObj is a hidden sample that already has a checklist entry.
 
@@ -612,11 +668,13 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	};
 
+	// #endregion samDonFun
+
 
 	const tasAllArr = staAppObj.tasks; // What: Task All Array. Why: Every task count below reads the same task list. How: This reads staAppObj.tasks.
 
 
-	const picCarNum = ( shoCheBoo || repActBoo ) // What: Picker Card Number. Why: See the doc comment just above. How: This counts every visible sample picker card, or 0 while neither gate is open.
+	const picCarNum = ( shoCheBoo || repActBoo ) // What: Picker Card Number. Why: This is the ring's and rail's total of sample picker launcher cards currently on screen. How: This counts every visible sample picker card, or 0 while neither gate is open.
 		? staAppObj.pickers.filter( ( curPicObj ) => samVisFun( curPicObj, ONB_SPI_ARR, staAppObj.pickers ) ).length // What: Visible Count Branch. Why: A gate is open, so on-screen picker cards count. How: This counts the pickers samVisFun accepts.
 		: 0; // What: Closed Branch. Why: Neither gate is open, so no picker cards are showing. How: This returns 0.
 
@@ -666,7 +724,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const [ curNowObj, setCurNowObj ] = React.useState( () => new Date() ); // What: Current Now Object And Setter. Why: The header's own kicker line needs a live-updating clock, re-rendered at the top of every minute rather than spamming setState every second. How: This starts at the current Date and is advanced by the effect below.
 
 
-	React.useEffect( () => { // What: Clock Tick Effect. Why: See the doc comment just above. How: This waits until the next exact minute boundary, ticks once, then ticks every 60 seconds after that.
+	React.useEffect( () => { // What: Clock Tick Effect. Why: The header's kicker line needs a clock that advances once a minute, on the minute. How: This waits until the next exact minute boundary, ticks once, then ticks every 60 seconds after that.
 
 
 		const ticCloFun = () => setCurNowObj( new Date() ); // What: Tick Clock Function. Why: Both the initial aligned tick and every later interval tick need this exact same update. How: This writes a fresh Date into curNowObj.
@@ -747,10 +805,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const [ jusCheStr, setJusCheStr ] = React.useState< string | null >( null ); // What: Just Checked String And Setter. Why: A just-completed row needs a brief "fresh" cue, keyed by its own eid. How: This is set by hanCheFun below and cleared 700ms later.
+	const [ jusCheStr, setJusCheStr ] = React.useState< string | null >( null ); // What: Just Checked String And Setter. Why: A just-completed row needs a brief "fresh" cue, keyed by its own eid. How: This is set by hanCheFun below and cleared once the check ripple's p05 duration step ends.
 
-	const rinEleRef = React.useRef< HTMLDivElement | null >( null );            // What: Ring Element Reference. Why: The celebration effect below needs a direct DOM handle to trigger CSS classes on. How: This is attached to the .ring div's own ref prop below.
-	const stkEleRef = React.useRef< HTMLDivElement | null >( null );            // What: Streak Element Reference. Why: The streak-pulse effect below needs a direct DOM handle to trigger its own CSS class on. How: This is attached to the .streak div's own ref prop below.
+	const rinEleRef = React.useRef< HTMLDivElement | null >( null );            // What: Ring Element Reference. Why: The celebration effect below needs a direct DOM handle to trigger CSS classes on. How: This is attached to the proRinDiv div's own ref prop below.
+	const stkEleRef = React.useRef< HTMLDivElement | null >( null );            // What: Streak Element Reference. Why: The streak-pulse effect below needs a direct DOM handle to trigger its own CSS class on. How: This is attached to the todStkDiv div's own ref prop below.
 	const preDonRef = React.useRef( donCouNum );                                // What: Previous Done Reference. Why: The celebration effect needs last render's own donCouNum to detect a genuine rise. How: This starts at the initial donCouNum and is overwritten at the end of that same effect.
 	const preFulRef = React.useRef( totCouNum > 0 && donCouNum === totCouNum ); // What: Previous Full Reference. Why: The celebration effect needs last render's own completion state to detect a genuine 0-to-1 transition into "all done". How: This starts at the initial completion state and is overwritten at the end of that same effect.
 	const preClaRef = React.useRef( !!staAppObj.today.streakClaimed );          // What: Previous Claimed Reference. Why: The streak-pulse effect needs last render's own claimed state to detect a genuine false-to-true transition. How: This starts at the initial claimed state and is overwritten at the end of that same effect.
@@ -1099,7 +1157,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			const heaHeiNum = heaCurEle.offsetHeight; // What: Header Height Number. Why: This is the header's own real rendered height. How: This reads heaCurEle.offsetHeight.
 
 			const raiCurEle = raiEleRef.current;                                                    // What: Rail Current Element. Why: The rail only contributes to the sticky offset while it is stacked horizontally, which needs its own live check below. How: This reads raiEleRef.current.
-			const raiHorBoo = !!raiCurEle && getComputedStyle( raiCurEle ).flexDirection === 'row'; // What: Rail Horizontal Boolean. Why: On mobile the rail flips to flex-direction: row and stacks below the header as a horizontal pill bar; this detects that state via computed style so it works whether triggered by the viewport breakpoint or the mobile-preview tweak. How: This reads raiCurEle's own live computed flexDirection.
+			const raiHorBoo = !!raiCurEle && getComputedStyle( raiCurEle ).flexDirection === 'row'; // What: Rail Horizontal Boolean. Why: On mobile the rail flips to flex-direction: row and stacks below the header as a horizontal pill bar; this detects that state via computed style, so it follows the viewport breakpoint. How: This reads raiCurEle's own live computed flexDirection.
 			const raiHeiNum = raiHorBoo ? raiCurEle.offsetHeight : 0;                               // What: Rail Height Number. Why: Only a horizontally-stacked rail contributes its own height to the sticky offset. How: This reads raiCurEle.offsetHeight only while raiHorBoo, otherwise 0.
 
 			// #endregion Height Measurement
@@ -1442,7 +1500,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 					const picResObj = PIC_NAM_OBJ.picIteFun( picRcdObj as PicRcdTyp, staAppObj.items, { forIdeStr : nexIteObj.id } ); // What: Pick Result Object. Why: Forcing the specific next item still needs to run through the real picking engine so its own value/pending mutations compute correctly. How: This calls PIC_NAM_OBJ.picIteFun with forIdeStr set to nexIteObj's own id. // What: Type Assertion Note. Why: A row's picker is typed as possibly a stand-in. How: A reroll only ever runs on a real pick card, whose picker is a full record, so it's read as one here.
 
 
-					actStoObj.swaIteFun( entRcdObj.eid, nexIteObj.id, { // What: Set Entry Item Call. Why: This stages the new pick's own value/weight mutation as pending, applied only once the entry is marked done, preserving the "nothing changes until you actually do it" contract. How: This writes nexIteObj's own id plus picResObj's own updArr/patObj/depBoo.
+					actStoObj.swaIteFun( entRcdObj.eid, nexIteObj.id, { // What: Swap Item Call. Why: This stages the new pick's own value/weight mutation as pending, applied only once the entry is marked done, preserving the "nothing changes until you actually do it" contract. How: This writes nexIteObj's own id plus picResObj's own updArr/patObj/depBoo.
 
 
 						bumpPick    : true,             // What: Bump Pick. Why: A re-roll counts as a fresh pick once the entry is done. How: This asks the store to bump the item's own pick stats on completion.
@@ -1469,7 +1527,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				if ( picResObj.picObj ) { // What: Picked Guard. Why: A pick can legitimately come back empty (no eligible candidates), in which case there is nothing to stage. How: This only proceeds once picResObj.picObj exists.
 
 
-					actStoObj.swaIteFun( entRcdObj.eid, picResObj.picObj.id, { // What: Set Entry Item Call. Why: Same staging contract as the ease-up branch above: nothing changes until the entry is marked done. How: This writes picResObj.picObj's own id plus picResObj's own updArr/patObj/depBoo.
+					actStoObj.swaIteFun( entRcdObj.eid, picResObj.picObj.id, { // What: Swap Item Call. Why: Same staging contract as the ease-up branch above: nothing changes until the entry is marked done. How: This writes picResObj.picObj's own id plus picResObj's own updArr/patObj/depBoo.
 
 
 						bumpPick    : true,                // What: Bump Pick. Why: A re-roll counts as a fresh pick once the entry is done. How: This asks the store to bump the item's own pick stats on completion.
@@ -1522,7 +1580,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	React.useEffect( () => { // What: Rail Edge Fade Effect. Why: See the doc comment just above. How: This toggles both classes on scroll, on resize, and once immediately on mount/dependency change.
+	React.useEffect( () => { // What: Rail Edge Fade Effect. Why: See the doc comment just above. How: This toggles both edge attributes on scroll, on resize, and once immediately on mount/dependency change.
 
 
 		const raiCurEle = raiEleRef.current; // What: Rail Current Element. Why: Every check below reads this same node's own scroll position. How: This reads raiEleRef.current once.
@@ -1614,7 +1672,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 			const botEdgBoo = scrCurEle // What: Bottom Edge Boolean. Why: A user scrolled all the way to the end should always spy the LAST section, even if its own header can never reach the spy line. How: This checks either the scroller's own metrics or, without one, the window's.
-				? scrCurEle.scrollTop + scrCurEle.clientHeight >= scrCurEle.scrollHeight - 2        // What: Scroller Bottom Branch. Why: The list normally scrolls inside .main. How: This checks whether that scroller is within 2px of its own end.
+				? scrCurEle.scrollTop + scrCurEle.clientHeight >= scrCurEle.scrollHeight - 2        // What: Scroller Bottom Branch. Why: The list normally scrolls inside the app's main scroller (the appConMai element). How: This checks whether that scroller is within 2px of its own end.
 				: window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2; // What: Window Bottom Branch. Why: Without a scroll container the page itself scrolls. How: This checks whether the window is within 2px of the document end.
 
 			// #endregion Spy Measurements
@@ -1703,6 +1761,31 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	}, [ groDisArr.length, bloOrdArr, shoFeaBoo ] ); // What: Effect Dependency Array. Why: A changed group count, block order, or App Features visibility can all change which sections even exist to spy on. How: Each of these 3 can add/remove a whole section.
 
 
+	// #region jumGroFun
+
+	/**
+	 * jumGroFun = Jump Group Function
+	 *
+	 * @summary
+	 * The rail buttons' click handler. It highlights the group at once,
+	 * scrolls the content column to the group's section just beneath the
+	 * sticky offset, and pins the group active when it is too near the end of
+	 * the list to reach the spy line.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param groIdeStr - Group Identifier String: The block id to scroll to, a
+	 *                    group name or a sentinel such as '__reminders'.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * jumGroFun(groIdeStr) // => void
+	 * ```
+	 *
+	*/
+
 	const jumGroFun = ( groIdeStr : string ) => { // What: Jump Group Function. Why: This is the actual click handler behind every rail button, smooth-scrolling the content column to the named section. How: This resolves the sticky offset, computes a target scroll position, pins the group if it can't reach the spy line, then scrolls.
 
 
@@ -1767,6 +1850,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 	};
+
+	// #endregion jumGroFun
 
 	// #endregion Group Rail Scroll Spy
 
@@ -1918,6 +2003,31 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	};
 
 
+	// #region cloModFun
+
+	/**
+	 * cloModFun = Close Mode Function
+	 *
+	 * @summary
+	 * Leaves Edit Mode. Unless the close is a commit it first restores the
+	 * saved group and picker orders from the entry snapshot. It then clears
+	 * the snapshot, turns Edit Mode off, and keeps the banner mounted through
+	 * its collapse-out.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param cmtEdiBoo - Commit Edit Boolean: True keeps every drag made this
+	 *                    session, false discards them.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * cloModFun(true) // => void
+	 * ```
+	 *
+	*/
+
 	const cloModFun = ( cmtEdiBoo : boolean ) => { // What: Close Mode Function. Why: Leaving Edit Mode needs to either keep or discard every drag made during the session, then play the banner's own collapse-out. How: This reverts to ordSnaRef's own snapshot unless cmtEdiBoo, clears the snapshot, flips ediModBoo off, and stages banCloBoo.
 
 
@@ -1941,6 +2051,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 	};
+
+	// #endregion cloModFun
 
 
 	const cloModRef = React.useRef( cloModFun ); // What: Close Mode Reference. Why: The Escape listener below lives for a whole Edit Mode session, so the cloModFun it closed over would read that session's first-render state, including a stale closing guard. How: This holds the newest cloModFun, kept current by the sync effect below.
@@ -2030,7 +2142,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			hanDraEle   : secCurEle,                                                             // What: Handle Drag Element. Why: The whole row moves, not just its grip. How: This passes secCurEle.
 			iteSelStr   : '[data-element-name-hook~="todGroSec"]',                               // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the todGroSec hook selector.
 			onEndDraFun : () => emlTouObj.set( { draActBoo : false } ),                          // What: On End Drag Function. Why: The coach must reappear once the gesture ends. How: This publishes draActBoo : false onto the shared tour bus.
-			onStaDraFun : () => emlTouObj.set( { draActBoo : true } ),                           // What: On Start Drag Function. Why: Dragging a group should hide the mini-tour coach for the gesture's own duration (see Today's own "Movable IcoSvgCom" tour step), since its tooltip card can sit right over the group being dragged. How: This publishes draActBoo : true onto the shared tour bus, a harmless no-op when no tour is mounted.
+			onStaDraFun : () => emlTouObj.set( { draActBoo : true } ),                           // What: On Start Drag Function. Why: Dragging a group should hide the mini-tour coach for the gesture's own duration (see Today's own "Movable Icon" tour step), since its tooltip card can sit right over the group being dragged. How: This publishes draActBoo : true onto the shared tour bus, a harmless no-op when no tour is mounted.
 			scrConEle   : maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' ), // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest appConMai hook ancestor.
 
 			onDroOrdFun : ( ordNumArr ) => { // What: On Drop Order Function. Why: The actual persisted group order needs to be recomputed from the drop's own DOM-position indices. How: This maps ordNumArr back through shoOrdRef's own shown order, then merges the result into staAppObj.groupOrder.
@@ -2338,7 +2450,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-					carEntArr.push( { carBoo : true, entObj : exiEntObj } ); // What: Carried Entry Push. Why: A not-yet-done entry from the current period must persist verbatim, locked, rather than being replaced. How: This wraps exiEntObj in a { _carry, entry } marker for the commit step below.
+					carEntArr.push( { carBoo : true, entObj : exiEntObj } ); // What: Carried Entry Push. Why: A not-yet-done entry from the current period must persist verbatim, locked, rather than being replaced. How: This wraps exiEntObj in a { carBoo, entObj } marker for the commit step below.
 
 					const carIteObj = staAppObj.items.find( ( curIteObj ) => curIteObj.id === exiEntObj.itemId ); // What: Carried Item Object. Why: The carried item's own name still needs to join picNamSet, same as a fresh pick would. How: This finds the item matching exiEntObj's own itemId.
 
@@ -2406,7 +2518,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 					});
 
-					ordSloArr.push({ // What: Ordered Slot Push. Why: The day-off card still needs its own animation slot, in encounter order alongside every pick. How: This pushes a { pickerId, info } pair keyed by picIdeStr.
+					ordSloArr.push({ // What: Ordered Slot Push. Why: The day-off card still needs its own animation slot, in encounter order alongside every pick. How: This pushes a { picStr, infObj } pair keyed by picIdeStr.
 
 
 						picStr : picIdeStr, // What: Picker String. Why: Slots are keyed by the picker that produced them. How: This passes picIdeStr.
@@ -2459,7 +2571,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 				});
 
-				ordSloArr.push({ // What: Ordered Slot Push. Why: This pick still needs its own animation slot, in encounter order. How: This pushes a { pickerId, info } pair keyed by picIdeStr.
+				ordSloArr.push({ // What: Ordered Slot Push. Why: This pick still needs its own animation slot, in encounter order. How: This pushes a { picStr, infObj } pair keyed by picIdeStr.
 
 
 					picStr : picIdeStr, // What: Picker String. Why: Slots are keyed by the picker that produced them. How: This passes picIdeStr.
@@ -2496,7 +2608,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 				});
 
-				ordSloArr.push({ // What: Ordered Slot Push. Why: This charging card still needs its own animation slot, in encounter order. How: This pushes a { pickerId, info } pair keyed by picIdeStr.
+				ordSloArr.push({ // What: Ordered Slot Push. Why: This charging card still needs its own animation slot, in encounter order. How: This pushes a { picStr, infObj } pair keyed by picIdeStr.
 
 
 					picStr : picIdeStr, // What: Picker String. Why: Slots are keyed by the picker that produced them. How: This passes picIdeStr.
