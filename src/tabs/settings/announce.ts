@@ -39,10 +39,8 @@ let annStaFun : ( mesTexStr : string, mesOptObj? : { assBoo? : boolean } ) => vo
  * @summary
  * Builds the one screen-reader live region the whole app announces
  * through, once, at module load, and assigns annStaFun's real
- * implementation. The region has to exist before any message arrives,
- * since a region that mounts together with its own text is announced
- * unreliably (or not at all) by several browser and screen-reader
- * pairs. When the page body doesn't exist yet, attaching waits for
+ * implementation. The region is created once, before any message is set
+ * on it. When the page body doesn't exist yet, attaching waits for
  * DOMContentLoaded.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -58,7 +56,7 @@ let annStaFun : ( mesTexStr : string, mesOptObj? : { assBoo? : boolean } ) => vo
  *
 */
 
-(() => { // What: Announce Status Setup IIFE. Why: The live region must be created exactly once, at module load, since a region that mounts together with its own text is announced unreliably (or not at all) in several browser/screen-reader pairs. How: This builds the live region, attaches it to <body> (immediately or on DOMContentLoaded), and assigns the real implementation into the module-level annStaFun binding declared just above.
+(() => { // What: Announce Status Setup IIFE. Why: The live region is created once, at module load, before any message is set on it. How: This builds the live region, attaches it to <body> (immediately or on DOMContentLoaded), and assigns the real implementation into the module-level annStaFun binding declared just above.
 
 
 	// #region Live Region Element
@@ -119,10 +117,10 @@ let annStaFun : ( mesTexStr : string, mesOptObj? : { assBoo? : boolean } ) => vo
 	 *
 	*/
 
-	annStaFun = ( mesTexStr, mesOptObj ) => { // What: Announce Status Function. Why: This is the actual exported implementation, assigned into the module-level annStaFun binding declared just above this IIFE. How: This updates the region's own politeness, clears its text, then sets the new text on the next tick so the change is reliably detected.
+	annStaFun = ( mesTexStr, mesOptObj ) => { // What: Announce Status Function. Why: This is the actual exported implementation, assigned into the module-level annStaFun binding declared just above this IIFE. How: This updates the region's own politeness, clears its text, then sets the new text after a short delay.
 
 
-		if ( !mesTexStr ) return; // What: No Message Guard. Why: There is nothing useful to annStaFun for an empty/falsy message. How: This bails out without touching the region at all.
+		if ( !mesTexStr ) return; // What: No Message Guard. Why: An empty or falsy message has nothing to announce. How: This bails out without touching the region at all.
 
 
 
@@ -133,7 +131,7 @@ let annStaFun : ( mesTexStr : string, mesOptObj? : { assBoo? : boolean } ) => vo
 
 		clearTimeout( annTimNum ); // What: Timeout Clear. Why: A rapid repeat call must not let an earlier delayed set race this newer one. How: This cancels whatever timeout was previously scheduled.
 
-		annTimNum = setTimeout( () => { livRegEle.textContent = mesTexStr; }, 60 ); // What: Timeout Schedule. Why: Setting the text on the very next tick (rather than immediately) is what makes even an identical repeat message reliably re-announced. How: This schedules the real text write 60ms later.
+		annTimNum = setTimeout( () => { livRegEle.textContent = mesTexStr; }, 60 ); // What: Timeout Schedule. Why: The text is set after a short delay, rather than immediately, so the cleared region and the new text arrive as separate changes. How: This schedules the real text write 60ms later.
 
 
 	};

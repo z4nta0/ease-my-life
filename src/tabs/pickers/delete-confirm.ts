@@ -41,8 +41,7 @@ import { redMotFun } from '../../utils/motion.ts'; // What: Reduced Motion Funct
  *
  * @summary
  * Holds a pool's delete confirmation. conDelStr is the id of the row showing
- * its confirm row, set through setConDelStr when its delete button is
- * pressed and cleared once the delete goes ahead. conLeaStr is the id of the
+ * its confirm row, set through setConDelStr. conLeaStr is the id of the
  * row playing its leaving animation after Cancel. canConFun backs out of the
  * pending delete: under reduced motion it clears the confirm state at once,
  * and otherwise it marks the row as leaving, then clears both once the
@@ -101,7 +100,7 @@ function useDelConFun () : { canConFun : () => void, conDelStr : string | null, 
 
 
 
-		setConLeaStr( conDelStr ); // What: Leaving Stage Call. Why: The confirm row needs to actually play its own out-animation now. How: This copies the current conDelStr into conLeaStr, which the pool row applies as a className modifier.
+		setConLeaStr( conDelStr ); // What: Leaving Stage Call. Why: The confirm row needs to actually play its own out-animation now. How: This copies the current conDelStr into conLeaStr.
 
 		setTimeout( () => { // What: Delayed Clear Call. Why: The confirm row must not fully disappear until its own out-animation has had time to actually play. How: This clears both conLeaStr and conDelStr once the exit's base duration step has passed.
 
@@ -119,7 +118,7 @@ function useDelConFun () : { canConFun : () => void, conDelStr : string | null, 
 
 
 
-	return { canConFun, conDelStr, conLeaStr, setConDelStr }; // What: Delete Confirm Return. Why: The pool rows read both ids, the delete button and the confirmed delete set the confirming id, and the Cancel button calls the handler. How: This returns canConFun, both ids, and setConDelStr.
+	return { canConFun, conDelStr, conLeaStr, setConDelStr }; // What: Delete Confirm Return. Why: The caller needs the confirm state, its setter, and the Cancel handler. How: This returns canConFun, both ids, and setConDelStr.
 
 
 }

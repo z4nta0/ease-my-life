@@ -13,9 +13,9 @@ import type { RefObject } from 'react'; // What: Ref Object. Why: The frozen row
  * list-sorting.ts = List Sorting
  *
  * @summary
- * The Data tab's shared list-sorting helpers: one comparator that sorts every
- * section and item list by the same vocabulary of keys, and a helper that
- * keeps the row being edited from jumping around a live sort.
+ * The Data tab's shared list-sorting helpers: one comparator that sorts rows
+ * by a shared vocabulary of keys, and a helper that keeps the row being
+ * edited from jumping around a live sort.
  *
  * Sections:
  *  - Types
@@ -30,7 +30,7 @@ import type { RefObject } from 'react'; // What: Ref Object. Why: The frozen row
 
 // #region Types
 
-type SorRowTyp = { actBoo? : boolean | null, booNum? : number | null, couNum? : number | null, datNum? : number | null, groStr? : string | null, namStr : string, oddNum? : number | null, ranNum? : number | null, typStr? : string | null }; // What: Sort Row Type. Why: The Data tab sorts items, conditionals, reminders, and pickers with one comparator, each carrying different fields. How: This is any row with a name, its other fields read by whichever sort key applies.
+type SorRowTyp = { actBoo? : boolean | null, booNum? : number | null, couNum? : number | null, datNum? : number | null, groStr? : string | null, namStr : string, oddNum? : number | null, ranNum? : number | null, typStr? : string | null }; // What: Sort Row Type. Why: One comparator sorts rows that each carry different fields. How: This is any row with a name, its other fields read by whichever sort key applies.
 
 // #endregion Types
 
@@ -45,21 +45,14 @@ type SorRowTyp = { actBoo? : boolean | null, booNum? : number | null, couNum? : 
  *
  * @summary
  * Keeps whichever row is currently open for editing from jumping
- * around a live sort (picker items and reminders both write each
- * keystroke straight to the store, so their sort key can change mid-
- * edit): a brand-new row (still being named for the first time, id
- * === newIdeStr) pins to the very top, matching where its own
+ * around a live sort: a brand-new row (still being named for the first
+ * time, id === newIdeStr) pins to the very top, matching where its own
  * "+ Add" button sits, rather than wherever its still-default values
  * would otherwise sort it; an existing row being edited freezes at
  * whatever index it already occupied when editing began, instead of
- * chasing its live-typed values through the sort in real time.
- * froRowRef is a plain useRef({}) owned by the caller, persisted
- * across renders for as long as opeIdeStr stays the same; the caller is
- * responsible for replaying the row's entrance animation once its
- * editor actually closes (opeIdeStr changes away), so it settles into
- * its now-current live position with the same visual treatment a
- * freshly-created row already gets, rather than silently snapping
- * there.
+ * chasing its live-typed values through the sort. froRowRef is a ref
+ * owned by the caller, persisted across renders for as long as
+ * opeIdeStr stays the same.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -147,36 +140,30 @@ function freEdiFun< T extends { id : string } > ( sorLisArr : T[], opeIdeStr : s
  * sorEntFun = Sort Entries Function
  *
  * @summary
- * Shared sort vocabulary for the Data tab's section list (Conditionals
- * / Reminders / each picker card) and, per section, its own item list
- * (picker pool items, conditionals, reminders). Each list builds its
- * own array of { namStr, typStr, groStr, couNum, ranNum, oddNum,
- * booNum, datNum, actBoo } rows (fields that don't apply to a given row
- * are null) and sorts them with this one comparator, keyed by e.g.
+ * Shared sort vocabulary for lists of rows. Each list builds its own
+ * array of { namStr, typStr, groStr, couNum, ranNum, oddNum, booNum,
+ * datNum, actBoo } rows (fields that don't apply to a given row are
+ * null) and sorts them with this one comparator, keyed by e.g.
  * 'name-asc' or 'count-desc'.
  *
- * groStr/datNum/actBoo are N/A (null) for anything that doesn't have a
- * meaningful single value for that field (the Conditionals/Reminders
- * section as a whole, an item type with no such concept, or, for
- * date, a reminder with no next occurrence at all): those sort to the
- * top for the forward direction and the bottom for the reverse,
- * rather than being forced into a fake value. ranNum/oddNum/booNum are
- * different: null on a row means the field is irrelevant to that
- * row's own mode (mixed into the same list as rows it does apply to,
- * e.g. Odds/Boost only mean something for a weighted/dynamic
- * conditional, Range only for an ease-up/ease-down one), so those
- * always sort to the bottom in EITHER direction, rather than flipping
- * to the top on a reverse sort the way a genuinely missing value
- * would. Ties always fall back to name (A-Z); a reverse sort only
- * flips the primary field's comparison, never that tie-break.
+ * groStr/datNum/actBoo are N/A (null) for a row with no meaningful
+ * single value for that field: those sort to the top for the forward
+ * direction and the bottom for the reverse, rather than being forced
+ * into a fake value. ranNum/oddNum/booNum are different: null on a row
+ * means the field is irrelevant to that row's own mode, so those always
+ * sort to the bottom in EITHER direction, rather than flipping to the
+ * top on a reverse sort the way a genuinely missing value would. Ties
+ * always fall back to name (A-Z); a reverse sort only flips the primary
+ * field's comparison, never that tie-break.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param rowOneObj - Row One Object: The left-hand row to compare.
  * @param rowTwoObj - Row Two Object: The right-hand row to compare.
  * @param sorKeyStr - Sort Key String: The sort key, e.g. 'name-asc' or
- *                    'count-desc'; everything before the last dash names the
- *                    field, the trailing 'asc'/'desc' names the direction.
+ *                    'count-desc'; the part before the dash names the
+ *                    field, the part after it names the direction ('asc'
+ *                    or 'desc').
  *
  * @returns A standard Array.prototype.sort comparator result: negative
  * when rowOneObj sorts first, positive when rowTwoObj sorts first, 0 on a
@@ -194,9 +181,9 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 
 	// #region Sort Key Parsing
 
-	const [ fieNamStr, sorDirStr ] = sorKeyStr.split( '-' ); // What: Field Name String. Why: Every sort key packs which field to compare and which way, joined by a dash. How: This splits sorKeyStr once and keeps the part before the dash. // What: Sort Direction String. Why: Every branch below also reads the direction. How: This keeps the part after the dash.
+	const [ fieNamStr, sorDirStr ] = sorKeyStr.split( '-' ); // What: Field Name String. Why: Every sort key packs which field to compare and which way, joined by a dash. How: This splits sorKeyStr once and keeps the part before the dash. // What: Sort Direction String. Why: The reverse-sort flag below reads the direction. How: This keeps the part after the dash.
 
-	const revSorBoo = sorDirStr === 'desc'; // What: Reverse Sort Boolean. Why: Every branch below needs to know whether to flip its own comparison. How: This is true only when sorDirStr is exactly 'desc'.
+	const revSorBoo = sorDirStr === 'desc'; // What: Reverse Sort Boolean. Why: The branches that flip their own comparison on a descending sort need to know the direction. How: This is true only when sorDirStr is exactly 'desc'.
 
 	// #endregion Sort Key Parsing
 
@@ -204,13 +191,13 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 
 	// #region Comparison Helpers
 
-	const namSorFun = () => rowOneObj.namStr.localeCompare( rowTwoObj.namStr ); // What: Name Sort Function. Why: Every field's own tie-break, and the fallback for an unrecognized field, both need the same plain A-Z name comparison. How: This calls String.localeCompare between the two rows' own name fields.
+	const namSorFun = () => rowOneObj.namStr.localeCompare( rowTwoObj.namStr ); // What: Name Sort Function. Why: The tie-breaks and the unrecognized-field fallback all need the same plain A-Z name comparison. How: This calls String.localeCompare between the two rows' own name fields.
 
 
 	const dirNulFun = ( cmpOneAny : unknown, cmpTwoAny : unknown ) => { // What: Direction Null Function. Why: A field that's genuinely missing (not merely irrelevant) should sort to whichever end the current direction implies, rather than being forced into a fake value. How: This returns a real comparison result when either side is null/undefined, or null to mean both sides are real values and the caller does the actual field comparison.
 
 
-		const nulOneBoo = cmpOneAny == null; // What: Null One Boolean. Why: The 3 outcomes below all depend on which side (if any) is actually missing. How: This checks cmpOneAny with a loose null comparison, matching undefined too.
+		const nulOneBoo = cmpOneAny == null; // What: Null One Boolean. Why: The outcomes below all depend on which side (if any) is actually missing. How: This checks cmpOneAny with a loose null comparison, matching undefined too.
 		const nulTwoBoo = cmpTwoAny == null; // What: Null Two Boolean. Why: Same reasoning as nulOneBoo, for the other side. How: This checks cmpTwoAny with a loose null comparison, matching undefined too.
 
 
@@ -235,7 +222,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 	const lasNulFun = ( cmpOneAny : unknown, cmpTwoAny : unknown ) => { // What: Last Null Function. Why: A field that's irrelevant to a row (not missing, just N/A for its own mode) should always sort last in EITHER direction, unlike a genuinely missing value. How: This is the same idea as dirNulFun, except both null cases return a fixed "goes last" result regardless of revSorBoo.
 
 
-		const nulOneBoo = cmpOneAny == null; // What: Null One Boolean. Why: The 3 outcomes below all depend on which side (if any) is actually N/A. How: This checks cmpOneAny with a loose null comparison, matching undefined too.
+		const nulOneBoo = cmpOneAny == null; // What: Null One Boolean. Why: The outcomes below all depend on which side (if any) is actually N/A. How: This checks cmpOneAny with a loose null comparison, matching undefined too.
 		const nulTwoBoo = cmpTwoAny == null; // What: Null Two Boolean. Why: Same reasoning as nulOneBoo, for the other side. How: This checks cmpTwoAny with a loose null comparison, matching undefined too.
 
 
@@ -288,7 +275,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 		case 'type': { // What: Type Case Block. Why: Type has no N/A concept at all, unlike most other fields, so it skips straight to a real comparison. How: This compares the two rows' own type strings, flips for descending, and falls back to name on a tie.
 
 
-			const priCmpNum = rowOneObj.typStr!.localeCompare( rowTwoObj.typStr! ); // What: Primary Compare Number. Why: This is the actual field comparison this case exists to perform. How: This calls String.localeCompare between the two rows' own type fields. // What: Non-Null Note. Why: Only the lists whose rows all carry a type label offer the Type sort. How: The ! tells TypeScript both types are set here.
+			const priCmpNum = rowOneObj.typStr!.localeCompare( rowTwoObj.typStr! ); // What: Primary Compare Number. Why: This is the actual field comparison this case exists to perform. How: This calls String.localeCompare between the two rows' own type fields. // What: Non-Null Note. Why: This case has no N/A handling, so it expects every row to carry a type. How: The ! tells TypeScript both types are set here.
 
 
 
@@ -316,7 +303,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 
 		}
 
-		case 'count': { // What: Count Case Block. Why: Count is always a real number for every row, with no N/A concept at all. How: This compares the two rows' own count fields directly.
+		case 'count': { // What: Count Case Block. Why: Count has no N/A concept, so a missing count simply reads as 0. How: This compares the two rows' own count fields directly.
 
 
 			const priCmpNum = ( rowOneObj.couNum ?? 0 ) - ( rowTwoObj.couNum ?? 0 ); // What: Primary Compare Number. Why: This is the actual field comparison this case exists to perform. How: This subtracts rowTwoObj.couNum from rowOneObj.couNum, reading a missing count as 0, the same value a null count always gave the subtraction.
@@ -347,11 +334,11 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 
 		}
 
-		case 'range': return numLasFun( rowOneObj.ranNum, rowTwoObj.ranNum ); // What: Range Case Return. Why: Range only means something for an ease-up/ease-down conditional, so it always sorts last on any other mode. How: This defers entirely to numLasFun.
+		case 'range': return numLasFun( rowOneObj.ranNum, rowTwoObj.ranNum ); // What: Range Case Return. Why: A row with no range value sorts last in either direction. How: This defers entirely to numLasFun.
 
-		case 'odds': return numLasFun( rowOneObj.oddNum, rowTwoObj.oddNum ); // What: Odds Case Return. Why: Odds only means something for a weighted/dynamic conditional, so it always sorts last on any other mode. How: This defers entirely to numLasFun.
+		case 'odds': return numLasFun( rowOneObj.oddNum, rowTwoObj.oddNum ); // What: Odds Case Return. Why: A row with no odds value sorts last in either direction. How: This defers entirely to numLasFun.
 
-		case 'boost': return numLasFun( rowOneObj.booNum, rowTwoObj.booNum ); // What: Boost Case Return. Why: Boost only means something for a dynamic conditional, so it always sorts last on any other mode. How: This defers entirely to numLasFun.
+		case 'boost': return numLasFun( rowOneObj.booNum, rowTwoObj.booNum ); // What: Boost Case Return. Why: A row with no boost value sorts last in either direction. How: This defers entirely to numLasFun.
 
 		case 'active': { // What: Active Case Block. Why: actBoo can be genuinely N/A for a row with no single meaningful active state. How: This defers to dirNulFun first, then compares the two rows' own boolean actBoo fields.
 
@@ -363,7 +350,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 
 
 
-			if ( rowOneObj.actBoo !== rowTwoObj.actBoo ) { // What: Active Difference Check. Why: A plain boolean subtraction doesn't work, so an unequal pair needs its own explicit comparison. How: This picks -1/1 based on which row is active, then flips it for a descending sort.
+			if ( rowOneObj.actBoo !== rowTwoObj.actBoo ) { // What: Active Difference Check. Why: TypeScript doesn't allow subtracting booleans, so an unequal pair needs its own explicit comparison. How: This picks -1/1 based on which row is active, then flips it for a descending sort.
 
 
 				const priCmpNum = rowOneObj.actBoo ? -1 : 1; // What: Primary Compare Number. Why: An active row should sort before an inactive one, ascending. How: This picks -1 when rowOneObj is the active one, 1 otherwise.

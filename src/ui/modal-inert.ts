@@ -13,14 +13,12 @@ import React from 'react'; // What: React. Why: useModIneFun applies and lifts t
  * modal-inert.ts = Modal Inert
  *
  * @summary
- * Keeps keyboard focus and screen readers inside an open modal dialog. The
- * app's modals render into the body through a portal and mark themselves
- * aria-modal, but nothing stopped Tab from leaving them for the page behind,
- * where a keyboard user would land on controls they can't see. While a modal
- * is mounted, useModIneFun marks every other top-level element of the body
- * inert (unfocusable, unclickable, and hidden from assistive technology), and
- * lifts it again on unmount. Live regions are left alone, so announcements
- * made while the modal is open still reach screen readers.
+ * Keeps keyboard focus and screen readers inside an open modal dialog. While
+ * a modal is open, useModIneFun marks the other top-level elements of the
+ * body inert (unfocusable, unclickable, and hidden from assistive
+ * technology), and lifts it again when the modal closes or unmounts. Live
+ * regions are left alone, so announcements made while the modal is open
+ * still reach screen readers.
  *
  * Sections:
  *  - Hooks

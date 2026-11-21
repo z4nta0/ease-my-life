@@ -13,12 +13,10 @@ import React from 'react'; // What: React. Why: The watcher is a component built
  * unmount-watcher.ts = Unmount Watcher
  *
  * @summary
- * A component that renders nothing and only reports when it unmounts. The
- * Data tab places one inside each open editor row, so every way that row can
- * disappear (collapsing its card or section, a filter hiding it, or a switch
- * to another tab) runs the same "closing saves" handler that the row's own
- * collapse chevron does, without each of those paths having to know an
- * editor was open inside it.
+ * A component that renders nothing and only reports when it unmounts, so
+ * whatever removes it from the page runs its handler without that code
+ * having to know it was there. The Data tab places one inside each open
+ * editor row.
  *
  * Sections:
  *  - Components
