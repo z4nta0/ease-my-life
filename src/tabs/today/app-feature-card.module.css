@@ -11,8 +11,7 @@
  * tutorial is resolved, and a Cancel icon dismisses it. A tutorial that can't
  * run yet shows a dimmed check that explains why on tap, and its card takes
  * the warm "needs attention" tint. The card's declarations are copied from the
- * shared Today card classes the other cards still use, until the
- * design-system pass merges them.
+ * shared Today card classes the other cards use.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

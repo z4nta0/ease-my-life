@@ -10,8 +10,7 @@
  * where one is needed), the two first-sync choices, the failure note, and
  * the visually hidden status region. The rows and fields share their look
  * with the rest of the Settings tab and its support form, so their
- * declarations are copied here from those modules until the design-system
- * pass merges them.
+ * declarations are copied here from those modules.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

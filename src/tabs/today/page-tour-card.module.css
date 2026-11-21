@@ -10,7 +10,7 @@
  * spot starts the tour, the card fills with a done check once the tour is
  * finished, a Cancel icon dismisses it, and it slides out when it leaves the
  * list. The card's declarations are copied from the shared Today card classes
- * the other cards still use, until the design-system pass merges them.
+ * the other cards use.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
