@@ -772,7 +772,7 @@
 
 	.tabHeaDiv,
 	.tabRowDiv,
-	.conRowDiv { /* What: Tighter Log Table Grid. Why: The value columns need to shrink. How: This narrows them and the gap. */
+	.conRowDiv { /* What: Tighter Log Table Grid. Why: The value columns need to shrink. How: This narrows the last two value columns and the gap. */
 
 
 		gap                   : var( --spa-ver-m05 ) var( --spa-hor-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
