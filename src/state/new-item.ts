@@ -20,12 +20,8 @@ import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record T
  *
  * @summary
  * Item defaults by picker type. buiIteFun builds a brand-new item with the
- * defaults its picker's type calls for, without adding it anywhere: the
- * store's own addIteFun adds what it builds, and the Data tab uses the same
- * build for a new item's local draft, so a draft and the item it becomes
- * always start from identical defaults. modDefFun gives the fields every
- * item resets to when its picker changes type, shared by the Pickers tab's
- * edit save and the Data tab's draft picker.
+ * defaults its picker's type calls for, without adding it anywhere. modDefFun
+ * gives the fields every item resets to when its picker changes type.
  *
  * Sections:
  *  - Helpers
@@ -101,7 +97,7 @@ function buiIteFun ( curPicObj : Pick< PicRcdTyp, 'id' > & Partial< PicRcdTyp >,
 
 
 
-	const newIteObj : IteRcdTyp = { // What: New Item Object. Why: This is the actual item being added, in state.items' own shape. How: This bundles a fresh id, the de-duplicated name, pickerId, the resolved weight/value, and (for ease modes) a fresh drift band.
+	const newIteObj : IteRcdTyp = { // What: New Item Object. Why: This is the actual item being added, in state.items' own shape. How: This bundles an id, a never-picked item's starting fields, the de-duplicated name, pickerId, the resolved weight and value, and (for ease modes) a fresh drift band.
 
 
 		id         : optIdeStr || ranIdeFun( 'it_' ),                                          // What: ID. Why: Every item needs a stable id. How: This uses optIdeStr when given, else mints a random 'it_' id.
@@ -120,7 +116,7 @@ function buiIteFun ( curPicObj : Pick< PicRcdTyp, 'id' > & Partial< PicRcdTyp >,
 
 
 
-	return newIteObj; // What: New Item Return. Why: The caller adds this item to the store, or keeps it as a local draft. How: This returns newIteObj.
+	return newIteObj; // What: New Item Return. Why: The built item is this function's result. How: This returns newIteObj.
 
 
 }
@@ -182,7 +178,7 @@ function modDefFun ( newModStr : string, thrValNum : number ) : Partial< IteRcdT
 
 // #region Exports
 
-export { buiIteFun, modDefFun }; // What: Named Exports. Why: The store and the Data tab build new items, and reset items on a type change, the same way. How: This exports buiIteFun and modDefFun by name.
+export { buiIteFun, modDefFun }; // What: Named Exports. Why: Item building and the type-change reset are exported together. How: This exports buiIteFun and modDefFun by name.
 
 // #endregion Exports
 

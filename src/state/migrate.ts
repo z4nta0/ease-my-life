@@ -5,8 +5,8 @@
 
 import { CAD_NAM_OBJ } from '../core/cadence.ts';  // What: Cadence Namespace Object. Why: A picker's own saved cadence must be normalized to the current shape. How: This is called (enfWeeFun/norCadFun/isaCadFun) from migStaFun.
 import { HOL_NAM_OBJ } from '../core/holidays.ts'; // What: Holidays Namespace Object. Why: A save with no holiday list gets the canonical empty holidays shape. How: This is called (defStaFun) from migStaFun.
-import { newIdeFun   } from './ids.ts';            // What: New Identifier Function. Why: Migrated entries and new Today entries both need unique ids. How: This is called once per entry that needs one.
-import { norGroFun   } from '../core/pickers.ts';  // What: Normalize Group Function. Why: Every saved picker's group label is tidied and de-duplicated on load. How: This is called from migStaFun.
+import { newIdeFun   } from './ids.ts';            // What: New Identifier Function. Why: An entry saved without an eid needs a unique one. How: This is called once per entry that needs one.
+import { norGroFun   } from '../core/pickers.ts';  // What: Normalize Group Function. Why: Every saved picker's group label is Title Cased on load. How: This is called from migStaFun without an existing-group list.
 import { norPicFun   } from '../core/pickers.ts';  // What: Normalize Picker Function. Why: Every saved picker's display name is tidied on load. How: This is called from migStaFun.
 import { TAS_NAM_OBJ } from '../core/tasks.ts';    // What: Tasks Namespace Object. Why: Saved reminders and reminder options are normalized by the reminders engine, not this file. How: This is called (isaStaFun/norOptFun) from migStaFun.
 
@@ -141,10 +141,10 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	if ( curStaObj && Array.isArray( curStaObj.pickers ) && curStaObj.pickers.some( ( curPicObj : RawSavTyp ) => Array.isArray( curPicObj.itemIds ) ) ) { // What: Category-Collapse Backfill Guard. Why: The old category layer (picker.itemIds + item.categoryId) is collapsed into a direct item.pickerId link; detected by any picker still carrying an itemIds array. How: This rebuilds every item's own pickerId from whichever picker's itemIds listed it, then drops itemIds/categoryId/categories entirely.
 
 
-		const itePicObj : Record< string, string > = {}; // What: Item Picker Object And Guard. Why: The item map below needs O(1) lookup of which picker (if any) used to list a given item id. How: This starts empty and is filled by the loop directly below.
+		const itePicObj : Record< string, string > = {}; // What: Item Picker Object. Why: The item map below needs O(1) lookup of which picker (if any) used to list a given item id. How: This starts empty and is filled by the loop directly below.
 
 
-		for ( const curPicObj of curStaObj.pickers ) { // What: Item-Picker Fill Loop. Why: Every old itemIds list must be inverted into itePicObj before the item map below can use it. How: This iterates every picker with an itemIds array, filing each listed id under this picker's own id.
+		for ( const curPicObj of curStaObj.pickers ) { // What: Item-Picker Fill Loop. Why: Every old itemIds list must be inverted into itePicObj before the item map below can use it. How: This iterates every picker, filing each listed id under this picker's own id when it has an itemIds array.
 
 
 			if ( Array.isArray( curPicObj.itemIds ) ) for ( const ownIdeStr of curPicObj.itemIds ) itePicObj[ ownIdeStr ] = curPicObj.id; // What: Owned-ID Fill. Why: Every item id this picker used to own must map back to this picker's own id. How: This assigns curPicObj.id under ownIdeStr for every id in curPicObj.itemIds.
@@ -153,10 +153,10 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 		}
 
 
-		if ( Array.isArray( curStaObj.items ) ) { // What: Item Pickerid Rewrite Guard. Why: Only when items actually exist is there anything to rewrite. How: This maps every item to carry a real pickerId and drop its own old categoryId.
+		if ( Array.isArray( curStaObj.items ) ) { // What: Item Picker ID Rewrite Guard. Why: Only when items actually exist is there anything to rewrite. How: This maps every item to carry a real pickerId and drop its own old categoryId.
 
 
-			curStaObj.items = curStaObj.items.map( ( curIteObj : RawSavTyp ) => { // What: Item Picker Rewrite Map. Why: Every item must end up carrying a real pickerId. How: This maps each item, resolving its picker below.
+			curStaObj.items = curStaObj.items.map( ( curIteObj : RawSavTyp ) => { // What: Item Picker Rewrite Map. Why: Every item must end up with its own pickerId field, null when no picker lists it. How: This maps each item, resolving its picker below.
 
 
 				const rspIdeStr = curIteObj.pickerId || itePicObj[ curIteObj.id ] || null; // What: Resolved-Picker Identifier String. Why: An item may already carry a pickerId, or only be inferable from the old itemIds inversion above. How: This prefers curIteObj's own pickerId, falling back to itePicObj's lookup, then null.
@@ -165,7 +165,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
-				return { ...rmnFieObj, pickerId : rspIdeStr }; // What: Rewritten Item Return. Why: The caller needs this item's own real pickerId written, with categoryId gone. How: This spreads rmnFieObj with pickerId set to rspIdeStr.
+				return { ...rmnFieObj, pickerId : rspIdeStr }; // What: Rewritten Item Return. Why: The mapped item needs its own real pickerId written, with categoryId gone. How: This spreads rmnFieObj with pickerId set to rspIdeStr.
 
 
 			} );
@@ -175,7 +175,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
-		curStaObj.pickers = curStaObj.pickers.map( ( curPicObj : RawSavTyp ) => { // What: Picker Itemids Drop. Why: A picker no longer owns an itemIds list at all once items carry their own pickerId. How: This maps every picker to a copy without its itemIds.
+		curStaObj.pickers = curStaObj.pickers.map( ( curPicObj : RawSavTyp ) => { // What: Picker Item IDs Drop. Why: A picker no longer owns an itemIds list at all once items carry their own pickerId. How: This maps every picker to a copy without its itemIds.
 
 
 			const { itemIds : iteIdeArr, ...rmnFieObj } = curPicObj; // What: Item Identifier Array. Why: The itemIds list must be dropped entirely. How: This destructures itemIds off the picker as iteIdeArr, which goes unused. // What: Remaining Fields Object. Why: Every other field carries over. How: This keeps them in rmnFieObj.
@@ -239,14 +239,14 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	if ( curStaObj && Array.isArray( curStaObj.tasks ) && TAS_NAM_OBJ ) { // What: Stale One-Time Task Purge Guard. Why: A one-time reminder completed on a previous day shouldn't linger forever. How: This drops every task TAS_NAM_OBJ itself considers stale-once.
 
 
-		curStaObj.tasks = curStaObj.tasks.filter( ( curTasObj : RawSavTyp ) => !TAS_NAM_OBJ.isaStaFun( curTasObj ) ); // What: Stale-Once Filter. Why: Only TAS_NAM_OBJ itself knows the exact staleness rule for a one-time reminder. How: This keeps every task TAS_NAM_OBJ.isaStaFun reports false for.
+		curStaObj.tasks = curStaObj.tasks.filter( ( curTasObj : RawSavTyp ) => !TAS_NAM_OBJ.isaStaFun( curTasObj ) ); // What: Stale-Once Filter. Why: The staleness rule for a one-time reminder belongs to TAS_NAM_OBJ. How: This keeps every task TAS_NAM_OBJ.isaStaFun reports false for.
 
 
 	}
 
 
 
-	if ( curStaObj && Array.isArray( curStaObj.tasks ) ) { // What: Task Hidden-Flag Backfill Guard. Why: The hidden flag (lets a picker/task be kept but excluded from every list/count/generator run) was added later; used to tuck the Welcome Tour's own sample pickers/reminders out of sight without deleting their history. How: This backfills hidden:false on any task that doesn't already carry a real boolean there.
+	if ( curStaObj && Array.isArray( curStaObj.tasks ) ) { // What: Task Hidden-Flag Backfill Guard. Why: The hidden flag was added later, so a task saved before it needs hidden:false. How: This backfills hidden:false on any task that doesn't already carry a real boolean there.
 
 
 		curStaObj.tasks = curStaObj.tasks.map( ( curTasObj : RawSavTyp ) => ( typeof curTasObj.hidden === 'boolean' ? curTasObj : { ...curTasObj, hidden : false } ) ); // What: Task Hidden-Flag Map. Why: Only a task genuinely missing a real boolean hidden field needs patching. How: This passes a task through unchanged when hidden is already boolean, else spreads in hidden:false.
@@ -270,7 +270,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
-			return { // What: Backfilled Task Return. Why: The caller needs every new scheduling field present with a sensible default. How: This spreads curTasObj with dateMode/nthOrdinal/nthWeekday defaulted.
+			return { // What: Backfilled Task Return. Why: The mapped task needs every new scheduling field present with a sensible default. How: This spreads curTasObj with dateMode/nthOrdinal/nthWeekday defaulted.
 
 
 				...curTasObj, // What: Current Task Spread. Why: Every existing field must survive the backfill. How: This spreads curTasObj first so the defaults below only add fields.
@@ -293,20 +293,19 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	// #region Task Interval One-Shot Reset
 
 	/**
-	 * store.ts = Task Interval One-Shot Reset
+	 * migrate.ts = Task Interval One-Shot Reset
 	 *
 	 * @summary
-	 * `interval` is reused for weekly/monthly/annual's own "every N
-	 * ___", but defTasFun has ALWAYS unconditionally set interval:2
-	 * on every new task regardless of repeat kind (a leftover default
-	 * from when only the 'interval' repeat used it), so every pre-
-	 * existing weekly/monthly/annual reminder already carries a real
-	 * interval:2, completely unused until this migration existed.
-	 * Without this reset, every one of them would silently start
-	 * meaning "every 2 weeks/months/years" the moment this shipped.
-	 * This must run only ONCE: after a user deliberately sets an
-	 * interval via the new controls, this reset must never fire again
-	 * and clobber it, hence the _taskIntervalReset guard flag.
+	 * `interval` is reused for weekly/monthly/annual's own "every N ___", but
+	 * an earlier defTasFun set interval:2 on every new task regardless of
+	 * repeat kind (a leftover default from when only the 'interval' repeat
+	 * used it), so every pre-existing weekly/monthly/annual reminder already
+	 * carries a real interval:2, completely unused until this migration
+	 * existed. Without this reset, every one of them would silently start
+	 * meaning "every 2 weeks/months/years" the moment this shipped. This must
+	 * run only ONCE: after a user deliberately sets an interval via the new
+	 * controls, this reset must never fire again and clobber it, hence the
+	 * _taskIntervalReset guard flag.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -349,7 +348,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	// #region Data-Tab Collapse Defaults V2
 
 	/**
-	 * store.ts = Data-Tab Collapse Defaults V2
+	 * migrate.ts = Data-Tab Collapse Defaults V2
 	 *
 	 * @summary
 	 * The Data tab's main sections (Conditionals, Reminders, each
@@ -401,7 +400,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	// #region Reminders Stats-Default Flip
 
 	/**
-	 * store.ts = Reminders Stats-Default Flip
+	 * migrate.ts = Reminders Stats-Default Flip
 	 *
 	 * @summary
 	 * Reminders now count toward Stats by default, a one-time flip for
@@ -432,7 +431,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	// #region Onboarding Backfill
 
 	/**
-	 * store.ts = Onboarding Backfill
+	 * migrate.ts = Onboarding Backfill
 	 *
 	 * @summary
 	 * Onboarding was added later; existing users must NOT be re-
@@ -442,21 +441,14 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	 * checklist system entirely and unambiguously belongs to an
 	 * established account, not a first-time one.
 	 *
-	 * Without checklistDone set here too, the very next backfill below
-	 * (which defaults it to false for ANY onboarding object still
-	 * missing the field, including the one just created on this exact
-	 * line) put such an account back into "first-time" mode the moment
-	 * they next hit Replay Tour: the checklist's own real-picker name-
-	 * collision suppression and the App Features section both require
-	 * checklistDone to already be true, and the closing Generate card
-	 * requires it to be false. So with it wrongly false, a Replay
-	 * showed every mini-tour regardless of name collisions, hid App
-	 * Features entirely, and left Generate stuck permanently visible
-	 * (and permanently unreachable, since nothing tracked it as done).
+	 * Setting checklistDone:true here keeps such an account out of first-time
+	 * mode: the checklist's real-picker name-collision suppression and the App
+	 * Features section both require checklistDone to be true, and the closing
+	 * Generate card requires it to be false.
 	 *
 	 * Fresh clean state sets welcomed:false (and, via the block below,
-	 * checklistDone:false) explicitly to trigger the real first-run
-	 * flow; this branch only ever fires for existing data an actual
+	 * checklistDone:false) explicitly to trigger the real first-run flow; this
+	 * branch fires only for a state with no onboarding object, which
 	 * SED_NAM_OBJ.buiCleFun() never produces.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
@@ -482,7 +474,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	// #region Onboarding Checklist-Done Backfill
 
 	/**
-	 * store.ts = Onboarding Checklist-Done Backfill
+	 * migrate.ts = Onboarding Checklist-Done Backfill
 	 *
 	 * @summary
 	 * The same reasoning as the missing-onboarding branch above applies
@@ -524,21 +516,20 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	// #region Generate-Scroll-Pending Backfill
 
 	/**
-	 * store.ts = Generate-Scroll-Pending Backfill
+	 * migrate.ts = Generate-Scroll-Pending Backfill
 	 *
 	 * @summary
-	 * A one-shot signal (added later) for tab-today.tsx's own auto-
-	 * scroll to the Generate card: set the instant every OTHER
-	 * checklist item becomes resolved (see setCarFun below),
-	 * consumed (and cleared back to false) the next time TabTodCom
-	 * renders with it true. Persisted state rather than a local ref/
-	 * effect, deliberately: the LAST checklist item to resolve is very
-	 * often finished from a mini-tour or Page Tour running on a
-	 * DIFFERENT tab, which unmounts TabTodCom for the whole tour, so a
-	 * plain "did I see false-then-true" ref would miss the transition
-	 * entirely (it only resets, matching whatever the value already
-	 * is, on each fresh mount). This flag survives that gap by living
-	 * in state instead of the component.
+	 * A one-shot signal (added later) for tab-today.tsx's own auto-scroll to
+	 * the Generate card: set the instant every OTHER checklist item becomes
+	 * resolved (see setCarFun in store.ts), consumed (and cleared back to
+	 * false) the next time TabTodCom renders with it true. Persisted state
+	 * rather than a local ref/effect, deliberately: the LAST checklist item to
+	 * resolve is very often finished from a mini-tour or Page Tour running on
+	 * a DIFFERENT tab, which unmounts TabTodCom for the whole tour, so a plain
+	 * "did I see false-then-true" ref would miss the transition entirely (it
+	 * only resets, matching whatever the value already is, on each fresh
+	 * mount). This flag survives that gap by living in state instead of the
+	 * component.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -589,19 +580,18 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	// #region App-Features Intro-Seen Backfill
 
 	/**
-	 * store.ts = App-Features Intro-Seen Backfill
+	 * migrate.ts = App-Features Intro-Seen Backfill
 	 *
 	 * @summary
-	 * The "One Last Thing..." App Features intro tip (see onboarding-
-	 * app-features.tsx's own AppFeaturesIntroTip) shows exactly once,
-	 * right after the closing checklist's own generate() finishes,
-	 * pointing at the freshly-appeared App Features section. An
-	 * existing user whose checklist was ALREADY done before this
-	 * existed has long since passed that moment, so backfilling them
-	 * straight to "already seen" avoids ambushing a returning user with
-	 * it on their next ordinary Regenerate; a brand-new save (or one
-	 * still mid-checklist) keeps the real default (false), so the tip
-	 * still fires naturally once they finish for the first time.
+	 * The "One Last Thing..." App Features intro tip (see
+	 * onboarding/app-features.tsx's FeaTipCom) shows right after the closing
+	 * checklist's own generate() finishes, pointing at the freshly-appeared
+	 * App Features section. An existing user whose checklist was ALREADY done
+	 * before this existed has long since passed that moment, so backfilling
+	 * them straight to "already seen" avoids ambushing a returning user with
+	 * it on their next ordinary Regenerate; a brand-new save (or one still
+	 * mid-checklist) keeps the real default (false), so the tip still fires
+	 * naturally once they finish for the first time.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -631,7 +621,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
-	if ( curStaObj && !Array.isArray( curStaObj.vacationLog ) ) curStaObj.vacationLog = []; // What: Vacation-Log Backfill. Why: The inactive-state event log (append-only on/off transitions per item, so Stats can exclude ineligible days) was added later; old state is treated as always-eligible in the past, with the live item.vacation flag as current truth. How: This backfills vacationLog to [] when it isn't already an array.
+	if ( curStaObj && !Array.isArray( curStaObj.vacationLog ) ) curStaObj.vacationLog = []; // What: Vacation-Log Backfill. Why: The inactive-state event log (append-only on/off transitions per item) was added later. How: This backfills vacationLog to [] when it isn't already an array.
 
 
 
@@ -644,7 +634,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	// #region Conditional Active/Triggered Split
 
 	/**
-	 * store.ts = Conditional Active/Triggered Split
+	 * migrate.ts = Conditional Active/Triggered Split
 	 *
 	 * @summary
 	 * Splits the old single `active` field into `active` (enabled, not
@@ -672,7 +662,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 				const weiValNum = nexConObj.weight ?? 1; // What: Weight Value Number. Why: The odds formula below needs this conditional's own old weight, defaulting to 1 when absent. How: This reads nexConObj.weight, defaulting via ??.
 
-				nexConObj = { // What: Odds-Percentage Set. Why: The caller needs a direct percentage replacing the old ratio-weight scheme. How: This converts weiValNum via w/(w+1), rounds to the nearest 10, then clamps to [10,90].
+				nexConObj = { // What: Odds-Percentage Set. Why: This conditional needs a direct percentage replacing the old ratio-weight scheme. How: This converts weiValNum via w/(w+1), rounds to the nearest 10, then clamps to [10,90].
 
 
 					...nexConObj, // What: Next Conditional Spread. Why: Every other field of this conditional must survive the odds migration. How: This spreads nexConObj first so only oddsPct below is added.
@@ -699,10 +689,10 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
-	if ( curStaObj && Array.isArray( curStaObj.pickers ) ) { // What: Picker Conditionalid Backfill. Why: Every picker needs a conditionalId slot so gating code elsewhere can read it uniformly, whether or not the picker is actually gated. How: This backfills conditionalId to null on any picker that doesn't already carry the field.
+	if ( curStaObj && Array.isArray( curStaObj.pickers ) ) { // What: Picker Conditional ID Backfill. Why: Every picker needs a conditionalId slot, whether or not the picker is actually gated. How: This backfills conditionalId to null on any picker that doesn't already carry the field.
 
 
-		curStaObj.pickers = curStaObj.pickers.map( ( curPicObj : RawSavTyp ) => ( 'conditionalId' in curPicObj ? curPicObj : { ...curPicObj, conditionalId : null } ) ); // What: Picker Conditionalid Map. Why: A picker already carrying conditionalId (even null) needs no change. How: This passes curPicObj through unchanged when it already has the field, else spreads in conditionalId:null.
+		curStaObj.pickers = curStaObj.pickers.map( ( curPicObj : RawSavTyp ) => ( 'conditionalId' in curPicObj ? curPicObj : { ...curPicObj, conditionalId : null } ) ); // What: Picker Conditional ID Map. Why: A picker already carrying conditionalId (even null) needs no change. How: This passes curPicObj through unchanged when it already has the field, else spreads in conditionalId:null.
 
 
 	}
@@ -724,7 +714,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	// #region Ease-Down Weights Normalize
 
 	/**
-	 * store.ts = Ease-Down Weights Normalize
+	 * migrate.ts = Ease-Down Weights Normalize
 	 *
 	 * @summary
 	 * Ease Down's own fair-rotation weights were added later. Older
@@ -768,7 +758,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	if ( curStaObj && Array.isArray( curStaObj.pickers ) ) { // What: Picker Fields Normalize Guard. Why: Several independent per-picker fields (daysOfWeek, the weekly-cadence anchor-day rule, skipHolidays, avoidDuplicates, Picker Cadence, hidden) were each added at different times and all need backfilling together. How: This maps every picker through each field's own default/normalize step.
 
 
-		curStaObj.pickers = curStaObj.pickers.map( ( curPicObj : RawSavTyp ) => { // What: Picker Fields Normalize Map. Why: Every picker needs its own copy patched field-by-field before the caller gets the fully-backfilled array. How: This maps curStaObj.pickers, building nexPicObj from each field's own backfill/normalize step below.
+		curStaObj.pickers = curStaObj.pickers.map( ( curPicObj : RawSavTyp ) => { // What: Picker Fields Normalize Map. Why: Every picker needs its own copy patched field by field. How: This maps curStaObj.pickers, building nexPicObj from each field's own backfill/normalize step below.
 
 
 			const nexPicObj = { ...curPicObj }; // What: Next Picker Object. Why: Every backfill below patches a copy, never curPicObj itself. How: This starts as a shallow copy of curPicObj.
@@ -814,7 +804,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
-	if ( curStaObj && ( !curStaObj.ui.controlsCollapsed || typeof curStaObj.ui.controlsCollapsed !== 'object' ) ) curStaObj.ui.controlsCollapsed = {}; // What: Controls-Collapsed Object Backfill. Why: controlsCollapsed maps a section id to whether its own Controls sub-panel is collapsed (absent/false means open) and was added later. How: This backfills curStaObj.ui.controlsCollapsed to {} when it's missing or not a plain object.
+	if ( curStaObj && ( !curStaObj.ui.controlsCollapsed || typeof curStaObj.ui.controlsCollapsed !== 'object' ) ) curStaObj.ui.controlsCollapsed = {}; // What: Controls-Collapsed Object Backfill. Why: controlsCollapsed maps a section id to whether it's collapsed (true) or expanded (false), an absent id taking its section's own default, and was added later. How: This backfills curStaObj.ui.controlsCollapsed to {} when it's missing or not a plain object.
 
 	// #endregion UI Backfills
 
@@ -823,7 +813,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	// #region Today Ordering Backfill
 
 	/**
-	 * store.ts = Today Ordering Backfill
+	 * migrate.ts = Today Ordering Backfill
 	 *
 	 * @summary
 	 * Today ordering (Edit Mode, added later): groupOrder is the
@@ -898,7 +888,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 			if ( curStaObj.pickerOrder && typeof curStaObj.pickerOrder === 'object' ) { // What: Picker-Order Remap Guard. Why: pickerOrder's own keys are group names too, so they need the exact same normalization, merging any pre-existing/post-existing keys that collide once normalized. How: This rebuilds pickerOrder keyed by normalized group name.
 
 
-				const rmpOrdObj : Record< string, string[] > = {}; // What: Remapped Order Object And Guard. Why: The loop below needs somewhere to accumulate the re-keyed pickerOrder. How: This starts empty and is filled by the loop directly below.
+				const rmpOrdObj : Record< string, string[] > = {}; // What: Remapped Order Object. Why: The loop below needs somewhere to accumulate the re-keyed pickerOrder. How: This starts empty and is filled by the loop directly below.
 
 
 				for ( const [ curGroStr, picIdeArr ] of Object.entries( curStaObj.pickerOrder as Record< string, string[] > ) ) { // What: Picker-Order Remap Loop. Why: Every old group key must be normalized and merged into rmpOrdObj before it replaces curStaObj's own pickerOrder. How: This iterates curStaObj.pickerOrder's own entries, concatenating each onto its own normalized key's bucket. // What: Type Assertion Note. Why: A raw save types pickerOrder loosely. How: The entries are read as group names mapped to picker id lists, the shape every save has stored.
@@ -922,8 +912,8 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
-		const seeGroArr : string[]                   = []; // What: Seen Group Array And Guard. Why: The loop below needs to record each group's own first-occurrence order exactly once. How: This starts empty and is pushed into (without duplicates) by the loop directly below.
-		const groIdeObj : Record< string, string[] > = {}; // What: Group Identifier Object And Guard. Why: The loop below needs to bucket every picker's own id under its own group. How: This starts empty and is filled by the loop directly below.
+		const seeGroArr : string[]                   = []; // What: Seen Group Array. Why: The loop below needs to record each group's own first-occurrence order exactly once. How: This starts empty and is pushed into (without duplicates) by the loop directly below.
+		const groIdeObj : Record< string, string[] > = {}; // What: Group Identifier Object. Why: The loop below needs to bucket every picker's own id under its own group. How: This starts empty and is filled by the loop directly below.
 
 
 		for ( const curPicObj of curStaObj.pickers ) { // What: Group/Bucket Fill Loop. Why: Every picker must contribute its own group (once) to seeGroArr and its own id to groIdeObj's matching bucket. How: This iterates curStaObj.pickers, updating both structures per picker.
@@ -957,11 +947,11 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
-		for ( const curGroStr of seeGroArr ) { // What: Per-Group Order Reconcile Loop. Why: Every seen group needs its own pickerOrder entry reconciled: real picker ids plus any surviving synthetic day-off/charging ids, deduped, with newly-seen pickers appended. How: This rebuilds curStaObj.pickerOrder[curGroStr] for every group in seeGroArr.
+		for ( const curGroStr of seeGroArr ) { // What: Per-Group Order Reconcile Loop. Why: Every seen group needs its own pickerOrder entry reconciled: real picker ids plus any surviving synthetic day-off ids, deduped, with newly-seen pickers appended. How: This rebuilds curStaObj.pickerOrder[curGroStr] for every group in seeGroArr.
 
 
 			const valIdeSet = new Set( groIdeObj[ curGroStr ] ); // What: Valid Identifier Set. Why: The filter below needs fast membership checks against this group's own real picker ids. How: This wraps groIdeObj's own bucket for curGroStr in a Set.
-			const seeIdeSet = new Set();                         // What: Seen Identifier Set And Guard. Why: The filter below must defensively dedupe, self-healing any older corrupted order. How: This starts empty and is filled as the filter below runs.
+			const seeIdeSet = new Set();                         // What: Seen Identifier Set. Why: The filter below must defensively dedupe, self-healing any older corrupted order. How: This starts empty and is filled as the filter below runs.
 
 			const exiOrdArr = ( Array.isArray( curStaObj.pickerOrder[ curGroStr ] ) ? curStaObj.pickerOrder[ curGroStr ] : [] ) // What: Existing Order Array. Why: A saved order must be kept when present, dropping anything no longer valid and any duplicate. How: This keeps ids that are either a real current picker or a surviving synthetic 'dayoff_' id, each only once.
 				.filter( ( curIdeStr ) => ( valIdeSet.has( curIdeStr ) || String( curIdeStr ).startsWith( 'dayoff_' ) ) && !seeIdeSet.has( curIdeStr ) && seeIdeSet.add( curIdeStr ) ); // What: Valid Unique Filter. Why: A saved order may hold ids that no longer exist or repeat. How: This keeps valid ids (and day-off cards) the first time each one appears.
@@ -987,7 +977,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
-	return curStaObj; // What: Migrated State Return. Why: The caller needs the fully-backfilled state, mutated in place above. How: This returns curStaObj itself.
+	return curStaObj; // What: Migrated State Return. Why: The fully-backfilled state, mutated in place above, is this function's result. How: This returns curStaObj itself.
 
 
 }
@@ -1000,7 +990,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 // #region Exports
 
-export { migStaFun, SCH_VER_NUM }; // What: Named Exports. Why: The store runs every loaded or imported state through migStaFun, and sync refuses a cloud copy saved by a newer schema than SCH_VER_NUM. How: This exports both by name.
+export { migStaFun, SCH_VER_NUM }; // What: Named Exports. Why: migStaFun migrates a loaded or imported state, and SCH_VER_NUM is the schema version it stamps. How: This exports both by name.
 
 // #endregion Exports
 

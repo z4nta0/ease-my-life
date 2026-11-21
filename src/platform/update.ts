@@ -13,19 +13,19 @@ import { subMakFun } from '../utils/subscribers.ts'; // What: Subscriber Make Fu
  * update.ts = App Update Handling
  *
  * @summary
- * Brings a newly deployed version into an open app without losing anything
- * the person is doing. The service worker already takes over as soon as a new
+ * Brings a newly deployed version into an open app without losing anything the
+ * person is doing. The service worker already takes over as soon as a new
  * version installs (vite-plugin-pwa's autoUpdate calls skipWaiting and
- * clientsClaim), but the page keeps running the old code until it reloads,
- * and an installed app left open never reloads on its own. So this file asks
- * the browser to look for a new version whenever the app comes back to the
- * foreground, and once a new version has taken control, it reloads the app
- * while it's hidden, but only when nothing is under way: no inline editor or
- * add form open, no support form open, no text field focused, no tour
- * running, and no account sync uploading or waiting to. While something is
- * under way, it marks the update ready instead, for the app to offer a
- * Reload button, and tries again the next time the app is hidden or a sync
- * finishes. A first install, where no worker controlled the page at load,
+ * clientsClaim), but the page keeps running the old code until it reloads, and
+ * an installed app left open stays on the old code until something reloads it.
+ * So this file asks the browser to look for a new version whenever the app
+ * comes back to the foreground, and once a new version has taken control, it
+ * reloads the app while it's hidden, but only when nothing is under way: no
+ * inline editor or add form open, no support form open, no text field focused,
+ * no tour running, and no account sync uploading or waiting to. While
+ * something is under way, it marks the update ready instead, for the app to
+ * offer a Reload button, and tries again the next time the app is hidden or a
+ * sync finishes. A first install, where no worker controlled the page at load,
  * isn't an update and is ignored.
  *
  * Sections:
@@ -46,7 +46,7 @@ let hadConBoo = !!( navigator.serviceWorker && navigator.serviceWorker.controlle
 
 const { notSubFun, subAddFun } = subMakFun(); // What: Notify Subscribers Function. Why: The update note has to rerender once an update is ready. How: This calls every subscriber, one throwing subscriber never stopping the rest. // What: Subscribe Add Function. Why: The update note listens for an update becoming ready. How: This adds a subscriber and returns the function that removes it.
 
-let synBusBoo = false; // What: Sync Busy Boolean. Why: A reload would cut off an account sync uploading, or about to upload, a change. How: Sync sets this through synBusFun while one runs or a change waits.
+let synBusBoo = false; // What: Sync Busy Boolean. Why: A reload would cut off an account sync uploading, or about to upload, a change. How: synBusFun sets this while a sync runs or a change waits.
 let updReaBoo = false; // What: Update Ready Boolean. Why: The app shows its Reload note only once a new version has taken over. How: This turns true when that happens.
 
 // #endregion Module State
@@ -84,7 +84,7 @@ function busNowFun () : boolean {
 
 	const actDomEle = document.activeElement; // What: Active DOM Element. Why: A focused text field means typing may be under way. How: This reads the focused element.
 
-	const ediOpeBoo = ( window.__escStack || [] ).length > 0;                              // What: Editor Open Boolean. Why: Every inline editor and add form registers on the Escape stack while open. How: This checks the stack holds an entry.
+	const ediOpeBoo = ( window.__escStack || [] ).length > 0;                              // What: Editor Open Boolean. Why: An open inline editor or add form is registered on the Escape stack. How: This checks the stack holds an entry.
 	const supOpeBoo = !!document.querySelector( '[data-element-name-hook~="supForDiv"]' ); // What: Support Open Boolean. Why: The support form doesn't register on the Escape stack. How: This checks its form is in the page.
 	const texFocBoo = actDomEle instanceof HTMLTextAreaElement || ( actDomEle instanceof HTMLInputElement && /^(email|search|text|url)$/.test( actDomEle.type ) ); // What: Text Focus Boolean. Why: A field being typed in may hold text not yet saved. How: This checks the focused element is a text area or a text input.
 	const touActBoo = document.body.hasAttribute( 'data-tour-active' );                    // What: Tour Active Boolean. Why: A reload would end a running tour partway. How: This checks the body's tour attribute.
@@ -93,7 +93,7 @@ function busNowFun () : boolean {
 
 
 
-	return busNowBoo; // What: Busy Now Return. Why: The caller decides whether to reload. How: This hands back the combined answer.
+	return busNowBoo; // What: Busy Now Return. Why: The combined answer is this function's result. How: This hands back the combined answer.
 
 
 }
@@ -180,7 +180,7 @@ if ( navigator.serviceWorker ) navigator.serviceWorker.addEventListener( 'contro
 document.addEventListener( 'visibilitychange', () => { // What: Visibility Change Listener. Why: Coming back is the moment to look for a new version, and leaving is the moment to apply one quietly. How: This asks for an update when the app shows, and tries a safe reload when it hides.
 
 
-	if ( document.visibilityState === 'visible' && navigator.serviceWorker ) navigator.serviceWorker.getRegistration().then( ( worRegObj ) => worRegObj?.update() ).catch( () => {} ); // What: Update Check Call. Why: An app left open never checks for a new version by itself. How: This asks the registration to look for one, ignoring a failed check, such as one made offline.
+	if ( document.visibilityState === 'visible' && navigator.serviceWorker ) navigator.serviceWorker.getRegistration().then( ( worRegObj ) => worRegObj?.update() ).catch( () => {} ); // What: Update Check Call. Why: Coming back to the app is when to look for a new version. How: This asks the registration to look for one, ignoring a failed check, such as one made offline.
 
 	else relSafFun(); // What: Hidden Reload Call. Why: A hidden app with an update ready and nothing being edited can reload unseen. How: This tries the safe reload.
 
@@ -193,7 +193,7 @@ document.addEventListener( 'visibilitychange', () => { // What: Visibility Chang
 
 // #region Exports
 
-const UPD_NAM_OBJ = { // What: Update Namespace Object. Why: This is the single entry point the app's update note and the sync runner import. How: This maps each name to the function it calls.
+const UPD_NAM_OBJ = { // What: Update Namespace Object. Why: This gathers the update operations into one namespaced export. How: This maps each name to the function it calls.
 
 
 	relNowFun : relNowFun, // What: Reload Now Function. Why: The note's Reload button applies the update. How: This re-exports relNowFun under its own name.
