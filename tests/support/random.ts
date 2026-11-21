@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import type { Page } from '@playwright/test'; // What: Page. Why: The seeding installs itself on a Playwright page. How: This types insSeeFun's page parameter.
+import type { Page } from '@playwright/test'; // What: Page. Why: The seeding installs itself on a Playwright page. How: This types insSedFun's page parameter.
 
 // #endregion Imports
 
@@ -39,10 +39,10 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The seeding in
 
 // #region Helpers
 
-// #region insSeeFun
+// #region insSedFun
 
 /**
- * insSeeFun = Install Seed Function
+ * insSedFun = Install Seed Function
  *
  * @summary
  * Installs the split random stream on a page before any of the app's code
@@ -61,21 +61,21 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The seeding in
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param curPagObj - Current Page Object: The page to install the seeding on.
- * @param seeValNum - Seed Value Number: The 32-bit seed for the generator.
+ * @param sedValNum - Seed Value Number: The 32-bit seed for the generator.
  *
  * @returns A promise that settles once the script is registered.
  *
  * @example
  * ```ts
- * await insSeeFun(curPagObj, 20261004) // => void
+ * await insSedFun(curPagObj, 20261004) // => void
  * ```
  *
 */
 
-const insSeeFun = async ( curPagObj : Page, seeValNum : number ) : Promise< void > => { // What: Install Seed Function. Why: Repeatable runs need the app's scheduling draws seeded. How: This registers an init script that replaces Math.random with the split stream.
+const insSedFun = async ( curPagObj : Page, sedValNum : number ) : Promise< void > => { // What: Install Seed Function. Why: Repeatable runs need the app's scheduling draws seeded. How: This registers an init script that replaces Math.random with the split stream.
 
 
-	await curPagObj.addInitScript( ( iniSeeNum : number ) => { // What: Seed Init Script. Why: The replacement must exist before the app's first module runs. How: Playwright runs this in the page on every load, before the page's own scripts.
+	await curPagObj.addInitScript( ( iniSedNum : number ) => { // What: Seed Init Script. Why: The replacement must exist before the app's first module runs. How: Playwright runs this in the page on every load, before the page's own scripts.
 
 
 		// #region Load Counter
@@ -101,7 +101,7 @@ const insSeeFun = async ( curPagObj : Page, seeValNum : number ) : Promise< void
 
 		// #region Seeded Generator
 
-		let genStaNum = ( iniSeeNum ^ Math.imul( loaCouNum + 1, 2654435761 ) ) >>> 0; // What: Generator State Number. Why: mulberry32 advances one 32-bit state per draw, and no load may replay another's draws. How: This starts at the seed mixed with the load count, read as an unsigned 32-bit integer.
+		let genStaNum = ( iniSedNum ^ Math.imul( loaCouNum + 1, 2654435761 ) ) >>> 0; // What: Generator State Number. Why: mulberry32 advances one 32-bit state per draw, and no load may replay another's draws. How: This starts at the seed mixed with the load count, read as an unsigned 32-bit integer.
 
 		const natRanFun = Math.random.bind( Math ); // What: Native Random Function. Why: Draws from anywhere else must keep the browser's own randomness. How: This keeps the original Math.random.
 		const schPatObj = /\/src\/(core|state)\//;  // What: Scheduling Pattern Object. Why: Every scheduling decision lives in these two folders. How: This regex matches a stack frame from either one.
@@ -130,12 +130,12 @@ const insSeeFun = async ( curPagObj : Page, seeValNum : number ) : Promise< void
 		Math.random = () => ( schPatObj.test( new Error().stack || '' ) ? mulRanFun() : natRanFun() ); // What: Math Random Replacement. Why: Only scheduling draws should be seeded. How: This reads the calling stack and routes a draw from src/core/ or src/state/ to the seeded generator, any other to the native one.
 
 
-	}, seeValNum ); // What: Seed Argument. Why: The init script runs inside the page and can't see this file's variables. How: This passes the seed in as the script's argument.
+	}, sedValNum ); // What: Seed Argument. Why: The init script runs inside the page and can't see this file's variables. How: This passes the seed in as the script's argument.
 
 
 };
 
-// #endregion insSeeFun
+// #endregion insSedFun
 
 // #endregion Helpers
 
@@ -143,7 +143,7 @@ const insSeeFun = async ( curPagObj : Page, seeValNum : number ) : Promise< void
 
 // #region Exports
 
-export { insSeeFun }; // What: Named Exports. Why: The simulation seeds its pages through this. How: This exports insSeeFun by name.
+export { insSedFun }; // What: Named Exports. Why: The simulation seeds its pages through this. How: This exports insSedFun by name.
 
 // #endregion Exports
 

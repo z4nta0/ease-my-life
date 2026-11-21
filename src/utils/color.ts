@@ -59,7 +59,7 @@ function invColFun ( hexColStr : string ) : string {
 	try { // What: Color Conversion Try. Why: Any malformed input must fall back to the original color instead of throwing. How: The catch below returns hexColStr unchanged.
 
 
-		const rgbZerArr = ( () => { // What: RGB Zero-One Array. Why: The OKLab math below operates on linear-light RGB, not raw hex. How: This strips the leading '#', expands a 3-digit shorthand, parses the hex to an integer, and splits it into 0-1 channel values.
+		const rgbZeoArr = ( () => { // What: RGB Zero-One Array. Why: The OKLab math below operates on linear-light RGB, not raw hex. How: This strips the leading '#', expands a 3-digit shorthand, parses the hex to an integer, and splits it into 0-1 channel values.
 
 
 			const hexBarStr = hexColStr.replace( '#', '' ); // What: Hex Bare String. Why: The '#' prefix isn't part of the actual hex digits parseInt below needs. How: This strips it from hexColStr.
@@ -142,7 +142,7 @@ function invColFun ( hexColStr : string ) : string {
 
 		};
 
-		let [ oklLigNum, oklAaxNum, oklBaxNum ] = linOklFun( rgbZerArr.map( srgLinFun ) ); // What: Oklab Lightness Number. Why: The rest of this function inverts and re-encodes this exact triple. How: This converts rgbZerArr through the linear-light/Oklab pipeline built above and keeps the lightness. // What: Oklab A-Axis Number. Why: The same triple's green-red axis is re-encoded too. How: This keeps the second value. // What: Oklab B-Axis Number. Why: The same triple's blue-yellow axis is re-encoded too. How: This keeps the third value.
+		let [ oklLigNum, oklAaxNum, oklBaxNum ] = linOklFun( rgbZeoArr.map( srgLinFun ) ); // What: Oklab Lightness Number. Why: The rest of this function inverts and re-encodes this exact triple. How: This converts rgbZeoArr through the linear-light/Oklab pipeline built above and keeps the lightness. // What: Oklab A-Axis Number. Why: The same triple's green-red axis is re-encoded too. How: This keeps the second value. // What: Oklab B-Axis Number. Why: The same triple's blue-yellow axis is re-encoded too. How: This keeps the third value.
 
 
 		if ( Math.hypot( oklAaxNum, oklBaxNum ) < 0.02 ) { // What: Chroma Near-Zero Guard. Why: Near-neutral colors carry a tiny residual a/b from floating-point noise in the forward conversion, which gets amplified when inverting an extreme lightness (e.g. a near-white background would invert to a visibly red-tinted near-black instead of neutral). How: This clamps a/b to true zero whenever their combined magnitude is below a small threshold.

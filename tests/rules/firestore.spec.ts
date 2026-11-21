@@ -70,7 +70,7 @@ const accStoFun = ( uidValStr : string, tokClaObj : TokenOptions ) => tesEnvObj.
 
 
 
-const seeManFun = () => tesEnvObj.withSecurityRulesDisabled( ( cotAdmObj ) => setDoc( doc( cotAdmObj.firestore(), 'users/alice' ), MAN_ONE_OBJ ) ); // What: Seed Manifest Function. Why: Update and read tests need a manifest already there. How: This writes alice's first manifest with the rules switched off.
+const sedManFun = () => tesEnvObj.withSecurityRulesDisabled( ( cotAdmObj ) => setDoc( doc( cotAdmObj.firestore(), 'users/alice' ), MAN_ONE_OBJ ) ); // What: Seed Manifest Function. Why: Update and read tests need a manifest already there. How: This writes alice's first manifest with the rules switched off.
 
 // #endregion Helpers
 
@@ -143,7 +143,7 @@ test( 'a manifest or version with an unexpected field is refused', async () => {
 test( 'nobody else, and no unverified or signed-out account, can read or write a copy', async () => { // What: Access Test. Why: A copy belongs to its owner alone. How: This tries every other kind of account and checks each read and write fails.
 
 
-	await seeManFun(); // What: Manifest Seed. Why: Reads need a copy to read. How: This writes alice's manifest.
+	await sedManFun(); // What: Manifest Seed. Why: Reads need a copy to read. How: This writes alice's manifest.
 
 
 	const bobStoObj = accStoFun( 'bob', PAI_TOK_OBJ );                               // What: Bob Store Object. Why: Bob is a paid stranger to alice's copy. How: This acts as him.
@@ -171,7 +171,7 @@ test( 'an unpaid owner can read and delete its own copy but not write it, and a 
 
 	// #region Copy Setup
 
-	await seeManFun(); // What: Manifest Seed. Why: There has to be a copy to delete. How: This writes alice's manifest.
+	await sedManFun(); // What: Manifest Seed. Why: There has to be a copy to delete. How: This writes alice's manifest.
 
 
 

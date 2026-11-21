@@ -14,7 +14,7 @@ import { ENT_CAR_STR   } from '../support/today.ts';            // What: Entry C
 import { expect        } from '@playwright/test';               // What: Expect. Why: The run passes only with no problems found. How: This asserts the collected list is empty.
 import { expStaFun     } from '../support/check-stats.ts';      // What: Expected Stats Function. Why: The Stats tab is checked against the logs. How: This recomputes its figures.
 import { insClcFun     } from '../support/clock.ts';            // What: Install Clock Function. Why: The run starts on a fixed date. How: This installs the fake clock.
-import { insSeeFun     } from '../support/random.ts';           // What: Install Seed Function. Why: Picks must repeat run to run. How: This seeds the scheduling draws.
+import { insSedFun     } from '../support/random.ts';           // What: Install Seed Function. Why: Picks must repeat run to run. How: This seeds the scheduling draws.
 import { mkdirSync     } from 'node:fs';                        // What: Make Directory Sync. Why: The trace needs its output folder. How: This creates it.
 import { opeDayFun     } from '../support/app.ts';              // What: Open Day Function. Why: The run advances a day at a time. How: This opens the app on a day.
 import { readFileSync  } from 'node:fs';                        // What: Read File Sync. Why: A baseline trace can be compared. How: This reads it.
@@ -99,7 +99,7 @@ const OUT_DIR_STR = new URL( '../output/simulation/', import.meta.url ); // What
 
 // #region Module State
 
-const SEE_VAL_NUM = Number( process.env.EML_SIM_SEED || 20261004 ); // What: Seed Value Number. Why: The same seed repeats the same picks. How: This reads EML_SIM_SEED, defaulting to a fixed seed.
+const SED_VAL_NUM = Number( process.env.EML_SIM_SEED || 20261004 ); // What: Seed Value Number. Why: The same seed repeats the same picks. How: This reads EML_SIM_SEED, defaulting to a fixed seed.
 
 
 
@@ -665,7 +665,7 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 
 
-	await insSeeFun( curPagObj, SEE_VAL_NUM ); // What: Seed Install Call. Why: Picks must repeat run to run. How: This seeds the scheduling draws.
+	await insSedFun( curPagObj, SED_VAL_NUM ); // What: Seed Install Call. Why: Picks must repeat run to run. How: This seeds the scheduling draws.
 
 
 
