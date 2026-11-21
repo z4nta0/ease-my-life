@@ -2125,7 +2125,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 					items   : nexIteArr, // What: Items. Why: The one toggled item's own new vacation flag (and any recharge) must land in state. How: This is nexIteArr.
 					pickers : nexPicArr, // What: Pickers. Why: An abandoned streak's own nulled activeItemId must land in state. How: This is nexPicArr.
 
-					vacationLog : [ ...( curStaObj.vacationLog || [] ), { date : curDayStr, itemId : tarIdeStr, on : nexVacBoo } ] // What: Vacation Log. Why: Stats needs a row recording exactly when this item went inactive or came back. How: This appends one row for tarIdeStr to the existing log.
+					vacationLog : [ ...( curStaObj.vacationLog || [] ), { date : curDayStr, itemId : tarIdeStr, on : nexVacBoo } ] // What: Vacation Log. Why: Stats needs a row recording the day this item went inactive or came back. How: This appends one row for tarIdeStr to the existing log.
 
 
 				};
@@ -2598,7 +2598,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 		// #region Onboarding
 
-		finCheFun : ( donValBoo = true ) => setAppStaObj( ( curStaObj ) => ( { // What: Finish Checklist Function. Why: This flips the instant the closing Generate card's own flow completes; every checklist card stops rendering the moment it's true. How: This writes donValBoo (defaulting to true) as checklistDone onto curStaObj.onboarding.
+		finCheFun : ( donValBoo = true ) => setAppStaObj( ( curStaObj ) => ( { // What: Finish Checklist Function. Why: This records that the onboarding checklist is finished. How: This writes donValBoo (defaulting to true) as checklistDone onto curStaObj.onboarding.
 
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the onboarding override below.
@@ -2608,7 +2608,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 				...curStaObj.onboarding, // What: Current Onboarding Spread. Why: Every other onboarding field must carry over unchanged. How: This spreads curStaObj.onboarding.
 
-				checklistDone : donValBoo // What: Checklist Done. Why: This is the flag every checklist card checks before rendering. How: This is donValBoo.
+				checklistDone : donValBoo // What: Checklist Done. Why: This records whether the onboarding checklist is finished. How: This is donValBoo.
 
 
 			}
@@ -2618,7 +2618,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		sedHisFun : ( { pickLog : picLogArr, reminderLog : remLogArr, reminderSkipLog : skiLogArr } ) => setAppStaObj( ( curStaObj ) => ( { // What: Seed History Function. Why: This merges precomputed, already-hydrated history rows into state, used only by the Welcome Tour's own onboarding seeding to backfill Stats for the sample pickers/reminders without computing about a year of rows live. How: This prepends pickLog/reminderLog/reminderSkipLog rows (each already in their own full row shape) onto whatever curStaObj already holds.
+		sedHisFun : ( { pickLog : picLogArr, reminderLog : remLogArr, reminderSkipLog : skiLogArr } ) => setAppStaObj( ( curStaObj ) => ( { // What: Seed History Function. Why: This merges precomputed, already-hydrated history rows into state, so Stats can be backfilled without computing about a year of rows live. How: This prepends pickLog/reminderLog/reminderSkipLog rows (each already in their own full row shape) onto whatever curStaObj already holds.
 
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the log overrides below.
@@ -2666,7 +2666,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		setCarFun : ( iteIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => { // What: Set Card Function. Why: Every mini-tour launcher (picker, page and reminder tours, plus Today's own Skip button) needs to resolve or un-resolve its own checklist card without re-specifying the whole checklist. How: This patches or deletes iteIdeStr's own entry in onboarding.checklist, then flags generateScrollPending if readiness to generate just flipped on.
+		setCarFun : ( iteIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => { // What: Set Card Function. Why: Resolving or un-resolving a checklist card must patch its own entry without re-specifying the whole checklist. How: This patches or deletes iteIdeStr's own entry in onboarding.checklist, then flags generateScrollPending if readiness to generate just flipped on.
 
 
 			const curCheObj = { ...( ( curStaObj.onboarding && curStaObj.onboarding.checklist ) || {} ) }; // What: Current Checklist Object. Why: The resolve/unresolve below must patch a COPY, never curStaObj.onboarding.checklist directly. How: This shallow-copies curStaObj's own onboarding.checklist, defaulting to {}.
@@ -2697,10 +2697,10 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 			};
 
 
-			if ( !ONB_CHE_OBJ.reaGenFun( curStaObj ) && ONB_CHE_OBJ.reaGenFun( nexStaObj ) ) { // What: Ready-To-Generate Edge Guard. Why: tab-today.tsx's own auto-scroll needs to know the EXACT moment readiness just flipped on, not merely that it's on now. How: This flags generateScrollPending only when curStaObj was not-yet-ready and nexStaObj now is.
+			if ( !ONB_CHE_OBJ.reaGenFun( curStaObj ) && ONB_CHE_OBJ.reaGenFun( nexStaObj ) ) { // What: Ready-To-Generate Edge Guard. Why: Readiness to generate flipping on is a one-time edge, not a steady state, so it has to be flagged at the moment of the change. How: This flags generateScrollPending only when curStaObj was not-yet-ready and nexStaObj now is.
 
 
-				nexStaObj.onboarding.generateScrollPending = true; // What: Generate-Scroll-Pending Flag Set. Why: TabTodCom consumes (and clears) this the next time it renders with it true, per its own migStaFun() comment. How: This flips nexStaObj.onboarding.generateScrollPending to true.
+				nexStaObj.onboarding.generateScrollPending = true; // What: Generate-Scroll-Pending Flag Set. Why: This flags that readiness to generate just flipped on, per the summary above. How: This flips nexStaObj.onboarding.generateScrollPending to true.
 
 
 			}
@@ -2751,7 +2751,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		setOnbFun : ( patValObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Set Onboarding Function. Why: The welcome modal/mini-tour checklist need to flip individual flags without callers re-specifying the whole onboarding object. How: This merges patValObj onto curStaObj.onboarding, defaulting to {} when onboarding doesn't exist yet.
+		setOnbFun : ( patValObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Set Onboarding Function. Why: Individual onboarding flags must change without re-specifying the whole onboarding object. How: This merges patValObj onto curStaObj.onboarding, defaulting to {} when onboarding doesn't exist yet.
 
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -2811,7 +2811,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		addPicFun : ( picArgObj ) => { // What: Add Picker Function. Why: The Add-Picker flow needs to create a whole picker, its own item pool, and any new conditional in one step. How: This normalizes the submitted fields, builds the picker and its items, attaches or creates its conditional, updates daily membership, and returns the new (or replaced) picker's id.
 
 
-			try { // What: First-Picker Persistence Request Guard. Why: The first picker a user creates is the first data worth protecting from browser storage eviction, best asked for now rather than on a cold first load (where a denial would be sticky for the session). How: This calls PWA_NAM_OBJ.askFirFun only when this is genuinely the user's very first picker.
+			try { // What: First-Picker Persistence Request Guard. Why: The first picker a user creates is the first data worth protecting from browser storage eviction, so persistence is requested then. How: This calls PWA_NAM_OBJ.askFirFun only when this is genuinely the user's very first picker.
 
 
 				const curLatObj = latStaRef.current; // What: Current Latest Object. Why: The check below needs the freshest state, not a possibly-stale closed-over one. How: This reads latStaRef's own current value.
@@ -2829,10 +2829,10 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 			// #region Identifier Resolution
 
 			const exiIdeStr = picArgObj.replaceId; // What: Existing Identifier String. Why: A replace must keep the existing picker's own id alive. How: This reads picArgObj.replaceId, undefined on an ordinary add.
-			const givIdeStr = picArgObj.id;        // What: Given Identifier String. Why: Onboarding's own sample pickers pass an explicit id so it matches the one baked into precomputed Stats history. How: This reads picArgObj.id, undefined for every other caller.
+			const givIdeStr = picArgObj.id;        // What: Given Identifier String. Why: Onboarding's own sample pickers pass an explicit id so it matches the one baked into precomputed Stats history. How: This reads picArgObj.id, undefined when none was given.
 			const newIdeStr = ranIdeFun( 'pkr_' ); // What: New Identifier String. Why: Every other caller needs a fresh random id. How: This mints a 'pkr_' id from 6 random base-36 characters.
 
-			const picIdeStr = exiIdeStr || givIdeStr || newIdeStr; // What: Picker Identifier String. Why: An explicit id (onboarding's own sample pickers only, so their ids match the ones baked into precomputed Stats history) must win; every other caller gets a fresh random one. How: This prefers exiIdeStr, then givIdeStr, else newIdeStr.
+			const picIdeStr = exiIdeStr || givIdeStr || newIdeStr; // What: Picker Identifier String. Why: An explicit id (a sample picker's, matching the id baked into precomputed Stats history) must win over a fresh random one. How: This prefers exiIdeStr, then givIdeStr, else newIdeStr.
 
 			// #endregion Identifier Resolution
 
@@ -2850,7 +2850,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 			// #region Picker Build
 
-			const newConObj = picArgObj.newConditional; // What: New Conditional Object. Why: The inline-conditional build below reads many of this one field's own properties. How: This reads picArgObj.newConditional, which is null/undefined when no inline conditional was authored.
+			const newConObj = picArgObj.newConditional; // What: New Conditional Object. Why: The inline conditional the form authored, if any, is built into a conditional below. How: This reads picArgObj.newConditional, which is null/undefined when no inline conditional was authored.
 
 			const newIteArr = ( picArgObj.items || [] ).map( ( curIteObj ) : IteRcdTyp => ( { // What: New Item Array. Why: Every typed item in the create form becomes a real item object owned by this picker. How: This maps each raw item into state.items' own shape, honoring a form-set value/vacation and defaulting the rest per mode.
 
@@ -2901,7 +2901,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 				easeMax         : picArgObj.easeMax ?? 20,                                        // What: Ease Maximum. Why: The picker-level drift band is only a fallback span for its items. How: This reads picArgObj.easeMax, defaulting to 20.
 				easeMin         : picArgObj.easeMin ?? 10,                                        // What: Ease Minimum. Why: The picker-level drift band is only a fallback span for its items. How: This reads picArgObj.easeMin, defaulting to 10.
 				group           : picArgObj.group,                                                // What: Group. Why: The picker must land in the group chosen in the form. How: This is picArgObj.group.
-				hidden          : picArgObj.hidden === undefined ? false : picArgObj.hidden,      // What: Hidden Flag. Why: tab-picker.tsx passes true while the mini-tour checklist is up (mirrors reminders-section.tsx's own staAddFun) so a picker created during onboarding stays out of the real list until the closing Generate step. How: This copies picArgObj.hidden, defaulting to false when it was never given.
+				hidden          : picArgObj.hidden === undefined ? false : picArgObj.hidden,      // What: Hidden Flag. Why: A picker created during onboarding must stay out of the real list until the closing Generate step, so the caller can pass it hidden. How: This copies picArgObj.hidden, defaulting to false when it was never given.
 				id              : picIdeStr,                                                      // What: ID. Why: The picker keeps whichever id was resolved above (replaceId, a given id, or a fresh one). How: This is picIdeStr.
 				mode            : picArgObj.mode,                                                 // What: Mode. Why: The mode decides which selection algorithm this picker uses. How: This is picArgObj.mode.
 				name            : picArgObj.name,                                                 // What: Name. Why: This is the raw name; the de-duplicated one replaces it below, once state is available. How: This is picArgObj.name.
@@ -2919,7 +2919,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 				} ),
 
 				...norCadObj,                                                                                 // What: Normalized Cadence Spread. Why: The surfacing anchor and display unit must be resolved (and defaulted) the same way for every picker. How: This spreads norCadObj's own 8 cadence fields onto the picker.
-				...( picArgObj.createdFromSample ? { createdFromSample : picArgObj.createdFromSample } : {} ) // What: Created-From-Sample Spread. Why: This links back to the sample template a mini-tour-created picker was built from (see onboarding-checklist.ts); ignored everywhere else in the app. How: This spreads createdFromSample only when it was actually given.
+				...( picArgObj.createdFromSample ? { createdFromSample : picArgObj.createdFromSample } : {} ) // What: Created-From-Sample Spread. Why: This links back to the sample template a mini-tour-created picker was built from. How: This spreads createdFromSample only when it was actually given.
 
 
 			};
@@ -3011,7 +3011,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return picIdeStr; // What: Picker ID Return. Why: The caller (the Add-Picker form) needs the new or reused picker's own id back. How: This returns picIdeStr, resolved above.
+			return picIdeStr; // What: Picker ID Return. Why: The caller needs the new or reused picker's own id back. How: This returns picIdeStr, resolved above.
 
 
 		},
@@ -3246,7 +3246,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 			const modChaBoo = picArgObj.mode !== curPicObj.mode; // What: Mode Changed Boolean. Why: Only an actual mode change triggers the item-defaults reset further below. How: This is true when the new mode differs from curPicObj's own current one.
-			const newConObj = picArgObj.newConditional;          // What: New Conditional Object. Why: The inline-conditional build below reads many of this one field's own properties. How: This reads picArgObj.newConditional, which is null/undefined when no inline conditional was authored.
+			const newConObj = picArgObj.newConditional;          // What: New Conditional Object. Why: The inline conditional the form authored, if any, is built into a conditional below. How: This reads picArgObj.newConditional, which is null/undefined when no inline conditional was authored.
 
 
 			const finNamStr = uniNamFun( // What: Final Name String. Why: The committed picker still needs its own name tidied and de-duplicated against every OTHER visible picker. How: This calls uniNamFun with the tidied name against every sibling picker's own name, excluding itself.
@@ -3587,7 +3587,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 			const conIdeStr = curPicObj && curPicObj.conditionalId; // What: Conditional Identifier String. Why: The day-off-card check below needs to know which conditional (if any) gates this picker. How: This reads curPicObj's own conditionalId, or stays falsy when curPicObj is missing.
 
 			const hasDaoBoo = Boolean( easDowBoo && conIdeStr && // What: Has Day-Off Boolean. Why: An ease-down picker that's currently suppressed behind its own day-off card must NOT have that card silently replaced by this manual override. How: This is true only when this is ease-down, gated, and today already shows a live day-off card for that same conditional.
-				curStaObj.today.entries.some( ( curEntObj ) => curEntObj.kind === 'dayoff' && curEntObj.conditionalId === conIdeStr ) ); // What: Day-Off Card Test. Why: The picker is suppressed only when its own conditional's day-off card is on Today. How: This looks for a day-off entry with conIdeStr.
+				curStaObj.today.entries.some( ( curEntObj ) => curEntObj.kind === 'dayoff' && curEntObj.conditionalId === conIdeStr ) ); // What: Day-Off Card Test. Why: A live day-off card for this picker's own conditional is what marks it as suppressed today. How: This looks for a day-off entry with conIdeStr.
 
 			const nexEntArr = ( easDowBoo && !hasDaoBoo ) // What: Next Entry Array. Why: Ease Down normally REPLACES its own picker's existing entry; the day-off-card exception instead ADDS an extra entry alongside the still-showing card. How: This filters out this picker's own prior entry (unless the exception applies) before appending newEntObj.
 				? [ ...curStaObj.today.entries.filter( ( curEntObj ) => curEntObj.pickerId !== picIdeStr ), newEntObj ] // What: Replace Entry Branch. Why: Ease Down replaces its own picker's entry. How: This drops the old entry and appends newEntObj.
@@ -3624,12 +3624,12 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		cleEntFun : () => setAppStaObj( ( curStaObj ) => ( { // What: Clear Entries Function. Why: The Welcome Tour uses this to back up to its own Generate step, showing the same pristine "nothing generated yet" state it did the first time through. How: This empties today.entries without touching generatedAt/streakClaimed/anything else about today.
+		cleEntFun : () => setAppStaObj( ( curStaObj ) => ( { // What: Clear Entries Function. Why: Today's list must be emptied while every other today field stays as it is. How: This empties today.entries without touching generatedAt/streakClaimed/anything else about today.
 
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
 
-			today : { ...curStaObj.today, entries : [] } // What: Today. Why: The Welcome Tour's own back-up step needs Today emptied without touching any other today field. How: This spreads curStaObj.today with entries replaced by an empty array.
+			today : { ...curStaObj.today, entries : [] } // What: Today. Why: Today must be emptied without touching any other today field. How: This spreads curStaObj.today with entries replaced by an empty array.
 
 
 		} ) ),
@@ -3647,12 +3647,11 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * entry (has carBoo + entObj) is kept VERBATIM (same eid/itemId/
 		 * pending/done/revert/periodKey) so a cadence pick persists across
 		 * days until completed, log row included; a FRESH descriptor (no
-		 * eid) gets a new eid and a fresh 'auto' log row. optArgObj.
-		 * resBoo, only ever passed by the scheduled auto-run (never a
-		 * manual Regenerate, and deliberately not derived from the date),
-		 * clears today.streakClaimed so the new period starts unclaimed;
-		 * this is what stops a user from "farming" extra streak points by
-		 * repeatedly regenerating and completing within the same day.
+		 * eid) gets a new eid and a fresh 'auto' log row.
+		 * optArgObj.resBoo, when true, clears today.streakClaimed so the new
+		 * period starts unclaimed, and deliberately isn't derived from the
+		 * date; this is what stops a user from "farming" extra streak points
+		 * by repeatedly regenerating and completing within the same day.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -3670,7 +3669,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		setEntFun : ( lisEntArr, optArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Set Entries Function. Why: Generate rebuilds the whole Today list at once, carrying unfinished cadence picks forward and adding fresh ones. How: This keeps every carried entry verbatim, gives every fresh descriptor a new eid and 'auto' log row, and clears streakClaimed only when optArgObj.resetStreak is set.
+		setEntFun : ( lisEntArr, optArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Set Entries Function. Why: Generate rebuilds the whole Today list at once, carrying unfinished cadence picks forward and adding fresh ones. How: This keeps every carried entry verbatim, gives every fresh descriptor a new eid and 'auto' log row, and clears streakClaimed only when optArgObj.resBoo is set.
 
 
 			const curDayStr = isoDayFun(); // What: Current Day String. Why: The fresh-row and pick-log-purge logic below both need today's own calendar day. How: This reads isoDayFun().
@@ -3679,7 +3678,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 			// #region Entry Merge
 
-			const carEntArr = lisEntArr.filter( ( curDesObj ) => curDesObj.carBoo ).map( ( curDesObj ) => curDesObj.entObj! ); // What: Carried Entry Array. Why: A carried descriptor's own already-formed entry must be kept verbatim, unwrapped from its own _carry marker. How: This filters lisEntArr to _carry descriptors and unwraps each one's own entry. // What: Non-Null Note. Why: The generator only flags a descriptor _carry when it wraps an existing entry. How: The ! tells TypeScript entry is set here.
+			const carEntArr = lisEntArr.filter( ( curDesObj ) => curDesObj.carBoo ).map( ( curDesObj ) => curDesObj.entObj! ); // What: Carried Entry Array. Why: A carried descriptor's own already-formed entry must be kept verbatim, unwrapped from its own carried marker. How: This filters lisEntArr to descriptors with carBoo set and unwraps each one's own entry. // What: Non-Null Note. Why: A descriptor only has carBoo set when it wraps an existing entry. How: The ! tells TypeScript entry is set here.
 			const carIdeSet = new Set< string | null >( carEntArr.map( ( curEntObj ) => curEntObj.eid ) );                    // What: Carried Identifier Set. Why: The pick-log purge below must never drop a carried entry's own still-live row. How: This collects every carried entry's own eid.
 
 			const freEntArr = lisEntArr.filter( ( curDesObj ) => !curDesObj.carBoo ).map( ( curDesObj ) : TodEntTyp => ( { // What: Fresh Entry Array. Why: Every non-carried descriptor becomes a brand-new Today entry with its own fresh eid. How: This maps each descriptor into a full entry, spreading in periodKey/day-off-card fields only when present.
@@ -3720,7 +3719,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 			// #region Pick Log Rebuild
 
 			const newRowArr = freEntArr.filter( ( curEntObj ) => !curEntObj.kind && curEntObj.pickerId ).map( ( curEntObj ) => // What: New Row Array. Why: Only a real (non-day-off-card) fresh entry needs its own auto pick-log row; depletedEnd is deliberately NOT written here, since it's a value consequence recorded only on completion. How: This builds one logRowFun row per qualifying fresh entry, source:'auto'.
-				logRowFun( curStaObj, { date : curDayStr, eid : curEntObj.eid, itemId : curEntObj.itemId!, pickerId : curEntObj.pickerId!, source : 'auto' } ) ); // What: Auto Row Build. Why: Every fresh entry logs as an automatic pick. How: This builds the row from the entry's own eid, item and picker. // What: Non-Null Note. Why: The filter above keeps only ordinary picks with a picker, and an ordinary pick always holds its item. How: The ! tells TypeScript itemId and pickerId are set here.
+				logRowFun( curStaObj, { date : curDayStr, eid : curEntObj.eid, itemId : curEntObj.itemId!, pickerId : curEntObj.pickerId!, source : 'auto' } ) ); // What: Auto Row Build. Why: Each qualifying fresh entry logs as an automatic pick. How: This builds the row from the entry's own eid, item and picker. // What: Non-Null Note. Why: The filter above keeps only ordinary picks with a picker, and an ordinary pick always holds its item. How: The ! tells TypeScript itemId and pickerId are set here.
 
 			const nexLogArr = ( curStaObj.pickLog || [] ).filter( ( curRowObj ) => curRowObj.date !== curDayStr || carIdeSet.has( curRowObj.eid ) ).concat( newRowArr ); // What: Next Log Array. Why: The generator owns today, so every OTHER row logged today (auto or manual) must be dropped, except a carried entry's own still-live row. How: This keeps every row not dated today (or belonging to a carried eid), then appends newRowArr.
 
@@ -3731,7 +3730,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 			const nexTodObj = { ...curStaObj.today, entries : nexEntArr }; // What: Next Today Object. Why: The caller needs a fresh today object carrying the new entries. How: This spreads curStaObj.today with entries replaced by nexEntArr.
 
 
-			if ( optArgObj && optArgObj.resBoo ) nexTodObj.streakClaimed = false; // What: Streak-Claimed Reset Guard. Why: Only the scheduled auto-run (never a manual Regenerate) starts the new period unclaimed, per the design-rationale comment above. How: This sets nexTodObj.streakClaimed to false only when optArgObj.resetStreak is truthy.
+			if ( optArgObj && optArgObj.resBoo ) nexTodObj.streakClaimed = false; // What: Streak-Claimed Reset Guard. Why: A reset request starts the new period unclaimed, per the summary above. How: This sets nexTodObj.streakClaimed to false only when optArgObj.resBoo is truthy.
 
 
 
@@ -3990,7 +3989,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-	return [ appStaObj, actStoObj ]; // What: Store Tuple Return. Why: Every caller (AppRooCom) destructures this into its own state/actStoObj pair. How: This returns the current appStaObj alongside the memoized actStoObj object.
+	return [ appStaObj, actStoObj ]; // What: Store Tuple Return. Why: The hook hands back its state and its actions together. How: This returns the current appStaObj alongside the memoized actStoObj object.
 
 
 }
@@ -4003,7 +4002,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 // #region Exports
 
-export { type ActStoTyp, colMapFun, type EntDesTyp, useAppStaFun }; // What: Named Exports. Why: useAppStaFun is the entire app's own state layer, imported by app.tsx, the tabs type the actions they receive with ActStoTyp, and the Data tab's sections and tours read the saved collapse state through colMapFun. How: This exports the hook, the collapse map helper, and the action type by name.
+export { type ActStoTyp, colMapFun, type EntDesTyp, useAppStaFun }; // What: Named Exports. Why: These make the state hook, the collapse map helper, and the action and entry-descriptor types available to other files. How: This exports the hook, the collapse map helper, and the action and entry-descriptor types by name.
 
 // #endregion Exports
 
