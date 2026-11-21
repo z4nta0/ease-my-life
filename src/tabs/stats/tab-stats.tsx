@@ -3045,7 +3045,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 									<span className={ cssModObj.scoNamSpa }>All</span>{ /* What: Tab Name Span Element. Why: Every scope tab needs its own visible name. How: This renders the literal word "All". */ }
 
-									<span className={ cssModObj.scoModSpa }>Everything</span>{ /* What: Tab Mode Span Element. Why: Every scope tab needs a small descriptive subline under its name. How: This renders the literal word "Everything". */ }
+									<span className={ cssModObj.scoKinSpa }>Everything</span>{ /* What: Tab Mode Span Element. Why: Every scope tab needs a small descriptive subline under its name. How: This renders the literal word "Everything". */ }
 
 
 								</button>
@@ -3102,7 +3102,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 										<span className={ cssModObj.scoNamSpa }>{ entCurObj.namStr }</span>{ /* What: Tab Name Span Element. Why: Every scope tab needs its own visible name. How: This renders the entry's own namStr field. */ }
 
-										<span className={ cssModObj.scoModSpa }>{ entCurObj.labStr }</span>{ /* What: Tab Mode Span Element. Why: Every scope tab needs a small descriptive subline under its name. How: This renders the entry's own labStr field. */ }
+										<span className={ cssModObj.scoKinSpa }>{ entCurObj.labStr }</span>{ /* What: Tab Mode Span Element. Why: Every scope tab needs a small descriptive subline under its name. How: This renders the entry's own labStr field. */ }
 
 
 									</button>

@@ -509,7 +509,7 @@
 
 }
 
-.scoModSpa { /* What: Scope Mode Span. Why: Each tab names its scope's kind as quiet metadata. How: This sets it in small uppercase muted mono type. */
+.scoKinSpa { /* What: Scope Kind Span. Why: Each tab names its scope's kind as quiet metadata. How: This sets it in small uppercase muted mono type. */
 
 
 	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
