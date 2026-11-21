@@ -17,7 +17,7 @@
 
 
 
-.pilTagSpa { /* What: Pill Tag Span. Why: Stats, Pickers, and Data all tag things with the same small label. How: This styles an uppercase mono pill, reading its fit from --pil-* properties a parent may set, each falling back to the pill's normal inline sizing. */
+.pilTagSpa { /* What: Pill Tag Span. Why: Several tabs tag things with the same small label. How: This styles an uppercase mono pill, reading its fit from --pil-* properties a parent may set, each falling back to the pill's normal inline sizing. */
 
 
 	align-items     : center;

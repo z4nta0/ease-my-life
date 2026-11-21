@@ -39,14 +39,14 @@
 
 /* #region reeTraDiv */
 
-.reeTraDiv { /* What: Reel Track Div. Why: The names slide as one continuous strip, each move lasting exactly until the next. How: This stacks the rows and transitions only their transform, with the duration written inline per step. */
+.reeTraDiv { /* What: Reel Track Div. Why: The names slide as one continuous strip, each move lasting exactly until the next. How: This stacks the rows in a column and transitions only its own transform, with the duration written inline per step. */
 
 
 	display                    : flex;
 	flex-direction             : column;
 	transition-property        : transform;
 	transition-timing-function : linear;
-	will-change                : transform; /* What: Track Motion Hint. Why: The track exists only while the reel runs, sliding every step of its life, so promoting it up front saves a first-frame hitch on each move. How: This keeps the track on its own layer for as long as the reel is mounted. */
+	will-change                : transform; /* What: Track Motion Hint. Why: The track is the element that slides frame by frame while the reel runs, so promoting it up front saves a first-frame hitch on each move. How: This keeps the track on its own layer for as long as the reel is mounted. */
 
 
 }
@@ -314,7 +314,7 @@
 	display        : flex;
 	flex-direction : column;
 	gap            : var( --spa-ver-m07 );                     /* Spacing Vertical Base Minus 7 ~= 2.035px */
-	max-height     : calc( var( --ver-rhy-p03 ) * 1rem * 10 ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */ /* What: Spotlight Cap. Why: The list shows about ten rows before clipping. How: This caps it at ten spotlight rows. */
+	max-height     : calc( var( --ver-rhy-p03 ) * 1rem * 10 ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */ /* What: Spotlight Cap. Why: The list shows about ten rows before clipping. How: This caps it at ten row heights, so the gaps between rows leave a little under ten rows visible. */
 	max-width      : calc( var( --ver-rhy-p12 ) * 1rem );      /* Vertical Rhythm Base Plus 12 ~= 425.596px */
 	overflow       : hidden;
 	width          : 100%;

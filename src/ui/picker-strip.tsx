@@ -4,10 +4,10 @@
 // #region Imports
 
 import cssModObj from './picker-strip.module.css'; // What: CSS Module Object. Why: The reel, dissolve, and spotlight pick animations are styled from their own module. How: This maps each class name in picker-strip.module.css to its hashed module class.
-import React     from 'react';                     // What: React. Why: This is the UI library PicStrCom is built on. How: This is used directly (React.useState, React.useRef, React.useEffect, React.useMemo, ...) instead of importing individual named hooks.
+import React     from 'react';                     // What: React. Why: This is the UI library PicStrCom is built on. How: This is used directly (React.useState, React.useRef, React.useEffect, ...) instead of importing individual named hooks.
 
 
-import { redMotFun } from '../utils/motion.ts'; // What: Reduced Motion Function. Why: Under reduced motion the strip skips its cycle and mounts straight into the settled end state. How: This is checked once on mount unless forMotBoo forces the animation.
+import { redMotFun } from '../utils/motion.ts'; // What: Reduced Motion Function. Why: Under reduced motion the strip skips its cycle and mounts straight into the settled end state. How: This is checked on each render unless forMotBoo forces the animation.
 
 
 import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: The strip's candidates are items. How: This types PscProTyp's candidates by their id and name.
@@ -22,8 +22,8 @@ import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Typ
  * @summary
  * The animated pick reveal a picker plays when it runs: a reel, spotlight, or
  * dissolve cycle over the candidate items that settles on the item already
- * picked. It is shared by the Pickers tab's Pick One button and the Settings
- * tab's picker-animation preview, so both always show the same animation.
+ * picked. It is shared by more than one tab, so every use shows the same
+ * animation.
  *
  * Sections:
  *  - Components
@@ -65,8 +65,8 @@ type PscProTyp = { canIteArr : Pick< IteRcdTyp, 'id' | 'name' >[], forMotBoo? : 
  *                            own explicit Play press; defaults to undefined
  *                            (falsy).
  * @param props.onCycDonFun - On Cycle Done Function: Called once the cycle
- *                            settles on picIteObj; optional, since the
- *                            Settings preview never passes it.
+ *                            settles on picIteObj; optional, since a caller
+ *                            may not need to know when the cycle settles.
  * @param props.picIteObj   - Picked Item Object: The already-decided outcome
  *                            the cycle animates toward, or null while nothing
  *                            has been chosen yet.
@@ -90,16 +90,16 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 	// #region Cycle State
 
 	const lenCanNum = canIteArr.length;                                                                                       // What: Length Candidate Number. Why: Several branches below need the pool size to compute a modulo row/index. How: This is read once from canIteArr.length and reused throughout.
-	const indPicNum = ( picIteObj && lenCanNum ) ? canIteArr.findIndex( ( canCurObj ) => canCurObj.id === picIteObj.id ) : 0; // What: Index Picked Number. Why: The cycle needs to know where the decided outcome sits in the pool so it can land on it. How: This finds picked's own position in candidates, or 0 when there's nothing picked yet.
+	const indPicNum = ( picIteObj && lenCanNum ) ? canIteArr.findIndex( ( canCurObj ) => canCurObj.id === picIteObj.id ) : 0; // What: Index Picked Number. Why: The cycle needs to know where the decided outcome sits in the pool so it can land on it. How: This finds picIteObj's own position in canIteArr, or 0 when there's nothing picked yet.
 	const totSteNum = 22;                                                                                                     // What: Total Steps Number. Why: This is the fixed number of switches the cycle animation runs through before settling. How: This bounds the schedule loop below and shapes the deceleration curve.
 
 
-	const staPosNum = lenCanNum ? ( ( ( ( indPicNum - totSteNum ) % lenCanNum ) + lenCanNum ) % lenCanNum ) + lenCanNum * 2 : 0; // What: Start Position Number. Why: This is the actual computed starting row position described above. How: This is passed as the initial value of rowPosNum below and reused by the schedule loop's own local copy. // What: Start Position Calculation. Why: rowPosNum below is an ABSOLUTE, monotonically-increasing row position, not a modulo index, so advancing it by a constant +1 each step keeps the reel sliding in one direction the whole time (the old approach took the index modulo the list length, snapping backwards a full height every time it wrapped). How: This pre-picks a start offset so that after exactly totSteNum constant steps the reel lands on indPicNum (mod lenCanNum), with a couple of full loops of runway above it.
-	const aniOffBoo = !forMotBoo && !!( redMotFun() );                                                                           // What: Animation Off Boolean. Why: This is the actual computed flag described above. How: This combines the forMotBoo opt-out with the shared redMotFun() check. // What: Animation Off Boolean. Why: Reduced motion skips the cycle entirely, since the pick is already decided by the caller before this component even mounts, making the reel/spotlight/dissolve purely theatre; freezing the visuals via CSS alone would still leave the totSteNum-step timer running (roughly 2.5s) before onCycDonFun fires, gating the caller's own Send button behind a static screen with no feedback. How: forMotBoo (set by the Settings preview's own explicit Play press) opts out of this skip even under a system reduced-motion preference.
+	const staPosNum = lenCanNum ? ( ( ( ( indPicNum - totSteNum ) % lenCanNum ) + lenCanNum ) % lenCanNum ) + lenCanNum * 2 : 0; // What: Start Position Number. Why: This is the absolute row position the reel starts from and the schedule loop counts up from. How: This is passed as the initial value of rowPosNum below and reused by the schedule loop's own local copy. // What: Start Position Calculation. Why: rowPosNum below is an ABSOLUTE, monotonically-increasing row position, not a modulo index, so advancing it by a constant +1 each step keeps the reel sliding in one direction the whole time (the old approach took the index modulo the list length, snapping backwards a full height every time it wrapped). How: This pre-picks a start offset so that after exactly totSteNum constant steps the reel lands on indPicNum (mod lenCanNum), with a couple of full loops of runway above it.
+	const aniOffBoo = !forMotBoo && !!( redMotFun() );                                                                           // What: Animation Off Boolean. Why: This is whether the cycle is skipped entirely. How: This combines the forMotBoo opt-out with the shared redMotFun() check. // What: Animation Off Boolean. Why: Reduced motion skips the cycle entirely, since the pick is already decided by the caller before this component even mounts, making the reel/spotlight/dissolve purely theatre; freezing the visuals via CSS alone would still leave the totSteNum-step timer running (about 2.9s) before onCycDonFun fires, gating the caller's own Send button behind a static screen with no feedback. How: forMotBoo (set by the Settings preview's own explicit Play press) opts out of this skip even under a system reduced-motion preference.
 	const wraSpoRef = React.useRef( null );                                                                                      // What: Wrap Spotlight Reference. Why: The spotlight style's own wrapping div needs a stable DOM handle. How: This is attached via the spotlight branch's own ref prop, below.
 
 	const [ rowPosNum, setRowPosNum ] = React.useState( staPosNum );                         // What: Row Position Number And Setter. Why: This is the strip's own current absolute row position, driving every style's rendered frame. How: This starts at staPosNum and is advanced by the schedule loop in the effect below.
-	const [ traDurNum, setTraDurNum ] = React.useState( 0 );                                 // What: Transition Duration Number And Setter. Why: This is the actual per-step duration described above. How: This starts at 0 and is overwritten by the schedule loop on every step. // What: Per-Step Transition Duration. Why: Each move must animate over the SAME time as the gap until the next move, so transitions are never cut off mid-flight (a fast start) or left sitting idle (a slow end); the motion reads as one continuous, decelerating glide. How: This is recomputed every step by the schedule loop below and applied as the strip's own CSS transition-duration.
+	const [ traDurNum, setTraDurNum ] = React.useState( 0 );                                 // What: Transition Duration Number And Setter. Why: This is the transition duration applied to the track for the current step. How: This starts at 0 and is overwritten by the schedule loop on every step. // What: Per-Step Transition Duration. Why: Each move must animate over the SAME time as the gap until the next move, so transitions are never cut off mid-flight (a fast start) or left sitting idle (a slow end); the motion reads as one continuous, decelerating glide. How: This is recomputed every step by the schedule loop below and applied as the strip's own CSS transition-duration.
 	const [ cycPhaStr, setCycPhaStr ] = React.useState( aniOffBoo ? 'settled' : 'cycling' ); // What: Cycle Phase String And Setter. Why: Every style renders differently depending on whether the cycle is still spinning or has already landed. How: This starts on 'settled' when animation is off, otherwise 'cycling', and is flipped to 'settled' once the schedule loop below finishes.
 
 	// #endregion Cycle State
@@ -118,7 +118,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 	React.useEffect( () => { // What: Short Viewport Listener Effect. Why: shoVieBoo needs to update live if the viewport is resized past the 750px breakpoint while the cycle is running, not just on mount. How: This subscribes a change listener to the max-height media query and cleans it up on unmount.
 
 
-		if ( typeof matchMedia !== 'function' ) return; // What: No MatchMedia Guard. Why: Some environments may not support matchMedia at all. How: This bails out of the effect entirely, leaving shoVieBoo at its initial value.
+		if ( typeof matchMedia !== 'function' ) return; // What: No MatchMedia Guard. Why: matchMedia is called below, so the effect needs it to exist. How: This bails out of the effect entirely, leaving shoVieBoo at its initial value.
 
 
 
@@ -151,7 +151,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 		if ( aniOffBoo ) { // What: Reduced Motion Branch. Why: Under reduced motion the cycle should skip straight to done instead of running its schedule loop. How: This defers the onCycDonFun call to the next tick and returns its own cleanup, skipping the rest of the effect.
 
 
-			const defDonTim = setTimeout( () => { if ( onCycDonFun ) onCycDonFun(); }, 0 ); // What: Deferred Done Timeout. Why: Calling onCycDonFun synchronously here could fire the caller's own phase transition ('running' to 'done') mid-render. How: This hands control back on the very next tick instead.
+			const defDonTim = setTimeout( () => { if ( onCycDonFun ) onCycDonFun(); }, 0 ); // What: Deferred Done Timeout. Why: onCycDonFun runs on a later tick, after this effect has finished. How: This hands control back on the very next tick instead.
 
 
 
@@ -166,7 +166,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 		// #region Schedule Loop
 
-		let curPosNum = staPosNum; // What: Current Position Number. Why: The schedule loop below needs its own mutable running position, seeded from the same start the initial render used. How: This is incremented by 1 on every step inside schSteFun.
+		let curPosNum = staPosNum; // What: Current Position Number. Why: The schedule loop below needs its own mutable running position, seeded from the same start the initial render used. How: This is incremented by 1 on each step that advances the reel inside schSteFun.
 		let steCouNum = 0;         // What: Step Count Number. Why: The schedule loop needs to know how many steps have elapsed so it can stop at totSteNum and shape the deceleration curve. How: This is incremented by 1 on every step inside schSteFun.
 		let canRunBoo = false;     // What: Cancel Run Boolean. Why: A pending setTimeout chain must stop scheduling further steps once this effect is cleaned up. How: This is flipped to true by the cleanup function and checked at the top of every scheduled step.
 
@@ -215,7 +215,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 				// #region Next Step Scheduling
 
-				const proRatNum = steCouNum / totSteNum;                 // What: Progress Ratio Number. Why: This is the actual 0..1 progress value described above. How: This is steCouNum divided by totSteNum. // What: Deceleration Curve. Why: The cycle should start fast (roughly 40ms per step) and slow to a stop (roughly 300ms per step) as it approaches indPicNum. How: proRatNum is this step's progress through totSteNum, raised to a 2.2 exponent to bias the curve toward a late, gentle stop.
+				const proRatNum = steCouNum / totSteNum;                 // What: Progress Ratio Number. Why: This is how far through totSteNum the cycle has run, from 0 to 1. How: This is steCouNum divided by totSteNum. // What: Deceleration Curve. Why: The cycle should start fast (roughly 40ms per step) and slow to a stop (roughly 300ms per step) as it approaches indPicNum. How: proRatNum is this step's progress through totSteNum, raised to a 2.2 exponent to bias the curve toward a late, gentle stop.
 				const nexGapNum = 40 + Math.pow( proRatNum, 2.2 ) * 260; // What: Next Gap Number. Why: This is the actual eased delay, in ms, before the following step should fire. How: This maps proRatNum through the curve above onto the 40-300ms range.
 
 
@@ -251,22 +251,22 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: The cycle must restart only on a genuinely new pick, so the other values it reads stay out of the array. How: This silences the react-hooks exhaustive-deps warning for the dependency array below.
-	}, [ picIteObj ] ); // What: Effect Dependency Array. Why: A fresh cycle must only start when a genuinely new pick arrives. How: picIteObj changing is the sole trigger; the other values this effect reads (lenCanNum, aniOffBoo, staPosNum, onCycDonFun) are intentionally excluded since they're derived from the same render and don't themselves signal a new cycle.
+	}, [ picIteObj ] ); // What: Effect Dependency Array. Why: A fresh cycle must only start when a genuinely new pick arrives. How: picIteObj changing is the sole trigger; the other values this effect reads are intentionally excluded since a change to them alone shouldn't restart the cycle.
 
 
 
 	// #region Alternate Style Renders
 
-	if ( aniOffBoo ) { // What: Reduced Motion Render Branch. Why: One calm end-state is shown for every style when animation is off, matching what PicAniCom shows for the Settings preview. How: This returns the settled dissolve frame directly, skipping every style-specific branch below.
+	if ( aniOffBoo ) { // What: Reduced Motion Render Branch. Why: One calm end-state is shown for every style when animation is off. How: This returns the settled dissolve frame directly, skipping every style-specific branch below.
 
 
 		return (
 
 
-			<div className={` ${ cssModObj.picDisDiv }   ${ cssModObj.picDisDivSettled } `}>{ /* What: Dissolve Div Element. Why: This is the single calm end-state shown under reduced motion, regardless of the requested style. How: This renders the picked candidate's own name, already landed. */ }
+			<div className={` ${ cssModObj.picDisDiv }   ${ cssModObj.picDisDivSettled } `}>{ /* What: Picker Dissolve Div Element. Why: This is the single calm end-state shown under reduced motion, regardless of the requested style. How: This renders the picked candidate's own name, already landed. */ }
 
 
-				<span className={ cssModObj.disNamSpa }>{ picIteObj ? picIteObj.name : '' }</span>{ /* What: Name Span Element. Why: The picked candidate's name is the only thing this end-state needs to show. How: This renders picked.name, or an empty string while nothing is picked yet. */ }
+				<span className={ cssModObj.disNamSpa }>{ picIteObj ? picIteObj.name : '' }</span>{ /* What: Dissolve Name Span Element. Why: The picked candidate's name is the only thing this end-state needs to show. How: This renders picIteObj.name, or an empty string while nothing is picked yet. */ }
 
 
 			</div>
@@ -282,9 +282,9 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 	if ( styKeyStr === 'reel' ) { // What: Reel Style Branch. Why: One of the three requested animation styles is a vertical strip that shifts upward. How: This computes the reel's own row geometry and renders its scrolling track.
 
 
-		const rowHeiStr = 'calc( var( --ver-rhy-p05 ) * 1rem )';   // What: Row Height String. Why: Every reel row is one rhythm step tall, the same token the module's reel rows use, so the JS geometry can never drift from the CSS. How: This is multiplied by row counts in the reel's height and the track's offset below. // Vertical Rhythm Base Plus 5 ~= 59.447px
+		const rowHeiStr = 'calc( var( --ver-rhy-p05 ) * 1rem )';   // What: Row Height String. Why: Every reel row is one rhythm step tall, the same token the module's reel rows use, so the JS geometry matches the CSS. How: This is multiplied by row counts in the reel's height and the track's offset below. // Vertical Rhythm Base Plus 5 ~= 59.447px
 		const visRowNum = shoVieBoo ? 3 : 5;                       // What: Visible Row Number. Why: An odd count keeps the picked row centered in the stage; a short viewport needs fewer visible rows to fit. How: This picks 3 rows under shoVieBoo, otherwise 5.
-		const offRowNum = Math.floor( visRowNum / 2 ) - rowPosNum; // What: Offset Row Number. Why: The track must be shifted so the current row sits in the center of the visible window. How: This counts rows up by the current row's position, then back down by half the visible row count.
+		const offRowNum = Math.floor( visRowNum / 2 ) - rowPosNum; // What: Offset Row Number. Why: The track must be shifted so the current row sits in the center of the visible window. How: This takes half the visible row count, rounded down, minus the current row position.
 		const totRowNum = staPosNum + totSteNum + visRowNum + 4;   // What: Total Row Number. Why: Enough rows must actually exist in the DOM to cover the full monotonic travel plus the visible window above the landing row. How: This sums the start position, every scheduled step, the visible window, and a small buffer.
 
 
@@ -298,7 +298,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 				style={{ height : `calc( ${ rowHeiStr } * ${ visRowNum } )` }}
 
 				data-motion-force-active={ forMotBoo || undefined } // What: Motion Force Active Attribute. Why: An explicit preview request should play the animation even under reduced motion, and the module's reduced-motion rules skip anything under this attribute. How: This sets the presence-only attribute while forMotBoo is true and removes it otherwise.
-			>{ /* What: Reel Div Element. Why: This is the reel style's own root, sized to exactly fit its visible row window. How: This wraps the scrolling track plus its top/bottom fade masks and center landing line. */ }
+			>{ /* What: Picker Reel Div Element. Why: This is the reel style's own root, sized to exactly fit its visible row window. How: This wraps the scrolling track plus its top/bottom fade masks and center landing line. */ }
 
 
 				<div
@@ -308,7 +308,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 						transform          : `translateY( calc( ${ rowHeiStr } * ${ offRowNum } ) )`,
 						transitionDuration : `${ traDurNum }ms`
 					}}
-				>{ /* What: Track Div Element. Why: This is the actual scrolling element the animation slides. How: This is translated vertically by offRowNum rows, over a duration of traDurNum, and holds one row per rendered candidate below. */ }
+				>{ /* What: Reel Track Div Element. Why: This is the actual scrolling element the animation slides. How: This is translated vertically by offRowNum rows, over a duration of traDurNum, and holds totRowNum rows below. */ }
 
 
 					{ Array.from( Array( totRowNum ).keys(), ( rowIndNum ) => ( // What: Reel Row List Render. Why: totRowNum rows must actually exist so the track has real content to slide through for the whole travel distance. How: This maps a fresh array of that length into one row per rowIndNum, each showing the candidate at rowIndNum modulo lenCanNum.
@@ -320,7 +320,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 							className={ cssModObj.reeRowDiv }
 
 							data-row-highlight-active={ ( cycPhaStr === 'settled' && rowIndNum === rowPosNum ) || undefined } // What: Row Highlight Active Attribute. Why: Once the reel settles, the row on the center line is marked as the pick. How: This sets the presence-only attribute on that one row after settling and removes it otherwise.
-						>{ /* What: Row Div Element. Why: Each row shows one candidate's name at its own position in the endless scrolling loop. How: This marks itself with data-row-highlight-active only once the cycle has settled and this is the exact landing row. */ }
+						>{ /* What: Reel Row Div Element. Why: Each row shows one candidate's name at its own position in the endless scrolling loop. How: This marks itself with data-row-highlight-active only once the cycle has settled and this is the exact landing row. */ }
 
 
 							{ canIteArr[ rowIndNum % lenCanNum ].name }{ /* What: Row Name Expression. Why: Each reel row shows one candidate name, cycling through the pool. How: This reads the candidate at rowIndNum modulo the pool size. */ }
@@ -334,9 +334,9 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 				</div>
 
-				<div className={ cssModObj.reeMasDiv } />{ /* What: Mask Div Element. Why: The reel's own top/bottom edges need a soft fade instead of a hard visual cutoff. How: This is a purely decorative overlay, styled entirely via CSS. */ }
+				<div className={ cssModObj.reeMasDiv } />{ /* What: Reel Mask Div Element. Why: The reel's own top/bottom edges need a soft fade instead of a hard visual cutoff. How: This is a purely decorative overlay, styled entirely via CSS. */ }
 
-				<div className={ cssModObj.reeLinDiv } />{ /* What: Line Div Element. Why: The center landing row needs a visible marker line so the eye has somewhere to settle. How: This is a purely decorative overlay, styled entirely via CSS. */ }
+				<div className={ cssModObj.reeLinDiv } />{ /* What: Reel Line Div Element. Why: The center landing row needs a visible marker line so the eye has somewhere to settle. How: This is a purely decorative overlay, styled entirely via CSS. */ }
 
 
 			</div>
@@ -363,14 +363,14 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 				className={` ${ cssModObj.picDisDiv }   ${ cycPhaStr === 'settled' ? cssModObj.picDisDivSettled : '' } `}
 
 				data-motion-force-active={ forMotBoo || undefined } // What: Motion Force Active Attribute. Why: An explicit preview request should play the animation even under reduced motion, and the module's reduced-motion rules skip anything under this attribute. How: This sets the presence-only attribute while forMotBoo is true and removes it otherwise.
-			>{ /* What: Dissolve Div Element. Why: This is the dissolve style's own root, wrapping the fading name and its optional settled glow. How: This is keyed by rowPosNum and curCanObj's own id below so React remounts the span, replaying the fade, on every change. */ }
+			>{ /* What: Picker Dissolve Div Element. Why: This is the dissolve style's own root, wrapping the fading name and its optional settled glow. How: This holds a span keyed by rowPosNum and curCanObj's own id below so React remounts it, replaying the fade, on every change. */ }
 
 
 				<span
 					key={ rowPosNum + '_' + curCanObj.id }
 
 					className={ cssModObj.disNamSpa }
-				>{ /* What: Name Span Element. Why: This is the actual name that cross-fades between candidates. How: This renders curCanObj's own name, or an empty string on the rare frame where none resolves. */ }
+				>{ /* What: Dissolve Name Span Element. Why: This is the actual name that cross-fades between candidates. How: This renders curCanObj's own name, or an empty string on the rare frame where none resolves. */ }
 
 
 					{ curCanObj ? curCanObj.name : '' }{ /* What: Current Name Expression. Why: The dissolve frame shows the candidate for the current row position. How: This renders curCanObj's name, or nothing while it's missing. */ }
@@ -406,7 +406,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 			className={` ${ cssModObj.picSpoDiv }   ${ cycPhaStr === 'settled' ? cssModObj.picSpoDivSettled : '' } `}
 
 			data-motion-force-active={ forMotBoo || undefined } // What: Motion Force Active Attribute. Why: An explicit preview request should play the animation even under reduced motion, and the module's reduced-motion rules skip anything under this attribute. How: This sets the presence-only attribute while forMotBoo is true and removes it otherwise.
-		>{ /* What: Spotlight Div Element. Why: This is the spotlight style's own root, listing every visible candidate with the active one highlighted. How: This wraps one row per entry in visCanArr below. */ }
+		>{ /* What: Picker Spotlight Div Element. Why: This is the spotlight style's own root, listing every visible candidate with the active one highlighted. How: This wraps one row per entry in visCanArr below. */ }
 
 
 			{ visCanArr.map( ( curCanObj, rowIndNum ) => { // What: Spotlight Row List Render. Why: One row must exist per visible candidate, with the currently-landed one marked. How: This maps visCanArr to one row per curCanObj, computing isaActBoo per row from rowIndNum against the current position.
@@ -425,7 +425,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 						className={ cssModObj.spoRowDiv }
 
 						data-row-highlight-active={ isaActBoo || undefined } // What: Row Highlight Active Attribute. Why: The row the highlight is currently on stands out from the rest. How: This sets the presence-only attribute on that one row and removes it otherwise.
-					>{ /* What: Row Div Element. Why: Each row shows one candidate's name, highlighted only while it's the current landing row. How: This marks itself with data-row-highlight-active whenever isaActBoo is true for this row. */ }
+					>{ /* What: Spotlight Row Div Element. Why: Each row shows one candidate's name, highlighted only while it's the current landing row. How: This marks itself with data-row-highlight-active whenever isaActBoo is true for this row. */ }
 
 
 						<span>{ curCanObj.name }</span>{ /* What: Name Span Element. Why: Every row needs its own visible candidate name. How: This renders curCanObj's own name. */ }
@@ -456,7 +456,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 // #region Exports
 
-export { PicStrCom }; // What: Named Export. Why: The Pickers tab's run view and the Settings tab's animation preview both render this strip. How: This exports PicStrCom by name.
+export { PicStrCom }; // What: Named Export. Why: More than one file renders this strip. How: This exports PicStrCom by name.
 
 // #endregion Exports
 

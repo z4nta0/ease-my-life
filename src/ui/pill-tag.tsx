@@ -17,8 +17,8 @@ import type { ReactNode } from 'react'; // What: React Node. Why: A pill's text 
  * pill-tag.tsx = Pill Tag
  *
  * @summary
- * The small colored label the Stats and Pickers tabs use to tag a mode or a
- * status, with a tone that picks one of the pill color modifiers.
+ * The small colored label that tags a mode or a status, with a tone that
+ * picks one of the pill color modifiers.
  *
  * Sections:
  *  - Components
@@ -40,8 +40,8 @@ type PtcProTyp = { children : ReactNode, 'data-element-name-hook'? : string, ton
  * PilTagCom = Pill Tag Component
  *
  * @summary
- * The small colored label Stats, Pickers and Data use to tag a mode or a
- * status. The tone picks one of the pill color modifiers.
+ * The small colored label used to tag a mode or a status. The tone picks one
+ * of the pill color modifiers.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -62,14 +62,14 @@ type PtcProTyp = { children : ReactNode, 'data-element-name-hook'? : string, ton
  *
 */
 
-const PilTagCom = ( { children, 'data-element-name-hook' : hooNamStr, tonValStr = 'default' } : PtcProTyp ) : JSX.Element => ( // What: Pill Tag Component. Why: Stats/Pickers/Data all need the same small colored label to tag a mode or status. How: This renders a span whose "pill--{tone}" modifier class picks the actual color/style, defaulting to a neutral tone.
+const PilTagCom = ( { children, 'data-element-name-hook' : hooNamStr, tonValStr = 'default' } : PtcProTyp ) : JSX.Element => ( // What: Pill Tag Component. Why: Several tabs need the same small colored label to tag a mode or status. How: This renders a span whose tone modifier class picks the actual color and style, defaulting to a neutral tone.
 
 
 	<span
 		className={` ${ cssModObj.pilTagSpa }   ${ tonValStr === 'default' ? cssModObj.pilTagSpaDefault : '' }   ${ tonValStr === 'mode' ? cssModObj.pilTagSpaMode : '' }   ${ tonValStr === 'muted' ? cssModObj.pilTagSpaMuted : '' } `}
 
 		data-element-name-hook={ hooNamStr }
-	>{ children }</span> // What: Tag Span Element. Why: This is PilTagCom's own single rendered element. How: This applies the tonValStr modifier class and renders whatever children the caller passed.
+	>{ children }</span> // What: Pill Tag Span Element. Why: This is PilTagCom's own single rendered element. How: This applies the tonValStr modifier class and renders whatever children the caller passed.
 
 
 );
@@ -82,7 +82,7 @@ const PilTagCom = ( { children, 'data-element-name-hook' : hooNamStr, tonValStr 
 
 // #region Exports
 
-export { PilTagCom }; // What: Named Export. Why: The Stats and Pickers tabs tag modes and statuses with this pill. How: This exports PilTagCom by name.
+export { PilTagCom }; // What: Named Export. Why: More than one tab tags modes and statuses with this pill. How: This exports PilTagCom by name.
 
 // #endregion Exports
 
