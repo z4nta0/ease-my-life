@@ -2342,7 +2342,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const calUniStr = isaCadBoo ? `calendar ${ eliUniStr }` : 'calendar days';    // What: Calendar Unit String. Why: The calendar-mode toggle button's own label needs the same cadence-aware relabeling as the eligible one. How: This prefixes eliUniStr with "calendar", or falls back to the literal "calendar days". // Toggle-button label for calendar mode (relabelled to the cadence unit).
 
 
-	const uniForFun = ( valCouNum : number ) => isaCadBoo // What: Unit For Function. Why: A day-count metric's own unit word depends on both the picker's cadence and whether the value is singular or plural. How: This defers to CAD_NAM_OBJ.uniWorFun for a cadenced picker, otherwise pluralizes the literal word "day".
+	const uniForFun = ( valCouNum : number ) => isaCadBoo // What: Unit Format Function. Why: A day-count metric's own unit word depends on both the picker's cadence and whether the value is singular or plural. How: This defers to CAD_NAM_OBJ.uniWorFun for a cadenced picker, otherwise pluralizes the literal word "day".
 		? CAD_NAM_OBJ.uniWorFun( staCadStr, valCouNum ) // What: Cadenced Branch. Why: A cadenced picker counts in its own period unit. How: This asks CAD_NAM_OBJ.uniWorFun for the matching word.
 		: ( valCouNum === 1 ? 'day' : 'days' );         // What: Daily Branch. Why: A daily picker counts in plain days. How: This pluralizes "day" by valCouNum.
 

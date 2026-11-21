@@ -2397,7 +2397,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-	const meaCoaEle = ( // What: Measurer Coach Element. Why: This is a hidden clone of the coach, rendered off-screen the moment a step's content is known, BEFORE its target (and so curRecObj) resolves, unlike the real coach below; its only job is to give meaCoaRef's own layout effect something to measure early enough for decResFun (which runs inside the position-tracking effect, as soon as the target is first found, before the real coach exists in the DOM at all) to see this step's REAL height instead of a stale one measured off whatever the previous, possibly shorter, step happened to be. How: This renders a coach card holding the step's content fixed off-screen, so its measured height is ready before the real coach appears.
+	const meaCoaEle = ( // What: Measure Coach Element. Why: This is a hidden clone of the coach, rendered off-screen the moment a step's content is known, BEFORE its target (and so curRecObj) resolves, unlike the real coach below; its only job is to give meaCoaRef's own layout effect something to measure early enough for decResFun (which runs inside the position-tracking effect, as soon as the target is first found, before the real coach exists in the DOM at all) to see this step's REAL height instead of a stale one measured off whatever the previous, possibly shorter, step happened to be. How: This renders a coach card holding the step's content fixed off-screen, so its measured height is ready before the real coach appears.
 
 
 		<div
@@ -2484,7 +2484,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-				{ meaCoaEle }{ /* What: Measurer Coach Element Render. Why: The measurer must already be mounted so its height is ready once the target is found. How: This renders meaCoaEle unchanged. */ }
+				{ meaCoaEle }{ /* What: Measure Coach Element Render. Why: The measurer must already be mounted so its height is ready once the target is found. How: This renders meaCoaEle unchanged. */ }
 
 
 			</div>
@@ -2519,7 +2519,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		>{ /* What: Tour Overlay Div Element. Why: This is the overlay root every render branch portals. How: This wraps the hidden measurer, the spot, and the coach together. Its data-element-name-hook is read by help mode's own outside-click check. */ }
 
 
-			{ meaCoaEle }{ /* What: Measurer Coach Element Render. Why: The hidden measurer must stay mounted for every render this branch produces, not just the early pre-resolve branch above, so meaCoaRef's own layout effect keeps measuring the step's real, current height. How: This renders the same meaCoaEle already built above, unchanged in this branch. */ }
+			{ meaCoaEle }{ /* What: Measure Coach Element Render. Why: The hidden measurer must stay mounted for every render this branch produces, not just the early pre-resolve branch above, so meaCoaRef's own layout effect keeps measuring the step's real, current height. How: This renders the same meaCoaEle already built above, unchanged in this branch. */ }
 
 
 

@@ -555,7 +555,7 @@ const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id ); // What: O
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param staRawObj - State Raw Object: The precomputed stats object from
+ * @param staRawObj - Stats Raw Object: The precomputed stats object from
  *                    onboarding-stats-data.ts, holding day-offset-based
  *                    pickLog / reminderLog / reminderSkipLog arrays.
  *

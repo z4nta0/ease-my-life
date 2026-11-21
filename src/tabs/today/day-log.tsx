@@ -651,9 +651,9 @@ type ShcProTyp = { iteFlaObj : IteFlaTyp | undefined }; // What: Status-Chip-Com
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.iteFlaObj - Item Flag Object: This item's own flags object from
- *                          {@link dayFlaFun}, or undefined when the item has
- *                          no pick-log rows today at all.
+ * @param props.iteFlaObj - Item Flags Object: This item's own flags object
+ *                          from {@link dayFlaFun}, or undefined when the item
+ *                          has no pick-log rows today at all.
  *
  * @returns This item's own run of status icon chips, or a placeholder
  * span when there is nothing to show.

@@ -69,7 +69,7 @@ const { broInsObj, capPagObj } = await opeCapFun(); // What: Browser Instance Ob
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param icoSizNum - Icon Size Number: The icon's width and height in pixels.
+ * @param icoSizNum - ICO Size Number: The icon's width and height in pixels.
  *
  * @returns A promise that resolves with the finished PNG's bytes.
  *

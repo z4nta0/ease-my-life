@@ -713,7 +713,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 	// #endregion savAniFun
 
 
-	const tidNamStr = ( conDraObj && norConFun( conDraObj.name ) ) || ''; // What: Tidy Name String. Why: Every save/collision-check below needs the draft's own name already normalized to the app's tidy-casing rule. How: This calls norConFun on conDraObj.name when a draft exists, empty string otherwise.
+	const tidNamStr = ( conDraObj && norConFun( conDraObj.name ) ) || ''; // What: Tidied Name String. Why: Every save/collision-check below needs the draft's own name already normalized to the app's tidy-casing rule. How: This calls norConFun on conDraObj.name when a draft exists, empty string otherwise.
 
 
 	const namErrStr = conDraObj && !tidNamStr // What: Name Error String. Why: The open row's own editor needs a specific validation message whenever its name is empty or collides with another conditional. How: This checks emptiness first, then a case-insensitive collision against every OTHER conditional, null when the name is valid.

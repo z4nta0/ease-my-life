@@ -231,7 +231,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 
 		const newValStr = draNamStr.trim();                       // What: New Value String. Why: A typed name needs its surrounding whitespace trimmed before it is compared or saved. How: This trims draNamStr.
-		const chaValBoo = !!newValStr && newValStr !== groNamStr; // What: Changed Value Boolean. Why: An empty or unchanged draft should just close quietly rather than commit anything. How: This is true only when newValStr is non-empty and differs from groNamStr.
+		const chaValBoo = !!newValStr && newValStr !== groNamStr; // What: Change Value Boolean. Why: An empty or unchanged draft should just close quietly rather than commit anything. How: This is true only when newValStr is non-empty and differs from groNamStr.
 
 
 		if ( chaValBoo && valNamFun ) { // What: Validation Branch. Why: A real change needs to be checked against valNamFun before committing, since a collision should block rather than merge (Page Tours has nothing to merge into). How: This runs valNamFun against newValStr only when there is an actual change to validate.
