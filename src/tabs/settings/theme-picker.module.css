@@ -14,8 +14,8 @@
  * switches its label and name field to light-on-dark colors.
  *
  * The subsection heading and copy classes are copied from the shared Settings
- * classes until the design-system pass merges them. The label and the check
- * each have their own class, so the check keeps its top-right accent styling.
+ * classes. The label and the check each have their own class, so the check
+ * keeps its top-right accent styling.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -36,7 +36,7 @@
 
 }
 
-.subHeaDiv { /* What: Subsection Header Div. Why: Each subsection names itself like every other Appearance subsection. How: This sets the heading in small, spaced, muted mono capitals. */
+.subHeaDiv { /* What: Subsection Header Div. Why: Each subsection names itself, in the same style as the other Appearance subsections. How: This sets the heading in small, spaced, muted mono capitals. */
 
 
 	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -61,7 +61,7 @@
 
 /* #region theRowDiv */
 
-.theRowDiv { /* What: Theme Row Div. Why: Each theme previews as a full-width strip of its colors that can be picked. How: This lays out a clipped rounded strip with a transparent frame that fades in when the row is focused or selected, and eases its focus ring in, and eases its press and focus ring. */
+.theRowDiv { /* What: Theme Row Div. Why: Each theme previews as a full-width strip of its colors that can be picked. How: This lays out a clipped rounded strip with a transparent frame that fades in when the row is focused or selected, and eases its frame color, focus ring, and press. */
 
 
 	border         : var( --bor-wid-bas ) solid transparent; /* Border Width Base ~= 1.160px */
@@ -136,7 +136,7 @@
 
 
 }
-.theRowDiv:active { /* What: Pressed Theme Row Div. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.theRowDiv:active { /* What: Pressed Theme Row Div. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -246,7 +246,7 @@
 .cusSwaInp { /* What: Custom Swatch Input. Why: Each custom color is a live color input that should fill its segment like a preset swatch. How: This strips the native color input's chrome so it fills the full height. */
 
 
-	-webkit-appearance : none; /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping the color input's native styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
+	-webkit-appearance : none; /* What: WebKit Appearance. Why: The color input's native styling has to be dropped in WebKit too. How: This sets the prefixed appearance, the same as the standard appearance line below. */
 	appearance         : none;
 	background         : none;
 	border             : 0;
@@ -256,7 +256,7 @@
 
 
 }
-.cusSwaInp::-webkit-color-swatch-wrapper { /* What: Custom Swatch Input WebKit Swatch Wrapper. Why: WebKit pads the color swatch inside its input. How: This removes that padding so the color reaches the edges. */
+.cusSwaInp::-webkit-color-swatch-wrapper { /* What: Custom Swatch Input WebKit Swatch Wrapper. Why: The swatch wrapper's own padding would keep the color off the edges. How: This removes that padding so the color reaches the edges. */
 
 
 	padding : 0;
@@ -267,7 +267,7 @@
 
 
 	border        : none;
-	border-radius : 0;    /* What: Square Swatch Corners. Why: Safari on iPhone and iPad rounds the swatch itself, which stretches into an oval across a wide segment. How: This squares it, leaving the row's own rounded edge to shape it like a preset. */
+	border-radius : 0;    /* What: Square Swatch Corners. Why: The swatch's own corners should be square so the row's rounded edge shapes it like a preset. How: This squares it. */
 	transition    : background-color var( --dur-tra-p03 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
 
 
@@ -363,7 +363,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Custom Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Custom Name Input. Why: Someone who asked for less motion shouldn't see the field fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.cusNamInp { /* What: Still Custom Name Input. Why: The change should happen at once. How: This turns its transition off. */
