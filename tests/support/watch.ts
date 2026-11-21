@@ -15,13 +15,14 @@ import type { Page } from '@playwright/test'; // What: Page. Why: Every watcher 
  * @summary
  * Watches a page for the things a click can't report on its own. watErrFun
  * collects every uncaught page error and console error, React's warnings
- * included, so a suite can fail on any of them. rcdAniFun starts recording
- * every class and attribute the page adds, and seeAniFun asks whether one
- * matching a name appeared since, which is how a test confirms an
- * animation played: most animations switch on a class or a data attribute
- * for a moment and then remove it, too quickly to catch by looking. Module
- * class names are hashed but keep their local name, so a class is matched
- * by the name inside it (proRinDiv--pulsing matches _proRinDiv--pulsing_x1).
+ * included, so a suite can fail on any of them. rcdAniFun starts recording the
+ * class tokens and attributes added to elements already in the page, and
+ * seeAniFun asks whether one matching a name appeared since, which is how a
+ * test confirms an animation played: most animations switch on a class or a
+ * data attribute for a moment and then remove it, too quickly to catch by
+ * looking. Module class names are hashed but keep their local name, so a class
+ * is matched by the name inside it (proRinDiv--pulsing matches
+ * _proRinDiv--pulsing_x1).
  *
  * Sections:
  *  - Helpers
@@ -41,24 +42,25 @@ import type { Page } from '@playwright/test'; // What: Page. Why: Every watcher 
  * rcdAniFun = Record Animations Function
  *
  * @summary
- * Starts recording, in the page, every class token added to any element and
- * every attribute set, from now on, into window.__aniRcdArr. A later
+ * Starts recording, in the page, each class token added to an element
+ * already in the page and each attribute set on one, from now on, into
+ * window.__aniRcdArr. A later
  * seeAniFun call reads it. Calling it again clears the record.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param curPagObj - Current Page Object: The page to record.
  *
- * @returns A promise that settles once recording has started.
+ * @returns A promise that settles once recording has started, with no value.
  *
  * @example
  * ```ts
- * await rcdAniFun(curPagObj) // => void
+ * await rcdAniFun(curPagObj) // => Promise<void>
  * ```
  *
 */
 
-const rcdAniFun = async ( curPagObj : Page ) : Promise< void > => curPagObj.evaluate( () => { // What: Record Animations Function. Why: Animations switch classes on and off too fast to catch by looking. How: This records every added class and attribute.
+const rcdAniFun = async ( curPagObj : Page ) : Promise< void > => curPagObj.evaluate( () => { // What: Record Animations Function. Why: Animations switch classes on and off too fast to catch by looking. How: This records the classes and attributes added to elements in the page.
 
 
 	const winAnyObj = window as unknown as { __aniObsObj? : MutationObserver, __aniRcdArr : string[] }; // What: Window Any Object. Why: The record lives on the page's window. How: This reads the window with the recorder's fields. // What: Type Assertion Note. Why: These test-only fields aren't on the app's Window type. How: The window is read as holding them, since this script sets them.
@@ -120,7 +122,8 @@ const rcdAniFun = async ( curPagObj : Page ) : Promise< void > => curPagObj.eval
  * @param aniNamStr - Animation Name String: The class or bracketed attribute
  *                    name to look for.
  *
- * @returns Whether it appeared.
+ * @returns A promise that resolves with whether a matching recorded name
+ *          appeared.
  *
  * @example
  * ```ts
@@ -142,9 +145,8 @@ const seeAniFun = async ( curPagObj : Page, aniNamStr : string ) : Promise< bool
  *
  * @summary
  * Starts collecting a page's uncaught errors and console errors into an
- * array the caller keeps, so the test can assert it stayed empty. The
- * service worker block's own warning is a console warning, not an error,
- * so it never lands here.
+ * array the caller keeps, so the test can assert it stayed empty. Only
+ * console messages of type error are kept, so warnings never land here.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

@@ -39,7 +39,32 @@ const REM_CAR_STR = '[data-element-name-hook~="remCarArt"]:not([data-element-nam
 
 // #region Helpers
 
-const donCouFun = ( staAppObj : StaAppTyp ) => staAppObj.today.entries.filter( ( curEntObj ) => curEntObj.done ).length; // What: Done Count Function. Why: A check-off raises the done count by one. How: This counts done entries.
+// #region donCouFun
+
+/**
+ * donCouFun = Done Count Function
+ *
+ * @summary
+ * Counts the entries in a saved state's Today list that are checked off. It
+ * reads only the state it is given and changes nothing.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param staAppObj - State App Object: The saved state whose Today entries to
+ *                    count.
+ *
+ * @returns The number of entries marked done.
+ *
+ * @example
+ * ```ts
+ * donCouFun(staAppObj) // => 3
+ * ```
+ *
+*/
+
+const donCouFun = ( staAppObj : StaAppTyp ) : number => staAppObj.today.entries.filter( ( curEntObj ) => curEntObj.done ).length; // What: Done Count Function. Why: A check-off raises the done count by one. How: This counts done entries.
+
+// #endregion donCouFun
 
 // #endregion Helpers
 
@@ -47,7 +72,7 @@ const donCouFun = ( staAppObj : StaAppTyp ) => staAppObj.today.entries.filter( (
 
 // #region Exports
 
-export { donCouFun, ENT_CAR_STR, REM_CAR_STR }; // What: Named Exports. Why: The Today interaction suite and the simulation find cards and recognize check-offs through these. How: This exports them by name.
+export { donCouFun, ENT_CAR_STR, REM_CAR_STR }; // What: Named Exports. Why: These are the card selectors and done count the Today suites share. How: This exports them by name.
 
 // #endregion Exports
 

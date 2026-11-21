@@ -16,7 +16,7 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * @summary
  * Reads and writes the app's saved state the way src/state/storage.ts lays
  * it out, so a test can check what actually landed on disk rather than what
- * the screen shows. The app keeps everything in the IndexedDB database
+ * the screen shows. The app saves its state in the IndexedDB database
  * easemylife: the state, minus its pick log, under the key main in the
  * state store, and the pick log under main in the picklog store. Saves are
  * debounced to an idle moment, so a read straight after an action can see
@@ -62,7 +62,8 @@ const SET_GAP_NUM = 300;   // What: Settle Gap Number. Why: The app writes the p
  *
  * @param curPagObj - Current Page Object: The page whose saved state to read.
  *
- * @returns The saved state with its pick log, or null when none exists.
+ * @returns A promise that resolves with the saved state with its pick log, or
+ *          null when none exists.
  *
  * @example
  * ```ts
@@ -137,7 +138,8 @@ const reaStaFun = async ( curPagObj : Page ) : Promise< StaAppTyp | null > => cu
  * @param conLabStr - Condition Label String: Names the condition in the error
  *                    when it never holds.
  *
- * @returns The first settled saved state that met the condition.
+ * @returns A promise that resolves with the first settled saved state that
+ *          met the condition.
  * @see {@link setStaObj}
  *
  * @example
@@ -179,7 +181,7 @@ const waiStaFun = async ( curPagObj : Page, conTesFun : ( staAppObj : StaAppTyp 
 
 
 
-		await curPagObj.waitForTimeout( POL_GAP_NUM ); // What: Poll Gap Wait. Why: Reading again immediately would only repeat the same result. How: This waits POL_GAP_NUM milliseconds.
+		await curPagObj.waitForTimeout( POL_GAP_NUM ); // What: Poll Gap Wait. Why: Reading again immediately would waste a read before the save can land. How: This waits POL_GAP_NUM milliseconds.
 
 
 	}
@@ -215,11 +217,11 @@ const waiStaFun = async ( curPagObj : Page, conTesFun : ( staAppObj : StaAppTyp 
  * @param curPagObj - Current Page Object: The page whose origin to write to.
  * @param staAppObj - State App Object: The full state, pick log included.
  *
- * @returns A promise that settles once the state is written.
+ * @returns A promise that settles once the state is written, with no value.
  *
  * @example
  * ```ts
- * await wriStaFun(curPagObj, reaFixFun()) // => void
+ * await wriStaFun(curPagObj, reaFixFun()) // => Promise<void>
  * ```
  *
 */
@@ -272,11 +274,11 @@ const wriStaFun = async ( curPagObj : Page, staAppObj : StaAppTyp ) : Promise< v
 
 
 
-				datConObj.close(); // What: Connection Close Call. Why: An open connection would block the app's own open. How: This closes it.
+				datConObj.close(); // What: Connection Close Call. Why: An open connection would block the app's own upgrades. How: This closes it.
 
 
 
-				resProFun(); // What: Write Resolve Call. Why: The caller loads the app only after the write. How: This resolves the promise.
+				resProFun(); // What: Write Resolve Call. Why: The write has committed, so the awaiting caller can go on. How: This resolves the promise.
 
 
 			};
@@ -298,7 +300,7 @@ const wriStaFun = async ( curPagObj : Page, staAppObj : StaAppTyp ) : Promise< v
 
 // #region Exports
 
-export { reaStaFun, waiStaFun, wriStaFun }; // What: Named Exports. Why: Every suite sets up and checks saved state through these. How: This exports reaStaFun, waiStaFun, and wriStaFun by name.
+export { reaStaFun, waiStaFun, wriStaFun }; // What: Named Exports. Why: These are the helpers a suite uses to set up and check saved state. How: This exports reaStaFun, waiStaFun, and wriStaFun by name.
 
 // #endregion Exports
 

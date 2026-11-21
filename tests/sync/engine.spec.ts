@@ -50,7 +50,7 @@ import type { RawSavTyp } from '../../src/core/data-model.ts'; // What: Raw Save
 // #region Constants
 
 const DOC_MAX_NUM = 1048576 - 8192; // What: Document Maximum Number. Why: Firestore refuses a document over 1 MiB, including its field names and metadata. How: This is that limit in bytes, minus 8 KiB of room.
-const TOD_DAY_STR = '2026-10-20';   // What: Today Day String. Why: Rows dated today follow the winner alone. How: This is the day every flow runs on.
+const TOD_DAY_STR = '2026-10-20';   // What: Today Day String. Why: Rows dated today follow the winner alone. How: This is the day the sync flows run on.
 
 // #endregion Constants
 
@@ -72,8 +72,8 @@ const rowBuiFun = ( rowIdeStr : string, datValStr : string ) : RawSavTyp => ({ d
  * staBuiFun = State Build Function
  *
  * @summary
- * Builds a small app state: one item, whose name stands in for any change to
- * core, and a pick log, which stands in for every log.
+ * Builds a small app state: one item, whose name stands in for a change to
+ * core, and a pick log, which stands in for the logs.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -176,7 +176,7 @@ test( "a device's first sync adopts the account's data and keeps its own past hi
 	// #region Device Sync
 
 	const devResObj = await synRunFun( fakBacObj, devStaObj, 5000, null, TOD_DAY_STR );                            // What: Device Result Object. Why: The new device syncs for the first time. How: This runs its sync.
-	const expStaObj = staBuiFun( 'Dishes', [ rowBuiFun( 'd1', '2026-10-05' ), rowBuiFun( 'p1', '2026-10-19' ) ] ); // What: Expected State Object. Why: The account's core wins, its past row is kept, and its today row follows the account. How: This builds the expected merge.
+	const expStaObj = staBuiFun( 'Dishes', [ rowBuiFun( 'd1', '2026-10-05' ), rowBuiFun( 'p1', '2026-10-19' ) ] ); // What: Expected State Object. Why: The account's core wins, the device's past row is kept, and the device's today row follows the account. How: This builds the expected merge.
 
 	// #endregion Device Sync
 
@@ -194,7 +194,7 @@ test( "a device's first sync adopts the account's data and keeps its own past hi
 
 
 
-test( 'two devices that changed the same month merge it, with the later save deciding today', async () => { // What: Conflict Merge Test. Why: Offline changes on two devices must both survive, without a removed row coming back. How: This changes one month on both devices, syncs each, and compares both merged states with the expected one.
+test( 'two devices that changed the same month merge it, with the later save deciding today', async () => { // What: Conflict Merge Test. Why: Offline changes to one month on two devices must merge, without a removed row coming back. How: This changes one month on both devices, syncs each, and compares both merged states with the expected one.
 
 
 	// #region Base State
@@ -232,7 +232,7 @@ test( 'two devices that changed the same month merge it, with the later save dec
 
 
 
-test( 'display settings stay on each device and never upload', async () => { // What: Device Settings Test. Why: Theme, tab bar placement, and the Data tab's layout suit one screen. How: This changes them on one device, merges a change from another, and checks nothing uploads and each device keeps its own.
+test( 'display settings stay on each device and never upload', async () => { // What: Device Settings Test. Why: Theme, tab bar placement, and the Data tab's layout suit one screen. How: This syncs a theme change on one device and a second device with its own theme, and checks the theme change uploads nothing, the cloud's core holds no appearance, and the second device keeps its own theme.
 
 
 	// #region Device Syncs
@@ -250,7 +250,7 @@ test( 'display settings stay on each device and never upload', async () => { // 
 	// #region Settings Checks
 
 	expect( theResObj.pusNeeBoo ).toBe( false );                               // What: No Upload Assertion. Why: Settings stay local. How: This expects no upload.
-	expect( fakBacObj.docTexMap.get( 'core' ) ).not.toContain( 'appearance' ); // What: Cloud Core Assertion. Why: The cloud never holds settings. How: This checks core's text.
+	expect( fakBacObj.docTexMap.get( 'core' ) ).not.toContain( 'appearance' ); // What: Cloud Core Assertion. Why: The cloud's core document holds no appearance settings. How: This checks core's text.
 	expect( twoResObj.merStaObj?.appearance ).toEqual( { theme : 'dusk' } );   // What: Kept Theme Assertion. Why: Adopting the account keeps this device's theme. How: This reads the merged state's appearance, failing when there's none.
 
 	// #endregion Settings Checks
@@ -319,7 +319,7 @@ test( 'an upload that loses the race starts over, and gives up as busy after fou
 
 	// #region Busy Race
 
-	fakBacObj.rejCouObj.couNum = 10; // What: Many Lost Races. Why: A sync that keeps losing has to stop. How: This refuses every upload it tries.
+	fakBacObj.rejCouObj.couNum = 10; // What: Many Lost Races. Why: A sync that keeps losing has to stop. How: This refuses the next ten uploads.
 
 
 
@@ -368,7 +368,7 @@ test( 'a cloud copy saved by a newer schema is left alone', async () => { // Wha
 
 
 
-	expect( newResObj.synStaStr ).toBe( 'newer' );  // What: Newer Status Assertion. Why: The caller has to know to wait for an update. How: This expects newer.
+	expect( newResObj.synStaStr ).toBe( 'newer' );  // What: Newer Status Assertion. Why: A cloud copy from a newer schema is reported as newer rather than merged. How: This expects newer.
 	expect( newResObj.merStaObj ).toBeNull();       // What: Unchanged State Assertion. Why: Nothing local changes. How: This expects no new state.
 	expect( fakBacObj.putIdeArr.length ).toBe( 1 ); // What: No Upload Assertion. Why: Nothing in the cloud changes. How: This counts commits.
 
