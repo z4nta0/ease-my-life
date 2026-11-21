@@ -3,18 +3,18 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This file's own WelTouCom component, its step array, and its render output all need React in scope to compile their JSX. How: This is used directly (React.useState, React.useEffect, React.useCallback) throughout WelTouCom below.
+import React from 'react'; // What: React. Why: WelTouCom calls React hooks through the React namespace. How: This is used directly (React.useState, React.useEffect, React.useCallback) throughout WelTouCom below.
 
 
-import { emlTouObj   } from '../state/tour-bus.ts';             // What: Ease-My-Life Tour Object. Why: This is the shared observable tour bus other tabs read to react to the Welcome Tour without a context provider. How: This is written to via .set() at a few points below.
+import { emlTouObj   } from '../state/tour-bus.ts';             // What: Ease-My-Life Tour Object. Why: This is the shared observable tour bus other tabs read to react to the Welcome Tour without a context provider. How: This is written to via .set() in finTouFun below.
 import { GuiTouCom   } from './tour-runner.tsx';                // What: Guided Tour Component. Why: This is the generic spotlight-tour engine that actually drives the Welcome Tour once the intro modal is accepted. How: This is rendered while onbPhaStr is 'tour', passed this file's own step array and side effects.
 import { hydStaFun   } from '../state/onboarding-seed-data.ts'; // What: Hydrate Stats Function. Why: The precomputed sample history stores day-offsets, not real dates. How: This converts those offsets into real ISO dates relative to today inside the seeding effect below.
 import { IntModCom   } from './intro-modal.tsx';                // What: Intro Modal Component. Why: The Welcome Tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while onbPhaStr is 'welcome', passed this file's own copy and labels.
-import { NAV_TAR_OBJ } from './targets.tsx';                    // What: Nav Target Object. Why: Four of this tour's steps just spotlight a nav button, sharing the same selector/copy as each page's own future mini-tour. How: This is spread into the Pickers/Stats/Data/Settings step objects below.
+import { NAV_TAR_OBJ } from './targets.tsx';                    // What: Nav Target Object. Why: Five of this tour's steps just spotlight a nav button, sharing the same selector/copy as each page's own future mini-tour. How: This is spread into the Today/Pickers/Stats/Data/Settings step objects below.
 import { ONB_ASP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding All-Sample-Pickers Array. Why: The "Daily Chores" picker and the extra sample pickers make a generated day look like a fuller, more realistic todo list. How: The seeding effect below adds every entry through actStoObj.addPicFun, exactly like a real, user-created picker.
-import { ONB_SPI_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Identifiers Array. Why: The tour needs to recognize its own sample pickers by id, to hide/unhide them without touching a user's real ones. How: This is read by the settings step's runFun and by bacSteFun below.
+import { ONB_SPI_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Identifiers Array. Why: The tour needs to recognize its own sample pickers by id, to hide/unhide them without touching a user's real ones. How: This is read where the tour checks for, hides, and unhides its sample pickers below.
 import { ONB_STI_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Identifiers Array. Why: The tour needs to recognize its own sample reminders by id, so a Replay never seeds duplicates. How: This is checked before ever calling actStoObj.addTasFun below.
-import { ONB_TAS_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actStoObj.addTasFun by the Generate step's own runFun and by skiEndFun below.
+import { ONB_TAS_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actStoObj.addTasFun by sedTasFun, and its ids are read by hidSamFun and bacSteFun below.
 import { scrBehFun   } from '../utils/motion.ts';               // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { todTopFun   } from './tour-runner.tsx';                // What: Today Top Function. Why: Skipping the Welcome Tour should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This is called from the intro modal's own onSkiTouFun handler below.
 
@@ -46,8 +46,8 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  * other tabs can react to the tour without a context provider (e.g. Today's
  * own empty states gate on its touPhaStr field); window.__emlGenerate(),
  * registered by TabTodCom so the tour can run the real generator without
- * reaching into the footer's own confirm dialog; and a set of data-tour /
- * .ob-* / data-tab-button-key selectors on real target elements.
+ * reaching into the footer's own confirm dialog; and a set of
+ * data-element-name-hook selectors on real target elements.
  *
  * Trigger: this shows whenever state.onboarding.welcomed is false (a
  * clean state). Visit #onboard-demo for a non-destructive clean-state
@@ -222,7 +222,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 	}, [ onbPhaStr, onbStaObj.welcomed ] ); // What: Effect Dependency Array. Why: This must re-run whenever the persisted welcomed flag flips, and reads onbPhaStr in its guard. How: A re-run caused by onbPhaStr alone returns at the guard, since every path that sets the phase to off has already set welcomed to true.
 
 
-	React.useEffect( () => { // What: Seed Samples Effect. Why: Every tour step always needs real content to point at and generate from, and this must re-run on every genuine "flag flips" event (a Replay Tour on an already-mounted app), not just once on initial mount, guarded on the sample ids specifically existing (any status, hidden or not) rather than "the user has any picker at all", since a Replay Tour or an imported backup can leave welcomed false while state.pickers already holds the user's own real, sample-unrelated pickers; a plain "has any picker" check would read that as already-seeded and skip forever, leaving the per-page mini-tours with no sample to ever point at. How: This seeds ONB_EXA_OBJ plus every ONB_ESP_ARR entry as real pickers, then dynamic-imports the ~650KB precomputed Stats history (irrelevant to everyone past their first run, so kept out of the main bundle) and hydrates its day-offsets into real ISO dates relative to today via hydStaFun.
+	React.useEffect( () => { // What: Seed Samples Effect. Why: Every tour step always needs real content to point at and generate from, and this must re-run on every genuine "flag flips" event (a Replay Tour on an already-mounted app), not just once on initial mount, guarded on the sample ids specifically existing (any status, hidden or not) rather than "the user has any picker at all", since a Replay Tour or an imported backup can leave welcomed false while state.pickers already holds the user's own real, sample-unrelated pickers; a plain "has any picker" check would read that as already-seeded and skip forever, leaving the per-page mini-tours with no sample to ever point at. How: This seeds every ONB_ASP_ARR entry as a real picker, then dynamic-imports the ~650KB precomputed Stats history (irrelevant to everyone past their first run, so kept out of the main bundle) and hydrates its day-offsets into real ISO dates relative to today via hydStaFun.
 
 
 		if ( onbStaObj.welcomed || staAppObj.pickers.some( ( curPicObj ) => ONB_SPI_ARR.includes( curPicObj.id ) ) ) return; // What: Already Seeded Guard. Why: A welcomed-false state whose samples already exist (from an earlier pass, hidden or not) must never be seeded twice. How: This bails out once welcomed is already true, or once any sample picker id is already present among staAppObj.pickers.
@@ -424,7 +424,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 
 			bodEle    : <>Each morning the app will <b>automatically generate your daily todo list</b>. Since you have not created anything yet, the app will use some sample data so that you can see how it works. You can always click Regenerate if you’d rather generate the list yourself. Let’s go ahead and run that now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the generator does. How: GuiTouCom renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
-			runFun    : () => { // What: Run Function. Why: On a genuine first run, the real generator needs to actually fire; on a replay (dismissed:true) the user already has a real Today list, so regenerating would clobber it, and the sample reminders below need seeding differently in each case too. How: This conditionally calls window.__emlGenerate() and seeds ONB_TAS_ARR, guarded by existence so returning to this step and forward again can never seed either one twice.
+			runFun    : () => { // What: Run Function. Why: On a genuine first run, the real generator needs to actually fire; on a replay (dismissed:true) the user already has a real Today list, so regenerating would clobber it, and the sample reminders below need seeding differently in each case too. How: This calls window.__emlGenerate() on a first run and seeds ONB_TAS_ARR through sedTasFun, which skips seeding once any sample reminder exists, so returning to this step and forward again can never seed them twice.
 
 
 				if ( !onbStaObj.dismissed ) { // What: Not Dismissed Guard. Why: Only a true first run should actually regenerate the list; a replay's own review moment is the user's real, current list, not sample data. How: This calls the registered generator only when onbStaObj.dismissed is falsy.
@@ -509,12 +509,12 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 
 		},
 
-		{ // What: Closing Step Object. Why: This is the tour's own last step, closing out the Welcome Tour and pointing at where the per-page mini-tours will appear next. How: This spotlights .groDraDiv, scrolled to the top, with a 'Done' priStr that finishes the tour instead of advancing.
+		{ // What: Closing Step Object. Why: This is the tour's own last step, closing out the Welcome Tour and pointing at where the per-page mini-tours will appear next. How: This spotlights the groDraDiv element, scrolled to the top, with a 'Done' priStr that finishes the tour instead of advancing.
 
 
 			bacBoo : true,                                    // What: Back Boolean. Why: The user should always be able to return to the previous, Settings step. How: GuiTouCom shows its own Back button whenever this is true.
 			priStr : 'Done',                                  // What: Primary String. Why: This is the tour's own last step, so its main action finishes the tour instead of advancing. How: GuiTouCom reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
-			selStr : '[data-element-name-hook~="groDraDiv"]', // What: Selector String. Why: This closing step highlights the same area the tutorial launcher cards will appear in next. How: GuiTouCom spotlights whatever .groDraDiv matches.
+			selStr : '[data-element-name-hook~="groDraDiv"]', // What: Selector String. Why: This closing step highlights the same area the tutorial launcher cards will appear in next. How: GuiTouCom spotlights whatever groDraDiv matches.
 			sttBoo : true,                                    // What: Scroll-To-Top Boolean. Why: This step's own target starts right at the top of the page anyway. How: GuiTouCom scrolls all the way to 0 instead of just nudging the target into view.
 			tabStr : 'today',                                 // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 			titStr : 'You’re all finished!',                  // What: Title String. Why: This closing step's own coach card needs a heading marking the tour's own end. How: GuiTouCom renders this as the step's own heading text.
@@ -538,13 +538,13 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 	 *
 	 * @summary
 	 * Undoes the sample-data side effects of later steps before GuiTouCom
-	 * navigates back to an earlier one. Sample pickers/tasks only ever get
-	 * hidden once, at the Settings step's own runFun, so stepping back before
-	 * that point should show them exactly as they did the first time through,
-	 * not whatever the checklist phase (tutorial cards, Page Tours) left
-	 * behind from having reached the end. Going back to the Generate step also
-	 * removes the sample reminders and clears Today, since that step's own
-	 * runFun adds them again on its next Next.
+	 * navigates back to an earlier one. Sample pickers/tasks only get hidden
+	 * at the Settings step's own runFun (or on a Skip), so stepping back
+	 * before that point should show them exactly as they did the first time
+	 * through, not whatever the checklist phase (tutorial cards, Page Tours)
+	 * left behind from having reached the end. Going back to the Generate
+	 * step also removes the sample reminders and clears Today, since that
+	 * step's own runFun adds them again on its next Next.
 	 *
 	 * Skipped entirely during a replay (onbStaObj.dismissed): those samples
 	 * are the ORIGINAL ones from the user's first-ever onboarding, already
@@ -642,7 +642,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 
 
 				} }
-				onRetUsrFun={ () => { // What: On Returning User Function. Why: Someone who has used the app before is restoring a backup or signing in to sync, and needs neither the tour nor the tutorials. How: This does everything a skip does, then opens Settings at the Account section, with Import just above it.
+				onRetUsrFun={ () => { // What: On Returning User Function. Why: Someone who has used the app before is restoring a backup or signing in to sync, and needs neither the tour nor the tutorials. How: This persists welcomed, runs skiEndFun's shared skip cleanup, then opens Settings at the Account section, with Import just above it.
 
 
 					welDonFun(); // What: Welcome Done Call. Why: The welcome modal should never show again. How: This persists onboarding.welcomed as true.
