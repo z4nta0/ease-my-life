@@ -536,7 +536,7 @@
 
 }
 .bloHeaBut .namModSpa,
-.bloHeaDiv .namModSpa { /* What: Header Name And Mode. Why: In the header grid the name block takes the middle column. How: This places it in column 2. */
+.bloHeaDiv .namModSpa { /* What: Name Mode Span In Block Header Button And Div. Why: In the header grid the name block takes the middle column. How: This places it in column 2. */
 
 
 	grid-column : 2;

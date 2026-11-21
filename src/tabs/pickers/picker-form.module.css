@@ -755,8 +755,7 @@
 
 
 }
-.forFieDiv--conditional .conTogDiv .togTexDiv,
-.forFieDiv--conditional .daiTogDiv .togTexDiv { /* What: Toggle Text Div In Conditional Toggle Div And Daily Toggle Div In Form Field Div Conditional. Why: The conditional's two paragraphs shouldn't run so wide that the switch drops off the title's line. How: This caps the column at a rhythm step. */
+.forFieDiv--conditional .conTogDiv .togTexDiv { /* What: Toggle Text Div In Conditional Toggle Div In Form Field Div Conditional. Why: The conditional's two paragraphs shouldn't run so wide that the switch drops off the title's line. How: This caps the column at a rhythm step. */
 
 
 	max-width : calc( var( --ver-rhy-p12 ) * 1rem ); /* Vertical Rhythm Base Plus 12 ~= 425.596px */
