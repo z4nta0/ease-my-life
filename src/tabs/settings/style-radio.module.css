@@ -158,7 +158,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Style Radio Row. Why: Someone who asked for less motion shouldn't see the row's background fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Mode Option Label. Why: Someone who asked for less motion shouldn't see the row's background fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.modOptLab { /* What: Still Mode Option Label. Why: The background should simply switch. How: This turns the background fade off. */
@@ -198,7 +198,7 @@
 
 
 }
-.modOptLab[data-option-select-active] .modDotSpa { /* What: Selected Style Radio Dot. Why: The selected row's dot should read as on. How: This colors its border with the accent. */
+.modOptLab[data-option-select-active] .modDotSpa { /* What: Mode Dot Span In Selected Mode Option Label. Why: The selected row's dot should read as on. How: This colors its border with the accent. */
 
 
 	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -240,7 +240,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Style Radio Dot. Why: Someone who asked for less motion shouldn't see the dot's border fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Mode Dot Span. Why: Someone who asked for less motion shouldn't see the dot's border fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.modDotSpa { /* What: Still Mode Dot Span. Why: The border should simply switch. How: This turns the border fade off. */
@@ -292,14 +292,14 @@
 
 
 }
-.colDisDiv[data-collapse-open-active] { /* What: Open Style Radio Hint Collapse Disclosure Div. Why: The selected row's hint should show. How: This opens the grid row to its content's height. */
+.colDisDiv[data-collapse-open-active] { /* What: Open Collapse Disclosure Div. Why: The selected row's hint should show. How: This opens the grid row to its content's height. */
 
 
 	grid-template-rows : 1fr;
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Style Radio Hint Collapse. Why: Someone who asked for less motion shouldn't see the hint glide open. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Collapse Disclosure Div. Why: Someone who asked for less motion shouldn't see the hint glide open. How: This applies only when the reduced-motion preference is set. */
 
 
 	.colDisDiv { /* What: Still Collapse Disclosure Div. Why: The hint should simply open and close. How: This turns the glide off. */
@@ -327,7 +327,7 @@
 
 
 }
-.colDisDiv[data-collapse-open-active] > .colInnDiv { /* What: Open Style Radio Hint Content. Why: The open hint should settle fully visible. How: This fades it in and drops its lift. */
+.colDisDiv[data-collapse-open-active] > .colInnDiv { /* What: Collapse Inner Div In Open Collapse Disclosure Div. Why: The open hint should settle fully visible. How: This fades it in and drops its lift. */
 
 
 	opacity   : 1;
@@ -335,7 +335,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Style Radio Hint Content. Why: Someone who asked for less motion shouldn't see the hint fade and lift. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Collapse Inner Div. Why: Someone who asked for less motion shouldn't see the hint fade and lift. How: This applies only when the reduced-motion preference is set. */
 
 
 	.colInnDiv { /* What: Still Collapse Inner Div. Why: The hint should simply appear. How: This turns the fade and lift off. */
