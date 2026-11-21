@@ -79,9 +79,9 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  * - `labStr` (String): Label String, the page name shown on the tour's
  *   Today launcher card (see tab-today.tsx's PagTouCom).
  *
- * - `pagStr` (String): Page String, matching the `data-tab` value on
- *   that page's own nav button (see app.tsx's TabBarCom), which the
- *   tour's own opening step targets.
+ * - `pagStr` (String): Page String, matching the `data-tab-button-key` value
+ *   on that page's own nav button (see app.tsx's TabBarCom), which the tour's
+ *   own opening step targets.
  *
  * - `timStr` (String): Time String, a real, user-confirmed estimate
  *   (manually timed 2026-08-14) shown on the tour's Today launcher card.

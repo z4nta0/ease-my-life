@@ -179,7 +179,7 @@ const opeFixFun = async ( curPagObj : Page, dayIsoStr : string = '2026-10-05' ) 
 const selTabFun = async ( curPagObj : Page, tabIdeStr : string ) : Promise< void > => { // What: Select Tab Function. Why: Tests move between tabs the way a person does. How: This clicks the tab's navigation button and waits for it to be current.
 
 
-	const tabButLoc = curPagObj.locator( `[data-element-name-hook~="navTabBut"][data-tab="${ tabIdeStr }"]` ).first(); // What: Tab Button Locator. Why: The navigation can render more than one bar during a placement change. How: This finds the tab's button and takes the first.
+	const tabButLoc = curPagObj.locator( `[data-element-name-hook~="navTabBut"][data-tab-button-key="${ tabIdeStr }"]` ).first(); // What: Tab Button Locator. Why: The navigation can render more than one bar during a placement change. How: This finds the tab's button and takes the first.
 
 
 
@@ -187,7 +187,7 @@ const selTabFun = async ( curPagObj : Page, tabIdeStr : string ) : Promise< void
 
 
 
-	await curPagObj.locator( `[data-element-name-hook~="navTabBut"][data-tab="${ tabIdeStr }"][aria-current="page"]` ).first().waitFor(); // What: Current Tab Wait. Why: The tab renders only once it's current. How: This waits for its button to report aria-current.
+	await curPagObj.locator( `[data-element-name-hook~="navTabBut"][data-tab-button-key="${ tabIdeStr }"][aria-current="page"]` ).first().waitFor(); // What: Current Tab Wait. Why: The tab renders only once it's current. How: This waits for its button to report aria-current.
 
 
 };

@@ -393,7 +393,7 @@ test( "a returning user skips onboarding and lands on Settings' Account section"
 
 	// #region Landing Checks
 
-	await expect( curPagObj.locator( '[data-tab="settings"]' ) ).toHaveAttribute( 'aria-current', 'page' );                 // What: Settings Assertion. Why: Signing in and importing live there. How: This expects the Settings tab current.
+	await expect( curPagObj.locator( '[data-tab-button-key="settings"]' ) ).toHaveAttribute( 'aria-current', 'page' );      // What: Settings Assertion. Why: Signing in and importing live there. How: This expects the Settings tab current.
 	await expect( curPagObj.locator( '[data-element-name-hook~="setAccSec"]' ) ).toBeInViewport();                          // What: Account Section Assertion. Why: The person lands on Sign in. How: This expects the section on screen.
 	await expect( curPagObj.getByRole( 'dialog', { name : 'Welcome to Ease My Life' } ) ).toHaveCount( 0 );                 // What: Modal Gone Assertion. Why: Onboarding is out of the way. How: This expects no welcome modal.
 	await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.onboarding.welcomed === true, 'the welcome modal marked done' ); // What: Welcomed Wait. Why: The modal must not come back on the next launch. How: This waits for the saved flag.

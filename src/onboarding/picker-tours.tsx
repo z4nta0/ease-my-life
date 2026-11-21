@@ -474,12 +474,12 @@ const NAM_STE_OBJ = { // What: Name Step Object. Why: This step highlights the c
 const NAV_STE_OBJ = { // What: Nav Step Object. Why: Every picker tutorial's own Step 1 is this exact same step, highlighting the real Pickers nav button. How: This is spread as-is into every picker's own steObjArr below.
 
 
-	bacBoo : false,                 // What: Back Boolean. Why: This is every picker tutorial's own very first step, so there is nothing to go back to. How: GuiTouCom hides its own Back button whenever this is false.
-	cirBoo : true,                  // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuiTouCom disables Next and only advances once the real target is clicked.
-	priStr : 'Next',                // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
-	selStr : '[data-tab="picker"]', // What: Selector String. Why: This step highlights the real Pickers nav button. How: GuiTouCom spotlights whatever this selector matches.
-	tabStr : 'today',               // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
-	titStr : 'The Pickers Page',    // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuiTouCom renders this as the step's own heading text.
+	bacBoo : false,                            // What: Back Boolean. Why: This is every picker tutorial's own very first step, so there is nothing to go back to. How: GuiTouCom hides its own Back button whenever this is false.
+	cirBoo : true,                             // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuiTouCom disables Next and only advances once the real target is clicked.
+	priStr : 'Next',                           // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+	selStr : '[data-tab-button-key="picker"]', // What: Selector String. Why: This step highlights the real Pickers nav button. How: GuiTouCom spotlights whatever this selector matches.
+	tabStr : 'today',                          // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
+	titStr : 'The Pickers Page',               // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuiTouCom renders this as the step's own heading text.
 
 	bodEle : <>The Pickers page is <b>where you can create new pickers</b> and can be found using the shuffle icon indicated here. You can also <b>manually run any picker, as well as send a specific item to your todo list</b>, from the Pickers page. Go ahead and click the "Pickers" page's button now.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the Pickers page does. How: GuiTouCom renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
@@ -688,13 +688,14 @@ const buiLatFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Latest
  * buiModFun = Build Mode Function
  *
  * @summary
- * Highlights ONLY the sample's own mode option, modOptLab[data-mode="..."]
- * (the data-mode attribute exists purely for this), rather than the whole
- * modRadDiv list. Deliberately narrow: the click-guard blocks clicks outside
- * a step's own target for non-cirBoo steps too, so scoping to just this one
- * mode also prevents switching to a different type here, which would break the
- * mode-specific copy/targets later steps assume (Soonest/Latest wording, the
- * Weight/Boost rows, etc. are all mode-specific; see PicTouCom's own
+ * Highlights ONLY the sample's own mode option,
+ * modOptLab[data-mode-option-key="..."] (the data-mode-option-key attribute
+ * exists purely for this), rather than the whole modRadDiv list. Deliberately
+ * narrow: the click-guard blocks clicks outside a step's own target for
+ * non-cirBoo steps too, so scoping to just this one mode also prevents
+ * switching to a different type here, which would break the mode-specific
+ * copy/targets later steps assume (Soonest/Latest wording, the Weight/Boost
+ * rows, etc. are all mode-specific; see PicTouCom's own
  * isaEasBoo/useWeiBoo/isaDynBoo checks below).
  *
  * catBoo exists since a single mode option (label + description) can be tall
@@ -726,7 +727,7 @@ const buiModFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Mode F
 	catBoo : true,                   // What: Coach-At-Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuiTouCom skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
 	priStr : 'Next',                 // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
 	resBoo : false,                  // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuiTouCom's own resume-persist effect never checkpoints a step whose resBoo is false.
-	selStr : `[data-element-name-hook~="picFieDiv"] [data-element-name-hook~="modOptLab"][data-mode="${ PIC_SAM_OBJ[ picIdeStr ].mode }"]`, // What: Selector String. Why: This step highlights only this sample's own mode option, never the whole list. How: GuiTouCom spotlights whatever this selector matches.
+	selStr : `[data-element-name-hook~="picFieDiv"] [data-element-name-hook~="modOptLab"][data-mode-option-key="${ PIC_SAM_OBJ[ picIdeStr ].mode }"]`, // What: Selector String. Why: This step highlights only this sample's own mode option, never the whole list. How: GuiTouCom spotlights whatever this selector matches.
 	tabStr : 'picker',               // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 	titStr : 'Select a picker type', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuiTouCom renders this as the step's own heading text.
 

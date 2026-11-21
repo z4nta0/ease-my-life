@@ -590,7 +590,7 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 		labStr    : '[data-element-name-hook~="catModSpa"]',                               // labStr reads the visible .catModSpa pill (tab-data.tsx) in the header's catTagSpa cluster.
 		mulBoo    : true,                                            // mulBoo is true because every picker gets its own badge.
 		padYcoNum : 0,                                               // padYcoNum:0, same .catHeaHed/.catBodDiv zero-gap stacking as conditionalsManager; matters once a picker is expanded and .catBodDiv renders beneath it.
-		selStr    : '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"][data-picker-id] > [data-element-name-hook~="catHeaHed"]',
+		selStr    : '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"][data-picker-row-identifier] > [data-element-name-hook~="catHeaHed"]',
 		titStr    : ( tarRecObj ) => tarRecObj?.labStr ? `${ tarRecObj.labStr } Picker` : 'Picker' // titStr is dynamic by TYPE, not name (unlike conditionalRow/pickerRow's own precedent).
 
 
@@ -604,7 +604,7 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 		ideStr    : 'dataPickerControlsHeader',
 		mulBoo    : true,
 		padYcoNum : 0,
-		selStr    : '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"][data-picker-id] [data-element-name-hook~="catBodDiv"] > [data-element-name-hook~="catTogBut"]:nth-of-type(1)',
+		selStr    : '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"][data-picker-row-identifier] [data-element-name-hook~="catBodDiv"] > [data-element-name-hook~="catTogBut"]:nth-of-type(1)',
 		titStr    : 'Picker Controls'
 
 
@@ -617,7 +617,7 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 		ideStr    : 'dataPickerItemsHeader',
 		mulBoo    : true,
 		padYcoNum : 0,
-		selStr    : '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"][data-picker-id] [data-element-name-hook~="catBodDiv"] > [data-element-name-hook~="catTogBut"]:nth-of-type(2)',
+		selStr    : '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"][data-picker-row-identifier] [data-element-name-hook~="catBodDiv"] > [data-element-name-hook~="catTogBut"]:nth-of-type(2)',
 		titStr    : 'Picker Items'
 
 
@@ -834,19 +834,19 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 	// #region Item Rows / Sorting
 
-	{ // What: Create New Picker Item Help Item. Why: This is the on-demand help tip for the Create New Picker Item element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to a picker card (its own data-picker-id) so this doesn't also match the Conditionals/Reminders managers' own "Add" buttons, which share the rowAddBut hook and render in the same list.
+	{ // What: Create New Picker Item Help Item. Why: This is the on-demand help tip for the Create New Picker Item element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to a picker card (its own data-picker-row-identifier) so this doesn't also match the Conditionals/Reminders managers' own "Add" buttons, which share the rowAddBut hook and render in the same list.
 
 
 		bodEle    : <>This adds a new item to this picker's pool.</>,
 		ideStr    : 'dataAddItem',
 		padYcoNum : 0, // padYcoNum:0, .rowAddBut has the same zero-gap stacking as .lisIteDiv, touching the first item row below it.
-		selStr    : '[data-element-name-hook~="datLisDiv"] [data-element-name-hook~="datCatSec"][data-picker-id] :is([data-element-name-hook~="rowAddBut"], [data-element-name-hook~="rowAddSpa"])',
+		selStr    : '[data-element-name-hook~="datLisDiv"] [data-element-name-hook~="datCatSec"][data-picker-row-identifier] :is([data-element-name-hook~="rowAddBut"], [data-element-name-hook~="rowAddSpa"])',
 		titStr    : 'Create New Picker Item'
 
 
 	},
 
-	// Split by section type (three separate entries, each named for its own context) rather than one shared "Item Sort", Conditionals/Reminders/pickers all render the exact same SorSelCom markup (sort-select.tsx) inside their own .catBodDiv, so the selectors below key off each section's own distinguishing hook/attribute instead: the conCatSec hook (Conditionals), the remCatSec hook (Reminders), and a picker section's own data-picker-id (set only there, unlike a plain className check, which would need :not() exclusions against the other two instead). // mulBoo is true because every expanded section's own sort control gets its own badge, since more than one can be visible (and set to a different order) at once, matters most for pickers, where several can be expanded together.
+	// Split by section type (three separate entries, each named for its own context) rather than one shared "Item Sort", Conditionals/Reminders/pickers all render the exact same SorSelCom markup (sort-select.tsx) inside their own .catBodDiv, so the selectors below key off each section's own distinguishing hook/attribute instead: the conCatSec hook (Conditionals), the remCatSec hook (Reminders), and a picker section's own data-picker-row-identifier (set only there, unlike a plain className check, which would need :not() exclusions against the other two instead). // mulBoo is true because every expanded section's own sort control gets its own badge, since more than one can be visible (and set to a different order) at once, matters most for pickers, where several can be expanded together.
 	{ // What: Conditional Items Sort Help Item. Why: This is the on-demand help tip for the Conditional Items Sort element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -877,7 +877,7 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 		bodEle : <>This changes the order that the items in this section are listed in below.</>,
 		ideStr : 'dataPickerItemSort',
 		mulBoo : true,
-		selStr : '[data-element-name-hook~="datLisDiv"] [data-element-name-hook~="datCatSec"][data-picker-id] [data-element-name-hook~="sorDroSel"]',
+		selStr : '[data-element-name-hook~="datLisDiv"] [data-element-name-hook~="datCatSec"][data-picker-row-identifier] [data-element-name-hook~="sorDroSel"]',
 		titStr : 'Picker Items Sort'
 
 
@@ -890,7 +890,7 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 		ideStr    : 'dataItemRow',
 		mulBoo    : true, // mulBoo is true because every item in every expanded picker gets its own badge.
 		padYcoNum : 0,    // padYcoNum:0, .lisIteDiv rows stack with zero gap (touching, separated only by a hairline border), same as conditionalRow/reminderRowOnce/reminderRowRecurring.
-		selStr    : '[data-element-name-hook~="datLisDiv"] [data-element-name-hook~="datCatSec"][data-picker-id] [data-element-name-hook~="lisIteDiv"] > :is([data-element-name-hook~="lisRowBut"], [data-element-name-hook~="lisRowDiv"])',
+		selStr    : '[data-element-name-hook~="datLisDiv"] [data-element-name-hook~="datCatSec"][data-picker-row-identifier] [data-element-name-hook~="lisIteDiv"] > :is([data-element-name-hook~="lisRowBut"], [data-element-name-hook~="lisRowDiv"])',
 		titStr    : 'Picker Item'
 
 

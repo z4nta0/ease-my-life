@@ -38,9 +38,9 @@ import type { ReactNode } from 'react'; // What: React Node. Why: Each nav targe
  *
  * @summary
  * Shared, reusable target-and-description catalog for onboarding overlays. The
- * nav bar's per-page buttons ([data-tab="..."]) are spotlighted both by the
- * main Welcome Tour (onboarding/welcome-tour.tsx) and, later, by each page's
- * own "Explore the {page}" mini-tour (see ONB_EPT_ARR in
+ * nav bar's per-page buttons ([data-tab-button-key="..."]) are spotlighted
+ * both by the main Welcome Tour (onboarding/welcome-tour.tsx) and, later, by
+ * each page's own "Explore the {page}" mini-tour (see ONB_EPT_ARR in
  * onboarding-checklist.ts) as its opening step. This is kept as one source of
  * truth instead of being duplicated per consumer, keyed by the same page ids
  * as ONB_EPT_ARR's own pagStr field.
@@ -63,9 +63,9 @@ import type { ReactNode } from 'react'; // What: React Node. Why: Each nav targe
  *   paragraph, written as JSX so specific phrases can be bolded.
  *
  * - `selStr` (String): Selector String is the actual DOM selector the
- *   overlay spotlights, matching the nav bar's own data-tab attribute
- *   for this page; every consumer (the Welcome Tour and each page's own
- *   mini-tour) reads this directly as the step's own selector.
+ *   overlay spotlights, matching the nav bar's own data-tab-button-key
+ *   attribute for this page; every consumer (the Welcome Tour and each page's
+ *   own mini-tour) reads this directly as the step's own selector.
  *
  * - `titStr` (String): Title String is the overlay's own callout
  *   heading, naming this page; every consumer renders this directly as
@@ -81,7 +81,7 @@ const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titSt
 	data : { // What: Data Nav Target Object. Why: This is the nav-target descriptor for the Data page's own tab button. How: This is spread into the Welcome Tour's Data step and read by the page-tour system's opening step for the 'data' page id.
 
 
-		selStr : '[data-tab="data"]',
+		selStr : '[data-tab-button-key="data"]',
 		titStr : 'The Data Page',
 
 		bodEle : <>The Data page is <b>where you can view and edit all of your created data</b> and can be found using the database storage icon indicated here. The Data page content includes all of your reminders, pickers and their associated items.</>
@@ -92,7 +92,7 @@ const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titSt
 	picker : { // What: Picker Nav Target Object. Why: This is the nav-target descriptor for the Pickers page's own tab button. How: This is spread into the Welcome Tour's Pickers step and read by the page-tour system's opening step for the 'picker' page id.
 
 
-		selStr : '[data-tab="picker"]',
+		selStr : '[data-tab-button-key="picker"]',
 		titStr : 'The Pickers Page',
 
 		bodEle : <>The Pickers page is <b>where you can create new pickers</b> and can be found using the shuffle icon indicated here. You can also <b>manually run any picker, as well as send a specific item to your todo list</b>, from the Pickers page.</>
@@ -103,7 +103,7 @@ const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titSt
 	settings : { // What: Settings Nav Target Object. Why: This is the nav-target descriptor for the Settings page's own tab button. How: This is spread into the Welcome Tour's Settings step and read by the page-tour system's opening step for the 'settings' page id.
 
 
-		selStr : '[data-tab="settings"]',
+		selStr : '[data-tab-button-key="settings"]',
 		titStr : 'The Settings Page',
 
 		bodEle : <>The Settings page is where you can customize various aspects of the app and can be found using the gear icon indicated here. The Settings page allows you to change the app’s theme, animations, adjust the daily generator, customize holiday observances, <b>install the app</b>, export/import your data and contact the developer.</>
@@ -114,7 +114,7 @@ const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titSt
 	stats : { // What: Stats Nav Target Object. Why: This is the nav-target descriptor for the Stats page's own tab button. How: This is spread into the Welcome Tour's Stats step and read by the page-tour system's opening step for the 'stats' page id.
 
 
-		selStr : '[data-tab="stats"]',
+		selStr : '[data-tab-button-key="stats"]',
 		titStr : 'The Stats Page',
 
 		bodEle : <>The Stats page is where you can find a <b>breakdown of all the statistics associated with your created data</b> and can be found using the bar graph icon indicated here. As you continue to use the app over time, this page will be extremely useful.</>
@@ -125,7 +125,7 @@ const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titSt
 	today : { // What: Today Nav Target Object. Why: This is the nav-target descriptor for the Today page's own tab button. How: This is spread into the Welcome Tour's Today step and read by the page-tour system's opening step for the 'today' page id.
 
 
-		selStr : '[data-tab="today"]',
+		selStr : '[data-tab-button-key="today"]',
 		titStr : 'The Today Page',
 
 		bodEle : <>The Today page is the main page of the app and can be found using the calendar icon indicated here. The Today page is <b>where your auto-generated todo list will be displayed every day</b>.</>

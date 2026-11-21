@@ -300,7 +300,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 
-const PRE_PIC_STR = ONB_EXA_OBJ.id; // What: Preselect Picker String. Why: The Stats tour's own single-picker steps below pre-select this exact real sample, matched by [data-picker-id] on the tab button (tab-stats.tsx), not by its display name, since nothing stops a user from naming their own picker the same thing. How: This reads ONB_EXA_OBJ's own id straight through.
+const PRE_PIC_STR = ONB_EXA_OBJ.id; // What: Preselect Picker String. Why: The Stats tour's own single-picker steps below pre-select this exact real sample, matched by [data-picker-row-identifier] on the tab button (tab-stats.tsx), not by its display name, since nothing stops a user from naming their own picker the same thing. How: This reads ONB_EXA_OBJ's own id straight through.
 
 
 
@@ -1053,7 +1053,7 @@ const buiTesFun = ( pagIdeStr : string, actStoObj : ActStoTyp ) : TouSteTyp[] =>
 				runFun : () => { // What: Run Function. Why: The pbvObj step's own target only renders once a specific picker is the active scope, so this selects the real sample picker (unhidden for this whole tour, see unhHisFun) before that step ever mounts. How: This clicks the real scope tab matching PRE_PIC_STR.
 
 
-					const picTabEle = document.querySelector< HTMLElement >( `[data-element-name-hook~="scoTabDiv"] [data-element-name-hook~="scoTabBut"][data-picker-id="${ PRE_PIC_STR }"]` ); // What: Picker Tab Element. Why: This must click the exact tab for the real, preselected sample picker. How: This looks it up fresh via its own data-picker-id attribute.
+					const picTabEle = document.querySelector< HTMLElement >( `[data-element-name-hook~="scoTabDiv"] [data-element-name-hook~="scoTabBut"][data-picker-row-identifier="${ PRE_PIC_STR }"]` ); // What: Picker Tab Element. Why: This must click the exact tab for the real, preselected sample picker. How: This looks it up fresh via its own data-picker-row-identifier attribute.
 
 
 					if ( picTabEle ) picTabEle.click(); // What: Picker Tab Click. Why: This must only fire when the control actually exists. How: This clicks picTabEle.

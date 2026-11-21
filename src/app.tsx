@@ -327,7 +327,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 					className={ cssModObj.navTabBut }
 
 					data-element-name-hook='navTabBut'
-					data-tab={ tabConObj.ideStr }
+					data-tab-button-key={ tabConObj.ideStr }
 
 					aria-current={ tabConObj.ideStr === actIdeStr ? 'page' : undefined }
 					aria-label={ tabConObj.labStr } // What: ARIA Label. Why: At phone widths the tab's label is hidden and the button shows only its icon, which leaves it nameless to screen readers. How: This names the button with the same text as its label, so it reads the same at every width.

@@ -106,7 +106,7 @@ const opeSecFun = async ( carSecLoc : Locator, secIndNum : number | null ) : Pro
 
 
 
-const picCarFun = ( curPagObj : Page ) => curPagObj.locator( '[data-element-name-hook~="datCatSec"][data-picker-id]' ).first(); // What: Picker Card Function. Why: Most flows use the first picker card. How: This finds it.
+const picCarFun = ( curPagObj : Page ) => curPagObj.locator( '[data-element-name-hook~="datCatSec"][data-picker-row-identifier]' ).first(); // What: Picker Card Function. Why: Most flows use the first picker card. How: This finds it.
 
 // #endregion Helpers
 
@@ -168,7 +168,7 @@ test( 'closing the controls commits a toggle', async ( { page : curPagObj } ) =>
 	// #region Card Lookup
 
 	const carSecLoc = picCarFun( curPagObj );                                                                                      // What: Card Section Locator. Why: The first picker is changed. How: This finds its card.
-	const picIdeStr = ( await carSecLoc.getAttribute( 'data-picker-id' ) )!;                                                       // What: Picker Identifier String. Why: The saved picker is checked afterwards. How: This reads the card's picker id. // What: Non-Null Note. Why: The card was selected by that attribute. How: The ! tells TypeScript it's present.
+	const picIdeStr = ( await carSecLoc.getAttribute( 'data-picker-row-identifier' ) )!;                                           // What: Picker Identifier String. Why: The saved picker is checked afterwards. How: This reads the card's picker id. // What: Non-Null Note. Why: The card was selected by that attribute. How: The ! tells TypeScript it's present.
 	const preSkiBoo = ( await reaStaFun( curPagObj ) )!.pickers.find( ( curPicObj ) => curPicObj.id === picIdeStr )!.skipHolidays; // What: Previous Skip Boolean. Why: The toggle flips it. How: This reads it first. // What: Non-Null Note. Why: The state was saved and the card names a real picker. How: Each ! tells TypeScript the value exists.
 
 	// #endregion Card Lookup
@@ -201,8 +201,8 @@ test( 'closing the controls commits a toggle', async ( { page : curPagObj } ) =>
 test( 'the vacation button switches a whole picker off', async ( { page : curPagObj } ) => { // What: Vacation Test. Why: A picker's items can all be deactivated at once. How: This clicks the vacation button and waits for IndexedDB to show the picker switched off.
 
 
-	const carSecLoc = picCarFun( curPagObj );                                // What: Card Section Locator. Why: The first picker is switched off. How: This finds its card.
-	const picIdeStr = ( await carSecLoc.getAttribute( 'data-picker-id' ) )!; // What: Picker Identifier String. Why: Its items are checked afterwards. How: This reads the id. // What: Non-Null Note. Why: The card was selected by that attribute. How: The ! tells TypeScript it's present.
+	const carSecLoc = picCarFun( curPagObj );                                            // What: Card Section Locator. Why: The first picker is switched off. How: This finds its card.
+	const picIdeStr = ( await carSecLoc.getAttribute( 'data-picker-row-identifier' ) )!; // What: Picker Identifier String. Why: Its items are checked afterwards. How: This reads the id. // What: Non-Null Note. Why: The card was selected by that attribute. How: The ! tells TypeScript it's present.
 
 
 

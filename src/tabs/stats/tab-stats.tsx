@@ -3071,7 +3071,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 									keyStr : picCurObj.id,                                     // What: Key String. Why: Each tab needs a stable React key. How: This uses the picker's own id.
 									labStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr, // What: Label String. Why: The tab's subline names the picker's mode. How: This reads the mode's own display label.
 									namStr : picCurObj.name,                                   // What: Name String. Why: The tab shows the picker's own name. How: This copies it.
-									picStr : picCurObj.id,                                     // What: Picker String. Why: The tab carries a data-picker-id hook for the tours. How: This copies the picker's own id.
+									picStr : picCurObj.id,                                     // What: Picker String. Why: The tab carries a data-picker-row-identifier hook for the tours. How: This copies the picker's own id.
 									selBoo : scoValStr === picCurObj.id                        // What: Selected Boolean. Why: The active tab is highlighted. How: This compares scoValStr against the picker's own id.
 
 
@@ -3091,7 +3091,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 										style={{ animationDelay : ( entIndNum + 1 ) * 40 + 'ms' }}
 
 										data-element-name-hook='scoTabBut'
-										data-picker-id={ entCurObj.picStr }
+										data-picker-row-identifier={ entCurObj.picStr }
 										data-tab-select-active={ entCurObj.selBoo || undefined } // What: Tab Select Active Attribute. Why: The scope showing below should stand out in the strip. How: This is present only on the showing scope's tab.
 
 										type='button'

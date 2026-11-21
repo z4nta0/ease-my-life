@@ -184,7 +184,7 @@ test( 'the form creates a new picker with items', async ( { page : curPagObj } )
 
 
 
-	await curPagObj.locator( '[data-element-name-hook~="modOptLab"][data-mode="random"]' ).click(); // What: Mode Choice Call. Why: A picker needs a mode. How: This picks Truly Random.
+	await curPagObj.locator( '[data-element-name-hook~="modOptLab"][data-mode-option-key="random"]' ).click(); // What: Mode Choice Call. Why: A picker needs a mode. How: This picks Truly Random.
 
 
 

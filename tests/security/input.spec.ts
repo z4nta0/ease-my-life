@@ -140,7 +140,7 @@ test( 'a picker name typed as markup is tidied and shows as text', async ( { pag
 	await selTabFun( curPagObj, 'data' ); // What: Tab Switch Call. Why: Pickers are renamed on the Data tab. How: This switches to it.
 
 
-	const carSecLoc = curPagObj.locator( '[data-element-name-hook~="datCatSec"][data-picker-id]' ).first(); // What: Card Section Locator. Why: The first picker is renamed. How: This finds its card.
+	const carSecLoc = curPagObj.locator( '[data-element-name-hook~="datCatSec"][data-picker-row-identifier]' ).first(); // What: Card Section Locator. Why: The first picker is renamed. How: This finds its card.
 
 
 	await carSecLoc.locator( '[data-element-name-hook~="catHeaBut"]' ).first().click(); // What: Card Open Click. Why: A closed card hides its controls. How: This opens it.

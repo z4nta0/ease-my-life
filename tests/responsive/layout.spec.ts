@@ -362,7 +362,7 @@ const PAG_STA_ARR : PagStaTyp[] = [ // What: Page State Array. Why: Each tab, an
 	{ namStr : 'data-expanded', tabStr : 'data', preFun : async ( curPagObj ) => { // What: Data Expanded State. Why: An open picker card shows its controls and items, the Data tab's densest view. How: This opens the first picker's card, controls, and items.
 
 
-		const carSecLoc = curPagObj.locator( '[data-element-name-hook~="datCatSec"][data-picker-id]' ).first(); // What: Card Section Locator. Why: The first picker card is opened. How: This finds it.
+		const carSecLoc = curPagObj.locator( '[data-element-name-hook~="datCatSec"][data-picker-row-identifier]' ).first(); // What: Card Section Locator. Why: The first picker card is opened. How: This finds it.
 
 
 

@@ -41,14 +41,13 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  * per-feature mini-tour is built the same way: its own intro-modal
  * content plus its own step array, on the same two shared pieces.
  *
- * Decoupled from the tabs via three mechanisms: emlTouObj, a tiny
- * observable bus publishing prefill data for the picker form plus a live
- * phase/step so other tabs can react to the tour without a context
- * provider (e.g. Today's own empty states gate on its touPhaStr field);
- * window.__emlGenerate(), registered by TabTodCom so the tour can run the
- * real generator without reaching into the footer's own confirm dialog;
- * and a set of data-tour / .ob-* / data-tab selectors on real target
- * elements.
+ * Decoupled from the tabs via three mechanisms: emlTouObj, a tiny observable
+ * bus publishing prefill data for the picker form plus a live phase/step so
+ * other tabs can react to the tour without a context provider (e.g. Today's
+ * own empty states gate on its touPhaStr field); window.__emlGenerate(),
+ * registered by TabTodCom so the tour can run the real generator without
+ * reaching into the footer's own confirm dialog; and a set of data-tour /
+ * .ob-* / data-tab-button-key selectors on real target elements.
  *
  * Trigger: this shows whenever state.onboarding.welcomed is false (a
  * clean state). Visit #onboard-demo for a non-destructive clean-state

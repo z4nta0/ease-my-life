@@ -706,7 +706,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 
-		const catCurEle = document.querySelector( `[data-element-name-hook~="datCatSec"][data-picker-id="${ picIdeStr }"]` ); // What: Category Current Element. Why: The card's real height has to be read before its removal animation starts. How: This finds the picker's card by its hook and picker id.
+		const catCurEle = document.querySelector( `[data-element-name-hook~="datCatSec"][data-picker-row-identifier="${ picIdeStr }"]` ); // What: Category Current Element. Why: The card's real height has to be read before its removal animation starts. How: This finds the picker's card by its hook and picker id.
 
 
 		setRmvHeiNum( catCurEle ? catCurEle.getBoundingClientRect().height : 0 ); // What: Removing Height Set Call. Why: The collapse should start from the card's real height, open or closed. How: This stores the card's measured height, or 0 when it can't be found, which leaves the keyframes on their fallback.
@@ -1790,7 +1790,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 								cliFun : () => selScoFun( picCurObj.id ),                  // What: Click Function. Why: Clicking the box selects this picker's scope. How: This calls selScoFun with the picker's id.
-								ideStr : picCurObj.id,                                     // What: Identifier String. Why: The tour and help mode find a picker's box by its data-picker-id. How: This is the picker's id.
+								ideStr : picCurObj.id,                                     // What: Identifier String. Why: The tour and help mode find a picker's box by its data-picker-row-identifier. How: This is the picker's id.
 								keyStr : picCurObj.id,                                     // What: Key String. Why: React needs a stable key per box. How: This is the picker's id.
 								labStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr, // What: Label String. Why: The box's second line names the picker's mode. How: This reads the mode's label.
 								namStr : picCurObj.name,                                   // What: Name String. Why: The box shows the picker's name. How: This reads picCurObj.name.
@@ -1813,7 +1813,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 									style={{ animationDelay : ( filIndNum + 1 ) * 40 + 'ms' }}
 
 									data-element-name-hook='scoTabBut'
-									data-picker-id={ filEntObj.ideStr }
+									data-picker-row-identifier={ filEntObj.ideStr }
 									data-tab-select-active={ filEntObj.selBoo || undefined } // What: Tab Select Active Attribute. Why: The showing scope's tab should stand out in the strip. How: This sets the presence-only attribute while filEntObj.selBoo is true.
 
 									disabled={ disShoBoo }
@@ -2062,7 +2062,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 							data-card-vacation-active={ allVacBoo || undefined } // What: Card Vacation Active Attribute. Why: A picker with every item on vacation fades back. How: This sets the presence-only attribute while allVacBoo is true.
 							data-element-name-hook='datCatSec'
-							data-picker-id={ picCurObj.id }
+							data-picker-row-identifier={ picCurObj.id }
 
 							onAnimationEnd={ ( aniEveObj ) => { // What: On Animation End Handler. Why: A removed picker must leave the store only after its exit animation has played. How: This deletes the picker and clears rmvPicStr once the card itself (not a child) finishes animating while marked for removal.
 
