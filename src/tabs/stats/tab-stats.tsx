@@ -48,11 +48,11 @@ import type { VclRowTyp } from '../../core/data-model.ts'; // What: Vacation-Log
  * The Stats tab: the pick-log-derived history view, an activity heatmap,
  * per-picker breakdown, and reminder/conditional history, all filterable by
  * Group/Type/Show and a date range, paginated (PagNavCom) once a list runs
- * long. BreBarCom renders the stacked breakdown bars, HeaLegCom their heat
- * legend, and isoDayFun/relWheFun/couLevFun are small date/heatmap helpers
- * the rest of the file reads from. STA_RAN_ARR, SOU_MET_ARR, and TYP_MET_ARR
- * define the range pills and breakdown segments. TabStaCom ties every
- * section together as the tab.
+ * long. BreBarCom renders the stacked breakdown bars, HeaLegCom the heatmap's
+ * heat legend, and relWheFun, couLevFun, outCouFun, and remTalFun are small
+ * date, heatmap, and tally helpers the rest of the file reads from.
+ * STA_RAN_ARR, SOU_MET_ARR, and TYP_MET_ARR define the range pills and
+ * breakdown segments. TabStaCom ties every section together as the tab.
  *
  * Sections:
  *  - Constants
@@ -476,17 +476,17 @@ function BreBarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
 		<CarSurCom data-element-name-hook={ hooNamStr }>{ /* What: Card Surface Component. Why: This is BreBarCom's own root container, shared chrome with every other stat card. How: This renders the kicker, then either the bar and legend or the empty state below it. */ }
 
 
-			<div className={ cssModObj.staKicDiv }>{ kicTexStr }</div>{ /* What: Kicker Div Element. Why: Every card on this page opens with a small labelled kicker. How: This renders the caller's own kicTexStr. */ }
+			<div className={ cssModObj.staKicDiv }>{ kicTexStr }</div>{ /* What: Stats Kicker Div Element. Why: Every card on this page opens with a small labelled kicker. How: This renders the caller's own kicTexStr. */ }
 
 
 
 			{ totCouNum > 0 ? ( // What: Has Data Check. Why: A stacked bar with nothing in it would render as an empty, confusing sliver. How: This renders the real bar and legend only while totCouNum is positive, otherwise the empty state below.
 
 
-				<div className={ cssModObj.breBloDiv }>{ /* What: Breakdown Div Element. Why: This groups the bar and its legend as one visual unit. How: This wraps the breBarDiv segment row and the breLegUno list below it. */ }
+				<div className={ cssModObj.breBloDiv }>{ /* What: Breakdown Block Div Element. Why: This groups the bar and its legend as one visual unit. How: This wraps the breBarDiv segment row and the breLegUno list below it. */ }
 
 
-					<div className={ cssModObj.breBarDiv }>{ /* What: Bar Div Element. Why: This is the actual stacked proportion bar. How: This renders one span per non-zero segment, each sized to its own share of totCouNum. */ }
+					<div className={ cssModObj.breBarDiv }>{ /* What: Breakdown Bar Div Element. Why: This is the actual stacked proportion bar. How: This renders one span per non-zero segment, each sized to its own share of totCouNum. */ }
 
 
 						{ segDatArr.filter( ( segCurObj ) => segCurObj.couNum > 0 ).map( ( segCurObj ) => ( // What: Bar Segment Render. Why: A zero-count segment would render as an invisible sliver anyway, so it's skipped entirely. How: This maps every segment with a positive count to one proportionally-widthed span.
@@ -503,7 +503,7 @@ function BreBarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
 								}}
 
 								title={ `${ segCurObj.labStr }: ${ segCurObj.couNum }` }
-							/> // What: Segment Span Element. Why: Each stacked segment needs its own width, color, and a hover tooltip with the raw count. How: This is sized to the segment's own share of totCouNum and colored via its own colStr.
+							/> // What: Bar Segment Span Element. Why: Each stacked segment needs its own width, color, and a hover tooltip with the raw count. How: This is sized to the segment's own share of totCouNum and colored via its own colStr.
 
 
 						))}
@@ -512,7 +512,7 @@ function BreBarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
 					</div>
 
 
-					<ul className={ cssModObj.breLegUno }>{ /* What: Legend List Element. Why: The bar alone doesn't label its own segments. How: This renders one legend row per segment, including zero-count ones, each with its own dot, name, value, and percentage. */ }
+					<ul className={ cssModObj.breLegUno }>{ /* What: Breakdown Legend Unordered Element. Why: The bar alone doesn't label its own segments. How: This renders one legend row per segment, including zero-count ones, each with its own dot, name, value, and percentage. */ }
 
 
 						{ segDatArr.map( ( segCurObj ) => ( // What: Legend Row Render. Why: Every segment, even a zero-count one, still needs its own legend row for context. How: This maps every segment in segDatArr to one legend list item.
@@ -522,20 +522,20 @@ function BreBarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
 								key={ segCurObj.keyStr }
 
 								className={ cssModObj.legIteIte }
-							>{ /* What: Legend Item Element. Why: Each segment needs its own row grouping a color dot, its label, its count, and its share. How: This renders those four pieces as sibling spans. */ }
+							>{ /* What: Legend Item Item Element. Why: Each segment needs its own row grouping a color dot, its label, its count, and its share. How: This renders those four pieces as sibling spans. */ }
 
 
 								<span
 									className={ cssModObj.legDotSpa }
 
 									style={{ background : segCurObj.colStr }}
-								/>{ /* What: Dot Span Element. Why: The legend row needs a small color swatch matching its bar segment. How: This is a plain colored dot, styled via segCurObj's own colStr. */ }
+								/>{ /* What: Legend Dot Span Element. Why: The legend row needs a small color swatch matching its bar segment. How: This is a plain colored dot, styled via segCurObj's own colStr. */ }
 
-								<span className={ cssModObj.legLabSpa }>{ segCurObj.labStr }</span>{ /* What: Label Span Element. Why: The legend row needs the segment's own name. How: This renders segCurObj.labStr. */ }
+								<span className={ cssModObj.legLabSpa }>{ segCurObj.labStr }</span>{ /* What: Legend Label Span Element. Why: The legend row needs the segment's own name. How: This renders segCurObj.labStr. */ }
 
-								<span className={ cssModObj.legValSpa }>{ segCurObj.couNum }</span>{ /* What: Value Span Element. Why: The legend row needs the segment's own raw count. How: This renders segCurObj.couNum. */ }
+								<span className={ cssModObj.legValSpa }>{ segCurObj.couNum }</span>{ /* What: Legend Value Span Element. Why: The legend row needs the segment's own raw count. How: This renders segCurObj.couNum. */ }
 
-								<span className={ cssModObj.legPerSpa }>{ totCouNum ? Math.round( ( segCurObj.couNum / totCouNum ) * 100 ) : 0 }%</span>{ /* What: Percent Span Element. Why: The legend row needs the segment's own share of the total. How: This computes segCurObj.couNum as a percentage of totCouNum, guarding against a zero totCouNum. */ }
+								<span className={ cssModObj.legPerSpa }>{ totCouNum ? Math.round( ( segCurObj.couNum / totCouNum ) * 100 ) : 0 }%</span>{ /* What: Legend Percent Span Element. Why: The legend row needs the segment's own share of the total. How: This computes segCurObj.couNum as a percentage of totCouNum, guarding against a zero totCouNum. */ }
 
 
 							</li>
@@ -553,7 +553,7 @@ function BreBarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
 			) : ( // What: Empty State Branch. Why: A zero-total card needs to explain why the bar is missing instead of showing nothing at all. How: This renders the else branch, taken while totCouNum is zero.
 
 
-				<div className={ cssModObj.staEmpDiv }>{ empMesStr }</div> // What: Empty State Div Element. Why: This is the actual empty-state message. How: This renders the caller's own empMesStr.
+				<div className={ cssModObj.staEmpDiv }>{ empMesStr }</div> // What: Stats Empty Div Element. Why: This is the actual empty-state message. How: This renders the caller's own empMesStr.
 
 
 			) }
@@ -599,20 +599,20 @@ function HeaLegCom () : React.JSX.Element {
 	return (
 
 
-		<div className={ cssModObj.hetLegDiv }>{ /* What: Legend Div Element. Why: This groups the "less"/"more" labels and the 5 swatches into one row. How: This renders those 7 children in a fixed left-to-right order. */ }
+		<div className={ cssModObj.hetLegDiv }>{ /* What: Heat Legend Div Element. Why: This groups the "less"/"more" labels and the 5 swatches into one row. How: This renders those 7 children in a fixed left-to-right order. */ }
 
 
 			<span>less</span>{ /* What: Less Span Element. Why: The scale needs a label at its dim end. How: This renders the literal word "less". */ }
 
-			<i className={` ${ cssModObj.hetCelIta }   ${ cssModObj.hetCelItaLevel0 } `} />{ /* What: Swatch Element. Why: This is the scale's own level-0 (empty) reference swatch. How: This is a plain, non-interactive colored cell sharing the real heatmap cells' own classes. */ }
+			<i className={` ${ cssModObj.hetCelIta }   ${ cssModObj.hetCelItaLevel0 } `} />{ /* What: Heat Cell Italic Element. Why: This is the scale's own level-0 (empty) reference swatch. How: This is a plain, non-interactive colored cell styled by hetCelIta and its level modifier, the legend's own cell classes. */ }
 
-			<i className={` ${ cssModObj.hetCelIta }   ${ cssModObj.hetCelItaLevel1 } `} />{ /* What: Swatch Element. Why: This is the scale's own level-1 reference swatch. How: This is a plain, non-interactive colored cell sharing the real heatmap cells' own classes. */ }
+			<i className={` ${ cssModObj.hetCelIta }   ${ cssModObj.hetCelItaLevel1 } `} />{ /* What: Heat Cell Italic Element. Why: This is the scale's own level-1 reference swatch. How: This is a plain, non-interactive colored cell styled by hetCelIta and its level modifier, the legend's own cell classes. */ }
 
-			<i className={` ${ cssModObj.hetCelIta }   ${ cssModObj.hetCelItaLevel2 } `} />{ /* What: Swatch Element. Why: This is the scale's own level-2 reference swatch. How: This is a plain, non-interactive colored cell sharing the real heatmap cells' own classes. */ }
+			<i className={` ${ cssModObj.hetCelIta }   ${ cssModObj.hetCelItaLevel2 } `} />{ /* What: Heat Cell Italic Element. Why: This is the scale's own level-2 reference swatch. How: This is a plain, non-interactive colored cell styled by hetCelIta and its level modifier, the legend's own cell classes. */ }
 
-			<i className={` ${ cssModObj.hetCelIta }   ${ cssModObj.hetCelItaLevel3 } `} />{ /* What: Swatch Element. Why: This is the scale's own level-3 reference swatch. How: This is a plain, non-interactive colored cell sharing the real heatmap cells' own classes. */ }
+			<i className={` ${ cssModObj.hetCelIta }   ${ cssModObj.hetCelItaLevel3 } `} />{ /* What: Heat Cell Italic Element. Why: This is the scale's own level-3 reference swatch. How: This is a plain, non-interactive colored cell styled by hetCelIta and its level modifier, the legend's own cell classes. */ }
 
-			<i className={` ${ cssModObj.hetCelIta }   ${ cssModObj.hetCelItaLevel4 } `} />{ /* What: Swatch Element. Why: This is the scale's own level-4 (darkest) reference swatch. How: This is a plain, non-interactive colored cell sharing the real heatmap cells' own classes. */ }
+			<i className={` ${ cssModObj.hetCelIta }   ${ cssModObj.hetCelItaLevel4 } `} />{ /* What: Heat Cell Italic Element. Why: This is the scale's own level-4 (darkest) reference swatch. How: This is a plain, non-interactive colored cell styled by hetCelIta and its level modifier, the legend's own cell classes. */ }
 
 			<span>more</span>{ /* What: More Span Element. Why: The scale needs a label at its dark end. How: This renders the literal word "more". */ }
 
@@ -685,10 +685,10 @@ function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIte
 	return (
 
 
-		<div className={ cssModObj.pagNavDiv }>{ /* What: Pager Div Element. Why: This is PagNavCom's own root element, grouping the range text and the arrow buttons. How: This renders the "start-end of total" text followed by the two arrow buttons. */ }
+		<div className={ cssModObj.pagNavDiv }>{ /* What: Pager Navigation Div Element. Why: This is PagNavCom's own root element, grouping the range text and the arrow buttons. How: This renders the "start-end of total" text followed by the two arrow buttons. */ }
 
 
-			<span className={ cssModObj.pagRanSpa }>{ /* What: Range Span Element. Why: The pager needs one combined "1-10 of N items" readout. How: This renders staIteNum, an en dash, endIteNum, "of", totIteNum, and the optional unit word. */ }
+			<span className={ cssModObj.pagRanSpa }>{ /* What: Pager Range Span Element. Why: The pager needs one combined "1-10 of N items" readout. How: This renders staIteNum, an en dash, endIteNum, "of", totIteNum, and the optional unit word. */ }
 
 
 				{ staIteNum }&ndash;{ endIteNum } <span className={ cssModObj.pagJoiSpa }>of</span> { totIteNum }{ uniWorStr ? ` ${ uniWorStr }` : '' }{ /* What: Range Readout Expression. Why: The pager reads as one line of text. How: This joins the start, end, total, and optional unit word. */ }
@@ -696,7 +696,7 @@ function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIte
 
 			</span>
 
-			<div className={ cssModObj.pagArrDiv }>{ /* What: Arrows Div Element. Why: The previous/next controls are grouped together for layout. How: This renders the two arrow buttons side by side. */ }
+			<div className={ cssModObj.pagArrDiv }>{ /* What: Pager Arrows Div Element. Why: The previous/next controls are grouped together for layout. How: This renders the two arrow buttons side by side. */ }
 
 
 				<button
@@ -708,7 +708,7 @@ function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIte
 					aria-label='Previous page'
 
 					onClick={ () => onChange( curPagNum - 1 ) }
-				>&lsaquo;</button>{ /* What: Previous Arrow Button Element. Why: The user needs a way to move back one page. How: This is disabled on the first page and otherwise calls onChange with the previous page index. */ }
+				>&lsaquo;</button>{ /* What: Pager Arrow Button Element. Why: The user needs a way to move back one page. How: This is disabled on the first page and otherwise calls onChange with the previous page index. */ }
 
 				<button
 					className={ cssModObj.pagArrBut }
@@ -719,7 +719,7 @@ function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIte
 					aria-label='Next page'
 
 					onClick={ () => onChange( curPagNum + 1 ) }
-				>&rsaquo;</button>{ /* What: Next Arrow Button Element. Why: The user needs a way to move forward one page. How: This is disabled on the last page and otherwise calls onChange with the next page index. */ }
+				>&rsaquo;</button>{ /* What: Pager Arrow Button Element. Why: The user needs a way to move forward one page. How: This is disabled on the last page and otherwise calls onChange with the next page index. */ }
 
 
 			</div>
@@ -781,13 +781,13 @@ function RanCarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
 		<CarSurCom data-element-name-hook={ hooNamStr }>{ /* What: Card Surface Component. Why: A ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. */ }
 
 
-			<div className={ cssModObj.staKicDiv }>{ kicTexStr }</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders kicTexStr. */ }
+			<div className={ cssModObj.staKicDiv }>{ kicTexStr }</div>{ /* What: Stats Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders kicTexStr. */ }
 
 
 			{ ranIteArr.length ? ( // What: Ranking List Visibility Check. Why: An empty ranking needs its own message instead of a bare empty list. How: This renders the real list only while ranIteArr has at least one entry, the empty state otherwise.
 
 
-				<ul className={` ${ cssModObj.ranLisUno }   ${ rarRanBoo ? cssModObj.ranLisUnoRare : '' } `}>{ /* What: Ranking List Unordered Element. Why: This is the actual ranked list. How: This maps ranIteArr to one list item per item. */ }
+				<ul className={` ${ cssModObj.ranLisUno }   ${ rarRanBoo ? cssModObj.ranLisUnoRare : '' } `}>{ /* What: Rank List Unordered Element. Why: This is the actual ranked list. How: This maps ranIteArr to one list item per item, taking the --rare modifier for the least-picked list. */ }
 
 
 					{ ranIteArr.map( ( iteCurObj, iteIndNum ) => ( // What: Ranking Row Render. Why: Every ranked item needs its own row showing its name and count. How: This maps ranIteArr to one list item per entry, keyed by its own iteIndNum.
@@ -797,7 +797,7 @@ function RanCarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
 							key={ iteIndNum }
 
 							className={ cssModObj.ranIteIte }
-						>{ /* What: Ranking Item Element. Why: Each item needs its own name on one side and its own count on the other. How: This renders a plain name span and the count span. */ }
+						>{ /* What: Rank Item Item Element. Why: Each item needs its own name on one side and its own count on the other. How: This renders a plain name span and the count span. */ }
 
 
 							<span>{ iteCurObj.namStr }</span>{ /* What: Item Name Span Element. Why: The row needs its own visible item name. How: This renders iteCurObj.namStr. */ }
@@ -817,7 +817,7 @@ function RanCarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
 			) : ( // What: Empty State Branch. Why: With nothing to list, the card needs its own message instead. How: This renders the else branch.
 
 
-				<div className={ cssModObj.staEmpDiv }>{ empMesStr }</div> // What: Ranking Empty State Div Element. Why: An empty ranking needs to explain why the list is missing instead of showing nothing. How: This renders empMesStr.
+				<div className={ cssModObj.staEmpDiv }>{ empMesStr }</div> // What: Stats Empty Div Element. Why: An empty ranking needs to explain why the list is missing instead of showing nothing. How: This renders empMesStr.
 
 
 			) }
@@ -962,7 +962,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		return zerDatObj; // What: Zeroed Date Return. Why: This is the stable, time-zeroed today reference. How: This returns zerDatObj.
 
 
-	}, [] ); // What: Effect Dependency Array. Why: Today only needs computing once, on mount. How: An empty array means it never recomputes.
+	}, [] ); // What: Memo Dependency Array. Why: Today only needs computing once, on mount. How: An empty array means it never recomputes.
 
 
 	const todIsoStr = isoDayFun( todDatObj ); // What: Today ISO String. Why: The streak, heatmap, and "last picked" math all need today's own calendar day as a plain string. How: This converts todDatObj via the shared isoDayFun helper.
@@ -1872,7 +1872,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const useWeiBoo = isaPicBoo && scoPicObj && ( scoPicObj.mode === 'weighted' || scoPicObj.mode === 'dynamic' ); // What: Use Weight Boolean. Why: Only a weighted or dynamic picker's items have a meaningful weight suffix to show. How: This checks the scoped picker's own mode against both weight-driven modes.
 
 
-	const vacCheObj = React.useMemo( () => { // What: Vacation Check Object Memo. Why: Several metrics below need to know an item's own active/inactive state on an arbitrary past day, not just its current state. How: This replays staAppObj.vacationLog into a per-item sorted event list, then exposes two small lookup functions closing over it. // Inactive-state replay from the event log: vacCheObj.inaDayFun(itemId, date) answers whether that item was inactive that day; vacCheObj.retAftFun answers whether an 'on' (return-from-vacation) transition happened after that date.
+	const vacCheObj = React.useMemo( () => { // What: Vacation Check Object Memo. Why: Several metrics below need to know an item's own active/inactive state on an arbitrary past day, not just its current state. How: This replays staAppObj.vacationLog into a per-item sorted event list, then exposes two small lookup functions closing over it. // Inactive-state replay from the event log: vacCheObj.inaDayFun(itemId, date) answers whether that item was inactive that day; vacCheObj.retAftFun answers whether a deactivation (an 'on' event) happened after that date.
 
 
 		// #region Event Grouping
@@ -1932,7 +1932,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		};
 
 
-		const retAftFun = ( iteIdeStr : string, dayIsoStr : string ) => { // What: Return After Function. Why: The "was on vacation" label needs to know whether an item returned FROM vacation after a specific day, not just its state on that day. How: This checks the item's own event array for any later 'on' transition.
+		const retAftFun = ( iteIdeStr : string, dayIsoStr : string ) => { // What: Return After Function. Why: The "was inactive" label needs to know whether an item was deactivated after a specific day, which for a now-active item means it has since returned. How: This checks the item's own event array for any later event flagged on, a deactivation.
 
 
 			const iteEveArr = iteEveMap.get( iteIdeStr ); // What: Item Event Array. Why: An item with no vacation history at all can't have a later transition either. How: This looks up the item's own event array, which may be undefined.
@@ -1952,7 +1952,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 			inaDayFun : inaDayFun, // What: Inactive Day Function. Why: Metrics ask whether an item was inactive on a given day. How: This exposes inaDayFun under its own name.
-			retAftFun : retAftFun  // What: Return After Function. Why: The "was inactive" tag asks whether an item came back after a given day. How: This exposes retAftFun under its own name.
+			retAftFun : retAftFun  // What: Return After Function. Why: The "was inactive" tag asks whether an item was deactivated after a given day. How: This exposes retAftFun under its own name.
 
 
 		};
@@ -2238,7 +2238,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 			const eliDenNum = picRowArr.reduce( ( sumRunNum, rowCurObj ) => sumRunNum + ( vacCheObj.inaDayFun( iteCurObj.id, rowCurObj.date ) ? 0 : 1 ), 0 ); // What: Eligible Denominator Number. Why: The eligible-mode Count percentage needs a denominator of only the picks made while this item was actually active. How: This sums picRowArr, adding 1 per row unless this item was inactive on that row's own date. // Count denominator: total picks vs. picks made while this item was eligible.
 			const notDelBoo = !iteCurObj.delBoo;                                                                                                 // What: Not Deleted Boolean. Why: A deleted item's ghost row never gets the was-inactive label. How: This negates the ghost's own delBoo marker.
 			const notVacBoo = !iteCurObj.vacation;                                                                                               // What: Not Vacation Boolean. Why: A currently-inactive item shows its own inactive tag instead of the was-inactive label. How: This negates the item's own vacation flag.
-			const retAftBoo = vacCheObj.retAftFun( iteCurObj.id, lasDatStr || '' );                                                              // What: Return After Boolean. Why: The label only applies when the item came back from inactive after its own last pick. How: This calls vacCheObj.retAftFun with the item's id and lasDatStr, or an empty string for a never-picked item.
+			const retAftBoo = vacCheObj.retAftFun( iteCurObj.id, lasDatStr || '' );                                                              // What: Return After Boolean. Why: The label only applies when the item was deactivated after its own last pick, which with the checks above means it has since returned. How: This calls vacCheObj.retAftFun with the item's id and lasDatStr, or an empty string for a never-picked item.
 
 			const wasVacBoo = notDelBoo && notVacBoo && retAftBoo; // What: Was Vacation Boolean. Why: This flags an item that went inactive after its own last pick and hasn't been picked again since returning. How: This checks vacCheObj.retAftFun against lasDatStr, only for a live, currently-active item. // Label: not currently inactive, but went inactive after its last pick and hasn't been picked since returning. Never shown for a deleted item.
 
@@ -2282,7 +2282,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const effMetStr = ( metKeyStr === 'freq' || metKeyStr === 'spent' ) ? freKeyStr : metKeyStr; // What: Effective Metric String. Why: The rest of the card must treat a stale 'freq'/'spent' selection as whichever one actually applies to the current picker's mode. How: This substitutes freKeyStr whenever metKeyStr is either of those two, otherwise passes metKeyStr through unchanged.
 
 
-	const breLisArr = React.useMemo( () => { // What: Breakdown List Array Memo. Why: The Pick breakdown card needs perIteArr resorted by whichever metric/direction is currently active. How: This branches per effMetStr's own shape, since a null-heavy metric needs its own bottom-pinning comparator. // Sort perIteArr by the active metric + direction. Frequency and Last- picked pin their "no data" rows (never-picked) to the bottom.
+	const breLisArr = React.useMemo( () => { // What: Breakdown List Array Memo. Why: The Pick breakdown card needs perIteArr resorted by whichever metric/direction is currently active. How: This branches per effMetStr's own shape, since a null-heavy metric needs its own bottom-pinning comparator. // Sort perIteArr by the active metric + direction. Frequency, Last-picked, and Spent pin their "no data" rows (never-picked, or no completed cycle) to the bottom.
 
 
 		const sorDirNum = sorDirStr === 'desc' ? -1 : 1; // What: Sort Direction Number. Why: Every branch below needs a plain +1/-1 multiplier instead of re-checking the string per comparison. How: This is -1 for descending (since the raw subtraction below is ascending-oriented), 1 for ascending.
@@ -2335,7 +2335,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	// #region Cadence-Aware Formatting
 
-	const staCadStr = ( scoPicObj && scoPicObj.cadence ) || 'daily';              // What: Stat Cadence String. Why: Every unit-formatting helper below needs to know the scoped picker's own cadence. How: This reads scoPicObj.cadence, falling back to 'daily' for a picker with none set. // Cadence-aware unit words. A cadence picker runs once per period, so its own "eligible" (run-count) values ARE period counts, so eligible mode relabels days into week/month/year. Calendar mode always stays in literal days.
+	const staCadStr = ( scoPicObj && scoPicObj.cadence ) || 'daily';              // What: Stat Cadence String. Why: Every unit-formatting helper below needs to know the scoped picker's own cadence. How: This reads scoPicObj.cadence, falling back to 'daily' for a picker with none set. // Cadence-aware unit words. A cadence picker runs once per period, so its own "eligible" (run-count) values ARE period counts, shown as weeks, months, or years, and calendar mode converts its literal days into periods by perDayNum.
 	const isaCadBoo = staCadStr !== 'daily';                                      // What: Is-A Cadenced Boolean. Why: A daily picker's own values never need relabeling into a different unit word. How: This is true whenever staCadStr isn't the 'daily' default.
 	const perDayNum = PER_DAY_OBJ[ staCadStr ] || 1;                              // What: Period Day Number. Why: cadDisFun below needs this scoped picker's own approximate days-per-period value. How: This looks staCadStr up in PER_DAY_OBJ, falling back to 1 for a daily picker.
 	const eliUniStr = isaCadBoo ? CAD_NAM_OBJ.uniWorFun( staCadStr, 2 ) : 'days'; // What: Eligible Unit String. Why: The eligible-mode toggle button's own label needs a plural unit word matching the picker's cadence. How: This asks CAD_NAM_OBJ.uniWorFun for the plural form (using 2 as a representative plural count), or falls back to 'days'. // Plural unit word for the eligible-mode toggle labels (weeks/months/ years).
@@ -2347,7 +2347,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		: ( valCouNum === 1 ? 'day' : 'days' );         // What: Daily Branch. Why: A daily picker counts in plain days. How: This pluralizes "day" by valCouNum.
 
 
-	const cadDisFun = ( rawDayNum : number, uniModStr : string, daiDayNum : number ) => { // What: Cadence Display Function. Why: Every day-count metric's own value column needs this same conversion, so it's centralized once instead of repeated per metric. How: This converts rawDayNum into cadence periods for a cadenced picker, otherwise passing daiDayNum straight through. // Format a raw day-count metric for the value column. A cadence picker converts calendar days into periods and ALWAYS shows one decimal (forced ".0") so eligible and calendar line up; a daily picker keeps its existing whole-day display via daiDayNum. Returns { num (string), word }.
+	const cadDisFun = ( rawDayNum : number, uniModStr : string, daiDayNum : number ) => { // What: Cadence Display Function. Why: Every day-count metric's own value column needs this same conversion, so it's centralized once instead of repeated per metric. How: This converts rawDayNum into cadence periods for a cadenced picker, otherwise passing daiDayNum straight through. // Format a raw day-count metric for the value column. A cadence picker converts calendar days into periods and ALWAYS shows one decimal (forced ".0") so eligible and calendar line up; a daily picker keeps its existing whole-day display via daiDayNum. Returns { numStr, worStr }.
 
 
 		if ( !isaCadBoo ) return { // What: Daily Return. Why: A daily picker's own value column already has its own whole-day formatting computed by the caller. How: This returns daiDayNum as-is, with a simple singular/plural "day"/"days" word.
@@ -2432,7 +2432,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	// #region Suffix Helpers
 
-	const weiSufFun = React.useCallback( ( iteCurObj : Partial< IteRcdTyp > | undefined ) => { // What: Weight Suffix Function. Why: A weighted/dynamic picker's own items need their configured weight shown alongside the Count metric. How: This returns null unless useWeiBoo is true, otherwise a "weight N" string. // Name suffixes, scoped to the metric being shown: - Count -> weight suffix (weighted / dynamic) - Freq/Spent -> range suffix (ease modes), days from the drift band (soonest = 100/easeMax, latest = 100/easeMin) - Auto/Hand Picked/Re-Rolled Away -> no suffix ("{name} {count}")
+	const weiSufFun = React.useCallback( ( iteCurObj : Partial< IteRcdTyp > | undefined ) => { // What: Weight Suffix Function. Why: A weighted/dynamic picker's own items need their configured weight shown alongside the Count metric. How: This returns null unless useWeiBoo is true, otherwise a "weight N" string. // Name suffixes, scoped to the metric being shown: - Count -> weight suffix (weighted / dynamic) - Freq/Spent -> range suffix (ease modes), days from the drift band (soonest = 100/easeMax, latest = 100/easeMin) - Auto/Hand Picked/Re-Rolled Away/Skipped -> no suffix ("{name} {count}")
 
 
 		if ( !iteCurObj || !useWeiBoo ) return null; // What: Weight Mode Guard. Why: Only a weighted or dynamic picker's items carry a weight worth showing. How: This returns null for every other mode, or a missing item.
