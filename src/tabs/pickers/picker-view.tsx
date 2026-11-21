@@ -1007,7 +1007,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 				isaEdiBoo
 
 				onCanForFun={ () => setEdiOpeBoo( false ) }
-				onSavEdiFun={ ( payForObj ) => { // What: On Save Edit Handler. Why: Saving the edit form commits its fields and closes it. How: This calls savEdiFun, then closes the form.
+				onSavEdiFun={ ( payForObj ) => { // What: On Save Edit Function. Why: Saving the edit form commits its fields and closes it. How: This calls savEdiFun, then closes the form.
 
 
 					actStoObj.savEdiFun( picDatObj.id, payForObj ); // What: Save Edit Call. Why: This commits the edited Details fields to the picker. How: This calls savEdiFun with the picker's id and the form payload.

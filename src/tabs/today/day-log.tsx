@@ -759,7 +759,7 @@ function StaChiCom ( { iteFlaObj } : ShcProTyp ) : React.JSX.Element {
 
 
 
-type ThcProTyp = { heaLabStr? : string }; // What: Table-Header-Component Props Type. Why: A log table's header names its first column. How: This types TabHeaCom's props.
+type ThcProTyp = { heaLabStr? : string }; // What: Table-Head-Component Props Type. Why: A log table's header names its first column. How: This types TabHeaCom's props.
 
 // #region TabHeaCom
 
@@ -861,7 +861,7 @@ function TabHeaCom ( { heaLabStr = 'Item' } : ThcProTyp ) : React.JSX.Element {
 
 
 
-type VccProTyp = { aftValNum : number, genValNum : number | null | undefined, hasValBoo : boolean, offValNum? : number }; // What: Value-Cell-Component Props Type. Why: A value cell compares an item's value at generation with its value now. How: This types ValCelCom's props.
+type VccProTyp = { aftValNum : number, genValNum : number | null | undefined, hasValBoo : boolean, offValNum? : number }; // What: Value-Cells-Component Props Type. Why: A value cell compares an item's value at generation with its value now. How: This types ValCelCom's props.
 
 // #region ValCelCom
 
@@ -1831,7 +1831,7 @@ function LogChiCom ( { onTogLogFun, open } : LccProTyp ) : React.JSX.Element {
 
 
 
-type RlcProTyp = { onCloLogFun : () => void, staAppObj : StaAppTyp }; // What: Reminder-Log-Component Props Type. Why: The reminders' log panel covers every reminder and can be closed. How: This types RemLogCom's props.
+type RlcProTyp = { onCloLogFun : () => void, staAppObj : StaAppTyp }; // What: Reminders-Log-Component Props Type. Why: The reminders' log panel covers every reminder and can be closed. How: This types RemLogCom's props.
 
 // #region RemLogCom
 

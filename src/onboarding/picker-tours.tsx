@@ -1064,7 +1064,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 				titHeaStr={ `${ picRcdObj.name } Picker` }
 
 				onBegTouFun={ () => setTouPhaStr( 'tour' ) }
-				onSkiTouFun={ () => cloTouFun( 'cancelled' ) } // What: On Skip Handler. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying sample picker. How: This calls cloTouFun with 'cancelled'.
+				onSkiTouFun={ () => cloTouFun( 'cancelled' ) } // What: On Skip Tour Function. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying sample picker. How: This calls cloTouFun with 'cancelled'.
 			/> // What: Intro Modal Component. Why: This is this sample's own opening screen, shown before any spotlight step ever does. How: This is passed this sample's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
 
 
@@ -1117,7 +1117,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 			steObjArr={ steObjArr }
 			touIdeStr={ `picker-${ picIdeStr }` }
 
-			onBacTouFun={ ( tarSteNum ) => { // What: On Go Back Handler. Why: Back from buiAddFun's own step (index 6, the Items sub-step's "+ Add Item" button) to ITE_STE_OBJ's own step (index 5, "Add Items") needs the form pushed back to its Details sub-step first; unlike the Reminders tours' own "+" button, the forNexBut hook's own click is a one-way step change inside PicForCom, not a toggle, so without this ITE_STE_OBJ's own target stays gone (the form is still showing Items) and the tour has nothing to highlight. How: This branches on tarSteNum, clicking the real DOM control that reverses whichever one-way transition the tour is backing out of.
+			onBacTouFun={ ( tarSteNum ) => { // What: On Back Tour Function. Why: Back from buiAddFun's own step (index 6, the Items sub-step's "+ Add Item" button) to ITE_STE_OBJ's own step (index 5, "Add Items") needs the form pushed back to its Details sub-step first; unlike the Reminders tours' own "+" button, the forNexBut hook's own click is a one-way step change inside PicForCom, not a toggle, so without this ITE_STE_OBJ's own target stays gone (the form is still showing Items) and the tour has nothing to highlight. How: This branches on tarSteNum, clicking the real DOM control that reverses whichever one-way transition the tour is backing out of.
 
 
 				if ( tarSteNum === 5 ) { // What: Details Step Back Check. Why: Reversing buiAddFun's own step needs the form pushed back to Details. How: This clicks the form's own "Details" step-indicator tab, the only way to reverse this from outside the form, which owns that step state locally.
@@ -1152,8 +1152,8 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 
 
 			} }
-			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Handler. Why: This only fires from CRE_STE_OBJ's own cirBoo, after the real click that creates the picker has already reached the button's own handler. How: This calls cloTouFun with 'finished'.
-			onSkiTouFun={ () => cloTouFun( 'skipped' ) } // What: On Skip Handler. Why: Skip (or the not-found watchdog) reads as "the user didn't finish", distinct both from the intro modal's own 'cancelled' and from a genuine 'finished' below. How: This calls cloTouFun with 'skipped'.
+			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Tour Function. Why: This only fires from CRE_STE_OBJ's own cirBoo, after the real click that creates the picker has already reached the button's own handler. How: This calls cloTouFun with 'finished'.
+			onSkiTouFun={ () => cloTouFun( 'skipped' ) } // What: On Skip Tour Function. Why: Skip (or the not-found watchdog) reads as "the user didn't finish", distinct both from the intro modal's own 'cancelled' and from a genuine 'finished' below. How: This calls cloTouFun with 'skipped'.
 		/> // What: Guided Tour Component. Why: This is the actual running spotlight walkthrough for this sample, mounted once its own intro modal has been accepted or resumed into. How: This is passed this sample's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
 
 
@@ -1170,7 +1170,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 
 // #region Exports
 
-export { PicTouCom }; // What: Named Exports. Why: app.tsx renders this as the Pickers page's own guided tour. How: This re-exports PicTouCom; every other binding in this file is internal-only.
+export { PicTouCom }; // What: Named Export. Why: app.tsx renders this as the Pickers page's own guided tour. How: This re-exports PicTouCom; every other binding in this file is internal-only.
 
 // #endregion Exports
 

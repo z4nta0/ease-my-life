@@ -632,7 +632,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 				skiLabStr='I’ll explore myself'
 				titHeaStr='Welcome to Ease My Life'
 
-				onBegTouFun={ () => { // What: On Begin Handler. Why: Accepting the tour needs to switch to Today, persist that the welcome modal is done, and hand off to the running GuiTouCom, all as one action. How: This is called when IntModCom's own primary button is activated.
+				onBegTouFun={ () => { // What: On Begin Tour Function. Why: Accepting the tour needs to switch to Today, persist that the welcome modal is done, and hand off to the running GuiTouCom, all as one action. How: This is called when IntModCom's own primary button is activated.
 
 
 					selTabFun( 'today' ); // What: Today Switch Call. Why: The tour should always begin its walkthrough from the Today tab. How: This switches the app's own active tab to 'today'.
@@ -643,7 +643,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 
 
 				} }
-				onRetUsrFun={ () => { // What: On Returning User Handler. Why: Someone who has used the app before is restoring a backup or signing in to sync, and needs neither the tour nor the tutorials. How: This does everything a skip does, then opens Settings at the Account section, with Import just above it.
+				onRetUsrFun={ () => { // What: On Returning User Function. Why: Someone who has used the app before is restoring a backup or signing in to sync, and needs neither the tour nor the tutorials. How: This does everything a skip does, then opens Settings at the Account section, with Import just above it.
 
 
 					welDonFun(); // What: Welcome Done Call. Why: The welcome modal should never show again. How: This persists onboarding.welcomed as true.
@@ -657,7 +657,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 
 
 				} }
-				onSkiTouFun={ () => { // What: On Skip Handler. Why: Skipping still needs to land on the exact same "few small tutorials" checklist phase the full tour reaches at its own last step, since without it Today would have nothing to show. How: This persists welcomed, runs skiEndFun's shared skip cleanup, and lands back on a pristine Today.
+				onSkiTouFun={ () => { // What: On Skip Tour Function. Why: Skipping still needs to land on the exact same "few small tutorials" checklist phase the full tour reaches at its own last step, since without it Today would have nothing to show. How: This persists welcomed, runs skiEndFun's shared skip cleanup, and lands back on a pristine Today.
 
 
 					welDonFun(); // What: Welcome Done Call. Why: Skipping is also the point this welcome modal should never show again. How: This persists onboarding.welcomed as true.
@@ -708,7 +708,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 
 // #region Exports
 
-export { WelTouCom }; // What: Named Exports. Why: app.tsx renders this as the first-run welcome modal and its own driven tour. How: This re-exports WelTouCom; every other binding in this file is internal-only.
+export { WelTouCom }; // What: Named Export. Why: app.tsx renders this as the first-run welcome modal and its own driven tour. How: This re-exports WelTouCom; every other binding in this file is internal-only.
 
 // #endregion Exports
 

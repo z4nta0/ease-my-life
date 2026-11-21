@@ -1906,7 +1906,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 								actStoObj={ actStoObj }
 								staAppObj={ staAppObj }
-							/> // What: Conditional Manager Component. Why: The Conditionals section renders as its own manager card. How: This is passed the app state and actions.
+							/> // What: Conditionals Manager Component. Why: The Conditionals section renders as its own manager card. How: This is passed the app state and actions.
 
 
 						);
@@ -2279,7 +2279,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 											onCanNewFun={ canNewFun }
 											onColConFun={ () => actStoObj.togColFun( picCurObj.id + ':controls' ) }
-											onOpeSecFun={ () => { // What: On Open Section Handler. Why: The draft's first "Add Items" click must open the Items section and also queue a ready-to-type new item. How: This opens draIteBoo and arms penAutBoo together.
+											onOpeSecFun={ () => { // What: On Open Section Function. Why: The draft's first "Add Items" click must open the Items section and also queue a ready-to-type new item. How: This opens draIteBoo and arms penAutBoo together.
 
 
 												setDraIteBoo( true ); // What: Draft Items Open Call. Why: The draft's own Items section starts closed and must open here. How: This sets draIteBoo to true.
@@ -2571,7 +2571,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 																	picDatObj={ picCurObj }
 																	picIteArr={ picIteArr }
 
-																	onCanEdiFun={ () => { // What: On Cancel Handler. Why: Cancelling drops the row's draft, and a brand-new item goes away entirely. How: This marks the draft handled and closes the row, then drops a new item once the row's collapse animation finishes.
+																	onCanEdiFun={ () => { // What: On Cancel Edit Function. Why: Cancelling drops the row's draft, and a brand-new item goes away entirely. How: This marks the draft handled and closes the row, then drops a new item once the row's collapse animation finishes.
 
 
 																		hanDraRef.current = draIteObj; // What: Handled Draft Mark. Why: The row's unmount must not keep a draft its own Cancel dropped. How: This records the dropped draft.
@@ -2592,7 +2592,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 																	} }
-																	onDelIteFun={ () => { // What: On Delete Handler. Why: Deleting an item should let its row collapse before the store drops it. How: This marks the draft handled and closes the row, then removes the item right away under reduced motion or after the collapse otherwise.
+																	onDelIteFun={ () => { // What: On Delete Item Function. Why: Deleting an item should let its row collapse before the store drops it. How: This marks the draft handled and closes the row, then removes the item right away under reduced motion or after the collapse otherwise.
 
 
 																		hanDraRef.current = draIteObj; // What: Handled Draft Mark. Why: A deleted item's draft must not be kept by the row's unmount. How: This records the dropped draft.

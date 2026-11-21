@@ -315,7 +315,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 				titHeaStr={ ( pagCopObj && pagCopObj.titStr ) || navTarObj.titStr } // What: Title Heading Attribute. Why: A page without its own dedicated copy still needs a heading. How: This prefers pagCopObj's own titStr, falling back to navTarObj's.
 
 				onBegTouFun={ () => setTouPhaStr( 'tour' ) }
-				onSkiTouFun={ () => cloTouFun( 'cancelled' ) } // What: On Skip Handler. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying page. How: This calls cloTouFun with 'cancelled'.
+				onSkiTouFun={ () => cloTouFun( 'cancelled' ) } // What: On Skip Tour Function. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying page. How: This calls cloTouFun with 'cancelled'.
 			/> // What: Intro Modal Component. Why: This is this page's own opening screen, shown before any spotlight step ever does. How: This is passed this page's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
 
 
@@ -399,7 +399,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 			steObjArr={ steObjArr }
 			touIdeStr={ `page-${ pagIdeStr }` }
 
-			onBacTouFun={ ( tarSteNum ) => { // What: On Go Back Handler. Why: A real, one-way UI transition (the Pickers tour's own pick animation, or Today's own Edit Mode) must be reversed by a real control so a Back finds its target step's own selector again. How: This branches on pagIdeStr first, then on tarSteNum, driving whichever real DOM control or bus nonce reverses that specific transition.
+			onBacTouFun={ ( tarSteNum ) => { // What: On Back Tour Function. Why: A real, one-way UI transition (the Pickers tour's own pick animation, or Today's own Edit Mode) must be reversed by a real control so a Back finds its target step's own selector again. How: This branches on pagIdeStr first, then on tarSteNum, driving whichever real DOM control or bus nonce reverses that specific transition.
 
 
 				if ( pagIdeStr === 'explore_pickers' ) { // What: Pickers Back Branch Check. Why: Only the Pickers tour's own steps have this one-way pick-animation state to reverse. How: This branches on pagIdeStr matching 'explore_pickers'.
@@ -476,8 +476,8 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 
 
 			} }
-			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Handler. Why: This only fires from a step's own cirBoo priStr 'Done'. How: This calls cloTouFun with 'finished'.
-			onSkiTouFun={ () => { // What: On Skip Handler. Why: Skip can fire mid-Edit-Mode too, so any open rename input and any active Edit Mode session both need reverting before this tour actually closes. How: This forces the real name back if a rename input is open, clicks the real Cancel control if Edit Mode is on, then calls cloTouFun.
+			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Tour Function. Why: This only fires from a step's own cirBoo priStr 'Done'. How: This calls cloTouFun with 'finished'.
+			onSkiTouFun={ () => { // What: On Skip Tour Function. Why: Skip can fire mid-Edit-Mode too, so any open rename input and any active Edit Mode session both need reverting before this tour actually closes. How: This forces the real name back if a rename input is open, clicks the real Cancel control if Edit Mode is on, then calls cloTouFun.
 
 
 				if ( document.querySelector( '[data-element-name-hook~="pagTouSec"] [data-element-name-hook~="groNamInp"]' ) ) forNamFun( actStoObj ); // What: Open Rename Guard. Why: The same blur-races-the-click risk as a real Done click applies here too, clicking Skip is ALSO a click on a different element than the input. How: This forces the real name back only when the rename input is actually still open.
@@ -511,7 +511,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 
 // #region Exports
 
-export { PagTouCom }; // What: Named Exports. Why: app.tsx renders PagTouCom directly, and onboarding/app-features.tsx reuses buiTs1Fun verbatim for its own App Features tours. How: This re-exports both bindings unchanged from their own module.
+export { PagTouCom }; // What: Named Export. Why: app.tsx renders PagTouCom directly, and onboarding/app-features.tsx reuses buiTs1Fun verbatim for its own App Features tours. How: This re-exports both bindings unchanged from their own module.
 
 // #endregion Exports
 

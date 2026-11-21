@@ -1787,7 +1787,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 												value={ runDowArr }
 
 												onChange={ setRunDowArr }
-											/>{ /* What: Weekday Chips Component. Why: The user needs a direct way to toggle individual weekdays on or off. How: This is passed runDowArr and locDowNum so a weekly cadence's own anchor day can't be turned off here. */ }
+											/>{ /* What: Weekday Chip Component. Why: The user needs a direct way to toggle individual weekdays on or off. How: This is passed runDowArr and locDowNum so a weekly cadence's own anchor day can't be turned off here. */ }
 
 
 

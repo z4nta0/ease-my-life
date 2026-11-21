@@ -1173,7 +1173,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 			steObjArr={ steObjArr }
 			touIdeStr={ `appfeature-${ feaIdeStr }` }
 
-			onBacTouFun={ ( tarSteNum ) => { // What: On Go Back Handler. Why: A real, one-way UI transition (Edit Mode-style collapses, or the highlights toggle) must be reversed by a real control so a Back finds its target step's own selector again. How: This branches on feaIdeStr first, then on tarSteNum, driving whichever real DOM control or direct action reverses that specific transition.
+			onBacTouFun={ ( tarSteNum ) => { // What: On Back Tour Function. Why: A real, one-way UI transition (Edit Mode-style collapses, or the highlights toggle) must be reversed by a real control so a Back finds its target step's own selector again. How: This branches on feaIdeStr first, then on tarSteNum, driving whichever real DOM control or direct action reverses that specific transition.
 
 
 				if ( feaIdeStr === 'feat_edit_item' ) { // What: Edit Item Back Branch Check. Why: Only the edit-item tour's own steps have this one-way collapse/expand state to reverse. How: This branches on feaIdeStr matching 'feat_edit_item'.
@@ -1256,7 +1256,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 
 			} }
 			onFinTouFun={ () => cloTouFun( 'finished' ) }
-			onSkiTouFun={ () => { // What: On Skip Handler. Why: Help mode's own on/off flag is local React state inside TabTodCom, unreachable from here, only reachable via the highlights tour's own 2nd step cirBoo target (.helTogBut). How: This clicks the real, currently-on help-highlight toggle when feaIdeStr is 'feat_highlights', mirroring exactly how finishing normally turns it back off.
+			onSkiTouFun={ () => { // What: On Skip Tour Function. Why: Help mode's own on/off flag is local React state inside TabTodCom, unreachable from here, only reachable via the highlights tour's own 2nd step cirBoo target (.helTogBut). How: This clicks the real, currently-on help-highlight toggle when feaIdeStr is 'feat_highlights', mirroring exactly how finishing normally turns it back off.
 
 
 				if ( feaIdeStr === 'feat_highlights' ) { // What: Highlights Feature Check. Why: Only this feature can leave help mode turned on mid-Step-2 for Skip to undo. How: This branches on feaIdeStr matching 'feat_highlights'.

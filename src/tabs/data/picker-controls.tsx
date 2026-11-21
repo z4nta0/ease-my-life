@@ -1716,7 +1716,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 								value={ draPicObj.daysOfWeek || [ 0, 1, 2, 3, 4, 5, 6 ] }
 
 								onChange={ ( dayValArr ) => patPicFun( { daysOfWeek : dayValArr } ) }
-							/>{ /* What: Weekday Chips Component. Why: This is the actual multi-select for which weekdays this picker runs on. How: This locks the anchor weekday when draPicObj.cadence is 'weekly', otherwise every day is freely toggleable. */ }
+							/>{ /* What: Weekday Chip Component. Why: This is the actual multi-select for which weekdays this picker runs on. How: This locks the anchor weekday when draPicObj.cadence is 'weekly', otherwise every day is freely toggleable. */ }
 
 
 						</div>

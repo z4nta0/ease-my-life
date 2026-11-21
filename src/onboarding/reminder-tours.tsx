@@ -576,7 +576,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 				titHeaStr={ varCopObj.titStr }
 
 				onBegTouFun={ () => setTouPhaStr( 'tour' ) }
-				onSkiTouFun={ () => { // What: On Skip Handler. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying sample reminder. How: This never sets the prefill at this point, so there is nothing to clear.
+				onSkiTouFun={ () => { // What: On Skip Tour Function. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying sample reminder. How: This never sets the prefill at this point, so there is nothing to clear.
 
 
 					actStoObj.setCarFun( varCopObj.ideStr, { status : 'cancelled' } ); // What: Checklist Status Cancel Call. Why: Skipping the intro modal still needs the launcher card to stop showing itself. How: This updates this varKeyStr's own sample task's checklist entry to 'cancelled'.
@@ -613,9 +613,9 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 			steObjArr={ steObjArr }
 			touIdeStr={ `reminder-${ varKeyStr }` }
 
-			onBacTouFun={ ( tarSteNum ) => { if ( tarSteNum === 0 ) onCloForFun(); } } // What: On Go Back Handler. Why: Back to Step 1 re-highlights the "+" button, which toggles the add form open or closed. How: Closing it here keeps Step 1's own click meaning exactly what it always means, open the form, instead of closing an already-open one.
-			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Handler. Why: This only fires from buiSubFun's own cirBoo, after the real click that saves the reminder has already reached the button's own handler. How: This deliberately does not touch the form, since closing it here would discard the save instead of letting it happen.
-			onSkiTouFun={ () => { // What: On Skip Handler. Why: Skip discards the in-progress form exactly like its own Cancel button would. How: onCloForFun is a no-op if the form is not even open, for example Skip from Step 1.
+			onBacTouFun={ ( tarSteNum ) => { if ( tarSteNum === 0 ) onCloForFun(); } } // What: On Back Tour Function. Why: Back to Step 1 re-highlights the "+" button, which toggles the add form open or closed. How: Closing it here keeps Step 1's own click meaning exactly what it always means, open the form, instead of closing an already-open one.
+			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Tour Function. Why: This only fires from buiSubFun's own cirBoo, after the real click that saves the reminder has already reached the button's own handler. How: This deliberately does not touch the form, since closing it here would discard the save instead of letting it happen.
+			onSkiTouFun={ () => { // What: On Skip Tour Function. Why: Skip discards the in-progress form exactly like its own Cancel button would. How: onCloForFun is a no-op if the form is not even open, for example Skip from Step 1.
 
 
 				onCloForFun(); // What: Close Reminder Form Call. Why: A half-created reminder should not survive behind the scenes just because the user backed out via the tour instead of the form itself. How: This closes the add-reminder form exactly like its own Cancel button would.
@@ -640,7 +640,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 
 // #region Exports
 
-export { RemTouCom }; // What: Named Exports. Why: tab-today.tsx renders this as the Reminders section's own guided tour. How: This re-exports RemTouCom; every other binding in this file is internal-only.
+export { RemTouCom }; // What: Named Export. Why: tab-today.tsx renders this as the Reminders section's own guided tour. How: This re-exports RemTouCom; every other binding in this file is internal-only.
 
 // #endregion Exports
 

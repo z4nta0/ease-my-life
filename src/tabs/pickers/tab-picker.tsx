@@ -851,7 +851,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 							iniForObj={ touBusObj.prePayObj || empIniObj || null }
 							iniGroStr={ groFilStr === 'all' ? '' : groFilStr }
 
-							onCanForFun={ () => { // What: On Cancel Form Handler. Why: Cancelling the create form must also drop any staged prefill. How: This clears the prefill, then runs canCreFun.
+							onCanForFun={ () => { // What: On Cancel Form Function. Why: Cancelling the create form must also drop any staged prefill. How: This clears the prefill, then runs canCreFun.
 
 
 								setEmpIniObj( null ); // What: Empty Prefill Clear Call. Why: A cancelled form should not reopen with the old prefill. How: This resets empIniObj to null.
@@ -859,7 +859,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 							} }
-							onCrePicFun={ ( payForObj ) => { // What: On Create Function. Why: A successful create must reconcile with whatever the guided-tour checklist expects, then land the user on the freshly-made picker. How: This tags a tour-created picker for later replay matching, then advances the selection once the created id comes back.
+							onCrePicFun={ ( payForObj ) => { // What: On Create Picker Function. Why: A successful create must reconcile with whatever the guided-tour checklist expects, then land the user on the freshly-made picker. How: This tags a tour-created picker for later replay matching, then advances the selection once the created id comes back.
 
 
 								const newPicStr = actStoObj.addPicFun({ // What: New Picker String. Why: This is the actual created (or replayed-in-place) picker's own id. How: This calls actions.addPicFun with the payload plus the tour-driven fields above. // What: Replay Update Note. Why: A replay updates the SAME picker in place (via replaceId) instead of creating a duplicate, see store.ts's own addPicFun; createdFromSample tags this run's picker either way, so a LATER replay can find it too. How: This is gated on touBusObj.prePayObj, which is only set while a picker tutorial walks this form. // What: Hidden Field Note. Why: While the mini-tour checklist is up, ANY picker created here (via a tutorial's own walkthrough OR the user just clicking this same real button themselves) stays out of the real list until the closing Generate step (mirrors reminders-section.tsx's own staAddFun). How: This is driven by touBusObj.shoCheBoo below.

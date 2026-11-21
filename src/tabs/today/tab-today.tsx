@@ -4451,7 +4451,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											totCouNum={ curGroObj.entArr.length }
 
 											onCanMerFun={ () => setMerProObj( null ) }
-											onConMerFun={ () => { // What: Confirm Merge Handler. Why: Confirming both performs the merge and dismisses its own prompt. How: This renames the group into the existing one, then clears merProObj.
+											onConMerFun={ () => { // What: On Confirm Merge Function. Why: Confirming both performs the merge and dismisses its own prompt. How: This renames the group into the existing one, then clears merProObj.
 
 
 												actStoObj.renGroFun( merProObj!.from, merProObj!.to ); // What: Merge Rename Call. Why: Confirming the merge performs the rename into the existing group. How: This calls actStoObj.renGroFun with the prompt's own from/to names. // What: Non-Null Note. Why: The merge prompt and its Confirm button only render while merProObj holds a pending merge. How: The ! tells TypeScript the merge is set here.

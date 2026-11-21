@@ -601,7 +601,7 @@ const ONB_STA_OBJ : RawStaTyp = { // What: Onboarding Stats Object. Why: The Wel
 
 // #region Exports
 
-export { ONB_STA_OBJ }; // What: Named Exports. Why: The Welcome Tour, the Stats page tour and help mode each import this data lazily by name. How: This exports ONB_STA_OBJ.
+export { ONB_STA_OBJ }; // What: Named Export. Why: The Welcome Tour, the Stats page tour and help mode each import this data lazily by name. How: This exports ONB_STA_OBJ.
 
 // #endregion Exports
 

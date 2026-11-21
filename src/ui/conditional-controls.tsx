@@ -917,7 +917,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 								labTexStr='Fill'
 								thrValNum={ thrValNum }
 
-								onFilActFun={ () => patSetFun( { triggered : true, value : thrValNum } ) } // What: Full Charge Patch. Why: A fully charged conditional is triggered in both ease directions, so filling must set both fields together. How: This sets value to thrValNum and triggered to true.
+								onFilActFun={ () => patSetFun( { triggered : true, value : thrValNum } ) } // What: On Fill Action Function. Why: A fully charged conditional is triggered in both ease directions, so filling must set both fields together. How: This sets value to thrValNum and triggered to true.
 							/> // What: Fill Row Component. Why: Ease-up's own charge can be jumped straight to full instead of waiting out the drift. How: This renders the "Fill" row, marked as an ease-up row. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog.
 
 
@@ -934,7 +934,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 								labTexStr='Refill'
 								thrValNum={ thrValNum }
 
-								onFilActFun={ () => patSetFun( { triggered : true, value : thrValNum } ) } // What: Full Charge Patch. Why: A fully charged conditional is triggered in both ease directions, so filling must set both fields together. How: This sets value to thrValNum and triggered to true.
+								onFilActFun={ () => patSetFun( { triggered : true, value : thrValNum } ) } // What: On Fill Action Function. Why: A fully charged conditional is triggered in both ease directions, so filling must set both fields together. How: This sets value to thrValNum and triggered to true.
 							/> // What: Fill Row Component. Why: Ease-down's own charge can be jumped straight back to full instead of waiting out a fresh streak. How: This renders the "Refill" row, marked as an ease-down row. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog.
 
 

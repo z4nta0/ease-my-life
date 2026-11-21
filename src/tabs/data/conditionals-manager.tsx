@@ -376,7 +376,7 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
 
 
 
-type CmcProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Conditional-Manager-Component Props Type. Why: The Conditionals section reads the saved conditionals and changes them through the store. How: This types ConManCom's props.
+type CmcProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Conditionals-Manager-Component Props Type. Why: The Conditionals section reads the saved conditionals and changes them through the store. How: This types ConManCom's props.
 
 // #region ConManCom
 
@@ -1177,7 +1177,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 											onCloEdiFun={ cloEdiFun }
 											onDelConFun={ () => delAniFun( conCurObj.id ) }
-											onDisDraFun={ isaPenBoo ? cloAniFun : ( () => { // What: On Discard Draft Handler. Why: A pending row discards with its collapse animation, while any other row just closes and removes the conditional. How: This passes cloAniFun for a pending row, otherwise an arrow that closes the editor and deletes by id.
+											onDisDraFun={ isaPenBoo ? cloAniFun : ( () => { // What: On Discard Draft Function. Why: A pending row discards with its collapse animation, while any other row just closes and removes the conditional. How: This passes cloAniFun for a pending row, otherwise an arrow that closes the editor and deletes by id.
 
 
 												const rmvIdeStr = conCurObj.id; // What: Remove Identifier String. Why: The removal below needs a stable copy of this row's id. How: This reads conCurObj.id once.

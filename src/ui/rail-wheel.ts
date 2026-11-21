@@ -163,7 +163,7 @@ function useRaiWheFun () : void {
 
 // #region Exports
 
-export { useRaiWheFun }; // What: Named Exports. Why: The app root turns rail wheel scrolling on through this hook. How: This exports useRaiWheFun by name.
+export { useRaiWheFun }; // What: Named Export. Why: The app root turns rail wheel scrolling on through this hook. How: This exports useRaiWheFun by name.
 
 // #endregion Exports
 

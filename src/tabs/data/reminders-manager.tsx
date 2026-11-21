@@ -1430,7 +1430,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 															<EdiFooCom
 																isaNewBoo={ newAddRef.current === curTasObj.id }
 
-																onCanTasFun={ () => { // What: Cancel Handler. Why: Cancelling drops the row's draft, and a brand-new reminder goes away entirely. How: This marks the draft handled and closes the row, then drops a new reminder once the row's collapse animation finishes.
+																onCanTasFun={ () => { // What: On Cancel Task Function. Why: Cancelling drops the row's draft, and a brand-new reminder goes away entirely. How: This marks the draft handled and closes the row, then drops a new reminder once the row's collapse animation finishes.
 
 
 																	hanDraRef.current = draTasObj; // What: Handled Draft Mark. Why: The row's unmount must not keep a draft its own Cancel dropped. How: This records the dropped draft.
@@ -1451,7 +1451,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 
 																} }
-																onDelTasFun={ () => { // What: Delete Handler. Why: Deleting this row needs to drop its draft, close the row, and stage the same collapse-then-remove sequence the card-level Delete uses. How: This marks the draft handled, closes the row, then removes the reminder right away under reduced motion or after the collapse otherwise.
+																onDelTasFun={ () => { // What: On Delete Task Function. Why: Deleting this row needs to drop its draft, close the row, and stage the same collapse-then-remove sequence the card-level Delete uses. How: This marks the draft handled, closes the row, then removes the reminder right away under reduced motion or after the collapse otherwise.
 
 
 																	hanDraRef.current = draTasObj; // What: Handled Draft Mark. Why: A deleted reminder's draft must not be kept by the row's unmount. How: This records the dropped draft.

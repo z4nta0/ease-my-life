@@ -143,7 +143,7 @@ const insSedFun = async ( curPagObj : Page, sedValNum : number ) : Promise< void
 
 // #region Exports
 
-export { insSedFun }; // What: Named Exports. Why: The simulation seeds its pages through this. How: This exports insSedFun by name.
+export { insSedFun }; // What: Named Export. Why: The simulation seeds its pages through this. How: This exports insSedFun by name.
 
 // #endregion Exports
 

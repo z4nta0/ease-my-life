@@ -1141,7 +1141,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 							desIdeStr={ schNotStr }
 
 							onChange={ ( weeSelArr ) => onPatTasFun( { daysOfWeek : weeSelArr } ) }
-						/>{ /* What: Weekday Chips Component. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This commits the newly-selected day array straight through onPatTasFun. */ }
+						/>{ /* What: Weekday Chip Component. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This commits the newly-selected day array straight through onPatTasFun. */ }
 
 
 

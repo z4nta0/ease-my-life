@@ -173,7 +173,7 @@ const addSimFun = ( staAppObj : StaAppTyp ) : StaAppTyp => ( { // What: Add Sim 
 
 // #region Exports
 
-export { addSimFun }; // What: Named Exports. Why: The simulation extends the backup through this. How: This exports addSimFun by name.
+export { addSimFun }; // What: Named Export. Why: The simulation extends the backup through this. How: This exports addSimFun by name.
 
 // #endregion Exports
 

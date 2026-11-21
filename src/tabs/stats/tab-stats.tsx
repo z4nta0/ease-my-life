@@ -4931,7 +4931,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 // #region Exports
 
-export { TabStaCom }; // What: Named Exports. Why: app.tsx renders this as the Stats tab itself. How: This re-exports TabStaCom; every other binding in this file is internal-only.
+export { TabStaCom }; // What: Named Export. Why: app.tsx renders this as the Stats tab itself. How: This re-exports TabStaCom; every other binding in this file is internal-only.
 
 // #endregion Exports
 

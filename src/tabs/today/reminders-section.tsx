@@ -57,7 +57,7 @@ import type { TasRcdTyp } from '../../core/data-model.ts'; // What: Task Record 
 
 // #region Components
 
-type IdcProTyp = { draTasObj : TasRcdTyp, onCloEdiFun : () => void, onDelTasFun : () => void, onPatTasFun : ( patValObj : Partial< TasRcdTyp > ) => void, onSavTasFun : () => void, staAppObj : StaAppTyp }; // What: Inline-Editor-Component Props Type. Why: The inline editor edits a reminder's draft and runs its parent's Cancel, Delete, and Save. How: This types InlEdiCom's props, named Idc since Iec already belongs to IcoSetCom.
+type IdcProTyp = { draTasObj : TasRcdTyp, onCloEdiFun : () => void, onDelTasFun : () => void, onPatTasFun : ( patValObj : Partial< TasRcdTyp > ) => void, onSavTasFun : () => void, staAppObj : StaAppTyp }; // What: Inline-Edit-Component Props Type. Why: The inline editor edits a reminder's draft and runs its parent's Cancel, Delete, and Save. How: This types InlEdiCom's props, named Idc since Iec already belongs to IcoSetCom.
 
 // #region InlEdiCom
 
@@ -1462,7 +1462,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 							jusCheStr={ jusCheStr }
 							tasRcdObj={ curTasObj }
 
-							onAniEndFun={ ( aniEveObj ) => { // What: Animation End Handler. Why: This card's own collapse-in/out animations must clear their own staged flags exactly once, and only for the card's own outer element, not a bubbled child animation. How: This guards on the real target first, then clears insIdeStr and/or runs the deferred remove/skip action.
+							onAniEndFun={ ( aniEveObj ) => { // What: On Animate End Function. Why: This card's own collapse-in/out animations must clear their own staged flags exactly once, and only for the card's own outer element, not a bubbled child animation. How: This guards on the real target first, then clears insIdeStr and/or runs the deferred remove/skip action.
 
 
 								if ( aniEveObj.target !== aniEveObj.currentTarget ) return; // What: Bubbled Animation Guard. Why: A child element's own animation ending must not be mistaken for this card's own outer animation ending. How: This bails out unless the event's own target is this exact element.
@@ -1485,7 +1485,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 
 							} }
-							onEdiTasFun={ () => { // What: Edit Toggle Handler. Why: Tapping Edit toggles this card's own inline editor and closes its skip confirm. How: This flips the shared editor slot for this card, then clears skiIdeStr.
+							onEdiTasFun={ () => { // What: On Edit Task Function. Why: Tapping Edit toggles this card's own inline editor and closes its skip confirm. How: This flips the shared editor slot for this card, then clears skiIdeStr.
 
 
 								setActEdiStr( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : `reminder:${ curTasObj.id }` ); // What: Editor Slot Toggle Call. Why: The same tap opens or closes this card's editor. How: This clears the slot when it already holds this card, otherwise claims it.
@@ -1495,7 +1495,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 							} }
 							onRenTasFun={ ( renNamStr ) => patDraFun( { name : renNamStr } ) }
-							onSkiTasFun={ () => { // What: Skip Handler. Why: The row's own Skip button needs to toggle its own confirm prompt open/closed and close any unrelated open editor at the same time. How: This flips skiIdeStr and clears a matching actEdiStr sentinel.
+							onSkiTasFun={ () => { // What: On Skip Task Function. Why: The row's own Skip button needs to toggle its own confirm prompt open/closed and close any unrelated open editor at the same time. How: This flips skiIdeStr and clears a matching actEdiStr sentinel.
 
 
 								setSkiIdeStr( ( curSkiStr ) => curSkiStr === curTasObj.id ? null : curTasObj.id );                                            // What: Skip Confirm Toggle Call. Why: This is the actual open/close toggle for this card's own skip confirm prompt. How: This flips skiIdeStr between null and curTasObj's own id.
@@ -1515,8 +1515,8 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 								draTasObj={ opeDraObj && opeDraObj.id === curTasObj.id ? opeDraObj : curTasObj } // What: Draft Task Object. Why: The open editor shows its draft, while one still collapsing after a close shows the reminder itself. How: This picks the draft only when it belongs to this card's own reminder.
 								staAppObj={ staAppObj }
 
-								onCloEdiFun={ () => setActEdiStr( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : curEdiStr ) } // What: Editor Close Handler. Why: Another editor may already hold the shared slot, which must not be cleared. How: This clears the slot only while it still holds this card's own sentinel.
-								onDelTasFun={ () => { // What: Delete Handler. Why: Deleting this reminder needs to close its own inline editor and stage the same collapse-then-remove sequence the card-level Delete uses. How: This closes actEdiStr, then either removes immediately (reduced motion) or defers it behind the collapse-out animation.
+								onCloEdiFun={ () => setActEdiStr( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : curEdiStr ) } // What: On Close Edit Function. Why: Another editor may already hold the shared slot, which must not be cleared. How: This clears the slot only while it still holds this card's own sentinel.
+								onDelTasFun={ () => { // What: On Delete Task Function. Why: Deleting this reminder needs to close its own inline editor and stage the same collapse-then-remove sequence the card-level Delete uses. How: This closes actEdiStr, then either removes immediately (reduced motion) or defers it behind the collapse-out animation.
 
 
 									setActEdiStr( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : curEdiStr ); // What: Reminder Editor Close Call. Why: Deleting this reminder must also close its own now-stale inline editor. How: This clears actEdiStr only while it still equals this exact card's own sentinel.
@@ -1533,7 +1533,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 								} }
 								onPatTasFun={ patDraFun }
-								onSavTasFun={ () => { // What: Save Handler. Why: Save applies the draft, name included, to the real reminder before the editor closes. How: This commits the draft, then releases the editor slot when it still belongs to this card.
+								onSavTasFun={ () => { // What: On Save Task Function. Why: Save applies the draft, name included, to the real reminder before the editor closes. How: This commits the draft, then releases the editor slot when it still belongs to this card.
 
 
 									cmtDraFun(); // What: Commit Draft Call. Why: The draft's edits only reach the reminder on Save. How: This calls cmtDraFun.
