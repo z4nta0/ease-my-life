@@ -23,49 +23,10 @@ import type { PicRcdTyp } from './data-model.ts'; // What: Picker Record Type. W
  * cycle animation flashes through before settling on `picObj`; it is
  * just the eligible set for that mode.
  *
- * The three name normalizers (norGroFun, norPicFun, norConFun) were
- * swept to their own 9-char names first, with every one of those same
- * 5 consumer files updated in the same pass, since that blast radius
- * was small and non-persisted, the same way appearance.ts's own
- * exported bindings were deferred on its own first single-file
- * formatting pass.
- *
- * The exported PIC_NAM_OBJ namespace object's own property names
- * (originally pick, readiness, easeEligible, modeEligible, EASE_TOL,
- * avgEase, DEFAULT_EASE) were swept later, to match their
- * already-renamed internal implementations exactly (picIteFun,
- * reaValFun, easEliFun, modEliFun, EAS_TOL_NUM, aveEasFun,
- * DEF_EAS_OBJ), the same standard-practice sweep CAD_NAM_OBJ/
- * CON_NAM_OBJ/NOT_NAM_OBJ/ONB_CHE_OBJ already did elsewhere in this
- * codebase; every one of the same 5 consumer files was updated in the
- * same pass. EAS_TOL_NUM was later dropped from the namespace, since
- * only this file reads it.
- *
- * This return shape's own OUTER property names (picObj/updArr/cycArr/
- * depBoo/patObj above) were swept the same way too, across every
- * file that actually reads a PIC_NAM_OBJ.picIteFun() result directly
- * (store.ts, tab-today.tsx, tab-picker.tsx; tab-data.tsx and
- * ui/conditional-controls.tsx only ever touch PIC_NAM_OBJ's OTHER properties,
- * never this return shape). This was safe to do without touching
- * persisted data: every consumer that stages a pick result into
- * `entry.pending` (itself real, persisted state) reconstructs that
- * object BY HAND with its own fixed keys (updates/pickerPatch/
- * depletedEnd/pickedId/bumpPick), reading values off the pick result
- * via plain property access rather than deriving keys from it, so the
- * persisted `entry.pending` shape never moved.
- *
- * The INNER shape of each `updArr` entry ({id, value}, or {id, weight}/
- * {id, chargeStep, value} elsewhere) stays UNRENAMED, deliberately,
- * unlike the outer shape above: this array is assigned wholesale,
- * unmapped, straight into `entry.pending.updates` by every one of
- * those same consumers (e.g. `updates :
- * picResObj.updArr`, no `.map()` in sight), so its own property names
- * flow verbatim into IndexedDB and can sit there, unresolved, for as
- * long as a picked-but-not-yet-marked-done entry does. Renaming id/
- * value/weight/chargeStep would silently break reading any
- * already-persisted pending entry from before the change, with no
- * migration path; this is the one part of the contract that still
- * needs its own dedicated, migration-safe design before it can move.
+ * The entries of `updArr` ({id, value}, or {id, weight} and {id, chargeStep,
+ * value} elsewhere) keep the saved field names, since consumers store the
+ * array unmapped as an entry's pending updates and renaming those fields would
+ * break any already-saved pending entry.
  *
  * Sections:
  *  - Types
@@ -101,15 +62,15 @@ type PicResTyp = { // What: Pick Result Type. Why: Every mode's branch hands bac
 
 // #region Constants
 
-const DEF_EAS_OBJ = { easeMax : 14, easeMin : 7 }; // What: Default Ease Object. Why: A brand new picker with no items yet (or an ease-mode switch before any item has its own band) needs some flat drift band to fall back to. How: This is read directly by aveEasFun below whenever every sibling item (or the pool itself) has nothing better to offer.
+const DEF_EAS_OBJ = { easeMax : 14, easeMin : 7 }; // What: Default Ease Object. Why: A brand new picker with no items yet (or an ease-mode switch before any item has its own band) needs some flat drift band to fall back to. How: This is read directly by aveEasFun below, as the whole band when a picker has no items and for any single field an item lacks.
 
 
 
-const EAS_TOL_NUM = 0.5; // What: Ease Tolerance Number. Why: A threshold/N charge step (100/3, say) can land a hair under thrValNum on the very cycle it was planned to become eligible, and this tolerance must be the ONE place that's decided, not re-derived per caller. How: This is read directly by easEliFun below, the single source every eligibility check in this file and its callers must use.
+const EAS_TOL_NUM = 0.5; // What: Ease Tolerance Number. Why: A threshold/N charge step (100/3, say) can land a hair under thrValNum on the very cycle it was planned to become eligible, and this tolerance must be the ONE place that's decided, not re-derived per caller. How: This is read directly by easEliFun below, the one place the eligibility tolerance is decided.
 
 
 
-const THR_VAL_NUM = 100; // What: Threshold Value Number. Why: Every ease drift/day conversion and full-charge check across the app shares this one fixed ceiling value. How: This is divided by an item's own easeMin/easeMax to get a day count, and compared against an item's own charge value.
+const THR_VAL_NUM = 100; // What: Threshold Value Number. Why: The ease drift/day conversions and full-charge checks share this one fixed ceiling value. How: This is divided by an item's own easeMin/easeMax to get a day count, and compared against an item's own charge value.
 
 // #endregion Constants
 
@@ -141,7 +102,7 @@ const THR_VAL_NUM = 100; // What: Threshold Value Number. Why: Every ease drift/
  *                    to tidy, or undefined when none was given.
  *
  * @returns The tidied, Title Cased name, or an empty string when
- * rawNamStr had no alphanumeric content at all to tidy.
+ * rawNamStr had nothing but separator characters.
  *
  * @example
  * ```ts
@@ -156,7 +117,7 @@ function titCasFun ( rawNamStr : string | undefined ) : string {
 	const cleNamStr = String( rawNamStr || '' ).replace( /[^a-z0-9'’&]+/gi, ' ' ).trim().replace( /\s+/g, ' ' ); // What: Cleaned Name String. Why: A messy user-typed name needs every separator run collapsed to plain single spacing before it can be split into words. How: This coerces rawNamStr to a string, turns every run of characters other than letters, digits, apostrophes, and ampersands into one space, trims the ends, then collapses any remaining space run to one.
 
 
-	if ( !cleNamStr ) return ''; // What: No Cleaned Name Guard. Why: An input with no alphanumeric content at all has nothing left to Title Case. How: This returns an empty string early when cleNamStr came out empty.
+	if ( !cleNamStr ) return ''; // What: No Cleaned Name Guard. Why: An input made only of separator characters has nothing left to Title Case. How: This returns an empty string early when cleNamStr came out empty.
 
 
 
@@ -187,7 +148,7 @@ function titCasFun ( rawNamStr : string | undefined ) : string {
  *                    conditional name, or undefined when none was given.
  *
  * @returns The tidied, Title Cased conditional name, or an empty string
- * when rawNamStr had no alphanumeric content at all.
+ * when rawNamStr had nothing but separator characters.
  *
  * @example
  * ```ts
@@ -211,8 +172,8 @@ function norConFun ( rawNamStr : string | undefined ) : string { return titCasFu
  * Title Cases a user-typed group name via {@link titCasFun}, then, if it
  * case-insensitively matches a group that already exists, returns that
  * existing entry's own exact spelling instead of the freshly Title Cased
- * one, so normalizing a name never creates a near-duplicate group that
- * only differs by casing.
+ * one, so a name matching an existing group never creates a near-duplicate
+ * that only differs by casing.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -225,7 +186,7 @@ function norConFun ( rawNamStr : string | undefined ) : string { return titCasFu
  *
  * @returns The existing group's own exact spelling on a case-insensitive
  * match, the freshly Title Cased name otherwise, or an empty string when
- * rawNamStr had no alphanumeric content at all.
+ * rawNamStr had nothing but separator characters.
  *
  * @example
  * ```ts
@@ -240,7 +201,7 @@ function norGroFun ( rawNamStr : string, exiGroArr? : string[] ) : string {
 	const titNamStr = titCasFun( rawNamStr ); // What: Titled Name String. Why: Every further step below needs the already Title Cased version of rawNamStr to compare and possibly return. How: This calls titCasFun once and reuses the result throughout.
 
 
-	if ( !titNamStr ) return ''; // What: No Titled Name Guard. Why: An input with no alphanumeric content at all has no existing group worth matching against. How: This returns an empty string early when titNamStr came out empty.
+	if ( !titNamStr ) return ''; // What: No Titled Name Guard. Why: An input made only of separator characters has no existing group worth matching against. How: This returns an empty string early when titNamStr came out empty.
 
 
 
@@ -284,7 +245,7 @@ function norGroFun ( rawNamStr : string, exiGroArr? : string[] ) : string {
  *                    picker name, or undefined when none was given.
  *
  * @returns The tidied, Title Cased picker name, or an empty string when
- * rawNamStr had no alphanumeric content at all.
+ * rawNamStr had nothing but separator characters.
  *
  * @example
  * ```ts
@@ -314,9 +275,8 @@ function norPicFun ( rawNamStr : string | undefined ) : string { return titCasFu
  * the same picker (each falling back to DEF_EAS_OBJ itself, so a single
  * bare sibling can't skew this into NaN), rather than keeping a separate
  * per-picker default in sync by hand. Used both to stamp a freshly added
- * item's own easeMin/easeMax immediately, and, for any item that still
- * doesn't have its own values, as the same safety-net fallback picIteFun
- * itself uses.
+ * item's own easeMin/easeMax immediately. It is also the fallback band
+ * picIteFun rolls from for an item with no band of its own.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -444,9 +404,9 @@ const driDayFun = ( driValNum : number | undefined ) : number => Math.max( 1, Ma
  * @summary
  * Whether an ease-mode item has charged up to its picker's threshold,
  * within EAS_TOL_NUM's tolerance, so a fixed threshold/N step that lands
- * a hair under the threshold still counts. This is the single
- * eligibility check every ease-up caller must use, so the generator and
- * the re-roll count can never disagree.
+ * a hair under the threshold still counts. This is the one eligibility
+ * check ease-up items go through, so the generator and the re-roll count
+ * share the same threshold.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -464,7 +424,7 @@ const driDayFun = ( driValNum : number | undefined ) : number => Math.max( 1, Ma
  *
 */
 
-const easEliFun = ( iteRcdObj : IteRcdTyp, thrValNum : number ) : boolean => ( iteRcdObj.value ?? 0 ) >= ( ( thrValNum ?? THR_VAL_NUM ) - EAS_TOL_NUM ); // What: Ease Eligible Function. Why: Comparing an item's own value against its threshold directly (with no tolerance) can make an item at 99.7 invisible to a re-roll cycle count while still being eligible to the generator itself, a real inconsistency this file used to have. How: This treats iteRcdObj as eligible once its own value reaches thrValNum minus EAS_TOL_NUM, both defaulted the same way picIteFun defaults them.
+const easEliFun = ( iteRcdObj : IteRcdTyp, thrValNum : number ) : boolean => ( iteRcdObj.value ?? 0 ) >= ( ( thrValNum ?? THR_VAL_NUM ) - EAS_TOL_NUM ); // What: Ease Eligible Function. Why: Comparing an item's own value against its threshold directly (with no tolerance) can make an item at 99.7 invisible to a re-roll cycle count while the generator still treats it as eligible. How: This treats iteRcdObj as eligible once its own value reaches thrValNum minus EAS_TOL_NUM, with thrValNum defaulting to THR_VAL_NUM when missing.
 
 // #endregion easEliFun
 
@@ -557,17 +517,16 @@ const modEliFun = ( iteRcdObj : IteRcdTyp, picRcdObj : PicRcdTyp | null | undefi
  *
  * @summary
  * Computes a 0-1 readiness number for one item under its own picker's
- * mode, used by the Pickers view's "current state" rows as a visual
- * progress indicator. Modes with no meaningful readiness concept (random,
- * weighted) return null.
+ * mode, meant as a visual progress indicator. Modes with no meaningful
+ * readiness concept (random, weighted) return null.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param iteRcdObj - Item Record Object: The item to compute readiness for.
  * @param modKeyStr - Mode Key String: The item's own picker's mode.
  * @param thrValNum - Threshold Value Number: The item's own picker's
- *                    threshold, defaulting to THR_VAL_NUM to match
- *                    every other threshold default in this file.
+ *                    threshold, defaulting to THR_VAL_NUM to match the
+ *                    other threshold defaults in this file.
  *
  * @returns A 0-1 readiness number, or null when modKeyStr has no
  * meaningful readiness concept.
@@ -815,8 +774,8 @@ type PicOptTyp = { // What: Pick Option Type. Why: A single pick can be steered 
  * on picRcdObj's own mode (random / weighted / dynamic / ease-up /
  * ease-down). Every branch returns the same shape: { cycArr, picObj,
  * updArr }, with ease-down additionally returning depBoo and patObj.
- * See this file's own header comment for the full return-shape contract
- * and why the inner shape of each updArr entry stays unrenamed.
+ * See PicResTyp for the full return shape and PicUpdTyp for why each updArr
+ * entry keeps the saved field names.
  *
  * Duplicate avoidance only narrows which item can be chosen: an item
  * skipped for its name still gets its own drift, charge, or fairness
@@ -842,8 +801,7 @@ type PicOptTyp = { // What: Pick Option Type. Why: A single pick can be steered 
  *                    abandons the current active item to start a fresh
  *                    streak).
  *
- * @returns This pick's own result. See this file's own header comment
- * for the full shape.
+ * @returns This pick's own result, typed by PicResTyp.
  *
  * @example
  * ```ts
@@ -862,7 +820,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 	const excIdeSet = optConObj && optConObj.excIdeSet; // What: Exclude Identifier Set. Why: A manual "Pick One" spin must not land on an item already live on Today. How: This reads optConObj's own excIdeSet Set, if any was given.
 
 
-	if ( excIdeSet && excIdeSet.size && !( optConObj && optConObj.forIdeStr ) ) { // What: Exclude IDs Check. Why: A direct forIdeStr send bypasses this drop entirely, since its own button is already disabled in the UI whenever the target item is on Today. How: This gates the filter below on a real, non-empty excIdeSet and the absence of a forced pick.
+	if ( excIdeSet && excIdeSet.size && !( optConObj && optConObj.forIdeStr ) ) { // What: Exclude IDs Check. Why: A direct forIdeStr send bypasses this drop, so a forced item is never filtered out by id. How: This gates the filter below on a real, non-empty excIdeSet and the absence of a forced pick.
 
 
 		itePooArr = itePooArr.filter( ( curIteObj ) => !excIdeSet.has( curIteObj.id ) ); // What: Item Pool Exclude-IDs Filter. Why: Every id already live on Today must actually be dropped from the pool a normal draw can land on. How: This keeps only items whose own id is absent from excIdeSet.
@@ -877,13 +835,13 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 	// #region Duplicate Avoidance
 
 	const excNamSet = optConObj && optConObj.excNamSet; // What: Exclude Name Set. Why: A picker opted into avoidDuplicates must not resurface an item another picker already placed on Today under the same name. How: This reads optConObj's own excNamSet Set, if any was given.
-	const updPooArr = itePooArr;                        // What: Update Pool Array. Why: Duplicate avoidance only limits which item can be chosen, so an item skipped for its name must still drift, charge, or gain fairness weight like any other unchosen item. How: This keeps the pool as it stood before the dedup swap below, for every mode's own updates to walk.
+	const updPooArr = itePooArr;                        // What: Update Pool Array. Why: Duplicate avoidance only limits which item can be chosen, so an item skipped for its name must still drift, charge, or gain fairness weight like any other unchosen item. How: This keeps the pool as it stood before the dedup swap below, for the dynamic, ease-up, and ease-down updates to walk.
 
 	const avoDupBoo = !!picRcdObj.avoidDuplicates;           // What: Avoid Duplicates Boolean. Why: This behavior is opt-in per picker, so the dedup block below must never run for a picker that hasn't turned it on. How: This coerces picRcdObj's own avoidDuplicates flag to a real boolean.
 	const hasSizBoo = !!( excNamSet && excNamSet.size );     // What: Has Size Boolean. Why: A picker opted into avoidDuplicates still has nothing to dedup against until another picker has actually placed something on Today under some name. How: This is true only when excNamSet exists and holds at least one entry.
-	const notForBoo = !( optConObj && optConObj.forIdeStr ); // What: Not Force Boolean. Why: A direct forIdeStr send bypasses this drop entirely, since its own button is already disabled in the UI whenever the target item is on Today. How: This is true whenever optConObj is missing, or present without its own forIdeStr set.
+	const notForBoo = !( optConObj && optConObj.forIdeStr ); // What: Not Force Boolean. Why: A direct forIdeStr send bypasses this drop, so a forced item is never filtered out by name. How: This is true whenever optConObj is missing, or present without its own forIdeStr set.
 
-	const shoDedBoo = avoDupBoo && hasSizBoo && notForBoo; // What: Should Dedup Boolean. Why: The dedup block below must never leave the picker with zero eligible items, so it only runs once every one of these conditions holds. How: This combines avoDupBoo, hasSizBoo, and notForBoo into the single gate the if-check below reads.
+	const shoDedBoo = avoDupBoo && hasSizBoo && notForBoo; // What: Should Dedup Boolean. Why: The dedup block below applies only to a picker that opted in, has names to dedup against, and wasn't sent a forced item. How: This combines avoDupBoo, hasSizBoo, and notForBoo into the single gate the if-check below reads.
 
 
 	if ( shoDedBoo ) { // What: Avoid Duplicates Check. Why: This gates the dedup block below on the picker's own flag, a real non-empty excNamSet, and the absence of a forced pick. How: This reads shoDedBoo, computed just above.
@@ -901,7 +859,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 
 
-	if ( !itePooArr.length ) return { cycArr : [], picObj : null, updArr : [] }; // What: Empty Pool Guard. Why: A picker with nothing eligible at all (after vacation/exclude/dedup filtering) has no pick to make. How: This returns the same empty result shape every mode falls back to.
+	if ( !itePooArr.length ) return { cycArr : [], picObj : null, updArr : [] }; // What: Empty Pool Guard. Why: A picker with nothing eligible at all (after vacation/exclude/dedup filtering) has no pick to make. How: This returns an empty cycle array, a null pick, and no updates.
 
 
 
@@ -972,7 +930,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 		}
 
-		case 'ease-up': { // What: Ease Up Mode Branch. Why: This mode picks whichever eligible item is most overdue, on a fixed per-item charge plan rather than fresh random drift each run. How: See the design-rationale comment attached to thrValNum below for the full charge-plan model.
+		case 'ease-up': { // What: Ease Up Mode Branch. Why: This mode picks whichever eligible item is most overdue, on a fixed per-item charge plan rather than fresh random drift each run. How: See the Ease Up Charge Plan design-rationale comment just below for the full charge-plan model.
 
 
 			// #region Ease Up Charge Plan
@@ -1142,7 +1100,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 		}
 
-		case 'ease-down': { // What: Ease Down Mode Branch. Why: This mode maintains a perpetual fair-rotation streak, one active item depleting over several cycles before a new one starts. How: See the design-rationale comment attached to thrValNum below for the full two-counter model.
+		case 'ease-down': { // What: Ease Down Mode Branch. Why: This mode maintains a perpetual fair-rotation streak, one active item depleting over several cycles before a new one starts. How: See the Ease Down Fair Rotation design-rationale comment just below for the full two-counter model.
 
 
 			// #region Ease Down Fair Rotation
@@ -1358,25 +1316,25 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 // #region Exports
 
-const PIC_NAM_OBJ = { // What: Pickers Namespace Object. Why: store.ts, tab-today.tsx, and tab-picker.tsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own internal implementations another file uses onto matching external property names, the same sweep CAD_NAM_OBJ/CON_NAM_OBJ/NOT_NAM_OBJ/ONB_CHE_OBJ already did (see this file's own header comment).
+const PIC_NAM_OBJ = { // What: Pickers Namespace Object. Why: This is the one namespace object through which the rest of the app reaches this file's picking helpers. How: This maps each of this file's own internal implementations used elsewhere onto a matching external property name.
 
 
-	aveEasFun   : aveEasFun,   // What: Average Ease Function. Why: store.ts, tab-today.tsx, and tab-picker.tsx all call this for a picker's own average ease-band value. How: This re-exports aveEasFun under its own matching name.
-	dayDriFun   : dayDriFun,   // What: Day Drift Function. Why: The item and conditional editors convert a typed day count back into a drift value. How: This re-exports dayDriFun under its own matching name.
-	DEF_EAS_OBJ : DEF_EAS_OBJ, // What: Default Ease Object. Why: store.ts reads this for a fresh item's own starting ease-band shape, and conditionals.ts for a conditional with no band. How: This re-exports DEF_EAS_OBJ under its own matching name.
-	driDayFun   : driDayFun,   // What: Drift Day Function. Why: The editors and the Pickers, Data, and Stats tabs show an ease band as soonest and latest days. How: This re-exports driDayFun under its own matching name.
-	easEliFun   : easEliFun,   // What: Ease Eligible Function. Why: tab-today.tsx checks this to decide whether an ease-mode item is currently eligible to be picked. How: This re-exports easEliFun under its own matching name.
-	modEliFun   : modEliFun,   // What: Mode Eligible Function. Why: tab-picker.tsx checks this for a pool item's own mode-specific eligibility. How: This re-exports modEliFun under its own matching name.
-	picIteFun   : picIteFun,   // What: Pick Item Function. Why: tab-today.tsx and tab-picker.tsx both call this to actually pick a new item from a picker's own pool. How: This re-exports picIteFun under its own matching name.
-	reaValFun   : reaValFun,   // What: Readiness Value Function. Why: tab-picker.tsx reads this for a pool item's own readiness value. How: This re-exports reaValFun under its own matching name.
-	THR_VAL_NUM : THR_VAL_NUM  // What: Threshold Value Number. Why: The editors, the tabs, and the conditionals share the full-charge ceiling. How: This re-exports THR_VAL_NUM under its own matching name.
+	aveEasFun   : aveEasFun,   // What: Average Ease Function. Why: This gives a picker's own average ease-band value. How: This re-exports aveEasFun under its own matching name.
+	dayDriFun   : dayDriFun,   // What: Day Drift Function. Why: This converts a typed day count back into a drift value. How: This re-exports dayDriFun under its own matching name.
+	DEF_EAS_OBJ : DEF_EAS_OBJ, // What: Default Ease Object. Why: This is the default ease-band shape for a fresh item or a conditional with no band. How: This re-exports DEF_EAS_OBJ under its own matching name.
+	driDayFun   : driDayFun,   // What: Drift Day Function. Why: This shows an ease band as soonest and latest days. How: This re-exports driDayFun under its own matching name.
+	easEliFun   : easEliFun,   // What: Ease Eligible Function. Why: This tells whether an ease-mode item is currently eligible to be picked. How: This re-exports easEliFun under its own matching name.
+	modEliFun   : modEliFun,   // What: Mode Eligible Function. Why: This gives a pool item's own mode-specific eligibility. How: This re-exports modEliFun under its own matching name.
+	picIteFun   : picIteFun,   // What: Pick Item Function. Why: This picks a new item from a picker's own pool. How: This re-exports picIteFun under its own matching name.
+	reaValFun   : reaValFun,   // What: Readiness Value Function. Why: This gives a pool item's own readiness value. How: This re-exports reaValFun under its own matching name.
+	THR_VAL_NUM : THR_VAL_NUM  // What: Threshold Value Number. Why: The full-charge ceiling is shared outside this file. How: This re-exports THR_VAL_NUM under its own matching name.
 
 
 };
 
 
 
-export { norConFun, norGroFun, norPicFun, PIC_NAM_OBJ, type PicResTyp, type PicUpdTyp }; // What: Named Exports. Why: store.ts and the tab files import the three name normalizers individually and reach everything else through the PIC_NAM_OBJ namespace. How: This exports all four bindings, plus the pick result and update types, by name in one statement at the very end of the file.
+export { norConFun, norGroFun, norPicFun, PIC_NAM_OBJ, type PicResTyp, type PicUpdTyp }; // What: Named Exports. Why: The three name normalizers are exported individually, and everything else is reached through the PIC_NAM_OBJ namespace. How: This exports all four bindings, plus the pick result and update types, by name in one statement at the very end of the file.
 
 // #endregion Exports
 

@@ -236,9 +236,9 @@ function nthDayFun ( yeaValNum : number, monOneNum : number, dayIndNum : number,
  * @summary
  * Applies the federal "observed" shift, for fixed-date holidays only: a
  * holiday landing on Saturday is observed the Friday before it, and one
- * landing on Sunday is observed the Monday after it. Weekday-based
- * holidays (an nth/last rule) never land on a weekend at all, so they
- * never need this.
+ * landing on Sunday is observed the Monday after it. The table's
+ * weekday-based holidays (an nth/last rule) fall on a Monday or Thursday,
+ * so they never need this.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -340,9 +340,9 @@ function datDefFun ( holDefObj : HolDefTyp, yeaValNum : number ) : Date | null {
  *
  * @summary
  * Resolves every defined holiday for a country in a given year into a
- * concrete calendar record. date/iso on each returned record are the
- * OBSERVED day (what people actually get off); actual is the true
- * calendar day, and observed flags whether the two differ.
+ * concrete calendar record. datObj and isoStr on each returned record are the
+ * OBSERVED day (what people actually get off); actObj is the true
+ * calendar day, and obsBoo flags whether the two differ.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -373,7 +373,7 @@ function cmpYeaFun ( yeaValNum : number, couCodStr : string = 'US' ) : HolRcdTyp
 
 
 		const actDatObj = datDefFun( holDefObj, yeaValNum )!;                    // What: Actual Date Object. Why: Every record needs its true, un-shifted calendar date before any observed-day adjustment. How: This resolves holDefObj's own fixed/nth/last rule for yeaValNum via datDefFun. // What: Non-Null Note. Why: datDefFun returns null for a definition with no date rule. How: Every built-in definition carries exactly one of the three rules, so it always resolves.
-		const obsDatObj = holDefObj.fixArr ? obsDatFun( actDatObj ) : actDatObj; // What: Observed Date Object. Why: Only a fixed-date holiday can ever fall on a weekend and need the federal observed-day shift; a weekday-based rule never lands there. How: This applies obsDatFun only when holDefObj carries a fixArr rule, otherwise reuses actDatObj unshifted.
+		const obsDatObj = holDefObj.fixArr ? obsDatFun( actDatObj ) : actDatObj; // What: Observed Date Object. Why: Only a fixed-date holiday can fall on a weekend in this table, since its weekday rules are on a Monday or Thursday, so only it needs the federal observed-day shift. How: This applies obsDatFun only when holDefObj carries a fixArr rule, otherwise reuses actDatObj unshifted.
 
 
 
@@ -422,7 +422,7 @@ function cmpYeaFun ( yeaValNum : number, couCodStr : string = 'US' ) : HolRcdTyp
  *
 */
 
-function defStaFun () : HolStaTyp { return { country : 'US', custom : [], disabled : [] }; } // What: Default State Body. Why: Every caller needs a safe, well-shaped holidays-state object to fall back to when state.holidays is missing entirely. How: This returns the canonical empty shape with no holidays disabled and no custom days off.
+function defStaFun () : HolStaTyp { return { country : 'US', custom : [], disabled : [] }; } // What: Default State Body. Why: A caller needs a safe, well-shaped holidays-state object, whether for a fresh install or as a fallback when state.holidays is missing entirely. How: This returns the canonical empty shape with no holidays disabled and no custom days off.
 
 // #endregion defStaFun
 
@@ -452,7 +452,7 @@ function defStaFun () : HolStaTyp { return { country : 'US', custom : [], disabl
  *
 */
 
-function resStaFun ( holStaObj : HolStaTyp | null | undefined ) : HolStaTyp { return holStaObj || defStaFun(); } // What: Resolve State Body. Why: Every reader of a holidays state needs a real shape even when the state carries none. How: This returns holStaObj, falling back to defStaFun's canonical empty shape when it's falsy.
+function resStaFun ( holStaObj : HolStaTyp | null | undefined ) : HolStaTyp { return holStaObj || defStaFun(); } // What: Resolve State Body. Why: A reader of a holidays state needs a real shape even when the state carries none. How: This returns holStaObj, falling back to defStaFun's canonical empty shape when it's falsy.
 
 // #endregion resStaFun
 
@@ -493,11 +493,11 @@ function actYeaFun ( holStaObj : HolStaTyp | null | undefined, yeaValNum : numbe
 	const disKeyArr = resHolObj.disabled || []; // What: Disabled Key Array. Why: A very old persisted state might be missing this field entirely. How: This falls back to an empty array when resHolObj.disabled is missing.
 
 
-	const cmpActArr = cmpYeaFun( yeaValNum, resHolObj.country ) // What: Computed Active Array. Why: The caller only wants every defined holiday for the year, as a starting point before disabled ones are dropped. How: This computes every holiday record for yeaValNum against resHolObj.country.
+	const cmpActArr = cmpYeaFun( yeaValNum, resHolObj.country ) // What: Computed Active Array. Why: This starts from every defined holiday for the year, before disabled ones are dropped. How: This computes every holiday record for yeaValNum against resHolObj.country.
 
 		.filter( ( cmpRcdObj ) => !disKeyArr.includes( cmpRcdObj.keyStr ) ) // What: Disabled Filter. Why: A holiday the user has switched off must never appear in the active list. How: This keeps only records whose key is absent from disKeyArr.
 
-		.map( ( cmpRcdObj ) => ( { ...cmpRcdObj, cusBoo : false } ) ); // What: Custom Flag Map. Why: Every surviving record needs marking as a computed (non-custom) holiday, for callers that tell the two kinds apart. How: This spreads each record and overrides custom to false.
+		.map( ( cmpRcdObj ) => ( { ...cmpRcdObj, cusBoo : false } ) ); // What: Custom Flag Map. Why: Every surviving record needs marking as a computed (non-custom) holiday, for callers that tell the two kinds apart. How: This spreads each record and sets cusBoo to false.
 
 
 	const cusDayArr = ( resHolObj.custom || [] ).map( ( cusDefObj ) => { // What: Custom Day Array. Why: The user's own recurring custom days off need resolving to this specific year too, each flagged as custom. How: This maps every saved custom definition to a concrete date for yeaValNum.
@@ -637,14 +637,14 @@ function holDatFun ( holStaObj : HolStaTyp | null | undefined, cheDatObj : Date 
 
 // #region Exports
 
-const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is the module's whole public API, the single object every consuming file imports and calls through, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
+const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is the module's whole public API, the single object the consuming files import and call through. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
 
 
-	cmpYeaFun : cmpYeaFun, // What: Compute Year Function. Why: tab-settings.tsx calls this for a specific year's own active holiday set. How: This re-exports cmpYeaFun under its own matching name.
-	defStaFun : defStaFun, // What: Default State Function. Why: The seed and the save migration call this for a fresh holidays-state shape. How: This re-exports defStaFun under its own matching name.
-	holDatFun : holDatFun, // What: Holiday Date Function. Why: tab-today.tsx and tasks.ts both call this to check whether a specific date is a holiday. How: This re-exports holDatFun under its own matching name.
-	holInfFun : holInfFun, // What: Holiday Info Function. Why: tasks.ts calls this for a specific date's own full holiday info. How: This re-exports holInfFun under its own matching name.
-	resStaFun : resStaFun  // What: Resolve State Function. Why: The store's holiday actions and the Settings holiday editor read a holidays state that an old save may lack. How: This re-exports resStaFun under its own matching name.
+	cmpYeaFun : cmpYeaFun, // What: Compute Year Function. Why: This exposes the per-year computation of every defined holiday's record. How: This re-exports cmpYeaFun under its own matching name.
+	defStaFun : defStaFun, // What: Default State Function. Why: This exposes the canonical empty holidays-state shape. How: This re-exports defStaFun under its own matching name.
+	holDatFun : holDatFun, // What: Holiday Date Function. Why: This exposes the check of whether a specific date is a holiday, returning its name. How: This re-exports holDatFun under its own matching name.
+	holInfFun : holInfFun, // What: Holiday Info Function. Why: This exposes a specific date's full holiday record. How: This re-exports holInfFun under its own matching name.
+	resStaFun : resStaFun  // What: Resolve State Function. Why: This exposes the fallback that reads a holidays state an old save may lack. How: This re-exports resStaFun under its own matching name.
 
 
 };
