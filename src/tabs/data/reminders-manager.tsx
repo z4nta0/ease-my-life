@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './reminders-manager.module.css'; // What: CSS Module Object. Why: The Reminders section's card, settings matrix, rows, and editor are styled from their own module. How: This maps each class name in reminders-manager.module.css to its hashed module class.
-import React     from 'react';                          // What: React. Why: Every component in this file is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                          // What: React. Why: The components in this file are built directly on React's own APIs. How: This is used directly (React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
 import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: The add form and each open reminder's own actions need consistently-styled buttons. How: This is rendered throughout RemManCom.
@@ -13,14 +13,14 @@ import { colMapFun    } from '../../state/store.ts';                // What: Col
 import { durMilFun    } from '../../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { EdiFooCom    } from '../../ui/editor-footer.tsx';          // What: Editor Footer Component. Why: Every reminder editor ends with the same Delete/Cancel/Save row. How: This is rendered at the bottom of each reminder editor.
 import { freEdiFun    } from './list-sorting.ts';                   // What: Freeze Edited Function. Why: The Data tab's reminder list must not visibly reorder out from under an open editor as its own fields change. How: This is called once to compute disTasArr from sorTasArr.
-import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: Every reminder row and button needs a recognizable glyph. How: This is rendered throughout OptMatCom and RemManCom.
+import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: The reminder rows and the add control need a recognizable glyph. How: This is rendered throughout OptMatCom and RemManCom.
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add button in RemManCom.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Adding a reminder must stay disabled while any onboarding tutorial is still in progress. How: This is read via its own tutProFun helper in RemManCom.
-import { redMotFun    } from '../../utils/motion.ts';               // What: Reduced Motion Function. Why: A user who prefers reduced motion should get an instant close or remove instead of a timed animation. How: This is checked before every staged animation in RemManCom.
+import { redMotFun    } from '../../utils/motion.ts';               // What: Reduced Motion Function. Why: A user who prefers reduced motion should get an instant close or remove instead of a timed animation. How: This is checked before the smooth scroll and before the delayed remove in RemManCom.
 import { SchEdiCom    } from '../../ui/schedule-editor.tsx';        // What: Schedule Editor Component. Why: A reminder's own repeat and schedule fields are edited with one shared editor. How: This is rendered for the add form and each open reminder.
 import { sorEntFun    } from './list-sorting.ts';                   // What: Sort Entries Function. Why: The Data tab's reminder list needs the exact same sort vocabulary as the rest of the Data tab. How: This is called once per comparison inside RemManCom's own sorTasArr sort.
-import { SorSelCom    } from './sort-select.tsx';                   // What: Sort Select Component. Why: The Data tab's reminder Items list needs the same sort control as every other Data tab list. How: This is rendered in RemManCom, driven by ITE_SOR_ARR.
-import { TAS_NAM_OBJ  } from '../../core/tasks.ts';                 // What: Tasks Namespace Object. Why: Every reminder's own summary, next date, and default shape defer to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout RemManCom.
+import { SorSelCom    } from './sort-select.tsx';                   // What: Sort Select Component. Why: The Data tab's reminder Items list needs the same sort control as the other Data tab lists. How: This is rendered in RemManCom, driven by ITE_SOR_ARR.
+import { TAS_NAM_OBJ  } from '../../core/tasks.ts';                 // What: Tasks Namespace Object. Why: A reminder's own summary, next date, and default shape defer to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout RemManCom.
 import { UnmWatCom    } from './unmount-watcher.ts';                // What: Unmount Watcher Component. Why: An open reminder row or the settings matrix that disappears without its own Save still keeps its edits. How: This is rendered inside each, reporting its unmount.
 import { useTasDraFun } from '../../ui/record-draft.ts';            // What: Use Task Draft Function. Why: The open reminder row edits a local draft, committed when the row closes. How: This is called once inside RemManCom with the open reminder.
 
@@ -39,12 +39,12 @@ import type { TasRcdTyp } from '../../core/data-model.ts'; // What: Task Record 
  * reminders-manager.tsx = Reminders Manager
  *
  * @summary
- * The Data tab's own Reminders section: RemManCom lists every reminder as a
- * collapsible, sortable row (ITE_SOR_ARR holds its sort options) whose body is
- * the shared schedule editor, with an add form above the list. OptMatCom is
- * the section's own Controls body, the participation matrix of global reminder
- * settings (one row per REM_MAT_ARR entry, whose sub-explanations paiSubFun
- * builds), with its own Cancel/Save.
+ * The Data tab's own Reminders section: RemManCom lists the visible reminders
+ * as a collapsible, sortable row (ITE_SOR_ARR holds its sort options) whose
+ * body is the shared schedule editor, with an add form above the list.
+ * OptMatCom is the section's own Controls body, the participation matrix of
+ * global reminder settings (one row per REM_MAT_ARR entry, whose
+ * sub-explanations paiSubFun builds), with its own Cancel/Save.
  *
  * Sections:
  *  - Constants
@@ -97,15 +97,15 @@ import type { TasRcdTyp } from '../../core/data-model.ts'; // What: Task Record 
  *
 */
 
-const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list sort control needs one entry per supported sort. How: This is passed as SorSelCom's own options prop from RemManCom below.
+const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list sort control needs one entry per supported sort. How: This is passed as SorSelCom's optLisArr prop from RemManCom below.
 
 
-	{ keyStr : 'name-asc',  labStr : 'Name (A–Z)' }, // What: Key String. Why: This is the section's own default sort. How: SorSelCom compares this against iteSorStr and reports it via onChange.
-	{ keyStr : 'name-desc', labStr : 'Name (Z–A)' }, // What: Key String. Why: This is the reverse of the default sort. How: SorSelCom compares this against iteSorStr and reports it via onChange.
-	{ keyStr : 'type-asc',  labStr : 'Type (A–Z)' }, // What: Key String. Why: Type (One-time vs Recurring) is the only other text-like field reminders have. How: SorSelCom compares this against iteSorStr and reports it via onChange.
-	{ keyStr : 'type-desc', labStr : 'Type (Z–A)' }, // What: Key String. Why: This is the reverse of the type sort. How: SorSelCom compares this against iteSorStr and reports it via onChange.
-	{ keyStr : 'date-asc',  labStr : 'Soonest'    }, // What: Key String. Why: Date sorts by each reminder's own next eligible occurrence. How: SorSelCom compares this against iteSorStr and reports it via onChange.
-	{ keyStr : 'date-desc', labStr : 'Latest'     }  // What: Key String. Why: This is the reverse of the date sort. How: SorSelCom compares this against iteSorStr and reports it via onChange.
+	{ keyStr : 'name-asc',  labStr : 'Name (A–Z)' }, // What: Name Ascending Sort Entry. Why: This is the section's own default sort. How: SorSelCom compares its keyStr against iteSorStr and reports it via onChange.
+	{ keyStr : 'name-desc', labStr : 'Name (Z–A)' }, // What: Name Descending Sort Entry. Why: This is the reverse of the default sort. How: SorSelCom compares its keyStr against iteSorStr and reports it via onChange.
+	{ keyStr : 'type-asc',  labStr : 'Type (A–Z)' }, // What: Type Ascending Sort Entry. Why: Type (One-time vs Recurring) is the only other text-like field reminders have. How: SorSelCom compares its keyStr against iteSorStr and reports it via onChange.
+	{ keyStr : 'type-desc', labStr : 'Type (Z–A)' }, // What: Type Descending Sort Entry. Why: This is the reverse of the type sort. How: SorSelCom compares its keyStr against iteSorStr and reports it via onChange.
+	{ keyStr : 'date-asc',  labStr : 'Soonest'    }, // What: Date Ascending Sort Entry. Why: Date sorts by each reminder's own next eligible occurrence. How: SorSelCom compares its keyStr against iteSorStr and reports it via onChange.
+	{ keyStr : 'date-desc', labStr : 'Latest'     }  // What: Date Descending Sort Entry. Why: This is the reverse of the date sort. How: SorSelCom compares its keyStr against iteSorStr and reports it via onChange.
 
 
 ];
@@ -151,7 +151,7 @@ const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list 
 function paiSubFun ( verTexStr : string, neiConStr : string = 'and' ) : ( oncEnaBoo : boolean, reuEnaBoo : boolean ) => React.JSX.Element {
 
 
-	return ( oncEnaBoo, reuEnaBoo ) => ( // What: Pair Subtitle Return. Why: The caller (each REM_MAT_ARR entry's own dynFun) needs a function it can call with the live once/recurring toggle states. How: This renders one of the 4 mutually-exclusive phrases below.
+	return ( oncEnaBoo, reuEnaBoo ) => ( // What: Pair Subtitle Return. Why: This returns the function that renders the phrase for the live once and recurring toggle states. How: This renders one of the 4 mutually-exclusive phrases below.
 
 
 		oncEnaBoo && reuEnaBoo // What: Both Check. Why: The phrase depends on which of the two classes has the setting on. How: This tests both flags first.
@@ -334,7 +334,7 @@ function DisTogCom ( { colValBoo, kicTexStr, onClick, sumTexStr } : DtcProTyp ) 
 					className={ cssModObj.chvDisSpa }
 
 					data-chevron-open-active={ !colValBoo || undefined } // What: Chevron Open Active Attribute. Why: An open disclosure points its chevron down. How: This sets the presence-only attribute while colValBoo is false.
-				>{ /* What: Chevron Span Element. Why: The chevron's own rotation communicates whether the disclosure is currently open. How: This rotates via data-chevron-open-active while colValBoo is false. */ }
+				>{ /* What: Chevron Disclosure Span Element. Why: The chevron's own rotation communicates whether the disclosure is currently open. How: This rotates via data-chevron-open-active while colValBoo is false. */ }
 
 
 					<IcoSvgCom
@@ -486,7 +486,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 			className={ cssModObj.remMatDiv }
 
 			data-element-name-hook='remMatDiv'
-		>{ /* What: Matrix Div Element. Why: This is OptMatCom's own root element. How: This renders the head row, one row per REM_MAT_ARR entry, and the foot below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+		>{ /* What: Reminder Matrix Div Element. Why: This is OptMatCom's own root element. How: This renders the head row, one row per REM_MAT_ARR entry, and the foot below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 			<div className={ cssModObj.matHeaDiv }>{ /* What: Matrix Header Div Element. Why: The 2 column labels need their own header row above the data rows. How: This renders an empty leading cell (aligning with each row's own name column) plus the 2 column-label spans. */ }
@@ -520,7 +520,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 							key={ ( draOptObj.once[ optDefObj.keyStr ] ? 1 : 0 ) + '' + ( draOptObj.recurring[ optDefObj.keyStr ] ? 1 : 0 ) } // What: Toggle State Key. Why: The explanation should re-fade only when either class's toggle for this row flips. How: This joins the two toggle states into one key.
 
 							className={ cssModObj.matSubSpa }
-						>{ optDefObj.dynFun( !!draOptObj.once[ optDefObj.keyStr ], !!draOptObj.recurring[ optDefObj.keyStr ] ) }</span>{ /* What: Dynamic Sub Span Element. Why: Every row needs its own live, re-fading explanation. How: This re-keys on the combined once/recurring toggle state and calls optDefObj's own dynFun. */ }
+						>{ optDefObj.dynFun( !!draOptObj.once[ optDefObj.keyStr ], !!draOptObj.recurring[ optDefObj.keyStr ] ) }</span>{ /* What: Matrix Sub Span Element. Why: Every row needs its own live, re-fading explanation. How: This re-keys on the combined once/recurring toggle state and calls optDefObj's own dynFun. */ }
 
 
 					</span>
@@ -567,7 +567,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 
 
 									} ) ) }
-								>{ /* What: Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips this pair in the matrix's draft. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+								>{ /* What: Toggle Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips this pair in the matrix's draft. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 									<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: The switch's own CSS-driven thumb needs a real (if empty) element to animate. How: This renders an empty, purely decorative i element. */ }
@@ -595,7 +595,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 				className={ cssModObj.matFooDiv }
 
 				data-element-name-hook='matFooDiv'
-			>{ /* What: Matrix Foot Div Element. Why: The Cancel/Save actions need their own row below every matrix row. How: This wraps the fooRigDiv div below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+			>{ /* What: Matrix Footer Div Element. Why: The Cancel/Save actions need their own row below every matrix row. How: This wraps the fooRigDiv div below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 				<div className={ cssModObj.fooRigDiv }>{ /* What: Footer Right Div Element. Why: Cancel and Save read as a pair, right-aligned. How: This wraps both ButBasCom elements below. */ }
@@ -683,7 +683,7 @@ function RowIcoCom ( { isaOncBoo } : RicProTyp ) : React.JSX.Element {
 			<IcoSvgCom
 				icoNamStr={ isaOncBoo ? 'pinEle' : 'calEle' } // What: Type Icon Pick. Why: A one-time reminder and a recurring one look different at a glance. How: This picks the pin while isaOncBoo and the calendar otherwise.
 				sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-			/>{ /* What: Icon SVG Component. Why: The row's own icon needs to distinguish a one-time reminder from a recurring one at a glance. How: This renders 'pin' while isaOncBoo, 'calendar' otherwise, at a small 15px size. */ }
+			/>{ /* What: Icon SVG Component. Why: The row's own icon needs to distinguish a one-time reminder from a recurring one at a glance. How: This renders the 'pinEle' icon while isaOncBoo and the 'calEle' icon otherwise, at the bas rhythm step. */ }
 
 
 		</span>
@@ -772,7 +772,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 		const skiScrBoo = notOpeBoo || notNewBoo || notRowBoo; // What: Skip Scroll Boolean. Why: Any one missing piece means this effect has nothing to do. How: This ORs the 3 checks above.
 
 
-		if ( skiScrBoo ) return; // What: Not-A-New-Open Guard. Why: Every other case (no row open, a re-opened existing row, or the ref not yet attached) should do nothing at all. How: This bails out unless all 3 conditions hold.
+		if ( skiScrBoo ) return; // What: Not-A-New-Open Guard. Why: Every other case (no row open, a re-opened existing row, or the ref not yet attached) should do nothing at all. How: This returns when skiScrBoo is true.
 
 
 
@@ -851,7 +851,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 				...draTasObj, // What: Draft Task Spread. Why: Every drafted field, id included, must join the store as drafted. How: This spreads draTasObj first, so only the name below is overridden.
 
-				name : draTasObj.name.trim() || newTasObj.name // What: Name. Why: A saved reminder never keeps stray spaces or a blank name. How: This trims the drafted name, falling back to the new reminder's default name.
+				name : draTasObj.name.trim() || newTasObj.name // What: Name. Why: A newly added reminder never keeps stray spaces or a blank name. How: This trims the drafted name, falling back to the new reminder's default name.
 
 
 			});
@@ -975,7 +975,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 	const colMaiMap = colMapFun( staAppObj );                                // What: Collapsed Main Map. Why: The main section's own collapse state persists (like the pickers), so it survives tab switches. How: This reads staAppObj's own ui.controlsCollapsed, falling back to an empty object.
 	const secOpeBoo = colMaiMap[ '__reminders_main' ] === false;             // What: Section Open Boolean. Why: This reserved key defaults COLLAPSED, so absent means collapsed and an explicit false means expanded. How: This checks colMaiMap's own '__reminders_main' entry against exactly false.
-	const togMaiFun = () => actStoObj.togColFun( '__reminders_main', true ); // What: Toggle Main Function. Why: The header's own clickable area needs a single call to flip the main section's own collapse staAppObj. How: This calls actStoObj.togColFun against the same reserved key.
+	const togMaiFun = () => actStoObj.togColFun( '__reminders_main', true ); // What: Toggle Main Function. Why: The header's own clickable area needs a single call to flip the main section's own collapse state. How: This calls actStoObj.togColFun against the same reserved key.
 
 	const colSubMap = colMapFun( staAppObj );             // What: Collapsed Sub Map. Why: The Controls and Items sub-panels each remember their own collapse state independently of the main section and of each other. How: This reads the same staAppObj's own ui.controlsCollapsed, kept as a separate read for its own 2 sub-keys below.
 	const conColBoo = !!colSubMap[ '__reminders' ];       // What: Controls Collapsed Boolean. Why: The Controls disclosure defaults OPEN, so absent means open. How: This checks colSubMap's own '__reminders' entry.
@@ -990,6 +990,30 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 	// #region Row Actions
 
+	// #region keeCloFun
+
+	/**
+	 * keeCloFun = Keep Close Function
+	 *
+	 * @summary
+	 * Keeps the open draft, then closes the row only while it is still the
+	 * one named, so the collapse chevron and Save leave the same state. A
+	 * different row opened in the meantime stays open.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param tasIdeStr - Task Identifier String: The ID of the reminder whose
+	 *                    row is closing.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * keeCloFun(tasIdeStr) // => void
+	 * ```
+	 *
+	*/
+
 	const keeCloFun = ( tasIdeStr : string ) => { // What: Keep Close Function. Why: The row's own collapse chevron AND EdiFooCom's own Save mean "keep this, I'm done", and both need the exact same cleanup so the chevron can't drift out of sync with what Save already does. How: This keeps the open draft, then closes the row only while it's still this exact one.
 
 
@@ -999,6 +1023,8 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 
 	};
+
+	// #endregion keeCloFun
 
 
 	const addEdiFun = () => { // What: Add Edit Function. Why: "New reminder" needs to start a local draft reminder AND immediately open its own editor, ensuring the main section is open too. How: This keeps any open row, builds the draft, then opens its row.
@@ -1037,7 +1063,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 			className={ cssModObj.datCatSec }
 
 			data-element-name-hook='datCatSec remCatSec'
-		>{ /* What: Category Section Element. Why: This is RemManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours, the Data page tour, and help mode's Data catalog. */ }
+		>{ /* What: Data Category Section Element. Why: This is RemManCom's own root element, matching the other Data tab categories' outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours, the Data page tour, and help mode's Data catalog. */ }
 
 
 			<header
@@ -1064,7 +1090,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 						className={ cssModObj.chvDisSpa }
 
 						data-chevron-open-active={ secOpeBoo || undefined } // What: Chevron Open Active Attribute. Why: An open disclosure points its chevron down. How: This sets the presence-only attribute while secOpeBoo is true.
-					>{ /* What: Chevron Span Element. Why: The chevron's own rotation communicates the disclosure's open/closed state. How: This rotates via data-chevron-open-active while secOpeBoo is true. */ }
+					>{ /* What: Chevron Disclosure Span Element. Why: The chevron's own rotation communicates the disclosure's open/closed state. How: This rotates via data-chevron-open-active while secOpeBoo is true. */ }
 
 
 						<IcoSvgCom
@@ -1149,10 +1175,10 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 
 
-					<ColDisCom open={ !iteColBoo }>{ /* What: Collapse Disclosure Component. Why: The whole Items list (full-bleed rows: type icon + name + schedule, expanding into the exact Today editor) only exists while this disclosure is open. How: This animates the fragment below open/closed based on iteColBoo. */ }
+					<ColDisCom open={ !iteColBoo }>{ /* What: Collapse Disclosure Component. Why: The whole Items list (full-bleed rows: type icon + name + schedule, expanding into the shared schedule editor) only exists while this disclosure is open. How: This animates the fragment below open/closed based on iteColBoo. */ }
 
 
-						<React.Fragment>{ /* What: Items Fragment Element. Why: The add button and the list/empty-state below need to sit together with no extra dom wrapper of their own. How: This groups both below as one returned value. */ }
+						<React.Fragment>{ /* What: Items Fragment. Why: The add button and the list/empty-state below need to sit together with no extra dom wrapper of their own. How: This groups both below as one returned value. */ }
 
 
 							{ tutProBoo ? ( // What: Tutorials In Progress Check. Why: This second add-reminder entry point must also stay disabled with an explanation while the guided checklist is running. How: This renders the disabled InfTipCom while tutProBoo is true, the real button otherwise.
@@ -1187,7 +1213,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 									data-element-name-hook='rowAddBut'
 
 									onClick={ addEdiFun }
-								>{ /* What: Add Button Element. Why: This is the real, clickable "New reminder" entry point. How: This calls addEdiFun. Its data-element-name-hook is read by help mode's Data catalog. */ }
+								>{ /* What: Row Add Button Element. Why: This is the real, clickable "New reminder" entry point. How: This calls addEdiFun. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 									<IcoSvgCom
@@ -1212,7 +1238,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 							) : ( // What: Reminder List Branch. Why: With at least one reminder, the real list of rows belongs here instead. How: This renders the else branch, taken while visTasArr has entries.
 
 
-								<>{ /* What: Reminder List Fragment Element. Why: The sort control and the list rows render together as one branch. How: This groups them with no wrapper element. */ }
+								<>{ /* What: Reminder List Fragment. Why: The sort control and the list rows render together as one branch. How: This groups them with no wrapper element. */ }
 
 
 									{ visTasArr.length > 1 && ( // What: Sort Visibility Check. Why: Sorting only matters once there's more than 1 reminder to sort. How: This renders SorSelCom only while there are at least 2.
@@ -1225,7 +1251,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 											value={ iteSorStr }
 
 											onChange={ ( sorKeyStr ) => actStoObj.setSorFun( 'reminders', sorKeyStr ) }
-										/> // What: Sort Select Component. Why: The Items list needs the same sort control every other Data tab list uses. How: This is driven by ITE_SOR_ARR, committing through actStoObj.setSorFun.
+										/> // What: Sort Select Component. Why: The Items list needs the same sort control the other Data tab lists use. How: This is driven by ITE_SOR_ARR, committing through actStoObj.setSorFun.
 
 
 									) }
@@ -1253,7 +1279,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 												data-row-edit-active={ carOpeBoo || undefined } // What: Row Edit Active Attribute. Why: An open row's header stops reacting like a button and its chevron turns the accent color. How: This sets the presence-only attribute while carOpeBoo is true.
 
 												onAnimationEnd={ () => { if ( insIdeStr === curTasObj.id ) setInsIdeStr( null ); } } // What: Insert Flag Clear. Why: The entrance animation must play only once. How: This clears insIdeStr when this row's own animation ends while it still matches.
-											>{ /* What: Row Div Element. Why: This is one reminder's own full-bleed row, holding either its plain summary or its live name input, plus its own expanding editor below. How: This renders one of the 2 header branches below, then the shared editor ColDisCom. Its data-element-name-hook is read by the App Features tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+											>{ /* What: List Item Div Element. Why: This is one reminder's own full-bleed row, holding either its plain summary or its live name input, plus its own expanding editor below. How: This renders one of the 2 header branches below, then the shared editor ColDisCom. Its data-element-name-hook is read by the App Features tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 												{ carOpeBoo ? ( // What: Row Editing Check. Why: The row's own header swaps between a live-editable div and a plain clickable button depending on whether it's open. How: This renders the editing div while carOpeBoo is true, the plain toggle button otherwise.
@@ -1263,7 +1289,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 														className={ cssModObj.lisRowDiv }
 
 														data-element-name-hook='lisRowDiv'
-													>{ /* What: Row Editing Div Element. Why: While editing, this is a plain div rather than a button, since a button can't legally contain the input below it (interactive-in-interactive), which also cost it an accessible name of its own. How: This renders the type icon, the live name input, and a real, separate collapse-chevron button. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+													>{ /* What: List Row Div Element. Why: While editing, this is a plain div rather than a button, since a button can't legally contain the input below it (interactive-in-interactive), which also cost it an accessible name of its own. How: This renders the type icon, the live name input, and a real, separate collapse-chevron button. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
 														<RowIcoCom isaOncBoo={ isaOncBoo } />{ /* What: Row Icon Component. Why: The type icon needs its own wrapper for styling. How: This renders a pin while isaOncBoo is true, a calendar otherwise. */ }
@@ -1308,7 +1334,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 																onChange={ ( chaEveObj ) => patDraFun( { name : chaEveObj.target.value } ) }
 																onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Shortcut. Why: Pressing Enter should finish typing the name. How: This blurs the input on Enter, leaving the name in the draft until the row is kept.
-															/>{ /* What: Name Input Element. Why: This is the row's own live-editable name field while carOpeBoo. How: This writes every keystroke into the row's draft, trimmed when the draft is kept. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+															/>{ /* What: Row Name Input Element. Why: This is the row's own live-editable name field while carOpeBoo. How: This writes every keystroke into the row's draft, trimmed when the draft is kept. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 														</span>
@@ -1323,7 +1349,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 															aria-label='Collapse'
 
 															onClick={ () => keeCloFun( curTasObj.id ) }
-														>{ /* What: Collapse Chevron Button Element. Why: This is the row's own real, separate close affordance (see the row-editing div's own comment above for why it can't be the button itself). How: This calls keeCloFun, which marks the editor kept before closing it. */ }
+														>{ /* What: Row Chevron Button Element. Why: This is the row's own real, separate close affordance (see the row-editing div's own comment above for why it can't be the button itself). How: This calls keeCloFun, which marks the editor kept before closing it. */ }
 
 
 															<IcoSvgCom
@@ -1359,7 +1385,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 
 														} }
-													>{ /* What: Row Toggle Button Element. Why: The plain, non-editing state is itself the clickable control that opens the editor. How: This keeps any other open row's edits, then opens this one. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+													>{ /* What: List Row Button Element. Why: The plain, non-editing state is itself the clickable control that opens the editor. How: This keeps any other open row's edits, then opens this one. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
 														<RowIcoCom isaOncBoo={ isaOncBoo } />{ /* What: Row Icon Component. Why: The type icon needs its own wrapper for styling. How: This renders a pin while isaOncBoo is true, a calendar otherwise. */ }

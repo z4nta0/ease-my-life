@@ -6,15 +6,13 @@
  *
  * @summary
  * Styles for the Data tab's Reminders section: its collapsible card and
- * header, the Controls and Items toggles, the settings matrix of switches
- * with its footer, the Add control, the empty message, and each reminder's
- * row (a button while closed, a live name field while open) above its inline
- * editor. Most of these classes are shared with the Data tab's other
- * sections, so their rules are copies of the global ones, resolved where this
- * section's own overrides used to win on specificity, and they keep the same
- * names in every section's module. The Add control, the row, and the row's
- * chevron each render as two different tags, so each tag has its own class,
- * sharing one rule. An open chevron keys off
+ * header, the Controls and Items toggles, the settings matrix of switches with
+ * its footer, the Add control, the empty message, and each reminder's row (a
+ * button while closed, a live name field while open) above its inline editor.
+ * Most of these classes are shared with the Data tab's other sections, whose
+ * modules carry their own copies under the same names. The Add control, the
+ * row, and the row's chevron each render as two different tags, so each tag
+ * has its own class, sharing one rule. An open chevron keys off
  * data-chevron-open-active, an open row off data-row-edit-active, a one-time
  * reminder's icon off data-reminder-once-active, a switch off its own
  * aria-pressed, and the disabled Add control off data-tour-disabled-active,
@@ -129,7 +127,7 @@
 /* #region chvDisSpa */
 
 .chvDisSpa,
-.chvDisBut { /* What: Chevron Disclosure Span And Button. Why: A disclosure shows which way it will open. How: This sets the muted icon in an inline box that turns when opened. */
+.chvDisBut { /* What: Chevron Disclosure Span And Button. Why: A disclosure shows which way it will open. How: This sets the muted icon in an inline box that turns when opened, and eases that turn. */
 
 
 	color      : var( --tex-mut-col );                                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -423,7 +421,7 @@
 .matSubSpa { /* What: Matrix Sub Span. Why: The line under each setting explains what the current switches do, fading in each time it changes. How: This sets it small and muted and plays the shared fade whenever its keyed span remounts. */
 
 
-	animation   : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation   : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with the other live explanation lines, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color       : var( --tex-mut-col );                                                     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	font-size   : var( --fon-siz-bas );                                                     /* Font Size Base = 11px */
 	line-height : var( --ver-rhy-bas );                                                     /* Vertical Rhythm Base ~= 1.325 */
@@ -826,7 +824,7 @@
 
 }
 
-.rowNamInp { /* What: Row Name Input. Why: An open row renames its reminder in place, styled like the name it replaces. How: This draws a borderless field with only an underline. */
+.rowNamInp { /* What: Row Name Input. Why: An open row renames its reminder in place, styled like the name it replaces. How: This draws a borderless field with only an underline, and eases the underline's color. */
 
 
 	background     : transparent;
@@ -993,7 +991,7 @@
 .inlEdiDiv { /* What: Inline Editor Div. Why: The editor body blends into its row rather than drawing its own card, and fades in as it opens. How: This clears the card chrome and plays the shared row entrance. */
 
 
-	animation     : global( editorOpenFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ); /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation     : global( editorOpenFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ); /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with the other inline editors, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : none;
 	border        : 0;
 	border-radius : 0;
