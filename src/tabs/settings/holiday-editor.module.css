@@ -364,7 +364,7 @@
 
 
 }
-.togSwiBut[aria-pressed='true'] .swiKnoIta { /* What: On Holiday Switch Knob. Why: An on switch's knob sits at the right end. How: This slides the knob across. */
+.togSwiBut[aria-pressed='true'] .swiKnoIta { /* What: Switch Knob Italic In On Toggle Switch Button. Why: An on switch's knob sits at the right end. How: This slides the knob across. */
 
 
 	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) ); /* Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 1 ~= 19.304px */

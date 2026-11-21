@@ -854,7 +854,7 @@
 
 
 }
-.todCarArt[data-card-done-active] .carCheBut:focus-visible { /* What: Focused Done Checkbox. Why: On the filled box the check mark's edge should stay distinct from the ring's gap. How: This adds a thin background-colored inset line. */
+.todCarArt[data-card-done-active] .carCheBut:focus-visible { /* What: Focused Card Check Button In Done Today Card Article. Why: On the filled box the check mark's edge should stay distinct from the ring's gap. How: This adds a thin background-colored inset line. */
 
 
 	box-shadow : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ), inset 0 0 0 calc( var( --ver-rhy-m08 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.571px, Background Page Color = oklch( 0.985 0.003 240 ), Vertical Rhythm Base Minus 8 ~= 1.537px */
@@ -868,7 +868,7 @@
 
 
 }
-.todCarArt[data-card-done-active] .carCheBut { /* What: Done Checkbox. Why: A done reminder's box reads as filled. How: This fills it in the accent color. */
+.todCarArt[data-card-done-active] .carCheBut { /* What: Card Check Button In Done Today Card Article. Why: A done reminder's box reads as filled. How: This fills it in the accent color. */
 
 
 	background   : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -910,7 +910,7 @@
 
 
 }
-.todCarArt.todCarArt--fresh .cheRipSpa { /* What: Fresh Checkbox Ripple. Why: The card just checked sends its ring out once. How: This plays the shared ripple while the card carries its fresh class. */
+.todCarArt.todCarArt--fresh .cheRipSpa { /* What: Check Ripple Span In Today Card Article Fresh. Why: The card just checked sends its ring out once. How: This plays the shared ripple while the card carries its fresh class. */
 
 
 	animation : global( checkDoneRipple ) var( --dur-ani-p05 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global checkDoneRipple Keyframes. Why: The checkDoneRipple keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -920,7 +920,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fresh Checkbox Ripple. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.todCarArt.todCarArt--fresh .cheRipSpa { /* What: Still Fresh Checkbox Ripple. Why: The ring is only decoration. How: This turns the ripple off and keeps the ring hidden. */
+	.todCarArt.todCarArt--fresh .cheRipSpa { /* What: Still Check Ripple Span In Today Card Article Fresh. Why: The ring is only decoration. How: This turns the ripple off and keeps the ring hidden. */
 
 
 		animation : none;
@@ -1077,7 +1077,7 @@
 
 
 }
-.todCarArt[data-card-done-active] .carNamDiv { /* What: Done Reminder Name. Why: A done reminder reads as crossed off. How: This mutes and strikes through its name. */
+.todCarArt[data-card-done-active] .carNamDiv { /* What: Card Name Div In Done Today Card Article. Why: A done reminder reads as crossed off. How: This mutes and strikes through its name. */
 
 
 	color                : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */

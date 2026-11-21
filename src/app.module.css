@@ -477,7 +477,7 @@
 
 
 }
-.appTabNav--bottom .tabIndSpa { /* What: Bottom Tab Indicator. Why: The floating bottom pill needs a rounder indicator than the squarer side and top bars. How: This rounds it further. */
+.appTabNav--bottom .tabIndSpa { /* What: Tab Indicator Span In App Tab Nav Bottom. Why: The floating bottom pill needs a rounder indicator than the squarer side and top bars. How: This rounds it further. */
 
 
 	border-radius : var( --rad-bor-xla ); /* Radius Border Extra Large ~= 19.304px */
@@ -516,14 +516,14 @@
 
 
 }
-.appTabNav--bottom .tabBraBut { /* What: Bottom Tab Bar Brand. Why: The bottom bar has no room for a brand, and each tab's header already shows the logo. How: This hides it. */
+.appTabNav--bottom .tabBraBut { /* What: Tab Brand Button In App Tab Nav Bottom. Why: The bottom bar has no room for a brand, and each tab's header already shows the logo. How: This hides it. */
 
 
 	display : none;
 
 
 }
-.appTabNav--side .tabBraBut { /* What: Side Tab Bar Brand. Why: The rail leads with the wordmark above its tabs. How: This lays the brand out as a padded row above the tabs. */
+.appTabNav--side .tabBraBut { /* What: Tab Brand Button In App Tab Nav Side. Why: The rail leads with the wordmark above its tabs. How: This lays the brand out as a padded row above the tabs. */
 
 
 	align-items : center;
@@ -534,7 +534,7 @@
 
 
 }
-.appTabNav--top .tabBraBut { /* What: Top Tab Bar Brand. Why: The top bar leads with the wordmark, divided from the tabs. How: This lays the brand out as a row with a right divider. */
+.appTabNav--top .tabBraBut { /* What: Tab Brand Button In App Tab Nav Top. Why: The top bar leads with the wordmark, divided from the tabs. How: This lays the brand out as a row with a right divider. */
 
 
 	align-items   : center;
@@ -549,7 +549,7 @@
 @container appRooDiv ( max-width : 720px ) { /* What: Narrow Top Tab Bar Brand. Why: On a small screen the top bar must fit on one line. How: This applies only when the app is 720px wide or less. */
 
 
-	.appTabNav--top .tabBraBut { /* What: Tight Top Tab Bar Brand. Why: The brand should give the icon-only tabs more room. How: This tightens its divider spacing. */
+	.appTabNav--top .tabBraBut { /* What: Tight Tab Brand Button In App Tab Nav Top. Why: The brand should give the icon-only tabs more room. How: This tightens its divider spacing. */
 
 
 		margin-right  : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.571px */
@@ -587,7 +587,7 @@
 @container appRooDiv ( max-width : 500px ) { /* What: Narrowest Top Wordmark. Why: On the narrowest screens the top bar keeps only the mark so five tabs still fit. How: This applies only when the app is 500px wide or less. */
 
 
-	.appTabNav--top .braWorSpa { /* What: Mark-Only Top Wordmark. Why: With the text gone, the gap is empty space. How: This drops the gap. */
+	.appTabNav--top .braWorSpa { /* What: Mark-Only Brand Wordmark Span In App Tab Nav Top. Why: With the text gone, the gap is empty space. How: This drops the gap. */
 
 
 		gap : 0;
@@ -708,7 +708,7 @@
 
 
 }
-.appTabNav--bottom .navTabBut { /* What: Bottom Tab Button. Why: In the floating pill, each tab is a compact rounded pill. How: This lays its icon and label in a row in muted text, while the width rules below set its size. */
+.appTabNav--bottom .navTabBut { /* What: Nav Tab Button In App Tab Nav Bottom. Why: In the floating pill, each tab is a compact rounded pill. How: This lays its icon and label in a row in muted text, while the width rules below set its size. */
 
 
 	border-radius  : 999px;
@@ -720,7 +720,7 @@
 
 
 }
-.appTabNav--bottom .navTabBut[aria-current='page'] { /* What: Active Bottom Tab Button. Why: The active tab reads in the accent color over the indicator. How: This colors it accent with no fill of its own. */
+.appTabNav--bottom .navTabBut[aria-current='page'] { /* What: Current Nav Tab Button In App Tab Nav Bottom. Why: The active tab reads in the accent color over the indicator. How: This colors it accent with no fill of its own. */
 
 
 	background : transparent;
@@ -731,7 +731,7 @@
 @container appRooDiv ( min-width : 720px ) { /* What: Wide Bottom Tab Button. Why: In the floating wide pill, tabs sit as compact rounded pills with the icon beside the label. How: This applies only when the app is at least 720px wide. */
 
 
-	.appTabNav--bottom .navTabBut { /* What: Pill Bottom Tab Button. Why: Each tab sizes to its icon and label. How: This sets the large text, the label gap, its side padding, and the p03 rhythm height. */
+	.appTabNav--bottom .navTabBut { /* What: Pill Nav Tab Button In App Tab Nav Bottom. Why: Each tab sizes to its icon and label. How: This sets the large text, the label gap, its side padding, and the p03 rhythm height. */
 
 
 		font-size : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
@@ -747,7 +747,7 @@
 @container appRooDiv ( max-width : 719.98px ) { /* What: Narrow Bottom Tab Button. Why: In the floating narrow pill, tabs are icon-only pills. How: This applies only when the app is narrower than 720px. */
 
 
-	.appTabNav--bottom .navTabBut { /* What: Icon Pill Bottom Tab Button. Why: Each tab is a roomy icon-only pill. How: This drops the label gap and sets roomy side padding and the p04 touch-target height. */
+	.appTabNav--bottom .navTabBut { /* What: Icon Nav Tab Button In App Tab Nav Bottom. Why: Each tab is a roomy icon-only pill. How: This drops the label gap and sets roomy side padding and the p04 touch-target height. */
 
 
 		gap     : 0;
@@ -762,7 +762,7 @@
 @container appRooDiv ( max-width : 440px ) { /* What: Narrowest Bottom Tab Button. Why: Below about 430px, five buttons at their full side padding overflow the pill's rounded edges. How: This applies only when the app is 440px wide or less. */
 
 
-	.appTabNav--bottom .navTabBut { /* What: Tight Bottom Tab Button. Why: Every button should stay inside the pill down to the narrowest phones. How: This trims the side padding to the p01 step. */
+	.appTabNav--bottom .navTabBut { /* What: Tight Nav Tab Button In App Tab Nav Bottom. Why: Every button should stay inside the pill down to the narrowest phones. How: This trims the side padding to the p01 step. */
 
 
 		padding-left  : var( --spa-hor-p01 ); /* Spacing Horizontal Base Plus 1 ~= 19.304px */
@@ -773,7 +773,7 @@
 
 
 }
-.appTabNav--side .navTabBut { /* What: Side Tab Button. Why: In the rail each tab is a full-width row. How: This lays icon and label in a left-aligned padded row in muted text. */
+.appTabNav--side .navTabBut { /* What: Nav Tab Button In App Tab Nav Side. Why: In the rail each tab is a full-width row. How: This lays icon and label in a left-aligned padded row in muted text. */
 
 
 	border-radius   : var( --rad-bor-med );                /* Radius Border Medium = 11px */
@@ -788,7 +788,7 @@
 
 
 }
-.appTabNav--side .navTabBut[aria-current='page'] { /* What: Active Side Tab Button. Why: The active tab reads in the accent color over the indicator. How: This colors it accent with no fill of its own. */
+.appTabNav--side .navTabBut[aria-current='page'] { /* What: Current Nav Tab Button In App Tab Nav Side. Why: The active tab reads in the accent color over the indicator. How: This colors it accent with no fill of its own. */
 
 
 	background : transparent;
@@ -796,7 +796,7 @@
 
 
 }
-.appTabNav--top .navTabBut { /* What: Top Tab Button. Why: In the top bar each tab is a compact pill. How: This lays icon and label in a padded row pill in muted text. */
+.appTabNav--top .navTabBut { /* What: Nav Tab Button In App Tab Nav Top. Why: In the top bar each tab is a compact pill. How: This lays icon and label in a padded row pill in muted text. */
 
 
 	border-radius  : 999px;
@@ -810,7 +810,7 @@
 
 
 }
-.appTabNav--top .navTabBut[aria-current='page'] { /* What: Active Top Tab Button. Why: The active tab reads in the accent color over the indicator. How: This colors it accent with no fill of its own. */
+.appTabNav--top .navTabBut[aria-current='page'] { /* What: Current Nav Tab Button In App Tab Nav Top. Why: The active tab reads in the accent color over the indicator. How: This colors it accent with no fill of its own. */
 
 
 	background : transparent;
@@ -821,7 +821,7 @@
 @container appRooDiv ( max-width : 720px ) { /* What: Narrow Top Tab Button. Why: On a small screen the top bar keeps everything on one line with icon-only tabs. How: This applies only when the app is 720px wide or less. */
 
 
-	.appTabNav--top .navTabBut { /* What: Icon Top Tab Button. Why: With the label gone the tab only needs room for its icon. How: This tightens its padding and drops the gap. */
+	.appTabNav--top .navTabBut { /* What: Icon Nav Tab Button In App Tab Nav Top. Why: With the label gone the tab only needs room for its icon. How: This tightens its padding and drops the gap. */
 
 
 		gap     : 0;
@@ -927,7 +927,7 @@
 @container appRooDiv ( max-width : 720px ) { /* What: Narrow Rail Pull Handle. Why: The handle only exists while the rail is a drawer. How: This applies only when the app is 720px wide or less. */
 
 
-	.appTabNav--side .raiHanBut { /* What: Shown Rail Pull Handle. Why: The drawer needs its handle. How: This shows it. */
+	.appTabNav--side .raiHanBut { /* What: Shown Rail Handle Button In App Tab Nav Side. Why: The drawer needs its handle. How: This shows it. */
 
 
 		display : flex;

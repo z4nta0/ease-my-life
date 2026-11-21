@@ -449,7 +449,7 @@
 
 
 }
-.modOptLab[data-option-select-active] .modDotSpa { /* What: Selected Mode Dot Span. Why: The chosen option's dot rings in the accent. How: This borders it in the accent. */
+.modOptLab[data-option-select-active] .modDotSpa { /* What: Mode Dot Span In Selected Mode Option Label. Why: The chosen option's dot rings in the accent. How: This borders it in the accent. */
 
 
 	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -876,7 +876,7 @@
 
 
 }
-.togSwiBut[aria-checked='true'] .swiKnoIta { /* What: On Switch Knob Italic. Why: An active switch has its knob on the right. How: This slides the knob across. */
+.togSwiBut[aria-checked='true'] .swiKnoIta { /* What: Switch Knob Italic In On Toggle Switch Button. Why: An active switch has its knob on the right. How: This slides the knob across. */
 
 
 	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) ); /* Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 1 ~= 19.304px */

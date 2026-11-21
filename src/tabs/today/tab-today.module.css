@@ -724,7 +724,7 @@
 
 
 }
-.proRinDiv.proRinDiv--pulsing .rinGraSvg { /* What: Pulsing Ring Graphic. Why: Each completed item gives the ring a small pop. How: This plays a springy scale while the pulsing class is set. */
+.proRinDiv.proRinDiv--pulsing .rinGraSvg { /* What: Ring Graphic SVG In Progress Ring Div Pulsing. Why: Each completed item gives the ring a small pop. How: This plays a springy scale while the pulsing class is set. */
 
 
 	animation : rinGraSvgPulseBounce var( --dur-ani-p05 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
@@ -842,14 +842,14 @@
 
 
 }
-.proRinDiv.proRinDiv--pulsing .rinNumSpa { /* What: Pulsing Ring Count. Why: The count flashes as it grows. How: This plays a springy scale and accent flash. */
+.proRinDiv.proRinDiv--pulsing .rinNumSpa { /* What: Ring Number Span In Progress Ring Div Pulsing. Why: The count flashes as it grows. How: This plays a springy scale and accent flash. */
 
 
 	animation : rinNumSpaPulseBounce var( --dur-ani-p05 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
 
 
 }
-.proRinDiv.proRinDiv--celebrating .rinNumSpa { /* What: Celebrating Ring Count. Why: Completing the day gives the count a bigger flash. How: This plays a larger springy scale and accent flash. */
+.proRinDiv.proRinDiv--celebrating .rinNumSpa { /* What: Ring Number Span In Progress Ring Div Celebrating. Why: Completing the day gives the count a bigger flash. How: This plays a larger springy scale and accent flash. */
 
 
 	animation : rinNumSpaCompleteBounce var( --dur-ani-p08 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 8 ~= 1497.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
@@ -971,14 +971,14 @@
 
 
 }
-.proRinDiv.proRinDiv--pulsing .rinGloIta { /* What: Pulsing Ring Glow. Why: Each completed item blooms a small glow. How: This plays a short glow bloom. */
+.proRinDiv.proRinDiv--pulsing .rinGloIta { /* What: Ring Glow Italic In Progress Ring Div Pulsing. Why: Each completed item blooms a small glow. How: This plays a short glow bloom. */
 
 
 	animation : rinGloItaPulseFade var( --dur-ani-p06 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
-.proRinDiv.proRinDiv--celebrating .rinGloIta { /* What: Celebrating Ring Glow. Why: Completing the day blooms a bigger glow. How: This plays a longer, wider glow bloom. */
+.proRinDiv.proRinDiv--celebrating .rinGloIta { /* What: Ring Glow Italic In Progress Ring Div Celebrating. Why: Completing the day blooms a bigger glow. How: This plays a longer, wider glow bloom. */
 
 
 	animation : rinGloItaCompleteFade var( --dur-ani-p08 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 8 ~= 1497.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
@@ -1077,7 +1077,7 @@
 
 
 }
-.proRinDiv.proRinDiv--celebrating .rinRipIta { /* What: Celebrating Ring Ripple. Why: The ripple marks the moment the ring fills. How: This plays the ripple once over the p08 step, matching the ring's other completion animations. */
+.proRinDiv.proRinDiv--celebrating .rinRipIta { /* What: Ring Ripple Italic In Progress Ring Div Celebrating. Why: The ripple marks the moment the ring fills. How: This plays the ripple once over the p08 step, matching the ring's other completion animations. */
 
 
 	animation : rinRipItaCompleteRipple var( --dur-ani-p08 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 8 ~= 1497.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
@@ -1087,7 +1087,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Ripple. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.proRinDiv.proRinDiv--celebrating .rinRipIta { /* What: Still Ring Ripple. Why: The ripple is purely decorative. How: This turns its animation off and keeps it hidden. */
+	.proRinDiv.proRinDiv--celebrating .rinRipIta { /* What: Still Ring Ripple Italic In Progress Ring Div Celebrating. Why: The ripple is purely decorative. How: This turns its animation off and keeps it hidden. */
 
 
 		animation : none;
@@ -1811,7 +1811,7 @@
 
 
 }
-.groDraDiv > .todGroSec:not( :first-child ) { /* What: Following Group Section. Why: Each section after the first is divided from the one above. How: This draws a hairline above it with room below. */
+.groDraDiv > .todGroSec:not( :first-child ) { /* What: Following Today Group Section In Group Drag Div. Why: Each section after the first is divided from the one above. How: This draws a hairline above it with room below. */
 
 
 	border-top  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -1822,7 +1822,7 @@
 @container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.groDraDiv > .todGroSec:not( :first-child ) { /* What: Tighter Following Group Section. Why: The narrow list needs less room above each divider. How: This trims the space to large vertical spacing. */
+	.groDraDiv > .todGroSec:not( :first-child ) { /* What: Tighter Following Today Group Section In Group Drag Div. Why: The narrow list needs less room above each divider. How: This trims the space to large vertical spacing. */
 
 
 		padding-top : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
@@ -1832,7 +1832,7 @@
 
 
 }
-.groDraDiv > .todGroSec[data-item-drag-active] { /* What: Dragged Group Section. Why: A section being dragged lifts off the page as a card, without its divider. How: This raises it on a shadowed surface card and drops its divider and top padding, which reorder.ts marks with data-item-drag-active, matching the following-section rule's specificity and sitting after its narrow-width variant so it wins by order. */
+.groDraDiv > .todGroSec[data-item-drag-active] { /* What: Dragged Today Group Section In Group Drag Div. Why: A section being dragged lifts off the page as a card, without its divider. How: This raises it on a shadowed surface card and drops its divider and top padding, which reorder.ts marks with data-item-drag-active, matching the following-section rule's specificity and sitting after its narrow-width variant so it wins by order. */
 
 
 	background    : var( --bac-sur-col ); /* Background Surface Color = oklch( 0.975 0.004 240 ) */

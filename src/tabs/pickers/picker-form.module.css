@@ -640,7 +640,7 @@
 
 
 }
-.modOptLab[data-option-select-active] .modOptInp { /* What: Chosen Mode Option Radio. Why: The chosen radio rings in the accent. How: This borders it in the accent. */
+.modOptLab[data-option-select-active] .modOptInp { /* What: Mode Option Input In Selected Mode Option Label. Why: The chosen radio rings in the accent. How: This borders it in the accent. */
 
 
 	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -839,7 +839,7 @@
 
 
 }
-.togSwiBut[aria-checked='true'] .swiKnoIta { /* What: On Setting Switch Knob. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
+.togSwiBut[aria-checked='true'] .swiKnoIta { /* What: Switch Knob Italic In On Toggle Switch Button. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
 
 
 	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) ); /* Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 1 ~= 19.304px */
@@ -1009,7 +1009,7 @@
 
 
 }
-.conPilBut--new[data-pill-select-active] .conNamSpa { /* What: Open New Conditional Pill Label. Why: The label follows its pill's accent. How: This colors it. */
+.conPilBut--new[data-pill-select-active] .conNamSpa { /* What: Conditional Name Span In Selected Conditional Pill Button New. Why: The label follows its pill's accent. How: This colors it. */
 
 
 	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */

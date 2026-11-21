@@ -142,7 +142,7 @@
 
 
 }
-.todCarArt[data-slot-pending-active] .carMetDiv { /* What: Pending Loader Card Meta Row. Why: A waiting slot's text should read as not started yet. How: This fades the meta row. */
+.todCarArt[data-slot-pending-active] .carMetDiv { /* What: Card Meta Div In Pending Today Card Article. Why: A waiting slot's text should read as not started yet. How: This fades the meta row. */
 
 
 	opacity : var( --cdn-pow-002-rec ); /* Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
@@ -163,7 +163,7 @@
 
 
 }
-.todCarArt[data-slot-pending-active] .carNamDiv { /* What: Pending Loader Card Name Row. Why: A waiting slot's text should read as not started yet. How: This fades the name row. */
+.todCarArt[data-slot-pending-active] .carNamDiv { /* What: Card Name Div In Pending Today Card Article. Why: A waiting slot's text should read as not started yet. How: This fades the name row. */
 
 
 	opacity : var( --cdn-pow-002-rec ); /* Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */

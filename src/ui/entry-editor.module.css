@@ -385,7 +385,7 @@
 
 
 }
-.togSwiBut[aria-pressed='true'] .swiKnoIta { /* What: On Switch Knob Italic. Why: An active switch has its knob on the right. How: This slides the knob across. */
+.togSwiBut[aria-pressed='true'] .swiKnoIta { /* What: Switch Knob Italic In On Toggle Switch Button. Why: An active switch has its knob on the right. How: This slides the knob across. */
 
 
 	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) ); /* Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 1 ~= 19.304px */

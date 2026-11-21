@@ -488,7 +488,7 @@
 
 
 }
-.scoTabBut[data-tab-select-active] .scoNamSpa { /* What: Selected Show Tab Name. Why: The selected tab's name reads in the accent color. How: This colors it. */
+.scoTabBut[data-tab-select-active] .scoNamSpa { /* What: Scope Name Span In Selected Scope Tab Button. Why: The selected tab's name reads in the accent color. How: This colors it. */
 
 
 	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */

@@ -143,7 +143,7 @@
 
 
 }
-.todCarArt[data-card-done-active] .carCheBut:focus-visible { /* What: Focused Done Page Tour Check Button. Why: On the filled box, the ring's gap and the checkmark's edge both need to stay distinct. How: This adds a thin background-colored inset line inside the gap. */
+.todCarArt[data-card-done-active] .carCheBut:focus-visible { /* What: Focused Card Check Button In Done Today Card Article. Why: On the filled box, the ring's gap and the checkmark's edge both need to stay distinct. How: This adds a thin background-colored inset line inside the gap. */
 
 
 	box-shadow : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ), inset 0 0 0 calc( var( --ver-rhy-m08 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.571px, Background Page Color = oklch( 0.985 0.003 240 ), Vertical Rhythm Base Minus 8 ~= 1.537px */
@@ -157,7 +157,7 @@
 
 
 }
-.todCarArt[data-card-done-active] .carCheBut { /* What: Done Page Tour Check Button. Why: A finished tour's check should read as checked. How: This fills the box with the accent color and sets its glyph in the background color. */
+.todCarArt[data-card-done-active] .carCheBut { /* What: Card Check Button In Done Today Card Article. Why: A finished tour's check should read as checked. How: This fills the box with the accent color and sets its glyph in the background color. */
 
 
 	background   : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -281,7 +281,7 @@
 
 
 }
-.todCarArt[data-card-done-active] .carNamDiv { /* What: Done Page Tour Card Name. Why: A finished tour's text should read as checked off. How: This mutes it and strikes it through with a hairline. */
+.todCarArt[data-card-done-active] .carNamDiv { /* What: Card Name Div In Done Today Card Article. Why: A finished tour's text should read as checked off. How: This mutes it and strikes it through with a hairline. */
 
 
 	color                : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */

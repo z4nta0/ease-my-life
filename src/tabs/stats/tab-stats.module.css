@@ -498,7 +498,7 @@
 
 
 }
-.scoTabBut[data-tab-select-active] .scoNamSpa { /* What: Selected Show Tab Name. Why: The selected tab's name reads in the accent color. How: This colors it. */
+.scoTabBut[data-tab-select-active] .scoNamSpa { /* What: Scope Name Span In Selected Scope Tab Button. Why: The selected tab's name reads in the accent color. How: This colors it. */
 
 
 	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -1429,7 +1429,7 @@
 
 
 }
-.detIteIte[data-row-done-active] .detNamSpa { /* What: Done Day Detail Name. Why: A done item reads in body color. How: This darkens it, keying off data-row-done-active. */
+.detIteIte[data-row-done-active] .detNamSpa { /* What: Detail Name Span In Done Detail Item Item. Why: A done item reads in body color. How: This darkens it, keying off data-row-done-active. */
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
@@ -1446,7 +1446,7 @@
 
 
 }
-.detIteIte[data-row-done-active] .detMarSpa { /* What: Done Day Detail Mark. Why: A done item's check reads in the accent. How: This colors it, keying off data-row-done-active. */
+.detIteIte[data-row-done-active] .detMarSpa { /* What: Detail Mark Span In Done Detail Item Item. Why: A done item's check reads in the accent. How: This colors it, keying off data-row-done-active. */
 
 
 	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
