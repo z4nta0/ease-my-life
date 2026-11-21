@@ -66,7 +66,7 @@ const CON_GAT_STR = 'cnd_hlp_restday'; // What: Conditional Gate String. Why: PI
 
 
 
-const CON_GAT_OBJ : Partial< ConRcdTyp > = { // What: Conditional Gate Object. Why: This is the day-off gate example described above, holding an existing item of value; PIC_GAT_OBJ depends on it via conditionalId. How: This is added by sedPicFun/removed by clePicFun exactly like any real, user-created conditional.
+const CON_GAT_OBJ : Partial< ConRcdTyp > = { // What: Conditional Gate Object. Why: This is the day-off gate example described above; PIC_GAT_OBJ depends on it via conditionalId. How: This is added by sedPicFun/removed by clePicFun exactly like any real, user-created conditional.
 
 
 	cardText : 'Take a rest day, no yard work today!', // What: Card Text String. Why: This is the message shown on Today whenever this conditional actually gates PIC_GAT_OBJ off for the day. How: This is read wherever a gated-off picker's own card text needs displaying.
@@ -114,8 +114,8 @@ const PIC_GAT_OBJ : PicForTyp & { id : string } = { // What: Picker Gate Object.
  *
  * @summary
  * The real onboarding samples only cover ease-up, ease-down, and dynamic:
- * these two round out all 5 picker modes (see seed.ts's own
- * SED_NAM_OBJ.MOD_DEF_OBJ) with a 'random' and a 'weighted' example.
+ * these two round out all 5 picker modes (see seed.ts's own MOD_DEF_OBJ)
+ * with a 'random' and a 'weighted' example.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -421,7 +421,7 @@ const sedTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 // #region Exports
 
-export { clePicFun, cleTasFun, sedPicFun, sedTasFun }; // What: Named Exports. Why: tab-picker.tsx and tab-data.tsx each seed and clear their own slice of help-mode sample data as their own help toggle turns on and off. How: This exports all 4 seed and clear functions by name.
+export { clePicFun, cleTasFun, sedPicFun, sedTasFun }; // What: Named Exports. Why: A page's help toggle seeds and clears its own slice of help-mode sample data through these functions. How: This exports all 4 seed and clear functions by name.
 
 // #endregion Exports
 

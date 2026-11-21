@@ -43,8 +43,7 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  *
  * @summary
  * Reports whether a page tour works on disposable sample copies. Only the
- * Pickers and Data tours seed and clear picker copies, so PagTouCom asks this
- * before seeding as a tour opens and before clearing as it closes.
+ * Pickers and Data tours seed and clear picker copies.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -114,11 +113,10 @@ const clePicFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Picker Fu
  * sedPicFun = Seed Picker Function
  *
  * @summary
- * Fired from Step 1's runFun (see PagTouCom below), between the nav click and
- * Step 2 ever mounting, the same "prepare what the NEXT step needs" timing
- * already used elsewhere in this file (e.g. Today's own Step 5 staging Step
- * 6's rename input). Guarded by existence so navigating back to Step 1 and
- * forward again (re-firing this runFun) can't create duplicate-id pickers.
+ * Fired from a page tour's Step 1 runFun, between the nav click and Step 2
+ * mounting, so the targets Step 2 points at already exist. Guarded by
+ * existence so navigating back to Step 1 and forward again (re-firing this
+ * runFun) can't create duplicate-id pickers.
  *
  * The Pickers/Data tours need real pickers on screen to point at (e.g. the
  * group filter row doesn't even render with fewer than 2 groups), but both
@@ -300,7 +298,7 @@ const sedTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 // #region Exports
 
-export { clePicFun, cleTasFun, neeCopFun, sedPicFun, sedTasFun }; // What: Named Exports. Why: PagTouCom seeds and clears the copies as a page tour opens and closes. How: This exports the seed, clear, and needs-copies functions by name; the id helpers stay private to this file.
+export { clePicFun, cleTasFun, neeCopFun, sedPicFun, sedTasFun }; // What: Named Exports. Why: A page tour seeds and clears these copies as it opens and closes. How: This exports the seed, clear, and needs-copies functions by name; the id helpers stay private to this file.
 
 // #endregion Exports
 

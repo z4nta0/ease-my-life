@@ -197,11 +197,10 @@ function cliHorFun ( tarRecObj : EdgRecTyp, tarDomEle : HTMLElement ) : EdgRecTy
  * finTarFun = Find Targets Function
  *
  * @summary
- * Same comma-separated-fallback semantics as the guided tour's own
- * finTarFun, kept as an independent copy rather than a shared import:
- * these two engines are meant to stay decoupled (see this file's own
- * header comment), and the two copies are small enough that
- * duplicating them costs far less than the coupling would.
+ * Finds a selector list's visible targets: it tries each comma-separated
+ * alternative in order (split by splSelFun) and returns the first
+ * alternative's elements that have a real size. Help mode and the guided
+ * tours both resolve selectors through it.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -224,7 +223,7 @@ function finTarFun ( selLisStr : string ) : HTMLElement[] {
 	for ( const oneSelStr of splSelFun( selLisStr ) ) { // What: Selector Alternative Loop. Why: Each comma-separated alternative must be tried in order until one actually matches something visible. How: This walks selLisStr's own alternatives left to right.
 
 
-		const tarEleArr = [ ...document.querySelectorAll< HTMLElement >( oneSelStr ) ] // What: Target Element Array. Why: Every element matching this one alternative needs collecting before it can be filtered down to visible ones. How: This spreads the live NodeList from querySelectorAll into a plain array.
+		const tarEleArr = [ ...document.querySelectorAll< HTMLElement >( oneSelStr ) ] // What: Target Element Array. Why: Every element matching this one alternative needs collecting before it can be filtered down to visible ones. How: This spreads the NodeList from querySelectorAll into a plain array.
 			.filter( ( curTarEle ) => { // What: Visibility Filter. Why: A matched element that is display:none or otherwise zero-sized should never count as a real, clickable target. How: This keeps only elements whose own bounding rect has a real width or height.
 
 
@@ -290,7 +289,7 @@ function uniRecFun ( tarEleArr : HTMLElement[] ) : BoxRecTyp {
 	let botCurNum = -Infinity; // What: Bottom Current Number. Why: The union must start from a value any real rect's own bottom will immediately beat. How: This starts at -Infinity, widened by Math.max as elements are folded in below.
 
 
-	tarEleArr.forEach( ( curTarEle ) => { // What: Element Union Loop. Why: Every matched element contributes to the overall union. How: This walks tarEleArr, folding each element's own clipped rect into the accumulator numbers above.
+	tarEleArr.forEach( ( curTarEle ) => { // What: Element Union Loop. Why: Each matched element can contribute to the overall union. How: This walks tarEleArr, folding each element's own clipped rect into the accumulator numbers above.
 
 
 		// #region Element Clipping
@@ -651,10 +650,10 @@ function detEdgFun ( chrRecObj : EdgRecTyp ) : string {
 function badBoxFun ( lefBadNum : number, topBadNum : number ) : BadRecTyp {
 
 
-	return { // What: Badge Rect Return. Why: The caller needs the final fixed-position badge rect back. How: This builds the shape both the rendered badge button and plaTipFun's own anchoring read.
+	return { // What: Badge Rect Return. Why: The caller needs the final fixed-position badge rect back. How: This builds the { bottom, height, left, top, width } rect for the badge's fixed-position placement.
 
 
-		bottom : topBadNum + rhyPixFun( 'p02' ), // What: Badge Bottom. Why: plaTipFun and hit tests read the badge's own bottom edge. How: This adds the badge size to topBadNum. // Vertical Rhythm Base Plus 2 ~= 25.572px
+		bottom : topBadNum + rhyPixFun( 'p02' ), // What: Badge Bottom. Why: The badge's rect needs its own bottom edge. How: This adds the badge size to topBadNum. // Vertical Rhythm Base Plus 2 ~= 25.572px
 		height : rhyPixFun( 'p02' ),             // What: Badge Height. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 2 ~= 25.572px
 		left   : lefBadNum,                      // What: Badge Left. Why: This is where the badge is drawn horizontally. How: This is the left position given.
 		top    : topBadNum,                      // What: Top. Why: This is where the badge is drawn vertically. How: This is the top position given.
@@ -676,20 +675,18 @@ function badBoxFun ( lefBadNum : number, topBadNum : number ) : BadRecTyp {
  * badRecFun = Badge Rect Function
  *
  * @summary
- * Badge geometry, shared between where it is actually drawn and where
- * an open tip anchored to it should point: a p02-step circle overlapping
- * the highlighted box's own top-right corner (matching the "small
- * corner marker" design, distinct from InfTipCom's own inline-trigger
- * placement). This falls back to the top-LEFT corner instead when the
- * target's own right edge sits past the viewport, e.g. a
- * horizontally-scrollable row (Today's group nav) whose own rect is
- * its full unclipped content width, not just what is currently
- * visible; the target's LEFT edge is always what is initially in view,
- * since these rows start scrolled to 0. cenBadBoo, true for groStr
- * items, centers the badge over the column's own top edge instead,
- * since a column group member's own right edge is a shared, touching
- * boundary with its neighbor rather than a free edge with neutral
- * space past it.
+ * Badge geometry, shared between where it is actually drawn and where an open
+ * tip anchored to it should point: a p02-step circle overlapping the
+ * highlighted box's own top-right corner (matching the "small corner marker"
+ * design, distinct from InfTipCom's own inline-trigger placement). This falls
+ * back to the top-LEFT corner instead when the target's own right edge sits
+ * past the viewport, e.g. a horizontally-scrollable row (Today's group nav)
+ * whose own rect is its full unclipped content width, not just what is
+ * currently visible; the target's LEFT edge is what is in view when such a row
+ * starts scrolled to 0. cenBadBoo, true for groStr items, centers the badge
+ * over the column's own top edge instead, since a column group member's own
+ * right edge is a shared, touching boundary with its neighbor rather than a
+ * free edge with neutral space past it.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -717,7 +714,7 @@ function badRecFun ( tarRecObj : BoxRecTyp & Partial< PadSidTyp >, cenBadBoo : b
 
 	const padTopNum = tarRecObj.padTopNum ?? rhyPixFun( 'm02' );                                               // What: Pad Top Number. Why: The badge's own vertical anchor must match whatever pad actually survived clipping on this target's own top side, not the flat default. How: This reads tarRecObj's own padTopNum, falling back to the flat pad margin. // Vertical Rhythm Base Minus 2 ~= 8.304px
 	const rawTopNum = tarRecObj.top - padTopNum - rhyPixFun( 'p02' ) / 2;                                      // What: Raw Top Number. Why: The badge's own natural vertical position overlaps up into the highlight box's own top-right corner. How: This subtracts the pad and half the badge's own size from the target's own top edge. // Vertical Rhythm Base Plus 2 ~= 25.572px
-	const topBadNum = rawTopNum < -rhyPixFun( 'p02' ) ? rawTopNum : Math.max( rhyPixFun( 'm05' ), rawTopNum ); // What: Top Badge Number. Why: A badge only ALMOST on screen (within one badge-height of the top edge) should nudge down to stay visible, but a badge genuinely scrolled far above the viewport must not get dragged all the way down to that same floor. How: This only applies the 4px floor once rawTopNum is no further than one badge-height above 0. // Vertical Rhythm Base Plus 2 ~= 25.572px, Vertical Rhythm Base Minus 5 ~= 3.571px
+	const topBadNum = rawTopNum < -rhyPixFun( 'p02' ) ? rawTopNum : Math.max( rhyPixFun( 'm05' ), rawTopNum ); // What: Top Badge Number. Why: A badge only ALMOST on screen (within one badge-height of the top edge) should nudge down to stay visible, but a badge genuinely scrolled far above the viewport must not get dragged all the way down to that same floor. How: This only applies the small top floor once rawTopNum is no further than one badge-height above 0. // Vertical Rhythm Base Plus 2 ~= 25.572px, Vertical Rhythm Base Minus 5 ~= 3.571px
 
 	// #endregion Vertical Position
 
@@ -929,7 +926,7 @@ function shaRadFun ( tarDomEle : HTMLElement, padWidNum : number, padHeiNum : nu
 
 // #region Exports
 
-export { badRecFun, type BoxRecTyp, claPadFun, cliChrFun, cliHorFun, detEdgFun, finTarFun, type HelRecTyp, type PadSidTyp, shaRadFun, type ShaRadTyp, uniRecFun }; // What: Named Exports. Why: HelOveCom measures, clips, and shapes every highlight with these, the guided tours find and measure their targets with finTarFun and uniRecFun, and the overlay, catalog, and tip type their rects, pads, and shapes with the four types. How: This exports every helper the overlay reads and the four types by name; CHR_PRI_OBJ stays private to this file.
+export { badRecFun, type BoxRecTyp, claPadFun, cliChrFun, cliHorFun, detEdgFun, finTarFun, type HelRecTyp, type PadSidTyp, shaRadFun, type ShaRadTyp, uniRecFun }; // What: Named Exports. Why: Help mode's overlay and the guided tours reach the measurement math through these named exports, and type their rects, pads, and shapes with the four types. How: This exports the public helpers and the four types by name; CHR_PRI_OBJ and the badge-box and default-radius helpers stay private to this file.
 
 // #endregion Exports
 

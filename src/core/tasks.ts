@@ -6,7 +6,7 @@
 import { DAY_ABB_ARR } from '../utils/date.ts';      // What: Day Abbreviation Array. Why: A weekly multi-day or yearly nth-weekday summary names its weekdays in short form. How: This is indexed by a weekday number from daysOfWeek or nthWeekday.
 import { DAY_FUL_ARR } from '../utils/date.ts';      // What: Day Full Array. Why: Single-day weekly and nth-weekday summaries name their weekday in full. How: This is indexed by a weekday number from daysOfWeek or nthWeekday.
 import { dimCouFun   } from '../utils/date.ts';      // What: Days-In-Month Count Function. Why: Monthly and yearly clamping need a month's real length. How: This is called with a year and 1-based month.
-import { HOL_NAM_OBJ } from './holidays.ts';         // What: Holidays Namespace Object. Why: A reminder's own weekend/holiday participation switches need to know whether a given date is an active day off. How: This is called (guarded, since it's an external module) inside visTodFun/todVisFun/nexEliFun below.
+import { HOL_NAM_OBJ } from './holidays.ts';         // What: Holidays Namespace Object. Why: A reminder's own weekend/holiday participation switches need to know whether a given date is an active day off. How: This is called, guarded since it's an external module, wherever a reminder's visibility or next occurrence is worked out.
 import { isoDayFun   } from '../utils/date.ts';      // What: ISO Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { nwmDayFun   } from '../utils/date.ts';      // What: Nth-Weekday-Month Day Function. Why: An nth-weekday schedule needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
 import { ordSufFun   } from '../utils/date.ts';      // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
@@ -17,7 +17,7 @@ import { wkdDayFun   } from '../utils/date.ts';      // What: Weekend Day Functi
 import type { HolStaTyp } from './data-model.ts'; // What: Holiday State Type. Why: Holiday exclusions read the saved holiday settings. How: This types every holStaObj parameter.
 import type { RemClaTyp } from './data-model.ts'; // What: Reminder Class Type. Why: optForFun hands back one class's switches. How: This types its return.
 import type { RemOptTyp } from './data-model.ts'; // What: Reminder Options Type. Why: Exclusions read the saved per-class switches. How: This types every remOptObj parameter.
-import type { TasRcdTyp } from './data-model.ts'; // What: Task Record Type. Why: Every function here reads saved reminders. How: This types each task parameter and the defaulted record.
+import type { TasRcdTyp } from './data-model.ts'; // What: Task Record Type. Why: The reminder functions here read saved reminders. How: This types each task parameter and the defaulted record.
 
 // #endregion Imports
 
@@ -165,7 +165,7 @@ const ancDatFun = ( genTimStr? : string | null ) : Date => genTimStr ? new Date(
  *
 */
 
-const curIsoFun = () : string => isoDayFun( new Date() ); // What: Current ISO Function. Why: A brand new task's own anchor/onceDate/createdAt fields, and every "is this in the past" comparison, need today's own date as a plain string. How: This calls isoDayFun against a freshly constructed Date.
+const curIsoFun = () : string => isoDayFun( new Date() ); // What: Current ISO Function. Why: A brand new task's own anchor/onceDate/createdAt fields, and the one-time summary's "is this in the past" check, need today's own date as a plain string. How: This calls isoDayFun against a freshly constructed Date.
 
 // #endregion curIsoFun
 
@@ -207,14 +207,14 @@ const eveNthFun = ( nthValNum : number, uniCouNum : number ) : boolean => nthVal
 
 
 
-const parIsoFun = ( isoValStr : string ) => { // What: Parse ISO Function. Why: Every anchor/onceDate comparison in this file needs a stored ISO string turned back into a real local-midnight Date. How: This splits the string into its 3 numeric parts and builds a Date from them.
+const parIsoFun = ( isoValStr : string ) => { // What: Parse ISO Function. Why: The anchor day counts and the onceDate search horizon need a stored ISO string turned back into a real local-midnight Date. How: This splits the string into its 3 numeric parts and builds a Date from them.
 
 
 	const [ yeaValNum, monValNum, dayValNum ] = ( isoValStr || '' ).split( '-' ).map( Number ); // What: Year Value Number. Why: An anchor/onceDate ISO string needs splitting into its 3 numeric parts before a local-midnight Date can be built from it. How: This splits isoValStr (or an empty string when falsy) on '-', maps each segment through Number, and keeps the first. // What: Month Value Number. Why: The month is the string's second part. How: This keeps the second segment. // What: Day Value Number. Why: The day is the string's third part. How: This keeps the third segment.
 
 
 
-	return new Date( yeaValNum, ( monValNum || 1 ) - 1, dayValNum || 1 ); // What: Parsed ISO Date Return. Why: Every anchor/onceDate comparison elsewhere in this file needs a real local-midnight Date, not a string (this avoids the UTC-parsing drift a bare `new Date(isoValStr)` would introduce). How: This builds a Date from the 3 destructured parts, each falling back to a safe default (month 1, day 1) when isoValStr was malformed or empty.
+	return new Date( yeaValNum, ( monValNum || 1 ) - 1, dayValNum || 1 ); // What: Parsed ISO Date Return. Why: The day counts and the search horizon elsewhere in this file need a real local-midnight Date, not a string (this avoids the UTC-parsing drift a bare `new Date(isoValStr)` would introduce). How: This builds a Date from the 3 destructured parts, each falling back to a safe default (month 1, day 1) when isoValStr was malformed or empty.
 
 
 };
@@ -383,7 +383,7 @@ const intCouFun = ( tasRcdObj : TasRcdTyp ) : number => Math.max( 1, tasRcdObj.i
  *
 */
 
-function isaDonFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : boolean { return !!tasRcdObj.lastDone && tasRcdObj.lastDone === isoDayFun( cheDatObj ); } // What: Is-A Done Body. Why: Every caller (Today's checkbox state, streak reconciliation) needs a single boolean answer, not lastDone's own raw string. How: This compares tasRcdObj's own lastDone against cheDatObj's own iso string.
+function isaDonFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : boolean { return !!tasRcdObj.lastDone && tasRcdObj.lastDone === isoDayFun( cheDatObj ); } // What: Is-A Done Body. Why: A single boolean answer is easier to use than lastDone's own raw string. How: This compares tasRcdObj's own lastDone against cheDatObj's own iso string.
 
 // #endregion isaDonFun
 
@@ -395,9 +395,8 @@ function isaDonFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : bo
  * isaFulFun = Is-A Full Function
  *
  * @summary
- * A completed one-time task, on any day including today. Generate
- * purges these outright rather than waiting for isaStaFun (which only
- * catches a PRIOR day's completion).
+ * A completed one-time task, on any day including today. Unlike isaStaFun,
+ * which only catches a PRIOR day's completion.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -413,7 +412,7 @@ function isaDonFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : bo
  *
 */
 
-function isaFulFun ( tasRcdObj : TasRcdTyp ) : boolean { return tasRcdObj.repeat === 'once' && !!tasRcdObj.lastDone; } // What: Is-A Full Body. Why: store.ts's own Generate action calls this to drop a one-time task the moment it's done, same day included. How: This checks tasRcdObj is a 'once' task with any lastDone value at all.
+function isaFulFun ( tasRcdObj : TasRcdTyp ) : boolean { return tasRcdObj.repeat === 'once' && !!tasRcdObj.lastDone; } // What: Is-A Full Body. Why: A one-time task completed on any day, today included, needs a single boolean verdict. How: This checks tasRcdObj is a 'once' task with any lastDone value at all.
 
 // #endregion isaFulFun
 
@@ -643,7 +642,7 @@ function dueTodFun ( tasLisArr : TasRcdTyp[], cheDatObj : Date = new Date() ) : 
  *
 */
 
-const isaReuFun = ( tasRcdObj : TasRcdTyp ) : boolean => tasRcdObj.repeat !== 'once'; // What: Is-A Recurring Function. Why: optForFun/visTodFun/todVisFun all need to know which of the 2 option classes governs a given task. How: This is true for any repeat kind other than 'once'.
+const isaReuFun = ( tasRcdObj : TasRcdTyp ) : boolean => tasRcdObj.repeat !== 'once'; // What: Is-A Recurring Function. Why: optForFun needs to know which of the 2 option classes governs a given task. How: This is true for any repeat kind other than 'once'.
 
 // #endregion isaReuFun
 
@@ -682,7 +681,7 @@ function isaStaFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : bo
 	const lasDonBoo = !!tasRcdObj.lastDone;                          // What: Last Done Boolean. Why: A one-time task that was never completed hasn't served its purpose yet. How: This is true once tasRcdObj has a lastDone date, meaning the task has been completed.
 	const othDayBoo = tasRcdObj.lastDone !== isoDayFun( cheDatObj ); // What: Other Day Boolean. Why: A task completed today must stay visible for the rest of the day. How: This is true when tasRcdObj's own lastDone differs from cheDatObj's own date key.
 
-	const isaStaBoo = isaOncBoo && lasDonBoo && othDayBoo; // What: Is-A Stale Boolean. Why: migrate.ts's own migStaFun() calls this to drop one-time tasks that have already served their purpose. How: This combines the three checks above, true only for a 'once' task completed on some other day.
+	const isaStaBoo = isaOncBoo && lasDonBoo && othDayBoo; // What: Is-A Stale Boolean. Why: A one-time task is stale only when all three checks above agree. How: This combines the three checks above, true only for a 'once' task completed on some other day.
 
 
 
@@ -790,7 +789,7 @@ function sumTasFun ( tasRcdObj : TasRcdTyp ) : string {
 
 		}
 
-		case 'weekly': { // What: Weekly Case Block. Why: A weekly summary reads very differently depending on whether interval is 1 (a plain day-name label) or greater (an "every N weeks" label with a secondary day clause). How: This sorts daysOfWeek once, then branches entirely on intCouNum.
+		case 'weekly': { // What: Weekly Case Block. Why: A weekly summary reads very differently depending on whether interval is 1 (a plain day-name label) or greater (an "every N weeks" label with a secondary day clause). How: This sorts daysOfWeek once, then branches on intCouNum.
 
 
 			const dowSetArr = [ ...( tasRcdObj.daysOfWeek || [] ) ].sort( ( dowOneNum, dowTwoNum ) => dowOneNum - dowTwoNum ); // What: Day-Of-Week Set Array. Why: Every branch below reads daysOfWeek in ascending order, so a stray unsorted save doesn't produce a scrambled label. How: This spreads and sorts tasRcdObj's own daysOfWeek numerically.
@@ -835,12 +834,12 @@ function sumTasFun ( tasRcdObj : TasRcdTyp ) : string {
 
 
 
-			const dayLabStr = dowSetArr.length === 7 // What: Day Label String. Why: This is the secondary day-set clause the unit phrase is joined with below. How: This chains 4 mutually exclusive day-set shapes, falling back to a raw comma list, reusing wkdSetBoo for the weekend shape.
+			const dayLabStr = dowSetArr.length === 7 // What: Day Label String. Why: This is the secondary day-set clause the unit phrase is joined with below. How: This chains 4 mutually exclusive day-set shapes, falling back to a raw comma list, reusing isaWkdFun for the weekend shape.
 				? 'every day'                                                                                               // What: Full Week Branch. Why: All 7 days selected reads better as a single plain phrase than a 7-day list. How: This returns the plain phrase when dowSetArr's own length is 7.
 				: ( dowSetArr.length === 5 && [ 1, 2, 3, 4, 5 ].every( ( dowValNum ) => dowSetArr.includes( dowValNum ) ) ) // What: Weekdays Check. Why: Exactly Mon-Fri is common enough to deserve its own plain phrase. How: This tests for exactly the 5 weekday numbers next.
 				? 'weekdays'                                                                                                // What: Weekdays Branch. Why: See the check above. How: This returns the plain phrase when that check holds.
-				: isaWkdFun( dowSetArr )                                                                                    // What: Weekend Check. Why: Exactly Sun+Sat also deserves its own plain phrase. How: This tests wkdSetBoo next.
-				? 'weekends'                                                                                                // What: Weekends Branch. Why: See the check above. How: This returns the plain phrase when wkdSetBoo is true.
+				: isaWkdFun( dowSetArr )                                                                                    // What: Weekend Check. Why: Exactly Sun+Sat also deserves its own plain phrase. How: This tests isaWkdFun next.
+				? 'weekends'                                                                                                // What: Weekends Branch. Why: See the check above. How: This returns the plain phrase when isaWkdFun says the set is a weekend.
 				: dowSetArr.length === 1                                                                                    // What: Single Day Check. Why: Exactly one selected day reads best as its own full weekday name. How: This tests for a single entry next.
 				? DAY_FUL_ARR[ dowSetArr[ 0 ] ]                                                                             // What: Single Day Branch. Why: See the check above. How: This looks dowSetArr's own only entry up in DAY_FUL_ARR.
 				: dowSetArr.map( ( dowValNum ) => DAY_ABB_ARR[ dowValNum ] ).join( ', ' );                                  // What: Fallback Day List Branch. Why: Any other day combination falls back to a plain comma-separated abbreviated list. How: This maps every dowSetArr entry through DAY_ABB_ARR and joins them.
@@ -1250,7 +1249,7 @@ function todVisFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 
 
 
-	return { // What: Today Visibility Return. Why: The caller needs the full advisory shape described in this function's own @summary above. How: This builds one plain object from every value computed above.
+	return { // What: Today Visibility Return. Why: The caller needs the full advisory shape described in this function's own @summary above. How: This builds one plain object from the values computed above.
 
 
 		cauArr : cauValArr,                                                                        // What: Cause Array. Why: A caller wording a fuller note (more than one cause can apply at once) needs the complete set. How: This is cauValArr, computed above.
@@ -1346,7 +1345,7 @@ function visTodFun ( tasLisArr : TasRcdTyp[], remOptObj : RemOptTyp | null | und
 
 // #region Exports
 
-const TAS_NAM_OBJ = { // What: Tasks Namespace Object. Why: store.ts, the reminders UI files, day-log.tsx, tab-today.tsx, tab-stats.tsx, seed.ts, and the onboarding modules all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own internal implementations onto an external property name matching it exactly, swept everywhere at once so external and internal names never drift apart.
+const TAS_NAM_OBJ = { // What: Tasks Namespace Object. Why: Consumers import this one namespace object rather than several individual named exports. How: This maps each of this file's public functions onto an external property name matching its internal name exactly, so external and internal names never drift apart.
 
 
 	ancDatFun : ancDatFun, // What: Anchor Date Function. Why: Callers need the generator-anchored "what day is it" Date by this exact name. How: This re-exports ancDatFun under its own matching name.
@@ -1358,9 +1357,9 @@ const TAS_NAM_OBJ = { // What: Tasks Namespace Object. Why: store.ts, the remind
 	isaDueFun : isaDueFun, // What: Is-A Due Function. Why: Callers check whether a task is due on a given date by this exact name. How: This re-exports isaDueFun under its own matching name.
 	isaFulFun : isaFulFun, // What: Is-A Full Function. Why: Callers drop a same-day completed one-time task by this exact name. How: This re-exports isaFulFun under its own matching name.
 	isaReuFun : isaReuFun, // What: Is-A Recurring Function. Why: Callers check whether a task belongs to the recurring (vs one-time) options class by this exact name. How: This re-exports isaReuFun under its own matching name.
-	isaStaFun : isaStaFun, // What: Is-A Stale Function. Why: migrate.ts's own migStaFun() drops a previous-day completed one-time task by this exact name. How: This re-exports isaStaFun under its own matching name.
+	isaStaFun : isaStaFun, // What: Is-A Stale Function. Why: Callers drop a previous-day completed one-time task by this exact name. How: This re-exports isaStaFun under its own matching name.
 	nexEliFun : nexEliFun, // What: Next Eligible Function. Why: Callers need a task's own next eligible occurrence by this exact name. How: This re-exports nexEliFun under its own matching name.
-	norOptFun : norOptFun, // What: Normalize Options Function. Why: migrate.ts's own migStaFun() and every opts-reading caller need a fully-shaped options object by this exact name. How: This re-exports norOptFun under its own matching name.
+	norOptFun : norOptFun, // What: Normalize Options Function. Why: Callers need a fully-shaped options object by this exact name. How: This re-exports norOptFun under its own matching name.
 	optForFun : optForFun, // What: Options For Function. Why: Callers need a specific task's own governing options object by this exact name. How: This re-exports optForFun under its own matching name.
 	sumTasFun : sumTasFun, // What: Summary Task Function. Why: Callers need a task's own human-readable schedule summary by this exact name. How: This re-exports sumTasFun under its own matching name.
 	todVisFun : todVisFun, // What: Today Visibility Function. Why: Callers need the full visible/cause/next advisory for a single task by this exact name. How: This re-exports todVisFun under its own matching name.
@@ -1371,7 +1370,7 @@ const TAS_NAM_OBJ = { // What: Tasks Namespace Object. Why: store.ts, the remind
 
 
 
-export { TAS_NAM_OBJ, type TodVisTyp }; // What: Named Exports. Why: Every consumer reaches this file's own reminders engine through the one namespace object, and the schedule editor types todVisFun's result with TodVisTyp. How: This exports both by name at the very end of the file.
+export { TAS_NAM_OBJ, type TodVisTyp }; // What: Named Exports. Why: Callers reach this file's reminders engine through the one namespace object, and type todVisFun's result with TodVisTyp. How: This exports both by name at the very end of the file.
 
 // #endregion Exports
 
