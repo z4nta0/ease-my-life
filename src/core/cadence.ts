@@ -6,7 +6,7 @@
 import { DAY_FUL_ARR } from '../utils/date.ts';  // What: Day Full Array. Why: Cadence summaries and the locked-day tip name a weekday in full. How: This is indexed by a weekday number such as anchorDow or nthWeekday.
 import { dimCouFun   } from '../utils/date.ts';  // What: Days-In-Month Count Function. Why: Monthly and yearly anchors clamp to the month's real length. How: This is called with a year and 1-based month.
 import { isaIntFun   } from '../utils/guard.ts'; // What: Is-An Integer Function. Why: Saved anchor fields may be missing, and normalizing them needs TypeScript to know a passing value is a number. How: This replaces Number.isInteger in every anchor check.
-import { isoDayFun   } from '../utils/date.ts';  // What: ISO Day Function. Why: Period keys and generated log rows are local-calendar YYYY-MM-DD strings. How: This formats a Date as that key.
+import { isoDayFun   } from '../utils/date.ts';  // What: ISO Day Function. Why: Period keys are local-calendar YYYY-MM-DD strings. How: This formats a Date as that key.
 import { MON_ABB_ARR } from '../utils/date.ts';  // What: Month Abbreviation Array. Why: A yearly nth-weekday summary names its month in short form. How: This is indexed by anchorMonth minus 1.
 import { nwmDayFun   } from '../utils/date.ts';  // What: Nth-Weekday-Month Day Function. Why: An nth-weekday cadence needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
 import { ordSufFun   } from '../utils/date.ts';  // What: Ordinal Suffix Function. Why: Cadence summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
@@ -45,8 +45,8 @@ import type { PicRcdTyp } from './data-model.ts'; // What: Picker Record Type. W
  * 'nthWeekday' with the same nthOrdinal/nthWeekday fields and clamp as
  * monthly, scoped to that one anchor month.
  *
- * The dateMode/nthOrdinal/nthWeekday fields and their semantics mirror
- * tasks.ts' own monthly reminders exactly; the calendar math both share
+ * The dateMode/nthOrdinal/nthWeekday fields and their semantics match
+ * tasks.ts' own monthly reminders; the calendar math both share
  * (days in a month, the nth weekday, ordinal suffixes) comes from
  * utils/date.ts, while each module keeps its own schedule logic.
  *
@@ -64,15 +64,11 @@ import type { PicRcdTyp } from './data-model.ts'; // What: Picker Record Type. W
  * conversion anywhere in this file. Drift is 100 divided by periods,
  * exactly as the engine already stores it.
  *
- * The exported CAD_NAM_OBJ namespace object's own property names are a
- * cross-file contract read directly by store.ts, tab-today.tsx,
- * tab-picker.tsx, tab-data.tsx, tab-stats.tsx, day-log.tsx, and
- * cadence-control.tsx. Same as pickers.ts's own PIC_NAM_OBJ, CAD_NAM_OBJ's
- * own external names were swept to match their internal implementation
- * exactly, with every external call site updated to match. The explicit
- * `name : name` mapping (never JS shorthand) is kept anyway, so a future
- * internal rename still has to touch the export deliberately rather than
- * silently renaming the external API out from under its callers.
+ * The exported CAD_NAM_OBJ namespace object's property names match the names
+ * of the internal implementations they map to. The explicit `name : name`
+ * mapping (never JS shorthand) is kept anyway, so a future internal rename
+ * still has to touch the export deliberately rather than silently renaming
+ * the external API.
  *
  * Sections:
  *  - Types
@@ -88,7 +84,7 @@ import type { PicRcdTyp } from './data-model.ts'; // What: Picker Record Type. W
 
 // #region Types
 
-type CadFieTyp = Partial< Pick< PicRcdTyp, 'anchorDay' | 'anchorDom' | 'anchorDow' | 'anchorMonth' | 'cadence' | 'dateMode' | 'daysOfWeek' | 'id' | 'lastRunPeriod' | 'nthOrdinal' | 'nthWeekday' > >; // What: Cadence Field Type. Why: Every cadence helper reads only a picker's cadence fields, from saved pickers and half-filled drafts alike. How: This picks those fields from PicRcdTyp, every one optional, since each helper falls back to a default.
+type CadFieTyp = Partial< Pick< PicRcdTyp, 'anchorDay' | 'anchorDom' | 'anchorDow' | 'anchorMonth' | 'cadence' | 'dateMode' | 'daysOfWeek' | 'id' | 'lastRunPeriod' | 'nthOrdinal' | 'nthWeekday' > >; // What: Cadence Field Type. Why: The cadence helpers that take a picker read only its cadence fields, from saved pickers and half-filled drafts alike. How: This picks those fields from PicRcdTyp, all optional, since these helpers fall back to a default where one is missing.
 
 // #endregion Types
 
@@ -222,12 +218,12 @@ type CadNorTyp = Required< Pick< PicRcdTyp, 'anchorDay' | 'anchorDom' | 'anchorD
 function norCadFun ( picLikObj : CadFieTyp = {} ) : CadNorTyp {
 
 
-	const curDatObj = new Date();                                                   // What: Current Date Object. Why: Every default below (anchorDow, anchorDom, anchorMonth, anchorDay, nthWeekday) falls back to today's own value when picLikObj has nothing set. How: This is read once and reused across the whole return object below.
+	const curDatObj = new Date();                                                   // What: Current Date Object. Why: The anchor and weekday defaults below fall back to today's own value when picLikObj has nothing set. How: This is read once and reused across the whole return object below.
 	const curCadStr = isaCadFun( picLikObj.cadence ) ? picLikObj.cadence : 'daily'; // What: Current Cadence String. Why: An invalid or missing cadence value must fall back to 'daily' rather than propagate a bad value. How: This checks picLikObj's own cadence via isaCadFun, defaulting to 'daily' otherwise.
 
 
 
-	return { // What: Normalized Cadence Object Return. Why: Every caller of norCadFun needs this exact same full set of fields back, whatever picLikObj did or didn't already have. How: This builds the object below from curCadStr, curDatObj, and picLikObj's own existing fields.
+	return { // What: Normalized Cadence Object Return. Why: The result is a complete, defaulted set of cadence fields, whatever picLikObj did or didn't already have. How: This builds the object below from curCadStr, curDatObj, and picLikObj's own existing fields.
 
 
 		anchorDay   : isaIntFun( picLikObj.anchorDay ) ? picLikObj.anchorDay : curDatObj.getDate(),          // What: Anchor Day. Why: A yearly cadence also needs its own chosen day within anchorMonth, defaulted to today's when not yet set. How: This keeps picLikObj's own anchorDay when it's a real integer, curDatObj's own date otherwise.
@@ -331,7 +327,7 @@ function tdmResFun ( picCadObj : CadFieTyp, yeaValNum : number, monOneNum : numb
 function perStaFun ( picCadObj : CadFieTyp, cheDatObj : Date = new Date() ) : Date {
 
 
-	const curCadStr = picCadObj.cadence || 'daily'; // What: Current Cadence String. Why: Every branch below needs picCadObj's own cadence, defaulted the same way every other function in this file defaults it. How: This reads picCadObj.cadence, falling back to 'daily' when missing.
+	const curCadStr = picCadObj.cadence || 'daily'; // What: Current Cadence String. Why: Every branch below needs picCadObj's own cadence, defaulted to 'daily'. How: This reads picCadObj.cadence, falling back to 'daily' when missing.
 	const midDatObj = midDatFun( cheDatObj );       // What: Midnight Date Object. Why: Every branch below computes its own period start relative to cheDatObj with its time-of-day stripped. How: This calls midDatFun once and reuses the result throughout.
 
 
@@ -438,7 +434,7 @@ function perStaFun ( picCadObj : CadFieTyp, cheDatObj : Date = new Date() ) : Da
  *
 */
 
-function perKeyFun ( picCadObj : CadFieTyp, cheDatObj : Date = new Date() ) : string { return isoDayFun( perStaFun( picCadObj, cheDatObj ) ); } // What: Period Key Body. Why: Every caller needs a plain comparable string, not a Date instance. How: This formats perStaFun's own resolved period start via isoDayFun.
+function perKeyFun ( picCadObj : CadFieTyp, cheDatObj : Date = new Date() ) : string { return isoDayFun( perStaFun( picCadObj, cheDatObj ) ); } // What: Period Key Body. Why: A period key has to be a plain comparable string, not a Date instance. How: This formats perStaFun's own resolved period start via isoDayFun.
 
 // #endregion perKeyFun
 
@@ -480,7 +476,7 @@ function perKeyFun ( picCadObj : CadFieTyp, cheDatObj : Date = new Date() ) : st
 function fulPerFun ( picCadObj : CadFieTyp, picLogArr : PclRowTyp[] | null | undefined, cheDatObj : Date = new Date() ) : boolean {
 
 
-	if ( ( picCadObj.cadence || 'daily' ) === 'daily' ) return false; // What: Daily Cadence Guard. Why: Daily pickers are handled entirely by a separate legacy path, not this period-based check. How: This returns false early whenever picCadObj's own (defaulted) cadence is 'daily'.
+	if ( ( picCadObj.cadence || 'daily' ) === 'daily' ) return false; // What: Daily Cadence Guard. Why: A daily cadence has no period to check here. How: This returns false early whenever picCadObj's own (defaulted) cadence is 'daily'.
 
 
 
@@ -577,7 +573,7 @@ const locTipFun = ( dowValNum : number, souLabStr : string = 'How often?' ) : st
 function sumCadFun ( picCadObj : CadFieTyp ) : string {
 
 
-	const curCadStr = picCadObj.cadence || 'daily'; // What: Current Cadence String. Why: Every branch below needs picCadObj's own cadence, defaulted the same way every other function in this file defaults it. How: This reads picCadObj.cadence, falling back to 'daily' when missing.
+	const curCadStr = picCadObj.cadence || 'daily'; // What: Current Cadence String. Why: Every branch below needs picCadObj's own cadence, defaulted to 'daily'. How: This reads picCadObj.cadence, falling back to 'daily' when missing.
 
 
 	if ( curCadStr === 'daily' ) return 'Daily'; // What: Daily Case Return. Why: A daily cadence has no anchor to summarize at all. How: This returns the plain label unconditionally.
@@ -588,7 +584,7 @@ function sumCadFun ( picCadObj : CadFieTyp ) : string {
 
 
 
-	if ( curCadStr === 'monthly' ) { // What: Monthly Case Check. Why: A monthly cadence's own summary branches on dateMode, a multi-line ternary unlike the other cadences' plain one-line returns. How: This branches into the nth-weekday-versus-plain-date summary below whenever curCadStr is 'monthly'.
+	if ( curCadStr === 'monthly' ) { // What: Monthly Case Check. Why: A monthly cadence's own summary branches on dateMode, a multi-line ternary unlike daily's and weekly's plain one-line returns. How: This branches into the nth-weekday-versus-plain-date summary below whenever curCadStr is 'monthly'.
 
 
 		return picCadObj.dateMode === 'nthWeekday' // What: Monthly Case Return. Why: A monthly cadence summarizes differently depending on dateMode. How: This branches on picCadObj's own dateMode, naming either an nth-weekday or a plain day-of-month.
@@ -600,7 +596,7 @@ function sumCadFun ( picCadObj : CadFieTyp ) : string {
 
 
 
-	if ( curCadStr === 'yearly' ) { // What: Yearly Case Check. Why: A yearly cadence's own summary needs one of two entirely different string shapes depending on dateMode, unlike the other cadences' plain one-line returns. How: This branches into the nth-weekday-versus-plain-date summary below whenever curCadStr is 'yearly'.
+	if ( curCadStr === 'yearly' ) { // What: Yearly Case Check. Why: A yearly cadence's own summary needs one of two entirely different string shapes depending on dateMode, unlike daily's and weekly's plain one-line returns. How: This branches into the nth-weekday-versus-plain-date summary below whenever curCadStr is 'yearly'.
 
 
 		if ( picCadObj.dateMode === 'nthWeekday' ) return `Yearly · ${ ordSufFun( picCadObj.nthOrdinal ?? 1 ) } ${ DAY_FUL_ARR[ picCadObj.nthWeekday ?? 0 ] } of ${ MON_ABB_ARR[ ( picCadObj.anchorMonth ?? 1 ) - 1 ] }`; // What: Yearly Nth-Weekday Case Return. Why: A yearly cadence in nth-weekday mode names its ordinal, weekday, and anchor month all at once. How: This builds the summary string from picCadObj's own nthOrdinal/nthWeekday/anchorMonth.
@@ -655,7 +651,7 @@ function sumCadFun ( picCadObj : CadFieTyp ) : string {
 const tipMesFun = ( cadValStr : string, dayLabStr : string = 'Days' ) : string => { // What: Tip Message Function. Why: The "?" InfTipCom on each cadence needs copy explaining how that cadence interacts with the Days control, and the control is named differently per surface. How: This switches on cadValStr (defaulted to 'daily'), interpolating dayLabStr into whichever message applies.
 
 
-	switch ( cadValStr || 'daily' ) { // What: Cadence Tip Switch. Why: Each cadence needs its own tip copy explaining how it interacts with the Days control, defaulted to 'daily' the same way every other function in this file defaults a missing cadence. How: This branches on cadValStr, falling through the shared monthly/yearly warning and defaulting to a plain hint for daily.
+	switch ( cadValStr || 'daily' ) { // What: Cadence Tip Switch. Why: Each cadence needs its own tip copy explaining how it interacts with the Days control, defaulted to 'daily' when the cadence is missing. How: This branches on cadValStr, falling through the shared monthly/yearly warning and defaulting to a plain hint for daily.
 
 
 		case 'weekly': return `WARNING: The day you select here will be auto-selected in the ${ dayLabStr } control below and cannot be deselected.`; // What: Weekly Case Return. Why: A weekly cadence force-selects its own anchor day in the days control below (see enfWeeFun), which the user needs to be warned about. How: This returns a WARNING explaining that lock.
@@ -729,14 +725,14 @@ function uniWorFun ( cadValStr : string | null | undefined, couValNum : number )
 
 // #region Exports
 
-const CAD_NAM_OBJ = { // What: Cadence Namespace Object. Why: store.ts, tab-today.tsx, tab-picker.tsx, tab-data.tsx, tab-stats.tsx, day-log.tsx, and cadence-control.tsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own internal implementations that another file uses onto an external property name matching it exactly.
+const CAD_NAM_OBJ = { // What: Cadence Namespace Object. Why: This file's cadence logic is reached through one namespace object rather than several individual named exports. How: This maps each internal implementation another file uses onto an external property name matching it exactly.
 
 
 	enfWeeFun : enfWeeFun, // What: Enforce Weekly Function. Why: Callers need a weekly picker's own anchor day folded back into its selected days by this exact name. How: This re-exports enfWeeFun under its own matching name.
 	fulPerFun : fulPerFun, // What: Full Period Function. Why: Callers check whether a picker has already completed its own current period by this exact name. How: This re-exports fulPerFun under its own matching name.
 	isaCadFun : isaCadFun, // What: Is-A Cadence Function. Why: Callers validate an arbitrary string as a real cadence value by this exact name. How: This re-exports isaCadFun under its own matching name.
 	locTipFun : locTipFun, // What: Locked Tip Function. Why: Callers need the explanatory tooltip text for a weekly cadence's own locked anchor day by this exact name. How: This re-exports locTipFun under its own matching name.
-	norCadFun : norCadFun, // What: Normalize Cadence Function. Why: store.ts calls this to fill in every cadence-related field a picker needs, defaulted consistently. How: This re-exports norCadFun under its own matching name.
+	norCadFun : norCadFun, // What: Normalize Cadence Function. Why: Callers need every cadence-related field a picker needs filled in, defaulted consistently, by this exact name. How: This re-exports norCadFun under its own matching name.
 	perKeyFun : perKeyFun, // What: Period Key Function. Why: Callers need a given date's own comparable period key by this exact name. How: This re-exports perKeyFun under its own matching name.
 	sumCadFun : sumCadFun, // What: Summary Cadence Function. Why: Callers need a picker's own human-readable cadence summary by this exact name. How: This re-exports sumCadFun under its own matching name.
 	tipMesFun : tipMesFun, // What: Tip Message Function. Why: Callers need the explanatory tooltip text for a given cadence by this exact name. How: This re-exports tipMesFun under its own matching name.
@@ -747,7 +743,7 @@ const CAD_NAM_OBJ = { // What: Cadence Namespace Object. Why: store.ts, tab-toda
 
 
 
-export { CAD_NAM_OBJ, type CadFieTyp }; // What: Cadence Namespace Export. Why: Every consumer reaches this file's cadence logic through the one namespace object, and the editors type their cadence state with CadFieTyp. How: This exports CAD_NAM_OBJ by name at the very end of the file.
+export { CAD_NAM_OBJ, type CadFieTyp }; // What: Named Exports. Why: Other files reach this file's cadence logic through the namespace object, and callers type their cadence state with CadFieTyp. How: This exports CAD_NAM_OBJ and CadFieTyp by name at the very end of the file.
 
 // #endregion Exports
 

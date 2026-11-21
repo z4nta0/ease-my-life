@@ -81,8 +81,8 @@ type ConRcdTyp = { // What: Conditional Record Type. Why: A conditional is the d
 	id           : string;                                                                                // What: ID. Why: Pickers and log rows refer to a conditional by it. How: This is its stable identifier.
 	mode         : ModNamTyp;                                                                             // What: Mode. Why: A conditional decides whether to trigger in one of the five picker ways. How: This names which.
 	name         : string;                                                                                // What: Name. Why: The conditional is listed and logged by name. How: This is the user's own label for it.
-	oddsPct      : number;                                                                                // What: Odds Percent. Why: The random mode triggers with a fixed chance. How: This is that chance, 0 to 100.
-	threshold    : number;                                                                                // What: Threshold. Why: The ease and dynamic modes trigger once value crosses a line. How: This is that line, normally 100.
+	oddsPct      : number;                                                                                // What: Odds Percent. Why: The weighted and dynamic modes trigger with a chance the user sets. How: This is that base chance as a percent.
+	threshold    : number;                                                                                // What: Threshold. Why: The ease modes trigger once value crosses a line. How: This is that line, normally 100.
 	triggered    : boolean;                                                                               // What: Triggered. Why: Today's generation needs to know whether the gate is closed. How: This is true while the conditional suppresses its pickers.
 	value        : number;                                                                                // What: Value. Why: The ease and dynamic modes track their own drifting charge. How: This holds that charge.
 	weight       : number;                                                                                // What: Weight. Why: The weighted modes scale the trigger chance. How: This is that weight.
@@ -448,7 +448,7 @@ type StaAppTyp = { // What: State App Type. Why: The whole app runs on one saved
 
 // #region Exports
 
-export { type AppSetTyp, type CadNamTyp, type CdlRowTyp, type CheStaTyp, type ConRcdTyp, type CusPalTyp, type DaiSetTyp, type DatModTyp, type EntKinTyp, type EntPenTyp, type EntRevTyp, type HolStaTyp, type IteRcdTyp, type ModNamTyp, type OnbStaTyp, type PclOutTyp, type PclRowTyp, type PclSouTyp, type PicArgTyp, type PicForTyp, type PicRcdTyp, type RawSavTyp, type RemClaTyp, type RemKinTyp, type RemOptTyp, type RepNamTyp, type RmlRowTyp, type RslRowTyp, type StaAppTyp, type TasArgTyp, type TasRcdTyp, type TodEntTyp, type VclRowTyp }; // What: Named Type Exports. Why: core/, state/, and the UI all read the same saved records. How: This exports the record types and value sets other files read by name, each marked type so it disappears from the build.
+export { type AppSetTyp, type CadNamTyp, type CdlRowTyp, type CheStaTyp, type ConRcdTyp, type CusPalTyp, type DaiSetTyp, type DatModTyp, type EntKinTyp, type EntPenTyp, type EntRevTyp, type HolStaTyp, type IteRcdTyp, type ModNamTyp, type OnbStaTyp, type PclOutTyp, type PclRowTyp, type PclSouTyp, type PicArgTyp, type PicForTyp, type PicRcdTyp, type RawSavTyp, type RemClaTyp, type RemKinTyp, type RemOptTyp, type RepNamTyp, type RmlRowTyp, type RslRowTyp, type StaAppTyp, type TasArgTyp, type TasRcdTyp, type TodEntTyp, type VclRowTyp }; // What: Named Exports. Why: Other files read the saved record types by name. How: This exports the record types and value sets by name, each marked type so it disappears from the build.
 
 // #endregion Exports
 

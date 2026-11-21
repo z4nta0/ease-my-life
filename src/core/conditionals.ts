@@ -6,7 +6,7 @@
 import { PIC_NAM_OBJ } from './pickers.ts'; // What: Pickers Namespace Object. Why: A conditional falls back to the pickers' shared full-charge ceiling and default drift band. How: This reads its THR_VAL_NUM and DEF_EAS_OBJ.
 
 
-import type { ConRcdTyp } from './data-model.ts'; // What: Conditional Record Type. Why: Every function here reads a saved conditional or returns a partial update to one. How: This types those parameters and patches.
+import type { ConRcdTyp } from './data-model.ts'; // What: Conditional Record Type. Why: The conditional functions here read a saved conditional or return a partial update to one. How: This types those parameters and patches.
 
 // #endregion Imports
 
@@ -56,13 +56,8 @@ import type { ConRcdTyp } from './data-model.ts'; // What: Conditional Record Ty
  * dependent completion (a miss makes tomorrow likelier); a completed
  * card resets it, same as ease-up.
  *
- * The exported CON_NAM_OBJ namespace object's own property names are a
- * cross-file contract read directly by the store, the tabs, and the
- * shared editors. Its own blast radius (6 external call sites total, all
- * plain JS resolved at call time, never persisted) was checked first,
- * the same way CADENCE's was in cadence.ts before that one was renamed,
- * so its external names were swept to match its internal implementation
- * exactly, with every external call site updated to match.
+ * The exported CON_NAM_OBJ namespace object's property names match the names
+ * of the internal implementations they map to.
  *
  * Sections:
  *  - Constants
@@ -85,13 +80,39 @@ const DEF_ODD_NUM = 50; // What: Default Odds Number. Why: A weighted or dynamic
 
 // #region Helpers
 
+// #region claValFun
+
+/**
+ * claValFun = Clamp Value Function
+ *
+ * @summary
+ * Keeps a number inside a [min, max] band: a value below the minimum returns
+ * the minimum and one above the maximum returns the maximum.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curValNum - Current Value Number: The number to clamp.
+ * @param minValNum - Minimum Value Number: The band's lower bound.
+ * @param maxValNum - Maximum Value Number: The band's upper bound.
+ *
+ * @returns The clamped number.
+ *
+ * @example
+ * ```ts
+ * claValFun(120, 0, 100) // => 100
+ * ```
+ *
+*/
+
 const claValFun = ( curValNum : number, minValNum : number, maxValNum : number ) => Math.max( minValNum, Math.min( maxValNum, curValNum ) ); // What: Clamp Value Function. Why: Several value-family calculations below need a result kept within a hard [min, max] band, most often [0, threshold]. How: This nests Math.min/Math.max to floor curValNum at minValNum after first ceiling it at maxValNum.
+
+// #endregion claValFun
 
 
 
 // #region Mode Classification
 
-const modProFun = ( modKeyStr : string ) => modKeyStr === 'random' || modKeyStr === 'weighted'; // What: Mode Probability Function. Why: resDayFun below needs to know whether a conditional's own mode rolls triggered fresh at generate time. How: This is true for exactly the two probability-family modes, random and weighted.
+const modProFun = ( modKeyStr : string ) => modKeyStr === 'random' || modKeyStr === 'weighted'; // What: Mode Probability Function. Why: resDayFun below needs to tell the probability-family modes, which roll triggered fresh at generate time, from the others. How: This is true for exactly the two probability-family modes, random and weighted.
 
 
 
@@ -119,7 +140,7 @@ const modProFun = ( modKeyStr : string ) => modKeyStr === 'random' || modKeyStr 
  *
 */
 
-const modValFun = ( modKeyStr : string | undefined ) : boolean => !!modKeyStr && [ 'dynamic', 'ease-down', 'ease-up' ].includes( modKeyStr ); // What: Mode Value Function. Why: advValFun below, day-log.tsx, and store.ts all need to know whether a conditional's own mode is completion-driven instead of rolled. How: This is true for exactly the three value-family modes, ease-up, ease-down, and dynamic.
+const modValFun = ( modKeyStr : string | undefined ) : boolean => !!modKeyStr && [ 'dynamic', 'ease-down', 'ease-up' ].includes( modKeyStr ); // What: Mode Value Function. Why: Callers need to know whether a conditional's own mode is completion-driven instead of rolled. How: This is true for exactly the three value-family modes, ease-up, ease-down, and dynamic.
 
 // #endregion modValFun
 
@@ -251,7 +272,7 @@ function resDayFun ( conAllArr : ConRcdTyp[] | null | undefined ) : Record< stri
 	for ( const conCurObj of conAllArr || [] ) { // What: Conditional Walk Loop. Why: Every persisted conditional needs its own triggered state resolved for today, independently of every other one. How: This iterates conAllArr, falling back to an empty array when none was given.
 
 
-		if ( conCurObj.active === false ) { // What: Inactive Guard. Why: A disabled conditional is frozen entirely, with no roll and no state change of any kind. How: This writes only the charge-guard reset for conCurObj, then skips straight to the next conditional.
+		if ( conCurObj.active === false ) { // What: Inactive Guard. Why: A disabled conditional is frozen, with no roll and no change to its triggered state. How: This writes only the charge-guard reset for conCurObj, then skips straight to the next conditional.
 
 
 			patIdeObj[ conCurObj.id ] = { chargedToday : false }; // What: Frozen Patch Write. Why: An inactive conditional still needs its own per-day charge guard cleared, even though nothing else about it changes. How: This writes just chargedToday:false under conCurObj's own id.
@@ -304,20 +325,18 @@ function resDayFun ( conAllArr : ConRcdTyp[] | null | undefined ) : Record< stri
  * labels are, threshold/easeMax and threshold/easeMin), then returns
  * a FIXED step (threshold/N) sized so the cycle resolves in exactly N
  * cycles, giving every duration in the range equal odds. This mirrors
- * pickers.ts's own decay-step roll exactly (see its own comment for
+ * pickers.ts's own decay-step roll (see its own comment for
  * why a fresh random step every cycle, the previous approach here, is
  * biased: duration = threshold/step, so a uniform step does NOT give
- * a uniform duration). The caller (steResFun below) is the one that
- * actually persists the rolled step across cycles; a legacy
- * conditional with none lazily rolls one here instead.
+ * a uniform duration). steResFun below keeps reusing a step already
+ * rolled; a legacy conditional with none rolls one here instead.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param conCurObj - Conditional Current Object: The value-mode conditional to
  *                    roll a fresh plan for.
  * @param thrValNum - Threshold Value Number: The conditional's own resolved
- *                    charge ceiling (defaulted to THR_VAL_NUM by every
- *                    caller).
+ *                    charge ceiling.
  *
  * @returns The fixed per-cycle charge/discharge step this new plan
  * commits to.
@@ -347,7 +366,34 @@ function rolSteFun ( conCurObj : ConRcdTyp, thrValNum : number ) : number {
 
 
 
+// #region steResFun
+
+/**
+ * steResFun = Step Resolve Function
+ *
+ * @summary
+ * Resolves the fixed charge step a value-mode conditional uses: its own saved
+ * chargeStep when it is a positive number, a freshly rolled one otherwise.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param conCurObj - Conditional Current Object: The value-mode conditional to
+ *                    resolve a step for.
+ * @param thrValNum - Threshold Value Number: The conditional's own resolved
+ *                    charge ceiling.
+ *
+ * @returns The fixed per-cycle charge/discharge step.
+ *
+ * @example
+ * ```ts
+ * steResFun(conCurObj, thrValNum) // => 12
+ * ```
+ *
+*/
+
 const steResFun = ( conCurObj : ConRcdTyp, thrValNum : number ) => ( conCurObj.chargeStep && conCurObj.chargeStep > 0 ? conCurObj.chargeStep : rolSteFun( conCurObj, thrValNum ) ); // What: Step Resolve Function. Why: A value-mode conditional mid-cycle must keep using its own already-rolled step, while a legacy one with none (or a just-started cycle) needs a fresh roll. How: This returns conCurObj's own chargeStep when it is a real positive number, calling rolSteFun otherwise.
+
+// #endregion steResFun
 
 
 
@@ -399,10 +445,10 @@ function advValFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRc
 
 
 
-	const thrValNum = conCurObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: Every branch below needs the same resolved charge ceiling, defaulting to the shared full-charge ceiling for a legacy conditional with none. How: This reads conCurObj.threshold, falling back to PIC_NAM_OBJ.THR_VAL_NUM when it is nullish.
+	const thrValNum = conCurObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: The ease-up and ease-down branches below need the same resolved charge ceiling, defaulting to the shared full-charge ceiling for a legacy conditional with none. How: This reads conCurObj.threshold, falling back to PIC_NAM_OBJ.THR_VAL_NUM when it is nullish.
 
 
-	if ( conCurObj.mode === 'ease-up' ) { // What: Ease Up Mode Check. Why: An ease-up conditional's own advance needs its own multi-step charge-and-patch build, unlike dynamic's single-line return just below. How: This branches into the charge roll and patch object below whenever conCurObj's own mode is 'ease-up'.
+	if ( conCurObj.mode === 'ease-up' ) { // What: Ease Up Mode Check. Why: An ease-up conditional's own advance needs a charge roll before it can build its patch, unlike dynamic's fixed 10-point accrual just below. How: This branches into the charge roll and patch object below whenever conCurObj's own mode is 'ease-up'.
 
 
 		const steValNum = steResFun( conCurObj, thrValNum );                               // What: Step Value Number. Why: This completion's own advance needs the conditional's already-rolled (or freshly-rolled) fixed step before it can compute a new charge. How: This calls steResFun with conCurObj and thrValNum.
@@ -502,7 +548,7 @@ function carFulFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRc
 
 
 
-	const thrValNum = conCurObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: Every branch below needs the same resolved charge ceiling, defaulting to the shared full-charge ceiling for a legacy conditional with none. How: This reads conCurObj.threshold, falling back to PIC_NAM_OBJ.THR_VAL_NUM when it is nullish.
+	const thrValNum = conCurObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: The ease-up and ease-down branches below need the same resolved charge ceiling, defaulting to the shared full-charge ceiling for a legacy conditional with none. How: This reads conCurObj.threshold, falling back to PIC_NAM_OBJ.THR_VAL_NUM when it is nullish.
 
 
 	if ( conCurObj.mode === 'ease-up' ) return { // What: Ease Up Reset Return. Why: Completing the card both resets this cycle and rolls a fresh plan for the next one, mirroring pickers.ts's own reset-on-pick behavior. How: This zeroes value, clears triggered, and rolls a brand new chargeStep via rolSteFun.
@@ -521,7 +567,7 @@ function carFulFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRc
 
 
 
-	if ( conCurObj.mode === 'ease-down' ) { // What: Ease Down Mode Check. Why: Completing an ease-down conditional's own card needs its own multi-step discharge-and-patch build, unlike ease-up/dynamic's single-line returns just above. How: This branches into the discharge roll and patch object below whenever conCurObj's own mode is 'ease-down'.
+	if ( conCurObj.mode === 'ease-down' ) { // What: Ease Down Mode Check. Why: Completing an ease-down conditional's own card needs its own multi-step discharge-and-patch build, unlike ease-up's and dynamic's fixed resets just above. How: This branches into the discharge roll and patch object below whenever conCurObj's own mode is 'ease-down'.
 
 
 		const steValNum = steResFun( conCurObj, thrValNum );                                       // What: Step Value Number. Why: This card completion's own discharge needs the conditional's already-rolled (or freshly-rolled) fixed step before it can compute a new charge. How: This calls steResFun with conCurObj and thrValNum.
@@ -559,22 +605,22 @@ function carFulFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRc
 
 // #region Exports
 
-const CON_NAM_OBJ = { // What: Conditionals Namespace Object. Why: This is the single public entry point other files import, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal functions another file uses onto an external property name matching it exactly.
+const CON_NAM_OBJ = { // What: Conditionals Namespace Object. Why: This is the single public entry point other files import. How: This maps each internal function another file uses, plus DEF_ODD_NUM, onto an external property name matching it exactly.
 
 
-	advValFun   : advValFun,   // What: Advance Value Function. Why: store.ts calls this on a dependent picker's own first completion of the day. How: This re-exports advValFun under its own matching name.
-	carFulFun   : carFulFun,   // What: Card Full Function. Why: store.ts calls this when a day-off card itself is completed. How: This re-exports carFulFun under its own matching name.
-	DEF_ODD_NUM : DEF_ODD_NUM, // What: Default Odds Number. Why: The store, the tabs, and the conditional editor fall back to the same odds for a conditional saved without its own. How: This re-exports DEF_ODD_NUM under its own matching name.
-	modValFun   : modValFun,   // What: Mode Value Function. Why: day-log.tsx and store.ts both check this to classify a conditional's own mode. How: This re-exports modValFun under its own matching name.
-	resDayFun   : resDayFun,   // What: Resolve Day Function. Why: store.ts calls this once per generate to roll/carry every conditional's own triggered state for the day. How: This re-exports resDayFun under its own matching name.
-	supGatFun   : supGatFun    // What: Suppress Gate Function. Why: tab-today.tsx calls this to decide whether a dependent picker's own day-off card should show instead of a real pick. How: This re-exports supGatFun under its own matching name.
+	advValFun   : advValFun,   // What: Advance Value Function. Why: Callers advance a conditional's value on a dependent picker's first completion of the day by this exact name. How: This re-exports advValFun under its own matching name.
+	carFulFun   : carFulFun,   // What: Card Full Function. Why: Callers get the patch for a completed day-off card by this exact name. How: This re-exports carFulFun under its own matching name.
+	DEF_ODD_NUM : DEF_ODD_NUM, // What: Default Odds Number. Why: Callers fall back to the same odds for a conditional saved without its own by this exact name. How: This re-exports DEF_ODD_NUM under its own matching name.
+	modValFun   : modValFun,   // What: Mode Value Function. Why: Callers classify a conditional's own mode by this exact name. How: This re-exports modValFun under its own matching name.
+	resDayFun   : resDayFun,   // What: Resolve Day Function. Why: Callers roll or carry each conditional's triggered state for the day by this exact name. How: This re-exports resDayFun under its own matching name.
+	supGatFun   : supGatFun    // What: Suppress Gate Function. Why: Callers decide whether a dependent picker's day-off card shows instead of a real pick by this exact name. How: This re-exports supGatFun under its own matching name.
 
 
 };
 
 
 
-export { CON_NAM_OBJ }; // What: Conditionals Namespace Export. Why: Every consumer reaches this file's conditional logic through the one namespace object. How: This exports CON_NAM_OBJ by name at the very end of the file.
+export { CON_NAM_OBJ }; // What: Named Export. Why: Other files reach this file's conditional logic through the namespace object. How: This exports CON_NAM_OBJ by name at the very end of the file.
 
 // #endregion Exports
 
