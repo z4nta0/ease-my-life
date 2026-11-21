@@ -171,7 +171,7 @@
 
 /* #region chiRowDiv */
 
-.chiRowDiv { /* What: Chip Row Div. Why: The topic chips sit together below the paragraphs. How: This lays them out in a centered, wrapping row. */
+.chiRowDiv { /* What: Chip Row Div. Why: The topic chips sit together below the paragraphs. How: This lays them out in a centered row that wraps onto two lines at about 440px wide and below for its longest label. */
 
 
 	display         : flex;

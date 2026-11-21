@@ -247,7 +247,7 @@
 
 /* #region supDiaDiv */
 
-.supDiaDiv { /* What: Support Diagnostics Div. Why: The app version and browser sit side by side, wrapping on a narrow screen. How: This lays the two fields out in a wrapping row. */
+.supDiaDiv { /* What: Support Diagnostics Div. Why: The app version and browser sit side by side. How: This lays the two fields out in a wrapping row, which holds both on one line at 320px wide and wider. */
 
 
 	display   : flex;
@@ -301,7 +301,7 @@
 
 /* #region supFooDiv */
 
-.supFooDiv { /* What: Support Footer Div. Why: The actions sit on the right, with any note pushed to the left, below a divider. How: This lays them out in a wrapping, right-aligned row under a hairline border. */
+.supFooDiv { /* What: Support Footer Div. Why: The actions sit on the right, with any note pushed to the left, below a divider. How: This lays them out in a wrapping, right-aligned row under a hairline border, which holds the buttons on one line at 320px wide and wider, wraps onto two lines at about 375px wide and below with the validation message, and always wraps with the longer failure message. */
 
 
 	align-items     : center;

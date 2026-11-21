@@ -237,7 +237,7 @@
 
 
 
-.legPagFoo { /* What: Legal Page Footer. Why: The reader needs a way to the other legal document and back to the app. How: This sets a bordered row of links that wraps where it runs out of room. */
+.legPagFoo { /* What: Legal Page Footer. Why: The reader needs a way to the other legal document and back to the app. How: This sets a bordered row of links that wraps where it runs out of room, holding both links on one line at 320px wide and wider. */
 
 
 	border-top     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */

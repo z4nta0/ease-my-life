@@ -19,7 +19,7 @@
 
 /* #region dowChiDiv */
 
-.dowChiDiv { /* What: Day-Of-Week Chips Div. Why: The seven days read as one row that wraps on a narrow screen. How: This lays the chips out in a wrapping row with a small gap. */
+.dowChiDiv { /* What: Day-Of-Week Chips Div. Why: The seven days read as one row that wraps on a narrow screen. How: This lays the chips out in a wrapping row with a small gap, wrapping onto two lines at about 340px wide and below in the narrowest container that holds it. */
 
 
 	display   : flex;

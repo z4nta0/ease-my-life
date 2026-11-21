@@ -208,7 +208,7 @@
 
 
 }
-.holDatSpa--custom { /* What: Holiday Date Span Custom. Why: A custom day's date and "every year" tag sit on one line when there is room. How: This lays them out in a baseline row that wraps when they don't fit. */
+.holDatSpa--custom { /* What: Holiday Date Span Custom. Why: A custom day's date and "every year" tag sit on one line when there is room. How: This lays them out in a baseline row that wraps when they don't fit, which holds even the longest date on one line at 320px wide. */
 
 
 	align-items    : baseline;
@@ -431,7 +431,7 @@
 
 /* #region holAddDiv */
 
-.holAddDiv { /* What: Holiday Add Div. Why: Adding a custom day off sits below the list, divided from it. How: This lays the name field, date field, and Add button out in a wrapping row under a hairline border. */
+.holAddDiv { /* What: Holiday Add Div. Why: Adding a custom day off sits below the list, divided from it. How: This lays the name field, date field, and Add button out in a wrapping row under a hairline border, wrapping onto two lines at about 530px wide and below. */
 
 
 	align-items : center;
