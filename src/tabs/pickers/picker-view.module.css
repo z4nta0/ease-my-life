@@ -513,7 +513,7 @@
 
 
 }
-.senLabSpa--fade { /* What: Fading Send Label Span. Why: The label fades in each time its text changes. How: This plays the shared fade whenever its keyed span remounts. */
+.senLabSpa--fade { /* What: Send Label Span Fade. Why: The label fades in each time its text changes. How: This plays the shared fade whenever its keyed span remounts. */
 
 
 	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live label, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -523,7 +523,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fading Send Label. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.senLabSpa--fade { /* What: Still Fading Send Label Span. Why: The change should happen at once. How: This turns its animation off. */
+	.senLabSpa--fade { /* What: Still Send Label Span Fade. Why: The change should happen at once. How: This turns its animation off. */
 
 
 		animation : none;
@@ -595,7 +595,7 @@
 
 
 }
-.driTogBut:hover { /* What: Hovered Pool Reset Link. Why: The link should respond to the pointer. How: This darkens it. */
+.driTogBut:hover { /* What: Hovered Drift Toggle Button. Why: The link should respond to the pointer. How: This darkens it. */
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
@@ -670,42 +670,42 @@
 
 
 }
-.pooRowDiv:last-child { /* What: Last Pool Row. Why: The list's own border already closes it. How: This drops the last row's hairline. */
+.pooRowDiv:last-child { /* What: Last Pool Row Div. Why: The list's own border already closes it. How: This drops the last row's hairline. */
 
 
 	border-bottom : 0;
 
 
 }
-.pooRowDiv[data-row-vacation-active] { /* What: Inactive Pool Row. Why: An inactive item reads as set aside. How: This fades the row, keying off data-row-vacation-active. */
+.pooRowDiv[data-row-vacation-active] { /* What: Inactive Pool Row Div. Why: An inactive item reads as set aside. How: This fades the row, keying off data-row-vacation-active. */
 
 
 	opacity : var( --cdn-pow-003-rec ); /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
 
 
 }
-.pooRowDiv[data-row-ineligible-active] { /* What: Ineligible Pool Row. Why: An item that can't be picked right now reads a little quieter. How: This fades the row, keying off data-row-ineligible-active. */
+.pooRowDiv[data-row-ineligible-active] { /* What: Ineligible Pool Row Div. Why: An item that can't be picked right now reads a little quieter. How: This fades the row, keying off data-row-ineligible-active. */
 
 
 	opacity : var( --cdn-pow-002-rec ); /* Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
 
 
 }
-.pooRowDiv--confirm { /* What: Confirming Pool Row Div. Why: While asking to delete, the row holds only the confirm. How: This collapses the grid to one column. */
+.pooRowDiv--confirm { /* What: Pool Row Div Confirm. Why: While asking to delete, the row holds only the confirm. How: This collapses the grid to one column. */
 
 
 	grid-template-columns : 1fr;
 
 
 }
-.pooRowDiv--insert { /* What: Inserting Pool Row Div. Why: A just-saved item glides into place at the bottom of the pool. How: This plays the insert, cleared by the row's own animationend handler. */
+.pooRowDiv--insert { /* What: Pool Row Div Insert. Why: A just-saved item glides into place at the bottom of the pool. How: This plays the insert, cleared by the row's own animationend handler. */
 
 
 	animation : pooRowDivInsertFadeIn var( --dur-ani-p05 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
 
 
 }
-.pooRowDiv--removing { /* What: Removing Pool Row Div. Why: A deleted row collapses and fades, letting the rows below slide up. How: This plays the removal, whose end drives the actual delete. */
+.pooRowDiv--removing { /* What: Pool Row Div Removing. Why: A deleted row collapses and fades, letting the rows below slide up. How: This plays the removal, whose end drives the actual delete. */
 
 
 	animation : pooRowDivRemoveFold var( --dur-ani-p03 ) var( --mot-sta-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
@@ -792,7 +792,7 @@
 
 
 }
-.delConDiv--leaving { /* What: Leaving Delete Confirm Div. Why: A cancelled confirm slides back out. How: This plays the shared swap-out while it carries its leaving class. */
+.delConDiv--leaving { /* What: Delete Confirm Div Leaving. Why: A cancelled confirm slides back out. How: This plays the shared swap-out while it carries its leaving class. */
 
 
 	animation : global( footerSwapFadeOut ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with the Settings reset confirm, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -1286,7 +1286,7 @@
 
 
 }
-.iteAddBut:hover { /* What: Hovered Add Item Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
+.iteAddBut:hover { /* What: Hovered Item Add Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */

@@ -35,7 +35,7 @@
 
 
 }
-.lisIteDiv.lisIteDiv--closing { /* What: Closing List Item Div. Why: The card folds away before the saved item appears in the pool. How: This plays the close, whose end drives the rest, with the base class chained in so it outranks the card's own reduced-motion animation : none. */
+.lisIteDiv.lisIteDiv--closing { /* What: List Item Div Closing. Why: The card folds away before the saved item appears in the pool. How: This plays the close, whose end drives the rest, with the base class chained in so it outranks the card's own reduced-motion animation : none. */
 
 
 	animation : lisIteDivCloseFadeOut var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
@@ -54,7 +54,7 @@
 
 	}
 
-	.lisIteDiv.lisIteDiv--closing { /* What: Instant Closing List Item Div. Why: The card should close at once, while still ending the animation its handler waits on. How: This shortens the close to .01ms. */
+	.lisIteDiv.lisIteDiv--closing { /* What: Instant List Item Div Closing. Why: The card should close at once, while still ending the animation its handler waits on. How: This shortens the close to .01ms. */
 
 
 		animation-duration : .01ms;
@@ -168,7 +168,7 @@
 
 
 }
-.rowNamInp:focus { /* What: Focused Add Item Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
+.rowNamInp:focus { /* What: Focused Row Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
 
 
 	border-bottom-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -176,7 +176,7 @@
 
 
 }
-.rowNamInp::placeholder { /* What: Add Item Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+.rowNamInp::placeholder { /* What: Row Name Input Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
 
 
 	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */

@@ -133,7 +133,7 @@
 
 
 }
-.braMarBut:hover { /* What: Hovered Brand Mark. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
+.braMarBut:hover { /* What: Hovered Brand Mark Button. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
 
 
 	transform : translateY( -1px );
@@ -276,7 +276,7 @@
 
 
 }
-.subLinBut:hover { /* What: Hovered Intro Link. Why: The link should respond to the pointer. How: This thickens its underline. */
+.subLinBut:hover { /* What: Hovered Sub Link Button. Why: The link should respond to the pointer. How: This thickens its underline. */
 
 
 	text-decoration-thickness : 2px;

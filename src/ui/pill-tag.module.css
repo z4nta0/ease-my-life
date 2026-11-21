@@ -39,7 +39,7 @@
 
 
 }
-.pilTagSpa--default { /* What: Default Pill Tag Span. Why: Most tags are neutral labels. How: This gives the pill a surface fill, muted text, and a hairline border. */
+.pilTagSpa--default { /* What: Pill Tag Span Default. Why: Most tags are neutral labels. How: This gives the pill a surface fill, muted text, and a hairline border. */
 
 
 	background : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
@@ -48,7 +48,7 @@
 
 
 }
-.pilTagSpa--mode { /* What: Mode Pill Tag Span. Why: A picker's mode reads as a highlighted label. How: This tints the pill with the accent color. */
+.pilTagSpa--mode { /* What: Pill Tag Span Mode. Why: A picker's mode reads as a highlighted label. How: This tints the pill with the accent color. */
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -56,7 +56,7 @@
 
 
 }
-.pilTagSpa--muted { /* What: Muted Pill Tag Span. Why: A status like "inactive" should recede. How: This gives the pill a transparent fill, muted text, and slightly tighter padding. */
+.pilTagSpa--muted { /* What: Pill Tag Span Muted. Why: A status like "inactive" should recede. How: This gives the pill a transparent fill, muted text, and slightly tighter padding. */
 
 
 	background : transparent;

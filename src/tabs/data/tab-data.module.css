@@ -138,7 +138,7 @@
 
 
 }
-.braMarBut:hover { /* What: Hovered Brand Mark. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
+.braMarBut:hover { /* What: Hovered Brand Mark Button. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
 
 
 	transform : translateY( -1px );
@@ -281,7 +281,7 @@
 
 
 }
-.subLinBut:hover { /* What: Hovered Intro Link. Why: The link should respond to the pointer. How: This thickens its underline. */
+.subLinBut:hover { /* What: Hovered Sub Link Button. Why: The link should respond to the pointer. How: This thickens its underline. */
 
 
 	text-decoration-thickness : 2px;
@@ -434,7 +434,7 @@
 
 
 }
-.scoTabBut:hover { /* What: Hovered Show Tab. Why: The tab should respond to the pointer. How: This darkens its border. */
+.scoTabBut:hover { /* What: Hovered Scope Tab Button. Why: The tab should respond to the pointer. How: This darkens its border. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -632,7 +632,7 @@
 
 
 }
-.datCatSec--removing { /* What: Removing Data Category Section. Why: A deleted picker's card collapses away instead of vanishing. How: This plays the remove animation once, ending on the zero height its animationend handler waits for. */
+.datCatSec--removing { /* What: Data Category Section Removing. Why: A deleted picker's card collapses away instead of vanishing. How: This plays the remove animation once, ending on the zero height its animationend handler waits for. */
 
 
 	animation : datCatSecRemoveFold var( --dur-ani-p02 ) var( --mot-sta-eas ) forwards; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
@@ -643,7 +643,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Removing Category Card. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.datCatSec--removing { /* What: Still Removing Data Category Section. Why: The card should go at once, while still ending the animation its handler waits on. How: This turns its animation-duration off. */
+	.datCatSec--removing { /* What: Still Data Category Section Removing. Why: The card should go at once, while still ending the animation its handler waits on. How: This turns its animation-duration off. */
 
 
 		animation-duration : .01ms;
@@ -1007,7 +1007,7 @@
 
 
 }
-.vacTogBut:hover { /* What: Hovered Vacation Toggle. Why: The toggle should respond to the pointer. How: This darkens its text over the page background. */
+.vacTogBut:hover { /* What: Hovered Vacation Toggle Button. Why: The toggle should respond to the pointer. How: This darkens its text over the page background. */
 
 
 	background : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -1015,7 +1015,7 @@
 
 
 }
-.vacTogBut[aria-pressed='true'] { /* What: On Vacation Toggle. Why: A picker on vacation shows it in its toggle. How: This turns the toggle warm, keying off the aria-pressed it already sets. */
+.vacTogBut[aria-pressed='true'] { /* What: On Vacation Toggle Button. Why: A picker on vacation shows it in its toggle. How: This turns the toggle warm, keying off the aria-pressed it already sets. */
 
 
 	color : var( --acc-sec-col ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
@@ -1267,14 +1267,14 @@
 
 
 }
-.lisIteDiv:last-child { /* What: Last Item Item. Why: The card's own border already ends the list. How: This drops the last item's hairline. */
+.lisIteDiv:last-child { /* What: Last List Item Div. Why: The card's own border already ends the list. How: This drops the last item's hairline. */
 
 
 	border-bottom : 0;
 
 
 }
-.lisIteDiv--insert { /* What: Inserted List Item Div. Why: A just-added item springs into the list. How: This plays the shared row insert once, cleared by the row's own animationend handler. */
+.lisIteDiv--insert { /* What: List Item Div Insert. Why: A just-added item springs into the list. How: This plays the shared row insert once, cleared by the row's own animationend handler. */
 
 
 	animation : global( rowInsertSlideIn ) var( --dur-ani-p03 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */ /* What: Global rowInsertSlideIn Keyframes. Why: The rowInsertSlideIn keyframes are shared with the Data tab's reminder rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -1284,7 +1284,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Inserted Item. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.lisIteDiv--insert { /* What: Still Inserted List Item Div. Why: The row should appear at once, while still ending the animation its handler waits on. How: This turns its animation-duration off. */
+	.lisIteDiv--insert { /* What: Still List Item Div Insert. Why: The row should appear at once, while still ending the animation its handler waits on. How: This turns its animation-duration off. */
 
 
 		animation-duration : .01ms;
@@ -1294,7 +1294,7 @@
 
 
 }
-.lisIteDiv--tour { /* What: Tour List Item Div. Why: The Edit Item tour points at specific rows, and touching rows can't each draw an outline without doubling it where they meet. How: This swaps the outline for side and bottom borders that fade like the outline would, so adjacent targets share one line. */
+.lisIteDiv--tour { /* What: List Item Div Tour. Why: The Edit Item tour points at specific rows, and touching rows can't each draw an outline without doubling it where they meet. How: This swaps the outline for side and bottom borders that fade like the outline would, so adjacent targets share one line. */
 
 
 	animation     : lisIteDivTourBorderFade var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1983.0ms, Motion Standard Easing = ease */
@@ -1325,7 +1325,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tour Target Item. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.lisIteDiv--tour { /* What: Still Tour List Item Div. Why: A border frozen mid-fade would read as paused, so it pins to full color instead. How: This turns its animation off and sets the border to the accent. */
+	.lisIteDiv--tour { /* What: Still List Item Div Tour. Why: A border frozen mid-fade would read as paused, so it pins to full color instead. How: This turns its animation off and sets the border to the accent. */
 
 
 		animation    : none;
@@ -1468,7 +1468,7 @@
 
 
 }
-.rowNamInp::placeholder { /* What: Row Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+.rowNamInp::placeholder { /* What: Row Name Input Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
 
 
 	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -1647,7 +1647,7 @@
 
 
 }
-.datCreBut:hover { /* What: Hovered Create Picker Button. Why: The button should respond to the pointer. How: This tints it in the accent color. */
+.datCreBut:hover { /* What: Hovered Data Create Button. Why: The button should respond to the pointer. How: This tints it in the accent color. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -1656,7 +1656,7 @@
 
 
 }
-.datCreBut:disabled { /* What: Disabled Create Picker Button. Why: While a new picker is being drafted, another can't start and the button should look it. How: This dims it and stops it taking the pointer. */
+.datCreBut:disabled { /* What: Disabled Data Create Button. Why: While a new picker is being drafted, another can't start and the button should look it. How: This dims it and stops it taking the pointer. */
 
 
 	cursor         : default;

@@ -112,7 +112,7 @@
 
 
 }
-.filPilBut:hover { /* What: Hovered Filter Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
+.filPilBut:hover { /* What: Hovered Filter Pill Button. Why: The pill should respond to the pointer. How: This darkens its border and text. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -120,7 +120,7 @@
 
 
 }
-.filPilBut[aria-selected='true'] { /* What: Selected Filter Pill. Why: The active filter should stand out. How: This fills it in the soft accent, keying off the aria-selected the pill already sets. */
+.filPilBut[aria-selected='true'] { /* What: Selected Filter Pill Button. Why: The active filter should stand out. How: This fills it in the soft accent, keying off the aria-selected the pill already sets. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */

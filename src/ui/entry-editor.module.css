@@ -431,7 +431,7 @@
 
 
 }
-.ediFooDiv--confirm { /* What: Confirm Editor Footer Div. Why: Asking before a delete replaces the footer in place, its question and actions on one center line. How: This centers the row's children and keeps them spread apart. */
+.ediFooDiv--confirm { /* What: Editor Footer Div Confirm. Why: Asking before a delete replaces the footer in place, its question and actions on one center line. How: This centers the row's children and keeps them spread apart. */
 
 
 	align-items     : center;

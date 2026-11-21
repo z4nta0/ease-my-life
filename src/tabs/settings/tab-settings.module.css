@@ -132,7 +132,7 @@
 
 
 }
-.braMarBut:hover { /* What: Hovered Brand Mark. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
+.braMarBut:hover { /* What: Hovered Brand Mark Button. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
 
 
 	transform : translateY( -1px );
@@ -275,7 +275,7 @@
 
 
 }
-.subLinBut:hover { /* What: Hovered Intro Link. Why: The link should respond to the pointer. How: This thickens its underline. */
+.subLinBut:hover { /* What: Hovered Sub Link Button. Why: The link should respond to the pointer. How: This thickens its underline. */
 
 
 	text-decoration-thickness : 2px;
@@ -530,14 +530,14 @@
 
 
 }
-.raiSecBut:hover { /* What: Hovered Rail Button. Why: The button should respond to the pointer. How: This darkens its text. */
+.raiSecBut:hover { /* What: Hovered Rail Section Button. Why: The button should respond to the pointer. How: This darkens its text. */
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-.raiSecBut[data-rail-select-active] { /* What: Selected Rail Button. Why: The section in view should stand out. How: This fills it in the soft accent, keying off data-rail-select-active. */
+.raiSecBut[data-rail-select-active] { /* What: Selected Rail Section Button. Why: The section in view should stand out. How: This fills it in the soft accent, keying off data-rail-select-active. */
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -570,7 +570,7 @@
 
 	}
 
-	.raiSecBut[data-rail-select-active] { /* What: Selected Rail Pill. Why: The pill in view should stand out. How: This borders it in the accent over the soft accent fill. */
+	.raiSecBut[data-rail-select-active] { /* What: Selected Rail Section Button. Why: The pill in view should stand out. How: This borders it in the accent over the soft accent fill. */
 
 
 		background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -674,7 +674,7 @@
 
 
 }
-.secSubPar--motion { /* What: Motion Section Sub Paragraph. Why: The note that animations won't play reads as an advisory. How: This colors it in a warm tone darkened to stay readable. */
+.secSubPar--motion { /* What: Section Sub Paragraph Motion. Why: The note that animations won't play reads as an advisory. How: This colors it in a warm tone darkened to stay readable. */
 
 
 	color : var( --war-dar-col ); /* Warning Dark Color = oklch( 0.45 0.13 50 ) */
@@ -889,7 +889,7 @@
 
 }
 
-.setSubSpa--fade { /* What: Fading Settings Sub Span. Why: A description that changes with its setting should fade in the new wording. How: This plays the shared fade each time the keyed element remounts. */
+.setSubSpa--fade { /* What: Settings Sub Span Fade. Why: A description that changes with its setting should fade in the new wording. How: This plays the shared fade each time the keyed element remounts. */
 
 
 	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -899,7 +899,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Live Description. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.setSubSpa--fade { /* What: Still Fading Settings Sub Span. Why: The change should happen at once. How: This turns its animation off. */
+	.setSubSpa--fade { /* What: Still Settings Sub Span Fade. Why: The change should happen at once. How: This turns its animation off. */
 
 
 		animation : none;
@@ -910,7 +910,7 @@
 
 }
 
-.setSubSpa--layout { /* What: Layout Settings Sub Span. Why: The placement description must leave the segmented control room on one line. How: This caps it at a rhythm step. */
+.setSubSpa--layout { /* What: Settings Sub Span Layout. Why: The placement description must leave the segmented control room on one line. How: This caps it at a rhythm step. */
 
 
 	max-width : calc( var( --ver-rhy-p09 ) * 1rem ); /* Vertical Rhythm Base Plus 9 ~= 183.074px */
@@ -964,7 +964,7 @@
 
 
 }
-.stoChiSpa[data-chip-ok-active] { /* What: Good Storage Chip. Why: A reassuring fact reads green. How: This tints it green, keying off data-chip-ok-active. */
+.stoChiSpa[data-chip-ok-active] { /* What: Good Storage Chip Span. Why: A reassuring fact reads green. How: This tints it green, keying off data-chip-ok-active. */
 
 
 	background   : oklch( from var( --suc-mai-col ) l c h / var( --cdn-pow-009-rec ) ); /* Success Main Color = oklch( 0.5 0.11 155 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
@@ -973,7 +973,7 @@
 
 
 }
-.stoChiSpa[data-chip-warn-active] { /* What: Warning Storage Chip. Why: A fact worth acting on reads warm. How: This tints it in a warm color darkened to stay readable at 11px, keying off data-chip-warn-active. */
+.stoChiSpa[data-chip-warn-active] { /* What: Warning Storage Chip Span. Why: A fact worth acting on reads warm. How: This tints it in a warm color darkened to stay readable at 11px, keying off data-chip-warn-active. */
 
 
 	background   : oklch( from var( --acc-sec-col ) l c h / var( --cdn-pow-009-rec ) ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
@@ -1198,7 +1198,7 @@
 
 
 }
-.resConDiv--leaving { /* What: Leaving Reset Confirm Div. Why: A cancelled confirm swaps back out before it unmounts. How: This plays the shared footer swap-out. */
+.resConDiv--leaving { /* What: Reset Confirm Div Leaving. Why: A cancelled confirm swaps back out before it unmounts. How: This plays the shared footer swap-out. */
 
 
 	animation : global( footerSwapFadeOut ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with every editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -1262,14 +1262,14 @@
 
 
 }
-.docOpeBut:hover { /* What: Hovered Document Button. Why: The button should respond to the pointer. How: This darkens its border. */
+.docOpeBut:hover { /* What: Hovered Document Open Button. Why: The button should respond to the pointer. How: This darkens its border. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
-.docOpeBut:active { /* What: Pressed Document Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.docOpeBut:active { /* What: Pressed Document Open Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -1359,7 +1359,7 @@
 
 
 }
-.aboLinAnc:hover { /* What: Hovered About Link. Why: The link should respond to the pointer. How: This darkens it to body text. */
+.aboLinAnc:hover { /* What: Hovered About Link Anchor. Why: The link should respond to the pointer. How: This darkens it to body text. */
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */

@@ -105,7 +105,7 @@
 
 
 }
-.helBubSpa--sm { /* What: Small Help Bubble Span. Why: The standard bubble reads oversized beside the cadence field's short caption. How: This shrinks it slightly. */
+.helBubSpa--sm { /* What: Help Bubble Span Small. Why: The standard bubble reads oversized beside the cadence field's short caption. How: This shrinks it slightly. */
 
 
 	height : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */

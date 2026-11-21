@@ -67,7 +67,7 @@
 
 
 }
-.groGriSpa:hover { /* What: Hovered Group Grip. Why: The handle should respond to the pointer. How: This tints it with the accent and darkens its glyph. */
+.groGriSpa:hover { /* What: Hovered Group Grip Span. Why: The handle should respond to the pointer. How: This tints it with the accent and darkens its glyph. */
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -87,7 +87,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Group Grip. Why: Someone who asked for less motion shouldn't see the handle's colors fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.groGriSpa { /* What: Still Group Grip. Why: Its colors should simply switch. How: This turns the fades off. */
+	.groGriSpa { /* What: Still Group Grip Span. Why: Its colors should simply switch. How: This turns the fades off. */
 
 
 		transition : none;
@@ -128,7 +128,7 @@
 
 
 }
-.groNamInp.groNamInp--closing { /* What: Closing Group Name Input. Why: Closing the field should ease away rather than vanish. How: This slides it back out to the left. */
+.groNamInp.groNamInp--closing { /* What: Group Name Input Closing. Why: Closing the field should ease away rather than vanish. How: This slides it back out to the left. */
 
 
 	animation : groNamInpCloseFadeOut var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */
@@ -221,7 +221,7 @@
 
 
 }
-.groNamBut:hover { /* What: Hovered Editable Group Name. Why: The name should show it can be clicked. How: This gives it the accent tint. */
+.groNamBut:hover { /* What: Hovered Group Name Button. Why: The name should show it can be clicked. How: This gives it the accent tint. */
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -231,7 +231,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Editable Group Name. Why: Someone who asked for less motion shouldn't see the tint fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.groNamBut { /* What: Still Editable Group Name. Why: The tint should simply switch. How: This turns the fades off. */
+	.groNamBut { /* What: Still Group Name Button. Why: The tint should simply switch. How: This turns the fades off. */
 
 
 		transition : none;
@@ -268,7 +268,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Editable Group Name Pencil. Why: Someone who asked for less motion shouldn't see the pencil fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.penIcoSvg { /* What: Still Editable Group Name Pencil. Why: The pencil should simply appear. How: This turns the fade off. */
+	.penIcoSvg { /* What: Still Pencil Icon SVG. Why: The pencil should simply appear. How: This turns the fade off. */
 
 
 		transition : none;
@@ -358,14 +358,14 @@
 
 
 }
-.proDasIta[data-dash-done-active] { /* What: Done Group Progress Dash. Why: A done row's dash should read as filled. How: This fills it with the accent. */
+.proDasIta[data-dash-done-active] { /* What: Done Group Progress Dash Italic. Why: A done row's dash should read as filled. How: This fills it with the accent. */
 
 
 	background : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-.proDasIta.proDasIta--fresh { /* What: Fresh Progress Dash Italic. Why: The dash for the row just done should sweep full rather than snap. How: This keeps the base grey while the overlay sweeps across it, and must stay after the done rule so it wins. */
+.proDasIta.proDasIta--fresh { /* What: Progress Dash Italic Fresh. Why: The dash for the row just done should sweep full rather than snap. How: This keeps the base grey while the overlay sweeps across it, and must stay after the done rule so it wins. */
 
 
 	background : var( --bor-mai-col ); /* Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -389,7 +389,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Group Progress Dash. Why: Someone who asked for less motion shouldn't see the dash fade or sweep; the done fill already shows the state. How: This applies only when the reduced-motion preference is set. */
 
 
-	.proDasIta { /* What: Still Group Progress Dash. Why: The fill should simply switch. How: This turns the fade off. */
+	.proDasIta { /* What: Still Progress Dash Italic. Why: The fill should simply switch. How: This turns the fade off. */
 
 
 		transition : none;

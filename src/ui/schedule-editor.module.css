@@ -40,7 +40,7 @@
 
 
 }
-.schEdiDiv--stacked { /* What: Stacked Schedule Editor Div. Why: On Today, dividers separate the fields instead of a gap, and a closing line meets the footer's own divider. How: This drops the gap and draws a bottom border. */
+.schEdiDiv--stacked { /* What: Schedule Editor Div Stacked. Why: On Today, dividers separate the fields instead of a gap, and a closing line meets the footer's own divider. How: This drops the gap and draws a bottom border. */
 
 
 	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -48,7 +48,7 @@
 
 
 }
-.schEdiDiv--rows { /* What: Rows Schedule Editor Div. Why: In the Data tab, each field's own row borders do the separating. How: This drops the gap between fields. */
+.schEdiDiv--rows { /* What: Schedule Editor Div Rows. Why: In the Data tab, each field's own row borders do the separating. How: This drops the gap between fields. */
 
 
 	gap : 0;
@@ -225,7 +225,7 @@
 
 
 }
-.visNotPar--never { /* What: Never Visibility Note Paragraph. Why: A schedule that can never show is a dead configuration, not a deferral. How: This turns the note red, darkened for AA contrast. */
+.visNotPar--never { /* What: Visibility Note Paragraph Never. Why: A schedule that can never show is a dead configuration, not a deferral. How: This turns the note red, darkened for AA contrast. */
 
 
 	color : var( --err-dar-col ); /* Error Dark Color = oklch( 0.5 0.18 25 ) */

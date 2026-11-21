@@ -50,28 +50,28 @@
 
 
 }
-.todCarArt:last-child { /* What: Last Entry Card. Why: The list ends at the last card with no gap. How: This drops its bottom margin. */
+.todCarArt:last-child { /* What: Last Today Card Article. Why: The list ends at the last card with no gap. How: This drops its bottom margin. */
 
 
 	margin-bottom : 0;
 
 
 }
-.todCarArt:hover { /* What: Hovered Entry Card. Why: The card should respond to the pointer. How: This darkens its border. */
+.todCarArt:hover { /* What: Hovered Today Card Article. Why: The card should respond to the pointer. How: This darkens its border. */
 
 
 	border-color : var( --bor-hov-col ); /* Border Hover Color = oklch( 0.83 0.005 240 ) */
 
 
 }
-.todCarArt:active { /* What: Pressed Entry Card. Why: A press should register before the toggle lands. How: This shades the card. */
+.todCarArt:active { /* What: Pressed Today Card Article. Why: A press should register before the toggle lands. How: This shades the card. */
 
 
 	background : var( --bac-pre-col ); /* Background Pressed Color = oklch( 0.965 0.004 240 ) */
 
 
 }
-.todCarArt.todCarArt--removing { /* What: Removing Today Card Article. Why: A skipped entry or a finished tutorial card slides out and collapses. How: This plays the shared skip-out collapse and stops it taking clicks. */
+.todCarArt.todCarArt--removing { /* What: Today Card Article Removing. Why: A skipped entry or a finished tutorial card slides out and collapses. How: This plays the shared skip-out collapse and stops it taking clicks. */
 
 
 	animation      : global( cardRemoveSlideOut ) var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */ /* What: Global cardRemoveSlideOut Keyframes. Why: The cardRemoveSlideOut keyframes are shared with the reminder and page tour cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -87,7 +87,7 @@
 
 
 }
-.todCarArt--dayoff { /* What: Day-Off Today Card Article. Why: A day off reads as a gentle rest, apart from ordinary entries. How: This washes the card in the soft accent. */
+.todCarArt--dayoff { /* What: Today Card Article Day-Off. Why: A day off reads as a gentle rest, apart from ordinary entries. How: This washes the card in the soft accent. */
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -163,7 +163,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Entry Card. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.todCarArt { /* What: Still Entry Card. Why: The card should switch states at once. How: This turns its transitions off. */
+	.todCarArt { /* What: Still Today Card Article. Why: The card should switch states at once. How: This turns its transitions off. */
 
 
 		transition : none;
@@ -181,7 +181,7 @@
 
 	}
 
-	.todCarArt.todCarArt--removing { /* What: Instantly Removed Entry Card. Why: The collapse should finish at once rather than leave the card showing until it unmounts. How: This drops the animation and collapses the card to nothing. */
+	.todCarArt.todCarArt--removing { /* What: Still Today Card Article Removing. Why: The collapse should finish at once rather than leave the card showing until it unmounts. How: This drops the animation and collapses the card to nothing. */
 
 
 		animation      : none;
@@ -247,7 +247,7 @@
 
 
 }
-.carGriSpa:hover { /* What: Hovered Card Grip. Why: The handle should respond to the pointer. How: This tints it with the accent and darkens its icon. */
+.carGriSpa:hover { /* What: Hovered Card Grip Span. Why: The handle should respond to the pointer. How: This tints it with the accent and darkens its icon. */
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -267,7 +267,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Card Grip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.carGriSpa { /* What: Still Card Grip. Why: Its colors should simply switch. How: This turns its transition off. */
+	.carGriSpa { /* What: Still Card Grip Span. Why: Its colors should simply switch. How: This turns its transition off. */
 
 
 		transition : none;
@@ -310,7 +310,7 @@
 
 
 }
-.carCheBut:focus-visible { /* What: Focused Checkbox. Why: A keyboard user needs a legible ring even on the filled done box. How: This draws an accent outline separated from the box by a background-colored gap. */
+.carCheBut:focus-visible { /* What: Focused Card Check Button. Why: A keyboard user needs a legible ring even on the filled done box. How: This draws an accent outline separated from the box by a background-colored gap. */
 
 
 	box-shadow     : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.571px, Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -326,7 +326,7 @@
 
 
 }
-.carCheBut:hover { /* What: Hovered Checkbox. Why: The box should respond to the pointer. How: This darkens its border. */
+.carCheBut:hover { /* What: Hovered Card Check Button. Why: The box should respond to the pointer. How: This darkens its border. */
 
 
 	border-color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
@@ -345,7 +345,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Entry Checkbox. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.carCheBut { /* What: Still Entry Checkbox. Why: The change should happen at once. How: This turns its transition off. */
+	.carCheBut { /* What: Still Card Check Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -407,7 +407,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Done Check Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.cheIcoSvg { /* What: Still Done Check Mark. Why: The mark is state, so it stays while the spring goes. How: This turns the spring off and pins the mark fully shown. */
+	.cheIcoSvg { /* What: Still Check Icon SVG. Why: The mark is state, so it stays while the spring goes. How: This turns the spring off and pins the mark fully shown. */
 
 
 		animation : none;
@@ -497,7 +497,7 @@
 
 
 }
-.carMetDiv--dayoff { /* What: Day-Off Card Meta Div. Why: The day-off title can run long and must truncate rather than stretch the card. How: This lets the line shrink. */
+.carMetDiv--dayoff { /* What: Card Meta Div Day-Off. Why: The day-off title can run long and must truncate rather than stretch the card. How: This lets the line shrink. */
 
 
 	min-width : 0;
@@ -598,7 +598,7 @@
 
 
 }
-.entNamInp::placeholder { /* What: Entry Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+.entNamInp::placeholder { /* What: Entry Name Input Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
 
 
 	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */

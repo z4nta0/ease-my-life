@@ -85,14 +85,14 @@
 
 
 }
-.modOptLab:last-child { /* What: Last Style Radio Row. Why: The list's own bottom border already closes the last row. How: This drops the last row's divider. */
+.modOptLab:last-child { /* What: Last Mode Option Label. Why: The list's own bottom border already closes the last row. How: This drops the last row's divider. */
 
 
 	border-bottom : 0;
 
 
 }
-.modOptLab:hover { /* What: Hovered Style Radio Row. Why: A row should respond to the pointer. How: This darkens its background slightly. */
+.modOptLab:hover { /* What: Hovered Mode Option Label. Why: A row should respond to the pointer. How: This darkens its background slightly. */
 
 
 	background : var( --bac-wel-col ); /* Background Well Color = oklch( 0.96 0.004 240 ) */
@@ -292,7 +292,7 @@
 
 
 }
-.colDisDiv[data-collapse-open-active] { /* What: Open Style Radio Hint Collapse. Why: The selected row's hint should show. How: This opens the grid row to its content's height. */
+.colDisDiv[data-collapse-open-active] { /* What: Open Style Radio Hint Collapse Disclosure Div. Why: The selected row's hint should show. How: This opens the grid row to its content's height. */
 
 
 	grid-template-rows : 1fr;

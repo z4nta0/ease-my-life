@@ -23,7 +23,7 @@
 
 
 }
-.carSurDiv--padded { /* What: Padded Card Surface Div. Why: Most cards hold loose content that needs breathing room from the edge, while a few lay out their own full-bleed rows. How: This adds the standard inner padding when CarSurCom's isaPadBoo is on. */
+.carSurDiv--padded { /* What: Card Surface Div Padded. Why: Most cards hold loose content that needs breathing room from the edge, while a few lay out their own full-bleed rows. How: This adds the standard inner padding when CarSurCom's isaPadBoo is on. */
 
 
 	padding : var( --spa-ver-p01 ) var( --spa-hor-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px, Spacing Horizontal Base Plus 1 ~= 19.304px */

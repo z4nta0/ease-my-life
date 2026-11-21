@@ -63,7 +63,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Loader Card. Why: Someone who asked for less motion shouldn't see the card's colors fade between states. How: This applies only when the reduced-motion preference is set. */
 
 
-	.todCarArt { /* What: Still Loader Card. Why: The card's state changes should simply switch. How: This turns its fades off. */
+	.todCarArt { /* What: Still Today Card Article. Why: The card's state changes should simply switch. How: This turns its fades off. */
 
 
 		transition : none;

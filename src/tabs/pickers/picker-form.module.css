@@ -285,7 +285,7 @@
 
 
 }
-.steHinPar--mode { /* What: Mode Step Hint Paragraph. Why: The Items step's note about the chosen mode tucks up under the hint above it. How: This pulls it up by extra small 6 vertical spacing (about 2px). */
+.steHinPar--mode { /* What: Step Hint Paragraph Mode. Why: The Items step's note about the chosen mode tucks up under the hint above it. How: This pulls it up by extra small 6 vertical spacing (about 2px). */
 
 
 	margin-top : calc( var( --spa-ver-m07 ) * -1 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
@@ -331,7 +331,7 @@
 
 
 }
-.forFieDiv--daily { /* What: Daily Form Field Div. Why: The toggle and its schedule sit closer together than other fields' pieces. How: This tightens the gap. */
+.forFieDiv--daily { /* What: Form Field Div Daily. Why: The toggle and its schedule sit closer together than other fields' pieces. How: This tightens the gap. */
 
 
 	gap : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
@@ -373,7 +373,7 @@
 
 }
 
-.forHelPar--fade { /* What: Fading Form Help Paragraph. Why: Help that changes with its switch fades in each time it does. How: This plays the shared fade whenever its keyed paragraph remounts. */
+.forHelPar--fade { /* What: Form Help Paragraph Fade. Why: Help that changes with its switch fades in each time it does. How: This plays the shared fade whenever its keyed paragraph remounts. */
 
 
 	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -383,7 +383,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fading Help. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.forHelPar--fade { /* What: Still Fading Form Help Paragraph. Why: The change should happen at once. How: This turns its animation off. */
+	.forHelPar--fade { /* What: Still Form Help Paragraph Fade. Why: The change should happen at once. How: This turns its animation off. */
 
 
 		animation : none;
@@ -413,7 +413,7 @@
 
 
 }
-.forTexInp::placeholder { /* What: Text Input Placeholder. Why: The hint should read quieter than real input. How: This sets it muted and faded. */
+.forTexInp::placeholder { /* What: Form Text Input Placeholder. Why: The hint should read quieter than real input. How: This sets it muted and faded. */
 
 
 	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -421,14 +421,14 @@
 
 
 }
-.forTexInp:focus { /* What: Focused Text Input. Why: The focused field should stand out. How: This borders it in the accent color. */
+.forTexInp:focus { /* What: Focused Form Text Input. Why: The focused field should stand out. How: This borders it in the accent color. */
 
 
 	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-.forTexInp--short { /* What: Short Form Text Input. Why: The new group's name needs less width. How: This caps it at a smaller rhythm step. */
+.forTexInp--short { /* What: Form Text Input Short. Why: The new group's name needs less width. How: This caps it at a smaller rhythm step. */
 
 
 	max-width : calc( var( --ver-rhy-p10 ) * 1rem ); /* Vertical Rhythm Base Plus 10 ~= 242.522px */
@@ -482,14 +482,14 @@
 
 
 }
-.groChiBut:hover { /* What: Hovered Group Chip. Why: The chip should respond to the pointer. How: This darkens its border. */
+.groChiBut:hover { /* What: Hovered Group Chip Button. Why: The chip should respond to the pointer. How: This darkens its border. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
-.groChiBut[data-chip-select-active] { /* What: Chosen Group Chip. Why: The picker's group should stand out. How: This fills it in the soft accent, keying off data-chip-select-active. */
+.groChiBut[data-chip-select-active] { /* What: Chosen Group Chip Button. Why: The picker's group should stand out. How: This fills it in the soft accent, keying off data-chip-select-active. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -506,7 +506,7 @@
 
 
 }
-.groChiBut--new { /* What: New Group Chip Button. Why: Adding a group reads as a dashed placeholder chip. How: This dashes it in muted text. */
+.groChiBut--new { /* What: Group Chip Button New. Why: Adding a group reads as a dashed placeholder chip. How: This dashes it in muted text. */
 
 
 	border-style : dashed;
@@ -514,7 +514,7 @@
 
 
 }
-.groChiBut--new[data-chip-select-active] { /* What: Open New Group Chip. Why: While its name field is open, the chip reads as chosen. How: This solidifies it in the accent. */
+.groChiBut--new[data-chip-select-active] { /* What: Open Group Chip Button New. Why: While its name field is open, the chip reads as chosen. How: This solidifies it in the accent. */
 
 
 	border-style : solid;
@@ -579,14 +579,14 @@
 
 
 }
-.modOptLab:hover { /* What: Hovered Mode Option. Why: The card should respond to the pointer. How: This darkens its border. */
+.modOptLab:hover { /* What: Hovered Mode Option Label. Why: The card should respond to the pointer. How: This darkens its border. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
-.modOptLab:has( .modOptInp:focus-visible ) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus. How: This outlines the card while its radio has visible focus. */
+.modOptLab:has( .modOptInp:focus-visible ) { /* What: Focused Mode Option Label. Why: A keyboard user needs to see which option has focus. How: This outlines the card while its radio has visible focus. */
 
 
 	outline-offset : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
@@ -594,7 +594,7 @@
 
 
 }
-.modOptLab[data-option-select-active] { /* What: Chosen Mode Option. Why: The picker's mode should stand out. How: This fills the card in the soft accent, keying off data-option-select-active. */
+.modOptLab[data-option-select-active] { /* What: Chosen Mode Option Label. Why: The picker's mode should stand out. How: This fills the card in the soft accent, keying off data-option-select-active. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -944,14 +944,14 @@
 
 
 }
-.conPilBut:hover { /* What: Hovered Conditional Pill. Why: The pill should respond to the pointer. How: This darkens its border. */
+.conPilBut:hover { /* What: Hovered Conditional Pill Button. Why: The pill should respond to the pointer. How: This darkens its border. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
-.conPilBut[data-pill-select-active] { /* What: Chosen Conditional Pill. Why: The conditional to attach should stand out. How: This fills it in the soft accent with an inset accent ring, keying off data-pill-select-active. */
+.conPilBut[data-pill-select-active] { /* What: Chosen Conditional Pill Button. Why: The conditional to attach should stand out. How: This fills it in the soft accent with an inset accent ring, keying off data-pill-select-active. */
 
 
 	background   : var( --acc-tin-col );                                  /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -960,7 +960,7 @@
 
 
 }
-.conPilBut--new { /* What: New Conditional Pill Button. Why: Adding a conditional reads as a dashed placeholder with its icon beside the label. How: This lays it out in a row, dashed and muted. */
+.conPilBut--new { /* What: Conditional Pill Button New. Why: Adding a conditional reads as a dashed placeholder with its icon beside the label. How: This lays it out in a row, dashed and muted. */
 
 
 	align-items    : center;
@@ -971,7 +971,7 @@
 
 
 }
-.conPilBut--new[data-pill-select-active] { /* What: Open New Conditional Pill. Why: While the new-conditional editor is open, its pill reads as chosen. How: This colors it in the accent. */
+.conPilBut--new[data-pill-select-active] { /* What: Open Conditional Pill Button New. Why: While the new-conditional editor is open, its pill reads as chosen. How: This colors it in the accent. */
 
 
 	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -1104,7 +1104,7 @@
 
 
 }
-.dayPreBut:hover { /* What: Hovered Day Preset. Why: The preset should respond to the pointer. How: This tints it in the soft accent. */
+.dayPreBut:hover { /* What: Hovered Day Preset Button. Why: The preset should respond to the pointer. How: This tints it in the soft accent. */
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -1292,28 +1292,28 @@
 
 
 }
-.pooRowDiv:last-child { /* What: Last Pool Row. Why: The list's own border already closes it. How: This drops the last row's hairline. */
+.pooRowDiv:last-child { /* What: Last Pool Row Div. Why: The list's own border already closes it. How: This drops the last row's hairline. */
 
 
 	border-bottom : 0;
 
 
 }
-.pooRowDiv--confirm { /* What: Confirming Pool Row Div. Why: While asking to delete, the row holds only the confirm. How: This collapses the grid to one column. */
+.pooRowDiv--confirm { /* What: Pool Row Div Confirm. Why: While asking to delete, the row holds only the confirm. How: This collapses the grid to one column. */
 
 
 	grid-template-columns : 1fr;
 
 
 }
-.pooRowDiv--insert { /* What: Inserting Pool Row Div. Why: A just-saved item glides into place at the bottom of the pool. How: This plays the insert, cleared by the row's own animationend handler. */
+.pooRowDiv--insert { /* What: Pool Row Div Insert. Why: A just-saved item glides into place at the bottom of the pool. How: This plays the insert, cleared by the row's own animationend handler. */
 
 
 	animation : pooRowDivInsertFadeIn var( --dur-ani-p05 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
 
 
 }
-.pooRowDiv--removing { /* What: Removing Pool Row Div. Why: A deleted row collapses and fades, letting the rows below slide up. How: This plays the removal, whose end drives the actual delete. */
+.pooRowDiv--removing { /* What: Pool Row Div Removing. Why: A deleted row collapses and fades, letting the rows below slide up. How: This plays the removal, whose end drives the actual delete. */
 
 
 	animation : pooRowDivRemoveFold var( --dur-ani-p03 ) var( --mot-sta-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
@@ -1400,7 +1400,7 @@
 
 
 }
-.delConDiv--leaving { /* What: Leaving Delete Confirm Div. Why: A cancelled confirm slides back out. How: This plays the shared swap-out while it carries its leaving class. */
+.delConDiv--leaving { /* What: Delete Confirm Div Leaving. Why: A cancelled confirm slides back out. How: This plays the shared swap-out while it carries its leaving class. */
 
 
 	animation : global( footerSwapFadeOut ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with the Settings reset confirm, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -1650,7 +1650,7 @@
 
 
 }
-.iteAddBut:hover { /* What: Hovered Add Item Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
+.iteAddBut:hover { /* What: Hovered Item Add Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */

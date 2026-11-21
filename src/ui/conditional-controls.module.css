@@ -34,7 +34,7 @@
 
 
 }
-.conConDiv--inline { /* What: Inline Conditional Controls Div. Why: In the Data tab every field is a flush full-bleed row. How: This drops the gap and padding. */
+.conConDiv--inline { /* What: Conditional Controls Div Inline. Why: In the Data tab every field is a flush full-bleed row. How: This drops the gap and padding. */
 
 
 	gap     : 0;

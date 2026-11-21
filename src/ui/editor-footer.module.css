@@ -34,7 +34,7 @@
 
 
 }
-.ediFooDiv--confirm { /* What: Confirm Editor Footer Div. Why: The confirm question and its actions should line up on one center line. How: This vertically centers the footer's children while the confirm is up. */
+.ediFooDiv--confirm { /* What: Editor Footer Div Confirm. Why: The confirm question and its actions should line up on one center line. How: This vertically centers the footer's children while the confirm is up. */
 
 
 	align-items : center;

@@ -50,21 +50,21 @@
 
 
 }
-.holRowIte:last-child { /* What: Last Holiday Row. Why: The card's own edge already closes the list. How: This drops the last row's divider. */
+.holRowIte:last-child { /* What: Last Holiday Row Item. Why: The card's own edge already closes the list. How: This drops the last row's divider. */
 
 
 	border-bottom : 0;
 
 
 }
-.holRowIte--enter { /* What: Entering Holiday Row Item. Why: A newly added custom day should slide in rather than appear. How: This plays a short fade-and-drop as the row mounts, which existing rows skip since they're keyed by id. */
+.holRowIte--enter { /* What: Holiday Row Item Enter. Why: A newly added custom day should slide in rather than appear. How: This plays a short fade-and-drop as the row mounts, which existing rows skip since they're keyed by id. */
 
 
 	animation : holRowIteEnterFadeIn var( --dur-ani-p03 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
 
 
 }
-.holRowIte.holRowIte--exiting { /* What: Exiting Holiday Row Item. Why: A removed custom day should fade up and collapse so the rows below slide up smoothly. How: This plays the exit animation, which also collapses the row's height, and stops it taking clicks, with the base class chained in so it outranks the entering modifier's reduced-motion animation : none that a custom row also carries. */
+.holRowIte.holRowIte--exiting { /* What: Holiday Row Item Exiting. Why: A removed custom day should fade up and collapse so the rows below slide up smoothly. How: This plays the exit animation, which also collapses the row's height, and stops it taking clicks, with the base class chained in so it outranks the entering modifier's reduced-motion animation : none that a custom row also carries. */
 
 
 	animation      : holRowIteExitFold var( --dur-ani-p02 ) var( --mot-sta-eas ) forwards; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
@@ -76,7 +76,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Holiday Row. Why: Someone who asked for less motion shouldn't see rows slide in or out. How: This applies only when the reduced-motion preference is set. */
 
 
-	.holRowIte--enter { /* What: Still Entering Holiday Row Item. Why: A new row should simply appear. How: This turns the entrance off. */
+	.holRowIte--enter { /* What: Still Holiday Row Item Enter. Why: A new row should simply appear. How: This turns the entrance off. */
 
 
 		animation : none;
@@ -84,7 +84,7 @@
 
 	}
 
-	.holRowIte.holRowIte--exiting { /* What: Instant Exiting Holiday Row. Why: Turning the exit off would leave the row fully visible until it's removed. How: This shortens the exit to an instant so the row jumps straight to its collapsed end state. */
+	.holRowIte.holRowIte--exiting { /* What: Instant Holiday Row Item Exiting. Why: Turning the exit off would leave the row fully visible until it's removed. How: This shortens the exit to an instant so the row jumps straight to its collapsed end state. */
 
 
 		animation-duration : .01ms;
@@ -209,7 +209,7 @@
 
 
 }
-.holDatSpa--custom { /* What: Custom Holiday Date Span. Why: A custom day's date and "every year" tag fit on one line. How: This lays them out in a wrapping baseline row. */
+.holDatSpa--custom { /* What: Holiday Date Span Custom. Why: A custom day's date and "every year" tag fit on one line. How: This lays them out in a wrapping baseline row. */
 
 
 	align-items    : baseline;
@@ -402,7 +402,7 @@
 
 
 }
-.holDelBut:hover { /* What: Hovered Custom Holiday Delete Button. Why: A destructive action should warn as the pointer reaches it. How: This gives it a background fill and turns its glyph red. */
+.holDelBut:hover { /* What: Hovered Holiday Delete Button. Why: A destructive action should warn as the pointer reaches it. How: This gives it a background fill and turns its glyph red. */
 
 
 	background : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */

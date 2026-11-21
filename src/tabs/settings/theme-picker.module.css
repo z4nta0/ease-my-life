@@ -77,21 +77,21 @@
 
 
 }
-.theRowDiv--custom { /* What: Custom Theme Row Div. Why: The editable custom theme reads as a different kind of row than the presets. How: This frames it with a dashed border. */
+.theRowDiv--custom { /* What: Theme Row Div Custom. Why: The editable custom theme reads as a different kind of row than the presets. How: This frames it with a dashed border. */
 
 
 	border : var( --bor-wid-bas ) dashed var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
 
 
 }
-.theRowDiv:hover:not( :focus-visible ):not( [aria-checked='true'] ):not( [data-option-select-active] ) { /* What: Hovered Theme Row. Why: A theme that isn't chosen should respond to the pointer, while a focused or chosen row keeps its own frame. How: This shows its frame in the hover border color. */
+.theRowDiv:hover:not( :focus-visible ):not( [aria-checked='true'] ):not( [data-option-select-active] ) { /* What: Hovered Theme Row Div. Why: A theme that isn't chosen should respond to the pointer, while a focused or chosen row keeps its own frame. How: This shows its frame in the hover border color. */
 
 
 	border-color : var( --bor-hov-col ); /* Border Hover Color = oklch( 0.83 0.005 240 ) */
 
 
 }
-.theRowDiv:focus-visible { /* What: Focused Theme Row. Why: A keyboard user needs to see which row has focus, including the selected row, whose own frame color wins over the focus one. How: This colors the frame with the accent and draws the accent outline just outside it. */
+.theRowDiv:focus-visible { /* What: Focused Theme Row Div. Why: A keyboard user needs to see which row has focus, including the selected row, whose own frame color wins over the focus one. How: This colors the frame with the accent and draws the accent outline just outside it. */
 
 
 	border-color   : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -108,7 +108,7 @@
 
 
 }
-.theRowDiv--custom[data-option-select-active] { /* What: Selected Custom Theme Row. Why: A selected custom row should drop its dashed frame for the same solid one the presets get. How: This makes its frame solid in the text color. */
+.theRowDiv--custom[data-option-select-active] { /* What: Selected Theme Row Div Custom. Why: A selected custom row should drop its dashed frame for the same solid one the presets get. How: This makes its frame solid in the text color. */
 
 
 	border-color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
@@ -325,7 +325,7 @@
 
 
 }
-.cusNamInp::placeholder { /* What: Custom Theme Name Placeholder. Why: The placeholder should read as a hint. How: This sets it in a lighter translucent dark. */
+.cusNamInp::placeholder { /* What: Custom Name Input Placeholder. Why: The placeholder should read as a hint. How: This sets it in a lighter translucent dark. */
 
 
 	color : rgba( 0, 0, 0, .4 );
@@ -347,7 +347,7 @@
 
 
 }
-.cusNamInp:focus { /* What: Focused Custom Theme Name Field. Why: A field being edited should read clearly against the strip. How: This gives it a solid white fill with near-black text. */
+.cusNamInp:focus { /* What: Focused Custom Name Input. Why: A field being edited should read clearly against the strip. How: This gives it a solid white fill with near-black text. */
 
 
 	background : white;

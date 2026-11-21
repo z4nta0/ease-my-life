@@ -76,14 +76,14 @@
 
 
 }
-.infTipSpa--top { /* What: Upward Info Tip Span. Why: A tip opening above its trigger should slide up into place. How: This starts the entrance slightly below. */
+.infTipSpa--top { /* What: Info Tip Span Top. Why: A tip opening above its trigger should slide up into place. How: This starts the entrance slightly below. */
 
 
 	--inf-tip-off : 4px; /* What: Info Tip Offset. Why: The entrance animation starts the tip offset toward its trigger. How: The infTipSpaOpenFadeIn keyframes read this as their starting vertical shift. */
 
 
 }
-.infTipSpa--bottom { /* What: Downward Info Tip Span. Why: A tip opening below its trigger should slide down into place. How: This starts the entrance slightly above. */
+.infTipSpa--bottom { /* What: Info Tip Span Bottom. Why: A tip opening below its trigger should slide down into place. How: This starts the entrance slightly above. */
 
 
 	--inf-tip-off : -4px; /* What: Info Tip Offset. Why: The entrance animation starts the tip offset toward its trigger. How: The infTipSpaOpenFadeIn keyframes read this as their starting vertical shift. */

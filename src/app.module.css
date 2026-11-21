@@ -89,7 +89,7 @@
 
 
 }
-.skiLinAnc:focus:hover { /* What: Hovered Focused Skip Link Anchor. Why: A shown button lifts a little under the pointer. How: This raises it by the large border width. */
+.skiLinAnc:focus:hover { /* What: Focused Hovered Skip Link Anchor. Why: A shown button lifts a little under the pointer. How: This raises it by the large border width. */
 
 
 	transform : translateY( calc( var( --bor-wid-lar ) * -1 ) ); /* Border Width Large ~= -2.035px */
@@ -104,7 +104,7 @@
 
 
 }
-.skiLinAnc:focus-visible { /* What: Focused Skip Link Anchor Ring. Why: A keyboard user needs to see the link has focus. How: This grows the accent ring in close around it. */
+.skiLinAnc:focus-visible { /* What: Focused Skip Link Anchor. Why: A keyboard user needs to see the link has focus. How: This grows the accent ring in close around it. */
 
 
 	outline-offset : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */

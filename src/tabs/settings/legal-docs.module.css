@@ -120,7 +120,7 @@
 
 
 }
-.legPanDiv--closing { /* What: Closing Legal Panel Div. Why: The panel should drop away rather than vanish. How: This plays the panel's exit while the modal's closing class is on. */
+.legPanDiv--closing { /* What: Legal Panel Div Closing. Why: The panel should drop away rather than vanish. How: This plays the panel's exit while the modal's closing class is on. */
 
 
 	animation : legPanDivCloseDrop var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
@@ -233,7 +233,7 @@
 
 
 }
-.panCloBut:hover { /* What: Hovered Legal Modal Close Button. Why: The close button should respond to the pointer. How: This gives it the hover tint and full text color. */
+.panCloBut:hover { /* What: Hovered Panel Close Button. Why: The close button should respond to the pointer. How: This gives it the hover tint and full text color. */
 
 
 	background : var( --bac-hov-col ); /* Background Hover Color = oklch( 0 0 0 / 0.05 ) */

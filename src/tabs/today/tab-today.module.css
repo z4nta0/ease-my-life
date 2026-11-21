@@ -56,7 +56,7 @@
 @container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.todPagHed { /* What: Trimmed Today Header. Why: The narrow header needs less padding. How: This tightens its padding. */
+	.todPagHed { /* What: Trimmed Today Page Header. Why: The narrow header needs less padding. How: This tightens its padding. */
 
 
 		padding : var( --spa-ver-bas ) var( --spa-hor-p01 ) var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
@@ -142,7 +142,7 @@
 @container appRooDiv ( max-width : 440px ) { /* What: Very Narrow Kicker. Why: On a very narrow app the time drops under the date. How: This applies only when the app is 440px wide or less. */
 
 
-	.kicTimSpa { /* What: Stacked Kicker Time. Why: The time needs its own line. How: This makes it a centered block without its divider. */
+	.kicTimSpa { /* What: Stacked Kicker Time Span. Why: The time needs its own line. How: This makes it a centered block without its divider. */
 
 
 		border-left  : none;
@@ -420,7 +420,7 @@
 @container appRooDiv ( max-width : 640px ) { /* What: Narrow Header Lead. Why: On a narrow screen the row sits tighter. How: This applies only when the app is 640px wide or less. */
 
 
-	.heaLeaDiv { /* What: Tighter Header Lead. Why: The row has less room. How: This tightens its gap. */
+	.heaLeaDiv { /* What: Tighter Header Lead Div. Why: The row has less room. How: This tightens its gap. */
 
 
 		gap : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
@@ -455,7 +455,7 @@
 
 
 }
-.braMarBut:hover { /* What: Hovered Brand Mark. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
+.braMarBut:hover { /* What: Hovered Brand Mark Button. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
 
 
 	transform : translateY( -1px );
@@ -465,7 +465,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Brand Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.braMarBut { /* What: Still Brand Mark. Why: The change should happen at once. How: This turns its transition off. */
+	.braMarBut { /* What: Still Brand Mark Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -517,7 +517,7 @@
 @container appRooDiv ( max-width : 560px ) { /* What: Narrow Today Title. Why: A narrow app needs a smaller heading. How: This applies only when the app is 560px wide or less. */
 
 
-	.todTitHea { /* What: Smaller Today Title. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
+	.todTitHea { /* What: Smaller Today Title Heading. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
 
 
 		font-size : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
@@ -799,7 +799,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Progress. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.rinProCir { /* What: Still Ring Progress. Why: The change should happen at once. How: This turns its transition off. */
+	.rinProCir { /* What: Still Ring Progress Circle. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1151,7 +1151,7 @@
 @container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.todBodDiv { /* What: Flush Today Body. Why: The narrow pill row's own padding already spaces it from the header. How: This drops the top padding. */
+	.todBodDiv { /* What: Flush Today Body Div. Why: The narrow pill row's own padding already spaces it from the header. How: This drops the top padding. */
 
 
 		padding-top : 0;
@@ -1184,7 +1184,7 @@
 
 
 }
-.ediBanDiv.ediBanDiv--closing { /* What: Closing Edit Banner Div. Why: Leaving Edit Mode folds the banner away so the list slides back up. How: This plays the fold once, ended by its animationend handler. */
+.ediBanDiv.ediBanDiv--closing { /* What: Edit Banner Div Closing. Why: Leaving Edit Mode folds the banner away so the list slides back up. How: This plays the fold once, ended by its animationend handler. */
 
 
 	animation : ediBanDivCloseFadeOut var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
@@ -1195,7 +1195,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Edit Mode Banner. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.ediBanDiv.ediBanDiv--closing { /* What: Quick Closing Edit Mode Banner. Why: The banner should go at once, while still ending the animation its handler waits on. How: This shortens the fold to .01ms. */
+	.ediBanDiv.ediBanDiv--closing { /* What: Still Edit Banner Div Closing. Why: The banner should go at once, while still ending the animation its handler waits on. How: This shortens the fold to .01ms. */
 
 
 		animation-duration : .01ms;
@@ -1203,7 +1203,7 @@
 
 	}
 
-	.ediBanDiv { /* What: Still Edit Mode Banner. Why: The banner should simply appear. How: This turns its entrance off. */
+	.ediBanDiv { /* What: Still Edit Banner Div. Why: The banner should simply appear. How: This turns its entrance off. */
 
 
 		animation : none;
@@ -1325,7 +1325,7 @@
 @container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.todLayDiv { /* What: Stacked Today Layout. Why: The rail becomes a row above the list. How: This collapses the grid to one column. */
+	.todLayDiv { /* What: Stacked Today Layout Div. Why: The rail becomes a row above the list. How: This collapses the grid to one column. */
 
 
 		gap                   : var( --spa-ver-bas ) var( --spa-hor-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
@@ -1422,7 +1422,7 @@
 @container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.raiKicDiv { /* What: Hidden Rail Kicker. Why: The pill row has no room for a heading. How: This hides it. */
+	.raiKicDiv { /* What: Hidden Rail Kicker Div. Why: The pill row has no room for a heading. How: This hides it. */
 
 
 		display : none;
@@ -1486,14 +1486,14 @@
 
 
 }
-.raiGroBut:hover { /* What: Hovered Rail Button. Why: The button should respond to the pointer. How: This darkens its text. */
+.raiGroBut:hover { /* What: Hovered Rail Group Button. Why: The button should respond to the pointer. How: This darkens its text. */
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-.raiGroBut[data-rail-select-active] { /* What: Selected Rail Button. Why: The group in view should stand out. How: This fills it in the soft accent, keying off data-rail-select-active. */
+.raiGroBut[data-rail-select-active] { /* What: Selected Rail Group Button. Why: The group in view should stand out. How: This fills it in the soft accent, keying off data-rail-select-active. */
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -1525,7 +1525,7 @@
 
 	}
 
-	.raiGroBut[data-rail-select-active] { /* What: Selected Rail Pill. Why: The pill in view should stand out. How: This borders it in the accent over the soft accent fill. */
+	.raiGroBut[data-rail-select-active] { /* What: Selected Rail Group Button. Why: The pill in view should stand out. How: This borders it in the accent over the soft accent fill. */
 
 
 		background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -1539,7 +1539,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Rail Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.raiGroBut { /* What: Still Rail Button. Why: The change should happen at once. How: This turns its transition off. */
+	.raiGroBut { /* What: Still Rail Group Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1611,7 +1611,7 @@
 @container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.raiEdiDiv { /* What: Hidden Rail Edit Mode Block. Why: The pill row has no room for it, so the footer button takes over. How: This hides it. */
+	.raiEdiDiv { /* What: Hidden Rail Edit Div. Why: The pill row has no room for it, so the footer button takes over. How: This hides it. */
 
 
 		display : none;
@@ -1644,7 +1644,7 @@
 
 
 }
-.ediRaiBut:hover { /* What: Hovered Edit Mode Rail Button. Why: The toggle should respond to the pointer. How: This tints it in the accent. */
+.ediRaiBut:hover { /* What: Hovered Edit Rail Button. Why: The toggle should respond to the pointer. How: This tints it in the accent. */
 
 
 	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -1652,7 +1652,7 @@
 
 
 }
-.ediRaiBut[data-edit-mode-active] { /* What: Active Edit Mode Rail Button. Why: While Edit Mode is on, its toggle reads as on. How: This solidifies its accent border over the soft accent fill, keying off data-edit-mode-active. */
+.ediRaiBut[data-edit-mode-active] { /* What: Active Edit Rail Button. Why: While Edit Mode is on, its toggle reads as on. How: This solidifies its accent border over the soft accent fill, keying off data-edit-mode-active. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -1673,7 +1673,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Edit Mode Rail Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.ediRaiBut { /* What: Still Edit Mode Rail Button. Why: The change should happen at once. How: This turns its transition off. */
+	.ediRaiBut { /* What: Still Edit Rail Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1742,7 +1742,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Confetti Piece. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.conPieIta { /* What: Still Confetti Piece. Why: Particles are purely decorative, so they stay hidden. How: This turns its animation and opacity off. */
+	.conPieIta { /* What: Still Confetti Piece Italic. Why: Particles are purely decorative, so they stay hidden. How: This turns its animation and opacity off. */
 
 
 		animation : none;
@@ -1770,7 +1770,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sparkle Piece. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.spaPieSpa { /* What: Still Sparkle Piece. Why: Particles are purely decorative, so they stay hidden. How: This turns its animation and opacity off. */
+	.spaPieSpa { /* What: Still Sparkle Piece Span. Why: Particles are purely decorative, so they stay hidden. How: This turns its animation and opacity off. */
 
 
 		animation : none;
@@ -1899,7 +1899,7 @@
 
 
 }
-.onbCreDiv.onbCreDiv--removing { /* What: Removing Onboarding Create Div. Why: The Generate card slides away once the real list is made. How: This plays the shared card skip-out. */
+.onbCreDiv.onbCreDiv--removing { /* What: Onboarding Create Div Removing. Why: The Generate card slides away once the real list is made. How: This plays the shared card skip-out. */
 
 
 	animation : global( cardRemoveSlideOut ) var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */ /* What: Global cardRemoveSlideOut Keyframes. Why: The cardRemoveSlideOut keyframes are shared with the Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -1909,7 +1909,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Removing Onboarding Card. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.onbCreDiv.onbCreDiv--removing { /* What: Still Removing Onboarding Card. Why: The card should go at once. How: This turns its animation and opacity off. */
+	.onbCreDiv.onbCreDiv--removing { /* What: Still Onboarding Create Div Removing. Why: The card should go at once. How: This turns its animation and opacity off. */
 
 
 		animation : none;
@@ -1920,7 +1920,7 @@
 
 
 }
-.onbCreDiv--pulsing { /* What: Pulsing Onboarding Create Div. Why: A Generate card ready to click sends a sonar ping out onto the page, which needs a positioned card to anchor it. How: This positions the card for its ping. */
+.onbCreDiv--pulsing { /* What: Onboarding Create Div Pulsing. Why: A Generate card ready to click sends a sonar ping out onto the page, which needs a positioned card to anchor it. How: This positions the card for its ping. */
 
 
 	position : relative;
@@ -2043,7 +2043,7 @@
 
 
 }
-.subLinBut:hover { /* What: Hovered Card Link. Why: The link should respond to the pointer. How: This thickens its underline. */
+.subLinBut:hover { /* What: Hovered Sub Link Button. Why: The link should respond to the pointer. How: This thickens its underline. */
 
 
 	text-decoration-thickness : 2px;
@@ -2255,7 +2255,7 @@
 @container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.fooEdiBut { /* What: Shown Footer Edit Mode Button. Why: The narrow pill row has no room for Edit Mode, so the footer takes over. How: This sets --but-bas-dis back to inline-flex. */
+	.fooEdiBut { /* What: Shown Footer Edit Button. Why: The narrow pill row has no room for Edit Mode, so the footer takes over. How: This sets --but-bas-dis back to inline-flex. */
 
 
 		--but-bas-dis : inline-flex;

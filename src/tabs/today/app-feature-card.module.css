@@ -41,21 +41,21 @@
 
 
 }
-.todCarArt:last-child { /* What: Last App Feature Card. Why: The last card in a list needs no gap below it. How: This drops its bottom margin. */
+.todCarArt:last-child { /* What: Last Today Card Article. Why: The last card in a list needs no gap below it. How: This drops its bottom margin. */
 
 
 	margin-bottom : 0;
 
 
 }
-.todCarArt:hover { /* What: Hovered App Feature Card. Why: The card should respond to the pointer. How: This darkens its border slightly. */
+.todCarArt:hover { /* What: Hovered Today Card Article. Why: The card should respond to the pointer. How: This darkens its border slightly. */
 
 
 	border-color : var( --bor-hov-col ); /* Border Hover Color = oklch( 0.83 0.005 240 ) */
 
 
 }
-.todCarArt:active { /* What: Pressed App Feature Card. Why: A press should register on the card. How: This darkens its surface slightly. */
+.todCarArt:active { /* What: Pressed Today Card Article. Why: A press should register on the card. How: This darkens its surface slightly. */
 
 
 	background : var( --bac-pre-col ); /* Background Pressed Color = oklch( 0.965 0.004 240 ) */
@@ -87,7 +87,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion App Feature Card. Why: Someone who asked for less motion shouldn't see the card fade between states. How: This applies only when the reduced-motion preference is set. */
 
 
-	.todCarArt { /* What: Still App Feature Card. Why: The card's state changes should simply switch. How: This turns its fades off. */
+	.todCarArt { /* What: Still Today Card Article. Why: The card's state changes should simply switch. How: This turns its fades off. */
 
 
 		transition : none;
@@ -350,7 +350,7 @@
 
 
 }
-.actIcoBut:hover { /* What: Hovered App Feature Cancel Button. Why: The button should respond to the pointer. How: This gives it a background fill and the full text color. */
+.actIcoBut:hover { /* What: Hovered Action Icon Button. Why: The button should respond to the pointer. How: This gives it a background fill and the full text color. */
 
 
 	background : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */

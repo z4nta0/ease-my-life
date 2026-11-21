@@ -397,7 +397,7 @@
 
 
 }
-.matRowDiv:last-child { /* What: Last Matrix Row. Why: The footer's divider already closes the table. How: This drops the last row's hairline. */
+.matRowDiv:last-child { /* What: Last Matrix Row Div. Why: The footer's divider already closes the table. How: This drops the last row's hairline. */
 
 
 	border-bottom : 0;
@@ -682,14 +682,14 @@
 
 
 }
-.lisIteDiv:last-child { /* What: Last Reminder Item. Why: The card's own border already ends the list. How: This drops the last item's hairline. */
+.lisIteDiv:last-child { /* What: Last List Item Div. Why: The card's own border already ends the list. How: This drops the last item's hairline. */
 
 
 	border-bottom : 0;
 
 
 }
-.lisIteDiv--insert { /* What: Inserted List Item Div. Why: A just-added reminder springs into the list. How: This plays the shared row insert once, cleared by the row's own animationend handler. */
+.lisIteDiv--insert { /* What: List Item Div Insert. Why: A just-added reminder springs into the list. How: This plays the shared row insert once, cleared by the row's own animationend handler. */
 
 
 	animation : global( rowInsertSlideIn ) var( --dur-ani-p03 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */ /* What: Global rowInsertSlideIn Keyframes. Why: The rowInsertSlideIn keyframes are shared with the Data tab's item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -699,7 +699,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Inserted Reminder Item. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.lisIteDiv--insert { /* What: Still Inserted List Item Div. Why: The row should appear at once, while still ending the animation its handler waits on. How: This shortens its insert to .01ms instead of turning it off. */
+	.lisIteDiv--insert { /* What: Still List Item Div Insert. Why: The row should appear at once, while still ending the animation its handler waits on. How: This shortens its insert to .01ms instead of turning it off. */
 
 
 		animation-duration : .01ms;
@@ -850,7 +850,7 @@
 
 
 }
-.rowNamInp::placeholder { /* What: Row Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+.rowNamInp::placeholder { /* What: Row Name Input Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
 
 
 	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */

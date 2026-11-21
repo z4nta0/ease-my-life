@@ -190,7 +190,7 @@
 
 
 }
-.panCloBut:hover { /* What: Hovered Log Close Button. Why: The button should respond to the pointer. How: This darkens its icon and border. */
+.panCloBut:hover { /* What: Hovered Panel Close Button. Why: The button should respond to the pointer. How: This darkens its icon and border. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -201,7 +201,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Log Close Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.panCloBut { /* What: Still Log Close Button. Why: The change should happen at once. How: This turns its transition off. */
+	.panCloBut { /* What: Still Panel Close Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -298,7 +298,7 @@
 
 
 }
-.staIcoSpa--auto { /* What: Auto Status Icon Span. Why: An auto pick reads in the accent. How: This tints the tile in the soft accent. */
+.staIcoSpa--auto { /* What: Status Icon Span Auto. Why: An auto pick reads in the accent. How: This tints the tile in the soft accent. */
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -306,7 +306,7 @@
 
 
 }
-.staIcoSpa--push { /* What: Push Status Icon Span. Why: A pushed item reads orange. How: This tints the tile orange. */
+.staIcoSpa--push { /* What: Status Icon Span Push. Why: A pushed item reads orange. How: This tints the tile orange. */
 
 
 	background : var( --war-tin-col ); /* Warning Tint Color = oklch( 0.95 0.045 50 ) */
@@ -314,7 +314,7 @@
 
 
 }
-.staIcoSpa--roll { /* What: Roll Status Icon Span. Why: A rolled-off item reads neutral. How: This outlines the tile on the surface. */
+.staIcoSpa--roll { /* What: Status Icon Span Roll. Why: A rolled-off item reads neutral. How: This outlines the tile on the surface. */
 
 
 	background : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
@@ -323,7 +323,7 @@
 
 
 }
-.staIcoSpa--skip { /* What: Skip Status Icon Span. Why: A skipped item reads red. How: This tints the tile red. */
+.staIcoSpa--skip { /* What: Status Icon Span Skip. Why: A skipped item reads red. How: This tints the tile red. */
 
 
 	background : var( --err-tin-col ); /* Error Tint Color = oklch( 0.955 0.02 25 ) */
@@ -331,7 +331,7 @@
 
 
 }
-.staIcoSpa--done { /* What: Done Status Icon Span. Why: A completed item reads green. How: This tints the tile green. */
+.staIcoSpa--done { /* What: Status Icon Span Done. Why: A completed item reads green. How: This tints the tile green. */
 
 
 	background : var( --suc-tin-col ); /* Success Tint Color = oklch( 0.95 0.035 155 ) */
@@ -378,7 +378,7 @@
 
 
 }
-.logBodDiv--rem { /* What: Reminders Log Body Div. Why: The reminders table needs a little more room around it. How: This pads it more evenly. */
+.logBodDiv--rem { /* What: Log Body Div Reminders. Why: The reminders table needs a little more room around it. How: This pads it more evenly. */
 
 
 	padding : var( --spa-ver-m02 ) var( --spa-hor-m01 ) var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 1 = 11px, Spacing Vertical Base Minus 1 = 11px */
@@ -635,7 +635,7 @@
 @container appRooDiv ( max-width : 440px ) { /* What: Very Narrow Block Summary. Why: On a very narrow app the wrapped summary reads better centered. How: This applies only when the app is 440px wide or less. */
 
 
-	.bloSumSpa { /* What: Centered Block Summary. Why: The wrapped lines center under each other. How: This centers its text. */
+	.bloSumSpa { /* What: Centered Block Summary Span. Why: The wrapped lines center under each other. How: This centers its text. */
 
 
 		text-align : center;
@@ -947,7 +947,7 @@
 @container appRooDiv ( max-width : 500px ) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
 
 
-	.conRowDiv { /* What: Tightest Conditional Row. Why: The row keeps room for its Triggered pill. How: This narrows the three value columns so the wider status column still fits. */
+	.conRowDiv { /* What: Tightest Conditional Row Div. Why: The row keeps room for its Triggered pill. How: This narrows the three value columns so the wider status column still fits. */
 
 
 		grid-template-columns : 1fr calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 6 ~= 78.750px */
@@ -1073,7 +1073,7 @@
 
 
 }
-.conModSpa[data-mode-neutral-active] { /* What: Neutral Conditional Mode Pill. Why: Weighted and random conditionals read neutral. How: This outlines the pill in the border color with muted text, keying off data-mode-neutral-active. */
+.conModSpa[data-mode-neutral-active] { /* What: Neutral Conditional Mode Span. Why: Weighted and random conditionals read neutral. How: This outlines the pill in the border color with muted text, keying off data-mode-neutral-active. */
 
 
 	background   : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -1141,7 +1141,7 @@
 
 
 }
-.booValSpa[data-boost-zero-active] { /* What: Zero Boost. Why: No boost reads faint. How: This colors it a faded muted, keying off data-boost-zero-active. */
+.booValSpa[data-boost-zero-active] { /* What: Zero Boost Value Span. Why: No boost reads faint. How: This colors it a faded muted, keying off data-boost-zero-active. */
 
 
 	color : oklch( from var( --tex-mut-col ) l c h / 0.5 ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -1193,21 +1193,21 @@
 
 
 }
-.celDelSpa--up { /* What: Up Cell Delta Span. Why: A rise reads green. How: This colors it green. */
+.celDelSpa--up { /* What: Cell Delta Span Up. Why: A rise reads green. How: This colors it green. */
 
 
 	color : var( --suc-mai-col ); /* Success Main Color = oklch( 0.5 0.11 155 ) */
 
 
 }
-.celDelSpa--down { /* What: Down Cell Delta Span. Why: A fall reads in the accent. How: This colors it in the accent. */
+.celDelSpa--down { /* What: Cell Delta Span Down. Why: A fall reads in the accent. How: This colors it in the accent. */
 
 
 	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-.celDelSpa--flat { /* What: Flat Cell Delta Span. Why: No change reads faint. How: This colors it a faded muted. */
+.celDelSpa--flat { /* What: Cell Delta Span Flat. Why: No change reads faint. How: This colors it a faded muted. */
 
 
 	color : oklch( from var( --tex-mut-col ) l c h / 0.5 ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -1227,7 +1227,7 @@
 
 
 }
-.celAftSpa--empty { /* What: Empty Cell After Span. Why: With no value, the N/A placeholder shouldn't read semibold. How: This returns the cell to its row's own weight. */
+.celAftSpa--empty { /* What: Cell After Span Empty. Why: With no value, the N/A placeholder shouldn't read semibold. How: This returns the cell to its row's own weight. */
 
 
 	font-weight : inherit;
@@ -1268,7 +1268,7 @@
 
 
 }
-.staPilSpa--triggered { /* What: Triggered Status Pill Span. Why: A conditional that triggered reads as a solid accent pill. How: This fills it in the accent with page-colored text. */
+.staPilSpa--triggered { /* What: Status Pill Span Triggered. Why: A conditional that triggered reads as a solid accent pill. How: This fills it in the accent with page-colored text. */
 
 
 	background : var( --acc-mai-col );                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -1277,7 +1277,7 @@
 
 
 }
-.staPilSpa--untriggered { /* What: Untriggered Status Pill Span. Why: A conditional that didn't trigger reads neutral. How: This outlines the pill on the surface in muted text. */
+.staPilSpa--untriggered { /* What: Status Pill Span Untriggered. Why: A conditional that didn't trigger reads neutral. How: This outlines the pill on the surface in muted text. */
 
 
 	background : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
@@ -1290,7 +1290,7 @@
 @container appRooDiv ( max-width : 500px ) { /* What: Very Narrow Untriggered Status Pill. Why: At 500px and below "Not Triggered" on one line is wider than the status column and spills over the After value. How: This applies only when the app is 500px wide or less. */
 
 
-	.staPilSpa--untriggered { /* What: Wrapped Untriggered Status Pill. Why: The whole status should stay readable inside its column. How: This wraps the text onto two centered lines and lets the pill grow to fit, never shorter than its one-line height. */
+	.staPilSpa--untriggered { /* What: Wrapped Status Pill Span Untriggered. Why: The whole status should stay readable inside its column. How: This wraps the text onto two centered lines and lets the pill grow to fit, never shorter than its one-line height. */
 
 
 		height          : auto;
@@ -1305,7 +1305,7 @@
 
 
 }
-.staPilSpa--done { /* What: Done Status Pill Span. Why: A done reminder reads green. How: This tints the pill green. */
+.staPilSpa--done { /* What: Status Pill Span Done. Why: A done reminder reads green. How: This tints the pill green. */
 
 
 	background : var( --suc-tin-col ); /* Success Tint Color = oklch( 0.95 0.035 155 ) */
@@ -1313,7 +1313,7 @@
 
 
 }
-.staPilSpa--due { /* What: Due Status Pill Span. Why: A reminder due today reads in the accent. How: This tints the pill in the soft accent. */
+.staPilSpa--due { /* What: Status Pill Span Due. Why: A reminder due today reads in the accent. How: This tints the pill in the soft accent. */
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -1321,7 +1321,7 @@
 
 
 }
-.staPilSpa--skipped { /* What: Skipped Status Pill Span. Why: A skipped reminder reads red. How: This tints the pill red. */
+.staPilSpa--skipped { /* What: Status Pill Span Skipped. Why: A skipped reminder reads red. How: This tints the pill red. */
 
 
 	background : var( --err-tin-col ); /* Error Tint Color = oklch( 0.955 0.02 25 ) */
@@ -1474,7 +1474,7 @@
 
 
 }
-.remRowDiv:last-child { /* What: Last Reminder Row. Why: The table's end needs no divider. How: This drops the hairline. */
+.remRowDiv:last-child { /* What: Last Reminders Row Div. Why: The table's end needs no divider. How: This drops the hairline. */
 
 
 	border-bottom : 0;

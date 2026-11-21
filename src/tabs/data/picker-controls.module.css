@@ -203,14 +203,14 @@
 
 
 }
-.basNamInp:focus { /* What: Focused Picker Name Input. Why: The focused field should stand out. How: This borders it in the accent color. */
+.basNamInp:focus { /* What: Focused Basics Name Input. Why: The focused field should stand out. How: This borders it in the accent color. */
 
 
 	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-.basNamInp::placeholder { /* What: Picker Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+.basNamInp::placeholder { /* What: Basics Name Input Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
 
 
 	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -318,7 +318,7 @@
 
 
 }
-.groPilBut:hover { /* What: Hovered Group Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
+.groPilBut:hover { /* What: Hovered Group Pill Button. Why: The pill should respond to the pointer. How: This darkens its border and text. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -326,7 +326,7 @@
 
 
 }
-.groPilBut[aria-checked='true'] { /* What: Chosen Group Pill. Why: The picker's current group should stand out. How: This fills it in the soft accent, keying off the aria-checked the pill already sets. */
+.groPilBut[aria-checked='true'] { /* What: Chosen Group Pill Button. Why: The picker's current group should stand out. How: This fills it in the soft accent, keying off the aria-checked the pill already sets. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -356,7 +356,7 @@
 
 
 }
-.groPilBut--new { /* What: New Group Pill Button. Why: Adding a group reads as a dashed placeholder pill. How: This dashes the border and tightens the icon gap. */
+.groPilBut--new { /* What: Group Pill Button New. Why: Adding a group reads as a dashed placeholder pill. How: This dashes the border and tightens the icon gap. */
 
 
 	border-style : dashed;
@@ -365,7 +365,7 @@
 
 
 }
-.groPilBut--new:hover { /* What: Hovered New Group Pill. Why: The pill should respond to the pointer. How: This turns it the accent color. */
+.groPilBut--new:hover { /* What: Hovered Group Pill Button New. Why: The pill should respond to the pointer. How: This turns it the accent color. */
 
 
 	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -373,7 +373,7 @@
 
 
 }
-.groPilBut--new.groPilBut--returning { /* What: Returning New Group Pill. Why: After the inline input closes, the pill pops back in, mirroring how it left. How: This plays a springy scale-in while the returning class is set. */
+.groPilBut--new.groPilBut--returning { /* What: Group Pill Button New Returning. Why: After the inline input closes, the pill pops back in, mirroring how it left. How: This plays a springy scale-in while the returning class is set. */
 
 
 	animation : groPilButReturnPopIn var( --dur-ani-p01 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
@@ -383,7 +383,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Returning New Group Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.groPilBut--new.groPilBut--returning { /* What: Still Returning New Group Pill Button. Why: The change should happen at once. How: This turns its animation off. */
+	.groPilBut--new.groPilBut--returning { /* What: Still Group Pill Button New Returning. Why: The change should happen at once. How: This turns its animation off. */
 
 
 		animation : none;
@@ -673,21 +673,21 @@
 
 
 }
-.modOptLab:last-child { /* What: Last Mode Option. Why: The radio's own edge closes the list. How: This drops the last option's hairline. */
+.modOptLab:last-child { /* What: Last Mode Option Label. Why: The radio's own edge closes the list. How: This drops the last option's hairline. */
 
 
 	border-bottom : 0;
 
 
 }
-.modOptLab:hover { /* What: Hovered Mode Option. Why: The option should respond to the pointer. How: This shades it. */
+.modOptLab:hover { /* What: Hovered Mode Option Label. Why: The option should respond to the pointer. How: This shades it. */
 
 
 	background : var( --bac-wel-col ); /* Background Well Color = oklch( 0.96 0.004 240 ) */
 
 
 }
-.modOptLab:has( input:focus-visible ) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus, though the radio itself is hidden. How: This outlines the option while its input has visible focus. */
+.modOptLab:has( input:focus-visible ) { /* What: Focused Mode Option Label. Why: A keyboard user needs to see which option has focus, though the radio itself is hidden. How: This outlines the option while its input has visible focus. */
 
 
 	outline-offset : calc( var( --bor-wid-lar ) * -1 ); /* Border Width Large ~= 2.035px */
@@ -695,14 +695,14 @@
 
 
 }
-.modOptLab[data-option-select-active] { /* What: Selected Mode Option. Why: The picker's mode should stand out. How: This fills it in the soft accent, keying off data-option-select-active. */
+.modOptLab[data-option-select-active] { /* What: Selected Mode Option Label. Why: The picker's mode should stand out. How: This fills it in the soft accent, keying off data-option-select-active. */
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
 
 
 }
-.modOptLab[data-option-select-active]:hover { /* What: Hovered Selected Mode Option. Why: The selection shouldn't fade on hover. How: This keeps the soft accent. */
+.modOptLab[data-option-select-active]:hover { /* What: Hovered Selected Mode Option Label. Why: The selection shouldn't fade on hover. How: This keeps the soft accent. */
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -946,7 +946,7 @@
 
 }
 
-.schNamSpa--help { /* What: Help Schedule Name Span. Why: The cadence setting's name carries an inline help tip. How: This lines them up in an inline row. */
+.schNamSpa--help { /* What: Schedule Name Span Help. Why: The cadence setting's name carries an inline help tip. How: This lines them up in an inline row. */
 
 
 	align-items : center;
@@ -976,7 +976,7 @@
 
 
 }
-.cadHelSpa:hover { /* What: Hovered Help Tip. Why: The tip should respond to the pointer. How: This tints it in the accent. */
+.cadHelSpa:hover { /* What: Hovered Cadence Help Span. Why: The tip should respond to the pointer. How: This tints it in the accent. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -1020,7 +1020,7 @@
 
 }
 
-.schSubSpa--fade { /* What: Fading Schedule Sub Span. Why: An explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
+.schSubSpa--fade { /* What: Schedule Sub Span Fade. Why: An explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
 
 
 	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -1030,7 +1030,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fading Setting Explanation. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.schSubSpa--fade { /* What: Still Fading Schedule Sub Span. Why: The change should happen at once. How: This turns its animation off. */
+	.schSubSpa--fade { /* What: Still Schedule Sub Span Fade. Why: The change should happen at once. How: This turns its animation off. */
 
 
 		animation : none;
@@ -1221,14 +1221,14 @@
 
 
 }
-.conPilBut:hover { /* What: Hovered Conditional Pill. Why: The pill should respond to the pointer. How: This darkens its border. */
+.conPilBut:hover { /* What: Hovered Conditional Pill Button. Why: The pill should respond to the pointer. How: This darkens its border. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
-.conPilBut[data-pill-select-active] { /* What: Attached Conditional Pill. Why: The attached conditional should stand out. How: This fills it in the soft accent with an inset accent ring, keying off data-pill-select-active. */
+.conPilBut[data-pill-select-active] { /* What: Attached Conditional Pill Button. Why: The attached conditional should stand out. How: This fills it in the soft accent with an inset accent ring, keying off data-pill-select-active. */
 
 
 	background   : var( --acc-tin-col );                                  /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -1328,7 +1328,7 @@
 
 
 }
-.cadOptSel::placeholder { /* What: Cadence Select Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
+.cadOptSel::placeholder { /* What: Cadence Option Select Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
 
 
 	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -1336,7 +1336,7 @@
 
 
 }
-.cadOptSel:focus { /* What: Focused Cadence Select. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
+.cadOptSel:focus { /* What: Focused Cadence Option Select. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
 
 
 	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -1377,7 +1377,7 @@
 
 
 }
-.offNotDiv:last-child { /* What: Last On-Demand Note. Why: The group's own bottom border already closes it. How: This drops the note's hairline. */
+.offNotDiv:last-child { /* What: Last Off Note Div. Why: The group's own bottom border already closes it. How: This drops the note's hairline. */
 
 
 	border-bottom : 0;
@@ -1418,7 +1418,7 @@
 
 
 }
-.ediRowDiv:last-child { /* What: Last Ease Setting Row. Why: The group's own bottom border already closes it. How: This drops the row's hairline. */
+.ediRowDiv:last-child { /* What: Last Editor Row Div. Why: The group's own bottom border already closes it. How: This drops the row's hairline. */
 
 
 	border-bottom : 0;
@@ -1533,7 +1533,7 @@
 
 
 }
-.fooRowDiv--new { /* What: New Footer Row Div. Why: A draft picker has no Delete, so its buttons sit right. How: This pushes the row's contents to its end. */
+.fooRowDiv--new { /* What: Footer Row Div New. Why: A draft picker has no Delete, so its buttons sit right. How: This pushes the row's contents to its end. */
 
 
 	justify-content : flex-end;

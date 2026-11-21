@@ -97,7 +97,7 @@
 @container appRooDiv ( max-width : 640px ) { /* What: Narrow Header Lead. Why: On a narrow screen the mark and title sit closer. How: This applies only when the app is 640px wide or less. */
 
 
-	.heaLeaDiv { /* What: Tighter Header Lead. Why: The row has less room. How: This tightens its gap. */
+	.heaLeaDiv { /* What: Tighter Header Lead Div. Why: The row has less room. How: This tightens its gap. */
 
 
 		gap : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
@@ -134,7 +134,7 @@
 
 
 }
-.braMarBut:hover { /* What: Hovered Brand Mark. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
+.braMarBut:hover { /* What: Hovered Brand Mark Button. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
 
 
 	transform : translateY( -1px );
@@ -144,7 +144,7 @@
 @container appRooDiv ( max-width : 640px ) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the app is 640px wide or less. */
 
 
-	.braMarBut { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark one rhythm step, to p05. */
+	.braMarBut { /* What: Smaller Brand Mark Button. Why: The title needs the room. How: This shrinks the mark one rhythm step, to p05. */
 
 
 		height : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
@@ -158,7 +158,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Brand Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.braMarBut { /* What: Still Brand Mark. Why: The change should happen at once. How: This turns its transition off. */
+	.braMarBut { /* What: Still Brand Mark Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -277,7 +277,7 @@
 
 
 }
-.subLinBut:hover { /* What: Hovered Intro Link. Why: The link should respond to the pointer. How: This thickens its underline. */
+.subLinBut:hover { /* What: Hovered Sub Link Button. Why: The link should respond to the pointer. How: This thickens its underline. */
 
 
 	text-decoration-thickness : 2px;
@@ -444,7 +444,7 @@
 
 
 }
-.scoTabBut:hover { /* What: Hovered Show Tab. Why: The tab should respond to the pointer. How: This darkens its border. */
+.scoTabBut:hover { /* What: Hovered Scope Tab Button. Why: The tab should respond to the pointer. How: This darkens its border. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -469,7 +469,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Show Tab. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.scoTabBut { /* What: Still Show Tab. Why: The change should happen at once. How: This turns its animation and transition off. */
+	.scoTabBut { /* What: Still Scope Tab Button. Why: The change should happen at once. How: This turns its animation and transition off. */
 
 
 		animation  : none;
@@ -582,7 +582,7 @@
 @container appRooDiv ( max-width : 640px ) { /* What: Narrow Range Pills. Why: On a narrow app the pills match the scrolling rows above them. How: This applies only when the app matches ( max-width : 640px ). */
 
 
-	.ranPilDiv { /* What: Scrolling Range Pills. Why: The pills should stay on one side-scrolling line. How: This stops them wrapping. */
+	.ranPilDiv { /* What: Scrolling Range Pills Div. Why: The pills should stay on one side-scrolling line. How: This stops them wrapping. */
 
 
 		flex-wrap : nowrap;
@@ -612,7 +612,7 @@
 
 
 }
-.ranPilBut:hover { /* What: Hovered Range Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
+.ranPilBut:hover { /* What: Hovered Range Pill Button. Why: The pill should respond to the pointer. How: This darkens its border and text. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -620,7 +620,7 @@
 
 
 }
-.ranPilBut[data-pill-select-active] { /* What: Selected Range Pill. Why: The active range should stand out. How: This fills it in the soft accent, keying off data-pill-select-active. */
+.ranPilBut[data-pill-select-active] { /* What: Selected Range Pill Button. Why: The active range should stand out. How: This fills it in the soft accent, keying off data-pill-select-active. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -640,7 +640,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Range Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.ranPilBut { /* What: Still Range Pill. Why: The change should happen at once. How: This turns its transition off. */
+	.ranPilBut { /* What: Still Range Pill Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -682,7 +682,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Stats Body. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.staBodDiv { /* What: Still Stats Body. Why: The change should happen at once. How: This turns its animation off. */
+	.staBodDiv { /* What: Still Stats Body Div. Why: The change should happen at once. How: This turns its animation off. */
 
 
 		animation : none;
@@ -747,7 +747,7 @@
 
 
 }
-.staRowDiv--two { /* What: Two Stat Row Div. Why: The most and least picked lists share one row. How: This drops the grid to two columns. */
+.staRowDiv--two { /* What: Stat Row Div Two. Why: The most and least picked lists share one row. How: This drops the grid to two columns. */
 
 
 	grid-template-columns : repeat( 2, 1fr );
@@ -757,7 +757,7 @@
 @container appRooDiv ( max-width : 640px ) { /* What: Narrow Stat Card Row. Why: A narrow app has room for fewer columns. How: This applies only when the app matches ( max-width : 640px ). */
 
 
-	.staRowDiv { /* What: Two Column Stat Card Row. Why: Four cards would be too cramped. How: This drops the grid to two columns. */
+	.staRowDiv { /* What: Two Column Stat Row Div. Why: Four cards would be too cramped. How: This drops the grid to two columns. */
 
 
 		grid-template-columns : repeat( 2, 1fr );
@@ -888,7 +888,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Breakdown Segment. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.barSegSpa { /* What: Still Breakdown Segment. Why: The change should happen at once. How: This turns its transition off. */
+	.barSegSpa { /* What: Still Bar Segment Span. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -927,7 +927,7 @@
 
 
 }
-.legIteIte:last-child { /* What: Last Legend Row. Why: The last row needs no divider. How: This drops its border. */
+.legIteIte:last-child { /* What: Last Legend Item Item. Why: The last row needs no divider. How: This drops its border. */
 
 
 	border-bottom : 0;
@@ -1079,7 +1079,7 @@
 
 
 }
-.yeaArrBut:hover:not( :disabled ) { /* What: Hovered Year Arrow. Why: A live arrow should respond to the pointer. How: This tints it with the accent. */
+.yeaArrBut:hover:not( :disabled ) { /* What: Hovered Year Arrow Button. Why: A live arrow should respond to the pointer. How: This tints it with the accent. */
 
 
 	background   : oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-009-rec ) ); /* Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
@@ -1087,7 +1087,7 @@
 
 
 }
-.yeaArrBut:disabled { /* What: Disabled Year Arrow. Why: An arrow with nowhere to go should look it. How: This fades it and drops the pointer cursor. */
+.yeaArrBut:disabled { /* What: Disabled Year Arrow Button. Why: An arrow with nowhere to go should look it. How: This fades it and drops the pointer cursor. */
 
 
 	cursor  : default;
@@ -1098,7 +1098,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Year Arrow. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.yeaArrBut { /* What: Still Year Arrow. Why: The change should happen at once. How: This turns its transition off. */
+	.yeaArrBut { /* What: Still Year Arrow Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1414,7 +1414,7 @@
 
 
 }
-.detIteIte:last-child { /* What: Last Day Detail Row. Why: The last row needs no divider. How: This drops its border. */
+.detIteIte:last-child { /* What: Last Detail Item Item. Why: The last row needs no divider. How: This drops its border. */
 
 
 	border-bottom : 0;
@@ -1556,7 +1556,7 @@
 
 
 }
-.sumIteIte:first-child { /* What: First Conditional Summary Row. Why: The first row needs no divider. How: This drops its border. */
+.sumIteIte:first-child { /* What: First Summary Item Item. Why: The first row needs no divider. How: This drops its border. */
 
 
 	border-top : 0;
@@ -1676,7 +1676,7 @@
 
 
 }
-.ranSorBut:hover { /* What: Hovered Sort Toggle. Why: The toggle should respond to the pointer. How: This darkens its border and text. */
+.ranSorBut:hover { /* What: Hovered Rank Sort Button. Why: The toggle should respond to the pointer. How: This darkens its border and text. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -1687,7 +1687,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sort Toggle. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.ranSorBut { /* What: Still Sort Toggle. Why: The change should happen at once. How: This turns its transition off. */
+	.ranSorBut { /* What: Still Rank Sort Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1763,7 +1763,7 @@
 
 
 }
-.breMetBut:hover { /* What: Hovered Metric Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
+.breMetBut:hover { /* What: Hovered Breakdown Metric Button. Why: The pill should respond to the pointer. How: This darkens its border and text. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -1783,7 +1783,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Metric Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.breMetBut { /* What: Still Metric Pill. Why: The change should happen at once. How: This turns its transition off. */
+	.breMetBut { /* What: Still Breakdown Metric Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1826,7 +1826,7 @@
 
 
 }
-.notLinBut:hover { /* What: Hovered Unit Toggle. Why: The link should respond to the pointer. How: This darkens it. */
+.notLinBut:hover { /* What: Hovered Note Link Button. Why: The link should respond to the pointer. How: This darkens it. */
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
@@ -1845,7 +1845,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Unit Toggle. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.notLinBut { /* What: Still Unit Toggle. Why: The change should happen at once. How: This turns its transition off. */
+	.notLinBut { /* What: Still Note Link Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1940,7 +1940,7 @@
 
 
 }
-.ranIteIte:last-child { /* What: Last Rank Row. Why: The last row needs no divider. How: This drops its border. */
+.ranIteIte:last-child { /* What: Last Rank Item Item. Why: The last row needs no divider. How: This drops its border. */
 
 
 	border-bottom : 0;
@@ -2043,7 +2043,7 @@
 
 
 }
-.ranTagSpa--was { /* What: Was Rank Tag Span. Why: An item that returned but hasn't been picked since reads in the accent rather than muted. How: This tints the chip in the accent. */
+.ranTagSpa--was { /* What: Rank Tag Span Was. Why: An item that returned but hasn't been picked since reads in the accent rather than muted. How: This tints the chip in the accent. */
 
 
 	background   : var( --acc-tin-col );                                                /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -2052,7 +2052,7 @@
 
 
 }
-.ranTagSpa--deleted { /* What: Deleted Rank Tag Span. Why: A deleted item's tag warns in a warm danger tint. How: This tints the chip red. */
+.ranTagSpa--deleted { /* What: Rank Tag Span Deleted. Why: A deleted item's tag warns in a warm danger tint. How: This tints the chip red. */
 
 
 	background   : oklch( from var( --err-mai-col ) l c h / var( --cdn-pow-009-rec ) ); /* Error Main Color = oklch( 0.55 0.17 25 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
@@ -2157,7 +2157,7 @@
 
 
 }
-.freValSpa--freq { /* What: Frequency Frequency Value Span. Why: Values like every 12.5 weeks and Picked once differ in width, which would shift the tag before them. How: This fixes it at a rhythm step, right-aligned. */
+.freValSpa--freq { /* What: Frequency Value Span Frequency. Why: Values like every 12.5 weeks and Picked once differ in width, which would shift the tag before them. How: This fixes it at a rhythm step, right-aligned. */
 
 
 	text-align : right;
@@ -2165,7 +2165,7 @@
 
 
 }
-.freValSpa--last { /* What: Last Frequency Value Span. Why: Values like 12 days and Yesterday differ in width, which would shift the tag before them, and the longest needs a smaller size to fit beside its tag. How: This sets it at the base font size, fixed at a rhythm step, right-aligned. */
+.freValSpa--last { /* What: Frequency Value Span Last. Why: Values like 12 days and Yesterday differ in width, which would shift the tag before them, and the longest needs a smaller size to fit beside its tag. How: This sets it at the base font size, fixed at a rhythm step, right-aligned. */
 
 
 	font-size  : var( --fon-siz-bas );                /* Font Size Base = 11px */
@@ -2174,7 +2174,7 @@
 
 
 }
-.freValSpa--interval { /* What: Interval Frequency Value Span. Why: Values like every 100 days would shift the pill before them. How: This fixes it at a rhythm step, right-aligned. */
+.freValSpa--interval { /* What: Frequency Value Span Interval. Why: Values like every 100 days would shift the pill before them. How: This fixes it at a rhythm step, right-aligned. */
 
 
 	text-align : right;
@@ -2182,7 +2182,7 @@
 
 
 }
-.freValSpa--fired { /* What: Fired Frequency Value Span. Why: A date like Aug 23 would shift the pill before it. How: This fixes it at a rhythm step, right-aligned. */
+.freValSpa--fired { /* What: Frequency Value Span Fired. Why: A date like Aug 23 would shift the pill before it. How: This fixes it at a rhythm step, right-aligned. */
 
 
 	text-align : right;
@@ -2258,7 +2258,7 @@
 
 
 }
-.logIteIte:last-child { /* What: Last Reminder Log Row. Why: The last row needs no divider. How: This drops its border. */
+.logIteIte:last-child { /* What: Last Log Item Item. Why: The last row needs no divider. How: This drops its border. */
 
 
 	border-bottom : 0;
@@ -2331,7 +2331,7 @@
 
 
 }
-.logTypSpa--recurring { /* What: Recurring Log Type Span. Why: A recurring reminder reads in the accent. How: This tints the chip in the accent. */
+.logTypSpa--recurring { /* What: Log Type Span Recurring. Why: A recurring reminder reads in the accent. How: This tints the chip in the accent. */
 
 
 	background   : oklch( from var( --acc-tin-col ) l c h / 0.5 );                      /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -2412,7 +2412,7 @@
 
 
 }
-.pagArrBut:hover:not( :disabled ) { /* What: Hovered Pager Arrow. Why: A live arrow should respond to the pointer. How: This tints it with the accent. */
+.pagArrBut:hover:not( :disabled ) { /* What: Hovered Pager Arrow Button. Why: A live arrow should respond to the pointer. How: This tints it with the accent. */
 
 
 	background   : oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-009-rec ) ); /* Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
@@ -2420,7 +2420,7 @@
 
 
 }
-.pagArrBut:disabled { /* What: Disabled Pager Arrow. Why: An arrow with nowhere to go should look it. How: This fades it and drops the pointer cursor. */
+.pagArrBut:disabled { /* What: Disabled Pager Arrow Button. Why: An arrow with nowhere to go should look it. How: This fades it and drops the pointer cursor. */
 
 
 	cursor  : default;
@@ -2431,7 +2431,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pager Arrow. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pagArrBut { /* What: Still Pager Arrow. Why: The change should happen at once. How: This turns its transition off. */
+	.pagArrBut { /* What: Still Pager Arrow Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;

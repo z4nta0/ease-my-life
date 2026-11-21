@@ -67,7 +67,7 @@
 
 
 }
-.welCarDiv--rise { /* What: Rising Welcome Card Div. Why: The card should rise gently into place when the modal opens. How: This plays the welCarDivOpenRise entrance, added only when reduced motion isn't requested. */
+.welCarDiv--rise { /* What: Welcome Card Div Rise. Why: The card should rise gently into place when the modal opens. How: This plays the welCarDivOpenRise entrance, added only when reduced motion isn't requested. */
 
 
 	animation : welCarDivOpenRise var( --dur-ani-p02 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
