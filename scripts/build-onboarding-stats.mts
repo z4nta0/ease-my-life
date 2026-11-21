@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import patModObj from 'node:path'; // What: Path Module Object. Why: The output file's absolute path is built from this script's own folder. How: This joins and resolves the path parts for OUT_PAT_STR.
+import patModObj from 'node:path'; // What: Path Module Object. Why: The output file's absolute path is built from this script's own folder. How: This takes a directory name and joins path parts for CUR_DIR_STR and OUT_PAT_STR.
 
 
 import { fileURLToPath } from 'node:url';                             // What: File URL To Path. Why: ESM modules have no __dirname, so this script reconstructs its own folder. How: This converts import.meta.url for CUR_DIR_STR.
@@ -64,7 +64,7 @@ import type { RawStaTyp } from '../src/state/onboarding-seed-data.ts'; // What: 
 
 const CUR_DIR_STR = patModObj.dirname( fileURLToPath( import.meta.url ) );                           // What: Current Directory String. Why: The output path is resolved from this script's own folder, not the folder it's run from. How: This converts import.meta.url to a file path and takes its directory.
 const OUT_PAT_STR = patModObj.join( CUR_DIR_STR, '..', 'src', 'state', 'onboarding-stats-data.ts' ); // What: Output Path String. Why: The generated file always lands in the same place. How: This joins CUR_DIR_STR with the data file's path in src/state.
-const TRA_TAS_OBJ = ONB_TAS_ARR.find( ( curTasObj ) => curTasObj.id === 'tk_ob_trash' )!;            // What: Trash Task Object. Why: Only the weekly "Take trash out for pickup" reminder gets history, since the one-time prescription reminder hasn't been completed on a fresh install. How: This finds its definition by id. // What: Non-Null Note. Why: The onboarding samples always include the weekly trash reminder. How: The ! tells TypeScript the find returns it.
+const TRA_TAS_OBJ = ONB_TAS_ARR.find( ( curTasObj ) => curTasObj.id === 'tk_ob_trash' )!;            // What: Trash Task Object. Why: Only the weekly "Take trash out for pickup" reminder gets history, since the one-time prescription reminder hasn't been completed on a fresh install. How: This finds its definition by id. // What: Non-Null Note. Why: The onboarding task list includes the weekly trash reminder. How: The ! tells TypeScript the find returns it.
 
 // #endregion Constants
 
@@ -89,9 +89,10 @@ const REF_MOD_BOO = process.argv.includes( '--reformat' ); // What: Reformat Mod
  *
  * @summary
  * Rebuilds every sample picker's items as the records store.ts's addPicFun
- * creates live. An ease-down item starts at weight 1 and full value 100, an
- * ease-up or ease-down item carries its own soonest and latest drift, and
- * every other item takes its definition's weight and value.
+ * creates live. An ease-down item weighs 1 and, without a value of its own,
+ * starts at 100; an ease-up or ease-down item carries its own soonest and
+ * latest drift; and every other item takes its definition's weight (default
+ * 1) and value (default 0).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -169,13 +170,13 @@ const buiPicFun = () : Partial< PicRcdTyp >[] => ONB_ASP_ARR.map( ( curPicObj ) 
 
 
 	daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ], // What: Days Of Week. Why: The sample pickers run every day. How: This lists all seven weekdays.
-	easeMax    : 20,                      // What: Ease Maximum. Why: Every new picker starts with the default latest drift. How: This mirrors addPicFun's default.
-	easeMin    : 10,                      // What: Ease Minimum. Why: Every new picker starts with the default soonest drift. How: This mirrors addPicFun's default.
+	easeMax    : 20,                      // What: Ease Maximum. Why: A new picker without its own latest drift gets the default. How: This mirrors addPicFun's default.
+	easeMin    : 10,                      // What: Ease Minimum. Why: A new picker without its own soonest drift gets the default. How: This mirrors addPicFun's default.
 	group      : curPicObj.group,         // What: Group. Why: Each sample picker keeps its own group. How: This copies it from the definition.
 	id         : curPicObj.id,            // What: ID. Why: Each sample picker keeps its own id, which its items point at. How: This copies it from the definition.
 	mode       : curPicObj.mode,          // What: Mode. Why: Each sample picker keeps its own picking mode. How: This copies it from the definition.
 	name       : curPicObj.name,          // What: Name. Why: Each sample picker keeps its own name. How: This copies it from the definition.
-	threshold  : 100                      // What: Threshold. Why: Every new picker starts with the default charge threshold. How: This mirrors addPicFun's default.
+	threshold  : 100                      // What: Threshold. Why: A new picker without its own charge threshold gets the default. How: This mirrors addPicFun's default.
 
 
 } ) );
@@ -252,7 +253,7 @@ const buiRemFun = ( todDatObj : Date ) : { remLogArr : RawStaTyp[ 'reminderLog' 
 
 
 
-	return { remLogArr, remSkiArr }; // What: Reminder Rows Return. Why: The caller stores the completed and skipped rows in separate logs. How: This returns both arrays.
+	return { remLogArr, remSkiArr }; // What: Reminder Rows Return. Why: The completed and skipped rows are kept in separate logs. How: This returns both arrays.
 
 
 };
@@ -261,6 +262,28 @@ const buiRemFun = ( todDatObj : Date ) : { remLogArr : RawStaTyp[ 'reminderLog' 
 
 
 
+// #region isoIndFun
+
+/**
+ * isoIndFun = ISO Index Function
+ *
+ * @summary
+ * Turns an ISO date key (YYYY-MM-DD) into whole UTC days since the epoch, so
+ * two dates compare and subtract as plain integers.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param isoDayStr - ISO Day String: The date key to convert.
+ *
+ * @returns The date's day index.
+ *
+ * @example
+ * ```ts
+ * isoIndFun('2026-11-21') // => 20778
+ * ```
+ *
+*/
+
 const isoIndFun = ( isoDayStr : string ) => { // What: ISO Index Function. Why: Day offsets need a comparable, timezone-safe day count rather than an ISO string. How: This parses the date's parts and converts them to whole UTC days since the epoch.
 
 
@@ -268,10 +291,12 @@ const isoIndFun = ( isoDayStr : string ) => { // What: ISO Index Function. Why: 
 
 
 
-	return Math.floor( Date.UTC( yeaValNum, monValNum - 1, dayValNum ) / 86400000 ); // What: Day Index Return. Why: The caller compares two dates as plain integers. How: This converts the UTC timestamp to whole days.
+	return Math.floor( Date.UTC( yeaValNum, monValNum - 1, dayValNum ) / 86400000 ); // What: Day Index Return. Why: A day index is a plain integer that compares and subtracts. How: This converts the UTC timestamp to whole days.
 
 
 };
+
+// #endregion isoIndFun
 
 
 
@@ -375,7 +400,7 @@ const simDatFun = () : RawStaTyp => { // What: Simulate Data Function. Why: A no
 
 
 
-	return { // What: Simulated Data Return. Why: The caller writes these three logs. How: This converts the pick rows and pairs them with the reminder rows.
+	return { // What: Simulated Data Return. Why: The three logs are returned together. How: This converts the pick rows and pairs them with the reminder rows.
 
 
 		pickLog         : covLogFun( hisRowArr, isoIndFun( isoDayFun( todDatObj ) ) ), // What: Pick Log. Why: The pick rows are stored as day offsets. How: This converts them against today's day index.
@@ -396,7 +421,7 @@ const simDatFun = () : RawStaTyp => { // What: Simulate Data Function. Why: A no
 
 // #region Output Formatting
 
-const forKeyFun = ( keyOneStr : string, keyTwoStr : string ) => keyOneStr.toLowerCase().localeCompare( keyTwoStr.toLowerCase() ); // What: Format Key Function. Why: Every row's keys are written alphabetically, compared case-insensitively. How: This is the comparator both key groups sort with.
+const forKeyFun = ( keyOneStr : string, keyTwoStr : string ) => keyOneStr.toLowerCase().localeCompare( keyTwoStr.toLowerCase() ); // What: Format Key Function. Why: Each key group is written alphabetically, compared case-insensitively. How: This is the comparator both key groups sort with.
 
 
 
@@ -493,7 +518,7 @@ const forArrFun = ( rowRcdArr : Record< string, unknown >[], traTexStr : string,
 
 
 
-	return `[ ${ annTexStr }\n\n\n${ rowTexArr.map( ( curTexStr ) => `\t\t{ ${ curTexStr.padEnd( rowWidNum ) } }` ).join( ',\n' ) }\n\n\n\t]${ traTexStr }`; // What: Array Text Return. Why: The caller splices the finished table into the template. How: This wraps every padded row in braces, joins them, and adds the 2-blank padding, the trailing text, and the comment.
+	return `[ ${ annTexStr }\n\n\n${ rowTexArr.map( ( curTexStr ) => `\t\t{ ${ curTexStr.padEnd( rowWidNum ) } }` ).join( ',\n' ) }\n\n\n\t]${ traTexStr }`; // What: Array Text Return. Why: The finished table is returned as source text. How: This wraps every padded row in braces, joins them, and adds the 2-blank padding, the trailing text, and the comment.
 
 
 };
@@ -509,9 +534,9 @@ const forArrFun = ( rowRcdArr : Record< string, unknown >[], traTexStr : string,
  *
  * @summary
  * Builds the complete source text of the generated onboarding-stats-data.ts:
- * its file header, its ONB_STA_OBJ with the shape block documenting every
- * row's fields, and its export, all following this repo's formatting rules,
- * with the three logs written as aligned tables by forArrFun.
+ * its imports, its file header, its ONB_STA_OBJ with a shape block describing
+ * the rows' shared shape, and its export, all following this repo's formatting
+ * rules, with the three logs written as aligned tables by forArrFun.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -572,16 +597,16 @@ import type { RawStaTyp } from './onboarding-seed-data.ts'; // What: Raw Stats T
  * CLAUDE.md). Keys every row carries come first, alphabetized and
  * column-aligned, then any optional ones. The rows mirror
  * state.pickLog/.reminderLog/.reminderSkipLog, minus the fields hydStaFun in
- * onboarding-seed-data.ts fills in at hydration time (id/eid/completedAt for a
- * pick row, rowId plus completedAt or skippedAt for a reminder row) from each
- * row's own dayNum, houNum, and minNum. Their fields are described by
- * RawPicTyp and RawRemTyp in that same file.
+ * onboarding-seed-data.ts fills in at hydration time (date, eid, id, and
+ * completedAt for a pick row, rowId plus completedAt or skippedAt for a
+ * reminder row) from each row's own dayNum, houNum, and minNum. Their fields
+ * are described by RawPicTyp and RawRemTyp in that same file.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const ONB_STA_OBJ : RawStaTyp = { // What: Onboarding Stats Object. Why: The Welcome Tour and help mode seed a year of realistic history into Stats. How: This holds the 3 precomputed logs, turned into real dated rows by hydStaFun.
+const ONB_STA_OBJ : RawStaTyp = { // What: Onboarding Stats Object. Why: The sample Stats history is stored here as precomputed logs. How: This holds the 3 precomputed logs, turned into real dated rows by hydStaFun.
 
 
 	pickLog : ${ forArrFun( outDatObj.pickLog, ',', '// What: Pick Log. Why: Stats needs a year of sample picks. How: This lists every simulated pick as a dayNum-based row.' ) }
@@ -601,7 +626,7 @@ const ONB_STA_OBJ : RawStaTyp = { // What: Onboarding Stats Object. Why: The Wel
 
 // #region Exports
 
-export { ONB_STA_OBJ }; // What: Named Export. Why: The Welcome Tour, the Stats page tour and help mode each import this data lazily by name. How: This exports ONB_STA_OBJ.
+export { ONB_STA_OBJ }; // What: Named Export. Why: The sample history is read from this module by name. How: This exports ONB_STA_OBJ.
 
 // #endregion Exports
 

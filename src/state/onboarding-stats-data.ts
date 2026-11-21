@@ -43,16 +43,16 @@ import type { RawStaTyp } from './onboarding-seed-data.ts'; // What: Raw Stats T
  * CLAUDE.md). Keys every row carries come first, alphabetized and
  * column-aligned, then any optional ones. The rows mirror
  * state.pickLog/.reminderLog/.reminderSkipLog, minus the fields hydStaFun in
- * onboarding-seed-data.ts fills in at hydration time (id/eid/completedAt for a
- * pick row, rowId plus completedAt or skippedAt for a reminder row) from each
- * row's own dayNum, houNum, and minNum. Their fields are described by
- * RawPicTyp and RawRemTyp in that same file.
+ * onboarding-seed-data.ts fills in at hydration time (date, eid, id, and
+ * completedAt for a pick row, rowId plus completedAt or skippedAt for a
+ * reminder row) from each row's own dayNum, houNum, and minNum. Their fields
+ * are described by RawPicTyp and RawRemTyp in that same file.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const ONB_STA_OBJ : RawStaTyp = { // What: Onboarding Stats Object. Why: The Welcome Tour and help mode seed a year of realistic history into Stats. How: This holds the 3 precomputed logs, turned into real dated rows by hydStaFun.
+const ONB_STA_OBJ : RawStaTyp = { // What: Onboarding Stats Object. Why: The sample Stats history is stored here as precomputed logs. How: This holds the 3 precomputed logs, turned into real dated rows by hydStaFun.
 
 
 	pickLog : [ // What: Pick Log. Why: Stats needs a year of sample picks. How: This lists every simulated pick as a dayNum-based row.
@@ -2514,7 +2514,7 @@ const ONB_STA_OBJ : RawStaTyp = { // What: Onboarding Stats Object. Why: The Wel
 
 // #region Exports
 
-export { ONB_STA_OBJ }; // What: Named Export. Why: The Welcome Tour, the Stats page tour and help mode each import this data lazily by name. How: This exports ONB_STA_OBJ.
+export { ONB_STA_OBJ }; // What: Named Export. Why: The sample history is read from this module by name. How: This exports ONB_STA_OBJ.
 
 // #endregion Exports
 
