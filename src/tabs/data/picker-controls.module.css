@@ -52,7 +52,7 @@
 
 
 }
-.conGroDiv--basics { /* What: Basics Controls Group Div. Why: The details rows run edge to edge under their heading. How: This pulls the group past the body's padding, flush, closed by a hairline. */
+.conGroDiv--basics { /* What: Controls Group Div Basics. Why: The details rows run edge to edge under their heading. How: This pulls the group past the body's padding, flush, closed by a hairline. */
 
 
 	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -562,7 +562,7 @@
 
 
 }
-.groOkaBut:not( :disabled ):hover { /* What: Hovered Confirm Button. Why: A live confirm should respond to the pointer. How: This tints it in the accent. */
+.groOkaBut:not( :disabled ):hover { /* What: Hovered Group Okay Button. Why: A live confirm should respond to the pointer. How: This tints it in the accent. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -571,7 +571,7 @@
 
 
 }
-.groOkaBut:disabled { /* What: Disabled Confirm Button. Why: A blank or colliding name can't be confirmed and should look it. How: This dims it and drops the pointer cursor. */
+.groOkaBut:disabled { /* What: Disabled Group Okay Button. Why: A blank or colliding name can't be confirmed and should look it. How: This dims it and drops the pointer cursor. */
 
 
 	cursor  : default;
@@ -579,7 +579,7 @@
 
 
 }
-.groCanBut:hover { /* What: Hovered Cancel Button. Why: Cancel should read as backing out. How: This tints it in the danger color. */
+.groCanBut:hover { /* What: Hovered Group Cancel Button. Why: Cancel should read as backing out. How: This tints it in the danger color. */
 
 
 	border-color : var( --err-mai-col ); /* Error Main Color = oklch( 0.55 0.17 25 ) */

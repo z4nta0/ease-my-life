@@ -1124,14 +1124,14 @@
 
 
 }
-.hetGriDiv--next { /* What: Next Heat Grid Div. Why: Paging forward should read as moving right. How: This slides the grid in from the right. */
+.hetGriDiv--next { /* What: Heat Grid Div Next. Why: Paging forward should read as moving right. How: This slides the grid in from the right. */
 
 
 	animation : hetGriDivNextFadeIn var( --dur-ani-p02 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
-.hetGriDiv--prev { /* What: Previous Heat Grid Div. Why: Paging back should read as moving left. How: This slides the grid in from the left. */
+.hetGriDiv--prev { /* What: Heat Grid Div Previous. Why: Paging back should read as moving left. How: This slides the grid in from the left. */
 
 
 	animation : hetGriDivPrevFadeIn var( --dur-ani-p02 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
@@ -1227,21 +1227,21 @@
 
 
 }
-.hetCelBut:hover { /* What: Hovered Heat Cell. Why: The cell should respond to the pointer. How: This grows it slightly. */
+.hetCelBut:hover { /* What: Hovered Heat Cell Button. Why: The cell should respond to the pointer. How: This grows it slightly. */
 
 
 	transform : scale( 1.08 );
 
 
 }
-.hetCelBut[data-cell-select-active] { /* What: Selected Heat Cell. Why: The tapped day should stand out. How: This outlines it in body color, keying off data-cell-select-active. */
+.hetCelBut[data-cell-select-active] { /* What: Selected Heat Cell Button. Why: The tapped day should stand out. How: This outlines it in body color, keying off data-cell-select-active. */
 
 
 	outline-color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-.hetCelBut:focus-visible { /* What: Focused Heat Cell. Why: A keyboard user needs to see which day has focus, including the selected day. How: This colors the cell's waiting outline in the accent, and must stay after the selected rule so focus wins on the selected day. */
+.hetCelBut:focus-visible { /* What: Focused Heat Cell Button. Why: A keyboard user needs to see which day has focus, including the selected day. How: This colors the cell's waiting outline in the accent, and must stay after the selected rule so focus wins on the selected day. */
 
 
 	outline-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -1251,7 +1251,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Heat Cell. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.hetCelBut { /* What: Still Heat Cell. Why: The change should happen at once. How: This turns its transition off. */
+	.hetCelBut { /* What: Still Heat Cell Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1913,14 +1913,14 @@
 
 
 }
-.ranLisUno--freq { /* What: Frequency Rank List Unordered. Why: A list under a unit note needs more room above. How: This spaces it base vertical spacing down. */
+.ranLisUno--freq { /* What: Rank List Unordered Frequency. Why: A list under a unit note needs more room above. How: This spaces it base vertical spacing down. */
 
 
 	margin-top : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
 
 
 }
-.ranLisUno--breakdown { /* What: Breakdown Rank List Unordered. Why: A breakdown list sits under its note and pills. How: This spaces it base vertical spacing down. */
+.ranLisUno--breakdown { /* What: Rank List Unordered Breakdown. Why: A breakdown list sits under its note and pills. How: This spaces it base vertical spacing down. */
 
 
 	margin-top : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */

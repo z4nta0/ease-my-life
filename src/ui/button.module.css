@@ -37,14 +37,14 @@
 
 
 }
-.butBasBut:active { /* What: Pressed Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.butBasBut:active { /* What: Pressed Button Base Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
-.butBasBut:disabled { /* What: Disabled Button. Why: An unavailable action should look it. How: This dims the button and drops the pointer cursor. */
+.butBasBut:disabled { /* What: Disabled Button Base Button. Why: An unavailable action should look it. How: This dims the button and drops the pointer cursor. */
 
 
 	cursor  : default;
@@ -65,7 +65,7 @@
 
 
 }
-.butBasBut--sm { /* What: Small Button Base Button. Why: Compact rows need a shorter button. How: This drops the height one rhythm step and shrinks the padding and gap. */
+.butBasBut--sm { /* What: Button Base Button Small. Why: Compact rows need a shorter button. How: This drops the height one rhythm step and shrinks the padding and gap. */
 
 
 	border-radius : 999px;
@@ -76,7 +76,7 @@
 
 
 }
-.butBasBut--primary { /* What: Primary Button Base Button. Why: The main action in a view should stand out. How: This fills the button with the text color and uses the background color for its label. */
+.butBasBut--primary { /* What: Button Base Button Primary. Why: The main action in a view should stand out. How: This fills the button with the text color and uses the background color for its label. */
 
 
 	background : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
@@ -84,21 +84,21 @@
 
 
 }
-.butBasBut--primary:hover { /* What: Hovered Primary Button. Why: The main action should respond to the pointer. How: This lightens its fill slightly. */
+.butBasBut--primary:hover { /* What: Hovered Button Base Button Primary. Why: The main action should respond to the pointer. How: This lightens its fill slightly. */
 
 
 	background : oklch( from var( --tex-mai-col ) calc( l + 0.06 ) c h ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-.butBasBut--ghost { /* What: Ghost Button Base Button. Why: Secondary actions shouldn't compete with the content. How: This leaves the button unfilled with a muted label. */
+.butBasBut--ghost { /* What: Button Base Button Ghost. Why: Secondary actions shouldn't compete with the content. How: This leaves the button unfilled with a muted label. */
 
 
 	color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
-.butBasBut--ghost:hover { /* What: Hovered Ghost Button. Why: A quiet button still needs to respond to the pointer. How: This gives it a surface fill and the full text color. */
+.butBasBut--ghost:hover { /* What: Hovered Button Base Button Ghost. Why: A quiet button still needs to respond to the pointer. How: This gives it a surface fill and the full text color. */
 
 
 	background : var( --bac-sur-col ); /* Background Surface Color = oklch( 0.975 0.004 240 ) */
@@ -106,7 +106,7 @@
 
 
 }
-.butBasBut--danger { /* What: Danger Button Base Button. Why: A destructive action should read as one before it's clicked. How: This outlines the button in red, and a parent can hide it through --but-dan-dis. */
+.butBasBut--danger { /* What: Button Base Button Danger. Why: A destructive action should read as one before it's clicked. How: This outlines the button in red, and a parent can hide it through --but-dan-dis. */
 
 
 	background : transparent;
@@ -116,14 +116,14 @@
 
 
 }
-.butBasBut--danger:hover { /* What: Hovered Danger Button. Why: The destructive action should respond to the pointer. How: This gives it a faint red fill. */
+.butBasBut--danger:hover { /* What: Hovered Button Base Button Danger. Why: The destructive action should respond to the pointer. How: This gives it a faint red fill. */
 
 
 	background : var( --err-tin-col ); /* Error Tint Color = oklch( 0.955 0.02 25 ) */
 
 
 }
-.butBasBut--secondary { /* What: Secondary Button Base Button. Why: Some actions need a clear but outlined button. How: This gives it a surface fill, a hairline border, and the full text color. */
+.butBasBut--secondary { /* What: Button Base Button Secondary. Why: Some actions need a clear but outlined button. How: This gives it a surface fill, a hairline border, and the full text color. */
 
 
 	background : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
@@ -132,7 +132,7 @@
 
 
 }
-.butBasBut--secondary:hover { /* What: Hovered Secondary Button. Why: An outlined button should respond to the pointer. How: This darkens its border to the muted color. */
+.butBasBut--secondary:hover { /* What: Hovered Button Base Button Secondary. Why: An outlined button should respond to the pointer. How: This darkens its border to the muted color. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */

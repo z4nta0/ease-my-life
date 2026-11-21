@@ -38,14 +38,14 @@
 
 
 }
-.appRooDiv[data-placement='side'] { /* What: Side Placement App Root. Why: A side rail sits beside the content rather than above it. How: This lays the root out as a row. */
+.appRooDiv[data-placement='side'] { /* What: Side Placement App Root Div. Why: A side rail sits beside the content rather than above it. How: This lays the root out as a row. */
 
 
 	flex-direction : row;
 
 
 }
-.appRooDiv[data-placement='top'] { /* What: Top Placement App Root. Why: A top bar sits above the content. How: This keeps the root a column. */
+.appRooDiv[data-placement='top'] { /* What: Top Placement App Root Div. Why: A top bar sits above the content. How: This keeps the root a column. */
 
 
 	flex-direction : column;

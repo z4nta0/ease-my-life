@@ -789,7 +789,7 @@
 
 
 }
-.setRowDiv--sub { /* What: Sub Settings Row Div. Why: The run time sits under its toggle as a dependent row that dims while unused. How: This drops the top border, adds top room, and fades its opacity. */
+.setRowDiv--sub { /* What: Settings Row Div Sub. Why: The run time sits under its toggle as a dependent row that dims while unused. How: This drops the top border, adds top room, and fades its opacity. */
 
 
 	border-top  : 0;
@@ -808,7 +808,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Run Time Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.setRowDiv--sub { /* What: Still Sub Settings Row Div. Why: The change should happen at once. How: This turns its transition off. */
+	.setRowDiv--sub { /* What: Still Settings Row Div Sub. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -821,7 +821,7 @@
 @container appRooDiv ( max-width : 500px ) { /* What: Narrow Stacking Settings Row. Why: A row with a wide control squeezes its text into a narrow column on a phone. How: This applies only when the app is 500px wide or less. */
 
 
-	.setRowDiv--stack { /* What: Stacked Settings Row Div. Why: The text should get the row's full width, with the control underneath. How: This stacks the text above the control, keeping the control at its natural width on the left. */
+	.setRowDiv--stack { /* What: Stacked Settings Row Div Stack. Why: The text should get the row's full width, with the control underneath. How: This stacks the text above the control, keeping the control at its natural width on the left. */
 
 
 		align-items    : flex-start;

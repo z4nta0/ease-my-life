@@ -323,7 +323,7 @@
 
 
 }
-.remAddSpa[aria-disabled='true'] { /* What: Disabled Add Reminder Button. Why: While the tutorials run, adding a reminder is unavailable and should look it. How: This dims the button and drops the pointer cursor, keying off the aria-disabled its info tip sets, but keeps pointer events, since the tip needs hover and taps to show why. */
+.remAddSpa[aria-disabled='true'] { /* What: Disabled Reminder Add Span. Why: While the tutorials run, adding a reminder is unavailable and should look it. How: This dims the button and drops the pointer cursor, keying off the aria-disabled its info tip sets, but keeps pointer events, since the tip needs hover and taps to show why. */
 
 
 	cursor  : default;

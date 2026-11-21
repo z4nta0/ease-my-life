@@ -204,7 +204,7 @@
 
 
 }
-.todStkDiv.todStkDiv--bumped { /* What: Bumped Today Streak Div. Why: A streak that just grew should pop for a moment. How: This plays a springy scale while the bumped class is set. */
+.todStkDiv.todStkDiv--bumped { /* What: Today Streak Div Bumped. Why: A streak that just grew should pop for a moment. How: This plays a springy scale while the bumped class is set. */
 
 
 	animation : todStkDivBumpBounce var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
@@ -214,7 +214,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Streak Chip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.todStkDiv { /* What: Still Streak Chip. Why: The warm tint should switch at once. How: This turns its transition off. */
+	.todStkDiv { /* What: Still Today Streak Div. Why: The warm tint should switch at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -222,7 +222,7 @@
 
 	}
 
-	.todStkDiv.todStkDiv--bumped { /* What: Still Bumped Streak Chip. Why: The chip shouldn't pop, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
+	.todStkDiv.todStkDiv--bumped { /* What: Still Today Streak Div Bumped. Why: The chip shouldn't pop, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
 
 
 		animation : none;
@@ -283,7 +283,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Streak Flame. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.stkFlaSvg { /* What: Still Streak Flame. Why: The change should happen at once. How: This turns its transition off. */
+	.stkFlaSvg { /* What: Still Streak Flame SVG. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;

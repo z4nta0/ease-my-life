@@ -34,7 +34,7 @@
 
 
 }
-.legBacDiv--closing { /* What: Closing Legal Backdrop Div. Why: The dim should fade away with the panel rather than vanish. How: This plays the fade-out while the modal's closing class is on. */
+.legBacDiv--closing { /* What: Legal Backdrop Div Closing. Why: The dim should fade away with the panel rather than vanish. How: This plays the fade-out while the modal's closing class is on. */
 
 
 	animation : legBacDivCloseFadeOut var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */

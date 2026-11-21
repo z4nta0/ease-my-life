@@ -443,14 +443,14 @@
 
 
 }
-.picTabBut:hover { /* What: Hovered Picker Tab. Why: The tab should respond to the pointer. How: This darkens its border. */
+.picTabBut:hover { /* What: Hovered Picker Tab Button. Why: The tab should respond to the pointer. How: This darkens its border. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
-.picTabBut[data-tab-select-active] { /* What: Selected Picker Tab. Why: The picker showing below should stand out in the strip. How: This fills the tab in the soft accent. */
+.picTabBut[data-tab-select-active] { /* What: Selected Picker Tab Button. Why: The picker showing below should stand out in the strip. How: This fills the tab in the soft accent. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -524,7 +524,7 @@
 
 
 }
-.picAddSpa[aria-disabled='true'] { /* What: Disabled Add Picker Tab. Why: While the tutorials run, adding a picker is unavailable and should look it. How: This dims the tab and drops the pointer cursor, keying off the aria-disabled its info tip sets, but keeps pointer events, since the tip needs hover and taps to show why. */
+.picAddSpa[aria-disabled='true'] { /* What: Disabled Picker Add Span. Why: While the tutorials run, adding a picker is unavailable and should look it. How: This dims the tab and drops the pointer cursor, keying off the aria-disabled its info tip sets, but keeps pointer events, since the tip needs hover and taps to show why. */
 
 
 	cursor  : default;

@@ -1022,7 +1022,7 @@
 
 
 }
-.pooSenBut--sent { /* What: Sent Pool Send Button. Why: Once sent, the button becomes a settled check. How: This fills it in the soft accent and drops the pointer cursor. */
+.pooSenBut--sent { /* What: Pool Send Button Sent. Why: Once sent, the button becomes a settled check. How: This fills it in the soft accent and drops the pointer cursor. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -1040,7 +1040,7 @@
 
 
 }
-.pooSenBut--tour { /* What: Tour Pool Send Button. Why: App Features' manual-pick tour points at the Send to Today button inside its bigger spotlight. How: This draws an accent outline, inset so it never shifts layout, that fades in and out. */
+.pooSenBut--tour { /* What: Pool Send Button Tour. Why: App Features' manual-pick tour points at the Send to Today button inside its bigger spotlight. How: This draws an accent outline, inset so it never shifts layout, that fades in and out. */
 
 
 	animation      : global( targetTourPulse ) var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1983.0ms, Motion Standard Easing = ease */ /* What: Global targetTourPulse Keyframes. Why: The targetTourPulse keyframes are shared with the Data tab's tour targets, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -1060,7 +1060,7 @@
 
 
 	}
-	.pooSenBut--tour { /* What: Still Tour Pool Send Button. Why: An outline frozen mid-fade would read as paused, so it pins to full color instead. How: This turns its animation off and sets the outline to the accent. */
+	.pooSenBut--tour { /* What: Still Pool Send Button Tour. Why: An outline frozen mid-fade would read as paused, so it pins to full color instead. How: This turns its animation off and sets the outline to the accent. */
 
 
 		animation     : none;

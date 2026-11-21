@@ -50,7 +50,7 @@
 
 
 }
-.logChiBut:hover { /* What: Hovered Log Chip. Why: The chip should respond to the pointer. How: This darkens its text and border. */
+.logChiBut:hover { /* What: Hovered Log Chip Button. Why: The chip should respond to the pointer. How: This darkens its text and border. */
 
 
 	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -58,7 +58,7 @@
 
 
 }
-.logChiBut[aria-pressed='true'] { /* What: Open Log Chip. Why: While its log is open the chip reads as on. How: This fills it in the soft accent, keying off the aria-pressed it already sets. */
+.logChiBut[aria-pressed='true'] { /* What: Open Log Chip Button. Why: While its log is open the chip reads as on. How: This fills it in the soft accent, keying off the aria-pressed it already sets. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -77,7 +77,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Log Chip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.logChiBut { /* What: Still Log Chip. Why: The change should happen at once. How: This turns its transition off. */
+	.logChiBut { /* What: Still Log Chip Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -498,7 +498,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Block Chevron. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.bloChvSpa { /* What: Still Block Chevron. Why: The change should happen at once. How: This turns its transition off. */
+	.bloChvSpa { /* What: Still Block Chevron Span. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;

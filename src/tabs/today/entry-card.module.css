@@ -704,7 +704,7 @@
 
 
 }
-.actIcoSpa[aria-disabled='true'] { /* What: Disabled Entry Action. Why: An unavailable action looks inert but stays focusable, so its tip can explain why. How: This dims it and drops the pointer cursor, keying off the aria-disabled its info tip sets. */
+.actIcoSpa[aria-disabled='true'] { /* What: Disabled Action Icon Span. Why: An unavailable action looks inert but stays focusable, so its tip can explain why. How: This dims it and drops the pointer cursor, keying off the aria-disabled its info tip sets. */
 
 
 	cursor  : default;
@@ -712,7 +712,7 @@
 
 
 }
-.actIcoSpa[aria-disabled='true']:hover { /* What: Hovered Disabled Entry Action. Why: An unavailable action shouldn't react like a live one. How: This keeps its background clear and its icon muted. */
+.actIcoSpa[aria-disabled='true']:hover { /* What: Hovered Disabled Action Icon Span. Why: An unavailable action shouldn't react like a live one. How: This keeps its background clear and its icon muted. */
 
 
 	background : none;

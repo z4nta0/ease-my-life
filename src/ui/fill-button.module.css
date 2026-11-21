@@ -15,7 +15,7 @@
 
 
 
-.refIcoSvg--spinning { /* What: Spinning Refresh Icon SVG. Why: A click on the lever should visibly register even when the fill itself shows no immediate change. How: FilButCom hands ButBasCom this class for its icon while its spin state is on, which turns the icon once. */
+.refIcoSvg--spinning { /* What: Refresh Icon SVG Spinning. Why: A click on the lever should visibly register even when the fill itself shows no immediate change. How: FilButCom hands ButBasCom this class for its icon while its spin state is on, which turns the icon once. */
 
 
 	animation : refIcoSvgClickSpin var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */
@@ -25,7 +25,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Spinning Refresh Icon SVG. Why: Someone who asked for less motion shouldn't see the icon turn. How: This applies only when the reduced-motion preference is set. */
 
 
-	.refIcoSvg--spinning { /* What: Still Refresh Icon SVG. Why: The icon should stay put. How: This shortens the spin to an instant, so the button's own animationend handler still fires and clears the spin state. */
+	.refIcoSvg--spinning { /* What: Still Refresh Icon SVG Spinning. Why: The icon should stay put. How: This shortens the spin to an instant, so the button's own animationend handler still fires and clears the spin state. */
 
 
 		animation-duration : .01ms;

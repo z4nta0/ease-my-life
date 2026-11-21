@@ -43,7 +43,7 @@
 
 
 }
-.segConDiv--grid { /* What: Grid Segment Control Div. Why: With five options, Repeat is the only control that wraps on a narrow screen, and wrapped flex rows justify on their own, leaving pills stranded at opposite edges. How: This switches it to an auto-fit grid so every wrapped row lines up under the row above, spreading its columns across the full width so no large gap is left at the end of a row. */
+.segConDiv--grid { /* What: Segment Control Div Grid. Why: With five options, Repeat is the only control that wraps on a narrow screen, and wrapped flex rows justify on their own, leaving pills stranded at opposite edges. How: This switches it to an auto-fit grid so every wrapped row lines up under the row above, spreading its columns across the full width so no large gap is left at the end of a row. */
 
 
 	display               : grid;
@@ -53,7 +53,7 @@
 
 
 }
-.segConDiv--snug { /* What: Snug Segment Control Div. Why: Day selection's two short options would otherwise stretch across a column flex field and land at opposite edges. How: This keeps the control to its content's width with the buttons snug together. */
+.segConDiv--snug { /* What: Segment Control Div Snug. Why: Day selection's two short options would otherwise stretch across a column flex field and land at opposite edges. How: This keeps the control to its content's width with the buttons snug together. */
 
 
 	align-self      : flex-start;
