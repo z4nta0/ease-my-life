@@ -62,14 +62,14 @@
 
 
 }
-.todCarArt[data-card-done-active] { /* What: Done App Feature Card. Why: A finished tutorial should read as done, like a checked-off card. How: This dims the card's surface slightly, and must stay after the pressed rule so it wins. */
+.todCarArt[data-card-done-active] { /* What: Done Today Card Article. Why: A finished tutorial should read as done, like a checked-off card. How: This dims the card's surface slightly, and must stay after the pressed rule so it wins. */
 
 
 	background : var( --bac-sun-col ); /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
 
 
 }
-.todCarArt[data-card-needed-active] { /* What: Needs Attention App Feature Card. Why: A tutorial that can't run yet is flagged as unfinished, warm rather than red, since nothing is wrong. How: This tints the card's border and surface with the warm color, and must stay after the hover and pressed rules so it wins. */
+.todCarArt[data-card-needed-active] { /* What: Needed Today Card Article. Why: A tutorial that can't run yet is flagged as unfinished, warm rather than red, since nothing is wrong. How: This tints the card's border and surface with the warm color, and must stay after the hover and pressed rules so it wins. */
 
 
 	background   : oklch( from var( --acc-sec-col ) l c h / var( --cdn-pow-010-rec ) ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ), Core-Design-Number to the Power of 10 Reciprocal ~= 0.060 */
@@ -77,7 +77,7 @@
 
 
 }
-.todCarArt[data-card-needed-active]:hover { /* What: Hovered Needs Attention App Feature Card. Why: The flagged card should still respond to the pointer. How: This deepens its warm border. */
+.todCarArt[data-card-needed-active]:hover { /* What: Hovered Needed Today Card Article. Why: The flagged card should still respond to the pointer. How: This deepens its warm border. */
 
 
 	border-color : oklch( from var( --acc-sec-col ) l c h / var( --cdn-pow-001-rec ) ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ), Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
@@ -159,7 +159,7 @@
 
 
 }
-.carCheSpa[aria-disabled='true'] { /* What: Blocked App Feature Check. Why: A tutorial that can't run yet shows a dimmed play button that explains itself on tap instead of starting. How: This dims it and drops the help cursor, keying off the aria-disabled its info tip sets so it outranks the tip's own cursor. */
+.carCheSpa[aria-disabled='true'] { /* What: Blocked Card Check Span. Why: A tutorial that can't run yet shows a dimmed play button that explains itself on tap instead of starting. How: This dims it and drops the help cursor, keying off the aria-disabled its info tip sets so it outranks the tip's own cursor. */
 
 
 	cursor  : default;
@@ -167,7 +167,7 @@
 
 
 }
-.carCheSpa[aria-disabled='true']:hover { /* What: Hovered Blocked App Feature Check. Why: A blocked button shouldn't look clickable on hover. How: This holds its border at the normal border color. */
+.carCheSpa[aria-disabled='true']:hover { /* What: Hovered Blocked Card Check Span. Why: A blocked button shouldn't look clickable on hover. How: This holds its border at the normal border color. */
 
 
 	border-color : var( --bor-mai-col ); /* Border Main Color = oklch( 0.91 0.005 240 ) */

@@ -394,14 +394,14 @@
 
 
 }
-.scoTabDiv[data-scroll-start-active] { /* What: Show Tab Strip At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+.scoTabDiv[data-scroll-start-active] { /* What: Scrolled Start Scope Tab Div. Why: No content hides past the left edge. How: This zeroes the left fade. */
 
 
 	--fad-lef-off : 0px;
 
 
 }
-.scoTabDiv[data-scroll-end-active] { /* What: Show Tab Strip At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+.scoTabDiv[data-scroll-end-active] { /* What: Scrolled End Scope Tab Div. Why: No content hides past the right edge. How: This zeroes the right fade. */
 
 
 	--fad-rig-off : 0px;
@@ -451,7 +451,7 @@
 
 
 }
-.scoTabBut[data-tab-select-active] { /* What: Selected Show Tab. Why: The scope showing below should stand out in the strip. How: This fills the tab in the soft accent, keying off data-tab-select-active. */
+.scoTabBut[data-tab-select-active] { /* What: Selected Scope Tab Button. Why: The scope showing below should stand out in the strip. How: This fills the tab in the soft accent, keying off data-tab-select-active. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -565,14 +565,14 @@
 
 
 }
-.ranPilDiv[data-scroll-start-active] { /* What: Range Pills At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+.ranPilDiv[data-scroll-start-active] { /* What: Scrolled Start Range Pills Div. Why: No content hides past the left edge. How: This zeroes the left fade. */
 
 
 	--fad-lef-off : 0px;
 
 
 }
-.ranPilDiv[data-scroll-end-active] { /* What: Range Pills At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+.ranPilDiv[data-scroll-end-active] { /* What: Scrolled End Range Pills Div. Why: No content hides past the right edge. How: This zeroes the right fade. */
 
 
 	--fad-rig-off : 0px;
@@ -1731,14 +1731,14 @@
 
 
 }
-.breMetDiv[data-scroll-start-active] { /* What: Metric Pills At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+.breMetDiv[data-scroll-start-active] { /* What: Scrolled Start Breakdown Metrics Div. Why: No content hides past the left edge. How: This zeroes the left fade. */
 
 
 	--fad-lef-off : 0px;
 
 
 }
-.breMetDiv[data-scroll-end-active] { /* What: Metric Pills At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+.breMetDiv[data-scroll-end-active] { /* What: Scrolled End Breakdown Metrics Div. Why: No content hides past the right edge. How: This zeroes the right fade. */
 
 
 	--fad-rig-off : 0px;
@@ -1771,7 +1771,7 @@
 
 
 }
-.breMetBut[data-pill-select-active] { /* What: Selected Metric Pill. Why: The showing metric should stand out. How: This fills it in the soft accent, keying off data-pill-select-active. */
+.breMetBut[data-pill-select-active] { /* What: Selected Breakdown Metric Button. Why: The showing metric should stand out. How: This fills it in the soft accent, keying off data-pill-select-active. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -1833,7 +1833,7 @@
 
 
 }
-.notLinBut[data-link-select-active] { /* What: Selected Unit Toggle. Why: The showing unit should stand out. How: This sets it bold in the accent with a solid underline, keying off data-link-select-active. */
+.notLinBut[data-link-select-active] { /* What: Selected Note Link Button. Why: The showing unit should stand out. How: This sets it bold in the accent with a solid underline, keying off data-link-select-active. */
 
 
 	color                 : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -2150,7 +2150,7 @@
 
 
 }
-.freValSpa[data-value-dim-active] { /* What: Placeholder Unit Value. Why: A placeholder like Not Picked should read fainter than a real value. How: This fades it, keying off data-value-dim-active. */
+.freValSpa[data-value-dim-active] { /* What: Dimmed Frequency Value Span. Why: A placeholder like Not Picked should read fainter than a real value. How: This fades it, keying off data-value-dim-active. */
 
 
 	color : oklch( from var( --tex-mut-col ) l c h / var( --cdn-pow-001-rec ) ); /* Text Muted Color = oklch( 0.5 0.012 250 ), Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */

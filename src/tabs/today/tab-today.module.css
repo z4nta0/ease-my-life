@@ -1891,7 +1891,7 @@
 
 
 }
-.onbCreDiv--generate[data-card-needed-active] { /* What: Blocked Generate Card. Why: A Generate card still waiting on its tutorials reads as unfinished, warm rather than red. How: This tints its border and fill warm, keying off data-card-needed-active. */
+.onbCreDiv--generate[data-card-needed-active] { /* What: Needed Onboarding Create Div Generate. Why: A Generate card still waiting on its tutorials reads as unfinished, warm rather than red. How: This tints its border and fill warm, keying off data-card-needed-active. */
 
 
 	background   : oklch( from var( --acc-sec-col ) l c h / var( --cdn-pow-009-rec ) ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */

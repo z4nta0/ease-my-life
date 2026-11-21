@@ -165,7 +165,7 @@
 
 }
 
-.fieSubSpa { /* What: Field Summary Span. Why: The live summary reads as a quiet sentence under the label. How: This sets it small and muted in normal case. */
+.fieSubSpa { /* What: Field Subtitle Span. Why: The live summary reads as a quiet sentence under the label. How: This sets it small and muted in normal case. */
 
 
 	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -174,7 +174,7 @@
 
 
 }
-.fieSubSpa--fading { /* What: Fading Field Summary Span. Why: A summary that changes should ease in rather than snap. How: This fades it in each time it remounts. */
+.fieSubSpa--fading { /* What: Field Subtitle Span Fading. Why: A summary that changes should ease in rather than snap. How: This fades it in each time it remounts. */
 
 
 	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -184,7 +184,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fading Field Summary Span. Why: Someone who asked for less motion shouldn't see the summary fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.fieSubSpa--fading { /* What: Still Field Summary Span. Why: The new summary should simply appear. How: This turns the fade off. */
+	.fieSubSpa--fading { /* What: Still Field Subtitle Span Fading. Why: The new summary should simply appear. How: This turns the fade off. */
 
 
 		animation : none;

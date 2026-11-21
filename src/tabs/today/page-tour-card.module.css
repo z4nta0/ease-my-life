@@ -60,7 +60,7 @@
 
 
 }
-.todCarArt[data-card-done-active] { /* What: Done Page Tour Card. Why: A finished tour should read as done, like a checked-off card. How: This dims the card's surface slightly, and must stay after the pressed rule so it wins. */
+.todCarArt[data-card-done-active] { /* What: Done Today Card Article. Why: A finished tour should read as done, like a checked-off card. How: This dims the card's surface slightly, and must stay after the pressed rule so it wins. */
 
 
 	background : var( --bac-sun-col ); /* Background Sunken Color = oklch( 0.969 0.004 240 ) */

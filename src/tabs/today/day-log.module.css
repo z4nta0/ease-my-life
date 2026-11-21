@@ -1481,14 +1481,14 @@
 
 
 }
-.remRowDiv[data-row-done-active] { /* What: Done Reminder Row. Why: A done reminder's row reads green. How: This tints it green, keying off data-row-done-active. */
+.remRowDiv[data-row-done-active] { /* What: Done Reminders Row Div. Why: A done reminder's row reads green. How: This tints it green, keying off data-row-done-active. */
 
 
 	background : var( --suc-tin-col ); /* Success Tint Color = oklch( 0.95 0.035 155 ) */
 
 
 }
-.remRowDiv[data-row-due-active] { /* What: Due Reminder Row. Why: A reminder due today reads in the accent. How: This tints it in the soft accent, keying off data-row-due-active. */
+.remRowDiv[data-row-due-active] { /* What: Due Reminders Row Div. Why: A reminder due today reads in the accent. How: This tints it in the soft accent, keying off data-row-due-active. */
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */

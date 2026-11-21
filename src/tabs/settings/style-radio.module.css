@@ -99,7 +99,7 @@
 
 
 }
-.modOptLab:has( .modOptInp:focus-visible ) { /* What: Focused Style Radio Row. Why: The native radio is hidden, so a keyboard user needs to see focus on the whole row. How: This draws the accent outline inside the row while its radio has keyboard focus. */
+.modOptLab:has( .modOptInp:focus-visible ) { /* What: Focused Mode Option Label. Why: The native radio is hidden, so a keyboard user needs to see focus on the whole row. How: This draws the accent outline inside the row while its radio has keyboard focus. */
 
 
 	outline-offset : calc( var( --bor-wid-lar ) * -1 ); /* Border Width Large ~= 2.035px */
@@ -107,14 +107,14 @@
 
 
 }
-.modOptLab[data-option-select-active] { /* What: Selected Style Radio Row. Why: The chosen option should stand out. How: This tints the row with the accent color. */
+.modOptLab[data-option-select-active] { /* What: Selected Mode Option Label. Why: The chosen option should stand out. How: This tints the row with the accent color. */
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
 
 
 }
-.modOptLab[data-option-select-active]:hover { /* What: Hovered Selected Style Radio Row. Why: Hover shouldn't dim the selected row's tint. How: This keeps the accent tint. */
+.modOptLab[data-option-select-active]:hover { /* What: Hovered Selected Mode Option Label. Why: Hover shouldn't dim the selected row's tint. How: This keeps the accent tint. */
 
 
 	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */

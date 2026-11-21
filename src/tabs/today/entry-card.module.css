@@ -43,7 +43,7 @@
 
 
 }
-.todCarArt[data-card-exhale-active] { /* What: Exhaling Entry Card. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exh-car-del tab-today.tsx sets on each card. */
+.todCarArt[data-card-exhale-active] { /* What: Exhaling Today Card Article. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exh-car-del tab-today.tsx sets on each card. */
 
 
 	animation : global( cardCelebrateSwell ) var( --exh-car-dur ) var( --mot-dec-eas ) var( --exh-car-del, 0ms ) both; /* Exhale Card Duration ~= 1130.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Exhale Card Delay, set inline per card by the ripple cascade */ /* What: Global cardCelebrateSwell Keyframes. Why: The cardCelebrateSwell keyframes are shared with the reminder cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -80,7 +80,7 @@
 
 
 }
-.todCarArt[data-card-done-active] { /* What: Done Entry Card. Why: A done entry reads as settled. How: This shades the card slightly darker than the surface. */
+.todCarArt[data-card-done-active] { /* What: Done Today Card Article. Why: A done entry reads as settled. How: This shades the card slightly darker than the surface. */
 
 
 	background : var( --bac-sun-col ); /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
@@ -94,21 +94,21 @@
 
 
 }
-.todCarArt--dayoff[data-card-done-active] { /* What: Done Day-Off Card. Why: A done day off keeps its accent wash, a shade darker. How: This darkens the soft accent slightly. */
+.todCarArt--dayoff[data-card-done-active] { /* What: Done Today Card Article Day-Off. Why: A done day off keeps its accent wash, a shade darker. How: This darkens the soft accent slightly. */
 
 
 	background : oklch( from var( --acc-tin-col ) calc( l - 0.02 ) c h ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
 
 
 }
-.todCarArt[data-card-edit-active] { /* What: Editing Entry Card. Why: While its editor is open, clicking the card doesn't toggle it. How: This resets the cursor. */
+.todCarArt[data-card-edit-active] { /* What: Editing Today Card Article. Why: While its editor is open, clicking the card doesn't toggle it. How: This resets the cursor. */
 
 
 	cursor : default;
 
 
 }
-.todCarArt[data-card-reorder-active] { /* What: Reorderable Entry Card. Why: In Edit Mode a card is dragged rather than toggled. How: This dashes its border in the accent color, switches to the grab cursor, and plays a short unlock as Edit Mode opens. */
+.todCarArt[data-card-reorder-active] { /* What: Reorderable Today Card Article. Why: In Edit Mode a card is dragged rather than toggled. How: This dashes its border in the accent color, switches to the grab cursor, and plays a short unlock as Edit Mode opens. */
 
 
 	animation    : todCarArtReorderFadeIn var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
@@ -119,7 +119,7 @@
 
 
 }
-.todCarArt[data-card-reorder-active]:hover { /* What: Hovered Reorderable Entry Card. Why: The card should respond to the pointer without looking clickable. How: This deepens the dashed border and keeps a plain surface. */
+.todCarArt[data-card-reorder-active]:hover { /* What: Hovered Reorderable Today Card Article. Why: The card should respond to the pointer without looking clickable. How: This deepens the dashed border and keeps a plain surface. */
 
 
 	background   : var( --bac-sur-col );                                                /* Background Surface Color = oklch( 0.975 0.004 240 ) */
@@ -127,14 +127,14 @@
 
 
 }
-.todCarArt[data-card-reorder-active]:active { /* What: Pressed Reorderable Entry Card. Why: A press starts a drag, not a toggle. How: This keeps the plain surface. */
+.todCarArt[data-card-reorder-active]:active { /* What: Pressed Reorderable Today Card Article. Why: A press starts a drag, not a toggle. How: This keeps the plain surface. */
 
 
 	background : var( --bac-sur-col ); /* Background Surface Color = oklch( 0.975 0.004 240 ) */
 
 
 }
-.todCarArt[data-item-drag-active] { /* What: Dragged Entry Card. Why: The card under the pointer lifts above the rest. How: This solidifies its border, shadows it, and scales it up slightly. */
+.todCarArt[data-item-drag-active] { /* What: Dragged Today Card Article. Why: The card under the pointer lifts above the rest. How: This solidifies its border, shadows it, and scales it up slightly. */
 
 
 	border-color : oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-002-rec ) ); /* Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
@@ -145,7 +145,7 @@
 
 
 }
-.todCarArt--tutorial[data-card-needed-active] { /* What: Needed Tutorial Card. Why: While no real picker exists, the tutorial cards ask for attention. How: This tints the card warm. */
+.todCarArt--tutorial[data-card-needed-active] { /* What: Needed Today Card Article Tutorial. Why: While no real picker exists, the tutorial cards ask for attention. How: This tints the card warm. */
 
 
 	background   : oklch( from var( --acc-sec-col ) l c h / var( --cdn-pow-010-rec ) ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ), Core-Design-Number to the Power of 10 Reciprocal ~= 0.060 */
@@ -153,7 +153,7 @@
 
 
 }
-.todCarArt--tutorial[data-card-needed-active]:hover { /* What: Hovered Needed Tutorial Card. Why: The card should respond to the pointer. How: This deepens its warm border. */
+.todCarArt--tutorial[data-card-needed-active]:hover { /* What: Hovered Needed Today Card Article Tutorial. Why: The card should respond to the pointer. How: This deepens its warm border. */
 
 
 	border-color : oklch( from var( --acc-sec-col ) l c h / var( --cdn-pow-001-rec ) ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ), Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
@@ -171,7 +171,7 @@
 
 	}
 
-	.todCarArt[data-card-exhale-active] { /* What: Still Exhaling Entry Card. Why: The halo is only decoration. How: This turns the exhale off and pins the card at rest. */
+	.todCarArt[data-card-exhale-active] { /* What: Still Exhaling Today Card Article. Why: The halo is only decoration. How: This turns the exhale off and pins the card at rest. */
 
 
 		animation  : none;
@@ -196,7 +196,7 @@
 
 	}
 
-	.todCarArt[data-card-reorder-active] { /* What: Still Reorderable Entry Card. Why: Edit Mode should simply switch on. How: This turns the unlock off. */
+	.todCarArt[data-card-reorder-active] { /* What: Still Reorderable Today Card Article. Why: Edit Mode should simply switch on. How: This turns the unlock off. */
 
 
 		animation : none;

@@ -483,7 +483,7 @@
 
 
 }
-.togSwiBut[aria-pressed='true'] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-pressed the switch already sets. */
+.togSwiBut[aria-pressed='true'] { /* What: On Toggle Switch Button. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-pressed the switch already sets. */
 
 
 	background : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -799,7 +799,7 @@
 
 
 }
-.rowIcoSpa[data-reminder-once-active] { /* What: One-Time Reminder Icon. Why: A one-time reminder reads warm, apart from the recurring ones. How: This tints the tile in the warm color, keying off data-reminder-once-active. */
+.rowIcoSpa[data-reminder-once-active] { /* What: One-Time Row Icon Span. Why: A one-time reminder reads warm, apart from the recurring ones. How: This tints the tile in the warm color, keying off data-reminder-once-active. */
 
 
 	background : oklch( from var( --acc-sec-col ) calc( l + 0.28 ) c h ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */

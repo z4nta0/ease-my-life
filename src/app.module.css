@@ -131,7 +131,7 @@
 
 /* #region appTabNav */
 
-.appTabNav { /* What: Tab Bar. Why: The navigation reads as a translucent frosted bar over the content. How: This lays the tabs out in a centered row on a blurred translucent background, with a zero-width border each placement widens on its own edge. */
+.appTabNav { /* What: App Tab Nav. Why: The navigation reads as a translucent frosted bar over the content. How: This lays the tabs out in a centered row on a blurred translucent background, with a zero-width border each placement widens on its own edge. */
 
 
 	-webkit-backdrop-filter : blur( calc( var( --ver-rhy-p01 ) * 1rem ) ) saturate( 150% ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */ /* What: WebKit Backdrop Filter. Why: Safari only honors its own prefixed backdrop-filter. How: This blurs what's behind in WebKit, the same as the standard backdrop-filter line below. */
@@ -144,7 +144,7 @@
 
 
 }
-.appTabNav--exiting { /* What: Exiting Tab Bar. Why: When the placement changes, a ghost of the old bar plays its exit over the page without taking clicks. How: This makes it inert and raises it, and must stay before the placement rules so their own stacking wins where they set one. */
+.appTabNav--exiting { /* What: App Tab Nav Exiting. Why: When the placement changes, a ghost of the old bar plays its exit over the page without taking clicks. How: This makes it inert and raises it, and must stay before the placement rules so their own stacking wins where they set one. */
 
 
 	pointer-events : none;
@@ -152,7 +152,7 @@
 
 
 }
-.appTabNav--exiting.appTabNav--side { /* What: Exiting Side Tab Bar. Why: The ghost side rail leaves the layout so the real bar can take its slot. How: This pins it to the left edge as an overlay. */
+.appTabNav--exiting.appTabNav--side { /* What: App Tab Nav Exiting Side. Why: The ghost side rail leaves the layout so the real bar can take its slot. How: This pins it to the left edge as an overlay. */
 
 
 	bottom   : 0;
@@ -162,7 +162,7 @@
 
 
 }
-.appTabNav--exiting.appTabNav--top { /* What: Exiting Top Tab Bar. Why: The ghost top bar leaves the layout so the real bar can take its slot. How: This pins it to the top edge as an overlay. */
+.appTabNav--exiting.appTabNav--top { /* What: App Tab Nav Exiting Top. Why: The ghost top bar leaves the layout so the real bar can take its slot. How: This pins it to the top edge as an overlay. */
 
 
 	left     : 0;
@@ -172,49 +172,49 @@
 
 
 }
-.appTabNav--exiting.appTabNav--bottom { /* What: Exiting Bottom Tab Bar Motion. Why: The old bottom bar should slide away toward its own edge. How: This plays the bottom exit. */
+.appTabNav--exiting.appTabNav--bottom { /* What: App Tab Nav Exiting Bottom. Why: The old bottom bar should slide away toward its own edge. How: This plays the bottom exit. */
 
 
 	animation : appTabNavBottomSlideOut var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */
 
 
 }
-.appTabNav--exiting.appTabNav--top { /* What: Exiting Top Tab Bar Motion. Why: The old top bar should slide away toward its own edge. How: This plays the top exit. */
+.appTabNav--exiting.appTabNav--top { /* What: App Tab Nav Exiting Top. Why: The old top bar should slide away toward its own edge. How: This plays the top exit. */
 
 
 	animation : appTabNavTopSlideOut var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */
 
 
 }
-.appTabNav--exiting.appTabNav--side { /* What: Exiting Side Tab Bar Motion. Why: The old side rail should slide away toward its own edge. How: This plays the side exit. */
+.appTabNav--exiting.appTabNav--side { /* What: App Tab Nav Exiting Side. Why: The old side rail should slide away toward its own edge. How: This plays the side exit. */
 
 
 	animation : appTabNavSideSlideOut var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */
 
 
 }
-.appTabNav--entering.appTabNav--bottom { /* What: Entering Bottom Tab Bar. Why: The new bottom bar should arrive from its edge just after the old one leaves. How: This plays the bottom entrance after a short stagger. */
+.appTabNav--entering.appTabNav--bottom { /* What: App Tab Nav Entering Bottom. Why: The new bottom bar should arrive from its edge just after the old one leaves. How: This plays the bottom entrance after a short stagger. */
 
 
 	animation : appTabNavBottomSlideIn var( --dur-ani-p04 ) var( --mot-dec-eas ) var( --dur-ani-m01 ) both; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Duration Animation Base Minus 1 ~= 119.2ms */
 
 
 }
-.appTabNav--entering.appTabNav--top { /* What: Entering Top Tab Bar. Why: The new top bar should arrive from its edge just after the old one leaves. How: This plays the top entrance after a short stagger. */
+.appTabNav--entering.appTabNav--top { /* What: App Tab Nav Entering Top. Why: The new top bar should arrive from its edge just after the old one leaves. How: This plays the top entrance after a short stagger. */
 
 
 	animation : appTabNavTopSlideIn var( --dur-ani-p04 ) var( --mot-dec-eas ) var( --dur-ani-m01 ) both; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Duration Animation Base Minus 1 ~= 119.2ms */
 
 
 }
-.appTabNav--entering.appTabNav--side { /* What: Entering Side Tab Bar. Why: The new side rail should arrive from its edge just after the old one leaves. How: This plays the side entrance after a short stagger. */
+.appTabNav--entering.appTabNav--side { /* What: App Tab Nav Entering Side. Why: The new side rail should arrive from its edge just after the old one leaves. How: This plays the side entrance after a short stagger. */
 
 
 	animation : appTabNavSideSlideIn var( --dur-ani-p04 ) var( --mot-dec-eas ) var( --dur-ani-m01 ) both; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Duration Animation Base Minus 1 ~= 119.2ms */
 
 
 }
-.appTabNav--bottom { /* What: Bottom Tab Bar. Why: At the bottom, the tabs float in a centered pill above the screen's bottom edge. How: This fixes a content-width rounded pill with a border, shadow, and surface fill, centered across the screen, while the width rules below set how far it sits from the edge. */
+.appTabNav--bottom { /* What: App Tab Nav Bottom. Why: At the bottom, the tabs float in a centered pill above the screen's bottom edge. How: This fixes a content-width rounded pill with a border, shadow, and surface fill, centered across the screen, while the width rules below set how far it sits from the edge. */
 
 
 	background      : oklch( from var( --bac-sur-col ) l c h / 0.94 ); /* Background Surface Color = oklch( 0.975 0.004 240 ) */
@@ -260,7 +260,7 @@
 
 
 }
-.appTabNav--side { /* What: Side Tab Bar. Why: At the side, the tabs stack in a full-height rail beside the content. How: This makes a sticky full-height column with a right border. */
+.appTabNav--side { /* What: App Tab Nav Side. Why: At the side, the tabs stack in a full-height rail beside the content. How: This makes a sticky full-height column with a right border. */
 
 
 	align-items        : stretch;
@@ -308,7 +308,7 @@
 
 
 }
-.appTabNav--top { /* What: Top Tab Bar. Why: At the top, the brand and tabs sit in one sticky bar whose content lines up with the page column. How: This makes a sticky bar with a bottom border and padding that centers its content in the Today column's width. */
+.appTabNav--top { /* What: App Tab Nav Top. Why: At the top, the brand and tabs sit in one sticky bar whose content lines up with the page column. How: This makes a sticky bar with a bottom border and padding that centers its content in the Today column's width. */
 
 
 	border-bottom-width : var( --bor-wid-sma );                                                                                 /* Border Width Small ~= 0.499px */
@@ -323,7 +323,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tab Bar. Why: Someone who asked for less motion shouldn't see the bars slide out and in, or the drawer slide. How: This applies only when the reduced-motion preference is set. */
 
 
-	.appTabNav--exiting { /* What: Hidden Exiting Tab Bar. Why: Without its slide the ghost bar adds nothing. How: This hides it. */
+	.appTabNav--exiting { /* What: Hidden App Tab Nav Exiting. Why: Without its slide the ghost bar adds nothing. How: This hides it. */
 
 
 		display : none;
@@ -341,7 +341,7 @@
 
 	}
 
-	.appTabNav--side { /* What: Still Side Tab Bar. Why: The drawer should simply open and close. How: This turns its slide off. */
+	.appTabNav--side { /* What: Still App Tab Nav Side. Why: The drawer should simply open and close. How: This turns its slide off. */
 
 
 		transition : none;
@@ -463,7 +463,7 @@
 
 }
 
-.tabIndSpa { /* What: Tab Indicator. Why: One accent pill slides behind the active tab. How: JS measures the active tab and writes the pill's size and position, which glide on transform, width, and height behind the buttons. */
+.tabIndSpa { /* What: Tab Indicator Span. Why: One accent pill slides behind the active tab. How: JS measures the active tab and writes the pill's size and position, which glide on transform, width, and height behind the buttons. */
 
 
 	background     : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -487,7 +487,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tab Indicator. Why: Someone who asked for less motion shouldn't see the pill glide. How: This applies only when the reduced-motion preference is set. */
 
 
-	.tabIndSpa { /* What: Still Tab Indicator. Why: The pill should simply jump to the active tab. How: This turns its glide off. */
+	.tabIndSpa { /* What: Still Tab Indicator Span. Why: The pill should simply jump to the active tab. How: This turns its glide off. */
 
 
 		transition : none;
@@ -502,7 +502,7 @@
 
 /* #region tabBraBut */
 
-.tabBraBut { /* What: Tab Bar Brand. Why: The brand is a button back to Today that the placement rules lay out, not a styled native button. How: This strips the button chrome and inherits the text styling. */
+.tabBraBut { /* What: Tab Brand Button. Why: The brand is a button back to Today that the placement rules lay out, not a styled native button. How: This strips the button chrome and inherits the text styling. */
 
 
 	-webkit-appearance : none; /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping a button's native styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
@@ -563,7 +563,7 @@
 
 /* #region braWorSpa */
 
-.braWorSpa { /* What: Nav Wordmark. Why: The wordmark only belongs in the side and top bars. How: This hides it by default. */
+.braWorSpa { /* What: Brand Wordmark Span. Why: The wordmark only belongs in the side and top bars. How: This hides it by default. */
 
 
 	display : none;
@@ -690,7 +690,7 @@
 
 /* #region navTabBut */
 
-.navTabBut { /* What: Tab Button. Why: Each tab button sits above the sliding indicator and fades its colors as it becomes active. How: This lays out its icon and label in a row, raised above the indicator, and eases its press and focus ring. */
+.navTabBut { /* What: Nav Tab Button. Why: Each tab button sits above the sliding indicator and fades its colors as it becomes active. How: This lays out its icon and label in a row, raised above the indicator, and eases its press and focus ring. */
 
 
 	align-items : center;
@@ -701,7 +701,7 @@
 
 
 }
-.navTabBut:hover:not( [aria-current='page'] ) { /* What: Hovered Tab Button. Why: An inactive tab should respond to the pointer. How: This darkens its text, keyed off the active tab's own aria-current. */
+.navTabBut:hover:not( [aria-current='page'] ) { /* What: Hovered Nav Tab Button. Why: An inactive tab should respond to the pointer. How: This darkens its text, keyed off the active tab's own aria-current. */
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
@@ -835,7 +835,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tab Button. Why: Someone who asked for less motion shouldn't see a tab's colors fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.navTabBut { /* What: Still Tab Button. Why: Its colors should simply switch. How: This turns the fades off. */
+	.navTabBut { /* What: Still Nav Tab Button. Why: Its colors should simply switch. How: This turns the fades off. */
 
 
 		transition : none;
@@ -845,7 +845,7 @@
 
 
 }
-.navTabBut:active { /* What: Pressed Navigation Tab Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.navTabBut:active { /* What: Pressed Nav Tab Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -892,7 +892,7 @@
 /* #endregion navTabBut */
 
 
-.raiHanBut { /* What: Rail Pull Handle. Why: The drawer rail needs a visible pull tab riding its right edge, which only exists on a small screen. How: This draws a frosted tab centered on the rail's right edge, hidden until the narrow-screen query shows it. */
+.raiHanBut { /* What: Rail Handle Button. Why: The drawer rail needs a visible pull tab riding its right edge, which only exists on a small screen. How: This draws a frosted tab centered on the rail's right edge, hidden until the narrow-screen query shows it. */
 
 
 	-webkit-backdrop-filter : blur( calc( var( --ver-rhy-p01 ) * 1rem ) ) saturate( 150% ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */ /* What: WebKit Backdrop Filter. Why: Safari only honors its own prefixed backdrop-filter. How: This blurs what's behind in WebKit, the same as the standard backdrop-filter line below. */
@@ -917,7 +917,7 @@
 
 
 }
-.raiHanBut:hover { /* What: Hovered Rail Pull Handle. Why: The handle should respond to the pointer. How: This colors its glyph accent. */
+.raiHanBut:hover { /* What: Hovered Rail Handle Button. Why: The handle should respond to the pointer. How: This colors its glyph accent. */
 
 
 	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -942,7 +942,7 @@
 
 
 
-.raiScrDiv { /* What: Rail Scrim. Why: An open drawer dims the content behind it, and only exists on a small screen. How: This covers the viewport with a translucent layer below the drawer, hidden until the narrow-screen query shows it. */
+.raiScrDiv { /* What: Rail Scrim Div. Why: An open drawer dims the content behind it, and only exists on a small screen. How: This covers the viewport with a translucent layer below the drawer, hidden until the narrow-screen query shows it. */
 
 
 	background : oklch( from var( --tex-mai-col ) l c h / var( --cdn-pow-004-rec ) ); /* Text Main Color = oklch( 0.17 0.012 250 ), Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
@@ -971,7 +971,7 @@
 
 /* #region appConMai */
 
-.appConMai { /* What: Main Area. Why: The active tab scrolls in its own area, with side padding each layout can change, clipped horizontally so the background flourish's edge glyphs never scroll it sideways. How: This fills the remaining space, pads it from --mai-hor-pad, scrolls vertically, and eases padding changes between layouts. */
+.appConMai { /* What: App Content Main. Why: The active tab scrolls in its own area, with side padding each layout can change, clipped horizontally so the background flourish's edge glyphs never scroll it sideways. How: This fills the remaining space, pads it from --mai-hor-pad, scrolls vertically, and eases padding changes between layouts. */
 
 
 	flex                  : 1;
@@ -1003,7 +1003,7 @@
 
 
 }
-.appConMai[data-tab-today-active] { /* What: Today Main Area. Why: The Today tab runs edge to edge. How: This drops the side padding while Today shows, which the placement rules above can still override. */
+.appConMai[data-tab-today-active] { /* What: Today App Content Main. Why: The Today tab runs edge to edge. How: This drops the side padding while Today shows, which the placement rules above can still override. */
 
 
 	--mai-hor-pad : 0;
@@ -1069,7 +1069,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Main Area. Why: Someone who asked for less motion shouldn't see the content reflow between layouts. How: This applies only when the reduced-motion preference is set. */
 
 
-	.appConMai { /* What: Still Main Area. Why: The padding should simply switch. How: This turns its transition off. */
+	.appConMai { /* What: Still App Content Main. Why: The padding should simply switch. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1080,7 +1080,7 @@
 
 }
 
-.maiInnDiv { /* What: Main Content Column. Why: Every tab but Today reads in one centered, capped column. How: This centers a capped flex column with a top offset and a gap between sections. */
+.maiInnDiv { /* What: Main Inner Div. Why: Every tab but Today reads in one centered, capped column. How: This centers a capped flex column with a top offset and a gap between sections. */
 
 
 	display        : flex;
@@ -1094,7 +1094,7 @@
 
 }
 
-.tabFadDiv { /* What: Tab Fade. Why: Switching tabs should fade and lift the new tab in rather than snap. How: This plays the shared fade each time the keyed wrapper remounts. */
+.tabFadDiv { /* What: Tab Fade Div. Why: Switching tabs should fade and lift the new tab in rather than snap. How: This plays the shared fade each time the keyed wrapper remounts. */
 
 
 	animation : global( tabOpenFadeIn ) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The tabOpenFadeIn keyframes are shared with the tabs' own fading sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -1104,7 +1104,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tab Fade. Why: Someone who asked for less motion shouldn't see tabs fade in. How: This applies only when the reduced-motion preference is set. */
 
 
-	.tabFadDiv { /* What: Still Tab Fade. Why: The new tab should simply appear. How: This turns the fade off. */
+	.tabFadDiv { /* What: Still Tab Fade Div. Why: The new tab should simply appear. How: This turns the fade off. */
 
 
 		animation : none;

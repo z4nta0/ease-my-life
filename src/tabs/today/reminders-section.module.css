@@ -39,7 +39,7 @@
 
 
 }
-.todGroSec:not( :first-child ) { /* What: Following Reminders Section. Why: A section after another one needs a divider above it. How: This draws a hairline and pads below it, since every sibling in the group column is a group section, standing in for the old sibling selector that can't reach across modules. */
+.todGroSec:not( :first-child ) { /* What: Following Today Group Section. Why: A section after another one needs a divider above it. How: This draws a hairline and pads below it, since every sibling in the group column is a group section, standing in for the old sibling selector that can't reach across modules. */
 
 
 	border-top  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -60,7 +60,7 @@
 
 
 }
-.todGroSec[data-item-drag-active] { /* What: Dragged Reminders Section. Why: A section being dragged lifts above the rest, without its divider. How: This floats it on a shadowed surface and drops its top divider and padding, sitting after the narrow-width rule so it wins by order. */
+.todGroSec[data-item-drag-active] { /* What: Dragged Today Group Section. Why: A section being dragged lifts above the rest, without its divider. How: This floats it on a shadowed surface and drops its top divider and padding, sitting after the narrow-width rule so it wins by order. */
 
 
 	background    : var( --bac-sur-col ); /* Background Surface Color = oklch( 0.975 0.004 240 ) */
@@ -387,7 +387,7 @@
 
 
 }
-.addMesPar[data-message-ok-active] { /* What: Ok Add Result Message. Why: A reminder that lands in today's list reads as a success. How: This tints the note green. */
+.addMesPar[data-message-ok-active] { /* What: Good Added Message Paragraph. Why: A reminder that lands in today's list reads as a success. How: This tints the note green. */
 
 
 	background   : oklch( from var( --suc-mai-col ) l c h / var( --cdn-pow-010-rec ) ); /* Success Main Color = oklch( 0.5 0.11 155 ), Core-Design-Number to the Power of 10 Reciprocal ~= 0.060 */
@@ -611,7 +611,7 @@
 
 
 }
-.todCarArt[data-card-exhale-active] { /* What: Exhaling Reminder Card. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exh-car-del tab-today.tsx sets on each card. */
+.todCarArt[data-card-exhale-active] { /* What: Exhaling Today Card Article. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exh-car-del tab-today.tsx sets on each card. */
 
 
 	animation : global( cardCelebrateSwell ) var( --exh-car-dur ) var( --mot-dec-eas ) var( --exh-car-del, 0ms ) both; /* Exhale Card Duration ~= 1130.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Exhale Card Delay, set inline per card by the ripple cascade */ /* What: Global cardCelebrateSwell Keyframes. Why: The cardCelebrateSwell keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -648,14 +648,14 @@
 
 
 }
-.todCarArt[data-card-done-active] { /* What: Done Reminder Card. Why: A done reminder reads as settled. How: This shades the card slightly darker than the surface. */
+.todCarArt[data-card-done-active] { /* What: Done Today Card Article. Why: A done reminder reads as settled. How: This shades the card slightly darker than the surface. */
 
 
 	background : var( --bac-sun-col ); /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
 
 
 }
-.todCarArt[data-card-edit-active] { /* What: Editing Reminder Card. Why: While its editor is open, clicking the card doesn't toggle it. How: This resets the cursor. */
+.todCarArt[data-card-edit-active] { /* What: Editing Today Card Article. Why: While its editor is open, clicking the card doesn't toggle it. How: This resets the cursor. */
 
 
 	cursor : default;
@@ -697,7 +697,7 @@
 
 	}
 
-	.todCarArt[data-card-exhale-active] { /* What: Still Exhaling Reminder Card. Why: The halo is only decoration. How: This turns the exhale off and pins the card at rest. */
+	.todCarArt[data-card-exhale-active] { /* What: Still Exhaling Today Card Article. Why: The halo is only decoration. How: This turns the exhale off and pins the card at rest. */
 
 
 		animation  : none;

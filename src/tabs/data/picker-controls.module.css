@@ -1183,14 +1183,14 @@
 
 
 }
-.conRaiDiv[data-scroll-start-active] { /* What: Conditional Rail At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+.conRaiDiv[data-scroll-start-active] { /* What: Scrolled Start Conditional Rail Div. Why: No content hides past the left edge. How: This zeroes the left fade. */
 
 
 	--fad-lef-off : 0px;
 
 
 }
-.conRaiDiv[data-scroll-end-active] { /* What: Conditional Rail At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+.conRaiDiv[data-scroll-end-active] { /* What: Scrolled End Conditional Rail Div. Why: No content hides past the right edge. How: This zeroes the right fade. */
 
 
 	--fad-rig-off : 0px;

@@ -384,14 +384,14 @@
 
 
 }
-.scoTabDiv[data-scroll-start-active] { /* What: Show Tab Strip At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+.scoTabDiv[data-scroll-start-active] { /* What: Scrolled Start Scope Tab Div. Why: No content hides past the left edge. How: This zeroes the left fade. */
 
 
 	--fad-lef-off : 0px;
 
 
 }
-.scoTabDiv[data-scroll-end-active] { /* What: Show Tab Strip At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+.scoTabDiv[data-scroll-end-active] { /* What: Scrolled End Scope Tab Div. Why: No content hides past the right edge. How: This zeroes the right fade. */
 
 
 	--fad-rig-off : 0px;
@@ -441,7 +441,7 @@
 
 
 }
-.scoTabBut[data-tab-select-active] { /* What: Selected Show Tab. Why: The scope showing below should stand out in the strip. How: This fills the tab in the soft accent, keying off data-tab-select-active. */
+.scoTabBut[data-tab-select-active] { /* What: Selected Scope Tab Button. Why: The scope showing below should stand out in the strip. How: This fills the tab in the soft accent, keying off data-tab-select-active. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -625,7 +625,7 @@
 
 
 }
-.datCatSec[data-card-vacation-active] { /* What: Vacationing Category Card. Why: A picker with every item on vacation fades back. How: This dims the card, keying off data-card-vacation-active. */
+.datCatSec[data-card-vacation-active] { /* What: Vacationing Data Category Section. Why: A picker with every item on vacation fades back. How: This dims the card, keying off data-card-vacation-active. */
 
 
 	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
@@ -1305,7 +1305,7 @@
 
 
 }
-.lisIteDiv--tour:first-of-type { /* What: First Tour Target Item. Why: Only the first target row draws the top edge, since each row's bottom border is the line shared with the next; :first-of-type skips the Add button, which is always the first child. How: This adds the top border and rounds the top corners. */
+.lisIteDiv--tour:first-of-type { /* What: First List Item Div Tour. Why: Only the first target row draws the top edge, since each row's bottom border is the line shared with the next; :first-of-type skips the Add button, which is always the first child. How: This adds the top border and rounds the top corners. */
 
 
 	border-top              : var( --bor-wid-lar ) solid var( --acc-mai-col ); /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -1314,7 +1314,7 @@
 
 
 }
-.lisIteDiv--tour:last-of-type { /* What: Last Tour Target Item. Why: The last target row closes the box. How: This rounds its bottom corners. */
+.lisIteDiv--tour:last-of-type { /* What: Last List Item Div Tour. Why: The last target row closes the box. How: This rounds its bottom corners. */
 
 
 	border-bottom-left-radius  : var( --rad-bor-med ); /* Radius Border Medium = 11px */

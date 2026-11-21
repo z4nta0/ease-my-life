@@ -789,7 +789,7 @@
 
 
 }
-.togSwiBut[aria-checked='true'] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-checked the switch already sets. */
+.togSwiBut[aria-checked='true'] { /* What: On Toggle Switch Button. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-checked the switch already sets. */
 
 
 	background : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -906,14 +906,14 @@
 
 
 }
-.conRaiDiv[data-scroll-start-active] { /* What: Conditional Rail At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+.conRaiDiv[data-scroll-start-active] { /* What: Scrolled Start Conditional Rail Div. Why: No content hides past the left edge. How: This zeroes the left fade. */
 
 
 	--fad-lef-off : 0px;
 
 
 }
-.conRaiDiv[data-scroll-end-active] { /* What: Conditional Rail At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+.conRaiDiv[data-scroll-end-active] { /* What: Scrolled End Conditional Rail Div. Why: No content hides past the right edge. How: This zeroes the right fade. */
 
 
 	--fad-rig-off : 0px;

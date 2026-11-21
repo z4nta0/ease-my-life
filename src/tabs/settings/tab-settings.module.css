@@ -995,21 +995,21 @@
 
 
 }
-.setMesSpa[data-message-ok-active] { /* What: Good Result Message. Why: A success reads in the accent. How: This colors it, keying off data-message-ok-active. */
+.setMesSpa[data-message-ok-active] { /* What: Good Settings Message Span. Why: A success reads in the accent. How: This colors it, keying off data-message-ok-active. */
 
 
 	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-.setMesSpa[data-message-error-active] { /* What: Failed Result Message. Why: A failure reads red. How: This colors it, keying off data-message-error-active. */
+.setMesSpa[data-message-error-active] { /* What: Failed Settings Message Span. Why: A failure reads red. How: This colors it, keying off data-message-error-active. */
 
 
 	color : var( --err-dar-col ); /* Error Dark Color = oklch( 0.5 0.18 25 ) */
 
 
 }
-.setMesSpa[data-message-warn-active] { /* What: Pending Result Message. Why: A pending destructive import reads warm, like the reminder advisories, rather than as an error. How: This colors it warm with a capped line length, keying off data-message-warn-active. */
+.setMesSpa[data-message-warn-active] { /* What: Pending Settings Message Span. Why: A pending destructive import reads warm, like the reminder advisories, rather than as an error. How: This colors it warm with a capped line length, keying off data-message-warn-active. */
 
 
 	color       : var( --war-dar-col ); /* Warning Dark Color = oklch( 0.45 0.13 50 ) */
@@ -1058,7 +1058,7 @@
 
 
 }
-.togSwiBut[aria-pressed='true'] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-pressed the switch already sets. */
+.togSwiBut[aria-pressed='true'] { /* What: On Toggle Switch Button. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-pressed the switch already sets. */
 
 
 	background : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */

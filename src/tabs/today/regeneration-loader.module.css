@@ -53,7 +53,7 @@
 
 
 }
-.todCarArt[data-slot-pending-active] { /* What: Pending Loader Card. Why: A slot still waiting its turn should read as not started yet. How: This lightens the card's surface slightly. */
+.todCarArt[data-slot-pending-active] { /* What: Pending Today Card Article. Why: A slot still waiting its turn should read as not started yet. How: This lightens the card's surface slightly. */
 
 
 	background : var( --bac-rai-col ); /* Background Raised Color = oklch( 0.981 0.004 240 ) */
