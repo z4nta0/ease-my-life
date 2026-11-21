@@ -1867,8 +1867,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const isaPicBoo = notAllBoo && notRemBoo && notConBoo && hasPicBoo; // What: Is-A Picker Boolean. Why: Several blocks below only make sense while a single real picker is the active scope. How: This is true when scoValStr isn't 'all', neither the Reminders nor Conditionals sentinel is active, and the scoped picker exists. // Single-picker breakdown: EVERY item in the picker (including zero-pick and inactive ones), with all per-item metrics on one object. The Pick breakdown card pivots on metKeyStr to choose which value to show and sort by.
 
 
-	const easDowBoo = isaPicBoo && scoPicObj && scoPicObj.mode === 'ease-down';                                    // What: Ease Down Boolean. Why: An ease-down picker swaps the Frequency metric for Spent and measures things differently below. How: This checks the scoped picker's own mode.
-	const easUpwBoo = isaPicBoo && scoPicObj && scoPicObj.mode === 'ease-up';                                      // What: Ease Upward Boolean. Why: An ease-up picker's own items show a range suffix the same way an ease-down picker's do. How: This checks the scoped picker's own mode.
+	const easDowBoo = isaPicBoo && !!scoPicObj && scoPicObj.mode === 'ease-down';                                    // What: Ease Down Boolean. Why: An ease-down picker swaps the Frequency metric for Spent and measures things differently below. How: This checks the scoped picker's own mode.
+	const easUpwBoo = isaPicBoo && !!scoPicObj && scoPicObj.mode === 'ease-up';                                      // What: Ease Upward Boolean. Why: An ease-up picker's own items show a range suffix the same way an ease-down picker's do. How: This checks the scoped picker's own mode.
 	const useWeiBoo = isaPicBoo && scoPicObj && ( scoPicObj.mode === 'weighted' || scoPicObj.mode === 'dynamic' ); // What: Use Weight Boolean. Why: Only a weighted or dynamic picker's items have a meaningful weight suffix to show. How: This checks the scoped picker's own mode against both weight-driven modes.
 
 

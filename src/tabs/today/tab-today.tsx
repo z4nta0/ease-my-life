@@ -1098,9 +1098,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 			const heaHeiNum = heaCurEle.offsetHeight; // What: Header Height Number. Why: This is the header's own real rendered height. How: This reads heaCurEle.offsetHeight.
 
-			const raiCurEle = raiEleRef.current;                                                             // What: Rail Current Element. Why: The rail only contributes to the sticky offset while it is stacked horizontally, which needs its own live check below. How: This reads raiEleRef.current.
-			const raiHorBoo = Boolean( raiCurEle && getComputedStyle( raiCurEle ).flexDirection === 'row' ); // What: Rail Horizontal Boolean. Why: On mobile the rail flips to flex-direction: row and stacks below the header as a horizontal pill bar; this detects that state via computed style so it works whether triggered by the viewport breakpoint or the mobile-preview tweak. How: This reads raiCurEle's own live computed flexDirection.
-			const raiHeiNum = raiHorBoo ? raiCurEle!.offsetHeight : 0;                                       // What: Rail Height Number. Why: Only a horizontally-stacked rail contributes its own height to the sticky offset. How: This reads raiCurEle!.offsetHeight only while raiHorBoo, otherwise 0. // What: Non-Null Note. Why: raiHorBoo is true only when raiCurEle exists. How: The ! tells TypeScript it does.
+			const raiCurEle = raiEleRef.current;                                                    // What: Rail Current Element. Why: The rail only contributes to the sticky offset while it is stacked horizontally, which needs its own live check below. How: This reads raiEleRef.current.
+			const raiHorBoo = !!raiCurEle && getComputedStyle( raiCurEle ).flexDirection === 'row'; // What: Rail Horizontal Boolean. Why: On mobile the rail flips to flex-direction: row and stacks below the header as a horizontal pill bar; this detects that state via computed style so it works whether triggered by the viewport breakpoint or the mobile-preview tweak. How: This reads raiCurEle's own live computed flexDirection.
+			const raiHeiNum = raiHorBoo ? raiCurEle.offsetHeight : 0;                               // What: Rail Height Number. Why: Only a horizontally-stacked rail contributes its own height to the sticky offset. How: This reads raiCurEle.offsetHeight only while raiHorBoo, otherwise 0.
 
 			// #endregion Height Measurement
 
