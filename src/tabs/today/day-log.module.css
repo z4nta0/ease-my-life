@@ -87,7 +87,7 @@
 
 
 }
-.logChiBut:active { /* What: Pressed Log Chip Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.logChiBut:active { /* What: Pressed Log Chip Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -211,7 +211,7 @@
 
 
 }
-.panCloBut:active { /* What: Pressed Panel Close Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.panCloBut:active { /* What: Pressed Panel Close Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -285,7 +285,7 @@
 
 /* #region staIcoSpa */
 
-.staIcoSpa { /* What: Status Icon Span. Why: Each status shows as a small tinted icon tile, in the key and in the rows. How: This centers the icon in a rounded tile at the large rhythm step. */
+.staIcoSpa { /* What: Status Icon Span. Why: Each status shows as a small tinted icon tile, in the key and in the rows. How: This centers the icon in a rounded tile at the base-plus-1 rhythm step. */
 
 
 	align-items     : center;
@@ -401,7 +401,7 @@
 /* #region logBloDiv */
 
 .logBloDiv,
-.logConDiv { /* What: Log Block Div And Log Conditionals Div. Why: Each picker block, and the Conditionals block, is divided from the one above. How: This draws a hairline above every block. */
+.logConDiv { /* What: Log Block Div And Log Conditionals Div. Why: Each picker block, and the Conditionals block, is divided from the one above. How: This draws a hairline above each block, which the first block then drops. */
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -788,7 +788,7 @@
 
 	.tabHeaDiv,
 	.tabRowDiv,
-	.conRowDiv { /* What: Tightest Log Table Grid. Why: The status column needs to shrink too. How: This halves it. */
+	.conRowDiv { /* What: Tightest Log Table Grid. Why: The status column needs to shrink too. How: This narrows the status column to a smaller rhythm step. */
 
 
 		grid-template-columns : 1fr calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 4 ~= 44.876px, Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 5 ~= 59.447px */
@@ -935,7 +935,7 @@
 
 
 }
-.conRowDiv { /* What: Conditional Row Div. Why: A conditional's row tints in the accent and joins the rested line under it. How: This forces an accent tint and drops its divider over any row state. */
+.conRowDiv { /* What: Conditional Row Div. Why: A conditional's row tints in the accent and joins the rested line under it. How: This sets an accent tint and drops its divider, after the shared row rule so it wins. */
 
 
 	background    : oklch( from var( --acc-mai-col ) 0.93 0.05 h ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -1381,7 +1381,7 @@
 
 }
 
-.affIcoSvg { /* What: Affected Icon SVG. Why: The icon sits small and a little faded. How: This sizes it to the small rhythm step at 0.8 opacity. */
+.affIcoSvg { /* What: Affected Icon SVG. Why: The icon sits small and a little faded. How: This sizes it to the small rhythm step at about 0.755 opacity. */
 
 
 	flex    : none;
