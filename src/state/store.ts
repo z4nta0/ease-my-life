@@ -3531,7 +3531,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 			const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === picIdeStr ); // What: Current Picker Object And Guard. Why: Every branch below needs to know this picker's own mode/activeItemId/conditionalId. How: This looks up picIdeStr in curStaObj.pickers.
-			const easDowBoo = curPicObj && curPicObj.mode === 'ease-down';                           // What: Ease Down Boolean. Why: Ease Down's own single-entry-per-picker replace behavior branches everywhere below. How: This is true only when curPicObj exists and its own mode is 'ease-down'.
+			const easDowBoo = Boolean( curPicObj && curPicObj.mode === 'ease-down' );                // What: Ease Down Boolean. Why: Ease Down's own single-entry-per-picker replace behavior branches everywhere below. How: This is true only when curPicObj exists and its own mode is 'ease-down'.
 
 			const entIdeStr = easDowBoo // What: Entry Identifier String. Why: Ease Down reuses its own existing entry's eid (so a replace, not a stack); every other mode always mints a fresh one. How: This reuses the picker's own current entry's eid when found, else mints a new one via newIdeFun.
 				? ( curStaObj.today.entries.find( ( curEntObj ) => curEntObj.pickerId === picIdeStr )?.eid || newIdeFun() ) // What: Reused Eid Branch. Why: Ease Down replaces its own existing entry. How: This reuses that entry's eid, minting one when there is none.
@@ -3550,10 +3550,10 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 				penValObj = null; // What: Default Pending Reset. Why: Every mode besides ease-down's own re-activation case has no mutation to stage at all. How: This starts penValObj at null before the ease-down check below.
 
 
-				if ( easDowBoo && curPicObj.activeItemId !== iteIdeStr ) { // What: Ease-Down Reactivation Guard. Why: Only switching to a DIFFERENT active item needs its own staged recharge-and-activate pending. How: This builds penValObj only when curPicObj is ease-down and itemId isn't already its own active item.
+				if ( easDowBoo && curPicObj!.activeItemId !== iteIdeStr ) { // What: Ease-Down Reactivation Guard. Why: Only switching to a DIFFERENT active item needs its own staged recharge-and-activate pending. How: This builds penValObj only when curPicObj is ease-down and itemId isn't already its own active item. // What: Non-Null Note. Why: easDowBoo is true only when curPicObj was found. How: The ! tells TypeScript it exists.
 
 
-					const thrValNum = curPicObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: The previously-active item (if any) must be staged to recharge back to this exact threshold. How: This reads curPicObj's own threshold, defaulting to PIC_NAM_OBJ.THR_VAL_NUM.
+					const thrValNum = curPicObj!.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: The previously-active item (if any) must be staged to recharge back to this exact threshold. How: This reads curPicObj's own threshold, defaulting to PIC_NAM_OBJ.THR_VAL_NUM. // What: Non-Null Note. Why: easDowBoo is true only when curPicObj was found. How: The ! tells TypeScript it exists.
 
 					penValObj = { // What: Ease-Down Pending Object. Why: The caller needs a real pending payload staging both the recharge and the activation switch. How: This stages the previously-active item's own recharge (if any), the activeItemId patch, and the pick bump.
 
@@ -3561,7 +3561,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 						bumpPick    : false,                                                                               // What: Bump Pick. Why: A re-activation is not a fresh pick, so the item's own pick count must not rise. How: This is always false here.
 						pickedId    : iteIdeStr,                                                                           // What: Picked ID. Why: The completion step needs to know which item this pending belongs to. How: This is iteIdeStr.
 						pickerPatch : { activeItemId : iteIdeStr },                                                        // What: Picker Patch. Why: Completing this entry must make iteIdeStr the picker's own active item. How: This stages activeItemId as iteIdeStr.
-						updates     : curPicObj.activeItemId ? [ { id : curPicObj.activeItemId, value : thrValNum } ] : [] // What: Updates. Why: The previously-active item (if any) must recharge to full on completion. How: This stages one value:thrValNum update for it, else none.
+						updates     : curPicObj!.activeItemId ? [ { id : curPicObj!.activeItemId, value : thrValNum } ] : [] // What: Updates. Why: The previously-active item (if any) must recharge to full on completion. How: This stages one value:thrValNum update for it, else none. // What: Non-Null Note. Why: easDowBoo is true only when curPicObj was found. How: The ! tells TypeScript it exists.
 
 
 					};
