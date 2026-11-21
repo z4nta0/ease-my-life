@@ -2018,7 +2018,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					{ selModStr === 'random' && ( // What: Random Note Check. Why: Only Truly Random has literally nothing extra to explain about its own items. How: This renders the note only for that mode.
 
 
-						<p className={` ${ cssModObj.steHinPar }   ${ cssModObj.steHinParMode } `}>Because you chose &ldquo;Truly Random&rdquo;, there are no extra controls to tweak for these items since they all have an equal chance of being picked.</p> // What: Random Note Paragraph Element. Why: A Truly Random picker has no per-item controls, which is worth saying. How: This renders a fixed explanation.
+						<p className={ cssModObj.steHinPar }>Because you chose &ldquo;Truly Random&rdquo;, there are no extra controls to tweak for these items since they all have an equal chance of being picked.</p> // What: Step Hint Paragraph Element. Why: A Truly Random picker has no per-item controls, which is worth saying. How: This renders a fixed explanation.
 
 
 					) }
@@ -2026,7 +2026,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					{ selModStr === 'weighted' && ( // What: Weighted Note Check. Why: Weighted and Dynamic both introduce the per-item weight concept, worth explaining once items are being added. How: This renders the note only for that mode.
 
 
-						<p className={` ${ cssModObj.steHinPar }   ${ cssModObj.steHinParMode } `}>Because you chose &ldquo;Weighted&rdquo;, each item also has a weight. A higher weight means an item has a higher chance of being picked. e.g. a w2 item will be picked about twice as often as a w1. Leave them all at w1 for an even start, you can always change these later.</p> // What: Weighted Note Paragraph Element. Why: Weighted items carry a weight the user should understand. How: This renders a fixed explanation.
+						<p className={ cssModObj.steHinPar }>Because you chose &ldquo;Weighted&rdquo;, each item also has a weight. A higher weight means an item has a higher chance of being picked. e.g. a w2 item will be picked about twice as often as a w1. Leave them all at w1 for an even start, you can always change these later.</p> // What: Step Hint Paragraph Element. Why: Weighted items carry a weight the user should understand. How: This renders a fixed explanation.
 
 
 					) }
@@ -2034,7 +2034,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					{ selModStr === 'dynamic' && ( // What: Dynamic Note Check. Why: Same reasoning as the Weighted note above, worded to also quote the mode's own live label. How: This renders the note only for that mode.
 
 
-						<p className={` ${ cssModObj.steHinPar }   ${ cssModObj.steHinParMode } `}>Because you chose &ldquo;{ SED_NAM_OBJ.MOD_DEF_OBJ[ selModStr ].labStr }&rdquo;, each item also has a weight. A higher weight means an item has a higher chance of being picked. e.g. a w2 item will be picked about twice as often as a w1. Leave them all at w1 for an even start, you can always change these later.</p> // What: Dynamic Note Paragraph Element. Why: Dynamic items carry a weight plus a drift bonus the user should understand. How: This renders an explanation naming the chosen mode.
+						<p className={ cssModObj.steHinPar }>Because you chose &ldquo;{ SED_NAM_OBJ.MOD_DEF_OBJ[ selModStr ].labStr }&rdquo;, each item also has a weight. A higher weight means an item has a higher chance of being picked. e.g. a w2 item will be picked about twice as often as a w1. Leave them all at w1 for an even start, you can always change these later.</p> // What: Step Hint Paragraph Element. Why: Dynamic items carry a weight plus a drift bonus the user should understand. How: This renders an explanation naming the chosen mode.
 
 
 					) }
@@ -2042,7 +2042,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					{ selModStr === 'ease-up' && ( // What: Ease Up Note Check. Why: Ease Up/Ease Down both introduce the per-item drift-cadence concept, worth explaining once items are being added. How: This renders the note only for that mode.
 
 
-						<p className={` ${ cssModObj.steHinPar }   ${ cssModObj.steHinParMode } `}>Because you chose &ldquo;Ease Up&rdquo;, each item gets its own cadence. This is set per item below, since each item might need a different timeout period. For each one you will need to pick a soonest and a latest value, which will be used to determine its new value as it charges towards becoming eligible again.</p> // What: Ease Up Note Paragraph Element. Why: Ease Up items each need their own timeout band. How: This renders a fixed explanation.
+						<p className={ cssModObj.steHinPar }>Because you chose &ldquo;Ease Up&rdquo;, each item gets its own cadence. This is set per item below, since each item might need a different timeout period. For each one you will need to pick a soonest and a latest value, which will be used to determine its new value as it charges towards becoming eligible again.</p> // What: Step Hint Paragraph Element. Why: Ease Up items each need their own timeout band. How: This renders a fixed explanation.
 
 
 					) }
@@ -2050,7 +2050,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					{ selModStr === 'ease-down' && ( // What: Ease Down Note Check. Why: Same reasoning as the Ease Up note above, worded for discharging instead of charging. How: This renders the note only for that mode.
 
 
-						<p className={` ${ cssModObj.steHinPar }   ${ cssModObj.steHinParMode } `}>Because you chose &ldquo;Ease Down&rdquo;, each item gets its own cadence. This is set per item below, since each item might need a different selection period. For each one you will need to pick a soonest and a latest value, which will be used to determine its new value as it discharges towards deselection.</p> // What: Ease Down Note Paragraph Element. Why: Ease Down items each need their own selection band. How: This renders a fixed explanation.
+						<p className={ cssModObj.steHinPar }>Because you chose &ldquo;Ease Down&rdquo;, each item gets its own cadence. This is set per item below, since each item might need a different selection period. For each one you will need to pick a soonest and a latest value, which will be used to determine its new value as it discharges towards deselection.</p> // What: Step Hint Paragraph Element. Why: Ease Down items each need their own selection band. How: This renders a fixed explanation.
 
 
 					) }

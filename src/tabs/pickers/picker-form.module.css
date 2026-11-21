@@ -285,13 +285,6 @@
 
 
 }
-.steHinPar--mode { /* What: Step Hint Paragraph Mode. Why: The Items step's note about the chosen mode tucks up under the hint above it. How: This pulls it up by extra small 6 vertical spacing (about 2px). */
-
-
-	margin-top : calc( var( --spa-ver-m07 ) * -1 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
-
-
-}
 
 
 
