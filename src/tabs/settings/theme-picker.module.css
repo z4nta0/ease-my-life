@@ -101,7 +101,7 @@
 
 }
 .theRowDiv[aria-checked='true'],
-.theRowDiv[data-option-select-active] { /* What: Selected Theme Row. Why: The active theme should stand out. How: This frames the row in the text color, keyed off a preset row's own aria-checked or the custom row's selected attribute, and must stay after the focus rule so it wins. */
+.theRowDiv[data-option-select-active] { /* What: Selected Theme Row Div. Why: The active theme should stand out. How: This frames the row in the text color, keyed off a preset row's own aria-checked or the custom row's selected attribute, and must stay after the focus rule so it wins. */
 
 
 	border-color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
@@ -169,7 +169,7 @@
 
 
 }
-.theRowDiv[data-theme-dark-active] .theLabSpa { /* What: Dark Theme Row Label. Why: Dark text would vanish on a dark theme's colors. How: This switches the label to translucent white. */
+.theRowDiv[data-theme-dark-active] .theLabSpa { /* What: Theme Label Span In Dark Theme Row Div. Why: Dark text would vanish on a dark theme's colors. How: This switches the label to translucent white. */
 
 
 	color : rgba( 255, 255, 255, .65 );
@@ -256,14 +256,14 @@
 
 
 }
-.cusSwaInp::-webkit-color-swatch-wrapper { /* What: WebKit Custom Theme Swatch Wrapper. Why: WebKit pads the color swatch inside its input. How: This removes that padding so the color reaches the edges. */
+.cusSwaInp::-webkit-color-swatch-wrapper { /* What: Custom Swatch Input WebKit Swatch Wrapper. Why: WebKit pads the color swatch inside its input. How: This removes that padding so the color reaches the edges. */
 
 
 	padding : 0;
 
 
 }
-.cusSwaInp::-webkit-color-swatch { /* What: WebKit Custom Theme Swatch Color. Why: The color should fill its segment without a border or rounding and ease when it changes. How: This drops WebKit's swatch border and corner rounding and fades its color. */
+.cusSwaInp::-webkit-color-swatch { /* What: Custom Swatch Input WebKit Swatch. Why: The color should fill its segment without a border or rounding and ease when it changes. How: This drops WebKit's swatch border and corner rounding and fades its color. */
 
 
 	border        : none;
@@ -272,7 +272,7 @@
 
 
 }
-.cusSwaInp::-moz-color-swatch { /* What: Firefox Custom Theme Swatch Color. Why: The color should fill its segment without a border or rounding and ease when it changes. How: This drops Firefox's swatch border and corner rounding and fades its color. */
+.cusSwaInp::-moz-color-swatch { /* What: Custom Swatch Input Firefox Swatch. Why: The color should fill its segment without a border or rounding and ease when it changes. How: This drops Firefox's swatch border and corner rounding and fades its color. */
 
 
 	border        : none;
@@ -284,7 +284,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Custom Theme Swatch. Why: Someone who asked for less motion shouldn't see a swatch's color fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.cusSwaInp::-webkit-color-swatch { /* What: Still WebKit Custom Theme Swatch. Why: The color should simply switch. How: This turns the fade off in WebKit. */
+	.cusSwaInp::-webkit-color-swatch { /* What: Still Custom Swatch Input WebKit Swatch. Why: The color should simply switch. How: This turns the fade off in WebKit. */
 
 
 		transition : none;
@@ -292,7 +292,7 @@
 
 	}
 
-	.cusSwaInp::-moz-color-swatch { /* What: Still Firefox Custom Theme Swatch. Why: The color should simply switch. How: This turns the fade off in Firefox. */
+	.cusSwaInp::-moz-color-swatch { /* What: Still Custom Swatch Input Firefox Swatch. Why: The color should simply switch. How: This turns the fade off in Firefox. */
 
 
 		transition : none;
@@ -332,7 +332,7 @@
 
 
 }
-.theRowDiv--custom[data-theme-dark-active] .cusNamInp { /* What: Dark Custom Theme Name Field. Why: On a dark custom theme the field should read light on dark. How: This switches it to translucent white text on a translucent dark fill. */
+.theRowDiv--custom[data-theme-dark-active] .cusNamInp { /* What: Custom Name Input In Dark Theme Row Div Custom. Why: On a dark custom theme the field should read light on dark. How: This switches it to translucent white text on a translucent dark fill. */
 
 
 	background : rgba( 0, 0, 0, .35 );
@@ -340,7 +340,7 @@
 
 
 }
-.theRowDiv--custom[data-theme-dark-active] .cusNamInp::placeholder { /* What: Dark Custom Theme Name Placeholder. Why: The placeholder should stay readable on the dark field. How: This lightens it. */
+.theRowDiv--custom[data-theme-dark-active] .cusNamInp::placeholder { /* What: Custom Name Input Placeholder In Dark Theme Row Div Custom. Why: The placeholder should stay readable on the dark field. How: This lightens it. */
 
 
 	color : rgba( 255, 255, 255, .5 );
@@ -355,7 +355,7 @@
 
 
 }
-.theRowDiv--custom[data-theme-dark-active] .cusNamInp:focus { /* What: Focused Dark Custom Theme Name Field. Why: On a dark theme the focused field should stay dark. How: This gives it a solid near-black fill with white text. */
+.theRowDiv--custom[data-theme-dark-active] .cusNamInp:focus { /* What: Focused Custom Name Input In Dark Theme Row Div Custom. Why: On a dark theme the focused field should stay dark. How: This gives it a solid near-black fill with white text. */
 
 
 	background : #111;

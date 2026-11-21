@@ -377,7 +377,7 @@
 
 
 }
-.scoTabDiv::-webkit-scrollbar { /* What: Show Tab Strip Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+.scoTabDiv::-webkit-scrollbar { /* What: Scope Tab Div Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
 
 
 	display : none;
@@ -653,7 +653,7 @@
 
 
 }
-@keyframes datCatSecRemoveFold { /* What: Category Card Remove Keyframes. Why: The card fades and folds to nothing as it leaves. How: This runs opacity and max-height down to zero while clearing its spacing. */
+@keyframes datCatSecRemoveFold { /* What: Data Category Section Remove Fold Keyframes. Why: The card fades and folds to nothing as it leaves. How: This runs opacity and max-height down to zero while clearing its spacing. */
 
 
 	from {
@@ -681,7 +681,7 @@
 
 }
 .datCatSec--tour,
-.catTogBut--tour { /* What: Tour Data Category Section And Category Toggle Button. Why: The Edit Item tour points at the specific card, toggle, or row it wants clicked inside its bigger spotlight. How: This draws an accent outline, inset so it never shifts layout, that fades in and out. */
+.catTogBut--tour { /* What: Data Category Section Tour And Category Toggle Button Tour. Why: The Edit Item tour points at the specific card, toggle, or row it wants clicked inside its bigger spotlight. How: This draws an accent outline, inset so it never shifts layout, that fades in and out. */
 
 
 	animation      : global( targetTourPulse ) var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1983.0ms, Motion Standard Easing = ease */ /* What: Global targetTourPulse Keyframes. Why: The targetTourPulse keyframes are shared with the Pickers tab's tour target, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -694,7 +694,7 @@
 
 
 	.datCatSec--tour,
-	.catTogBut--tour { /* What: Still Tour Data Category Section And Category Toggle Button. Why: An outline frozen mid-fade would read as paused, so it pins to full color instead. How: This turns its animation off and sets the outline to the accent. */
+	.catTogBut--tour { /* What: Still Data Category Section Tour And Category Toggle Button Tour. Why: An outline frozen mid-fade would read as paused, so it pins to full color instead. How: This turns its animation off and sets the outline to the accent. */
 
 
 		animation     : none;
@@ -1114,7 +1114,7 @@
 
 
 }
-.catTogBut ~ .catTogBut { /* What: Following Section Toggle. Why: The Items toggle needs a divider above it too. How: This draws a hairline on top of every toggle after the first. */
+.catTogBut ~ .catTogBut { /* What: Following Category Toggle Button. Why: The Items toggle needs a divider above it too. How: This draws a hairline on top of every toggle after the first. */
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -1336,7 +1336,7 @@
 
 
 }
-@keyframes lisIteDivTourBorderFade { /* What: Tour Target Item Border Fade Keyframes. Why: A target row's borders should fade in and out the way the plain tour outline does. How: This dims the border color to 20% at the midpoint and back. */
+@keyframes lisIteDivTourBorderFade { /* What: List Item Div Tour Border Fade Keyframes. Why: A target row's borders should fade in and out the way the plain tour outline does. How: This dims the border color to 20% at the midpoint and back. */
 
 
 	0%, 100% {
@@ -1392,7 +1392,7 @@
 
 }
 .lisIteDiv[data-row-edit-active] > .lisRowDiv:hover,
-.lisIteDiv[data-row-edit-active] > .lisRowBut:hover { /* What: Hovered Open List Row Div And Button. Why: An open row's header isn't a button, so it shouldn't react to hover. How: This keeps its background clear. */
+.lisIteDiv[data-row-edit-active] > .lisRowBut:hover { /* What: Hovered List Row Div And Button In Open List Item Div. Why: An open row's header isn't a button, so it shouldn't react to hover. How: This keeps its background clear. */
 
 
 	background : transparent;
@@ -1400,7 +1400,7 @@
 
 }
 .lisIteDiv[data-row-edit-active] > .lisRowDiv,
-.lisIteDiv[data-row-edit-active] > .lisRowBut { /* What: Open List Row Div And Button. Why: An open row's header isn't clickable. How: This resets the cursor. */
+.lisIteDiv[data-row-edit-active] > .lisRowBut { /* What: List Row Div And Button In Open List Item Div. Why: An open row's header isn't clickable. How: This resets the cursor. */
 
 
 	cursor : default;
@@ -1499,7 +1499,7 @@
 
 
 }
-.lisIteDiv[data-row-vacation-active] .rowNamSpa { /* What: Vacationing Item Name. Why: An item on vacation reads quieter than the rest. How: This mutes its name, keying off the row's data-row-vacation-active. */
+.lisIteDiv[data-row-vacation-active] .rowNamSpa { /* What: Row Name Span In Vacationing List Item Div. Why: An item on vacation reads quieter than the rest. How: This mutes its name, keying off the row's data-row-vacation-active. */
 
 
 	color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -1536,14 +1536,14 @@
 
 }
 .lisIteDiv[data-row-edit-active] .rowChvSpa,
-.lisIteDiv[data-row-edit-active] .rowChvBut { /* What: Open Row Chevron Span And Button. Why: An open row's chevron marks it as the one being edited. How: This turns it the accent color. */
+.lisIteDiv[data-row-edit-active] .rowChvBut { /* What: Row Chevron Span And Button In Open List Item Div. Why: An open row's chevron marks it as the one being edited. How: This turns it the accent color. */
 
 
 	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-.lisIteDiv[data-row-edit-active] .rowChvBut:hover { /* What: Hovered Open Row Chevron Button. Why: A chosen control a person can still click should still answer the pointer. How: This darkens its accent a step. */
+.lisIteDiv[data-row-edit-active] .rowChvBut:hover { /* What: Hovered Row Chevron Button In Open List Item Div. Why: A chosen control a person can still click should still answer the pointer. How: This darkens its accent a step. */
 
 
 	color : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ), darkened by 0.1 */

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?><!-- What: Xml Declaration. Why: Crawlers expect a sitemap to state its XML version and encoding. How: This declares XML 1.0 in UTF-8 as the file's very first characters. -->
+<?xml version='1.0' encoding='UTF-8'?><!-- What: XML Declaration. Why: Crawlers expect a sitemap to state its XML version and encoding. How: This declares XML 1.0 in UTF-8 as the file's very first characters. -->
 
 
 

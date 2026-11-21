@@ -92,7 +92,7 @@
 .preCarDiv--exhaling { /* What: Preview Card Div Exhaling. Why: The ripple style pulses each card once with a soft accent halo as the celebration cascades down. How: JS adds this class per card with a staggered --exh-car-del, playing the shared exhale animation. */
 
 
-	animation : global( cardCelebrateSwell ) var( --exh-car-dur ) var( --mot-dec-eas ) var( --exh-car-del, 0ms ) both; /* Exhale Card Duration ~= 1130.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Exhale Card Delay, set inline per card by the ripple cascade */ /* What: Global Exhale Keyframes. Why: The cardCelebrateSwell keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( cardCelebrateSwell ) var( --exh-car-dur ) var( --mot-dec-eas ) var( --exh-car-del, 0ms ) both; /* Exhale Card Duration ~= 1130.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Exhale Card Delay, set inline per card by the ripple cascade */ /* What: Global cardCelebrateSwell Keyframes. Why: The cardCelebrateSwell keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -153,7 +153,7 @@
 .cheIcoSvg { /* What: Check Icon SVG. Why: The checkmark springs in like a freshly checked card as the preview appears. How: This plays the shared spring animation on the glyph. */
 
 
-	animation : global( checkDoneBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Spring Keyframes. Why: The checkDoneBounce keyframes are shared with the real Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( checkDoneBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global checkDoneBounce Keyframes. Why: The checkDoneBounce keyframes are shared with the real Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -240,7 +240,7 @@
 .conPieIta { /* What: Confetti Piece Italic. Why: Each piece bursts out from the center like the real confetti celebration. How: This draws a small accent chip at the stage's center, flung outward by the shared burst animation using its own --con-dir-ang, --con-tra-off, and --con-spi-ang. */
 
 
-	animation     : global( confettiCelebrateBurst ) var( --dur-ani-p06 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global Burst Keyframes. Why: The confettiCelebrateBurst keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation     : global( confettiCelebrateBurst ) var( --dur-ani-p06 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global confettiCelebrateBurst Keyframes. Why: The confettiCelebrateBurst keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var( --acc-mai-col );                                                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius : var( --rad-bor-xsm );                                                            /* Radius Border Extra Small ~= 3.571px */
 	height        : calc( var( --ver-rhy-bas ) * 1rem );                                             /* Vertical Rhythm Base ~= 14.572px */
@@ -256,7 +256,7 @@
 .spaPieSpa { /* What: Sparkle Piece Span. Why: Each sparkle glints at its own spot like the real sparkle celebration. How: This centers an accent glyph on its inline position and twinkles it with the shared animation. */
 
 
-	animation   : global( sparkleCelebrateTwinkle ) var( --dur-ani-p06 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */ /* What: Global Twinkle Keyframes. Why: The sparkleCelebrateTwinkle keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation   : global( sparkleCelebrateTwinkle ) var( --dur-ani-p06 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */ /* What: Global sparkleCelebrateTwinkle Keyframes. Why: The sparkleCelebrateTwinkle keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color       : var( --acc-mai-col );                                                             /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	font-size   : var( --fon-siz-p02 );                                                             /* Font Size Base Plus 2 ~= 19.304px */
 	line-height : var( --ver-rhy-m01 );                                                             /* Vertical Rhythm Base Minus 1 = 1 */

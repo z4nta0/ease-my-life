@@ -222,7 +222,7 @@
 @container appRooDiv ( max-width : 560px ) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
 
 
-	.pagTitHea { /* What: Smaller Section Title. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
+	.pagTitHea { /* What: Smaller Page Title Heading. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
 
 
 		font-size : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
@@ -387,7 +387,7 @@
 
 
 }
-.scoTabDiv::-webkit-scrollbar { /* What: Show Tab Strip Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+.scoTabDiv::-webkit-scrollbar { /* What: Scope Tab Div Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
 
 
 	display : none;
@@ -411,7 +411,7 @@
 @supports ( -moz-appearance : none ) { /* What: Firefox Show Tab Strip. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
 
 
-	.scoTabDiv { /* What: Padded Show Tab Strip. Why: The bottom border needs a pixel of room. How: This adds extra small 8 vertical spacing (about 1px) of bottom padding. */
+	.scoTabDiv { /* What: Padded Scope Tab Div. Why: The bottom border needs a pixel of room. How: This adds extra small 8 vertical spacing (about 1px) of bottom padding. */
 
 
 		padding-bottom : var( --spa-ver-m09 ); /* Spacing Vertical Base Minus 9 ~= 1.160px */
@@ -558,7 +558,7 @@
 
 
 }
-.ranPilDiv::-webkit-scrollbar { /* What: Range Pills Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+.ranPilDiv::-webkit-scrollbar { /* What: Range Pills Div Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
 
 
 	display : none;
@@ -765,7 +765,7 @@
 
 	}
 
-	.staRowDiv--two { /* What: Stacked Two Card Row. Why: The two lists need the full width. How: This stacks them in one column. */
+	.staRowDiv--two { /* What: Stacked Stat Row Div Two. Why: The two lists need the full width. How: This stacks them in one column. */
 
 
 		grid-template-columns : 1fr;
@@ -1016,7 +1016,7 @@
 
 }
 
-.hetLegDiv .hetCelIta { /* What: Legend Heat Cell. Why: The sample cells are fixed-size swatches. How: This sizes them at the base rhythm step without stretching. */
+.hetLegDiv .hetCelIta { /* What: Heat Cell Italic In Heat Legend Div. Why: The sample cells are fixed-size swatches. How: This sizes them at the base rhythm step without stretching. */
 
 
 	aspect-ratio : auto;
@@ -1142,7 +1142,7 @@
 
 
 	.hetGriDiv--next,
-	.hetGriDiv--prev { /* What: Still Heatmap. Why: The new year should simply appear. How: This turns its animation off. */
+	.hetGriDiv--prev { /* What: Still Heat Grid Div Next And Previous. Why: The new year should simply appear. How: This turns its animation off. */
 
 
 		animation : none;
@@ -1496,7 +1496,7 @@
 
 
 }
-.conSumDiv .sumHeaDiv .sumNumDiv { /* What: Summary Numbers Div In Conditional Summary. Why: The Conditionals card's stats would fit beside its title but should break like the Reminders card's for consistency. How: This forces them onto their own line. */
+.conSumDiv .sumHeaDiv .sumNumDiv { /* What: Summary Numbers Div In Summary Header Div In Conditional Summary Div. Why: The Conditionals card's stats would fit beside its title but should break like the Reminders card's for consistency. How: This forces them onto their own line. */
 
 
 	flex-basis : 100%;
@@ -1724,7 +1724,7 @@
 
 
 }
-.breMetDiv::-webkit-scrollbar { /* What: Metric Pills Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+.breMetDiv::-webkit-scrollbar { /* What: Breakdown Metrics Div Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
 
 
 	display : none;
@@ -1868,7 +1868,7 @@
 
 
 	.ranLisUno--fade,
-	.remLogUno--fade { /* What: Still Refreshing List. Why: The change should happen at once. How: This turns its animation off. */
+	.remLogUno--fade { /* What: Still Rank List Unordered Fade And Reminder Log Unordered Fade. Why: The change should happen at once. How: This turns its animation off. */
 
 
 		animation : none;
@@ -1948,7 +1948,7 @@
 
 }
 .ranLisUno--breakdown .ranIteIte,
-.ranLisUno--freq .ranIteIte { /* What: Breakdown Rank Row. Why: A breakdown row's tags and pills should center against its name block. How: This centers the row. */
+.ranLisUno--freq .ranIteIte { /* What: Rank Item Item In Rank List Unordered Breakdown And Frequency. Why: A breakdown row's tags and pills should center against its name block. How: This centers the row. */
 
 
 	align-items : center;
@@ -1975,7 +1975,7 @@
 }
 
 .ranLisUno--breakdown .ranNamSpa,
-.ranLisUno--freq .ranNamSpa { /* What: Breakdown Item Name. Why: A breakdown row stacks its name line over its meta. How: This stacks them in a shrinkable column. */
+.ranLisUno--freq .ranNamSpa { /* What: Rank Name Span In Rank List Unordered Breakdown And Frequency. Why: A breakdown row stacks its name line over its meta. How: This stacks them in a shrinkable column. */
 
 
 	display        : flex;
@@ -1986,14 +1986,14 @@
 
 }
 .ranLisUno--breakdown .ranIteIte[data-row-vacation-active] .ranNamSpa,
-.ranLisUno--freq .ranIteIte[data-row-vacation-active] .ranNamSpa { /* What: Inactive Item Name. Why: An inactive item reads muted. How: This mutes its name, keying off data-row-vacation-active. */
+.ranLisUno--freq .ranIteIte[data-row-vacation-active] .ranNamSpa { /* What: Rank Name Span In Vacationing Rank Item Item In Rank List Unordered Breakdown And Frequency. Why: An inactive item reads muted. How: This mutes its name, keying off data-row-vacation-active. */
 
 
 	color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
-.ranLisUno--breakdown .namRowSpa { /* What: Item Name Line. Why: The name and its tag share a line. How: This lines them up on a baseline row that can shrink. */
+.ranLisUno--breakdown .namRowSpa { /* What: Name Row Span In Rank List Unordered Breakdown. Why: The name and its tag share a line. How: This lines them up on a baseline row that can shrink. */
 
 
 	align-items : baseline;
@@ -2004,7 +2004,7 @@
 
 }
 .ranLisUno--breakdown .ranIteIte[data-row-deleted-active] .namTexSpa,
-.ranLisUno--freq .ranIteIte[data-row-deleted-active] .namTexSpa { /* What: Deleted Item Name. Why: A deleted item's history remains but should read as historical. How: This mutes and strikes its name, keying off data-row-deleted-active. */
+.ranLisUno--freq .ranIteIte[data-row-deleted-active] .namTexSpa { /* What: Name Text Span In Deleted Rank Item Item In Rank List Unordered Breakdown And Frequency. Why: A deleted item's history remains but should read as historical. How: This mutes and strikes its name, keying off data-row-deleted-active. */
 
 
 	color                 : var( --tex-mut-col );                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */

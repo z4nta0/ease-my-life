@@ -256,7 +256,7 @@
 
 }
 .carGriSpa:active,
-[data-item-drag-active] .carGriSpa { /* What: Pressed Card Grip. Why: A press on the handle starts a drag, and should register before anything else happens. How: This switches to the grabbing cursor and presses the grip in slightly, keyed on the drag state as well as the press, since Firefox drops :active once the drag cancels pointerdown's default. */
+[data-item-drag-active] .carGriSpa { /* What: Pressed Card Grip Span. Why: A press on the handle starts a drag, and should register before anything else happens. How: This switches to the grabbing cursor and presses the grip in slightly, keyed on the drag state as well as the press, since Firefox drops :active once the drag cancels pointerdown's default. */
 
 
 	cursor    : grabbing;
@@ -742,7 +742,7 @@
 
 }
 
-.actIcoBut.actIcoBut--spinning .rolIcoSvg { /* What: Spinning Roll Icon SVG. Why: The re-roll icon spins along with the card's tumble. How: This turns the icon a full turn backward while the button carries its spinning class. */
+.actIcoBut.actIcoBut--spinning .rolIcoSvg { /* What: Roll Icon SVG In Action Icon Button Spinning. Why: The re-roll icon spins along with the card's tumble. How: This turns the icon a full turn backward while the button carries its spinning class. */
 
 
 	animation : rolIcoSvgRollSpin var( --dur-ani-p06 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */
@@ -752,7 +752,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Spinning Re-Roll Icon. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.actIcoBut.actIcoBut--spinning .rolIcoSvg { /* What: Still Spinning Re-Roll Icon. Why: The icon should stay put. How: This turns the spin off and keeps the icon upright. */
+	.actIcoBut.actIcoBut--spinning .rolIcoSvg { /* What: Still Roll Icon SVG In Action Icon Button Spinning. Why: The icon should stay put. How: This turns the spin off and keeps the icon upright. */
 
 
 		animation : none;

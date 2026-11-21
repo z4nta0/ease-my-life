@@ -45,7 +45,7 @@
 
 
 	.legBacDiv,
-	.legBacDiv--closing { /* What: Closing Legal Backdrop Div. Why: The dim should simply appear and disappear. How: This turns both fades off. */
+	.legBacDiv--closing { /* What: Still Legal Backdrop Div And Legal Backdrop Div Closing. Why: The dim should simply appear and disappear. How: This turns both fades off. */
 
 
 		animation : none;
@@ -131,7 +131,7 @@
 
 
 	.legPanDiv,
-	.legPanDiv--closing { /* What: Closing Legal Panel Div. Why: The panel should simply appear and disappear. How: This turns its entrance and exit off. */
+	.legPanDiv--closing { /* What: Still Legal Panel Div And Legal Panel Div Closing. Why: The panel should simply appear and disappear. How: This turns its entrance and exit off. */
 
 
 		animation : none;

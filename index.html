@@ -265,7 +265,7 @@
 
 
 			}
-			.equTokSpa--check { /* What: Check Equation Token Span. Why: The checkmark that ends the equation pops in as it lands. How: This sizes a square box for the check and adds the pop to the token loop, both on the same stagger. */
+			.equTokSpa--check { /* What: Equation Token Span Check. Why: The checkmark that ends the equation pops in as it lands. How: This sizes a square box for the check and adds the pop to the token loop, both on the same stagger. */
 
 
 				animation       : equTokSpaLoopFade 3.4s ease-in-out infinite, equTokSpaCheckPop 3.4s ease-in-out infinite;
@@ -280,7 +280,7 @@
 
 
 				.equTokSpa,
-				.equTokSpa--check { /* What: Still Equation Token Span. Why: The finished equation should simply show. How: This turns the loop off and holds every token fully visible in place. */
+				.equTokSpa--check { /* What: Still Equation Token Span And Equation Token Span Check. Why: The finished equation should simply show. How: This turns the loop off and holds every token fully visible in place. */
 
 
 					animation : none;
@@ -292,7 +292,7 @@
 
 
 			}
-			@keyframes equTokSpaLoopFade { /* What: Equation Token Span Loop Fade. Why: Each token slides in, holds while the equation reads, then fades before the replay. How: This fades and slides the token in early in the loop and fades it out near the end. */
+			@keyframes equTokSpaLoopFade { /* What: Equation Token Span Loop Fade Keyframes. Why: Each token slides in, holds while the equation reads, then fades before the replay. How: This fades and slides the token in early in the loop and fades it out near the end. */
 
 
 				0% {
@@ -340,7 +340,7 @@
 
 
 			}
-			@keyframes equTokSpaCheckPop { /* What: Equation Token Span Check Pop. Why: The checkmark should land with a small bounce. How: This scales it up past full size and back as it appears. */
+			@keyframes equTokSpaCheckPop { /* What: Equation Token Span Check Pop Keyframes. Why: The checkmark should land with a small bounce. How: This scales it up past full size and back as it appears. */
 
 
 				0%,

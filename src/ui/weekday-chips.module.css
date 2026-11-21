@@ -83,7 +83,7 @@
 
 }
 .dowChiDiv--sm .dowChiBut,
-.dowChiDiv--sm .dowChiSpa { /* What: Small Day-Of-Week Chip Button And Span. Why: Compact contexts need smaller chips. How: This shrinks every chip inside a small chip row, the locked one included. */
+.dowChiDiv--sm .dowChiSpa { /* What: Day-Of-Week Chip Button And Span In Day-Of-Week Chips Div Small. Why: Compact contexts need smaller chips. How: This shrinks every chip inside a small chip row, the locked one included. */
 
 
 	font-size : var( --fon-siz-bas );                /* Font Size Base = 11px */

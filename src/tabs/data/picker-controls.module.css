@@ -74,7 +74,7 @@
 
 }
 .conGroDiv--sched,
-.conGroDiv--items { /* What: Schedule And Item Groups. Why: The setting rows run edge to edge between hairlines. How: This pulls each group past the body's padding, flush, with a hairline above and below. */
+.conGroDiv--items { /* What: Controls Group Div Schedule And Items. Why: The setting rows run edge to edge between hairlines. How: This pulls each group past the body's padding, flush, with a hairline above and below. */
 
 
 	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -111,7 +111,7 @@
 
 
 }
-.conGroDiv--basics .conSubDiv { /* What: Picker Details Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it base horizontal spacing at the sides and extra small 1 vertical spacing below. */
+.conGroDiv--basics .conSubDiv { /* What: Controls Subhead Div In Controls Group Div Basics. Why: The group's heading sits inset over its full-bleed rows. How: This pads it base horizontal spacing at the sides and extra small 1 vertical spacing below. */
 
 
 	padding : 0 var( --spa-hor-bas ) var( --spa-ver-m02 ); /* Spacing Horizontal Base ~= 14.572px, Spacing Vertical Base Minus 2 ~= 8.304px */
@@ -126,14 +126,14 @@
 
 }
 .conGroDiv--sched .conSubDiv,
-.conGroDiv--items .conSubDiv { /* What: Schedule And Item Subhead. Why: The group's heading sits inset over its full-bleed rows, centered between the hairline above and the first row's border below. How: This pads it base vertical spacing above and below and base horizontal spacing at the sides. */
+.conGroDiv--items .conSubDiv { /* What: Controls Subhead Div In Controls Group Div Schedule And Items. Why: The group's heading sits inset over its full-bleed rows, centered between the hairline above and the first row's border below. How: This pads it base vertical spacing above and below and base horizontal spacing at the sides. */
 
 
 	padding : var( --spa-ver-bas ) var( --spa-hor-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 
 
 }
-.conSubDiv + .schLinDiv { /* What: First Setting Row. Why: The first row under a heading needs a divider above it. How: This draws a hairline on top of the row right after a subhead. */
+.conSubDiv + .schLinDiv { /* What: Schedule Line Div After Controls Subhead Div. Why: The first row under a heading needs a divider above it. How: This draws a hairline on top of the row right after a subhead. */
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -269,21 +269,21 @@
 
 	}
 
-	.groPilDiv::-webkit-scrollbar { /* What: Group Pills Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+	.groPilDiv::-webkit-scrollbar { /* What: Narrow Group Pill Div Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
 
 
 		display : none;
 
 
 	}
-	.groPilDiv[data-scroll-start-active] { /* What: Group Pills At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+	.groPilDiv[data-scroll-start-active] { /* What: Narrow Scrolled Start Group Pill Div. Why: No content hides past the left edge. How: This zeroes the left fade. */
 
 
 		--fad-lef-off : 0px;
 
 
 	}
-	.groPilDiv[data-scroll-end-active] { /* What: Group Pills At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+	.groPilDiv[data-scroll-end-active] { /* What: Narrow Scrolled End Group Pill Div. Why: No content hides past the right edge. How: This zeroes the right fade. */
 
 
 		--fad-rig-off : 0px;
@@ -400,7 +400,7 @@
 
 
 }
-@keyframes groPilButReturnPopIn { /* What: Group Pill Button Return Pop In. Why: The pill springs back in from smaller. How: This fades it in while scaling it up to full size. */
+@keyframes groPilButReturnPopIn { /* What: Group Pill Button Return Pop In Keyframes. Why: The pill springs back in from smaller. How: This fades it in while scaling it up to full size. */
 
 
 	from {
@@ -466,7 +466,7 @@
 
 
 }
-@keyframes groNewSpaOpenFadeIn { /* What: New Group Control Keyframes. Why: The control fades in as it replaces the pill. How: This runs its opacity up from zero. */
+@keyframes groNewSpaOpenFadeIn { /* What: Group New Span Open Fade In Keyframes. Why: The control fades in as it replaces the pill. How: This runs its opacity up from zero. */
 
 
 	from {
@@ -518,7 +518,7 @@
 
 
 }
-@keyframes groNewInpOpenGrow { /* What: New Group Input Keyframes. Why: The field grows out of the pill it replaces. How: This widens it from the plus pill's size while fading it in. */
+@keyframes groNewInpOpenGrow { /* What: Group New Input Open Grow Keyframes. Why: The field grows out of the pill it replaces. How: This widens it from the plus pill's size while fading it in. */
 
 
 	from {
@@ -602,7 +602,7 @@
 
 
 }
-@keyframes confirmOpenPopIn { /* What: Confirm Open Pop In. Why: The buttons pop in beside the field. How: This fades them in while scaling them up to full size. */
+@keyframes confirmOpenPopIn { /* What: Confirm Open Pop In Keyframes. Why: The buttons pop in beside the field. How: This fades them in while scaling them up to full size. */
 
 
 	from {
@@ -806,7 +806,7 @@
 
 
 }
-.modOptLab[data-option-select-active] .modDotSpa::after { /* What: Selected Mode Dot Span Fill. Why: The chosen option shows its mark. How: This fades the mark in on the decelerating curve. */
+.modOptLab[data-option-select-active] .modDotSpa::after { /* What: Mode Dot Span Fill In Selected Mode Option Label. Why: The chosen option shows its mark. How: This fades the mark in on the decelerating curve. */
 
 
 	opacity    : 1;
@@ -911,7 +911,7 @@
 
 }
 .conGroDiv--sched .schLinDiv:last-child,
-.conGroDiv--items:not( :has( .easConDiv ) ) .schLinDiv:last-child { /* What: Last Setting Row. Why: The group's own bottom border already closes it, unless the ease settings follow in Item Controls. How: This drops the last row's hairline. */
+.conGroDiv--items:not( :has( .easConDiv ) ) .schLinDiv:last-child { /* What: Last Schedule Line Div In Controls Group Div Schedule And Items. Why: The group's own bottom border already closes it, unless the ease settings follow in Item Controls. How: This drops the last row's hairline. */
 
 
 	border-bottom : 0;
@@ -1120,7 +1120,7 @@
 
 }
 .togSwiBut[aria-checked='true'] .swiKnoIta,
-.togSwiBut[aria-pressed='true'] .swiKnoIta { /* What: On Setting Switch Knob. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
+.togSwiBut[aria-pressed='true'] .swiKnoIta { /* What: Switch Knob Italic In On Toggle Switch Button. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
 
 
 	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) ); /* Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 1 ~= 19.304px */
@@ -1176,7 +1176,7 @@
 
 
 }
-.conRaiDiv::-webkit-scrollbar { /* What: Conditional Rail Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+.conRaiDiv::-webkit-scrollbar { /* What: Conditional Rail Div Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
 
 
 	display : none;

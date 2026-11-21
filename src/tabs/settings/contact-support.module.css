@@ -109,7 +109,7 @@
 .setMesSpa { /* What: Settings Message Span. Why: A successful send should confirm itself with a small, noticeable pop. How: This sets the note in small accent text and pops it in each time it remounts. */
 
 
-	animation  : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation  : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global messageResultBounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color      : var( --acc-mai-col );                                                         /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	font-size  : var( --fon-siz-bas );                                                         /* Font Size Base = 11px */
 	margin-top : var( --spa-ver-m07 );                                                         /* Spacing Vertical Base Minus 7 ~= 2.035px */
@@ -336,7 +336,7 @@
 .supValSpa { /* What: Support Validation Span. Why: An empty-field send attempt should explain itself right beside the buttons. How: This sets the note in small red text, pushes it left, and pops it in. */
 
 
-	animation : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global messageResultBounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color     : var( --err-dar-col );                                                         /* Error Dark Color = oklch( 0.5 0.18 25 ) */
 	font-size : var( --fon-siz-bas );                                                         /* Font Size Base = 11px */
 
@@ -362,7 +362,7 @@
 .supFalSpa { /* What: Support Fallback Span. Why: A send that didn't go through lost nothing, so its note reads as advice rather than an error. How: This sets it in small warm text, pushes it left, and pops it in. */
 
 
-	animation   : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation   : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global messageResultBounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color       : var( --war-dar-col );                                                         /* Warning Dark Color = oklch( 0.45 0.13 50 ) */
 	font-size   : var( --fon-siz-bas );                                                         /* Font Size Base = 11px */
 	line-height : var( --ver-rhy-bas );                                                         /* Vertical Rhythm Base ~= 1.325 */

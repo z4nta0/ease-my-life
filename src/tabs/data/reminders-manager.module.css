@@ -262,7 +262,7 @@
 
 
 }
-.catTogBut ~ .catTogBut { /* What: Following Section Toggle. Why: The second toggle needs a divider above it too. How: This draws a hairline on top of every toggle after the first. */
+.catTogBut ~ .catTogBut { /* What: Following Category Toggle Button. Why: The second toggle needs a divider above it too. How: This draws a hairline on top of every toggle after the first. */
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -744,7 +744,7 @@
 
 }
 .lisIteDiv[data-row-edit-active] > .lisRowDiv:hover,
-.lisIteDiv[data-row-edit-active] > .lisRowBut:hover { /* What: Hovered Open List Row Div And Button. Why: An open row's header isn't a button, so it shouldn't react to hover. How: This keeps its background clear. */
+.lisIteDiv[data-row-edit-active] > .lisRowBut:hover { /* What: Hovered List Row Div And Button In Open List Item Div. Why: An open row's header isn't a button, so it shouldn't react to hover. How: This keeps its background clear. */
 
 
 	background : transparent;
@@ -752,7 +752,7 @@
 
 }
 .lisIteDiv[data-row-edit-active] > .lisRowDiv,
-.lisIteDiv[data-row-edit-active] > .lisRowBut { /* What: Open List Row Div And Button. Why: An open row's header isn't clickable. How: This resets the cursor. */
+.lisIteDiv[data-row-edit-active] > .lisRowBut { /* What: List Row Div And Button In Open List Item Div. Why: An open row's header isn't clickable. How: This resets the cursor. */
 
 
 	cursor : default;
@@ -911,14 +911,14 @@
 
 }
 .lisIteDiv[data-row-edit-active] .rowChvSpa,
-.lisIteDiv[data-row-edit-active] .rowChvBut { /* What: Open Row Chevron Span And Button. Why: An open row's chevron marks it as the one being edited. How: This turns it the accent color. */
+.lisIteDiv[data-row-edit-active] .rowChvBut { /* What: Row Chevron Span And Button In Open List Item Div. Why: An open row's chevron marks it as the one being edited. How: This turns it the accent color. */
 
 
 	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-.lisIteDiv[data-row-edit-active] .rowChvBut:hover { /* What: Hovered Open Row Chevron Button. Why: A chosen control a person can still click should still answer the pointer. How: This darkens its accent a step. */
+.lisIteDiv[data-row-edit-active] .rowChvBut:hover { /* What: Hovered Row Chevron Button In Open List Item Div. Why: A chosen control a person can still click should still answer the pointer. How: This darkens its accent a step. */
 
 
 	color : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ), darkened by 0.1 */

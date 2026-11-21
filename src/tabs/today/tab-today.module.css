@@ -273,7 +273,7 @@
 
 
 }
-.todStkDiv.todStkDiv--bumped .stkFlaSvg { /* What: Bumped Streak Flame. Why: The flame flares as the streak grows. How: This plays a scale, tilt, and glow flare. */
+.todStkDiv.todStkDiv--bumped .stkFlaSvg { /* What: Streak Flame SVG In Today Streak Div Bumped. Why: The flame flares as the streak grows. How: This plays a scale, tilt, and glow flare. */
 
 
 	animation : stkFlaSvgBumpFlare var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
@@ -291,7 +291,7 @@
 
 	}
 
-	.todStkDiv.todStkDiv--bumped .stkFlaSvg { /* What: Still Bumped Streak Flame. Why: The flame shouldn't flare, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
+	.todStkDiv.todStkDiv--bumped .stkFlaSvg { /* What: Still Streak Flame SVG In Today Streak Div Bumped. Why: The flame shouldn't flare, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
 
 
 		animation : none;
@@ -344,7 +344,7 @@
 
 }
 
-.todStkDiv.todStkDiv--bumped .stkCouSpa { /* What: Bumped Streak Count. Why: The count flashes warm as it grows. How: This plays a brief warm, bolder color flash. */
+.todStkDiv.todStkDiv--bumped .stkCouSpa { /* What: Streak Count Span In Today Streak Div Bumped. Why: The count flashes warm as it grows. How: This plays a brief warm, bolder color flash. */
 
 
 	animation : stkCouSpaBumpFlash var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
@@ -354,7 +354,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Streak Count. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.todStkDiv.todStkDiv--bumped .stkCouSpa { /* What: Still Bumped Streak Count. Why: The count shouldn't flash, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
+	.todStkDiv.todStkDiv--bumped .stkCouSpa { /* What: Still Streak Count Span In Today Streak Div Bumped. Why: The count shouldn't flash, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
 
 
 		animation : none;
@@ -531,7 +531,7 @@
 
 /* #region titStaSpa */
 
-.todTitHea .titStaSpa { /* What: Title State. Why: Both titles share one cell and cross-fade. How: This places each in the grid's one cell and eases its opacity and position. */
+.todTitHea .titStaSpa { /* What: Title State Span In Today Title Heading. Why: Both titles share one cell and cross-fade. How: This places each in the grid's one cell and eases its opacity and position. */
 
 
 	grid-area  : 1 / 1;
@@ -539,7 +539,7 @@
 
 
 }
-.todTitHea .titStaSpa[aria-hidden='true'] { /* What: Hidden Title State. Why: The inactive title fades up and away. How: This hides it, nudged up, keying off the aria-hidden it already sets. */
+.todTitHea .titStaSpa[aria-hidden='true'] { /* What: Hidden Title State Span In Today Title Heading. Why: The inactive title fades up and away. How: This hides it, nudged up, keying off the aria-hidden it already sets. */
 
 
 	opacity        : 0;
@@ -548,7 +548,7 @@
 
 
 }
-.todTitHea .titStaSpa[aria-hidden='false'] { /* What: Shown Title State. Why: The active title rests in place. How: This shows it unmoved. */
+.todTitHea .titStaSpa[aria-hidden='false'] { /* What: Shown Title State Span In Today Title Heading. Why: The active title rests in place. How: This shows it unmoved. */
 
 
 	opacity   : 1;
@@ -559,7 +559,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Title State. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.todTitHea .titStaSpa { /* What: Still Title State. Why: The titles should swap at once. How: This turns their transition off. */
+	.todTitHea .titStaSpa { /* What: Still Title State Span In Today Title Heading. Why: The titles should swap at once. How: This turns their transition off. */
 
 
 		transition : none;
@@ -570,7 +570,7 @@
 
 }
 
-.todTitHea .titStaSpa--done .titWorSpa { /* What: Celebration Title Word. Why: The celebratory title's words enter one by one. How: This starts each word hidden and low and plays a fade-rise. */
+.todTitHea .titStaSpa--done .titWorSpa { /* What: Title Word Span In Title State Span Done In Today Title Heading. Why: The celebratory title's words enter one by one. How: This starts each word hidden and low and plays a fade-rise. */
 
 
 	animation : titWorSpaRiseFadeIn var( --dur-ani-p04 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
@@ -580,21 +580,21 @@
 
 
 }
-.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--1 { /* What: First Celebration Word. Why: The words stagger in. How: This delays the first by the m03 step. */
+.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--1 { /* What: Title Word Span 1 In Shown Title State Span Done In Today Title Heading. Why: The words stagger in. How: This delays the first by the m03 step. */
 
 
 	animation-delay : var( --dur-ani-m03 ); /* Duration Animation Base Minus 3 ~= 67.9ms */
 
 
 }
-.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--2 { /* What: Second Celebration Word. Why: The words stagger in. How: This delays the second by the p01 step. */
+.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--2 { /* What: Title Word Span 2 In Shown Title State Span Done In Today Title Heading. Why: The words stagger in. How: This delays the second by the p01 step. */
 
 
 	animation-delay : var( --dur-ani-p01 ); /* Duration Animation Base Plus 1 ~= 209.1ms */
 
 
 }
-.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--3 { /* What: Third Celebration Word. Why: "eased!" lands last with a spring to match its meaning. How: This plays a delayed spring scale in the accent color. */
+.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--3 { /* What: Title Word Span 3 In Shown Title State Span Done In Today Title Heading. Why: "eased!" lands last with a spring to match its meaning. How: This plays a delayed spring scale in the accent color. */
 
 
 	animation        : titWorSpaSpringBounce var( --dur-ani-p06 ) var( --mot-bou-eas ) var( --dur-ani-p04 ) forwards; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ), Duration Animation Base Plus 4 ~= 486.1ms */
@@ -603,7 +603,7 @@
 
 
 }
-.todTitHea .titStaSpa--done[aria-hidden='true'] .titWorSpa { /* What: Held Celebration Word. Why: While the celebration title is hidden, its words wait at their start state so the reveal replays cleanly next time. How: This turns their animation off. */
+.todTitHea .titStaSpa--done[aria-hidden='true'] .titWorSpa { /* What: Title Word Span In Hidden Title State Span Done In Today Title Heading. Why: While the celebration title is hidden, its words wait at their start state so the reveal replays cleanly next time. How: This turns their animation off. */
 
 
 	animation : none;
@@ -616,7 +616,7 @@
 	.todTitHea .titStaSpa--done .titWorSpa,
 	.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--1,
 	.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--2,
-	.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--3 { /* What: Still Celebration Title Word. Why: The words animate in from hidden, so without motion they must be pinned visible. How: This turns their animation off and pins them shown and unmoved. */
+	.todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--3 { /* What: Still Title Word Span In Title State Span Done In Today Title Heading. Why: The words animate in from hidden, so without motion they must be pinned visible. How: This turns their animation off and pins them shown and unmoved. */
 
 
 		animation : none;
@@ -735,7 +735,7 @@
 
 
 	.proRinDiv.proRinDiv--pulsing .rinGraSvg,
-	.proRinDiv.proRinDiv--celebrating .rinGraSvg { /* What: Still Ring Graphic. Why: The ring shouldn't pop, but must keep its quarter turn so the arc still starts at the top. How: This turns its animation off, leaving the base rotation in place. */
+	.proRinDiv.proRinDiv--celebrating .rinGraSvg { /* What: Still Ring Graphic SVG In Progress Ring Div Pulsing And Celebrating. Why: The ring shouldn't pop, but must keep its quarter turn so the arc still starts at the top. How: This turns its animation off, leaving the base rotation in place. */
 
 
 		animation : none;
@@ -860,7 +860,7 @@
 
 
 	.proRinDiv.proRinDiv--pulsing .rinNumSpa,
-	.proRinDiv.proRinDiv--celebrating .rinNumSpa { /* What: Still Ring Count. Why: The count shouldn't pop. How: This turns its animation and transform off. */
+	.proRinDiv.proRinDiv--celebrating .rinNumSpa { /* What: Still Ring Number Span In Progress Ring Div Pulsing And Celebrating. Why: The count shouldn't pop. How: This turns its animation and transform off. */
 
 
 		animation : none;
@@ -989,7 +989,7 @@
 
 
 	.proRinDiv.proRinDiv--pulsing .rinGloIta,
-	.proRinDiv.proRinDiv--celebrating .rinGloIta { /* What: Still Ring Glow. Why: The glow is purely decorative. How: This turns its animation off and keeps it hidden. */
+	.proRinDiv.proRinDiv--celebrating .rinGloIta { /* What: Still Ring Glow Italic In Progress Ring Div Pulsing And Celebrating. Why: The glow is purely decorative. How: This turns its animation off and keeps it hidden. */
 
 
 		animation : none;
@@ -1355,7 +1355,7 @@
 
 
 }
-.groRaiAsi::-webkit-scrollbar { /* What: Group Rail Scrollbar. Why: The rail scrolls without a visible bar. How: This hides WebKit's scrollbar. */
+.groRaiAsi::-webkit-scrollbar { /* What: Group Rail Aside Scrollbar. Why: The rail scrolls without a visible bar. How: This hides WebKit's scrollbar. */
 
 
 	display : none;
@@ -1365,7 +1365,7 @@
 @container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.groRaiAsi { /* What: Group Pill Row. Why: The rail becomes a frosted, sticky pill row under the header that scrolls sideways, its edges faded as a cue. How: This turns it into a full-bleed scrolling row with a blurred translucent background and a gradient mask on each end. */
+	.groRaiAsi { /* What: Narrow Group Rail Aside. Why: The rail becomes a frosted, sticky pill row under the header that scrolls sideways, its edges faded as a cue. How: This turns it into a full-bleed scrolling row with a blurred translucent background and a gradient mask on each end. */
 
 
 		--fad-edg-off : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the row. How: --fad-lef-off and --fad-rig-off start from it. */
@@ -1392,7 +1392,7 @@
 
 	}
 
-	.groRaiAsi[data-scroll-start-active] { /* What: Group Pill Row At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+	.groRaiAsi[data-scroll-start-active] { /* What: Narrow Scrolled Start Group Rail Aside. Why: No content hides past the left edge. How: This zeroes the left fade. */
 
 
 		--fad-lef-off : 0px;
@@ -1400,7 +1400,7 @@
 
 	}
 
-	.groRaiAsi[data-scroll-end-active] { /* What: Group Pill Row At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+	.groRaiAsi[data-scroll-end-active] { /* What: Narrow Scrolled End Group Rail Aside. Why: No content hides past the right edge. How: This zeroes the right fade. */
 
 
 		--fad-rig-off : 0px;
@@ -1449,7 +1449,7 @@
 @container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.raiLisUno { /* What: Rail Pill List. Why: The pills sit in one row as wide as they need. How: This lays them out in a row at its content width. */
+	.raiLisUno { /* What: Narrow Rail List Unordered. Why: The pills sit in one row as wide as they need. How: This lays them out in a row at its content width. */
 
 
 		flex           : 0 0 auto;
@@ -1512,7 +1512,7 @@
 @container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.raiGroBut { /* What: Rail Pill. Why: In the narrow pill row each group is an outlined pill. How: This turns the button into a compact bordered pill that never shrinks or wraps. */
+	.raiGroBut { /* What: Narrow Rail Group Button. Why: In the narrow pill row each group is an outlined pill. How: This turns the button into a compact bordered pill that never shrinks or wraps. */
 
 
 		background    : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
@@ -1564,7 +1564,7 @@
 
 
 }
-.raiGroBut--reminders[data-rail-select-active] .raiNamSpa { /* What: Selected Reminders Rail Name. Why: The Reminders entry's name follows its selected color. How: This colors it in the accent. */
+.raiGroBut--reminders[data-rail-select-active] .raiNamSpa { /* What: Rail Name Span In Selected Rail Group Button Reminders. Why: The Reminders entry's name follows its selected color. How: This colors it in the accent. */
 
 
 	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */

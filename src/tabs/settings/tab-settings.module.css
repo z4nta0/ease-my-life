@@ -352,7 +352,7 @@
 
 
 }
-.setRaiAsi::-webkit-scrollbar { /* What: Section Rail Scrollbar. Why: WebKit ignores scrollbar-width. How: This hides its scrollbar. */
+.setRaiAsi::-webkit-scrollbar { /* What: Settings Rail Aside Scrollbar. Why: WebKit ignores scrollbar-width. How: This hides its scrollbar. */
 
 
 	display : none;
@@ -378,7 +378,7 @@
 	}
 
 	.setRaiAsi::before,
-	.setRaiAsi::after { /* What: Pill Bar Edge Fades. Why: Pills cut off at an edge should fade out rather than stop hard. How: This pins a narrow overlay to each side of the rail, which never scrolls itself. */
+	.setRaiAsi::after { /* What: Narrow Settings Rail Aside Edge Fades. Why: Pills cut off at an edge should fade out rather than stop hard. How: This pins a narrow overlay to each side of the rail, which never scrolls itself. */
 
 
 		bottom         : 0;
@@ -392,7 +392,7 @@
 
 	}
 
-	.setRaiAsi::before { /* What: Settings Rail Aside Left Fade. Why: The fade belongs where the pills are cut off, inside the rail's padding. How: This insets it by the rail's side padding and fades from the background to transparent. */
+	.setRaiAsi::before { /* What: Narrow Settings Rail Aside Left Fade. Why: The fade belongs where the pills are cut off, inside the rail's padding. How: This insets it by the rail's side padding and fades from the background to transparent. */
 
 
 		background : linear-gradient( to right, var( --bac-pag-col ), transparent ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -401,7 +401,7 @@
 
 	}
 
-	.setRaiAsi::after { /* What: Settings Rail Aside Right Fade. Why: The fade belongs where the pills are cut off, inside the rail's padding. How: This insets it by the rail's side padding and fades from the background to transparent. */
+	.setRaiAsi::after { /* What: Narrow Settings Rail Aside Right Fade. Why: The fade belongs where the pills are cut off, inside the rail's padding. How: This insets it by the rail's side padding and fades from the background to transparent. */
 
 
 		background : linear-gradient( to left, var( --bac-pag-col ), transparent ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -410,7 +410,7 @@
 
 	}
 
-	.setRaiAsi[data-scroll-start-active]::before { /* What: Scrolled Start Settings Rail Aside Left Fade. Why: Nothing is cut off once the row is scrolled to its start. How: This hides the left fade, keying off data-scroll-start-active. */
+	.setRaiAsi[data-scroll-start-active]::before { /* What: Narrow Scrolled Start Settings Rail Aside Left Fade. Why: Nothing is cut off once the row is scrolled to its start. How: This hides the left fade, keying off data-scroll-start-active. */
 
 
 		opacity : 0;
@@ -418,7 +418,7 @@
 
 	}
 
-	.setRaiAsi[data-scroll-end-active]::after { /* What: Scrolled End Settings Rail Aside Right Fade. Why: Nothing is cut off once the row is scrolled to its end. How: This hides the right fade, keying off data-scroll-end-active. */
+	.setRaiAsi[data-scroll-end-active]::after { /* What: Narrow Scrolled End Settings Rail Aside Right Fade. Why: Nothing is cut off once the row is scrolled to its end. How: This hides the right fade, keying off data-scroll-end-active. */
 
 
 		opacity : 0;
@@ -467,7 +467,7 @@
 
 	}
 
-	.raiScrDiv::-webkit-scrollbar { /* What: Rail Scroller Scrollbar. Why: WebKit ignores scrollbar-width. How: This hides its scrollbar. */
+	.raiScrDiv::-webkit-scrollbar { /* What: Narrow Rail Scroll Div Scrollbar. Why: WebKit ignores scrollbar-width. How: This hides its scrollbar. */
 
 
 		display : none;
@@ -882,7 +882,7 @@
 
 
 }
-.insRowDiv--ios .setSubSpa + .setSubSpa { /* What: Settings Sub Span Following Settings Sub Span In Install Row Div iOS. Why: The steps and the warning are two notes, not a name and description, so they need room between them. How: This spaces the second one extra small 1 vertical spacing down. */
+.insRowDiv--ios .setSubSpa + .setSubSpa { /* What: Following Settings Sub Span In Install Row Div iOS. Why: The steps and the warning are two notes, not a name and description, so they need room between them. How: This spaces the second one extra small 1 vertical spacing down. */
 
 
 	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
@@ -921,7 +921,7 @@
 @container appRooDiv ( max-width : 500px ) { /* What: Narrow Stacked Layout Description. Why: Once its row stacks, the description no longer shares its line with the control. How: This applies only when the app is 500px wide or less. */
 
 
-	.setRowDiv--stack .setSubSpa--layout { /* What: Full Width Layout Description. Why: The stacked description can use the row's full width. How: This lifts the 190px cap. */
+	.setRowDiv--stack .setSubSpa--layout { /* What: Narrow Settings Sub Span Layout In Settings Row Div Stack. Why: The stacked description can use the row's full width. How: This lifts the 190px cap. */
 
 
 		max-width : none;
@@ -990,7 +990,7 @@
 .setMesSpa { /* What: Settings Message Span. Why: An action's result pops in under its row's description. How: This sets small text that plays a springy pop. */
 
 
-	animation  : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the contact form's messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name. */
+	animation  : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global messageResultBounce Keyframes. Why: The messageResultBounce keyframes are shared with the contact form's messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name. */
 	font-size  : var( --fon-siz-bas );                                                         /* Font Size Base = 11px */
 	margin-top : var( --spa-ver-m07 );                                                         /* Spacing Vertical Base Minus 7 ~= 2.035px */
 
@@ -1210,7 +1210,7 @@
 
 
 	.resConDiv,
-	.resConDiv--leaving { /* What: Still Reset Confirm Divs. Why: The pair should swap at once, and JS already skips the leave delay. How: This turns its animation off. */
+	.resConDiv--leaving { /* What: Still Reset Confirm Div And Reset Confirm Div Leaving. Why: The pair should swap at once, and JS already skips the leave delay. How: This turns its animation off. */
 
 
 		animation : none;

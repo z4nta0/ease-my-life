@@ -82,14 +82,14 @@
 
 
 }
-.schEdiDiv--stacked .forFieDiv + .forFieDiv { /* What: Following Stacked Form Field Div. Why: Consecutive fields read as separate rows. How: This draws a divider above every field after the first. */
+.schEdiDiv--stacked .forFieDiv + .forFieDiv { /* What: Following Form Field Div In Schedule Editor Div Stacked. Why: Consecutive fields read as separate rows. How: This draws a divider above every field after the first. */
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 
 
 }
-.schEdiDiv--stacked .remExtDiv > .forFieDiv { /* What: Wrapped Stacked Form Field Div. Why: A field inside the fade wrapper isn't a sibling of the fields above it, so it misses both the divider and the padding the rules above give. How: This restores its divider and top padding, and must stay after the first-field rule so it wins. */
+.schEdiDiv--stacked .remExtDiv > .forFieDiv { /* What: Form Field Div In Reminder Extra Div In Schedule Editor Div Stacked. Why: A field inside the fade wrapper isn't a sibling of the fields above it, so it misses both the divider and the padding the rules above give. How: This restores its divider and top padding, and must stay after the first-field rule so it wins. */
 
 
 	border-top  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -177,7 +177,7 @@
 .fieSubSpa--fading { /* What: Field Subtitle Span Fading. Why: A summary that changes should ease in rather than snap. How: This fades it in each time it remounts. */
 
 
-	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -336,7 +336,7 @@
 
 
 }
-@keyframes dateSwapFadeIn { /* What: Date Swap Fade In. Why: A small fade and settle reads as the same control changing form. How: This fades the element in from slightly lower and smaller. */
+@keyframes dateSwapFadeIn { /* What: Date Swap Fade In Keyframes. Why: A small fade and settle reads as the same control changing form. How: This fades the element in from slightly lower and smaller. */
 
 
 	from {
@@ -480,7 +480,7 @@
 .ancFadDiv { /* What: Anchor Fade Div. Why: The "counted from" hint appears when an interval goes above 1, and should ease in rather than snap. How: This fades the block in each time it mounts. */
 
 
-	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -505,7 +505,7 @@
 .remExtDiv { /* What: Reminder Extra Div. Why: Switching the repeat kind swaps the fields below it, which should cross-fade rather than snap. How: This fades the block in each time it remounts. */
 
 
-	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

@@ -103,7 +103,7 @@
 
 
 }
-@keyframes infTipSpaOpenFadeIn { /* What: Info Tip Span Open Fade In. Why: A tip that fades and slides in slightly reads as attached to its trigger. How: This fades from transparent and slides from the --inf-tip-off offset to its resting place. */
+@keyframes infTipSpaOpenFadeIn { /* What: Info Tip Span Open Fade In Keyframes. Why: A tip that fades and slides in slightly reads as attached to its trigger. How: This fades from transparent and slides from the --inf-tip-off offset to its resting place. */
 
 
 	from {

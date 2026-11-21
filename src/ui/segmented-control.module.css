@@ -98,7 +98,7 @@
 
 
 }
-.segConDiv--grid .segConBut { /* What: Grid Segment Control Button. Why: At the larger font size Repeat's five labels squeeze and wrap on a narrow screen, turning the pills tall and nearly round. How: This sets its options at the base font size, so each label stays on one line. */
+.segConDiv--grid .segConBut { /* What: Segment Control Button In Segment Control Div Grid. Why: At the larger font size Repeat's five labels squeeze and wrap on a narrow screen, turning the pills tall and nearly round. How: This sets its options at the base font size, so each label stays on one line. */
 
 
 	font-size : var( --fon-siz-bas ); /* Font Size Base = 11px */

@@ -35,7 +35,7 @@
 
 
 }
-@keyframes refIcoSvgClickSpin { /* What: Refresh Icon SVG Click Spin. Why: One full turn reads as a refresh. How: This rotates the icon a full circle. */
+@keyframes refIcoSvgClickSpin { /* What: Refresh Icon SVG Click Spin Keyframes. Why: One full turn reads as a refresh. How: This rotates the icon a full circle. */
 
 
 	from {

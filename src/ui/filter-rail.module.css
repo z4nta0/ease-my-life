@@ -66,7 +66,7 @@
 
 
 }
-.filRaiDiv::-webkit-scrollbar { /* What: Pill Rail Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+.filRaiDiv::-webkit-scrollbar { /* What: Filter Rail Div Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
 
 
 	display : none;
@@ -178,7 +178,7 @@
 
 
 }
-.filPilBut[aria-selected='true'] .filCouSpa { /* What: Selected Pill Count. Why: The count follows its pill's accent. How: This tints the capsule in the accent color. */
+.filPilBut[aria-selected='true'] .filCouSpa { /* What: Filter Count Span In Selected Filter Pill Button. Why: The count follows its pill's accent. How: This tints the capsule in the accent color. */
 
 
 	background : oklch( from var( --acc-mai-col ) l c h / 0.16 );            /* Accent Main Color = oklch( 0.5 0.14 250 ) */

@@ -50,7 +50,7 @@
 @container appRooDiv ( max-width : 760px ) { /* What: Narrow Reminders Section. Why: On a narrow screen the sections sit closer. How: This applies only when the app is 760px wide or less. */
 
 
-	.todGroSec:not( :first-child ) { /* What: Tighter Following Reminders Section. Why: The divider needs less room. How: This shrinks the padding above the section. */
+	.todGroSec:not( :first-child ) { /* What: Narrow Following Today Group Section. Why: The divider needs less room. How: This shrinks the padding above the section. */
 
 
 		padding-top : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
@@ -126,7 +126,7 @@
 
 }
 .groGriSpa:active,
-[data-item-drag-active] .groGriSpa { /* What: Pressed Group Grip. Why: A press on the handle starts a drag, and should register before anything else happens. How: This switches to the grabbing cursor and presses the grip in slightly, keyed on the drag state as well as the press, since Firefox drops :active once the drag cancels pointerdown's default. */
+[data-item-drag-active] .groGriSpa { /* What: Pressed Group Grip Span. Why: A press on the handle starts a drag, and should register before anything else happens. How: This switches to the grabbing cursor and presses the grip in slightly, keyed on the drag state as well as the press, since Firefox drops :active once the drag cancels pointerdown's default. */
 
 
 	cursor    : grabbing;
@@ -237,7 +237,7 @@
 
 
 }
-.proDasIta[data-dash-done-active] { /* What: Done Group Progress Dash Italic. Why: A done row's dash should read as filled. How: This fills it with the accent. */
+.proDasIta[data-dash-done-active] { /* What: Done Progress Dash Italic. Why: A done row's dash should read as filled. How: This fills it with the accent. */
 
 
 	background : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -254,7 +254,7 @@
 .proDasIta.proDasIta--fresh::after { /* What: Progress Dash Italic Fresh Sweep. Why: The fill should sweep in from the left. How: This scales an accent overlay from nothing to full width with the shared sweep animation. */
 
 
-	animation        : global( dashFreshSweep ) var( --dur-ani-p04 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global Sweep Keyframes. Why: The dashFreshSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation        : global( dashFreshSweep ) var( --dur-ani-p04 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global dashFreshSweep Keyframes. Why: The dashFreshSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background       : var( --acc-mai-col );                                                        /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius    : inherit;
 	content          : '';
@@ -420,7 +420,7 @@
 
 
 	.remAddDiv,
-	.remAddDiv.remAddDiv--closing { /* What: Still Quick-Add Form. Why: The form should appear and close at once, while still ending the animation its handler waits on. How: This shortens its fades to .01ms instead of turning them off. */
+	.remAddDiv.remAddDiv--closing { /* What: Still Reminder Add Div And Reminder Add Div Closing. Why: The form should appear and close at once, while still ending the animation its handler waits on. How: This shortens its fades to .01ms instead of turning them off. */
 
 
 		animation-duration : .01ms;
@@ -724,7 +724,7 @@
 
 	.todCarArt--inserting,
 	.todCarArt--deleting,
-	.todCarArt--purging { /* What: Instant Reminder Card Animations. Why: The card should arrive and leave at once, while still ending the animations their handlers wait on. How: This shortens each to .01ms instead of turning it off. */
+	.todCarArt--purging { /* What: Instant Today Card Article Inserting, Deleting, And Purging. Why: The card should arrive and leave at once, while still ending the animations their handlers wait on. How: This shortens each to .01ms instead of turning it off. */
 
 
 		animation-duration : .01ms;

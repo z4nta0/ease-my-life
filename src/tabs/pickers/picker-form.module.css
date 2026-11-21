@@ -586,7 +586,7 @@
 
 
 }
-.modOptLab:has( .modOptInp:focus-visible ) { /* What: Focused Mode Option Label. Why: A keyboard user needs to see which option has focus. How: This outlines the card while its radio has visible focus. */
+.modOptLab:has( .modOptInp:focus-visible ) { /* What: Mode Option Label With Focused Mode Option Input. Why: A keyboard user needs to see which option has focus. How: This outlines the card while its radio has visible focus. */
 
 
 	outline-offset : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
@@ -660,7 +660,7 @@
 
 
 }
-.modOptLab[data-option-select-active] .modOptInp::after { /* What: Chosen Mode Option Input Dot. Why: The chosen option shows its mark. How: This fades the mark in on the decelerating curve. */
+.modOptLab[data-option-select-active] .modOptInp::after { /* What: Mode Option Input Dot In Selected Mode Option Label. Why: The chosen option shows its mark. How: This fades the mark in on the decelerating curve. */
 
 
 	opacity    : 1;
@@ -746,7 +746,7 @@
 }
 
 .conTogDiv .togTexDiv,
-.daiTogDiv .togTexDiv { /* What: Toggle Text Div In Toggle Divs. Why: A toggle field's label and help stack together beside its switch. How: This stacks them in a spaced column, while the schedule's own toggles keep their plain block flow. */
+.daiTogDiv .togTexDiv { /* What: Toggle Text Div In Conditional Toggle Div And Daily Toggle Div. Why: A toggle field's label and help stack together beside its switch. How: This stacks them in a spaced column, while the schedule's own toggles keep their plain block flow. */
 
 
 	display        : flex;
@@ -756,7 +756,7 @@
 
 }
 .forFieDiv--conditional .conTogDiv .togTexDiv,
-.forFieDiv--conditional .daiTogDiv .togTexDiv { /* What: Conditional Toggle Text. Why: The conditional's two paragraphs shouldn't run so wide that the switch drops off the title's line. How: This caps the column at a rhythm step. */
+.forFieDiv--conditional .daiTogDiv .togTexDiv { /* What: Toggle Text Div In Conditional Toggle Div And Daily Toggle Div In Form Field Div Conditional. Why: The conditional's two paragraphs shouldn't run so wide that the switch drops off the title's line. How: This caps the column at a rhythm step. */
 
 
 	max-width : calc( var( --ver-rhy-p12 ) * 1rem ); /* Vertical Rhythm Base Plus 12 ~= 425.596px */
@@ -899,7 +899,7 @@
 
 
 }
-.conRaiDiv::-webkit-scrollbar { /* What: Conditional Rail Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+.conRaiDiv::-webkit-scrollbar { /* What: Conditional Rail Div Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
 
 
 	display : none;
@@ -1175,7 +1175,7 @@
 
 }
 .itePooDiv + .detFooDiv,
-.itePooDiv + .iteFooDiv { /* What: Items Footer Div After Item Pool Div. Why: The Items footer needs room below the pool. How: This spaces it large vertical spacing down. */
+.itePooDiv + .iteFooDiv { /* What: Details Footer Div And Items Footer Div After Item Pool Div. Why: The Items footer needs room below the pool. How: This spaces it large vertical spacing down. */
 
 
 	margin-top : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
@@ -1325,7 +1325,7 @@
 
 
 	.pooRowDiv--insert,
-	.pooRowDiv--removing { /* What: Instant Inserting And Removing Pool Row Divs. Why: The row should arrive and leave at once, while still ending the animations its handler waits on. How: This shortens both to .01ms. */
+	.pooRowDiv--removing { /* What: Instant Pool Row Div Insert And Pool Row Div Removing. Why: The row should arrive and leave at once, while still ending the animations its handler waits on. How: This shortens both to .01ms. */
 
 
 		animation-duration : .01ms;
@@ -1411,7 +1411,7 @@
 
 
 	.delConDiv,
-	.delConDiv--leaving { /* What: Still Delete Confirm Divs. Why: The confirm should simply appear and go. How: This turns both slides off. */
+	.delConDiv--leaving { /* What: Still Delete Confirm Div And Delete Confirm Div Leaving. Why: The confirm should simply appear and go. How: This turns both slides off. */
 
 
 		animation : none;

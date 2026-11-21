@@ -116,7 +116,7 @@
 }
 
 .setNamSpa,
-.setNamLab { /* What: Settings Name Label. Why: The row's name leads it, whether it names the row or a field. How: This sets it in bold body text. */
+.setNamLab { /* What: Settings Name Span And Settings Name Label. Why: The row's name leads it, whether it names the row or a field. How: This sets it in bold body text. */
 
 
 	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
@@ -311,7 +311,7 @@
 .accErrSpa { /* What: Account Error Span. Why: A new failure should pop in so it's noticed. How: This plays the shared bounce each time the keyed message remounts. */
 
 
-	animation : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global messageResultBounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display   : inline-block;
 
 

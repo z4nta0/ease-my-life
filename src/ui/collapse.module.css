@@ -61,7 +61,7 @@
 
 
 }
-.colDisDiv[data-collapse-open-active] > .colInnDiv { /* What: Open Collapse Inner Div. Why: Open content is fully visible in place. How: This fades it in and settles it at its resting position. */
+.colDisDiv[data-collapse-open-active] > .colInnDiv { /* What: Collapse Inner Div In Open Collapse Disclosure Div. Why: Open content is fully visible in place. How: This fades it in and settles it at its resting position. */
 
 
 	opacity   : 1;

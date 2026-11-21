@@ -98,7 +98,7 @@
 
 /* #region carTexDiv */
 
-.conConDiv--inline > .forFieDiv--cardtext .carTexDiv { /* What: Inline Card Text Div. Why: The card text's label and help stack together beside the input. How: This stacks them in a capped column. */
+.conConDiv--inline > .forFieDiv--cardtext .carTexDiv { /* What: Card Text Div In Form Field Div Cardtext In Conditional Controls Div Inline. Why: The card text's label and help stack together beside the input. How: This stacks them in a capped column. */
 
 
 	display        : flex;
@@ -167,7 +167,7 @@
 
 
 }
-.conConDiv--inline > .forFieDiv--cardtext .forTexInp { /* What: Inline Card Text Input. Why: Beside its label, the input takes the row's remaining width up to a cap. How: This lets it grow and shrink within a rhythm step. */
+.conConDiv--inline > .forFieDiv--cardtext .forTexInp { /* What: Form Text Input In Form Field Div Cardtext In Conditional Controls Div Inline. Why: Beside its label, the input takes the row's remaining width up to a cap. How: This lets it grow and shrink within a rhythm step. */
 
 
 	flex      : 1 1 auto;
@@ -237,7 +237,7 @@
 
 
 }
-.conConDiv--inline .typGroDiv > .forFieFie { /* What: Inline Form Field Fieldset. Why: In the Data tab the type's heading sits in a row under a hairline, its options full-bleed below. How: This pads only the top and draws the hairline. */
+.conConDiv--inline .typGroDiv > .forFieFie { /* What: Form Field Fieldset In Type Group Div In Conditional Controls Div Inline. Why: In the Data tab the type's heading sits in a row under a hairline, its options full-bleed below. How: This pads only the top and draws the hairline. */
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -257,7 +257,7 @@
 
 
 }
-.conConDiv--inline .typGroDiv > .forFieFie > .forLabLeg { /* What: Inline Form Label Legend. Why: The heading lines up with the row padding around it. How: This insets it base horizontal spacing on each side. */
+.conConDiv--inline .typGroDiv > .forFieFie > .forLabLeg { /* What: Form Label Legend In Form Field Fieldset In Type Group Div In Conditional Controls Div Inline. Why: The heading lines up with the row padding around it. How: This insets it base horizontal spacing on each side. */
 
 
 	padding : 0 var( --spa-hor-bas ); /* Spacing Horizontal Base ~= 14.572px */
@@ -350,7 +350,7 @@
 
 
 }
-.modOptLab:has( .modOptInp:focus-visible ) { /* What: Focused Mode Option Label. Why: A keyboard user needs to see which option has focus, though the radio itself is hidden. How: This outlines the option while its input has visible focus. */
+.modOptLab:has( .modOptInp:focus-visible ) { /* What: Mode Option Label With Focused Mode Option Input. Why: A keyboard user needs to see which option has focus, though the radio itself is hidden. How: This outlines the option while its input has visible focus. */
 
 
 	outline-offset : calc( var( --bor-wid-lar ) * -1 ); /* Border Width Large ~= 2.035px */
@@ -469,7 +469,7 @@
 
 
 }
-.modOptLab[data-option-select-active] .modDotSpa::after { /* What: Selected Mode Dot Span Fill. Why: The chosen option shows its mark. How: This fades the mark in on the decelerating curve. */
+.modOptLab[data-option-select-active] .modDotSpa::after { /* What: Mode Dot Span Fill In Selected Mode Option Label. Why: The chosen option shows its mark. How: This fades the mark in on the decelerating curve. */
 
 
 	opacity    : 1;
@@ -604,7 +604,7 @@
 
 
 }
-.conConDiv--inline > .typGroDiv > .conTypDiv:last-child .ediRowDiv { /* What: Inline Active Editor Row Div. Why: The standalone Active row doubles its bottom hairline against the footer's top one, like the other Data editors. How: This adds a bottom hairline. */
+.conConDiv--inline > .typGroDiv > .conTypDiv:last-child .ediRowDiv { /* What: Editor Row Div In Last Conditional Type Div In Type Group Div In Conditional Controls Div Inline. Why: The standalone Active row doubles its bottom hairline against the footer's top one, like the other Data editors. How: This adds a bottom hairline. */
 
 
 	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -659,7 +659,7 @@
 
 }
 .ediNamSpa--fade,
-.ediSubSpa--fade { /* What: Fading Editor Name And Sub Spans. Why: A label or explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
+.ediSubSpa--fade { /* What: Editor Name Span Fade And Editor Sub Span Fade. Why: A label or explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
 
 
 	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -670,7 +670,7 @@
 
 
 	.ediNamSpa--fade,
-	.ediSubSpa--fade { /* What: Still Fading Editor Spans. Why: The change should happen at once. How: This turns their animation off. */
+	.ediSubSpa--fade { /* What: Still Editor Name Span Fade And Editor Sub Span Fade. Why: The change should happen at once. How: This turns their animation off. */
 
 
 		animation : none;

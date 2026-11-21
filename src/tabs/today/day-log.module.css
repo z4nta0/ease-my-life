@@ -409,7 +409,7 @@
 
 }
 .logBloDiv:first-child,
-.logConDiv:first-child { /* What: First Log Block. Why: The panel header already divides the first block. How: This drops its hairline. */
+.logConDiv:first-child { /* What: First Log Block Div And Log Conditionals Div. Why: The panel header already divides the first block. How: This drops its hairline. */
 
 
 	border-top : 0;
@@ -446,7 +446,7 @@
 
 
 }
-.logConDiv .bloHeaDiv { /* What: Conditionals Header. Why: The Conditionals header is just a title and count. How: This lays them out in a plain row. */
+.logConDiv .bloHeaDiv { /* What: Block Header Div In Log Conditionals Div. Why: The Conditionals header is just a title and count. How: This lays them out in a plain row. */
 
 
 	display : flex;
@@ -481,14 +481,14 @@
 
 
 }
-.bloHeaBut .bloChvSpa { /* What: Header Chevron. Why: The chevron takes the first column. How: This places it in column 1. */
+.bloHeaBut .bloChvSpa { /* What: Block Chevron Span In Block Header Button. Why: The chevron takes the first column. How: This places it in column 1. */
 
 
 	grid-column : 1;
 
 
 }
-.bloHeaBut[aria-expanded='false'] .bloChvSpa { /* What: Closed Block Chevron. Why: A closed block points its chevron sideways. How: This turns it back a quarter, keying off the header's aria-expanded. */
+.bloHeaBut[aria-expanded='false'] .bloChvSpa { /* What: Block Chevron Span In Closed Block Header Button. Why: A closed block points its chevron sideways. How: This turns it back a quarter, keying off the header's aria-expanded. */
 
 
 	transform : rotate( -90deg );
@@ -555,7 +555,7 @@
 
 
 }
-.namModSpa .bloNamSpa { /* What: Header Block Name. Why: Beside its pill the name takes up to a rhythm step's width. How: This lets it shrink from that basis. */
+.namModSpa .bloNamSpa { /* What: Block Name Span In Name Mode Span. Why: Beside its pill the name takes up to a rhythm step's width. How: This lets it shrink from that basis. */
 
 
 	flex      : 0 1 calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 8 ~= 138.199px */
@@ -599,7 +599,7 @@
 
 
 }
-.namModSpa .picModSpa { /* What: Header Mode Pill. Why: Beside a picker's name the pill keeps a fixed width so the names line up. How: This fixes it at a rhythm step, ending in an ellipsis. */
+.namModSpa .picModSpa { /* What: Picker Mode Span In Name Mode Span. Why: Beside a picker's name the pill keeps a fixed width so the names line up. How: This fixes it at a rhythm step, ending in an ellipsis. */
 
 
 	min-width     : 0;
@@ -814,7 +814,7 @@
 @container appRooDiv ( max-width : 500px ) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
 
 
-	.logConDiv .tabHeaDiv { /* What: Conditionals Table Header. Why: The Conditionals header keeps room for its Triggered pills. How: This narrows the three value columns so the wider status column still fits. */
+	.logConDiv .tabHeaDiv { /* What: Very Narrow Table Header Div In Log Conditionals Div. Why: The Conditionals header keeps room for its Triggered pills. How: This narrows the three value columns so the wider status column still fits. */
 
 
 		grid-template-columns : 1fr calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 6 ~= 78.750px */
@@ -921,14 +921,14 @@
 
 }
 .tabRowDiv:last-child,
-.conRowDiv:last-child { /* What: Last Log Row. Why: The table's end needs no divider. How: This drops the hairline. */
+.conRowDiv:last-child { /* What: Last Table Row Div And Conditional Row Div. Why: The table's end needs no divider. How: This drops the hairline. */
 
 
 	border-bottom : 0;
 
 
 }
-.tabRowDiv[data-row-done-active] { /* What: Done Log Row. Why: A completed item's row reads green. How: This tints it green, keying off data-row-done-active. */
+.tabRowDiv[data-row-done-active] { /* What: Done Table Row Div. Why: A completed item's row reads green. How: This tints it green, keying off data-row-done-active. */
 
 
 	background : var( --suc-tin-col ); /* Success Tint Color = oklch( 0.95 0.035 155 ) */
@@ -1005,7 +1005,7 @@
 
 
 }
-.tabRowDiv[data-row-vacation-active] .rowNamSpa { /* What: Vacationing Row Name. Why: An item on vacation reads quieter. How: This mutes its name, keying off the row's data-row-vacation-active. */
+.tabRowDiv[data-row-vacation-active] .rowNamSpa { /* What: Row Name Span In Vacationing Table Row Div. Why: An item on vacation reads quieter. How: This mutes its name, keying off the row's data-row-vacation-active. */
 
 
 	color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -1508,7 +1508,7 @@
 
 
 }
-.remRowDiv[data-row-upcoming-active] .remNamSpa { /* What: Upcoming Reminder Name. Why: A reminder not due yet reads quieter. How: This mutes its name, keying off the row's data-row-upcoming-active. */
+.remRowDiv[data-row-upcoming-active] .remNamSpa { /* What: Reminder Name Span In Upcoming Reminders Row Div. Why: A reminder not due yet reads quieter. How: This mutes its name, keying off the row's data-row-upcoming-active. */
 
 
 	color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
