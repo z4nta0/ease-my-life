@@ -19,7 +19,7 @@
 
 
 
-.secSubPar { /* What: Section Sub Paragraph. Why: The section explains itself in muted copy, like every other section. How: This sets it muted at the large font size with no margin. */
+.secSubPar { /* What: Section Sub Paragraph. Why: The section explains itself in muted copy, like the other sections. How: This sets it muted at the body font size with no margin. */
 
 
 	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -129,7 +129,7 @@
 /* #region setSubSpa */
 
 .setSubSpa,
-.accStaSpa { /* What: Settings Sub Span And Account Status Span. Why: The explanation should read as quieter supporting text. How: This sets it small and muted with balanced line breaks. */
+.accStaSpa { /* What: Settings Sub Span And Account Status Span. Why: The explanation should read as quieter supporting text. How: This sets it small and muted, with line breaks that avoid a lone last word. */
 
 
 	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -143,7 +143,7 @@
 .accStaSpa { /* What: Settings Sub Span Fade And Account Status Span. Why: A description that changes after an action should fade in its new wording. How: This plays the shared fade each time the keyed element remounts. */
 
 
-	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with the other live explanation lines, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

@@ -22,16 +22,16 @@ import type { AccSynTyp } from '../../state/sync-run.ts'; // What: Account Sync 
  * account-section.tsx = Account Section
  *
  * @summary
- * The Settings tab's Account section. Signed out, it offers Google sign-in
- * and an emailed sign-in link, with a box to paste the link into, since an
- * installed app on a phone often can't open a link itself (the email opens
- * it in the browser instead). A link opened where it wasn't requested asks
- * for the address it was sent to. Signed in, it names the account and offers
+ * The Settings tab's Account section. Signed out, it offers Google sign-in and
+ * an emailed sign-in link, with a box to paste the link into, since an
+ * installed app on a phone often can't open a link itself (the email opens it
+ * in the browser instead). A link opened where it wasn't requested asks for
+ * the address it was sent to. Signed in, it names the account and offers
  * sign-out, then either the paid sync upgrade or, once bought, how sync is
  * going and a Sync now button. A device's first sync onto an account that
- * already holds data asks which copy to keep. Every result is announced:
- * failures through an alert region, and sign-in and sync news through a
- * status region, both in the page and empty from the first render.
+ * already holds data asks which copy to keep. Failures are announced through
+ * an alert region, and sign-in, link-sent, and purchase news through a status
+ * region, both in the page and empty from the first render.
  *
  * Sections:
  *  - Helpers
@@ -186,7 +186,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 
 
-	const finPasFun = ( subEveObj : React.FormEvent ) => { // What: Finish Paste Function. Why: The paste form finishes a sign-in with a link copied from the email. How: This stops the page reload and finishes with the address typed above.
+	const finPasFun = ( subEveObj : React.FormEvent ) => { // What: Finish Paste Function. Why: The paste form finishes a sign-in with a link copied from the email. How: This stops the page reload and finishes with the address the link was sent to.
 
 
 		subEveObj.preventDefault(); // What: Submit Prevent Call. Why: The form must not reload the page. How: This cancels the default submit.
@@ -557,7 +557,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 									sizValStr='sm'
 
 									onClick={ buySynFun }
-								>{ buyActBoo ? 'Opening checkout…' : 'Unlock sync' }</ButBasCom>{ /* What: Button Base Component. Why: This starts the purchase. How: This opens Polar's checkout, disabled and relabeled while it opens or while a purchase finishes. */ }
+								>{ buyActBoo ? 'Opening checkout…' : 'Unlock sync' }</ButBasCom>{ /* What: Button Base Component. Why: This starts the purchase. How: This opens Polar's checkout, disabled while it opens or while a purchase finishes, and relabeled while it opens. */ }
 
 
 							</div>
