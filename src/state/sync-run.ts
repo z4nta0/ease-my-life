@@ -493,7 +493,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 			const linHreStr = window.location.href;                 // What: Link Hypertext-Reference String. Why: The code is read before the address is cleaned. How: This keeps it.
-			const remAdrStr = reaKeyFun( STG_NAM_OBJ.SIG_EMA_STR ); // What: Remembered Address String. Why: The link finishes at once when this browser requested it. How: This reads the remembered address.
+			const rmbAdrStr = reaKeyFun( STG_NAM_OBJ.SIG_EMA_STR ); // What: Remembered Address String. Why: The link finishes at once when this browser requested it. How: This reads the remembered address.
 
 
 			window.history.replaceState( null, '', window.location.pathname ); // What: Address Clean Call. Why: The one-time code must not stay in the address bar, a bookmark, or the history. How: This replaces the address with the bare path.
@@ -501,7 +501,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 			setLinUrlStr( linHreStr ); // What: Link Store. Why: Without a remembered address, the screen asks for one. How: This holds the link.
 
 
-			if ( remAdrStr ) void finLinFun( remAdrStr, linHreStr ); // What: Remembered Finish Call. Why: The same browser that asked can finish without typing. How: This finishes with the remembered address.
+			if ( rmbAdrStr ) void finLinFun( rmbAdrStr, linHreStr ); // What: Remembered Finish Call. Why: The same browser that asked can finish without typing. How: This finishes with the remembered address.
 
 
 		}
@@ -635,15 +635,15 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 			if ( !synMetObj ) { // What: First Sync Check. Why: A first sync onto an account that already has data may need the person's choice. How: This reads the account's manifest and asks or follows the choice.
 
 
-				const remManObj = await synBacObj.getManFun(); // What: Remote Manifest Object. Why: Only an account that already holds data needs a choice. How: This reads its manifest.
+				const rmtManObj = await synBacObj.getManFun(); // What: Remote Manifest Object. Why: Only an account that already holds data needs a choice. How: This reads its manifest.
 
 
 
-				if ( remManObj && hasDatFun( begStaObj ) && !choValStr ) { setSynRawStr( 'choose' ); return; } // What: Choice Guard. Why: Both copies hold data, and only the person knows which to keep. How: This waits for their choice.
+				if ( rmtManObj && hasDatFun( begStaObj ) && !choValStr ) { setSynRawStr( 'choose' ); return; } // What: Choice Guard. Why: Both copies hold data, and only the person knows which to keep. How: This waits for their choice.
 
 
 
-				if ( remManObj && choValStr === 'device' ) synMetObj = { docs : remManObj.docs, rev : remManObj.rev }; // What: Device Choice. Why: Keeping this device means the account's copy counts as unchanged, so this device's documents replace it entirely. How: This uses the account's hashes as the last sync.
+				if ( rmtManObj && choValStr === 'device' ) synMetObj = { docs : rmtManObj.docs, rev : rmtManObj.rev }; // What: Device Choice. Why: Keeping this device means the account's copy counts as unchanged, so this device's documents replace it entirely. How: This uses the account's hashes as the last sync.
 
 
 			}

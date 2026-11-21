@@ -59,7 +59,7 @@ import type { RawSavTyp } from '../core/data-model.ts'; // What: Raw Save Type. 
  *                    core or pickLog-2026-10.
  * @param locDocObj - Local Document Object: This device's content, or
  *                    undefined when it has none.
- * @param remDocObj - Remote Document Object: The cloud's content, or
+ * @param rmtDocObj - Remote Document Object: The cloud's content, or
  *                    undefined when it has none.
  * @param locWinBoo - Local Winner Boolean: Whether this device saved last,
  *                    making its side the winner.
@@ -70,16 +70,16 @@ import type { RawSavTyp } from '../core/data-model.ts'; // What: Raw Save Type. 
  *
  * @example
  * ```ts
- * merDocFun('core', locDocObj, remDocObj, true, '2026-10-20') // => merged
+ * merDocFun('core', locDocObj, rmtDocObj, true, '2026-10-20') // => merged
  * ```
  *
 */
 
-function merDocFun ( docIdeStr : string, locDocObj : RawSavTyp, remDocObj : RawSavTyp, locWinBoo : boolean, todDayStr : string ) : RawSavTyp {
+function merDocFun ( docIdeStr : string, locDocObj : RawSavTyp, rmtDocObj : RawSavTyp, locWinBoo : boolean, todDayStr : string ) : RawSavTyp {
 
 
-	const winDocObj = locWinBoo ? locDocObj : remDocObj;                                                     // What: Winner Document Object. Why: The winner's content leads every merge. How: This picks the local side when it saved last, the cloud's otherwise.
-	const losDocObj = locWinBoo ? remDocObj : locDocObj;                                                     // What: Loser Document Object. Why: Only the other side's older rows are added. How: This picks the side that didn't win.
+	const winDocObj = locWinBoo ? locDocObj : rmtDocObj;                                                     // What: Winner Document Object. Why: The winner's content leads every merge. How: This picks the local side when it saved last, the cloud's otherwise.
+	const losDocObj = locWinBoo ? rmtDocObj : locDocObj;                                                     // What: Loser Document Object. Why: Only the other side's older rows are added. How: This picks the side that didn't win.
 	const logSpeObj = LOG_SPE_ARR.find( ( speCurObj ) => docIdeStr.startsWith( `${ speCurObj.keyStr }-` ) ); // What: Log Specification Object. Why: Only a log month merges row by row. How: This finds the log whose name prefixes the id, or undefined for core.
 
 

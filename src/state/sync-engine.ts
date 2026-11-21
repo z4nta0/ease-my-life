@@ -155,11 +155,11 @@ async function synRunFun ( synBacObj : SynBacTyp, locStaObj : StaAppTyp, locSavN
 	for ( let tryIndNum = 0; tryIndNum < TRY_MAX_NUM; tryIndNum++ ) { // What: Try Loop. Why: An upload that loses the race starts over from the newer cloud copy. How: This runs the sync up to TRY_MAX_NUM times.
 
 
-		const remManObj = await synBacObj.getManFun(); // What: Remote Manifest Object. Why: The cloud's hashes say what it holds. How: This reads its manifest, null before the first upload.
+		const rmtManObj = await synBacObj.getManFun(); // What: Remote Manifest Object. Why: The cloud's hashes say what it holds. How: This reads its manifest, null before the first upload.
 
 
 
-		if ( remManObj && remManObj.v > SCH_VER_NUM ) return { merStaObj : null, pusNeeBoo : false, synMetObj, synStaStr : 'newer' }; // What: Newer Schema Guard. Why: This app can't read or safely merge a shape it doesn't know yet, so the device waits for its own update. How: This returns without changing anything.
+		if ( rmtManObj && rmtManObj.v > SCH_VER_NUM ) return { merStaObj : null, pusNeeBoo : false, synMetObj, synStaStr : 'newer' }; // What: Newer Schema Guard. Why: This app can't read or safely merge a shape it doesn't know yet, so the device waits for its own update. How: This returns without changing anything.
 
 
 
@@ -167,11 +167,11 @@ async function synRunFun ( synBacObj : SynBacTyp, locStaObj : StaAppTyp, locSavN
 
 		const locDocObj = splStaFun( locStaObj );                                                         // What: Local Document Object. Why: Local state is compared document by document. How: This splits it.
 		const locHasObj = hasMapFun( locDocObj );                                                         // What: Local Hash Object. Why: Each local document's fingerprint is compared. How: This hashes them.
-		const basHasObj = synMetObj && remManObj ? synMetObj.docs : {};                                   // What: Base Hash Object. Why: A document that still matches the last sync wasn't changed on that side, but a cloud copy that's gone (deleted from another device) must not read as every document deleted, which would wipe this device too. How: This reads the last sync's hashes, or none before the first sync or when the cloud holds nothing, so this device's documents upload again.
-		const remHasObj = remManObj ? remManObj.docs : {};                                                // What: Remote Hash Object. Why: Each cloud document's fingerprint is compared. How: This reads the manifest's hashes, or none before the first upload.
-		const locWinBoo = !!synMetObj && ( !remManObj || locSavNum >= remManObj.savedAt );                // What: Local Winner Boolean. Why: A document both sides changed follows the side that saved last, and a first sync follows the cloud. How: This is true when this device has synced before and saved no earlier than the cloud.
-		const docIdeArr = [ ...new Set( [ ...Object.keys( locHasObj ), ...Object.keys( remHasObj ) ] ) ]; // What: Document Identifier Array. Why: Every document either side holds is compared. How: This lists both sides' ids once each.
-		const fetIdeArr = docIdeArr.filter( ( docIdeStr ) => remHasObj[ docIdeStr ] !== undefined && remHasObj[ docIdeStr ] !== locHasObj[ docIdeStr ] && remHasObj[ docIdeStr ] !== basHasObj[ docIdeStr ] ); // What: Fetch Identifier Array. Why: Only documents the cloud changed, and that differ here, are downloaded. How: This keeps the ids whose cloud hash differs from both the local and last synced ones.
+		const basHasObj = synMetObj && rmtManObj ? synMetObj.docs : {};                                   // What: Base Hash Object. Why: A document that still matches the last sync wasn't changed on that side, but a cloud copy that's gone (deleted from another device) must not read as every document deleted, which would wipe this device too. How: This reads the last sync's hashes, or none before the first sync or when the cloud holds nothing, so this device's documents upload again.
+		const rmtHasObj = rmtManObj ? rmtManObj.docs : {};                                                // What: Remote Hash Object. Why: Each cloud document's fingerprint is compared. How: This reads the manifest's hashes, or none before the first upload.
+		const locWinBoo = !!synMetObj && ( !rmtManObj || locSavNum >= rmtManObj.savedAt );                // What: Local Winner Boolean. Why: A document both sides changed follows the side that saved last, and a first sync follows the cloud. How: This is true when this device has synced before and saved no earlier than the cloud.
+		const docIdeArr = [ ...new Set( [ ...Object.keys( locHasObj ), ...Object.keys( rmtHasObj ) ] ) ]; // What: Document Identifier Array. Why: Every document either side holds is compared. How: This lists both sides' ids once each.
+		const fetIdeArr = docIdeArr.filter( ( docIdeStr ) => rmtHasObj[ docIdeStr ] !== undefined && rmtHasObj[ docIdeStr ] !== locHasObj[ docIdeStr ] && rmtHasObj[ docIdeStr ] !== basHasObj[ docIdeStr ] ); // What: Fetch Identifier Array. Why: Only documents the cloud changed, and that differ here, are downloaded. How: This keeps the ids whose cloud hash differs from both the local and last synced ones.
 
 		// #endregion Document Comparison
 
@@ -179,7 +179,7 @@ async function synRunFun ( synBacObj : SynBacTyp, locStaObj : StaAppTyp, locSavN
 
 		// #region Document Merge
 
-		const remTexObj = fetIdeArr.length ? await synBacObj.getDocFun( Object.fromEntries( fetIdeArr.map( ( docIdeStr ) => [ docIdeStr, remHasObj[ docIdeStr ] ] ) ) ) : {}; // What: Remote Text Object. Why: Changed cloud documents are needed to adopt or merge them. How: This downloads the versions the manifest lists as JSON text, or skips the call when nothing changed.
+		const rmtTexObj = fetIdeArr.length ? await synBacObj.getDocFun( Object.fromEntries( fetIdeArr.map( ( docIdeStr ) => [ docIdeStr, rmtHasObj[ docIdeStr ] ] ) ) ) : {}; // What: Remote Text Object. Why: Changed cloud documents are needed to adopt or merge them. How: This downloads the versions the manifest lists as JSON text, or skips the call when nothing changed.
 
 		const merDocObj : SynDocTyp = {}; // What: Merged Document Object. Why: The merge result is collected by id. How: The loop below fills it.
 
@@ -188,18 +188,18 @@ async function synRunFun ( synBacObj : SynBacTyp, locStaObj : StaAppTyp, locSavN
 
 
 			const locHasStr = locHasObj[ docIdeStr ];                                        // What: Local Hash String. Why: It tells whether this device changed the document. How: This reads its local hash.
-			const remHasStr = remHasObj[ docIdeStr ];                                        // What: Remote Hash String. Why: It tells whether the cloud changed the document. How: This reads its cloud hash.
+			const rmtHasStr = rmtHasObj[ docIdeStr ];                                        // What: Remote Hash String. Why: It tells whether the cloud changed the document. How: This reads its cloud hash.
 			const basHasStr = basHasObj[ docIdeStr ];                                        // What: Base Hash String. Why: Both sides are compared against what they last agreed on. How: This reads the last sync's hash.
-			const remTexStr = remTexObj[ docIdeStr ];                                        // What: Remote Text String. Why: A downloaded document is parsed before it's used. How: This reads its JSON text, undefined when it wasn't downloaded.
-			const remDocObj = remTexStr === undefined ? undefined : JSON.parse( remTexStr ); // What: Remote Document Object. Why: The cloud's content is merged as data. How: This parses the downloaded text.
+			const rmtTexStr = rmtTexObj[ docIdeStr ];                                        // What: Remote Text String. Why: A downloaded document is parsed before it's used. How: This reads its JSON text, undefined when it wasn't downloaded.
+			const rmtDocObj = rmtTexStr === undefined ? undefined : JSON.parse( rmtTexStr ); // What: Remote Document Object. Why: The cloud's content is merged as data. How: This parses the downloaded text.
 
 
 
-			const merCurObj = remHasStr === locHasStr || remHasStr === basHasStr                       // What: Merged Current Object. Why: A document only one side changed is taken from that side, and one both changed is merged. How: This picks the local copy when the cloud didn't change it, the cloud's when only it did, and merges otherwise.
+			const merCurObj = rmtHasStr === locHasStr || rmtHasStr === basHasStr                       // What: Merged Current Object. Why: A document only one side changed is taken from that side, and one both changed is merged. How: This picks the local copy when the cloud didn't change it, the cloud's when only it did, and merges otherwise.
 				? locDocObj[ docIdeStr ]                                                               // What: Local Branch. Why: The cloud matches this device or hasn't changed since the last sync. How: This keeps the local copy, undefined when this device deleted it.
 				: locHasStr === basHasStr                                                              // What: Remote Only Check. Why: A document this device left alone follows the cloud. How: This checks whether the local copy still matches the last sync.
-					? remDocObj                                                                        // What: Remote Branch. Why: Only the cloud changed it. How: This takes the cloud's copy, undefined when the cloud deleted it.
-					: merDocFun( docIdeStr, locDocObj[ docIdeStr ], remDocObj, locWinBoo, todDayStr ); // What: Merge Branch. Why: Both sides changed it. How: This merges the two copies.
+					? rmtDocObj                                                                        // What: Remote Branch. Why: Only the cloud changed it. How: This takes the cloud's copy, undefined when the cloud deleted it.
+					: merDocFun( docIdeStr, locDocObj[ docIdeStr ], rmtDocObj, locWinBoo, todDayStr ); // What: Merge Branch. Why: Both sides changed it. How: This merges the two copies.
 
 
 			if ( merCurObj !== undefined && !( Array.isArray( merCurObj ) && !merCurObj.length ) ) merDocObj[ docIdeStr ] = merCurObj; // What: Merged Document Store. Why: A deleted document, or a month left with no rows, isn't kept. How: This stores every other merged document by id.
@@ -215,22 +215,22 @@ async function synRunFun ( synBacObj : SynBacTyp, locStaObj : StaAppTyp, locSavN
 
 		const merHasObj = hasMapFun( merDocObj );        // What: Merged Hash Object. Why: The merged documents are compared with both sides. How: This hashes them.
 		const merStaObj = canJsoFun( merHasObj ) === canJsoFun( locHasObj ) ? null : { ...joiDocFun( merDocObj ), ...Object.fromEntries( DEV_KEY_ARR.map( ( keyNamStr ) => [ keyNamStr, locStaObj[ keyNamStr ] ] ) ) }; // What: Merged State Object. Why: The caller only saves a state when the merge changed something here, and this device keeps its own settings. How: This joins the merged documents when their hashes differ from the local ones, adding back this device's DEV_KEY_ARR fields, and is null otherwise.
-		const basRevNum = remManObj ? remManObj.rev : 0; // What: Base Revision Number. Why: The upload only commits on the revision it was built from. How: This reads the cloud's revision, 0 before the first upload.
+		const basRevNum = rmtManObj ? rmtManObj.rev : 0; // What: Base Revision Number. Why: The upload only commits on the revision it was built from. How: This reads the cloud's revision, 0 before the first upload.
 
 
 
-		if ( canJsoFun( merHasObj ) === canJsoFun( remHasObj ) ) return { merStaObj, pusNeeBoo : false, synMetObj : { docs : merHasObj, rev : basRevNum }, synStaStr : 'synced' }; // What: Nothing To Upload Guard. Why: The cloud already holds the merged content. How: This returns the new meta without an upload.
+		if ( canJsoFun( merHasObj ) === canJsoFun( rmtHasObj ) ) return { merStaObj, pusNeeBoo : false, synMetObj : { docs : merHasObj, rev : basRevNum }, synStaStr : 'synced' }; // What: Nothing To Upload Guard. Why: The cloud already holds the merged content. How: This returns the new meta without an upload.
 
 
 
 		const putTexObj : Record< string, string | null > = {}; // What: Put Text Object. Why: Only changed documents are uploaded, and documents gone from the merge are deleted. How: The two loops below fill it.
 
 
-		for ( const docIdeStr of Object.keys( merHasObj ) ) if ( merHasObj[ docIdeStr ] !== remHasObj[ docIdeStr ] ) putTexObj[ docIdeStr ] = canJsoFun( merDocObj[ docIdeStr ] ); // What: Changed Document Loop. Why: A document the cloud doesn't hold in this form is uploaded. How: This adds its canonical JSON.
+		for ( const docIdeStr of Object.keys( merHasObj ) ) if ( merHasObj[ docIdeStr ] !== rmtHasObj[ docIdeStr ] ) putTexObj[ docIdeStr ] = canJsoFun( merDocObj[ docIdeStr ] ); // What: Changed Document Loop. Why: A document the cloud doesn't hold in this form is uploaded. How: This adds its canonical JSON.
 
 
 
-		for ( const docIdeStr of Object.keys( remHasObj ) ) if ( !( docIdeStr in merHasObj ) ) putTexObj[ docIdeStr ] = null; // What: Deleted Document Loop. Why: A document the merge dropped is removed from the cloud too. How: This marks it null.
+		for ( const docIdeStr of Object.keys( rmtHasObj ) ) if ( !( docIdeStr in merHasObj ) ) putTexObj[ docIdeStr ] = null; // What: Deleted Document Loop. Why: A document the merge dropped is removed from the cloud too. How: This marks it null.
 
 
 
@@ -239,7 +239,7 @@ async function synRunFun ( synBacObj : SynBacTyp, locStaObj : StaAppTyp, locSavN
 
 			docs    : merHasObj,                                                // What: Documents. Why: The cloud has to list what it holds. How: This is every merged document's hash.
 			rev     : basRevNum + 1,                                            // What: Revision. Why: The next upload has to know it's building on this one. How: This counts one past the revision this upload started from.
-			savedAt : Math.max( locSavNum, remManObj ? remManObj.savedAt : 0 ), // What: Saved At. Why: The next conflict is won by whichever side saved after this. How: This is the later of the two sides' save times.
+			savedAt : Math.max( locSavNum, rmtManObj ? rmtManObj.savedAt : 0 ), // What: Saved At. Why: The next conflict is won by whichever side saved after this. How: This is the later of the two sides' save times.
 			v       : SCH_VER_NUM                                               // What: Version. Why: An older app must not merge a shape it doesn't know. How: This is the schema this app saves.
 
 
