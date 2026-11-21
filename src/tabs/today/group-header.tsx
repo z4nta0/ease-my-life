@@ -287,7 +287,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 		<React.Fragment>{ /* What: Group Header Fragment Element. Why: The header itself and its own merge/error banners are true siblings with no shared wrapper of their own. How: This groups the header, the merge-confirm banner, and the name-error banner without adding an extra DOM node. */ }
 
 
-			<header className={ cssModObj.groHeaHea }>{ /* What: Group Header Header Element. Why: This is GroHeaCom's own root landmark, holding the name/count row and the progress dash row beneath it. How: This renders as a semantic <header>. */ }
+			<header className={ cssModObj.groHeaHed }>{ /* What: Group Header Header Element. Why: This is GroHeaCom's own root landmark, holding the name/count row and the progress dash row beneath it. How: This renders as a semantic <header>. */ }
 
 
 				<div className={ cssModObj.heaLefDiv }>{ /* What: Header Left Div Element. Why: The name, count, and Day Log chip read as one left-aligned cluster. How: This wraps the grip (Edit Mode only), the name/rename control, the count, and the Day Log chip. */ }

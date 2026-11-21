@@ -717,7 +717,7 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 
 
-		for ( const [ hooNamStr, expTexStr ] of [ [ 'staStrDiv', expStaObj.staStkStr ], [ 'staFulDiv', expStaObj.staFulStr ], [ 'staDonDiv', expStaObj.staDonStr ], [ 'staRatDiv', expStaObj.staRatStr ] ] ) { // What: Headline Loop. Why: Each headline card must match. How: This compares each one.
+		for ( const [ hooNamStr, expTexStr ] of [ [ 'staStkDiv', expStaObj.staStkStr ], [ 'staFulDiv', expStaObj.staFulStr ], [ 'staDonDiv', expStaObj.staDonStr ], [ 'staRatDiv', expStaObj.staRatStr ] ] ) { // What: Headline Loop. Why: Each headline card must match. How: This compares each one.
 
 
 			const shoTexStr = await numTexFun( hooNamStr ); // What: Shown Text String. Why: The card's number as shown. How: This reads it.

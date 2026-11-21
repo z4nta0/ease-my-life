@@ -39,9 +39,9 @@
 }
 
 
-/* #region todPagHea */
+/* #region todPagHed */
 
-.todPagHea { /* What: Today Page Header. Why: The header stays pinned at the top while the list scrolls under it. How: This makes it a sticky padded bar on the page background above a hairline. */
+.todPagHed { /* What: Today Page Header. Why: The header stays pinned at the top while the list scrolls under it. How: This makes it a sticky padded bar on the page background above a hairline. */
 
 
 	background    : var( --bac-pag-col );                                           /* Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -56,7 +56,7 @@
 @container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.todPagHea { /* What: Trimmed Today Header. Why: The narrow header needs less padding. How: This tightens its padding. */
+	.todPagHed { /* What: Trimmed Today Header. Why: The narrow header needs less padding. How: This tightens its padding. */
 
 
 		padding : var( --spa-ver-bas ) var( --spa-hor-p01 ) var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
@@ -173,9 +173,9 @@
 }
 
 
-/* #region todStrDiv */
+/* #region todStkDiv */
 
-.todStrDiv { /* What: Today Streak Div. Why: The current streak sits on the kicker row as a small pill. How: This draws a small outlined mono pill that fades its colors. */
+.todStkDiv { /* What: Today Streak Div. Why: The current streak sits on the kicker row as a small pill. How: This draws a small outlined mono pill that fades its colors. */
 
 
 	align-items    : center;
@@ -196,7 +196,7 @@
 
 
 }
-.todStrDiv[data-streak-claim-active] { /* What: Claimed Today Streak Div. Why: A day that has claimed its streak point should show it for as long as the claim holds. How: This tints the chip warm while the claim attribute is set, fading in and out through the base rule's transition. */
+.todStkDiv[data-streak-claim-active] { /* What: Claimed Today Streak Div. Why: A day that has claimed its streak point should show it for as long as the claim holds. How: This tints the chip warm while the claim attribute is set, fading in and out through the base rule's transition. */
 
 
 	background   : oklch( from var( --acc-sec-col ) calc( l + 0.32 ) calc( c - 0.05 ) h ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
@@ -204,17 +204,17 @@
 
 
 }
-.todStrDiv.todStrDiv--bumped { /* What: Bumped Today Streak Div. Why: A streak that just grew should pop for a moment. How: This plays a springy scale while the bumped class is set. */
+.todStkDiv.todStkDiv--bumped { /* What: Bumped Today Streak Div. Why: A streak that just grew should pop for a moment. How: This plays a springy scale while the bumped class is set. */
 
 
-	animation : todStrDivBumpBounce var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	animation : todStkDivBumpBounce var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
 
 
 }
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Streak Chip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.todStrDiv { /* What: Still Streak Chip. Why: The warm tint should switch at once. How: This turns its transition off. */
+	.todStkDiv { /* What: Still Streak Chip. Why: The warm tint should switch at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -222,7 +222,7 @@
 
 	}
 
-	.todStrDiv.todStrDiv--bumped { /* What: Still Bumped Streak Chip. Why: The chip shouldn't pop, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
+	.todStkDiv.todStkDiv--bumped { /* What: Still Bumped Streak Chip. Why: The chip shouldn't pop, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
 
 
 		animation : none;
@@ -234,7 +234,7 @@
 
 
 }
-@keyframes todStrDivBumpBounce { /* What: Today Streak Div Bump Bounce Keyframes. Why: The chip swells briefly. How: This scales it up and back. */
+@keyframes todStkDivBumpBounce { /* What: Today Streak Div Bump Bounce Keyframes. Why: The chip swells briefly. How: This scales it up and back. */
 
 
 	0% {
@@ -264,7 +264,7 @@
 
 }
 
-.strFlaSvg { /* What: Streak Flame SVG. Why: The flame icon reads warm beside the count. How: This colors it warm at its natural size, easing its transform and glow. */
+.stkFlaSvg { /* What: Streak Flame SVG. Why: The flame icon reads warm beside the count. How: This colors it warm at its natural size, easing its transform and glow. */
 
 
 	color      : var( --acc-sec-col );                                                                                  /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
@@ -273,17 +273,17 @@
 
 
 }
-.todStrDiv.todStrDiv--bumped .strFlaSvg { /* What: Bumped Streak Flame. Why: The flame flares as the streak grows. How: This plays a scale, tilt, and glow flare. */
+.todStkDiv.todStkDiv--bumped .stkFlaSvg { /* What: Bumped Streak Flame. Why: The flame flares as the streak grows. How: This plays a scale, tilt, and glow flare. */
 
 
-	animation : strFlaSvgBumpFlare var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	animation : stkFlaSvgBumpFlare var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
 
 
 }
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Streak Flame. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.strFlaSvg { /* What: Still Streak Flame. Why: The change should happen at once. How: This turns its transition off. */
+	.stkFlaSvg { /* What: Still Streak Flame. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -291,7 +291,7 @@
 
 	}
 
-	.todStrDiv.todStrDiv--bumped .strFlaSvg { /* What: Still Bumped Streak Flame. Why: The flame shouldn't flare, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
+	.todStkDiv.todStkDiv--bumped .stkFlaSvg { /* What: Still Bumped Streak Flame. Why: The flame shouldn't flare, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
 
 
 		animation : none;
@@ -303,7 +303,7 @@
 
 
 }
-@keyframes strFlaSvgBumpFlare { /* What: Streak Flame SVG Bump Flare Keyframes. Why: The flame flares and settles. How: This scales, tilts, and glows it, then eases back. */
+@keyframes stkFlaSvgBumpFlare { /* What: Streak Flame SVG Bump Flare Keyframes. Why: The flame flares and settles. How: This scales, tilts, and glows it, then eases back. */
 
 
 	0% {
@@ -344,17 +344,17 @@
 
 }
 
-.todStrDiv.todStrDiv--bumped .strCouSpa { /* What: Bumped Streak Count. Why: The count flashes warm as it grows. How: This plays a brief warm, bolder color flash. */
+.todStkDiv.todStkDiv--bumped .stkCouSpa { /* What: Bumped Streak Count. Why: The count flashes warm as it grows. How: This plays a brief warm, bolder color flash. */
 
 
-	animation : strCouSpaBumpFlash var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	animation : stkCouSpaBumpFlash var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
 
 
 }
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Streak Count. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.todStrDiv.todStrDiv--bumped .strCouSpa { /* What: Still Bumped Streak Count. Why: The count shouldn't flash, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
+	.todStkDiv.todStkDiv--bumped .stkCouSpa { /* What: Still Bumped Streak Count. Why: The count shouldn't flash, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
 
 
 		animation : none;
@@ -366,7 +366,7 @@
 
 
 }
-@keyframes strCouSpaBumpFlash { /* What: Streak Count Span Bump Flash Keyframes. Why: The count warms and bolds for a beat. How: This runs its color to warm and back. */
+@keyframes stkCouSpaBumpFlash { /* What: Streak Count Span Bump Flash Keyframes. Why: The count warms and bolds for a beat. How: This runs its color to warm and back. */
 
 
 	0% {
@@ -397,7 +397,7 @@
 
 }
 
-/* #endregion todStrDiv */
+/* #endregion todStkDiv */
 
 /* #endregion rowRigDiv */
 
@@ -1132,7 +1132,7 @@
 
 /* #endregion heaInnDiv */
 
-/* #endregion todPagHea */
+/* #endregion todPagHed */
 
 
 

@@ -2698,7 +2698,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-			<header className={ cssModObj.pagHeaHea }>{ /* What: Header Element. Why: This groups the page's own kicker/help toggle, brand mark, title, and subtitle. How: This renders as a semantic header landmark above the filters/body wrapper. */ }
+			<header className={ cssModObj.pagHeaHed }>{ /* What: Header Element. Why: This groups the page's own kicker/help toggle, brand mark, title, and subtitle. How: This renders as a semantic header landmark above the filters/body wrapper. */ }
 
 
 				<div className={ cssModObj.kicRowDiv }>{ /* What: Kicker Row Div Element. Why: The page's own kicker and help toggle sit side by side. How: This wraps the kicker span and the HelButCom. */ }
@@ -3664,7 +3664,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 									<CarSurCom
 										className={ cssModObj.staCarDiv }
 
-										data-element-name-hook='staStrDiv'
+										data-element-name-hook='staStkDiv'
 										data-picker-scope-active={ isaPicBoo || undefined } // What: Picker Scope Active Attribute. Why: Help mode tells the single-picker version of this card apart from the all-pickers version without reading the card's own classes. How: This is present only while isaPicBoo is true, since undefined drops the attribute entirely.
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "day streak" total, tagged with data-picker-scope-active so help mode can tell the two scopes apart. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 

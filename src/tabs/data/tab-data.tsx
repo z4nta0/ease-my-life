@@ -1393,7 +1393,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 
-			<header className={ cssModObj.pagHeaHea }>{ /* What: Page Header Header Element. Why: This tab's own kicker, brand link, and lead paragraphs all belong in one landmark. How: This wraps the kicker row and the lead/warning paragraphs below. */ }
+			<header className={ cssModObj.pagHeaHed }>{ /* What: Page Header Header Element. Why: This tab's own kicker, brand link, and lead paragraphs all belong in one landmark. How: This wraps the kicker row and the lead/warning paragraphs below. */ }
 
 
 				<div className={ cssModObj.kicRowDiv }>{ /* What: Kicker Row Div Element. Why: The kicker label and the help toggle belong on the same line. How: This wraps the kicker div and HelButCom below. */ }
@@ -2082,9 +2082,9 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 							<header
-								className={ cssModObj.catHeaHea }
+								className={ cssModObj.catHeaHed }
 
-								data-element-name-hook='catHeaHea'
+								data-element-name-hook='catHeaHed'
 
 								onClick={ ( cliEveObj ) => { // What: On Click Handler. Why: Clicking anywhere on the header outside a real button toggles the card. How: This toggles the section unless it's a draft, the tour is guarding the header, or the click landed on a button.
 

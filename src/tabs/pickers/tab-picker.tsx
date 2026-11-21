@@ -474,7 +474,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-			<header className={ cssModObj.pagHeaHea }>{ /* What: Header Element. Why: The kicker/help row, the brand lead, and the intro paragraph form one page header. How: This wraps those three pieces. */ }
+			<header className={ cssModObj.pagHeaHed }>{ /* What: Header Element. Why: The kicker/help row, the brand lead, and the intro paragraph form one page header. How: This wraps those three pieces. */ }
 
 
 				<div className={ cssModObj.kicRowDiv }>{ /* What: Kicker Row Div Element. Why: The page kicker and the Help toggle sit side by side. How: This wraps those two pieces. */ }

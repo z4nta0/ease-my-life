@@ -800,9 +800,9 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 
 			<header
-				className={ cssModObj.catHeaHea }
+				className={ cssModObj.catHeaHed }
 
-				data-element-name-hook='catHeaHea'
+				data-element-name-hook='catHeaHed'
 			>{ /* What: Category Header Header Element. Why: Every section shares the same header shape (chevron + name + count). How: This wraps the collapse-toggle button below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 

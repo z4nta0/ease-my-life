@@ -1428,7 +1428,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-			<header className={ cssModObj.pagHeaHea }>{ /* What: Stat H Header Element. Why: Every tab shares this same header shape: a kicker row, a brand lockup, and an intro paragraph. How: This wraps the kicker/help-button row, the brand mark plus title, and the intro paragraph. */ }
+			<header className={ cssModObj.pagHeaHed }>{ /* What: Stat H Header Element. Why: Every tab shares this same header shape: a kicker row, a brand lockup, and an intro paragraph. How: This wraps the kicker/help-button row, the brand mark plus title, and the intro paragraph. */ }
 
 
 				<div className={ cssModObj.kicRowDiv }>{ /* What: Kicker Row Div Element. Why: The section kicker and the help toggle share one row. How: This wraps the kicker span and the HelButCom. */ }

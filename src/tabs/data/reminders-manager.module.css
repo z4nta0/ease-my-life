@@ -55,9 +55,9 @@
 }
 
 
-/* #region catHeaHea */
+/* #region catHeaHed */
 
-.catHeaHea { /* What: Category Header Header. Why: The header opens and closes the whole section. How: This spreads its contents across a padded row with a pointer cursor and no text selection. */
+.catHeaHed { /* What: Category Header Header. Why: The header opens and closes the whole section. How: This spreads its contents across a padded row with a pointer cursor and no text selection. */
 
 
 	align-items     : center;
@@ -213,7 +213,7 @@
 
 /* #endregion catHeaBut */
 
-/* #endregion catHeaHea */
+/* #endregion catHeaHed */
 
 
 

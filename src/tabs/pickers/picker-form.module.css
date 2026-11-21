@@ -38,9 +38,9 @@
 }
 
 
-/* #region forHeaHea */
+/* #region forHeaHed */
 
-.forHeaHea { /* What: Form Header Header. Why: The kicker and title head the form. How: This lays them out in a top-aligned row. */
+.forHeaHed { /* What: Form Header Header. Why: The kicker and title head the form. How: This lays them out in a top-aligned row. */
 
 
 	align-items     : flex-start;
@@ -76,7 +76,7 @@
 
 }
 
-/* #endregion forHeaHea */
+/* #endregion forHeaHed */
 
 
 

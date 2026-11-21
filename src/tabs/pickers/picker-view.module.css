@@ -39,9 +39,9 @@
 }
 
 
-/* #region picHeaHea */
+/* #region picHeaHed */
 
-.picHeaHea { /* What: Picker Header Header. Why: The name block sits left of the Edit button, aligned to its top. How: This spreads them across a top-aligned row. */
+.picHeaHed { /* What: Picker Header Header. Why: The name block sits left of the Edit button, aligned to its top. How: This spreads them across a top-aligned row. */
 
 
 	align-items     : flex-start;
@@ -91,7 +91,7 @@
 
 /* #endregion heaTitDiv */
 
-/* #endregion picHeaHea */
+/* #endregion picHeaHed */
 
 
 

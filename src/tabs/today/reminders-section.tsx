@@ -1112,7 +1112,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 		>{ /* What: Group Section Element. Why: This is RemSecCom's own root element, matching every other Today group's own outer landmark. How: This renders the header, the optional day-log panel, and the todLisDiv list below. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, help mode's Today catalog, and the Today page tour. */ }
 
 
-			<header className={ cssModObj.groHeaHea }>{ /* What: Group Header Element. Why: This groups the section's own name/count/log-chip on the left and its progress/add-button on the right. How: This renders heaLefDiv and heaRigDiv below, marking itself reorderable while ediModBoo is on. */ }
+			<header className={ cssModObj.groHeaHed }>{ /* What: Group Header Element. Why: This groups the section's own name/count/log-chip on the left and its progress/add-button on the right. How: This renders heaLefDiv and heaRigDiv below, marking itself reorderable while ediModBoo is on. */ }
 
 
 				<div className={ cssModObj.heaLefDiv }>{ /* What: Group Header Left Div Element. Why: The drag grip, name, count, and log chip read together on the header's own left side. How: This wraps all 4 below, the grip only while ediModBoo is on. */ }

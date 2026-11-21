@@ -42,9 +42,9 @@
 }
 
 
-/* #region pagHeaHea */
+/* #region pagHeaHed */
 
-.pagHeaHea { /* What: Page Header Header. Why: The kicker row, lead, and intro read as one header. How: This stacks them in a spaced column. */
+.pagHeaHed { /* What: Page Header Header. Why: The kicker row, lead, and intro read as one header. How: This stacks them in a spaced column. */
 
 
 	display        : flex;
@@ -311,7 +311,7 @@
 
 /* #endregion pagSubPar */
 
-/* #endregion pagHeaHea */
+/* #endregion pagHeaHed */
 
 
 
@@ -707,9 +707,9 @@
 }
 
 
-/* #region catHeaHea */
+/* #region catHeaHed */
 
-.catHeaHea { /* What: Category Header Header. Why: The header opens and closes the whole card. How: This spreads its contents across a padded row with a pointer cursor and no text selection. */
+.catHeaHed { /* What: Category Header Header. Why: The header opens and closes the whole card. How: This spreads its contents across a padded row with a pointer cursor and no text selection. */
 
 
 	align-items     : center;
@@ -1065,7 +1065,7 @@
 
 /* #endregion catRigSpa */
 
-/* #endregion catHeaHea */
+/* #endregion catHeaHed */
 
 
 

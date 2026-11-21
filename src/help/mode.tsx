@@ -347,7 +347,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 		const chrSelArr = [ // What: Chrome Selector Array. Why: These are the only pieces of always-on-top chrome any highlight ever needs clipping against; the tab bar alone varies its own edge at runtime. How: This is mapped into real chrome items below.
 
 
-			[ '[data-element-name-hook~="todPagHea"]', 'top'  ], // What: Today Header Entry. Why: The Today header stays pinned above the scrolling list. How: This pairs its hook selector with the edge a highlight is clipped against.
+			[ '[data-element-name-hook~="todPagHed"]', 'top'  ], // What: Today Header Entry. Why: The Today header stays pinned above the scrolling list. How: This pairs its hook selector with the edge a highlight is clipped against.
 			[ '[data-element-name-hook~="groRaiAsi"]', 'top'  ], // What: Group Rail Entry. Why: The Today group rail stays pinned above the scrolling list. How: This pairs its hook selector with the edge a highlight is clipped against.
 			[ '[data-element-name-hook~="setRaiAsi"]', 'top'  ], // What: Settings Rail Entry. Why: The Settings section rail stays pinned above the scrolling page. How: This pairs its hook selector with the edge a highlight is clipped against.
 			[ '[data-element-name-hook~="appTabNav"]', 'auto' ], // What: Tab Bar Entry. Why: The tab bar's own clipped edge depends on its placement. How: This pairs its hook selector with the edge a highlight is clipped against.

@@ -73,7 +73,7 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 
 		bodEle : <>This counts how many days in a row you've completed everything on your todo list. Missing a day resets it back to zero.</>,
 		ideStr : 'streak',
-		selStr : '[data-element-name-hook~="todStrDiv"]',
+		selStr : '[data-element-name-hook~="todStkDiv"]',
 		titStr : 'Day Streak'
 
 

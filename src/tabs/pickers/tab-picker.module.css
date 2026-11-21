@@ -37,9 +37,9 @@
 }
 
 
-/* #region pagHeaHea */
+/* #region pagHeaHed */
 
-.pagHeaHea { /* What: Page Header Header. Why: The kicker row, lead, and intro read as one header. How: This stacks them in a column. */
+.pagHeaHed { /* What: Page Header Header. Why: The kicker row, lead, and intro read as one header. How: This stacks them in a column. */
 
 
 	display        : flex;
@@ -306,7 +306,7 @@
 
 /* #endregion pagSubPar */
 
-/* #endregion pagHeaHea */
+/* #endregion pagHeaHed */
 
 
 

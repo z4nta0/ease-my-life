@@ -1190,7 +1190,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		>{ /* What: Picker Form Div Element. Why: This is PicForCom's own root, holding the header, the step indicator (create only), and whichever step's own content is active. How: This wraps every piece of the create/edit form. */ }
 
 
-			<header className={ cssModObj.forHeaHea }>{ /* What: Picker Header Element. Why: The kicker and heading read as one title block. How: This wraps those two pieces. */ }
+			<header className={ cssModObj.forHeaHed }>{ /* What: Picker Header Element. Why: The kicker and heading read as one title block. How: This wraps those two pieces. */ }
 
 
 				<div>{ /* What: Header Text Div Element. Why: The form's kicker and title belong together. How: This wraps the two lines below. */ }

@@ -124,8 +124,8 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 		bodEle    : <>This is where you can view and edit all of your conditionals. Tap the header to expand or collapse the section.</>,
 		ideStr    : 'conditionalsManager',
-		padYcoNum : 0, // padYcoNum:0, .catHeaHea has no border/gap of its own below it, but .catBodDiv (wrapping the Add button and every row) sits directly against it with only a hairline border, same zero-gap stacking as the rest of this card. The roughly 19px flex gap above the conCatSec section itself (from .tabPagDiv) easily absorbs losing the default pad on that side too.
-		selStr    : '[data-element-name-hook~="conCatSec"] [data-element-name-hook~="catHeaHea"]',
+		padYcoNum : 0, // padYcoNum:0, .catHeaHed has no border/gap of its own below it, but .catBodDiv (wrapping the Add button and every row) sits directly against it with only a hairline border, same zero-gap stacking as the rest of this card. The roughly 19px flex gap above the conCatSec section itself (from .tabPagDiv) easily absorbs losing the default pad on that side too.
+		selStr    : '[data-element-name-hook~="conCatSec"] [data-element-name-hook~="catHeaHed"]',
 		titStr    : 'Conditionals'
 
 
@@ -366,8 +366,8 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 		bodEle    : <>This is where you can view and edit all of your reminders. Tap the header to expand or collapse the section.</>,
 		ideStr    : 'remindersManager',
-		padYcoNum : 0, // padYcoNum:0, same .catHeaHea/.catBodDiv zero-gap stacking as conditionalsManager.
-		selStr    : '[data-element-name-hook~="remCatSec"] [data-element-name-hook~="catHeaHea"]',
+		padYcoNum : 0, // padYcoNum:0, same .catHeaHed/.catBodDiv zero-gap stacking as conditionalsManager.
+		selStr    : '[data-element-name-hook~="remCatSec"] [data-element-name-hook~="catHeaHed"]',
 		titStr    : 'Reminders'
 
 
@@ -581,7 +581,7 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 	// #region Pickers Manager
 
-	// Each picker gets its own highlight, plus each of its own settings controls individually (PicConCom) and each of its items individually (reusing the shared item-editor entries below). Scoped via the direct .datLisDiv > .datCatSec > .catHeaHea chain since .catHeaHea is also reused by the Conditionals/Reminders managers' own outer headers (which render outside .datLisDiv entirely).
+	// Each picker gets its own highlight, plus each of its own settings controls individually (PicConCom) and each of its items individually (reusing the shared item-editor entries below). Scoped via the direct .datLisDiv > .datCatSec > .catHeaHed chain since .catHeaHed is also reused by the Conditionals/Reminders managers' own outer headers (which render outside .datLisDiv entirely).
 	{ // What: Picker Row Help Item. Why: This is the on-demand help tip for the Picker Row element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -589,14 +589,14 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 		ideStr    : 'pickerRow',
 		labStr    : '[data-element-name-hook~="catModSpa"]',                               // labStr reads the visible .catModSpa pill (tab-data.tsx) in the header's catTagSpa cluster.
 		mulBoo    : true,                                            // mulBoo is true because every picker gets its own badge.
-		padYcoNum : 0,                                               // padYcoNum:0, same .catHeaHea/.catBodDiv zero-gap stacking as conditionalsManager; matters once a picker is expanded and .catBodDiv renders beneath it.
-		selStr    : '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"][data-picker-id] > [data-element-name-hook~="catHeaHea"]',
+		padYcoNum : 0,                                               // padYcoNum:0, same .catHeaHed/.catBodDiv zero-gap stacking as conditionalsManager; matters once a picker is expanded and .catBodDiv renders beneath it.
+		selStr    : '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"][data-picker-id] > [data-element-name-hook~="catHeaHed"]',
 		titStr    : ( tarRecObj ) => tarRecObj?.labStr ? `${ tarRecObj.labStr } Picker` : 'Picker' // titStr is dynamic by TYPE, not name (unlike conditionalRow/pickerRow's own precedent).
 
 
 	},
 
-	// mulBoo is true because each expanded picker gets its own Controls/Items pair (more than one can be open at once). Same .catTogBut class and :nth-of-type split as the Reminders manager's own pair above. .catBodDiv is a descendant, not a direct child, of .datCatSec, it's wrapped in its own <ColDisCom> div (unlike .catHeaHea, which isn't). // padYcoNum:0, .catTogBut touches its neighbor with only a hairline border.
+	// mulBoo is true because each expanded picker gets its own Controls/Items pair (more than one can be open at once). Same .catTogBut class and :nth-of-type split as the Reminders manager's own pair above. .catBodDiv is a descendant, not a direct child, of .datCatSec, it's wrapped in its own <ColDisCom> div (unlike .catHeaHed, which isn't). // padYcoNum:0, .catTogBut touches its neighbor with only a hairline border.
 	{ // What: Picker Controls Help Item. Why: This is the on-demand help tip for the Picker Controls element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 

@@ -1030,11 +1030,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			const stkCurEle = stkEleRef.current; // What: Streak Current Element. Why: Every DOM manipulation below targets this same node. How: This reads stkEleRef.current once and reuses it below.
 
 
-			stkCurEle.classList.remove( cssModObj.todStrDivBumped ); // What: Stale Class Clear. Why: A CSS animation class must be removed before being re-added, or the browser won't replay it. How: This removes todStrDiv--bumped unconditionally before the reflow forcing line below.
+			stkCurEle.classList.remove( cssModObj.todStkDivBumped ); // What: Stale Class Clear. Why: A CSS animation class must be removed before being re-added, or the browser won't replay it. How: This removes todStkDiv--bumped unconditionally before the reflow forcing line below.
 			void stkCurEle.offsetWidth;                              // What: Reflow Force. Why: Removing then immediately re-adding the same class needs a forced reflow in between. How: Reading offsetWidth forces a synchronous layout pass.
-			stkCurEle.classList.add( cssModObj.todStrDivBumped );    // What: Bumped Class Add. Why: This is the actual CSS trigger for the streak's own pulse animation. How: This adds the todStrDiv--bumped modifier to stkCurEle.
+			stkCurEle.classList.add( cssModObj.todStkDivBumped );    // What: Bumped Class Add. Why: This is the actual CSS trigger for the streak's own pulse animation. How: This adds the todStkDiv--bumped modifier to stkCurEle.
 
-			const bumEndTim = setTimeout( () => stkCurEle.classList.remove( cssModObj.todStrDivBumped ), durMilFun( 'p06' ) ); // What: Bump End Timeout. Why: The bumped class must clear itself once its own short animation finishes. How: This removes todStrDiv--bumped after the bump's own p06 duration step. // Duration Base Plus 6 ~= 853.0ms
+			const bumEndTim = setTimeout( () => stkCurEle.classList.remove( cssModObj.todStkDivBumped ), durMilFun( 'p06' ) ); // What: Bump End Timeout. Why: The bumped class must clear itself once its own short animation finishes. How: This removes todStkDiv--bumped after the bump's own p06 duration step. // Duration Base Plus 6 ~= 853.0ms
 
 
 			preClaRef.current = claNowBoo; // What: Previous Claimed Update. Why: The next run of this effect must compare against the claimed state that is current now. How: This overwrites preClaRef with claNowBoo.
@@ -3582,9 +3582,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			<header
 				ref={ heaEleRef }
 
-				className={ cssModObj.todPagHea }
+				className={ cssModObj.todPagHed }
 
-				data-element-name-hook='todPagHea'
+				data-element-name-hook='todPagHed'
 			>{ /* What: Today Header Element. Why: This is the sticky header every scroll-spy/offset calculation in this file measures against. How: This renders the date/streak/help row and the brand mark/title/ring row beneath it. Its data-element-name-hook is read by the tour runner's safe-area math and outside-click checks and help mode's chrome clipping. */ }
 
 
@@ -3612,21 +3612,21 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								<div
 									ref={ stkEleRef }
 
-									className={ cssModObj.todStrDiv }
+									className={ cssModObj.todStkDiv }
 
-									data-element-name-hook='todStrDiv'
+									data-element-name-hook='todStkDiv'
 									data-streak-claim-active={ staAppObj.today.streakClaimed || undefined } // What: Streak Claim Active Attribute. Why: The badge stays tinted for as long as today's streak point is claimed. How: This sets the presence-only attribute while today.streakClaimed is true, and drops it once the day reopens.
 								>{ /* What: Streak Div Element. Why: This is the badge the streak-pulse effect above targets directly. How: This renders a flame icon plus the current streak count. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 									<IcoSvgCom
-										className={ cssModObj.strFlaSvg }
+										className={ cssModObj.stkFlaSvg }
 
 										icoNamStr='flaEle'
 										sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
 									/>{ /* What: Icon SVG Component. Why: The streak badge needs a recognizable glyph. How: This renders the 'flaEle' icon at a fixed size. */ }
 
-									<span className={ cssModObj.strCouSpa }>{ staAppObj.streak }-day streak</span>{ /* What: Streak Text Span Element. Why: The streak count needs its own plain text alongside the flame icon. How: This renders staAppObj.streak interpolated into the fixed phrase. */ }
+									<span className={ cssModObj.stkCouSpa }>{ staAppObj.streak }-day streak</span>{ /* What: Streak Text Span Element. Why: The streak count needs its own plain text alongside the flame icon. How: This renders staAppObj.streak interpolated into the fixed phrase. */ }
 
 
 								</div>

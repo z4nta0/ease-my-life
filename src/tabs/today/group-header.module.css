@@ -23,9 +23,9 @@
 
 
 
-/* #region groHeaHea */
+/* #region groHeaHed */
 
-.groHeaHea { /* What: Group Header Header. Why: The name cluster and the progress dashes share one row, pushed to opposite ends. How: This spreads them apart in a centered flex row. */
+.groHeaHed { /* What: Group Header Header. Why: The name cluster and the progress dashes share one row, pushed to opposite ends. How: This spreads them apart in a centered flex row. */
 
 
 	align-items     : center;
@@ -411,7 +411,7 @@
 
 /* #endregion groProDiv */
 
-/* #endregion groHeaHea */
+/* #endregion groHeaHed */
 
 
 

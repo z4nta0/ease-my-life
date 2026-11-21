@@ -262,7 +262,7 @@ test( 'finishing every card celebrates', async ( { page : curPagObj } ) => { // 
 
 
 
-	if ( !preStaObj.today.streakClaimed && finStaObj.today.streakClaimed ) expect( await seeAniFun( curPagObj, 'todStrDiv--bumped' ), 'streak bump' ).toBe( true ); // What: Streak Bump Assertion. Why: The streak badge bumps only when the day's claim goes from false to true, which happens once every card is done. How: This checks its class appeared when this run made the claim.
+	if ( !preStaObj.today.streakClaimed && finStaObj.today.streakClaimed ) expect( await seeAniFun( curPagObj, 'todStkDiv--bumped' ), 'streak bump' ).toBe( true ); // What: Streak Bump Assertion. Why: The streak badge bumps only when the day's claim goes from false to true, which happens once every card is done. How: This checks its class appeared when this run made the claim.
 
 	// #endregion Celebration Checks
 
@@ -294,7 +294,7 @@ test( 'pushing an item onto a finished day gives the streak back', async ( { pag
 
 
 
-	await expect( curPagObj.locator( '[data-element-name-hook~="todStrDiv"]' ), 'badge tinted' ).toHaveAttribute( 'data-streak-claim-active' ); // What: Tinted Badge Assertion. Why: A claimed day keeps the streak badge tinted. How: This checks the badge carries the claim attribute.
+	await expect( curPagObj.locator( '[data-element-name-hook~="todStkDiv"]' ), 'badge tinted' ).toHaveAttribute( 'data-streak-claim-active' ); // What: Tinted Badge Assertion. Why: A claimed day keeps the streak badge tinted. How: This checks the badge carries the claim attribute.
 
 	// #endregion Finish The Day
 
@@ -334,7 +334,7 @@ test( 'pushing an item onto a finished day gives the streak back', async ( { pag
 
 
 
-	await expect( curPagObj.locator( '[data-element-name-hook~="todStrDiv"]' ), 'badge untinted' ).not.toHaveAttribute( 'data-streak-claim-active' ); // What: Untinted Badge Assertion. Why: A reopened day drops the badge's tint. How: This checks the claim attribute is gone.
+	await expect( curPagObj.locator( '[data-element-name-hook~="todStkDiv"]' ), 'badge untinted' ).not.toHaveAttribute( 'data-streak-claim-active' ); // What: Untinted Badge Assertion. Why: A reopened day drops the badge's tint. How: This checks the claim attribute is gone.
 
 	// #endregion Reopened Day Check
 

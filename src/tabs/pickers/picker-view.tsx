@@ -1035,7 +1035,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 		>{ /* What: Picker View Div Element. Why: This is PicVieCom's own root, holding the header, the run stage/actions, and the pool. How: This wraps every piece of the selected picker's own live view. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
-			<header className={ cssModObj.picHeaHea }>{ /* What: Picker Header Element. Why: The picker's own name/mode and its Edit button both belong in one header row. How: This wraps the title block and the Edit button. */ }
+			<header className={ cssModObj.picHeaHed }>{ /* What: Picker Header Element. Why: The picker's own name/mode and its Edit button both belong in one header row. How: This wraps the title block and the Edit button. */ }
 
 
 				<div className={ cssModObj.heaTitDiv }>{ /* What: Title Block Div Element. Why: The kicker, name, and mode pill read as one grouped title. How: This wraps those three pieces so the header's own flex layout can place the Edit button beside them. */ }

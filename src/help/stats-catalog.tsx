@@ -114,7 +114,7 @@ const STA_HEL_ARR : HelIteTyp[] = [ // What: Stats Help Array. Why: This is the 
 		ideStr    : 'statStreak',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '[data-element-name-hook~="staStrDiv"]:not([data-picker-scope-active])',
+		selStr    : '[data-element-name-hook~="staStkDiv"]:not([data-picker-scope-active])',
 		titStr    : 'Day Streak'
 
 
@@ -166,7 +166,7 @@ const STA_HEL_ARR : HelIteTyp[] = [ // What: Stats Help Array. Why: This is the 
 		ideStr    : 'statPickerStreak',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '[data-element-name-hook~="staStrDiv"][data-picker-scope-active]',
+		selStr    : '[data-element-name-hook~="staStkDiv"][data-picker-scope-active]',
 		titStr    : 'Picker Day Streak'
 
 
