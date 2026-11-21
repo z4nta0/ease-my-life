@@ -211,7 +211,7 @@ function LoaCarCom ( { infRcdObj, picRcdObj } : LacProTyp ) : React.JSX.Element 
 				<div className={ cssModObj.carNamDiv }>{ /* What: Loader Card Name Div Element. Why: This is where the slot's own pending/active/settled visual actually renders. How: This renders exactly one of the three branches below, gated on staStr. */ }
 
 
-					{ sloStaStr === 'pending' && <span className={ cssModObj.penDotSpa }>·  ·  ·</span> }{ /* What: Pending Dots Span Element. Why: A slot not yet reached by the cascade shows plain waiting dots. How: This renders only while sloStaStr is 'pending'. */ }
+					{ sloStaStr === 'pending' && <span className={ cssModObj.waiDotSpa }>·  ·  ·</span> }{ /* What: Waiting Dots Span Element. Why: A slot not yet reached by the cascade shows plain waiting dots. How: This renders only while sloStaStr is 'pending'. */ }
 
 
 
@@ -219,7 +219,7 @@ function LoaCarCom ( { infRcdObj, picRcdObj } : LacProTyp ) : React.JSX.Element 
 
 
 
-					{ sloStaStr === 'active' && !hasReeBoo && <span className={ cssModObj.penDotSpa }>·  ·  ·</span> }{ /* What: Active Dots Span Element. Why: Any other active slot (day-off/charging, or a pick with no candidates) just shows the same waiting dots. How: This renders only while sloStaStr is 'active' and hasReeBoo is false. */ }
+					{ sloStaStr === 'active' && !hasReeBoo && <span className={ cssModObj.waiDotSpa }>·  ·  ·</span> }{ /* What: Active Dots Span Element. Why: Any other active slot (day-off/charging, or a pick with no candidates) just shows the same waiting dots. How: This renders only while sloStaStr is 'active' and hasReeBoo is false. */ }
 
 					{ sloStaStr === 'settled' && ( // What: Settled State Check. Why: Once this slot's own cascade step finishes, it shows the final resolved name instead of any dots/reel. How: This renders finNamStr only while sloStaStr is 'settled'.
 
