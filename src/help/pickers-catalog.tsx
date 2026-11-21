@@ -203,7 +203,7 @@ const PIC_HEL_ARR : HelIteTyp[] = [ // What: Picker Help Array. Why: This is the
 		bodEle : (
 
 
-			<>This lists all of the items that are in this picker's pool, including their values (if applicable). The <span className={ cssModObj.inlIcoSpa }><IcoSvgCom icoNamStr='calEle' sizSteStr='bas' /></span> Send to Today button will send the item to your todo list on the Today page, the <span className={ cssModObj.inlIcoSpa }><IcoSvgCom icoNamStr='ediEle' sizSteStr='bas' /></span> Edit button will allow you to edit the item's properties and the <span className={ cssModObj.inlIcoSpa }><IcoSvgCom icoNamStr='traEle' sizSteStr='bas' /></span> Delete button will delete the item after asking for confirmation.</> // What: Body Fragment. Why: This tip's own body mixes text with inline icons. How: This wraps the whole run as one element. // Vertical Rhythm Base ~= 14.572px
+			<>This lists all of the items that are in this picker's pool, including their values (if applicable). The <span className={ cssModObj.inlIcoSpa }><IcoSvgCom className={ cssModObj.inlIcoSvg } icoNamStr='calEle' sizSteStr='bas' /></span> Send to Today button will send the item to your todo list on the Today page, the <span className={ cssModObj.inlIcoSpa }><IcoSvgCom className={ cssModObj.inlIcoSvg } icoNamStr='ediEle' sizSteStr='bas' /></span> Edit button will allow you to edit the item's properties and the <span className={ cssModObj.inlIcoSpa }><IcoSvgCom className={ cssModObj.inlIcoSvg } icoNamStr='traEle' sizSteStr='bas' /></span> Delete button will delete the item after asking for confirmation.</> // What: Body Fragment. Why: This tip's own body mixes text with inline icons. How: This wraps the whole run as one element. // Vertical Rhythm Base ~= 14.572px
 
 
 		)

@@ -45,7 +45,7 @@
 
 }
 
-.navLabDiv svg { /* What: Nav Label Div Icon. Why: The icon should keep its size however long the name beside it gets. How: This stops the icon from shrinking in the row. */
+.navIcoSvg { /* What: Nav Icon SVG. Why: The icon should keep its size however long the name beside it gets. How: This stops the icon from shrinking in the row. */
 
 
 	flex : 0 0 auto;

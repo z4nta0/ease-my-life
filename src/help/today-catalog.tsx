@@ -252,10 +252,10 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 			<>{ /* What: Body Fragment. Why: This tip's own body groups several lines as one element. How: This wraps them without adding a wrapper element to the tip. */ }
 
 
-				<div className={ cssModObj.navIteDiv }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+				<div className={ cssModObj.butIteDiv }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
 
 
-					<div className={ cssModObj.navLabDiv }><IcoSvgCom icoNamStr='refEle' sizSteStr='bas' /><b>Re-Roll:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
+					<div className={ cssModObj.butLabDiv }><IcoSvgCom className={ cssModObj.butLabSvg } icoNamStr='refEle' sizSteStr='bas' /><b>Re-Roll:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
 
 					<p>This button swaps this item for a different one from the same picker, without waiting for the next generation.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
@@ -263,10 +263,10 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 				</div>
 
 
-				<div className={ cssModObj.navIteDiv }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+				<div className={ cssModObj.butIteDiv }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
 
 
-					<div className={ cssModObj.navLabDiv }><IcoSvgCom icoNamStr='skiEle' sizSteStr='bas' /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
+					<div className={ cssModObj.butLabDiv }><IcoSvgCom className={ cssModObj.butLabSvg } icoNamStr='skiEle' sizSteStr='bas' /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
 
 					<p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
@@ -274,10 +274,10 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 				</div>
 
 
-				<div className={ cssModObj.navIteDiv }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+				<div className={ cssModObj.butIteDiv }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
 
 
-					<div className={ cssModObj.navLabDiv }><IcoSvgCom icoNamStr='ediEle' sizSteStr='bas' /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
+					<div className={ cssModObj.butLabDiv }><IcoSvgCom className={ cssModObj.butLabSvg } icoNamStr='ediEle' sizSteStr='bas' /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
 
 					<p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
@@ -307,10 +307,10 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 			<>{ /* What: Body Fragment. Why: This tip's own body groups several lines as one element. How: This wraps them without adding a wrapper element to the tip. */ }
 
 
-				<div className={ cssModObj.navIteDiv }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+				<div className={ cssModObj.butIteDiv }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
 
 
-					<div className={ cssModObj.navLabDiv }><IcoSvgCom icoNamStr='skiEle' sizSteStr='bas' /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
+					<div className={ cssModObj.butLabDiv }><IcoSvgCom className={ cssModObj.butLabSvg } icoNamStr='skiEle' sizSteStr='bas' /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
 
 					<p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
@@ -318,10 +318,10 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 				</div>
 
 
-				<div className={ cssModObj.navIteDiv }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+				<div className={ cssModObj.butIteDiv }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
 
 
-					<div className={ cssModObj.navLabDiv }><IcoSvgCom icoNamStr='ediEle' sizSteStr='bas' /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
+					<div className={ cssModObj.butLabDiv }><IcoSvgCom className={ cssModObj.butLabSvg } icoNamStr='ediEle' sizSteStr='bas' /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
 
 					<p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
