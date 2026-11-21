@@ -30,7 +30,7 @@
 	overflow-y     : auto;
 	padding        : var( --spa-ver-p02 ) var( --spa-hor-p02 );                                  /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 2 ~= 25.572px */
 	position       : fixed;
-	z-index        : 19;                                                                         /* What: Intro Scrim Stack Level. Why: The welcome modal covers the whole app shell, whose highest layer is the drawer rail at 18. How: This sits one level above it. */
+	z-index        : 19;                                                                         /* What: Intro Scrim Stack Level. Why: The intro modal covers the whole app shell, whose highest layer is the drawer rail at 18. How: This sits one level above it. */
 
 
 }
@@ -171,7 +171,7 @@
 
 /* #region chiRowDiv */
 
-.chiRowDiv { /* What: Chip Row Div. Why: The topic chips read as one row below the paragraphs. How: This lays them out in a centered, wrapping row. */
+.chiRowDiv { /* What: Chip Row Div. Why: The topic chips sit together below the paragraphs. How: This lays them out in a centered, wrapping row. */
 
 
 	display         : flex;
@@ -207,7 +207,7 @@
 
 /* #region actStaDiv */
 
-.actStaDiv { /* What: Action Stack Div. Why: The start and skip buttons stack below the content. How: This lays them out in a spaced column. */
+.actStaDiv { /* What: Action Stack Div. Why: The action buttons stack below the content. How: This lays them out in a spaced column. */
 
 
 	display        : flex;
@@ -281,7 +281,7 @@
 
 }
 
-.intRetBut { /* What: Intro Return Button. Why: The returning-user option is for a few people, so it reads quieter than both buttons. How: This drops the border, sets it muted and smaller, and fades its color, press, and focus ring. */
+.intRetBut { /* What: Intro Return Button. Why: The returning-user option is secondary, so it reads quieter than the two main buttons. How: This makes its border transparent, sets it muted and smaller, and fades its color, press, and focus ring. */
 
 
 	border-color : transparent;
@@ -294,7 +294,7 @@
 
 
 }
-.intRetBut:hover { /* What: Hovered Intro Return Button. Why: A text button shifts color on hover, as every text link does. How: This turns it the accent color. */
+.intRetBut:hover { /* What: Hovered Intro Return Button. Why: A text button shifts color on hover, as a text link does. How: This turns it the accent color. */
 
 
 	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */

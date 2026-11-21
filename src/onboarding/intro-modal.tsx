@@ -52,9 +52,10 @@ type ImcProTyp = { begLabStr? : string, icoTopEle : React.ReactNode, onBegTouFun
  * an icon, a title, one or more body paragraphs, and up to a few small
  * pills, then a primary "start" action above a secondary "skip" one, and,
  * when the caller asks, a quieter third action for someone returning.
- * Every piece of visible content is passed in by the caller; only the
- * structure and the two buttons' own styling are meant to stay identical
- * across every tour that uses this component. See
+ * The icon, heading, paragraphs, and pills are passed in by the caller, and
+ * the button labels fall back to defaults; only the structure and the two
+ * buttons' own styling are meant to stay identical across every tour that
+ * uses this component. See
  * onboarding/welcome-tour.tsx for the Welcome Tour's own copy and labels,
  * which differ slightly ("Take the quick tour" and "I'll explore myself")
  * from a mini-tour's plainer "Get started" and "Skip".
@@ -109,7 +110,7 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetU
 	const priButRef = React.useRef< HTMLButtonElement | null >( null ); // What: Primary Button Reference. Why: The primary action button needs a stable handle so it can be focused on mount. How: This starts null and is attached to the primary button's own ref prop below.
 
 
-	React.useEffect( () => { if ( priButRef.current ) priButRef.current.focus( { preventScroll : true } ); }, [] ); // What: Primary Focus Effect. Why: The primary button should be focused immediately on mount so pressing Enter submits right away, but a plain autoFocus's default scroll-into-view would land the page scrolled down to this button near the bottom of the modal instead of showing its own top (icon, title) first, now that .intScrDiv can be a scroll container. How: This focuses priButRef's current button with preventScroll, once, on mount only, guarded so it no-ops if the ref isn't attached yet.
+	React.useEffect( () => { if ( priButRef.current ) priButRef.current.focus( { preventScroll : true } ); }, [] ); // What: Primary Focus Effect. Why: The primary button should be focused on mount so pressing Enter starts the tour right away, without scrolling the modal down to it. How: This focuses priButRef's current button with preventScroll, once, on mount only, guarded so it no-ops if the ref isn't attached yet.
 
 
 
@@ -128,7 +129,7 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetU
 			aria-label={ titHeaStr }
 			aria-modal='true'
 			role='dialog'
-		>{ /* What: Container Scrim Div Element. Why: This is the modal's own full-viewport backdrop and, since it can scroll, the positioning context the focus effect above cares about. How: This wraps the welcome card below and marks itself as an accessible dialog named by titHeaStr. Its data-element-name-hook is read by the shared Escape-key handler. */ }
+		>{ /* What: Intro Scrim Div Element. Why: This is the modal's own full-viewport, scrollable backdrop. How: This wraps the intro card below and marks itself as an accessible dialog named by titHeaStr. Its data-element-name-hook is read by the shared Escape-key handler. */ }
 
 
 			<div className={` ${ cssModObj.intCarDiv }   ${ redMotBoo ? '' : cssModObj.intCarDivRise } `}>{ /* What: Intro Card Div Element. Why: This is the actual visible card, separate from the scrim so only it plays the slide-in entrance animation. How: This applies the rise entrance modifier class unless redMotBoo reports the user prefers reduced motion. */ }
@@ -153,7 +154,7 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetU
 				{ pilLabArr && pilLabArr.length > 0 && ( // What: Pills Visibility Check. Why: Not every intro modal has pills to show. How: This renders the chip row only while pilLabArr holds at least one entry.
 
 
-					<div className={ cssModObj.chiRowDiv }>{ /* What: Chip Row Div Element. Why: This groups every pill chip as one visual row below the paragraphs. How: This renders one span per pilLabArr entry below. */ }
+					<div className={ cssModObj.chiRowDiv }>{ /* What: Chip Row Div Element. Why: This groups every pill chip together below the paragraphs. How: This renders one span per pilLabArr entry below, in a centered, wrapping row. */ }
 
 
 						{ pilLabArr.map( ( pilValStr ) => ( // What: Pill Map. Why: One chip is needed per entry in pilLabArr. How: This maps every pilLabArr entry to its own span, keyed by its own text.
@@ -174,7 +175,7 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetU
 
 				) }
 
-				<div className={ cssModObj.actStaDiv }>{ /* What: Action Stack Div Element. Why: This groups the modal's own primary/secondary action pair in one stack. How: This renders the primary start button followed by the secondary skip button below. */ }
+				<div className={ cssModObj.actStaDiv }>{ /* What: Action Stack Div Element. Why: This groups the modal's own primary/secondary action pair in one stack. How: This renders the primary start button, the secondary skip button, and, when onRetUsrFun is passed, the returning-user button below. */ }
 
 
 					<button
@@ -183,13 +184,13 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetU
 						className={` ${ cssModObj.intActBut }   ${ cssModObj.intActButPrimary } `}
 
 						onClick={ onBegTouFun }
-					>{ begLabStr }</button>{ /* What: Primary Action Button Element. Why: This is the tour's own main call to action. How: This is focused on mount via priButRef and calls onBegTouFun when clicked. */ }
+					>{ begLabStr }</button>{ /* What: Intro Action Button Element. Why: This is the tour's own main call to action, styled as the primary button. How: This is focused on mount via priButRef and calls onBegTouFun when clicked. */ }
 
 					<button
 						className={` ${ cssModObj.intActBut }   ${ cssModObj.intActButGhost } `}
 
 						onClick={ onSkiTouFun }
-					>{ skiLabStr }</button>{ /* What: Skip Action Button Element. Why: A user must always be able to decline a tour instead of taking it. How: This calls onSkiTouFun when clicked. */ }
+					>{ skiLabStr }</button>{ /* What: Intro Action Button Element. Why: A user must always be able to decline a tour instead of taking it, so this is styled as the quieter ghost button. How: This calls onSkiTouFun when clicked. */ }
 
 					{ onRetUsrFun && ( // What: Returning User Check. Why: Only the Welcome Tour offers a way past onboarding for someone who has used the app before. How: This shows the text button when the caller passes its handler.
 
@@ -230,7 +231,7 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetU
 
 // #region Exports
 
-export { IntModCom }; // What: Named Export. Why: onboarding/welcome-tour.tsx, onboarding/app-features.tsx, onboarding/page-tours.tsx, onboarding/picker-tours.tsx, and onboarding/reminder-tours.tsx all import this by this exact name. How: This re-exports IntModCom by name, rippled into every one of those files' own import and JSX usage in the same pass.
+export { IntModCom }; // What: Named Export. Why: This makes the intro modal available to every tour that opens with it. How: This exports IntModCom by name.
 
 // #endregion Exports
 

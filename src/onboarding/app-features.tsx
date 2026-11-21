@@ -7,7 +7,7 @@ import cssModObj from './app-features.module.css'; // What: CSS Module Object. W
 import React     from 'react';                     // What: React. Why: This file's own FeaTouCom and FeaTipCom components need React in scope to compile their JSX and to call React.useState/React.useEffect. How: This is used directly (React.useState, React.useEffect) below, instead of importing individual named hooks.
 
 
-import { buiTs1Fun } from './page-steps.tsx';  // What: Build Tour-Step-1 Function. Why: Every App Feature tour reuses this exact shared Step 1, the real nav-button highlight, as its own opening step. How: This is called inside FeaTouCom below, passed this feature's own page, an optional run side effect, and a primary button label.
+import { buiTs1Fun } from './page-steps.tsx';  // What: Build Tour-Step-1 Function. Why: Every App Feature tour but feat_highlights reuses this exact shared Step 1, the real nav-button highlight, as its own opening step. How: This is called inside FeaTouCom below, passed this feature's own page, an optional run side effect, and a primary button label.
 import { colMapFun } from '../state/store.ts'; // What: Collapsed Map Function. Why: The saved section collapse state may be missing on an old save. How: This is called with the app state to read the collapse map, empty when there is none.
 import { GuiTouCom } from './tour-runner.tsx'; // What: Guided Tour Component. Why: This is the generic spotlight-tour engine that actually drives each App Feature tutorial once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-feature step array.
 import { IcoSvgCom } from '../ui/icon.tsx';    // What: Icon SVG Component. Why: The intro modal needs a recognizable glyph matching the current feature's own page. How: This is rendered inside the intro modal's icon prop below.
@@ -27,19 +27,10 @@ import type { TouSteTyp } from './tour-runner.tsx';     // What: Tour Step Type.
  * app-features.tsx = App Features
  *
  * @summary
- * App Features, a SEPARATE, later-stage set of mini-tours shown on Today only
- * once the user has generated their first real todo list (see tab-today.tsx's
- * shoFeaBoo), pinned as the LAST group on the page, below Reminders, Page
- * Tours (mutually exclusive with these anyway, see shoFeaBoo's own comment)
- * and every real picker group. Unlike every earlier onboarding tour, these
- * operate on the user's own REAL data rather than disposable samples: there is
- * always at least one real picker by this point (see onboarding-checklist.ts's
- * reaGenFun gate), and these are deliberately NOT tracked by the checklist
- * "engine" at all: no donCouNum/total ring or streak participation, no closing
- * Generate-style card, no counting toward anything. Resolved state lives in
- * its own state.onboarding.appFeatures map (see store.ts's setFeaFun), reset
- * to {} whenever Replay Tour is clicked in Settings so these reappear
- * alongside it (see tab-settings.tsx's own replay button).
+ * App Features, a set of mini-tours that run on the user's own real data
+ * rather than disposable samples. They aren't tracked by the onboarding
+ * checklist: each one's resolved status lives in its own
+ * state.onboarding.appFeatures entry (see store.ts's setFeaFun).
  *
  * Every App Feature tour opens on the shared Step 1 nav-button highlight from
  * onboarding/page-steps.tsx's own buiTs1Fun (except feat_highlights, whose
@@ -67,11 +58,10 @@ import type { TouSteTyp } from './tour-runner.tsx';     // What: Tour Step Type.
  *
  * @summary
  * The ordered catalog of every App Feature tutorial. Every property here is
- * read only by this file and by tab-today.tsx's own AppFeaCom and progress
- * counters, none of it persisted (the persisted map itself is keyed by
- * ideStr's own string VALUE, e.g. 'feat_manual_pick', not by this
- * property's own name), so all 7 fields follow the usual 6-character
- * object-property convention.
+ * read only by this file and the Today tab's launcher cards, none of it
+ * persisted (the persisted map itself is keyed by ideStr's own string VALUE,
+ * e.g. 'feat_manual_pick', not by this property's own name), so all 7 fields
+ * follow the usual 6-character object-property convention.
  *
  * Every entry below shares this exact shape, and none of the 8 entries
  * repeat these same fields' own boilerplate comments on their own lines
@@ -99,13 +89,9 @@ import type { TouSteTyp } from './tour-runner.tsx';     // What: Tour Step Type.
  *   tutorial, rendered as the intro modal's own pill row (IntModCom's
  *   own pilLabArr prop).
  *
- * - `timStr` (String, optional): Time String is a real, user-confirmed
- *   estimate (same convention as ONB_EPT_ARR's own timStr field in
- *   onboarding-checklist.ts), shown next to the launcher card's own
- *   label whenever present; tab-today.tsx renders feaRcdObj.timStr
- *   directly whenever it's truthy. Only a feature with real step-by-step
- *   content built out so far gets one; the rest stay untimed until they
- *   do too.
+ * - `timStr` (String, optional): Time String is an estimate of how long the
+ *   tutorial takes, shown next to the launcher card's own label whenever
+ *   present; the card renders feaRcdObj.timStr only when it's truthy.
  *
  * - `titStr` (String): Title String is the intro modal's own heading
  *   naming this tutorial, rendered as IntModCom's own titHeaStr prop.
@@ -244,15 +230,14 @@ const APP_FEA_ARR = [ // What: App Feature Array. Why: Every App Feature tutoria
  * @summary
  * Display label per `pagStr` id, the same 5 tabs as app.tsx's own TAB_OBJ_ARR,
  * which isn't exported, so this stays self-contained rather than reaching into
- * that file for it. Used for the launcher card's own kicker text (see
- * app-feature-card.tsx's AppFeaCom): the page each feature's icon/nav-click
- * step belongs to.
+ * that file for it. It supplies the launcher card's own meta text naming the
+ * page each feature's icon/nav-click step belongs to.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const PAG_LAB_OBJ : Record< string, string > = { // What: Page Label Object. Why: app-feature-card.tsx's own AppFeaCom reads this by a feature's own page id for its kicker text. How: This is looked up by APP_FEA_ARR entries' own pagStr field wherever this file or app-feature-card.tsx needs the real tab's display name.
+const PAG_LAB_OBJ : Record< string, string > = { // What: Page Label Object. Why: app-feature-card.tsx's own AppFeaCom reads this by a feature's own page id for its kicker text. How: This is looked up by an APP_FEA_ARR entry's own pagStr wherever the real tab's display name is needed.
 
 
 	data     : 'Data',     // What: Data Label. Why: This names the Data tab for any feature whose own page is 'data'. How: This is read back as PAG_LAB_OBJ.data.
@@ -311,21 +296,18 @@ const TIP_STE_OBJ = { // What: Tip Step Object. Why: FeaTipCom's own GuiTouCom n
  * bloReaFun = Blocked Reason Function
  *
  * @summary
- * "Make your first manual pick" needs a real target to run the tour against:
- * a real (non-hidden), non-sample picker with at least 2 items. 2, not 1,
- * Step 4's own copy invites a Re-roll ("give it a try"), and with a single
- * item Re-roll would deterministically return the same result every time,
- * making that invitation pointless. Unlike the checklist's own amber "needs
- * attention" cue on the Create-a-picker cards (which are always runnable,
- * just flagged as unfinished, see onboarding-checklist.ts's reaPicFun),
- * this actually blocks the card: there's no partial tour to offer without a
+ * "Make your first manual pick" needs a real target to run the tour against: a
+ * real (non-hidden), non-sample picker with at least 2 items. 2, not 1:
+ * Re-roll stays usable on the Add To Todo List step, and with a single item it
+ * would deterministically return the same result every time, making it
+ * pointless. This blocks the card: there's no partial tour to offer without a
  * real picker to run one on. No other App Feature has a requirement yet, so
  * this stays a one-off check rather than a generic per-feature schema field.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param feaIdeStr - Feature Identifier String: The feature id tab-today.tsx's
- *                    own AppFeaCom is asking about.
+ * @param feaIdeStr - Feature Identifier String: The feature id to check for a
+ *                    blocked reason.
  * @param staAppObj - State App Object: The entire app's own persisted state.
  *
  * @returns A user-facing reason string whenever this feature is blocked,
@@ -600,7 +582,7 @@ const buiTesFun = ( feaIdeStr : string, actStoObj : ActStoTyp, alrProBoo : boole
 
 			},
 
-			{ // What: Items Section Step. Why: This is the edit-item tour's own 5th step. How: This mirrors Controls Section but for the Items header instead. // Same shape as Edit Picker Settings above (Controls Section), mirrored for Items: cliSelStr narrows to the Items header specifically (:nth-of-type(2)) instead of Controls. Controls itself was just re-collapsed by the previous step's own outgoing runFun, so the highlighted box (same whole-picker selStr as Controls Section/Edit Picker Settings) reads clean again rather than showing Controls still expanded alongside it.
+			{ // What: Items Section Step. Why: This is the edit-item tour's own 5th step. How: This mirrors Controls Section but for the Items header instead. // Same shape as Controls Section above, mirrored for Items: cliSelStr narrows to the Items header specifically (:nth-of-type(2)) instead of Controls. Controls itself was just re-collapsed by the previous step's own outgoing runFun, so the highlighted box (same whole-picker selStr as Controls Section/Edit Picker Settings) reads clean again rather than showing Controls still expanded alongside it.
 
 
 				bacBoo    : true,             // What: Back Boolean. Why: The user should always be able to return to Edit Picker Settings. How: GuiTouCom shows its own Back button whenever this is true.
@@ -625,7 +607,7 @@ const buiTesFun = ( feaIdeStr : string, actStoObj : ActStoTyp, alrProBoo : boole
 				cirBoo    : true,             // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuiTouCom disables Next and only advances once the real target is clicked.
 				cliSelStr : '[data-element-name-hook~="datLisDiv"] [data-element-name-hook~="lisIteDiv"] > :is([data-element-name-hook~="lisRowBut"], [data-element-name-hook~="lisRowDiv"])', // What: Click Selector String. Why: Any one item row must satisfy this step, not just a specific item. How: This is read by the click-guard/cirBoo logic separately from selStr.
 				priStr    : 'Next',           // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
-				pulSelStr : '[data-never-match-target]', // What: Pulse Selector String. Why: The default cirBoo pulse must be suppressed in favor of each item row's own individual pulse. How: This is a selector chosen to never match anything currently on screen. // Same pulse suppression as every other cirBoo step above, each item's own row pulses (.lisIteDiv--tour, tab-data.tsx) instead of a ring around the whole picker card.
+				pulSelStr : '[data-never-match-target]', // What: Pulse Selector String. Why: The default cirBoo pulse must be suppressed in favor of each item row's own individual pulse. How: This is a selector chosen to never match anything currently on screen. // Same pulse suppression as every other cirBoo step in this tour above, each item's own row pulses (.lisIteDiv--tour, tab-data.tsx) instead of a ring around the whole picker card.
 				selStr    : '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"]:has([data-element-name-hook~="catHeaBut"][aria-expanded="true"])', // What: Selector String. Why: This step highlights the same whole picker box, Items now expanded by the previous step's own click. How: GuiTouCom spotlights whatever this selector matches.
 				tabStr    : 'data',           // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 				titStr    : 'Picker Items',   // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuiTouCom renders this as the step's own heading text.
@@ -870,7 +852,7 @@ const buiTesFun = ( feaIdeStr : string, actStoObj : ActStoTyp, alrProBoo : boole
 
 			} ] ),
 
-			{ // What: Install The App Step. Why: This is the protect-data tour's own final step. How: This spotlights whichever real install control applies without needing to know the browser. // Comma-separated fallback (see finTarFun's own comma-splitting in onboarding/tour-runner.tsx), the insAppBut hook (only rendered when canInsBoo) is tried first; if this browser can't offer a real install prompt, falls back to the insRowDiv hook (shared by all of tab-settings.tsx's own browser-specific instructional blocks, iOS, Mac, or the generic "not available here" note, exactly one of which renders at a time), so this targets whichever one actually applies without needing to know which browser it's running in. No cirBoo, Done is enabled outright, last step of this tutorial.
+			{ // What: Install The App Step. Why: This is the protect-data tour's own final step. How: This spotlights whichever real install control applies without needing to know the browser. // Comma-separated fallback (see finTarFun's own comma-splitting in onboarding/tour-runner.tsx), the insAppBut hook (only rendered when canInsBoo) is tried first; if this browser can't offer a real install prompt, falls back to the insRowDiv hook (shared by tab-settings.tsx's own install note rows, iOS, Mac, or the generic "not available here" note, exactly one of which renders at a time), so this targets whichever one actually applies without needing to know which browser it's running in. No cirBoo, Done is enabled outright, last step of this tutorial.
 
 
 				bacBoo : true,                                                                           // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
@@ -914,27 +896,19 @@ type FtcProTyp = { actStoObj : ActStoTyp }; // What: Feature-Tip-Component Props
  * FeaTipCom = Feature Tip Component
  *
  * @summary
- * "One Last Thing...", a single, standalone tip shown exactly once, right
- * after the closing checklist's own generate() call actually finishes,
- * pointing at the freshly-appeared App Features section. NOT a per-feature
- * tutorial like FeaTouCom above (no intro modal, no per-feature id): a
- * single `solBoo` GuiTouCom step (see that flag's own doc comment in
- * onboarding/tour-runner.tsx), which hides the step counter and Skip/Back,
- * showing one full-width "Dismiss" button instead. Mounted directly from
- * TabTodCom rather than lifted to app.tsx like
- * FeaTouCom/PagTouCom/PicTouCom are: unlike those, this never navigates to
- * another tab (the whole point is the section already on screen), so it
- * doesn't need real cross-tab selTabFun/actIdeStr plumbing,
- * actIdeStr='today'/a no-op selTabFun is enough, the same pattern PagTouCom
- * itself used before Pickers/Stats/Data/Settings tours needed it to actually
- * leave Today.
+ * "One Last Thing...", a single, standalone tip pointing at the
+ * freshly-appeared App Features section. NOT a per-feature tutorial like
+ * FeaTouCom above (no intro modal, no per-feature id): a single `solBoo`
+ * GuiTouCom step, which hides the step counter and Skip/Back and shows one
+ * full-width "Dismiss" button instead. It never navigates to another tab, so
+ * it passes actIdeStr='today' and a no-op selTabFun.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.actStoObj - Action Store Object: The actions that mutate
  *                          the app's own persisted state.
  *
- * @returns The single, solo GuiTouCom step described above.
+ * @returns A GuiTouCom running the single solo step described above.
  *
  * @example
  * ```tsx
@@ -953,7 +927,7 @@ function FeaTipCom ( { actStoObj } : FtcProTyp ) : React.JSX.Element {
 		<GuiTouCom
 			actIdeStr='today'
 			actStoObj={ actStoObj }
-			resSteNum={ 0 }
+			resSteNum={ 0 } // What: Resume Step Attribute. Why: This one-step tip always opens on its only step. How: This passes 0 as the step to start on.
 			selTabFun={ () => {} } // What: Select Tab Stub Attribute. Why: This tip never leaves Today, so there is never a tab to switch to. How: This passes a no-op in place of the app-wide selTabFun, which this mount never receives.
 			steObjArr={ [ TIP_STE_OBJ ] }
 			touIdeStr='appfeatures-intro'
@@ -1081,7 +1055,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 	 *
 	*/
 
-	const cloTouFun = ( staValStr : CheStaTyp ) : void => { // What: Close Tour Function. Why: Every path that ends this tour, however it ends, needs the exact same cleanup. How: This resolves this feature's own checklist entry to staValStr, then calls onCloTouFun.
+	const cloTouFun = ( staValStr : CheStaTyp ) : void => { // What: Close Tour Function. Why: Every path that ends this tour, however it ends, needs the exact same cleanup. How: This records staValStr on this feature's own appFeatures entry, then calls onCloTouFun.
 
 
 		actStoObj.setFeaFun( feaIdeStr, { status : staValStr } ); // What: Set App Feature Item Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this feature's own appFeatures entry to staValStr.
@@ -1112,7 +1086,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 		);
 
 
-		const intIcoEle = feaIdeStr === 'feat_highlights' ? <span className={ cssModObj.helIcoSpa }>i</span> : pagIcoEle; // What: Intro Icon Element. Why: The highlight feature has no page of its own, so it shows the help mark instead. How: This picks the help glyph for feat_highlights, otherwise pagIcoEle.
+		const intIcoEle = feaIdeStr === 'feat_highlights' ? <span className={ cssModObj.helIcoSpa }>i</span> : pagIcoEle; // What: Intro Icon Element. Why: The highlight feature has no page icon of its own to show, so it shows the help mark instead. How: This picks the help glyph for feat_highlights, otherwise pagIcoEle.
 
 
 
@@ -1292,7 +1266,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 
 // #region Exports
 
-export { APP_FEA_ARR, bloReaFun, FeaTipCom, FeaTouCom, PAG_LAB_OBJ }; // What: Named Exports. Why: tab-today.tsx reads APP_FEA_ARR/PAG_LAB_OBJ/bloReaFun and renders FeaTipCom, and app.tsx renders FeaTouCom. How: This re-exports all 5 bindings by name; every other binding in this file is internal-only.
+export { APP_FEA_ARR, bloReaFun, FeaTipCom, FeaTouCom, PAG_LAB_OBJ }; // What: Named Exports. Why: This makes the catalog, page labels, blocked-reason check, and the two tour components available to other files. How: This exports all 5 bindings by name in one statement; every other binding in this file is internal-only.
 
 // #endregion Exports
 

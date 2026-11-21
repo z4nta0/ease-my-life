@@ -57,7 +57,7 @@ import './styles/styles.css'; // What: Styles Stylesheet Import. Why: This is th
  * settle before releasing the boot splash: a plain CSS/inline-JS overlay
  * defined in index.html, dismissed by calling its own exposed
  * window.__dismissBootSplash hook after one animation frame plus a further
- * 180ms matching the splash's own fade timing.
+ * 180ms.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -79,7 +79,7 @@ function booAppFun () : void {
 
 
 
-	requestAnimationFrame( () => setTimeout( () => { if ( window.__dismissBootSplash ) window.__dismissBootSplash(); }, 180 ) ); // What: Boot Splash Dismiss Schedule Call. Why: The boot splash should hold through the app's first paint settling instead of vanishing the instant React mounts. How: This waits one animation frame for paint, then a further 180ms matching the splash's own fade timing, before calling its exposed dismiss hook if index.html's boot script has registered one.
+	requestAnimationFrame( () => setTimeout( () => { if ( window.__dismissBootSplash ) window.__dismissBootSplash(); }, 180 ) ); // What: Boot Splash Dismiss Schedule Call. Why: The boot splash should hold through the app's first paint settling instead of vanishing the instant React mounts. How: This waits one animation frame for paint, then a further 180ms, before calling its exposed dismiss hook if index.html's boot script has registered one.
 
 
 }
