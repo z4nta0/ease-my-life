@@ -8,7 +8,7 @@ import { conChaFun   } from '../support/update.ts';          // What: Controller
 import { creAccFun   } from '../support/account.ts';         // What: Create Account Function. Why: The flow needs its own paid emulator account. How: This creates one.
 import { DAY_ONE_STR } from '../support/account.ts';         // What: Day One String. Why: The device's daily list is built on a known day before the change. How: This is that Chicago date.
 import { EMU_PRO_STR } from '../../src/emulator-project.ts'; // What: Emulator Project String. Why: The manifest's address names the project. How: This is the demo project.
-import { expect      } from '@playwright/test';              // What: Expect. Why: Each step asserts on the note, the page's mark, and the cloud's revision. How: This makes the assertions.
+import { expect      } from '@playwright/test';              // What: Expect. Why: Each step asserts on what the page and the cloud hold. How: This makes the assertions.
 import { fakWorFun   } from '../support/update.ts';          // What: Fake Worker Function. Why: The suites block service workers, so the update flow's inputs are faked. How: This fakes the controller, the registration, and the visibility.
 import { FIR_EMU_STR } from '../support/emulator.ts';        // What: Firestore Emulator String. Why: The test reads the manifest straight from the Firestore emulator. How: This is its address.
 import { insClcFun   } from '../support/clock.ts';           // What: Install Clock Function. Why: The flow runs on a chosen day, so its daily list is built at a known moment. How: This fakes the page's clock before it loads.
@@ -19,7 +19,7 @@ import { subHolFun   } from '../support/app.ts';             // What: Submit Hol
 import { test        } from '@playwright/test';              // What: Test. Why: The flow is its own test. How: This declares it.
 import { visSetFun   } from '../support/update.ts';          // What: Visibility Set Function. Why: Hiding the app is what starts both the upload and the quiet reload. How: This sets the faked visibility and fires its event.
 import { waiStaFun   } from '../support/storage.ts';         // What: Wait State Function. Why: The change has to be saved before it waits to sync. How: This waits for it in storage.
-import { watErrFun   } from '../support/watch.ts';           // What: Watch Errors Function. Why: The flow fails on any page error. How: This collects them.
+import { watErrFun   } from '../support/watch.ts';           // What: Watch Errors Function. Why: The flow fails on a page error before the reload. How: This collects them.
 
 
 import type { Page } from '@playwright/test'; // What: Page. Why: The helpers drive the device's page. How: This types their page parameter.
@@ -32,18 +32,18 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
  * update.spec.ts = Account Update Spec
  *
  * @summary
- * Checks that an app update never reloads over a real account sync, and never
- * waits on one with nothing left to upload, against the Firebase Emulator,
- * which npm run test:account starts and stops around this suite. In each
- * test a paid device signs in on a chosen day and uploads, waits for that
- * day's list, makes a change that waits to sync, and receives a new version
- * while visible, so the update note shows. Hiding the app then starts the
- * waiting upload, whose manifest commit a route holds. In the first, the page
- * must not reload while the change waits or the upload runs, and has to
- * reload once the commit lands and the manifest's revision moves. In the
- * second, a further change made during the held upload is uploaded by the
- * sync that reruns after it, and the page has to reload once that rerun
- * lands, rather than waiting out the further change's two minutes.
+ * Checks that an app update doesn't reload over an account sync that is
+ * waiting or under way, and doesn't wait on one with nothing left to upload,
+ * against the Firebase Emulator, which npm run test:account starts and stops
+ * around this suite. In each test a paid device signs in on a chosen day and
+ * uploads, waits for that day's list, makes a change that waits to sync, and
+ * receives a new version while visible, so the update note shows. Hiding the
+ * app then starts the waiting upload, whose commit requests a route holds. In
+ * the first, the page must not reload while the change waits or the upload
+ * runs, and has to reload once the commit lands and the manifest's revision
+ * moves. In the second, a further change made during the held upload is
+ * uploaded by the sync that reruns after it, and the page has to reload once
+ * that rerun lands, rather than waiting out the further change's two minutes.
  *
  * Sections:
  *  - Constants
@@ -77,7 +77,7 @@ const HOL_TWO_STR = 'Rerun Holiday';  // What: Holiday Two String. Why: The chan
  * address, fakes the clock at noon on day one and a controlled worker, opens
  * the app, signs in through the emailed link, and waits for the first upload
  * and day one's list. It starts watching for page errors first, and hands
- * back that list and the manifest's address in the emulator.
+ * back the error list and the manifest's address in the emulator.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -99,7 +99,7 @@ async function devSetFun ( curPagObj : Page ) : Promise< { errMesArr : string[],
 	// #region Account Setup
 
 	const emaAdrStr = `update-${ Date.now() }@example.com`;                                                                // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address.
-	const errMesArr = watErrFun( curPagObj );                                                                              // What: Error Message Array. Why: The flow fails on any page error. How: This starts watching.
+	const errMesArr = watErrFun( curPagObj );                                                                              // What: Error Message Array. Why: The flow fails on a page error before the reload. How: This starts watching.
 	const uidValStr = await creAccFun( emaAdrStr );                                                                        // What: UID Value String. Why: The manifest is read by the account's id. How: This creates the paid account.
 	const manUrlStr = `${ FIR_EMU_STR }/v1/projects/${ EMU_PRO_STR }/databases/(default)/documents/users/${ uidValStr }`; // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
 
@@ -178,7 +178,7 @@ type CmtHolTyp = { // What: Commit Hold Type. Why: Both tests go on from a held 
 
 	begRevNum : number;     // What: Begin Revision Number. Why: Each test checks the revision moved past it. How: This is the revision after the first upload.
 	cmtRelFun : () => void; // What: Commit Release Function. Why: Each test lets the held commit go at its own moment. How: This releases it.
-	errMesArr : string[];   // What: Error Message Array. Why: The flow fails on any page error. How: This is the list the setup started.
+	errMesArr : string[];   // What: Error Message Array. Why: The flow fails on a page error before the reload. How: This is the list the setup started.
 	manUrlStr : string;     // What: Manifest URL String. Why: Each test reads the emulator's copy directly. How: This is the manifest's REST address.
 
 
@@ -190,12 +190,12 @@ type CmtHolTyp = { // What: Commit Hold Type. Why: Both tests go on from a held 
  * cmtHolFun = Commit Hold Function
  *
  * @summary
- * Readies a paid device mid-upload with an update waiting: sets the device
- * up through devSetFun, adds a holiday that waits to sync, brings in a new
+ * Readies a paid device mid-upload with an update waiting: sets the device up
+ * through devSetFun, adds a holiday that waits to sync, brings in a new
  * version while visible and checks the update note shows, then holds every
- * manifest commit behind a route, marks the page so a reload would show,
- * hides the app, and waits for the held commit to be sent. It hands back
- * the revision from before the upload and the release for the held commit.
+ * commit request behind a route, marks the page so a reload would show, hides
+ * the app, and waits for the held commit to be sent. It hands back the
+ * revision from before the upload and the release for the held commit.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -216,7 +216,7 @@ async function cmtHolFun ( curPagObj : Page ) : Promise< CmtHolTyp > {
 
 	// #region Device And Release Setup
 
-	const { errMesArr, manUrlStr } = await devSetFun( curPagObj ); // What: Error Message Array. Why: The flow fails on any page error. How: This is the list the setup started. // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
+	const { errMesArr, manUrlStr } = await devSetFun( curPagObj ); // What: Error Message Array. Why: The flow fails on a page error before the reload. How: This is the list the setup started. // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
 
 	let cmtRelFun = () => {}; // What: Commit Release Function. Why: The held commit goes through only once the test lets it. How: The promise below replaces this with its resolver.
 
@@ -242,7 +242,7 @@ async function cmtHolFun ( curPagObj : Page ) : Promise< CmtHolTyp > {
 
 	// #region Held Commit Setup
 
-	await curPagObj.route( /documents:commit/, async ( rouCurObj ) => { // What: Commit Hold Route. Why: The upload has to stay under way while the test checks the page or makes a further change. How: This holds each manifest commit until the test releases them, after which they pass straight through.
+	await curPagObj.route( /documents:commit/, async ( rouCurObj ) => { // What: Commit Hold Route. Why: The upload has to stay under way while the test checks the page or makes a further change. How: This holds each commit request until the test releases them, after which they pass straight through.
 
 
 		await cmtRelPro; // What: Release Wait. Why: The commit waits for the test. How: This waits for the release promise.
@@ -285,7 +285,7 @@ async function cmtHolFun ( curPagObj : Page ) : Promise< CmtHolTyp > {
 test( 'a hidden app holds a new version back while a change syncs, then reloads once the upload lands', async ( { page : curPagObj } ) => { // What: Sync Update Test. Why: A reload would cut off a change waiting to sync or an upload under way. How: This makes a change, readies an update, hides the app with the upload's commit held, checks no reload comes, then lets the commit through and waits for the reload.
 
 
-	const { begRevNum, cmtRelFun, errMesArr, manUrlStr } = await cmtHolFun( curPagObj ); // What: Begin Revision Number. Why: The change's upload must move the revision past this. How: This is the revision after the first upload. // What: Commit Release Function. Why: The held commit goes through only once the test has checked no reload came. How: This releases it. // What: Error Message Array. Why: The flow fails on any page error. How: This is the list the setup started. // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
+	const { begRevNum, cmtRelFun, errMesArr, manUrlStr } = await cmtHolFun( curPagObj ); // What: Begin Revision Number. Why: The change's upload must move the revision past this. How: This is the revision after the first upload. // What: Commit Release Function. Why: The held commit goes through only once the test has checked no reload came. How: This releases it. // What: Error Message Array. Why: The flow fails on a page error before the reload. How: This is the list the setup started. // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
 
 
 
@@ -315,7 +315,7 @@ test( 'a hidden app holds a new version back while a change syncs, then reloads 
 test( 'a hidden app reloads once a rerun uploads a change made during a sync, without waiting out its two minutes', async ( { page : curPagObj } ) => { // What: Rerun Update Test. Why: A sync uploads every change made before it starts, so the two-minute wait a change made during the last sync started must not hold the reload once the rerun has uploaded it. How: This hides the app with the first upload's commit held, makes a second change, then lets the commits through and waits for the reload well inside two minutes.
 
 
-	const { begRevNum, cmtRelFun, errMesArr, manUrlStr } = await cmtHolFun( curPagObj ); // What: Begin Revision Number. Why: Both uploads must move the revision past this. How: This is the revision after the first upload. // What: Commit Release Function. Why: The held commit goes through only once the second change is made. How: This releases it. // What: Error Message Array. Why: The flow fails on any page error. How: This is the list the setup started. // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
+	const { begRevNum, cmtRelFun, errMesArr, manUrlStr } = await cmtHolFun( curPagObj ); // What: Begin Revision Number. Why: Both uploads must move the revision past this. How: This is the revision after the first upload. // What: Commit Release Function. Why: The held commit goes through only once the second change is made. How: This releases it. // What: Error Message Array. Why: The flow fails on a page error before the reload. How: This is the list the setup started. // What: Manifest URL String. Why: The test reads the emulator's copy directly. How: This is the manifest's REST address.
 
 
 

@@ -4,9 +4,9 @@
 // #region Imports
 
 import { ALL_STA_ARR } from '../support/states.ts';        // What: All State Array. Why: Every shared state is checked, and so is each opened or reachable one, since each holds a look the plain tabs don't. How: This lists them.
-import { expect      } from '@playwright/test';            // What: Expect. Why: Each check passes only with no problems found. How: This asserts each problem list is empty and the page reaches no wider than the viewport.
-import { keyProFun   } from '../support/scripted.ts';      // What: Keyboard Problems Function. Why: Everything has to be usable without a mouse. How: This walks the page with Tab and returns every problem it meets.
-import { namProFun   } from '../support/scripted.ts';      // What: Name Problems Function. Why: Every control must be announced by a clean name. How: This reads the accessibility tree and returns every badly named link or button.
+import { expect      } from '@playwright/test';            // What: Expect. Why: Each check passes only with no problems found. How: This asserts on what each check reads.
+import { keyProFun   } from '../support/scripted.ts';      // What: Keyboard Problems Function. Why: Everything has to be usable without a mouse. How: This walks the page with Tab and returns the problems it meets.
+import { namProFun   } from '../support/scripted.ts';      // What: Name Problems Function. Why: Each link and button must be announced by a clean name. How: This reads the accessibility tree and returns the badly named links and buttons it finds.
 import { opeStaFun   } from '../support/states.ts';        // What: Open State Function. Why: Each check opens and settles its state first. How: This loads it and waits for it.
 import { REF_WID_NUM } from '../support/accessibility.ts'; // What: Reflow Width Number. Why: WCAG's reflow criterion asks for no sideways scrolling at 320 CSS pixels. How: This is the width the reflow check opens each state at.
 import { sidOveFun   } from '../support/accessibility.ts'; // What: Sideways Overflow Function. Why: The reflow check reads how far the page reaches past the viewport. How: This measures the root element's scroll width less its visible width.
@@ -23,8 +23,8 @@ import { test        } from '@playwright/test';            // What: Test. Why: E
  * The accessibility checks axe-core can't make, run on every app state,
  * opened editors and forms and open tips included, in whichever engine the
  * project runs. Names and keyboard: the checks in tests/support/scripted.ts,
- * which list every badly named link or button, and every problem a Tab walk
- * meets, from a stop off screen or covered to one it never reaches, or a
+ * which list the badly named links and buttons, and the problems a Tab walk
+ * meets, from a stop off screen or covered to one it doesn't reach, or a
  * pop-up left open once focus moves past it. Reflow: at 320px wide, WCAG's
  * narrowest reflow width, nothing scrolls sideways. Motion: with reduced
  * motion requested, no animation or transition longer than 1ms starts while
@@ -150,7 +150,7 @@ test.describe.configure( { mode : 'parallel' } ); // What: Parallel Mode Call. W
 for ( const staRcdObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every check runs on every app state. How: This declares each check once per state.
 
 
-	test( `${ staRcdObj.ideStr } names every link and button cleanly`, async ( { page : curPagObj } ) => { // What: Names Test. Why: Every control must be announced by a clean name. How: This opens the state and checks its accessibility tree.
+	test( `${ staRcdObj.ideStr } names every link and button cleanly`, async ( { page : curPagObj } ) => { // What: Names Test. Why: Each link and button must be announced by a clean name. How: This opens the state and checks its accessibility tree.
 
 
 		await opeStaFun( curPagObj, staRcdObj ); // What: State Open Call. Why: The tree should be read with the state settled. How: This loads and settles it.
@@ -171,7 +171,7 @@ for ( const staRcdObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every ch
 		await opeStaFun( curPagObj, staRcdObj ); // What: State Open Call. Why: The walk should start from the state settled. How: This loads and settles it.
 
 
-		expect( await keyProFun( curPagObj, engNamStr, staRcdObj.popStr || null ) ).toEqual( [] ); // What: No Keyboard Problems Assertion. Why: The state passes only when no element takes a positive tabindex, every stop is reached, in order, on screen, uncovered, and visibly focused, and an open pop-up closes as focus moves on. How: This compares the problems with an empty list, so a failure prints each one.
+		expect( await keyProFun( curPagObj, engNamStr, staRcdObj.popStr || null ) ).toEqual( [] ); // What: No Keyboard Problems Assertion. Why: The state passes only when the keyboard walk finds no problems. How: This compares the problems with an empty list, so a failure prints each one.
 
 
 	} );

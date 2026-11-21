@@ -74,7 +74,7 @@ const WEB_SEC_STR = 'test-webhook-secret';                       // What: Webhoo
  * @param staClaObj - Start Claims Object: Claims the account starts with,
  *                    defaulting to none.
  *
- * @returns A promise that settles with the account's email, id, and token.
+ * @returns A promise that resolves with the account's email, ID, and token.
  *
  * @example
  * ```ts
@@ -206,7 +206,7 @@ test( 'a webhook with a bad signature or an old timestamp is refused and changes
 
 
 
-test( 'a whsec_ secret signs with its decoded key, as Polar signs', async () => { // What: Base64 Secret Test. Why: Polar's current secrets are base64 keys, which the first version of the check missed, refusing every real delivery. How: This sets a whsec_ secret and signs with its decoded bytes.
+test( 'a whsec_ secret signs with its decoded key, as Polar signs', async () => { // What: Base64 Secret Test. Why: Polar's current secrets are base64 keys, which the first version of the check missed, refusing real deliveries. How: This sets a whsec_ secret and signs with its decoded bytes.
 
 
 	// #region Signed Delivery Setup
@@ -250,7 +250,7 @@ test( 'an untagged order finds its account by email, and only a full refund clea
 	// #region Paid Delivery
 
 	const accNewObj = await accNewFun( true );                                                                                // What: Account New Object. Why: The buyer's account. How: This creates it.
-	const ordDatObj = { customer : { email : accNewObj.emaStr, external_id : null }, id : 'ord3', product_id : PRO_LIV_STR }; // What: Order Data Object. Why: The order carries only the buyer's email. How: This builds it.
+	const ordDatObj = { customer : { email : accNewObj.emaStr, external_id : null }, id : 'ord3', product_id : PRO_LIV_STR }; // What: Order Data Object. Why: The order names its buyer by email alone. How: This builds it.
 
 
 	await webSerFun( webReqFun( { data : { ...ordDatObj, status : 'paid' }, type : 'order.paid' } ), LIV_COT_OBJ ); // What: Paid Delivery. Why: The purchase arrives. How: This sends order.paid.
@@ -319,7 +319,7 @@ test( 'the checkout refuses a missing or unverified sign-in and a deploy without
 
 	// #region Sign-In Refusals
 
-	cheModObj.equal( ( await cheSerFun( cheReqFun( '' ), LIV_COT_OBJ ) ).status, 401 );              // What: No Token Assertion. Why: Nobody signed in can't buy. How: This expects 401.
+	cheModObj.equal( ( await cheSerFun( cheReqFun( '' ), LIV_COT_OBJ ) ).status, 401 );              // What: No Token Assertion. Why: Someone who isn't signed in can't buy. How: This expects 401.
 	cheModObj.equal( ( await cheSerFun( cheReqFun( unvAccObj.tokStr ), LIV_COT_OBJ ) ).status, 403 ); // What: Unverified Assertion. Why: An unverified email couldn't sync anyway. How: This expects 403.
 
 	// #endregion Sign-In Refusals

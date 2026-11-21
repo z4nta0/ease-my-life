@@ -47,12 +47,12 @@ import { TIP_URL_STR  } from './support/app.ts';     // What: Tip URL String. Wh
 
 // #region Constants
 
-const ENG_NAM_ARR = [ // What: Engine Name Array. Why: The accessibility, account, security, and SEO suites run in all three engines. How: Each entry is a Playwright browser name, given one project apiece in each of those suites.
+const ENG_NAM_ARR = [ // What: Engine Name Array. Why: Every suite that drives a browser, simulation aside, runs in all three engines. How: Each entry is a Playwright browser name, given one project apiece in each of those suites. // What: Type Assertion Note. Why: browserName needs the literal engine names, not plain strings. How: as const keeps each entry's literal type.
 
 
 	'chromium', // What: Chromium Engine. Why: Chrome and Edge render with it. How: This is Playwright's Chromium build.
 	'firefox',  // What: Firefox Engine. Why: Firefox renders with its own engine, Gecko. How: This is Playwright's Firefox build.
-	'webkit'    // What: WebKit Engine. Why: Safari, and every browser on iOS, renders with it. How: This is Playwright's WebKit build.
+	'webkit'    // What: WebKit Engine. Why: Safari renders with it. How: This is Playwright's WebKit build.
 
 
 ] as const;
@@ -63,16 +63,16 @@ const SER_URL_STR = 'http://localhost:5190'; // What: Server URL String. Why: Ev
 
 
 
-const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playwright reads its whole setup from this file's default export. How: This holds the shared page settings, the eight suites' projects, the reporters, and the dev server.
+const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playwright reads its whole setup from this file's default export. How: This holds the shared page settings, the suites' projects, the reporters, and the dev server.
 
 
 	expect        : { timeout : 10000 }, // What: Expect. Why: Some assertions wait on animations and debounced saves. How: This gives each expect up to 10 seconds.
-	fullyParallel : false,               // What: Fully Parallel. Why: Each spec file walks one flow in order, step after step. How: This keeps a file's tests running in sequence, while separate files may still run in parallel.
+	fullyParallel : false,               // What: Fully Parallel. Why: Most spec files walk one flow in order, step after step, and the specs whose tests are independent turn parallel mode on themselves. How: This keeps a file's tests running in sequence, while separate files may still run in parallel.
 	outputDir     : 'output/results',    // What: Output Directory. Why: Failure screenshots and traces need a home git ignores. How: This writes them under tests/output/results.
 	testDir       : '.',                 // What: Test Directory. Why: Each project picks its own folder below. How: This roots test discovery at tests/.
 	workers       : 6,                   // What: Workers. Why: Most spec files and the parallel specs' tests are independent, but every worker drives a full browser, and six held steady on a 24-core, 31 GB machine (measured 2026-11-13 in tech-geek-cards). How: This runs up to six tests at once.
 
-	projects : [ // What: Projects. Why: Each suite runs on its own, and the simulation needs far more time than the rest. How: This lists one project per suite folder, each runnable with --project.
+	projects : [ // What: Projects. Why: Each suite runs on its own, and the simulation needs far more time than the rest. How: This lists each suite's projects, each runnable with --project.
 
 
 		...ENG_NAM_ARR.map( ( engNamStr ) => ({ // What: Accessibility Projects. Why: The pre-commit accessibility scan runs in every engine, since a check that passes in one proves nothing about the others. How: This adds one accessibility project per engine.
@@ -246,8 +246,8 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 
 			command             : 'npx vite --port 5190 --strictPort', // What: Command. Why: A strict port fails loudly instead of drifting onto another server's port. How: This starts the Vite dev server on 5190.
 			cwd                 : ROO_DIR_STR,                         // What: Current Working Directory. Why: Vite reads its config from the repo root. How: This starts the command there.
-			env                 : { VITE_FIREBASE_EMULATOR : '127.0.0.1', VITE_TIP_URL : TIP_URL_STR }, // What: Environment. Why: The Settings suite checks the Buy Me a Coffee button opens its tip page, and the account suite must reach the Firebase Emulator, never the real project. How: This builds the app with the tip placeholder and the emulator's host.
-			reuseExistingServer : false,                               // What: Reuse Existing Server. Why: A leftover server could be running other code. How: This always starts a fresh one.
+			env                 : { VITE_FIREBASE_EMULATOR : '127.0.0.1', VITE_TIP_URL : TIP_URL_STR }, // What: Environment. Why: The interaction suite's settings spec checks the Buy Me a Coffee button opens its tip page, and the account suite must reach the Firebase Emulator, never the real project. How: This builds the app with the tip placeholder and the emulator's host.
+			reuseExistingServer : false,                               // What: Reuse Existing Server. Why: A leftover server could be running other code. How: This starts a fresh server, failing the run if the port is taken.
 			timeout             : 60000,                               // What: Timeout. Why: The first start can take a while on a cold cache. How: This waits up to a minute for the server to answer.
 			url                 : SER_URL_STR                          // What: URL. Why: Playwright starts the tests only once the app answers. How: This is the address it polls.
 

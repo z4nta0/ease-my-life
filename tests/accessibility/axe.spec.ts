@@ -45,7 +45,7 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The scan helpe
 
 // #region Types
 
-type AxeResTyp = Awaited< ReturnType< AxeBuiCla[ 'analyze' ] > >; // What: Axe Results Type. Why: The scan's findings are summarized for the report, and axe-core itself is only a dependency of the Playwright integration. How: This reads the type from what AxeBuiCla's analyze resolves to.
+type AxeResTyp = Awaited< ReturnType< AxeBuiCla[ 'analyze' ] > >; // What: Axe Result Type. Why: The scan's findings are summarized for the report, and axe-core itself is only a dependency of the Playwright integration. How: This reads the type from what AxeBuiCla's analyze resolves to.
 
 // #endregion Types
 
@@ -68,7 +68,7 @@ type AxeResTyp = Awaited< ReturnType< AxeBuiCla[ 'analyze' ] > >; // What: Axe R
  *
  * @param curPagObj - Current Page Object: The page to scan.
  *
- * @returns The scan's results.
+ * @returns A promise that resolves with the scan's results.
  *
  * @example
  * ```ts
