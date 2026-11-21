@@ -6,7 +6,7 @@
  *
  * @summary
  * App-agnostic date helpers shared across the app: the local-calendar ISO day
- * key every dated state field and log row is keyed by, the compact, long, and
+ * key that dated state fields and log rows use, the compact, long, and
  * time-of-day display formatters, and the calendar math behind monthly and
  * yearly schedules (days in a month, the nth weekday of a month, and ordinal
  * suffixes), plus the weekday and month names those schedules are read by, and
@@ -74,9 +74,8 @@ const dimCouFun = ( yeaValNum : number, monOneNum : number ) : number => new Dat
  *
  * @summary
  * Converts a Date into its own local-timezone calendar day, as a plain
- * 'YYYY-MM-DD' string. Every pick/conditional/reminder log row and
- * every day-scoped comparison in this file goes through this, so "today"
- * always means the same local calendar day everywhere.
+ * 'YYYY-MM-DD' string. It gives the key that dated state fields and log
+ * rows use, so "today" means the local calendar day rather than UTC's.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -92,7 +91,7 @@ const dimCouFun = ( yeaValNum : number, monOneNum : number ) : number => new Dat
  *
 */
 
-const isoDayFun = ( datInpObj : Date = new Date() ) : string => { // What: ISO Day Function. Why: Every dated state field (pick-log dates, reminder dates) needs one local-calendar day format. How: This formats datInpObj, defaulting to now, as a local YYYY-MM-DD string.
+const isoDayFun = ( datInpObj : Date = new Date() ) : string => { // What: ISO Day Function. Why: Dated state fields (pick-log dates, reminder dates) need one local-calendar day format. How: This formats datInpObj, defaulting to now, as a local YYYY-MM-DD string.
 
 
 	const datCopObj = new Date( datInpObj ); // What: Date Copy Object. Why: datInpObj itself must not be mutated by the timezone shift below. How: This constructs a fresh Date instance from datInpObj.
@@ -118,9 +117,9 @@ const isoDayFun = ( datInpObj : Date = new Date() ) : string => { // What: ISO D
  * @summary
  * Formats a next-eligible date as a full prose label, not a compact
  * one. The year is included whenever the date falls outside the
- * current year, and ALWAYS for a yearly reminder, where "Monday,
- * January 25" would otherwise read like a date days away rather than
- * next year's occurrence.
+ * current year, and whenever alwYeaBoo is true, as for a yearly reminder,
+ * where "Monday, January 25" would otherwise read like a date days away
+ * rather than next year's occurrence.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -146,7 +145,7 @@ function nexDatFun ( nexDatObj : Date | null, alwYeaBoo : boolean ) : string | n
 
 
 
-	const shoYeaBoo = alwYeaBoo || nexDatObj.getFullYear() !== new Date().getFullYear(); // What: Show Year Boolean. Why: The year clutters a same-year date but is essential context for a yearly reminder or a date in a different year. How: This is true when alwYeaBoo was passed, or when nexDatObj's own year differs from the current year.
+	const shoYeaBoo = alwYeaBoo || nexDatObj.getFullYear() !== new Date().getFullYear(); // What: Show Year Boolean. Why: The year clutters a same-year date but is essential context for a yearly reminder or a date in a different year. How: This is true when alwYeaBoo is true, or when nexDatObj's own year differs from the current year.
 
 
 	const forOptObj : Intl.DateTimeFormatOptions = shoYeaBoo // What: Format Options Object. Why: The date's own locale format depends on whether the year shows. How: This picks one of the two options objects below based on shoYeaBoo.
@@ -174,9 +173,7 @@ function nexDatFun ( nexDatObj : Date | null, alwYeaBoo : boolean ) : string | n
  * a given year/month. Clamps down to the 4th whenever a requested 5th
  * doesn't exist: every month has at least 4 of any weekday (the
  * shortest month is 28 days, exactly 4 weeks), so only the 5th can ever
- * be missing, and the 4th is always a valid fallback. Same logic as
- * tasks.ts' own nwmDayFun, duplicated per this module's own
- * isolation from tasks.ts.
+ * be missing, and the 4th is always a valid fallback.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -246,7 +243,7 @@ function ordSufFun ( ordValNum : number ) : string {
 
 	const sufTexArr = [ 'th', 'st', 'nd', 'rd' ];           // What: Suffix Text Array. Why: Every English ordinal suffix boils down to one of just these 4 words. How: This is indexed below by lasTwoNum's own value.
 	const lasTwoNum = ordValNum % 100;                      // What: Last Two Number. Why: English ordinal suffixes are decided by a number's own last two digits (11th/12th/13th are the exception every other rule must respect). How: This is ordValNum modulo 100.
-	const oneSufStr = sufTexArr[ ( lasTwoNum - 20 ) % 10 ]; // What: Ones Suffix String. Why: Past 20, the suffix follows the last digit alone (21st, 22nd, 23rd, 31st, ...). How: This reads sufTexArr at lasTwoNum minus 20, modulo 10, which is undefined below 21 and for any last digit past 3.
+	const oneSufStr = sufTexArr[ ( lasTwoNum - 20 ) % 10 ]; // What: Ones Suffix String. Why: Past 20, the suffix follows the last digit alone (21st, 22nd, 23rd, 31st, ...). How: This reads sufTexArr at lasTwoNum minus 20, modulo 10, which is undefined below 20 (except at 0 and 10, where it reads 'th') and for any last digit past 3.
 	const lowSufStr = sufTexArr[ lasTwoNum ];               // What: Low Suffix String. Why: Below 20, only 1, 2 and 3 take their own suffix, so 11th, 12th and 13th fall through to 'th'. How: This reads sufTexArr at lasTwoNum directly, which is undefined from 4 upward.
 	const defSufStr = sufTexArr[ 0 ];                       // What: Default Suffix String. Why: Every number neither lookup above matched takes 'th'. How: This reads sufTexArr's own first entry.
 
@@ -263,7 +260,7 @@ function ordSufFun ( ordValNum : number ) : string {
 
 
 
-const parDatFun = ( isoDatStr? : string | null ) : Date => isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parse Date Function. Why: Every date formatter takes an ISO string or nothing, meaning now. How: This parses the string, or makes the current date when none is given.
+const parDatFun = ( isoDatStr? : string | null ) : Date => isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parse Date Function. Why: The date formatters below take an ISO string or nothing, meaning now. How: This parses the string, or makes the current date when none is given.
 
 
 
@@ -273,8 +270,7 @@ const parDatFun = ( isoDatStr? : string | null ) : Date => isoDatStr ? new Date(
  * forDatFun = Format Date Function
  *
  * @summary
- * Formats a date the compact way the app shows dates everywhere (Today's
- * header, Stats rows, ...): short weekday, short month, day. With no
+ * Formats a date the compact way: short weekday, short month, day. With no
  * argument it formats right now.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -290,10 +286,10 @@ const parDatFun = ( isoDatStr? : string | null ) : Date => isoDatStr ? new Date(
  *
 */
 
-const forDatFun = ( isoDatStr? : string ) : string => { // What: Format Date Function. Why: Every date shown compactly across the app (Today's header, Stats rows, ...) needs the same short weekday/month/day format. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString.
+const forDatFun = ( isoDatStr? : string ) : string => { // What: Format Date Function. Why: A compact date needs one short weekday/month/day format. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString.
 
 
-	const parDatObj = parDatFun( isoDatStr ); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This calls parDatFun, which builds a Date from isoDatStr when given, otherwise the current moment.
+	const parDatObj = parDatFun( isoDatStr ); // What: Parsed Date Object. Why: The argument may be an ISO string or omitted for "right now". How: This calls parDatFun, which builds a Date from isoDatStr when given, otherwise the current moment.
 
 
 
@@ -332,7 +328,7 @@ const forDatFun = ( isoDatStr? : string ) : string => { // What: Format Date Fun
 const forLonFun = ( isoDatStr? : string | null ) : string => { // What: Format Long Function. Why: A few spots (long-form date displays) need the full weekday name instead of the short 3-letter one. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString with a long weekday.
 
 
-	const parDatObj = parDatFun( isoDatStr ); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This calls parDatFun, which builds a Date from isoDatStr when given, otherwise the current moment.
+	const parDatObj = parDatFun( isoDatStr ); // What: Parsed Date Object. Why: The argument may be an ISO string or omitted for "right now". How: This calls parDatFun, which builds a Date from isoDatStr when given, otherwise the current moment.
 
 
 
@@ -371,7 +367,7 @@ const forLonFun = ( isoDatStr? : string | null ) : string => { // What: Format L
 const forTimFun = ( isoDatStr? : string | null ) : string => { // What: Format Time Function. Why: A few spots need a plain "3:42 PM" style time with no seconds. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleTimeString.
 
 
-	const parDatObj = parDatFun( isoDatStr ); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This calls parDatFun, which builds a Date from isoDatStr when given, otherwise the current moment.
+	const parDatObj = parDatFun( isoDatStr ); // What: Parsed Date Object. Why: The argument may be an ISO string or omitted for "right now". How: This calls parDatFun, which builds a Date from isoDatStr when given, otherwise the current moment.
 
 
 
@@ -415,7 +411,7 @@ const wkdDayFun = ( cheDatObj : Date ) : boolean => cheDatObj.getDay() === 0 || 
 
 // #region Exports
 
-export { DAY_ABB_ARR, DAY_FUL_ARR, dimCouFun, forDatFun, forLonFun, forTimFun, isoDayFun, MON_ABB_ARR, MON_FUL_ARR, nexDatFun, nwmDayFun, ordSufFun, wkdDayFun }; // What: Named Exports. Why: Core schedules, state, and UI all format, compute, and name dates the same way. How: This exports every constant and helper above by name.
+export { DAY_ABB_ARR, DAY_FUL_ARR, dimCouFun, forDatFun, forLonFun, forTimFun, isoDayFun, MON_ABB_ARR, MON_FUL_ARR, nexDatFun, nwmDayFun, ordSufFun, wkdDayFun }; // What: Named Exports. Why: These constants and helpers are the module's public date API. How: This exports the constants and public helpers above by name.
 
 // #endregion Exports
 

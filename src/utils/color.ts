@@ -29,9 +29,7 @@
  * Inverts a hex color's own lightness (keeping its hue/chroma) using
  * plain OKLab math, then reads back a plain hex string so the result
  * stays usable directly as an <input type="color"> value (which only
- * accepts hex; a raw "oklch(from ...)" string would be rejected). Used
- * to auto-derive a custom theme's dark/light counterpart from whichever
- * one the user actually edited.
+ * accepts hex; a raw "oklch(from ...)" string would be rejected).
  *
  * Hex/OKLab conversion follows Bjorn Ottosson's own reference formulas,
  * used here instead of round-tripping through the browser's own CSS
@@ -56,7 +54,7 @@
 function invColFun ( hexColStr : string ) : string {
 
 
-	try { // What: Color Conversion Try. Why: Any malformed input must fall back to the original color instead of throwing. How: The catch below returns hexColStr unchanged.
+	try { // What: Color Conversion Try. Why: A conversion that throws must fall back to the original color instead of propagating. How: The catch below returns hexColStr unchanged.
 
 
 		const rgbZeoArr = ( () => { // What: RGB Zero-One Array. Why: The OKLab math below operates on linear-light RGB, not raw hex. How: This strips the leading '#', expands a 3-digit shorthand, parses the hex to an integer, and splits it into 0-1 channel values.
@@ -167,7 +165,7 @@ function invColFun ( hexColStr : string ) : string {
 
 	}
 
-	catch { return hexColStr; } // What: Conversion Failure Guard. Why: A malformed hexColStr must fall back to itself rather than throw all the way up to the caller. How: This returns hexColStr unchanged whenever anything above throws.
+	catch { return hexColStr; } // What: Conversion Failure Guard. Why: A conversion that throws must return hexColStr rather than propagate to the caller. How: This returns hexColStr unchanged whenever anything above throws.
 
 
 }
@@ -180,7 +178,7 @@ function invColFun ( hexColStr : string ) : string {
 
 // #region Exports
 
-export { invColFun }; // What: Named Export. Why: The custom theme actions derive one theme's colors from the other's. How: This exports invColFun by name.
+export { invColFun }; // What: Named Export. Why: Other modules derive one color from another through this inversion. How: This exports invColFun by name.
 
 // #endregion Exports
 

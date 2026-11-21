@@ -36,8 +36,12 @@ type CliEveTyp = Pick< MouseEvent, 'altKey' | 'button' | 'ctrlKey' | 'metaKey' |
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param cliEveObj - Click Event Object: The click, a DOM or React mouse
- *                    event.
+ * @param props.altKeyBoo - Alt Key Boolean: Whether Alt is held.
+ * @param props.butIndNum - Button Index Number: Which button was pressed, 0
+ *                          for the main one.
+ * @param props.conKeyBoo - Control Key Boolean: Whether Ctrl is held.
+ * @param props.metKeyBoo - Meta Key Boolean: Whether Cmd is held.
+ * @param props.shiKeyBoo - Shift Key Boolean: Whether Shift is held.
  *
  * @returns Whether the click is a modified one.
  *
@@ -58,7 +62,7 @@ const modCliFun = ( { altKey : altKeyBoo, button : butIndNum, ctrlKey : conKeyBo
 
 // #region Exports
 
-export { modCliFun }; // What: Named Export. Why: Every self-handled link shares one check. How: This exports modCliFun by name.
+export { modCliFun }; // What: Named Export. Why: A modified click needs one shared check. How: This exports modCliFun by name.
 
 // #endregion Exports
 

@@ -127,7 +127,7 @@ function subMakFun () : SmfResTyp {
 
 // #region Exports
 
-export { subMakFun }; // What: Named Export. Why: Platform modules each keep their own subscriber list without repeating its code. How: This exports the factory by name.
+export { subMakFun }; // What: Named Export. Why: A module needs its own subscriber list without repeating this code. How: This exports the factory by name.
 
 // #endregion Exports
 

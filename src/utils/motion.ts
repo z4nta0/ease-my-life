@@ -5,12 +5,12 @@
  * motion.ts = Motion
  *
  * @summary
- * The reduced-motion check every animation in the app consults before playing:
- * whether the user's operating system asks for reduced motion. It reads the
- * live media query each time, so a change to the setting takes effect without
- * a reload. It also picks the behavior a script-driven scroll uses from it,
- * and reads the stylesheet's easing curves, for motion that JavaScript plays
- * itself.
+ * The reduced-motion check for animations JavaScript plays itself, such as a
+ * scroll or an Element.animate call: whether the user's operating system asks
+ * for reduced motion. It reads the live media query each time, so a change to
+ * the setting takes effect without a reload. It also picks the behavior a
+ * script-driven scroll uses from it, and reads the stylesheet's easing curves,
+ * for motion that JavaScript plays itself.
  *
  * Sections:
  *  - Helpers
@@ -81,7 +81,7 @@ const motEasFun = ( easFamStr : string ) : string => getComputedStyle( document.
  *
 */
 
-const redMotFun = () : boolean => !!( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ); // What: Reduced Motion Function. Why: JS-driven animations (rAF tweens, Element.animate, smooth scrolls) must check this since the CSS media query alone never reaches them. How: This reports whether the OS's prefers-reduced-motion media query currently matches reduce.
+const redMotFun = () : boolean => !!( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ); // What: Reduced Motion Function. Why: JS-driven animations (rAF tweens, Element.animate, smooth scrolls) must check this since the CSS media query alone does not reach them. How: This reports whether the OS's prefers-reduced-motion media query currently matches reduce.
 
 // #endregion redMotFun
 
@@ -110,7 +110,7 @@ const redMotFun = () : boolean => !!( window.matchMedia && window.matchMedia( '(
  *
 */
 
-const scrBehFun = () : ScrollBehavior => redMotFun() ? 'auto' : 'smooth'; // What: Scroll Behavior Function. Why: Every scrollTo and scrollIntoView should jump instead of glide for a user who prefers reduced motion. How: This picks 'auto' when redMotFun reports reduced motion, otherwise 'smooth'.
+const scrBehFun = () : ScrollBehavior => redMotFun() ? 'auto' : 'smooth'; // What: Scroll Behavior Function. Why: A script-driven scroll should jump instead of glide for a user who prefers reduced motion. How: This picks 'auto' when redMotFun reports reduced motion, otherwise 'smooth'.
 
 // #endregion scrBehFun
 
@@ -120,7 +120,7 @@ const scrBehFun = () : ScrollBehavior => redMotFun() ? 'auto' : 'smooth'; // Wha
 
 // #region Exports
 
-export { motEasFun, redMotFun, scrBehFun }; // What: Named Exports. Why: Every animated component checks the same reduced-motion preference, script-driven scrolls pick their behavior from it, and JS-played motion reads the same curves as the stylesheet. How: This exports motEasFun, redMotFun, and scrBehFun by name.
+export { motEasFun, redMotFun, scrBehFun }; // What: Named Exports. Why: The reduced-motion check, the scroll behavior, and the stylesheet's easing curves are read from one module. How: This exports motEasFun, redMotFun, and scrBehFun by name.
 
 // #endregion Exports
 

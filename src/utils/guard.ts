@@ -88,7 +88,7 @@ const isaTruFun = < T >( valAny : T ) : valAny is NonNullable< T > => Boolean( v
 
 // #region Exports
 
-export { isaIntFun, isaTruFun }; // What: Named Exports. Why: Code reading optional saved numbers or filtering out missing values narrows through these guards. How: This exports isaIntFun and isaTruFun by name.
+export { isaIntFun, isaTruFun }; // What: Named Exports. Why: Type guards for checks TypeScript can't read are shared by name. How: This exports isaIntFun and isaTruFun by name.
 
 // #endregion Exports
 

@@ -8,11 +8,10 @@
  * The vertical rhythm's step sizes in pixels, for layout math that works with
  * measured element positions (placing a tooltip, scrolling a target clear of
  * a sticky header), and the duration scale's steps in milliseconds, for
- * timers that wait on a CSS animation. Every length step is the root font
- * size times a power of the core design number, and every duration step is
- * a power of it in milliseconds, the same formulas styles.css uses for its
- * --ver-rhy-* and --dur-* tokens, so a step read here always matches the
- * stylesheet's own value.
+ * timers that wait on a CSS animation. Each length step is the root font size
+ * times a power of the core design number, and each duration step is a power
+ * of it in milliseconds, the same formulas styles.css uses for its --ver-rhy-*
+ * and --dur-* tokens, so a step read here matches the stylesheet's own value.
  *
  * Sections:
  *  - Constants
@@ -35,7 +34,33 @@ const COR_DES_NUM = ( Math.cbrt( 108 + 12 * Math.sqrt( 69 ) ) + Math.cbrt( 108 -
 
 // #region Helpers
 
+// #region steOffFun
+
+/**
+ * steOffFun = Step Offset Function
+ *
+ * @summary
+ * The offset of a named scale step from its base step: 0 for 'bas', NN for
+ * 'pNN' (NN steps above it), and -NN for 'mNN' (NN steps below it). The
+ * rhythm and duration scales both name their steps this way.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param steNamStr - Step Name String: The step's name, e.g. 'bas', 'p03', or
+ *                    'm02'.
+ *
+ * @returns The step's signed offset from the base step.
+ *
+ * @example
+ * ```ts
+ * steOffFun('m02') // => -2
+ * ```
+ *
+*/
+
 const steOffFun = ( steNamStr : string ) => steNamStr === 'bas' ? 0 : ( steNamStr[ 0 ] === 'p' ? 1 : -1 ) * Number( steNamStr.slice( 1 ) ); // What: Step Offset Function. Why: The rhythm and the duration scale name their steps the same way, by offset from a base step. How: This returns 0 for 'bas', NN for 'pNN', and -NN for 'mNN'.
+
+// #endregion steOffFun
 
 
 
@@ -49,8 +74,8 @@ const steOffFun = ( steNamStr : string ) => steNamStr === 'bas' ? 0 : ( steNamSt
  * stylesheet names its --dur-ani-* and --dur-tra-* steps: 'bas' for the base
  * step, 'pNN' for NN steps above it, and 'mNN' for NN steps below it. The
  * base step is the 18th power of the core design number, so 'p04' is the
- * 22nd power, about 486ms. A timer that waits for a CSS animation reads the
- * same step the animation uses, so the two always end together.
+ * 22nd power, about 486ms. A timer that reads the same step as its animation
+ * ends with it.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -120,7 +145,7 @@ const rhyPixFun = ( rhySteStr : string ) : number => { // What: Rhythm Pixel Fun
 
 // #region Exports
 
-export { durMilFun, rhyPixFun }; // What: Named Exports. Why: Every piece of pixel layout math and every animation-matched timer reads the stylesheet's scales through the same helpers. How: This exports durMilFun and rhyPixFun by name.
+export { durMilFun, rhyPixFun }; // What: Named Exports. Why: Pixel layout math and animation-matched timers read the stylesheet's scales through these helpers. How: This exports durMilFun and rhyPixFun by name.
 
 // #endregion Exports
 

@@ -56,7 +56,7 @@ const selAllFun = ( inpCurEle : HTMLInputElement | null ) : void => { if ( inpCu
 
 // #region Exports
 
-export { selAllFun }; // What: Named Export. Why: Every field that opens with a default name shares one ref callback. How: This exports selAllFun by name.
+export { selAllFun }; // What: Named Export. Why: A field that opens with a default value needs one shared ref callback. How: This exports selAllFun by name.
 
 // #endregion Exports
 

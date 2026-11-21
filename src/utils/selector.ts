@@ -47,7 +47,7 @@
  *
 */
 
-const splSelFun = ( selLisStr : string ) : string[] => { // What: Split Selector Function. Why: Callers that try each alternative of a selector list in turn must not split a nested list apart. How: This walks selLisStr one character at a time and cuts only at commas outside any parentheses, brackets, or quotes.
+const splSelFun = ( selLisStr : string ) : string[] => { // What: Split Selector Function. Why: A selector list's nested commas must not split an alternative apart. How: This walks selLisStr one character at a time and cuts only at commas outside any parentheses, brackets, or quotes.
 
 
 	const altSelArr = []; // What: Alternative Selector Array. Why: Every finished top-level alternative is collected here. How: This is pushed onto at each top-level comma and once more at the end.
@@ -108,7 +108,7 @@ const splSelFun = ( selLisStr : string ) : string[] => { // What: Split Selector
 
 // #region Exports
 
-export { splSelFun }; // What: Named Export. Why: Help mode and the tour runner both try a selector list's alternatives in turn. How: This exports splSelFun by name.
+export { splSelFun }; // What: Named Export. Why: A selector list's top-level alternatives are split in one place. How: This exports splSelFun by name.
 
 // #endregion Exports
 

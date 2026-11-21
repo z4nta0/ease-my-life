@@ -54,7 +54,7 @@ function ideMakFun ( preTexStr : string ) : ( () => string ) {
 
 
 
-	return () => preTexStr + Date.now().toString( 36 ) + ( seqCouNum++ ).toString( 36 ); // What: Identifier Function Return. Why: The module mints every ID of its kind through it. How: This returns a function joining the prefix, the time in base 36, and the counter in base 36, counting up once per call.
+	return () => preTexStr + Date.now().toString( 36 ) + ( seqCouNum++ ).toString( 36 ); // What: Identifier Function Return. Why: The caller needs an ID function with a counter of its own. How: This returns a function joining the prefix, the time in base 36, and the counter in base 36, counting up once per call.
 
 
 }
@@ -67,7 +67,7 @@ function ideMakFun ( preTexStr : string ) : ( () => string ) {
 
 // #region Exports
 
-export { ideMakFun }; // What: Named Export. Why: The Today entries, the pick log, and the conditional log each mint IDs with a counter of their own. How: This exports the factory by name.
+export { ideMakFun }; // What: Named Export. Why: Each module needs an ID function with a counter of its own. How: This exports the factory by name.
 
 // #endregion Exports
 

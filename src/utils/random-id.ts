@@ -59,7 +59,7 @@ const ranIdeFun = ( preTexStr : string, lenValNum : number = 6 ) : string => pre
 
 // #region Exports
 
-export { ranIdeFun }; // What: Named Export. Why: The store, the domain modules, and the editors mint record ids through it. How: This exports ranIdeFun by name.
+export { ranIdeFun }; // What: Named Export. Why: Random record ids are minted from one helper. How: This exports ranIdeFun by name.
 
 // #endregion Exports
 

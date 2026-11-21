@@ -28,9 +28,7 @@
  * @summary
  * Makes name unique among siblings (an array of existing sibling
  * names) by appending " (2)", " (3)", ... as needed. Compares
- * case-insensitively so "vacuum"/"Vacuum" collide. Used whenever an
- * item/reminder/picker is added or renamed, so two entries in the same
- * scope can't share a name the user can't tell apart.
+ * case-insensitively so "vacuum"/"Vacuum" collide.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -38,8 +36,8 @@
  * @param sibNamArr  - Sibling Name Array: The sibling names already in use in
  *                     this scope.
  *
- * @returns The unique name: namRawStr as-is if it doesn't collide,
- * otherwise namRawStr (or its already-numbered base) with the next
+ * @returns The unique name: namRawStr trimmed if it doesn't collide, otherwise
+ * namRawStr (or its already-numbered base) with the next
  * free " (N)" suffix appended.
  *
  * @example
@@ -68,7 +66,7 @@ function uniNamFun ( namRawStr : string, sibNamArr : string[] ) : string {
 
 	const stiNamStr = basNamStr.replace( /\s*\(\d+\)$/, '' ); // What: Stripped Name String. Why: A name that already ends in " (N)" must be re-numbered from its own bare base, not stacked again. How: This strips a trailing " (N)" suffix from basNamStr, if present.
 
-	let sufCanNum = 2; // What: Suffix Candidate Number And Guard. Why: The loop below needs a running candidate suffix, starting at the first number that could possibly be free. How: This starts at 2 and is incremented until a free suffix is found.
+	let sufCanNum = 2; // What: Suffix Candidate Number. Why: The loop below needs a running candidate suffix, starting at the first number that could possibly be free. How: This starts at 2 and is incremented until a free suffix is found.
 
 
 	while ( takNamSet.has( `${ stiNamStr } (${ sufCanNum })`.toLowerCase() ) ) sufCanNum++; // What: Free-Suffix Search Loop. Why: Every already-taken suffix must be skipped until a genuinely free one is found. How: This keeps incrementing sufCanNum while its candidate string is still present in takNamSet.
@@ -90,7 +88,7 @@ function uniNamFun ( namRawStr : string, sibNamArr : string[] ) : string {
 
 // #region Exports
 
-export { uniNamFun }; // What: Named Export. Why: Every add and rename action keeps sibling names unique. How: This exports uniNamFun by name.
+export { uniNamFun }; // What: Named Export. Why: A name must be made unique among its siblings from one place. How: This exports uniNamFun by name.
 
 // #endregion Exports
 
