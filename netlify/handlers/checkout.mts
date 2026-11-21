@@ -64,7 +64,7 @@ const errResFun = ( errMesStr : string, staCodNum : number ) => Response.json( {
  * @param netCotObj - Netlify Context Object: Netlify's details of the
  *                    deploy running the function.
  *
- * @returns A promise that settles with the response.
+ * @returns A promise that resolves with the response.
  *
  * @example
  * ```ts
@@ -144,7 +144,7 @@ async function cheSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 			external_customer_id : decTokObj.uid,                                        // What: External Customer Identifier. Why: The webhook finds the account by it. How: This is the account's id.
 			metadata             : { firebaseUid : decTokObj.uid },                      // What: Metadata. Why: The order keeps the account's id even if the customer record changes. How: This copies it in.
 			products             : [ proIdeStr ],                                        // What: Products. Why: The checkout sells the sync product. How: This lists it.
-			success_url          : `${ new URL( reqCurObj.url ).origin }/?purchase=sync` // What: Success URL. Why: The buyer returns to the app, which then picks up the paid claim. How: This is the site's own address, marked as a purchase.
+			success_url          : `${ new URL( reqCurObj.url ).origin }/?purchase=sync` // What: Success URL. Why: The buyer returns to the app marked as a purchase. How: This is the site's own address, marked as a purchase.
 
 
 		}),
@@ -170,14 +170,14 @@ async function cheSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 
 
 
-		return errResFun( "The checkout couldn't be started. Try again in a moment.", 502 ); // What: Failure Return. Why: A moment later usually works. How: This says so.
+		return errResFun( "The checkout couldn't be started. Try again in a moment.", 502 ); // What: Failure Return. Why: The buyer needs to know the checkout didn't start. How: This says so.
 
 
 	}
 
 
 
-	const cheSesObj = await polResObj.json() as { url : string }; // What: Checkout Session Object. Why: Polar returns the checkout's address. How: This parses its reply. // What: Type Assertion Note. Why: A successful checkout creation always returns the checkout with its url. How: The as types the parsed reply.
+	const cheSesObj = await polResObj.json() as { url : string }; // What: Checkout Session Object. Why: Polar returns the checkout's address. How: This parses its reply. // What: Type Assertion Note. Why: The code reads only the url of a successful reply. How: The as types the parsed reply.
 
 	// #endregion Checkout Creation
 

@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { createHmac      } from 'node:crypto'; // What: Create HMAC. Why: Polar signs every webhook with a shared secret. How: This computes the expected signature.
+import { createHmac      } from 'node:crypto'; // What: Create HMAC. Why: Polar signs its webhooks with a shared secret. How: This computes the expected signature.
 import { timingSafeEqual } from 'node:crypto'; // What: Timing Safe Equal. Why: A signature compared byte by byte at varying speed can leak it. How: This compares in constant time.
 
 // #endregion Imports
@@ -16,15 +16,16 @@ import { timingSafeEqual } from 'node:crypto'; // What: Timing Safe Equal. Why: 
  * @summary
  * What the Netlify Functions need to know about Polar, which sells the paid
  * sync upgrade. The production site talks to live Polar and every other
- * deploy (a preview, a branch) to Polar's sandbox, so a preview can never
- * charge anyone. Each has its own product, API address, and secrets.
+ * deploy (a preview, a branch) to Polar's sandbox, so a preview talks only
+ * to the sandbox. Each has its own product, API address, and secrets.
  *
  * Polar signs each webhook the Standard Webhooks way: an HMAC-SHA256 of the
  * message id, its timestamp, and its body, keyed by the endpoint's secret
  * (its base64-decoded bytes, for a secret written that way),
  * sent base64-encoded in the webhook-signature header. A webhook whose
  * signature doesn't match, or whose timestamp is more than five minutes
- * off, is refused, so nobody else can mark an account as paid.
+ * off, is refused, which keeps a forged webhook from marking an account as
+ * paid.
  *
  * Sections:
  *  - Types
@@ -40,8 +41,8 @@ import { timingSafeEqual } from 'node:crypto'; // What: Timing Safe Equal. Why: 
 
 // #region Types
 
-type NetCotTyp = { deploy : { context : string } }; // What: Netlify Context Type. Why: Each function reads which deploy it runs in. How: This types the one field of Netlify's context they use.
-type PolOrdTyp = { customer? : { email? : string, external_id? : string | null }, id : string, metadata? : Record< string, unknown >, product? : { id? : string }, product_id? : string, status? : string }; // What: Polar Order Type. Why: The webhook reads only a few fields of an order. How: This types those, each optional the way Polar may leave them out.
+type NetCotTyp = { deploy : { context : string } }; // What: Netlify Context Type. Why: The deploy context is the one field of Netlify's context the handlers read. How: This types that field.
+type PolOrdTyp = { customer? : { email? : string, external_id? : string | null }, id : string, metadata? : Record< string, unknown >, product? : { id? : string }, product_id? : string, status? : string }; // What: Polar Order Type. Why: The webhook reads only a few fields of an order. How: This types those, marking optional the ones Polar may leave out.
 
 // #endregion Types
 
@@ -61,7 +62,31 @@ const TIM_TOL_NUM = 300;                                    // What: Time Tolera
 
 // #region Helpers
 
-const isaLivFun = ( depCotStr : string ) => depCotStr === 'production'; // What: Is-A Live Function. Why: Only the production site talks to live Polar. How: This is true for Netlify's production deploy context.
+// #region isaLivFun
+
+/**
+ * isaLivFun = Is-A Live Function
+ *
+ * @summary
+ * Says whether a deploy talks to live Polar: Netlify's production deploy
+ * context does, and every other context uses the sandbox.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param depCotStr - Deploy Context String: Netlify's deploy context.
+ *
+ * @returns True for the production context, false for any other.
+ *
+ * @example
+ * ```ts
+ * isaLivFun(netCotObj.deploy.context) // => true
+ * ```
+ *
+*/
+
+const isaLivFun = ( depCotStr : string ) : boolean => depCotStr === 'production'; // What: Is-A Live Function. Why: Production is the one deploy context that counts as live Polar. How: This is true for Netlify's production deploy context.
+
+// #endregion isaLivFun
 
 
 
@@ -71,10 +96,9 @@ const isaLivFun = ( depCotStr : string ) => depCotStr === 'production'; // What:
  * ordUidFun = Order UID Function
  *
  * @summary
- * Reads which Firebase account an order belongs to, from what the checkout
- * function attached: the customer's external id, or the order's
- * firebaseUid metadata. It returns null for an order made some other way
- * (a checkout link), whose account the webhook then looks up by email.
+ * Reads which Firebase account an order belongs to, from the customer's
+ * external id or the order's firebaseUid metadata. It returns null for an
+ * order that carries neither (a plain checkout link).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -113,11 +137,10 @@ function ordUidFun ( ordCurObj : PolOrdTyp ) : string | null {
  *
  * @summary
  * Checks a webhook's signature and timestamp the Standard Webhooks way (see
- * the file summary), matching Polar's own SDK: the HMAC key is tried both as
- * the secret's own bytes and, when the secret (minus any whsec_ prefix) is
- * valid base64, as the bytes it decodes to, which is how Polar's current
- * secrets are meant. The signature header can list several v1 signatures
- * (during a secret rotation), and any one matching either key is enough.
+ * the file summary). The HMAC key is tried both as the secret's own bytes
+ * and, when the secret (minus any whsec_ prefix) is valid base64, as the
+ * bytes it decodes to. The signature header can list several v1 signatures,
+ * and any one matching either key is enough.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -161,8 +184,8 @@ function verWebFun ( bodTexStr : string, reqHeaObj : Headers, webSecStr : string
 	// #region Expected Signatures
 
 	const b64KeyStr = webSecStr.startsWith( 'whsec_' ) ? webSecStr.slice( 6 ) : webSecStr;                                  // What: Base64 Key String. Why: A Standard Webhooks secret may carry a whsec_ prefix before its base64 key. How: This drops it.
-	const b64ValBoo = b64KeyStr.length > 0 && b64KeyStr.length % 4 === 0 && /^[A-Za-z0-9+/]*={0,2}$/.test( b64KeyStr );     // What: Base64 Valid Boolean. Why: Only a real base64 string means a decoded key, the same test Polar's SDK makes with atob. How: This checks its length and characters.
-	const keyBufArr = [ Buffer.from( webSecStr, 'utf8' ), ...( b64ValBoo ? [ Buffer.from( b64KeyStr, 'base64' ) ] : [] ) ]; // What: Key Buffer Array. Why: Polar's SDK accepts a signature made with either key. How: This lists the secret's own bytes and, when valid, its decoded bytes.
+	const b64ValBoo = b64KeyStr.length > 0 && b64KeyStr.length % 4 === 0 && /^[A-Za-z0-9+/]*={0,2}$/.test( b64KeyStr );     // What: Base64 Valid Boolean. Why: Only a valid base64 string is also tried as a decoded key. How: This checks its length and characters.
+	const keyBufArr = [ Buffer.from( webSecStr, 'utf8' ), ...( b64ValBoo ? [ Buffer.from( b64KeyStr, 'base64' ) ] : [] ) ]; // What: Key Buffer Array. Why: A signature may have been made with either key. How: This lists the secret's own bytes and, when valid, its decoded bytes.
 	const sigConStr = `${ mesIdeStr }.${ Math.floor( Number( mesTimStr ) ) }.${ bodTexStr }`;                               // What: Signed Content String. Why: Polar signs the id, the timestamp, and the body joined by dots. How: This builds the same text.
 	const expSigArr = keyBufArr.map( ( keyBufObj ) => createHmac( 'sha256', keyBufObj ).update( sigConStr ).digest() );     // What: Expected Signature Array. Why: A genuine signature matches one of these. How: This signs the content with each key.
 
@@ -173,7 +196,7 @@ function verWebFun ( bodTexStr : string, reqHeaObj : Headers, webSecStr : string
 	const sigMatBoo = mesSigStr.split( ' ' ).some( ( sigEntStr ) => { // What: Signature Match Boolean. Why: Any listed v1 signature matching proves the webhook genuine. How: This compares each against every expected one in constant time.
 
 
-		const [ sigVerStr, sigB64Str ] = sigEntStr.split( ',', 2 ); // What: Signature Version String. Why: Each entry starts with a version before its comma. How: This keeps the part before the first comma. // What: Signature Base64 String. Why: The base64 signature follows the comma. How: This keeps the part after it.
+		const [ sigVerStr, sigB64Str ] = sigEntStr.split( ',', 2 ); // What: Signature Version String. Why: Each entry starts with a version before its comma. How: This keeps the part before the first comma. // What: Signature Base64 String. Why: The base64 signature follows the comma. How: This keeps the part between the first comma and the next one, or the end.
 
 
 
@@ -192,7 +215,7 @@ function verWebFun ( bodTexStr : string, reqHeaObj : Headers, webSecStr : string
 
 
 
-	return sigMatBoo ? null : 'signature mismatch'; // What: Result Return. Why: The caller refuses anything but a match, and logs why. How: This returns null for a match, or the reason.
+	return sigMatBoo ? null : 'signature mismatch'; // What: Result Return. Why: The result names why a webhook failed, or is null when it's genuine. How: This returns null for a match, or the reason.
 
 
 }
@@ -205,7 +228,7 @@ function verWebFun ( bodTexStr : string, reqHeaObj : Headers, webSecStr : string
 
 // #region Exports
 
-export { API_LIV_STR, API_SAN_STR, isaLivFun, type NetCotTyp, ordUidFun, type PolOrdTyp, PRO_LIV_STR, PRO_SAN_STR, verWebFun }; // What: Named Exports. Why: The checkout and webhook functions share Polar's addresses, products, and checks, and the Netlify context type. How: This exports them by name.
+export { API_LIV_STR, API_SAN_STR, isaLivFun, type NetCotTyp, ordUidFun, type PolOrdTyp, PRO_LIV_STR, PRO_SAN_STR, verWebFun }; // What: Named Exports. Why: Other files need Polar's addresses, products, checks, and order and context types. How: This exports them by name.
 
 // #endregion Exports
 

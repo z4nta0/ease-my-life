@@ -26,9 +26,9 @@ import type { Auth } from 'firebase-admin/auth'; // What: Authentication. Why: C
  * the service account's email and private key, kept in the
  * FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY secrets. The key is stored
  * with its line breaks written as \n, so they're turned back into real line
- * breaks first. When FIREBASE_AUTH_EMULATOR_HOST is set, which only the
- * tests do, it talks to the local auth emulator under the demo project and
- * needs no key at all.
+ * breaks first. When FIREBASE_AUTH_EMULATOR_HOST is set, as the test suites
+ * do, it talks to the local auth emulator under the demo project and needs
+ * no key at all.
  *
  * Sections:
  *  - Constants
@@ -138,7 +138,7 @@ function admAutFun () : Auth {
 
 // #region Exports
 
-export { admAutFun }; // What: Named Export. Why: Both functions reach Firebase through it. How: This exports admAutFun by name.
+export { admAutFun }; // What: Named Export. Why: The Netlify functions reach Firebase's admin auth through it. How: This exports admAutFun by name.
 
 // #endregion Exports
 

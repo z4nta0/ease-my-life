@@ -32,9 +32,7 @@ import type { PolOrdTyp } from '../lib/polar.mts'; // What: Polar Order Type. Wh
  * acknowledged, so Polar doesn't retry it forever. Other events, and orders
  * for other products, are acknowledged and ignored.
  *
- * Setting the claim keeps any other claims the account has. The app picks
- * the change up when its token refreshes, which it forces on returning from
- * the checkout.
+ * Setting the claim keeps any other claims the account has.
  *
  * Sections:
  *  - Helpers
@@ -61,7 +59,7 @@ import type { PolOrdTyp } from '../lib/polar.mts'; // What: Polar Order Type. Wh
  *
  * @param ordCurObj - Order Current Object: The webhook's order.
  *
- * @returns A promise that settles with the account's id, or null when no
+ * @returns A promise that resolves with the account's id, or null when no
  *          account matches.
  *
  * @example
@@ -118,7 +116,7 @@ async function ordAccFun ( ordCurObj : PolOrdTyp ) : Promise< string | null > {
  * @param netCotObj - Netlify Context Object: Netlify's details of the
  *                    deploy running the function.
  *
- * @returns A promise that settles with the response.
+ * @returns A promise that resolves with the response.
  *
  * @example
  * ```ts
@@ -152,14 +150,14 @@ async function webSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 
 
 
-	if ( verFaiStr ) { // What: Signature Check. Why: A refused webhook should say why, in Polar's delivery log and Netlify's. How: This logs the reason with the secret's length, never the secret, and refuses.
+	if ( verFaiStr ) { // What: Signature Check. Why: A refused webhook should say why. How: This logs the reason with the secret's length, never the secret, and refuses.
 
 
 		console.warn( `Webhook refused: ${ verFaiStr } (secret length ${ webSecStr.length })` ); // What: Refusal Log. Why: The length helps spot a wrong or padded secret without exposing it. How: This logs the reason and length.
 
 
 
-		return new Response( `Webhook refused: ${ verFaiStr }.`, { status : 403 } ); // What: Refusal Return. Why: Polar shows the reply in its delivery log. How: This answers 403 with the reason.
+		return new Response( `Webhook refused: ${ verFaiStr }.`, { status : 403 } ); // What: Refusal Return. Why: The reason goes back to the sender with the status. How: This answers 403 with the reason.
 
 
 	}
