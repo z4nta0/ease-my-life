@@ -27,8 +27,8 @@ import { watErrFun   } from '../support/watch.ts';  // What: Watch Errors Functi
  * policy would block. Neither server reads Netlify's headers file, so every
  * response is given the headers the built dist/_headers sends with its path.
  * First a check proves the policy is live, by injecting an inline script and
- * seeing it refused and reported. Then every app state the accessibility
- * suite visits, and the two legal pages, are checked for policy violations
+ * seeing it refused and reported. Then every state in the shared list the
+ * suites visit, and the two legal pages, are checked for policy violations
  * and checked to close off every new tab link, with neither an opener nor a
  * referrer. Last, an unknown address has to load the app and be replaced by
  * the root, keeping its query and hash, since the app answers at one address.
@@ -52,10 +52,10 @@ test( 'the policy refuses an injected inline script', async ( { page : curPagObj
 
 
 
-	const injRanBoo = await curPagObj.evaluate( async () => { // What: Injection Ran Boolean. Why: A refused script never sets its flag. How: This adds an inline script that sets a flag, waits a moment for any violation event, and reports whether the flag was set.
+	const injRanBoo = await curPagObj.evaluate( async () => { // What: Injection Ran Boolean. Why: A refused script doesn't run, so its flag stays unset. How: This adds an inline script that sets a flag, waits a moment for any violation event, and reports whether the flag was set.
 
 
-		const scrNewEle = document.createElement( 'script' ); // What: Script New Element. Why: Injected markup is how a cross-site scripting attack runs code. How: This makes an inline script.
+		const scrNewEle = document.createElement( 'script' ); // What: Script New Element. Why: Injected markup is one way a cross-site scripting attack runs code. How: This makes an inline script.
 
 
 		scrNewEle.textContent = 'document.documentElement.dataset.injectedScriptRan = "true";'; // What: Script Text Assignment. Why: The flag shows whether the script ran. How: This sets a data attribute on the page's root if it does.
@@ -86,7 +86,7 @@ test( 'the policy refuses an injected inline script', async ( { page : curPagObj
 
 
 
-for ( const staRcdObj of STA_RCD_ARR ) { // What: State Loop. Why: Every state the suites visit has to work under the policy. How: This declares one test per state.
+for ( const staRcdObj of STA_RCD_ARR ) { // What: State Loop. Why: Every state in the shared list has to work under the policy. How: This declares one test per state.
 
 
 	test( `${ staRcdObj.ideStr } breaks no rule of the security policy and closes off every new tab link`, async ( { page : curPagObj } ) => { // What: State Policy Test. Why: A blocked resource, such as a font, would break the app once deployed, and the policy can't be loosened to hide it. How: This opens the state under the policy and checks nothing was refused and every new tab link is closed off.
@@ -140,7 +140,7 @@ for ( const legPatStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: The lega
 
 		await curPagObj.goto( legPatStr ); // What: Legal Page Open Call. Why: The page is checked as a visitor loads it. How: This loads its address.
 
-		await curPagObj.evaluate( () => document.fonts.ready.then( () => undefined ) ); // What: Fonts Ready Wait. Why: A refused font is reported only once the page asks for it. How: This waits until every font face has loaded.
+		await curPagObj.evaluate( () => document.fonts.ready.then( () => undefined ) ); // What: Fonts Ready Wait. Why: A refused font is reported only once the page asks for it. How: This waits until the fonts the page asked for have loaded.
 
 		// #endregion Legal Page Load
 

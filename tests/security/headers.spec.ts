@@ -5,7 +5,7 @@
 
 import { execFileSync  } from 'node:child_process';    // What: Exec File Sync. Why: The dependency check asks npm itself. How: This runs npm audit and returns its output.
 import { expect        } from '@playwright/test';      // What: Expect. Why: Each check passes only when the policy and the build are what they should be. How: This asserts on what each check reads, such as the audit's counts.
-import { fileURLToPath } from 'node:url';              // What: File URL To Path. Why: The repo root npm works from sits two folders above this file, with the build folder, dist/, inside it. How: This turns each one's URL into a path.
+import { fileURLToPath } from 'node:url';              // What: File URL To Path. Why: The build folder, dist/, and the source file read sit under the repo root, two folders above this file. How: This turns each one's URL into a path.
 import { heaAllFun     } from '../support/headers.ts'; // What: Headers All Function. Why: The checks test the policy Netlify really sends. How: This reads the /* block of public/_headers.
 import { join          } from 'node:path';             // What: Join. Why: A built file's path is its folder plus its name. How: This joins them with the right separator.
 import { readdirSync   } from 'node:fs';               // What: Read Directory Sync. Why: Every built text file is searched for secrets. How: This lists the build folder's entries, recursively.
@@ -28,12 +28,12 @@ import { test          } from '@playwright/test';      // What: Test. Why: Each 
  * policy, such as refusing framing, with nothing from another origin but the
  * Firebase and reCAPTCHA addresses the optional paid sync needs, and inline
  * code allowed only for styles. The production build, which the preview
- * server builds before the run, has to serve the two legal pages at their own
- * addresses and then hand every other path to the app with a 200, and hold no
+ * server builds before the run, has to rewrite the two legal pages to their
+ * own files and then hand every other path to the app with a 200, and hold no
  * private key or provider token, the Firebase web config and the reCAPTCHA
  * site key aside, since both are meant for the browser. npm audit has to find
  * no high or critical advisory in the shipped dependencies, and skips with a
- * message when npm can't be reached.
+ * message when npm can't reach its registry.
  *
  * Sections:
  *  - Constants

@@ -12,7 +12,7 @@ import { getDoc                    } from 'firebase/firestore';            // Wh
 import { initializeTestEnvironment } from '@firebase/rules-unit-testing';  // What: Initialize Test Environment. Why: The rules run in the local emulator. How: This connects to it with the project's rules.
 import { readFileSync              } from 'node:fs';                       // What: Read File Sync. Why: The emulator is given the real rules file. How: This reads it.
 import { setDoc                    } from 'firebase/firestore';            // What: Set Doc. Why: Write rules are checked. How: This writes a document.
-import { setLogLevel               } from 'firebase/firestore';            // What: Set Log Level. Why: Every refusal a test expects would otherwise print as a warning. How: This silences the SDK's logging.
+import { setLogLevel               } from 'firebase/firestore';            // What: Set Log Level. Why: Refusals the tests expect shouldn't fill the output. How: This silences the SDK's logging.
 import { test                      } from '@playwright/test';              // What: Test. Why: Each rule is its own test. How: This declares them.
 
 
@@ -66,7 +66,33 @@ let tesEnvObj : RulesTestEnvironment; // What: Test Environment Object. Why: Eve
 
 // #region Helpers
 
+// #region accStoFun
+
+/**
+ * accStoFun = Account Store Function
+ *
+ * @summary
+ * Builds the database a chosen account sees in the emulator, signed in with
+ * the given UID and token claims, so a test acts as that account.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param uidValStr - UID Value String: The signed-in account's UID.
+ * @param tokClaObj - Token Claim Object: The token claims the account
+ *                    carries, such as its verified email and paid flags.
+ *
+ * @returns The Firestore database as that account.
+ *
+ * @example
+ * ```ts
+ * accStoFun('alice', PAI_TOK_OBJ) // => the database as alice
+ * ```
+ *
+*/
+
 const accStoFun = ( uidValStr : string, tokClaObj : TokenOptions ) => tesEnvObj.authenticatedContext( uidValStr, tokClaObj ).firestore(); // What: Account Store Function. Why: Each test acts as a chosen account. How: This returns the database as that account, with those token claims.
+
+// #endregion accStoFun
 
 
 
@@ -140,7 +166,7 @@ test( 'a manifest or version with an unexpected field is refused', async () => {
 
 
 
-test( 'nobody else, and no unverified or signed-out account, can read or write a copy', async () => { // What: Access Test. Why: A copy belongs to its owner alone. How: This tries every other kind of account and checks each read and write fails.
+test( 'nobody else, and no unverified or signed-out account, can read or write a copy', async () => { // What: Access Test. Why: A copy belongs to its owner alone. How: This tries a stranger, an unverified account, and an anonymous visitor, and checks each read and write fails.
 
 
 	await sedManFun(); // What: Manifest Seed. Why: Reads need a copy to read. How: This writes alice's manifest.
@@ -166,7 +192,7 @@ test( 'nobody else, and no unverified or signed-out account, can read or write a
 
 
 
-test( 'an unpaid owner can read and delete its own copy but not write it, and a stranger cannot delete it', async () => { // What: Unpaid Owner Test. Why: Anyone can always find and remove their own data, while writing is the paid feature. How: This deletes as a stranger and as the unpaid owner, checking which reads, writes, and deletes the rules allow.
+test( 'an unpaid owner can read and delete its own copy but not write it, and a stranger cannot delete it', async () => { // What: Unpaid Owner Test. Why: A person can still find and remove their own data without paying, while writing is the paid feature. How: This deletes as a stranger and as the unpaid owner, checking which reads, writes, and deletes the rules allow.
 
 
 	// #region Copy Setup

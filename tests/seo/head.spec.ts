@@ -27,13 +27,14 @@ import { watErrFun     } from '../support/watch.ts';   // What: Watch Errors Fun
  * running a script the way link checkers read it, has one title and one
  * description of its own, the description 120 to 125 characters, one
  * canonical address on this domain, techgeek.dev as its author, and nothing
- * that keeps it out of search. In a browser every app state keeps that one
- * description, and each legal page shows its own head and one h1. The home
- * page's raw head carries a complete link preview with absolute addresses,
- * every icon it links to is served at its size, and the preview image is a
- * 1,200x630 PNG under 300 KB. The structured data describes a WebApplication
- * whose sync offer has the price the app shows. robots.txt lets every
- * crawler in and names the sitemap, which lists exactly the three pages.
+ * that keeps it out of search. In a browser every state in the shared list
+ * keeps that one description, and each legal page shows its own head and one
+ * h1. The home page's raw head carries a complete link preview with absolute
+ * addresses, every icon it links to is served at its size, and the preview
+ * image is a 1,200x630 PNG under 300 KB. The structured data describes a
+ * WebApplication whose sync offer has the price the app shows. robots.txt
+ * lets every crawler in and names the sitemap, which lists exactly the three
+ * pages.
  *
  * Sections:
  *  - Constants
@@ -50,7 +51,7 @@ import { watErrFun     } from '../support/watch.ts';   // What: Watch Errors Fun
 // #region Constants
 
 const CON_PAT_STR = fileURLToPath( new URL( '../../src/constants.ts', import.meta.url ) );                                                        // What: Constants Path String. Why: The sync price lives in the app's constants. How: This resolves src/constants.ts.
-const HOM_DES_STR = 'Pick what to do today, without deciding. Your pickers choose for you, on the schedule you set and entirely on your device.'; // What: Home Description String. Why: The raw home page and every app state carry this one description. How: This is the exact text it should hold.
+const HOM_DES_STR = 'Pick what to do today, without deciding. Your pickers choose for you, on the schedule you set and entirely on your device.'; // What: Home Description String. Why: The raw home page and every state in the shared list carry this one description. How: This is the exact text it should hold.
 const HOM_TIT_STR = 'Ease My Life: pick what to do today, without deciding';                                                                      // What: Home Title String. Why: The app keeps index.html's title on every screen. How: This is the exact text it should hold.
 const LIV_URL_STR = 'https://easemylife.app/';                                                                                                    // What: Live URL String. Why: The addresses the checks expect start from the live site's. How: This is its address.
 
@@ -139,7 +140,7 @@ const PAG_HEA_ARR = [ // What: Page Head Array. Why: Every indexed page's head i
  *
 */
 
-const SOC_KEY_ARR = [ // What: Social Key Array. Why: A shared link shows a full card only when every tag is there. How: Each entry names one tag.
+const SOC_KEY_ARR = [ // What: Social Key Array. Why: A complete link preview needs each of these tags. How: Each entry names one tag.
 
 
 	'og:description',
@@ -218,7 +219,33 @@ function imaSizFun ( imaBufObj : Buffer ) : [ number, number ] {
 
 
 
+// #region metTagFun
+
+/**
+ * metTagFun = Meta Tag Function
+ *
+ * @summary
+ * Lists the meta tags in a page's raw HTML as pairs of name or property and
+ * decoded content, in the page's order, so a check reads tags the way a link
+ * scraper does, without a browser and with repeats kept.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param htmTexStr - HTML Text String: The page's raw HTML.
+ *
+ * @returns One pair per meta tag, its name or property first and its decoded
+ * content second, in the page's order.
+ *
+ * @example
+ * ```ts
+ * metTagFun(rawHtmStr) // => [ [ 'description', 'Pick what to do today...' ] ]
+ * ```
+ *
+*/
+
 const metTagFun = ( htmTexStr : string ) : [ string, string ][] => [ ...htmTexStr.matchAll( /<meta\s+(?:name|property)=(['"])([^'"]+)\1\s+content=(['"])(.*?)\3/g ) ].map( ( tagMatArr ) => [ tagMatArr[ 2 ], tagMatArr[ 4 ].replace( /&quot;/g, '"' ).replace( /&#39;/g, "'" ).replace( /&amp;/g, '&' ) ] ); // What: Meta Tag Function. Why: The raw page's tags are read without a browser, the way a link scraper reads them, and repeats have to be counted. How: This lists each meta tag's name or property with its decoded content, in the page's order.
+
+// #endregion metTagFun
 
 // #endregion Helpers
 
@@ -246,7 +273,7 @@ for ( const heaRowObj of PAG_HEA_ARR ) { // What: Raw Head Loop. Why: Every inde
 		// #region Head Assertions
 
 		expect( titMatArr ).toEqual( [ heaRowObj.titStr ] );                       // What: Single Title Assertion. Why: Search listings and tabs name the page by its one title. How: This checks the page has exactly its row's title.
-		expect( heaRowObj.titStr.length ).toBeLessThanOrEqual( 60 );               // What: Title Length Assertion. Why: A title past about 60 characters is cut off in listings. How: This checks it's at most 60 characters.
+		expect( heaRowObj.titStr.length ).toBeLessThanOrEqual( 60 );               // What: Title Length Assertion. Why: A page's title stays under about 60 characters. How: This checks it's at most 60 characters.
 		expect( desConArr ).toEqual( [ heaRowObj.desStr ] );                       // What: Single Description Assertion. Why: Two descriptions leave search engines to guess, and each page should describe itself. How: This checks the page has exactly its row's description.
 		expect( heaRowObj.desStr.length ).toBeGreaterThanOrEqual( 120 );           // What: Description Minimum Assertion. Why: Link preview checkers flag a description under 120 characters. How: This checks it runs at least 120 characters.
 		expect( heaRowObj.desStr.length ).toBeLessThanOrEqual( 125 );              // What: Description Maximum Assertion. Why: Phones cut a summary off around 125 characters. How: This checks it stays within that.
@@ -372,10 +399,10 @@ test( 'the raw home page carries its full link preview', async ( { request : req
 	expect( SOC_KEY_ARR.filter( ( socKeyStr ) => !socTagObj[ socKeyStr ] ) ).toEqual( [] );                                                      // What: Complete Tags Assertion. Why: An app shows a bare link when a tag it needs is missing. How: This lists any required tag the page lacks.
 	expect( [ socTagObj[ 'og:url' ], socTagObj[ 'og:image' ], socTagObj[ 'twitter:image' ] ] ).toEqual( [ LIV_URL_STR, expImaStr, expImaStr ] ); // What: Address Assertion. Why: Scrapers need absolute HTTPS addresses for the page and its image. How: This checks each against the live site's.
 	expect( [ socTagObj[ 'og:description' ], socTagObj[ 'twitter:description' ] ] ).toEqual( [ HOM_DES_STR, HOM_DES_STR ] );                     // What: Description Assertion. Why: The card's summary matches the page's own description. How: This checks both copies.
-	expect( socTagObj[ 'twitter:title' ] ).toBe( socTagObj[ 'og:title' ] );                                                                      // What: Title Match Assertion. Why: Every app shows the same card title. How: This checks the two titles agree.
-	expect( socTagObj[ 'og:title' ].length ).toBeLessThanOrEqual( 60 );                                                                          // What: Title Length Assertion. Why: A card title past about 60 characters is cut off. How: This checks it's at most 60 characters.
-	expect( socTagObj[ 'twitter:image:alt' ] ).toBe( socTagObj[ 'og:image:alt' ] );                                                              // What: Image Text Assertion. Why: Every app describes the image the same way. How: This checks the two alternatives agree.
-	expect( [ socTagObj[ 'og:image:type' ], socTagObj[ 'og:image:width' ], socTagObj[ 'og:image:height' ], socTagObj[ 'og:type' ], socTagObj[ 'twitter:card' ], socTagObj[ 'og:locale' ] ] ).toEqual( [ 'image/png', '1200', '630', 'website', 'summary_large_image', 'en_US' ] ); // What: Image And Type Assertion. Why: Apps lay out a large preview from the image's stated type and size. How: This checks them, the page's type, the card type, and the locale.
+	expect( socTagObj[ 'twitter:title' ] ).toBe( socTagObj[ 'og:title' ] );                                                                      // What: Title Match Assertion. Why: The card's title reads the same under Open Graph and Twitter. How: This checks the two titles agree.
+	expect( socTagObj[ 'og:title' ].length ).toBeLessThanOrEqual( 60 );                                                                          // What: Title Length Assertion. Why: A card title stays under about 60 characters. How: This checks it's at most 60 characters.
+	expect( socTagObj[ 'twitter:image:alt' ] ).toBe( socTagObj[ 'og:image:alt' ] );                                                              // What: Image Text Assertion. Why: The image's alternative text reads the same under Open Graph and Twitter. How: This checks the two alternatives agree.
+	expect( [ socTagObj[ 'og:image:type' ], socTagObj[ 'og:image:width' ], socTagObj[ 'og:image:height' ], socTagObj[ 'og:type' ], socTagObj[ 'twitter:card' ], socTagObj[ 'og:locale' ] ] ).toEqual( [ 'image/png', '1200', '630', 'website', 'summary_large_image', 'en_US' ] ); // What: Image And Type Assertion. Why: The card tags have to state the image's real type and size, the page's type, the card type, and the locale. How: This checks them, the page's type, the card type, and the locale.
 
 	// #endregion Preview Tag Checks
 
@@ -401,7 +428,7 @@ test( 'every icon the head links to is served at its size', async ( { page : cur
 	// #region Icon List Checks
 
 	expect( icoLinArr.map( ( [ icoHreStr ] ) => icoHreStr ) ).toContain( 'assets/apple-touch-icon.png' ); // What: Touch Icon Assertion. Why: iOS and some apps draw the app's mark from this link. How: This checks it's linked.
-	expect( icoLinArr.length ).toBe( 6 );                                                                 // What: Icon Count Assertion. Why: The set is the SVG, two small PNGs, the ICO, the large PNG, and the Apple touch icon. How: This checks all six are linked.
+	expect( icoLinArr.length ).toBe( 6 );                                                                 // What: Icon Count Assertion. Why: The set is the SVG, two small PNGs, the ICO, the large PNG, and the Apple touch icon. How: This checks six icon links are present.
 
 	// #endregion Icon List Checks
 
@@ -459,7 +486,7 @@ test( 'every icon the head links to is served at its size', async ( { page : cur
 
 
 
-test( 'the link preview image is 1,200x630 and under 300 KB', async ( { request : reqCotObj } ) => { // What: Preview Image Test. Why: The tags promise the image's size, and WhatsApp drops a preview image over about 300 KB. How: This fetches the image from the build and checks its type, its 1,200 by 630 size, and its bytes against the limit.
+test( 'the link preview image is 1,200x630 and under 300 KB', async ( { request : reqCotObj } ) => { // What: Preview Image Test. Why: The tags promise the image's size, and the Social Previews rule keeps the image under 300 KB. How: This fetches the image from the build and checks its type, its 1,200 by 630 size, and its bytes against the limit.
 
 
 	const imaResObj = await reqCotObj.get( `${ PRE_URL_STR }/assets/og-image-2.png` ); // What: Image Response Object. Why: The image has to exist where the tags point. How: This fetches it from the build.

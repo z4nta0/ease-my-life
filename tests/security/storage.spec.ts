@@ -24,8 +24,8 @@ import { watErrFun } from '../support/watch.ts'; // What: Watch Errors Function.
  * documents in CLAUDE.md's "Where data lives" or one the Firebase SDK names
  * for itself, and no value may hold a token, a private key, or a password
  * field. The app keeps its data in IndexedDB and Firebase Auth keeps its
- * session in its own IndexedDB database, so local storage holds only the
- * mirror and the app's small flags.
+ * session in its own IndexedDB database, so local storage holds the mirror,
+ * a few small records, and any keys the Firebase SDK names for itself.
  *
  * Sections:
  *  - Constants
@@ -49,7 +49,7 @@ const APP_KEY_ARR = [ // What: App Key Array. Why: Every key the app writes is d
 	'easemylife.signinemail',      // What: Sign-In Email Key. Why: An emailed link finishes in the browser that asked for it. How: This holds the address until the link is used.
 	'easemylife.snapshot.pre-idb', // What: Pre-IndexedDB Snapshot Key. Why: The first IndexedDB migration kept a rollback copy for a few boots. How: This holds that copy.
 	'easemylife.syncmeta',         // What: Sync Meta Key. Why: Each sync compares against what this device last synced. How: This holds hashes, a revision, and the account's ID, never a token.
-	'easemylife.v2'                // What: Warm Mirror Key. Why: A boot that can't open IndexedDB in time runs on this copy. How: This holds the state without its pick log.
+	'easemylife.v2'                // What: Warm Mirror Key. Why: A boot that can't open IndexedDB in time runs on this copy. How: This holds the state, without its pick log in a normal session.
 
 
 ];
@@ -99,7 +99,7 @@ test( 'local storage holds only the documented keys and no secret', async ( { pa
 
 	expect( stoEntArr.map( ( [ stoKeyStr ] ) => stoKeyStr ).filter( ( stoKeyStr ) => !APP_KEY_ARR.includes( stoKeyStr ) && !stoKeyStr.startsWith( 'firebase:' ) ) ).toEqual( [] ); // What: Documented Keys Assertion. Why: An unknown key may hold something nobody reviewed. How: This lists every key that's neither the app's nor the Firebase SDK's own.
 	expect( stoEntArr.filter( ( [ , stoValStr ] ) => SEC_VAL_ARR.some( ( secValReg ) => secValReg.test( stoValStr ) ) ).map( ( [ stoKeyStr ] ) => stoKeyStr ) ).toEqual( [] );     // What: No Secret Assertion. Why: No value should hold a token, a private key, or a password. How: This lists every key whose value matches a secret pattern.
-	expect( stoEntArr.map( ( [ stoKeyStr ] ) => stoKeyStr ) ).toContain( 'easemylife.v2' );                                                                                        // What: Mirror Written Assertion. Why: The check means little unless the largest value, the mirror, was there to read. How: This checks the mirror was written.
+	expect( stoEntArr.map( ( [ stoKeyStr ] ) => stoKeyStr ) ).toContain( 'easemylife.v2' );                                                                                        // What: Mirror Written Assertion. Why: The check means little unless the mirror, the main value, was there to read. How: This checks the mirror was written.
 	expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] ); // What: Error Assertion. Why: A run that logged an error failed even if it finished. How: This expects no errors.
 
 	// #endregion Storage Checks
