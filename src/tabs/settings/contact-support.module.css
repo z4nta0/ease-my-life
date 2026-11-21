@@ -178,7 +178,7 @@
 }
 
 .supSubInp,
-.supMesTex { /* What: Support Message Textarea. Why: The subject and message fields should look like the app's other form fields. How: This gives them the shared field border, radius, padding, and type, with a border fade on focus. */
+.supMesTex { /* What: Support Subject Input And Support Message Textarea. Why: The subject and message fields should look like the app's other form fields. How: This gives them the shared field border, radius, padding, and type, with a border fade on focus. */
 
 
 	background    : var( --bac-pag-col );                                   /* Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -218,7 +218,7 @@
 
 
 	.supSubInp,
-	.supMesTex { /* What: Still Support Message Textarea. Why: The focus border should simply switch. How: This turns the border fade off. */
+	.supMesTex { /* What: Still Support Subject Input And Support Message Textarea. Why: The focus border should simply switch. How: This turns the border fade off. */
 
 
 		transition : none;

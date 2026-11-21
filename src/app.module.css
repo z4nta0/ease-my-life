@@ -27,7 +27,7 @@
 
 /* #region appRooDiv */
 
-.appRooDiv { /* What: App Root. Why: The app fills the viewport, and its width drives every container query in the app. How: This makes it a full-height flex column that clips overflow and names it the appRooDiv inline-size container, after its own class. */
+.appRooDiv { /* What: App Root Div. Why: The app fills the viewport, and its width drives every container query in the app. How: This makes it a full-height flex column that clips overflow and names it the appRooDiv inline-size container, after its own class. */
 
 
 	container      : appRooDiv / inline-size;
@@ -333,7 +333,7 @@
 
 	.appTabNav--entering.appTabNav--bottom,
 	.appTabNav--entering.appTabNav--top,
-	.appTabNav--entering.appTabNav--side { /* What: Still Entering Tab Bar. Why: The new bar should simply be there. How: This turns the entrances off. */
+	.appTabNav--entering.appTabNav--side { /* What: Still App Tab Nav Entering. Why: The new bar should simply be there. How: This turns the entrances off. */
 
 
 		animation : none;
@@ -571,7 +571,7 @@
 
 }
 .appTabNav--side .braWorSpa,
-.appTabNav--top .braWorSpa { /* What: Shown Nav Wordmark. Why: The side and top bars lead with "Ease" over "My Life" beside the mark. How: This lays the mark and the stacked lines out in a tight row in capitals. */
+.appTabNav--top .braWorSpa { /* What: Shown Brand Wordmark Span. Why: The side and top bars lead with "Ease" over "My Life" beside the mark. How: This lays the mark and the stacked lines out in a tight row in capitals. */
 
 
 	align-items    : center;
@@ -601,7 +601,7 @@
 /* #region worMarSpa */
 
 .appTabNav--side .braWorSpa .worMarSpa,
-.appTabNav--top .braWorSpa .worMarSpa { /* What: Wordmark Mark. Why: The wordmark repeats the small logo mark beside its text. How: This sizes a fixed square in the accent color. */
+.appTabNav--top .braWorSpa .worMarSpa { /* What: Wordmark Mark Span. Why: The wordmark repeats the small logo mark beside its text. How: This sizes a fixed square in the accent color. */
 
 
 	color   : var( --acc-mai-col );                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -614,7 +614,7 @@
 }
 
 .appTabNav--side .braWorSpa .worMarSpa .worMarSvg,
-.appTabNav--top .braWorSpa .worMarSpa .worMarSvg { /* What: Wordmark Mark Glyph. Why: The logo should fill its square. How: This sizes the svg to the full box as a block. */
+.appTabNav--top .braWorSpa .worMarSpa .worMarSvg { /* What: Wordmark Mark SVG. Why: The logo should fill its square. How: This sizes the svg to the full box as a block. */
 
 
 	display : block;
@@ -631,7 +631,7 @@
 /* #region worLinSpa */
 
 .appTabNav--side .braWorSpa .worLinSpa,
-.appTabNav--top .braWorSpa .worLinSpa { /* What: Wordmark Lines. Why: "Ease" stacks over "My Life". How: This stacks the two lines left-aligned. */
+.appTabNav--top .braWorSpa .worLinSpa { /* What: Wordmark Lines Span. Why: "Ease" stacks over "My Life". How: This stacks the two lines left-aligned. */
 
 
 	align-items    : flex-start;
@@ -655,7 +655,7 @@
 }
 
 .appTabNav--side .braWorSpa .worEasSpa,
-.appTabNav--top .braWorSpa .worEasSpa { /* What: Wordmark Ease Line. Why: "Ease" leads the wordmark in the brand's display face. How: This sets it large and bold in Shantell Sans, in the accent color. */
+.appTabNav--top .braWorSpa .worEasSpa { /* What: Wordmark Ease Span. Why: "Ease" leads the wordmark in the brand's display face. How: This sets it large and bold in Shantell Sans, in the accent color. */
 
 
 	color          : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -881,7 +881,7 @@
 }
 
 .appTabNav--side .navTabBut[aria-current='page'] .tabIcoSvg,
-.appTabNav--top .navTabBut[aria-current='page'] .tabIcoSvg { /* What: Active Tab Icon. Why: The active tab's icon should match its accent label. How: This colors the icon accent. */
+.appTabNav--top .navTabBut[aria-current='page'] .tabIcoSvg { /* What: Current Tab Icon SVG. Why: The active tab's icon should match its accent label. How: This colors the icon accent. */
 
 
 	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */

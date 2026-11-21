@@ -696,7 +696,7 @@
 
 }
 .actIcoBut:hover,
-.actIcoSpa:hover { /* What: Hovered Entry Action Button. Why: The button should respond to the pointer. How: This fills it with the background color and darkens its icon. */
+.actIcoSpa:hover { /* What: Hovered Action Icon Button And Span. Why: The button should respond to the pointer. How: This fills it with the background color and darkens its icon. */
 
 
 	background : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -724,7 +724,7 @@
 
 
 	.actIcoBut,
-	.actIcoSpa { /* What: Still Entry Action Button. Why: The change should happen at once. How: This turns its transition off. */
+	.actIcoSpa { /* What: Still Action Icon Button And Span. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;

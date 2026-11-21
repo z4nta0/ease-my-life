@@ -314,7 +314,7 @@
 
 }
 .remAddBut:hover,
-.remAddSpa:hover { /* What: Hovered Add Reminder Button. Why: The button should respond to the pointer. How: This tints it in the accent color. */
+.remAddSpa:hover { /* What: Hovered Reminder Add Button And Span. Why: The button should respond to the pointer. How: This tints it in the accent color. */
 
 
 	background   : oklch( from var( --acc-tin-col ) l c h / 0.5 ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -335,7 +335,7 @@
 
 
 	.remAddBut,
-	.remAddSpa { /* What: Still Add Reminder Button. Why: The change should happen at once. How: This turns its transition off. */
+	.remAddSpa { /* What: Still Reminder Add Button And Span. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;

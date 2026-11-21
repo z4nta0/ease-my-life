@@ -447,7 +447,7 @@
 }
 
 .holNamInp,
-.holDatInp { /* What: Holiday Date Input. Why: The name and date fields should look like the app's other form fields while sharing the row. How: This gives them the shared field border, radius, padding, and type, lets them grow from a rhythm step, caps them at a rhythm step, and fades the border on focus. */
+.holDatInp { /* What: Holiday Name Input And Holiday Date Input. Why: The name and date fields should look like the app's other form fields while sharing the row. How: This gives them the shared field border, radius, padding, and type, lets them grow from a rhythm step, caps them at a rhythm step, and fades the border on focus. */
 
 
 	background    : var( --bac-pag-col );                                   /* Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -488,7 +488,7 @@
 
 
 	.holNamInp,
-	.holDatInp { /* What: Still Holiday Date Input. Why: The focus border should simply switch. How: This turns the border fade off. */
+	.holDatInp { /* What: Still Holiday Name Input And Holiday Date Input. Why: The focus border should simply switch. How: This turns the border fade off. */
 
 
 		transition : none;

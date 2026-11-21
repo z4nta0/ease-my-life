@@ -135,7 +135,7 @@
 
 }
 .carCheBut:focus-visible,
-.carCheSpa:focus-visible { /* What: Focused App Feature Check Button. Why: A keyboard user needs a visible ring that still reads on the filled done state. How: This draws an accent ring separated from the box by a background-colored gap. */
+.carCheSpa:focus-visible { /* What: Focused Card Check Button And Span. Why: A keyboard user needs a visible ring that still reads on the filled done state. How: This draws an accent ring separated from the box by a background-colored gap. */
 
 
 	box-shadow     : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.571px, Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -152,7 +152,7 @@
 
 }
 .carCheBut:hover,
-.carCheSpa:hover { /* What: Hovered App Feature Check Button. Why: The button should respond to the pointer. How: This darkens its border to the text color. */
+.carCheSpa:hover { /* What: Hovered Card Check Button And Span. Why: The button should respond to the pointer. How: This darkens its border to the text color. */
 
 
 	border-color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */

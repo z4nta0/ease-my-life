@@ -2089,7 +2089,7 @@
 
 }
 .onbGenSpa:active,
-.genLisSpa:active { /* What: Pressed Tip Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.genLisSpa:active { /* What: Pressed Onboarding Generate Span And Generate List Span. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -2134,7 +2134,7 @@
 
 }
 .onbGenSpa[aria-disabled='true'],
-.genLisSpa[aria-disabled='true'] { /* What: Disabled Tip Button. Why: The stand-in should read as unavailable. How: This dims it and drops the pointer cursor, keying off the aria-disabled its info tip sets. */
+.genLisSpa[aria-disabled='true'] { /* What: Disabled Onboarding Generate Span And Generate List Span. Why: The stand-in should read as unavailable. How: This dims it and drops the pointer cursor, keying off the aria-disabled its info tip sets. */
 
 
 	cursor  : default;
@@ -2143,7 +2143,7 @@
 
 }
 .onbGenSpa[aria-disabled='true']:hover,
-.genLisSpa[aria-disabled='true']:hover { /* What: Hovered Disabled Tip Button. Why: A disabled stand-in shouldn't light up on hover. How: This holds a flat page-background fill and its own text color. */
+.genLisSpa[aria-disabled='true']:hover { /* What: Hovered Disabled Onboarding Generate Span And Generate List Span. Why: A disabled stand-in shouldn't light up on hover. How: This holds a flat page-background fill and its own text color. */
 
 
 	background : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -2155,7 +2155,7 @@
 
 
 	.onbGenSpa,
-	.genLisSpa { /* What: Still Tip Button. Why: The change should happen at once. How: This turns its transition off. */
+	.genLisSpa { /* What: Still Onboarding Generate Span And Generate List Span. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;

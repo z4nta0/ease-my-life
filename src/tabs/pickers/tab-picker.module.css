@@ -497,7 +497,7 @@
 
 }
 .picAddBut:hover,
-.picAddSpa:hover { /* What: Hovered Add Picker Tab. Why: The tab should respond to the pointer. How: This turns it the accent color. */
+.picAddSpa:hover { /* What: Hovered Picker Add Button And Span. Why: The tab should respond to the pointer. How: This turns it the accent color. */
 
 
 	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -506,7 +506,7 @@
 
 }
 .picAddBut[data-tab-select-active],
-.picAddSpa[data-tab-select-active] { /* What: Selected Add Picker Tab. Why: While the create form is open, its tab reads as selected. How: This solidifies the border and fills it in the soft accent. */
+.picAddSpa[data-tab-select-active] { /* What: Selected Picker Add Button And Span. Why: While the create form is open, its tab reads as selected. How: This solidifies the border and fills it in the soft accent. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -586,7 +586,7 @@
 
 }
 .picAddBut .tabNamSpa,
-.picAddSpa .tabNamSpa { /* What: Add Tab Label. Why: The add label reads smaller and follows the tab's own color. How: This shrinks it and inherits the color. */
+.picAddSpa .tabNamSpa { /* What: Tab Name Span In Picker Add Button And Span. Why: The add label reads smaller and follows the tab's own color. How: This shrinks it and inherits the color. */
 
 
 	color     : inherit;

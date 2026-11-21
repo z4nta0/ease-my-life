@@ -1262,7 +1262,7 @@
 
 }
 .hetCelIta--level0,
-.hetCelBut--level0 { /* What: Level 0 Heat Cell Italic And Button. Why: A day with nothing done stays on the faint track color. How: This sets that color. */
+.hetCelBut--level0 { /* What: Heat Cell Italic And Button Level 0. Why: A day with nothing done stays on the faint track color. How: This sets that color. */
 
 
 	background : var( --bor-fil-col ); /* Border Fill Color = oklch( 0.93 0.005 240 ) */
@@ -1270,7 +1270,7 @@
 
 }
 .hetCelIta--level1,
-.hetCelBut--level1 { /* What: Level 1 Heat Cell Italic And Button. Why: A little done reads as a pale accent. How: This lightens and desaturates the accent. */
+.hetCelBut--level1 { /* What: Heat Cell Italic And Button Level 1. Why: A little done reads as a pale accent. How: This lightens and desaturates the accent. */
 
 
 	background : var( --hea-lev-sma ); /* Heat Level Small = oklch( 0.8 0.04 250 ) */
@@ -1278,7 +1278,7 @@
 
 }
 .hetCelIta--level2,
-.hetCelBut--level2 { /* What: Level 2 Heat Cell Italic And Button. Why: Some done reads a step stronger. How: This lightens the accent less. */
+.hetCelBut--level2 { /* What: Heat Cell Italic And Button Level 2. Why: Some done reads a step stronger. How: This lightens the accent less. */
 
 
 	background : var( --hea-lev-med ); /* Heat Level Medium = oklch( 0.68 0.08 250 ) */
@@ -1286,7 +1286,7 @@
 
 }
 .hetCelIta--level3,
-.hetCelBut--level3 { /* What: Level 3 Heat Cell Italic And Button. Why: Most done reads nearly full strength. How: This lightens the accent slightly. */
+.hetCelBut--level3 { /* What: Heat Cell Italic And Button Level 3. Why: Most done reads nearly full strength. How: This lightens the accent slightly. */
 
 
 	background : var( --hea-lev-lar ); /* Heat Level Large = oklch( 0.58 0.11 250 ) */
@@ -1294,7 +1294,7 @@
 
 }
 .hetCelIta--level4,
-.hetCelBut--level4 { /* What: Level 4 Heat Cell Italic And Button. Why: A full day reads in the accent itself. How: This sets the accent. */
+.hetCelBut--level4 { /* What: Heat Cell Italic And Button Level 4. Why: A full day reads in the accent itself. How: This sets the accent. */
 
 
 	background : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -1857,7 +1857,7 @@
 }
 
 .ranLisUno--fade,
-.remLogUno--fade { /* What: Fade Rank List Unordered And Fade Reminder Log Unordered. Why: A list that changes with its metric or sort should fade and rise in. How: This plays the shared fade alongside a short rise each time the keyed list remounts. */
+.remLogUno--fade { /* What: Rank List Unordered Fade And Reminder Log Unordered Fade. Why: A list that changes with its metric or sort should fade and rise in. How: This plays the shared fade alongside a short rise each time the keyed list remounts. */
 
 
 	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ), listSwitchRise var( --dur-ani-p02 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every live explanation line, so they stay in the global sheet, while listSwitchRise is this file's own. How: global() keeps CSS modules from renaming the shared reference to a scoped name that doesn't exist. */
