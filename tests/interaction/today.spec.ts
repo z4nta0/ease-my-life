@@ -30,7 +30,7 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * today.spec.ts = Today Spec
  *
  * @summary
- * Drives every control on the Today tab on real data and checks each one both
+ * Drives the Today tab's controls on real data and checks each one both
  * ways: the saved state in IndexedDB changed as it should, and the animation
  * tied to it played. Checking a card off pulses the progress ring and is
  * undone by checking it again; finishing every card celebrates, and bumps the
@@ -90,7 +90,7 @@ let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's pa
  * @param curPagObj - Current Page Object: The page to look on.
  * @param modNamArr - Mode Name Array: Which picker modes qualify.
  *
- * @returns The card and its entry id, or null.
+ * @returns A promise that resolves with the card and its entry id, or null.
  *
  * @example
  * ```ts
@@ -174,7 +174,7 @@ test( 'checking a card saves, animates, and undoes', async ( { page : curPagObj 
 
 	const preStaObj = ( await reaStaFun( curPagObj ) )!;                                // What: Previous State Object. Why: The check-off and undo are compared with it. How: This reads the state. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 	const butCurLoc = curPagObj.locator( `${ ENT_CAR_STR } ${ UNC_BUT_STR }` ).first(); // What: Button Current Locator. Why: The first unchecked card is checked off. How: This finds its button.
-	const butHanObj = ( await butCurLoc.elementHandle() )!;                             // What: Button Handle Object. Why: The undo clicks the same card. How: This holds the button. // What: Non-Null Note. Why: The fixed day always has an unchecked card. How: The ! tells TypeScript the handle exists.
+	const butHanObj = ( await butCurLoc.elementHandle() )!;                             // What: Button Handle Object. Why: The undo clicks the same card. How: This holds the button. // What: Non-Null Note. Why: The fixed day has an unchecked card. How: The ! tells TypeScript the handle exists.
 
 
 
@@ -348,7 +348,7 @@ test( 're-rolling and skipping animate and save', async ( { page : curPagObj } )
 
 	// #region Re-Roll
 
-	const rolCarObj = ( await picCarFun( curPagObj, [ 'dynamic', 'random', 'weighted' ] ) )!; // What: Roll Card Object. Why: A draw-mode card can always re-roll. How: This finds one. // What: Non-Null Note. Why: The backup's fixed day always has a draw-mode pick. How: The ! tells TypeScript one was found.
+	const rolCarObj = ( await picCarFun( curPagObj, [ 'dynamic', 'random', 'weighted' ] ) )!; // What: Roll Card Object. Why: A draw-mode card can re-roll. How: This finds one. // What: Non-Null Note. Why: The backup's fixed day has a draw-mode pick. How: The ! tells TypeScript one was found.
 
 
 
@@ -460,7 +460,7 @@ test( 'the item editor saves only on Save', async ( { page : curPagObj } ) => { 
 
 
 
-test( 'reminders can be added, renamed, and skipped', async ( { page : curPagObj } ) => { // What: Reminder Test. Why: Every reminder action must save. How: This adds, renames, and skips a reminder, checking IndexedDB after each step.
+test( 'reminders can be added, renamed, and skipped', async ( { page : curPagObj } ) => { // What: Reminder Test. Why: Reminders must be added, renamed, and skipped through their own controls. How: This adds, renames, and skips a reminder, checking IndexedDB after each step.
 
 
 	// #region Reminder Add
@@ -747,7 +747,7 @@ test( 'refilling an Ease Down item keeps its streak going', async ( { page : cur
 	// #region Staged State Build
 
 	const decUpdObj = easEntObj!.pending!.updates.find( ( curUpdObj ) => curUpdObj.id === easEntObj!.itemId && ( curUpdObj.chargeStep ?? 0 ) > 0 )!; // What: Decay Update Object. Why: Its step sets how low the item is staged. How: This finds the entry's decay row. // What: Non-Null Note. Why: easEntObj was found only with a pending holding this row. How: The ! tells TypeScript the entry, its pending, and the row are set.
-	const easIteObj = fixStaObj.items.find( ( curIteObj ) => curIteObj.id === easEntObj!.itemId )!;                                                  // What: Ease Item Object. Why: Its card and saved value are checked. How: This finds the entry's item. // What: Non-Null Note. Why: Every entry's item is in the saved items. How: The ! tells TypeScript the item is found.
+	const easIteObj = fixStaObj.items.find( ( curIteObj ) => curIteObj.id === easEntObj!.itemId )!;                                                  // What: Ease Item Object. Why: Its card and saved value are checked. How: This finds the entry's item. // What: Non-Null Note. Why: easEntObj's item is in the saved items. How: The ! tells TypeScript the item is found.
 	const easPicObj = fixStaObj.pickers.find( ( curPicObj ) => curPicObj.id === easEntObj!.pickerId )!;                                              // What: Ease Picker Object. Why: Its threshold and active item are checked. How: This finds the entry's picker. // What: Non-Null Note. Why: easEntObj was found only with its picker in the saved pickers. How: The ! tells TypeScript the picker is found.
 	const steValNum = decUpdObj.chargeStep!; // What: Step Value Number. Why: The staged item holds exactly one step, so this pick runs it out. How: This reads the row's step. // What: Non-Null Note. Why: decUpdObj was found only with a chargeStep. How: The ! tells TypeScript the step is set.
 	const thrValNum = easPicObj.threshold ?? 100;                                                                                                    // What: Threshold Value Number. Why: A refill fills the item to its picker's threshold. How: This reads it, defaulting to 100.

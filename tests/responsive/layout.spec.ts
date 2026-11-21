@@ -10,7 +10,7 @@ import { selTabFun } from '../support/app.ts';   // What: Select Tab Function. W
 import { test      } from '@playwright/test';    // What: Test. Why: Each width and page state is its own test. How: This declares them.
 
 
-import type { Page } from '@playwright/test'; // What: Page. Why: Every helper drives the page. How: This types the page parameters.
+import type { Page } from '@playwright/test'; // What: Page. Why: The helpers drive the page. How: This types the page parameters.
 
 // #endregion Imports
 
@@ -60,25 +60,24 @@ const VIE_WID_ARR = [ 375, 414, 768, 1024, 1280 ];                       // What
  *
  * @summary
  * Measures the page as it stands and returns every layout problem found.
- * Hidden things don't count: elements that aren't displayed, are fully
- * transparent, sit inside an aria-hidden decoration, or show a pixel or
- * less across once every clipping ancestor has cut them down (the
+ * Hidden things don't count: elements that aren't displayed, are visibility
+ * hidden, are fully transparent, sit inside an aria-hidden decoration, or show
+ * a pixel or less across once every clipping ancestor has cut them down (the
  * visually-hidden technique, or content inside a closed section). Overflow
  * only counts outside any ancestor that scrolls horizontally, since those
  * contain it on purpose; an ancestor that only clips would cut the content
- * off, so it still counts there, and text truncated with an ellipsis is
- * left alone. The main area only counts as scrolling
- * sideways when it doesn't clip. Overlap is checked between controls that
- * don't contain each other and sit in the same layer, so content scrolling
- * under the fixed tab bar isn't counted, and an overlap counts once it
- * covers more than a tenth of the smaller control and more than four square
- * pixels.
+ * off, so it still counts there, and text truncated with an ellipsis is left
+ * alone. The main area only counts as scrolling sideways when it doesn't clip.
+ * Overlap is checked between controls that don't contain each other and sit in
+ * the same layer, so content scrolling under the fixed tab bar isn't counted,
+ * and an overlap counts once it covers more than a tenth of the smaller
+ * control and more than four square pixels.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param curPagObj - Current Page Object: The page to measure.
  *
- * @returns Every problem found.
+ * @returns A promise that resolves with every problem found.
  *
  * @example
  * ```ts
@@ -101,6 +100,30 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 
 
 	// #region Element Helpers
+
+	// #region cliRecFun
+
+	/**
+	 * cliRecFun = Clipped Rect Function
+	 *
+	 * @summary
+	 * Measures an element's box and cuts it down to the box of every ancestor
+	 * up to the body that clips its overflow, so only the part that can show
+	 * is left. An element clipped away entirely comes back with a zero width
+	 * or height.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param curDomEle - Current DOM Element: The element to measure.
+	 *
+	 * @returns The cut box's edges and size.
+	 *
+	 * @example
+	 * ```ts
+	 * cliRecFun(curDomEle) // => { bottom, height, left, right, top, width }
+	 * ```
+	 *
+	*/
 
 	const cliRecFun = ( curDomEle : Element ) => { // What: Clipped Rect Function. Why: A clipping ancestor hides whatever falls outside it. How: This cuts the element's box down to every clipping ancestor's box.
 
@@ -137,7 +160,7 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 
 
 
-		return { // What: Clipped Rect Return. Why: Callers measure only what shows. How: This returns the cut box, its sides never negative.
+		return { // What: Clipped Rect Return. Why: Callers measure only what shows. How: This returns the cut box, its width and height never negative.
 
 
 			bottom : botValNum,                            // What: Bottom. Why: The cut box's bottom edge. How: This is the cut value.
@@ -152,6 +175,8 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 
 
 	};
+
+	// #endregion cliRecFun
 
 
 
@@ -169,7 +194,32 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 
 
 
-	const visEleFun = ( curDomEle : Element ) => { // What: Visible Element Function. Why: Hidden things can't look wrong. How: This checks display, opacity, aria-hidden, and what shows once clipped.
+	// #region visEleFun
+
+	/**
+	 * visEleFun = Visible Element Function
+	 *
+	 * @summary
+	 * Reports whether an element can be seen: it's displayed, not visibility
+	 * hidden, not fully transparent, not inside an aria-hidden ancestor, and
+	 * more than a pixel wide and tall once its clipping ancestors have cut it
+	 * down.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param curDomEle - Current DOM Element: The element to check.
+	 *
+	 * @returns Whether the element shows.
+	 * @see {@link visEleBoo}
+	 *
+	 * @example
+	 * ```ts
+	 * visEleFun(curDomEle) // => true
+	 * ```
+	 *
+	*/
+
+	const visEleFun = ( curDomEle : Element ) => { // What: Visible Element Function. Why: Hidden things can't look wrong. How: This checks display, visibility, opacity, aria-hidden, and what shows once clipped.
 
 
 		const cmpStyObj = getComputedStyle( curDomEle ); // What: Computed Style Object. Why: Visibility comes from the element's styles. How: This reads them.
@@ -193,6 +243,8 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 
 	};
 
+	// #endregion visEleFun
+
 
 
 	const scrAncFun = ( curDomEle : Element ) => { // What: Scroll Ancestor Function. Why: A container that scrolls sideways, like a pill rail, holds its overflow on purpose. How: This finds the nearest such ancestor.
@@ -209,6 +261,29 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 
 
 
+	// #region desEleFun
+
+	/**
+	 * desEleFun = Describe Element Function
+	 *
+	 * @summary
+	 * Names an element for a problem report: its data-element-name-hook, else
+	 * its aria-label, else its tag, followed by the first 40 characters of its
+	 * trimmed text in quotes.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param curDomEle - Current DOM Element: The element to describe.
+	 *
+	 * @returns The element's name and opening text.
+	 *
+	 * @example
+	 * ```ts
+	 * desEleFun(curDomEle) // => 'todCarArt "Laundry"'
+	 * ```
+	 *
+	*/
+
 	const desEleFun = ( curDomEle : Element ) => { // What: Describe Element Function. Why: Each problem must say which element. How: This names it by hook, label, or tag, with its text.
 
 
@@ -224,6 +299,8 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 
 
 	};
+
+	// #endregion desEleFun
 
 	// #endregion Element Helpers
 
@@ -249,7 +326,7 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 
 
 
-	for ( const curDomEle of Array.from( document.querySelectorAll( 'body *' ) ) ) { // What: Element Loop. Why: Every visible element is checked for overflow. How: This walks the page.
+	for ( const curDomEle of Array.from( document.querySelectorAll( 'body *' ) ) ) { // What: Element Loop. Why: Visible elements outside a sideways scroller are checked for overflow. How: This walks the page.
 
 
 		if ( !visEleFun( curDomEle ) || scrAncFun( curDomEle ) ) continue; // What: Contained Guard. Why: Hidden or contained elements are fine. How: This skips them.
@@ -349,13 +426,13 @@ const nooPreFun = async () => {}; // What: No-Op Prepare Function. Why: Most sta
 
 type PagStaTyp = { namStr : string, preFun : ( curPagObj : Page ) => Promise< void >, tabStr : string }; // What: Page State Type. Why: Each measured state is a tab plus optional setup. How: This holds its name, tab, and setup.
 
-const PAG_STA_ARR : PagStaTyp[] = [ // What: Page State Array. Why: Each tab, and the expanded states most likely to crowd, are measured. How: Each row is one state.
+const PAG_STA_ARR : PagStaTyp[] = [ // What: Page State Array. Why: Four tabs as they open, and the expanded states most likely to crowd, are measured. How: Each row is one state.
 
 
 	{ namStr : 'today',        preFun : nooPreFun, tabStr : 'today' },    // What: Today State. Why: The daily list is the main screen. How: This measures Today as it opens.
 	{ namStr : 'pickers',      preFun : nooPreFun, tabStr : 'picker' },   // What: Pickers State. Why: The picker view packs controls and a pool. How: This measures Pickers as it opens.
 	{ namStr : 'stats',        preFun : nooPreFun, tabStr : 'stats' },    // What: Stats State. Why: Stats holds wide cards and a heatmap. How: This measures Stats as it opens.
-	{ namStr : 'settings',     preFun : nooPreFun, tabStr : 'settings' }, // What: Settings State. Why: Settings holds every option row. How: This measures Settings as it opens.
+	{ namStr : 'settings',     preFun : nooPreFun, tabStr : 'settings' }, // What: Settings State. Why: Settings holds the option rows. How: This measures Settings as it opens.
 
 	{ namStr : 'today-editor', tabStr : 'today', preFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="todCarArt"] [aria-label="Edit"]' ).first().click(); } }, // What: Today Editor State. Why: The inline item editor crowds a card. How: This opens the first card's editor.
 

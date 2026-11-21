@@ -87,7 +87,7 @@ let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's pa
  *
  * @example
  * ```ts
- * texCheFun(page, INJ_PAY_STR) // => Promise<void>
+ * await texCheFun(page, INJ_PAY_STR) // => Promise<void>
  * ```
  *
 */
@@ -132,7 +132,7 @@ test.afterEach( () => { expect( errMesArr, errMesArr.join( '\n' ) ).toEqual( [] 
 
 
 
-test( 'a picker name typed as markup is tidied and shows as text', async ( { page : curPagObj } ) => { // What: Picker Name Test. Why: A picker's name shows again on every tab, and the app tidies a picker's name into plain words as it saves. How: This renames a picker in the Data tab's controls, saves, checks the saved name kept no markup, and checks it shows as text and ran nothing.
+test( 'a picker name typed as markup is tidied and shows as text', async ( { page : curPagObj } ) => { // What: Picker Name Test. Why: A picker's name shows again on its Data tab card, and the app tidies a picker's name into plain words as it saves. How: This renames a picker in the Data tab's controls, saves, checks the saved name kept no markup, and checks it shows as text and ran nothing.
 
 
 	// #region Picker Card Open
@@ -159,7 +159,7 @@ test( 'a picker name typed as markup is tidied and shows as text', async ( { pag
 
 
 	const savStaObj = await waiStaFun( curPagObj, ( staAppObj ) => staAppObj.pickers.some( ( curPicObj ) => /onerror/i.test( curPicObj.name ) ), 'picker name saved' ); // What: Saved State Object. Why: The name is checked once saved, in whatever form the app tidied it to. How: This waits for a picker whose name holds the payload's words.
-	const savNamStr = savStaObj.pickers.find( ( curPicObj ) => /onerror/i.test( curPicObj.name ) )!.name;                                                               // What: Saved Name String. Why: The tidied name is what the card shows. How: This reads it from the saved state. // What: Non-Null Note. Why: The wait above returns only once such a picker exists. How: The ! says find succeeds.
+	const savNamStr = savStaObj.pickers.find( ( curPicObj ) => /onerror/i.test( curPicObj.name ) )!.name;                                                               // What: Saved Name String. Why: The tidied name is what the card shows. How: This reads it from the saved state. // What: Non-Null Note. Why: The wait above returns only once such a picker exists. How: The ! tells TypeScript the find succeeds.
 
 	// #endregion Payload Save
 
@@ -167,7 +167,7 @@ test( 'a picker name typed as markup is tidied and shows as text', async ( { pag
 
 	// #region Text Display Checks
 
-	expect( savNamStr ).not.toMatch( /[<>=]/ ); // What: Tidied Name Assertion. Why: A picker's name keeps only words, so no markup reaches any screen. How: This checks the saved name holds none of the tag's symbols.
+	expect( savNamStr ).not.toMatch( /[<>=]/ ); // What: Tidied Name Assertion. Why: A picker's name is tidied to plain words, so no markup is saved. How: This checks the saved name holds none of the tag's symbols.
 
 	await texCheFun( curPagObj, savNamStr ); // What: Text Check Call. Why: The saved name shows again on the card. How: This checks it shows as text and ran nothing.
 
@@ -196,7 +196,7 @@ test( 'a reminder name typed as markup shows as text', async ( { page : curPagOb
 
 
 
-test( 'a holiday name typed as markup shows as text', async ( { page : curPagObj } ) => { // What: Holiday Name Test. Why: A custom holiday's name shows again in the Settings list and on its day off. How: This adds a holiday in Settings and checks the name shows as text and ran nothing.
+test( 'a holiday name typed as markup shows as text', async ( { page : curPagObj } ) => { // What: Holiday Name Test. Why: A custom holiday's name shows again in the Settings list. How: This adds a holiday in Settings and checks the name shows as text and ran nothing.
 
 
 	await selTabFun( curPagObj, 'settings' ); // What: Tab Switch Call. Why: Holidays are added on the Settings tab. How: This switches to it.

@@ -81,11 +81,11 @@ const TOD_TAB_STR = '[data-element-name-hook~="todTabDiv"]';                    
  *
  * @param curPagObj - Current Page Object: The page showing the modal.
  *
- * @returns A promise that settles once the button is clicked.
+ * @returns A promise that settles once the button is clicked, with no value.
  *
  * @example
  * ```ts
- * await begModFun(curPagObj) // => void
+ * await begModFun(curPagObj) // => Promise<void>
  * ```
  *
 */
@@ -125,7 +125,8 @@ const begModFun = async ( curPagObj : Page ) : Promise< void > => { // What: Beg
  * @param waiMilNum - Wait Milliseconds Number: How long to wait for a
  *                    change.
  *
- * @returns Whether the card's text changed in time.
+ * @returns A promise that resolves with whether the card's text changed in
+ *          time.
  *
  * @example
  * ```ts
@@ -140,7 +141,33 @@ const chaWaiFun = async ( curPagObj : Page, preKeyStr : string, waiMilNum : numb
 
 
 
+// #region coaKeyFun
+
+/**
+ * coaKeyFun = Coach Key Function
+ *
+ * @summary
+ * Reads the visible coach card's text, cut to its first 200 characters, as a
+ * key that changes once a step advances. Returns an empty string when no card
+ * shows.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curPagObj - Current Page Object: The page running the tour.
+ *
+ * @returns A promise that resolves with the card's text key, or an empty
+ *          string.
+ *
+ * @example
+ * ```ts
+ * await coaKeyFun(curPagObj) // => 'Welcome to ...'
+ * ```
+ *
+*/
+
 const coaKeyFun = async ( curPagObj : Page ) : Promise< string > => curPagObj.evaluate( ( coaSelStr ) => document.querySelector< HTMLElement >( coaSelStr )?.innerText.slice( 0, 200 ) || '', COA_CAR_STR ); // What: Coach Key Function. Why: A step has advanced once its card's text changes. How: This reads the visible card's text, or empty when there's none.
+
+// #endregion coaKeyFun
 
 
 
@@ -152,20 +179,20 @@ type RecBoxTyp = { height : number, width : number, x : number, y : number }; //
  * advSteFun = Advance Step Function
  *
  * @summary
- * Tries to move the current step on: an enabled Next, Done, or Dismiss
- * button first, then the spotlight's center, then the center of each
- * clickable element showing inside the spotlight, skipping any covered by
- * the coach card. The button and the center get five seconds each, since a
- * click step can wait on an animation or a new target before advancing, and
- * each further element gets a second and a half. Off-target clicks are
- * blocked by the tour's own click guard, so a wrong guess does nothing.
- * Returns whether the step advanced.
+ * Tries to move the current step on: an enabled Next, Done, or Dismiss button
+ * first, then the spotlight's center, then the center of each clickable
+ * element showing inside the spotlight, skipping any covered by something
+ * else, such as the coach card. The button and the center get five seconds
+ * each, since a click step can wait on an animation or a new target before
+ * advancing, and each further element gets a second and a half. Off-target
+ * clicks are blocked by the tour's own click guard, so a wrong guess does
+ * nothing. Returns whether the step advanced.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param curPagObj - Current Page Object: The page running the tour.
  *
- * @returns Whether the step advanced.
+ * @returns A promise that resolves with whether the step advanced.
  *
  * @example
  * ```ts
@@ -282,18 +309,18 @@ const advSteFun = async ( curPagObj : Page ) : Promise< boolean > => { // What: 
  * seconds, since the tour can drop the attribute for a moment as it
  * remounts. Throws with the stuck step's text when a step won't advance,
  * when the card never comes back while the tour is still running, or after
- * 40 steps, more than any tour has.
+ * 40 steps.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param curPagObj - Current Page Object: The page running the tour.
  * @param touNamStr - Tour Name String: Names the tour in a failure.
  *
- * @returns A promise that settles once the tour has ended.
+ * @returns A promise that settles once the tour has ended, with no value.
  *
  * @example
  * ```ts
- * await runTouFun(curPagObj, 'welcome') // => void
+ * await runTouFun(curPagObj, 'welcome') // => Promise<void>
  * ```
  *
 */
@@ -327,7 +354,7 @@ const runTouFun = async ( curPagObj : Page, touNamStr : string ) : Promise< void
 
 
 
-	throw new Error( `${ touNamStr } tour never ended` ); // What: Endless Error. Why: No tour runs past 40 steps. How: This throws.
+	throw new Error( `${ touNamStr } tour never ended` ); // What: Endless Error. Why: A tour still running after 40 steps hasn't ended. How: This throws.
 
 
 };
@@ -353,11 +380,12 @@ const runTouFun = async ( curPagObj : Page, touNamStr : string ) : Promise< void
  * @param butSelStr - Button Selector String: Matches the unplayed
  *                    launchers' Start buttons.
  *
- * @returns A promise that settles once the tour has ended back on Today.
+ * @returns A promise that settles once the tour has ended back on Today, with
+ *          no value.
  *
  * @example
  * ```ts
- * await lauRunFun(curPagObj, LAU_BUT_STR) // => void
+ * await lauRunFun(curPagObj, LAU_BUT_STR) // => Promise<void>
  * ```
  *
 */
@@ -457,7 +485,7 @@ for ( const vieWidNum of [ 375, 1280 ] ) test( `the whole onboarding at ${ vieWi
 	while ( await curPagObj.locator( LAU_BUT_STR ).count() ) { // What: Launcher Loop. Why: Every checklist launcher runs its tour. How: This plays the next unplayed launcher until none remain.
 
 
-		if ( ++lauCouNum > 20 ) throw new Error( 'the checklist launchers never ran out' ); // What: Endless Guard. Why: A launcher that stays unplayed after its tour would loop forever. How: This throws past 20, more than the checklist has.
+		if ( ++lauCouNum > 20 ) throw new Error( 'the checklist launchers never ran out' ); // What: Endless Guard. Why: A launcher that stays unplayed after its tour would loop forever. How: This throws past 20.
 
 
 
@@ -494,7 +522,7 @@ for ( const vieWidNum of [ 375, 1280 ] ) test( `the whole onboarding at ${ vieWi
 	while ( await curPagObj.locator( FEA_BUT_STR ).count() ) { // What: Feature Loop. Why: Every App Features card runs its tour. How: This plays the next unplayed card until none remain.
 
 
-		if ( ++feaCouNum > 12 ) throw new Error( 'the App Features cards never ran out' ); // What: Endless Guard. Why: A card that stays unplayed after its tour would loop forever. How: This throws past 12, more than the section has.
+		if ( ++feaCouNum > 12 ) throw new Error( 'the App Features cards never ran out' ); // What: Endless Guard. Why: A card that stays unplayed after its tour would loop forever. How: This throws past 12.
 
 
 

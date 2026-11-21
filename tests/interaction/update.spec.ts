@@ -263,7 +263,7 @@ test( 'a new version reaching a hidden app waits while sync is busy, then reload
 
 
 
-test( 'coming back to the app looks for a new version, and a first install shows nothing', async ( { page : curPagObj } ) => { // What: Update Check Test. Why: An app left open never looks for a new version by itself, and a first install isn't an update. How: This shows the app twice and checks each asks for an update, then fires a control change with no earlier controller and checks no note shows.
+test( 'coming back to the app looks for a new version, and a first install shows nothing', async ( { page : curPagObj } ) => { // What: Update Check Test. Why: An app left open looks for a new version when the person comes back to it, and a first install isn't an update. How: This shows the app twice and checks each asks for an update, then fires a control change with no earlier controller and checks no note shows.
 
 
 	// #region First Install Setup
