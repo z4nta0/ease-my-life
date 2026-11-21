@@ -222,7 +222,7 @@
 @container appRooDiv ( max-width : 560px ) { /* What: Narrow Page Title Heading. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
 
 
-	.pagTitHea { /* What: Smaller Page Title Heading. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
+	.pagTitHea { /* What: Smaller Page Title Heading. Why: The heading has less room. How: This drops it one step, to the p03 font size. */
 
 
 		font-size : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
@@ -251,7 +251,7 @@
 
 /* #region pagSubPar */
 
-.pagSubPar { /* What: Page Sub Paragraph. Why: The intro explains the page under its title, linking to other tabs inline, set a little below the title row. How: This sets it muted with a capped line length and a large vertical spacing top margin. */
+.pagSubPar { /* What: Page Sub Paragraph. Why: The intro explains the page under its title, linking to other tabs inline, set a little below the title row. How: This sets it muted with a capped line length and a top margin of the p01 vertical spacing step. */
 
 
 	color     : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -408,10 +408,10 @@
 
 
 }
-@supports ( -moz-appearance : none ) { /* What: Firefox Scope Tab Div. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
+@supports ( -moz-appearance : none ) { /* What: Firefox Scope Tab Div. Why: The rail's bottom border needs a pixel of room where this feature query matches. How: This applies only where -moz-appearance is recognized. */
 
 
-	.scoTabDiv { /* What: Padded Scope Tab Div. Why: The bottom border needs a pixel of room. How: This adds extra small 8 vertical spacing (about 1px) of bottom padding. */
+	.scoTabDiv { /* What: Padded Scope Tab Div. Why: The bottom border needs a pixel of room. How: This adds the m09 vertical spacing step (about 1px) of bottom padding. */
 
 
 		padding-bottom : var( --spa-ver-m09 ); /* Spacing Vertical Base Minus 9 ~= 1.160px */
@@ -425,7 +425,7 @@
 
 /* #region scoTabBut */
 
-.scoTabBut { /* What: Scope Tab Button. Why: Everything and each picker in scope is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode, and eases its press and focus ring. */
+.scoTabBut { /* What: Scope Tab Button. Why: Each scope in the Show strip is a card-like tab, sliding in as it mounts. How: This draws a bordered, snapping card with the name over its kind, and eases its press and focus ring. */
 
 
 	animation         : global( tabGroupSlideIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ) backwards; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global tabGroupSlideIn Keyframes. Why: The tabGroupSlideIn keyframes are shared with the Pickers and Data tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */ /* What: Backwards Fill. Why: A fill that held the last frame would hold the tab's transform and keep its press from showing. How: The tab holds the first frame only while it waits to start, and its own styles, which match the last frame, take over once it ends. */
@@ -593,7 +593,7 @@
 
 }
 
-.ranPilBut { /* What: Range Pill Button. Why: Each range is a pill that sets the period every stat covers. How: This draws an outlined pill that never shrinks or wraps and fades between colors, and eases its press and focus ring. */
+.ranPilBut { /* What: Range Pill Button. Why: Each range is a pill that sets the period the stats cover. How: This draws an outlined pill that never shrinks or wraps and fades between colors, and eases its press and focus ring. */
 
 
 	background     : transparent;
@@ -823,7 +823,7 @@
 
 }
 
-.staLabDiv { /* What: Stat Label Div. Why: The number names what it counts below it. How: This sets small uppercase muted mono type. */
+.staLabDiv { /* What: Stat Label Div. Why: Each headline number needs a label below it naming what it counts. How: This sets small uppercase muted mono type. */
 
 
 	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -858,7 +858,7 @@
 
 /* #region breBarDiv */
 
-.breBarDiv { /* What: Breakdown Bar Div. Why: The segments read as one rounded proportion bar. How: This lays them out in a clipped pill at the small rhythm step on a faint track. */
+.breBarDiv { /* What: Breakdown Bar Div. Why: The segments read as one rounded proportion bar. How: This lays them out in a clipped pill at the m01 rhythm step on a faint track. */
 
 
 	background    : var( --bor-fil-col );                /* Border Fill Color = oklch( 0.93 0.005 240 ) */
@@ -1047,7 +1047,7 @@
 
 }
 
-.hetYeaSpa { /* What: Heat Year Span. Why: The showing year reads between its arrows. How: This sets it in bold tabular mono at a fixed width. */
+.hetYeaSpa { /* What: Heat Year Span. Why: The showing year reads between its arrows. How: This sets it in bold tabular mono at a minimum width. */
 
 
 	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
@@ -1152,7 +1152,7 @@
 
 
 }
-@keyframes hetGriDivNextFadeIn { /* What: Heat Grid Div Next Fade In Keyframes. Why: The next year enters from the right. How: This fades the grid in while sliding it 16px left into place. */
+@keyframes hetGriDivNextFadeIn { /* What: Heat Grid Div Next Fade In Keyframes. Why: The next year enters from the right. How: This fades the grid in while sliding it one horizontal spacing step (about 14.572px) left into place. */
 
 
 	from {
@@ -1175,7 +1175,7 @@
 
 
 }
-@keyframes hetGriDivPrevFadeIn { /* What: Heat Grid Div Previous Fade In Keyframes. Why: The previous year enters from the left. How: This fades the grid in while sliding it 16px right into place. */
+@keyframes hetGriDivPrevFadeIn { /* What: Heat Grid Div Previous Fade In Keyframes. Why: The previous year enters from the left. How: This fades the grid in while sliding it one horizontal spacing step (about 14.572px) right into place. */
 
 
 	from {
@@ -1456,7 +1456,7 @@
 
 /* #endregion detLisUno */
 
-.detEmpPar { /* What: Detail Empty Paragraph. Why: A day with nothing says so quietly. How: This sets small muted text. */
+.detEmpPar { /* What: Detail Empty Paragraph. Why: A day with nothing says so quietly. How: This sets muted text. */
 
 
 	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -1504,7 +1504,7 @@
 
 }
 
-.sumStaSpa { /* What: Summary Stat Span. Why: Each stat is a number with a label. How: This sets the label small and muted. */
+.sumStaSpa { /* What: Summary Stat Span. Why: Each stat is a number with a label. How: This sets the label muted. */
 
 
 	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -1860,7 +1860,7 @@
 .remLogUno--fade { /* What: Rank List Unordered Fade And Reminder Log Unordered Fade. Why: A list that changes with its metric or sort should fade and rise in. How: This plays the shared fade alongside a short rise each time the keyed list remounts. */
 
 
-	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ), listSwitchRise var( --dur-ani-p02 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every live explanation line, so they stay in the global sheet, while listSwitchRise is this file's own. How: global() keeps CSS modules from renaming the shared reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ), listSwitchRise var( --dur-ani-p02 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with other modules, so they stay in the global sheet, while listSwitchRise is this file's own. How: global() keeps CSS modules from renaming the shared reference to a scoped name that doesn't exist. */
 
 
 }
@@ -1878,7 +1878,7 @@
 
 
 }
-@keyframes listSwitchRise { /* What: List Switch Rise Keyframes. Why: The refreshed list settles up into place. How: This moves it up 5px. */
+@keyframes listSwitchRise { /* What: List Switch Rise Keyframes. Why: The refreshed list settles up into place. How: This moves it up one vertical spacing step (about 4.731px). */
 
 
 	from {
@@ -2446,7 +2446,7 @@
 
 /* #endregion pagNavDiv */
 
-.staEmpDiv { /* What: Stat Empty Div. Why: A card with nothing to show says so quietly. How: This sets small muted text with a little padding. */
+.staEmpDiv { /* What: Stat Empty Div. Why: A card with nothing to show says so quietly. How: This sets muted text with a little padding. */
 
 
 	color     : var( --tex-mut-col );                      /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -2456,7 +2456,7 @@
 
 }
 
-.sumEmpDiv { /* What: Summary Empty Div. Why: A summary or log with nothing in range says so quietly. How: This sets small muted text with a little padding. */
+.sumEmpDiv { /* What: Summary Empty Div. Why: A summary or log with nothing in range says so quietly. How: This sets muted text with a little padding. */
 
 
 	color     : var( --tex-mut-col );   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
