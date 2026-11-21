@@ -222,7 +222,7 @@ const REA_STA_ARR : StaRcdTyp[] = [ // What: Reachable State Array. Why: A pop-u
 		actFun : async ( curPagObj ) => { // What: Info Tip Action Function. Why: The state shows the tip's bubble open. How: This presses Enter on the first info tip and waits for its bubble.
 
 
-			await curPagObj.locator( '[class*="infTriSpa"]' ).first().press( 'Enter' ); // What: Tip Open Call. Why: A keyboard user opens a tip with Enter. How: This focuses the first info tip's trigger and presses Enter on it.
+			await curPagObj.locator( '[class*="infTrgSpa"]' ).first().press( 'Enter' ); // What: Tip Open Call. Why: A keyboard user opens a tip with Enter. How: This focuses the first info tip's trigger and presses Enter on it.
 
 			await curPagObj.locator( '[data-element-name-hook~="infTipSpa"]' ).waitFor(); // What: Bubble Wait. Why: The checks read the page only once the bubble shows. How: This waits for it.
 

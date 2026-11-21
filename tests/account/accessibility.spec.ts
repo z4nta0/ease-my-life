@@ -170,7 +170,7 @@ test( 'the signed-in Account screens pass the accessibility checks', async ( { p
 
 	await curPagObj.locator( '[data-element-name-hook~="resRowDiv"]' ).getByRole( 'button', { exact : true, name : 'Reset' } ).click(); // What: Reset Open Click. Why: The signed-in confirm has its cloud option. How: This opens it.
 
-	await expect( curPagObj.locator( '[data-element-name-hook~="resCloBut"]' ) ).toBeVisible(); // What: Confirm Wait. Why: The screen is ready once the cloud option shows. How: This waits for it.
+	await expect( curPagObj.locator( '[data-element-name-hook~="resCldBut"]' ) ).toBeVisible(); // What: Confirm Wait. Why: The screen is ready once the cloud option shows. How: This waits for it.
 
 	await chePagFun( curPagObj ); // What: Confirm Check Call. Why: The reset confirm must pass. How: This checks it.
 

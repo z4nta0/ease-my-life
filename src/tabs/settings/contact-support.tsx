@@ -479,9 +479,9 @@ function ConSupCom () : React.JSX.Element {
 
 
 				<div
-					className={ cssModObj.supTriDiv }
+					className={ cssModObj.supTrgDiv }
 
-					data-element-name-hook='supTriDiv'
+					data-element-name-hook='supTrgDiv'
 				>{ /* What: Support Trigger Div Element. Why: The label/description and the trigger button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Contact Support button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 

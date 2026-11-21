@@ -347,7 +347,7 @@ const SET_HEL_ARR : HelIteTyp[] = [ // What: Settings Help Array. Why: This is t
 
 		bodEle : <>This opens a short form for sending a message directly to the developer. Your app version and browser are attached automatically, so there's no back-and-forth needed to track those down.</>,
 		ideStr : 'aboutContactTrigger',
-		selStr : '[data-element-name-hook~="supTriDiv"]',
+		selStr : '[data-element-name-hook~="supTrgDiv"]',
 		titStr : 'Contact Support'
 
 

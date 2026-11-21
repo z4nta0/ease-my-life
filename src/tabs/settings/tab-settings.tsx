@@ -2722,7 +2722,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 											<ButBasCom
-												data-element-name-hook='resCloBut'
+												data-element-name-hook='resCldBut'
 
 												disabled={ resBusBoo }
 												kinValStr='danger'

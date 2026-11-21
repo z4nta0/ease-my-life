@@ -253,7 +253,7 @@
 
 }
 
-.spaPieSpa { /* What: Sparkle Piece Span. Why: Each sparkle glints at its own spot like the real sparkle celebration. How: This centers an accent glyph on its inline position and twinkles it with the shared animation. */
+.spkPieSpa { /* What: Sparkle Piece Span. Why: Each sparkle glints at its own spot like the real sparkle celebration. How: This centers an accent glyph on its inline position and twinkles it with the shared animation. */
 
 
 	animation   : global( sparkleCelebrateTwinkle ) var( --dur-ani-p06 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */ /* What: Global sparkleCelebrateTwinkle Keyframes. Why: The sparkleCelebrateTwinkle keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */

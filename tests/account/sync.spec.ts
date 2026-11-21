@@ -498,7 +498,7 @@ test( 'resetting a signed-in device can delete the cloud copy too, and signs the
 
 	await curPagObj.locator( '[data-element-name-hook~="resRowDiv"]' ).getByRole( 'button', { exact : true, name : 'Reset' } ).click(); // What: Reset Open Click. Why: The reset asks for confirmation first. How: This opens it.
 
-	await curPagObj.locator( '[data-element-name-hook~="resCloBut"]' ).click(); // What: Cloud Reset Click. Why: This is the option under test. How: This resets and deletes the cloud copy.
+	await curPagObj.locator( '[data-element-name-hook~="resCldBut"]' ).click(); // What: Cloud Reset Click. Why: This is the option under test. How: This resets and deletes the cloud copy.
 
 	await curPagObj.getByRole( 'dialog', { name : 'Welcome to Ease My Life' } ).waitFor(); // What: Reload Wait. Why: A reset reloads the app onto its welcome modal. How: This waits for it.
 

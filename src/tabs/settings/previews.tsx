@@ -410,7 +410,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 						<span
 							key={ parCurObj.ideStr }
 
-							className={ cssModObj.spaPieSpa }
+							className={ cssModObj.spkPieSpa }
 
 							style={{
 								animationDelay : parCurObj.delNum + 'ms',

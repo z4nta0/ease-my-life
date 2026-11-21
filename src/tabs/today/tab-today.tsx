@@ -4269,7 +4269,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									<span
 										key={ curParObj.ideNum }
 
-										className={ cssModObj.spaPieSpa }
+										className={ cssModObj.spkPieSpa }
 
 										style={{
 											animationDelay : `${ curParObj.delNum }ms`,

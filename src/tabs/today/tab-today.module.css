@@ -1754,7 +1754,7 @@
 
 }
 
-.spaPieSpa { /* What: Sparkle Piece Span. Why: Each sparkle twinkles at its own spot. How: This draws a small accent glyph centered on its inline position that plays the shared twinkle. */
+.spkPieSpa { /* What: Sparkle Piece Span. Why: Each sparkle twinkles at its own spot. How: This draws a small accent glyph centered on its inline position that plays the shared twinkle. */
 
 
 	animation   : global( sparkleCelebrateTwinkle ) var( --dur-ani-p06 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */ /* What: Global sparkleCelebrateTwinkle Keyframes. Why: The sparkleCelebrateTwinkle keyframes are shared with the Settings celebration preview, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -1770,7 +1770,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sparkle Piece Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.spaPieSpa { /* What: Still Sparkle Piece Span. Why: Particles are purely decorative, so they stay hidden. How: This turns its animation and opacity off. */
+	.spkPieSpa { /* What: Still Sparkle Piece Span. Why: Particles are purely decorative, so they stay hidden. How: This turns its animation and opacity off. */
 
 
 		animation : none;

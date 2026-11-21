@@ -15,7 +15,7 @@
 
 
 
-.infTriSpa { /* What: Info Trigger Span. Why: Whatever a tip is attached to should hint that it explains something. How: This shows the help cursor over the trigger, and eases its focus ring in. */
+.infTrgSpa { /* What: Info Trigger Span. Why: Whatever a tip is attached to should hint that it explains something. How: This shows the help cursor over the trigger, and eases its focus ring in. */
 
 
 	cursor         : help;
@@ -25,7 +25,7 @@
 
 
 }
-.infTriSpa:focus-visible { /* What: Focused Info Trigger Span. Why: A keyboard user needs to see which trigger has focus. How: This draws the accent outline around it. */
+.infTrgSpa:focus-visible { /* What: Focused Info Trigger Span. Why: A keyboard user needs to see which trigger has focus. How: This draws the accent outline around it. */
 
 
 	border-radius  : var( --rad-bor-xsm ); /* Radius Border Extra Small ~= 3.571px */
@@ -37,7 +37,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Info Trigger Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.infTriSpa { /* What: Still Info Trigger Span. Why: The change should happen at once. How: This turns its transition off. */
+	.infTrgSpa { /* What: Still Info Trigger Span. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -47,7 +47,7 @@
 
 
 }
-.infTriSpa button:disabled { /* What: Disabled Trigger Button. Why: A disabled native button swallows pointer and touch events instead of letting them reach the trigger around it, so on touch screens its tip would never open. How: This lets those events pass through the button to the trigger, naming it by tag since the button is the caller's own child, which InfTipCom can't give a class. */
+.infTrgSpa button:disabled { /* What: Disabled Trigger Button. Why: A disabled native button swallows pointer and touch events instead of letting them reach the trigger around it, so on touch screens its tip would never open. How: This lets those events pass through the button to the trigger, naming it by tag since the button is the caller's own child, which InfTipCom can't give a class. */
 
 
 	pointer-events : none;

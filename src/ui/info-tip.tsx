@@ -377,7 +377,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 		<span
 			ref={ trgEleRef }
 
-			className={` ${ cssModObj.infTriSpa }   ${ className } `}
+			className={` ${ cssModObj.infTrgSpa }   ${ className } `}
 
 			data-element-name-hook={ hooNamStr }
 			{ ...datAttObj } // What: Data Attributes Spread. Why: A caller's state attributes (e.g. a selected tab) must land on the trigger its module styles. How: This spreads every remaining data-* prop onto the span.
