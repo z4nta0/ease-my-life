@@ -11,28 +11,28 @@ import { ButBasCom    } from '../../ui/button.tsx';               // What: Butto
 import { CAD_NAM_OBJ  } from '../../core/cadence.ts';             // What: Cadence Namespace Object. Why: This is the namespace of pure functions this file uses to normalize and edit a picker's own cadence. How: This is called for CAD_NAM_OBJ.norCadFun/enfWeeFun/locTipFun/uniWorFun throughout PicForCom.
 import { CadConCom    } from '../../ui/cadence-control.tsx';      // What: Cadence Control Component. Why: This is the shared editor for a picker's cadence settings. How: This is rendered inside PicForCom's daily-schedule block, wired to the local cadence state.
 import { CodConCom    } from '../../ui/conditional-controls.tsx'; // What: Conditional Control Component. Why: Attaching a brand-new inline conditional needs the same editor the Data tab uses. How: This is rendered inside PicForCom's conditional-attach block, wired to the local conDraObj state.
-import { ColDisCom    } from '../../ui/collapse.tsx';             // What: Collapse Disclosure Component. Why: Several optional sections need an animated expand/collapse instead of an abrupt show/hide. How: This wraps the add-group input, the conditional-attach block, and the daily-schedule block, each gated on its own open boolean.
-import { conDraFun    } from '../../ui/conditional-controls.tsx'; // What: Conditional Draft Function. Why: Starting a new inline conditional needs a sensible starting draft shape. How: This is called whenever the user opens the Add New Conditional pill, seeded from the picker's own name.
+import { ColDisCom    } from '../../ui/collapse.tsx';             // What: Collapse Disclosure Component. Why: Several optional sections need an animated expand/collapse instead of an abrupt show/hide. How: This wraps each optional section, such as the add-group input, gated on its own open condition.
+import { conDraFun    } from '../../ui/conditional-controls.tsx'; // What: Conditional Draft Function. Why: Starting a new inline conditional needs a sensible starting draft shape. How: This builds the initial draft at mount and again whenever the user opens the Add New Conditional pill, seeded from the picker's own name.
 import { durMilFun    } from '../../utils/rhythm.ts';             // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { emlTouObj    } from '../../state/tour-bus.ts';           // What: Ease-My-Life Tour Object. Why: A couple of tour-driven behaviors need to read the shared tour bus's current value synchronously, not through React state. How: This is read via emlTouObj.get() when staging a new draft item's tour prefill, and written via emlTouObj.set() to clear a staged empty-state prefill.
+import { emlTouObj    } from '../../state/tour-bus.ts';           // What: Ease-My-Life Tour Object. Why: A couple of tour-driven behaviors need to read the shared tour bus's current value synchronously, not through React state. How: This is read via emlTouObj.get() when staging a new draft item's tour prefill.
 import { IcoSvgCom    } from '../../ui/icon.tsx';                 // What: Icon SVG Component. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
-import { InfTipCom    } from '../../ui/info-tip.tsx';             // What: Info Tip Component. Why: A disabled Create button must explain that a picker needs at least 2 items. How: This wraps that button with the requirement as its tip.
-import { IteCarCom    } from './item-card.tsx';                   // What: Item Card Component. Why: Adding or editing a pool item opens the shared item card, holding the same weight/ease editor the Today tab uses. How: This is rendered below the pool list, wired to either the real store actions or the local draft-item actions.
+import { InfTipCom    } from '../../ui/info-tip.tsx';             // What: Info Tip Component. Why: A pool row's Delete must explain why it is unavailable once the pool is at its 2-item floor. How: This wraps that row's trash glyph with the requirement as its tip.
+import { IteCarCom    } from './item-card.tsx';                   // What: Item Card Component. Why: Adding or editing a pool item opens the shared item card, holding the same weight/ease editor the Today tab uses. How: This is rendered below the pool list, wired to the local draft-item actions.
 import { norConFun    } from '../../core/pickers.ts';             // What: Normalize Conditional Function. Why: A new inline conditional's name must be compared against existing ones the same way the store itself normalizes them. How: This is called on the conditional draft's own name before checking it for a collision.
 import { norGroFun    } from '../../core/pickers.ts';             // What: Normalize Group Function. Why: A newly-typed group name must be normalized the same way the store itself normalizes group names. How: This is called on the new-group input's value to compute the picker's effective group.
 import { PIC_NAM_OBJ  } from '../../core/pickers.ts';             // What: Pickers Namespace Object. Why: A newly added item takes the same default drift band and full-charge ceiling the pickers module uses, and its ease band reads as days. How: This is read for DEF_EAS_OBJ and THR_VAL_NUM, and called via driDayFun.
 import { ranIdeFun    } from '../../utils/random-id.ts';          // What: Random Identifier Function. Why: A new item needs a stable id from the moment it's added. How: This mints an 'it_' id.
-import { redMotFun    } from '../../utils/motion.ts';             // What: Reduced Motion Function. Why: Several exit/scroll animations must be skipped for a user who prefers reduced motion. How: This is checked before every animated scroll, exit delay, or the reel/spotlight/dissolve cycle itself.
+import { redMotFun    } from '../../utils/motion.ts';             // What: Reduced Motion Function. Why: The Daily section's scroll must not wait on an animation that reduced motion skips. How: This is checked once, to drop the reveal delay to 0 under reduced motion.
 import { rhyPixFun    } from '../../utils/rhythm.ts';             // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { scrBehFun    } from '../../utils/motion.ts';             // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';               // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) throughout to show the active mode's label/hint and to render the mode-choice radio list.
 import { selAllFun    } from '../../utils/input.ts';              // What: Select All Function. Why: A new pool item opens with a default name that typing should replace outright. How: This is the name field's ref callback, selecting its text once as it mounts.
-import { togFadFun    } from '../../ui/edge-fade.ts';             // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
+import { togFadFun    } from '../../ui/edge-fade.ts';             // What: Toggle Fade Function. Why: The conditional rail hides each edge fade once that edge is reached. How: This is called by the rail's scroll and resize handlers.
 import { useDelConFun } from './delete-confirm.ts';               // What: Use Delete Confirm Function. Why: A pool row's inline delete confirmation is shared with the other pool on this tab. How: This is called once for the confirm state and its Cancel handler.
-import { useEmlTouFun } from '../../state/tour-bus.ts';           // What: Use Ease-My-Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
+import { useEmlTouFun } from '../../state/tour-bus.ts';           // What: Use Ease-My-Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the tour bus's phase, staged item name, and reopen nonce.
 import { useFliRaiFun } from '../../ui/flip-rail.ts';             // What: Use Flip Rail Function. Why: The conditional rail's selected pill should glide to the front instead of snapping, matching the Data tab. How: This is called once with the rail ref and a trigger key.
 import { useIteDraFun } from '../../ui/record-draft.ts';          // What: Use Item Draft Function. Why: An added pool item's editor edits a local draft, committed into the pool only on Save. How: This is called once with whichever pool item's editor is open.
-import { WeeChiCom    } from '../../ui/weekday-chips.tsx';        // What: Weekday Chip Component. Why: The daily-schedule block needs a 7-day picker for which weekdays a picker may run on. How: This is rendered in PicForCom's schedule block, wired to the local daysOfWeek state.
+import { WeeChiCom    } from '../../ui/weekday-chips.tsx';        // What: Weekday Chip Component. Why: The daily-schedule block needs a 7-day picker for which weekdays a picker may run on. How: This is rendered in PicForCom's schedule block, wired to the runDowArr state.
 
 
 import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The new picker's local pool mirrors the store's item actions. How: This types draActObj's methods.
@@ -127,7 +127,7 @@ function TogRowCom ( { 'data-element-name-hook' : hooNamStr, className, disHelEl
 				<label
 					className={ cssModObj.forLabLab }
 					htmlFor={ ideValStr }
-				>{ labTexStr }</label>{ /* What: Form Label Element. Why: The switch below needs an associated, readable label. How: This is linked to the switch through ideValStr. */ }
+				>{ labTexStr }</label>{ /* What: Form Label Label Element. Why: The switch below needs an associated, readable label. How: This is linked to the switch through ideValStr. */ }
 
 				<p
 					key={ value ? 'on' : 'off' }
@@ -155,7 +155,7 @@ function TogRowCom ( { 'data-element-name-hook' : hooNamStr, className, disHelEl
 			>{ /* What: Toggle Switch Button Element. Why: This is the actual on/off control for the setting. How: This calls onClick when pressed. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
-				<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent switch's own aria-checked state. */ }
+				<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent switch's own aria-checked state. */ }
 
 
 			</button>
@@ -255,7 +255,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		}
 
 
-	}, [ iniForObj ] ); // What: Effect Dependency Array. Why: Only a new prefill can ask for focus. How: The one prefill that sets focusName keeps its identity, so this runs once for it, and the edit flow's fresh object every render never sets focusName, so those runs do nothing.
+	}, [ iniForObj ] ); // What: Effect Dependency Array. Why: Only a new prefill can ask for focus. How: A new iniForObj re-runs the effect, and it acts only when that prefill carries focusName.
 
 	// #endregion Form Step And Name
 
@@ -273,7 +273,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const daiTogRef = React.useRef( false );                         // What: Daily Toggled Reference. Why: The reveal effect below must only fire when the USER actually flipped the switch, not on an initial prefilled-true render. How: This is set true by the switch's own onClick and read (but never itself triggers a re-render) by the effect below.
 
 
-	React.useEffect( () => { // What: Daily Reveal Effect. Why: Re-enabling the Daily section should bring the newly-revealed block fully into view, since it can unfurl below the fold. How: This waits for the ColDisCom unfurl to finish, then scrolls the shared .main container just enough to bring the block fully into view.
+	React.useEffect( () => { // What: Daily Reveal Effect. Why: Re-enabling the Daily section should bring the newly-revealed block fully into view, since it can unfurl below the fold. How: This waits for the ColDisCom unfurl to finish, then scrolls the shared main container just enough to bring the block fully into view.
 
 
 		if ( !incDaiBoo || !daiTogRef.current ) return; // What: Not User-Toggled Guard. Why: Only a genuine user toggle-on should trigger this scroll, not a prefilled initial value. How: This bails out unless both incDaiBoo is true and daiTogRef.current is true.
@@ -284,7 +284,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 			const daiBloEle = daiBloRef.current;                                                         // What: Daily Block Element. Why: The scroll calculation needs the actual DOM node. How: This reads daiBloRef.current once and reuses it below.
-			const scrConEle = daiBloEle && daiBloEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared scrollable container is what actually needs to move. How: This walks up from daiBloEle to the nearest .main ancestor.
+			const scrConEle = daiBloEle && daiBloEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared scrollable container is what actually needs to move. How: This walks up from daiBloEle to the nearest main ancestor.
 
 
 			if ( !daiBloEle || !scrConEle ) return; // What: Missing Element Guard. Why: Either element may not exist yet if this fires after an unrelated unmount. How: This bails out of the scroll calculation entirely when either is missing.
@@ -352,7 +352,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 	// #region Conditional Attachment
 
-	const [ conAttBoo, setConAttBoo ] = React.useState( !!( iniForObj && iniForObj.conditionalId ) );       // What: Conditional Attach Boolean And Setter. Why: An optional conditional gate; when on, the user attaches an existing conditional or creates a fresh inline one. How: This starts on only when editing an existing picker that already has one attached.
+	const [ conAttBoo, setConAttBoo ] = React.useState( !!( iniForObj && iniForObj.conditionalId ) );       // What: Conditional Attach Boolean And Setter. Why: An optional conditional gate; when on, the user attaches an existing conditional or creates a fresh inline one. How: This starts on only when the prefill already names an attached conditional.
 	const [ conSelStr, setConSelStr ] = React.useState( ( iniForObj && iniForObj.conditionalId ) || null ); // What: Conditional Selected String And Setter. Why: This holds which conditional is chosen: an existing id, the literal 'new', or null. How: This starts from a prefilled conditionalId, or null.
 	const [ conDraObj, setConDraObj ] = React.useState( () => conDraFun( '' ) );                            // What: Conditional Draft Object And Setter. Why: Creating a fresh inline conditional needs its own draft shape to edit. How: This starts from the shared default, seeded with an empty name until the user actually opens the "Add New Conditional" pill.
 
@@ -379,10 +379,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 * @summary
 	 * The callback ref for the create form's conditional pill rail. ColDisCom
 	 * mounts the rail a render after the conditional toggle turns on, so a
-	 * plain effect would run while the ref is still empty; this ref runs
-	 * exactly when the node attaches. Every call first tears down the previous
-	 * attachment's listeners, records the new node in raiNodRef, and wires the
-	 * rail's edge-fade classes to its own scroll and a ResizeObserver.
+	 * plain effect would run while the ref is still empty; this ref runs as
+	 * the node attaches and again with null as it detaches. Every call first
+	 * tears down the previous attachment's listeners, records the new node in
+	 * raiNodRef, and wires the rail's edge-fade classes to its own scroll and
+	 * a ResizeObserver.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -398,7 +399,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	*/
 
-	const raiCalFun = React.useCallback( ( raiCurEle : HTMLElement | null ) => { // What: Rail Callback Function. Why: ColDisCom (below) mounts this rail one render AFTER conAttBoo flips true (it stages its own `render` state first), so a plain useEffect keyed on conAttBoo would fire while the ref is still null and never get another chance to run once the rail actually appears; a callback ref, which fires exactly when the DOM node attaches, plus a ResizeObserver, which re-fires whenever conditionals are added/removed and the rail's content width changes, sidesteps that race entirely. How: This registers a scroll listener and a ResizeObserver on whatever element the rail's own ref prop attaches to below, tearing down the previous ones first.
+	const raiCalFun = React.useCallback( ( raiCurEle : HTMLElement | null ) => { // What: Rail Callback Function. Why: ColDisCom (below) mounts this rail one render AFTER conAttBoo flips true (it stages its own `render` state first), so a plain useEffect keyed on conAttBoo would fire while the ref is still null and never get another chance to run once the rail actually appears; a callback ref, which fires as the DOM node attaches (and with null when it detaches), plus a ResizeObserver, which re-fires whenever conditionals are added/removed and the rail's content width changes, sidesteps that race entirely. How: This registers a scroll listener and a ResizeObserver on whatever element the rail's own ref prop attaches to below, tearing down the previous ones first.
 
 
 		if ( raiCleRef.current ) { // What: Previous Cleanup Guard. Why: A remount (or unmount) must not leave the prior element's own listeners dangling. How: This runs and clears whatever teardown function was registered for the previous element, if any.
@@ -541,7 +542,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 			}
 
 
-			const scrConEle = document.querySelector( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: No scrollable ancestor was found in the walk above, so the shared app-wide scroller is the fallback target. How: This queries for the .main element directly.
+			const scrConEle = document.querySelector( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: No scrollable ancestor was found in the walk above, so the shared app-wide scroller is the fallback target. How: This queries for the main element directly.
 
 
 			if ( scrConEle ) { // What: Fallback Scroll Guard. Why: Only a genuinely-found fallback container should be scrolled. How: This scrolls .main to the top if it exists.
@@ -573,14 +574,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 	const effGroStr = addGroBoo ? norGroFun( newGroStr, exiGroArr ) : selGroStr; // What: Effective Group String. Why: The picker's own real group is whichever of the two group controls (existing chip or new-group input) is currently active. How: This normalizes newGroStr when addGroBoo is on, otherwise it's just selGroStr directly.
 	const detReaBoo = !!( newNamStr.trim() && effGroStr && selModStr );          // What: Details Ready Boolean. Why: Both steps' own footer buttons need to know whether Step 1's own required fields are actually complete. How: This requires a non-blank trimmed name, a real effective group, and a chosen mode.
-	const shoWeiBoo = selModStr === 'weighted' || selModStr === 'dynamic';       // What: Show Weight Boolean. Why: Weight is a lever only for these two modes; random/ease-* ignore it entirely, so the control stays hidden elsewhere to avoid asking for something irrelevant. How: This gates the weight column throughout Step 2.
+	const shoWeiBoo = selModStr === 'weighted' || selModStr === 'dynamic';       // What: Show Weight Boolean. Why: Weight is a lever for these two modes. How: This gates the weight column throughout Step 2.
 	const isaEasBoo = selModStr === 'ease-up' || selModStr === 'ease-down';      // What: Is-An Ease Boolean. Why: Only these two modes use the easeMin/easeMax drift band at all. How: This gates the ease controls throughout Step 2.
 
 	// #endregion Mode Derivations
 
 
 
-	const capStrFun = ( souTexStr : string ) => souTexStr.length ? souTexStr[ 0 ].toUpperCase() + souTexStr.slice( 1 ) : souTexStr; // What: Capitalize String Function. Why: Every item/picker name this form commits should read with a capitalized first letter, regardless of how the user actually typed it. How: This upper-cases just the first character and leaves the rest untouched.
+	const capStrFun = ( souTexStr : string ) => souTexStr.length ? souTexStr[ 0 ].toUpperCase() + souTexStr.slice( 1 ) : souTexStr; // What: Capitalize String Function. Why: A picker name this form commits should read with a capitalized first letter, however the user typed it. How: This upper-cases just the first character and leaves the rest untouched.
 
 
 
@@ -596,11 +597,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 	const addWraRef = React.useRef< HTMLDivElement | null >( null ); // What: Add Wrap Reference. Why: Both the new-item and edit-item flows render into this same below-the-list slot, which needs a stable handle so it can be scrolled into view. How: This is attached to the iteAddDiv div's own ref prop, below.
 
-	const [ ediIteStr, setEdiIteStr ] = React.useState< string | null >( null ); // What: Editing Item String And Setter. Why: Editing an already-added draft item mirrors the live Pickers tab's own ediIteStr/opeEdiFun/staEdiFun exactly (see PicVieCom above), just bound to pooIteArr + draActObj instead of the real store. How: This holds the id of whichever committed draft item currently has its editor open, or null.
+	const [ ediIteStr, setEdiIteStr ] = React.useState< string | null >( null ); // What: Editing Item String And Setter. Why: Editing an already-added draft item mirrors the live Pickers tab's own ediIteStr/opeEdiFun/staEdiFun in picker-view.tsx, just bound to pooIteArr + draActObj instead of the real store. How: This holds the id of whichever committed draft item currently has its editor open, or null.
 	const [ ediCloBoo, setEdiCloBoo ] = React.useState( false );                 // What: Editing Closing Boolean And Setter. Why: Closing a committed draft item's editor needs its own out-animation before it's actually torn down. How: This is flipped true to start that animation.
 
 	const penEdiRef = React.useRef< string | null >( null );                                  // What: Pending Edit Reference. Why: Switching straight from the new-item form (or a different item's editor) into this one must not silently drop the request. How: This holds the target id to reopen once whatever's currently closing finishes.
-	const cmtCouNum = pooIteArr.filter( ( iteCurObj ) => iteCurObj.id !== actNewStr ).length; // What: Committed Count Number. Why: The count and the Create button must not react early to a row still being edited, so its own Save hasn't landed yet. How: This is deliberately computed AFTER actNewStr's own declaration above; referencing it earlier in the body would (since this project targets Vite, not a var-hoisting build) read as undefined and this filter would exclude nothing.
+	const cmtCouNum = pooIteArr.filter( ( iteCurObj ) => iteCurObj.id !== actNewStr ).length; // What: Committed Count Number. Why: The count and the Create button must not react early to a row still being edited, so its own Save hasn't landed yet. How: This counts every pool item except the one still being newly added (actNewStr), so it is declared after actNewStr.
 	const enoIteBoo = cmtCouNum >= 2;                                                         // What: Enough Item Boolean. Why: A picker must have at least 2 real, committed items before it can be created. How: This is true once cmtCouNum reaches 2.
 
 
@@ -631,7 +632,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const { cmtDraFun, draIteObj, patDraFun } = useIteDraFun( draActObj, ediOpeObj ); // What: Commit Draft Function. Why: An already-added pool item's editor edits its own local draft, committed into the pool only on Save, the same as every other item editor. How: This calls useIteDraFun with the open pool item and the pool's own actions, and keeps its commit. // What: Draft Item Object. Why: The editor's controls show the draft. How: This keeps the draft item. // What: Patch Draft Function. Why: Each control edits the draft. How: This keeps the hook's patcher.
 
 
-	const draPicObj = { cadence : cadCurObj.cadence, mode : selModStr, threshold : PIC_NAM_OBJ.THR_VAL_NUM }; // What: Draft Picker Object. Why: EntEdiCom still expects a picker-shaped object to read mode/threshold/cadence off of, even though the real picker doesn't exist yet. How: No `id` -- deliberately, since draft items carry no pickerId either (both undefined), so EntEdiCom's own PIC_NAM_OBJ.aveEasFun(items, picDatObj.id) fallback still matches every draft item against this pseudo-picker's undefined id and averages them correctly, not a coincidence to "fix" by inventing ids here. No easeMin/easeMax here either, since EntEdiCom no longer reads those off the picker directly.
+	const draPicObj = { cadence : cadCurObj.cadence, mode : selModStr, threshold : PIC_NAM_OBJ.THR_VAL_NUM }; // What: Draft Picker Object. Why: EntEdiCom still expects a picker-shaped object to read mode/threshold/cadence off of, even though the real picker doesn't exist yet. How: This carries no id, since draft items carry no pickerId either, so the item card's aveEasFun fallback matches every draft item against this pseudo-picker's undefined id and averages them, and it carries no easeMin/easeMax, since the item card reads the bands off the items.
 
 
 	// #region scrAddFun
@@ -640,7 +641,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 * scrAddFun = Scroll Add Function
 	 *
 	 * @summary
-	 * Scrolls the shared .main container just enough to bring the
+	 * Scrolls the shared main container just enough to bring the
 	 * below-the-list editor slot fully into view, plus a small margin, once
 	 * two animation frames have let the just-opened editor lay out. It does
 	 * nothing when the slot already fits or either element is gone.
@@ -665,7 +666,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 			const addWraEle = addWraRef.current;                                                         // What: Add Wrap Element. Why: The scroll calculation needs the actual DOM node, not just the ref object. How: This reads addWraRef.current once and reuses it below.
-			const scrConEle = addWraEle && addWraEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared scrollable container is what actually needs to move, not the slot itself. How: This walks up from addWraEle to the nearest .main ancestor.
+			const scrConEle = addWraEle && addWraEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared scrollable container is what actually needs to move, not the slot itself. How: This walks up from addWraEle to the nearest main ancestor.
 
 
 			if ( !addWraEle || !scrConEle ) return; // What: Missing Element Guard. Why: Either element may not exist yet if this fires after an unrelated unmount. How: This bails out of the scroll calculation entirely when either is missing.
@@ -728,13 +729,13 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		setActCloStr( false ); // What: Stale Closing Clear Call. Why: A prior editor's own closing state must not carry over onto this fresh one. How: This clears any stale closing state left behind by whatever was open before.
 
 
-		const newIdeStr = ranIdeFun( 'it_' ); // What: New Identifier String. Why: The new item needs a stable id from the moment it's added, and it keeps that id once the picker is created. How: This builds a short random suffix onto the same 'it_' prefix every other item id uses.
+		const newIdeStr = ranIdeFun( 'it_' ); // What: New Identifier String. Why: The new item needs a stable id from the moment it's added, and it keeps that id once the picker is created. How: This builds a short random suffix onto the 'it_' item prefix.
 
 
 
 		// #region Draft Name Resolution
 
-		const curBusObj = emlTouObj.get();                                                  // What: Current Bus Object. Why: The synchronous read described above needs the bus's own live snapshot. How: This calls emlTouObj.get() directly. // What: Tour Prefill Read Note. Why: This reads straight off the bus (emlTouObj.get()), not the React-state touBusObj, since this fires as the NATIVE bubble-phase handler of the same click whose CAPTURE-phase handling just ran a picker-tour step's own run() (which sets itePreStr on the bus synchronously), but useEmlTouFun's subscriber-driven setState is batched and hasn't actually landed in this component's own render yet, so touBusObj here would still be the PREVIOUS render's snapshot, from before itePreStr was set. How: Reading the bus's own synchronous getter instead (the same fix reminders-section.tsx's own prefill already uses) is what actually lands the tour's staged name/ease on the item it creates.
+		const curBusObj = emlTouObj.get();                                                  // What: Current Bus Object. Why: The synchronous read described in the note below needs the bus's own live snapshot. How: This calls emlTouObj.get() directly. // What: Tour Prefill Read Note. Why: This reads the bus's synchronous getter instead of the React-state touBusObj, which may not yet have caught up with the bus within the same click. How: emlTouObj.get() returns the bus's current value at once, so a staged name and ease band reach the item this creates.
 		const curTouBoo = Boolean( curBusObj.touPhaStr === 'tour' && curBusObj.itePreStr ); // What: Current Tour Boolean. Why: Only an actively-running tour that staged a specific item name should override the generated default below. How: This checks both the bus's own phase and its itePreStr field.
 
 		let newNamStr; // What: New Name String. Why: The actual name to seed the draft with depends on which branch below resolves it. How: This is declared here and assigned in exactly one of the two branches that follow.
@@ -1121,7 +1122,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-		if ( conAttBoo && conSelStr === 'new' ) { // What: Conditional Attach Note. Why: Create-new names are unique by validation above, so no silent reuse happens here; edit explicitly clears the field (conditionalId: null) when turned off, since unlike a fresh create, this can also DETACH one the picker already had, so there's no bare "just omit the field" default to fall back on. How: The three branches below cover attaching an existing conditional, attaching a fresh inline one, or explicitly detaching on edit.
+		if ( conAttBoo && conSelStr === 'new' ) { // What: Conditional Attach Note. Why: Create-new names are unique by validation above, so no silent reuse happens here; edit explicitly clears the field (conditionalId: null) when turned off, since unlike a fresh create, this can also DETACH one the picker already had, so there's no bare "just omit the field" default to fall back on. How: This chain's three branches attach a fresh inline conditional, attach an existing one, or detach on edit.
 
 
 			payForObj.newConditional = { // What: New Conditional Attach. Why: A freshly-created inline conditional needs its own draft shape sent through, under its own tidied name. How: This spreads conDraObj and overwrites its name with conTidStr (or a bare fallback).
@@ -1155,7 +1156,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-		if ( isaEasBoo && !isaEdiBoo ) { // What: Legacy Ease Summary Guard. Why: Nothing reads picker.easeMin/easeMax anymore (pick(), the Data tab, and the item editor all compute a live per-picker average from the items themselves instead, see PIC_NAM_OBJ.aveEasFun), so this is kept only so store.ts's addPicFun still has a value to accept; harmless dead data on the created picker otherwise. How: This is skipped for edit, since there's no items array here to compute a fresh average from, and the field is inert anyway.
+		if ( isaEasBoo && !isaEdiBoo ) { // What: Legacy Ease Summary Guard. Why: Items carry their own ease bands, and the picker-level easeMin/easeMax is only a legacy summary that addPicFun still accepts. How: This is skipped for edit, which leaves the picker's existing summary fields alone.
 
 
 			payForObj.easeMin = Math.min( ...pooIteArr.map( ( iteCurObj ) => iteCurObj.easeMin ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin ) ); // What: Legacy Ease Minimum Attach. Why: A summary value is still expected on the created payload. How: This takes the smallest easeMin across every committed item.
@@ -1190,15 +1191,15 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		>{ /* What: Picker Form Div Element. Why: This is PicForCom's own root, holding the header, the step indicator (create only), and whichever step's own content is active. How: This wraps every piece of the create/edit form. */ }
 
 
-			<header className={ cssModObj.forHeaHed }>{ /* What: Picker Header Element. Why: The kicker and heading read as one title block. How: This wraps those two pieces. */ }
+			<header className={ cssModObj.forHeaHed }>{ /* What: Form Header Header Element. Why: The kicker and heading read as one title block. How: This wraps those two pieces. */ }
 
 
 				<div>{ /* What: Header Text Div Element. Why: The form's kicker and title belong together. How: This wraps the two lines below. */ }
 
 
-					<div className={ cssModObj.forKicDiv }>{ isaEdiBoo ? 'Editing' : 'New picker' }</div>{ /* What: Kicker Div Element. Why: A small eyebrow label orients the reader before the heading below. How: This renders "Editing" or "New picker" depending on isaEdiBoo. */ }
+					<div className={ cssModObj.forKicDiv }>{ isaEdiBoo ? 'Editing' : 'New picker' }</div>{ /* What: Form Kicker Div Element. Why: A small eyebrow label orients the reader before the heading below. How: This renders "Editing" or "New picker" depending on isaEdiBoo. */ }
 
-					<h2 className={ cssModObj.forTitHea }>{ isaEdiBoo ? ( newNamStr.trim() || 'Editing picker' ) : 'Create a picker' }</h2>{ /* What: Title Heading Element. Why: This form's own main heading should reflect whatever the user has typed so far while editing. How: This shows the live-typed name (or a fallback) while editing, otherwise a fixed create-mode heading. */ }
+					<h2 className={ cssModObj.forTitHea }>{ isaEdiBoo ? ( newNamStr.trim() || 'Editing picker' ) : 'Create a picker' }</h2>{ /* What: Form Title Heading Element. Why: This form's own main heading should reflect whatever the user has typed so far while editing. How: This shows the live-typed name (or a fallback) while editing, otherwise a fixed create-mode heading. */ }
 
 
 				</div>
@@ -1210,7 +1211,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 			{ !isaEdiBoo && ( // What: Step Indicator Check. Why: Only the create flow ever has a second step to indicate. How: This renders the whole step indicator only while isaEdiBoo is false. // What: Edit Steps Design Note. Why: Edit reuses only the Details step, since this picker's items already exist and are edited via the Data tab or PicVieCom's own live pool instead. How: There's no Items step to switch to here, so the step indicator below is skipped entirely while isaEdiBoo is true.
 
 
-				<div className={ cssModObj.steBarDiv }>{ /* What: Steps Div Element. Why: Details and Items need a shared two-step indicator row. How: This wraps both step buttons and the connecting line between them. */ }
+				<div className={ cssModObj.steBarDiv }>{ /* What: Step Bar Div Element. Why: Details and Items need a shared two-step indicator row. How: This wraps both step buttons and the connecting line between them. */ }
 
 
 					<button
@@ -1290,10 +1291,10 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					key='np-step1'
 
 					className={ cssModObj.steFadDiv }
-				>{ /* What: Step One Fade Div Element. Why: Switching steps should play a fade transition, and React needs a stable key to treat each step as a distinct mounted instance. How: This wraps the whole Details step's own fields and footer. */ }
+				>{ /* What: Step Fade Div Element. Why: Switching steps should play a fade transition, and React needs a stable key to treat each step as a distinct mounted instance. How: This wraps the whole Details step's own fields and footer. */ }
 
 
-					<p className={ cssModObj.steHinPar }>{ /* What: Intro Hint Paragraph Element. Why: A first-time user needs a plain-language orientation before the fields below. How: This shows a slightly different phrasing for edit versus create. */ }
+					<p className={ cssModObj.steHinPar }>{ /* What: Step Hint Paragraph Element. Why: A first-time user needs a plain-language orientation before the fields below. How: This shows a slightly different phrasing for edit versus create. */ }
 
 
 						{ isaEdiBoo // What: Edit Mode Check. Why: Editing and creating need different intro text. How: This picks one of the two paragraphs below based on isaEdiBoo.
@@ -1315,23 +1316,23 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						className={ cssModObj.picFieDiv }
 
 						data-element-name-hook='picFieDiv'
-					>{ /* What: Fields Div Element. Why: Every Details field (Name, Group, Picker type, conditional attach, daily schedule) belongs in one shared column. How: This wraps every forFieDiv block below. Its data-element-name-hook is read by the picker mini-tours. */ }
+					>{ /* What: Picker Fields Div Element. Why: Every Details field (Name, Group, Picker type, conditional attach, daily schedule) belongs in one shared column. How: This wraps the Name, Group, Picker type, Conditional, and Daily field blocks below. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 						<div
 							className={ cssModObj.forFieDiv }
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Name Field Div Element. Why: The label, its help text, and the input itself form one field unit. How: This wraps those three pieces. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+						>{ /* What: Form Field Div Element. Why: The label, its help text, and the input itself form one field unit. How: This wraps those three pieces. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 							<label
 								className={ cssModObj.forLabLab }
 
 								htmlFor='picNamInp'
-							>Name</label>{ /* What: Name Label Element. Why: The input below needs an associated, readable label. How: This is linked to the input via the shared 'picNamInp' id. */ }
+							>Name</label>{ /* What: Form Label Label Element. Why: The input below needs an associated, readable label. How: This is linked to the input via the shared 'picNamInp' id. */ }
 
-							<p className={ cssModObj.forHelPar }>What you&rsquo;ll see on the picker bar above and on your todo list cards. Short and plain works best, e.g. &ldquo;Daily Chore&rdquo;, &ldquo;Dinner&rdquo;, &ldquo;Coffee Creamer&rdquo;.</p>{ /* What: Name Help Paragraph Element. Why: A first-time user needs guidance on what makes a good picker name. How: This renders a fixed explanatory sentence with a couple of worked examples. */ }
+							<p className={ cssModObj.forHelPar }>What you&rsquo;ll see on the picker bar above and on your todo list cards. Short and plain works best, e.g. &ldquo;Daily Chore&rdquo;, &ldquo;Dinner&rdquo;, &ldquo;Coffee Creamer&rdquo;.</p>{ /* What: Form Help Paragraph Element. Why: A first-time user needs guidance on what makes a good picker name. How: This renders a fixed explanatory sentence with a couple of worked examples. */ }
 
 							<input
 								ref={ namInpRef }
@@ -1357,18 +1358,18 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={ cssModObj.forFieDiv }
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Group Field Div Element. Why: The label, help text, group chips, and the inline new-group input form one field unit. How: This wraps those pieces. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+						>{ /* What: Form Field Div Element. Why: The label, help text, group chips, and the inline new-group input form one field unit. How: This wraps those pieces. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-							<span className={ cssModObj.forLabSpa }>Group</span>{ /* What: Group Label Span Element. Why: The controls below need a readable label. How: This renders the literal word "Group". */ }
+							<span className={ cssModObj.forLabSpa }>Group</span>{ /* What: Form Label Span Element. Why: The controls below need a readable label. How: This renders the literal word "Group". */ }
 
-							<p className={ cssModObj.forHelPar }>Pickers are clustered into groups on your todo list, like &ldquo;Chores&rdquo; or &ldquo;Food&rdquo;, so that related picks sit together. You may choose an existing group or create a new one.</p>{ /* What: Group Help Paragraph Element. Why: A first-time user needs to understand what a group actually does before choosing one. How: This renders a fixed explanatory sentence. */ }
+							<p className={ cssModObj.forHelPar }>Pickers are clustered into groups on your todo list, like &ldquo;Chores&rdquo; or &ldquo;Food&rdquo;, so that related picks sit together. You may choose an existing group or create a new one.</p>{ /* What: Form Help Paragraph Element. Why: A first-time user needs to understand what a group actually does before choosing one. How: This renders a fixed explanatory sentence. */ }
 
 							<div
 								className={ cssModObj.forGroDiv }
 
 								data-element-name-hook='forGroDiv'
-							>{ /* What: Groups Div Element. Why: Every existing group chip plus the "New Group" chip sit in one row. How: This maps exiGroArr to one chip each, then appends the fixed "New Group" chip. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+							>{ /* What: Form Groups Div Element. Why: Every existing group chip plus the "New Group" chip sit in one row. How: This maps exiGroArr to one chip each, then appends the fixed "New Group" chip. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 								{ exiGroArr.map( ( curGroStr ) => ( // What: Group Chip List Render. Why: Every existing group needs its own selectable chip. How: This maps exiGroArr to one button per curGroStr.
@@ -1410,7 +1411,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									type='button'
 
 									onClick={ () => setAddGroBoo( true ) }
-								>{ /* What: New Group Chip Button Element. Why: The user needs an explicit way to open the inline new-group sub-form. How: This flips addGroBoo true. */ }
+								>{ /* What: Group Chip Button New Element. Why: The user needs an explicit way to open the inline new-group sub-form. How: This flips addGroBoo true. */ }
 
 
 									<IcoSvgCom
@@ -1442,7 +1443,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									aria-label='New group name'
 
 									onChange={ ( chaEveObj ) => setNewGroStr( chaEveObj.target.value ) }
-								/>{ /* What: New Group Input Element. Why: A brand-new group needs its own typed name. How: This is a controlled text input committing on Enter or the checkmark. */ }
+								/>{ /* What: New Group Input Element. Why: A brand-new group needs its own typed name. How: This is a controlled text input writing into newGroStr on every change. */ }
 
 
 							</ColDisCom>
@@ -1509,12 +1510,12 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 														key={ parIndNum }
 
 														className={ cssModObj.modHinDiv }
-													>{ parTexStr }</div> // What: Hint Paragraph Element. Why: Each paragraph renders as its own hint line. How: This renders parTexStr, keyed by its index.
+													>{ parTexStr }</div> // What: Mode Hint Div Element. Why: Each paragraph renders as its own hint line. How: This renders parTexStr, keyed by its index.
 
 
 												) )
 
-												: <div className={ cssModObj.modHinDiv }>{ modInfObj.hinArr }</div> // What: Single-Paragraph Hint Render. Why: Most modes only need one short explanation. How: This renders modInfObj.hinArr directly when it's a plain string.
+												: <div className={ cssModObj.modHinDiv }>{ modInfObj.hinArr }</div> // What: Mode Hint Div Element. Why: A mode with a string hint needs one short hint line. How: This renders modInfObj.hinArr directly when it's a plain string.
 
 
 											}
@@ -1540,7 +1541,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={` ${ cssModObj.forFieDiv }   ${ cssModObj.forFieDivConditional } `}
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Conditional Field Div Element. Why: The attach-a-conditional toggle and its own collapsible content form one field unit. How: This wraps conTogDiv and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+						>{ /* What: Form Field Div Conditional Element. Why: The attach-a-conditional toggle and its own collapsible content form one field unit. How: This wraps conTogDiv and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 							<div
@@ -1553,11 +1554,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								<div className={ cssModObj.togTexDiv }>{ /* What: Toggle Text Div Element. Why: The label and its two help paragraphs read as one block. How: This wraps those three pieces. */ }
 
 
-									<span className={ cssModObj.forLabSpa }>Attach a conditional</span>{ /* What: Conditional Label Span Element. Why: The toggle below needs a readable label. How: This renders the literal text. */ }
+									<span className={ cssModObj.forLabSpa }>Attach a conditional</span>{ /* What: Form Label Span Element. Why: The toggle below needs a readable label. How: This renders the literal text. */ }
 
-									<p className={ cssModObj.forHelPar }>Conditionals can be attached to a picker that will determine whether a picker should be run on any given day during the auto generator phase for the Today page. Run eligibility can be determined using the same rules that the pickers use, e.g. Truly Random, Weighted, Dynamic Weighted, Ease Up and Ease Down.</p>{ /* What: Conditional Help Paragraph Element. Why: A first-time user needs to understand what a conditional even does. How: This renders a fixed explanatory sentence. */ }
+									<p className={ cssModObj.forHelPar }>Conditionals can be attached to a picker that will determine whether a picker should be run on any given day during the auto generator phase for the Today page. Run eligibility can be determined using the same rules that the pickers use, e.g. Truly Random, Weighted, Dynamic Weighted, Ease Up and Ease Down.</p>{ /* What: Form Help Paragraph Element. Why: A first-time user needs to understand what a conditional even does. How: This renders a fixed explanatory sentence. */ }
 
-									<p className={ cssModObj.forHelPar }>Example: You have a Daily Chore picker that you attach a Weighted conditional to in order to determine whether a Day Off should should be triggered and therefore no chores should be chosen for that day.</p>{ /* What: Conditional Example Paragraph Element. Why: A concrete example lands faster than the abstract explanation above alone. How: This renders a fixed worked example sentence. */ }
+									<p className={ cssModObj.forHelPar }>Example: You have a Daily Chore picker that you attach a Weighted conditional to in order to determine whether a Day Off should should be triggered and therefore no chores should be chosen for that day.</p>{ /* What: Form Help Paragraph Element. Why: A concrete example lands faster than the abstract explanation above alone. How: This renders a fixed worked example sentence. */ }
 
 
 								</div>
@@ -1577,7 +1578,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								>{ /* What: Conditional Switch Button Element. Why: This is the actual on/off control for the conditional attachment. How: This flips conAttBoo on click. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-									<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked. */ }
+									<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked. */ }
 
 
 								</button>
@@ -1605,7 +1606,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									>{ /* What: Conditional Rail Div Element. Why: Every existing conditional plus the "Add New" pill need a horizontally-scrolling rail. How: This wraps one pill per sorted entry in conObjArr, then the fixed "Add New Conditional" pill. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
 
 
-										{ [ ...conObjArr ].sort( ( conOneObj, conTwoObj ) => { // What: Sorted Conditional List Render. Why: The rail needs a stable order with the active selection pinned to the front. How: This sorts alphabetically, except a or b matching conSelStr is forced to the very front. // What: Conditional Sort Design Note. Why: The rail reads alphabetically, except the currently-selected conditional (once the user has picked one) pins to the front. How: This is the same "selected stays first" convention as the Data tab's own rail.
+										{ [ ...conObjArr ].sort( ( conOneObj, conTwoObj ) => { // What: Sorted Conditional List Render. Why: The rail needs a stable order with the active selection pinned to the front. How: This sorts alphabetically, except the conditional matching conSelStr is forced to the very front. // What: Conditional Sort Design Note. Why: The rail reads alphabetically, except the currently-selected conditional (once the user has picked one) pins to the front. How: This is the same "selected stays first" convention as the Data tab's own rail.
 
 
 											if ( conOneObj.id === conSelStr ) return -1; // What: First Pinned Guard. Why: The currently-selected conditional must sort before everything else. How: This returns -1 whenever conOneObj is the selection.
@@ -1636,9 +1637,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											>{ /* What: Conditional Pill Button Element. Why: Every existing conditional needs its own selectable pill showing its name and mode. How: This selects curConObj.id on click. */ }
 
 
-												<span className={ cssModObj.conNamSpa }>{ curConObj.name }</span>{ /* What: Pill Name Span Element. Why: The pill needs its own readable name. How: This renders curConObj.name. */ }
+												<span className={ cssModObj.conNamSpa }>{ curConObj.name }</span>{ /* What: Conditional Name Span Element. Why: The pill needs its own readable name. How: This renders curConObj.name. */ }
 
-												<span className={ cssModObj.conModSpa }>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ curConObj.mode ] || {} ).labStr || curConObj.mode }</span>{ /* What: Pill Mode Span Element. Why: The pill also needs to show which mode the conditional itself runs under. How: This looks up the mode's own label in SED_NAM_OBJ.MOD_DEF_OBJ, falling back to the raw mode string. */ }
+												<span className={ cssModObj.conModSpa }>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ curConObj.mode ] || {} ).labStr || curConObj.mode }</span>{ /* What: Conditional Mode Span Element. Why: The pill also needs to show which mode the conditional itself runs under. How: This looks up the mode's own label in SED_NAM_OBJ.MOD_DEF_OBJ, falling back to the raw mode string. */ }
 
 
 											</button>
@@ -1661,7 +1662,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 											} }
-										>{ /* What: New Conditional Pill Button Element. Why: The user needs an explicit way to open the inline new-conditional editor. How: This selects the 'new' pill and seeds conDraObj from the shared default, pre-filled with this picker's own name. */ }
+										>{ /* What: Conditional Pill Button New Element. Why: The user needs an explicit way to open the inline new-conditional editor. How: This selects the 'new' pill and seeds conDraObj from the shared default, pre-filled with this picker's own name. */ }
 
 
 											<IcoSvgCom
@@ -1669,7 +1670,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 												sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 											/>{ /* What: Icon SVG Component. Why: The new-conditional pill needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
 
-											<span className={ cssModObj.conNamSpa }>Add New Conditional</span>{ /* What: Pill Name Span Element. Why: The new-conditional pill needs its own visible label. How: This renders the literal text "Add New Conditional". */ }
+											<span className={ cssModObj.conNamSpa }>Add New Conditional</span>{ /* What: Conditional Name Span Element. Why: The new-conditional pill needs its own visible label. How: This renders the literal text "Add New Conditional". */ }
 
 
 										</button>
@@ -1707,7 +1708,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={` ${ cssModObj.forFieDiv }   ${ cssModObj.forFieDivDaily } `}
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Daily Field Div Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps daiTogDiv and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+						>{ /* What: Form Field Div Daily Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps daiTogDiv and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 							<TogRowCom
@@ -1741,14 +1742,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									ref={ daiBloRef }
 
 									className={ cssModObj.schSetDiv }
-								>{ /* What: Schedule Div Element. Why: The cadence control, the weekday picker, and the two schedule toggles form one collapsible block. How: This wraps schBloDiv/schTogDiv sections below. */ }
+								>{ /* What: Schedule Settings Div Element. Why: The cadence control, the weekday picker, and the two schedule toggles form one collapsible block. How: This wraps schBloDiv/schTogDiv sections below. */ }
 
 
 									<div
 										className={ cssModObj.schBloDiv }
 
 										data-element-name-hook='schBloDiv'
-									>{ /* What: Cadence Block Div Element. Why: The shared cadence editor needs its own labelled block. How: This wraps a single CadConCom, wired to cadCurObj. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+									>{ /* What: Schedule Block Div Element. Why: The shared cadence editor needs its own labelled block. How: This wraps a single CadConCom, wired to cadCurObj. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 										<CadConCom
@@ -1766,12 +1767,12 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										className={ cssModObj.schBloDiv }
 
 										data-element-name-hook='schBloDiv'
-									>{ /* What: Days Block Div Element. Why: The weekday picker and its own presets form one block. How: This wraps the label, help text, chips, and preset buttons below. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+									>{ /* What: Schedule Block Div Element. Why: The weekday picker and its own presets form one block. How: This wraps the label, help text, chips, and preset buttons below. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
-										<span className={ cssModObj.forLabSpa }>Which days?</span>{ /* What: Days Label Span Element. Why: The weekday picker below needs a readable label. How: This renders the literal text. */ }
+										<span className={ cssModObj.forLabSpa }>Which days?</span>{ /* What: Form Label Span Element. Why: The weekday picker below needs a readable label. How: This renders the literal text. */ }
 
-										<p className={ cssModObj.forHelPar }>Pick the days that this picker is allowed to run on. Tap a day to turn it off. This is handy for things like chores, that you&rsquo;d rather not see on weekends.</p>{ /* What: Days Help Paragraph Element. Why: A first-time user needs to understand what tapping a day chip actually does. How: This renders a fixed explanatory sentence. */ }
+										<p className={ cssModObj.forHelPar }>Pick the days that this picker is allowed to run on. Tap a day to turn it off. This is handy for things like chores, that you&rsquo;d rather not see on weekends.</p>{ /* What: Form Help Paragraph Element. Why: A first-time user needs to understand what tapping a day chip actually does. How: This renders a fixed explanatory sentence. */ }
 
 
 										<div
@@ -1791,7 +1792,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-											<div className={ cssModObj.schPreDiv }>{ /* What: Presets Div Element. Why: Three common day patterns deserve one-tap shortcuts instead of manual chip-tapping every time. How: This wraps the Every day/Weekdays/Weekends buttons. */ }
+											<div className={ cssModObj.schPreDiv }>{ /* What: Schedule Presets Div Element. Why: Three common day patterns deserve one-tap shortcuts instead of manual chip-tapping every time. How: This wraps the Every day/Weekdays/Weekends buttons. */ }
 
 
 												<button
@@ -1800,7 +1801,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 													type='button'
 
 													onClick={ () => setRunDowArr( witLocFun( [ 0, 1, 2, 3, 4, 5, 6 ] ) ) }
-												>Every day</button>{ /* What: Every Day Preset Button Element. Why: This is the fastest way to select every day at once. How: This calls witLocFun with the full week, keeping any locked anchor day intact. */ }
+												>Every day</button>{ /* What: Day Preset Button Element. Why: This is the fastest way to select every day at once. How: This calls witLocFun with the full week, keeping any locked anchor day intact. */ }
 
 												<button
 													className={ cssModObj.dayPreBut }
@@ -1808,7 +1809,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 													type='button'
 
 													onClick={ () => setRunDowArr( witLocFun( [ 1, 2, 3, 4, 5 ] ) ) }
-												>Weekdays</button>{ /* What: Weekdays Preset Button Element. Why: This is a common one-tap pattern for chore-like pickers. How: This calls witLocFun with Monday through Friday. */ }
+												>Weekdays</button>{ /* What: Day Preset Button Element. Why: This is a common one-tap pattern for chore-like pickers. How: This calls witLocFun with Monday through Friday. */ }
 
 												<button
 													className={ cssModObj.dayPreBut }
@@ -1816,7 +1817,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 													type='button'
 
 													onClick={ () => setRunDowArr( witLocFun( [ 0, 6 ] ) ) }
-												>Weekends</button>{ /* What: Weekends Preset Button Element. Why: This is the inverse common one-tap pattern. How: This calls witLocFun with Saturday and Sunday. */ }
+												>Weekends</button>{ /* What: Day Preset Button Element. Why: This is the inverse common one-tap pattern. How: This calls witLocFun with Saturday and Sunday. */ }
 
 
 											</div>
@@ -1942,7 +1943,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={ cssModObj.forActDiv }
 
 							data-element-name-hook='forActDiv'
-						>{ /* What: Footer Actions Div Element. Why: Cancel and the Save/Add Items button sit side by side. How: This wraps those two controls. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+						>{ /* What: Form Actions Div Element. Why: Cancel and the Save/Add Items button sit side by side. How: This wraps those two controls. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 							<ButBasCom
@@ -1998,10 +1999,10 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					key='np-step2'
 
 					className={ cssModObj.steFadDiv }
-				>{ /* What: Step Two Fade Div Element. Why: Switching steps should play a fade transition, and React needs a stable key to treat each step as a distinct mounted instance. How: This wraps the whole Items step's own hint text, pool, and footer. */ }
+				>{ /* What: Step Fade Div Element. Why: Switching steps should play a fade transition, and React needs a stable key to treat each step as a distinct mounted instance. How: This wraps the whole Items step's own hint text, pool, and footer. */ }
 
 
-					<p className={ cssModObj.steHinPar }>{ /* What: Items Intro Hint Paragraph Element. Why: A first-time user needs to be reminded which picker/mode they're building items for. How: This renders the live-typed name (or a fallback) and the chosen mode's own label. */ }
+					<p className={ cssModObj.steHinPar }>{ /* What: Step Hint Paragraph Element. Why: A first-time user needs to be reminded which picker/mode they're building items for. How: This renders the live-typed name (or a fallback) and the chosen mode's own label. */ }
 
 
 						This is the list of items that your
@@ -2056,13 +2057,13 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-					<div className={ cssModObj.itePooDiv }>{ /* What: Pool Div Element. Why: The empty-state message, the real pool list, and the add/edit slot below it all share this one section. How: This wraps whichever of those currently applies. */ }
+					<div className={ cssModObj.itePooDiv }>{ /* What: Item Pool Div Element. Why: The empty-state message, the real pool list, and the add/edit slot below it all share this one section. How: This wraps whichever of those currently applies. */ }
 
 
 						{ pooIteArr.filter( ( iteCurObj ) => iteCurObj.id !== actNewStr ).length === 0 && !actNewStr && ( // What: Empty Pool Check. Why: A pool with no committed items yet (and nothing currently being added) needs its own placeholder message. How: This renders the placeholder only under both conditions.
 
 
-							<div className={ cssModObj.pooEmpDiv }>Nothing here yet. Add at least 2 items that this picker can choose between, so that there&rsquo;s a real choice to make.</div> // What: Empty Pool Div Element. Why: An empty draft pool needs a nudge toward adding items. How: This renders a fixed message.
+							<div className={ cssModObj.pooEmpDiv }>Nothing here yet. Add at least 2 items that this picker can choose between, so that there&rsquo;s a real choice to make.</div> // What: Pool Empty Div Element. Why: An empty draft pool needs a nudge toward adding items. How: This renders a fixed message.
 
 
 						) }
@@ -2109,18 +2110,18 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 											} }
-										>{ /* What: Row Div Element. Why: Every committed draft item needs one row, whichever of its own name/meta/actions or delete-confirm content currently applies. How: This carries this row's own transient animation classes, and commits the real removal once its own leaving keyframe finishes. */ }
+										>{ /* What: Pool Row Div Element. Why: Every committed draft item needs one row, whichever of its own name/meta/actions or delete-confirm content currently applies. How: This carries this row's own transient animation classes, and commits the real removal once its own leaving keyframe finishes. */ }
 
 
 											{ conDelStr === curIteObj.id ? ( // What: Delete Confirm Check. Why: A row pending delete confirmation replaces its own normal content entirely. How: This renders the confirm row while conDelStr matches this item, otherwise the row's real content below.
 
 
-												<div className={` ${ cssModObj.delConDiv }   ${ conLeaStr === curIteObj.id ? cssModObj.delConDivLeaving : '' } `}>{ /* What: Confirm Div Element. Why: The delete question and its Cancel/Delete buttons form one block. How: This wraps delMesSpa and delActDiv. */ }
+												<div className={` ${ cssModObj.delConDiv }   ${ conLeaStr === curIteObj.id ? cssModObj.delConDivLeaving : '' } `}>{ /* What: Delete Confirm Div Element. Why: The delete question and its Cancel/Delete buttons form one block. How: This wraps delMesSpa and delActDiv. */ }
 
 
-													<span className={ cssModObj.delMesSpa }>Delete <strong>{ curIteObj.name }</strong>?</span>{ /* What: Confirm Message Span Element. Why: The user must see exactly which item they're about to remove from the draft. How: This renders curIteObj.name inside the fixed question text. */ }
+													<span className={ cssModObj.delMesSpa }>Delete <strong>{ curIteObj.name }</strong>?</span>{ /* What: Delete Message Span Element. Why: The user must see exactly which item they're about to remove from the draft. How: This renders curIteObj.name inside the fixed question text. */ }
 
-													<div className={ cssModObj.delActDiv }>{ /* What: Confirm Actions Div Element. Why: Cancel and Delete need to sit side by side. How: This wraps those two buttons. */ }
+													<div className={ cssModObj.delActDiv }>{ /* What: Delete Actions Div Element. Why: Cancel and Delete need to sit side by side. How: This wraps those two buttons. */ }
 
 
 														<ButBasCom
@@ -2157,12 +2158,12 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											) : ( // What: Row Content Branch. Why: A row not pending delete confirmation shows its own normal name/meta/actions content instead. How: This renders the else branch, taken while conDelStr doesn't match this item.
 
 
-												<React.Fragment>{ /* What: Row Content Fragment Element. Why: The name/meta block and the edit/delete actions below are true siblings with no shared wrapper of their own. How: This groups all of this draft row's own real content without adding an extra DOM node. */ }
+												<React.Fragment>{ /* What: Row Content Fragment. Why: The name/meta block and the edit/delete actions below are true siblings with no shared wrapper of their own. How: This groups all of this draft row's own real content without adding an extra DOM node. */ }
 
 
-													<div className={ cssModObj.pooNamDiv }>{ curIteObj.name }</div>{ /* What: Name Div Element. Why: Every row needs its own visible item name. How: This renders curIteObj.name. */ }
+													<div className={ cssModObj.pooNamDiv }>{ curIteObj.name }</div>{ /* What: Pool Name Div Element. Why: Every row needs its own visible item name. How: This renders curIteObj.name. */ }
 
-													<div className={ cssModObj.pooMetDiv }>{ /* What: Meta Div Element. Why: The optional cadence summary and the optional weight pill sit side by side. How: This wraps both, each independently gated. */ }
+													<div className={ cssModObj.pooMetDiv }>{ /* What: Pool Meta Div Element. Why: The optional cadence summary and the optional weight pill sit side by side. How: This wraps both, each independently gated. */ }
 
 
 														{ isaEasBoo && <span className={ cssModObj.pooEasSpa }>{ sooDayNum }&ndash;{ latDayNum } { CAD_NAM_OBJ.uniWorFun( cadCurObj.cadence, latDayNum ) }</span> }{ /* What: Ease Meta Span Check. Why: Only ease-up/ease-down items have a cadence summary worth showing. How: This renders the soonest-latest range, unit-worded per the picker's own cadence, only while isaEasBoo is true. */ }
@@ -2183,7 +2184,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 														title='Edit'
 
 														onClick={ () => staDraFun( curIteObj.id ) }
-													>{ /* What: Edit Pool Button Element. Why: Every row needs a way to open its own item in the shared editor slot below. How: This calls staDraFun with this row's own item id. */ }
+													>{ /* What: Pool Edit Button Element. Why: Every row needs a way to open its own item in the shared editor slot below. How: This calls staDraFun with this row's own item id. */ }
 
 
 														<IcoSvgCom
@@ -2227,7 +2228,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 															aria-label={ `Delete ${ curIteObj.name }` }
 
 															onClick={ () => setConDelStr( curIteObj.id ) }
-														>{ /* What: Delete Pool Button Element. Why: This starts this row's own delete-confirm flow. How: This writes curIteObj.id into conDelStr. */ }
+														>{ /* What: Pool Delete Button Element. Why: This starts this row's own delete-confirm flow. How: This writes curIteObj.id into conDelStr. */ }
 
 
 															<IcoSvgCom
@@ -2270,10 +2271,10 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={ cssModObj.iteAddDiv }
 
 							data-element-name-hook='iteAddDiv'
-						>{ /* What: Add Item Wrap Div Element. Why: The new-item form, an already-committed item's editor, and the plain "+ Add Item" button all share this one below-the-list slot. How: This wraps whichever of those three the IIFE below currently resolves to. Its data-element-name-hook is read by the picker mini-tours. */ }
+						>{ /* What: Item Add Div Element. Why: The new-item form, an already-committed item's editor, and the plain "+ Add Item" button all share this one below-the-list slot. How: This wraps whichever of those three the IIFE below currently resolves to. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
-							{ ( () => { // What: Additem Slot Render. Why: Exactly one of three things belongs in this slot at a time, easier to express as a small function than as a nested ternary. How: This checks ediIteStr first, then actNewStr, falling back to the plain button.
+							{ ( () => { // What: Add Item Slot Render. Why: Exactly one of three things belongs in this slot at a time, easier to express as a small function than as a nested ternary. How: This checks ediIteStr first, then actNewStr, falling back to the plain button.
 
 
 								if ( ediIteStr ) { // What: Committed Item Editor Branch. Why: An already-committed draft item's own editor takes priority whenever one is open. How: This looks up the item and renders its editor, or nothing if it vanished out from under itself.
@@ -2344,7 +2345,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										type='button'
 
 										onClick={ addDraFun }
-									>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls the add handler on click, disabled during the matching tour step. Its data-element-name-hook is read by the Pickers page tour, the picker mini-tours, and help mode's Pickers catalog. */ }
+									>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls addDraFun on click. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 										<IcoSvgCom
@@ -2447,7 +2448,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={ cssModObj.forActDiv }
 
 							data-element-name-hook='forActDiv'
-						>{ /* What: Footer Actions Div Element. Why: Back and Create Picker sit side by side. How: This wraps those two buttons. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+						>{ /* What: Form Actions Div Element. Why: Back and Create Picker sit side by side. How: This wraps those two buttons. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 							<ButBasCom
@@ -2497,7 +2498,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 // #region Exports
 
-export { PicForCom }; // What: Named Export. Why: The Pickers tab renders this form to create a picker, and a picker's own view renders it to edit that picker's details. How: This exports PicForCom by name.
+export { PicForCom }; // What: Named Export. Why: The form is rendered from outside this file, so it is exported by name. How: This exports PicForCom by name.
 
 // #endregion Exports
 
