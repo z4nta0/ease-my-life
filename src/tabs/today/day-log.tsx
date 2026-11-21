@@ -10,9 +10,9 @@ import React     from 'react';                // What: React. Why: This is the U
 import { CAD_NAM_OBJ } from '../../core/cadence.ts';      // What: Cadence Namespace Object. Why: An ease-mode item's subline needs CAD_NAM_OBJ.uniWorFun to phrase its range in the picker's own cadence unit (days/weeks/months/years) instead of always "days". How: This is called once inside iteSubFun below.
 import { ColDisCom   } from '../../ui/collapse.tsx';      // What: Collapse Disclosure Component. Why: PicBloCom's own item table only needs to exist in the DOM while its block is actually expanded. How: This wraps that table, driven by PicBloCom's own open/closed state.
 import { CON_NAM_OBJ } from '../../core/conditionals.ts'; // What: Conditionals Namespace Object. Why: ConSecCom needs CON_NAM_OBJ.modValFun to know whether a given conditional's own mode even has a value to show, and the odds labels fall back to the shared default odds. How: This is called once per conditional row inside ConSecCom below, and read for DEF_ODD_NUM.
-import { InfTipCom   } from '../../ui/info-tip.tsx';      // What: Info Tip Component. Why: Every truncatable name/label in this file (item, conditional, reminder) needs the shared reveal-on-truncation tooltip. How: This wraps those names/labels throughout PicBloCom, ConSecCom and RemLogCom.
+import { InfTipCom   } from '../../ui/info-tip.tsx';      // What: Info Tip Component. Why: The item, conditional, reminder, and mode labels in this file can truncate and need the shared reveal-on-truncation tooltip. How: This wraps those labels in PicBloCom, ConSecCom, NamModCom, and RemLogCom.
 import { isoDayFun   } from '../../utils/date.ts';        // What: ISO Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
-import { PIC_NAM_OBJ } from '../../core/pickers.ts';      // What: Pickers Namespace Object. Why: Ease day-range math in this file divides the shared full-charge ceiling by a drift band, falling back to the pickers' default band. How: This reads PIC_NAM_OBJ.THR_VAL_NUM and DEF_EAS_OBJ wherever a drift-to-days conversion happens.
+import { PIC_NAM_OBJ } from '../../core/pickers.ts';      // What: Pickers Namespace Object. Why: Ease day-range math in this file divides the shared full-charge ceiling by a drift band, and a conditional's own range falls back to the pickers' default band. How: This reads PIC_NAM_OBJ.THR_VAL_NUM in both day-range conversions and DEF_EAS_OBJ in conSubFun's fallback.
 import { SED_NAM_OBJ } from '../../state/seed.ts';        // What: Seed Namespace Object. Why: PicBloCom and ConSecCom label a mode with the same display names the mode radios use. How: This reads MOD_DEF_OBJ's own labStr for a picker's or conditional's mode.
 import { TAS_NAM_OBJ } from '../../core/tasks.ts';        // What: Tasks Namespace Object. Why: RemLogCom needs the reminders engine's own scheduling helpers (ancDatFun, visTodFun, isaDonFun, nexEliFun, sumTasFun). How: These are called throughout RemLogCom below.
 
@@ -274,7 +274,7 @@ function forDueFun ( dueDatObj : Date | null, dayKeyStr : string ) : string {
 
 
 
-const forTimFun = ( isoTimStr : string | null ) => { // What: Format Time Function. Why: Both GroLogCom's kicker needs a plain "3:42 PM" style time for when the day was generated. How: This builds a Date from isoTimStr and formats it via toLocaleTimeString, swallowing an invalid input as an empty string.
+const forTimFun = ( isoTimStr : string | null ) => { // What: Format Time Function. Why: GroLogCom's kicker needs a plain "3:42 PM" style time for when the day was generated. How: This builds a Date from isoTimStr and formats it via toLocaleTimeString, swallowing an invalid input as an empty string.
 
 
 	if ( !isoTimStr ) return ''; // What: Missing Time Guard. Why: A day that hasn't been generated yet has no time to show, and new Date( null ) would read as the epoch. How: This returns an empty string when isoTimStr is missing.
@@ -290,7 +290,7 @@ const forTimFun = ( isoTimStr : string | null ) => { // What: Format Time Functi
 
 
 
-const hasValFun = ( picModStr : string ) => { // What: Has Value Function. Why: PicBloCom and ValCelCom both need to know whether a picker's own mode tracks a numeric value at all, since random/weighted modes have nothing to show in the At-generation/After columns. How: This is called with a picker's own mode string.
+const hasValFun = ( picModStr : string ) => { // What: Has Value Function. Why: PicBloCom needs to know whether a picker's own mode tracks a numeric value at all, since random/weighted modes have nothing to show in the At-generation/After columns. How: This is called with a picker's own mode string.
 
 
 	const easUpwBoo = picModStr === 'ease-up';   // What: Ease Upward Boolean. Why: This mode is one of the 3 that track a numeric value. How: This checks picModStr against the literal 'ease-up' mode key.
@@ -359,7 +359,7 @@ function iteSubFun ( picRcdObj : PicRcdTyp, iteRcdObj : IteRcdTyp, booValNum : n
 		return (
 
 
-			<React.Fragment>{ /* What: Dynamic Subline Fragment Element. Why: This item's own subline needs both a plain weight string and an optional boost span, without an extra wrapping DOM element. How: This renders the weight text, then booRouNum's own boost span when it isn't null. */ }
+			<React.Fragment>{ /* What: Dynamic Subline Fragment. Why: This item's own subline needs both a plain weight string and an optional boost span, without an extra wrapping DOM element. How: This renders the weight text, then booRouNum's own boost span when it isn't null. */ }
 
 
 				{ `weight ${ iteRcdObj.weight ?? 1 }` }{ /* What: Weight Text. Why: Every dynamic item still shows its own base weight first. How: This renders iteRcdObj's own weight, defaulting to 1 for an older item with none set. */ }
@@ -371,7 +371,7 @@ function iteSubFun ( picRcdObj : PicRcdTyp, iteRcdObj : IteRcdTyp, booValNum : n
 						className={ cssModObj.booValSpa }
 
 						data-boost-zero-active={ !booRouNum || undefined } // What: Boost Zero Active Attribute. Why: No boost reads faint. How: This sets the presence-only attribute while booRouNum is 0.
-					> (+{ booRouNum })</span> // What: Boost Span Element. Why: A dynamic item's boost shows beside its weight. How: This renders booRouNum in parentheses, faint when it's zero.
+					> (+{ booRouNum })</span> // What: Boost Value Span Element. Why: A dynamic item's boost shows beside its weight. How: This renders booRouNum in parentheses, faint when it's zero.
 
 
 				) }
@@ -463,7 +463,7 @@ function IcoSetCom ( { className, icoKeyStr, strWidNum = 2 } : IecProTyp ) : Rea
 		chvEle : <><path d='m6 9 6 6 6-6' /></>,                                                                                         // What: Chevron Element. Why: This marks PicBloCom's own expand/collapse toggle. How: This draws a plain downward chevron, keyed chvEle (escalated past the usual che truncation, since that collides with cheEle just above, per the Naming-conflict resolution rule).
 		clcEle : <><path d='M12 8v4l3 3' /><circle cx='12' cy='12' r='9' /></>,                                                          // What: Clock Element. Why: This marks RemLogCom's own kicker. How: This draws a plain clock face, keyed clcEle (escalated past the usual clo truncation, since clo already heavily means Close throughout this codebase, per the Naming-conflict resolution rule).
 		croEle : <><path d='M18 6 6 18M6 6l12 12' /></>,                                                                                 // What: Cross Element. Why: This marks a skipped status, and a close button. How: This draws a plain X shape.
-		logEle : <><path d='M3 5h18M3 12h18M3 19h18' /></>,                                                                              // What: Log Element. Why: This marks the LogChiCom toggle and every panel's own kicker. How: This draws 3 stacked horizontal lines.
+		logEle : <><path d='M3 5h18M3 12h18M3 19h18' /></>,                                                                              // What: Log Element. Why: This marks LogChiCom's toggle and the group log panel's kicker. How: This draws 3 stacked horizontal lines.
 		mooEle : <><path d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z' /></>,                                                                   // What: Moon Element. Why: This marks a picker resting today under a triggered conditional. How: This draws a crescent moon shape.
 		pusEle : <><path d='M12 19V5M5 12l7-7 7 7' /></>,                                                                                // What: Push Element. Why: This marks a manually pushed/rerolled status. How: This draws an upward arrow.
 		rolEle : <><path d='M3 2v6h6' /><path d='M3 8a9 9 0 1 0 3-5' /></>,                                                              // What: Roll Element. Why: This marks a rolled-off status. How: This draws a counter-clockwise arrow.
@@ -490,7 +490,7 @@ function IcoSetCom ( { className, icoKeyStr, strWidNum = 2 } : IecProTyp ) : Rea
 			viewBox='0 0 24 24'
 
 			aria-hidden='true'
-		>{ /* What: Icon Shape SVG Element. Why: This is IcoSetCom's own single rendered element, sized and stroked identically for every glyph. How: This renders whichever shape icoShaEle resolves to. */ }
+		>{ /* What: Icon Shape SVG Element. Why: This is IcoSetCom's own single rendered element, drawn on the same 24-unit viewBox with the same fill and line styling for every glyph. How: This renders whichever shape icoShaEle resolves to. */ }
 
 
 			{ icoShaEle }
@@ -536,7 +536,7 @@ type LlcProTyp = { onCloLogFun : () => void }; // What: Log-Close-Component Prop
 function LogCloCom ( { onCloLogFun } : LlcProTyp ) : React.JSX.Element | null {
 
 
-	if ( !onCloLogFun ) return null; // What: Close Handler Guard. Why: A panel opened without a real close handler (none in this codebase today, but supported) needs no close button at all. How: This renders nothing when onCloLogFun is missing.
+	if ( !onCloLogFun ) return null; // What: Close Handler Guard. Why: A panel opened without a real close handler needs no close button at all. How: This renders nothing when onCloLogFun is missing.
 
 
 
@@ -551,7 +551,7 @@ function LogCloCom ( { onCloLogFun } : LlcProTyp ) : React.JSX.Element | null {
 			aria-label='Close log'
 
 			onClick={ onCloLogFun }
-		>{ /* What: Close Button Element. Why: This is the panel's own dismiss control. How: This calls onCloLogFun on click. */ }
+		>{ /* What: Panel Close Button Element. Why: This is the panel's own dismiss control. How: This calls onCloLogFun on click. */ }
 
 
 			<IcoSetCom
@@ -678,7 +678,7 @@ function StaChiCom ( { iteFlaObj } : ShcProTyp ) : React.JSX.Element {
 				className={ cssModObj.staNonSpa }
 
 				data-element-name-hook='logStaSpa'
-			>—</span> // What: No Rows Span Element. Why: An item with no pick-log rows today still needs a placeholder in its status column. How: This renders an em-dash display glyph. Its data-element-name-hook is read by help mode's Today catalog.
+			>—</span> // What: Status None Span Element. Why: An item with no pick-log rows today still needs a placeholder in its status column. How: This renders an em-dash display glyph. Its data-element-name-hook is read by help mode's Today catalog.
 
 
 		);
@@ -718,7 +718,7 @@ function StaChiCom ( { iteFlaObj } : ShcProTyp ) : React.JSX.Element {
 			className={ cssModObj.rowStaSpa }
 
 			data-element-name-hook='logStaSpa'
-		>{ /* What: Status Chip Row Span Element. Why: This is StaChiCom's own root element, holding every chip this item earned today. How: This maps chiTupArr into one small icon span per chip below. Its data-element-name-hook is read by help mode's Today catalog. */ }
+		>{ /* What: Row Status Span Element. Why: This is StaChiCom's own root element, holding every chip this item earned today. How: This maps chiTupArr into one small icon span per chip below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 			{ chiTupArr.map( ( [ chiKeyStr, chiIcoStr, chiTitStr, chiWidNum ] ) => ( // What: Chip Map Callback. Why: One small span is needed per earned chip. How: This destructures each chiTupArr tuple and renders it as a titled icon span, keyed by chiKeyStr.
@@ -730,7 +730,7 @@ function StaChiCom ( { iteFlaObj } : ShcProTyp ) : React.JSX.Element {
 					className={` ${ cssModObj.staIcoSpa }   ${ chiKeyStr === 'auto' ? cssModObj.staIcoSpaAuto : '' }   ${ chiKeyStr === 'push' ? cssModObj.staIcoSpaPush : '' }   ${ chiKeyStr === 'roll' ? cssModObj.staIcoSpaRoll : '' }   ${ chiKeyStr === 'skip' ? cssModObj.staIcoSpaSkip : '' }   ${ chiKeyStr === 'done' ? cssModObj.staIcoSpaDone : '' } `}
 
 					title={ chiTitStr }
-				>{ /* What: Status Chip Span Element. Why: Each earned status gets its own small colored icon. How: This wraps IcoSetCom for chiIcoStr/chiWidNum, tinted by the staIcoSpa modifier class matching chiKeyStr. */ }
+				>{ /* What: Status Icon Span Element. Why: Each earned status gets its own small colored icon. How: This wraps IcoSetCom for chiIcoStr/chiWidNum, tinted by the staIcoSpa modifier class matching chiKeyStr. */ }
 
 
 					<IcoSetCom
@@ -741,7 +741,7 @@ function StaChiCom ( { iteFlaObj } : ShcProTyp ) : React.JSX.Element {
 					/>{ /* What: Icon Set Component. Why: This is the chip's own glyph. How: This draws chiIcoStr at the chip's own stroke width. */ }
 
 
-				</span> // What: Status Chip Span Element. Why: Each earned status gets its own small colored icon. How: This is tinted by its own staIcoSpa modifier for chiKeyStr class.
+				</span>
 
 
 			) ) }
@@ -800,16 +800,16 @@ function TabHeaCom ( { heaLabStr = 'Item' } : ThcProTyp ) : React.JSX.Element {
 				className={ cssModObj.heaGenSpa }
 
 				data-element-name-hook='logGenSpa'
-			>{ /* What: At Generation Header Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders an open-circle glyph plus a visually-hidden "At generation" span. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ /* What: Header Generation Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders an open-circle glyph plus a visually-hidden "At generation" span. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 				<span
 					className={ cssModObj.genIcoSpa }
 
 					aria-hidden='true'
-				>○</span>{ /* What: At Generation Glyph Span Element. Why: A compact glyph keeps the narrow column header short. How: This renders ○ hidden from screen readers. */ }
+				>○</span>{ /* What: Generation Icon Span Element. Why: A compact glyph keeps the narrow column header short. How: This renders ○ hidden from screen readers. */ }
 
-				<span className={ cssModObj.visHidSpa }>At generation</span>{ /* What: At Generation Label Span Element. Why: Screen readers need the column's real name. How: This renders "At generation" visually hidden. */ }
+				<span className={ cssModObj.visHidSpa }>At generation</span>{ /* What: Visually Hidden Span Element. Why: Screen readers need the column's real name. How: This renders "At generation" visually hidden. */ }
 
 
 			</span>
@@ -818,12 +818,12 @@ function TabHeaCom ( { heaLabStr = 'Item' } : ThcProTyp ) : React.JSX.Element {
 				className={ cssModObj.heaDelSpa }
 
 				data-element-name-hook='logDelSpa'
-			>{ /* What: Delta Header Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders a delta glyph plus a visually-hidden "Change" span. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ /* What: Header Delta Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders a delta glyph plus a visually-hidden "Change" span. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 				<span aria-hidden='true'>Δ</span>{ /* What: Delta Glyph Span Element. Why: A compact glyph keeps the narrow column header short. How: This renders Δ hidden from screen readers. */ }
 
-				<span className={ cssModObj.visHidSpa }>Change</span>{ /* What: Delta Label Span Element. Why: Screen readers need the column's real name. How: This renders "Change" visually hidden. */ }
+				<span className={ cssModObj.visHidSpa }>Change</span>{ /* What: Visually Hidden Span Element. Why: Screen readers need the column's real name. How: This renders "Change" visually hidden. */ }
 
 
 			</span>
@@ -832,12 +832,12 @@ function TabHeaCom ( { heaLabStr = 'Item' } : ThcProTyp ) : React.JSX.Element {
 				className={ cssModObj.heaAftSpa }
 
 				data-element-name-hook='logAftSpa'
-			>{ /* What: After Header Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders a filled-circle glyph plus a visually-hidden "After" span. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ /* What: Header After Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders a filled-circle glyph plus a visually-hidden "After" span. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 				<span aria-hidden='true'>●</span>{ /* What: After Glyph Span Element. Why: A compact glyph keeps the narrow column header short. How: This renders ● hidden from screen readers. */ }
 
-				<span className={ cssModObj.visHidSpa }>After</span>{ /* What: After Label Span Element. Why: Screen readers need the column's real name. How: This renders "After" visually hidden. */ }
+				<span className={ cssModObj.visHidSpa }>After</span>{ /* What: Visually Hidden Span Element. Why: Screen readers need the column's real name. How: This renders "After" visually hidden. */ }
 
 
 			</span>
@@ -846,7 +846,7 @@ function TabHeaCom ( { heaLabStr = 'Item' } : ThcProTyp ) : React.JSX.Element {
 				className={ cssModObj.heaStaSpa }
 
 				data-element-name-hook='logStaSpa'
-			>Status</span>{ /* What: Status Header Span Element. Why: The last column is a plain text header, no glyph needed. How: This renders the literal text "Status". Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>Status</span>{ /* What: Header Status Span Element. Why: The last column is a plain text header, no glyph needed. How: This renders the literal text "Status". Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 		</div>
@@ -912,26 +912,26 @@ function ValCelCom ( { aftValNum, genValNum, hasValBoo, offValNum = 0 } : VccPro
 		return (
 
 
-			<React.Fragment>{ /* What: No Value Cells Fragment Element. Why: This row still needs all 3 value cell slots rendered, even with nothing real to show. How: This renders 2 N/A cells and a flat placeholder delta between them. */ }
+			<React.Fragment>{ /* What: No Value Cells Fragment. Why: This row still needs all 3 value cell slots rendered, even with nothing real to show. How: This renders 2 N/A cells and a flat placeholder delta between them. */ }
 
 
 				<span
 					className={ cssModObj.celGenSpa }
 
 					data-element-name-hook='logGenSpa'
-				><span className={ cssModObj.notAppSpa }>N/A</span></span>{ /* What: At Generation Not Available Span Element. Why: There is no generation-time value to show. How: This renders the shared notAppSpa "N/A" placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
+				><span className={ cssModObj.notAppSpa }>N/A</span>{ /* What: Not Applicable Span Element. Why: A value that doesn't apply reads faint. How: This renders the literal text "N/A". */ }</span>{ /* What: Cell Generation Span Element. Why: There is no generation-time value to show. How: This renders the shared notAppSpa "N/A" placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 				<span
 					className={` ${ cssModObj.celDelSpa }   ${ cssModObj.celDelSpaFlat } `}
 
 					data-element-name-hook='logDelSpa'
-				>—</span>{ /* What: Delta Placeholder Span Element. Why: With no real value, there is no real delta either. How: This renders the shared em-dash placeholder glyph (a display character, not prose). Its data-element-name-hook is read by help mode's Today catalog. */ }
+				>—</span>{ /* What: Cell Delta Span Element. Why: With no real value, there is no real delta either. How: This renders the shared em-dash placeholder glyph (a display character, not prose). Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 				<span
 					className={` ${ cssModObj.celAftSpa }   ${ cssModObj.celAftSpaEmpty } `}
 
 					data-element-name-hook='logAftSpa'
-				><span className={ cssModObj.notAppSpa }>N/A</span></span>{ /* What: After Not Available Span Element. Why: There is no current value to show either. How: This renders the shared notAppSpa "N/A" placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
+				><span className={ cssModObj.notAppSpa }>N/A</span>{ /* What: Not Applicable Span Element. Why: A value that doesn't apply reads faint. How: This renders the literal text "N/A". */ }</span>{ /* What: Cell After Span Element. Why: There is no current value to show either. How: This renders the shared notAppSpa "N/A" placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 			</React.Fragment>
@@ -955,26 +955,26 @@ function ValCelCom ( { aftValNum, genValNum, hasValBoo, offValNum = 0 } : VccPro
 	return (
 
 
-		<React.Fragment>{ /* What: Value Cells Fragment Element. Why: This row's own 3 real value cells share no wrapping DOM element. How: This renders the at-generation, delta and after cells in order. */ }
+		<React.Fragment>{ /* What: Value Cells Fragment. Why: This row's own 3 real value cells share no wrapping DOM element. How: This renders the at-generation, delta and after cells in order. */ }
 
 
 			<span
 				className={ cssModObj.celGenSpa }
 
 				data-element-name-hook='logGenSpa'
-			>{ effGenNum }</span>{ /* What: At Generation Value Span Element. Why: This is the row's own value as it stood at generation time. How: This renders effGenNum directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ effGenNum }</span>{ /* What: Cell Generation Span Element. Why: This is the row's own value as it stood at generation time. How: This renders effGenNum directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 			<span
 				className={` ${ cssModObj.celDelSpa }   ${ treClaStr === 'up' ? cssModObj.celDelSpaUp : '' }   ${ treClaStr === 'down' ? cssModObj.celDelSpaDown : '' }   ${ treClaStr === 'flat' ? cssModObj.celDelSpaFlat : '' } `}
 
 				data-element-name-hook='logDelSpa'
-			>{ disTexStr }</span>{ /* What: Delta Value Span Element. Why: This is the row's own signed change since generation. How: This renders disTexStr, tinted by its own treClaStr direction class. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ disTexStr }</span>{ /* What: Cell Delta Span Element. Why: This is the row's own signed change since generation. How: This renders disTexStr, tinted by its own treClaStr direction class. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 			<span
 				className={ cssModObj.celAftSpa }
 
 				data-element-name-hook='logAftSpa'
-			>{ effAftNum }</span>{ /* What: After Value Span Element. Why: This is the row's own current value. How: This renders effAftNum directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ effAftNum }</span>{ /* What: Cell After Span Element. Why: This is the row's own current value. How: This renders effAftNum directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 		</React.Fragment>
@@ -997,16 +997,16 @@ type CncProTyp = { picGroArr : PicRcdTyp[], staAppObj : StaAppTyp }; // What: Co
  * ConSecCom = Conditional Section Component
  *
  * @summary
- * The blue section listing every conditional attached to any picker in
- * the current group, one row per conditional (name/mode subline, value
+ * The blue section listing every conditional attached to a visible picker
+ * in the current group, one row per conditional (name/mode subline, value
  * cells, Triggered/Not-triggered pill) plus a strip naming which
  * pickers it affects. Renders nothing at all when the group has no
  * attached conditionals.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.picGroArr - Picker Group Array: Every picker in the current
- *                          group.
+ * @param props.picGroArr - Picker Group Array: The current group's own
+ *                          non-hidden pickers, in saved order.
  * @param props.staAppObj - State App Object: The whole app state object.
  *
  * @returns This group's own conditionals section, or null once it has
@@ -1041,20 +1041,20 @@ function ConSecCom ( { picGroArr, staAppObj } : CncProTyp ) : React.JSX.Element 
 			className={ cssModObj.logConDiv }
 
 			data-element-name-hook='logConDiv'
-		>{ /* What: Conditional Section Div Element. Why: This is ConSecCom's own root element, tinted blue via its own logConDiv class. How: This renders a static header plus the conditional table below. Its data-element-name-hook is read by help mode's Today catalog. */ }
+		>{ /* What: Log Conditionals Div Element. Why: This is ConSecCom's own root element, tinted blue via its own logConDiv class. How: This renders a static header plus the conditional table below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
-			<div className={ cssModObj.bloHeaDiv }>{ /* What: Conditional Section Header Div Element. Why: This mirrors PicBloCom's own static header shape. How: This renders the section's own title plus a count pill. */ }
+			<div className={ cssModObj.bloHeaDiv }>{ /* What: Block Header Div Element. Why: This mirrors PicBloCom's own static header shape. How: This renders the section's own title plus a count pill. */ }
 
 
-				<span className={ cssModObj.conTitSpa }>Conditionals</span>{ /* What: Conditional Section Title Span Element. Why: This section needs its own plain title. How: This renders the literal text "Conditionals". */ }
+				<span className={ cssModObj.conTitSpa }>Conditionals</span>{ /* What: Conditionals Title Span Element. Why: This section needs its own plain title. How: This renders the literal text "Conditionals". */ }
 
 				<span className={ cssModObj.conCouSpa }>{ conRcdArr.length }</span>{ /* What: Conditional Count Span Element. Why: The header shows how many conditionals this section covers. How: This renders conRcdArr's own length. */ }
 
 
 			</div>
 
-			<div className={ cssModObj.logTabDiv }>{ /* What: Conditional Table Div Element. Why: This groups the shared header row with every conditional row below it. How: This renders TabHeaCom followed by one row per conRcdArr entry. */ }
+			<div className={ cssModObj.logTabDiv }>{ /* What: Log Table Div Element. Why: This groups the shared header row with every conditional row below it. How: This renders TabHeaCom followed by one row per conRcdArr entry. */ }
 
 
 				<TabHeaCom heaLabStr='Conditional' />{ /* What: Table Head Component. Why: This table's first column needs its own "Conditional" label instead of the default "Item". How: This renders with heaLabStr explicitly set. */ }
@@ -1065,7 +1065,7 @@ function ConSecCom ( { picGroArr, staAppObj } : CncProTyp ) : React.JSX.Element 
 
 
 					const attNamArr = staAppObj.pickers.filter( ( picRcdObj ) => picRcdObj.conditionalId === conRcdObj.id && !picRcdObj.hidden ).map( ( picRcdObj ) => picRcdObj.name ); // What: Attached Name Array. Why: The affected-pickers strip below needs just the visible attached pickers' own names. How: This filters staAppObj's own pickers down to this conditional's own id, excluding a hidden one, then maps to their own name.
-					const trgFlaBoo = CON_NAM_OBJ.supGatFun( conRcdObj );                                           // What: Triggered Flag Boolean. Why: Both the pill and the affected-pickers wording below depend on whether this conditional actually fired today. How: This calls CON_NAM_OBJ.supGatFun, the same shared active-and-triggered check every other suppression decision in the app uses.
+					const trgFlaBoo = CON_NAM_OBJ.supGatFun( conRcdObj );                                           // What: Triggered Flag Boolean. Why: Both the pill and the affected-pickers wording below depend on whether this conditional actually fired today. How: This calls CON_NAM_OBJ.supGatFun, the shared active-and-triggered check.
 					const hasValBoo = CON_NAM_OBJ.modValFun( conRcdObj.mode );                                      // What: Has Value Boolean. Why: Some conditional modes track no value at all. How: This asks CON_NAM_OBJ.modValFun for conRcdObj's own mode.
 					const genSnaObj = genConObj[ conRcdObj.id ];                                                    // What: Generation Snapshot Object. Why: The value cells below need this conditional's own at-generation snapshot, if any. How: This reads genConObj's own entry for conRcdObj's own id.
 					const neuModBoo = conRcdObj.mode === 'weighted' || conRcdObj.mode === 'random';                 // What: Neutral Mode Boolean. Why: These 2 modes get a visually neutral pill instead of a tinted one. How: This checks conRcdObj's own mode against both literal keys.
@@ -1077,7 +1077,7 @@ function ConSecCom ( { picGroArr, staAppObj } : CncProTyp ) : React.JSX.Element 
 					return (
 
 
-						<React.Fragment key={ conRcdObj.id }>{ /* What: Conditional Row Fragment Element. Why: The row itself and its own affected-pickers strip are siblings, not nested. How: This groups the conRowDiv row and the conAffDiv strip below without an extra wrapping element. */ }
+						<React.Fragment key={ conRcdObj.id }>{ /* What: Conditional Row Fragment. Why: The row itself and its own affected-pickers strip are siblings, not nested. How: This groups the conRowDiv row and the conAffDiv strip below without an extra wrapping element. */ }
 
 
 							<div className={ cssModObj.conRowDiv }>{ /* What: Conditional Row Div Element. Why: This is one conditional's own full row, spanning name/subline, value cells and its own triggered pill. How: This renders the name/mode span, ValCelCom, and the triggered pill below. */ }
@@ -1087,7 +1087,7 @@ function ConSecCom ( { picGroArr, staAppObj } : CncProTyp ) : React.JSX.Element 
 									className={ cssModObj.rowFirSpa }
 
 									data-element-name-hook='logIteSpa'
-								>{ /* What: Conditional Name Span Element. Why: This groups the conditional's own name, mode pill and subline together. How: This renders conRcdObj's own name/mode row plus its computed subline below. Its data-element-name-hook is read by help mode's Today catalog. */ }
+								>{ /* What: Row First Span Element. Why: This groups the conditional's own name, mode pill and subline together. How: This renders conRcdObj's own name/mode row plus its computed subline below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 									<span className={ cssModObj.namRowSpa }>{ /* What: Name Row Span Element. Why: The name and mode pill sit side by side on their own row above the subline. How: This renders conRcdObj's own name plus its modLabStr pill. */ }
@@ -1114,7 +1114,7 @@ function ConSecCom ( { picGroArr, staAppObj } : CncProTyp ) : React.JSX.Element 
 
 									</span>
 
-									<span className={ cssModObj.rowSubSpa }>{ conSubFun( conRcdObj ) }</span>{ /* What: Conditional Subline Span Element. Why: Every conditional shows its own odds/range text beneath its name. How: This renders conSubFun's own result for conRcdObj. */ }
+									<span className={ cssModObj.rowSubSpa }>{ conSubFun( conRcdObj ) }</span>{ /* What: Row Subline Span Element. Why: Every conditional shows its own odds/range text beneath its name. How: This renders conSubFun's own result for conRcdObj. */ }
 
 
 								</span>
@@ -1133,10 +1133,10 @@ function ConSecCom ( { picGroArr, staAppObj } : CncProTyp ) : React.JSX.Element 
 									className={ cssModObj.rowStaSpa }
 
 									data-element-name-hook='logStaSpa'
-								>{ /* What: Conditional Status Span Element. Why: The last column shows whether this conditional actually fired today. How: This renders the triggered/not-triggered pill below. Its data-element-name-hook is read by help mode's Today catalog. */ }
+								>{ /* What: Row Status Span Element. Why: The last column shows whether this conditional actually fired today. How: This renders the triggered/not-triggered pill below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
-									<span className={` ${ cssModObj.staPilSpa }   ${ trgFlaBoo ? cssModObj.staPilSpaTriggered : cssModObj.staPilSpaUntriggered } `}>{ trgFlaBoo ? 'Triggered' : 'Not triggered' }</span>{ /* What: Triggered Pill Span Element. Why: This is the actual triggered/not-triggered indicator. How: This renders its own text/class from trgFlaBoo. */ }
+									<span className={` ${ cssModObj.staPilSpa }   ${ trgFlaBoo ? cssModObj.staPilSpaTriggered : cssModObj.staPilSpaUntriggered } `}>{ trgFlaBoo ? 'Triggered' : 'Not triggered' }</span>{ /* What: Status Pill Span Element. Why: This is the actual triggered/not-triggered indicator. How: This renders its own text/class from trgFlaBoo. */ }
 
 
 								</span>
@@ -1251,10 +1251,10 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 				className={ cssModObj.logBloDiv }
 
 				data-element-name-hook='logBloDiv'
-			>{ /* What: Rested Picker Block Div Element. Why: This is the whole static-rested variant's own root element. How: This renders a single non-interactive header row, no table beneath it. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ /* What: Log Block Div Element. Why: This is the whole static-rested variant's own root element. How: This renders a single non-interactive header row, no table beneath it. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
-				<div className={ cssModObj.bloHeaDiv }>{ /* What: Rested Block Header Div Element. Why: This mirrors the interactive header's own layout without being a button. How: This renders the picker's own name/mode pill plus the rested strip. */ }
+				<div className={ cssModObj.bloHeaDiv }>{ /* What: Block Header Div Element. Why: This mirrors the interactive header's own layout without being a button. How: This renders the picker's own name/mode pill plus the rested strip. */ }
 
 
 					<NamModCom
@@ -1265,10 +1265,10 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 
 
 
-					<span className={ cssModObj.bloResSpa }>{ /* What: Rest Span Element. Why: This groups the rested icon/text with which conditional caused it. How: This renders the "Rested" strip plus conRcdObj's own name when found. */ }
+					<span className={ cssModObj.bloResSpa }>{ /* What: Block Rested Span Element. Why: This groups the rested icon/text with which conditional caused it. How: This renders the "Rested" strip plus conRcdObj's own name when found. */ }
 
 
-						<span className={ cssModObj.resLinSpa }>{ /* What: Rest Label Span Element. Why: This is the actual "rested today" indicator. How: This renders a moon glyph plus the literal text "Rested". */ }
+						<span className={ cssModObj.resLinSpa }>{ /* What: Rested Line Span Element. Why: This is the actual "rested today" indicator. How: This renders a moon glyph plus the literal text "Rested". */ }
 
 
 							<IcoSetCom
@@ -1312,7 +1312,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 			className={ cssModObj.logBloDiv }
 
 			data-element-name-hook='logBloDiv'
-		>{ /* What: Picker Block Div Element. Why: This is the interactive variant's own root element. How: This wraps the header button, whose aria-expanded reflects bloOpeBoo, and the collapsible table below. Its data-element-name-hook is read by help mode's Today catalog. */ }
+		>{ /* What: Log Block Div Element. Why: This is the interactive variant's own root element. How: This wraps the header button, whose aria-expanded reflects bloOpeBoo, and the collapsible table below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 			<button
@@ -1326,7 +1326,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 			>{ /* What: Block Header Button Element. Why: The whole header is the actual expand/collapse control. How: This flips bloOpeBoo on click and reflects it via aria-expanded. */ }
 
 
-				<span className={ cssModObj.bloChvSpa }>{ /* What: Chevron Span Element. Why: A chevron glyph signals this header is expandable. How: This renders IcoSetCom's own "chevron" shape, rotated via CSS from its header's own aria-expanded. */ }
+				<span className={ cssModObj.bloChvSpa }>{ /* What: Block Chevron Span Element. Why: A chevron glyph signals this header is expandable. How: This renders IcoSetCom's own "chevron" shape, rotated via CSS from its header's own aria-expanded. */ }
 
 
 					<IcoSetCom
@@ -1348,7 +1348,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 
 
 
-				<span className={ cssModObj.bloSumSpa }>{ /* What: Summary Span Element. Why: The header's own right-hand side summarizes this picker's own item/done counts. How: This renders the item count, plus a done chip once donCouNum is positive. */ }
+				<span className={ cssModObj.bloSumSpa }>{ /* What: Block Summary Span Element. Why: The header's own right-hand side summarizes this picker's own item/done counts. How: This renders the item count, plus a done chip once donCouNum is positive. */ }
 
 
 					<span>{ picIteArr.length } item{ picIteArr.length === 1 ? '' : 's' }</span>{ /* What: Item Count Span Element. Why: The header always shows how many items this picker has. How: This renders picIteArr's own length, pluralized. */ }
@@ -1387,7 +1387,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 			<ColDisCom open={ bloOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The item table below should only exist in the DOM while this block is actually expanded. How: This wraps the table, driven by bloOpeBoo. */ }
 
 
-				<div className={ cssModObj.logTabDiv }>{ /* What: Item Table Div Element. Why: This groups the shared header row with every item row below it. How: This renders TabHeaCom followed by one row per picIteArr entry. */ }
+				<div className={ cssModObj.logTabDiv }>{ /* What: Log Table Div Element. Why: This groups the shared header row with every item row below it. How: This renders TabHeaCom followed by one row per picIteArr entry. */ }
 
 
 					<TabHeaCom />{ /* What: Table Head Component. Why: This item table needs the shared column headers. How: This renders with its own default 'Item' first-column label. */ }
@@ -1415,14 +1415,14 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 
 								data-row-done-active={ iteDonBoo || undefined } // What: Row Done Active Attribute. Why: A completed item's row reads green. How: This sets the presence-only attribute while iteDonBoo is true.
 								data-row-vacation-active={ iteRcdObj.vacation || undefined } // What: Row Vacation Active Attribute. Why: An item on vacation reads quieter. How: This sets the presence-only attribute while the item is on vacation.
-							>{ /* What: Item Row Div Element. Why: This is one item's own full row, spanning name/subline, value cells and status. How: This marks itself with data-row-done-active/data-row-vacation-active from iteDonBoo/iteRcdObj.vacation. */ }
+							>{ /* What: Table Row Div Element. Why: This is one item's own full row, spanning name/subline, value cells and status. How: This marks itself with data-row-done-active/data-row-vacation-active from iteDonBoo/iteRcdObj.vacation. */ }
 
 
 								<span
 									className={ cssModObj.rowFirSpa }
 
 									data-element-name-hook='logIteSpa'
-								>{ /* What: Item Name Span Element. Why: This groups the item's own name and subline together. How: This renders iteRcdObj's own name plus its computed subline below. Its data-element-name-hook is read by help mode's Today catalog. */ }
+								>{ /* What: Row First Span Element. Why: This groups the item's own name and subline together. How: This renders iteRcdObj's own name plus its computed subline below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 									<InfTipCom
@@ -1434,7 +1434,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 
 
 
-									<span className={ cssModObj.rowSubSpa }>{ iteSubFun( picRcdObj, iteRcdObj, hasValBoo ? genIteObj[ iteRcdObj.id ] : null ) }</span>{ /* What: Item Subline Span Element. Why: Every item shows its own weight/range/boost text beneath its name. How: This renders iteSubFun's own result, passing the generation snapshot only while hasValBoo. */ }
+									<span className={ cssModObj.rowSubSpa }>{ iteSubFun( picRcdObj, iteRcdObj, hasValBoo ? genIteObj[ iteRcdObj.id ] : null ) }</span>{ /* What: Row Subline Span Element. Why: Every item shows its own weight/range/boost text beneath its name. How: This renders iteSubFun's own result, passing the generation snapshot only while hasValBoo. */ }
 
 
 								</span>
@@ -1455,7 +1455,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 										className={ cssModObj.rowStaSpa }
 
 										data-element-name-hook='logStaSpa'
-									><span className={ cssModObj.vacNotSpa }>Inactive</span></span> // What: Inactive Status Span Element. Why: A vacationing item has no chips to show. How: This renders the plain Inactive label in the status column. Its data-element-name-hook is read by help mode's Today catalog.
+									><span className={ cssModObj.vacNotSpa }>Inactive</span>{ /* What: Vacation Note Span Element. Why: A vacationing item has no chips to show. How: This renders the literal text "Inactive". */ }</span> // What: Row Status Span Element. Why: A vacationing item has no chips to show. How: This renders the plain Inactive label in the status column. Its data-element-name-hook is read by help mode's Today catalog.
 									: <StaChiCom iteFlaObj={ iteFlaObj } />                                                    // What: Status Chip Component. Why: Every other item shows its own status chips. How: This passes the item's own flags.
 								}
 
@@ -1505,8 +1505,7 @@ type GlcProTyp = { groNamStr : string, onCloLogFun : () => void, staAppObj : Sta
  *
  * @param props.groNamStr   - Group Name String: Which group this panel covers.
  * @param props.onCloLogFun - On Close Log Function: Called when the panel's
- *                            own close button is pressed; omitted entirely
- *                            suppresses that button.
+ *                            own close button is pressed.
  * @param props.staAppObj   - State App Object: The whole app state object.
  *
  * @returns This group's own full log panel.
@@ -1521,7 +1520,7 @@ type GlcProTyp = { groNamStr : string, onCloLogFun : () => void, staAppObj : Sta
 function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React.JSX.Element {
 
 
-	const dayKeyStr = isoDayFun();                                                                                                    // What: Day Key String. Why: Every lookup below (conditionals, pickers, items) is scoped to today's own date key. How: This calls isoDayFun with no argument, defaulting to right now.
+	const dayKeyStr = isoDayFun();                                                                                                    // What: Day Key String. Why: The picker blocks below scope their pick-log lookups to today's own date key. How: This calls isoDayFun with no argument, defaulting to right now.
 	const groPicArr = staAppObj.pickers.filter( ( picRcdObj ) => ( picRcdObj.group || 'Other' ) === groNamStr && !picRcdObj.hidden ); // What: Group Picker Array. Why: This panel only ever shows the pickers actually belonging to this exact group. How: This filters staAppObj's own pickers down to a matching (or defaulted) group, excluding a hidden one.
 	const picOrdArr = ( staAppObj.pickerOrder && staAppObj.pickerOrder[ groNamStr ] ) || [];                                          // What: Picker Order Array. Why: The sort below needs this group's own saved manual order, if any. How: This reads staAppObj's own pickerOrder entry for groNamStr, or an empty array when there is none.
 
@@ -1561,13 +1560,13 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React
 	return (
 
 
-		<div className={ cssModObj.logPanDiv }>{ /* What: Group Log Panel Div Element. Why: This is GroLogCom's own root element. How: This renders the panel header, the shared key/legend, and the conditionals/pickers body below. */ }
+		<div className={ cssModObj.logPanDiv }>{ /* What: Log Panel Div Element. Why: This is GroLogCom's own root element. How: This renders the panel header, the shared key/legend, and the conditionals/pickers body below. */ }
 
 
 			<div className={ cssModObj.panHeaDiv }>{ /* What: Panel Header Div Element. Why: This groups the panel's own kicker with its optional close button. How: This renders the kicker span plus onCloLogFun's own button when provided. */ }
 
 
-				<span className={ cssModObj.panKicSpa }>{ /* What: Kicker Span Element. Why: The panel names which group it covers and when it was generated. How: This renders a log glyph plus groNamStr and forTimFun's own formatted time. */ }
+				<span className={ cssModObj.panKicSpa }>{ /* What: Panel Kicker Span Element. Why: The panel names which group it covers and when it was generated. How: This renders a log glyph plus groNamStr and forTimFun's own formatted time. */ }
 
 
 					<IcoSetCom
@@ -1594,18 +1593,18 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React
 				className={ cssModObj.logKeyDiv }
 
 				data-element-name-hook='logKeyDiv'
-			>{ /* What: Key Legend Div Element. Why: The panel needs a one-time legend explaining every status chip's own meaning. How: This renders 5 icon/label pairs, one per possible status. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ /* What: Log Key Div Element. Why: The panel needs a one-time legend explaining every status chip's own meaning. How: This renders 5 icon/label pairs, one per possible status. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
-				<span className={ cssModObj.panKicSpa }>Key</span>{ /* What: Key Kicker Span Element. Why: The legend needs its own small title. How: This renders the literal text "Key". */ }
+				<span className={ cssModObj.panKicSpa }>Key</span>{ /* What: Panel Kicker Span Element. Why: The legend needs its own small title. How: This renders the literal text "Key". */ }
 
 				<span className={ cssModObj.keyIteSpa }>{ /* What: Key Items Span Element. Why: All 5 legend entries are grouped as one inline run. How: This renders one keyEntSpa span per possible status chip. */ }
 
 
-					<span className={ cssModObj.keyEntSpa }>{ /* What: Auto Key Item Span Element. Why: The legend needs an entry explaining the auto-picked chip. How: This renders the shuffle glyph plus its own bold label. */ }
+					<span className={ cssModObj.keyEntSpa }>{ /* What: Key Entry Span Element. Why: The legend needs an entry explaining the auto-picked chip. How: This renders the shuffle glyph plus its own bold label. */ }
 
 
-						<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaAuto } `}>{ /* What: Auto Key Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
+						<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaAuto } `}>{ /* What: Status Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
 
 
 							<IcoSetCom
@@ -1617,15 +1616,15 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React
 
 						</span>
 
-						<b className={ cssModObj.keyNamBol }>Auto-picked</b>{ /* What: Auto Key Label Element. Why: The legend names what the chip means. How: This renders the bold label. */ }
+						<b className={ cssModObj.keyNamBol }>Auto-picked</b>{ /* What: Key Name Bold Element. Why: The legend names what the chip means. How: This renders the bold label. */ }
 
 
 					</span>
 
-					<span className={ cssModObj.keyEntSpa }>{ /* What: Pushed Key Item Span Element. Why: The legend needs an entry explaining the pushed chip. How: This renders the push glyph plus its own bold label. */ }
+					<span className={ cssModObj.keyEntSpa }>{ /* What: Key Entry Span Element. Why: The legend needs an entry explaining the pushed chip. How: This renders the push glyph plus its own bold label. */ }
 
 
-						<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaPush } `}>{ /* What: Pushed Key Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
+						<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaPush } `}>{ /* What: Status Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
 
 
 							<IcoSetCom
@@ -1638,15 +1637,15 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React
 
 						</span>
 
-						<b className={ cssModObj.keyNamBol }>Pushed</b>{ /* What: Pushed Key Label Element. Why: The legend names what the chip means. How: This renders the bold label. */ }
+						<b className={ cssModObj.keyNamBol }>Pushed</b>{ /* What: Key Name Bold Element. Why: The legend names what the chip means. How: This renders the bold label. */ }
 
 
 					</span>
 
-					<span className={ cssModObj.keyEntSpa }>{ /* What: Rolled Off Key Item Span Element. Why: The legend needs an entry explaining the rolled-off chip. How: This renders the roll glyph plus its own bold label. */ }
+					<span className={ cssModObj.keyEntSpa }>{ /* What: Key Entry Span Element. Why: The legend needs an entry explaining the rolled-off chip. How: This renders the roll glyph plus its own bold label. */ }
 
 
-						<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaRoll } `}>{ /* What: Rolled Off Key Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
+						<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaRoll } `}>{ /* What: Status Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
 
 
 							<IcoSetCom
@@ -1659,15 +1658,15 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React
 
 						</span>
 
-						<b className={ cssModObj.keyNamBol }>Rolled off</b>{ /* What: Rolled Off Key Label Element. Why: The legend names what the chip means. How: This renders the bold label. */ }
+						<b className={ cssModObj.keyNamBol }>Rolled off</b>{ /* What: Key Name Bold Element. Why: The legend names what the chip means. How: This renders the bold label. */ }
 
 
 					</span>
 
-					<span className={ cssModObj.keyEntSpa }>{ /* What: Skipped Key Item Span Element. Why: The legend needs an entry explaining the skipped chip. How: This renders the x glyph plus its own bold label. */ }
+					<span className={ cssModObj.keyEntSpa }>{ /* What: Key Entry Span Element. Why: The legend needs an entry explaining the skipped chip. How: This renders the x glyph plus its own bold label. */ }
 
 
-						<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaSkip } `}>{ /* What: Skipped Key Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
+						<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaSkip } `}>{ /* What: Status Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
 
 
 							<IcoSetCom
@@ -1680,15 +1679,15 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React
 
 						</span>
 
-						<b className={ cssModObj.keyNamBol }>Skipped</b>{ /* What: Skipped Key Label Element. Why: The legend names what the chip means. How: This renders the bold label. */ }
+						<b className={ cssModObj.keyNamBol }>Skipped</b>{ /* What: Key Name Bold Element. Why: The legend names what the chip means. How: This renders the bold label. */ }
 
 
 					</span>
 
-					<span className={ cssModObj.keyEntSpa }>{ /* What: Completed Key Item Span Element. Why: The legend needs an entry explaining the completed chip. How: This renders the check glyph plus its own bold label. */ }
+					<span className={ cssModObj.keyEntSpa }>{ /* What: Key Entry Span Element. Why: The legend needs an entry explaining the completed chip. How: This renders the check glyph plus its own bold label. */ }
 
 
-						<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaDone } `}>{ /* What: Completed Key Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
+						<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaDone } `}>{ /* What: Status Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
 
 
 							<IcoSetCom
@@ -1701,7 +1700,7 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React
 
 						</span>
 
-						<b className={ cssModObj.keyNamBol }>Completed</b>{ /* What: Completed Key Label Element. Why: The legend names what the chip means. How: This renders the bold label. */ }
+						<b className={ cssModObj.keyNamBol }>Completed</b>{ /* What: Key Name Bold Element. Why: The legend names what the chip means. How: This renders the bold label. */ }
 
 
 					</span>
@@ -1712,13 +1711,13 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React
 
 			</div>
 
-			<div className={ cssModObj.logBodDiv }>{ /* What: Group Body Div Element. Why: This groups the conditionals section with every picker block below it. How: This renders ConSecCom followed by one PicBloCom per sorPicArr entry. */ }
+			<div className={ cssModObj.logBodDiv }>{ /* What: Log Body Div Element. Why: This groups the conditionals section with every picker block below it. How: This renders ConSecCom followed by one PicBloCom per sorPicArr entry. */ }
 
 
 				<ConSecCom
 					picGroArr={ sorPicArr }
 					staAppObj={ staAppObj }
-				/>{ /* What: Conditional Section Component. Why: This group's own attached conditionals (if any) render above its pickers. How: This passes staAppObj and the sorted picker array straight through; ConSecCom needs no day key since it reads today's own generation snapshot directly, not a per-day pick-log scan. */ }
+				/>{ /* What: Conditional Section Component. Why: This group's own attached conditionals (if any) render above its pickers. How: This passes staAppObj and the sorted picker array straight through. */ }
 
 
 
@@ -1807,7 +1806,7 @@ function LogChiCom ( { onTogLogFun, open } : LccProTyp ) : React.JSX.Element {
 
 
 			} }
-		>{ /* What: Day Log Toggle Button Element. Why: This is LogChiCom's own single rendered element. How: This shows open through its aria-pressed state, which its styling keys off, and toggles the panel without the click reaching the group header. Its data-element-name-hook is read by help mode's Today catalog. */ }
+		>{ /* What: Log Chip Button Element. Why: This is LogChiCom's own single rendered element. How: This shows open through its aria-pressed state, which its styling keys off, and toggles the panel without the click reaching the group header. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 			<IcoSetCom
@@ -1843,15 +1842,12 @@ type RlcProTyp = { onCloLogFun : () => void, staAppObj : StaAppTyp }; // What: R
  * task/reminder with its own current status (done/due today/skipped/
  * not yet due) and, for a not-yet-due one, a short relative due label.
  * Pinned to the last generation's own anchor date (TAS_NAM_OBJ.ancDatFun),
- * not live "now", since this panel is a snapshot of the Reminders
- * section right above it, itself frozen to the last generate() call
- * until the next one runs.
+ * not live "now", so its statuses match that snapshot.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.onCloLogFun - On Close Log Function: Called when the panel's
- *                            own close button is pressed; omitted entirely
- *                            suppresses that button.
+ *                            own close button is pressed.
  * @param props.staAppObj   - State App Object: The whole app state object.
  *
  * @returns This panel's own full reminders log.
@@ -1868,7 +1864,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 
 	// #region Reminder Task Sets
 
-	const ancDatObj = TAS_NAM_OBJ.ancDatFun( staAppObj.today && staAppObj.today.generatedAt );                         // What: Anchor Date Object. Why: Every lookup below must use the same frozen anchor the Reminders section above this panel already used. How: This calls TAS_NAM_OBJ.ancDatFun with staAppObj's own today.generatedAt, if any.
+	const ancDatObj = TAS_NAM_OBJ.ancDatFun( staAppObj.today && staAppObj.today.generatedAt );                         // What: Anchor Date Object. Why: Every lookup below must use the anchor date frozen at the last generation, not live "now". How: This calls TAS_NAM_OBJ.ancDatFun with staAppObj's own today.generatedAt, if any.
 	const dayKeyStr = isoDayFun( ancDatObj );                                                                          // What: Day Key String. Why: The skipped-lookup below needs a plain date key to match against, scoped to ancDatObj rather than live "now". How: This calls isoDayFun with ancDatObj.
 	const tasLisArr = staAppObj.tasks.filter( ( curTasObj ) => !curTasObj.hidden );                                    // What: Task List Array. Why: A hidden task/reminder never belongs in this log at all. How: This filters staAppObj's own tasks down to the non-hidden ones.
 	const visTasArr = TAS_NAM_OBJ.visTodFun( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, ancDatObj ); // What: Visible Task Array. Why: The status below needs to know which tasks are actually due today. How: This calls TAS_NAM_OBJ.visTodFun with staAppObj's own tasks/reminderOpts/holidays and ancDatObj.
@@ -1949,13 +1945,13 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 	return (
 
 
-		<div className={ cssModObj.logPanDiv }>{ /* What: Reminders Log Panel Div Element. Why: This is RemLogCom's own root element. How: This renders the panel header plus the reminder rows body below. */ }
+		<div className={ cssModObj.logPanDiv }>{ /* What: Log Panel Div Element. Why: This is RemLogCom's own root element. How: This renders the panel header plus the reminder rows body below. */ }
 
 
 			<div className={ cssModObj.panHeaDiv }>{ /* What: Panel Header Div Element. Why: This groups the panel's own kicker with its optional close button. How: This renders the kicker span plus onCloLogFun's own button when provided. */ }
 
 
-				<span className={ cssModObj.panKicSpa }>{ /* What: Kicker Span Element. Why: The panel names which anchor date this snapshot covers. How: This renders a clock glyph plus ancDatObj's own formatted weekday/date. */ }
+				<span className={ cssModObj.panKicSpa }>{ /* What: Panel Kicker Span Element. Why: The panel names which anchor date this snapshot covers. How: This renders a clock glyph plus ancDatObj's own formatted weekday/date. */ }
 
 
 					<IcoSetCom
@@ -1979,10 +1975,10 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 			</div>
 
 
-			<div className={` ${ cssModObj.logBodDiv }   ${ cssModObj.logBodDivRem } `}>{ /* What: Reminders Body Div Element. Why: The reminders table sits inset under the panel header, its header cells carrying their own data-element-name-hook values for help mode instead of borrowing the data rows' styled classes. How: This renders the header row plus one row per remRowArr entry below. */ }
+			<div className={` ${ cssModObj.logBodDiv }   ${ cssModObj.logBodDivRem } `}>{ /* What: Log Body Div Element. Why: The reminders table sits inset under the panel header, its header cells carrying their own data-element-name-hook values for help mode instead of borrowing the data rows' styled classes. How: This renders the header row plus one row per remRowArr entry below. */ }
 
 
-				<div className={ cssModObj.remHeaDiv }>{ /* What: Reminders Table Head Div Element. Why: This table needs its own 3-column header row. How: This renders the 3 shared column-header spans. */ }
+				<div className={ cssModObj.remHeaDiv }>{ /* What: Reminders Header Div Element. Why: This table needs its own 3-column header row. How: This renders the 3 column-header spans. */ }
 
 
 					<span data-element-name-hook='remNamSpa'>Reminder</span>{ /* What: Reminder Header Span Element. Why: This labels the name column. How: This renders the literal text "Reminder". Its data-element-name-hook is read by help mode's Today catalog. */ }
@@ -1991,13 +1987,13 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 						className={ cssModObj.heaWheSpa }
 
 						data-element-name-hook='remWheSpa'
-					>When</span>{ /* What: When Header Span Element. Why: This labels the schedule column. How: This renders the literal text "When". Its data-element-name-hook is read by help mode's Today catalog. */ }
+					>When</span>{ /* What: Header When Span Element. Why: This labels the schedule column. How: This renders the literal text "When". Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 					<span
 						className={ cssModObj.heaStaSpa }
 
 						data-element-name-hook='remStaSpa'
-					>Status</span>{ /* What: Status Header Span Element. Why: This labels the status column. How: This renders the literal text "Status". Its data-element-name-hook is read by help mode's Today catalog. */ }
+					>Status</span>{ /* What: Header Status Span Element. Why: This labels the status column. How: This renders the literal text "Status". Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 				</div>
@@ -2045,10 +2041,10 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 							{ rowStaStr === 'done' && ( // What: Done Status Visibility Check. Why: A done row shows its own check icon plus a Done pill. How: This renders only while rowStaStr is 'done'.
 
 
-								<React.Fragment>{ /* What: Done Status Fragment Element. Why: The check icon and its own Done pill are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
+								<React.Fragment>{ /* What: Done Status Fragment. Why: The check icon and its own Done pill are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
 
 
-									<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaDone } `}>{ /* What: Done Icon Span Element. Why: A done row's own status needs a recognizable check glyph before its pill. How: This renders IcoSetCom's own "check" shape. */ }
+									<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaDone } `}>{ /* What: Status Icon Span Element. Why: A done row's own status needs a recognizable check glyph before its pill. How: This renders IcoSetCom's own "check" shape. */ }
 
 
 										<IcoSetCom
@@ -2061,7 +2057,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 
 									</span>
 
-									<span className={` ${ cssModObj.staPilSpa }   ${ cssModObj.staPilSpaDone } `}>Done</span>{ /* What: Done Pill Span Element. Why: The done row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Done". */ }
+									<span className={` ${ cssModObj.staPilSpa }   ${ cssModObj.staPilSpaDone } `}>Done</span>{ /* What: Status Pill Span Element. Why: The done row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Done". */ }
 
 
 								</React.Fragment>
@@ -2077,10 +2073,10 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 							{ rowStaStr === 'skip' && ( // What: Skip Status Visibility Check. Why: A skipped row shows its own x icon plus a Skipped pill. How: This renders only while rowStaStr is 'skip'.
 
 
-								<React.Fragment>{ /* What: Skip Status Fragment Element. Why: The x icon and its own Skipped pill are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
+								<React.Fragment>{ /* What: Skip Status Fragment. Why: The x icon and its own Skipped pill are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
 
 
-									<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaSkip } `}>{ /* What: Skip Icon Span Element. Why: A skipped row's own status needs a recognizable x glyph before its pill. How: This renders IcoSetCom's own "x" shape. */ }
+									<span className={` ${ cssModObj.staIcoSpa }   ${ cssModObj.staIcoSpaSkip } `}>{ /* What: Status Icon Span Element. Why: A skipped row's own status needs a recognizable x glyph before its pill. How: This renders IcoSetCom's own "x" shape. */ }
 
 
 										<IcoSetCom
@@ -2093,7 +2089,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 
 									</span>
 
-									<span className={` ${ cssModObj.staPilSpa }   ${ cssModObj.staPilSpaSkipped } `}>Skipped</span>{ /* What: Skip Pill Span Element. Why: The skipped row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Skipped". */ }
+									<span className={` ${ cssModObj.staPilSpa }   ${ cssModObj.staPilSpaSkipped } `}>Skipped</span>{ /* What: Status Pill Span Element. Why: The skipped row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Skipped". */ }
 
 
 								</React.Fragment>
@@ -2133,7 +2129,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 
 // #region Exports
 
-export { GroLogCom, LogChiCom, RemLogCom }; // What: Named Exports. Why: tab-today.tsx renders GroLogCom and LogChiCom, and reminders-section.tsx renders LogChiCom and RemLogCom. How: This exports the three components by name.
+export { GroLogCom, LogChiCom, RemLogCom }; // What: Named Exports. Why: These three components are the Day Log's public components. How: This exports the three components by name.
 
 // #endregion Exports
 
