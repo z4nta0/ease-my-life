@@ -134,7 +134,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 	// #region Inline Name Edit
 
-	const [ ediOpeBoo, setEdiOpeBoo ] = React.useState( false );     // What: Editing Open Boolean And Setter. Why: Edit Mode only, this tracks whether the inline name field currently replaces the plain heading/rename button. How: This is toggled by staEdiFun and finCloFun below.
+	const [ ediOpeBoo, setEdiOpeBoo ] = React.useState( false );     // What: Editing Open Boolean And Setter. Why: Edit Mode only, this tracks whether the inline name field currently replaces the plain heading/rename button. How: This is toggled by staEdiFun, finCloFun, and the Edit Mode Exit effect below.
 	const [ cloOutBoo, setCloOutBoo ] = React.useState( false );     // What: Closing Out Boolean And Setter. Why: Closing the inline field plays a brief out-animation before it actually unmounts. How: This is toggled true right before that animation, then false once it finishes.
 	const [ draNamStr, setDraNamStr ] = React.useState( groNamStr ); // What: Draft Name String And Setter. Why: The inline field edits a local draft, never groNamStr directly, until it is explicitly committed. How: This starts at groNamStr and is freely typed into while ediOpeBoo is true.
 	const [ namErrStr, setNamErrStr ] = React.useState( '' );        // What: Name Error String And Setter. Why: Only set when valNamFun rejects a commit (e.g. a Page Tours rename colliding with an existing group name), since it has nothing to merge into, unlike onRenGroFun, so it blocks instead of offering a merge. How: This keeps the field open, un-committed, until the user edits again or cancels.
@@ -142,14 +142,14 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 	const namInpRef = React.useRef< HTMLInputElement | null >( null ); // What: Name Input Reference. Why: Opening the field needs to both focus and select its own text. How: This is attached to the input's own ref prop below.
 
 
-	React.useEffect( () => { // What: Explicit Focus Effect. Why: autoFocus's own default scroll-into-view would fight a guided-tour spotlight already mid-positioning this same input, since the tour's own scroll-to-target math runs a tick later and sees this as a moving target. How: This focuses namInpRef with preventScroll instead of relying on autoFocus, then selects its text.
+	React.useEffect( () => { // What: Explicit Focus Effect. Why: The field must take focus without the page scrolling to it. How: This focuses namInpRef with preventScroll instead of relying on autoFocus, then selects its text.
 
 
 		if ( !ediOpeBoo || !namInpRef.current ) return; // What: Not Editing Guard. Why: There is nothing to focus while the field isn't even open. How: This bails out early unless both ediOpeBoo is true and namInpRef is attached.
 
 
 
-		namInpRef.current.focus( { preventScroll : true } ); // What: Explicit Focus Call. Why: preventScroll avoids fighting a tour's own scroll positioning, unlike the input's own autoFocus attribute would. How: This focuses namInpRef's own current node without letting the browser auto-scroll to it.
+		namInpRef.current.focus( { preventScroll : true } ); // What: Explicit Focus Call. Why: preventScroll keeps the page from scrolling to the field. How: This focuses namInpRef's own current node without letting the browser auto-scroll to it.
 		namInpRef.current.select();                          // What: Text Select Call. Why: Opening the field should offer the whole current name ready to overtype, not just a caret. How: This selects namInpRef's own current text content.
 
 
@@ -178,8 +178,6 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 	 * @summary
 	 * Plays the out animation (groNamInp--closing) for its base duration step,
 	 * then unmounts the field and, for a real change, commits the rename.
-	 * Guarded so the blur that Enter triggers can't double-fire alongside an
-	 * explicit commit/cancel already in flight.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -209,7 +207,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 			setEdiOpeBoo( false ); // What: Editing Close. Why: The field itself is done animating out and can now unmount. How: This flips ediOpeBoo back to false.
 			setCloOutBoo( false ); // What: Closing Flag Clear. Why: The out-animation flag must not persist once the field is already gone. How: This flips cloOutBoo back to false.
 
-			if ( chaValBoo ) onRenGroFun!( newValStr! ); // What: Commit Branch. Why: A real, confirmed change needs to actually rename the group. How: This calls onRenGroFun with newValStr. // What: Non-Null Note. Why: Renaming only opens on a real group, whose caller always passes onRenGroFun, and a real change always comes with its new name. How: The ! tells TypeScript both are set here.
+			if ( chaValBoo ) onRenGroFun!( newValStr! ); // What: Commit Branch. Why: A real, confirmed change needs to actually rename the group. How: This calls onRenGroFun with newValStr. // What: Non-Null Note. Why: The rename field opens only for a group given onRenGroFun, and a real change comes with its new name. How: The ! tells TypeScript both are set here.
 
 			else setDraNamStr( groNamStr ); // What: Revert Branch. Why: A cancel, or a no-op commit, should leave the draft matching the real name again for next time. How: This resets draNamStr back to groNamStr.
 
@@ -244,7 +242,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 
 				setNamErrStr( errMesStr );  // What: Name Error Stage. Why: The banner beneath the header needs this exact message to display. How: This publishes errMesStr into namErrStr.
-				namInpRef.current?.focus(); // What: Focus Reclaim. Why: commit() runs from onBlur too (Enter blurs the input), so focus may already be gone; reclaiming it lets the user just keep typing to fix the collision. How: This focuses namInpRef's own current node, if it still exists.
+				namInpRef.current?.focus(); // What: Focus Reclaim. Why: cmtEdiFun runs from onBlur too (Enter blurs the input), so focus may already be gone; reclaiming it lets the user just keep typing to fix the collision. How: This focuses namInpRef's own current node, if it still exists.
 
 
 
@@ -284,7 +282,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 	return (
 
 
-		<React.Fragment>{ /* What: Group Header Fragment Element. Why: The header itself and its own merge/error banners are true siblings with no shared wrapper of their own. How: This groups the header, the merge-confirm banner, and the name-error banner without adding an extra DOM node. */ }
+		<React.Fragment>{ /* What: Group Header Fragment. Why: The header itself and its own merge/error banners are true siblings with no shared wrapper of their own. How: This groups the header, the merge-confirm banner, and the name-error banner without adding an extra DOM node. */ }
 
 
 			<header className={ cssModObj.groHeaHed }>{ /* What: Group Header Header Element. Why: This is GroHeaCom's own root landmark, holding the name/count row and the progress dash row beneath it. How: This renders as a semantic <header>. */ }
@@ -307,8 +305,8 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 							role='button'
 							tabIndex={ 0 }
 
-							onDragStart={ ( draEveObj ) => draEveObj.preventDefault() }
-							onPointerDown={ ( poiEveObj ) => onGriDowFun!( poiEveObj ) } // What: Non-Null Note. Why: The grip only renders in Edit Mode, where Today always passes onGriDowFun. How: The ! tells TypeScript the handler is set.
+							onDragStart={ ( draEveObj ) => draEveObj.preventDefault() } // What: Native Drag Block. Why: Reordering runs on pointer events, so the browser's own drag gesture is not wanted. How: This calls preventDefault on dragstart.
+							onPointerDown={ ( poiEveObj ) => onGriDowFun!( poiEveObj ) } // What: Non-Null Note. Why: The grip is drawn only in Edit Mode, when onGriDowFun is passed. How: The ! tells TypeScript the handler is set.
 						>{ /* What: Group Grip Span Element. Why: This is the actual pointer-drag handle for reordering this group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. Its data-element-name-hook is read by the Today page tour and help mode's Today catalog. */ }
 
 
@@ -352,7 +350,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 
 							} }
-							onKeyDown={ ( keyEveObj ) => { // What: Key Down Handler. Why: Enter should commit (via a blur) and Escape should cancel, mirroring every other inline editor in the app. How: This blurs the input on Enter and calls canEdiFun on Escape.
+							onKeyDown={ ( keyEveObj ) => { // What: Key Down Handler. Why: Enter should commit (via a blur) and Escape should cancel. How: This blurs the input on Enter and calls canEdiFun on Escape.
 
 
 								if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); // What: Enter Branch. Why: Enter commits the rename, which happens through the input's own onBlur. How: This blurs the input, firing cmtEdiFun.
@@ -360,7 +358,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 								else if ( keyEveObj.key === 'Escape' ) { // What: Escape Branch. Why: Escape cancels the rename. How: This stops the key's default behavior, then calls canEdiFun.
 
 
-									keyEveObj.preventDefault(); // What: Default Prevention. Why: Escape must not also trigger any browser-level default (such as leaving a fullscreen view). How: This calls preventDefault on the key event.
+									keyEveObj.preventDefault(); // What: Default Prevention. Why: Escape is handled here, so its default action is suppressed. How: This calls preventDefault on the key event.
 									canEdiFun();                // What: Cancel Edit Call. Why: This is the actual cancel. How: This calls canEdiFun.
 
 
@@ -413,7 +411,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 						<span className={ cssModObj.groDonSpa }>{ donCouNum }</span>{ /* What: Group Done Span Element. Why: This is the group's own current done count. How: This renders donCouNum directly. */ }
 
-						<span className={ cssModObj.groTotSpa }>of { totCouNum }</span>{ /* What: Group Of Span Element. Why: The done count alone is meaningless without the total it is out of. How: This renders the literal word "of" plus totCouNum. */ }
+						<span className={ cssModObj.groTotSpa }>of { totCouNum }</span>{ /* What: Group Total Span Element. Why: The done count alone is meaningless without the total it is out of, shown after the literal word "of". How: This renders the literal word "of" plus totCouNum. */ }
 
 
 					</span>
@@ -447,7 +445,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 							className={` ${ cssModObj.proDasIta }   ${ curIndNum === freIndNum ? cssModObj.proDasItaFresh : '' } `}
 
 							data-dash-done-active={ curIndNum < donCouNum || undefined } // What: Dash Done Active Attribute. Why: A done row's dash is filled by its module. How: This sets the presence-only attribute on every dash below donCouNum and removes it otherwise.
-						/> // What: Progress Dash Element. Why: This is one single dash in the group's own progress bar. How: This marks itself with data-dash-done-active once its own index falls under donCouNum, and takes the module's proDasItaFresh class for exactly one tick when it is the dash freIndNum names.
+						/> // What: Progress Dash Italic Element. Why: This is one single dash in the group's own progress bar. How: This marks itself with data-dash-done-active once its own index falls under donCouNum, and takes the module's proDasItaFresh class while it is the dash freIndNum names.
 
 
 					) ) }
@@ -474,7 +472,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 					</span>
 
-					<div className={ cssModObj.conActDiv }>{ /* What: Delete Actions Div Element. Why: The Cancel/Merge actions read as one paired cluster. How: This wraps both ButBasCom elements below. */ }
+					<div className={ cssModObj.conActDiv }>{ /* What: Confirm Actions Div Element. Why: The Cancel/Merge actions read as one paired cluster. How: This wraps both ButBasCom elements below. */ }
 
 
 						<ButBasCom
@@ -534,7 +532,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 // #region Exports
 
-export { GroHeaCom }; // What: Named Export. Why: The Today tab renders a header above every group. How: This exports GroHeaCom by name.
+export { GroHeaCom }; // What: Named Export. Why: The Today tab shows this header with a group's rows. How: This exports GroHeaCom by name.
 
 // #endregion Exports
 

@@ -159,7 +159,7 @@ function LeaConCom ( { ariSubStr, ediModBoo, entRcdObj, onGriDowFun, onTogDonFun
 					role='button'
 					tabIndex={ 0 }
 
-					onDragStart={ ( draEveObj ) => draEveObj.preventDefault() }
+					onDragStart={ ( draEveObj ) => draEveObj.preventDefault() } // What: Native Drag Block. Why: Reordering runs on pointer events, so the browser's own drag gesture is not wanted. How: This calls preventDefault on dragstart.
 					onPointerDown={ ( poiEveObj ) => onGriDowFun( poiEveObj ) }
 				>{ /* What: Card Grip Span Element. Why: This is the actual pointer-drag handle for reordering this row within its group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
@@ -183,7 +183,7 @@ function LeaConCom ( { ariSubStr, ediModBoo, entRcdObj, onGriDowFun, onTogDonFun
 
 					type='button'
 
-					aria-label={ `${ entRcdObj.done ? 'Unmark' : 'Mark' } ${ ariSubStr } complete` }
+					aria-label={ `${ entRcdObj.done ? 'Unmark' : 'Mark' } ${ ariSubStr } complete` } // What: Check Button Name. Why: A screen reader should hear whether pressing the button marks the row complete or unmarks it. How: This reads "Unmark" while entRcdObj.done is true and "Mark" otherwise, then the subject and "complete".
 					aria-pressed={ !!entRcdObj.done }
 
 					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
@@ -194,14 +194,14 @@ function LeaConCom ( { ariSubStr, ediModBoo, entRcdObj, onGriDowFun, onTogDonFun
 
 
 					} }
-				>{ /* What: Check Button Element. Why: This is the actual done-toggle control for the row. How: This calls onTogDonFun, and shows a checkmark only once entRcdObj.done is true. Its data-element-name-hook is read by help mode's Today catalog. */ }
+				>{ /* What: Card Check Button Element. Why: This is the actual done-toggle control for the row. How: This calls onTogDonFun, and shows a checkmark only once entRcdObj.done is true. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 					<span
 						className={ cssModObj.cheRipSpa }
 
 						aria-hidden='true'
-					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
+					/>{ /* What: Check Ripple Span Element. Why: A completed check needs a ripple flourish. How: This is a purely decorative, empty span. */ }
 
 					{ entRcdObj.done && ( // What: Done IcoSvgCom Check. Why: A completed card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the IcoSvgCom only while entRcdObj.done is true.
 
@@ -281,7 +281,7 @@ function SkiButCom ( { entIdeStr, onSkiEntFun } : SbcProTyp ) : React.JSX.Elemen
 
 
 			} }
-		>{ /* What: Skip Icon Button Element. Why: This is the row's own working skip control. How: This calls onSkiEntFun with entIdeStr. */ }
+		>{ /* What: Action Icon Button Element. Why: This is the row's own working skip control, an action icon button. How: This calls onSkiEntFun with entIdeStr. */ }
 
 
 			<IcoSvgCom
@@ -373,11 +373,11 @@ type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : stri
 function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, isaEdiBoo, isaRmvBoo, isaRolBoo, jusCheStr, onGriDowFun, onPlaTutFun, onRenIteFun, onRerEntFun, onSkiEntFun, onTogDonFun, onTogEdiFun, onUncTutFun, picRcdObj, staAppObj } : EccProTyp ) : React.JSX.Element | null {
 
 
-	const disTipStr = 'This action is disabled for this type of item.'; // What: Disabled Tip String. Why: Every disabled action icon on a day-off or charging row shares the exact same explanation. How: This is passed as each of those rows' InfTipCom labels below.
+	const disTipStr = 'This action is disabled for this type of item.'; // What: Disabled Tip String. Why: Every disabled action icon on a day-off or charging row shares the exact same explanation. How: This is passed as the labTexStr of each of those rows' DisActCom actions below.
 
 
 
-	const onPlaCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Placeholder Click Function. Why: Clicking anywhere on a day-off or charging row (other than its own actions area) should toggle done, but only outside Edit Mode and while not mid-removal. How: This checks both exclusion conditions first, then calls onTogDonFun.
+	const onPlaCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Placeholder Click Function. Why: Clicking anywhere on a day-off or charging row (other than its own actions area) should toggle done, but only outside Edit Mode and while not mid-removal. How: This checks the busy flags and the actions area first, then calls onTogDonFun.
 
 
 		if ( ediModBoo || isaRmvBoo ) return; // What: Busy Row Guard. Why: A row being dragged in Edit Mode, or already animating out, must not toggle. How: This bails out while ediModBoo or isaRmvBoo is true.
@@ -429,7 +429,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 				data-element-name-hook='todCarArt tutCarArt'
 
 				onClick={ onRowCliFun }
-			>{ /* What: Tutorial Card Article Element. Why: This is EntCarCom's own root for a mini-tour launcher row. How: This renders a Play/Undo check button, the meta/name body, and (while unresolved) a Cancel action. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
+			>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for a mini-tour launcher row, which also carries the tutorial variant class. How: This renders a Play/Undo check button, the meta/name body, and (while unresolved) a Cancel action. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
 				{ tutDonBoo ? ( // What: Tutorial Done Check. Why: A resolved sample card's checkbox behaves differently from a pending one. How: This renders the undo-check button while tutDonBoo is true, the play-check button otherwise.
@@ -453,14 +453,14 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 
 
 						} }
-					>{ /* What: Undo Check Button Element. Why: A resolved tutorial card can be un-resolved directly from its own check button, unlike a pending one. How: This calls onUncTutFun, scoped to 'picker'. Its data-element-name-hook is read by help mode's Today catalog. */ }
+					>{ /* What: Card Check Button Element. Why: A resolved tutorial card can be un-resolved directly from its own check button, unlike a pending one, which is the Play variant below. How: This calls onUncTutFun with the picker's id. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 						<span
 							className={ cssModObj.cheRipSpa }
 
 							aria-hidden='true'
-						/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
+						/>{ /* What: Check Ripple Span Element. Why: A completed check needs a ripple flourish. How: This is a purely decorative, empty span. */ }
 
 						<IcoSvgCom
 							className={ cssModObj.cheIcoSvg }
@@ -493,7 +493,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 
 
 						} }
-					>{ /* What: Play Check Button Element. Why: A pending tutorial card's own check button starts its mini-tour instead of toggling done. How: This calls onPlaTutFun, scoped to 'picker'. Its data-element-name-hook is read by help mode's Today catalog. */ }
+					>{ /* What: Card Check Button Element. Why: A pending tutorial card's own check button, the Play variant, starts its mini-tour instead of toggling done. How: This calls onPlaTutFun, scoped to 'picker'. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 						<IcoSvgCom
@@ -521,7 +521,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 						{ ONB_PCT_OBJ[ picRcdObj.id ] && ( // What: Time Estimate Check. Why: Not every sample picker card has a manually-timed estimate. How: This renders the dot/time pair only while ONB_PCT_OBJ has an entry for picRcdObj's own id.
 
 
-							<React.Fragment>{ /* What: Time Estimate Fragment Element. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
+							<React.Fragment>{ /* What: Time Estimate Fragment. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
 
 
 								<span className={ cssModObj.metDotSpa }>&middot;</span>{ /* What: Meta Dot Span Element. Why: The picker name and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
@@ -567,7 +567,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 
 
 							} }
-						>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing its tutorial. How: This calls actStoObj.setCarFun with a 'cancelled' status. */ }
+						>{ /* What: Action Icon Button Element. Why: This is the Cancel action, which marks this card resolved without actually finishing its tutorial. How: This calls actStoObj.setCarFun with a 'cancelled' status. */ }
 
 
 							<IcoSvgCom
@@ -614,7 +614,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 				data-element-name-hook='todCarArt daoCarArt'
 
 				onClick={ onPlaCliFun }
-			>{ /* What: Day-Off Card Article Element. Why: This is EntCarCom's own root for a day-off row. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) a disabled re-roll/edit plus a working Skip. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
+			>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for a day-off row, which also carries the day-off variant class. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) a disabled re-roll/edit plus a working Skip. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
 
@@ -726,7 +726,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 				data-element-name-hook='todCarArt chrCarArt'
 
 				onClick={ onPlaCliFun }
-			>{ /* What: Charging Card Article Element. Why: This is EntCarCom's own root for a charging row. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) 3 fully-disabled actions. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
+			>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for a charging row, which also carries the charging variant class. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) 3 fully-disabled actions. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
 
@@ -840,7 +840,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 
 
 	const eliCouNum = picRcdObj.mode === 'ease-up' // What: Eligible Count Number. Why: This is the actual number of candidates re-roll could land on. How: This counts only threshold-eligible items for ease-up, or the whole active pool for every other mode.
-		? rerPooArr.filter( ( pooIteObj ) => PIC_NAM_OBJ.easEliFun( pooIteObj, picRcdObj.threshold! ) ).length // What: Ease-Up Count Branch. Why: Ease-up only re-rolls between items charged to the threshold. How: This counts rerPooArr's own eligible items. // What: Non-Null Note. Why: Only a real ease-up picker reaches this branch, and every real picker has a threshold. How: The ! tells TypeScript the threshold is set.
+		? rerPooArr.filter( ( pooIteObj ) => PIC_NAM_OBJ.easEliFun( pooIteObj, picRcdObj.threshold! ) ).length // What: Ease-Up Count Branch. Why: Ease-up only re-rolls between items charged to the threshold. How: This counts rerPooArr's own eligible items. // What: Non-Null Note. Why: Only an ease-up picker reaches this branch, and an ease-up picker has a threshold. How: The ! tells TypeScript the threshold is set.
 		: rerPooArr.length;                                                                                    // What: Active Pool Count Branch. Why: Every other mode can land on any active item. How: This counts the whole rerPooArr.
 
 	// #endregion Reroll Eligibility
@@ -881,7 +881,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 	// #endregion Completed Row Lockout
 
 
-	const onRowCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area or the name field) should toggle done, but only outside Edit Mode and while not mid-removal/mid-reroll. How: This checks all 3 exclusion conditions first, then calls onTogDonFun.
+	const onRowCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area or the name field) should toggle done, but only outside Edit Mode and while not mid-removal/mid-reroll. How: This checks the busy flags, the actions area, and the name field first, then calls onTogDonFun.
 
 
 		if ( ediModBoo || isaRmvBoo || isaRolBoo ) return; // What: Busy Row Guard. Why: A row being dragged in Edit Mode, or mid removal or reroll animation, must not toggle. How: This bails out while any of those three flags is true.
@@ -892,7 +892,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 
 
 
-		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="entNamInp"]' ) ) return; // What: Name Input Guard. Why: Clicking into the inline rename field must not toggle the row. How: This bails out when the click landed inside .entNamInp. // What: Type Assertion Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on a card always lands on one.
+		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="entNamInp"]' ) ) return; // What: Name Input Guard. Why: Clicking into the inline rename field must not toggle the row. How: This bails out when the click landed inside the entNamInp element. // What: Type Assertion Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on a card always lands on one.
 
 
 
@@ -915,7 +915,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 			data-element-name-hook='todCarArt'
 
 			onClick={ onRowCliFun }
-		>{ /* What: Real Pick Card Article Element. Why: This is EntCarCom's own root for an ordinary picked-item row. How: This renders a grip (Edit Mode) or check button, the meta/name body (a text field while editing), and (outside Edit Mode) the re-roll/skip/edit actions. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
+		>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for an ordinary picked-item row, which carries no variant class. How: This renders a grip (Edit Mode) or check button, the meta/name body (a text field while editing), and (outside Edit Mode) the re-roll/skip/edit actions. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
 
@@ -959,9 +959,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 						aria-label='Item name'
 
 						onChange={ ( chaEveObj ) => onRenIteFun( chaEveObj.target.value ) }
-						onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() }
-						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-					/> // What: Entry Card Name Input Element. Why: This is the actual editable field for renaming the item in place. How: This writes every change into the editor's draft through onRenIteFun, and blurs on Enter. Its data-element-name-hook is read by the entry card's own row-click handler and help mode's Today catalog.
+						onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() } // What: Row Click Stop. Why: A click into the name field must not also reach the card's own row click. How: This stops the click's propagation.
+						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Handler. Why: Enter should finish typing the name. How: This blurs the input when the key is Enter.
+					/> // What: Entry Name Input Element. Why: This is the actual editable field for renaming the item in place. How: This writes every change into the editor's draft through onRenIteFun, and blurs on Enter. Its data-element-name-hook is read by the entry card's own row-click handler and help mode's Today catalog.
 
 
 				) : ( // What: Plain Name Branch. Why: Outside editing, the plain non-editable name div belongs here instead. How: This renders the else branch, taken while isaEdiBoo is false.

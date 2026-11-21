@@ -43,7 +43,7 @@
 
 
 }
-.todCarArt[data-card-exhale-active] { /* What: Exhaling Today Card Article. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exh-car-del tab-today.tsx sets on each card. */
+.todCarArt[data-card-exhale-active] { /* What: Exhaling Today Card Article. Why: The ripple celebration pulses each marked card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exh-car-del set on each card. */
 
 
 	animation : global( cardCelebrateSwell ) var( --exh-car-dur ) var( --mot-dec-eas ) var( --exh-car-del, 0ms ) both; /* Exhale Card Duration ~= 1130.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Exhale Card Delay, set inline per card by the ripple cascade */ /* What: Global cardCelebrateSwell Keyframes. Why: The cardCelebrateSwell keyframes are shared with the reminder cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -101,7 +101,7 @@
 
 
 }
-.todCarArt[data-card-edit-active] { /* What: Editing Today Card Article. Why: While its editor is open, clicking the card doesn't toggle it. How: This resets the cursor. */
+.todCarArt[data-card-edit-active] { /* What: Editing Today Card Article. Why: While its editor is open, the card stops looking clickable. How: This resets the cursor. */
 
 
 	cursor : default;
@@ -115,7 +115,7 @@
 	border-color : oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-003-rec ) );   /* Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
 	border-style : dashed;
 	cursor       : grab;
-	perspective  : none;                                                                  /* What: Flat Perspective. Why: In Firefox the card's 3D context interferes with the drag's translate. How: This drops the perspective while the card can be dragged. */
+	perspective  : none;                                                                  /* What: Flat Perspective. Why: The card is drawn flat while it can be dragged. How: This drops the perspective while the card can be dragged. */
 
 
 }
@@ -206,7 +206,7 @@
 
 
 }
-@keyframes todCarArtReorderFadeIn { /* What: Today Card Article Reorder Fade In Keyframes. Why: The cards fade up as they come loose for dragging, animating opacity only, since a held transform would override the drag's inline translate and freeze the card in place. How: This fades the card from 40% to full opacity. */
+@keyframes todCarArtReorderFadeIn { /* What: Today Card Article Reorder Fade In Keyframes. Why: The cards fade up as they come loose for dragging, animating opacity only, since a held transform would override the drag's inline translate and freeze the card in place. How: This fades the card from about 43% to full opacity. */
 
 
 	from {
@@ -256,7 +256,7 @@
 
 }
 .carGriSpa:active,
-[data-item-drag-active] .carGriSpa { /* What: Pressed Card Grip Span. Why: A press on the handle starts a drag, and should register before anything else happens. How: This switches to the grabbing cursor and presses the grip in slightly, keyed on the drag state as well as the press, since Firefox drops :active once the drag cancels pointerdown's default. */
+[data-item-drag-active] .carGriSpa { /* What: Pressed Card Grip Span. Why: A press on the handle starts a drag, and should register before anything else happens. How: This switches to the grabbing cursor and presses the grip in slightly, keyed on the drag state as well as the press. */
 
 
 	cursor    : grabbing;
@@ -284,7 +284,7 @@
 
 /* #region carCheBut */
 
-.carCheBut { /* What: Card Check Button. Why: The card's primary action is a real button styled as a checkbox. How: This strips the button chrome down to a small clickable rounded box that fades between states, and eases its focus ring in, and eases its press and focus ring. */
+.carCheBut { /* What: Card Check Button. Why: The card's primary action is a real button styled as a checkbox. How: This strips the button chrome down to a small clickable rounded box that fades between states, and eases its press and focus ring. */
 
 
 	-webkit-appearance : none;
@@ -355,7 +355,7 @@
 
 
 }
-.carCheBut:active { /* What: Pressed Card Check Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.carCheBut:active { /* What: Pressed Card Check Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -436,7 +436,7 @@
 
 
 }
-.todCarArt.todCarArt--rolling .carBodDiv { /* What: Card Body Div In Today Card Article Rolling. Why: A re-roll tumbles the card's text a full turn, swapping in the new pick at the halfway point, upside down. How: This spins the body once around its X axis in 3D. */
+.todCarArt.todCarArt--rolling .carBodDiv { /* What: Card Body Div In Today Card Article Rolling. Why: A re-roll tumbles the card's text a full turn. How: This spins the body once around its X axis in 3D. */
 
 
 	animation       : carBodDivRollFlip var( --dur-ani-p06 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */
@@ -522,7 +522,7 @@
 
 
 }
-.daoConStr { /* What: Day-Off Conditional Strong. Why: The conditional's own name leads the title. How: This sets it bold. */
+.daoConStr { /* What: Day-Off Conditional Strong. Why: The conditional's own name stands out within the title. How: This sets it bold. */
 
 
 	font-weight : 700;
@@ -572,7 +572,7 @@
 
 
 
-.entNamInp { /* What: Entry Name Input. Why: An editing card renames its item in place, styled like the name it replaces. How: This draws a borderless field with only an underline. */
+.entNamInp { /* What: Entry Name Input. Why: An editing card renames its item in place, styled like the name it replaces. How: This draws a field with no box border and just an underline, and eases the underline's color. */
 
 
 	background     : none;
@@ -668,7 +668,7 @@
 
 /* #region carActDiv */
 
-.carActDiv { /* What: Card Actions Div. Why: Re-Roll, Skip, and Edit sit together at the card's end. How: This lays them out in a row. */
+.carActDiv { /* What: Card Actions Div. Why: A card's action icons sit together at its end. How: This lays them out in a row. */
 
 
 	display : flex;
@@ -734,7 +734,7 @@
 
 
 }
-.actIcoBut:active { /* What: Pressed Action Icon Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.actIcoBut:active { /* What: Pressed Action Icon Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
