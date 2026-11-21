@@ -63,9 +63,9 @@ type TouSteTyp = { // What: Tour Step Type. Why: Every guided tour is a list of 
 	bacBoo?    : boolean;    // What: Back Boolean. Why: Some steps can be revisited. How: This shows the Back button.
 	bodEle     : ReactNode;  // What: Body Element. Why: The coach card explains the step. How: This is its body copy.
 	catBoo?    : boolean;    // What: Coach-At-Top Boolean. Why: A target taller than the viewport can't have the coach reserve space beside it. How: This skips that reserve and scrolls the target to start below the coach.
-	cirBoo?    : boolean;    // What: Click-In-Real Boolean. Why: Some steps teach the real control rather than narrate it. How: Next is disabled and only a click on the target advances.
+	cirBoo?    : boolean;    // What: Click-Is-Required Boolean. Why: Some steps teach the real control rather than narrate it. How: Next is disabled and only a click on the target advances.
 	cliSelStr? : string;     // What: Click Selector String. Why: A highlight can be wider than what should be clicked. How: This narrows what counts as an on-target click, defaulting to selStr.
-	cptSelStr? : string;     // What: Click Pass-Through Selector String. Why: A repeatable action inside a step must stay usable without advancing it. How: Clicks on this selector reach their own handler untouched.
+	cptSelStr? : string;     // What: Click-Pass-Through Selector String. Why: A repeatable action inside a step must stay usable without advancing it. How: Clicks on this selector reach their own handler untouched.
 	priStr     : string;     // What: Primary String. Why: The primary button's label changes on the last step. How: This is that label, with 'Done' finishing the tour.
 	pulSelStr? : string;     // What: Pulse Selector String. Why: The cirBoo pulse should stop once nothing is left to click. How: The pulse only plays while this selector matches.
 	resBoo?    : boolean;    // What: Resumable Boolean. Why: A step whose target came from an unsaved earlier action can't be resumed after a reload. How: This is false on such a step, keeping it out of the resume checkpoint.

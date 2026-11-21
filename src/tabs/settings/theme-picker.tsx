@@ -74,7 +74,7 @@ type TccProTyp = { actStoObj : ActStoTyp, actTheBoo : boolean, cusColObj : CusPa
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actStoObj - Actions Store Object: {@link useAppStaFun}
+ * @param props.actStoObj - Action Store Object: {@link useAppStaFun}
  * @param props.actTheBoo - Active Theme Boolean: Whether this specific custom
  *                          theme is the currently active one.
  * @param props.cusColObj - Custom Color Object: The user's own saved custom
@@ -339,7 +339,7 @@ type TscProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Them
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actStoObj - Actions Store Object: {@link useAppStaFun}
+ * @param props.actStoObj - Action Store Object: {@link useAppStaFun}
  * @param props.staAppObj - State App Object: {@link useAppStaFun}
  *
  * @returns Both theme cards, Light then Dark, as a fragment.

@@ -66,7 +66,7 @@ type WccProTyp = { desIdeStr? : string, locDayNum? : number | null, locTipStr? :
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.desIdeStr - Described-By Identifier String: The id of an
+ * @param props.desIdeStr - Describe Identifier String: The id of an
  *                          element describing the chips, wired to aria-
  *                          describedby.
  * @param props.locDayNum - Locked Day Number: A day (0-6) pinned on,

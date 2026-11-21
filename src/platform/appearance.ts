@@ -569,7 +569,7 @@ function synTinFun ( bacColStr : string ) : void {
 
 	const metTagLis = document.querySelectorAll( 'meta[name="theme-color"]' ); // What: Meta Tag List. Why: index.html ships a light/dark pair of theme-color tags, both of which need collapsing down to one. How: This finds every existing theme-color meta tag, in document order.
 
-	let priMetEle = null; // What: Primary Meta Element And Setter. Why: Exactly one theme-color tag should survive; every other one gets removed below. How: This starts null and is assigned the first tag found in the loop that follows.
+	let priMetEle = null; // What: Primary Meta Element. Why: Exactly one theme-color tag should survive; every other one gets removed below. How: This starts null and is assigned the first tag found in the loop that follows.
 
 
 	for ( const metCurEle of metTagLis ) { // What: Meta Tag Loop. Why: Every existing theme-color tag must be visited once, to keep the first and discard the rest. How: This iterates metTagLis in document order.

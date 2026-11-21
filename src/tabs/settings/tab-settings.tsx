@@ -327,7 +327,7 @@ type TecProTyp = { accSynObj : AccSynTyp, actStoObj : ActStoTyp, onNavHomFun? : 
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.accSynObj   - Account Sync Object: {@link useSynRunFun}
- * @param props.actStoObj   - Actions Store Object: {@link useAppStaFun}
+ * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
  * @param props.onNavHomFun - On Navigate Home Function: Navigates back to the
  *                            Today tab.
  * @param props.onNavTabFun - On Navigate Tab Function: Navigates to an

@@ -440,7 +440,7 @@ type IecProTyp = { className? : string, icoKeyStr : string, strWidNum? : number 
  *                          that sizes or colors this icon where it sits.
  * @param props.icoKeyStr - Icon Key String: Which shape to render; looked up
  *                          in this component's own isePatObj.
- * @param props.strWidNum - String Width Number: The SVG stroke width,
+ * @param props.strWidNum - Stroke Width Number: The SVG stroke width,
  *                          defaulting to 2.
  *
  * @returns This component's own single rendered svg element.

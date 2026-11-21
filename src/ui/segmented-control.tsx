@@ -50,7 +50,7 @@ type SccProTyp< T extends string > = { ariLabStr : string, desIdeStr? : string, 
  *
  * @param props.ariLabStr - ARIA Label String: The control's own accessible
  *                          group label.
- * @param props.desIdeStr - Description Identifier String: An optional id of an
+ * @param props.desIdeStr - Describe Identifier String: An optional id of an
  *                          external element (an advisory note) that describes
  *                          this control.
  * @param props.layVarStr - Layout Variant String: An optional layout, 'grid'

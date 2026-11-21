@@ -445,7 +445,7 @@ test( 'signing out ends the session and leaves nothing of it in storage', async 
 	await expect( curPagObj.locator( '[data-element-name-hook~="accGooBut"]' ) ).toBeVisible(); // What: Signed Out Assertion. Why: The account screen has to offer sign-in again. How: This expects the sign-in button back.
 
 
-	const outKeyArr = await curPagObj.evaluate( () => Object.keys( localStorage ) ); // What: Signed-Out Key Array. Why: The app's account flags must go with the session. How: This reads local storage's keys.
+	const outKeyArr = await curPagObj.evaluate( () => Object.keys( localStorage ) ); // What: Out Key Array. Why: The app's account flags must go with the session. How: This reads local storage's keys.
 
 
 	expect( outKeyArr ).not.toContain( 'easemylife.signedin' ); // What: Signed-In Flag Assertion. Why: A signed-out device shouldn't load Firebase at launch. How: This checks the flag is gone.

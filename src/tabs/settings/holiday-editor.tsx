@@ -57,7 +57,7 @@ type HecProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Holi
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actStoObj - Actions Store Object: {@link useAppStaFun}
+ * @param props.actStoObj - Action Store Object: {@link useAppStaFun}
  * @param props.staAppObj - State App Object: {@link useAppStaFun}
  *
  * @returns The holiday list (computed rows plus custom rows) and the
