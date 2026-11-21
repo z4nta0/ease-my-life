@@ -167,7 +167,7 @@
 
 }
 
-.steNumSpa { /* What: Step Number Span. Why: Each step shows its number, or a check once done, in a small circle. How: This centers it in an outlined circle at the large rhythm step that fades between states. */
+.steNumSpa { /* What: Step Number Span. Why: Each step shows its number, or a check once done, in a small circle. How: This centers it in an outlined circle sized at Vertical Rhythm Base Plus 1 that fades between states. */
 
 
 	align-items     : center;
@@ -249,7 +249,7 @@
 .steFadDiv { /* What: Step Fade Div. Why: Each step fades in as the form switches to it. How: This plays the shared tab fade. */
 
 
-	animation : global( tabOpenFadeIn ) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */ /* What: Global tabOpenFadeIn Keyframes. Why: The tabOpenFadeIn keyframes are shared with the app shell and the Pickers tab, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( tabOpenFadeIn ) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */ /* What: Global tabOpenFadeIn Keyframes. Why: The tabOpenFadeIn keyframes are shared with the app shell and the tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -376,7 +376,7 @@
 .forHelPar--fade { /* What: Form Help Paragraph Fade. Why: Help that changes with its switch fades in each time it does. How: This plays the shared fade whenever its keyed paragraph remounts. */
 
 
-	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with other live explanation lines, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -885,8 +885,8 @@
 
 
 	--fad-edg-off : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the rail. How: --fad-lef-off and --fad-rig-off start from it. */
-	--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.ts zeroes it via data-scroll-start-active. */
-	--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.ts zeroes it via data-scroll-end-active. */
+	--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and the data-scroll-start-active rule below zeroes it. */
+	--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and the data-scroll-end-active rule below zeroes it. */
 
 	-webkit-mask-image : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
 	display            : flex;
@@ -1174,14 +1174,14 @@
 
 }
 .itePooDiv + .detFooDiv,
-.itePooDiv + .iteFooDiv { /* What: Details Footer Div And Items Footer Div After Item Pool Div. Why: The Items footer needs room below the pool. How: This spaces it large vertical spacing down. */
+.itePooDiv + .iteFooDiv { /* What: Details Footer Div And Items Footer Div After Item Pool Div. Why: The Items footer needs room below the pool. How: This spaces it Spacing Vertical Base Plus 1 down. */
 
 
 	margin-top : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
 
 
 }
-.detFooDiv { /* What: Details Footer Div. Why: The Details footer needs room below the fields. How: This spaces it extra large 1 vertical spacing down. */
+.detFooDiv { /* What: Details Footer Div. Why: The Details footer needs room below the fields. How: This spaces it Spacing Vertical Base Plus 2 down. */
 
 
 	margin-top : var( --spa-ver-p02 ); /* Spacing Vertical Base Plus 2 ~= 25.572px */
@@ -1189,7 +1189,7 @@
 
 }
 
-.fooNotDiv { /* What: Footer Note Div. Why: The note says what the step still needs, in quiet mono type that takes the spare width. How: This sets small muted mono text capped at 40ch. */
+.fooNotDiv { /* What: Footer Note Div. Why: The note says what the step still needs, in quiet mono type that takes the spare width. How: This sets small muted mono text capped at the small text width. */
 
 
 	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -1391,7 +1391,7 @@
 
 
 	align-items     : center;
-	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with the editor footers and other confirm rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display         : flex;
 	flex-wrap       : wrap;
 	gap             : var( --spa-ver-m01 ) var( --spa-hor-m01 );                                 /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
@@ -1402,7 +1402,7 @@
 .delConDiv--leaving { /* What: Delete Confirm Div Leaving. Why: A cancelled confirm slides back out. How: This plays the shared swap-out while it carries its leaving class. */
 
 
-	animation : global( footerSwapFadeOut ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with the Settings reset confirm, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( footerSwapFadeOut ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with other confirm rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -1421,7 +1421,7 @@
 
 }
 
-.delMesSpa { /* What: Delete Message Span. Why: The question reads as body text, the item's name in bold. How: This sets it with balanced wrapping. */
+.delMesSpa { /* What: Delete Message Span. Why: The question reads as body text, the item's name in bold. How: This sets its size and wraps it with pretty text wrapping. */
 
 
 	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
