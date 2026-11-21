@@ -3423,7 +3423,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 										<ul
 											key={ conMetStr + conSorStr }
 
-											className={` ${ cssModObj.ranLisUno }   ${ cssModObj.ranLisUnoBreakdown }   ${ cssModObj.ranLisUnoFade }   ${ ( conMetStr === 'interval' || conMetStr === 'last' ) ? cssModObj.ranLisUnoFreq : '' } `}
+											className={` ${ cssModObj.ranLisUno }   ${ cssModObj.ranLisUnoBreakdown }   ${ cssModObj.ranLisUnoFade }   ${ ( conMetStr === 'interval' || conMetStr === 'last' ) ? cssModObj.ranLisUnoWide : '' } `}
 										>{ /* What: Conditional List Element. Why: This is the actual rendered breakdown list, remounting (and replaying its own fade) whenever the metric or sort changes. How: This maps conBreArr to one list item per conditional. */ }
 
 
@@ -4716,7 +4716,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 								<ul
 									key={ effMetStr + sorDirStr }
 
-									className={` ${ cssModObj.ranLisUno }   ${ cssModObj.ranLisUnoBreakdown }   ${ cssModObj.ranLisUnoFade }   ${ ( effMetStr === 'freq' || effMetStr === 'last' ) ? cssModObj.ranLisUnoFreq : '' } `}
+									className={` ${ cssModObj.ranLisUno }   ${ cssModObj.ranLisUnoBreakdown }   ${ cssModObj.ranLisUnoFade }   ${ ( effMetStr === 'freq' || effMetStr === 'last' ) ? cssModObj.ranLisUnoWide : '' } `}
 								>{ /* What: Breakdown List Element. Why: This is the actual rendered breakdown list, remounting (and replaying its own fade) whenever the metric or sort changes. How: This maps breLisArr to one list item per item. */ }
 
 

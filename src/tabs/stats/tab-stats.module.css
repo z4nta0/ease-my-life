@@ -1913,7 +1913,7 @@
 
 
 }
-.ranLisUno--freq { /* What: Rank List Unordered Frequency. Why: A list under a unit note needs more room above. How: This spaces it base vertical spacing down. */
+.ranLisUno--wide { /* What: Rank List Unordered Wide. Why: A list under a unit note needs more room above. How: This spaces it base vertical spacing down. */
 
 
 	margin-top : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
@@ -1948,7 +1948,7 @@
 
 }
 .ranLisUno--breakdown .ranIteIte,
-.ranLisUno--freq .ranIteIte { /* What: Rank Item Item In Rank List Unordered Breakdown And Frequency. Why: A breakdown row's tags and pills should center against its name block. How: This centers the row. */
+.ranLisUno--wide .ranIteIte { /* What: Rank Item Item In Rank List Unordered Breakdown And Wide. Why: A breakdown row's tags and pills should center against its name block. How: This centers the row. */
 
 
 	align-items : center;
@@ -1975,7 +1975,7 @@
 }
 
 .ranLisUno--breakdown .ranNamSpa,
-.ranLisUno--freq .ranNamSpa { /* What: Rank Name Span In Rank List Unordered Breakdown And Frequency. Why: A breakdown row stacks its name line over its meta. How: This stacks them in a shrinkable column. */
+.ranLisUno--wide .ranNamSpa { /* What: Rank Name Span In Rank List Unordered Breakdown And Wide. Why: A breakdown row stacks its name line over its meta. How: This stacks them in a shrinkable column. */
 
 
 	display        : flex;
@@ -1986,7 +1986,7 @@
 
 }
 .ranLisUno--breakdown .ranIteIte[data-row-vacation-active] .ranNamSpa,
-.ranLisUno--freq .ranIteIte[data-row-vacation-active] .ranNamSpa { /* What: Rank Name Span In Vacationing Rank Item Item In Rank List Unordered Breakdown And Frequency. Why: An inactive item reads muted. How: This mutes its name, keying off data-row-vacation-active. */
+.ranLisUno--wide .ranIteIte[data-row-vacation-active] .ranNamSpa { /* What: Rank Name Span In Vacationing Rank Item Item In Rank List Unordered Breakdown And Wide. Why: An inactive item reads muted. How: This mutes its name, keying off data-row-vacation-active. */
 
 
 	color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -2004,7 +2004,7 @@
 
 }
 .ranLisUno--breakdown .ranIteIte[data-row-deleted-active] .namTexSpa,
-.ranLisUno--freq .ranIteIte[data-row-deleted-active] .namTexSpa { /* What: Name Text Span In Deleted Rank Item Item In Rank List Unordered Breakdown And Frequency. Why: A deleted item's history remains but should read as historical. How: This mutes and strikes its name, keying off data-row-deleted-active. */
+.ranLisUno--wide .ranIteIte[data-row-deleted-active] .namTexSpa { /* What: Name Text Span In Deleted Rank Item Item In Rank List Unordered Breakdown And Wide. Why: A deleted item's history remains but should read as historical. How: This mutes and strikes its name, keying off data-row-deleted-active. */
 
 
 	color                 : var( --tex-mut-col );                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
