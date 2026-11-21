@@ -262,7 +262,7 @@ function fluStaFun ( curStaObj : StaAppTyp ) : void {
 
 	}
 
-	catch ( errCatObj ) { console.warn( errCatObj ); } // What: Flush Failure Guard. Why: A write failure must never propagate up while the page is unloading. How: This swallows the error silently. It logs the error as a warning so the failure stays visible in the console.
+	catch ( errCatObj ) { console.warn( errCatObj ); } // What: Flush Failure Guard. Why: A write failure must never propagate up while the page is unloading. How: This logs the error as a warning so the failure stays visible in the console, and never rethrows.
 
 
 }
@@ -278,7 +278,7 @@ function fluStaFun ( curStaObj : StaAppTyp ) : void {
  *
  * @summary
  * Synchronous by design: STG_NAM_OBJ.iniStoFun() has already resolved before
- * React mounts (see the boot gate in the HTML shell), so the loaded
+ * React mounts (see the boot gate in main.tsx), so the loaded
  * state is sitting in memory and no component had to become async. The
  * localStorage read is kept as a fallback for the case where storage.ts
  * failed to load at all. A brand-new user (nothing stored anywhere)
@@ -412,7 +412,7 @@ function madConFun ( newConObj : Partial< ConRcdTyp > | null | undefined ) : Con
  * Reconciles that verdict against whether the day was already claimed,
  * so toggling the last done item back off un-claims it, and a day is
  * never double-counted. Entries belonging to a hidden picker (see the
- * hidden flag backfilled in migStaFun above) don't count toward, or
+ * hidden flag backfilled by migStaFun) don't count toward, or
  * block, the streak, same as if that picker didn't exist. Reminders
  * are checked against the last generation's own anchor date (not live
  * "now"), so this must always agree with whatever RemSecCom is
@@ -651,7 +651,7 @@ function wriStaFun ( curStaObj : StaAppTyp ) : void {
 
 	}
 
-	catch ( errCatObj ) { console.warn( errCatObj ); } // What: Persist Failure Guard. Why: A write failure must never propagate up to the caller. How: This swallows the error silently. It logs the error as a warning so the failure stays visible in the console.
+	catch ( errCatObj ) { console.warn( errCatObj ); } // What: Persist Failure Guard. Why: A write failure must never propagate up to the caller. How: This logs the error as a warning so the failure stays visible in the console, and never rethrows.
 
 
 }
@@ -673,13 +673,10 @@ function wriStaFun ( curStaObj : StaAppTyp ) : void {
  * The entire app state layer. Holds one useState for the whole app
  * state object, seeded either from optArgObj.initial (the onboarding
  * demo's own non-persisted state) or from loaStaFun()'s own migrated
- * result. Persistence is a synchronous localStorage.setItem(JSON.
- * stringify(state)) underneath, and the state itself carries a long
- * pick log, so writing on every setState blocked the main thread (it
- * janked the Regenerate loader whenever a store update fired mid-
- * animation). The write is instead scheduled during idle time and
+ * result. Persisting the state is delegated to storage.ts, and the state
+ * carries a long pick log, so the write is scheduled during idle time and
  * coalesced across rapid updates, then flushed synchronously on hide/
- * unload/unmount so nothing is ever lost. Returns [state, actions],
+ * unload/unmount. Returns [state, actions],
  * where actions is a useMemo'd object of state-transition functions;
  * every key of that object, and every top-level field of state itself,
  * is a real contract every tab reads by name and must never be renamed.
@@ -835,7 +832,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		impDatFun : ( impRawObj ) => { // What: Import Data Function. Why: This is called with the parsed JSON blob a user just imported. How: This marks the next save authoritative (so an empty imported pickLog isn't treated as "nothing to save yet"), then replaces state wholesale via migStaFun().
+		impDatFun : ( impRawObj ) => { // What: Import Data Function. Why: An imported backup replaces the entire state. How: This marks the next save authoritative (so an empty imported pickLog isn't treated as "nothing to save yet"), then replaces state wholesale via migStaFun().
 
 
 			try { if ( STG_NAM_OBJ ) STG_NAM_OBJ.logAutFun(); } // What: Authoritative-Write Marker Try. Why: STG_NAM_OBJ must treat the very next save as authoritative, not incremental, so an intentionally-empty imported log actually overwrites the old one. How: This calls STG_NAM_OBJ.logAutFun() when STG_NAM_OBJ exists.
@@ -863,7 +860,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * ing a clean state in place and stopping there: a plain in-memory
 		 * reset left stale module-level singletons behind (state/tour-bus.ts's
 		 * bus, etc.), which is what made onboarding misbehave after "Reset
-		 * all data". wipe() is async (an IDB clear); awaiting it before
+		 * all data". wipDatFun() is async (an IDB clear); awaiting it before
 		 * reloading matters here specifically, unlike a fire-and-forget
 		 * call, since a reload can tear down the page mid-transaction,
 		 * something setState() never could guard against.
@@ -896,7 +893,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		 * @example
 		 * ```ts
-		 * wipAppFun() // => Promise
+		 * wipAppFun() // => Promise<void>
 		 * ```
 		 *
 		*/
@@ -921,7 +918,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 			}
 
-			catch ( errCatObj ) { console.warn( errCatObj ); } // What: Wipe Failure Guard. Why: A wipe failure must never prevent the reload below from still happening. How: This swallows the error silently. It logs the error as a warning so the failure stays visible in the console.
+			catch ( errCatObj ) { console.warn( errCatObj ); } // What: Wipe Failure Guard. Why: A wipe failure must never prevent the reload below from still happening. How: This logs the error as a warning so the failure stays visible in the console, and never rethrows.
 
 
 
@@ -939,7 +936,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			window.location.replace( `${ window.location.origin }${ window.location.pathname }` ); // What: Hard Reload. Why: Only a real reload clears stale module-level singletons left behind by an in-memory-only reset, and it must land on the bare address, since WebKit can reload a query the app already cleaned (a used sign-in link's code). How: This loads the app's path afresh, with no query or hash.
+			window.location.replace( `${ window.location.origin }${ window.location.pathname }` ); // What: Hard Reload. Why: Only a real reload clears stale module-level singletons left behind by an in-memory-only reset, and it lands on the bare address so no query or hash survives. How: This loads the app's path afresh, with no query or hash.
 
 
 		},
@@ -960,7 +957,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * @summary
 		 * Renames a custom theme slot without touching its own colors or
 		 * activating it (renaming while just browsing shouldn't force-
-		 * switch the live theme). Mirrors the color auto-derive above:
+		 * switch the live theme). Mirrors setCusFun's color auto-derive:
 		 * renaming one slot also renames its own counterpart, UNLESS the
 		 * counterpart's own name has since been edited directly (tracked
 		 * separately from the color derived flag, since a user might
@@ -1593,8 +1590,8 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * Renames a group everywhere: every member picker's own group, the
 		 * groupOrder slot and the pickerOrder key. If the new name matches an
 		 * existing group (case-insensitively), this becomes a merge that folds
-		 * the 2 groups together, so the caller (Edit Mode) must confirm a
-		 * merge before calling it.
+		 * the 2 groups together, so a merge must be confirmed before calling
+		 * it.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -1611,7 +1608,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		renGroFun : ( oldNamStr, rawNamStr ) => setAppStaObj( ( curStaObj ) => { // What: Rename Group Function. Why: This renames a group everywhere: rewriting every member picker's own group, remapping the groupOrder slot + pickerOrder key. If the new name matches an existing group (case-insensitively, via the normalizer's own collision reuse) this becomes a MERGE, folding the 2 groups together; the caller (Edit Mode) confirms the merge before invoking. How: See the inline comments below for each step.
+		renGroFun : ( oldNamStr, rawNamStr ) => setAppStaObj( ( curStaObj ) => { // What: Rename Group Function. Why: This renames a group everywhere: rewriting every member picker's own group, remapping the groupOrder slot + pickerOrder key. If the new name matches an existing group (case-insensitively, via the normalizer's own collision reuse) this becomes a MERGE, folding the 2 groups together; the merge must be confirmed before invoking. How: See the inline comments below for each step.
 
 
 			const othGroArr = [ ...new Set( curStaObj.pickers.filter( ( curPicObj ) => curPicObj.group && curPicObj.group !== oldNamStr ).map( ( curPicObj ) => curPicObj.group ) ) ]; // What: Other Group Array. Why: The normalizer needs every OTHER existing group name to detect a same-name collision (a merge). How: This collects the distinct group of every picker not already in oldNamStr.
@@ -1654,7 +1651,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		renTouFun : ( rawNamStr ) => setAppStaObj( ( curStaObj ) => { // What: Rename Tours Function. Why: Page Tours has no pickers to rewrite (unlike renGroFun), just a label swap; collision-with-an-existing-group blocking happens in the UI before this ever fires. How: This normalizes rawNamStr and writes it onto onboarding.pageToursName.
+		renTouFun : ( rawNamStr ) => setAppStaObj( ( curStaObj ) => { // What: Rename Tours Function. Why: Page Tours has no pickers to rewrite (unlike renGroFun), just a label swap; an existing group's name must be blocked before this fires. How: This normalizes rawNamStr and writes it onto onboarding.pageToursName.
 
 
 			const nexNamStr = ( norGroFun && norGroFun( rawNamStr ) ) || String( rawNamStr || '' ).trim(); // What: Next Name String. Why: The write below needs a tidied, real name. How: This calls norGroFun, else falls back to a plain trim.
@@ -1945,7 +1942,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		movIteFun : ( tarIdeStr ) => setAppStaObj( ( curStaObj ) => { // What: Move Item Function. Why: The Pickers-tab add flow renders a picker's own items in array order, so this lands a just-saved item at the bottom of that picker's own list. How: This moves the one matching item to the end of the global items array.
+		movIteFun : ( tarIdeStr ) => setAppStaObj( ( curStaObj ) => { // What: Move Item Function. Why: A just-saved item lands at the bottom of its picker's own list, which follows the order of the global items array. How: This moves the one matching item to the end of the global items array.
 
 
 			const tarIteObj = curStaObj.items.find( ( iteFinObj ) => iteFinObj.id === tarIdeStr ); // What: Target Item Object And Guard. Why: A stale tarIdeStr must be a no-op rather than silently dropping the item. How: This looks up tarIdeStr in curStaObj.items.
