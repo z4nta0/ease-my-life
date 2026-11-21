@@ -1221,7 +1221,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 										<SorSelCom
 											labTexStr='Sort'
 											optLisArr={ ITE_SOR_ARR }
-											selIdeStr='rem-item-sort'
+											selIdeStr='remSorSel'
 											value={ iteSorStr }
 
 											onChange={ ( sorKeyStr ) => actStoObj.setSorFun( 'reminders', sorKeyStr ) }

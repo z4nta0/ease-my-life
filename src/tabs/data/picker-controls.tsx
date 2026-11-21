@@ -1137,7 +1137,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 								<input
 									className={ cssModObj.modOptInp }
 
-									name={ `mode_${ picDatObj.id }` }
+									name={ `picModRad--${ picDatObj.id }` }
 
 									checked={ modSelBoo }
 									type='radio'

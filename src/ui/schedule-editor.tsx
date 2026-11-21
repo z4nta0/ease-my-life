@@ -981,8 +981,8 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 	// #region Visibility Note Ids
 
-	const schNotStr = `rem-vis-sched-${ tasRcdObj.id }`; // What: Schedule Note String. Why: The schedule-subsection VisNotCom instance below needs a stable dom id so a control can reference it via aria-describedby. How: This is passed as that instance's own notIdeStr prop.
-	const repNotStr = `rem-vis-set-${ tasRcdObj.id }`;   // What: Repeat Note String. Why: The Repeat row's own VisNotCom instance below needs its own distinct dom id for the same reason. How: This is passed as that instance's own notIdeStr prop.
+	const schNotStr = `schVisDiv--${ tasRcdObj.id }`; // What: Schedule Note String. Why: The schedule-subsection VisNotCom instance below needs a stable dom id so a control can reference it via aria-describedby. How: This is passed as that instance's own notIdeStr prop.
+	const repNotStr = `repVisDiv--${ tasRcdObj.id }`; // What: Repeat Note String. Why: The Repeat row's own VisNotCom instance below needs its own distinct dom id for the same reason. How: This is passed as that instance's own notIdeStr prop.
 
 	// #endregion Visibility Note Ids
 

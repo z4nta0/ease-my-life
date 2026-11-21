@@ -503,11 +503,11 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 					<label
 						className={ cssModObj.forLabLab }
 
-						htmlFor={ `${ insIdeStr }-name` }
+						htmlFor={ `conNamInp--${ insIdeStr }` }
 					>Conditional name</label>{ /* What: Name Label Element. Why: This is the name field's own visible label, tied to the input below via htmlFor. How: This renders the literal text "Conditional name". */ }
 
 					<input
-						id={ `${ insIdeStr }-name` }
+						id={ `conNamInp--${ insIdeStr }` }
 
 						className={ cssModObj.forTexInp }
 
@@ -564,7 +564,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 					<label
 						className={ cssModObj.forLabLab }
 
-						htmlFor={ `${ insIdeStr }-cardtext` }
+						htmlFor={ `carTexInp--${ insIdeStr }` }
 					>Replacement card text</label>{ /* What: Cardtext Label Element. Why: This is the card-text field's own visible label. How: This renders the literal text "Replacement card text". */ }
 
 					<p className={ cssModObj.forHelPar }>This is the text that is shown on the card that appears on your todo list when this conditional suppresses its picker.</p>{ /* What: Cardtext Help Paragraph Element. Why: A user configuring this field for the first time needs to know exactly where and when this text appears. How: This renders a fixed explanatory sentence beneath the label. */ }
@@ -573,7 +573,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 				</div>
 
 				<input
-					id={ `${ insIdeStr }-cardtext` }
+					id={ `carTexInp--${ insIdeStr }` }
 
 					className={ cssModObj.forTexInp }
 
@@ -635,7 +635,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 										<input
 											className={ cssModObj.modOptInp }
 
-											name={ `${ insIdeStr }-cnd-mode` }
+											name={ `conModRad--${ insIdeStr }` }
 
 											checked={ modSelBoo }
 											type='radio'

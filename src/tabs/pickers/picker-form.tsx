@@ -1328,15 +1328,15 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							<label
 								className={ cssModObj.forLabLab }
 
-								htmlFor='np-name'
-							>Name</label>{ /* What: Name Label Element. Why: The input below needs an associated, readable label. How: This is linked to the input via the shared 'np-name' id. */ }
+								htmlFor='picNamInp'
+							>Name</label>{ /* What: Name Label Element. Why: The input below needs an associated, readable label. How: This is linked to the input via the shared 'picNamInp' id. */ }
 
 							<p className={ cssModObj.forHelPar }>What you&rsquo;ll see on the picker bar above and on your todo list cards. Short and plain works best, e.g. &ldquo;Daily Chore&rdquo;, &ldquo;Dinner&rdquo;, &ldquo;Coffee Creamer&rdquo;.</p>{ /* What: Name Help Paragraph Element. Why: A first-time user needs guidance on what makes a good picker name. How: This renders a fixed explanatory sentence with a couple of worked examples. */ }
 
 							<input
 								ref={ namInpRef }
 
-								id='np-name'
+								id='picNamInp'
 
 								className={ cssModObj.forTexInp }
 
@@ -1486,7 +1486,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										<input
 											className={ cssModObj.modOptInp }
 
-											name='np-mode'
+											name='forModRad'
 
 											checked={ selModStr === modKeyStr }
 											type='radio'
@@ -1711,7 +1711,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 							<TogRowCom
-								ideValStr='np-daily'
+								ideValStr='daiTogBut'
 
 								className={ cssModObj.forTogDiv }
 
@@ -1830,7 +1830,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 									<TogRowCom
-										ideValStr='np-skiphol'
+										ideValStr='skiHolBut'
 
 										className={ cssModObj.schTogDiv }
 
@@ -1847,7 +1847,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 									<TogRowCom
-										ideValStr='np-avoiddupes'
+										ideValStr='avoDupBut'
 
 										className={ cssModObj.schTogDiv }
 

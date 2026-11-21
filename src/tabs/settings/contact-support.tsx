@@ -575,11 +575,11 @@ function ConSupCom () : React.JSX.Element {
 							<label
 								className={ cssModObj.supLabLab }
 
-								htmlFor='support-message-input'
-							>Message</label>{ /* What: Message Label Element. Why: The message textarea needs a visible, properly-associated label. How: This points at the textarea below via its own distinct id. */ }{ /* The id is "support-message-input", not "support-message", since that id is already taken by index.html's hidden static Netlify form (see its own comment above the <form name="support">), and duplicate ids on the page confused the browser's label matching (both labels applied, announcing "Message Message"). */ }
+								htmlFor='supMesTex--app'
+							>Message</label>{ /* What: Message Label Element. Why: The message textarea needs a visible, properly-associated label. How: This points at the textarea below via its own distinct id. */ }{ /* The id is supMesTex--app, not supMesTex, since that id is already taken by index.html's hidden static Netlify form (see its own comment above the <form name="support">), and duplicate ids on the page confused the browser's label matching (both labels applied, announcing "Message Message"). */ }
 
 							<textarea
-								id='support-message-input'
+								id='supMesTex--app'
 
 								className={ cssModObj.supMesTex }
 

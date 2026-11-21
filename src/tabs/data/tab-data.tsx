@@ -1854,7 +1854,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 				<SorSelCom
 					labTexStr='Sort'
 					optLisArr={ SEC_SOR_ARR }
-					selIdeStr='data-section-sort'
+					selIdeStr='secSorSel'
 					value={ secSorStr }
 
 					onChange={ ( keyValStr ) => actStoObj.setSorFun( 'sections', keyValStr ) }
@@ -2371,7 +2371,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 												<SorSelCom
 													labTexStr='Sort'
 													optLisArr={ pisOptFun( picCurObj.mode ) }
-													selIdeStr={ `item-sort-${ picCurObj.id }` }
+													selIdeStr={ `iteSorSel--${ picCurObj.id }` }
 													value={ iteSorStr }
 
 													onChange={ ( keyValStr ) => actStoObj.setSorFun( picCurObj.id, keyValStr ) }

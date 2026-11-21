@@ -381,12 +381,12 @@ const PIC_HEL_ARR : HelIteTyp[] = [ // What: Picker Help Array. Why: This is the
 
 	// #region Create A Picker Form Step 1
 
-	{ // What: Picker Name Help Item. Why: This is the on-demand help tip for the Picker Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // :has(#np-name) scopes to just this field, since every field in the form shares the same forFieDiv/forFieFie hooks.
+	{ // What: Picker Name Help Item. Why: This is the on-demand help tip for the Picker Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // :has(#picNamInp) scopes to just this field, since every field in the form shares the same forFieDiv/forFieFie hooks.
 
 
 		bodEle : <>This is the name field for your new picker, and it should have a short, descriptive name.</>,
 		ideStr : 'newPickerName',
-		selStr : ':is([data-element-name-hook~="forFieDiv"], [data-element-name-hook~="forFieFie"]):has(#np-name)',
+		selStr : ':is([data-element-name-hook~="forFieDiv"], [data-element-name-hook~="forFieFie"]):has(#picNamInp)',
 		titStr : 'Picker Name'
 
 
@@ -630,12 +630,12 @@ const PIC_HEL_ARR : HelIteTyp[] = [ // What: Picker Help Array. Why: This is the
 
 	},
 
-	{ // What: Picker Holidays Toggle Help Item. Why: This is the on-demand help tip for the Picker Holidays Toggle element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // :has(#np-skiphol) distinguishes this from the OTHER schTogDiv just below it (Picker Duplicate Items Toggle), both share the same hook.
+	{ // What: Picker Holidays Toggle Help Item. Why: This is the on-demand help tip for the Picker Holidays Toggle element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // :has(#skiHolBut) distinguishes this from the OTHER schTogDiv just below it (Picker Duplicate Items Toggle), both share the same hook.
 
 
 		bodEle : <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
 		ideStr : 'newPickerSkipHolidays',
-		selStr : '[data-element-name-hook~="schTogDiv"]:has(#np-skiphol)',
+		selStr : '[data-element-name-hook~="schTogDiv"]:has(#skiHolBut)',
 		titStr : 'Picker Holidays Toggle'
 
 
@@ -646,7 +646,7 @@ const PIC_HEL_ARR : HelIteTyp[] = [ // What: Picker Help Array. Why: This is the
 
 		bodEle : <>This determines whether the picker is allowed to choose an item when another item with the same name already exists elsewhere in the generated daily todo list. If all items are ineligible due to duplication, then this setting is ignored and an item is chosen normally.</>,
 		ideStr : 'newPickerAvoidDuplicates',
-		selStr : '[data-element-name-hook~="schTogDiv"]:has(#np-avoiddupes)',
+		selStr : '[data-element-name-hook~="schTogDiv"]:has(#avoDupBut)',
 		titStr : 'Picker Duplicate Items Toggle'
 
 

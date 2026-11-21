@@ -176,7 +176,7 @@ test( 'the form creates a new picker with items', async ( { page : curPagObj } )
 
 
 
-	await curPagObj.locator( '#np-name' ).fill( 'Form Picker' ); // What: Name Fill Call. Why: A picker needs a name. How: This types one.
+	await curPagObj.locator( '#picNamInp' ).fill( 'Form Picker' ); // What: Name Fill Call. Why: A picker needs a name. How: This types one.
 
 
 

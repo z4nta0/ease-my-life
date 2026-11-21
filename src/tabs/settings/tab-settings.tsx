@@ -2567,7 +2567,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 										<span
-											id='set-import-confirm-msg'
+											id='impConSpa'
 
 											className={ cssModObj.setMesSpa }
 
@@ -2620,7 +2620,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 											kinValStr='danger'
 											sizValStr='sm'
 
-											aria-describedby='set-import-confirm-msg'
+											aria-describedby='impConSpa'
 
 											onClick={ runImpFun }
 										>Import</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final confirmation that replaces all data with the staged backup. How: This calls runImpFun when clicked. */ }
@@ -2671,7 +2671,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 									<span className={ cssModObj.setNamSpa }>Reset all data</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Reset all data". */ }
 
 									<span
-										id='set-reset-confirm-msg'
+										id='resDesSpa'
 
 										className={ cssModObj.setSubSpa }
 									>{ accSynObj.accUsrObj ? <>Wipes everything on this device and signs you out. Your cloud copy stays, so signing back in restores it, unless you delete it too. A device still signed in uploads its own copy again when it next syncs. <strong>This can't be undone.</strong></> : <>Wipes everything and restores the app to a clean state. <strong>This can't be undone.</strong></> }</span>{ /* What: Set Data Sub Span Element. Why: The destructive and irreversible nature of reset needs to be stated plainly up front, and is also referenced by the confirm button's own aria-describedby below. How: This renders the fixed description. */ }
@@ -2709,7 +2709,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 											disabled={ resBusBoo }
 
-											aria-describedby='set-reset-confirm-msg'
+											aria-describedby='resDesSpa'
 
 											onClick={ () => void resRunFun( false ) } // What: Reset Confirm Click Handler. Why: Confirming wipes this device, and signs it out first when an account is signed in. How: This runs the reset without deleting the cloud copy.
 										>{ accSynObj.accUsrObj ? 'Reset this device' : 'Reset' }</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final confirmation that wipes this device's data. How: This runs the reset, its label naming the device when an account's cloud copy would stay. */ }
@@ -2726,7 +2726,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 												kinValStr='danger'
 												sizValStr='sm'
 
-												aria-describedby='set-reset-confirm-msg'
+												aria-describedby='resDesSpa'
 
 												onClick={ () => void resRunFun( true ) } // What: Cloud Reset Click Handler. Why: The person wants the cloud copy gone too. How: This deletes it, signs out, and wipes the device.
 											>Reset and delete cloud copy</ButBasCom>

@@ -961,7 +961,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 						<SorSelCom
 							labTexStr='Sort'
 							optLisArr={ CIS_OPT_ARR }
-							selIdeStr='cnd-item-sort'
+							selIdeStr='conSorSel'
 							value={ iteSorStr }
 
 							onChange={ ( keyValStr ) => actStoObj.setSorFun( 'conditionals', keyValStr ) }
