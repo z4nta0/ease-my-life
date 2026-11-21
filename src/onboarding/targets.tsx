@@ -14,7 +14,7 @@ import type { ReactNode } from 'react'; // What: React Node. Why: Each nav targe
  *
  * @summary
  * A single-export file: NAV_TAR_OBJ, the shared nav-target catalog reused by
- * the Welcome Tour and every page's own mini-tour. See NAV_TAR_OBJ's own
+ * the Welcome Tour and the page mini-tours. See NAV_TAR_OBJ's own
  * comment right below for its full design rationale; this file exists purely
  * so that catalog has one home neither onboarding/welcome-tour.tsx nor
  * onboarding/page-tours.tsx needs to own on the other's behalf.
@@ -47,7 +47,7 @@ import type { ReactNode } from 'react'; // What: React Node. Why: Each nav targe
  *
  * Each entry holds content only (selStr/titStr/bodEle), no navigation
  * (priStr/bacBoo/runFun), since a guided tour needs Back/Next/Skip and a
- * future on-demand help mode won't. Consumers that need tour-flow-specific
+ * plain help overlay won't. Consumers that need tour-flow-specific
  * framing (e.g. "let's explore this page now") append that themselves rather
  * than have it forced into the shared text; see the steps in
  * onboarding/welcome-tour.tsx for that split in practice.
@@ -58,24 +58,21 @@ import type { ReactNode } from 'react'; // What: React Node. Why: Each nav targe
  *
  * - `bodEle` (Element): Body Element is a plain description of what the
  *   page IS, written to stand alone with no reference to "this tour" or
- *   "the next step" baked in, so it reads fine wherever it's reused;
- *   every consumer renders this directly as the step's own descriptive
- *   paragraph, written as JSX so specific phrases can be bolded.
+ *   "the next step" baked in, so it reads fine wherever it's reused; it is
+ *   written as JSX so specific phrases can be bolded.
  *
  * - `selStr` (String): Selector String is the actual DOM selector the
  *   overlay spotlights, matching the nav bar's own data-tab-button-key
- *   attribute for this page; every consumer (the Welcome Tour and each page's
- *   own mini-tour) reads this directly as the step's own selector.
+ *   attribute for this page.
  *
  * - `titStr` (String): Title String is the overlay's own callout
- *   heading, naming this page; every consumer renders this directly as
- *   the step's own heading text.
+ *   heading, naming this page.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titStr : string } > = { // What: Nav Target Object. Why: This is the shared onboarding nav-target catalog, kept as one source of truth instead of duplicating each page's selector/title/body per consumer. How: This is read by the Welcome Tour, the page-tour system, and the picker-tour system, each spreading or looking up one entry by its own page id.
+const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titStr : string } > = { // What: Nav Target Object. Why: This is the shared onboarding nav-target catalog, kept as one source of truth instead of duplicating each page's selector/title/body per consumer. How: This is read by the onboarding tours, which spread or look up one entry by its page id.
 
 
 	data : { // What: Data Nav Target Object. Why: This is the nav-target descriptor for the Data page's own tab button. How: This is spread into the Welcome Tour's Data step and read by the page-tour system's opening step for the 'data' page id.
@@ -144,7 +141,7 @@ const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titSt
 
 // #region Exports
 
-export { NAV_TAR_OBJ }; // What: Named Export. Why: Every consumer imports this catalog by name. How: This re-exports NAV_TAR_OBJ, the sole binding this file defines.
+export { NAV_TAR_OBJ }; // What: Named Export. Why: Other files import this catalog by name. How: This re-exports NAV_TAR_OBJ, the sole binding this file defines.
 
 // #endregion Exports
 

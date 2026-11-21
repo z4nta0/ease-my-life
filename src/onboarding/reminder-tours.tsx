@@ -3,13 +3,13 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This file's own RemTouCom component and its step-building helpers all need React in scope to compile their JSX. How: This is used directly (React.useState) below, instead of importing individual named hooks.
+import React from 'react'; // What: React. Why: This file's own RemTouCom component calls React.useState. How: This is used directly (React.useState) below, instead of importing individual named hooks.
 
 
-import { emlTouObj    } from '../state/tour-bus.ts';             // What: Ease-My-Life Tour Object. Why: This publishes the running tour's prefill data for the real reminder form and clears it again on every exit path. How: This is written to via .set() in buiAddFun's runFun and cloTouFun below.
+import { emlTouObj    } from '../state/tour-bus.ts';             // What: Ease-My-Life Tour Object. Why: This publishes the running tour's prefill data for the real reminder form and clears it again when the tour ends. How: This is written to via .set() in buiAddFun's runFun and cloTouFun below.
 import { GuiTouCom    } from './tour-runner.tsx';                // What: Guided Tour Component. Why: This is the generic spotlight-tour engine that actually drives each reminder mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-varKeyStr step array.
 import { IcoSvgCom    } from '../ui/icon.tsx';                   // What: Icon SVG Component. Why: The intro modal needs a recognizable glyph matching the current varKeyStr. How: This is rendered as the intro modal's icon below.
-import { IntModCom    } from './intro-modal.tsx';                // What: Intro Modal Component. Why: Each reminder mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this file's own per-varKeyStr copy.
+import { IntModCom    } from './intro-modal.tsx';                // What: Intro Modal Component. Why: Each reminder mini-tour opens on this generic intro modal before its spotlight steps, unless a reload resumes it mid-tour. How: This is rendered while touPhaStr is 'intro', passed this file's own per-varKeyStr copy.
 import { ONB_TAS_ARR  } from '../state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: A reload can land on this tour before the live sample task has been re-derived from state.tasks. How: This is searched as the fallback template lookup in buiAddFun's runFun below.
 import { useEmlTouFun } from '../state/tour-bus.ts';             // What: Use Ease-My-Life Tour Function. Why: The recurring tour's own Step 4 needs to read the live draft's current schedule type off the shared bus. How: This is called once to subscribe to the bus and read its own draRepStr field.
 
@@ -111,7 +111,7 @@ const NAM_STE_OBJ = { // What: Name Step Object. Why: Both tour variants share t
 const REP_COP_OBJ : Record< string, { leaStr : string, pluBoo? : boolean, taiStr : string, titStr : string } > = { // What: Repeat Copy Object. Why: Step 4's own copy differs by which schedule control Step 3's pill choice revealed. How: This is looked up by buiFreFun below, keyed by the live draft's own repeat kind.
 
 
-	annual : { // What: Annual Entry. Why: This is the copy content descriptor for the annual recurring-schedule control. How: This is looked up by REP_COP_OBJ via the live draft's own 'annual' repeat kind.
+	annual : { // What: Annual Entry. Why: This is the copy content descriptor for the annual recurring-schedule control. How: This is looked up in REP_COP_OBJ by the live draft's own 'annual' repeat kind.
 
 
 		leaStr : 'how often and which day or weekday of the year a recurring reminder will show up in your todo list',
@@ -121,7 +121,7 @@ const REP_COP_OBJ : Record< string, { leaStr : string, pluBoo? : boolean, taiStr
 
 	},
 
-	interval : { // What: Interval Entry. Why: This is the copy content descriptor for the interval recurring-schedule control. How: This is looked up by REP_COP_OBJ via the live draft's own 'interval' repeat kind.
+	interval : { // What: Interval Entry. Why: This is the copy content descriptor for the interval recurring-schedule control. How: This is looked up in REP_COP_OBJ by the live draft's own 'interval' repeat kind.
 
 
 		leaStr : 'how frequently a recurring reminder will show up in your todo list',
@@ -132,7 +132,7 @@ const REP_COP_OBJ : Record< string, { leaStr : string, pluBoo? : boolean, taiStr
 
 	},
 
-	monthly : { // What: Monthly Entry. Why: This is the copy content descriptor for the monthly recurring-schedule control. How: This is looked up by REP_COP_OBJ via the live draft's own 'monthly' repeat kind.
+	monthly : { // What: Monthly Entry. Why: This is the copy content descriptor for the monthly recurring-schedule control. How: This is looked up in REP_COP_OBJ by the live draft's own 'monthly' repeat kind.
 
 
 		leaStr : 'how often and which day or weekday of the month a recurring reminder will show up in your todo list',
@@ -142,7 +142,7 @@ const REP_COP_OBJ : Record< string, { leaStr : string, pluBoo? : boolean, taiStr
 
 	},
 
-	weekly : { // What: Weekly Entry. Why: This is the copy content descriptor for the weekly recurring-schedule control. How: This is looked up by REP_COP_OBJ via the live draft's own 'weekly' repeat kind.
+	weekly : { // What: Weekly Entry. Why: This is the copy content descriptor for the weekly recurring-schedule control. How: This is looked up in REP_COP_OBJ by the live draft's own 'weekly' repeat kind.
 
 
 		leaStr : 'how often and which day(s) of the week a recurring reminder will show up in your todo list',
@@ -207,10 +207,10 @@ const REP_STE_OBJ = { // What: Repeat Step Object. Why: The recurring tour's own
 const VAR_COP_OBJ : Record< string, { bodStr : string, icoStr : string, ideStr : string, titStr : string } > = { // What: Variant Copy Object. Why: Each tour varKeyStr needs its own sample task id, icon, title, and second intro paragraph. How: This is looked up by varKeyStr ('once'/'recurring') everywhere a step or the intro modal needs varKeyStr-specific copy.
 
 
-	once : { // What: Once Entry. Why: This is the copy content descriptor for the one-time reminder tour variant. How: This is looked up by VAR_COP_OBJ via the real 'once' varKeyStr.
+	once : { // What: Once Entry. Why: This is the copy content descriptor for the one-time reminder tour variant. How: This is looked up in VAR_COP_OBJ by the real 'once' varKeyStr.
 
 
-		icoStr : 'pinEle',             // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
+		icoStr : 'pinEle',             // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own icoNamStr prop in the render below.
 		ideStr : 'tk_ob_meds',         // What: Identifier String. Why: This ties the 'once' varKeyStr to its own sample reminder. How: This is read back against state.tasks/ONB_TAS_ARR by buiAddFun's runFun below and against the checklist by cloTouFun.
 		titStr : 'One-Time Reminders', // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own titHeaStr prop.
 
@@ -219,10 +219,10 @@ const VAR_COP_OBJ : Record< string, { bodStr : string, icoStr : string, ideStr :
 
 	},
 
-	recurring : { // What: Recurring Entry. Why: This is the copy content descriptor for the recurring reminder tour variant. How: This is looked up by VAR_COP_OBJ via the real 'recurring' varKeyStr.
+	recurring : { // What: Recurring Entry. Why: This is the copy content descriptor for the recurring reminder tour variant. How: This is looked up in VAR_COP_OBJ by the real 'recurring' varKeyStr.
 
 
-		icoStr : 'calEle',              // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
+		icoStr : 'calEle',              // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own icoNamStr prop in the render below.
 		ideStr : 'tk_ob_trash',         // What: Identifier String. Why: This ties the 'recurring' varKeyStr to its own sample reminder. How: This is read back against state.tasks/ONB_TAS_ARR by buiAddFun's runFun below and against the checklist by cloTouFun.
 		titStr : 'Recurring Reminders', // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own titHeaStr prop.
 
@@ -344,9 +344,8 @@ const buiAddFun = ( varKeyStr : string, staAppObj : StaAppTyp ) : TouSteTyp => {
  * Builds the recurring tour's own Step 4, highlighting whichever schedule
  * control the draft's repeat kind reveals below the Repeat pills (.remExtDiv,
  * the same container for every kind). Its title and body come from REP_COP_OBJ
- * for that kind, falling back to the weekly copy for the one frame before
- * reminders-section.tsx's own draft has published a real repeat kind onto the
- * bus.
+ * for that kind, falling back to the weekly copy while the bus holds no
+ * repeat kind yet.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -363,7 +362,7 @@ const buiAddFun = ( varKeyStr : string, staAppObj : StaAppTyp ) : TouSteTyp => {
  *
 */
 
-const buiFreFun = ( repValStr : string | null | undefined ) : TouSteTyp => { // What: Build Frequency Function. Why: Step 4 highlights whichever schedule control the recurring draft's own repeat kind reveals, with copy that tracks it. How: This looks up REP_COP_OBJ by repValStr, falling back to 'weekly' for the one frame before reminders-section.tsx's own staAddFun/draActObj have published a real value onto the bus yet.
+const buiFreFun = ( repValStr : string | null | undefined ) : TouSteTyp => { // What: Build Frequency Function. Why: Step 4 highlights whichever schedule control the recurring draft's own repeat kind reveals, with copy that tracks it. How: This looks up REP_COP_OBJ by repValStr, falling back to 'weekly' while the bus holds no repeat kind yet.
 
 
 	const repCopObj = ( repValStr && REP_COP_OBJ[ repValStr ] ) || REP_COP_OBJ.weekly; // What: Repeat Copy Object. Why: The step's own titStr/bodEle below need this repeat kind's own copy. How: This looks up REP_COP_OBJ by repValStr, falling back to weekly.
@@ -445,7 +444,7 @@ const buiSubFun = ( varKeyStr : string ) : TouSteTyp => ({ // What: Build Submit
 
 // #region Components
 
-type RtcProTyp = { actStoObj : ActStoTyp, onCloForFun : () => void, onCloTouFun : () => void, staAppObj : StaAppTyp, varKeyStr : string }; // What: Reminder-Tour-Component Props Type. Why: A reminder tour drives the real reminder form for one sample and closes both when it ends. How: This types RemTouCom's props.
+type RtcProTyp = { actStoObj : ActStoTyp, onCloForFun : () => void, onCloTouFun : () => void, staAppObj : StaAppTyp, varKeyStr : string }; // What: Reminder-Tour-Component Props Type. Why: A reminder tour needs the app's actions and state, a way to close the real reminder form and itself, and which sample variant it teaches. How: This types RemTouCom's props.
 
 // #region RemTouCom
 
@@ -460,19 +459,17 @@ type RtcProTyp = { actStoObj : ActStoTyp, onCloForFun : () => void, onCloTouFun 
  * varKeyStr adds 2 extra steps in between (REP_STE_OBJ, buiFreFun) for its own
  * Repeat schedule.
  *
- * Every step stays on Today, and this component is only ever mounted from
- * within TabTodCom (see tab-today.tsx's own staTouFun), so
- * actIdeStr/selTabFun are hardcoded/stubbed below rather than threaded all
- * the way up; a future step needing another tab would need this lifted the
- * way WelTouCom (onboarding/welcome-tour.tsx) is.
+ * Every step stays on Today, so actIdeStr and selTabFun are hardcoded and
+ * stubbed below rather than threaded all the way up; a step on another tab
+ * would need them lifted the way WelTouCom (onboarding/welcome-tour.tsx) is.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.actStoObj   - Action Store Object: The shared app actions
  *                            that mutate props.staAppObj.
  * @param props.onCloForFun - On Close Form Function: Closes the real
- *                            add-reminder form on Today, exactly like its
- *                            own Cancel button would.
+ *                            add-reminder form on Today, like its own
+ *                            Cancel button would.
  * @param props.onCloTouFun - On Close Tour Function: Clears tab-today.tsx's
  *                            own minTouObj, ending this mount.
  * @param props.staAppObj   - State App Object: The entire app's own
@@ -532,7 +529,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 	 *
 	*/
 
-	const cloTouFun = ( staValStr : CheStaTyp ) : void => { // What: Close Tour Function. Why: Clears the checklist status and the shared bus's own prefill together, the only two bits of state this tour ever touches outside its own local phase. How: This never touches the sample task itself (see buiAddFun's own runFun above), only the new draft it seeded gets built from it.
+	const cloTouFun = ( staValStr : CheStaTyp ) : void => { // What: Close Tour Function. Why: This ends the tour by clearing the shared bus's prefill and recording how it ended in the checklist. How: This never touches the sample task itself (see buiAddFun's own runFun above), only the new draft it seeded gets built from it.
 
 
 		emlTouObj.set( { prePayObj : null } ); // What: Prefill Clear Call. Why: A stale prefill left over from Step 1 must not leak into whatever the add-reminder form shows next. How: This clears the shared bus's own prePayObj field.
@@ -550,7 +547,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 
 
 
-	if ( touPhaStr === 'intro' ) { // What: Intro Phase Check. Why: The intro modal must show before any spotlight step ever does. How: This returns IntModCom below whenever touPhaStr is 'intro'.
+	if ( touPhaStr === 'intro' ) { // What: Intro Phase Check. Why: The intro modal shows before the spotlight steps, unless a reload resumed the tour into them. How: This returns IntModCom below whenever touPhaStr is 'intro'.
 
 
 		const intIcoEle = ( // What: Intro Icon Element. Why: The intro modal's own icon matches this varKeyStr. How: This renders varCopObj's own icon at the p05 rhythm step, passed as IntModCom's own icoTopEle prop below.
@@ -576,7 +573,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 				titHeaStr={ varCopObj.titStr }
 
 				onBegTouFun={ () => setTouPhaStr( 'tour' ) }
-				onSkiTouFun={ () => { // What: On Skip Tour Function. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying sample reminder. How: This never sets the prefill at this point, so there is nothing to clear.
+				onSkiTouFun={ () => { // What: On Skip Tour Function. Why: This mirrors the launcher card's own X button, marking the card cancelled without touching the underlying sample reminder. How: This never sets the prefill at this point, so there is nothing to clear.
 
 
 					actStoObj.setCarFun( varCopObj.ideStr, { status : 'cancelled' } ); // What: Checklist Status Cancel Call. Why: Skipping the intro modal still needs the launcher card to stop showing itself. How: This updates this varKeyStr's own sample task's checklist entry to 'cancelled'.
@@ -586,7 +583,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 
 
 				} }
-			/> // What: Intro Modal Component. Why: This is this varKeyStr's own opening screen, shown before any spotlight step ever does. How: This is passed this varKeyStr's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
+			/> // What: Intro Modal Component. Why: This is this varKeyStr's own opening screen, shown before the spotlight steps unless a reload resumes the tour. How: This is passed this varKeyStr's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
 
 
 		);
@@ -613,14 +610,14 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 			steObjArr={ steObjArr }
 			touIdeStr={ `reminder-${ varKeyStr }` }
 
-			onBacTouFun={ ( tarSteNum ) => { if ( tarSteNum === 0 ) onCloForFun(); } } // What: On Back Tour Function. Why: Back to Step 1 re-highlights the "+" button, which toggles the add form open or closed. How: Closing it here keeps Step 1's own click meaning exactly what it always means, open the form, instead of closing an already-open one.
+			onBacTouFun={ ( tarSteNum ) => { if ( tarSteNum === 0 ) onCloForFun(); } } // What: On Back Tour Function. Why: Back to Step 1 re-highlights the "+" button, which toggles the add form open or closed. How: Closing it here keeps Step 1's own click meaning "open the form", instead of closing an already-open one.
 			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Tour Function. Why: This only fires from buiSubFun's own cirBoo, after the real click that saves the reminder has already reached the button's own handler. How: This deliberately does not touch the form, since closing it here would discard the save instead of letting it happen.
-			onSkiTouFun={ () => { // What: On Skip Tour Function. Why: Skip discards the in-progress form exactly like its own Cancel button would. How: onCloForFun is a no-op if the form is not even open, for example Skip from Step 1.
+			onSkiTouFun={ () => { // What: On Skip Tour Function. Why: Skip discards the in-progress form like its own Cancel button would. How: onCloForFun is a no-op if the form is not even open, for example Skip from Step 1.
 
 
-				onCloForFun(); // What: Close Reminder Form Call. Why: A half-created reminder should not survive behind the scenes just because the user backed out via the tour instead of the form itself. How: This closes the add-reminder form exactly like its own Cancel button would.
+				onCloForFun(); // What: Close Reminder Form Call. Why: A half-created reminder should not survive behind the scenes just because the user backed out via the tour instead of the form itself. How: This closes the add-reminder form like its own Cancel button would.
 
-				cloTouFun( 'skipped' ); // What: Close Tour Call. Why: This funnels Skip through the same cleanup any other exit path off this tour uses. How: This clears the bus prefill, updates the checklist to 'skipped', and calls onCloTouFun.
+				cloTouFun( 'skipped' ); // What: Close Tour Call. Why: This funnels Skip through the same cleanup the tour's finish uses. How: This clears the bus prefill, updates the checklist to 'skipped', and calls onCloTouFun.
 
 
 			} }
