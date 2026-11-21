@@ -21,15 +21,14 @@ import type { TasRcdTyp } from '../../src/core/data-model.ts'; // What: Task Rec
  * holds. Every added name starts with "Sim", and the real records are left
  * untouched.
  *
- * The pickers: a monthly Ease Up on the 31st, which has to clamp to the
- * last day of shorter months; a yearly random picker on January 2; a weekly
- * weighted picker anchored on Wednesday and limited to Monday, Wednesday,
- * and Friday; a daily dynamic picker that skips holidays, whose window holds
- * Thanksgiving, Christmas, and New Year's Day; and a weekday random picker
- * that avoids duplicates and shares item names with the holiday picker, so
- * the duplicate rule gets exercised. The reminders: a yearly one on
- * December 31, a monthly one on the 31st, and a weekly one every other week
- * on Tuesdays and Thursdays.
+ * The pickers: a monthly Ease Up on the 31st, which has to clamp to the last
+ * day of shorter months; a yearly random picker on January 2; a weekly
+ * weighted picker anchored on Wednesday and limited to Monday, Wednesday, and
+ * Friday; a daily dynamic picker that skips holidays; and a weekday random
+ * picker that avoids duplicates and shares item names with the holiday picker,
+ * so the duplicate rule gets exercised. The reminders: a yearly one on
+ * December 31, a monthly one on the 31st, and a weekly one every other week on
+ * Tuesdays and Thursdays.
  *
  * Sections:
  *  - Constants
@@ -44,7 +43,7 @@ import type { TasRcdTyp } from '../../src/core/data-model.ts'; // What: Task Rec
 
 // #region Constants
 
-const PIC_BAS_OBJ = { activeItemId : null, anchorDay : 1, anchorDom : 1, anchorDow : 1, anchorMonth : 1, avoidDuplicates : false, conditionalId : null, dateMode : 'date', daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ], easeMax : 14, easeMin : 7, group : 'Sim', hidden : false, skipHolidays : false, threshold : 100 } as const; // What: Picker Base Object. Why: Every added picker shares the same defaults. How: This holds the fields each one doesn't set itself.
+const PIC_BAS_OBJ = { activeItemId : null, anchorDay : 1, anchorDom : 1, anchorDow : 1, anchorMonth : 1, avoidDuplicates : false, conditionalId : null, dateMode : 'date', daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ], easeMax : 14, easeMin : 7, group : 'Sim', hidden : false, skipHolidays : false, threshold : 100 } as const; // What: Picker Base Object. Why: Every added picker shares the same defaults. How: This holds the fields each one doesn't set itself. // What: Type Assertion Note. Why: The fields keep their literal types, such as dateMode being 'date', instead of widening to string. How: as const marks every value as a readonly literal.
 
 
 

@@ -40,9 +40,9 @@ import type { TasRcdTyp } from '../../src/core/data-model.ts'; // What: Task Rec
  * until it's done; weekly on its weekdays every N weeks counted in rolling
  * 7-day blocks from its anchor; every N days from its anchor; monthly on its
  * day or nth weekday every N months; yearly in its month on its day or nth
- * weekday every N years. An every-1 schedule ignores its anchor entirely. A
- * due reminder is shown unless it's hidden, skipped until a later day, or
- * excluded by its class's weekend or holiday option.
+ * weekday every N years. A weekly, monthly, or yearly every-1 schedule
+ * ignores its anchor. A due reminder is shown unless it's hidden, skipped
+ * until a later day, or excluded by its class's weekend or holiday option.
  *
  * Sections:
  *  - Helpers
@@ -56,7 +56,35 @@ import type { TasRcdTyp } from '../../src/core/data-model.ts'; // What: Task Rec
 
 // #region Helpers
 
+// #region eveNthFun
+
+/**
+ * eveNthFun = Every Nth Function
+ *
+ * @summary
+ * Whether a unit count from an anchor lands on an every-N schedule. An
+ * interval of 1 or less always lands, whatever the count, and any larger
+ * interval lands only on a count that isn't negative and divides evenly by
+ * it.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param intValNum - Interval Value Number: The N of every N units.
+ * @param uniCouNum - Unit Count Number: The weeks, months, or years since the
+ *                    anchor, negative before it.
+ *
+ * @returns Whether the unit lands on the schedule.
+ *
+ * @example
+ * ```ts
+ * eveNthFun(2, 4) // => true
+ * ```
+ *
+*/
+
 const eveNthFun = ( intValNum : number, uniCouNum : number ) : boolean => intValNum <= 1 || ( uniCouNum >= 0 && uniCouNum % intValNum === 0 ); // What: Every Nth Function. Why: Every-N schedules land on every Nth week, month, or year from the anchor. How: This passes every unit when N is 1, else only non-negative multiples of N.
+
+// #endregion eveNthFun
 
 
 
@@ -92,7 +120,7 @@ const remDueFun = ( tasRcdObj : TasRcdTyp, dayIsoStr : string ) : boolean => { /
 
 	const [ yeaValNum, monValNum, dayValNum ] = parIsoFun( dayIsoStr ); // What: Year Value Number. Why: Monthly and yearly rules read the date's parts. How: This splits the date and keeps the year. // What: Month Value Number. Why: Monthly rules read the month. How: This keeps the month. // What: Day Value Number. Why: Monthly rules compare the day. How: This keeps the day.
 
-	const intValNum = Math.max( 1, tasRcdObj.interval || 1 );                     // What: Interval Value Number. Why: Every repeat can skip units. How: This reads N, at least 1.
+	const intValNum = Math.max( 1, tasRcdObj.interval || 1 );                     // What: Interval Value Number. Why: A recurring repeat can skip units. How: This reads N, at least 1.
 	const ancDayStr = ( tasRcdObj.anchor || tasRcdObj.createdAt ).slice( 0, 10 ); // What: Anchor Day String. Why: Every-N counts start from the anchor. How: This reads the anchor, falling back to the creation date.
 	const [ ancYeaNum, ancMonNum ] = parIsoFun( ancDayStr );                      // What: Anchor Year Number. Why: Yearly counts are in whole years. How: This splits the anchor and keeps its year. // What: Anchor Month Number. Why: Monthly counts are in whole months. How: This keeps its month.
 	const nthModBoo = tasRcdObj.dateMode === 'nthWeekday';                        // What: Nth Mode Boolean. Why: Monthly and yearly reminders can fall on an nth weekday. How: This reads the date mode.
@@ -207,9 +235,38 @@ const remVisFun = ( tasRcdObj : TasRcdTyp, staAppObj : StaAppTyp, dayIsoStr : st
 
 
 
+// #region tdmDayFun
+
+/**
+ * tdmDayFun = Target-Day-Month Day Function
+ *
+ * @summary
+ * The day of a month a monthly or yearly picker's anchor falls on: the
+ * month's nth weekday in nth-weekday mode, else the anchor day clamped to the
+ * month's length.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param picRcdObj - Picker Record Object: The monthly or yearly picker.
+ * @param yeaValNum - Year Value Number: The year of the month.
+ * @param monValNum - Month Value Number: The month, from 1 to 12.
+ * @param fieNamStr - Field Name String: The anchor field to read, anchorDay
+ *                    for a yearly picker or anchorDom for a monthly one.
+ *
+ * @returns The anchor's day of the month.
+ *
+ * @example
+ * ```ts
+ * tdmDayFun(monthlyPicker, 2026, 2, 'anchorDom') // => 28 for an anchor of 31
+ * ```
+ *
+*/
+
 const tdmDayFun = ( picRcdObj : PicRcdTyp, yeaValNum : number, monValNum : number, fieNamStr : 'anchorDay' | 'anchorDom' ) : number => ( picRcdObj.dateMode === 'nthWeekday' // What: Target-Day-Month Day Function. Why: Monthly and yearly anchors are a day number or an nth weekday. How: This resolves the anchor day for a given month.
 	? nthDayFun( yeaValNum, monValNum, picRcdObj.nthOrdinal ?? 1, picRcdObj.nthWeekday ?? 0 )                                                                                // What: Nth Weekday Branch. Why: Nth-weekday mode anchors on a weekday. How: This finds that month's nth weekday.
 	: Math.min( picRcdObj[ fieNamStr ] ?? 1, dimValFun( yeaValNum, monValNum ) ) );                                                                                          // What: Date Branch. Why: A day past the month's end falls on its last day. How: This clamps the anchor day to the month.
+
+// #endregion tdmDayFun
 
 
 

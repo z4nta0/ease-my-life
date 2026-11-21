@@ -5,11 +5,10 @@
  * feedback.ts = Feedback
  *
  * @summary
- * The shared pieces of the interaction feedback probe, for a spec that
- * checks a control's hover, press, and focus: the lists of properties a look
- * is read with, and the helpers a check runs inside the page, such as the
- * one that records a look, and the one that turns two records of a look into
- * problems. A spec collects and drives its own elements.
+ * The shared pieces of the interaction feedback probe, for a spec that checks
+ * a control's hover, press, and focus: the lists of properties a look is read
+ * with, and the helpers that record a look and compare two records of it. A
+ * spec collects and drives its own elements.
  * Adapted from TechGeek.support's own.
  *
  * Sections:
@@ -138,7 +137,7 @@ async function aniFinFun ( eleCurEle : Element ) : Promise< void > {
 		const durValNum = Number( effCurObj.getComputedTiming().activeDuration ); // What: Duration Value Number. Why: An animation with no length eases nothing. How: This reads how long the animation runs, in milliseconds.
 
 
-		for ( const keyNamStr of effCurObj.getKeyframes().flatMap( ( keyCurObj ) => Object.keys( keyCurObj ) ) ) proDurObj[ `${ effCurObj.pseudoElement || '' }|${ keyNamStr }` ] = durValNum; // What: Keyframe Name Loop. Why: Each property a keyframe sets is one the animation moves. How: This records each under its pseudo-element and camel case name.
+		for ( const keyNamStr of effCurObj.getKeyframes().flatMap( ( keyCurObj ) => Object.keys( keyCurObj ) ) ) proDurObj[ `${ effCurObj.pseudoElement || '' }|${ keyNamStr }` ] = durValNum; // What: Keyframe Name Loop. Why: Each key a keyframe holds, its animated properties among them, is recorded as moved by the animation. How: This records each under its pseudo-element and camel case name.
 
 
 
@@ -156,7 +155,7 @@ async function aniFinFun ( eleCurEle : Element ) : Promise< void > {
 	window.__aniProMap = aniProMap; // What: Animation Map Assignment. Why: The snapshot runs in its own call, so it can only read what the page holds. How: This hands the map to the window, replacing the last settle's.
 
 
-	await Promise.all( finAniArr.map( ( aniCurObj ) => aniCurObj.finished.catch( () => undefined ) ) ); // What: Animation Finish Wait. Why: The look is read only once every entrance and transition has ended. How: This waits on each one's finished promise, treating one cancelled midway, such as a transition a new one replaced, as ended too, since its promise rejects rather than resolves.
+	await Promise.all( finAniArr.map( ( aniCurObj ) => aniCurObj.finished.catch( () => undefined ) ) ); // What: Animation Finish Wait. Why: The look is read only once every finite entrance and transition has ended. How: This waits on each one's finished promise, treating one cancelled midway, such as a transition a new one replaced, as ended too, since its promise rejects rather than resolves.
 
 	// #endregion Animation Handoff
 

@@ -39,7 +39,7 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The name and k
 
 const GLY_DEC_REG = /[←↑→↓·•]/;                             // What: Glyph Decorative Regular Expression. Why: A decorative glyph inside a name is read aloud as noise, such as right arrow. How: This matches the arrows and dots an interface draws as decoration.
 const TAB_HIN_REG = /\(opens (?:[^()"]+ )?in a new tab\)"/; // What: Tab Hint Regular Expression. Why: A link that opens a new tab has to say so at the end of its announced name. How: This matches the whole note, "(opens in a new tab)" or one naming where it goes, followed by the closing quote of the name.
-const TAB_MAX_NUM = 300;                                    // What: Tab Maximum Number. Why: A keyboard trap would otherwise keep the walk going forever. How: This caps the walk at far more Tab presses than the busiest state's roughly 140 stops.
+const TAB_MAX_NUM = 300;                                    // What: Tab Maximum Number. Why: A keyboard trap would otherwise keep the walk going forever. How: This caps the walk at far more Tab presses than any one state has stops.
 
 // #endregion Constants
 
@@ -60,8 +60,7 @@ const TAB_MAX_NUM = 300;                                    // What: Tab Maximum
  * or without saying so at the end of its name. Elements hidden from assistive
  * technology don't appear in the tree, so decorative icons hidden from it are
  * never counted. A tree with no link or button at all is a problem too, since
- * every page it reads shows at least one, such as the tab bar's buttons or a
- * legal page's skip link.
+ * every page it reads shows at least one, such as the tab bar's buttons.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -135,7 +134,7 @@ async function namProFun ( curPagObj : Page ) : Promise< string[] > {
 
 
 
-	return proLisArr; // What: Problem List Return. Why: The names test fails on any recorded problem. How: This hands back every badly named control found.
+	return proLisArr; // What: Problem List Return. Why: The recorded problems are the check's result. How: This hands back every problem found.
 
 
 }
@@ -152,11 +151,9 @@ async function namProFun ( curPagObj : Page ) : Promise< string[] > {
  * @summary
  * Runs inside the page and resolves once the page has stopped scrolling,
  * meaning its scroll position hasn't changed for 15 frames in a row (about a
- * quarter of a second), or after 2 seconds at most. WebKit scrolls a focused
- * text field into view a few frames after focusing it rather than at once,
- * so measuring a stop straight after the Tab press would find it still off
- * screen. Passed to Playwright's evaluate, so it can't read anything from
- * this file.
+ * quarter of a second), or after 2 seconds at most. A stop is measured only
+ * once the page has stopped scrolling, so its position is where it ends up.
+ * Passed to Playwright's evaluate, so it can't read anything from this file.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -406,7 +403,7 @@ function stoInfFun () : StoInfTyp | null {
 
 
 
-	return { // What: Stop Information Return. Why: The walk judges each stop outside the page. How: This hands back the stop's order, coverage, description, indicator, repeats, and visibility.
+	return { // What: Stop Information Return. Why: The walk judges each stop outside the page. How: This hands back the stop's order, coverage, description, first-stop check, indicator, repeats, and visibility.
 
 
 		befBoo : befStoBoo,                                                                     // What: Before Boolean. Why: Focus should move forward through the page. How: This reads whether the stop comes earlier in the document than the last one.
@@ -593,11 +590,11 @@ async function keyProFun ( curPagObj : Page, engNamStr : string, popSelStr : str
 
 		await curPagObj.keyboard.press( tabCouNum === 0 && staFocBoo ? `Shift+${ tabKeyStr }` : tabKeyStr ); // What: Tab Press Call. Why: Each pass moves focus to the next stop. How: This presses the engine's Tab key, or on a focused start's first pass, Shift with it, landing back on the control the action left focused.
 
-		await curPagObj.evaluate( scrSetFun ); // What: Scroll Settled Wait. Why: Some engines scroll a focused field into view a few frames late. How: This waits until the page has stopped scrolling.
+		await curPagObj.evaluate( scrSetFun ); // What: Scroll Settled Wait. Why: A stop is measured only once the page has stopped scrolling. How: This waits until the page has stopped scrolling.
 
 
 		const stoInfObj = await curPagObj.evaluate( stoInfFun );              // What: Stop Information Object. Why: The stop is described and measured inside the page. How: This runs stoInfFun there.
-		const walEndBoo = !stoInfObj || stoInfObj.firBoo || stoInfObj.samBoo; // What: Walk Ended Boolean. Why: Focus leaving the page, coming back around, or staying put means every stop was visited. How: This checks each in turn, the later two only once a stop exists, so the chain stays inline. // What: Firefox Walk End Note. Why: Firefox moves focus out to its own interface after the last stop but still reports that stop as focused. How: Focus staying on the same stop after a press is read as the walk leaving the page.
+		const walEndBoo = !stoInfObj || stoInfObj.firBoo || stoInfObj.samBoo; // What: Walk Ended Boolean. Why: Focus leaving the page, coming back around, or staying put means the walk is over. How: This checks each in turn, the later two only once a stop exists, so the chain stays inline. // What: Firefox Walk End Note. Why: Firefox moves focus out to its own interface after the last stop but still reports that stop as focused. How: Focus staying on the same stop after a press is read as the walk leaving the page.
 
 
 		if ( walEndBoo && !tabCouNum ) return [ ...proLisArr, 'the Tab walk reached no stop' ]; // What: Empty Walk Guard. Why: A walk that ends before its first stop has checked nothing. How: This returns the problems with one more, ending the walk.
@@ -635,7 +632,7 @@ async function keyProFun ( curPagObj : Page, engNamStr : string, popSelStr : str
 
 
 
-	return proLisArr; // What: Problem List Return. Why: The keyboard test fails on any recorded problem. How: This hands back every problem the walk found.
+	return proLisArr; // What: Problem List Return. Why: The recorded problems are the check's result. How: This hands back every problem the walk found.
 
 
 }

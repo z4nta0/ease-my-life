@@ -6,7 +6,7 @@
 import { dimValFun } from './dates.ts'; // What: Days-In-Month Value Function. Why: The last Monday of May depends on May's length. How: This reads a month's day count.
 import { dowValFun } from './dates.ts'; // What: Day-Of-Week Value Function. Why: Weekend shifts and last-weekday rules read weekdays. How: This reads a date's weekday.
 import { isoParFun } from './dates.ts'; // What: ISO Parts Function. Why: Each rule produces a year, month, and day. How: This writes them as YYYY-MM-DD.
-import { nthDayFun } from './dates.ts'; // What: Nth Day Function. Why: Most holidays are the nth weekday of a month. How: This finds that day.
+import { nthDayFun } from './dates.ts'; // What: Nth Day Function. Why: Several holidays are the nth weekday of a month. How: This finds that day.
 
 
 import type { HolStaTyp } from '../../src/core/data-model.ts'; // What: Holiday State Type. Why: The rules read the saved holiday settings. How: This types holSetFun's settings parameter.
@@ -95,7 +95,8 @@ const NTH_HOL_ARR = [ // What: Nth Holiday Array. Why: These holidays are an nth
  * @param holStaObj - Holiday State Object: The saved holiday settings.
  * @param yeaValNum - Year Value Number: The year to list.
  *
- * @returns The set of holiday dates that touch the year.
+ * @returns The set of holiday dates for the year and its neighbors, which
+ *          holds the year's own dates and those observed into it.
  * @see {@link holDatSet}
  *
  * @example

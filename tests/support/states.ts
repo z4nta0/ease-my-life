@@ -92,7 +92,7 @@ const EXT_STA_ARR : StaRcdTyp[] = [ // What: Extra State Array. Why: An editor o
 		tabStr : 'today',
 		widNum : 375,
 
-		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="todCarArt"] [aria-label="Edit"]' ).first().click(); }
+		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="todCarArt"] [aria-label="Edit"]' ).first().click(); } // What: Editor Action Function. Why: The state shows an item's editor open. How: This presses the Edit button on Today's first card.
 
 
 	},
@@ -134,7 +134,7 @@ const EXT_STA_ARR : StaRcdTyp[] = [ // What: Extra State Array. Why: An editor o
 		tabStr : 'picker',
 		widNum : 1280,
 
-		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="picAddBut"]' ).first().click(); }
+		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="picAddBut"]' ).first().click(); } // What: Form Action Function. Why: The state shows the new picker form open. How: This presses the first Add button.
 
 
 	},
@@ -266,7 +266,7 @@ const REA_STA_ARR : StaRcdTyp[] = [ // What: Reachable State Array. Why: A pop-u
 		tabStr : 'settings',
 		widNum : 1280,
 
-		actFun : async ( curPagObj ) => { await curPagObj.getByRole( 'button', { exact : true, name : 'Contact Support' } ).click(); }
+		actFun : async ( curPagObj ) => { await curPagObj.getByRole( 'button', { exact : true, name : 'Contact Support' } ).click(); } // What: Support Form Action Function. Why: The state shows the support form open. How: This presses the Contact Support button.
 
 
 	}
@@ -284,8 +284,8 @@ const REA_STA_ARR : StaRcdTyp[] = [ // What: Reachable State Array. Why: A pop-u
  * STA_RCD_ARR = State Record Array
  *
  * @summary
- * Every state the checks visit: each tab on the real-data backup at a phone
- * width (375px) and a desktop width (1,280px), help mode turned on over
+ * The shared states the checks visit: each tab on the real-data backup at a
+ * phone width (375px) and a desktop width (1,280px), help mode turned on over
  * Today, the Privacy Policy panel open over Settings, and the welcome modal a
  * fresh install opens with. Every row shares the {@link StaRcdTyp} shape, so
  * its fields carry no comments of their own:
@@ -311,7 +311,7 @@ const REA_STA_ARR : StaRcdTyp[] = [ // What: Reachable State Array. Why: A pop-u
  *
 */
 
-const STA_RCD_ARR : StaRcdTyp[] = [ // What: State Record Array. Why: Every check walks the same list of states, so a new state is added in one place. How: Each row names a state, its tab, its viewport, and whether it loads the backup, and the opened states add an action.
+const STA_RCD_ARR : StaRcdTyp[] = [ // What: State Record Array. Why: The checks share this list of the plain tabs and a few opened looks. How: Each row names a state, its tab, its viewport, and whether it loads the backup, and the opened states add an action.
 
 
 	{ fixBoo : true,  heiNum : 800, ideStr : 'today-desktop',    tabStr : 'today',    widNum : 1280 }, // What: Today Desktop State. Why: The day's list is the app's main screen. How: This opens Today at 1,280px.
@@ -320,9 +320,9 @@ const STA_RCD_ARR : StaRcdTyp[] = [ // What: State Record Array. Why: Every chec
 	{ fixBoo : true,  heiNum : 812, ideStr : 'pickers-phone',    tabStr : 'picker',   widNum : 375  }, // What: Pickers Phone State. Why: The picker rails scroll sideways on a phone. How: This opens Pickers at 375px.
 	{ fixBoo : true,  heiNum : 800, ideStr : 'stats-desktop',    tabStr : 'stats',    widNum : 1280 }, // What: Stats Desktop State. Why: The charts and tables carry the most text and color. How: This opens Stats at 1,280px.
 	{ fixBoo : true,  heiNum : 812, ideStr : 'stats-phone',      tabStr : 'stats',    widNum : 375  }, // What: Stats Phone State. Why: The tables reflow on a phone. How: This opens Stats at 375px.
-	{ fixBoo : true,  heiNum : 800, ideStr : 'data-desktop',     tabStr : 'data',     widNum : 1280 }, // What: Data Desktop State. Why: Every record is edited here. How: This opens Data at 1,280px.
+	{ fixBoo : true,  heiNum : 800, ideStr : 'data-desktop',     tabStr : 'data',     widNum : 1280 }, // What: Data Desktop State. Why: The pickers, items, and reminders are edited here. How: This opens Data at 1,280px.
 	{ fixBoo : true,  heiNum : 812, ideStr : 'data-phone',       tabStr : 'data',     widNum : 375  }, // What: Data Phone State. Why: The section cards stack on a phone. How: This opens Data at 375px.
-	{ fixBoo : true,  heiNum : 800, ideStr : 'settings-desktop', tabStr : 'settings', widNum : 1280 }, // What: Settings Desktop State. Why: Every setting and the support form live here. How: This opens Settings at 1,280px.
+	{ fixBoo : true,  heiNum : 800, ideStr : 'settings-desktop', tabStr : 'settings', widNum : 1280 }, // What: Settings Desktop State. Why: The settings and the support form live here. How: This opens Settings at 1,280px.
 	{ fixBoo : true,  heiNum : 812, ideStr : 'settings-phone',   tabStr : 'settings', widNum : 375  }, // What: Settings Phone State. Why: The section rail scrolls sideways on a phone. How: This opens Settings at 375px.
 	{ fixBoo : false, heiNum : 812, ideStr : 'welcome-phone',    tabStr : 'today',    widNum : 375  }, // What: Welcome Phone State. Why: A first visit opens with the welcome modal. How: This opens an empty install at 375px.
 
@@ -376,14 +376,14 @@ const ALL_STA_ARR = [ ...STA_RCD_ARR, ...EXT_STA_ARR, ...REA_STA_ARR ]; // What:
  *
  * @summary
  * Opens one state on a page and waits until it's settled: sizes the viewport,
- * loads the real-data backup on the suites' fixed day (or an empty install
- * on that day), switches to the state's tab and moves the Tab starting point
- * back to the top of the page, waits for the web fonts, runs the state's
- * action if it has one, then waits until no finite animation is still
- * running, so a check never measures a card halfway through its entrance. An
- * endless animation (a looping boot or badge effect) can't
- * settle, so it's left out of the wait, and the wait fails the check after 5
- * seconds rather than hanging.
+ * loads the real-data backup on the suites' fixed day, switches to the state's
+ * tab, and moves the Tab starting point back to the top of the page (or loads
+ * an empty install on that day and waits for its welcome dialog), waits for
+ * the web fonts, runs the state's action if it has one, then waits until no
+ * finite animation is still running, so a check never measures a card halfway
+ * through its entrance. An endless animation (a looping boot or badge effect)
+ * can't settle, so it's left out of the wait, and the wait fails the check
+ * after 5 seconds rather than hanging.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -451,11 +451,11 @@ async function opeStaFun ( curPagObj : Page, staRcdObj : StaRcdTyp ) : Promise< 
 
 	// #region Settling Waits
 
-	await curPagObj.evaluate( () => document.fonts.ready.then( () => undefined ) ); // What: Fonts Ready Wait. Why: Text measured before its web font loads would have the wrong size and wrapping. How: This waits until every font face has loaded.
+	await curPagObj.evaluate( () => document.fonts.ready.then( () => undefined ) ); // What: Fonts Ready Wait. Why: Text measured before its web font loads would have the wrong size and wrapping. How: This waits until the page's fonts have finished loading.
 
 
 
-	await curPagObj.locator( '[data-element-name-hook~="booSplDiv"]' ).waitFor( { state : 'detached' } ); // What: Boot Splash Wait. Why: The splash fades and leaves about half a second after the app mounts, and until then it covers whatever is under it. How: This waits until it's gone from the page.
+	await curPagObj.locator( '[data-element-name-hook~="booSplDiv"]' ).waitFor( { state : 'detached' } ); // What: Boot Splash Wait. Why: The splash fades out after the app mounts, and until it leaves it covers whatever is under it. How: This waits until it's gone from the page.
 
 
 
