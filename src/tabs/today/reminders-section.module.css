@@ -19,7 +19,7 @@
  * the quick-add close are this file's own module classes, while the ripple
  * celebration's cross-file exhale keys off data-card-exhale-active. A section
  * that isn't first in its column draws the divider the old sibling selector
- * drew, since every sibling in that column is a group section.
+ * drew, since the siblings in that column are group sections.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -39,7 +39,7 @@
 
 
 }
-.todGroSec:not( :first-child ) { /* What: Following Today Group Section. Why: A section after another one needs a divider above it. How: This draws a hairline and pads below it, since every sibling in the group column is a group section, standing in for the old sibling selector that can't reach across modules. */
+.todGroSec:not( :first-child ) { /* What: Following Today Group Section. Why: A section after another one needs a divider above it. How: This draws a hairline and pads below it, since the siblings in the group column are group sections, standing in for the old sibling selector that can't reach across modules. */
 
 
 	border-top  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -111,7 +111,7 @@
 	height          : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content : center;
 	margin-left     : calc( var( --spa-hor-m05 ) * -1 );   /* Spacing Horizontal Base Minus 5 ~= 3.571px */
-	touch-action    : none;                                /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
+	touch-action    : none;                                /* What: Pointer-Owned Gesture. Why: The drag controller needs the pointer moves, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
 	transition      : color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width           : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
@@ -126,7 +126,7 @@
 
 }
 .groGriSpa:active,
-[data-item-drag-active] .groGriSpa { /* What: Pressed Group Grip Span. Why: A press on the handle starts a drag, and should register before anything else happens. How: This switches to the grabbing cursor and presses the grip in slightly, keyed on the drag state as well as the press, since Firefox drops :active once the drag cancels pointerdown's default. */
+[data-item-drag-active] .groGriSpa { /* What: Pressed Group Grip Span. Why: A press on the handle starts a drag, and should register before anything else happens. How: This switches to the grabbing cursor and presses the grip in slightly, keyed on the drag state as well as the press. */
 
 
 	cursor    : grabbing;
@@ -202,7 +202,7 @@
 
 /* #region heaRigDiv */
 
-.heaRigDiv { /* What: Header Right Div. Why: The progress dashes and the Add button sit together at the header's right end. How: This lines them up in a centered row, so the header stays a two-child row like every other group's. */
+.heaRigDiv { /* What: Header Right Div. Why: The progress dashes and the Add button sit together at the header's right end. How: This lines them up in a centered row, keeping the header a two-child row. */
 
 
 	align-items : center;
@@ -254,7 +254,7 @@
 .proDasIta.proDasIta--fresh::after { /* What: Progress Dash Italic Fresh Sweep. Why: The fill should sweep in from the left. How: This scales an accent overlay from nothing to full width with the shared sweep animation. */
 
 
-	animation        : global( dashFreshSweep ) var( --dur-ani-p04 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global dashFreshSweep Keyframes. Why: The dashFreshSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation        : global( dashFreshSweep ) var( --dur-ani-p04 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global dashFreshSweep Keyframes. Why: The dashFreshSweep keyframes are shared with the group headers' progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background       : var( --acc-mai-col );                                                        /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius    : inherit;
 	content          : '';
@@ -404,7 +404,7 @@
 .remAddDiv { /* What: Reminder Add Div. Why: The add form drops into the top of the list and eases away when closed. How: This fades it in on mount, and plays its close while it carries the closing class. */
 
 
-	animation : global( editorOpenFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ); /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( editorOpenFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ); /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with the other inline editors, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -461,7 +461,7 @@
 
 
 	align-items : center;
-	animation   : global( editorOpenFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ); /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation   : global( editorOpenFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ); /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with the other inline editors, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display     : flex;
 	gap         : var( --spa-hor-m02 );                                                 /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 ) var( --spa-ver-m02 );       /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 7 ~= 2.035px, Spacing Vertical Base Minus 2 ~= 8.304px */
@@ -546,7 +546,7 @@
 	--edi-foo-mar : 0;                                               /* What: Footer Margin. Why: The footer sits flush in the card. How: EdiFooCom reads this for its own margin. */
 	--edi-foo-pad : var( --spa-ver-bas ) var( --spa-hor-bas ) 0;     /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */ /* What: Footer Padding. Why: The footer's buttons stay inset from the card's edges. How: EdiFooCom reads this for its own padding. */
 
-	animation     : global( editorOpenFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ); /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation     : global( editorOpenFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ); /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with the other inline editors, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var( --bac-sun-col );                                                 /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
 	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );                      /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : var( --rad-bor-med );                                                 /* Radius Border Medium = 11px */
@@ -611,7 +611,7 @@
 
 
 }
-.todCarArt[data-card-exhale-active] { /* What: Exhaling Today Card Article. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exh-car-del tab-today.tsx sets on each card. */
+.todCarArt[data-card-exhale-active] { /* What: Exhaling Today Card Article. Why: The ripple celebration pulses a card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exh-car-del tab-today.tsx sets on each card. */
 
 
 	animation : global( cardCelebrateSwell ) var( --exh-car-dur ) var( --mot-dec-eas ) var( --exh-car-del, 0ms ) both; /* Exhale Card Duration ~= 1130.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Exhale Card Delay, set inline per card by the ripple cascade */ /* What: Global cardCelebrateSwell Keyframes. Why: The cardCelebrateSwell keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -655,7 +655,7 @@
 
 
 }
-.todCarArt[data-card-edit-active] { /* What: Editing Today Card Article. Why: While its editor is open, clicking the card doesn't toggle it. How: This resets the cursor. */
+.todCarArt[data-card-edit-active] { /* What: Editing Today Card Article. Why: While its editor is open, the card shouldn't look clickable. How: This resets the cursor. */
 
 
 	cursor : default;
@@ -819,7 +819,7 @@
 
 /* #region carCheBut */
 
-.carCheBut { /* What: Card Check Button. Why: The card's primary action is a real button styled as a checkbox. How: This strips the button chrome down to a small rounded box that fades between states, and eases its focus ring in, and eases its press and focus ring. */
+.carCheBut { /* What: Card Check Button. Why: The card's primary action is a real button styled as a checkbox. How: This strips the button chrome down to a small rounded box that fades between states, and eases its press and focus ring. */
 
 
 	-webkit-appearance : none;
@@ -1169,7 +1169,7 @@
 
 
 	align-items     : center;
-	animation       : global( editorOpenFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ); /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global( editorOpenFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ); /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with the other inline editors, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background      : var( --bac-sun-col );                                                 /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
 	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                      /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius   : var( --rad-bor-med );                                                 /* Radius Border Medium = 11px */

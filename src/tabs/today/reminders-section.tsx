@@ -4,32 +4,32 @@
 // #region Imports
 
 import cssModObj from './reminders-section.module.css'; // What: CSS Module Object. Why: The Reminders section's header, quick-add form, and cards are styled from their own module. How: This maps each class name in reminders-section.module.css to its hashed module class.
-import React     from 'react';                          // What: React. Why: Every component in this file is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                          // What: React. Why: The components use React's own APIs directly (hooks, Fragment, and types). How: This is used directly (React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
 import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: The quick-add form and each reminder card's own actions need consistently-styled buttons. How: This is rendered throughout RemCarCom and RemSecCom.
-import { ColDisCom    } from '../../ui/collapse.tsx';               // What: Collapse Disclosure Component. Why: The Reminders log, the quick-add form, and each inline editor need to animate open and closed instead of snapping. How: This wraps each of those in RemSecCom and InlEdiCom, driven by its own open state.
+import { ColDisCom    } from '../../ui/collapse.tsx';               // What: Collapse Disclosure Component. Why: The Reminders log, each inline editor, and each skip confirm need to animate open and closed instead of snapping. How: This wraps each of those in RemSecCom, driven by its own open state.
 import { durMilFun    } from '../../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { EdiFooCom    } from '../../ui/editor-footer.tsx';          // What: Editor Footer Component. Why: Every reminder editor ends with the same Delete/Cancel/Save row. How: This is rendered at the bottom of each reminder editor.
+import { EdiFooCom    } from '../../ui/editor-footer.tsx';          // What: Editor Footer Component. Why: A saved reminder's inline editor ends with the shared Delete/Cancel/Save row. How: This is rendered at the bottom of InlEdiCom.
 import { emlTouObj    } from '../../state/tour-bus.ts';             // What: Ease-My-Life Tour Object. Why: A reminder mini-tour publishes prefill data and reads the live draft's own repeat kind through this shared bus. How: This is read via .get() in staAddFun and written to via .set() below.
-import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: Every reminder card and button needs a recognizable glyph. How: This is rendered throughout RemCarCom and RemSecCom.
+import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: The reminder cards' and header's icon buttons need recognizable glyphs. How: This is rendered throughout RemCarCom and RemSecCom.
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add button in RemSecCom.
 import { isoDayFun    } from '../../utils/date.ts';                 // What: ISO Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
-import { LogChiCom    } from './day-log.tsx';                       // What: Log Chip Component. Why: The Reminders section's own header needs the same show-today's-log toggle chip as every other group. How: This is rendered in RemSecCom's header, gated on onTogLogFun being supplied.
+import { LogChiCom    } from './day-log.tsx';                       // What: Log Chip Component. Why: The Reminders section's own header needs a show-today's-log toggle chip. How: This is rendered in RemSecCom's header, gated on onTogLogFun being supplied.
 import { nexDatFun    } from '../../utils/date.ts';                 // What: Next Date Function. Why: A reminder's next occurrence reads as a full prose date. How: This is called with the date and whether the year must always show.
-import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: The quick-add entry point must stay disabled while any onboarding tutorial is still in progress, and a tutorial card needs its own launch state. How: This is read via its own tutProFun and entLooFun helpers.
+import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: The quick-add entry point must stay disabled while an onboarding tutorial other than a reminder tour is in progress, and a tutorial card needs its own launch state. How: This is read via its own tutProFun and entLooFun helpers.
 import { ONB_RCT_OBJ  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Reminder-Card-Text Object. Why: A still-hidden sample reminder's own mini-tour launcher card needs copy distinct from its real schedule summary. How: This is looked up by sample task id inside RemCarCom's own isaTutBoo branch.
 import { ONB_STI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Identifiers Array. Why: Only the Welcome Tour's own seeded sample reminders should ever render as a mini-tour launcher card. How: This is checked against a hidden task's own id inside RemSecCom's tutTasArr filter.
-import { redMotFun    } from '../../utils/motion.ts';               // What: Reduced Motion Function. Why: A user who prefers reduced motion should get an instant close, skip, or remove instead of a timed animation. How: This is checked before every staged animation in RemCarCom and RemSecCom.
+import { redMotFun    } from '../../utils/motion.ts';               // What: Reduced Motion Function. Why: A user who prefers reduced motion should get an instant close, skip, or remove instead of a timed animation. How: This is checked before each staged close, skip, or remove in RemSecCom.
 import { RemLogCom    } from './day-log.tsx';                       // What: Reminders Log Component. Why: The Reminders section's own header chip opens this exact audit panel. How: This is rendered inside RemSecCom, gated on logOpeBoo.
 import { SchEdiCom    } from '../../ui/schedule-editor.tsx';        // What: Schedule Editor Component. Why: A reminder's own repeat and schedule fields are edited with one shared editor. How: This is rendered for the add form and each open reminder.
-import { TAS_NAM_OBJ  } from '../../core/tasks.ts';                 // What: Tasks Namespace Object. Why: Every due-ness, visibility, and summary computation for Today's cards defers to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout RemCarCom and RemSecCom.
-import { useEscCanFun } from '../../ui/escape-cancel.ts';           // What: Use Escape Cancel Function. Why: The quick-add form needs Escape to discard in-progress edits the same way every other editor does. How: This is called once inside RemSecCom.
+import { TAS_NAM_OBJ  } from '../../core/tasks.ts';                 // What: Tasks Namespace Object. Why: Due-ness, visibility, and summary computations for Today's reminder cards defer to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout RemCarCom and RemSecCom.
+import { useEscCanFun } from '../../ui/escape-cancel.ts';           // What: Use Escape Cancel Function. Why: The quick-add form needs Escape to discard its in-progress edits. How: This is called once inside RemSecCom.
 import { useTasDraFun } from '../../ui/record-draft.ts';            // What: Use Task Draft Function. Why: An open reminder's name input and schedule editor share one local draft, committed only on Save. How: This is called once inside RemSecCom with the open reminder.
 
 
 import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The section and its cards change reminders through the store's actions. How: This types their actStoObj.
-import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The section reads every reminder and its logs from the app state. How: This types its staAppObj.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: The section reads its reminders and options from the app state. How: This types its staAppObj.
 import type { TasRcdTyp } from '../../core/data-model.ts'; // What: Task Record Type. Why: Each card and editor shows one reminder. How: This types the reminder and its draft.
 
 // #endregion Imports
@@ -104,7 +104,7 @@ function InlEdiCom ( { draTasObj, onCloEdiFun, onDelTasFun, onPatTasFun, onSavTa
 			className={ cssModObj.inlEdiDiv }
 
 			data-element-name-hook='inlEdiDiv'
-		>{ /* What: Inline Editor Div Element. Why: This groups the schedule editor and its own footer as one visual unit. How: This renders SchEdiCom against draTasObj, then EdiFooCom below it. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
+		>{ /* What: Inline Edit Div Element. Why: This groups the schedule editor and its own footer as one visual unit. How: This renders SchEdiCom against draTasObj, then EdiFooCom below it. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 			<SchEdiCom
@@ -230,9 +230,9 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 
 
-			if ( tutDonBoo ) onUncTutFun!( tasRcdObj.id ); // What: Done Dispatch Branch. Why: A sample whose mini-tour already finished should un-resolve it back to not-done on click. How: This calls onUncTutFun when tutDonBoo is true. // What: Non-Null Note. Why: The tutorial card is only rendered with isaTutBoo, and that call always passes onUncTutFun. How: The ! tells TypeScript the callback is set here.
+			if ( tutDonBoo ) onUncTutFun!( tasRcdObj.id ); // What: Done Dispatch Branch. Why: A sample whose mini-tour already finished should un-resolve it back to not-done on click. How: This calls onUncTutFun when tutDonBoo is true. // What: Non-Null Note. Why: The tutorial card is only rendered with isaTutBoo, which expects onUncTutFun to be set. How: The ! tells TypeScript the callback is set here.
 
-			else onPlaTutFun!( 'reminder', tasRcdObj.id ); // What: Not-Done Dispatch Branch. Why: A sample whose mini-tour hasn't finished yet should start playing it on click. How: This calls onPlaTutFun otherwise. // What: Non-Null Note. Why: The tutorial card is only rendered with isaTutBoo, and that call always passes onPlaTutFun. How: The ! tells TypeScript the callback is set here.
+			else onPlaTutFun!( 'reminder', tasRcdObj.id ); // What: Not-Done Dispatch Branch. Why: A sample whose mini-tour hasn't finished yet should start playing it on click. How: This calls onPlaTutFun otherwise. // What: Non-Null Note. Why: The tutorial card is only rendered with isaTutBoo, which expects onPlaTutFun to be set. How: The ! tells TypeScript the callback is set here.
 
 
 		};
@@ -249,7 +249,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 				data-element-name-hook='todCarArt tutCarArt remCarArt'
 
 				onClick={ onRowCliFun }
-			>{ /* What: Tutorial Article Element. Why: This is the mini-tour launcher card's own root element. How: This marks itself done via data-card-done-active once tutDonBoo, and dispatches every non-actions-area click to onRowCliFun. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
+			>{ /* What: Today Card Article Element. Why: This is the mini-tour launcher card's own root element. How: This marks itself done via data-card-done-active once tutDonBoo, and passes its clicks to onRowCliFun. Its data-element-name-hook is read by Today's drag and scroll code, help mode, and the test suites. */ }
 
 
 				{ tutDonBoo ? ( // What: Tutorial Done Check. Why: A resolved sample card's checkbox behaves differently from a pending one. How: This renders the undo-check button while tutDonBoo is true, the play-check button otherwise.
@@ -270,18 +270,18 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 							cliEveObj.stopPropagation(); // What: Row Click Isolation. Why: The card's own row click must not also fire for this control. How: This stops the click from bubbling to the article.
 
-							onUncTutFun!( tasRcdObj.id ); // What: Tutorial Undo Call. Why: This un-resolves the sample's own mini-tour. How: This calls onUncTutFun with the sample's own id. // What: Non-Null Note. Why: The tutorial card is only rendered with isaTutBoo, and that call always passes onUncTutFun. How: The ! tells TypeScript the callback is set here.
+							onUncTutFun!( tasRcdObj.id ); // What: Tutorial Undo Call. Why: This un-resolves the sample's own mini-tour. How: This calls onUncTutFun with the sample's own id. // What: Non-Null Note. Why: The tutorial card is only rendered with isaTutBoo, which expects onUncTutFun to be set. How: The ! tells TypeScript the callback is set here.
 
 
 						} }
-					>{ /* What: Undo Check Button Element. Why: A resolved sample can be un-resolved directly from its own checkbox, same as a normal completed card toggling back off. How: This calls onUncTutFun, isolated from the row's own onRowCliFun via stopPropagation. Its data-element-name-hook is read by help mode's Today catalog. */ }
+					>{ /* What: Card Check Button Element. Why: A resolved sample can be un-resolved directly from its own checkbox, same as a normal completed card toggling back off. How: This calls onUncTutFun, isolated from the row's own onRowCliFun via stopPropagation. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 						<span
 							className={ cssModObj.cheRipSpa }
 
 							aria-hidden='true'
-						/>{ /* What: Check Ripple Span Element. Why: The checkbox needs its own decorative press-ripple, same as every other checkbox in the app. How: This renders an empty, purely decorative span. */ }
+						/>{ /* What: Check Ripple Span Element. Why: The checkbox needs its own decorative press-ripple. How: This renders an empty, purely decorative span. */ }
 
 						<IcoSvgCom
 							className={ cssModObj.cheIcoSvg }
@@ -311,11 +311,11 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 							cliEveObj.stopPropagation(); // What: Row Click Isolation. Why: The card's own row click must not also fire for this control. How: This stops the click from bubbling to the article.
 
-							onPlaTutFun!( 'reminder', tasRcdObj.id ); // What: Tutorial Play Call. Why: This starts the sample's own reminder mini-tour. How: This calls onPlaTutFun with the 'reminder' tour kind and the sample's own id. // What: Non-Null Note. Why: The tutorial card is only rendered with isaTutBoo, and that call always passes onPlaTutFun. How: The ! tells TypeScript the callback is set here.
+							onPlaTutFun!( 'reminder', tasRcdObj.id ); // What: Tutorial Play Call. Why: This starts the sample's own reminder mini-tour. How: This calls onPlaTutFun with the 'reminder' tour kind and the sample's own id. // What: Non-Null Note. Why: The tutorial card is only rendered with isaTutBoo, which expects onPlaTutFun to be set. How: The ! tells TypeScript the callback is set here.
 
 
 						} }
-					>{ /* What: Play Check Button Element. Why: An unresolved sample's own checkbox instead starts the mini-tour, never marks it done directly. How: This calls onPlaTutFun, isolated from the row's own onRowCliFun via stopPropagation. Its data-element-name-hook is read by help mode's Today catalog. */ }
+					>{ /* What: Card Check Button Element. Why: An unresolved sample's own checkbox instead starts the mini-tour, never marks it done directly. How: This calls onPlaTutFun, isolated from the row's own onRowCliFun via stopPropagation. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 						<IcoSvgCom
@@ -336,12 +336,12 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 					<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: The kicker (schedule-like summary) and optional time estimate read together as one line. How: This renders the kicker span, then the optional dot/time pair. */ }
 
 
-						<span className={ cssModObj.metLabSpa }>{ texDisObj.kicStr }</span>{ /* What: Meta Picker Span Element. Why: This is the card's own kicker text, reusing the same class a real entry's picker name uses. How: This renders texDisObj's own kicStr. */ }
+						<span className={ cssModObj.metLabSpa }>{ texDisObj.kicStr }</span>{ /* What: Meta Label Span Element. Why: This is the card's own kicker text, sharing the class a due reminder's schedule summary uses. How: This renders texDisObj's own kicStr. */ }
 
 						{ texDisObj.timStr && ( // What: Time Visibility Check. Why: Not every sample card has a manually-timed estimate. How: This renders the dot/time pair only while texDisObj's own timStr is set.
 
 
-							<>{ /* What: Time Pair Fragment Element. Why: The dot separator and the time estimate show or hide together. How: This groups both spans with no wrapper element. */ }
+							<>{ /* What: Time Pair Fragment. Why: The dot separator and the time estimate show or hide together. How: This groups both spans with no wrapper element. */ }
 
 
 								<span className={ cssModObj.metDotSpa }>·</span>{ /* What: Meta Dot Span Element. Why: This visually separates the kicker from the time estimate. How: This renders a literal middle-dot character. */ }
@@ -370,7 +370,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 						className={ cssModObj.carActDiv }
 
 						data-element-name-hook='carActDiv'
-					>{ /* What: Card Actions Div Element. Why: This is the click-isolated actions area onRowCliFun already excludes. How: This wraps the single Cancel button below. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
+					>{ /* What: Card Actions Div Element. Why: This is the click-isolated actions area onRowCliFun already excludes. How: This wraps the single Cancel button below. Its data-element-name-hook is read by the row-click handlers, which ignore clicks inside it, and by help mode. */ }
 
 
 						<button
@@ -388,7 +388,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 
 							} }
-						>{ /* What: Cancel Button Element. Why: This marks the sample's own checklist entry cancelled without touching the sample itself, distinct from actually resolving it. How: This calls actStoObj.setCarFun, isolated from the row's own onRowCliFun via stopPropagation. */ }
+						>{ /* What: Action Icon Button Element. Why: This marks the sample's own checklist entry cancelled without touching the sample itself, distinct from actually resolving it. How: This calls actStoObj.setCarFun, isolated from the row's own onRowCliFun via stopPropagation. */ }
 
 
 							<IcoSvgCom
@@ -432,7 +432,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 
 
-		onTogTasFun!( tasRcdObj ); // What: Toggle Done Call. Why: Once neither exclusion zone matched, the click is a genuine row toggle. How: This calls onTogTasFun against tasRcdObj. // What: Non-Null Note. Why: The due-reminder card's only caller always passes onTogTasFun. How: The ! tells TypeScript the callback is set here.
+		onTogTasFun!( tasRcdObj ); // What: Toggle Done Call. Why: Once neither exclusion zone matched, the click is a genuine row toggle. How: This calls onTogTasFun against tasRcdObj. // What: Non-Null Note. Why: A due-reminder card is rendered with onTogTasFun set. How: The ! tells TypeScript the callback is set here.
 
 
 	};
@@ -451,7 +451,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 			onAnimationEnd={ onAniEndFun }
 			onClick={ onRowCliFun }
-		>{ /* What: Reminder Article Element. Why: This is the real reminder row's own root element, matching a picker EntCarCom's structure. How: This marks itself done/fresh/editing per the 3 booleans above, plus whatever animation class extClaStr carries. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
+		>{ /* What: Today Card Article Element. Why: This is the real reminder row's own root element, matching a picker EntCarCom's structure. How: This marks itself done, fresh, or editing from isaDonBoo, isaFreBoo, and isaOpeBoo, plus whatever animation class extClaStr carries. Its data-element-name-hook is read by Today's drag and scroll code, help mode, and the test suites. */ }
 
 
 			<button
@@ -469,11 +469,11 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 					cliEveObj.stopPropagation(); // What: Row Click Isolation. Why: The card's own row click must not also fire for this control. How: This stops the click from bubbling to the article.
 
-					onTogTasFun!( tasRcdObj ); // What: Toggle Done Call. Why: The checkbox toggles the reminder's own done state. How: This calls onTogTasFun with the task. // What: Non-Null Note. Why: The due-reminder card's only caller always passes onTogTasFun. How: The ! tells TypeScript the callback is set here.
+					onTogTasFun!( tasRcdObj ); // What: Toggle Done Call. Why: The checkbox toggles the reminder's own done state. How: This calls onTogTasFun with the task. // What: Non-Null Note. Why: A due-reminder card is rendered with onTogTasFun set. How: The ! tells TypeScript the callback is set here.
 
 
 				} }
-			>{ /* What: Check Button Element. Why: The checkbox is also independently clickable, isolated from the row's own onRowCliFun (both end up calling onTogTasFun, but the button needs its own accessible name/state). How: This toggles done via stopPropagation plus a direct onTogTasFun call. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ /* What: Card Check Button Element. Why: The checkbox is also independently clickable, isolated from the row's own onRowCliFun (both end up calling onTogTasFun, but the button needs its own accessible name/state). How: This toggles done via stopPropagation plus a direct onTogTasFun call. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 				<span
@@ -512,7 +512,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 						sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
 					/>{ /* What: Icon SVG Component. Why: This distinguishes a one-time reminder from a recurring one at a glance. How: This renders 'pin' for a 'once' repeat, otherwise 'calendar'. */ }
 
-					<span className={ cssModObj.metLabSpa }>{ TAS_NAM_OBJ.sumTasFun( tasRcdObj ) }</span>{ /* What: Meta Picker Span Element. Why: This is the row's own schedule summary, reusing the same class a real entry's picker name uses. How: This calls TAS_NAM_OBJ.sumTasFun against tasRcdObj. */ }
+					<span className={ cssModObj.metLabSpa }>{ TAS_NAM_OBJ.sumTasFun( tasRcdObj ) }</span>{ /* What: Meta Label Span Element. Why: This is the row's own schedule summary, sharing the class the launcher card's kicker uses. How: This calls TAS_NAM_OBJ.sumTasFun against tasRcdObj. */ }
 
 
 				</div>
@@ -534,10 +534,10 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 						aria-label='Reminder name'
 
-						onChange={ ( chaEveObj ) => onRenTasFun!( chaEveObj.target.value ) } // What: Non-Null Note. Why: The due-reminder card's only caller always passes onRenTasFun. How: The ! tells TypeScript the callback is set here.
+						onChange={ ( chaEveObj ) => onRenTasFun!( chaEveObj.target.value ) } // What: Non-Null Note. Why: A due-reminder card is rendered with onRenTasFun set. How: The ! tells TypeScript the callback is set here.
 						onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() } // What: Row Click Isolation. Why: Clicking into the name input must not also toggle the row done. How: This stops the click from bubbling to the card.
 						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Shortcut. Why: Pressing Enter should finish typing the name. How: This blurs the input on Enter, leaving the name in the draft until Save.
-					/> // What: Name Input Element. Why: While isaOpeBoo, the plain name div below is replaced with a live-editable input. How: This writes every change into the editor's draft through onRenTasFun, trimmed on Save, and blurs itself on Enter. Its data-element-name-hook is read by the reminder card's own row-click handler and help mode's Today catalog.
+					/> // What: Reminder Name Input Element. Why: While isaOpeBoo, the plain name div below is replaced with a live-editable input. How: This writes every change into the editor's draft through onRenTasFun, trimmed on Save, and blurs itself on Enter. Its data-element-name-hook is read by the card's row-click handler, help mode, and the test suites.
 
 
 				) : ( // What: Plain Name Branch. Why: Outside editing, the plain non-editable name div belongs here instead. How: This renders the else branch, taken while isaOpeBoo is false.
@@ -556,7 +556,7 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 				className={ cssModObj.carActDiv }
 
 				data-element-name-hook='carActDiv'
-			>{ /* What: Card Actions Div Element. Why: Skip and Edit are the row's own click-isolated actions. How: This wraps both buttons below. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
+			>{ /* What: Card Actions Div Element. Why: Skip and Edit are the row's own click-isolated actions. How: This wraps both buttons below. Its data-element-name-hook is read by the row-click handlers, which ignore clicks inside it, and by help mode. */ }
 
 
 				<button
@@ -570,11 +570,11 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 						cliEveObj.stopPropagation(); // What: Row Click Isolation. Why: The card's own row click must not also fire for this control. How: This stops the click from bubbling to the article.
 
-						onSkiTasFun!(); // What: Skip Toggle Call. Why: This opens or closes the card's own skip confirm. How: This calls onSkiTasFun. // What: Non-Null Note. Why: The due-reminder card's only caller always passes onSkiTasFun. How: The ! tells TypeScript the callback is set here.
+						onSkiTasFun!(); // What: Skip Toggle Call. Why: This opens or closes the card's own skip confirm. How: This calls onSkiTasFun. // What: Non-Null Note. Why: A due-reminder card is rendered with onSkiTasFun set. How: The ! tells TypeScript the callback is set here.
 
 
 					} }
-				>{ /* What: Skip Button Element. Why: This opens/closes this card's own skip confirm. How: This is isolated from the row's own onRowCliFun via stopPropagation. */ }
+				>{ /* What: Action Icon Button Element. Why: This opens/closes this card's own skip confirm. How: This is isolated from the row's own onRowCliFun via stopPropagation. */ }
 
 
 					<IcoSvgCom
@@ -597,11 +597,11 @@ function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBo
 
 						cliEveObj.stopPropagation(); // What: Row Click Isolation. Why: The card's own row click must not also fire for this control. How: This stops the click from bubbling to the article.
 
-						onEdiTasFun!(); // What: Edit Toggle Call. Why: This opens or closes the card's own inline editor. How: This calls onEdiTasFun. // What: Non-Null Note. Why: The due-reminder card's only caller always passes onEdiTasFun. How: The ! tells TypeScript the callback is set here.
+						onEdiTasFun!(); // What: Edit Toggle Call. Why: This opens or closes the card's own inline editor. How: This calls onEdiTasFun. // What: Non-Null Note. Why: A due-reminder card is rendered with onEdiTasFun set. How: The ! tells TypeScript the callback is set here.
 
 
 					} }
-				>{ /* What: Edit Button Element. Why: This opens/closes this card's own inline schedule editor. How: This is isolated from the row's own onRowCliFun via stopPropagation. */ }
+				>{ /* What: Action Icon Button Element. Why: This opens/closes this card's own inline schedule editor. How: This is isolated from the row's own onRowCliFun via stopPropagation. */ }
 
 
 					<IcoSvgCom
@@ -638,8 +638,8 @@ type RscProTyp = { actEdiStr : string | null, actStoObj : ActStoTyp, ariTasSet :
  * @summary
  * Today's Reminders section: the list of due reminders with their inline
  * editors and skip confirms, the mini-tour launcher cards for still-hidden
- * sample reminders, and the quick-add form, under a header matching every
- * other Today group. Rendered by tab-today.tsx.
+ * sample reminders, and the quick-add form, under a group header. Rendered
+ * by tab-today.tsx.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -691,7 +691,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 	// #region Due And Tutorial Lists
 
-	const ancDatObj = TAS_NAM_OBJ.ancDatFun( staAppObj.today && staAppObj.today.generatedAt );                         // What: Anchor Date Object. Why: A reminder due on a new day shouldn't appear until the generator actually runs on/after that day, exactly like picker entries. How: This calls TAS_NAM_OBJ.ancDatFun against staAppObj's own last generation timestamp.
+	const ancDatObj = TAS_NAM_OBJ.ancDatFun( staAppObj.today && staAppObj.today.generatedAt );                         // What: Anchor Date Object. Why: A reminder due on a new day shouldn't appear until the generator actually runs on or after that day. How: This calls TAS_NAM_OBJ.ancDatFun against staAppObj's own last generation timestamp.
 	const dueTasArr = TAS_NAM_OBJ.visTodFun( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, ancDatObj ); // What: Due Task Array. Why: This is the real, non-sample reminder list this section actually renders. How: This calls TAS_NAM_OBJ.visTodFun against staAppObj's own tasks/reminderOpts/holidays, anchored to ancDatObj.
 
 
@@ -745,7 +745,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 	const [ insIdeStr, setInsIdeStr ] = React.useState< string | null >( null ); // What: Insert Identifier String And Setter. Why: A newly-added card needs to play its own entrance animation exactly once. How: This is set to the new card's own id right when commit finishes, then cleared on that card's own animation end.
 	const [ rmvIdeStr, setRmvIdeStr ] = React.useState< string | null >( null ); // What: Removing Identifier String And Setter. Why: A card slated for delete/skip needs to play its own collapse-out animation before the underlying task is actually removed. How: This is set right before that animation starts, then cleared once it ends.
 	const [ skiIdeStr, setSkiIdeStr ] = React.useState< string | null >( null ); // What: Skip Identifier String And Setter. Why: A card's own skip confirm is its own independent open/closed slot, separate from actEdiStr. How: This holds whichever task's own skip confirm is currently open.
-	const [ jusCheStr, setJusCheStr ] = React.useState< string | null >( null ); // What: Just Checked String And Setter. Why: A reminder that was JUST checked needs a brief "fresh" flourish, distinct from one that was already done. How: This is set on every fresh check and cleared 700ms later.
+	const [ jusCheStr, setJusCheStr ] = React.useState< string | null >( null ); // What: Just Checked String And Setter. Why: A reminder that was JUST checked needs a brief "fresh" flourish, distinct from one that was already done. How: This is set on each fresh check and cleared after the p05 duration step.
 
 	const rmvActRef = React.useRef< ( () => void ) | null >( null ); // What: Remove Action Reference. Why: Delete and Skip share the same collapse-out animation, but each needs its own action to run once it finishes. How: This holds whichever thunk should run on the removing card's own animation end.
 
@@ -756,7 +756,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 		const wasDonBoo = TAS_NAM_OBJ.isaDonFun( curTasObj, ancDatObj ); // What: Was Done Boolean. Why: The fresh flourish must never replay for a reminder that was already checked before this toggle. How: This reads curTasObj's own done state before the toggle below applies.
 
 
-		actStoObj.togTasFun( curTasObj.id ); // What: Toggle Done Call. Why: This is the actual state change every branch below reacts to. How: This calls actStoObj.togTasFun against curTasObj's own id.
+		actStoObj.togTasFun( curTasObj.id ); // What: Toggle Done Call. Why: This is the actual state change the branch below reacts to. How: This calls actStoObj.togTasFun against curTasObj's own id.
 
 		if ( !wasDonBoo ) { // What: Fresh Flourish Guard. Why: Only a genuine 0-to-1 transition should play the flourish. How: This stages and later clears jusCheStr only while wasDonBoo was false.
 
@@ -777,7 +777,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 	// #region Add Announcement
 
-	const [ addMesObj, setAddMesObj ] = React.useState< { okaBoo : boolean, texStr : string } | null >( null ); // What: Added Message Object And Setter. Why: After a successful add, silence is indistinguishable from a failed save whenever the new reminder won't actually appear today, so this needs an explicit announcement. How: This is populated by annAddFun below and auto-cleared by the effect right after it.
+	const [ addMesObj, setAddMesObj ] = React.useState< { okaBoo : boolean, texStr : string } | null >( null ); // What: Added Message Object And Setter. Why: After a successful add, silence is indistinguishable from a failed save whenever the new reminder won't actually appear today, so this needs an explicit announcement. How: This is populated by annAddFun below and cleared by the timeout annAddFun schedules.
 
 	const addTimRef = React.useRef< number | undefined >( undefined ); // What: Added Timeout Reference. Why: The scheduled clearing of addMesObj needs to be cancellable if a second add happens before the first message times out. How: This holds whichever setTimeout id is currently pending.
 
@@ -804,7 +804,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 		// #region Message Staging
 
-		setAddMesObj( newMesObj ); // What: Add Message Stage Call. Why: This is the actual announcement staged for the effect below to auto-clear. How: This stores newMesObj for the message paragraph to render.
+		setAddMesObj( newMesObj ); // What: Add Message Stage Call. Why: This is the actual announcement staged for the timer below to auto-clear. How: This stores newMesObj for the message paragraph to render.
 
 
 		clearTimeout( addTimRef.current );                                                            // What: Stale Timer Clear. Why: A previous message's own scheduled clear must not fire early and wipe this fresh one. How: This clears whatever timeout id addTimRef currently holds.
@@ -823,13 +823,13 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 	const [ visForBoo, setVisForBoo ] = React.useState( addOpeBoo );                // What: Visible Form Boolean And Setter. Why: The quick-add form must stay mounted for its own exit animation even after actEdiStr has already moved on to a different editor. How: This starts at addOpeBoo and is later driven by the effect below.
 	const [ draTasObj, setDraTasObj ] = React.useState< TasRcdTyp | null >( null ); // What: Draft Task Object And Setter. Why: The quick-add form holds a full draft task so the same SchEdiCom used on an existing reminder can configure recurrence before it's ever created. How: This starts null and is populated by staAddFun below.
-	const [ addCloBoo, setAddCloBoo ] = React.useState( false );                    // What: Add Closing Boolean And Setter. Why: The quick-add form's own exit animation needs a flag distinct from visForBoo, so the form stays mounted but visually collapsing during the close. How: This is toggled by canAddFun/cmtAddFun below.
+	const [ addCloBoo, setAddCloBoo ] = React.useState( false );                    // What: Add Closing Boolean And Setter. Why: The quick-add form's own exit animation needs a flag distinct from visForBoo, so the form stays mounted but visually collapsing during the close. How: This is set true when a close begins and reset when it ends.
 
 	const wasAddRef  = React.useRef( addOpeBoo );                       // What: Was Adding Reference. Why: The effect below needs to detect an addOpeBoo transition, not just its current value. How: This is read and overwritten at the end of that same effect.
 	const selCloRef  = React.useRef( false );                           // What: Self Closing Reference. Why: Our own cancel/commit already starts the exit animation itself; the effect below must not ALSO re-trigger it as if some other editor forced this one closed. How: This is set just before that self-initiated close begins.
 	const cloTimRef  = React.useRef< number | undefined >( undefined ); // What: Close Timeout Reference. Why: The scheduled end of an in-progress close animation needs to be cancellable if a fresh open/close interrupts it. How: This holds whichever setTimeout id is currently pending.
 	const inpEleRef = React.useRef< HTMLInputElement | null >( null );  // What: Input Element Reference. Why: The quick-add form's own name input needs to be focusable programmatically. How: This is attached to that input's own ref prop below.
-	const cmtTasRef = React.useRef( false );                            // What: Commit Task Reference. Why: A rapid double-click on Add must not commit the same draft twice. How: This is checked and set at the very top of cmtAddFun below, then cleared 500ms after it finishes.
+	const cmtTasRef = React.useRef( false );                            // What: Commit Task Reference. Why: A rapid double-click on Add must not commit the same draft twice. How: This is checked and set near the top of cmtAddFun below, then cleared 500ms after it commits.
 
 
 	React.useEffect( () => { if ( addOpeBoo && inpEleRef.current ) inpEleRef.current.focus(); }, [ addOpeBoo ] ); // What: Focus Effect. Why: Opening the quick-add form should focus its own name input immediately. How: This focuses inpEleRef's own current node whenever addOpeBoo becomes true.
@@ -860,7 +860,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 				setAddCloBoo( true ); // What: Add Closing Flag Set. Why: The form needs to stay mounted but visually collapsing while the transition plays. How: This flips addCloBoo true.
 
-				cloTimRef.current = setTimeout( () => { // What: Deferred Discard Call. Why: The actual unmount must wait for the .18s close animation to finish first. How: This schedules the draft clear, then stores the timeout id for possible cancellation.
+				cloTimRef.current = setTimeout( () => { // What: Deferred Discard Call. Why: The actual unmount must wait for the close animation to finish first. How: This schedules the draft clear, then stores the timeout id for possible cancellation.
 
 
 					setDraTasObj( null );  // What: Draft Clear Call. Why: The closed form's draft is spent. How: This resets draTasObj to null.
@@ -912,7 +912,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 		setDraTasObj( TAS_NAM_OBJ.defTasFun( { ...( touBusObj.prePayObj || { repeat : 'once' } ), ...( touBusObj.shoCheBoo ? { hidden : true } : {} ) } ) ); // What: Draft Task Seed. Why: Any reminder created while the mini-tour checklist is up should stay hidden from the real list until it concludes, not just a tour's own reminders. How: This spreads touBusObj's own prefill (or a plain 'once' default) plus a hidden flag whenever touBusObj's own shoCheBoo is set.
 
 		setAddCloBoo( false );          // What: Add Closing Flag Reset. Why: A freshly-opened form must not start out mid-close, in case a previous close was still in flight. How: This clears addCloBoo back to false.
-		setActEdiStr( 'reminder-add' ); // What: Active Editor Claim. Why: The quick-add form needs to claim the shared actEdiStr slot so every other open editor forces itself closed. How: This sets actEdiStr to the 'reminder-add' sentinel.
+		setActEdiStr( 'reminder-add' ); // What: Active Editor Claim. Why: The quick-add form needs to claim the shared actEdiStr slot, which closes a different open editor. How: This sets actEdiStr to the 'reminder-add' sentinel.
 
 
 	};
@@ -984,7 +984,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 		setAddCloBoo( true ); // What: Add Closing Flag Set. Why: The form needs to stay mounted but visually collapsing while the transition plays. How: This flips addCloBoo true.
 
-		cloTimRef.current = setTimeout( () => { // What: Deferred Discard Call. Why: The actual unmount must wait for the .18s close animation to finish first. How: This schedules the draft clear/editor close, then stores the timeout id for possible cancellation.
+		cloTimRef.current = setTimeout( () => { // What: Deferred Discard Call. Why: The actual unmount must wait for the close animation to finish first. How: This schedules the draft clear/editor close, then stores the timeout id for possible cancellation.
 
 
 			endAddFun(); // What: End Add Call. Why: Cancel discards the in-progress draft and closes the form. How: This clears the draft, hides the form, and releases the editor slot through endAddFun.
@@ -996,7 +996,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 	};
 
 
-	const cmtAddFun = () => { // What: Commit Add Function. Why: This is the quick-add form's own Save action, creating the real reminder (or updating an existing one, for a re-run mini-tour) from draTasObj. How: This validates the name, resolves a possible existing sample-linked task, then stages the same collapse-then-reveal animation commit already used elsewhere.
+	const cmtAddFun = () => { // What: Commit Add Function. Why: This is the quick-add form's own Save action, creating the real reminder (or updating an existing one, for a re-run mini-tour) from draTasObj. How: This validates the name, resolves a possible existing sample-linked task, then stages a close animation before committing.
 
 
 		if ( !draTasObj ) return; // What: No Draft Guard. Why: There is nothing to commit while no quick-add draft is open. How: This bails out of the commit when draTasObj is null.
@@ -1010,7 +1010,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 
 
-		cmtTasRef.current = true; // What: Commit In-Flight Flag Set. Why: This is the actual guard the top-of-function check above reads to reject a rapid second click. How: This flips cmtTasRef true for the duration of this commit.
+		cmtTasRef.current = true; // What: Commit In-Flight Flag Set. Why: This is the guard the check above reads to reject a rapid second click. How: This flips cmtTasRef true for the duration of this commit.
 		selCloRef.current = true; // What: Self-Close Flag Set. Why: The forced-close effect above must not also react to the addOpeBoo transition this commit is about to cause. How: This flags selCloRef before the animated close below begins.
 
 
@@ -1020,7 +1020,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 		const newIdeStr = exiTasObj ? exiTasObj.id : draTasObj.id; // What: New Identifier String. Why: The entrance animation below needs to target whichever id the committed reminder actually ends up at. How: This picks exiTasObj's own id when one was found, otherwise draTasObj's own id.
 
-		const finAddFun = () => { // What: Finish Add Function. Why: The actual commit is deferred behind the collapse animation below (or run immediately under reduced motion), so it's centralized here. How: This calls actStoObj.addTasFun, announces the result, stages the entrance animation, and resets every quick-add staAppObj slot.
+		const finAddFun = () => { // What: Finish Add Function. Why: The actual commit is deferred behind the collapse animation below (or run immediately under reduced motion), so it's centralized here. How: This calls actStoObj.addTasFun, announces the result, stages the entrance animation, ends the quick-add form, and releases the commit flag after 500ms.
 
 
 			actStoObj.addTasFun( { ...draTasObj, name : tasNamStr, ...( exiTasObj ? { replaceId : exiTasObj.id } : {} ) } ); // What: Add Task Call. Why: This is the actual commit, creating a new reminder or, for a re-run mini-tour, replacing the existing sample-linked one via replaceId. How: This spreads draTasObj with the trimmed name and an optional replaceId.
@@ -1063,16 +1063,16 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 	const remPreRef = React.useRef( remDonNum ); // What: Reminder Previous Reference. Why: The dash-bar animation below needs remDonNum's own PRIOR value to detect a genuine increase, not just its current value. How: This starts at remDonNum and is updated at the end of the effect below.
 
-	const [ remFreNum, setRemFreNum ] = React.useState( -1 ); // What: Reminder Fresh Number And Setter. Why: The dash-bar's own just-completed dash needs to know WHICH index to briefly animate, mirroring GroHeaCom's own freIndNum. How: This is set by the effect below and cleared 520ms later.
+	const [ remFreNum, setRemFreNum ] = React.useState( -1 ); // What: Reminder Fresh Number And Setter. Why: The dash-bar's own just-completed dash needs to know WHICH index to briefly animate, mirroring GroHeaCom's own freIndNum. How: This is set by the effect below and cleared after the dash sweep's p04 duration step.
 
 
-	React.useEffect( () => { // What: Dash Animation Effect. Why: The dash that just turned on should animate in, exactly like every other group's own progress bar, even though this section isn't rendered by that shared component. How: This detects a genuine increase in remDonNum, stages remFreNum, then clears it after the flourish's own duration.
+	React.useEffect( () => { // What: Dash Animation Effect. Why: The dash that just turned on should animate in. How: This detects a genuine increase in remDonNum, stages remFreNum, then clears it after the flourish's own duration.
 
 
 		if ( remDonNum > remPreRef.current ) { // What: Genuine Increase Guard. Why: Only an actual increase (not e.g. an unrelated re-render) should trigger the flourish. How: This compares remDonNum against remPreRef's own remembered prior value.
 
 
-			const newFreNum = remDonNum - 1; // What: New Fresh Number. Why: The just-completed dash is always the one immediately before the new total. How: This subtracts 1 from remDonNum.
+			const newFreNum = remDonNum - 1; // What: New Fresh Number. Why: The just-completed dash is the one just before the new done count. How: This subtracts 1 from remDonNum.
 
 
 			setRemFreNum( newFreNum ); // What: Fresh Index Stage Call. Why: This is what actually tells the dash bar which index to briefly animate. How: This sets remFreNum to newFreNum.
@@ -1109,13 +1109,13 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 			className={ cssModObj.todGroSec }
 
 			data-element-name-hook='todGroSec remGroSec'
-		>{ /* What: Group Section Element. Why: This is RemSecCom's own root element, matching every other Today group's own outer landmark. How: This renders the header, the optional day-log panel, and the todLisDiv list below. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, help mode's Today catalog, and the Today page tour. */ }
+		>{ /* What: Today Group Section Element. Why: This is RemSecCom's own root element, matching every other Today group's own outer landmark. How: This renders the header, the optional day-log panel, and the todLisDiv list below. Its data-element-name-hook is read by Today's drag and scroll code, the tours, help mode, and the test suites. */ }
 
 
-			<header className={ cssModObj.groHeaHed }>{ /* What: Group Header Element. Why: This groups the section's own name/count/log-chip on the left and its progress/add-button on the right. How: This renders heaLefDiv and heaRigDiv below, marking itself reorderable while ediModBoo is on. */ }
+			<header className={ cssModObj.groHeaHed }>{ /* What: Group Header Element. Why: This groups the section's own name/count/log-chip on the left and its progress/add-button on the right. How: This renders heaLefDiv and heaRigDiv below. */ }
 
 
-				<div className={ cssModObj.heaLefDiv }>{ /* What: Group Header Left Div Element. Why: The drag grip, name, count, and log chip read together on the header's own left side. How: This wraps all 4 below, the grip only while ediModBoo is on. */ }
+				<div className={ cssModObj.heaLefDiv }>{ /* What: Header Left Div Element. Why: The drag grip, name, count, and log chip read together on the header's own left side. How: This wraps the grip, name, count, and log chip below, the grip only while ediModBoo is on and the chip only while it is off. */ }
 
 
 					{ ediModBoo && ( // What: Grip Visibility Check. Why: The drag grip only makes sense while Edit Mode is on. How: This renders the grip span only while ediModBoo is true.
@@ -1134,7 +1134,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 							onDragStart={ ( draEveObj ) => draEveObj.preventDefault() } // What: Native Drag Block. Why: The grip uses its own pointer-driven reorder, so the browser's HTML5 drag must never start. How: This cancels dragstart.
 							onPointerDown={ ( poiEveObj ) => onGriDowFun( poiEveObj ) }
-						>{ /* What: Group Grip Span Element. Why: This is the whole section's own drag handle for reordering among other groups. How: This suppresses the native HTML5 drag entirely and forwards pointer-down straight to onGriDowFun. Its data-element-name-hook is read by the Today page tour and help mode's Today catalog. */ }
+						>{ /* What: Group Grip Span Element. Why: This is the whole section's own drag handle for reordering among other groups. How: This suppresses the native HTML5 drag entirely and forwards pointer-down straight to onGriDowFun. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 							<IcoSvgCom
@@ -1148,14 +1148,14 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 					) }
 
-					<h2 className={ cssModObj.groNamHea }>Reminders</h2>{ /* What: Group Name Heading Element. Why: This is the section's own fixed title, matching every other Today group's own heading. How: This renders the literal text "Reminders". */ }
+					<h2 className={ cssModObj.groNamHea }>Reminders</h2>{ /* What: Group Name Heading Element. Why: This is the section's own fixed title. How: This renders the literal text "Reminders". */ }
 
 					<span className={ cssModObj.groCouSpa }>{ /* What: Group Count Span Element. Why: The done and total counts read together as one "N of M" unit. How: This wraps the done span and the "of M" span below. */ }
 
 
 						<span className={ cssModObj.groDonSpa }>{ remDonNum }</span>{ /* What: Group Done Span Element. Why: This is the header's own live completed count. How: This renders remDonNum directly. */ }
 
-						<span className={ cssModObj.groTotSpa }>of { remTotNum }</span>{ /* What: Group Of Span Element. Why: This is the header's own live total count. How: This renders remTotNum directly. */ }
+						<span className={ cssModObj.groTotSpa }>of { remTotNum }</span>{ /* What: Group Total Span Element. Why: This is the header's own live total count. How: This renders the word "of" and remTotNum. */ }
 
 
 					</span>
@@ -1181,7 +1181,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 				<div className={ cssModObj.heaRigDiv }>{ /* What: Header Right Div Element. Why: The progress dash-bar and the add button read together on the header's own right side. How: This wraps both below. */ }
 
 
-					<div className={ cssModObj.groProDiv }>{ /* What: Group Progress Div Element. Why: This mirrors GroHeaCom's own dash-bar for every other Today group, even though this section isn't rendered by that shared component. How: This renders one dash per remTotNum, marking the done ones and briefly flourishing the freshest one. */ }
+					<div className={ cssModObj.groProDiv }>{ /* What: Group Progress Div Element. Why: This is the section's own dash progress bar. How: This renders one dash per remTotNum, marking the done ones and briefly flourishing the freshest one. */ }
 
 
 						{ [ ...Array( remTotNum ).keys() ].map( ( dasIndNum ) => ( // What: Dash List Render. Why: One dash is needed per item this section counts toward its own total. How: This maps the indices of a remTotNum-length array to one <i> per dash, keyed by its own index (stable here, since remTotNum only ever grows/shrinks at its own end).
@@ -1193,7 +1193,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 								className={` ${ cssModObj.proDasIta }   ${ dasIndNum === remFreNum ? cssModObj.proDasItaFresh : '' } `}
 
 								data-dash-done-active={ dasIndNum < remDonNum || undefined } // What: Dash Done Active Attribute. Why: A done row's dash is filled by its module. How: This sets the presence-only attribute while this dash's index is below remDonNum.
-							/> // What: Dash Element. Why: This is one individual dash in the progress bar. How: This marks itself done when its own index is below remDonNum, and fresh with the module's sweep class only for the single index remFreNum currently flourishing.
+							/> // What: Progress Dash Italic Element. Why: This is one individual dash in the progress bar. How: This marks itself done when its own index is below remDonNum, and fresh with the module's sweep class only for the single index remFreNum currently flourishing.
 
 
 						) ) }
@@ -1216,7 +1216,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 								actNamStr='Add a Reminder'
 								labTexStr='This button is disabled until all tutorials are completed.'
-							>{ /* What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while some other tutorial is in progress. How: This wraps the plus icon, standing in for the real button below. Its data-element-name-hook is read by the reminder mini-tours and help mode's Today catalog. */ }
+							>{ /* What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while some other tutorial is in progress. How: This wraps the plus icon, standing in for the real button below. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 								<IcoSvgCom
@@ -1248,7 +1248,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 
 								} }
-							>{ /* What: Add Button Element. Why: This is the real, clickable entry point into the quick-add form. How: This toggles between canAddFun and staAddFun based on whether the form is already open. Its data-element-name-hook is read by the reminder mini-tours and help mode's Today catalog. */ }
+							>{ /* What: Reminder Add Button Element. Why: This is the real, clickable entry point into the quick-add form. How: This toggles between canAddFun and staAddFun based on whether the form is already open. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 								<IcoSvgCom
@@ -1297,7 +1297,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 				className={ cssModObj.todLisDiv }
 
 				data-element-name-hook='todLisDiv'
-			>{ /* What: Today List Div Element. Why: This is the shared vertical list every card/form below stacks inside, matching every other Today group's own list. How: This renders the added-message banner, the quick-add form, every tutorial card, and every real reminder row plus its inline editors. Its data-element-name-hook is read by Today's own drag-to-reorder code. */ }
+			>{ /* What: Today List Div Element. Why: This is the vertical list the cards and forms below stack inside. How: This renders the added-message banner, the quick-add form, the tutorial cards, and the real reminder rows with their inline editors and skip confirms. Its data-element-name-hook is read by Today's drag-to-reorder code and the test suites. */ }
 
 
 				<div role='status'>{ /* What: Added Status Div Element. Why: The note after adding a reminder has to reach screen reader users, and a region added at the moment it speaks is often missed. How: This stays in the list from the first render, empty until a reminder is added. */ }
@@ -1327,14 +1327,14 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 						className={` ${ cssModObj.remAddDiv }   ${ addCloBoo ? cssModObj.remAddDivClosing : '' } `}
 
 						data-element-name-hook='remAddDiv'
-					>{ /* What: Quick-Add Wrap Div Element. Why: The name input row and the full schedule editor need to collapse together as one unit. How: This wraps both below, marking itself closing while addCloBoo is true. Its data-element-name-hook is read by the reminder mini-tours, help mode's Today catalog, and help mode's Data catalog. */ }
+					>{ /* What: Reminder Add Div Element. Why: The name input row and the full schedule editor need to collapse together as one unit. How: This wraps both below, marking itself closing while addCloBoo is true. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 						<div
 							className={ cssModObj.remFieDiv }
 
 							data-element-name-hook='remFieDiv'
-						>{ /* What: Quick-Add Div Element. Why: The name input needs its own row above the schedule editor. How: This wraps the single name input below. Its data-element-name-hook is read by the reminder mini-tours and help mode's Today catalog. */ }
+						>{ /* What: Reminder Field Div Element. Why: The name input needs its own row above the schedule editor. How: This wraps the single name input below. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 							<input
@@ -1353,7 +1353,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 								onChange={ ( chaEveObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj!, name : chaEveObj.target.value } ) ) } // What: Non-Null Note. Why: The quick-add form only renders, and so only edits, while a draft is open. How: The ! tells TypeScript the previous draft is set.
 								onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) cmtAddFun(); } } // What: Enter Commit Shortcut. Why: Pressing Enter in the name field should add the reminder. How: This calls cmtAddFun on Enter.
-							/>{ /* What: Name Input Element. Why: This is the quick-add form's own primary, first-focused field. How: This commits every keystroke straight into draTasObj, and Enter commits the whole form via cmtAddFun. Its data-element-name-hook is read by help mode's Today catalog. */ }
+							/>{ /* What: Add Name Input Element. Why: This is the quick-add form's own primary, first-focused field. How: This commits every keystroke straight into draTasObj, and Enter commits the whole form via cmtAddFun. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 						</div>
@@ -1363,7 +1363,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 							className={ cssModObj.inlEdiDiv }
 
 							data-element-name-hook='inlEdiDiv'
-						>{ /* What: Inline Editor Div Element. Why: The schedule editor and its own footer need to sit together, same layout as InlEdiCom's own root. How: This renders SchEdiCom against draTasObj, then its own Cancel/Add footer. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
+						>{ /* What: Inline Edit Div Element. Why: The schedule editor and its own footer need to sit together, same layout as InlEdiCom's own root. How: This renders SchEdiCom against draTasObj, then its own Cancel/Add footer. Its data-element-name-hook is read by help mode. */ }
 
 
 							<SchEdiCom
@@ -1381,7 +1381,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 								className={ cssModObj.ediFooDiv }
 
 								data-element-name-hook='ediFooDiv'
-							>{ /* What: Inline Foot Div Element. Why: Cancel and Add read as a pair, matching EdiFooCom's own plain-footer shape. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+							>{ /* What: Edit Footer Div Element. Why: Cancel and Add read as a pair, matching EdiFooCom's own plain-footer shape. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by help mode. */ }
 
 
 								<ButBasCom
@@ -1401,7 +1401,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 									sizValStr='sm'
 
 									onClick={ cmtAddFun }
-								>Add</ButBasCom>{ /* What: Button Base Component. Why: This is the form's own actual submit action. How: This calls cmtAddFun, disabled while the name is blank. Its data-element-name-hook is read by the reminder mini-tours. */ }
+								>Add</ButBasCom>{ /* What: Button Base Component. Why: This is the form's own actual submit action. How: This calls cmtAddFun, disabled while the name is blank. Its data-element-name-hook is read by the tours and the test suites. */ }
 
 
 							</div>
@@ -1441,7 +1441,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 				{ dueTasArr.map( ( curTasObj ) => ( // What: Due Card List Render. Why: One real reminder row (plus its own inline editors) is needed per currently-due reminder. How: This maps dueTasArr to one RemCarCom, one skip ColDisCom, and one edit ColDisCom per entry, keyed by its own id.
 
 
-					<React.Fragment key={ curTasObj.id }>{ /* What: Due Card Fragment Element. Why: Each due reminder renders its card plus its inline editors as siblings. How: This groups them per reminder, keyed by the task's own id. */ }
+					<React.Fragment key={ curTasObj.id }>{ /* What: Due Card Fragment. Why: Each due reminder renders its card plus its inline editors as siblings. How: This groups them per reminder, keyed by the task's own id. */ }
 
 
 						<RemCarCom
@@ -1462,7 +1462,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 							jusCheStr={ jusCheStr }
 							tasRcdObj={ curTasObj }
 
-							onAniEndFun={ ( aniEveObj ) => { // What: On Animate End Function. Why: This card's own collapse-in/out animations must clear their own staged flags exactly once, and only for the card's own outer element, not a bubbled child animation. How: This guards on the real target first, then clears insIdeStr and/or runs the deferred remove/skip action.
+							onAniEndFun={ ( aniEveObj ) => { // What: On Animate End Function. Why: This card's own collapse-in/out animations must clear their own staged flags, and only for the card's own outer element, not a bubbled child animation. How: This guards on the real target first, then clears insIdeStr and/or runs the deferred remove/skip action.
 
 
 								if ( aniEveObj.target !== aniEveObj.currentTarget ) return; // What: Bubbled Animation Guard. Why: A child element's own animation ending must not be mistaken for this card's own outer animation ending. How: This bails out unless the event's own target is this exact element.
@@ -1490,12 +1490,12 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 								setActEdiStr( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : `reminder:${ curTasObj.id }` ); // What: Editor Slot Toggle Call. Why: The same tap opens or closes this card's editor. How: This clears the slot when it already holds this card, otherwise claims it.
 
-								setSkiIdeStr( null ); // What: Skip Confirm Close Call. Why: The editor and the skip confirm never show together. How: This clears skiIdeStr.
+								setSkiIdeStr( null ); // What: Skip Confirm Close Call. Why: Opening the editor closes this card's skip confirm. How: This clears skiIdeStr.
 
 
 							} }
 							onRenTasFun={ ( renNamStr ) => patDraFun( { name : renNamStr } ) }
-							onSkiTasFun={ () => { // What: On Skip Task Function. Why: The row's own Skip button needs to toggle its own confirm prompt open/closed and close any unrelated open editor at the same time. How: This flips skiIdeStr and clears a matching actEdiStr sentinel.
+							onSkiTasFun={ () => { // What: On Skip Task Function. Why: The row's own Skip button needs to toggle its own confirm prompt open/closed and close any open reminder editor at the same time. How: This flips skiIdeStr and clears a matching actEdiStr sentinel.
 
 
 								setSkiIdeStr( ( curSkiStr ) => curSkiStr === curTasObj.id ? null : curTasObj.id );                                            // What: Skip Confirm Toggle Call. Why: This is the actual open/close toggle for this card's own skip confirm prompt. How: This flips skiIdeStr between null and curTasObj's own id.
@@ -1504,11 +1504,11 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 							} }
 							onTogTasFun={ onTogDonFun }
-						/>{ /* What: Reminder Card Component. Why: This is one real, due reminder's own row. How: This wires every one of its callback props straight into this section's own local staAppObj and actStoObj. */ }
+						/>{ /* What: Reminder Card Component. Why: This is one real, due reminder's own row. How: This wires the card's animation-end, edit, rename, skip, and toggle callbacks to this section's own handlers. */ }
 
 
 
-						<ColDisCom open={ opeTasStr === curTasObj.id }>{ /* What: Collapse Disclosure Component. Why: The inline schedule editor only exists while this exact card's own edit affordance is open. How: This animates InlEdiCom open only while opeTasStr matches curTasObj's own id. */ }
+						<ColDisCom open={ opeTasStr === curTasObj.id }>{ /* What: Collapse Disclosure Component. Why: The inline schedule editor opens only while this card's own edit affordance is open. How: This animates InlEdiCom open only while opeTasStr matches curTasObj's own id. */ }
 
 
 							<InlEdiCom
@@ -1549,7 +1549,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 
 
-						<ColDisCom open={ skiIdeStr === curTasObj.id }>{ /* What: Collapse Disclosure Component. Why: The skip confirm only exists while this exact card's own skip affordance is open. How: This animates the confirm prompt open only while skiIdeStr matches curTasObj's own id. */ }
+						<ColDisCom open={ skiIdeStr === curTasObj.id }>{ /* What: Collapse Disclosure Component. Why: The skip confirm opens only while this card's own skip affordance is open. How: This animates the confirm prompt open only while skiIdeStr matches curTasObj's own id. */ }
 
 
 							{ ( () => { // What: Skip Confirm Content Function. Why: The confirm prompt's own wording depends on curTasObj's own next eligible day, computed once as an IIFE rather than inline in the JSX below. How: This resolves that next day, then returns the confirm/no-day-available markup.
@@ -1576,7 +1576,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 										{ skiLabStr ? ( // What: Skip Label Check. Why: The confirm prompt's own shape depends on whether a real eligible day was actually found. How: This renders the Skip-until confirm while skiLabStr holds a value, an explanatory no-day message otherwise.
 
 
-											<>{ /* What: Skip Confirm Fragment Element. Why: The skip message and its buttons render together as one branch. How: This groups them with no wrapper element. */ }
+											<>{ /* What: Skip Confirm Fragment. Why: The skip message and its buttons render together as one branch. How: This groups them with no wrapper element. */ }
 
 
 												<div className={ cssModObj.skiMesDiv }>Skip until <strong className={ cssModObj.skiDatStr }>{ skiLabStr }</strong>?</div>{ /* What: Skip Message Div Element. Why: This names the exact day curTasObj would be deferred to. How: This renders skiLabStr inside the confirm question. */ }
@@ -1626,7 +1626,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 										) : ( // What: No Eligible Day Branch. Why: With nothing to skip to, the prompt just needs a plain explanatory message and Close button instead. How: This renders the else branch, taken while skiLabStr is null.
 
 
-											<>{ /* What: No Day Fragment Element. Why: The explanation and its Close button render together as one branch. How: This groups them with no wrapper element. */ }
+											<>{ /* What: No Day Fragment. Why: The explanation and its Close button render together as one branch. How: This groups them with no wrapper element. */ }
 
 
 												<div className={ cssModObj.skiMesDiv }>No upcoming eligible day to skip to.</div>{ /* What: Skip Message Div Element. Why: curTasObj has no eligible day at all to defer to, e.g. every allowed weekday is excluded. How: This renders the plain explanatory text instead of a real confirm question. */ }
