@@ -349,7 +349,7 @@ test( "the checkout asks Polar for the sync product tagged with the buyer's acco
 	const accNewObj = await accNewFun( true ); // What: Account New Object. Why: The buyer's account. How: This creates it.
 	const oriFetFun = globalThis.fetch;        // What: Original Fetch Function. Why: The stub must hand everything but Polar back to the real fetch. How: This keeps it.
 
-	let polReqObj : { body : string, url : string } | null = null; // What: Polar Request Object. Why: The test reads what the function sent Polar. How: The stub stores it.
+	let polReqObj : { bodStr : string, urlStr : string } | null = null; // What: Polar Request Object. Why: The test reads what the function sent Polar. How: The stub stores it.
 
 
 
@@ -360,7 +360,7 @@ test( "the checkout asks Polar for the sync product tagged with the buyer's acco
 
 
 
-		polReqObj = { body : String( reqOptObj?.body ), url : String( reqAdrAny ) }; // What: Polar Request Record. Why: The test checks it. How: This stores the address and body.
+		polReqObj = { bodStr : String( reqOptObj?.body ), urlStr : String( reqAdrAny ) }; // What: Polar Request Record. Why: The test checks it. How: This stores the address and body.
 
 
 
@@ -379,16 +379,16 @@ test( "the checkout asks Polar for the sync product tagged with the buyer's acco
 
 
 		cheModObj.deepEqual( await cheResObj.json(), { url : 'https://polar.sh/checkout/test' } ); // What: Address Assertion. Why: The app sends the buyer to Polar's address. How: This expects it returned.
-		cheModObj.equal( polReqObj!.url, 'https://api.polar.sh/v1/checkouts/' );                   // What: Endpoint Assertion. Why: Production uses live Polar. How: This checks the address. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
-		cheModObj.deepEqual( JSON.parse( polReqObj!.body ), { customer_email : accNewObj.emaStr, external_customer_id : accNewObj.uidStr, metadata : { firebaseUid : accNewObj.uidStr }, products : [ PRO_LIV_STR ], success_url : 'https://easemylife.app/?purchase=sync' } ); // What: Body Assertion. Why: The webhook finds the account from these tags. How: This checks every field. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
+		cheModObj.equal( polReqObj!.urlStr, 'https://api.polar.sh/v1/checkouts/' );                // What: Endpoint Assertion. Why: Production uses live Polar. How: This checks the address. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
+		cheModObj.deepEqual( JSON.parse( polReqObj!.bodStr ), { customer_email : accNewObj.emaStr, external_customer_id : accNewObj.uidStr, metadata : { firebaseUid : accNewObj.uidStr }, products : [ PRO_LIV_STR ], success_url : 'https://easemylife.app/?purchase=sync' } ); // What: Body Assertion. Why: The webhook finds the account from these tags. How: This checks every field. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
 
 
 
 		await cheSerFun( new Request( 'https://paid-sync-accounts--ease-my-life.netlify.app/.netlify/functions/checkout', { headers : { 'Authorization' : `Bearer ${ accNewObj.tokStr }` }, method : 'POST' } ), PRE_COT_OBJ ); // What: Preview Checkout Call. Why: A preview must never reach live Polar. How: This starts a checkout as a preview.
 
 
-		cheModObj.equal( polReqObj!.url, 'https://sandbox-api.polar.sh/v1/checkouts/' ); // What: Sandbox Endpoint Assertion. Why: Previews use the sandbox. How: This checks the address. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
-		cheModObj.deepEqual( JSON.parse( polReqObj!.body ).products, [ PRO_SAN_STR ] );  // What: Sandbox Product Assertion. Why: Previews sell the sandbox product. How: This checks it. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
+		cheModObj.equal( polReqObj!.urlStr, 'https://sandbox-api.polar.sh/v1/checkouts/' ); // What: Sandbox Endpoint Assertion. Why: Previews use the sandbox. How: This checks the address. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
+		cheModObj.deepEqual( JSON.parse( polReqObj!.bodStr ).products, [ PRO_SAN_STR ] );   // What: Sandbox Product Assertion. Why: Previews sell the sandbox product. How: This checks it. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
 
 
 	}

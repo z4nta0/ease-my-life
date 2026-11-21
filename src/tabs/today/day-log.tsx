@@ -989,7 +989,7 @@ function ValCelCom ( { aftValNum, genValNum, hasValBoo, offValNum = 0 } : VccPro
 
 
 
-type CtcProTyp = { picGroArr : PicRcdTyp[], staAppObj : StaAppTyp }; // What: Conditional-Section-Component Props Type. Why: The conditional section lists the conditionals gating one group's pickers. How: This types ConSecCom's props, named Cso since Csc, Cec, and Ccc already belong to other components.
+type CncProTyp = { picGroArr : PicRcdTyp[], staAppObj : StaAppTyp }; // What: Conditional-Section-Component Props Type. Why: The conditional section lists the conditionals gating one group's pickers. How: This types ConSecCom's props, named Cnc since Csc, Cec, Ccc, and Coc already belong to other components.
 
 // #region ConSecCom
 
@@ -1019,7 +1019,7 @@ type CtcProTyp = { picGroArr : PicRcdTyp[], staAppObj : StaAppTyp }; // What: Co
  *
 */
 
-function ConSecCom ( { picGroArr, staAppObj } : CtcProTyp ) : React.JSX.Element | null {
+function ConSecCom ( { picGroArr, staAppObj } : CncProTyp ) : React.JSX.Element | null {
 
 
 	const conIdeArr = [ ...new Set( picGroArr.filter( ( picRcdObj ) => picRcdObj.conditionalId ).map( ( picRcdObj ) => picRcdObj.conditionalId ) ) ]; // What: Conditional Identifier Array. Why: This section only needs the unique conditional ids actually attached to this group's own pickers. How: This maps picGroArr down to its own conditionalId values, deduped via a Set.

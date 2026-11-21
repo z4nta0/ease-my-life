@@ -79,10 +79,10 @@ type TwoDevTyp = { // What: Two Device Type. Why: Both two-device tests read the
 
 	emaAdrStr : string;         // What: Email Address String. Why: Both devices sign in to the one account. How: This is its address.
 	fixStaObj : StaAppTyp;      // What: Fixture State Object. Why: The first device starts on real data. How: This is the backup.
-	oneConObj : BrowserContext; // What: One Context Object. Why: The first device has its own storage. How: This is its context.
+	oneCotObj : BrowserContext; // What: One Context Object. Why: The first device has its own storage. How: This is its context.
 	oneErrArr : string[];       // What: One Error Array. Why: The first device is watched for errors. How: This is the list collecting them.
 	onePagObj : Page;           // What: One Page Object. Why: The first device's app runs here. How: This is its page.
-	twoConObj : BrowserContext; // What: Two Context Object. Why: The second device has separate storage. How: This is its context.
+	twoCotObj : BrowserContext; // What: Two Context Object. Why: The second device has separate storage. How: This is its context.
 	twoErrArr : string[];       // What: Two Error Array. Why: The second device is watched for errors. How: This is the list collecting them.
 	twoPagObj : Page;           // What: Two Page Object. Why: The second device's app runs here. How: This is its page.
 
@@ -121,10 +121,10 @@ async function twoDevFun ( broCurObj : Browser, emaPreStr : string ) : Promise< 
 
 	const emaAdrStr = `${ emaPreStr }-${ Date.now() }@example.com`;               // What: Email Address String. Why: Each run needs its own account. How: This builds a unique address from the prefix.
 	const fixStaObj = reaFixFun();                                                // What: Fixture State Object. Why: The first device starts on real data. How: This reads the backup.
-	const oneConObj = await broCurObj.newContext( { serviceWorkers : 'block' } ); // What: One Context Object. Why: The first device has its own storage. How: This opens a context, blocking the service worker as every suite does.
-	const twoConObj = await broCurObj.newContext( { serviceWorkers : 'block' } ); // What: Two Context Object. Why: The second device has separate storage. How: This opens another context.
-	const onePagObj = await oneConObj.newPage();                                  // What: One Page Object. Why: The first device's app runs here. How: This opens its page.
-	const twoPagObj = await twoConObj.newPage();                                  // What: Two Page Object. Why: The second device's app runs here. How: This opens its page.
+	const oneCotObj = await broCurObj.newContext( { serviceWorkers : 'block' } ); // What: One Context Object. Why: The first device has its own storage. How: This opens a context, blocking the service worker as every suite does.
+	const twoCotObj = await broCurObj.newContext( { serviceWorkers : 'block' } ); // What: Two Context Object. Why: The second device has separate storage. How: This opens another context.
+	const onePagObj = await oneCotObj.newPage();                                  // What: One Page Object. Why: The first device's app runs here. How: This opens its page.
+	const twoPagObj = await twoCotObj.newPage();                                  // What: Two Page Object. Why: The second device's app runs here. How: This opens its page.
 	const oneErrArr = watErrFun( onePagObj );                                     // What: One Error Array. Why: The first device is watched for errors. How: This starts watching it.
 	const twoErrArr = watErrFun( twoPagObj );                                     // What: Two Error Array. Why: The second device is watched for errors. How: This starts watching it.
 
@@ -133,7 +133,7 @@ async function twoDevFun ( broCurObj : Browser, emaPreStr : string ) : Promise< 
 
 
 
-	return { emaAdrStr, fixStaObj, oneConObj, oneErrArr, onePagObj, twoConObj, twoErrArr, twoPagObj }; // What: Setup Return. Why: Each test drives both devices and checks their errors. How: This hands back everything it opened.
+	return { emaAdrStr, fixStaObj, oneCotObj, oneErrArr, onePagObj, twoCotObj, twoErrArr, twoPagObj }; // What: Setup Return. Why: Each test drives both devices and checks their errors. How: This hands back everything it opened.
 
 
 }
@@ -151,7 +151,7 @@ test( 'two devices sign in to one paid account and sync each other', async ( { b
 
 	// #region First Device Setup
 
-	const { emaAdrStr, fixStaObj, oneConObj, oneErrArr, onePagObj, twoConObj, twoErrArr, twoPagObj } = await twoDevFun( browser, 'sync' ); // What: Email Address String. Why: Both devices sign in to one account. How: This is its unique address. // What: Fixture State Object. Why: The first device starts on real data, which the second must receive. How: This is the backup. // What: One Context Object. Why: The first device has its own storage. How: This is its context. // What: One Error Array. Why: The first device is watched for errors. How: This is its list. // What: One Page Object. Why: The first device's app runs here. How: This is its page. // What: Two Context Object. Why: The second device has separate storage. How: This is its context. // What: Two Error Array. Why: The second device is watched for errors. How: This is its list. // What: Two Page Object. Why: The second device's app runs here. How: This is its page.
+	const { emaAdrStr, fixStaObj, oneCotObj, oneErrArr, onePagObj, twoCotObj, twoErrArr, twoPagObj } = await twoDevFun( browser, 'sync' ); // What: Email Address String. Why: Both devices sign in to one account. How: This is its unique address. // What: Fixture State Object. Why: The first device starts on real data, which the second must receive. How: This is the backup. // What: One Context Object. Why: The first device has its own storage. How: This is its context. // What: One Error Array. Why: The first device is watched for errors. How: This is its list. // What: One Page Object. Why: The first device's app runs here. How: This is its page. // What: Two Context Object. Why: The second device has separate storage. How: This is its context. // What: Two Error Array. Why: The second device is watched for errors. How: This is its list. // What: Two Page Object. Why: The second device's app runs here. How: This is its page.
 
 
 	await bacUplFun( onePagObj, emaAdrStr, fixStaObj ); // What: First Device Upload Call. Why: An empty account takes the first device's real data. How: This writes the backup, opens the app, signs in, and waits for the upload.
@@ -202,8 +202,8 @@ test( 'two devices sign in to one paid account and sync each other', async ( { b
 
 	// #region Context Closes
 
-	await oneConObj.close(); // What: First Context Close. Why: The devices end with the test. How: This closes the first.
-	await twoConObj.close(); // What: Second Context Close. Why: The devices end with the test. How: This closes the second.
+	await oneCotObj.close(); // What: First Context Close. Why: The devices end with the test. How: This closes the first.
+	await twoCotObj.close(); // What: Second Context Close. Why: The devices end with the test. How: This closes the second.
 
 	// #endregion Context Closes
 
@@ -213,7 +213,7 @@ test( 'two devices sign in to one paid account and sync each other', async ( { b
 test( "a device opened with yesterday's list takes the day's list another device already checked off", async ( { browser } ) => { // What: New Day Test. Why: A device opened on a new day used to build its own list before its launch sync, then win the sync and replace the list another device had already checked off. How: This shares one day's list between two devices, builds and checks off the next day's on the first, opens the second on that day, and checks both keep the first device's list.
 
 
-	const { emaAdrStr, fixStaObj, oneConObj, oneErrArr, onePagObj, twoConObj, twoErrArr, twoPagObj } = await twoDevFun( browser, 'newday' ); // What: Email Address String. Why: Both devices sign in to one account. How: This is its unique address. // What: Fixture State Object. Why: The first device starts on real data with a daily generator. How: This is the backup. // What: One Context Object. Why: The first device has its own storage. How: This is its context. // What: One Error Array. Why: The first device is watched for errors. How: This is its list. // What: One Page Object. Why: The first device's app runs here. How: This is its page. // What: Two Context Object. Why: The second device has separate storage, kept between its two launches. How: This is its context. // What: Two Error Array. Why: The second device is watched for errors. How: This is its list. // What: Two Page Object. Why: The second device's app runs here. How: This is its page.
+	const { emaAdrStr, fixStaObj, oneCotObj, oneErrArr, onePagObj, twoCotObj, twoErrArr, twoPagObj } = await twoDevFun( browser, 'newday' ); // What: Email Address String. Why: Both devices sign in to one account. How: This is its unique address. // What: Fixture State Object. Why: The first device starts on real data with a daily generator. How: This is the backup. // What: One Context Object. Why: The first device has its own storage. How: This is its context. // What: One Error Array. Why: The first device is watched for errors. How: This is its list. // What: One Page Object. Why: The first device's app runs here. How: This is its page. // What: Two Context Object. Why: The second device has separate storage, kept between its two launches. How: This is its context. // What: Two Error Array. Why: The second device is watched for errors. How: This is its list. // What: Two Page Object. Why: The second device's app runs here. How: This is its page.
 
 
 
@@ -239,7 +239,7 @@ test( "a device opened with yesterday's list takes the day's list another device
 	await onePagObj.close(); // What: First Device Close. Why: The first device is opened again on day two, as a person would the next morning. How: This closes its page, keeping its storage.
 
 
-	const fouPagObj = await oneConObj.newPage(); // What: Fourth Page Object. Why: The first device opens again on its own storage. How: This opens a new page in its context.
+	const fouPagObj = await oneCotObj.newPage(); // What: Fourth Page Object. Why: The first device opens again on its own storage. How: This opens a new page in its context.
 	const fouErrArr = watErrFun( fouPagObj );    // What: Fourth Error Array. Why: The first device's second launch is watched for errors. How: This starts watching it.
 
 
@@ -270,7 +270,7 @@ test( "a device opened with yesterday's list takes the day's list another device
 
 	// #region Second Device Day Two Launch
 
-	const thrPagObj = await twoConObj.newPage(); // What: Third Page Object. Why: The second device opens again, on its own storage still holding day one's list. How: This opens a new page in its context.
+	const thrPagObj = await twoCotObj.newPage(); // What: Third Page Object. Why: The second device opens again, on its own storage still holding day one's list. How: This opens a new page in its context.
 	const thrErrArr = watErrFun( thrPagObj );    // What: Third Error Array. Why: The second device's second launch is watched for errors. How: This starts watching it.
 
 
@@ -314,8 +314,8 @@ test( "a device opened with yesterday's list takes the day's list another device
 
 	// #region Context Closes
 
-	await oneConObj.close(); // What: First Context Close. Why: The devices end with the test. How: This closes the first.
-	await twoConObj.close(); // What: Second Context Close. Why: The devices end with the test. How: This closes the second.
+	await oneCotObj.close(); // What: First Context Close. Why: The devices end with the test. How: This closes the first.
+	await twoCotObj.close(); // What: Second Context Close. Why: The devices end with the test. How: This closes the second.
 
 	// #endregion Context Closes
 

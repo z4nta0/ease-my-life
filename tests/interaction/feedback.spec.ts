@@ -708,12 +708,12 @@ async function reaHitFun ( hanCurObj : ElementHandle< Element > ) : Promise< boo
  * @example
  * ```ts
  * handle.evaluate(stiConFun, CON_SEL_STR)
- * // => { hovBoo : false, preBoo : false }
+ * // => { dowBoo : false, hovBoo : false }
  * ```
  *
 */
 
-function stiConFun ( conCurEle : Element, conSelStr : string ) : { hovBoo : boolean, preBoo : boolean } {
+function stiConFun ( conCurEle : Element, conSelStr : string ) : { dowBoo : boolean, hovBoo : boolean } {
 
 
 	const cheRadBoo = conCurEle.matches( '[role="radio"][aria-checked="true"], input[type="radio"]:checked' ); // What: Checked Radio Boolean. Why: The user decided on 2026-11-18 that a chosen theme row or mode card stays still, since clicking it re-chooses the same one. How: This is true for a radio role marked checked or a native radio that is.
@@ -726,8 +726,8 @@ function stiConFun ( conCurEle : Element, conSelStr : string ) : { hovBoo : bool
 	return { // What: Still Verdict Return. Why: The probe skips only the look the decision exempts. How: This frees the hover look for every still case and the press look for a disabled wrapper alone.
 
 
-		hovBoo : cheRadBoo || curMarBoo || disWraBoo || poiOffBoo, // What: Hover Boolean. Why: Every still case may skip the hover look. How: This is true when any of the four holds.
-		preBoo : disWraBoo                                         // What: Press Boolean. Why: Only a control whose action can't run may skip the press look too. How: This is true for a disabled wrapper.
+		dowBoo : disWraBoo,                                       // What: Down Boolean. Why: Only a control whose action can't run may skip the press look too. How: This is true for a disabled wrapper.
+		hovBoo : cheRadBoo || curMarBoo || disWraBoo || poiOffBoo // What: Hover Boolean. Why: Every still case may skip the hover look. How: This is true when any of the four holds.
 
 
 	};
@@ -859,7 +859,7 @@ async function feeProFun ( curPagObj : Page, staIdeStr : string, redMotBoo : boo
 		await looHanObj.evaluate( aniFinFun ); // What: Press Settle Call. Why: The pressed look is read once it has eased in. How: This waits two frames, then for every finite animation on the element, inside it, and above it to end.
 
 
-		const preSnaArr = await looHanObj.evaluate( snaEleFun, CON_PRO_ARR );                                            // What: Press Snapshot Array. Why: The pressed look is compared with hovered. How: This records it.
+		const dowSnaArr = await looHanObj.evaluate( snaEleFun, CON_PRO_ARR );                                            // What: Down Snapshot Array. Why: The pressed look is compared with hovered. How: This records it.
 		const traDurStr = await looHanObj.evaluate( ( looCurEle ) => getComputedStyle( looCurEle ).transitionDuration ); // What: Transition Duration String. Why: Reduced motion should leave nothing moving. How: This reads the control's transition durations.
 
 
@@ -894,7 +894,7 @@ async function feeProFun ( curPagObj : Page, staIdeStr : string, redMotBoo : boo
 
 
 
-		if ( !conFieBoo && !conStiObj.preBoo && !labWebBoo && valSigFun( hovSnaArr ) === valSigFun( preSnaArr ) ) proLisArr.push( `${ conDesStr } looks the same pressed` ); // What: Press Check. Why: A press has to register before anything happens. How: This records a link or button that doesn't change, leaving out a text field, which isn't pressed.
+		if ( !conFieBoo && !conStiObj.dowBoo && !labWebBoo && valSigFun( hovSnaArr ) === valSigFun( dowSnaArr ) ) proLisArr.push( `${ conDesStr } looks the same pressed` ); // What: Press Check. Why: A press has to register before anything happens. How: This records a link or button that doesn't change, leaving out a text field, which isn't pressed.
 
 
 
@@ -906,9 +906,9 @@ async function feeProFun ( curPagObj : Page, staIdeStr : string, redMotBoo : boo
 
 
 
-		if ( redMotBoo ) proLisArr.push( ...movProFun( resSnaArr, hovSnaArr, CON_PRO_ARR, conDesStr, 'when hovered' ), ...movProFun( hovSnaArr, preSnaArr, CON_PRO_ARR, conDesStr, 'when pressed' ), ...movProFun( bluSnaArr, focSnaArr, FOC_PRO_ARR, conDesStr, 'when focused' ) ); // What: Reduced Motion Change Check. Why: Under reduced motion every change should switch at once, inside the control too. How: This records each property that changes while a transition still eases it.
+		if ( redMotBoo ) proLisArr.push( ...movProFun( resSnaArr, hovSnaArr, CON_PRO_ARR, conDesStr, 'when hovered' ), ...movProFun( hovSnaArr, dowSnaArr, CON_PRO_ARR, conDesStr, 'when pressed' ), ...movProFun( bluSnaArr, focSnaArr, FOC_PRO_ARR, conDesStr, 'when focused' ) ); // What: Reduced Motion Change Check. Why: Under reduced motion every change should switch at once, inside the control too. How: This records each property that changes while a transition still eases it.
 
-		else proLisArr.push( ...snaProFun( resSnaArr, hovSnaArr, CON_PRO_ARR, conDesStr, 'when hovered' ), ...snaProFun( hovSnaArr, preSnaArr, CON_PRO_ARR, conDesStr, 'when pressed' ), ...snaProFun( bluSnaArr, focSnaArr, FOC_PRO_ARR, conDesStr, 'when focused' ) ); // What: Snapped Change Check. Why: Every probed property a hover, press, or focus changes should ease rather than snap, the focus ring included. How: This records each one that changes without easing, on the control or anything inside it.
+		else proLisArr.push( ...snaProFun( resSnaArr, hovSnaArr, CON_PRO_ARR, conDesStr, 'when hovered' ), ...snaProFun( hovSnaArr, dowSnaArr, CON_PRO_ARR, conDesStr, 'when pressed' ), ...snaProFun( bluSnaArr, focSnaArr, FOC_PRO_ARR, conDesStr, 'when focused' ) ); // What: Snapped Change Check. Why: Every probed property a hover, press, or focus changes should ease rather than snap, the focus ring included. How: This records each one that changes without easing, on the control or anything inside it.
 
 
 	}
