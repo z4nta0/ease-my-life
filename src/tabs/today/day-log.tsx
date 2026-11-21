@@ -1400,7 +1400,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 
 
 						const iteFlaObj = iteFlaMap.get( iteRcdObj.id );                      // What: Item Flags Object. Why: This row's own status chips and done state both read from the same flags object. How: This reads iteFlaMap's own entry for iteRcdObj's own id.
-						const iteDonBoo = iteFlaObj && iteFlaObj.donBoo;                      // What: Item Done Boolean. Why: A completed item gets its own done row styling. How: This is true only when iteFlaObj exists and its own donBoo flag is set.
+						const iteDonBoo = Boolean( iteFlaObj && iteFlaObj.donBoo );           // What: Item Done Boolean. Why: A completed item gets its own done row styling. How: This is true only when iteFlaObj exists and its own donBoo flag is set.
 						const hasValBoo = hasValFun( picRcdObj.mode ) && !iteRcdObj.vacation; // What: Has Value Boolean. Why: An item on vacation never shows a value, even under a value-tracking mode. How: This combines hasValFun's own mode check with iteRcdObj's own vacation flag.
 
 

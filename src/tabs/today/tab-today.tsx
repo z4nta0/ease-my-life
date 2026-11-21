@@ -587,7 +587,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const samVisFun = ( rcdCurObj : { hidden? : boolean, id : string, name : string }, samIdeArr : string[], allRcdArr : { id : string, name : string }[] ) => { // What: Sample Visible Function. Why: A sample picker or task card only counts toward the ring while its own card is actually on screen, and that rule is identical for both kinds. How: This checks that rcdCurObj is a hidden sample, then (only once cheDonBoo) that it is still unresolved and not name-collided with a real record.
 
 
-		const isaSamBoo = rcdCurObj.hidden && samIdeArr.includes( rcdCurObj.id );                                                                    // What: Is-A Sample Boolean. Why: Only a hidden sample offers a launcher card. How: This checks the hidden flag and samIdeArr membership.
+		const isaSamBoo = Boolean( rcdCurObj.hidden && samIdeArr.includes( rcdCurObj.id ) );                                                         // What: Is-A Sample Boolean. Why: Only a hidden sample offers a launcher card. How: This checks the hidden flag and samIdeArr membership.
 		const isaOpeBoo = shoCheBoo || !ONB_CHE_OBJ.entLooFun( staAppObj, rcdCurObj.id );                                                            // What: Is-An Open Boolean. Why: During a replay a resolved card is no longer rendered, so it must drop out of the count. How: This is always true in the first-time phase, otherwise true only while the card has no checklist entry.
 		const isaUniBoo = shoCheBoo || !allRcdArr.some( ( othRcdObj ) => !samIdeArr.includes( othRcdObj.id ) && othRcdObj.name === rcdCurObj.name ); // What: Is-A Unique Boolean. Why: During a replay a sample whose name a real record already took stops offering its card. How: This is always true in the first-time phase, otherwise true only when no real record shares the sample's own name.
 
@@ -602,8 +602,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const samDonFun = ( rcdCurObj : { hidden? : boolean, id : string }, samIdeArr : string[] ) => { // What: Sample Done Function. Why: The first-time phase counts a resolved sample card as done, the same way for pickers and tasks. How: This checks that rcdCurObj is a hidden sample that already has a checklist entry.
 
 
-		const isaSamBoo = rcdCurObj.hidden && samIdeArr.includes( rcdCurObj.id ); // What: Is-A Sample Boolean. Why: Only a hidden sample offers a launcher card. How: This checks the hidden flag and samIdeArr membership.
-		const hasEntBoo = !!ONB_CHE_OBJ.entLooFun( staAppObj, rcdCurObj.id );     // What: Has Entry Boolean. Why: A card with a checklist entry has been resolved. How: This looks the card up in the checklist.
+		const isaSamBoo = Boolean( rcdCurObj.hidden && samIdeArr.includes( rcdCurObj.id ) ); // What: Is-A Sample Boolean. Why: Only a hidden sample offers a launcher card. How: This checks the hidden flag and samIdeArr membership.
+		const hasEntBoo = !!ONB_CHE_OBJ.entLooFun( staAppObj, rcdCurObj.id );                // What: Has Entry Boolean. Why: A card with a checklist entry has been resolved. How: This looks the card up in the checklist.
 
 
 

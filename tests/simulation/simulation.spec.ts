@@ -240,7 +240,7 @@ const uniCarFun = async ( curPagObj : Page, staAppObj : StaAppTyp, conTesFun : (
 		const entKinStr = curEntObj.kind;                                                                         // What: Entry Kind String. Why: Only plain picks qualify. How: This reads the entry's kind, empty for a pick.
 		const notUniBoo = namCouMap.get( namTexStr ) !== 1;                                                       // What: Not Unique Boolean. Why: The card is found by its name, which must be unique. How: This checks the name's count isn't 1.
 
-		const skiEntBoo = isaDonBoo || entKinStr || !conTesFun( curEntObj ) || notUniBoo; // What: Skip Entry Boolean. Why: Only an unchecked, uniquely named pick that meets the condition qualifies. How: This combines the checks, testing the condition only on plain unchecked picks.
+		const skiEntBoo = Boolean( isaDonBoo || entKinStr || !conTesFun( curEntObj ) || notUniBoo ); // What: Skip Entry Boolean. Why: Only an unchecked, uniquely named pick that meets the condition qualifies. How: This combines the checks, testing the condition only on plain unchecked picks.
 
 
 		if ( skiEntBoo ) continue; // What: Qualify Guard. Why: Only an unchecked, uniquely named pick that meets the condition qualifies. How: This skips the rest.
