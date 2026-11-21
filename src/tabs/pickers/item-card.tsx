@@ -115,7 +115,7 @@ function IteCarCom ( { ediKeyStr, iteCloBoo, iteDatObj, namInpRef, namValStr, on
 
 
 			} }
-		>{ /* What: List Item Div Element. Why: This is the whole item card slot, playing its own closing animation before its parent tears it down. How: This hands the end of that closing keyframe to onCloEndFun. Its data-element-name-hook is read by the App Features tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+		>{ /* What: List Item Div Element. Why: This is the whole item card slot, playing its own closing animation before its parent tears it down. How: This hands the end of that closing keyframe to onCloEndFun. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 			<div
@@ -155,7 +155,7 @@ function IteCarCom ( { ediKeyStr, iteCloBoo, iteDatObj, namInpRef, namValStr, on
 						} ) }
 						onChange={ ( chaEveObj ) => onNamChaFun( chaEveObj.target.value ) }
 						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Handler. Why: Pressing Enter should finish editing the name. How: This blurs the input when the key is Enter, which runs the blur commit where one is set.
-					/>{ /* What: Row Name Input Element. Why: This is the actual live-typed name field for the item being added or edited. How: This reports every change through onNamChaFun and blurs itself on Enter. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+					/>{ /* What: Row Name Input Element. Why: This is the actual live-typed name field for the item being added or edited. How: This reports every change through onNamChaFun and blurs itself on Enter. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 				</span>

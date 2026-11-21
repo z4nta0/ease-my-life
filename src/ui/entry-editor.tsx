@@ -96,7 +96,7 @@ function ChrRowCom ( { chrValNum, isaDowBoo, labTexStr, onFilActFun, thrValNum }
 			data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds the Refill row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
 			data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds the Fill row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
 			data-element-name-hook='ediRowDiv'
-		>{ /* What: Editor Row Div Element. Why: An ease item offers an instant full-charge shortcut. How: This renders the label and subtitle plus its FilButCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+		>{ /* What: Editor Row Div Element. Why: An ease item offers an instant full-charge shortcut. How: This renders the label and subtitle plus its FilButCom. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 			<div className={ cssModObj.ediLabDiv }>{ /* What: Editor Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
@@ -187,7 +187,7 @@ function EasRowCom ( { dayValNum, isaDowBoo, iteNamStr, labTexStr, maxValNum, on
 			data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
 			data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
 			data-element-name-hook='ediRowDiv'
-		>{ /* What: Editor Row Div Element. Why: This is one Soonest/Shortest or Latest/Longest control row. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+		>{ /* What: Editor Row Div Element. Why: This is one Soonest/Shortest or Latest/Longest control row. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 			<div className={ cssModObj.ediLabDiv }>{ /* What: Editor Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
@@ -243,7 +243,7 @@ function EasRowCom ( { dayValNum, isaDowBoo, iteNamStr, labTexStr, maxValNum, on
 					className={ cssModObj.easUniSpa }
 
 					data-element-name-hook='easUniSpa'
-				>{ uniWorStr }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorStr. Its data-element-name-hook is read by the help items' own unit-word lookups. */ }
+				>{ uniWorStr }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorStr. Its data-element-name-hook is read by help mode. */ }
 
 
 			</div>
@@ -469,7 +469,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 			className={ cssModObj.entEdiDiv }
 
 			data-element-name-hook='entEdiDiv'
-		>{ /* What: Entry Editor Div Element. Why: This is EntEdiCom's own root wrapper. How: This renders the mode-specific rows above a confirm-gated footer. Its data-element-name-hook is read by help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+		>{ /* What: Entry Editor Div Element. Why: This is EntEdiCom's own root wrapper. How: This renders the mode-specific rows above a confirm-gated footer. Its data-element-name-hook is read by help mode. */ }
 
 
 			<div className={ cssModObj.ediLisDiv }>{ /* What: Editor List Div Element. Why: Every mode-specific control row shares this one column. How: This renders exactly one of the ease/weight/no-weight branches, plus the optional Boost row and the always-present Active/Inactive row. */ }
@@ -578,7 +578,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 						className={ cssModObj.ediRowDiv }
 
 						data-element-name-hook='ediRowDiv'
-					>{ /* What: Editor Row Div Element. Why: This is the weighted/dynamic weight control row. How: This renders the label/subtitle plus the plus/minus weight stepper below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+					>{ /* What: Editor Row Div Element. Why: This is the weighted/dynamic weight control row. How: This renders the label/subtitle plus the plus/minus weight stepper below. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 						<div className={ cssModObj.ediLabDiv }>{ /* What: Editor Label Div Element. Why: The label and the live weight subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
@@ -599,7 +599,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 							className={ cssModObj.weiSteDiv }
 
 							data-element-name-hook='weiSteDiv'
-						>{ /* What: Weight Stepper Div Element. Why: The minus/value/plus trio reads as one compact control. How: This wraps both plus/minus buttons around the current weight display. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+						>{ /* What: Weight Stepper Div Element. Why: The minus/value/plus trio reads as one compact control. How: This wraps both plus/minus buttons around the current weight display. Its data-element-name-hook is read by help mode. */ }
 
 
 							<button
@@ -638,7 +638,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 						className={ cssModObj.ediRowDiv }
 
 						data-element-name-hook='ediRowDiv'
-					>{ /* What: Editor Row Div Element. Why: Random mode still needs a Weight row for layout parity, but with no editable control. How: This renders a fixed explanatory subtitle and a plain "No weight" note instead of any stepper. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+					>{ /* What: Editor Row Div Element. Why: Random mode still needs a Weight row for layout parity, but with no editable control. How: This renders a fixed explanatory subtitle and a plain "No weight" note instead of any stepper. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 						<div className={ cssModObj.ediLabDiv }>{ /* What: Editor Label Div Element. Why: The label and its fixed explanatory subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
@@ -668,7 +668,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 						className={ cssModObj.ediRowDiv }
 
 						data-element-name-hook='ediRowDiv'
-					>{ /* What: Editor Row Div Element. Why: This is the dynamic-mode boost control row. How: This renders the label/subtitle plus a BooResCom control. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+					>{ /* What: Editor Row Div Element. Why: This is the dynamic-mode boost control row. How: This renders the label/subtitle plus a BooResCom control. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 						<div className={ cssModObj.ediLabDiv }>{ /* What: Editor Label Div Element. Why: The label and the live boost subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
@@ -708,7 +708,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 					className={ cssModObj.ediRowDiv }
 
 					data-element-name-hook='ediRowDiv'
-				>{ /* What: Editor Row Div Element. Why: Every mode, regardless of the branches above, still needs the same Active/Inactive toggle row. How: This renders the label/subtitle plus a plain switch button. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+				>{ /* What: Editor Row Div Element. Why: Every mode, regardless of the branches above, still needs the same Active/Inactive toggle row. How: This renders the label/subtitle plus a plain switch button. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 					<div className={ cssModObj.ediLabDiv }>{ /* What: Editor Label Div Element. Why: The label and the live active-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
@@ -738,7 +738,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 						aria-pressed={ !iteDatObj.vacation }
 
 						onClick={ () => onPatIteFun( { vacation : !iteDatObj.vacation } ) }
-					>{ /* What: Toggle Switch Button Element. Why: This is the actual Active/Inactive toggle control. How: This flips the draft's vacation flag via onPatIteFun. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+					>{ /* What: Toggle Switch Button Element. Why: This is the actual Active/Inactive toggle control. How: This flips the draft's vacation flag via onPatIteFun. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 						<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-pressed. */ }
@@ -763,7 +763,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 					className={` ${ cssModObj.ediFooDiv }   ${ cssModObj.ediFooDivConfirm } `}
 
 					data-element-name-hook='ediFooDiv'
-				>{ /* What: Editor Footer Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+				>{ /* What: Editor Footer Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode. */ }
 
 
 					<span className={ cssModObj.delMesSpa }>Delete this item?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
@@ -787,7 +787,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 							sizValStr='sm'
 
 							onClick={ onDelIteFun }
-						>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls the caller's own onDelIteFun. Its data-element-name-hook is read by help mode's Data catalog. */ }
+						>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls the caller's own onDelIteFun. Its data-element-name-hook is read by help mode. */ }
 
 
 					</div>
@@ -805,7 +805,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 					className={ cssModObj.ediFooDiv }
 
 					data-element-name-hook='ediFooDiv'
-				>{ /* What: Editor Footer Div Element. Why: This is the normal footer, holding an optional Delete button (suppressed for a brand-new item) plus the Cancel/Save actions. A parent can hide the Delete button by setting --ent-del-dis, which this footer hands to ButBasCom's danger variant. How: This renders Delete (plain, or InfTipCom-wrapped and disabled while minIteBoo) unless isaNewBoo, then the Cancel/Save pair. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+				>{ /* What: Editor Footer Div Element. Why: This is the normal footer, holding an optional Delete button (suppressed for a brand-new item) plus the Cancel/Save actions. A parent can hide the Delete button by setting --ent-del-dis, which this footer hands to ButBasCom's danger variant. How: This renders Delete (plain, or InfTipCom-wrapped and disabled while minIteBoo) unless isaNewBoo, then the Cancel/Save pair. Its data-element-name-hook is read by help mode. */ }
 
 
 					{ !isaNewBoo && ( minIteBoo ? ( // What: Delete Visibility Check. Why: A brand-new item has nothing to delete yet, only to discard via Cancel/implicit-close; an existing item at the 2-item floor gets a disabled, explained Delete instead of a working one. How: This hides Delete for a new item, and otherwise shows the blocked-delete tip while minIteBoo holds, or the real Delete button.
@@ -825,7 +825,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 								icoNamStr='traEle'
 								kinValStr='danger'
 								sizValStr='sm'
-							>Delete</ButBasCom>{ /* What: Button Base Component. Why: This shows the disabled Delete control the wrapping InfTipCom explains. How: This never fires, since disabled is always set in this branch. Its data-element-name-hook is read by help mode's Data catalog. */ }
+							>Delete</ButBasCom>{ /* What: Button Base Component. Why: This shows the disabled Delete control the wrapping InfTipCom explains. How: This never fires, since disabled is always set in this branch. Its data-element-name-hook is read by help mode. */ }
 
 
 						</InfTipCom>
@@ -842,7 +842,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 							sizValStr='sm'
 
 							onClick={ () => setConDelBoo( true ) }
-						>Delete</ButBasCom> // What: Button Base Component. Why: This opens the delete confirm prompt above instead of deleting immediately. How: This sets conDelBoo to true. Its data-element-name-hook is read by help mode's Data catalog.
+						>Delete</ButBasCom> // What: Button Base Component. Why: This opens the delete confirm prompt above instead of deleting immediately. How: This sets conDelBoo to true. Its data-element-name-hook is read by help mode.
 
 
 					) ) }
@@ -859,7 +859,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 							sizValStr='sm'
 
 							onClick={ onCanEdiFun }
-						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the draft's edits. How: This calls the caller's own onCanEdiFun. Its data-element-name-hook is read by the picker mini-tours. */ }
+						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the draft's edits. How: This calls the caller's own onCanEdiFun. Its data-element-name-hook is read by the tours and the test suites. */ }
 
 
 
@@ -870,7 +870,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 							sizValStr='sm'
 
 							onClick={ onSavEdiFun }
-						>Save</ButBasCom>{ /* What: Button Base Component. Why: This commits the draft's edits. How: This calls the caller's own onSavEdiFun. Its data-element-name-hook is read by the picker mini-tours. */ }
+						>Save</ButBasCom>{ /* What: Button Base Component. Why: This commits the draft's edits. How: This calls the caller's own onSavEdiFun. Its data-element-name-hook is read by the tours and the test suites. */ }
 
 
 					</div>

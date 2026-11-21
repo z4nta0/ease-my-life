@@ -289,7 +289,7 @@ function CatTogCom ( { colValBoo, disValBoo, kicTexStr, onClick, sumTexStr, touV
 			aria-expanded={ !colValBoo }
 
 			onClick={ onClick }
-		>{ /* What: Category Toggle Button Element. Why: A nested disclosure needs its own toggle. How: This calls onClick, which flips its collapsed state. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+		>{ /* What: Category Toggle Button Element. Why: A nested disclosure needs its own toggle. How: This calls onClick, which flips its collapsed state. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 			<span className={ cssModObj.togLabSpa }>{ /* What: Toggle Label Span Element. Why: The chevron and the kicker read together as one unit. How: This wraps both spans below. */ }
@@ -1419,7 +1419,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 					className={ cssModObj.heaLeaDiv }
 
 					data-element-name-hook='heaLeaDiv'
-				>{ /* What: Header Lead Div Element. Why: The brand link and the page title belong together at the top of the header. How: This wraps the brand button and the heaTitDiv div below. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+				>{ /* What: Header Lead Div Element. Why: The brand link and the page title belong together at the top of the header. How: This wraps the brand button and the heaTitDiv div below. Its data-element-name-hook is read by help mode. */ }
 
 
 					<button
@@ -1432,7 +1432,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 						aria-label='Ease My Life link to go to the Today page'
 
 						onClick={ onNavHomFun }
-					>{ /* What: Brand Mark Button Element. Why: The logo/wordmark also works as a shortcut back to the Today tab. How: This wraps the theme-wired logo svg below and jumps to Today on click. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+					>{ /* What: Brand Mark Button Element. Why: The logo/wordmark also works as a shortcut back to the Today tab. How: This wraps the theme-wired logo svg below and jumps to Today on click. Its data-element-name-hook is read by help mode. */ }
 
 
 						<svg
@@ -1747,7 +1747,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 								type='button'
 
 								onClick={ () => selScoFun( 'all' ) }
-							>{ /* What: Scope Tab Button Element. Why: This is the All box: selecting it shows every visible section at once. How: This calls selScoFun('all') on click, disabled during the matching tour step. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
+							>{ /* What: Scope Tab Button Element. Why: This is the All box: selecting it shows every visible section at once. How: This calls selScoFun('all') on click, disabled during the matching tour step. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 								<span className={ cssModObj.scoNamSpa }>All</span>{ /* What: Scope Name Span Element. Why: Every box needs its own visible name. How: This renders the literal text "All". */ }
@@ -1821,7 +1821,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 									type='button'
 
 									onClick={ filEntObj.cliFun }
-								>{ /* What: Scope Tab Button Element. Why: Each box narrows the list to one scope: Conditionals, Reminders, or one picker. How: This marks itself selected when filEntObj.selBoo and runs filEntObj.cliFun. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
+								>{ /* What: Scope Tab Button Element. Why: Each box narrows the list to one scope: Conditionals, Reminders, or one picker. How: This marks itself selected when filEntObj.selBoo and runs filEntObj.cliFun. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 									<span className={ cssModObj.scoNamSpa }>{ filEntObj.namStr }</span>{ /* What: Scope Name Span Element. Why: Every box needs its own visible name. How: This renders filEntObj.namStr. */ }
@@ -1849,7 +1849,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 				className={ cssModObj.sorBarDiv }
 
 				data-element-name-hook='sorBarDiv'
-			>{ /* What: Sort Bar Div Element. Why: The section sort control needs its own row, separate from the filter rows above. How: This wraps SorSelCom below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+			>{ /* What: Sort Bar Div Element. Why: The section sort control needs its own row, separate from the filter rows above. How: This wraps SorSelCom below. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 				<SorSelCom
@@ -1872,7 +1872,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 				className={ cssModObj.datLisDiv }
 
 				data-element-name-hook='datLisDiv'
-			>{ /* What: Data List Div Element. Why: This is the actual rendered list, re-keyed when the Group filter, the scope, or the Conditionals filter changes so section entrance animations replay. How: This renders an empty-state message when nothing matches, otherwise every entry in shoSecArr plus the Create Picker trigger. Its data-element-name-hook is read by the App Features tours, the Data page tour, and help mode's Data catalog. */ }
+			>{ /* What: Data List Div Element. Why: This is the actual rendered list, re-keyed when the Group filter, the scope, or the Conditionals filter changes so section entrance animations replay. How: This renders an empty-state message when nothing matches, otherwise every entry in shoSecArr plus the Create Picker trigger. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 				{ shoEmpBoo && ( // What: Empty State Check. Why: Every filter combined leaving nothing at all needs its own explanatory message. How: This renders only while all 3 sections are absent.
@@ -2079,7 +2079,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 							} }
-						>{ /* What: Data Category Section Element. Why: This is one picker's own top-level card, matching every other Data tab category's own outer landmark. How: This plays the removal animation via rmvPicStr/onAnimationEnd, and renders the header + ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours, the Data page tour, and help mode's Data catalog. */ }
+						>{ /* What: Data Category Section Element. Why: This is one picker's own top-level card, matching every other Data tab category's own outer landmark. How: This plays the removal animation via rmvPicStr/onAnimationEnd, and renders the header + ColDisCom-wrapped body below. Its data-element-name-hook is read by the tours, help mode, the Data tab's scroll code, and the test suites. */ }
 
 
 							<header
@@ -2101,7 +2101,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 								} }
-							>{ /* What: Category Header Header Element. Why: Clicking anywhere on the header (outside a real button) should toggle the card. How: This calls togSecFun unless this is a draft, the tour is guarding the header, or the click actually landed on a button. Its data-element-name-hook is read by help mode's Data catalog. */ }
+							>{ /* What: Category Header Header Element. Why: Clicking anywhere on the header (outside a real button) should toggle the card. How: This calls togSecFun unless this is a draft, the tour is guarding the header, or the click actually landed on a button. Its data-element-name-hook is read by help mode. */ }
 
 
 								<button
@@ -2115,7 +2115,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 									aria-expanded={ secOpeBoo }
 
 									onClick={ () => togSecFun( picCurObj.id ) }
-								>{ /* What: Category Header Button Element. Why: This is the actual clickable control for expanding/collapsing the card. How: This is disabled for a draft (always expanded) or during the guarded tour step. Its data-element-name-hook is read by the App Features tours. */ }
+								>{ /* What: Category Header Button Element. Why: This is the actual clickable control for expanding/collapsing the card. How: This is disabled for a draft (always expanded) or during the guarded tour step. Its data-element-name-hook is read by the tours and the test suites. */ }
 
 
 									<span
@@ -2169,7 +2169,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 											labTexStr={ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr }
 											trnOnlBoo
-										>{ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr }</InfTipCom>{ /* What: Category Mode Span Info Tip Component. Why: A long mode label like "Dynamic Weighted" can still truncate at this width. How: This reveals the full label on demand only when it's actually truncated. Its data-element-name-hook is read by help mode's Data catalog. */ }
+										>{ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr }</InfTipCom>{ /* What: Category Mode Span Info Tip Component. Why: A long mode label like "Dynamic Weighted" can still truncate at this width. How: This reveals the full label on demand only when it's actually truncated. Its data-element-name-hook is read by help mode. */ }
 
 
 
@@ -2245,7 +2245,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 									className={ cssModObj.catBodDiv }
 
 									data-element-name-hook='catBodDiv'
-								>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures both belong in one grouped body. How: This wraps both nested disclosures below. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+								>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures both belong in one grouped body. How: This wraps both nested disclosures below. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 
@@ -2327,7 +2327,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 													actNamStr={ `Add to ${ picCurObj.name.toLowerCase() }` }
 													labTexStr='This button is disabled until all tutorials are completed.'
-												>{ /* What: Row Add Span Info Tip Component. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses. Its data-element-name-hook is read by help mode's Data catalog. */ }
+												>{ /* What: Row Add Span Info Tip Component. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses. Its data-element-name-hook is read by help mode. */ }
 
 
 													<IcoSvgCom
@@ -2350,7 +2350,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 													disabled={ detAddBoo }
 
 													onClick={ staAddFun }
-												>{ /* What: Row Add Button Element. Why: This is the actual "create a brand-new item" affordance. How: This calls staAddFun on click, disabled during the guarded tour step. Its data-element-name-hook is read by help mode's Data catalog. */ }
+												>{ /* What: Row Add Button Element. Why: This is the actual "create a brand-new item" affordance. How: This calls staAddFun on click, disabled during the guarded tour step. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 													<IcoSvgCom
@@ -2417,7 +2417,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 														data-row-vacation-active={ iteCurObj.vacation || undefined } // What: Row Vacation Active Attribute. Why: An item on vacation reads quieter than the rest. How: This sets the presence-only attribute while the item is on vacation.
 
 														onAnimationEnd={ () => { if ( insIteStr === iteCurObj.id ) setInsIteStr( null ); } }
-													>{ /* What: List Item Div Element. Why: Every item needs its own collapsible row wrapper, capturing the entrance/insert animation and the tour highlight. How: This clears insIteStr once this row's own insert animation finishes. Its data-element-name-hook is read by the App Features tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+													>{ /* What: List Item Div Element. Why: Every item needs its own collapsible row wrapper, capturing the entrance/insert animation and the tour highlight. How: This clears insIteStr once this row's own insert animation finishes. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 														{ iteOpeBoo ? ( // What: Editing Check. Why: The open row swaps its own header for a live name input, since a real button can't legally contain that input. How: This renders the editing header while iteOpeBoo is true, otherwise the normal clickable row.
@@ -2427,7 +2427,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 																className={ cssModObj.lisRowDiv }
 
 																data-element-name-hook='lisRowDiv'
-															>{ /* What: List Row Div Element. Why: The name input and its own chevron button need their own row. How: This wraps the rowMaiSpa span and the chevron button below. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+															>{ /* What: List Row Div Element. Why: The name input and its own chevron button need their own row. How: This wraps the rowMaiSpa span and the chevron button below. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 																<span className={ cssModObj.rowMaiSpa }>{ /* What: Row Main Span Element. Why: The name input needs its own wrapper matching the closed row's own layout. How: This wraps the input below. */ }
@@ -2468,7 +2468,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 																		onChange={ ( chaEveObj ) => patDraFun( { name : chaEveObj.target.value } ) }
 																		onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-																	/>{ /* What: Row Name Input Element. Why: An item's own name is edited right in the row header. How: This writes every keystroke into the row's draft, trimmed when the draft is kept. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+																	/>{ /* What: Row Name Input Element. Why: An item's own name is edited right in the row header. How: This writes every keystroke into the row's draft, trimmed when the draft is kept. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 																</span>
@@ -2519,7 +2519,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 																} }
-															>{ /* What: List Row Button Element. Why: A closed row is a plain clickable control that opens its own editor. How: This keeps any other open row's edits, then opens this one. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+															>{ /* What: List Row Button Element. Why: A closed row is a plain clickable control that opens its own editor. How: This keeps any other open row's edits, then opens this one. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 																<span className={ cssModObj.rowMaiSpa }>{ /* What: Row Main Span Element. Why: The name and its own meta line belong together. How: This wraps the name and summary spans below. */ }
@@ -2529,7 +2529,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 																		className={ cssModObj.rowNamSpa }
 
 																		data-element-name-hook='rowNamSpa'
-																	>{ iteCurObj.name }</span>{ /* What: Row Name Span Element. Why: Every item row needs its own visible name. How: This renders iteCurObj.name. Its data-element-name-hook is read by help mode's Data catalog. */ }
+																	>{ iteCurObj.name }</span>{ /* What: Row Name Span Element. Why: Every item row needs its own visible name. How: This renders iteCurObj.name. Its data-element-name-hook is read by help mode. */ }
 
 																	<span className={ cssModObj.rowSumSpa }>{ rowSumStr }</span>{ /* What: Row Summary Span Element. Why: The closed row's meta line summarizes the item's state. How: This renders rowSumStr. */ }
 
@@ -2673,7 +2673,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 						type='button'
 
 						onClick={ staNewFun }
-					>{ /* What: Data Create Button Element. Why: This is the only place a brand-new picker can be started from this tab. How: This calls staNewFun on click, disabled during the guarded tour step. Its data-element-name-hook is read by the Data page tour and help mode's Data catalog. */ }
+					>{ /* What: Data Create Button Element. Why: This is the only place a brand-new picker can be started from this tab. How: This calls staNewFun on click, disabled during the guarded tour step. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 						<IcoSvgCom

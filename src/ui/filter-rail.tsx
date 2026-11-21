@@ -97,7 +97,7 @@ function FilRaiCom ( { allCouNum, allSelBoo, ariLabStr, 'data-element-name-hook'
 
 				aria-label={ ariLabStr }
 				role='tablist'
-			>{ /* What: Filter Rail Div Element. Why: The "All" pill and one pill per choice need a horizontally scrolling tab list. How: This wraps the "All" pill and one pill per entry in entIteArr. Its data-element-name-hook is read by the page tours and help mode. */ }
+			>{ /* What: Filter Rail Div Element. Why: The "All" pill and one pill per choice need a horizontally scrolling tab list. How: This wraps the "All" pill and one pill per entry in entIteArr. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 				<button
@@ -112,7 +112,7 @@ function FilRaiCom ( { allCouNum, allSelBoo, ariLabStr, 'data-element-name-hook'
 					role='tab'
 
 					onClick={ onAllPilFun }
-				>{ /* What: All Pill Button Element. Why: The user needs a way to clear the filter back to unfiltered. How: This marks itself selected when allSelBoo and runs onAllPilFun. Its data-element-name-hook is read by the page tours and help mode. */ }
+				>{ /* What: All Pill Button Element. Why: The user needs a way to clear the filter back to unfiltered. How: This marks itself selected when allSelBoo and runs onAllPilFun. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 					All
@@ -139,7 +139,7 @@ function FilRaiCom ( { allCouNum, allSelBoo, ariLabStr, 'data-element-name-hook'
 						role='tab'
 
 						onClick={ entCurObj.cliFun }
-					>{ /* What: Entry Pill Button Element. Why: Clicking a pill narrows the tab to that choice. How: This marks itself selected when entCurObj.selBoo and runs entCurObj.cliFun. Its data-element-name-hook is read by the page tours and help mode. */ }
+					>{ /* What: Entry Pill Button Element. Why: Clicking a pill narrows the tab to that choice. How: This marks itself selected when entCurObj.selBoo and runs entCurObj.cliFun. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 						{ entCurObj.namStr }{ /* What: Pill Name Expression. Why: Every pill needs its own visible label. How: This renders entCurObj.namStr. */ }

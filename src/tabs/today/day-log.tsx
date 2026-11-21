@@ -678,7 +678,7 @@ function StaChiCom ( { iteFlaObj } : ShcProTyp ) : React.JSX.Element {
 				className={ cssModObj.staNonSpa }
 
 				data-element-name-hook='logStaSpa'
-			>—</span> // What: Status None Span Element. Why: An item with no pick-log rows today still needs a placeholder in its status column. How: This renders an em-dash display glyph. Its data-element-name-hook is read by help mode's Today catalog.
+			>—</span> // What: Status None Span Element. Why: An item with no pick-log rows today still needs a placeholder in its status column. How: This renders an em-dash display glyph. Its data-element-name-hook is read by help mode.
 
 
 		);
@@ -718,7 +718,7 @@ function StaChiCom ( { iteFlaObj } : ShcProTyp ) : React.JSX.Element {
 			className={ cssModObj.rowStaSpa }
 
 			data-element-name-hook='logStaSpa'
-		>{ /* What: Row Status Span Element. Why: This is StaChiCom's own root element, holding every chip this item earned today. How: This maps chiTupArr into one small icon span per chip below. Its data-element-name-hook is read by help mode's Today catalog. */ }
+		>{ /* What: Row Status Span Element. Why: This is StaChiCom's own root element, holding every chip this item earned today. How: This maps chiTupArr into one small icon span per chip below. Its data-element-name-hook is read by help mode. */ }
 
 
 			{ chiTupArr.map( ( [ chiKeyStr, chiIcoStr, chiTitStr, chiWidNum ] ) => ( // What: Chip Map Callback. Why: One small span is needed per earned chip. How: This destructures each chiTupArr tuple and renders it as a titled icon span, keyed by chiKeyStr.
@@ -794,13 +794,13 @@ function TabHeaCom ( { heaLabStr = 'Item' } : ThcProTyp ) : React.JSX.Element {
 		<div className={ cssModObj.tabHeaDiv }>{ /* What: Table Head Div Element. Why: This is TabHeaCom's own root element. How: This renders the 5 shared column headers below. */ }
 
 
-			<span data-element-name-hook='logIteSpa'>{ heaLabStr }</span>{ /* What: Item Header Span Element. Why: The first column's own label varies by caller. How: This renders heaLabStr directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			<span data-element-name-hook='logIteSpa'>{ heaLabStr }</span>{ /* What: Item Header Span Element. Why: The first column's own label varies by caller. How: This renders heaLabStr directly. Its data-element-name-hook is read by help mode. */ }
 
 			<span
 				className={ cssModObj.heaGenSpa }
 
 				data-element-name-hook='logGenSpa'
-			>{ /* What: Header Generation Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders an open-circle glyph plus a visually-hidden "At generation" span. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ /* What: Header Generation Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders an open-circle glyph plus a visually-hidden "At generation" span. Its data-element-name-hook is read by help mode. */ }
 
 
 				<span
@@ -818,7 +818,7 @@ function TabHeaCom ( { heaLabStr = 'Item' } : ThcProTyp ) : React.JSX.Element {
 				className={ cssModObj.heaDelSpa }
 
 				data-element-name-hook='logDelSpa'
-			>{ /* What: Header Delta Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders a delta glyph plus a visually-hidden "Change" span. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ /* What: Header Delta Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders a delta glyph plus a visually-hidden "Change" span. Its data-element-name-hook is read by help mode. */ }
 
 
 				<span aria-hidden='true'>Δ</span>{ /* What: Delta Glyph Span Element. Why: A compact glyph keeps the narrow column header short. How: This renders Δ hidden from screen readers. */ }
@@ -832,7 +832,7 @@ function TabHeaCom ( { heaLabStr = 'Item' } : ThcProTyp ) : React.JSX.Element {
 				className={ cssModObj.heaAftSpa }
 
 				data-element-name-hook='logAftSpa'
-			>{ /* What: Header After Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders a filled-circle glyph plus a visually-hidden "After" span. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ /* What: Header After Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders a filled-circle glyph plus a visually-hidden "After" span. Its data-element-name-hook is read by help mode. */ }
 
 
 				<span aria-hidden='true'>●</span>{ /* What: After Glyph Span Element. Why: A compact glyph keeps the narrow column header short. How: This renders ● hidden from screen readers. */ }
@@ -846,7 +846,7 @@ function TabHeaCom ( { heaLabStr = 'Item' } : ThcProTyp ) : React.JSX.Element {
 				className={ cssModObj.heaStaSpa }
 
 				data-element-name-hook='logStaSpa'
-			>Status</span>{ /* What: Header Status Span Element. Why: The last column is a plain text header, no glyph needed. How: This renders the literal text "Status". Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>Status</span>{ /* What: Header Status Span Element. Why: The last column is a plain text header, no glyph needed. How: This renders the literal text "Status". Its data-element-name-hook is read by help mode. */ }
 
 
 		</div>
@@ -919,19 +919,19 @@ function ValCelCom ( { aftValNum, genValNum, hasValBoo, offValNum = 0 } : VccPro
 					className={ cssModObj.celGenSpa }
 
 					data-element-name-hook='logGenSpa'
-				><span className={ cssModObj.notAppSpa }>N/A</span>{ /* What: Not Applicable Span Element. Why: A value that doesn't apply reads faint. How: This renders the literal text "N/A". */ }</span>{ /* What: Cell Generation Span Element. Why: There is no generation-time value to show. How: This renders the shared notAppSpa "N/A" placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
+				><span className={ cssModObj.notAppSpa }>N/A</span>{ /* What: Not Applicable Span Element. Why: A value that doesn't apply reads faint. How: This renders the literal text "N/A". */ }</span>{ /* What: Cell Generation Span Element. Why: There is no generation-time value to show. How: This renders the shared notAppSpa "N/A" placeholder. Its data-element-name-hook is read by help mode. */ }
 
 				<span
 					className={` ${ cssModObj.celDelSpa }   ${ cssModObj.celDelSpaFlat } `}
 
 					data-element-name-hook='logDelSpa'
-				>—</span>{ /* What: Cell Delta Span Element. Why: With no real value, there is no real delta either. How: This renders the shared em-dash placeholder glyph (a display character, not prose). Its data-element-name-hook is read by help mode's Today catalog. */ }
+				>—</span>{ /* What: Cell Delta Span Element. Why: With no real value, there is no real delta either. How: This renders the shared em-dash placeholder glyph (a display character, not prose). Its data-element-name-hook is read by help mode. */ }
 
 				<span
 					className={` ${ cssModObj.celAftSpa }   ${ cssModObj.celAftSpaEmpty } `}
 
 					data-element-name-hook='logAftSpa'
-				><span className={ cssModObj.notAppSpa }>N/A</span>{ /* What: Not Applicable Span Element. Why: A value that doesn't apply reads faint. How: This renders the literal text "N/A". */ }</span>{ /* What: Cell After Span Element. Why: There is no current value to show either. How: This renders the shared notAppSpa "N/A" placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
+				><span className={ cssModObj.notAppSpa }>N/A</span>{ /* What: Not Applicable Span Element. Why: A value that doesn't apply reads faint. How: This renders the literal text "N/A". */ }</span>{ /* What: Cell After Span Element. Why: There is no current value to show either. How: This renders the shared notAppSpa "N/A" placeholder. Its data-element-name-hook is read by help mode. */ }
 
 
 			</React.Fragment>
@@ -962,19 +962,19 @@ function ValCelCom ( { aftValNum, genValNum, hasValBoo, offValNum = 0 } : VccPro
 				className={ cssModObj.celGenSpa }
 
 				data-element-name-hook='logGenSpa'
-			>{ effGenNum }</span>{ /* What: Cell Generation Span Element. Why: This is the row's own value as it stood at generation time. How: This renders effGenNum directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ effGenNum }</span>{ /* What: Cell Generation Span Element. Why: This is the row's own value as it stood at generation time. How: This renders effGenNum directly. Its data-element-name-hook is read by help mode. */ }
 
 			<span
 				className={` ${ cssModObj.celDelSpa }   ${ treClaStr === 'up' ? cssModObj.celDelSpaUp : '' }   ${ treClaStr === 'down' ? cssModObj.celDelSpaDown : '' }   ${ treClaStr === 'flat' ? cssModObj.celDelSpaFlat : '' } `}
 
 				data-element-name-hook='logDelSpa'
-			>{ disTexStr }</span>{ /* What: Cell Delta Span Element. Why: This is the row's own signed change since generation. How: This renders disTexStr, tinted by its own treClaStr direction class. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ disTexStr }</span>{ /* What: Cell Delta Span Element. Why: This is the row's own signed change since generation. How: This renders disTexStr, tinted by its own treClaStr direction class. Its data-element-name-hook is read by help mode. */ }
 
 			<span
 				className={ cssModObj.celAftSpa }
 
 				data-element-name-hook='logAftSpa'
-			>{ effAftNum }</span>{ /* What: Cell After Span Element. Why: This is the row's own current value. How: This renders effAftNum directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ effAftNum }</span>{ /* What: Cell After Span Element. Why: This is the row's own current value. How: This renders effAftNum directly. Its data-element-name-hook is read by help mode. */ }
 
 
 		</React.Fragment>
@@ -1041,7 +1041,7 @@ function ConSecCom ( { picGroArr, staAppObj } : CncProTyp ) : React.JSX.Element 
 			className={ cssModObj.logConDiv }
 
 			data-element-name-hook='logConDiv'
-		>{ /* What: Log Conditionals Div Element. Why: This is ConSecCom's own root element, tinted blue via its own logConDiv class. How: This renders a static header plus the conditional table below. Its data-element-name-hook is read by help mode's Today catalog. */ }
+		>{ /* What: Log Conditionals Div Element. Why: This is ConSecCom's own root element, tinted blue via its own logConDiv class. How: This renders a static header plus the conditional table below. Its data-element-name-hook is read by help mode. */ }
 
 
 			<div className={ cssModObj.bloHeaDiv }>{ /* What: Block Header Div Element. Why: This mirrors PicBloCom's own static header shape. How: This renders the section's own title plus a count pill. */ }
@@ -1087,7 +1087,7 @@ function ConSecCom ( { picGroArr, staAppObj } : CncProTyp ) : React.JSX.Element 
 									className={ cssModObj.rowFirSpa }
 
 									data-element-name-hook='logIteSpa'
-								>{ /* What: Row First Span Element. Why: This groups the conditional's own name, mode pill and subline together. How: This renders conRcdObj's own name/mode row plus its computed subline below. Its data-element-name-hook is read by help mode's Today catalog. */ }
+								>{ /* What: Row First Span Element. Why: This groups the conditional's own name, mode pill and subline together. How: This renders conRcdObj's own name/mode row plus its computed subline below. Its data-element-name-hook is read by help mode. */ }
 
 
 									<span className={ cssModObj.namRowSpa }>{ /* What: Name Row Span Element. Why: The name and mode pill sit side by side on their own row above the subline. How: This renders conRcdObj's own name plus its modLabStr pill. */ }
@@ -1133,7 +1133,7 @@ function ConSecCom ( { picGroArr, staAppObj } : CncProTyp ) : React.JSX.Element 
 									className={ cssModObj.rowStaSpa }
 
 									data-element-name-hook='logStaSpa'
-								>{ /* What: Row Status Span Element. Why: The last column shows whether this conditional actually fired today. How: This renders the triggered/not-triggered pill below. Its data-element-name-hook is read by help mode's Today catalog. */ }
+								>{ /* What: Row Status Span Element. Why: The last column shows whether this conditional actually fired today. How: This renders the triggered/not-triggered pill below. Its data-element-name-hook is read by help mode. */ }
 
 
 									<span className={` ${ cssModObj.staPilSpa }   ${ trgFlaBoo ? cssModObj.staPilSpaTriggered : cssModObj.staPilSpaUntriggered } `}>{ trgFlaBoo ? 'Triggered' : 'Not triggered' }</span>{ /* What: Status Pill Span Element. Why: This is the actual triggered/not-triggered indicator. How: This renders its own text/class from trgFlaBoo. */ }
@@ -1251,7 +1251,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 				className={ cssModObj.logBloDiv }
 
 				data-element-name-hook='logBloDiv'
-			>{ /* What: Log Block Div Element. Why: This is the whole static-rested variant's own root element. How: This renders a single non-interactive header row, no table beneath it. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ /* What: Log Block Div Element. Why: This is the whole static-rested variant's own root element. How: This renders a single non-interactive header row, no table beneath it. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 				<div className={ cssModObj.bloHeaDiv }>{ /* What: Block Header Div Element. Why: This mirrors the interactive header's own layout without being a button. How: This renders the picker's own name/mode pill plus the rested strip. */ }
@@ -1312,7 +1312,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 			className={ cssModObj.logBloDiv }
 
 			data-element-name-hook='logBloDiv'
-		>{ /* What: Log Block Div Element. Why: This is the interactive variant's own root element. How: This wraps the header button, whose aria-expanded reflects bloOpeBoo, and the collapsible table below. Its data-element-name-hook is read by help mode's Today catalog. */ }
+		>{ /* What: Log Block Div Element. Why: This is the interactive variant's own root element. How: This wraps the header button, whose aria-expanded reflects bloOpeBoo, and the collapsible table below. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 			<button
@@ -1422,7 +1422,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 									className={ cssModObj.rowFirSpa }
 
 									data-element-name-hook='logIteSpa'
-								>{ /* What: Row First Span Element. Why: This groups the item's own name and subline together. How: This renders iteRcdObj's own name plus its computed subline below. Its data-element-name-hook is read by help mode's Today catalog. */ }
+								>{ /* What: Row First Span Element. Why: This groups the item's own name and subline together. How: This renders iteRcdObj's own name plus its computed subline below. Its data-element-name-hook is read by help mode. */ }
 
 
 									<InfTipCom
@@ -1455,7 +1455,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 										className={ cssModObj.rowStaSpa }
 
 										data-element-name-hook='logStaSpa'
-									><span className={ cssModObj.vacNotSpa }>Inactive</span>{ /* What: Vacation Note Span Element. Why: A vacationing item has no chips to show. How: This renders the literal text "Inactive". */ }</span> // What: Row Status Span Element. Why: A vacationing item has no chips to show. How: This renders the plain Inactive label in the status column. Its data-element-name-hook is read by help mode's Today catalog.
+									><span className={ cssModObj.vacNotSpa }>Inactive</span>{ /* What: Vacation Note Span Element. Why: A vacationing item has no chips to show. How: This renders the literal text "Inactive". */ }</span> // What: Row Status Span Element. Why: A vacationing item has no chips to show. How: This renders the plain Inactive label in the status column. Its data-element-name-hook is read by help mode.
 									: <StaChiCom iteFlaObj={ iteFlaObj } />                                                    // What: Status Chip Component. Why: Every other item shows its own status chips. How: This passes the item's own flags.
 								}
 
@@ -1593,7 +1593,7 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } : GlcProTyp ) : React
 				className={ cssModObj.logKeyDiv }
 
 				data-element-name-hook='logKeyDiv'
-			>{ /* What: Log Key Div Element. Why: The panel needs a one-time legend explaining every status chip's own meaning. How: This renders 5 icon/label pairs, one per possible status. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ /* What: Log Key Div Element. Why: The panel needs a one-time legend explaining every status chip's own meaning. How: This renders 5 icon/label pairs, one per possible status. Its data-element-name-hook is read by help mode. */ }
 
 
 				<span className={ cssModObj.panKicSpa }>Key</span>{ /* What: Panel Kicker Span Element. Why: The legend needs its own small title. How: This renders the literal text "Key". */ }
@@ -1806,7 +1806,7 @@ function LogChiCom ( { onTogLogFun, open } : LccProTyp ) : React.JSX.Element {
 
 
 			} }
-		>{ /* What: Log Chip Button Element. Why: This is LogChiCom's own single rendered element. How: This shows open through its aria-pressed state, which its styling keys off, and toggles the panel without the click reaching the group header. Its data-element-name-hook is read by help mode's Today catalog. */ }
+		>{ /* What: Log Chip Button Element. Why: This is LogChiCom's own single rendered element. How: This shows open through its aria-pressed state, which its styling keys off, and toggles the panel without the click reaching the group header. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 			<IcoSetCom
@@ -1981,19 +1981,19 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 				<div className={ cssModObj.remHeaDiv }>{ /* What: Reminders Header Div Element. Why: This table needs its own 3-column header row. How: This renders the 3 column-header spans. */ }
 
 
-					<span data-element-name-hook='remNamSpa'>Reminder</span>{ /* What: Reminder Header Span Element. Why: This labels the name column. How: This renders the literal text "Reminder". Its data-element-name-hook is read by help mode's Today catalog. */ }
+					<span data-element-name-hook='remNamSpa'>Reminder</span>{ /* What: Reminder Header Span Element. Why: This labels the name column. How: This renders the literal text "Reminder". Its data-element-name-hook is read by help mode. */ }
 
 					<span
 						className={ cssModObj.heaWheSpa }
 
 						data-element-name-hook='remWheSpa'
-					>When</span>{ /* What: Header When Span Element. Why: This labels the schedule column. How: This renders the literal text "When". Its data-element-name-hook is read by help mode's Today catalog. */ }
+					>When</span>{ /* What: Header When Span Element. Why: This labels the schedule column. How: This renders the literal text "When". Its data-element-name-hook is read by help mode. */ }
 
 					<span
 						className={ cssModObj.heaStaSpa }
 
 						data-element-name-hook='remStaSpa'
-					>Status</span>{ /* What: Header Status Span Element. Why: This labels the status column. How: This renders the literal text "Status". Its data-element-name-hook is read by help mode's Today catalog. */ }
+					>Status</span>{ /* What: Header Status Span Element. Why: This labels the status column. How: This renders the literal text "Status". Its data-element-name-hook is read by help mode. */ }
 
 
 				</div>
@@ -2021,7 +2021,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 
 							labTexStr={ tasRcdObj.name }
 							trnOnlBoo
-						>{ tasRcdObj.name }</InfTipCom>{ /* What: Info Tip Component. Why: A long reminder name can truncate in a narrow layout. How: This renders tasRcdObj's own name as a truncation-revealing InfTipCom. Its data-element-name-hook is read by help mode's Today catalog. */ }
+						>{ tasRcdObj.name }</InfTipCom>{ /* What: Info Tip Component. Why: A long reminder name can truncate in a narrow layout. How: This renders tasRcdObj's own name as a truncation-revealing InfTipCom. Its data-element-name-hook is read by help mode. */ }
 
 
 
@@ -2029,13 +2029,13 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 							className={ cssModObj.remWheSpa }
 
 							data-element-name-hook='remWheSpa'
-						>{ wheSumStr }</span>{ /* What: Reminder When Span Element. Why: Every row shows its own plain schedule summary. How: This renders wheSumStr directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
+						>{ wheSumStr }</span>{ /* What: Reminder When Span Element. Why: Every row shows its own plain schedule summary. How: This renders wheSumStr directly. Its data-element-name-hook is read by help mode. */ }
 
 						<span
 							className={ cssModObj.remStaSpa }
 
 							data-element-name-hook='remStaSpa'
-						>{ /* What: Reminder Status Span Element. Why: The last column shows this row's own current status, differently per rowStaStr. How: This renders one of 4 status variants below, matched on rowStaStr. Its data-element-name-hook is read by help mode's Today catalog. */ }
+						>{ /* What: Reminder Status Span Element. Why: The last column shows this row's own current status, differently per rowStaStr. How: This renders one of 4 status variants below, matched on rowStaStr. Its data-element-name-hook is read by help mode. */ }
 
 
 							{ rowStaStr === 'done' && ( // What: Done Status Visibility Check. Why: A done row shows its own check icon plus a Done pill. How: This renders only while rowStaStr is 'done'.

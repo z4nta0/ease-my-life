@@ -185,7 +185,7 @@ function LoaCarCom ( { infRcdObj, picRcdObj } : LacProTyp ) : React.JSX.Element 
 
 			data-element-name-hook='todCarArt'
 			data-slot-pending-active={ sloStaStr === 'pending' || undefined } // What: Slot Pending Active Attribute. Why: A slot still waiting its turn gets a lighter card and faded text from its module. How: This sets the presence-only attribute while sloStaStr is 'pending' and removes it otherwise.
-		>{ /* What: Today Card Article Element. Why: This is one picker's own regeneration slot, styled per its own current status. How: This renders a disabled-looking check spot, the body below, and an empty actions strip for layout parity with a real EntCarCom. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
+		>{ /* What: Today Card Article Element. Why: This is one picker's own regeneration slot, styled per its own current status. How: This renders a disabled-looking check spot, the body below, and an empty actions strip for layout parity with a real EntCarCom. Its data-element-name-hook is read by help mode, Today's ripple and drag-to-reorder code, and the test suites. */ }
 
 
 			<span
@@ -194,7 +194,7 @@ function LoaCarCom ( { infRcdObj, picRcdObj } : LacProTyp ) : React.JSX.Element 
 				data-element-name-hook='carCheSpa'
 
 				aria-hidden='true'
-			/>{ /* What: Card Check Span Element. Why: A loader card still needs the same layout slot a real card's check button occupies. How: This renders an inert, unclickable placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			/>{ /* What: Card Check Span Element. Why: A loader card still needs the same layout slot a real card's check button occupies. How: This renders an inert, unclickable placeholder. Its data-element-name-hook is read by help mode. */ }
 
 
 			<div className={ cssModObj.carBodDiv }>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block, matching a real card's own layout. How: This wraps the meta row and the name row below. */ }
@@ -240,7 +240,7 @@ function LoaCarCom ( { infRcdObj, picRcdObj } : LacProTyp ) : React.JSX.Element 
 				className={ cssModObj.carActDiv }
 
 				data-element-name-hook='carActDiv'
-			/>{ /* What: Card Actions Div Element. Why: A loader card still needs the same layout slot a real card's actions strip occupies. How: This renders an empty placeholder, matching a real card's own layout. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
+			/>{ /* What: Card Actions Div Element. Why: A loader card still needs the same layout slot a real card's actions strip occupies. How: This renders an empty placeholder, matching a real card's own layout. Its data-element-name-hook is read by help mode. */ }
 
 
 		</article>

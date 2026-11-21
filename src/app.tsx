@@ -233,7 +233,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 			aria-hidden={ tbcGhoBoo || undefined } // What: ARIA Hidden Attribute. Why: A ghost copy is purely decorative during its exit animation. How: This hides the bar from assistive technology only while tbcGhoBoo is true and leaves the attribute off otherwise.
 			aria-label='Sections'
-		>{ /* What: App Tab Nav Element. Why: This is TabBarCom's own root element, holding the tab buttons, the brand button, the rail handle, and the sliding indicator. How: This renders as an actual <nav> landmark, positioned and laid out per tabPlaStr and styled with the caller's own className. Its data-element-name-hook is read by tour, help mode, and support form layout and scroll code. */ }
+		>{ /* What: App Tab Nav Element. Why: This is TabBarCom's own root element, holding the tab buttons, the brand button, the rail handle, and the sliding indicator. How: This renders as an actual <nav> landmark, positioned and laid out per tabPlaStr and styled with the caller's own className. Its data-element-name-hook is read by the tours, help mode, and the support form. */ }
 
 
 			{ indRecObj && ( // What: Indicator Visibility Check. Why: There is nothing to position until a measurement has actually happened. How: This renders the indicator span only while indRecObj holds a value, otherwise it renders nothing at all.
@@ -783,7 +783,7 @@ function AppRooCom () : React.JSX.Element {
 				data-tab-today-active={ actIdeStr === 'today' || undefined } // What: Tab Today Active Attribute. Why: The Today tab runs edge to edge in the bottom (below 880px) and top placements, so the main area drops its base side padding while it shows. How: This sets the presence-only attribute while actIdeStr is 'today' and removes it otherwise.
 
 				tabIndex={ -1 } // What: Main Tab Index. Why: The skip link moves focus here, but the main area isn't a control. How: A tabIndex of -1 lets it take focus without joining the Tab order.
-			>{ /* What: App Content Main Element. Why: This is the single shared scroll container for whichever tab is currently active, and the skip link's target. How: This renders the update note, then the Today tab directly or every other tab inside a shared maiInnDiv wrapper, based on actIdeStr. Its id is kept plain as the skip link's target, and its data-element-name-hook is read by tab, tour, and help scroll-into-view code. */ }
+			>{ /* What: App Content Main Element. Why: This is the single shared scroll container for whichever tab is currently active, and the skip link's target. How: This renders the update note, then the Today tab directly or every other tab inside a shared maiInnDiv wrapper, based on actIdeStr. Its id is kept plain as the skip link's target, and its data-element-name-hook is read by the tours, help mode, Today's drag-to-reorder code, the Today, Pickers, and Settings tabs' scroll code, the background flourish's layout code, the support form, and the test suites. */ }
 
 
 				<UpdNotCom />{ /* What: Update Note Component. Why: A new version that couldn't reload while the app was hidden, since work was still under way, is offered here. How: This renders the note's status region first in the main area, above whichever tab is open. */ }

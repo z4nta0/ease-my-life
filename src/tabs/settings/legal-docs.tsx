@@ -238,7 +238,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 			data-element-name-hook='legBacDiv'
 
 			onMouseDown={ ( mouDowObj ) => { if ( mouDowObj.target === mouDowObj.currentTarget ) modDisFun(); } } // What: Backdrop Dismiss Handler. Why: Only a press on the scrim itself, not one inside the panel, should close the modal. How: This calls modDisFun only when the mousedown target is the backdrop element.
-		>{ /* What: Legal Backdrop Div Element. Why: This is the modal's own full-viewport scrim, and a direct click on it (not on the panel inside it) should dismiss the modal. How: This wraps the panel below and calls modDisFun only when the mousedown target is the backdrop itself. Its data-element-name-hook is read by help mode, which lets clicks inside the modal through. */ }
+		>{ /* What: Legal Backdrop Div Element. Why: This is the modal's own full-viewport scrim, and a direct click on it (not on the panel inside it) should dismiss the modal. How: This wraps the panel below and calls modDisFun only when the mousedown target is the backdrop itself. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 			<div

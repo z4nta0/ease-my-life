@@ -499,7 +499,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 					className={ cssModObj.heaLeaDiv }
 
 					data-element-name-hook='heaLeaDiv'
-				>{ /* What: Header Lead Div Element. Why: The brand mark and the page's own main heading sit side by side. How: This wraps those two pieces. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+				>{ /* What: Header Lead Div Element. Why: The brand mark and the page's own main heading sit side by side. How: This wraps those two pieces. Its data-element-name-hook is read by help mode. */ }
 
 
 					<button
@@ -512,7 +512,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 						aria-label='Ease My Life link to go to the Today page'
 
 						onClick={ onNavHomFun }
-					>{ /* What: Brand Mark Button Element. Why: The logo also works as a shortcut back to the Today tab. How: This wraps the logo svg and calls onNavHomFun on click. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+					>{ /* What: Brand Mark Button Element. Why: The logo also works as a shortcut back to the Today tab. How: This wraps the logo svg and calls onNavHomFun on click. Its data-element-name-hook is read by help mode. */ }
 
 
 						<svg
@@ -739,7 +739,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 							data-element-name-hook='picTabDiv'
 							data-rail-wheel-scroll
-						>{ /* What: Picker Tab Div Element. Why: The Add New Picker tab plus one tab per currently-visible picker need a horizontally-scrolling rail; re-keying by the two filters together replays each tab's own stagger-in animation whenever the filtered set changes. How: This wraps the Add New Picker tab and one tab per entry in sorPicArr. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
+						>{ /* What: Picker Tab Div Element. Why: The Add New Picker tab plus one tab per currently-visible picker need a horizontally-scrolling rail; re-keying by the two filters together replays each tab's own stagger-in animation whenever the filtered set changes. How: This wraps the Add New Picker tab and one tab per entry in sorPicArr. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 							{ tutProBoo ? ( // What: Tutorials In Progress Check. Why: Distinct from disAddBoo below, this tooltip's wording ("until all tutorials are completed") would be misleading during a Replay of the Pickers page tour, which runs AFTER the checklist finishes, when tutProBoo is always false, so that case still falls through to the plain disabled button with no tooltip. How: This renders a disabled, explanatory InfTipCom instead of the real button while the guided checklist is still in progress.
@@ -753,7 +753,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 									actNamStr='Add New Picker'
 									labTexStr='This button is disabled until all tutorials are completed.'
-								>{ /* What: Info Tip Component. Why: A disabled add tab still needs to explain why it can't be clicked yet. How: This wraps the same visible label the real tab uses. Its data-element-name-hook is read by the Pickers page tour, the picker mini-tours, and help mode's Pickers catalog. */ }
+								>{ /* What: Info Tip Component. Why: A disabled add tab still needs to explain why it can't be clicked yet. How: This wraps the same visible label the real tab uses. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 									<AddLabCom />{ /* What: Add Label Component. Why: The add tab needs its plus glyph and visible label. How: This renders both. */ }
@@ -811,7 +811,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 									} }
-								>{ /* What: Picker Tab Button Element. Why: Tapping a picker's own tab should select it and close the create form. How: This writes curPicObj.id into actPicStr. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
+								>{ /* What: Picker Tab Button Element. Why: Tapping a picker's own tab should select it and close the create form. How: This writes curPicObj.id into actPicStr. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 									<span className={ cssModObj.tabNamSpa }>{ curPicObj.name }</span>{ /* What: Tab Name Span Element. Why: Every tab needs its own picker name. How: This renders curPicObj.name. */ }

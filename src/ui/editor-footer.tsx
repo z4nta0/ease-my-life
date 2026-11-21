@@ -97,7 +97,7 @@ function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } : EfcP
 				className={` ${ cssModObj.ediFooDiv }   ${ cssModObj.ediFooDivConfirm } `}
 
 				data-element-name-hook='ediFooDiv'
-			>{ /* What: Editor Footer Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+			>{ /* What: Editor Footer Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode. */ }
 
 
 				<span className={ cssModObj.delMesSpa }>Delete this reminder?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
@@ -121,7 +121,7 @@ function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } : EfcP
 						sizValStr='sm'
 
 						onClick={ onDelTasFun }
-					>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls onDelTasFun. Its data-element-name-hook is read by help mode's Data catalog. */ }
+					>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls onDelTasFun. Its data-element-name-hook is read by help mode. */ }
 
 
 				</div>
@@ -146,7 +146,7 @@ function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } : EfcP
 			className={ cssModObj.ediFooDiv }
 
 			data-element-name-hook='ediFooDiv'
-		>{ /* What: Editor Footer Div Element. Why: This is the normal, non-confirming footer shown whenever conOpeBoo is false. How: This renders an optional Delete button (suppressed for a brand-new reminder) plus the Cancel/Save actions. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+		>{ /* What: Editor Footer Div Element. Why: This is the normal, non-confirming footer shown whenever conOpeBoo is false. How: This renders an optional Delete button (suppressed for a brand-new reminder) plus the Cancel/Save actions. Its data-element-name-hook is read by help mode. */ }
 
 
 			{ !isaNewBoo && ( // What: Delete Visibility Check. Why: A brand-new, not-yet-kept reminder has nothing to delete yet, only to discard via Cancel. How: This renders the Delete button only for an already-existing reminder.
@@ -160,7 +160,7 @@ function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } : EfcP
 					sizValStr='sm'
 
 					onClick={ () => setConOpeBoo( true ) }
-				>Delete</ButBasCom> // What: Button Base Component. Why: This opens the delete confirm prompt above instead of deleting immediately. How: This sets conOpeBoo to true. Its data-element-name-hook is read by help mode's Data catalog.
+				>Delete</ButBasCom> // What: Button Base Component. Why: This opens the delete confirm prompt above instead of deleting immediately. How: This sets conOpeBoo to true. Its data-element-name-hook is read by help mode.
 
 
 			) }

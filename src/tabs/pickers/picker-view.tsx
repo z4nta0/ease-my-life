@@ -1032,7 +1032,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 			className={ cssModObj.picVieDiv }
 
 			data-element-name-hook='picVieDiv'
-		>{ /* What: Picker View Div Element. Why: This is PicVieCom's own root, holding the header, the run stage/actions, and the pool. How: This wraps every piece of the selected picker's own live view. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+		>{ /* What: Picker View Div Element. Why: This is PicVieCom's own root, holding the header, the run stage/actions, and the pool. How: This wraps every piece of the selected picker's own live view. Its data-element-name-hook is read by help mode. */ }
 
 
 			<header className={ cssModObj.picHeaHed }>{ /* What: Picker Header Header Element. Why: The picker's own name/mode and its Edit button both belong in one header row. How: This wraps the title block and the Edit button. */ }
@@ -1047,7 +1047,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 						className={ cssModObj.picTitHea }
 
 						data-element-name-hook='picTitHea'
-					>{ picDatObj.name }</h2>{ /* What: Picker Title Heading Element. Why: The picker's own name is this view's main heading. How: This renders picker.name. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog. */ }
+					>{ picDatObj.name }</h2>{ /* What: Picker Title Heading Element. Why: The picker's own name is this view's main heading. How: This renders picker.name. Its data-element-name-hook is read by help mode. */ }
 
 
 
@@ -1055,7 +1055,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 						data-element-name-hook='modPilSpa'
 
 						tonValStr='mode'
-					>{ modInfObj.labStr }</PilTagCom>{ /* What: Pill Tag Component. Why: The picker's own mode reads as a small status pill beside its name. How: This renders modInfObj.labStr inside the shared PilTagCom component. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog. */ }
+					>{ modInfObj.labStr }</PilTagCom>{ /* What: Pill Tag Component. Why: The picker's own mode reads as a small status pill beside its name. How: This renders modInfObj.labStr inside the shared PilTagCom component. Its data-element-name-hook is read by help mode. */ }
 
 
 				</div>
@@ -1070,7 +1070,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 					sizValStr='sm'
 
 					onClick={ () => setEdiOpeBoo( true ) }
-				>Edit</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to open PicForCom's own Details step against this exact picker. How: This flips ediOpeBoo true on click. Its data-element-name-hook is read by the Pickers page tour and help mode's Pickers catalog. */ }
+				>Edit</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to open PicForCom's own Details step against this exact picker. How: This flips ediOpeBoo true on click. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 			</header>
@@ -1088,7 +1088,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 						className={ cssModObj.picHinPar }
 
 						data-element-name-hook='picHinPar'
-					>{ parTexStr }</p> // What: Picker Hint Paragraph Element. Why: Each paragraph renders as its own hint line. How: This renders parTexStr, keyed by its index. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
+					>{ parTexStr }</p> // What: Picker Hint Paragraph Element. Why: Each paragraph renders as its own hint line. How: This renders parTexStr, keyed by its index. Its data-element-name-hook is read by help mode.
 
 
 				) )
@@ -1100,7 +1100,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 						className={ cssModObj.picHinPar }
 
 						data-element-name-hook='picHinPar'
-					>{ modInfObj.hinArr }</p> // What: Picker Hint Paragraph Element. Why: A single-paragraph hint renders as one hint line. How: This renders modInfObj.hinArr directly. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
+					>{ modInfObj.hinArr }</p> // What: Picker Hint Paragraph Element. Why: A single-paragraph hint renders as one hint line. How: This renders modInfObj.hinArr directly. Its data-element-name-hook is read by help mode.
 
 
 				)
@@ -1112,7 +1112,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 				className={ cssModObj.picHinPar }
 
 				data-element-name-hook='picHinPar'
-			>Please note that any items in this picker&rsquo;s pool that are already included in the Today tab will be excluded from being selected.</p>{ /* What: Picker Hint Paragraph Element. Why: This one is the exclusion note: the pool's own eligible count can otherwise look wrong to someone who doesn't know Today-listed items are excluded from picking. How: This renders a fixed explanatory sentence under every mode's own hint. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog. */ }
+			>Please note that any items in this picker&rsquo;s pool that are already included in the Today tab will be excluded from being selected.</p>{ /* What: Picker Hint Paragraph Element. Why: This one is the exclusion note: the pool's own eligible count can otherwise look wrong to someone who doesn't know Today-listed items are excluded from picking. How: This renders a fixed explanatory sentence under every mode's own hint. Its data-element-name-hook is read by help mode. */ }
 
 
 
@@ -1120,7 +1120,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 				className={ cssModObj.picRunDiv }
 
 				data-element-name-hook='picRunDiv'
-			>{ /* What: Picker Run Div Element. Why: The stage and its action buttons form one visual unit. How: This wraps picStaDiv and picActDiv together. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
+			>{ /* What: Picker Run Div Element. Why: The stage and its action buttons form one visual unit. How: This wraps picStaDiv and picActDiv together. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 				<div className={ cssModObj.picStaDiv }>{ /* What: Picker Stage Div Element. Why: One of four states (idle, running-or-done, sent, or empty) shows at a time. How: This wraps whichever of the branches below currently matches runPhaStr. */ }
@@ -1259,7 +1259,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 								kinValStr='primary'
 
 								onClick={ senTodFun }
-							>{ /* What: Button Base Component. Why: This is the primary confirm action for a settled pick. How: This calls senTodFun, then re-labels itself "Sent!" once runPhaStr flips to 'sent'. Its data-element-name-hook is read by the Pickers page tour and the App Features tours. */ }
+							>{ /* What: Button Base Component. Why: This is the primary confirm action for a settled pick. How: This calls senTodFun, then re-labels itself "Sent!" once runPhaStr flips to 'sent'. Its data-element-name-hook is read by the tours and the test suites. */ }
 
 
 								<span
@@ -1292,7 +1292,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 								kinValStr='ghost'
 
 								onClick={ () => aftExiFun( rerActFun ) }
-							>Re-Roll</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to abandon this exact pick and get a fresh one, playing the shared exit animation first. How: This calls aftExiFun(rerActFun), disabled only during the page tour's own intercepted step. */ }{ /* What: Reroll Hook Design Note. Why: The picRerBut hook lets App Features' own manual-pick tour target this specific button (cptSelStr, see onboarding/app-features.tsx) without also matching Send to Today or Done. How: disabled and data-tour-disabled-active above still only ever check intSenBoo (the ORIGINAL Pickers page tour), unchanged; App Features leaves Re-Roll fully usable on purpose, see disDonBoo's own comment above. Its data-element-name-hook is read by the App Features tours. */ }
+							>Re-Roll</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to abandon this exact pick and get a fresh one, playing the shared exit animation first. How: This calls aftExiFun(rerActFun), disabled only during the page tour's own intercepted step. */ }{ /* What: Reroll Hook Design Note. Why: The picRerBut hook lets App Features' own manual-pick tour target this specific button (cptSelStr, see onboarding/app-features.tsx) without also matching Send to Today or Done. How: disabled and data-tour-disabled-active above still only ever check intSenBoo (the ORIGINAL Pickers page tour), unchanged; App Features leaves Re-Roll fully usable on purpose, see disDonBoo's own comment above. Its data-element-name-hook is read by the tours. */ }
 
 
 
@@ -1334,7 +1334,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 							kinValStr='primary'
 
 							onClick={ runPicFun }
-						>{ busPicBoo ? 'Picking…' : 'Pick One' }</ButBasCom> // What: Button Base Component. Why: This is the way into a first cycle from the idle stage. How: This calls runPicFun, disabling and relabeling itself while busPicBoo is true. Its data-element-name-hook is read by the Pickers page tour and the App Features tours.
+						>{ busPicBoo ? 'Picking…' : 'Pick One' }</ButBasCom> // What: Button Base Component. Why: This is the way into a first cycle from the idle stage. How: This calls runPicFun, disabling and relabeling itself while busPicBoo is true. Its data-element-name-hook is read by the tours and the test suites.
 
 
 					) }
@@ -1354,7 +1354,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 					className={ cssModObj.pooIteDiv }
 
 					data-element-name-hook='pooIteDiv'
-				>{ /* What: Pool Items Div Element. Why: The pool's own header and its list of rows need one shared box the tour can highlight together. How: This wraps pooHeaDiv and pooLisDiv. */ }{ /* What: Pool Items Wrap Design Note. Why: This wrapper is purely structural, letting the Pickers page tour highlight the header + item list as one combined box without also catching "+ Add Item" below (a step of its own, see iteAddDiv further down). How: This mirrors picPooDiv's own flex/gap so wrapping these two doesn't change their spacing. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
+				>{ /* What: Pool Items Div Element. Why: The pool's own header and its list of rows need one shared box the tour can highlight together. How: This wraps pooHeaDiv and pooLisDiv. */ }{ /* What: Pool Items Wrap Design Note. Why: This wrapper is purely structural, letting the Pickers page tour highlight the header + item list as one combined box without also catching "+ Add Item" below (a step of its own, see iteAddDiv further down). How: This mirrors picPooDiv's own flex/gap so wrapping these two doesn't change their spacing. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 					<div className={ cssModObj.pooHeaDiv }>{ /* What: Pool Header Div Element. Why: The eligible-count kicker and the drift-toggle link sit on one row. How: This wraps those two pieces. */ }
@@ -1736,7 +1736,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 					className={ cssModObj.iteAddDiv }
 
 					data-element-name-hook='iteAddDiv'
-				>{ /* What: Item Add Div Element. Why: The new-item form, the existing-item editor, and the plain "+ Add Item" button all share this one below-the-list slot. How: This wraps whichever of those three the IIFE below currently resolves to. Its data-element-name-hook is read by the picker mini-tours. */ }
+				>{ /* What: Item Add Div Element. Why: The new-item form, the existing-item editor, and the plain "+ Add Item" button all share this one below-the-list slot. How: This wraps whichever of those three the IIFE below currently resolves to. Its data-element-name-hook is read by the tours. */ }
 
 
 					{ ( () => { // What: Additem Slot Render. Why: Exactly one of three things belongs in this slot at a time (an open existing-item editor, an open new-item draft editor, or the plain add button), and that choice is easier to express as a small function than as a nested ternary. How: This checks ediIteStr first, then newDraObj, falling back to the plain button.
@@ -1810,7 +1810,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 								type='button'
 
 								onClick={ addIteFun }
-							>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls the add handler on click, disabled during the matching tour step. Its data-element-name-hook is read by the Pickers page tour, the picker mini-tours, and help mode's Pickers catalog. */ }
+							>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls the add handler on click, disabled during the matching tour step. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 								<IcoSvgCom

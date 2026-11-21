@@ -1090,7 +1090,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 							} }
-						>{ /* What: Help Badge Button Element. Why: This is the actual clickable "i" marker opening/closing this target's own tip. How: This marks itself open via data-badge-open-active while opeIdeStr === curIdeStr and toggles opeIdeStr when clicked. Its data-element-name-hook is read by help mode's own outside-click check. */ }
+						>{ /* What: Help Badge Button Element. Why: This is the actual clickable "i" marker opening/closing this target's own tip. How: This marks itself open via data-badge-open-active while opeIdeStr === curIdeStr and toggles opeIdeStr when clicked. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 							i

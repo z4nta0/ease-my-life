@@ -567,7 +567,7 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 			className={ cssModObj.cadConDiv }
 
 			data-element-name-hook='cadConDiv'
-		>{ /* What: Cadence Control Div Element. Why: This is CadConCom's own root element, holding the cadence picker and, for a non-daily cadence, the matching anchor subsection. How: This renders as a plain div; every field below commits through setPatFun. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+		>{ /* What: Cadence Control Div Element. Why: This is CadConCom's own root element, holding the cadence picker and, for a non-daily cadence, the matching anchor subsection. How: This renders as a plain div; every field below commits through setPatFun. Its data-element-name-hook is read by help mode. */ }
 
 
 			<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the cadence picker's own label and its own SegConCom control as one field. How: This wraps the label block and the top SegConCom below. */ }

@@ -129,7 +129,7 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetU
 			aria-label={ titHeaStr }
 			aria-modal='true'
 			role='dialog'
-		>{ /* What: Intro Scrim Div Element. Why: This is the modal's own full-viewport, scrollable backdrop. How: This wraps the intro card below and marks itself as an accessible dialog named by titHeaStr. Its data-element-name-hook is read by the shared Escape-key handler. */ }
+		>{ /* What: Intro Scrim Div Element. Why: This is the modal's own full-viewport, scrollable backdrop. How: This wraps the intro card below and marks itself as an accessible dialog named by titHeaStr. Its data-element-name-hook is read by the Escape-key handler and the test suites. */ }
 
 
 			<div className={` ${ cssModObj.intCarDiv }   ${ redMotBoo ? '' : cssModObj.intCarDivRise } `}>{ /* What: Intro Card Div Element. Why: This is the actual visible card, separate from the scrim so only it plays the slide-in entrance animation. How: This applies the rise entrance modifier class unless redMotBoo reports the user prefers reduced motion. */ }

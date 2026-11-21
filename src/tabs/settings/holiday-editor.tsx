@@ -188,7 +188,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 				className={ cssModObj.holLisUno }
 
 				data-element-name-hook='holLisUno'
-			>{ /* What: Holiday List Unordered Element. Why: This is the whole editable list, computed holidays first, then any custom ones. How: This maps cmpHolArr and then cusHolArr into their own rows below. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+			>{ /* What: Holiday List Unordered Element. Why: This is the whole editable list, computed holidays first, then any custom ones. How: This maps cmpHolArr and then cusHolArr into their own rows below. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 				{ cmpHolArr.map( ( holCurObj ) => { // What: Computed Holiday Map. Why: One row is needed per rule-computed holiday for the current year. How: This maps cmpHolArr, deriving each row's own on/off state from disKeyArr before rendering it.
@@ -243,7 +243,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 								aria-pressed={ holEnaBoo }
 
 								onClick={ () => actStoObj.togHolFun( holCurObj.keyStr ) }
-							>{ /* What: Toggle Switch Button Element. Why: A computed holiday needs a way to toggle it off and on without deleting it outright. How: This calls actStoObj.togHolFun with this row's own key when clicked. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+							>{ /* What: Toggle Switch Button Element. Why: A computed holiday needs a way to toggle it off and on without deleting it outright. How: This calls actStoObj.togHolFun with this row's own key when clicked. Its data-element-name-hook is read by the test suites. */ }
 
 
 								<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-pressed state. */ }
@@ -321,7 +321,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 				className={ cssModObj.holAddDiv }
 
 				data-element-name-hook='holAddDiv'
-			>{ /* What: Holiday Add Div Element. Why: Adding a custom holiday needs its own small form beneath the list. How: This wraps the name input, date input, and Add button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+			>{ /* What: Holiday Add Div Element. Why: Adding a custom holiday needs its own small form beneath the list. How: This wraps the name input, date input, and Add button. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 				<input

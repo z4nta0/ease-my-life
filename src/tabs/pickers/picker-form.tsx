@@ -152,7 +152,7 @@ function TogRowCom ( { 'data-element-name-hook' : hooNamStr, className, disHelEl
 				role='switch'
 
 				onClick={ onClick }
-			>{ /* What: Toggle Switch Button Element. Why: This is the actual on/off control for the setting. How: This calls onClick when pressed. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+			>{ /* What: Toggle Switch Button Element. Why: This is the actual on/off control for the setting. How: This calls onClick when pressed. Its data-element-name-hook is read by the test suites. */ }
 
 
 				<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent switch's own aria-checked state. */ }
@@ -1224,7 +1224,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						type='button'
 
 						onClick={ () => setForSteNum( 1 ) }
-					>{ /* What: Details Step Button Element. Why: The user needs a way to jump back to Step 1 at any time. How: This marks itself current while forSteNum is 1, otherwise done, through its data-step-*-active attributes, and always allows navigating back. Its data-element-name-hook is read by the picker mini-tours. */ }
+					>{ /* What: Details Step Button Element. Why: The user needs a way to jump back to Step 1 at any time. How: This marks itself current while forSteNum is 1, otherwise done, through its data-step-*-active attributes, and always allows navigating back. Its data-element-name-hook is read by the tours. */ }
 
 
 						<span className={ cssModObj.steNumSpa }>{ /* What: Step Number Span Element. Why: A completed step shows a checkmark instead of its own number. How: This renders a check icon once forSteNum has advanced past 1, otherwise the literal "1". */ }
@@ -1316,14 +1316,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						className={ cssModObj.picFieDiv }
 
 						data-element-name-hook='picFieDiv'
-					>{ /* What: Picker Fields Div Element. Why: Every Details field (Name, Group, Picker type, conditional attach, daily schedule) belongs in one shared column. How: This wraps the Name, Group, Picker type, Conditional, and Daily field blocks below. Its data-element-name-hook is read by the picker mini-tours. */ }
+					>{ /* What: Picker Fields Div Element. Why: Every Details field (Name, Group, Picker type, conditional attach, daily schedule) belongs in one shared column. How: This wraps the Name, Group, Picker type, Conditional, and Daily field blocks below. Its data-element-name-hook is read by the tours. */ }
 
 
 						<div
 							className={ cssModObj.forFieDiv }
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Form Field Div Element. Why: The label, its help text, and the input itself form one field unit. How: This wraps those three pieces. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+						>{ /* What: Form Field Div Element. Why: The label, its help text, and the input itself form one field unit. How: This wraps those three pieces. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 							<label
@@ -1358,7 +1358,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={ cssModObj.forFieDiv }
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Form Field Div Element. Why: The label, help text, group chips, and the inline new-group input form one field unit. How: This wraps those pieces. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+						>{ /* What: Form Field Div Element. Why: The label, help text, group chips, and the inline new-group input form one field unit. How: This wraps those pieces. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 							<span className={ cssModObj.forLabSpa }>Group</span>{ /* What: Form Label Span Element. Why: The controls below need a readable label. How: This renders the literal word "Group". */ }
@@ -1369,7 +1369,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								className={ cssModObj.forGroDiv }
 
 								data-element-name-hook='forGroDiv'
-							>{ /* What: Form Groups Div Element. Why: Every existing group chip plus the "New Group" chip sit in one row. How: This maps exiGroArr to one chip each, then appends the fixed "New Group" chip. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+							>{ /* What: Form Groups Div Element. Why: Every existing group chip plus the "New Group" chip sit in one row. How: This maps exiGroArr to one chip each, then appends the fixed "New Group" chip. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 								{ exiGroArr.map( ( curGroStr ) => ( // What: Group Chip List Render. Why: Every existing group needs its own selectable chip. How: This maps exiGroArr to one button per curGroStr.
@@ -1456,7 +1456,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={ cssModObj.forFieFie }
 
 							data-element-name-hook='forFieFie'
-						>{ /* What: Mode Field Fieldset Element. Why: The picker-type radio group needs its own labelled fieldset. How: This wraps the legend, help text, and the radio list below. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+						>{ /* What: Mode Field Fieldset Element. Why: The picker-type radio group needs its own labelled fieldset. How: This wraps the legend, help text, and the radio list below. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 							<legend className={ cssModObj.forLabLeg }>Picker type</legend>{ /* What: Mode Legend Element. Why: A fieldset needs its own accessible legend. How: This renders the literal text "Picker type". */ }
@@ -1467,7 +1467,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								className={ cssModObj.modRadDiv }
 
 								data-element-name-hook='modRadDiv'
-							>{ /* What: Mode Radio Div Element. Why: Every mode in SED_NAM_OBJ.MOD_DEF_OBJ needs its own selectable radio row. How: This maps Object.entries(SED_NAM_OBJ.MOD_DEF_OBJ) to one label per entry. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
+							>{ /* What: Mode Radio Div Element. Why: Every mode in SED_NAM_OBJ.MOD_DEF_OBJ needs its own selectable radio row. How: This maps Object.entries(SED_NAM_OBJ.MOD_DEF_OBJ) to one label per entry. Its data-element-name-hook is read by help mode. */ }
 
 
 								{ Object.entries( SED_NAM_OBJ.MOD_DEF_OBJ ).map( ( [ modKeyStr, modInfObj ] ) => ( // What: Mode Option List Render. Why: The picker's own mode choice must be built from the shared SED_NAM_OBJ.MOD_DEF_OBJ table, not hardcoded. How: This maps each [key, info] pair to one radio label.
@@ -1481,7 +1481,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										data-element-name-hook='modOptLab'
 										data-mode-option-key={ modKeyStr }
 										data-option-select-active={ selModStr === modKeyStr || undefined } // What: Option Select Active Attribute. Why: The picker's mode should stand out. How: This sets the presence-only attribute while this option is the chosen mode.
-									>{ /* What: Mode Option Label Element. Why: The radio input and its own name/hint text must all be one clickable label. How: This wraps the radio input and its description block. Its data-element-name-hook is read by the picker mini-tours. */ }
+									>{ /* What: Mode Option Label Element. Why: The radio input and its own name/hint text must all be one clickable label. How: This wraps the radio input and its description block. Its data-element-name-hook is read by the tours and the test suites. */ }
 
 
 										<input
@@ -1541,14 +1541,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={` ${ cssModObj.forFieDiv }   ${ cssModObj.forFieDivConditional } `}
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Form Field Div Conditional Element. Why: The attach-a-conditional toggle and its own collapsible content form one field unit. How: This wraps conTogDiv and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+						>{ /* What: Form Field Div Conditional Element. Why: The attach-a-conditional toggle and its own collapsible content form one field unit. How: This wraps conTogDiv and the ColDisCom below it. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 							<div
 								className={ cssModObj.conTogDiv }
 
 								data-element-name-hook='conTogDiv'
-							>{ /* What: Conditional Toggle Div Element. Why: The label/help text block and the switch control sit side by side. How: This wraps togTexDiv and the switch button. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+							>{ /* What: Conditional Toggle Div Element. Why: The label/help text block and the switch control sit side by side. How: This wraps togTexDiv and the switch button. Its data-element-name-hook is read by help mode. */ }
 
 
 								<div className={ cssModObj.togTexDiv }>{ /* What: Toggle Text Div Element. Why: The label and its two help paragraphs read as one block. How: This wraps those three pieces. */ }
@@ -1575,7 +1575,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									role='switch'
 
 									onClick={ () => setConAttBoo( ( preValBoo ) => !preValBoo ) }
-								>{ /* What: Conditional Switch Button Element. Why: This is the actual on/off control for the conditional attachment. How: This flips conAttBoo on click. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+								>{ /* What: Conditional Switch Button Element. Why: This is the actual on/off control for the conditional attachment. How: This flips conAttBoo on click. Its data-element-name-hook is read by the test suites. */ }
 
 
 									<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked. */ }
@@ -1603,7 +1603,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										data-rail-wheel-scroll
 										data-scroll-end-active // What: Scroll End Active Attribute. Why: The rail starts with no edge fades until edge-fade.ts first measures it. How: This sets the presence-only attribute that togFadFun later toggles.
 										data-scroll-start-active // What: Scroll Start Active Attribute. Why: The rail starts with no edge fades until edge-fade.ts first measures it. How: This sets the presence-only attribute that togFadFun later toggles.
-									>{ /* What: Conditional Rail Div Element. Why: Every existing conditional plus the "Add New" pill need a horizontally-scrolling rail. How: This wraps one pill per sorted entry in conObjArr, then the fixed "Add New Conditional" pill. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
+									>{ /* What: Conditional Rail Div Element. Why: Every existing conditional plus the "Add New" pill need a horizontally-scrolling rail. How: This wraps one pill per sorted entry in conObjArr, then the fixed "Add New Conditional" pill. Its data-element-name-hook is read by help mode. */ }
 
 
 										{ [ ...conObjArr ].sort( ( conOneObj, conTwoObj ) => { // What: Sorted Conditional List Render. Why: The rail needs a stable order with the active selection pinned to the front. How: This sorts alphabetically, except the conditional matching conSelStr is forced to the very front. // What: Conditional Sort Design Note. Why: The rail reads alphabetically, except the currently-selected conditional (once the user has picked one) pins to the front. How: This is the same "selected stays first" convention as the Data tab's own rail.
@@ -1708,7 +1708,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={` ${ cssModObj.forFieDiv }   ${ cssModObj.forFieDivDaily } `}
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Form Field Div Daily Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps daiTogDiv and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+						>{ /* What: Form Field Div Daily Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps daiTogDiv and the ColDisCom below it. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 							<TogRowCom
@@ -1731,7 +1731,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 								} }
-							/>{ /* What: Toggle Row Component. Why: The label/help text block and the switch control sit side by side. How: This renders the label, its live help paragraph, and the switch. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+							/>{ /* What: Toggle Row Component. Why: The label/help text block and the switch control sit side by side. How: This renders the label, its live help paragraph, and the switch. Its data-element-name-hook is read by help mode. */ }
 
 
 
@@ -1749,7 +1749,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										className={ cssModObj.schBloDiv }
 
 										data-element-name-hook='schBloDiv'
-									>{ /* What: Schedule Block Div Element. Why: The shared cadence editor needs its own labelled block. How: This wraps a single CadConCom, wired to cadCurObj. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+									>{ /* What: Schedule Block Div Element. Why: The shared cadence editor needs its own labelled block. How: This wraps a single CadConCom, wired to cadCurObj. Its data-element-name-hook is read by help mode. */ }
 
 
 										<CadConCom
@@ -1767,7 +1767,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										className={ cssModObj.schBloDiv }
 
 										data-element-name-hook='schBloDiv'
-									>{ /* What: Schedule Block Div Element. Why: The weekday picker and its own presets form one block. How: This wraps the label, help text, chips, and preset buttons below. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+									>{ /* What: Schedule Block Div Element. Why: The weekday picker and its own presets form one block. How: This wraps the label, help text, chips, and preset buttons below. Its data-element-name-hook is read by help mode. */ }
 
 
 										<span className={ cssModObj.forLabSpa }>Which days?</span>{ /* What: Form Label Span Element. Why: The weekday picker below needs a readable label. How: This renders the literal text. */ }
@@ -1779,7 +1779,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											className={ cssModObj.schRowDiv }
 
 											data-element-name-hook='schRowDiv'
-										>{ /* What: Schedule Row Div Element. Why: The weekday chips and their preset shortcuts sit side by side. How: This wraps WeeChiCom and schPreDiv. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+										>{ /* What: Schedule Row Div Element. Why: The weekday chips and their preset shortcuts sit side by side. How: This wraps WeeChiCom and schPreDiv. Its data-element-name-hook is read by help mode. */ }
 
 
 											<WeeChiCom
@@ -1843,7 +1843,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										value={ skiHolBoo }
 
 										onClick={ () => setSkiHolBoo( ( preValBoo ) => !preValBoo ) }
-									/>{ /* What: Toggle Row Component. Why: The label/help text block and its own switch sit side by side. How: This renders the label, its live help paragraph, and the switch. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+									/>{ /* What: Toggle Row Component. Why: The label/help text block and its own switch sit side by side. How: This renders the label, its live help paragraph, and the switch. Its data-element-name-hook is read by help mode. */ }
 
 
 
@@ -1860,7 +1860,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										value={ avoDupBoo }
 
 										onClick={ () => setAvoDupBoo( ( preValBoo ) => !preValBoo ) }
-									/>{ /* What: Toggle Row Component. Why: The label/help text block and its own switch sit side by side. How: This renders the label, its live help paragraph, and the switch. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+									/>{ /* What: Toggle Row Component. Why: The label/help text block and its own switch sit side by side. How: This renders the label, its live help paragraph, and the switch. Its data-element-name-hook is read by help mode. */ }
 
 
 								</div>
@@ -1880,14 +1880,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						className={ cssModObj.detFooDiv }
 
 						data-element-name-hook='detFooDiv'
-					>{ /* What: Details Footer Div Element. Why: The step's own guidance note and its Cancel/Next actions sit in one footer row. How: This wraps fooNotDiv and forActDiv. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+					>{ /* What: Details Footer Div Element. Why: The step's own guidance note and its Cancel/Next actions sit in one footer row. How: This wraps fooNotDiv and forActDiv. Its data-element-name-hook is read by help mode. */ }
 
 
 						<div
 							className={ cssModObj.fooNotDiv }
 
 							data-element-name-hook='fooNotDiv'
-						>{ /* What: Footer Note Div Element. Why: The Step 1 footer explains what's still missing before Next works. How: This renders the note text below. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+						>{ /* What: Footer Note Div Element. Why: The Step 1 footer explains what's still missing before Next works. How: This renders the note text below. Its data-element-name-hook is read by help mode. */ }
 
 
 							{ ( () => { // What: Footer Note Render. Why: The exact guidance sentence depends on which required field (if any) is still missing, and whether this is a create or an edit. How: This checks name/group completeness first, branching separately for edit versus create phrasing.
@@ -1943,7 +1943,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={ cssModObj.forActDiv }
 
 							data-element-name-hook='forActDiv'
-						>{ /* What: Form Actions Div Element. Why: Cancel and the Save/Add Items button sit side by side. How: This wraps those two controls. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+						>{ /* What: Form Actions Div Element. Why: Cancel and the Save/Add Items button sit side by side. How: This wraps those two controls. Its data-element-name-hook is read by help mode. */ }
 
 
 							<ButBasCom
@@ -1977,7 +1977,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									kinValStr='primary'
 
 									onClick={ advSteFun }
-								>Add Items</ButBasCom> // What: Button Base Component. Why: Creating still has an Items step to fill in. How: This calls advSteFun to advance, disabled under the same conditions as the edit Save button above. Its data-element-name-hook is read by the picker mini-tours.
+								>Add Items</ButBasCom> // What: Button Base Component. Why: Creating still has an Items step to fill in. How: This calls advSteFun to advance, disabled under the same conditions as the edit Save button above. Its data-element-name-hook is read by the tours and the test suites.
 
 
 							) }
@@ -2271,7 +2271,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={ cssModObj.iteAddDiv }
 
 							data-element-name-hook='iteAddDiv'
-						>{ /* What: Item Add Div Element. Why: The new-item form, an already-committed item's editor, and the plain "+ Add Item" button all share this one below-the-list slot. How: This wraps whichever of those three the IIFE below currently resolves to. Its data-element-name-hook is read by the picker mini-tours. */ }
+						>{ /* What: Item Add Div Element. Why: The new-item form, an already-committed item's editor, and the plain "+ Add Item" button all share this one below-the-list slot. How: This wraps whichever of those three the IIFE below currently resolves to. Its data-element-name-hook is read by the tours. */ }
 
 
 							{ ( () => { // What: Add Item Slot Render. Why: Exactly one of three things belongs in this slot at a time, easier to express as a small function than as a nested ternary. How: This checks ediIteStr first, then actNewStr, falling back to the plain button.
@@ -2345,7 +2345,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										type='button'
 
 										onClick={ addDraFun }
-									>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls addDraFun on click. Its data-element-name-hook is read by the tours and help mode. */ }
+									>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls addDraFun on click. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 										<IcoSvgCom
@@ -2417,14 +2417,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						className={ cssModObj.iteFooDiv }
 
 						data-element-name-hook='iteFooDiv'
-					>{ /* What: Items Footer Div Element. Why: The step's own guidance note and its Back/Create actions sit in one footer row. How: This wraps fooNotDiv and forActDiv. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+					>{ /* What: Items Footer Div Element. Why: The step's own guidance note and its Back/Create actions sit in one footer row. How: This wraps fooNotDiv and forActDiv. Its data-element-name-hook is read by help mode. */ }
 
 
 						<div
 							className={ cssModObj.fooNotDiv }
 
 							data-element-name-hook='fooNotDiv'
-						>{ /* What: Footer Note Div Element. Why: The exact guidance sentence depends on how many committed items exist and whether weight is relevant. How: This branches on enoIteBoo first, then shoWeiBoo, otherwise counting toward the 2-item minimum. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+						>{ /* What: Footer Note Div Element. Why: The exact guidance sentence depends on how many committed items exist and whether weight is relevant. How: This branches on enoIteBoo first, then shoWeiBoo, otherwise counting toward the 2-item minimum. Its data-element-name-hook is read by help mode. */ }
 
 
 							{ !enoIteBoo // What: Not Enough Items Check. Why: The footer note either says how many more items are needed or confirms the minimum is met. How: This picks the add-more message first, then the weight or minimum message.
@@ -2448,7 +2448,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={ cssModObj.forActDiv }
 
 							data-element-name-hook='forActDiv'
-						>{ /* What: Form Actions Div Element. Why: Back and Create Picker sit side by side. How: This wraps those two buttons. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+						>{ /* What: Form Actions Div Element. Why: Back and Create Picker sit side by side. How: This wraps those two buttons. Its data-element-name-hook is read by help mode. */ }
 
 
 							<ButBasCom
@@ -2467,7 +2467,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								kinValStr='primary'
 
 								onClick={ subForFun }
-							>Create Picker</ButBasCom>{ /* What: Button Base Component. Why: This is the actual final commit for a brand-new picker. How: This calls subForFun, disabled until enoIteBoo holds and no conditional name collides. Its data-element-name-hook is read by the picker mini-tours. */ }
+							>Create Picker</ButBasCom>{ /* What: Button Base Component. Why: This is the actual final commit for a brand-new picker. How: This calls subForFun, disabled until enoIteBoo holds and no conditional name collides. Its data-element-name-hook is read by the tours and the test suites. */ }
 
 
 						</div>

@@ -1522,7 +1522,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 			className={` ${ cssModObj.schEdiDiv }   ${ layVarStr === 'stacked' ? cssModObj.schEdiDivStacked : '' }   ${ layVarStr === 'rows' ? cssModObj.schEdiDivRows : '' } `}
 
 			data-element-name-hook='schEdiDiv'
-		>{ /* What: Schedule Editor Div Element. Why: This is SchEdiCom's own root element, holding the Repeat row and whichever detail subsection currently applies. How: This renders the Repeat row, then either oncFieEle or extFieEle based on tasRcdObj's own repeat. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
+		>{ /* What: Schedule Editor Div Element. Why: This is SchEdiCom's own root element, holding the Repeat row and whichever detail subsection currently applies. How: This renders the Repeat row, then either oncFieEle or extFieEle based on tasRcdObj's own repeat. Its data-element-name-hook is read by help mode. */ }
 
 
 			<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: The Repeat control is its own schedule subsection, always shown regardless of which kind is selected. How: This renders the segmented control plus its own live summary and visibility note. */ }
@@ -1592,7 +1592,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 						className={ cssModObj.remExtDiv }
 
 						data-element-name-hook='remExtDiv'
-					>{ oncFieEle }</div>{ /* What: Reminder Extra Div Element. Why: The once fields share the extra-fields subsection's own fade wrapper. How: This wraps oncFieEle inside the collapse. Its data-element-name-hook is read by the reminder mini-tours. */ }
+					>{ oncFieEle }</div>{ /* What: Reminder Extra Div Element. Why: The once fields share the extra-fields subsection's own fade wrapper. How: This wraps oncFieEle inside the collapse. Its data-element-name-hook is read by the tours. */ }
 
 
 				</ColDisCom>
@@ -1620,7 +1620,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 						className={ cssModObj.remExtDiv }
 
 						data-element-name-hook='remExtDiv'
-					>{ extFieEle }</div>{ /* What: Reminder Extra Div Element. Why: The extra-fields subsection needs to re-key on a genuine kind switch, so its own internal ColDisCom states reset cleanly instead of carrying over stale open/closed state. How: This keys on lasExtRef's own remembered kind while collapsing back to 'once', otherwise the task's own real repeat. Its data-element-name-hook is read by the reminder mini-tours. */ }
+					>{ extFieEle }</div>{ /* What: Reminder Extra Div Element. Why: The extra-fields subsection needs to re-key on a genuine kind switch, so its own internal ColDisCom states reset cleanly instead of carrying over stale open/closed state. How: This keys on lasExtRef's own remembered kind while collapsing back to 'once', otherwise the task's own real repeat. Its data-element-name-hook is read by the tours. */ }
 
 
 				</ColDisCom>

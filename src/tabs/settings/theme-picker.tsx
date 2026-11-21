@@ -431,7 +431,7 @@ function TheSecCom ( { actStoObj, staAppObj } : TscProTyp ) : React.JSX.Element 
 				className={ cssModObj.theDarDiv }
 
 				data-element-name-hook='theDarDiv'
-			>{ /* What: Theme Dark Div Element. Why: The Dark card needs its own labeled subsection, matching the Light one above. How: This wraps the subsection heading, its explanatory copy, and the Dark theme CarSurCom. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
+			>{ /* What: Theme Dark Div Element. Why: The Dark card needs its own labeled subsection, matching the Light one above. How: This wraps the subsection heading, its explanatory copy, and the Dark theme CarSurCom. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 				<div className={ cssModObj.subHeaDiv }>Theme &middot; Dark</div>{ /* What: Subsection Header Div Element. Why: The Dark subsection needs a heading naming it, in the same style as the Appearance section's other subsections (the Light one above). How: This renders the fixed heading "Theme · Dark". */ }

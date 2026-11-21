@@ -77,7 +77,7 @@ function HelButCom ( { actModBoo, onTogModFun } : HbcProTyp ) : React.JSX.Elemen
 			aria-pressed={ actModBoo }
 
 			onClick={ onTogModFun }
-		>{ /* What: Help Toggle Button Element. Why: This is HelButCom's own single rendered element. How: This shows actModBoo as its aria-pressed state, which its module also styles as switched on, and calls onTogModFun when pressed. Its data-element-name-hook is read by help mode and the App Features tours. */ }
+		>{ /* What: Help Toggle Button Element. Why: This is HelButCom's own single rendered element. How: This shows actModBoo as its aria-pressed state, which its module also styles as switched on, and calls onTogModFun when pressed. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 			i

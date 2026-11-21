@@ -324,7 +324,7 @@ function DisTogCom ( { colValBoo, kicTexStr, onClick, sumTexStr } : DtcProTyp ) 
 			aria-expanded={ !colValBoo }
 
 			onClick={ onClick }
-		>{ /* What: Category Toggle Button Element. Why: A nested disclosure needs its own toggle. How: This calls onClick, which flips its collapsed state. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+		>{ /* What: Category Toggle Button Element. Why: A nested disclosure needs its own toggle. How: This calls onClick, which flips its collapsed state. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 			<span className={ cssModObj.togLabSpa }>{ /* What: Toggle Label Span Element. Why: The chevron and the kicker read together as one unit. How: This wraps both spans below. */ }
@@ -486,7 +486,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 			className={ cssModObj.remMatDiv }
 
 			data-element-name-hook='remMatDiv'
-		>{ /* What: Reminder Matrix Div Element. Why: This is OptMatCom's own root element. How: This renders the head row, one row per REM_MAT_ARR entry, and the foot below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+		>{ /* What: Reminder Matrix Div Element. Why: This is OptMatCom's own root element. How: This renders the head row, one row per REM_MAT_ARR entry, and the foot below. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 			<div className={ cssModObj.matHeaDiv }>{ /* What: Matrix Header Div Element. Why: The 2 column labels need their own header row above the data rows. How: This renders an empty leading cell (aligning with each row's own name column) plus the 2 column-label spans. */ }
@@ -567,7 +567,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 
 
 									} ) ) }
-								>{ /* What: Toggle Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips this pair in the matrix's draft. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+								>{ /* What: Toggle Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips this pair in the matrix's draft. Its data-element-name-hook is read by the test suites. */ }
 
 
 									<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: The switch's own CSS-driven thumb needs a real (if empty) element to animate. How: This renders an empty, purely decorative i element. */ }
@@ -595,7 +595,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 				className={ cssModObj.matFooDiv }
 
 				data-element-name-hook='matFooDiv'
-			>{ /* What: Matrix Footer Div Element. Why: The Cancel/Save actions need their own row below every matrix row. How: This wraps the fooRigDiv div below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+			>{ /* What: Matrix Footer Div Element. Why: The Cancel/Save actions need their own row below every matrix row. How: This wraps the fooRigDiv div below. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 				<div className={ cssModObj.fooRigDiv }>{ /* What: Footer Right Div Element. Why: Cancel and Save read as a pair, right-aligned. How: This wraps both ButBasCom elements below. */ }
@@ -677,7 +677,7 @@ function RowIcoCom ( { isaOncBoo } : RicProTyp ) : React.JSX.Element {
 
 			data-element-name-hook='rowIcoSpa'
 			data-reminder-once-active={ isaOncBoo || undefined } // What: Reminder Once Active Attribute. Why: Help mode finds a one-time reminder's row by its icon without reading its classes. How: This is present only while isaOncBoo is true, since undefined drops the attribute entirely.
-		>{ /* What: Row Icon Span Element. Why: The type icon needs its own wrapper for styling. How: This wraps the single IcoSvgCom below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+		>{ /* What: Row Icon Span Element. Why: The type icon needs its own wrapper for styling. How: This wraps the single IcoSvgCom below. Its data-element-name-hook is read by help mode. */ }
 
 
 			<IcoSvgCom
@@ -1063,14 +1063,14 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 			className={ cssModObj.datCatSec }
 
 			data-element-name-hook='datCatSec remCatSec'
-		>{ /* What: Data Category Section Element. Why: This is RemManCom's own root element, matching the other Data tab categories' outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours, the Data page tour, and help mode's Data catalog. */ }
+		>{ /* What: Data Category Section Element. Why: This is RemManCom's own root element, matching the other Data tab categories' outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the tours, help mode, the Data tab's scroll code, and the test suites. */ }
 
 
 			<header
 				className={ cssModObj.catHeaHed }
 
 				data-element-name-hook='catHeaHed'
-			>{ /* What: Category Header Element. Why: The whole header is one clickable disclosure toggling the main section. How: This wraps the single toggle button below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+			>{ /* What: Category Header Element. Why: The whole header is one clickable disclosure toggling the main section. How: This wraps the single toggle button below. Its data-element-name-hook is read by help mode. */ }
 
 
 				<button
@@ -1083,7 +1083,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 					aria-expanded={ secOpeBoo }
 
 					onClick={ togMaiFun }
-				>{ /* What: Category Header Button Element. Why: This is the actual clickable disclosure control for the whole category. How: This toggles secOpeBoo via togMaiFun. Its data-element-name-hook is read by the App Features tours. */ }
+				>{ /* What: Category Header Button Element. Why: This is the actual clickable disclosure control for the whole category. How: This toggles secOpeBoo via togMaiFun. Its data-element-name-hook is read by the tours and the test suites. */ }
 
 
 					<span
@@ -1136,7 +1136,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 					className={ cssModObj.catBodDiv }
 
 					data-element-name-hook='catBodDiv'
-				>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures need to sit together as one scrollable body. How: This renders both disclosure toggles and their own ColDisCom-wrapped content below. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+				>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures need to sit together as one scrollable body. How: This renders both disclosure toggles and their own ColDisCom-wrapped content below. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 
@@ -1192,7 +1192,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 									actNamStr='New reminder'
 									labTexStr='This button is disabled until all tutorials are completed.'
-								>{ /* What: Info Tip Component. Why: This is a second, independent path to a real reminder, so it must stay disabled during any onboarding tutorial the same way RemSecCom's own add button does. How: This wraps the plus icon and label text, standing in for the real button below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+								>{ /* What: Info Tip Component. Why: This is a second, independent path to a real reminder, so it must stay disabled during any onboarding tutorial the same way RemSecCom's own add button does. How: This wraps the plus icon and label text, standing in for the real button below. Its data-element-name-hook is read by help mode. */ }
 
 
 									<IcoSvgCom
@@ -1213,7 +1213,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 									data-element-name-hook='rowAddBut'
 
 									onClick={ addEdiFun }
-								>{ /* What: Row Add Button Element. Why: This is the real, clickable "New reminder" entry point. How: This calls addEdiFun. Its data-element-name-hook is read by help mode's Data catalog. */ }
+								>{ /* What: Row Add Button Element. Why: This is the real, clickable "New reminder" entry point. How: This calls addEdiFun. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 									<IcoSvgCom
@@ -1279,7 +1279,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 												data-row-edit-active={ carOpeBoo || undefined } // What: Row Edit Active Attribute. Why: An open row's header stops reacting like a button and its chevron turns the accent color. How: This sets the presence-only attribute while carOpeBoo is true.
 
 												onAnimationEnd={ () => { if ( insIdeStr === curTasObj.id ) setInsIdeStr( null ); } } // What: Insert Flag Clear. Why: The entrance animation must play only once. How: This clears insIdeStr when this row's own animation ends while it still matches.
-											>{ /* What: List Item Div Element. Why: This is one reminder's own full-bleed row, holding either its plain summary or its live name input, plus its own expanding editor below. How: This renders one of the 2 header branches below, then the shared editor ColDisCom. Its data-element-name-hook is read by the App Features tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+											>{ /* What: List Item Div Element. Why: This is one reminder's own full-bleed row, holding either its plain summary or its live name input, plus its own expanding editor below. How: This renders one of the 2 header branches below, then the shared editor ColDisCom. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 												{ carOpeBoo ? ( // What: Row Editing Check. Why: The row's own header swaps between a live-editable div and a plain clickable button depending on whether it's open. How: This renders the editing div while carOpeBoo is true, the plain toggle button otherwise.
@@ -1289,7 +1289,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 														className={ cssModObj.lisRowDiv }
 
 														data-element-name-hook='lisRowDiv'
-													>{ /* What: List Row Div Element. Why: While editing, this is a plain div rather than a button, since a button can't legally contain the input below it (interactive-in-interactive), which also cost it an accessible name of its own. How: This renders the type icon, the live name input, and a real, separate collapse-chevron button. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+													>{ /* What: List Row Div Element. Why: While editing, this is a plain div rather than a button, since a button can't legally contain the input below it (interactive-in-interactive), which also cost it an accessible name of its own. How: This renders the type icon, the live name input, and a real, separate collapse-chevron button. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 														<RowIcoCom isaOncBoo={ isaOncBoo } />{ /* What: Row Icon Component. Why: The type icon needs its own wrapper for styling. How: This renders a pin while isaOncBoo is true, a calendar otherwise. */ }
@@ -1334,7 +1334,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 																onChange={ ( chaEveObj ) => patDraFun( { name : chaEveObj.target.value } ) }
 																onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Shortcut. Why: Pressing Enter should finish typing the name. How: This blurs the input on Enter, leaving the name in the draft until the row is kept.
-															/>{ /* What: Row Name Input Element. Why: This is the row's own live-editable name field while carOpeBoo. How: This writes every keystroke into the row's draft, trimmed when the draft is kept. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+															/>{ /* What: Row Name Input Element. Why: This is the row's own live-editable name field while carOpeBoo. How: This writes every keystroke into the row's draft, trimmed when the draft is kept. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 														</span>
@@ -1385,7 +1385,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 
 														} }
-													>{ /* What: List Row Button Element. Why: The plain, non-editing state is itself the clickable control that opens the editor. How: This keeps any other open row's edits, then opens this one. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+													>{ /* What: List Row Button Element. Why: The plain, non-editing state is itself the clickable control that opens the editor. How: This keeps any other open row's edits, then opens this one. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 														<RowIcoCom isaOncBoo={ isaOncBoo } />{ /* What: Row Icon Component. Why: The type icon needs its own wrapper for styling. How: This renders a pin while isaOncBoo is true, a calendar otherwise. */ }
@@ -1399,7 +1399,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 																className={ cssModObj.rowNamSpa }
 
 																data-element-name-hook='rowNamSpa'
-															>{ curTasObj.name }</span>{ /* What: Row Name Span Element. Why: This is the row's own primary text. How: This renders curTasObj's own name. Its data-element-name-hook is read by help mode's Data catalog. */ }
+															>{ curTasObj.name }</span>{ /* What: Row Name Span Element. Why: This is the row's own primary text. How: This renders curTasObj's own name. Its data-element-name-hook is read by help mode. */ }
 
 															<span className={ cssModObj.rowSumSpa }>{ TAS_NAM_OBJ.sumTasFun( curTasObj ) }</span>{ /* What: Row Summary Span Element. Why: This is the row's own secondary, schedule-summary text. How: This calls TAS_NAM_OBJ.sumTasFun against curTasObj. */ }
 
@@ -1439,7 +1439,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 															className={ cssModObj.inlEdiDiv }
 
 															data-element-name-hook='inlEdiDiv'
-														>{ /* What: Inline Editor Div Element. Why: The schedule editor and its own footer need to sit together, matching InlEdiCom's own root layout. How: This renders SchEdiCom against the row's draft, then EdiFooCom below it. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
+														>{ /* What: Inline Editor Div Element. Why: The schedule editor and its own footer need to sit together, matching InlEdiCom's own root layout. How: This renders SchEdiCom against the row's draft, then EdiFooCom below it. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 															<SchEdiCom

@@ -2364,7 +2364,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 				data-element-name-hook='touOveDiv'
 
 				aria-live='polite'
-			>{ /* What: Tour Overlay Div Element. Why: This is the overlay root every render branch portals. How: This wraps the dim alone here. Its data-element-name-hook is read by help mode's own outside-click check. */ }
+			>{ /* What: Tour Overlay Div Element. Why: This is the overlay root every render branch portals. How: This wraps the dim alone here. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 				<div className={ cssModObj.touDimDiv } />{ /* What: Tour Dim Div Element. Why: The page stays dimmed for the single frame before the tour skips itself. How: This renders the plain dim layer. */ }
@@ -2471,7 +2471,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 				data-element-name-hook='touOveDiv'
 
 				aria-live='polite'
-			>{ /* What: Tour Overlay Div Element. Why: This is the overlay root every render branch portals. How: This wraps the dim and the hidden measurer here. Its data-element-name-hook is read by help mode's own outside-click check. */ }
+			>{ /* What: Tour Overlay Div Element. Why: This is the overlay root every render branch portals. How: This wraps the dim and the hidden measurer here. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 				<div className={ cssModObj.touDimDiv } />{ /* What: Tour Dim Div Element. Why: Nothing is highlighted yet, so the whole page stays dimmed. How: This renders the plain dim layer. */ }
@@ -2510,7 +2510,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			data-element-name-hook='touOveDiv'
 
 			aria-live='polite'
-		>{ /* What: Tour Overlay Div Element. Why: This is the overlay root every render branch portals. How: This wraps the hidden measurer, the spot, and the coach together. Its data-element-name-hook is read by help mode's own outside-click check. */ }
+		>{ /* What: Tour Overlay Div Element. Why: This is the overlay root every render branch portals. How: This wraps the hidden measurer, the spot, and the coach together. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 			{ meaCoaEle }{ /* What: Measure Coach Element Render. Why: The hidden measurer must stay mounted for every render this branch produces, not just the early pre-resolve branch above, so meaCoaRef's own layout effect keeps measuring the step's real, current height. How: This renders the same meaCoaEle already built above, unchanged in this branch. */ }
@@ -2551,7 +2551,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 					}}
 
 					data-element-name-hook='coaCarDiv'
-				>{ /* What: Coach Card Div Element. Why: This is the real, visible, interactive coach card. How: This positions itself from coaLayObj, coaWidNum, and arrHorNum, and renders its own arrow direction class. Its data-element-name-hook is read by the tour runner's own outside-click checks. */ }
+				>{ /* What: Coach Card Div Element. Why: This is the real, visible, interactive coach card. How: This positions itself from coaLayObj, coaWidNum, and arrHorNum, and renders its own arrow direction class. Its data-element-name-hook is read by the tours and the test suites. */ }
 
 
 					{ !curSteObj.solBoo && <p className={ cssModObj.coaProPar }>Step { curSteNum + 1 } of { totSteNum }</p> }{ /* What: Coach Progress Paragraph Element. Why: Every non-solo step shows its own position in the sequence. How: This renders only when curSteObj.solBoo is falsy. */ }

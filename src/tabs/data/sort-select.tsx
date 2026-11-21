@@ -93,7 +93,7 @@ function SorSelCom ( { labTexStr, onChange, optLisArr, selIdeStr, value } : SscP
 				value={ value }
 
 				onChange={ ( chaEveObj ) => onChange( chaEveObj.target.value ) }
-			>{ /* What: Sort Dropdown Select Element. Why: This is the actual control the user picks a sort option from. How: This renders one <option> per entry in optLisArr below, and reports the chosen key up via onChange. Its data-element-name-hook is read by help mode's Data catalog. */ }
+			>{ /* What: Sort Dropdown Select Element. Why: This is the actual control the user picks a sort option from. How: This renders one <option> per entry in optLisArr below, and reports the chosen key up via onChange. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 				{ optLisArr.map( ( optCurObj ) => ( // What: Sort Option Map. Why: One <option> is needed per entry in optLisArr. How: This maps optLisArr to one <option> per entry, keyed by its own keyStr.
