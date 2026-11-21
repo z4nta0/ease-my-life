@@ -47,7 +47,7 @@
 
 
 }
-@container appRooDiv ( max-width : 760px ) { /* What: Narrow Reminders Section. Why: On a narrow screen the sections sit closer. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Following Today Group Section. Why: On a narrow screen the sections sit closer. How: This applies only when the app is 760px wide or less. */
 
 
 	.todGroSec:not( :first-child ) { /* What: Narrow Following Today Group Section. Why: The divider needs less room. How: This shrinks the padding above the section. */
@@ -134,7 +134,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Group Grip. Why: Someone who asked for less motion shouldn't see the handle's colors fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Group Grip Span. Why: Someone who asked for less motion shouldn't see the handle's colors fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.groGriSpa { /* What: Still Group Grip Span. Why: Its colors should simply switch. How: This turns the fades off. */
@@ -265,7 +265,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Group Progress Dash. Why: Someone who asked for less motion shouldn't see the dash fade or sweep; the done fill already shows the state. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Progress Dash Italic. Why: Someone who asked for less motion shouldn't see the dash fade or sweep; the done fill already shows the state. How: This applies only when the reduced-motion preference is set. */
 
 
 	.proDasIta { /* What: Still Progress Dash Italic. Why: The fill should simply switch. How: This turns the fade off. */
@@ -331,7 +331,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Add Reminder Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reminder Add Button And Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.remAddBut,
@@ -416,7 +416,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Quick-Add Form. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reminder Add Div And Reminder Add Div Closing. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.remAddDiv,
@@ -468,7 +468,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Quick-Add Name Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reminder Field Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.remFieDiv { /* What: Still Reminder Field Div. Why: The row should simply appear. How: This turns its fade off and pins it fully shown. */
@@ -519,7 +519,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Quick-Add Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Add Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.addNamInp { /* What: Still Add Name Input. Why: The change should happen at once. How: This turns its transition off. */
@@ -555,7 +555,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reminder Inline Editor. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Inline Editor Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.inlEdiDiv { /* What: Still Inline Editor Div. Why: The editor should simply appear. How: This turns its fade off and pins it fully shown. */
@@ -686,7 +686,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reminder Card. Why: Someone who asked for less motion shouldn't see the cards move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Today Card Article. Why: Someone who asked for less motion shouldn't see the cards move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.todCarArt { /* What: Still Today Card Article. Why: The card should switch states at once. How: This turns its transitions off. */
@@ -877,7 +877,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reminder Checkbox. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Card Check Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.carCheBut { /* What: Still Card Check Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -917,7 +917,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fresh Checkbox Ripple. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Check Ripple Span In Today Card Article Fresh. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.todCarArt.todCarArt--fresh .cheRipSpa { /* What: Still Check Ripple Span In Today Card Article Fresh. Why: The ring is only decoration. How: This turns the ripple off and keeps the ring hidden. */
@@ -939,7 +939,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Done Check Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Check Icon SVG. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.cheIcoSvg { /* What: Still Check Icon SVG. Why: The mark is state, so it stays while the spring goes. How: This turns the spring off and pins the mark fully shown. */
@@ -1136,7 +1136,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reminder Action Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Action Icon Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.actIcoBut { /* What: Still Action Icon Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -1182,7 +1182,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Skip Confirm. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Skip Confirm Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.skiConDiv { /* What: Still Skip Confirm Div. Why: The card should simply appear. How: This turns its fade off and pins it fully shown. */

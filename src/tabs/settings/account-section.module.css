@@ -81,7 +81,7 @@
 
 
 }
-@container appRooDiv ( max-width : 500px ) { /* What: Narrow Settings Row. Why: A field and its button squeeze the text into a narrow column on a phone. How: This applies only when the app is 500px wide or less. */
+@container appRooDiv ( max-width : 500px ) { /* What: Narrow Settings Rows. Why: A field and its button squeeze the text into a narrow column on a phone. How: This applies only when the app is 500px wide or less. */
 
 
 	.setRowDiv,
@@ -147,7 +147,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Live Description. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Settings Sub Span Fade And Account Status Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.setSubSpa--fade,
@@ -195,7 +195,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion ReCaptcha Link Anchor. Why: Someone who asked for less motion shouldn't see the link's changes ease. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Google Link Anchor. Why: Someone who asked for less motion shouldn't see the link's changes ease. How: This applies only when the reduced-motion preference is set. */
 
 
 	.gooLinAnc { /* What: Motionless Google Link Anchor. Why: The link's changes should happen at once. How: This turns off its transitions. */
@@ -258,7 +258,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Account Field. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Account Email Input And Account Paste Input. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.accEmaInp,
@@ -316,7 +316,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Account Error. Why: Someone who asked for less motion shouldn't see the note pop. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Account Error Span. Why: Someone who asked for less motion shouldn't see the note pop. How: This applies only when the reduced-motion preference is set. */
 
 
 	.accErrSpa { /* What: Still Account Error Span. Why: The note should simply appear. How: This turns the pop off. */

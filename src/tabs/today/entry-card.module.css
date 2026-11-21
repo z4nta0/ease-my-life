@@ -160,7 +160,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Entry Card. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Today Card Article. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.todCarArt { /* What: Still Today Card Article. Why: The card should switch states at once. How: This turns its transitions off. */
@@ -264,7 +264,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Card Grip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Card Grip Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.carGriSpa { /* What: Still Card Grip Span. Why: Its colors should simply switch. How: This turns its transition off. */
@@ -342,7 +342,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Entry Checkbox. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Card Check Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.carCheBut { /* What: Still Card Check Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -382,7 +382,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fresh Checkbox Ripple. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Check Ripple Span In Today Card Article Fresh. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.todCarArt.todCarArt--fresh .cheRipSpa { /* What: Still Check Ripple Span In Today Card Article Fresh. Why: The ring is only decoration. How: This turns the ripple off and keeps the ring hidden. */
@@ -404,7 +404,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Done Check Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Check Icon SVG. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.cheIcoSvg { /* What: Still Check Icon SVG. Why: The mark is state, so it stays while the spring goes. How: This turns the spring off and pins the mark fully shown. */
@@ -444,7 +444,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Re-Rolling Card Body. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Card Body Div In Today Card Article Rolling. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.todCarArt.todCarArt--rolling .carBodDiv { /* What: Still Card Body Div In Today Card Article Rolling. Why: The new pick should simply appear. How: This turns the tumble off and keeps the body upright. */
@@ -720,7 +720,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Entry Action Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Action Icon Button And Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.actIcoBut,
@@ -749,7 +749,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Spinning Re-Roll Icon. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Roll Icon SVG In Action Icon Button Spinning. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.actIcoBut.actIcoBut--spinning .rolIcoSvg { /* What: Still Roll Icon SVG In Action Icon Button Spinning. Why: The icon should stay put. How: This turns the spin off and keeps the icon upright. */

@@ -22,7 +22,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Spinning Refresh Icon SVG. Why: Someone who asked for less motion shouldn't see the icon turn. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Refresh Icon SVG Spinning. Why: Someone who asked for less motion shouldn't see the icon turn. How: This applies only when the reduced-motion preference is set. */
 
 
 	.refIcoSvg--spinning { /* What: Still Refresh Icon SVG Spinning. Why: The icon should stay put. How: This shortens the spin to an instant, so the button's own animationend handler still fires and clears the spin state. */

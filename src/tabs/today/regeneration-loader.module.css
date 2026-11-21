@@ -60,7 +60,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Loader Card. Why: Someone who asked for less motion shouldn't see the card's colors fade between states. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Today Card Article. Why: Someone who asked for less motion shouldn't see the card's colors fade between states. How: This applies only when the reduced-motion preference is set. */
 
 
 	.todCarArt { /* What: Still Today Card Article. Why: The card's state changes should simply switch. How: This turns its fades off. */
@@ -99,7 +99,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Loader Check Spot. Why: Someone who asked for less motion shouldn't see the spot's colors fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Card Check Span. Why: Someone who asked for less motion shouldn't see the spot's colors fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.carCheSpa { /* What: Still Card Check Span. Why: The spot's colors should simply switch. How: This turns its fades off. */
@@ -257,7 +257,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Loader Names. Why: Someone who asked for less motion should see the settled name directly, with no cycling or landing bounce. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reel Name Span And Settled Name Span. Why: Someone who asked for less motion should see the settled name directly, with no cycling or landing bounce. How: This applies only when the reduced-motion preference is set. */
 
 
 	.reeNamSpa,

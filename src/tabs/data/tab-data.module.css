@@ -98,7 +98,7 @@
 
 
 }
-@container appRooDiv ( max-width : 640px ) { /* What: Narrow Header Lead. Why: On a narrow screen the mark and title sit closer. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Header Lead Div. Why: On a narrow screen the mark and title sit closer. How: This applies only when the app is 640px wide or less. */
 
 
 	.heaLeaDiv { /* What: Tighter Header Lead Div. Why: The row has less room. How: This tightens its gap. */
@@ -145,7 +145,7 @@
 
 
 }
-@container appRooDiv ( max-width : 640px ) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Brand Mark Button. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the app is 640px wide or less. */
 
 
 	.braMarBut { /* What: Smaller Brand Mark Button. Why: The title needs the room. How: This shrinks the mark one rhythm step, to p05. */
@@ -159,7 +159,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Brand Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Brand Mark Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.braMarBut { /* What: Still Brand Mark Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -223,7 +223,7 @@
 
 
 }
-@container appRooDiv ( max-width : 560px ) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
+@container appRooDiv ( max-width : 560px ) { /* What: Narrow Page Title Heading. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
 
 
 	.pagTitHea { /* What: Smaller Page Title Heading. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
@@ -398,7 +398,7 @@
 
 
 }
-@supports ( -moz-appearance : none ) { /* What: Firefox Show Tab Strip. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
+@supports ( -moz-appearance : none ) { /* What: Firefox Scope Tab Div. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
 
 
 	.scoTabDiv { /* What: Padded Scope Tab Div. Why: The bottom border needs a pixel of room. How: This adds extra small 8 vertical spacing (about 1px) of bottom padding. */
@@ -456,7 +456,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Show Tab. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Scope Tab Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.scoTabBut { /* What: Still Scope Tab Button. Why: The change should happen at once. How: This turns its animation and transition off. */
@@ -612,7 +612,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Category Card. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Data Category Section. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.datCatSec { /* What: Still Data Category Section. Why: The change should happen at once. How: This turns its animation off. */
@@ -640,7 +640,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Removing Category Card. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Data Category Section Removing. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.datCatSec--removing { /* What: Still Data Category Section Removing. Why: The card should go at once, while still ending the animation its handler waits on. How: This turns its animation-duration off. */
@@ -690,7 +690,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tour Target. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Data Category Section Tour And Category Toggle Button Tour. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.datCatSec--tour,
@@ -798,7 +798,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Chevron. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Chevron Disclosure Span And Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.chvDisSpa,
@@ -882,7 +882,7 @@
 
 
 }
-@container appRooDiv ( max-width : 500px ) { /* What: Narrow Category Header. Why: On a narrow app the header's tags and toggle stack instead of crowding the name. How: This applies only when the app is 500px wide or less. */
+@container appRooDiv ( max-width : 500px ) { /* What: Narrow Category Right Span. Why: On a narrow app the header's tags and toggle stack instead of crowding the name. How: This applies only when the app is 500px wide or less. */
 
 
 	.catRigSpa { /* What: Stacked Category Right Span. Why: The tags and toggle need to stack. How: This turns the row into a tighter column. */
@@ -910,7 +910,7 @@
 
 
 }
-@container appRooDiv ( max-width : 500px ) { /* What: Narrow Category Header. Why: On a narrow app the header's tags and toggle stack instead of crowding the name. How: This applies only when the app is 500px wide or less. */
+@container appRooDiv ( max-width : 500px ) { /* What: Narrow Category Tags Span. Why: On a narrow app the header's tags and toggle stack instead of crowding the name. How: This applies only when the app is 500px wide or less. */
 
 
 	.catTagSpa { /* What: Stacked Category Tags Span. Why: The two tags need to stack. How: This turns the row into a tighter column. */
@@ -1022,7 +1022,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Vacation Toggle. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Vacation Toggle Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.vacTogBut { /* What: Still Vacation Toggle Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -1050,7 +1050,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fading Toggle Label. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Vacation Label Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.vacLabSpa { /* What: Still Vacation Label Span. Why: The change should happen at once. How: This turns its animation off. */
@@ -1281,7 +1281,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Inserted Item. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion List Item Div Insert. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.lisIteDiv--insert { /* What: Still List Item Div Insert. Why: The row should appear at once, while still ending the animation its handler waits on. How: This turns its animation-duration off. */
@@ -1322,7 +1322,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tour Target Item. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion List Item Div Tour. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.lisIteDiv--tour { /* What: Still List Item Div Tour. Why: A border frozen mid-fade would read as paused, so it pins to full color instead. How: This turns its animation off and sets the border to the accent. */
@@ -1665,7 +1665,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Create Picker Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Data Create Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.datCreBut { /* What: Still Data Create Button. Why: The change should happen at once. How: This turns its transition off. */

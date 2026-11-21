@@ -113,7 +113,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Cadence Help Bubble. Why: Someone who asked for less motion shouldn't see the bubble's colors fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Help Bubble Span. Why: Someone who asked for less motion shouldn't see the bubble's colors fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.helBubSpa { /* What: Still Help Bubble Span. Why: The hover colors should simply switch. How: This turns the color fade off. */
@@ -153,7 +153,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Cadence Field Summary. Why: Someone who asked for less motion shouldn't see the summary fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Field Subtitle Span Fading. Why: Someone who asked for less motion shouldn't see the summary fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.fieSubSpa--fading { /* What: Still Field Subtitle Span Fading. Why: The new summary should simply appear. How: This turns the fade off. */
@@ -184,7 +184,7 @@
 
 
 }
-@container appRooDiv ( max-width : 440px ) { /* What: Narrow Cadence Inline Row. Why: On an iPhone SE-width screen the yearly nth-weekday row's three selects clip at the normal gap. How: This applies only when the app container is 440px wide or less. */
+@container appRooDiv ( max-width : 440px ) { /* What: Narrow Field Row Div. Why: On an iPhone SE-width screen the yearly nth-weekday row's three selects clip at the normal gap. How: This applies only when the app container is 440px wide or less. */
 
 
 	.fieRowDiv { /* What: Tight Field Row Div. Why: The three selects need just enough room to fit. How: This shaves the gap down. */
@@ -264,7 +264,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Cadence Anchor Block. Why: Someone who asked for less motion shouldn't see the block fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Anchor Fade Div. Why: Someone who asked for less motion shouldn't see the block fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.ancFadDiv { /* What: Still Anchor Fade Div. Why: The new block should simply appear. How: This turns the fade off. */

@@ -41,7 +41,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Legal Modal Backdrop. Why: Someone who asked for less motion shouldn't see the dim fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Legal Backdrop Div And Legal Backdrop Div Closing. Why: Someone who asked for less motion shouldn't see the dim fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.legBacDiv,
@@ -127,7 +127,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Legal Modal Panel. Why: Someone who asked for less motion shouldn't see the panel move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Legal Panel Div And Legal Panel Div Closing. Why: Someone who asked for less motion shouldn't see the panel move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.legPanDiv,
@@ -241,7 +241,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Legal Modal Close Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Panel Close Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.panCloBut { /* What: Still Panel Close Button. Why: The change should happen at once. How: This turns its transition off. */

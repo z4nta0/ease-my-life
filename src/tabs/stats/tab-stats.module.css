@@ -94,7 +94,7 @@
 
 
 }
-@container appRooDiv ( max-width : 640px ) { /* What: Narrow Header Lead. Why: On a narrow screen the mark and title sit closer. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Header Lead Div. Why: On a narrow screen the mark and title sit closer. How: This applies only when the app is 640px wide or less. */
 
 
 	.heaLeaDiv { /* What: Tighter Header Lead Div. Why: The row has less room. How: This tightens its gap. */
@@ -141,7 +141,7 @@
 
 
 }
-@container appRooDiv ( max-width : 640px ) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Brand Mark Button. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the app is 640px wide or less. */
 
 
 	.braMarBut { /* What: Smaller Brand Mark Button. Why: The title needs the room. How: This shrinks the mark one rhythm step, to p05. */
@@ -155,7 +155,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Brand Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Brand Mark Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.braMarBut { /* What: Still Brand Mark Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -219,7 +219,7 @@
 
 
 }
-@container appRooDiv ( max-width : 560px ) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
+@container appRooDiv ( max-width : 560px ) { /* What: Narrow Page Title Heading. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
 
 
 	.pagTitHea { /* What: Smaller Page Title Heading. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
@@ -408,7 +408,7 @@
 
 
 }
-@supports ( -moz-appearance : none ) { /* What: Firefox Show Tab Strip. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
+@supports ( -moz-appearance : none ) { /* What: Firefox Scope Tab Div. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
 
 
 	.scoTabDiv { /* What: Padded Scope Tab Div. Why: The bottom border needs a pixel of room. How: This adds extra small 8 vertical spacing (about 1px) of bottom padding. */
@@ -466,7 +466,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Show Tab. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Scope Tab Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.scoTabBut { /* What: Still Scope Tab Button. Why: The change should happen at once. How: This turns its animation and transition off. */
@@ -579,7 +579,7 @@
 
 
 }
-@container appRooDiv ( max-width : 640px ) { /* What: Narrow Range Pills. Why: On a narrow app the pills match the scrolling rows above them. How: This applies only when the app matches ( max-width : 640px ). */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Range Pills Div. Why: On a narrow app the pills match the scrolling rows above them. How: This applies only when the app matches ( max-width : 640px ). */
 
 
 	.ranPilDiv { /* What: Scrolling Range Pills Div. Why: The pills should stay on one side-scrolling line. How: This stops them wrapping. */
@@ -637,7 +637,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Range Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Range Pill Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.ranPilBut { /* What: Still Range Pill Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -679,7 +679,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Stats Body. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Stats Body Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.staBodDiv { /* What: Still Stats Body Div. Why: The change should happen at once. How: This turns its animation off. */
@@ -754,7 +754,7 @@
 
 
 }
-@container appRooDiv ( max-width : 640px ) { /* What: Narrow Stat Card Row. Why: A narrow app has room for fewer columns. How: This applies only when the app matches ( max-width : 640px ). */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Stat Row Div And Stat Row Div Two. Why: A narrow app has room for fewer columns. How: This applies only when the app matches ( max-width : 640px ). */
 
 
 	.staRowDiv { /* What: Two Column Stat Row Div. Why: Four cards would be too cramped. How: This drops the grid to two columns. */
@@ -885,7 +885,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Breakdown Segment. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Bar Segment Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.barSegSpa { /* What: Still Bar Segment Span. Why: The change should happen at once. How: This turns its transition off. */
@@ -1095,7 +1095,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Year Arrow. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Year Arrow Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.yeaArrBut { /* What: Still Year Arrow Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -1138,7 +1138,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Heatmap. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Heat Grid Div Next And Previous. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.hetGriDiv--next,
@@ -1248,7 +1248,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Heat Cell. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Heat Cell Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.hetCelBut { /* What: Still Heat Cell Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -1684,7 +1684,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sort Toggle. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Rank Sort Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.ranSorBut { /* What: Still Rank Sort Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -1780,7 +1780,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Metric Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Breakdown Metric Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.breMetBut { /* What: Still Breakdown Metric Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -1842,7 +1842,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Unit Toggle. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Note Link Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.notLinBut { /* What: Still Note Link Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -1864,7 +1864,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Refreshing List. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Rank List Unordered Fade And Reminder Log Unordered Fade. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.ranLisUno--fade,
@@ -2428,7 +2428,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pager Arrow. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pager Arrow Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.pagArrBut { /* What: Still Pager Arrow Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -2495,7 +2495,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Help Bubble. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Value Help Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.valHelSpa { /* What: Still Value Help Span. Why: The change should happen at once. How: This turns its transition off. */

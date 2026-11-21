@@ -136,7 +136,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Preview Card Check. Why: Someone who asked for less motion shouldn't see the check's colors fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Card Check Span. Why: Someone who asked for less motion shouldn't see the check's colors fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.carCheSpa { /* What: Still Card Check Span. Why: Its colors should simply switch. How: This turns the fades off. */

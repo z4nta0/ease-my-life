@@ -54,7 +54,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Update Note. Why: Someone who asked for less motion shouldn't see the note pop. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Update Row Div. Why: Someone who asked for less motion shouldn't see the note pop. How: This applies only when the reduced-motion preference is set. */
 
 
 	.updRowDiv { /* What: Still Update Row Div. Why: The note should simply appear. How: This turns the pop off. */

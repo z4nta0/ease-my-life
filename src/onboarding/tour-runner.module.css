@@ -75,7 +75,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tour Spotlight Div. Why: Someone who asked for less motion shouldn't see the ring ping. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tour Spotlight Div Pulse Ring. Why: Someone who asked for less motion shouldn't see the ring ping. How: This applies only when the reduced-motion preference is set. */
 
 
 	.touSpoDiv--pulse::after { /* What: Motionless Tour Spotlight Div Pulse Ring. Why: The ring should stay still. How: This turns its ping and transitions off. */

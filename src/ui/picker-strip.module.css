@@ -50,7 +50,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reel Track Div. Why: Someone who asked for less motion shouldn't see the strip slide, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reel Track Div In Unforced Picker Reel Div. Why: Someone who asked for less motion shouldn't see the strip slide, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
 
 
 	.picReeDiv:not( [data-motion-force-active] ) .reeTraDiv { /* What: Still Reel Track Div In Unforced Picker Reel Div. Why: The strip should simply jump to each position. How: This turns the transform transition off, except inside a forced-motion preview. */
@@ -98,7 +98,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reel Row Div. Why: Someone who asked for less motion shouldn't see the row's color fade, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reel Row Div In Unforced Picker Reel Div. Why: Someone who asked for less motion shouldn't see the row's color fade, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
 
 
 	.picReeDiv:not( [data-motion-force-active] ) .reeRowDiv { /* What: Still Reel Row Div In Unforced Picker Reel Div. Why: The row's color should simply switch. How: This turns the color fade off, except inside a forced-motion preview. */
@@ -180,7 +180,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Dissolve Name Span. Why: Someone who asked for less motion should see the landed name without the fade-through or bounce, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Dissolve Name Span In Unforced Picker Dissolve Div. Why: Someone who asked for less motion should see the landed name without the fade-through or bounce, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
 
 
 	.picDisDiv:not( [data-motion-force-active] ) .disNamSpa { /* What: Still Dissolve Name Span In Unforced Picker Dissolve Div. Why: The name should simply be there. How: This turns its animations off and holds it fully visible in place, except inside a forced-motion preview. */
@@ -264,7 +264,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Dissolve Glow Div. Why: The glow is decorative motion, unless the user asked to preview it. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Dissolve Glow Div In Unforced Picker Dissolve Div. Why: The glow is decorative motion, unless the user asked to preview it. How: This applies only when the reduced-motion preference is set. */
 
 
 	.picDisDiv:not( [data-motion-force-active] ) .disGloDiv { /* What: Hidden Dissolve Glow Div In Unforced Picker Dissolve Div. Why: Without its bloom the glow adds nothing. How: This turns it off and hides it, except inside a forced-motion preview. */
@@ -370,7 +370,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Spotlight Row Div. Why: Someone who asked for less motion shouldn't see the highlight fade and scale, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Spotlight Row Div In Unforced Picker Spotlight Div. Why: Someone who asked for less motion shouldn't see the highlight fade and scale, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
 
 
 	.picSpoDiv:not( [data-motion-force-active] ) .spoRowDiv { /* What: Still Spotlight Row Div In Unforced Picker Spotlight Div. Why: The highlight should simply switch. How: This turns its fades off, except inside a forced-motion preview. */

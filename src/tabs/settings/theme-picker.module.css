@@ -123,7 +123,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Theme Row. Why: Someone who asked for less motion shouldn't see the frame fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Theme Row Div. Why: Someone who asked for less motion shouldn't see the frame fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.theRowDiv { /* What: Still Theme Row Div. Why: The frame should simply switch. How: This turns its fade off. */
@@ -197,7 +197,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Theme Row Check. Why: Someone who asked for less motion shouldn't see the check spring in. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Theme Check Span. Why: Someone who asked for less motion shouldn't see the check spring in. How: This applies only when the reduced-motion preference is set. */
 
 
 	.theCheSpa { /* What: Still Theme Check Span. Why: The check should simply appear. How: This turns the spring off. */
@@ -281,7 +281,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Custom Theme Swatch. Why: Someone who asked for less motion shouldn't see a swatch's color fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Custom Swatch Input. Why: Someone who asked for less motion shouldn't see a swatch's color fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.cusSwaInp::-webkit-color-swatch { /* What: Still Custom Swatch Input WebKit Swatch. Why: The color should simply switch. How: This turns the fade off in WebKit. */

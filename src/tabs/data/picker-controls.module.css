@@ -218,7 +218,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Picker Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Basics Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.basNamInp { /* What: Still Basics Name Input. Why: The change should happen at once. How: This turns its transition off. */
@@ -248,7 +248,7 @@
 
 
 }
-@container appRooDiv ( max-width : 640px ) { /* What: Narrow Group Row. Why: On a narrow app the group pills scroll sideways instead of wrapping. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Group Pill Div. Why: On a narrow app the group pills scroll sideways instead of wrapping. How: This applies only when the app is 640px wide or less. */
 
 
 	.groPilDiv { /* What: Scrolling Group Pill Div. Why: The pills stay on one line and scroll, with their edges faded as a cue. How: This stops wrapping, hides the scrollbar, and masks each end. */
@@ -343,7 +343,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Group Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Group Pill Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.groPilBut { /* What: Still Group Pill Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -380,7 +380,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Returning New Group Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Group Pill Button New Returning. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.groPilBut--new.groPilBut--returning { /* What: Still Group Pill Button New Returning. Why: The change should happen at once. How: This turns its animation off. */
@@ -440,7 +440,7 @@
 
 
 }
-@container appRooDiv ( max-width : 640px ) { /* What: Narrow Group Row. Why: On a narrow app the group pills scroll sideways instead of wrapping. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Group New Span. Why: On a narrow app the group pills scroll sideways instead of wrapping. How: This applies only when the app is 640px wide or less. */
 
 
 	.groNewSpa { /* What: Unshrinking Group New Span. Why: In the scrolling rail the control keeps its size. How: This stops it shrinking. */
@@ -453,7 +453,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion New Group Control. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Group New Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.groNewSpa { /* What: Still Group New Span. Why: The change should happen at once. How: This turns its animation off. */
@@ -505,7 +505,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion New Group Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Group New Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.groNewInp { /* What: Still Group New Input. Why: The change should happen at once. How: This turns its animation off. */
@@ -587,7 +587,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion New Group Buttons. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Group Okay And Cancel Buttons. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.groOkaBut,
@@ -746,7 +746,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Mode Option. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Mode Option Label. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.modOptLab { /* What: Still Mode Option Label. Why: The change should happen at once. How: This turns its transition off. */
@@ -828,7 +828,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Mode Option Dot. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Mode Dot Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.modDotSpa { /* What: Still Mode Dot Span. Why: The change should happen at once. How: This turns its transition off. */
@@ -985,7 +985,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Help Tip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Cadence Help Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.cadHelSpa { /* What: Still Cadence Help Span. Why: The change should happen at once. How: This turns its transition off. */
@@ -1027,7 +1027,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fading Setting Explanation. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Schedule Sub Span Fade. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.schSubSpa--fade { /* What: Still Schedule Sub Span Fade. Why: The change should happen at once. How: This turns its animation off. */
@@ -1083,7 +1083,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Setting Switch. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Toggle Switch Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.togSwiBut { /* What: Still Toggle Switch Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -1127,7 +1127,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Setting Switch Knob. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Switch Knob Italic. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.swiKnoIta { /* What: Still Switch Knob Italic. Why: The change should happen at once. How: This turns its transition off. */
@@ -1237,7 +1237,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Conditional Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Conditional Pill Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.conPilBut { /* What: Still Conditional Pill Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -1343,7 +1343,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Cadence Select. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Cadence Option Select. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.cadOptSel { /* What: Still Cadence Option Select. Why: The change should happen at once. How: This turns its transition off. */
@@ -1479,7 +1479,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Delete Confirm Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Delete Confirm Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.delConDiv { /* What: Still Delete Confirm Div. Why: The change should happen at once. How: This turns its animation off. */
@@ -1540,7 +1540,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Footer Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Footer Row Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.fooRowDiv { /* What: Still Footer Row Div. Why: The change should happen at once. How: This turns its animation off. */

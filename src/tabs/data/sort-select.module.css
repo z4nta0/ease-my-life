@@ -78,7 +78,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sort Select. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sort Dropdown Select. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.sorDroSel { /* What: Still Sort Dropdown Select. Why: The focus border should simply switch. How: This turns the border fade off. */

@@ -53,7 +53,7 @@
 
 
 }
-@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Page Header. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.todPagHed { /* What: Trimmed Today Page Header. Why: The narrow header needs less padding. How: This tightens its padding. */
@@ -139,7 +139,7 @@
 
 
 }
-@container appRooDiv ( max-width : 440px ) { /* What: Very Narrow Kicker. Why: On a very narrow app the time drops under the date. How: This applies only when the app is 440px wide or less. */
+@container appRooDiv ( max-width : 440px ) { /* What: Very Narrow Kicker Time Span. Why: On a very narrow app the time drops under the date. How: This applies only when the app is 440px wide or less. */
 
 
 	.kicTimSpa { /* What: Stacked Kicker Time Span. Why: The time needs its own line. How: This makes it a centered block without its divider. */
@@ -211,7 +211,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Streak Chip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Today Streak Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.todStkDiv { /* What: Still Today Streak Div. Why: The warm tint should switch at once. How: This turns its transition off. */
@@ -280,7 +280,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Streak Flame. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Streak Flame SVG. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.stkFlaSvg { /* What: Still Streak Flame SVG. Why: The change should happen at once. How: This turns its transition off. */
@@ -351,7 +351,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Streak Count. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Streak Count Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.todStkDiv.todStkDiv--bumped .stkCouSpa { /* What: Still Streak Count Span In Today Streak Div Bumped. Why: The count shouldn't flash, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
@@ -417,7 +417,7 @@
 
 
 }
-@container appRooDiv ( max-width : 640px ) { /* What: Narrow Header Lead. Why: On a narrow screen the row sits tighter. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Header Lead Div. Why: On a narrow screen the row sits tighter. How: This applies only when the app is 640px wide or less. */
 
 
 	.heaLeaDiv { /* What: Tighter Header Lead Div. Why: The row has less room. How: This tightens its gap. */
@@ -462,7 +462,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Brand Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Brand Mark Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.braMarBut { /* What: Still Brand Mark Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -514,7 +514,7 @@
 
 
 }
-@container appRooDiv ( max-width : 560px ) { /* What: Narrow Today Title. Why: A narrow app needs a smaller heading. How: This applies only when the app is 560px wide or less. */
+@container appRooDiv ( max-width : 560px ) { /* What: Narrow Today Title Heading. Why: A narrow app needs a smaller heading. How: This applies only when the app is 560px wide or less. */
 
 
 	.todTitHea { /* What: Smaller Today Title Heading. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
@@ -556,7 +556,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Title State. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Title State Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.todTitHea .titStaSpa { /* What: Still Title State Span In Today Title Heading. Why: The titles should swap at once. How: This turns their transition off. */
@@ -610,7 +610,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Celebration Title Word. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Title Word Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.todTitHea .titStaSpa--done .titWorSpa,
@@ -731,7 +731,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Graphic. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Graphic SVG. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.proRinDiv.proRinDiv--pulsing .rinGraSvg,
@@ -796,7 +796,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Progress. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Progress Circle. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.rinProCir { /* What: Still Ring Progress Circle. Why: The change should happen at once. How: This turns its transition off. */
@@ -856,7 +856,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Count. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Number Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.proRinDiv.proRinDiv--pulsing .rinNumSpa,
@@ -985,7 +985,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Glow. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Glow Italic. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.proRinDiv.proRinDiv--pulsing .rinGloIta,
@@ -1084,7 +1084,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Ripple. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Ring Ripple Italic. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.proRinDiv.proRinDiv--celebrating .rinRipIta { /* What: Still Ring Ripple Italic In Progress Ring Div Celebrating. Why: The ripple is purely decorative. How: This turns its animation off and keeps it hidden. */
@@ -1148,7 +1148,7 @@
 
 
 }
-@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Body Div. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.todBodDiv { /* What: Flush Today Body Div. Why: The narrow pill row's own padding already spaces it from the header. How: This drops the top padding. */
@@ -1192,7 +1192,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Edit Mode Banner. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Edit Banner Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.ediBanDiv.ediBanDiv--closing { /* What: Still Edit Banner Div Closing. Why: The banner should go at once, while still ending the animation its handler waits on. How: This shortens the fold to .01ms. */
@@ -1322,7 +1322,7 @@
 
 
 }
-@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout Div. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.todLayDiv { /* What: Stacked Today Layout Div. Why: The rail becomes a row above the list. How: This collapses the grid to one column. */
@@ -1362,7 +1362,7 @@
 
 
 }
-@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Group Rail Aside. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.groRaiAsi { /* What: Narrow Group Rail Aside. Why: The rail becomes a frosted, sticky pill row under the header that scrolls sideways, its edges faded as a cue. How: This turns it into a full-bleed scrolling row with a blurred translucent background and a gradient mask on each end. */
@@ -1419,7 +1419,7 @@
 
 
 }
-@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Rail Kicker Div. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.raiKicDiv { /* What: Hidden Rail Kicker Div. Why: The pill row has no room for a heading. How: This hides it. */
@@ -1446,7 +1446,7 @@
 
 
 }
-@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Rail List Unordered. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.raiLisUno { /* What: Narrow Rail List Unordered. Why: The pills sit in one row as wide as they need. How: This lays them out in a row at its content width. */
@@ -1509,7 +1509,7 @@
 
 
 }
-@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Rail Group Button. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.raiGroBut { /* What: Narrow Rail Group Button. Why: In the narrow pill row each group is an outlined pill. How: This turns the button into a compact bordered pill that never shrinks or wraps. */
@@ -1536,7 +1536,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Rail Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Rail Group Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.raiGroBut { /* What: Still Rail Group Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -1608,7 +1608,7 @@
 
 
 }
-@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Rail Edit Div. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.raiEdiDiv { /* What: Hidden Rail Edit Div. Why: The pill row has no room for it, so the footer button takes over. How: This hides it. */
@@ -1670,7 +1670,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Edit Mode Rail Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Edit Rail Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.ediRaiBut { /* What: Still Edit Rail Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -1739,7 +1739,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Confetti Piece. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Confetti Piece Italic. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.conPieIta { /* What: Still Confetti Piece Italic. Why: Particles are purely decorative, so they stay hidden. How: This turns its animation and opacity off. */
@@ -1767,7 +1767,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sparkle Piece. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sparkle Piece Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.spaPieSpa { /* What: Still Sparkle Piece Span. Why: Particles are purely decorative, so they stay hidden. How: This turns its animation and opacity off. */
@@ -1819,7 +1819,7 @@
 
 
 }
-@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Following Today Group Section In Group Drag Div. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.groDraDiv > .todGroSec:not( :first-child ) { /* What: Tighter Following Today Group Section In Group Drag Div. Why: The narrow list needs less room above each divider. How: This trims the space to large vertical spacing. */
@@ -1906,7 +1906,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Removing Onboarding Card. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Onboarding Create Div Removing. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.onbCreDiv.onbCreDiv--removing { /* What: Still Onboarding Create Div Removing. Why: The card should go at once. How: This turns its animation and opacity off. */
@@ -1939,7 +1939,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Generate Card Ping. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Onboarding Create Div Pulsing Ping. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.onbCreDiv--pulsing::after { /* What: Still Onboarding Create Div Pulsing Ping. Why: The ping is purely decorative. How: This turns its animation and transition off. */
@@ -2151,7 +2151,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tip Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Onboarding Generate Span And Generate List Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.onbGenSpa,
@@ -2252,7 +2252,7 @@
 
 
 }
-@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Footer Edit Button. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.fooEdiBut { /* What: Shown Footer Edit Button. Why: The narrow pill row has no room for Edit Mode, so the footer takes over. How: This sets --but-bas-dis back to inline-flex. */

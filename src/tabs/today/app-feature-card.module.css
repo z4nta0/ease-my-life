@@ -84,7 +84,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion App Feature Card. Why: Someone who asked for less motion shouldn't see the card fade between states. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Today Card Article. Why: Someone who asked for less motion shouldn't see the card fade between states. How: This applies only when the reduced-motion preference is set. */
 
 
 	.todCarArt { /* What: Still Today Card Article. Why: The card's state changes should simply switch. How: This turns its fades off. */
@@ -183,7 +183,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion App Feature Check Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Card Check Button And Span. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.carCheBut,
@@ -225,7 +225,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion App Feature Checkmark. Why: The checkmark is state, so it stays, but its spring is motion. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Check Icon SVG. Why: The checkmark is state, so it stays, but its spring is motion. How: This applies only when the reduced-motion preference is set. */
 
 
 	.cheIcoSvg { /* What: Still Check Icon SVG. Why: The checkmark should simply be there. How: This turns the spring off and holds the glyph fully visible at full size. */
@@ -358,7 +358,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion App Feature Cancel Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Action Icon Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.actIcoBut { /* What: Still Action Icon Button. Why: Its colors should simply switch. How: This turns the fades off. */

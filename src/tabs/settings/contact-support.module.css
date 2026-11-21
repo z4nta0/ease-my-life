@@ -116,7 +116,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sent Note. Why: Someone who asked for less motion shouldn't see the note pop. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Settings Message Span. Why: Someone who asked for less motion shouldn't see the note pop. How: This applies only when the reduced-motion preference is set. */
 
 
 	.setMesSpa { /* What: Still Settings Message Span. Why: The note should simply appear. How: This turns the pop off. */
@@ -214,7 +214,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Support Text Field. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Support Subject Input And Support Message Textarea. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.supSubInp,
@@ -342,7 +342,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Support Validation Note. Why: Someone who asked for less motion shouldn't see the note pop. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Support Validation Span. Why: Someone who asked for less motion shouldn't see the note pop. How: This applies only when the reduced-motion preference is set. */
 
 
 	.supValSpa { /* What: Still Support Validation Span. Why: The note should simply appear. How: This turns the pop off. */
@@ -370,7 +370,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Support Fallback Note. Why: Someone who asked for less motion shouldn't see the note pop. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Support Fallback Span. Why: Someone who asked for less motion shouldn't see the note pop. How: This applies only when the reduced-motion preference is set. */
 
 
 	.supFalSpa { /* What: Still Support Fallback Span. Why: The note should simply appear. How: This turns the pop off. */

@@ -50,7 +50,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Progress Fill. Why: Someone who asked for less motion shouldn't see the fill slide. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Progress Fill Italic. Why: Someone who asked for less motion shouldn't see the fill slide. How: This applies only when the reduced-motion preference is set. */
 
 
 	.proFilIta { /* What: Still Progress Fill Italic. Why: The fill should jump straight to its new position. How: This turns the slide off. */

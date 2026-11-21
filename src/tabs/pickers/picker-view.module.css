@@ -147,7 +147,7 @@
 
 
 }
-@media ( max-height : 750px ) { /* What: Short Picker Stage. Why: On a short viewport the full stage would push the buttons below the fold, and clipping the reel a little is the better tradeoff. How: This applies only when the viewport matches ( max-height : 750px ). */
+@media ( max-height : 750px ) { /* What: Short Viewport Picker Stage Div. Why: On a short viewport the full stage would push the buttons below the fold, and clipping the reel a little is the better tradeoff. How: This applies only when the viewport matches ( max-height : 750px ). */
 
 
 	.picStaDiv { /* What: Shorter Picker Stage Div. Why: The buttons must stay reachable. How: This lowers the stage to three reel rows plus padding. */
@@ -190,7 +190,7 @@
 
 
 }
-@container appRooDiv ( max-width : 560px ) { /* What: Narrow Stage Count. Why: A narrow app needs a smaller figure. How: This applies only when the app matches ( max-width : 560px ). */
+@container appRooDiv ( max-width : 560px ) { /* What: Narrow Stage Number Div. Why: A narrow app needs a smaller figure. How: This applies only when the app matches ( max-width : 560px ). */
 
 
 	.staNumDiv { /* What: Smaller Stage Number Div. Why: The figure has less room. How: This drops it one step, to the extra large 4 font size. */
@@ -236,7 +236,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Stage Sent Confirmation. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Stage Sent Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.staSenDiv { /* What: Still Stage Sent Div. Why: The confirmation should simply appear. How: This turns its rise off and pins it in place. */
@@ -290,7 +290,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Stage Sent Check. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sent Check Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.senCheDiv { /* What: Still Sent Check Div. Why: The check should simply appear. How: This turns its pop off and pins it at full size. */
@@ -406,7 +406,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Picker Action. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Picker Action, Send, Re-Roll, And Pick One Buttons In Picker Actions Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.picActDiv .picActBut,
@@ -522,7 +522,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fading Send Label. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Send Label Span Fade. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.senLabSpa--fade { /* What: Still Send Label Span Fade. Why: The change should happen at once. How: This turns its animation off. */
@@ -604,7 +604,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Reset Link. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Drift Toggle Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.driTogBut { /* What: Still Drift Toggle Button. Why: The change should happen at once. How: This turns its transition off. */
@@ -659,7 +659,7 @@
 
 
 }
-@container appRooDiv ( max-width : 440px ) { /* What: Narrow Pool Row. Why: A very narrow app needs tighter columns. How: This applies only when the app matches ( max-width : 440px ). */
+@container appRooDiv ( max-width : 440px ) { /* What: Narrow Pool Row Div. Why: A very narrow app needs tighter columns. How: This applies only when the app matches ( max-width : 440px ). */
 
 
 	.pooRowDiv { /* What: Tight Pool Row Div. Why: The columns need the room. How: This tightens the gap. */
@@ -715,7 +715,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Row Div Insert And Pool Row Div Removing. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.pooRowDiv--insert,
@@ -801,7 +801,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Delete Confirm. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Delete Confirm Div And Delete Confirm Div Leaving. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.delConDiv,
@@ -857,7 +857,7 @@
 
 
 }
-@container appRooDiv ( max-width : 640px ) { /* What: Narrow Pool Item Name. Why: On a narrow row the pill drops under the name instead of competing with it for width. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Pool Name Div. Why: On a narrow row the pill drops under the name instead of competing with it for width. How: This applies only when the app is 640px wide or less. */
 
 
 	.pooNamDiv { /* What: Wrapped Pool Name Div. Why: Once wrapped, the pill has nothing to line up with, and its text should sit flush under the name. How: This wraps the row, lets the pill size to its text from the left, and pulls it left by its own side padding to cancel it. */
@@ -884,7 +884,7 @@
 
 
 }
-@container appRooDiv ( max-width : 640px ) { /* What: Narrow Pool Item Name Text. Why: The name claims the whole first line so the pill wraps below it. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Item Name Span. Why: The name claims the whole first line so the pill wraps below it. How: This applies only when the app is 640px wide or less. */
 
 
 	.iteNamSpa { /* What: Full-Width Item Name Span. Why: The pill belongs on its own line. How: This makes the name take the full row. */
@@ -937,7 +937,7 @@
 
 
 }
-@container appRooDiv ( max-width : 640px ) { /* What: Narrow Pool Item Progress. Why: On a phone the full width leaves too little room for the name. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Pool Progress Span. Why: On a phone the full width leaves too little room for the name. How: This applies only when the app is 640px wide or less. */
 
 
 	.pooProSpa { /* What: Narrower Pool Progress Span. Why: The name needs the room. How: This lowers the minimum by one rhythm step. */
@@ -1051,7 +1051,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Send Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Send Button And Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.pooSenBut,
@@ -1088,7 +1088,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sent Pool Check. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sent Check SVG. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.senCheSvg { /* What: Instant Sent Check SVG. Why: The check should simply appear. How: This shortens its pop to .01ms. */
@@ -1224,7 +1224,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Delete Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Delete Button And Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.pooDelBut,
@@ -1297,7 +1297,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Add Item Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Item Add Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	.iteAddBut { /* What: Still Item Add Button. Why: The change should happen at once. How: This turns its transition off. */
