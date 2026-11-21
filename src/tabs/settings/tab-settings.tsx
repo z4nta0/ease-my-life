@@ -8,32 +8,32 @@ import React     from 'react';                     // What: React. Why: TabSetCo
 
 
 import { AccSecCom    } from './account-section.tsx';               // What: Account Section Component. Why: The Account section's sign-in and sync live in their own component. How: This renders them.
-import { annStaFun    } from './announce.ts';                       // What: Announce Status Function. Why: Several actions here (export, import, reset) need to speak a transient status to screen readers once they finish. How: This is called after each of those actions completes, sometimes assertively so it is not dropped by a focus move.
+import { annStaFun    } from './announce.ts';                       // What: Announce Status Function. Why: Actions here, such as export, need to speak a transient status to screen readers once they finish. How: This is called after those actions complete, sometimes assertively so it is not dropped by a focus move.
 import { APP_VER_STR  } from '../../constants.ts';                  // What: App Version String. Why: The About section shows the real build version. How: This is rendered in the About section's version row.
-import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: Nearly every action in this tab (install, export/import/reset, replay tour, view legal docs) is triggered from this shared button component. How: This is rendered throughout the tab with varying kind/size/icon props.
-import { CarSurCom    } from '../../ui/card-surface.tsx';           // What: Card Surface Component. Why: Every section's own controls sit inside this shared bordered container. How: This wraps the contents of nearly every setSubDiv and setSecSec below.
+import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: Actions in this tab, such as install, are triggered from this shared button component. How: This is rendered throughout the tab with varying kind/size/icon props.
+import { CarSurCom    } from '../../ui/card-surface.tsx';           // What: Card Surface Component. Why: A section's rows sit inside this shared bordered container. How: This wraps each group of rows in the sections below.
 import { CelPreCom    } from './previews.tsx';                      // What: Celebration Preview Component. Why: The completion-celebration style picker needs a live preview the user can play. How: This is rendered inside the Completion Celebration card, driven by celStyStr/celTokNum.
-import { ConSupCom    } from './contact-support.tsx';               // What: Contact Support Component. Why: The Account section's own support form lives in its own file. How: This is rendered once in TabSetCom's Account section.
+import { ConSupCom    } from './contact-support.tsx';               // What: Contact Support Component. Why: The About section's support form lives in its own file. How: This is rendered once in TabSetCom's About section.
 import { durMilFun    } from '../../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: Exit timers must end with the animation they wait on. How: This returns a duration step's length in milliseconds.
 import { HelButCom    } from '../../help/button.tsx';               // What: Help Button Component. Why: This tab needs its own toggle for entering/exiting help mode, like every other tab. How: This is rendered in the header, toggling helModBoo.
 import { HelOveCom    } from '../../help/mode.tsx';                 // What: Help Overlay Component. Why: Help mode needs its own dimmed overlay plus tooltips layered above this tab's real content. How: This is rendered once, driven by helModBoo and SET_HEL_ARR.
 import { HolEdiCom    } from './holiday-editor.tsx';                // What: Holiday Editor Component. Why: The Holidays section's own editable list lives in its own file. How: This is rendered once in TabSetCom's Holidays section.
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled Export/Reset button still needs to explain why it is disabled. How: This wraps those buttons, given a label prop with the explanation.
 import { LegModCom    } from './legal-docs.tsx';                    // What: Legal Modal Component. Why: The Legal section's View buttons need somewhere to actually show the Privacy Policy/Terms of Service text. How: This is rendered once, driven by legDocStr, and closed by clearing that state back to null.
-import { NOT_NAM_OBJ  } from '../../platform/notify.ts';            // What: Notification Namespace Object. Why: The Daily generator's notify-me row needs to read/request the browser's notification permission. How: This is called via its own perCheFun()/askOncFun()/reqPerFun()/subAddFun() methods.
+import { NOT_NAM_OBJ  } from '../../platform/notify.ts';            // What: Notification Namespace Object. Why: The Daily generator's notify-me row needs to read/request the browser's notification permission. How: This is called through its own methods, such as perCheFun().
 import { ONB_SPI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Identifiers Array. Why: Replaying the welcome tour needs to tell a real, established account apart from one still holding only seeded sample pickers. How: This is checked against staAppObj.pickers to decide whether to self-heal stale onboarding flags before the tour starts.
 import { PicAniCom    } from './previews.tsx';                      // What: Picker Animation Component. Why: The picker-animation style picker needs a live preview the user can play. How: This is rendered inside the Picker Animation card, driven by picPreStr/picTokNum.
-import { PWA_NAM_OBJ  } from '../../platform/pwa.ts';               // What: Progressive Web App Namespace Object. Why: The Data Control section reports install/persistence state and drives the install prompt. How: This is called via its own subscribe()/isaStaFun()/canInsFun()/insStaFun()/askInsFun()/askPerFun() methods.
-import { redMotFun    } from '../../utils/motion.ts';               // What: Reduced Motion Function. Why: A jump-to-section scroll and both preview stages must not animate for a user who prefers reduced motion. How: This is checked before choosing 'smooth' vs 'auto' scroll behavior, and to track the note shown above each style picker.
+import { PWA_NAM_OBJ  } from '../../platform/pwa.ts';               // What: Progressive Web App Namespace Object. Why: The Data Control section reports install/persistence state and drives the install prompt. How: This is called through its own methods, such as isaStaFun().
+import { redMotFun    } from '../../utils/motion.ts';               // What: Reduced Motion Function. Why: The confirm pairs and the reduced-motion note need to know whether the user prefers reduced motion. How: This is checked to close a confirm at once instead of playing its leave animation, and to start redMotBoo.
 import { rhyPixFun    } from '../../utils/rhythm.ts';               // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { scrBehFun    } from '../../utils/motion.ts';               // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { SegConCom    } from '../../ui/segmented-control.tsx';      // What: Segment Control Component. Why: The tab-bar-placement control is a 3-way exclusive choice, the exact shape this shared control renders. How: This renders the bottom/side/top options, driven by the persisted tabPlacement value.
 import { SET_HEL_ARR  } from '../../help/settings-catalog.tsx';     // What: Settings Help Array. Why: Help mode needs this tab's own catalog of tooltip targets. How: This is passed straight to HelOveCom.
-import { STG_NAM_OBJ  } from '../../state/storage.ts';              // What: Storage Namespace Object. Why: The Data Control section reports where data lives and reads the true persisted pick log before exporting. How: This is called via its own staRepFun()/reaPerFun() methods.
+import { STG_NAM_OBJ  } from '../../state/storage.ts';              // What: Storage Namespace Object. Why: The Data Control section reports where data lives and reads the true persisted pick log before exporting. How: This is called through its own methods, such as staRepFun().
 import { StyRadCom    } from './style-radio.tsx';                   // What: Style Radio Component. Why: Appearance's Picker animation and Completion celebration pickers share one radio list. How: This is rendered twice in TabSetCom's Appearance section.
 import { TheSecCom    } from './theme-picker.tsx';                  // What: Theme Section Component. Why: Appearance's own Light and Dark theme cards live in their own file. How: This is rendered once in TabSetCom's Appearance section.
 import { TIP_URL_STR  } from '../../constants.ts';                  // What: Tip URL String. Why: The About section's Buy Me a Coffee button opens the Ko-fi tip page. How: This is opened in a new tab when the button is clicked, and disables the button while unset.
-import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
+import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Toggle Fade Function. Why: The section rail hides each edge fade once that edge is reached. How: This is called by the rail's own scroll and resize handlers.
 import { useEscCanFun } from '../../ui/escape-cancel.ts';           // What: Use Escape Cancel Function. Why: Both the pending-import and pending-reset confirmations need Escape to back out, like every other confirm in the app. How: This is called once per confirmation, gated on that confirmation's own open boolean.
 
 
@@ -106,7 +106,7 @@ const SET_SEC_ARR = [ // What: Settings Section Array. Why: This drives both the
 	{ ideStr : 'daily',      labStr : 'Daily generator' }, // What: Daily Section Object. Why: The generator's own schedule and notifications live here. How: This is the second rail link.
 	{ ideStr : 'holidays',   labStr : 'Holidays'        }, // What: Holidays Section Object. Why: The holiday and days-off editor lives here. How: This is the third rail link.
 	{ ideStr : 'data',       labStr : 'Data control'    }, // What: Data Section Object. Why: Storage status, install, export, import, and reset live here. How: This is the fourth rail link.
-	{ ideStr : 'account',    labStr : 'Account'         }, // What: Account Section Object. Why: The future sync feature is announced here. How: This is the fifth rail link.
+	{ ideStr : 'account',    labStr : 'Account'         }, // What: Account Section Object. Why: Sign-in and sync live here. How: This is the fifth rail link.
 	{ ideStr : 'about',      labStr : 'About'           }, // What: About Section Object. Why: App identity, the replay tour, and contact support live here. How: This is the sixth rail link.
 	{ ideStr : 'legal',      labStr : 'Legal'           }  // What: Legal Section Object. Why: The Privacy Policy and Terms of Service live here. How: This is the last rail link, given extra room below it by the Legal spacer effect so its own top can scroll up to the spy's base line.
 
@@ -208,14 +208,14 @@ function InsRowCom ( { labTexStr, steTexEle, warTexEle } : IocProTyp ) : React.J
 		>{ /* What: Install Row Div Element. Why: A platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-			<div className={ cssModObj.setInfDiv }>{ /* What: Install Info Div Element. Why: The note's own name and its 2 explanatory paragraphs need their own grouping. How: This wraps the name span and both sub spans. */ }
+			<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The note's own name and its 2 explanatory paragraphs need their own grouping. How: This wraps the name span and both sub spans. */ }
 
 
-				<span className={ cssModObj.setNamSpa }>{ labTexStr }</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders labTexStr. */ }
+				<span className={ cssModObj.setNamSpa }>{ labTexStr }</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders labTexStr. */ }
 
-				<span className={ cssModObj.setSubSpa }>{ steTexEle }</span>{ /* What: Set Data Sub Span Element. Why: The note first says how to install the app. How: This renders steTexEle. */ }
+				<span className={ cssModObj.setSubSpa }>{ steTexEle }</span>{ /* What: Settings Sub Span Element. Why: The note first says how to install the app. How: This renders steTexEle. */ }
 
-				<span className={ cssModObj.setSubSpa }>{ warTexEle }</span>{ /* What: Set Data Sub Span Element. Why: The note warns that installing doesn't carry existing data over. How: This renders warTexEle. */ }
+				<span className={ cssModObj.setSubSpa }>{ warTexEle }</span>{ /* What: Settings Sub Span Element. Why: The note warns that installing doesn't carry existing data over. How: This renders warTexEle. */ }
 
 
 			</div>
@@ -278,12 +278,12 @@ function LegRowCom ( { className, 'data-element-name-hook' : hooNamStr, labTexSt
 		>{ /* What: Legal Row Div Element. Why: The label/description and the View button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the View button. */ }
 
 
-			<div className={ cssModObj.setInfDiv }>{ /* What: Legal Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
+			<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
 
 
-				<span className={ cssModObj.setNamSpa }>{ labTexStr }</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders labTexStr. */ }
+				<span className={ cssModObj.setNamSpa }>{ labTexStr }</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders labTexStr. */ }
 
-				<span className={ cssModObj.setSubSpa }>{ subTexStr }</span>{ /* What: Set Data Sub Span Element. Why: The row needs a short description of what the document actually covers. How: This renders subTexStr. */ }
+				<span className={ cssModObj.setSubSpa }>{ subTexStr }</span>{ /* What: Settings Sub Span Element. Why: The row needs a short description of what the document actually covers. How: This renders subTexStr. */ }
 
 
 			</div>
@@ -349,7 +349,7 @@ type TecProTyp = { accSynObj : AccSynTyp, actStoObj : ActStoTyp, onNavHomFun? : 
 function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TecProTyp ) : React.JSX.Element {
 
 
-	const appCurObj = staAppObj.appearance; // What: Appearance Current Object. Why: The appearance rows read the persisted appearance settings. How: This reads staAppObj.appearance, which migStaFun guarantees on every load.
+	const appCurObj = staAppObj.appearance; // What: Appearance Current Object. Why: The appearance rows read the persisted appearance settings. How: This reads staAppObj.appearance, which migStaFun backfills.
 
 
 
@@ -359,7 +359,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	// #region Help Mode
 
-	const [ helModBoo, setHelModBoo ] = React.useState( false ); // What: Help Mode Boolean And Setter. Why: This whole tab needs one shared flag for whether help mode is currently active. How: This gates HelOveCom below and is toggled by the header's own HelButCom. // Help mode (see help/mode.tsx); every section here is static UI chrome, no data-dependent content, so unlike Pickers/Data/Stats no disposable sample data needs seeding.
+	const [ helModBoo, setHelModBoo ] = React.useState( false ); // What: Help Mode Boolean And Setter. Why: This whole tab needs one shared flag for whether help mode is currently active. How: This gates HelOveCom below and is toggled by the header's own HelButCom. // Help mode (see help/mode.tsx).
 
 	const helExiFun = React.useCallback( () => setHelModBoo( false ), [] ); // What: Help Exit Function. Why: HelOveCom needs a stable callback to call when the user exits help mode from inside the overlay itself. How: This clears helModBoo; memoized with an empty dependency array since it only ever closes over a stable setter.
 
@@ -369,7 +369,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	// #region Style Previews
 
-	const [ celTokNum, setCelTokNum ] = React.useState( 0 );                     // What: Celebration Token Number And Setter. Why: CelPreCom needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plaCelFun and passed straight through as CelPreCom's own repTokNum prop. // Appearance preview stages: bumping a token replays; celStyStr/picPreStr hold which style is currently showing (null = idle, selector visible).
+	const [ celTokNum, setCelTokNum ] = React.useState( 0 );                     // What: Celebration Token Number And Setter. Why: CelPreCom needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plaCelFun and passed straight through as CelPreCom's own repTokNum prop. // Appearance preview stages: bumping a token replays; celStyStr and picPreStr hold the style being previewed (picPreStr null means the selected style shows).
 	const [ celStyStr, setCelStyStr ] = React.useState( 'confetti' );            // What: Celebration Style String And Setter. Why: The preview stage needs to know which specific style to actually play. How: This is set by plaCelFun and passed straight through as CelPreCom's own styKeyStr prop.
 	const [ picTokNum, setPicTokNum ] = React.useState( 0 );                     // What: Picker Token Number And Setter. Why: PicAniCom needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plaPicFun and passed straight through as PicAniCom's own repTokNum prop.
 	const [ picPreStr, setPicPreStr ] = React.useState< string | null >( null ); // What: Picker Preview String And Setter. Why: The picker-animation stage should keep showing whichever style was last previewed, not the selected style, once its own cycle finishes. How: This is set by plaPicFun and, while non-null, overrides the selected pickAnim value passed to PicAniCom.
@@ -436,7 +436,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	 *
 	*/
 
-	const plaPicFun = ( newStyStr : string ) => { // What: Play Pick Function. Why: Pressing Preview on a picker-animation style option needs to both select and immediately replay that style. How: This sets picPreStr and bumps picTokNum to trigger PicAniCom's own remount. // The strip runs ~2s. picPreStr keeps holding the previewed style after it ends (it never reverts to the selected style), so the stage keeps the previewed animation's final frame instead of snapping to another style.
+	const plaPicFun = ( newStyStr : string ) => { // What: Play Pick Function. Why: Pressing Preview on a picker-animation style option needs to both select and immediately replay that style. How: This sets picPreStr and bumps picTokNum to trigger PicAniCom's own remount. // picPreStr keeps holding the previewed style after the animation ends, so the stage keeps its final frame instead of snapping to another style.
 
 
 		setPicPreStr( newStyStr );                      // What: Picker Preview Set. Why: The stage needs to know which style to play. How: This writes newStyStr into picPreStr.
@@ -453,17 +453,43 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	// #region Scroll-Spy And Jump-To
 
-	const [ actSecStr, setActSecStr ] = React.useState( 'daily' ); // What: Active Section String And Setter. Why: Both the rail's own highlighted link and the scroll-spy effect below need one shared source of truth for which section reads as current. How: This is written by the scroll-spy effect during normal scrolling and by jumSecFun when a rail link is clicked. // Mirrors the Today tab's own group rail. The scroll container is the shared <main className="main">; sections live in the right pane and the sticky rail on the left tracks / drives position.
+	const [ actSecStr, setActSecStr ] = React.useState( 'daily' ); // What: Active Section String And Setter. Why: Both the rail's own highlighted link and the scroll-spy effect below need one shared source of truth for which section reads as current. How: This is written by the scroll-spy effect during normal scrolling and by jumSecFun when a rail link is clicked. // Mirrors the Today tab's own group rail. The scroll container is the app's main content element (hook appConMai); sections live in the right pane and the sticky rail on the left tracks and drives position.
 	const [ legMinNum, setLegMinNum ] = React.useState( 0 );       // What: Legal Minimum Number And Setter. Why: Legal is the last section, so without extra room below it the page runs out of scroll before its own top can reach the spy's base line. How: This holds the minimum height the Legal section needs, measured by the Legal spacer effect below and applied as its own minHeight.
 
 	const secMapRef = React.useRef< Record< string, HTMLElement | null > >( {} ); // What: Section Map Reference. Why: Every section below registers itself here via its own ref callback, giving the scroll-spy/jump-to logic a live lookup from section id to DOM element. How: This is written to by each section's own ref prop and read throughout this component.
 	const raiEleRef = React.useRef< HTMLElement | null >( null );                 // What: Rail Element Reference. Why: stiOffFun and the rail-fade effect both need a handle on the rail's own outer element. How: This is attached to the aside's own ref prop below.
 	const raiScrRef = React.useRef< HTMLDivElement | null >( null );              // What: Rail Scroll Reference. Why: The rail-fade effect needs to read scroll position from the actual scrolling element, distinct from the sticky outer rail the fade attributes are toggled on. How: This is attached to the rail's own inner scroll wrapper below. // The mobile pill bar's own horizontal scroller, separate from raiEleRef; see the fade-edge effect's own comment below for why.
-	const rooEleRef = React.useRef< HTMLDivElement | null >( null );              // What: Root Element Reference. Why: The scroll-spy effect needs a handle on this component's own root to find its nearest '.appConMai' scroll ancestor. How: This is attached to the tab's own outer div below.
+	const rooEleRef = React.useRef< HTMLDivElement | null >( null );              // What: Root Element Reference. Why: The scroll-spy effect needs a handle on this component's own root to find its nearest appConMai scroll ancestor. How: This is attached to the tab's own outer div below.
 	const skiSpyRef = React.useRef( false );                                      // What: Skip Spy Reference. Why: A section just jumped to via the rail must not have scroll-spy immediately recompute over it mid-scroll. How: This is set true for the duration of jumSecFun's own scroll animation and read as a guard at the top of the scroll-spy handler.
 
 
-	const stiOffFun = () => { // What: Sticky Offset Function. Why: Both the scroll-spy handler and jumSecFun need the exact same "how far below the viewport top" figure, computed fresh each time layout may have changed. How: This measures the rail's own current orientation and height, returning the extra offset a mobile sticky bar needs on top of a fixed 16px margin. // Where a jumped-to section should land below the top of the scroll viewport (the desktop rail sticks at a base rhythm step; on mobile the rail is a sticky bar, so its own height is added too). Measured live so the 2 stay in agreement.
+
+	// #region stiOffFun
+
+	/**
+	 * stiOffFun = Sticky Offset Function
+	 *
+	 * @summary
+	 * Returns how far below the scroll viewport's top a section should sit
+	 * when it is jumped to or read as current: the base rhythm step, plus the
+	 * rail's own height and an m02 step while the rail renders as a
+	 * horizontal sticky bar on mobile. It measures the rail fresh on each
+	 * call, so it follows layout changes.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns The offset, in pixels.
+	 *
+	 * @example
+	 * ```ts
+	 * stiOffFun() // => 14.572
+	 * ```
+	 *
+	*/
+
+	const stiOffFun = () => { // What: Sticky Offset Function. Why: Both the scroll-spy handler and jumSecFun need the exact same "how far below the viewport top" figure, computed fresh each time layout may have changed. How: This measures the rail's own current orientation and height, returning the extra offset a mobile sticky bar needs on top of a base-step margin. // Where a jumped-to section should land below the top of the scroll viewport (the desktop rail sticks at a base rhythm step; on mobile the rail is a sticky bar, so its own height is added too). Measured live so the 2 stay in agreement.
 
 
 		const raiCurEle = raiEleRef.current;                                                    // What: Rail Current Element. Why: This gives a stable local handle on the rail for this measurement pass. How: This is read once from raiEleRef.current.
@@ -477,6 +503,9 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	};
 
+	// #endregion stiOffFun
+
+
 
 	React.useEffect( () => { // What: Scroll Spy Effect. Why: The rail's own active link must track which section is actually in view as the user scrolls, without fighting a section the user just explicitly jumped to. How: This computes, on every scroll, which registered section's own top has crossed the spy's base line.
 
@@ -488,7 +517,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-		const scrConEle = rooEleRef.current?.closest( '[data-element-name-hook~="appConMai"]' );   // What: Scroll Container Element. Why: The shared '.appConMai' scroller, not the window, is what actually needs to be measured/listened to in the normal case. How: This walks up from this component's own root to the nearest '.appConMai' ancestor.
+		const scrConEle = rooEleRef.current?.closest( '[data-element-name-hook~="appConMai"]' );   // What: Scroll Container Element. Why: The shared appConMai scroller, not the window, is what actually needs to be measured/listened to in the normal case. How: This walks up from this component's own root to the nearest appConMai ancestor.
 		const spyIdeSet = new Set( [ 'daily', 'holidays', 'data', 'account', 'about', 'legal' ] ); // What: Spy Identifier Set. Why: Every section after the first should be assignable active purely from scroll position. How: This is checked inside the loop below, skipping any section whose id is not a member. // Appearance is left out on purpose: it's the fallback whenever no later section has crossed the base line. Legal can take part like every other section thanks to the Legal spacer effect below, which gives it enough scroll room to reach the base line.
 
 
@@ -527,7 +556,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 		onScrEveFun(); // What: Initial Scroll Spy Call. Why: The rail should already reflect the right section on mount, without waiting for the first scroll event. How: This invokes onScrEveFun once, synchronously.
 
-		( scrConEle || window ).addEventListener( 'scroll', onScrEveFun, { passive : true } ); // What: Scroll Container Listener. Why: Most of the time there is a real '.appConMai' scroller to listen to directly. How: This subscribes onScrEveFun to the container's own scroll event, or the window's if no container was found.
+		( scrConEle || window ).addEventListener( 'scroll', onScrEveFun, { passive : true } ); // What: Scroll Container Listener. Why: Most of the time there is a real appConMai scroller to listen to directly. How: This subscribes onScrEveFun to the container's own scroll event, or the window's if no container was found.
 
 		window.addEventListener( 'scroll', onScrEveFun, { passive : true } ); // What: Window Scroll Listener. Why: A secondary window-level listener catches any scroll path the container-level one might miss. How: This subscribes onScrEveFun to the window's own scroll event as well.
 
@@ -544,13 +573,13 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 		};
 
 
-	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to wire up its own listeners once, on mount. How: An empty array means it never re-subscribes; every value it reads (refs, SET_SEC_ARR) is stable across renders anyway.
+	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to wire up its own listeners once, on mount. How: An empty array means it never re-subscribes; every value it reads (refs, SET_SEC_ARR, and stiOffFun, which only reads refs) stays valid across renders anyway.
 
 
 
 	// #region Rail Fade
 
-	React.useEffect( () => { // What: Rail Fade Effect. Why: The mobile pill bar's own start/end fade edges need to reflect real scroll position, toggled on the non-scrolling outer rail. How: This reads scroll position from the inner scroller but writes the resulting classes onto the outer rail, resubscribing on both scroll and resize. // Scroll-edge fades on the mobile rail (horizontal pill bar), the same affordance as the Data/Stats filter rows. The fade itself (setRaiAsi::before/::after, tab-settings.module.css) lives on the STICKY outer rail, not on the element that actually scrolls (raiScrRef, the inner wrapper around <ul>); an earlier version put overflow-x AND the fade pseudo-elements on the same (outer) element, which meant the fade (a position:absolute child of that scrolling element) scrolled away WITH the pills instead of staying pinned to the visible edges (confirmed on real devices, not a Chromium-sandbox-only quirk: reproduced in both Firefox and Chrome emulation). Reading scroll state from the inner wrapper but toggling the state classes on the outer (non-scrolling) rail keeps the fade itself immobile while still tracking real scroll position.
+	React.useEffect( () => { // What: Rail Fade Effect. Why: The mobile pill bar's own start/end fade edges need to reflect real scroll position, toggled on the non-scrolling outer rail. How: This reads scroll position from the inner scroller but writes the resulting attributes onto the outer rail, subscribing to scroll and resize. // Scroll-edge fades on the mobile rail (horizontal pill bar), the same affordance as the Data/Stats filter rows. The fade itself (setRaiAsi::before/::after, tab-settings.module.css) lives on the STICKY outer rail, not on the element that actually scrolls (raiScrRef, the inner wrapper around <ul>); an earlier version put overflow-x AND the fade pseudo-elements on the same (outer) element, which meant the fade (a position:absolute child of that scrolling element) scrolled away WITH the pills instead of staying pinned to the visible edges (confirmed on real devices, not a Chromium-sandbox-only quirk: reproduced in both Firefox and Chrome emulation). Reading scroll state from the inner wrapper but toggling the state classes on the outer (non-scrolling) rail keeps the fade itself immobile while still tracking real scroll position.
 
 
 		const scrCurEle = raiScrRef.current; // What: Scroll Current Element. Why: The scrolling inner wrapper is what actually needs measuring. How: This is read once from raiScrRef.current.
@@ -599,7 +628,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 		const legCurEle = secMapRef.current[ 'legal' ];                                          // What: Legal Current Element. Why: The Legal section is the one being sized. How: This looks up its own registered element in secMapRef.
-		const scrConEle = rooEleRef.current?.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared '.appConMai' scroller's own height and scroll range drive the measurement. How: This walks up from this component's own root to the nearest '.appConMai' ancestor.
+		const scrConEle = rooEleRef.current?.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared appConMai scroller's own height and scroll range drive the measurement. How: This walks up from this component's own root to the nearest appConMai ancestor.
 
 
 		if ( !legCurEle || !scrConEle ) return; // What: Missing Element Guard. Why: Nothing can be measured if either element is not actually mounted. How: This bails out early whenever either lookup above failed.
@@ -661,21 +690,21 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 		// #region Jump Target Values
 
-		const scrConEle = secCurEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared '.appConMai' scroller, not the window, is what actually needs scrolling in the normal case. How: This walks up from secCurEle to its nearest '.appConMai' ancestor.
+		const scrConEle = secCurEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared appConMai scroller, not the window, is what actually needs scrolling in the normal case. How: This walks up from secCurEle to its nearest appConMai ancestor.
 		const jumTopBoo = secIdeStr === SET_SEC_ARR[ 0 ].ideStr;                        // What: Jump Top Boolean. Why: Jumping to the very first section should reveal the tab's own header too, not just that section. How: This is true only when secIdeStr matches SET_SEC_ARR's own first entry. // The first section is the top of the tab; scroll all the way up so the header comes back into view rather than stopping at the section.
 
 		// #endregion Jump Target Values
 
 
 
-		if ( scrConEle ) { // What: Container Scroll Check. Why: The normal case scrolls inside '.appConMai', while the fallback scrolls the window. How: This takes the container branch whenever a '.appConMai' ancestor was found.
+		if ( scrConEle ) { // What: Container Scroll Check. Why: The normal case scrolls inside appConMai, while the fallback scrolls the window. How: This takes the container branch whenever an appConMai ancestor was found.
 
 
 			const offDelNum = secCurEle.getBoundingClientRect().top - scrConEle.getBoundingClientRect().top; // What: Offset Delta Number. Why: The scroll target must be computed relative to the container's own current scroll position, not an absolute page position. How: This is the section's own top minus the container's own top.
 			const topPosNum = jumTopBoo ? 0 : scrConEle.scrollTop + offDelNum - stiOffFun();                 // What: Top Position Number. Why: This is the actual scrollTop value to animate to. How: This is 0 for the top-of-tab case, otherwise the container's own current scrollTop plus offDelNum, minus the sticky offset so the section lands below the rail/header.
 
 
-			scrConEle.scrollTo({ // What: Container Scroll Call. Why: This is the actual scroll animation for the normal, in-'.appConMai' case. How: This scrolls scrConEle to topPosNum, animated unless reduced motion is preferred.
+			scrConEle.scrollTo({ // What: Container Scroll Call. Why: This is the actual scroll animation for the normal, in-appConMai case. How: This scrolls scrConEle to topPosNum, animated unless reduced motion is preferred.
 
 
 				behavior : scrBehFun(), // What: Behavior. Why: A user who prefers reduced motion should not see an animated scroll. How: This picks 'auto' under reduced motion, 'smooth' otherwise.
@@ -687,13 +716,13 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 		}
 
-		else { // What: Window Scroll Branch. Why: With no '.appConMai' ancestor, the window itself is what scrolls. How: This runs only when scrConEle is missing.
+		else { // What: Window Scroll Branch. Why: With no appConMai ancestor, the window itself is what scrolls. How: This runs only when scrConEle is missing.
 
 
 			const topPosNum = jumTopBoo ? 0 : secCurEle.getBoundingClientRect().top + window.scrollY - stiOffFun(); // What: Top Position Number. Why: This is the actual scrollTo value for the fallback, window-level scroll case. How: This is 0 for the top-of-tab case, otherwise the section's own viewport top plus the current window scroll, minus the sticky offset.
 
 
-			window.scrollTo({ // What: Window Scroll Call. Why: This is the actual scroll animation for the fallback case, when no '.appConMai' ancestor was found. How: This scrolls the window to topPosNum, animated unless reduced motion is preferred.
+			window.scrollTo({ // What: Window Scroll Call. Why: This is the actual scroll animation for the fallback case, when no appConMai ancestor was found. How: This scrolls the window to topPosNum, animated unless reduced motion is preferred.
 
 
 				behavior : scrBehFun(), // What: Behavior. Why: A user who prefers reduced motion should not see an animated scroll. How: This picks 'auto' under reduced motion, 'smooth' otherwise.
@@ -752,13 +781,39 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to subscribe once, on mount. How: An empty array means it never re-subscribes or re-runs after the initial mount.
 
 
+
+	// #region motNotFun
+
+	/**
+	 * motNotFun = Motion Note Function
+	 *
+	 * @summary
+	 * Returns the reduced-motion note for a style picker, naming the feature
+	 * it covers, while the user prefers reduced motion, and null otherwise.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param namTexStr - Name Text String: What the note says won't play, such
+	 *                    as "celebrations".
+	 *
+	 * @returns The note paragraph, or null while motion is allowed.
+	 *
+	 * @example
+	 * ```tsx
+	 * motNotFun('celebrations') // => <p /> or null
+	 * ```
+	 *
+	*/
+
 	const motNotFun = ( namTexStr : string ) => redMotBoo ? ( // What: Motion Note Function. Why: Both style-picker sections need the exact same reduced-motion note, differing only in what they name. How: This returns the note paragraph while redMotBoo is true, or null to render nothing.
 
 
-		<p className={` ${ cssModObj.secSubPar }   ${ cssModObj.secSubParMotion } `}>Your system is set to reduce motion, so { namTexStr } will not play in the app. You can still preview each one here.</p> // What: Set Rm Note Paragraph Element. Why: This is the actual note copy, naming whichever feature the caller passed in. How: This renders namTexStr inline inside the fixed surrounding sentence.
+		<p className={` ${ cssModObj.secSubPar }   ${ cssModObj.secSubParMotion } `}>Your system is set to reduce motion, so { namTexStr } will not play in the app. You can still preview each one here.</p> // What: Section Sub Paragraph Element. Why: This is the actual note copy, naming whichever feature the caller passed in. How: This carries the secSubParMotion modifier and renders namTexStr inline inside the fixed surrounding sentence.
 
 
 	) : null; // What: No Note Branch. Why: Nothing needs saying while motion is allowed. How: This returns null so the caller renders nothing.
+
+	// #endregion motNotFun
 
 	// #endregion Reduced Motion Note
 
@@ -766,7 +821,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	// #region Daily Generator Notifications
 
-	const [ notPerStr, setNotPerStr ] = React.useState( () => ( NOT_NAM_OBJ ? NOT_NAM_OBJ.perCheFun() : 'unsupported' ) ); // What: Notification Permission String And Setter. Why: The notify-me row needs the browser's own current notification permission to decide which of its 3 states to show. How: This starts from an immediate NOT_NAM_OBJ.perCheFun() check, then is kept in sync by the effect below. // Permission is asked exactly once, from the run-time change gesture: that is the moment the user has shown they care when the generator runs, and a denied prompt can't be re-shown by us.
+	const [ notPerStr, setNotPerStr ] = React.useState( () => ( NOT_NAM_OBJ ? NOT_NAM_OBJ.perCheFun() : 'unsupported' ) ); // What: Notification Permission String And Setter. Why: The notify-me row needs the browser's own current notification permission to decide which of its 3 states to show. How: This starts from an immediate NOT_NAM_OBJ.perCheFun() check, then is kept in sync by the effect below. // Permission is asked from the run-time change gesture: that is the moment the user has shown they care when the generator runs, and a denied prompt can't be re-shown by us.
 
 
 	React.useEffect( () => { // What: Notification Permission Subscribe Effect. Why: notPerStr needs to update live if permission changes outside this row's own controls, such as via the browser's own site settings. How: This subscribes to NOT_NAM_OBJ's own change notifications and cleans up on unmount.
@@ -782,7 +837,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to subscribe once, on mount. How: An empty array means it never re-subscribes; NOT_NAM_OBJ itself is a stable module-level import.
 
 
-	const onRunChaFun = ( newTimStr : string ) => { // What: On Run Change Function. Why: Changing the run-time is the one deliberate gesture this section asks notification permission from. How: This saves the new run time, then (if supported) asks for permission exactly once.
+	const onRunChaFun = ( newTimStr : string ) => { // What: On Run Change Function. Why: Changing the run-time is the one deliberate gesture this section asks notification permission from. How: This saves the new run time, then (if supported) calls askOncFun, which prompts only until the user has answered.
 
 
 		actStoObj.daiTimFun( newTimStr ); // What: Run Time Save Call. Why: This is the actual persisted setting the Daily generator reads to know when to run. How: This calls actStoObj.daiTimFun with newTimStr.
@@ -869,7 +924,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	const canInsBoo = !!( PWA_NAM_OBJ && PWA_NAM_OBJ.canInsFun() );                                   // What: Can Install Boolean. Why: The Install button itself should only render while an install prompt is actually available. How: This calls PWA_NAM_OBJ.canInsFun(), guarded against PWA_NAM_OBJ itself being unavailable.
 	const iosInsBoo = !!( PWA_NAM_OBJ && PWA_NAM_OBJ.isaIosBoo && !isaStaBoo );                       // What: iOS Install Boolean. Why: iOS/iPadOS need their own "Add to Home Screen" instructions instead of the native install prompt. How: This is true only when PWA_NAM_OBJ reports isaIosBoo and the app is not already standalone.
 	const macInsBoo = !!( PWA_NAM_OBJ && PWA_NAM_OBJ.isaMacBoo && !isaStaBoo );                       // What: Mac Install Boolean. Why: macOS Safari needs its own "Add to Dock" instructions instead of the native install prompt. How: This is true only when PWA_NAM_OBJ reports isaMacBoo and the app is not already standalone.
-	const insStaStr = ( PWA_NAM_OBJ && PWA_NAM_OBJ.insStaFun ) ? PWA_NAM_OBJ.insStaFun() : 'pending'; // What: Install State String. Why: The Data Control section's own install-related messaging branches on this exact value. How: This calls PWA_NAM_OBJ.insStaFun(), falling back to 'pending' when that method itself is unavailable. // Feature-detected rather than named-browser: 'unsupported' covers Firefox and anything else without the install prompt, and stays 'pending' until we have actually waited long enough to know.
+	const insStaStr = ( PWA_NAM_OBJ && PWA_NAM_OBJ.insStaFun ) ? PWA_NAM_OBJ.insStaFun() : 'pending'; // What: Install State String. Why: The Data Control section's own install-related messaging branches on this exact value. How: This calls PWA_NAM_OBJ.insStaFun(), falling back to 'pending' when that method itself is unavailable. // Feature-detected rather than named-browser: 'unsupported' means no install prompt exists, and 'pending' means support isn't known yet.
 
 	// #endregion App Installation State
 
@@ -899,14 +954,14 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-	const forWheFun = ( isoTimStr : string | null ) => { // What: Format When Function. Why: The storage row's "fallback copy" fact needs a friendly relative-or-absolute label, not a raw ISO timestamp. How: This special-cases "never" and "today", otherwise falling back to a short absolute date, catching any parse failure along the way.
+	const forWheFun = ( isoTimStr : string | null ) => { // What: Format When Function. Why: The storage row's "fallback copy" fact needs a friendly relative-or-absolute label, not a raw ISO timestamp. How: This returns 'not yet this install' for a missing timestamp and "today at TIME" for a same-day one, otherwise a short absolute date, falling back to 'unknown' if formatting throws.
 
 
 		if ( !isoTimStr ) return 'not yet this install'; // What: Missing Timestamp Guard. Why: A fallback copy that has never actually been written needs its own distinct label. How: This returns a fixed "not yet this install" string whenever isoTimStr is falsy.
 
 
 
-		try { // What: Timestamp Format Try. Why: A malformed timestamp can throw while being formatted. How: This wraps the formatting so the catch below can fall back to 'unknown'.
+		try { // What: Timestamp Format Try. Why: An unusable timestamp must not crash the storage row while it is formatted. How: This wraps the formatting so the catch below can fall back to 'unknown'.
 
 
 			const mirDatObj = new Date( isoTimStr );                                                        // What: Mirror Date Object. Why: The fallback copy's own timestamp needs to be a real Date before it can be compared or formatted. How: This parses isoTimStr.
@@ -973,16 +1028,16 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	// #region Data Control State
 
 	const filInpRef = React.useRef< HTMLInputElement | null >( null );  // What: File Input Reference. Why: The Import button itself is not the real file input; it needs a handle on the real (visually hidden) one to trigger its own click. How: This is attached to the hidden file input's own ref prop below.
-	const expButRef = React.useRef< HTMLButtonElement | null >( null ); // What: Export Button Reference. Why: expDatFun needs a handle on the Export button to restore focus to it after the download link is clicked. How: This is attached to the Export ButBasCom's own ref prop below. // Both actions hand focus away (export clicks a download link, import opens the file dialog), leaving focus on <body> where a screen reader starts reading the browser and page title. Refocus the button that was used and annStaFun through the app-level live region.
-	const impButRef = React.useRef< HTMLButtonElement | null >( null ); // What: Import Button Reference. Why: Both onImpFilFun's own failure path and the focus-restore effect below need a handle on the Import button. How: This is attached to the Import ButBasCom's own ref prop below. // Both actions hand focus away (export clicks a download link, import opens the file dialog), leaving focus on <body> where a screen reader starts reading the browser and page title. Refocus the button that was used and annStaFun through the app-level live region.
+	const expButRef = React.useRef< HTMLButtonElement | null >( null ); // What: Export Button Reference. Why: expDatFun needs a handle on the Export button to restore focus to it after the download link is clicked. How: This is attached to the Export ButBasCom's own ref prop below. // Both actions hand focus away (export clicks a download link, import opens the file dialog), so focus returns to the button that was used and annStaFun speaks through the app-level live region.
+	const impButRef = React.useRef< HTMLButtonElement | null >( null ); // What: Import Button Reference. Why: Both onImpFilFun's own failure path and the focus-restore effect below need a handle on the Import button. How: This is attached to the Import ButBasCom's own ref prop below. // Both actions hand focus away (export clicks a download link, import opens the file dialog), so focus returns to the button that was used and annStaFun speaks through the app-level live region.
 	const impConRef = React.useRef< HTMLButtonElement | null >( null ); // What: Import Confirm Reference. Why: Opening the confirmation should move focus onto its own Import button. How: This is attached to that button's own ref prop below.
-	const impFocRef = React.useRef( false );                            // What: Import Focus Reference. Why: The commit where the real Import button remounts happens after this closing function returns, so a plain synchronous focus call here would be too early. How: This flags that focus should be restored, consumed by the effect below once penImpObj is actually cleared. // Set when a confirm closes; consumed by the effect that runs after the Import button has actually remounted, so focus never lands on <body>.
+	const impFocRef = React.useRef( false );                            // What: Import Focus Reference. Why: The commit where the real Import button remounts happens after this closing function returns, so a plain synchronous focus call here would be too early. How: This flags that focus should be restored, consumed by the effect below once penImpObj is actually cleared. // Set when a confirm closes; consumed by the effect that runs after the Import button has remounted, so focus doesn't fall to <body>.
 	const resButRef = React.useRef< HTMLButtonElement | null >( null ); // What: Reset Button Reference. Why: Closing the confirmation without resetting should return focus to the row's own Reset button. How: This is attached to that button's own ref prop below. // Same unmount-on-swap problem as the import row: the trigger button is replaced by the confirm pair, so focus has to be moved deliberately in the commit AFTER each swap or it falls to <body>.
 	const resConRef = React.useRef< HTMLButtonElement | null >( null ); // What: Reset Confirm Reference. Why: Opening the confirmation should move focus onto its own Reset button. How: This is attached to that button's own ref prop below. // Same unmount-on-swap problem as the import row: the trigger button is replaced by the confirm pair, so focus has to be moved deliberately in the commit AFTER each swap or it falls to <body>.
 	const resFocRef = React.useRef( false );                            // What: Reset Focus Reference. Why: The commit where the real Reset button remounts happens after the closing function returns, so a plain synchronous focus call here would be too early. How: This flags that focus should be restored, consumed by the effect below once conResBoo is actually cleared.
 
 	const [ impMesObj, setImpMesObj ] = React.useState< StaMesTyp | null >( null );                               // What: Import Message Object And Setter. Why: A completed (or failed) import needs somewhere to report its own outcome once the confirmation itself is gone. How: This is rendered as a status line below the import row.
-	const [ penImpObj, setPenImpObj ] = React.useState< { datObj : RawSavTyp, namStr : string } | null >( null ); // What: Pending Import Object And Setter. Why: A chosen backup file must be confirmed in-app before it actually replaces all data. How: This holds the parsed { datObj, namStr } pair while the confirm row is showing, read by runImpFun. // Parsed-but-unconfirmed backup. Replaces a native confirm(), which the browser owns and no screen reader can be told about.
+	const [ penImpObj, setPenImpObj ] = React.useState< { datObj : RawSavTyp, namStr : string } | null >( null ); // What: Pending Import Object And Setter. Why: A chosen backup file must be confirmed in-app before it actually replaces all data. How: This holds the parsed { datObj, namStr } pair while the confirm row is showing, read by runImpFun. // Parsed-but-unconfirmed backup, confirmed in-app rather than through a native confirm().
 	const [ impLeaBoo, setImpLeaBoo ] = React.useState( false );                                                  // What: Import Leaving Boolean And Setter. Why: Closing the import confirmation should play its own leave animation before actually unmounting. How: This flags the confirm row as leaving for the duration of that animation.
 	const [ expMesObj, setExpMesObj ] = React.useState< { entNum : number, timNum : number } | null >( null );    // What: Export Message Object And Setter. Why: A completed export needs somewhere to report how many history entries it actually included. How: This is rendered as a status line below the export row.
 	const [ conResBoo, setConResBoo ] = React.useState( false );                                                  // What: Confirm Reset Boolean And Setter. Why: The Reset row needs to know whether its own confirm pair is currently showing. How: This swaps the Reset button for the confirm pair below.
@@ -992,12 +1047,12 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-	const hasPicBoo = ( staAppObj.pickers || [] ).length > 0;        // What: Has Picker Boolean. Why: Export and Reset only make sense once any picker exists. How: This checks staAppObj.pickers for at least 1 entry, treating a missing array as empty.
-	const hasIteBoo = ( staAppObj.items || [] ).length > 0;          // What: Has Item Boolean. Why: Export and Reset only make sense once any item exists. How: This checks staAppObj.items for at least 1 entry, treating a missing array as empty.
-	const hasConBoo = ( staAppObj.conditionals || [] ).length > 0;   // What: Has Conditional Boolean. Why: Export and Reset only make sense once any conditional exists. How: This checks staAppObj.conditionals for at least 1 entry, treating a missing array as empty.
-	const hasTasBoo = ( staAppObj.tasks || [] ).length > 0;          // What: Has Task Boolean. Why: Export and Reset only make sense once any reminder exists. How: This checks staAppObj.tasks for at least 1 entry, treating a missing array as empty.
-	const hasPclBoo = ( staAppObj.pickLog || [] ).length > 0;        // What: Has Pick-Log Boolean. Why: Export and Reset only make sense once any pick history has accrued. How: This checks staAppObj.pickLog for at least 1 entry, treating a missing array as empty.
-	const hasCdlBoo = ( staAppObj.conditionalLog || [] ).length > 0; // What: Has Conditional-Log Boolean. Why: Export and Reset only make sense once any conditional history has accrued. How: This checks staAppObj.conditionalLog for at least 1 entry, treating a missing array as empty.
+	const hasPicBoo = ( staAppObj.pickers || [] ).length > 0;        // What: Has Picker Boolean. Why: Any picker is data that Export and Reset can act on. How: This checks staAppObj.pickers for at least 1 entry, treating a missing array as empty.
+	const hasIteBoo = ( staAppObj.items || [] ).length > 0;          // What: Has Item Boolean. Why: Any item is data that Export and Reset can act on. How: This checks staAppObj.items for at least 1 entry, treating a missing array as empty.
+	const hasConBoo = ( staAppObj.conditionals || [] ).length > 0;   // What: Has Conditional Boolean. Why: Any conditional is data that Export and Reset can act on. How: This checks staAppObj.conditionals for at least 1 entry, treating a missing array as empty.
+	const hasTasBoo = ( staAppObj.tasks || [] ).length > 0;          // What: Has Task Boolean. Why: Any reminder is data that Export and Reset can act on. How: This checks staAppObj.tasks for at least 1 entry, treating a missing array as empty.
+	const hasPclBoo = ( staAppObj.pickLog || [] ).length > 0;        // What: Has Pick-Log Boolean. Why: Any pick history is data that Export and Reset can act on. How: This checks staAppObj.pickLog for at least 1 entry, treating a missing array as empty.
+	const hasCdlBoo = ( staAppObj.conditionalLog || [] ).length > 0; // What: Has Conditional-Log Boolean. Why: Any conditional history is data that Export and Reset can act on. How: This checks staAppObj.conditionalLog for at least 1 entry, treating a missing array as empty.
 
 	const hasDatBoo = hasPicBoo || hasIteBoo || hasConBoo || hasTasBoo || hasPclBoo || hasCdlBoo; // What: Has Data Boolean. Why: Both the Export and Reset rows need to know whether there is actually anything to export/reset at all. How: This is true whenever any one of the 6 collections above is non-empty. // Something to reset? True if the user has created any pickers, items, conditionals, or reminders, or accrued any pick/completion history; groups exist only through pickers, so hasPicBoo covers them.
 
@@ -1064,7 +1119,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	 *
 	*/
 
-	const resRunFun = async ( cldDelBoo : boolean ) : Promise< void > => {
+	const resRunFun = async ( cldDelBoo : boolean ) : Promise< void > => { // What: Reset Run Function. Why: A confirmed reset has to sign out of any account before the device is wiped. How: This runs the account wipe, then, only when it worked, navigates home, wipes the app, and reports the result.
 
 
 		// #region Account Wipe
@@ -1192,7 +1247,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 		});
 
-		annStaFun( `Backup exported, including ${ entCouNum } history ${ entCouNum === 1 ? 'entry' : 'entries' }.`, { assBoo : true } ); // What: Export Announce Call. Why: A screen-reader user needs to hear the export actually happened, including how much history it carried. How: This announces the entry count assertively, pluralized correctly for exactly 1 entry. // Announce BEFORE firing the download. The browser's own download UI takes focus the moment the link is clicked, and a screen reader that follows focus into browser chrome drops any pending polite announcement, so the speech has to be assertive and already under way. The file is fully built by this point, so "exported" is true when it is said.
+		annStaFun( `Backup exported, including ${ entCouNum } history ${ entCouNum === 1 ? 'entry' : 'entries' }.`, { assBoo : true } ); // What: Export Announce Call. Why: A screen-reader user needs to hear the export actually happened, including how much history it carried. How: This announces the entry count assertively, pluralized correctly for exactly 1 entry. // Announce BEFORE firing the download, assertively, so the speech is already under way when the link is clicked. The file is fully built by this point, so "exported" is true when it is said.
 
 		// #endregion Export Report
 
@@ -1250,7 +1305,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-				setImpMesObj( null ); // What: Import Message Clear. Why: A fresh file choice should not carry over a stale message from an earlier attempt. How: This clears impMesObj back to null. // Hold the parsed backup and ask in-app. No separate announcement: the file dialog closing already sends the reader through browser chrome, and an assertive message on top of that lands third, after its own noise and the focus move. Instead focus moves (a little late, so the dialog transition has settled) to the confirm button, whose name plus aria-describedby warning is read as a single utterance.
+				setImpMesObj( null ); // What: Import Message Clear. Why: A fresh file choice should not carry over a stale message from an earlier attempt. How: This clears impMesObj back to null. // Hold the parsed backup and ask in-app. No separate announcement: instead focus moves, after a short delay, to the confirm button, whose name and aria-describedby warning describe the choice.
 
 				setPenImpObj( { datObj : impDatObj, namStr : impFilObj.name } ); // What: Pending Import Set. Why: This is what actually surfaces the in-app confirmation row below. How: This stages the file's own name and parsed data together.
 
@@ -1345,7 +1400,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	};
 
 
-	const canImpFun = () => { // What: Cancel Import Function. Why: Explicitly cancelling should discard the staged backup and confirm nothing happened, distinct from a silent Escape dismissal. How: This announces the cancellation, then closes the confirmation the same way a successful import does.
+	const canImpFun = () => { // What: Cancel Import Function. Why: Cancelling, by button or Escape, should discard the staged backup and tell the user nothing was imported. How: This announces the cancellation, then closes the confirmation the same way a successful import does.
 
 
 		if ( !penImpObj ) return; // What: No Pending Import Guard. Why: There is nothing to cancel if no backup is actually staged. How: This bails out early whenever penImpObj is null.
@@ -1395,7 +1450,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-	const bmcIdeStr = 'braMarCli--set'; // What: Brand-Mark-ClipPath Identifier String. Why: This header renders the same logo svg as every other tab header, and clipPath ids must be document-unique. How: This appends a "--set" modifier to the shared braMarCli base id, the same per-tab convention as every other header's own logo ("--tod", "--pic", "--sta", "--dat"), keeping it distinct from the nav's own unmodified "braMarCli".
+	const bmcIdeStr = 'braMarCli--set'; // What: Brand-Mark-ClipPath Identifier String. Why: This header renders the same logo svg as every other tab header, and clipPath ids must be document-unique. How: This appends a "--set" modifier to the shared braMarCli base id, keeping it distinct from the nav's own unmodified "braMarCli" and the other tabs' logos.
 
 
 
@@ -1418,7 +1473,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 			ref={ rooEleRef }
 
 			className={ cssModObj.tabPagDiv }
-		>{ /* What: Tab Settings Div Element. Why: This is TabSetCom's own root element, giving the scroll-spy effect a handle to find its nearest '.appConMai' ancestor. How: This wraps the header, the section rail plus right-hand pane, and the Legal modal. */ }
+		>{ /* What: Tab Settings Div Element. Why: This is TabSetCom's own root element, giving the scroll-spy effect a handle to find its nearest appConMai ancestor. How: This wraps the header, the section rail plus right-hand pane, and the Legal modal. */ }
 
 
 			<HelOveCom
@@ -1430,13 +1485,13 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-			<header className={ cssModObj.pagHeaHed }>{ /* What: Stat H Header Element. Why: Every tab shares this same header shape: a kicker row, a brand lockup, and an intro paragraph. How: This wraps the kicker/help-button row, the brand mark plus title, and the intro paragraph. */ }
+			<header className={ cssModObj.pagHeaHed }>{ /* What: Page Heading Header Element. Why: The page header holds a kicker row, a brand lockup, and an intro paragraph. How: This wraps the kicker/help-button row, the brand mark plus title, and the intro paragraph. */ }
 
 
-				<div className={ cssModObj.kicRowDiv }>{ /* What: Kicker Row Div Element. Why: The section kicker and the help toggle share one row. How: This wraps the kicker span and the HelButCom. */ }
+				<div className={ cssModObj.kicRowDiv }>{ /* What: Kicker Row Div Element. Why: The section kicker and the help toggle share one row. How: This wraps the kicker div and the HelButCom. */ }
 
 
-					<div className={ cssModObj.pagKicDiv }>Settings</div>{ /* What: Kicker Div Element. Why: Every tab's header names itself with this same small kicker label. How: This renders the fixed text "Settings". */ }
+					<div className={ cssModObj.pagKicDiv }>Settings</div>{ /* What: Page Kicker Div Element. Why: The header names itself with this small kicker label. How: This renders the fixed text "Settings". */ }
 
 
 
@@ -1455,7 +1510,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					className={ cssModObj.heaLeaDiv }
 
 					data-element-name-hook='heaLeaDiv'
-				>{ /* What: Stat H Lead Div Element. Why: The brand mark and the page title sit side by side in this same lead row on every tab. How: This wraps the braMarBut button and the section title. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+				>{ /* What: Heading Lead Div Element. Why: The brand mark and the page title sit side by side in this lead row. How: This wraps the braMarBut button and the section title. Its data-element-name-hook is read by help mode. */ }
 
 
 					<button
@@ -1478,7 +1533,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 							viewBox='8 8 528 528'
 
 							aria-hidden='true'
-						>{ /* What: Logo SVG Element. Why: This draws the small square "Ease My Life" logo mark. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }{ /* Same theme-wired logo as the Today + Stats + Data headers. */ }
+						>{ /* What: Brand Mark SVG Element. Why: This draws the small square "Ease My Life" logo mark. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }
 
 
 							<defs>{ /* What: Clip Defs Element. Why: An SVG clipPath can only be applied via a defined, referenced id, not inline. How: This holds the one clipPath definition the glyph path below references. */ }
@@ -1569,10 +1624,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					</button>
 
 
-					<div className={ cssModObj.heaTitDiv }>{ /* What: Section H Div Element. Why: The page title needs its own small wrapper, matching every other tab's header. How: This wraps the h1 title below. */ }
+					<div className={ cssModObj.heaTitDiv }>{ /* What: Heading Title Div Element. Why: The page title needs its own small wrapper. How: This wraps the h1 title below. */ }
 
 
-						<h1 className={ cssModObj.pagTitHea }>Behind the scenes, of your <span className={ cssModObj.titAccSpa }>eased</span> life.</h1>{ /* What: Section Title H1 Element. Why: Every tab names its own page with this same title style. How: This renders the fixed title text, with "eased" set off in the shared accent span. */ }
+						<h1 className={ cssModObj.pagTitHea }>Behind the scenes, of your <span className={ cssModObj.titAccSpa }>eased</span> life.</h1>{ /* What: Page Title Heading Element. Why: The page names itself with this title style. How: This renders the fixed title text, with "eased" set off in the shared accent span. */ }
 
 
 					</div>
@@ -1582,14 +1637,14 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-				<p className={ cssModObj.pagSubPar }>All app-wide settings can be found here relating to the app's appearance, the Daily generator, holiday preferences, app data import, export, and deletion, user account, about and legal. All conditionals, reminders, pickers and their items' settings can be found in the <button className={ cssModObj.subLinBut } type='button' onClick={ () => onNavTabFun && onNavTabFun( 'data' ) }>Data page</button>.</p>{ /* What: Section Sub Paragraph Element. Why: Every tab's header ends with this same short intro paragraph. How: This renders the fixed intro copy, with a link to the Data tab via onNavTabFun. */ }
+				<p className={ cssModObj.pagSubPar }>All app-wide settings can be found here relating to the app's appearance, the Daily generator, holiday preferences, app data import, export, and deletion, user account, about and legal. All conditionals, reminders, pickers and their items' settings can be found in the <button className={ cssModObj.subLinBut } type='button' onClick={ () => onNavTabFun && onNavTabFun( 'data' ) }>Data page</button>.</p>{ /* What: Page Sub Paragraph Element. Why: The header ends with this short intro paragraph. How: This renders the fixed intro copy, with a link to the Data tab via onNavTabFun. */ }
 
 
 			</header>
 
 
 
-			<div className={ cssModObj.setGriDiv }>{ /* What: Settings Layout Div Element. Why: The section rail and the right-hand pane need to sit side by side. How: This wraps the rail aside and the setSecDiv div. */ }
+			<div className={ cssModObj.setGriDiv }>{ /* What: Settings Grid Div Element. Why: The section rail and the right-hand pane need to sit side by side. How: This wraps the rail aside and the setSecDiv div. */ }
 
 
 				<aside
@@ -1603,7 +1658,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 				>{ /* What: Settings Rail Aside Element. Why: This is the sticky/scrollable rail of section links tracked by scroll-spy and driven by jumSecFun. How: This wraps the rail's own kicker and its scrolling <ul> of section links. Its data-element-name-hook is read by help mode's chrome clipping and help mode's Settings catalog. */ }
 
 
-					<div className={ cssModObj.raiKicDiv }>Sections</div>{ /* What: Kicker Div Element. Why: The rail needs its own small heading, matching the kicker style used elsewhere. How: This renders the fixed text "Sections". */ }
+					<div className={ cssModObj.raiKicDiv }>Sections</div>{ /* What: Rail Kicker Div Element. Why: The rail needs its own small heading, matching the kicker style used elsewhere. How: This renders the fixed text "Sections". */ }
 
 
 
@@ -1612,11 +1667,11 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 						className={ cssModObj.raiScrDiv }
 
-						data-rail-wheel-scroll
-					>{ /* What: Settings Rail Scroll Div Element. Why: The rail-fade effect needs a dedicated scrolling element distinct from the non-scrolling outer rail its attributes are toggled on. How: This wraps the actual <ul> of section links. */ }{ /* Own scrolling element, separate from setRaiAsi itself; see the fade-edge effect's own comment for why. */ }
+						data-rail-wheel-scroll // What: Rail Wheel Scroll Attribute. Why: A rail that scrolls sideways needs the shared wheel and focus scrolling to reach it. How: This presence-only attribute marks the scroller for the handlers that read it.
+					>{ /* What: Rail Scroll Div Element. Why: The rail-fade effect needs a dedicated scrolling element distinct from the non-scrolling outer rail its attributes are toggled on. How: This wraps the actual <ul> of section links. */ }{ /* Own scrolling element, separate from setRaiAsi itself; see the fade-edge effect's own comment for why. */ }
 
 
-						<ul className={ cssModObj.raiLisUno }>{ /* What: Rail Link List Element. Why: One link is needed per entry in SET_SEC_ARR. How: This maps SET_SEC_ARR into one rail button per section. */ }
+						<ul className={ cssModObj.raiLisUno }>{ /* What: Rail List Unordered Element. Why: One link is needed per entry in SET_SEC_ARR. How: This maps SET_SEC_ARR into one rail button per section. */ }
 
 
 							{ SET_SEC_ARR.map( ( secConObj ) => ( // What: Section Link Map. Why: One rail link is needed per registered section, in the same fixed order the sections themselves render in. How: This maps SET_SEC_ARR to one <li><button> pair per entry, keyed by its own ideStr.
@@ -1631,7 +1686,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 										data-rail-select-active={ actSecStr === secConObj.ideStr || undefined } // What: Rail Select Active Attribute. Why: The section in view should stand out in the rail. How: This is present only on the button whose section actSecStr names.
 
 										onClick={ () => jumSecFun( secConObj.ideStr ) }
-									>{ /* What: Rail Btn Button Element. Why: This is the actual clickable control that jumps to and highlights this specific section. How: This calls jumSecFun with this section's own ideStr when clicked, and carries data-rail-select-active while actSecStr matches. */ }
+									>{ /* What: Rail Section Button Element. Why: This is the actual clickable control that jumps to and highlights this specific section. How: This calls jumSecFun with this section's own ideStr when clicked, and carries data-rail-select-active while actSecStr matches. */ }
 
 
 										<span className={ cssModObj.raiNamSpa }>{ secConObj.labStr }</span>{ /* What: Rail Name Span Element. Why: Every rail link needs its own visible section name. How: This renders secConObj's own labStr. */ }
@@ -1668,15 +1723,15 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					>{ /* What: Settings Appearance Section Element. Why: This is the Appearance section's own root, registering itself for scroll-spy/jump-to. How: This wraps the system-preference row, the Theme cards, the 2 style pickers, and the tab-placement control. Its data-element-name-hook is read by the Settings page tour and help mode's Settings catalog. */ }
 
 
-						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
+						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Heading Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
 
 
-							<span className={ cssModObj.secKicSpa }>Appearance</span>{ /* What: Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Appearance". */ }
+							<span className={ cssModObj.secKicSpa }>Appearance</span>{ /* What: Section Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Appearance". */ }
 
 
 						</div>
 
-						<p className={ cssModObj.secSubPar }>Control the appearance of Ease My life, including colors, animations and tab placement.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Appearance. */ }
+						<p className={ cssModObj.secSubPar }>Control the appearance of Ease My life, including colors, animations and tab placement.</p>{ /* What: Section Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Appearance. */ }
 
 						<div
 							className={ cssModObj.sysPreDiv }
@@ -1692,31 +1747,31 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 									className={ cssModObj.setRowDiv }
 
 									data-element-name-hook='setRowDiv'
-								>{ /* What: System Pref Row Div Element. Why: The label/description and the switch need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the switch button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+								>{ /* What: Settings Row Div Element. Why: The label/description and the switch need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the switch button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-									<div className={ cssModObj.setInfDiv }>{ /* What: System Pref Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the switch. How: This wraps the name span and the description span. */ }
+									<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the switch. How: This wraps the name span and the description span. */ }
 
 
-										<span className={ cssModObj.setNamSpa }>System preference</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "System preference". */ }
+										<span className={ cssModObj.setNamSpa }>System preference</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders the fixed label "System preference". */ }
 
 										<span
 											key={ String( !!appCurObj.autoSystem ) }
 
 											className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
-										>{ /* What: Set Data Sub Span Element. Why: This row's own description changes meaning based on the toggle's own state, and should fade between the 2 versions. How: This remounts (via its own boolean-string key) and renders one of 2 explanatory sentences depending on appCurObj.autoSystem. */ }
+										>{ /* What: Settings Sub Span Element. Why: This row's own description changes meaning based on the toggle's own state, and should fade between the 2 versions. How: This remounts (via its own boolean-string key) and renders one of 2 explanatory sentences depending on appCurObj.autoSystem. */ }
 
 
 											{ appCurObj.autoSystem ? ( // What: Auto System Check. Why: The description reads differently depending on whether the system preference is on. How: This renders the automatic copy while appCurObj.autoSystem is truthy, otherwise the manual copy.
 
 
-												<React.Fragment>Your <strong>system</strong> will apply light and dark themes <strong>according to its preferences</strong>. Whichever theme is selected below will apply its counterpart (e.g. Ink &rarr; Night) when applicable.</React.Fragment> // What: Automatic Copy Fragment Element. Why: This explains what the system preference does while it is on. How: This renders fixed copy with its key phrases in bold.
+												<React.Fragment>Your <strong>system</strong> will apply light and dark themes <strong>according to its preferences</strong>. Whichever theme is selected below will apply its counterpart (e.g. Ink &rarr; Night) when applicable.</React.Fragment> // What: Automatic Copy Fragment. Why: This explains what the system preference does while it is on. How: This renders fixed copy with its key phrases in bold.
 
 
 											) : ( // What: Manual Copy Branch. Why: With the system preference off, themes only change by hand. How: This renders the else branch, taken while appCurObj.autoSystem is falsy.
 
 
-												<React.Fragment>Themes will only be applied <strong>manually</strong> according to whichever preference you select in the options below.</React.Fragment> // What: Manual Copy Fragment Element. Why: This explains that themes only change by hand while the preference is off. How: This renders fixed copy with "manually" in bold.
+												<React.Fragment>Themes will only be applied <strong>manually</strong> according to whichever preference you select in the options below.</React.Fragment> // What: Manual Copy Fragment. Why: This explains that themes only change by hand while the preference is off. How: This renders fixed copy with "manually" in bold.
 
 
 											) }
@@ -1736,10 +1791,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 										aria-pressed={ !!appCurObj.autoSystem }
 
 										onClick={ () => actStoObj.setSysFun( !appCurObj.autoSystem ) }
-									>{ /* What: System Pref Switch Button Element. Why: This is the actual control that flips between automatic and manual theme selection. How: This calls actStoObj.setSysFun with the toggled value when clicked. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+									>{ /* What: Toggle Switch Button Element. Why: This is the actual control that flips between automatic and manual theme selection. How: This calls actStoObj.setSysFun with the toggled value when clicked. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-										<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's aria-pressed. */ }
+										<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's aria-pressed. */ }
 
 
 									</button>
@@ -1771,7 +1826,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 							<div className={ cssModObj.subHeaDiv }>Completion celebration</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Completion celebration". */ }
 
-							<p className={ cssModObj.secSubPar }>Pick which animation will play when all tasks are marked as completed inside of the Today page.</p>{ /* What: Settings Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the celebration picker. */ }
+							<p className={ cssModObj.secSubPar }>Pick which animation will play when all tasks are marked as completed inside of the Today page.</p>{ /* What: Section Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the celebration picker. */ }
 
 							{ motNotFun( 'celebrations' ) }{ /* What: Reduced Motion Note Call. Why: A user who prefers reduced motion needs to know this animation won't play on its own, only on demand here. How: This renders motNotFun's own note, naming "celebrations", or nothing while redMotBoo is false. */ }
 
@@ -1824,7 +1879,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 							<div className={ cssModObj.subHeaDiv }>Picker animation</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Picker animation". */ }
 
-							<p className={ cssModObj.secSubPar }>Pick which animation will play when the &ldquo;Pick One&rdquo; button is clicked inside of the Pickers page.</p>{ /* What: Settings Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the picker-animation picker. */ }
+							<p className={ cssModObj.secSubPar }>Pick which animation will play when the &ldquo;Pick One&rdquo; button is clicked inside of the Pickers page.</p>{ /* What: Section Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the picker-animation picker. */ }
 
 							{ motNotFun( 'this animation' ) }{ /* What: Reduced Motion Note Call. Why: A user who prefers reduced motion needs to know this animation won't play on its own, only on demand here. How: This renders motNotFun's own note, naming "this animation", or nothing while redMotBoo is false. */ }
 
@@ -1844,7 +1899,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 										{ labStr : 'Reel',      valStr : 'reel',      hinStr : 'Candidates cycle past like a slot-machine reel before landing on the pick.' }, // What: Reel Option Object. Why: This is the default reveal style. How: This names and describes the slot-machine reel.
-										{ labStr : 'Spotlight', valStr : 'spotlight', hinStr : 'A spotlight sweeps across the candidates and settles on the pick.' },          // What: Spotlight Option Object. Why: This is an alternative reveal that keeps every candidate in view. How: This names and describes the sweeping spotlight.
+										{ labStr : 'Spotlight', valStr : 'spotlight', hinStr : 'A spotlight sweeps across the candidates and settles on the pick.' },          // What: Spotlight Option Object. Why: This is an alternative reveal that sweeps a spotlight across the candidates. How: This names and describes the sweeping spotlight.
 										{ labStr : 'Dissolve',  valStr : 'dissolve',  hinStr : 'Candidates crossfade in place, dissolving into the final pick.' }              // What: Dissolve Option Object. Why: This is the calmest reveal style. How: This names and describes the in-place crossfade.
 
 
@@ -1885,7 +1940,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 							<div className={ cssModObj.subHeaDiv }>Layout</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Layout". */ }
 
-							<p className={ cssModObj.secSubPar }>Pick where the app&rsquo;s main navigation links should be located.</p>{ /* What: Settings Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the placement control. */ }
+							<p className={ cssModObj.secSubPar }>Pick where the app&rsquo;s main navigation links should be located.</p>{ /* What: Section Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the placement control. */ }
 
 
 
@@ -1896,37 +1951,37 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 									className={` ${ cssModObj.setRowDiv }   ${ cssModObj.setRowDivStack } `}
 
 									data-element-name-hook='setRowDiv'
-								>{ /* What: Layout Row Div Element. Why: The label/description and the SegConCom control need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the SegConCom control, stacking them on a narrow app so the description gets the full width. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+								>{ /* What: Settings Row Div Element. Why: The label/description and the SegConCom control need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the SegConCom control, stacking them on a narrow app so the description gets the full width. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-									<div className={ cssModObj.setInfDiv }>{ /* What: Layout Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the control. How: This wraps the name span and the description span. */ }
+									<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the control. How: This wraps the name span and the description span. */ }
 
 
-										<span className={ cssModObj.setNamSpa }>Tab bar placement</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Tab bar placement". */ }
+										<span className={ cssModObj.setNamSpa }>Tab bar placement</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders the fixed label "Tab bar placement". */ }
 
 										<span
 											key={ ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' }
 
 											className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade }   ${ cssModObj.setSubSpaLayout } `}
-										>{ /* What: Set Data Sub Span Element. Why: This row's own description changes meaning based on the selected placement, and should fade between versions. How: This remounts (via its own placement key) and renders whichever of 3 explanatory sentences matches the current placement. */ }
+										>{ /* What: Settings Sub Span Element. Why: This row's own description changes meaning based on the selected placement, and should fade between versions. How: This remounts (via its own placement key) and renders whichever of 3 explanatory sentences matches the current placement. */ }
 
 
 											{ ( ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' ) === 'bottom' ? ( // What: Bottom Placement Check. Why: The description names wherever the tab bar currently sits. How: This renders the bottom copy while tabPlacement is 'bottom' (or unset).
 
 
-												<React.Fragment>The main navigation is now a floating bar towards the <strong>bottom of the screen</strong>.</React.Fragment> // What: Bottom Copy Fragment Element. Why: This describes the default floating bottom bar. How: This renders fixed copy with the location in bold.
+												<React.Fragment>The main navigation is now a floating bar towards the <strong>bottom of the screen</strong>.</React.Fragment> // What: Bottom Copy Fragment. Why: This describes the default floating bottom bar. How: This renders fixed copy with the location in bold.
 
 
 											) : ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) === 'side' ? ( // What: Side Placement Check. Why: A side placement needs its own description. How: This renders the side copy while tabPlacement is 'side'.
 
 
-												<React.Fragment>The main navigation is now a sidebar on the <strong>left side of the screen</strong>.</React.Fragment> // What: Side Copy Fragment Element. Why: This describes the vertical sidebar placement. How: This renders fixed copy with the location in bold.
+												<React.Fragment>The main navigation is now a sidebar on the <strong>left side of the screen</strong>.</React.Fragment> // What: Side Copy Fragment. Why: This describes the vertical sidebar placement. How: This renders fixed copy with the location in bold.
 
 
 											) : ( // What: Top Placement Branch. Why: The only remaining placement is the top bar. How: This renders the else branch, taken while tabPlacement is 'top'.
 
 
-												<React.Fragment>The main navigation is now a bar at the <strong>top of the screen</strong>.</React.Fragment> // What: Top Copy Fragment Element. Why: This describes the top bar placement. How: This renders fixed copy with the location in bold.
+												<React.Fragment>The main navigation is now a bar at the <strong>top of the screen</strong>.</React.Fragment> // What: Top Copy Fragment. Why: This describes the top bar placement. How: This renders fixed copy with the location in bold.
 
 
 											) }
@@ -1978,15 +2033,15 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					>{ /* What: Settings Daily Section Element. Why: This is the Daily generator section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the generator's own settings CarSurCom. Its data-element-name-hook is read by the Settings page tour, the App Features tours, and help mode's Settings catalog. */ }
 
 
-						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
+						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Heading Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
 
 
-							<span className={ cssModObj.secKicSpa }>Daily generator</span>{ /* What: Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Daily generator". */ }
+							<span className={ cssModObj.secKicSpa }>Daily generator</span>{ /* What: Section Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Daily generator". */ }
 
 
 						</div>
 
-						<p className={ cssModObj.secSubPar }>The Daily generator can always be run manually from the Today page regardless of this setting. Which pickers are included in the Daily generator can be found with their own settings in the Data page.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for the Daily generator. */ }
+						<p className={ cssModObj.secSubPar }>The Daily generator can always be run manually from the Today page regardless of this setting. Which pickers are included in the Daily generator can be found with their own settings in the Data page.</p>{ /* What: Section Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for the Daily generator. */ }
 
 
 
@@ -1997,31 +2052,31 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 								className={ cssModObj.setRowDiv }
 
 								data-element-name-hook='setRowDiv'
-							>{ /* What: Auto Run Row Div Element. Why: The label/description and the switch need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the switch button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+							>{ /* What: Settings Row Div Element. Why: The label/description and the switch need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the switch button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-								<div className={ cssModObj.setInfDiv }>{ /* What: Auto Run Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the switch. How: This wraps the name span and the description span. */ }
+								<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the switch. How: This wraps the name span and the description span. */ }
 
 
-									<span className={ cssModObj.setNamSpa }>Run automatically</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Run automatically". */ }
+									<span className={ cssModObj.setNamSpa }>Run automatically</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders the fixed label "Run automatically". */ }
 
 									<span
 										key={ daiModStr + ( staAppObj.daily && staAppObj.daily.runTime ) }
 
 										className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
-									>{ /* What: Set Data Sub Span Element. Why: This row's own description changes meaning based on the mode and run time, and should fade between versions. How: This remounts (via its own mode+time key) and renders one of 2 explanatory sentences depending on daiModStr. */ }
+									>{ /* What: Settings Sub Span Element. Why: This row's own description changes meaning based on the mode and run time, and should fade between versions. How: This remounts (via its own mode+time key) and renders one of 2 explanatory sentences depending on daiModStr. */ }
 
 
 										{ daiModStr === 'auto' ? ( // What: Auto Mode Check. Why: The description reads differently depending on whether the generator runs on its own. How: This renders the scheduled copy while daiModStr is 'auto', otherwise the manual copy.
 
 
-											<React.Fragment>Daily generator will run automatically every day at <strong>{ forRunFun( ( staAppObj.daily && staAppObj.daily.runTime ) || '04:00' ) }</strong>.</React.Fragment> // What: Scheduled Copy Fragment Element. Why: This tells the user exactly when the generator will next run. How: This renders the formatted run time in bold via forRunFun.
+											<React.Fragment>Daily generator will run automatically every day at <strong>{ forRunFun( ( staAppObj.daily && staAppObj.daily.runTime ) || '04:00' ) }</strong>.</React.Fragment> // What: Scheduled Copy Fragment. Why: This tells the user exactly when the generator will next run. How: This renders the formatted run time in bold via forRunFun.
 
 
 										) : ( // What: Manual Mode Branch. Why: With auto mode off, the generator only runs by hand. How: This renders the else branch, taken while daiModStr is 'manual'.
 
 
-											<React.Fragment>Daily generator can only be run <strong>manually</strong> via the generator button at the bottom of the Today page.</React.Fragment> // What: Manual Copy Fragment Element. Why: This points the user at the manual generator button instead. How: This renders fixed copy with "manually" in bold.
+											<React.Fragment>Daily generator can only be run <strong>manually</strong> via the generator button at the bottom of the Today page.</React.Fragment> // What: Manual Copy Fragment. Why: This points the user at the manual generator button instead. How: This renders fixed copy with "manually" in bold.
 
 
 										) }
@@ -2041,10 +2096,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 									aria-pressed={ daiModStr === 'auto' }
 
 									onClick={ () => actStoObj.daiModFun( daiModStr === 'auto' ? 'manual' : 'auto' ) }
-								>{ /* What: Auto Run Switch Button Element. Why: This is the actual control that flips between automatic and manual generator runs. How: This calls actStoObj.daiModFun with the toggled value when clicked. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+								>{ /* What: Toggle Switch Button Element. Why: This is the actual control that flips between automatic and manual generator runs. How: This calls actStoObj.daiModFun with the toggled value when clicked. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-									<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's aria-pressed. */ }
+									<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's aria-pressed. */ }
 
 
 								</button>
@@ -2061,16 +2116,16 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 							>{ /* What: Run Time Div Element. Why: The run-time input is only meaningful while auto mode is on, so this whole row visually disables itself otherwise. How: This wraps the info block and the time input. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-								<div className={ cssModObj.setInfDiv }>{ /* What: Run Time Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the input. How: This wraps the name span and the description span. */ }
+								<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the input. How: This wraps the name span and the description span. */ }
 
 
-									<span className={ cssModObj.setNamSpa }>Run automatically at</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Run automatically at". */ }
+									<span className={ cssModObj.setNamSpa }>Run automatically at</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders the fixed label "Run automatically at". */ }
 
 									<span
 										key={ daiModStr }
 
 										className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
-									>{ /* What: Set Data Sub Span Element. Why: This row's own description changes meaning based on the mode, and should fade between versions. How: This remounts (via its own mode key) and renders one of 2 explanatory sentences depending on daiModStr. */ }
+									>{ /* What: Settings Sub Span Element. Why: This row's own description changes meaning based on the mode, and should fade between versions. How: This remounts (via its own mode key) and renders one of 2 explanatory sentences depending on daiModStr. */ }
 
 
 										{ daiModStr === 'auto' ? 'A quiet, early hour works best so that your list is ready for you first thing in the morning.' : 'Auto generation is turned off, turn it on to modify this setting.' }{ /* What: Run Time Copy Expression. Why: The run-time row explains itself differently depending on whether it is editable. How: This renders a scheduling tip while daiModStr is 'auto', otherwise a note that the setting is disabled. */ }
@@ -2092,7 +2147,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 									onChange={ ( chaEveObj ) => onRunChaFun( chaEveObj.target.value ) }
 									onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); } }
-								/>{ /* What: Run Time Input Element. Why: This is the actual control for the generator's own scheduled run time. How: This is bound to the persisted runTime, saving (and asking notification permission once) via onRunChaFun. */ }
+								/>{ /* What: Run Time Input Element. Why: This is the actual control for the generator's own scheduled run time. How: This is bound to the persisted runTime, saving (and asking notification permission) via onRunChaFun. */ }
 
 
 							</div>
@@ -2108,30 +2163,30 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 								>{ /* What: Notify Row Div Element. Why: The label/description and the permission control need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and whichever of the 3 permission-state controls below applies. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-									<div className={ cssModObj.setInfDiv }>{ /* What: Notify Info Div Element. Why: The row's own name and its permission-dependent description need their own grouping, apart from the control. How: This wraps the name span and the description span. */ }
+									<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name and its permission-dependent description need their own grouping, apart from the control. How: This wraps the name span and the description span. */ }
 
 
-										<span className={ cssModObj.setNamSpa }>Notify me when it runs</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Notify me when it runs". */ }
+										<span className={ cssModObj.setNamSpa }>Notify me when it runs</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders the fixed label "Notify me when it runs". */ }
 
-										<span className={ cssModObj.setSubSpa }>{ /* What: Set Data Sub Span Element. Why: This row's own description depends on the real current notification permission. How: This renders one of 3 explanatory sentences depending on notPerStr. */ }
+										<span className={ cssModObj.setSubSpa }>{ /* What: Settings Sub Span Element. Why: This row's own description depends on the real current notification permission. How: This renders one of 3 explanatory sentences depending on notPerStr. */ }
 
 
 											{ notPerStr === 'granted' ? ( // What: Granted Permission Check. Why: The description depends on the real current notification permission. How: This renders the granted copy while notPerStr is 'granted'.
 
 
-												<React.Fragment>You&rsquo;ll get a notification once your list has been generated but only while the app is open in a tab or window. Notifications for a closed app are coming in a future release.</React.Fragment> // What: Granted Copy Fragment Element. Why: This explains what a granted permission actually delivers. How: This renders fixed copy about open-app-only notifications.
+												<React.Fragment>You&rsquo;ll get a notification once your list has been generated but only while the app is open in a tab or window. Notifications for a closed app are coming in a future release.</React.Fragment> // What: Granted Copy Fragment. Why: This explains what a granted permission actually delivers. How: This renders fixed copy about open-app-only notifications.
 
 
 											) : notPerStr === 'denied' ? ( // What: Denied Permission Check. Why: A blocked permission needs its own explanation. How: This renders the denied copy while notPerStr is 'denied'.
 
 
-												<React.Fragment>Notifications are blocked for this site. You&rsquo;ll need to allow them in your browser&rsquo;s site settings.</React.Fragment> // What: Denied Copy Fragment Element. Why: The app can't re-ask once blocked, so the user needs to know where to fix it. How: This renders fixed copy pointing at the browser's own site settings.
+												<React.Fragment>Notifications are blocked for this site. You&rsquo;ll need to allow them in your browser&rsquo;s site settings.</React.Fragment> // What: Denied Copy Fragment. Why: The app can't re-ask once blocked, so the user needs to know where to fix it. How: This renders fixed copy pointing at the browser's own site settings.
 
 
 											) : ( // What: Default Permission Branch. Why: Permission hasn't been decided either way yet. How: This renders the else branch, taken while notPerStr is 'default'.
 
 
-												<React.Fragment>Get a nudge once your list has been generated. Only works while the app is open in a tab or window.</React.Fragment> // What: Default Copy Fragment Element. Why: This pitches the feature before permission is asked. How: This renders fixed copy describing the nudge.
+												<React.Fragment>Get a nudge once your list has been generated. Only works while the app is open in a tab or window.</React.Fragment> // What: Default Copy Fragment. Why: This pitches the feature before permission is asked. How: This renders fixed copy describing the nudge.
 
 
 											) }
@@ -2166,7 +2221,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 											className={ cssModObj.setChiSpa }
 
 											data-chip-ok-active
-										>On</span> // What: Set Store Chip Span Element. Why: This is the actual granted-state confirmation. How: This renders the fixed text "On".
+										>On</span> // What: Settings Chip Span Element. Why: This is the actual granted-state confirmation. How: This renders the fixed text "On".
 
 
 									) }
@@ -2178,7 +2233,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 											className={ cssModObj.setChiSpa }
 
 											data-chip-warn-active
-										>Blocked</span> // What: Set Store Chip Span Element. Why: This is the actual denied-state confirmation. How: This renders the fixed text "Blocked".
+										>Blocked</span> // What: Settings Chip Span Element. Why: This is the actual denied-state confirmation. How: This renders the fixed text "Blocked".
 
 
 									) }
@@ -2205,15 +2260,15 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					>{ /* What: Settings Holidays Section Element. Why: This is the Holidays section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and HolEdiCom's own CarSurCom. Its data-element-name-hook is read by the Settings page tour. */ }
 
 
-						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
+						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Heading Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
 
 
-							<span className={ cssModObj.secKicSpa }>Holidays</span>{ /* What: Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Holidays". */ }
+							<span className={ cssModObj.secKicSpa }>Holidays</span>{ /* What: Section Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Holidays". */ }
 
 
 						</div>
 
-						<p className={ cssModObj.secSubPar }>Any pickers that are set to &ldquo;Skip on holidays&rdquo; will not be run on the days that are toggled on here. Toggle off any that you don&rsquo;t observe, or even add your own! Dates shown are for { new Date().getFullYear() }.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Holidays, inlining the real current year. */ }
+						<p className={ cssModObj.secSubPar }>Any pickers that are set to &ldquo;Skip on holidays&rdquo; will not be run on the days that are toggled on here. Toggle off any that you don&rsquo;t observe, or even add your own! Dates shown are for { new Date().getFullYear() }.</p>{ /* What: Section Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Holidays, inlining the real current year. */ }
 
 
 
@@ -2241,15 +2296,15 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					>{ /* What: Settings Data Section Element. Why: This is the Data control section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the whole storage/export/import/reset CarSurCom. Its data-element-name-hook is read by the Settings page tour. */ }
 
 
-						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
+						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Heading Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
 
 
-							<span className={ cssModObj.secKicSpa }>Data control</span>{ /* What: Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Data control". */ }
+							<span className={ cssModObj.secKicSpa }>Data control</span>{ /* What: Section Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Data control". */ }
 
 
 						</div>
 
-						<p className={ cssModObj.secSubPar }>All of your data is stored locally, on this device to do with it as you will. Unfortunately, this also means that if you want to use this app on a different device then you will need to export your data here, and then use the import feature on the other device. Exporting your data is also a good way to backup your data, just in case something were to happen either to your device or to the browser and its stored data.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Data control. */ }
+						<p className={ cssModObj.secSubPar }>All of your data is stored locally, on this device to do with it as you will. Unfortunately, this also means that if you want to use this app on a different device then you will need to export your data here, and then use the import feature on the other device. Exporting your data is also a good way to backup your data, just in case something were to happen either to your device or to the browser and its stored data.</p>{ /* What: Section Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Data control. */ }
 
 
 
@@ -2260,27 +2315,27 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 								className={` ${ cssModObj.stoRowDiv }   ${ cssModObj.stoRowDivStack } `}
 
 								data-element-name-hook='stoRowDiv'
-							>{ /* What: Store Row Div Element. Why: The storage-status label/facts and the install/protect actions need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the store-actions block, stacking them on a narrow app so the facts get the full width. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+							>{ /* What: Storage Row Div Element. Why: The storage-status label/facts and the install/protect actions need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the store-actions block, stacking them on a narrow app so the facts get the full width. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-								<div className={ cssModObj.setInfDiv }>{ /* What: Store Info Div Element. Why: The row's own name, description, fact chips, and any persist-result message all need their own grouping. How: This wraps the name span, the description span, the facts span, and (conditionally) the persist-message span. */ }
+								<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name, description, fact chips, and any persist-result message all need their own grouping. How: This wraps the name span, the description span, the facts span, and (conditionally) the persist-message span. */ }
 
 
-									<span className={ cssModObj.setNamSpa }>Where your data lives</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Where your data lives". */ }
+									<span className={ cssModObj.setNamSpa }>Where your data lives</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders the fixed label "Where your data lives". */ }
 
-									<span className={ cssModObj.setSubSpa }>{ /* What: Set Data Sub Span Element. Why: This row's own description depends on which storage engine is actually in use. How: This renders one of 2 explanatory sentences depending on stoStaObj's own engine field. */ }
+									<span className={ cssModObj.setSubSpa }>{ /* What: Settings Sub Span Element. Why: This row's own description depends on which storage engine is actually in use. How: This renders one of 2 explanatory sentences depending on stoStaObj's own engine field. */ }
 
 
 										{ stoStaObj && stoStaObj.engStr === 'idb' ? ( // What: Database Engine Check. Why: The description depends on which storage engine is actually in use. How: This renders the database copy while stoStaObj reports the 'idb' engine.
 
 
-											<React.Fragment>Stored in this browser&rsquo;s database on this device.</React.Fragment> // What: Database Copy Fragment Element. Why: This confirms the sturdier IndexedDB storage is in use. How: This renders fixed copy.
+											<React.Fragment>Stored in this browser&rsquo;s database on this device.</React.Fragment> // What: Database Copy Fragment. Why: This confirms the sturdier IndexedDB storage is in use. How: This renders fixed copy.
 
 
 										) : ( // What: Simple Storage Branch. Why: Without IndexedDB, data falls back to the easier-to-clear localStorage. How: This renders the else branch, taken for any other engine or while status is still loading.
 
 
-											<React.Fragment>Stored in this browser&rsquo;s simple storage on this device, which is more likely to be cleared automatically. Exporting a backup is worth doing.</React.Fragment> // What: Simple Storage Copy Fragment Element. Why: The user should know this storage is more fragile and that exporting helps. How: This renders fixed copy recommending a backup.
+											<React.Fragment>Stored in this browser&rsquo;s simple storage on this device, which is more likely to be cleared automatically. Exporting a backup is worth doing.</React.Fragment> // What: Simple Storage Copy Fragment. Why: The user should know this storage is more fragile and that exporting helps. How: This renders fixed copy recommending a backup.
 
 
 										) }
@@ -2288,7 +2343,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 									</span>
 
-									<span className={ cssModObj.stoFacSpa }>{ /* What: Store Facts Span Element. Why: The protected/size/mirror facts, plus an install confirmation, need their own grouping as a row of small chips. How: This wraps 3 always-shown chips plus an installed chip while isaStaBoo is true. */ }
+									<span className={ cssModObj.stoFacSpa }>{ /* What: Storage Facts Span Element. Why: The protected/size/mirror facts, plus an install confirmation, need their own grouping as a row of small chips. How: This wraps 3 always-shown chips plus an installed chip while isaStaBoo is true. */ }
 
 
 										<span
@@ -2296,15 +2351,15 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 											data-chip-ok-active={ ( stoStaObj && stoStaObj.perBoo ) || undefined } // What: Chip Ok Active Attribute. Why: Protected storage reads as good news. How: This is present only while the storage is persisted.
 											data-chip-warn-active={ !( stoStaObj && stoStaObj.perBoo ) || undefined } // What: Chip Warn Active Attribute. Why: Unprotected storage is worth acting on. How: This is present only while the storage isn't persisted.
-										>{ stoStaObj && stoStaObj.perBoo ? 'Protected from cleanup' : 'Not protected yet' }</span>{ /* What: Persisted Chip Span Element. Why: Whether the browser has promised not to evict this app's own data is worth its own always-visible chip. How: This renders one of 2 labels, styled ok/warn, based on stoStaObj's own persisted field. */ }
+										>{ stoStaObj && stoStaObj.perBoo ? 'Protected from cleanup' : 'Not protected yet' }</span>{ /* What: Settings Chip Span Element. Why: Whether the browser has promised not to evict this app's own data is worth its own always-visible chip. How: This renders one of 2 labels, styled ok/warn, based on stoStaObj's own persisted field. */ }
 
-										<span className={ cssModObj.setChiSpa }>{ forBytFun( stoStaObj && stoStaObj.bytNum ) } of your data</span>{ /* What: Size Chip Span Element. Why: How much data is actually stored is worth its own always-visible chip. How: This renders forBytFun's own formatted size, reading stoStaObj's own dataBytes field. */ }
+										<span className={ cssModObj.setChiSpa }>{ forBytFun( stoStaObj && stoStaObj.bytNum ) } of your data</span>{ /* What: Settings Chip Span Element. Why: How much data is actually stored is worth its own always-visible chip. How: This renders forBytFun's own formatted size, reading stoStaObj's own bytNum field. */ }
 
 										<span
 											className={ cssModObj.setChiSpa }
 
-											data-chip-warn-active={ ( stoStaObj && stoStaObj.mirBoo === false ) || undefined } // What: Chip Warn Active Attribute. Why: An out-of-date fallback copy is worth acting on. How: This is present only while mirrorOk is false.
-										>Fallback copy: { stoStaObj && stoStaObj.mirBoo === false ? 'out of date' : forWheFun( stoStaObj && stoStaObj.mirStr ) }</span>{ /* What: Mirror Chip Span Element. Why: How fresh the localStorage fallback mirror is worth its own always-visible chip. How: This renders either a warning or forWheFun's own formatted timestamp, reading stoStaObj's own mirBoo/mirStr fields. */ }
+											data-chip-warn-active={ ( stoStaObj && stoStaObj.mirBoo === false ) || undefined } // What: Chip Warn Active Attribute. Why: An out-of-date fallback copy is worth acting on. How: This is present only while mirBoo is false.
+										>Fallback copy: { stoStaObj && stoStaObj.mirBoo === false ? 'out of date' : forWheFun( stoStaObj && stoStaObj.mirStr ) }</span>{ /* What: Settings Chip Span Element. Why: How fresh the localStorage fallback mirror is worth its own always-visible chip. How: This renders either a warning or forWheFun's own formatted timestamp, reading stoStaObj's own mirBoo/mirStr fields. */ }
 
 										{ isaStaBoo && ( // What: Installed Chip Check. Why: An installed/standalone app deserves its own small confirmation chip alongside the others. How: This renders the chip only while isaStaBoo is true.
 
@@ -2313,7 +2368,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 												className={ cssModObj.setChiSpa }
 
 												data-chip-ok-active
-											>Installed</span> // What: Installed Chip Span Element. Why: This is the actual installed confirmation. How: This renders the fixed text "Installed".
+											>Installed</span> // What: Settings Chip Span Element. Why: This is the actual installed confirmation. How: This renders the fixed text "Installed".
 
 
 										) }
@@ -2329,7 +2384,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 											data-message-error-active={ !perMesObj.okaBoo || undefined } // What: Message Error Active Attribute. Why: A failed attempt reads red. How: This is present only while perMesObj.okaBoo is false.
 											data-message-ok-active={ perMesObj.okaBoo || undefined } // What: Message Ok Active Attribute. Why: A successful attempt reads in the accent. How: This is present only while perMesObj.okaBoo is true.
-										>{ perMesObj.texStr }</span> // What: Persist Message Span Element. Why: This is the actual outcome text from the last Install/Protect Data attempt. How: This renders perMesObj's own text field, styled ok/err based on its own ok field.
+										>{ perMesObj.texStr }</span> // What: Settings Message Span Element. Why: This is the actual outcome text from the last Install/Protect Data attempt. How: This renders perMesObj's own text field, styled ok/err based on its own ok field.
 
 
 									) }
@@ -2405,12 +2460,12 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 								>{ /* What: Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
-									<div className={ cssModObj.setInfDiv }>{ /* What: Already Installed Info Div Element. Why: The note's own name and explanation need their own grouping. How: This wraps the name span and the description span. */ }
+									<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The note's own name and explanation need their own grouping. How: This wraps the name span and the description span. */ }
 
 
-										<span className={ cssModObj.setNamSpa }>Already installed on this device</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Already installed on this device". */ }
+										<span className={ cssModObj.setNamSpa }>Already installed on this device</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders the fixed label "Already installed on this device". */ }
 
-										<span className={ cssModObj.setSubSpa }>You&rsquo;re viewing Ease My Life in a browser tab. Open the installed app from your home screen or app list instead. It&rsquo;s the same data, and the installed copy is the one protected from browser cleanup.</span>{ /* What: Set Data Sub Span Element. Why: The user needs a clear, actionable explanation of why they are seeing this note. How: This renders the fixed explanatory copy. */ }
+										<span className={ cssModObj.setSubSpa }>You&rsquo;re viewing Ease My Life in a browser tab. Open the installed app from your home screen or app list instead. It&rsquo;s the same data, and the installed copy is the one protected from browser cleanup.</span>{ /* What: Settings Sub Span Element. Why: The user needs a clear, actionable explanation of why they are seeing this note. How: This renders the fixed explanatory copy. */ }
 
 
 									</div>
@@ -2432,12 +2487,12 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 								>{ /* What: Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
-									<div className={ cssModObj.setInfDiv }>{ /* What: Unsupported Info Div Element. Why: The note's own name and explanation need their own grouping. How: This wraps the name span and the description span. */ }
+									<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The note's own name and explanation need their own grouping. How: This wraps the name span and the description span. */ }
 
 
-										<span className={ cssModObj.setNamSpa }>Installing from this page isn&rsquo;t available here</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Installing from this page isn't available here". */ }
+										<span className={ cssModObj.setNamSpa }>Installing from this page isn&rsquo;t available here</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders the fixed label "Installing from this page isn't available here". */ }
 
-										<span className={ cssModObj.setSubSpa }>Some browsers offer <strong>Install app</strong> or <strong>Add to Home screen</strong> in their own menu, so it&rsquo;s worth a look. Others, including Firefox on desktop, can&rsquo;t install web apps at all. There you&rsquo;d need a Chromium based browser such as Chrome or Edge. Either way you can keep using Ease My Life right here, just use the <strong>Protect Data</strong> control above to make this browser far less likely to clear it.</span>{ /* What: Set Data Sub Span Element. Why: The user needs a clear explanation of why no install option is showing, plus the next-best alternative. How: This renders the fixed explanatory copy. */ }
+										<span className={ cssModObj.setSubSpa }>Some browsers offer <strong>Install app</strong> or <strong>Add to Home screen</strong> in their own menu, so it&rsquo;s worth a look. Others, including Firefox on desktop, can&rsquo;t install web apps at all. There you&rsquo;d need a Chromium based browser such as Chrome or Edge. Either way you can keep using Ease My Life right here, just use the <strong>Protect Data</strong> control above to make this browser far less likely to clear it.</span>{ /* What: Settings Sub Span Element. Why: The user needs a clear explanation of why no install option is showing, plus the next-best alternative. How: This renders the fixed explanatory copy. */ }
 
 
 									</div>
@@ -2484,12 +2539,12 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 							>{ /* What: Export Row Div Element. Why: The export label/description and the Export button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Export control. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-								<div className={ cssModObj.setInfDiv }>{ /* What: Export Info Div Element. Why: The row's own name, description, and any post-export message all need their own grouping. How: This wraps the name span, the description span, and (conditionally) the export-message span. */ }
+								<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name, description, and any post-export message all need their own grouping. How: This wraps the name span, the description span, and (conditionally) the export-message span. */ }
 
 
-									<span className={ cssModObj.setNamSpa }>Export a backup</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Export a backup". */ }
+									<span className={ cssModObj.setNamSpa }>Export a backup</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders the fixed label "Export a backup". */ }
 
-									<span className={ cssModObj.setSubSpa }>Downloads a JSON file of everything, this includes <strong>{ picCouNum }</strong> pickers, <strong>{ iteCouNum }</strong> items, <strong>{ remCouNum }</strong> reminders and <strong>all app settings</strong>.</span>{ /* What: Set Data Sub Span Element. Why: The row's own description should say exactly what a backup would include right now. How: This renders the fixed description, inlining the live picCouNum/iteCouNum/remCouNum counts. */ }
+									<span className={ cssModObj.setSubSpa }>Downloads a JSON file of everything, this includes <strong>{ picCouNum }</strong> pickers, <strong>{ iteCouNum }</strong> items, <strong>{ remCouNum }</strong> reminders and <strong>all app settings</strong>.</span>{ /* What: Settings Sub Span Element. Why: The row's own description should say what a backup would include right now. How: This renders the fixed description, inlining the live picCouNum/iteCouNum/remCouNum counts. */ }
 
 									{ expMesObj && ( // What: Export Message Check. Why: A message should only exist right after an actual export just happened. How: This renders the message span only while expMesObj holds a value.
 
@@ -2500,7 +2555,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 											className={ cssModObj.setMesSpa }
 
 											data-message-ok-active
-										>Backup exported, including <strong>{ expMesObj.entNum }</strong> history { expMesObj.entNum === 1 ? 'entry' : 'entries' }.</span> // What: Export Message Span Element. Why: This is the actual confirmation text from the last export. How: This renders expMesObj's own entries count, pluralized correctly for exactly 1 entry.
+										>Backup exported, including <strong>{ expMesObj.entNum }</strong> history { expMesObj.entNum === 1 ? 'entry' : 'entries' }.</span> // What: Settings Message Span Element. Why: This is the actual confirmation text from the last export. How: This renders expMesObj's own entries count, pluralized correctly for exactly 1 entry.
 
 
 									) }
@@ -2558,12 +2613,12 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 							>{ /* What: Import Row Div Element. Why: The import label/description and the Import control (or its confirm pair) need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block, the hidden file input, and whichever of the trigger/confirm controls currently applies. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-								<div className={ cssModObj.setInfDiv }>{ /* What: Import Info Div Element. Why: The row's own name, description, and any pending/completed message all need their own grouping. How: This wraps the name span, the description span, and whichever message span currently applies. */ }
+								<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name, description, and any pending/completed message all need their own grouping. How: This wraps the name span, the description span, and whichever message span currently applies. */ }
 
 
-									<span className={ cssModObj.setNamSpa }>Import a backup</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Import a backup". */ }
+									<span className={ cssModObj.setNamSpa }>Import a backup</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders the fixed label "Import a backup". */ }
 
-									<span className={ cssModObj.setSubSpa }><strong>Replaces all data</strong> that is currently being stored by this app with a previously exported file.</span>{ /* What: Set Data Sub Span Element. Why: The destructive nature of import needs to be stated plainly up front. How: This renders the fixed description. */ }
+									<span className={ cssModObj.setSubSpa }><strong>Replaces all data</strong> that is currently being stored by this app with a previously exported file.</span>{ /* What: Settings Sub Span Element. Why: The destructive nature of import needs to be stated plainly up front. How: This renders the fixed description. */ }
 
 									{ penImpObj && ( // What: Pending Import Message Check. Why: A confirmation prompt should only exist while a backup is actually staged and awaiting confirmation. How: This renders the message span only while penImpObj holds a value.
 
@@ -2574,7 +2629,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 											className={ cssModObj.setMesSpa }
 
 											data-message-warn-active
-										>Import <strong>{ penImpObj.namStr }</strong>? This <strong>replaces all data</strong> currently stored by this app.</span> // What: Pending Import Message Span Element. Why: This is the actual confirmation prompt, naming the staged file. How: This renders penImpObj's own name, and is referenced by the confirm button's own aria-describedby below.
+										>Import <strong>{ penImpObj.namStr }</strong>? This <strong>replaces all data</strong> currently stored by this app.</span> // What: Settings Message Span Element. Why: This is the actual confirmation prompt, naming the staged file. How: This renders penImpObj's own name, and is referenced by the confirm button's own aria-describedby below.
 
 
 									) }
@@ -2587,7 +2642,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 											data-message-error-active={ !impMesObj.okaBoo || undefined } // What: Message Error Active Attribute. Why: A failed import reads red. How: This is present only while impMesObj.okaBoo is false.
 											data-message-ok-active={ impMesObj.okaBoo || undefined } // What: Message Ok Active Attribute. Why: A successful import reads in the accent. How: This is present only while impMesObj.okaBoo is true.
-										>{ impMesObj.texStr }</span> // What: Import Outcome Message Span Element. Why: This is the actual outcome text from the last import attempt. How: This renders impMesObj's own text, styled ok/err based on its own ok field.
+										>{ impMesObj.texStr }</span> // What: Settings Message Span Element. Why: This is the actual outcome text from the last import attempt. How: This renders impMesObj's own text, styled ok/err based on its own ok field.
 
 
 									) }
@@ -2667,16 +2722,16 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 							>{ /* What: Reset Row Div Element. Why: The reset label/description and the Reset control (or its confirm pair) need to sit in the tab's usual info-plus-action row layout, flagged as a dangerous action. How: This wraps the info block and whichever of the trigger/confirm/disabled controls currently applies. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-								<div className={ cssModObj.setInfDiv }>{ /* What: Reset Info Div Element. Why: The row's own name, description, and any post-reset message all need their own grouping. How: This wraps the name span, the description span, and (conditionally) the reset-message span. */ }
+								<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name, description, and any post-reset message all need their own grouping. How: This wraps the name span, the description span, and (conditionally) the reset-message span. */ }
 
 
-									<span className={ cssModObj.setNamSpa }>Reset all data</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Reset all data". */ }
+									<span className={ cssModObj.setNamSpa }>Reset all data</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders the fixed label "Reset all data". */ }
 
 									<span
 										id='resDesSpa'
 
 										className={ cssModObj.setSubSpa }
-									>{ accSynObj.accUsrObj ? <>Wipes everything on this device and signs you out. Your cloud copy stays, so signing back in restores it, unless you delete it too. A device still signed in uploads its own copy again when it next syncs. <strong>This can't be undone.</strong></> : <>Wipes everything and restores the app to a clean state. <strong>This can't be undone.</strong></> }</span>{ /* What: Set Data Sub Span Element. Why: The destructive and irreversible nature of reset needs to be stated plainly up front, and is also referenced by the confirm button's own aria-describedby below. How: This renders the fixed description. */ }
+									>{ accSynObj.accUsrObj ? <>Wipes everything on this device and signs you out. Your cloud copy stays, so signing back in restores it, unless you delete it too. A device still signed in uploads its own copy again when it next syncs. <strong>This can't be undone.</strong></> : <>Wipes everything and restores the app to a clean state. <strong>This can't be undone.</strong></> }</span>{ /* What: Settings Sub Span Element. Why: The destructive and irreversible nature of reset needs to be stated plainly up front, and is also referenced by the confirm button's own aria-describedby below. How: This renders one of 2 fixed descriptions, depending on whether an account is signed in. */ }
 
 									{ resMesStr && ( // What: Reset Message Check. Why: A message should only exist right after an actual reset just happened. How: This renders the message span only while resMesStr holds a value.
 
@@ -2687,7 +2742,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 											className={ cssModObj.setMesSpa }
 
 											data-message-ok-active
-										>{ resMesStr }</span> // What: Reset Message Span Element. Why: This is the actual confirmation text from the last reset. How: This renders resMesStr directly.
+										>{ resMesStr }</span> // What: Settings Message Span Element. Why: This is the actual confirmation text from the last reset. How: This renders resMesStr directly.
 
 
 									) }
@@ -2814,10 +2869,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					>{ /* What: Settings Account Section Element. Why: This is the Account section's own root, registering itself for scroll-spy/jump-to. How: This wraps the section's heading and AccSecCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
+						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Heading Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
 
 
-							<span className={ cssModObj.secKicSpa }>Account</span>{ /* What: Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Account". */ }
+							<span className={ cssModObj.secKicSpa }>Account</span>{ /* What: Section Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Account". */ }
 
 
 						</div>
@@ -2837,17 +2892,17 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					>{ /* What: Settings About Section Element. Why: This is the About section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy plus 4 Cards: the app identity, the Buy Me a Coffee row, the replay-tour row, and ConSupCom. Its data-element-name-hook is read by the Settings page tour. */ }
 
 
-						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
+						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Heading Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
 
 
-							<span className={ cssModObj.secKicSpa }>About</span>{ /* What: Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "About". */ }
+							<span className={ cssModObj.secKicSpa }>About</span>{ /* What: Section Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "About". */ }
 
 
 						</div>
 
-						<p className={ cssModObj.secSubPar }>Ease My Life is a labor of love for me. I have been using a version of this app on my own home server for years, and I have always wanted to turn it into a &ldquo;proper app&rdquo; that I could share with everyone else. I hope there are at least a few people out there that find it as useful as I do. You can find out more information about myself by visiting the link below to my personal website, including links to some of my other projects.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading, and About's own is a longer personal note. How: This renders the fixed first paragraph. */ }
+						<p className={ cssModObj.secSubPar }>Ease My Life is a labor of love for me. I have been using a version of this app on my own home server for years, and I have always wanted to turn it into a &ldquo;proper app&rdquo; that I could share with everyone else. I hope there are at least a few people out there that find it as useful as I do. You can find out more information about myself by visiting the link below to my personal website, including links to some of my other projects.</p>{ /* What: Section Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading, and About's own is a longer personal note. How: This renders the fixed first paragraph. */ }
 
-						<p className={ cssModObj.secSubPar }>You will also find the link to this app’s source code on GitHub. Its source is available under the PolyForm Noncommercial License 1.0.0, which allows anyone to freely fork and modify the project’s source code for any noncommercial purpose (so no selling the software or making money off it in any way), as long as the license and its notice come along with it. Please be responsible with the source code, because I am just one person maintaining the project in their free time trying to make a living. This is not some big company with vast resources trying to extract every dollar that they can.</p>{ /* What: Settings Sub Paragraph Element. Why: The license terms deserve their own separate paragraph from the personal note above. How: This renders the fixed second paragraph. */ }
+						<p className={ cssModObj.secSubPar }>You will also find the link to this app’s source code on GitHub. Its source is available under the PolyForm Noncommercial License 1.0.0, which allows anyone to freely fork and modify the project’s source code for any noncommercial purpose (so no selling the software or making money off it in any way), as long as the license and its notice come along with it. Please be responsible with the source code, because I am just one person maintaining the project in their free time trying to make a living. This is not some big company with vast resources trying to extract every dollar that they can.</p>{ /* What: Section Sub Paragraph Element. Why: The license terms deserve their own separate paragraph from the personal note above. How: This renders the fixed second paragraph. */ }
 
 
 
@@ -2858,22 +2913,22 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 								className={ cssModObj.aboInfDiv }
 
 								data-element-name-hook='aboInfDiv'
-							>{ /* What: Set About Div Element. Why: The brand name, version, and links all belong to one identity block. How: This wraps the brand span and the version/creator/GitHub spans. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+							>{ /* What: About Info Div Element. Why: The brand name, version, and links all belong to one identity block. How: This wraps the brand span and the version/creator/GitHub spans. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-								<div className={ cssModObj.aboBraDiv }>{ /* What: Set About Brand Div Element. Why: The brand name needs its own small wrapper, separate from the version/link lines below it. How: This wraps the single aboNamSpa span. */ }
+								<div className={ cssModObj.aboBraDiv }>{ /* What: About Brand Div Element. Why: The brand name needs its own small wrapper, separate from the version/link lines below it. How: This wraps the single aboNamSpa span. */ }
 
 
-									<span className={ cssModObj.aboNamSpa }>Ease My Life</span>{ /* What: Set About Name Span Element. Why: The identity block needs its own visible app name. How: This renders the fixed text "Ease My Life". */ }
+									<span className={ cssModObj.aboNamSpa }>Ease My Life</span>{ /* What: About Name Span Element. Why: The identity block needs its own visible app name. How: This renders the fixed text "Ease My Life". */ }
 
 
 								</div>
 
-								<span className={ cssModObj.aboVerSpa }>{ APP_VER_STR == null ? 'Version: 1.0' : `Version: ${ APP_VER_STR }` }</span>{ /* What: Set About Ver Span Element. Why: The real build version belongs in this identity block. How: This renders APP_VER_STR, falling back to "1.0" when the build-time define is missing. */ }
+								<span className={ cssModObj.aboVerSpa }>{ APP_VER_STR == null ? 'Version: 1.0' : `Version: ${ APP_VER_STR }` }</span>{ /* What: About Version Span Element. Why: The real build version belongs in this identity block. How: This renders APP_VER_STR, falling back to "1.0" when the build-time define is missing. */ }
 
-								<span className={ cssModObj.aboLinSpa }>Creator: <a className={ cssModObj.aboLinAnc } href='https://techgeek.dev/' rel='noopener noreferrer' target='_blank'>https://techgeek.dev/<span data-new-tab-note> (opens in a new tab)</span></a></span>{ /* What: Set About Creator Span Element. Why: The identity block links to the creator's developer site. How: This renders a fixed external link, opened in a new tab. */ }
+								<span className={ cssModObj.aboLinSpa }>Creator: <a className={ cssModObj.aboLinAnc } href='https://techgeek.dev/' rel='noopener noreferrer' target='_blank'>https://techgeek.dev/<span data-new-tab-note> (opens in a new tab)</span></a></span>{ /* What: About Link Span Element. Why: The identity block links to the creator's developer site. How: This renders a fixed external link, opened in a new tab. */ }
 
-								<span className={ cssModObj.aboLinSpa }>GitHub: <a className={ cssModObj.aboLinAnc } href='https://github.com/z4nta0/ease-my-life' rel='noopener noreferrer' target='_blank'>https://github.com/z4nta0/ease-my-life<span data-new-tab-note> (opens in a new tab)</span></a></span>{ /* What: Set About Creator Span Element. Why: The identity block also links to the project's own source code. How: This renders a fixed external link, opened in a new tab. */ }
+								<span className={ cssModObj.aboLinSpa }>GitHub: <a className={ cssModObj.aboLinAnc } href='https://github.com/z4nta0/ease-my-life' rel='noopener noreferrer' target='_blank'>https://github.com/z4nta0/ease-my-life<span data-new-tab-note> (opens in a new tab)</span></a></span>{ /* What: About Link Span Element. Why: The identity block also links to the project's own source code. How: This renders a fixed external link, opened in a new tab. */ }
 
 
 							</div>
@@ -2893,12 +2948,12 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 							>{ /* What: Support Project Div Element. Why: The label/description and the Buy Me a Coffee button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the ButBasCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-								<div className={ cssModObj.setInfDiv }>{ /* What: Support Project Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
+								<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
 
 
-									<span className={ cssModObj.setNamSpa }>Support the project</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Support the project". */ }
+									<span className={ cssModObj.setNamSpa }>Support the project</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders the fixed label "Support the project". */ }
 
-									<span className={ cssModObj.setSubSpa }>{ TIP_URL_STR ? 'Enjoying Ease My Life? Consider buying me a coffee on Ko-fi, any amount you like. It opens in a new tab.' : 'Enjoying Ease My Life? Consider buying me a coffee.' }</span>{ /* What: Set Data Sub Span Element. Why: The row needs a short, friendly ask, and should say where the button goes once it works. How: This renders the Ko-fi note only while TIP_URL_STR is set. */ }
+									<span className={ cssModObj.setSubSpa }>{ TIP_URL_STR ? 'Enjoying Ease My Life? Consider buying me a coffee on Ko-fi, any amount you like. It opens in a new tab.' : 'Enjoying Ease My Life? Consider buying me a coffee.' }</span>{ /* What: Settings Sub Span Element. Why: The row needs a short, friendly ask, and should say where the button goes once it works. How: This renders the Ko-fi note only while TIP_URL_STR is set. */ }
 
 
 								</div>
@@ -2933,12 +2988,12 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 							>{ /* What: Replay Tour Div Element. Why: The label/description and the Replay Tour button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Replay Tour ButBasCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-								<div className={ cssModObj.setInfDiv }>{ /* What: Replay Tour Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
+								<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
 
 
-									<span className={ cssModObj.setNamSpa }>Replay the welcome tour</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Replay the welcome tour". */ }
+									<span className={ cssModObj.setNamSpa }>Replay the welcome tour</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders the fixed label "Replay the welcome tour". */ }
 
-									<span className={ cssModObj.setSubSpa }>Runs the first-run walkthrough again. Including the welcome message, a guided tour of pickers, generating your day, and reminders.</span>{ /* What: Set Data Sub Span Element. Why: The row needs to explain what pressing this button actually does. How: This renders the fixed description. */ }
+									<span className={ cssModObj.setSubSpa }>Runs the first-run walkthrough again. Including the welcome message, a guided tour of pickers, generating your day, and reminders.</span>{ /* What: Settings Sub Span Element. Why: The row needs to explain what pressing this button actually does. How: This renders the fixed description. */ }
 
 
 								</div>
@@ -2957,7 +3012,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-										const hasReaBoo = staAppObj.pickers.some( ( picCurObj ) => !ONB_SPI_ARR.includes( picCurObj.id ) ); // What: Has Real Boolean. Why: Only a real, established account (one holding at least 1 non-sample picker) needs this self-healing correction applied. How: This is true whenever any of staAppObj.pickers is not one of the seeded sample picker ids. // Self-healing for accounts whose checklistDone got permanently stuck false by a since-fixed migStaFun() gap (real, established accounts that updated through an old version boundary before that field existed; see migStaFun()'s own comment on this in migrate.ts). That stale false silently reactivates first-time checklist mode on replay instead of replay-continuation mode, defeating name-collision suppression, hiding App Features, and leaving the closing Generate card stuck permanently visible. Any account that already has a real (non-sample) picker is unambiguously past onboarding regardless of what checklistDone happens to say, so correct it here, the one place we can be sure right before a replay actually starts. // appFeaturesIntroSeen gets the same treatment for the same reason: it's the one-time "One Last Thing..." tip that's meant to ambush a user the FIRST moment App Features ever appears for them, right after finishing a real checklist. An established account replaying the tour has obviously already passed that moment, so leaving it at whatever stale false an old export happens to carry made the checklistDone fix above immediately re-trigger that one-time intro (scroll + highlight) on every single replay instead.
+										const hasReaBoo = staAppObj.pickers.some( ( picCurObj ) => !ONB_SPI_ARR.includes( picCurObj.id ) ); // What: Has Real Boolean. Why: Only a real, established account (one holding at least 1 non-sample picker) needs this self-healing correction applied. How: This is true whenever any of staAppObj.pickers is not one of the seeded sample picker ids. // Self-healing for accounts whose checklistDone and appFeaturesIntroSeen were left false by an old migration gap: an account with a real picker is past onboarding, so both are set true before the replay starts.
 
 
 										actStoObj.setOnbFun({ // What: Set Onboarding Call. Why: This is the actual reset of the tour's own onboarding flags, always clearing the core 5 and conditionally correcting the 2 self-healing ones. How: This spreads in appFeaturesIntroSeen/checklistDone only while hasReaBoo is true.
@@ -3003,15 +3058,15 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					>{ /* What: Settings Legal Section Element. Why: This is the Legal section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the Privacy Policy/Terms of Service rows. Its data-element-name-hook is read by the Settings page tour. */ }
 
 
-						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
+						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Heading Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
 
 
-							<span className={ cssModObj.secKicSpa }>Legal</span>{ /* What: Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Legal". */ }
+							<span className={ cssModObj.secKicSpa }>Legal</span>{ /* What: Section Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Legal". */ }
 
 
 						</div>
 
-						<p className={ cssModObj.secSubPar }>The documents below outline what you&rsquo;re agreeing to by using Ease My Life.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Legal. */ }
+						<p className={ cssModObj.secSubPar }>The documents below outline what you&rsquo;re agreeing to by using Ease My Life.</p>{ /* What: Section Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Legal. */ }
 
 
 
@@ -3081,7 +3136,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 // #region Exports
 
-export { TabSetCom }; // What: Named Export. Why: app.tsx imports the Settings tab by this exact name. How: This exports TabSetCom; every other binding in this file is internal-only.
+export { TabSetCom }; // What: Named Export. Why: This makes the Settings tab available to other files. How: This exports TabSetCom; every other binding in this file is private to it.
 
 // #endregion Exports
 
