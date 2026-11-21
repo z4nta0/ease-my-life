@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { ONB_CHE_OBJ } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: A sample picker keeps its launcher card only until its tutorial is done. How: This is called via ONB_CHE_OBJ.entLooFun.
+import { ONB_CHE_OBJ } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Once the first checklist is done, a sample picker's launcher card goes when its tutorial is done. How: This is called via ONB_CHE_OBJ.entLooFun.
 import { ONB_SPI_ARR } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Identifiers Array. Why: Sample pickers get launcher cards instead of picked entries. How: This is checked with .includes for each picker.
 
 
@@ -57,8 +57,7 @@ type TodGroTyp = { entArr : TodRowTyp[], namStr : string };                     
  * Buckets today's entries (real picks, day-off cards, charging cards,
  * and mini-tour launcher cards) by their own picker's group, in the
  * user's own saved group/picker order, falling back to encounter order
- * for anything not yet positioned. See this file's own header comment
- * for the overall Today tab layout this feeds.
+ * for anything not yet positioned.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -67,7 +66,7 @@ type TodGroTyp = { entArr : TodRowTyp[], namStr : string };                     
  *                    onboarding.
  *
  * @returns An array of { entArr, namStr } group objects, in display
- * order, each already internally sorted.
+ *          order, each already internally sorted.
  *
  * @example
  * ```ts
@@ -81,13 +80,13 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 
 	// #region Bucket Picker/Day-Off Entries
 
-	const groBucMap = new Map< string, TodGroTyp >(); // What: Group Bucket Map. Why: Every entry below needs to land in its own group's bucket, created the first time that group is seen. How: This is read and populated by both loops in this region, keyed by group name.
+	const groBucMap = new Map< string, TodGroTyp >(); // What: Group Bucket Map. Why: Each row below lands in its own group's bucket, created the first time that group is seen. How: This is populated through bucArrFun by the loops below, keyed by group name.
 
 
 	const bucArrFun = ( groNamStr : string ) => { // What: Bucket Array Function. Why: Every row below lands in its own group's bucket, which the first row seen for a group creates. How: This creates the group's bucket when it's missing, then returns its row array to push onto.
 
 
-		if ( !groBucMap.has( groNamStr ) ) groBucMap.set( groNamStr, { entArr : [], namStr : groNamStr } ); // What: Group Bucket Init Guard. Why: The very first entry seen for a group must create its own bucket. How: This sets a fresh { name, entries } bucket only when groNamStr has none yet.
+		if ( !groBucMap.has( groNamStr ) ) groBucMap.set( groNamStr, { entArr : [], namStr : groNamStr } ); // What: Group Bucket Init Guard. Why: The very first entry seen for a group must create its own bucket. How: This sets a fresh { entArr, namStr } bucket only when groNamStr has none yet.
 
 
 
@@ -97,7 +96,7 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 	};
 
 
-	for ( const curEntObj of staAppObj.today.entries ) { // What: Today Entry Bucket Loop. Why: Every real entry (pick, day-off, charging) needs to land in its own picker's group. How: This walks staAppObj.today.entries, resolving each one's own picker and group before pushing it into groBucMap.
+	for ( const curEntObj of staAppObj.today.entries ) { // What: Today Entry Bucket Loop. Why: Each real entry (pick, day-off, charging) lands in its own picker's group unless its picker is missing or hidden. How: This walks staAppObj.today.entries, resolving each one's own picker and group before pushing it into groBucMap.
 
 
 		if ( curEntObj.kind === 'dayoff' ) { // What: Day-Off Branch. Why: A day-off card has no real picker of its own, so it needs a synthetic picker-like row to slot into its group like any other entry. How: This builds that synthetic row and pushes it, then skips the normal picker lookup below entirely.
@@ -158,21 +157,12 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 	 * group-entries.ts = Mini-Tour Launcher Card Injection
 	 *
 	 * @summary
-	 * One launcher card per sample picker, slotted into its normal group
-	 * like any other card. `p.hidden` gates the timing: samples stay
-	 * visible/real for the main Welcome Tour and only flip hidden once, at
-	 * that tour's last step (see onboarding/welcome-tour.tsx), which is
-	 * when these start rendering. They stay on screen, checked or not,
-	 * through the ORIGINAL first-time checklist, until checklistDone (set
-	 * once the closing Generate card runs, see onboarding-checklist.ts).
-	 * Unlike checklistDone itself, this does NOT permanently stop once
-	 * that happens: Settings' Replay Tour button (tab-settings.tsx) resets
-	 * each item's own checklist entry (though never checklistDone), so a
-	 * still-unresolved sample keeps offering its card afterward too,
-	 * EXCLUDED if a real (non-sample) picker has since taken its exact
-	 * name, since re-prompting "set up a Daily Chores picker" when the
-	 * user already has their own real Daily Chores picker would be
-	 * redundant, not helpful.
+	 * One launcher card per hidden sample picker, slotted into its normal
+	 * group like any other card. Until checklistDone is set, each such card
+	 * stays, checked or not. Once it is set, a card whose tutorial is
+	 * resolved is dropped, and so is one whose sample name a real picker
+	 * has since taken, since re-prompting a setup the person already did
+	 * would be redundant.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -331,11 +321,12 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
  * merOrdFun = Merge Order Function
  *
  * @summary
- * Merges a reordered subset of *present* keys back into a fuller
- * ordering that may also contain absent keys (groups/pickers with no
- * entries today). Present keys are dropped into their existing slots in
- * the new relative order; absent keys keep their positions; brand-new
- * present keys append at the end.
+ * Merges a reordered subset of present keys back into a fuller ordering
+ * that may also contain absent keys (groups or pickers with no entries
+ * today). The result lists the present keys once each, in their new
+ * order, with each absent key restored right after the nearest present
+ * key that preceded it in the fuller ordering (at the front when none
+ * did), in its original relative order.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -346,7 +337,7 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
  *                    today, already in their new, just-dragged relative order.
  *
  * @returns A single merged ordering array combining both inputs, per the
- * rule described above.
+ *          rule described above.
  * @see {@link resKeyArr}
  *
  * @example
@@ -456,7 +447,7 @@ function merOrdFun ( fulOrdArr : string[] | null | undefined, prsNewArr : string
 
 // #region Exports
 
-export { groEntFun, merOrdFun, type TodGroTyp, type TodRowTyp }; // What: Named Exports. Why: The Today tab builds its grouped list with groEntFun, saves Edit Mode reorders with merOrdFun, and types its rows and groups. How: This exports both helpers and both types by name.
+export { groEntFun, merOrdFun, type TodGroTyp, type TodRowTyp }; // What: Named Exports. Why: These are the module's two helpers and the types of their rows and groups. How: This exports both helpers and both types by name.
 
 // #endregion Exports
 

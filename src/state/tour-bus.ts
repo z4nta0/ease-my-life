@@ -134,7 +134,7 @@ const emlTouObj = { // What: Ease-My-Life Tour Object. Why: This is the bus's ow
  * @param void - This function takes no parameters.
  *
  * @returns The bus's own current state, kept in sync via subscription
- * for as long as the calling component stays mounted.
+ *          for as long as the calling component stays mounted.
  * @see {@link busSnaObj}
  *
  * @example
@@ -177,7 +177,7 @@ function useEmlTouFun () : TouBusTyp {
 
 // #region Exports
 
-export { emlTouObj, useEmlTouFun }; // What: Named Exports. Why: The onboarding tours, the tour runner and the tabs all share this one bus, reading it through the hook or writing it through the object. How: This exports both bindings by name in one statement at the very end of the file.
+export { emlTouObj, useEmlTouFun }; // What: Named Exports. Why: The bus object and its subscribing hook are this module's public surface. How: This exports both by name.
 
 // #endregion Exports
 

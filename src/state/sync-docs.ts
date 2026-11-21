@@ -18,15 +18,17 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  *
  * @summary
  * Splits the app state into the documents the cloud copy is stored as, and
- * joins them back. Uploading the whole state on every sync would resend
- * years of unchanging history, so the state is split by how often its parts
- * change: one core document holds everything except the five history logs,
- * and each log is stored one month per document, named like
- * pickLog-2026-10. A month in the past never changes again, so a device
- * downloads it once. Each document is fingerprinted with a hash of its
- * canonical JSON (keys sorted), so a sync sends only the documents whose
- * content changed, and two devices that hold the same content agree on its
- * hash whatever order their keys came back in.
+ * joins them back. Uploading the whole state on every sync would resend years
+ * of unchanging history, so the state is split by how often its parts change:
+ * one core document holds everything except the five history logs, the
+ * per-device settings, and storage's own __ markers, and each log is stored
+ * one month per document, named like pickLog-2026-10. A month in the past
+ * rarely changes, and a document whose hash hasn't changed isn't downloaded
+ * again.
+ * Each document is fingerprinted with a hash of its canonical JSON (keys
+ * sorted), so a sync sends only the documents whose content changed, and two
+ * devices that hold the same content agree on its hash whatever order their
+ * keys came back in.
  *
  * Sections:
  *  - Types
@@ -85,7 +87,7 @@ type LogSpeTyp = { dayFun : ( logRowObj : RawSavTyp ) => string, ideFun : ( logR
  *
 */
 
-const LOG_SPE_ARR : LogSpeTyp[] = [ // What: Log Specification Array. Why: Splitting and merging treat every log the same way, given these three facts about it. How: Each row names a log, its row identity, and its row's day.
+const LOG_SPE_ARR : LogSpeTyp[] = [ // What: Log Specification Array. Why: Splitting and joining here treat each log the same way, given these three facts about it. How: Each row names a log, its row identity, and its row's day.
 
 
 	{ dayFun : ( logRowObj ) => logRowObj.date,                                 ideFun : ( logRowObj ) => logRowObj.id,                                                  keyStr : 'conditionalLog'  }, // What: Conditional Log Row. Why: A conditional's day-off history. How: Its rows carry an id and a day.
@@ -332,7 +334,7 @@ function splStaFun ( staAppObj : StaAppTyp ) : SynDocTyp {
 
 // #region Exports
 
-export { canJsoFun, COR_DOC_STR, DEV_KEY_ARR, hasDocFun, joiDocFun, LOG_SPE_ARR, splStaFun, type SynDocTyp }; // What: Named Exports. Why: The merge and sync engine split, fingerprint, and join documents through these. How: This exports them by name.
+export { canJsoFun, COR_DOC_STR, DEV_KEY_ARR, hasDocFun, joiDocFun, LOG_SPE_ARR, splStaFun, type SynDocTyp }; // What: Named Exports. Why: These are the module's public helpers, constants, and type. How: This exports them by name.
 
 // #endregion Exports
 

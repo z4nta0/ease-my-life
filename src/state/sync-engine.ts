@@ -140,11 +140,11 @@ type SynResTyp = { merStaObj : StaAppTyp | null, pusNeeBoo : boolean, synMetObj 
  * @param todDayStr - Today Day String: Today's local 'YYYY-MM-DD', the first
  *                    day whose log rows follow the winning side alone.
  *
- * @returns A promise that settles with the sync's result.
+ * @returns A promise that resolves with the sync's result.
  *
  * @example
  * ```ts
- * synRunFun(synBacObj, locStaObj, ...) // => Promise<SynResTyp>
+ * synRunFun(...) // => { merStaObj, pusNeeBoo, synMetObj, synStaStr }
  * ```
  *
 */
@@ -269,7 +269,7 @@ async function synRunFun ( synBacObj : SynBacTyp, locStaObj : StaAppTyp, locSavN
 
 // #region Exports
 
-export { type SynBacTyp, type SynManTyp, type SynMetTyp, synRunFun }; // What: Named Exports. Why: The store runs syncs through synRunFun, and each backend implements SynBacTyp. How: This exports the function and its types by name.
+export { type SynBacTyp, type SynManTyp, type SynMetTyp, synRunFun }; // What: Named Exports. Why: The sync function and the types of its backend, manifest, and meta are this module's public surface. How: This exports the function and its types by name.
 
 // #endregion Exports
 

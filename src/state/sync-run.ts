@@ -30,7 +30,8 @@ import type { SynMetTyp } from './sync-engine.ts';        // What: Sync Meta Typ
  * Runs paid sync from inside the app: follows the account, and decides when
  * to sync. Firebase loads only for a device that has signed in before (a
  * localStorage flag says so), or that was opened from a sign-in email, or
- * when someone starts signing in, so it never loads for anyone else.
+ * when someone starts signing in, so this hook doesn't load it for anyone
+ * else.
  *
  * A paid account syncs on launch, when the app comes back into view or online,
  * two minutes after the last change, and right away when the app is hidden
@@ -103,7 +104,7 @@ type AccSynTyp = { // What: Account Sync Type. Why: The account screen shows the
 const GEN_WAI_NUM = 10000;  // What: Generate Wait Number. Why: A new day's list waits for the launch sync, but an unreachable cloud mustn't hold it back for long. How: This caps the wait at ten seconds.
 const IDL_MIL_NUM = 120000; // What: Idle Milliseconds Number. Why: Syncing on every change would spend the free tier's writes on half-finished edits. How: This waits two minutes after the last change.
 const PUR_GAP_NUM = 3000;   // What: Purchase Gap Number. Why: After a purchase, the paid claim lands once Polar's webhook runs. How: This checks for it every three seconds.
-const PUR_TRY_NUM = 20;     // What: Purchase Try Number. Why: A webhook that hasn't landed in a minute won't by waiting longer here. How: This stops after 20 checks.
+const PUR_TRY_NUM = 20;     // What: Purchase Try Number. Why: The wait for the webhook has to end somewhere. How: This stops after 20 checks.
 const RET_MIL_NUM = 30000;  // What: Retry Milliseconds Number. Why: A sync that lost every race to another device should try again soon, not wait for the next change. How: This retries after 30 seconds.
 const SYN_FRE_NUM = 15000;  // What: Sync Fresh Number. Why: A sync that just finished already brought the cloud's list, so a new day's list needn't wait for another. How: This counts a sync as fresh for 15 seconds.
 
@@ -206,7 +207,7 @@ function reaMetFun ( uidValStr : string ) : SynRcdTyp {
  *
 */
 
-const waiConFun = async ( conTesFun : () => boolean, endTimNum : number ) : Promise< void > => {
+const waiConFun = async ( conTesFun : () => boolean, endTimNum : number ) : Promise< void > => { // What: Wait Condition Function. Why: Several waits share one deadline, and neither the account nor a sync announces when it's done. How: This polls the condition every 100 milliseconds until it holds or the deadline passes.
 
 
 	while ( !conTesFun() && Date.now() < endTimNum ) await new Promise( ( resProFun ) => window.setTimeout( resProFun, 100 ) ); // What: Condition Poll Loop. Why: Neither the account nor a running sync announces when it's done. How: This sleeps 100 milliseconds at a time until the condition holds or the deadline passes.
@@ -321,16 +322,16 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	 *
 	 * @param void - This function takes no parameters.
 	 *
-	 * @returns A promise that settles with the Firebase module.
+	 * @returns A promise that resolves with the Firebase module.
 	 *
 	 * @example
 	 * ```ts
-	 * const firModObj = await staWatFun() // => Promise<module>
+	 * const firModObj = await staWatFun() // => the Firebase module
 	 * ```
 	 *
 	*/
 
-	const staWatFun = async () => {
+	const staWatFun = async () => { // What: Start Watch Function. Why: The account is followed through Firebase, which loads on first use. How: This loads Firebase, starts the account watch once, and returns the module.
 
 
 		const firModObj = await loaFirFun(); // What: Firebase Module Object. Why: Every account call goes through it. How: This loads it.
@@ -409,7 +410,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	 *
 	*/
 
-	const finLinFun = async ( emaAdrStr : string, pasUrlStr? : string ) => {
+	const finLinFun = async ( emaAdrStr : string, pasUrlStr? : string ) => { // What: Finish Link Function. Why: An emailed sign-in link has to be completed with the address it was sent to. How: This signs in with the given or waiting link, showing a failure on the account screen.
 
 
 		const linCurStr = pasUrlStr || linUrlStr; // What: Link Current String. Why: A pasted link wins over the one the app opened with. How: This picks it.
@@ -670,7 +671,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
-				return;
+				return; // What: Busy Return. Why: The retry is scheduled, so nothing more runs now. How: This ends this run.
 
 
 			}
@@ -735,7 +736,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 				runAgaRef.current = false; // What: Rerun Clear. Why: The request is being honored. How: This clears it.
 
-				window.setTimeout( synNowFun, 0 ); // What: Rerun Schedule. Why: The lock is released only after this block. How: This runs on the next tick, keeping the update handling waiting until then.
+				window.setTimeout( synNowFun, 0 ); // What: Rerun Schedule. Why: This run has to finish unwinding before another starts. How: This runs on the next tick, keeping the update handling waiting until then.
 
 
 			}
@@ -846,7 +847,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
-				return;
+				return; // What: Give Up Return. Why: The wait is over, so this tick has nothing left to do. How: This ends the tick.
 
 
 			}
@@ -856,7 +857,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 			loaFirFun().then( ( firModObj ) => firModObj.refTokFun() ).catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Token Renewal Call. Why: A renewed token carries a newly set claim. How: This forces one, logging a failure rather than leaving it unhandled.
 
 
-		}, PUR_GAP_NUM );
+		}, PUR_GAP_NUM ); // What: Renewal Interval. Why: The claim is checked on a steady beat. How: This ticks every PUR_GAP_NUM.
 
 
 
@@ -964,7 +965,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	 *
 	*/
 
-	const synBefFun = async () : Promise< void > => { // What: Sync Before Function. Why: See the summary above. How: This waits for the account and a sync, bounded by GEN_WAI_NUM.
+	const synBefFun = async () : Promise< void > => { // What: Sync Before Function. Why: A new day's list must not replace one another device already built. How: This waits for the account and a sync, bounded by GEN_WAI_NUM.
 
 
 		const endTimNum = Date.now() + GEN_WAI_NUM; // What: End Time Number. Why: Every wait below shares one limit. How: This is the deadline.
@@ -1010,7 +1011,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 			const cheResObj = await fetch( '/.netlify/functions/checkout', { headers : { 'Authorization' : `Bearer ${ ideTokStr }` }, method : 'POST' } ); // What: Checkout Response Object. Why: The function creates the checkout. How: This posts the token to it.
-			const cheBodObj = await cheResObj.json().catch( () => ( {} ) ) as { error? : string, url? : string };                                          // What: Checkout Body Object. Why: The reply holds the address or a sentence. How: This parses it, or nothing when it isn't JSON. // What: Type Assertion Note. Why: The function always answers with url or error. How: The as types its reply.
+			const cheBodObj = await cheResObj.json().catch( () => ( {} ) ) as { error? : string, url? : string };                                          // What: Checkout Body Object. Why: The reply is read as holding a url or an error. How: This parses it, or nothing when it isn't JSON. // What: Type Assertion Note. Why: The function always answers with url or error. How: The as types its reply.
 
 
 
@@ -1046,9 +1047,10 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	 * @summary
 	 * Handles the account's part of a device reset: signs out when someone is
 	 * signed in, deleting the cloud copy first when asked. It blocks new syncs
-	 * and waits for one in progress to finish, so nothing uploads the copy
-	 * again between the deletion and the sign-out, and syncing stays blocked
-	 * until the caller wipes the device and the app reloads. If the deletion
+	 * and waits up to ten seconds for one in progress to finish, so nothing
+	 * uploads the copy again between the deletion and the sign-out, and
+	 * syncing stays blocked until the caller wipes the device and the app
+	 * reloads. If the deletion
 	 * or the sign-out fails, it reports that, so the caller wipes nothing and
 	 * the person can try again with nothing lost.
 	 *
@@ -1057,17 +1059,17 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	 * @param cldDelBoo - Cloud Delete Boolean: Whether to delete the cloud
 	 *                    copy too.
 	 *
-	 * @returns A promise that settles true when the device may be wiped, or
-	 *          false when the account part failed.
+	 * @returns A promise that resolves with true when the device may be
+	 *          wiped, or false when the account part failed.
 	 *
 	 * @example
 	 * ```ts
-	 * await wipAccFun(true) // => Promise<boolean>
+	 * await wipAccFun(true) // => true
 	 * ```
 	 *
 	*/
 
-	const wipAccFun = async ( cldDelBoo : boolean ) : Promise< boolean > => {
+	const wipAccFun = async ( cldDelBoo : boolean ) : Promise< boolean > => { // What: Wipe Account Function. Why: Resetting a signed-in device signs out first, and may delete the cloud copy too. How: This blocks new syncs, waits for a running one, deletes the copy when asked, signs out, and resolves false when that failed.
 
 
 		const accWipObj = accCurRef.current; // What: Account Wipe Object. Why: The account in use when the reset began is the one signed out. How: This reads it.
@@ -1106,7 +1108,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
-				return false;
+				return false; // What: Failed Return. Why: A failed deletion or sign-out must leave the device unwiped. How: This reports that the caller should not wipe.
 
 
 			}
@@ -1265,7 +1267,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 // #region Exports
 
-export { type AccSynTyp, useSynRunFun }; // What: Named Exports. Why: app.tsx runs sync through the hook, and the Settings tab types its account props. How: This exports them by name.
+export { type AccSynTyp, useSynRunFun }; // What: Named Exports. Why: The hook and the type of what it returns are this module's public surface. How: This exports them by name.
 
 // #endregion Exports
 

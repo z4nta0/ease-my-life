@@ -24,10 +24,10 @@ import type { RawSavTyp } from '../core/data-model.ts'; // What: Raw Save Type. 
  * mixed. A history log's month is merged row by row instead, since a day
  * spent offline on one device is history worth keeping: every row from
  * before today comes from either side (the winner's copy when both have it),
- * while today's rows come from the winner alone. Today's rows are the only
- * ones the app ever removes or replaces (regenerating, deleting an item, or
- * unchecking a reminder), so taking them from one side keeps a removal from
- * coming back, and keeps them matching the winner's own Today list.
+ * while today's rows come from the winner alone. Today's rows are the ones the
+ * app removes or replaces (regenerating, deleting an item, or unchecking a
+ * reminder), so taking them from one side keeps a removal from coming back,
+ * and keeps them matching the winner's own Today list.
  *
  * Sections:
  *  - Helpers
@@ -107,7 +107,7 @@ function merDocFun ( docIdeStr : string, locDocObj : RawSavTyp, rmtDocObj : RawS
 
 // #region Exports
 
-export { merDocFun }; // What: Named Export. Why: The sync engine merges a document both sides changed through this. How: This exports merDocFun by name.
+export { merDocFun }; // What: Named Export. Why: This is the module's one public function. How: This exports merDocFun by name.
 
 // #endregion Exports
 
