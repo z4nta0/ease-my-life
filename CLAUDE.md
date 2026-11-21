@@ -605,6 +605,11 @@ codebase, so it applies here and nowhere else.
   `donBoo`); Compensation takes Offset (`scrOffNum`); any other word takes
   a synonym. Scoped to ease-my-life ONLY, for the same reason as
   `rmn`/`rmv`.
+- **Cloud uses `cld`, not `clo`** (decided 2026-11-20, in the full audit):
+  `clo` is Close in hundreds of names here, and Phase A's `clu` reads as
+  club or clue, so Cloud takes its consonant skeleton `cld` (`cldDelBoo`,
+  `delCldFun`). Scoped to ease-my-life ONLY, for the same reason as
+  `rmn`/`rmv`.
 - **Trigger/Triggered uses `trg`, not `tri`** (a project-scoped
   decision, reversing an earlier sweep that had moved `trgValBoo`/
   `trgEleRef`/`trgCurEle`/`trgRecObj` to `tri`). `tri` had become
