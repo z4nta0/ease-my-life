@@ -584,7 +584,7 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 
 
 							<InfTipCom
-								className={` ${ cssModObj.helBubSpa }   ${ cssModObj.helBubSpaSm } `}
+								className={ cssModObj.helBubSpa }
 
 								labTexStr={ CAD_NAM_OBJ.tipMesFun( 'daily', 'Which days?' ) } // What: Cadence Tip Copy. Why: The tip names the picker's own days control, whose visible label in the picker form is 'Which days?'. How: This passes that label as tipMesFun's own second argument, alongside the daily cadence.
 							>?</InfTipCom> // What: Info Tip Component. Why: Only the daily cadence needs this inline explanation of how it interacts with a picker's own Days control. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy.

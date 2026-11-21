@@ -104,14 +104,6 @@
 
 
 }
-.helBubSpa--sm { /* What: Help Bubble Span Small. Why: The standard bubble reads oversized beside the cadence field's short caption. How: This shrinks it slightly. */
-
-
-	height : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
-	width  : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
-
-
-}
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Help Bubble Span. Why: Someone who asked for less motion shouldn't see the bubble's colors fade. How: This applies only when the reduced-motion preference is set. */
 
 
