@@ -19,8 +19,8 @@ rules_version = '2'; // What: Rules Version. Why: Version 2 allows functions wit
  * verified email address, which Google and emailed-link sign-ins always have
  * and a bare password account doesn't. Writing a copy also needs the paid
  * claim, which only the payment webhook can set. Reading and deleting need
- * only the account itself, so anyone can always find and remove their own
- * data, paid or not.
+ * only the verified account itself, so an unpaid or refunded account can still
+ * find and remove its own data.
  *
  * A manifest write must hold exactly the fields the sync engine writes, and
  * its revision must be exactly one more than the one it replaces (1 for the

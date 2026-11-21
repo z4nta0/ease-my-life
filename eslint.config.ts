@@ -48,7 +48,7 @@ import tyeEslObj from 'typescript-eslint';         // What: TypeScript ESLint Ob
 const ESL_CON_ARR = [ // What: ESLint Config Array. Why: ESLint reads its flat config as an array of objects, each scoped to the files it lists. How: This holds the generated-output ignores, typescript-eslint's recommended configs and two rule overrides, the src/ undefined-component config, and the hooks config.
 
 
-	{ ignores : [ 'dev-dist/**', 'dist/**', 'netlify/functions/**', 'tests/output/**' ] }, // What: Ignores Object. Why: The build output, the bundled Netlify Functions, the PWA plugin's dev service worker, and the test suites' reports are generated, not hand-written, so their lint results mean nothing. How: This global ignores entry skips all three folders for every config below; one glob each, since braces break ESLint's matching here.
+	{ ignores : [ 'dev-dist/**', 'dist/**', 'netlify/functions/**', 'tests/output/**' ] }, // What: Ignores Object. Why: The build output, the bundled Netlify Functions, the PWA plugin's dev service worker, and the test suites' reports are generated, not hand-written, so their lint results mean nothing. How: This global ignores entry skips all four folders for every config below; one glob each, since braces break ESLint's matching here.
 
 	...tyeEslObj.configs.recommended, // What: Recommended Configs Spread. Why: typescript-eslint's recommended rules catch TypeScript mistakes the compiler allows, such as an any or an unused variable. How: This spreads its recommended configs in, which apply to every file ESLint lints and switch off the core rules TypeScript already covers.
 
@@ -72,7 +72,7 @@ const ESL_CON_ARR = [ // What: ESLint Config Array. Why: ESLint reads its flat c
 
 		files   : [ 'src/**/*.ts', 'src/**/*.tsx' ],  // What: Files. Why: Only the app's own source is linted by these rules. How: This lists two separate globs, since the brace-expansion override in package.json breaks ESLint's {a,b} matching.
 		plugins : { react : reaPluObj },              // What: Plugins. Why: react/jsx-no-undef comes from the React plugin. How: This registers it.
-		rules   : { 'react/jsx-no-undef' : 'error' }, // What: Rules. Why: An undefined component in a JSX tag is always a bug, and TypeScript reports every other undefined name. How: This makes the JSX rule an error.
+		rules   : { 'react/jsx-no-undef' : 'error' }, // What: Rules. Why: An undefined component in a JSX tag fails at render, and TypeScript reports every other undefined name. How: This makes the JSX rule an error.
 
 		languageOptions : { // What: Language Options. Why: The parser has to know the syntax the source uses. How: This sets the TypeScript parser and modern module syntax with JSX.
 
@@ -91,14 +91,14 @@ const ESL_CON_ARR = [ // What: ESLint Config Array. Why: ESLint reads its flat c
 	{ // What: Hooks Config Object. Why: Hook calls in components and custom hooks follow rules of their own. How: This adds the React Hooks recommended rules for every .tsx file and every .ts file under src/.
 
 
-		files   : [ '**/*.tsx', 'src/**/*.ts' ],                    // What: Files. Why: Hooks live in every component file and in custom hooks under src/ written without JSX, while tests stay out, since Playwright's test.use reads as React's use. How: This matches every .tsx file plus the .ts files under src/, as two globs, since braces break ESLint's matching here.
+		files   : [ '**/*.tsx', 'src/**/*.ts' ],                    // What: Files. Why: Hooks can be called in a component file and in custom hooks under src/ written without JSX, while tests stay out, since Playwright's test.use reads as React's use. How: This matches every .tsx file plus the .ts files under src/, as two globs, since braces break ESLint's matching here.
 		plugins : { react : reaPluObj, 'react-hooks' : rehPluObj }, // What: Plugins. Why: The hooks rules come from the React Hooks plugin. How: This registers it beside the React plugin.
 
 		languageOptions : { // What: Language Options. Why: These files are TypeScript, the .tsx ones with JSX. How: This sets the TypeScript parser and turns on JSX parsing.
 
 
 			parser        : tyeEslObj.parser,                  // What: Parser. Why: ESLint's default parser can't read TypeScript. How: This sets typescript-eslint's parser.
-			parserOptions : { ecmaFeatures : { jsx : true } }, // What: Parser Options. Why: The .tsx files contain JSX. How: This turns on JSX parsing, which typescript-eslint applies by file extension, so the .ts files still parse without it.
+			parserOptions : { ecmaFeatures : { jsx : true } }, // What: Parser Options. Why: The .tsx files contain JSX. How: This turns on JSX parsing.
 
 
 		},

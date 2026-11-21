@@ -10,7 +10,7 @@
 
 
 
-# What: Log Files Block. Why: Logs are local run output, not source. How: This ignores every log file and folder the package managers write.
+# What: Log Files Block. Why: Logs are local run output, not source. How: This ignores the log files and logs folder, including the debug and error logs the package managers write.
 *.log
 lerna-debug.log*
 logs
@@ -37,7 +37,7 @@ tests/output
 
 
 
-# What: Re-Include Block. Why: A shared file inside an ignored folder still belongs in the project, and a re-include only works after the pattern it overrides. How: This re-includes .vscode/extensions.json, so the editor's extension recommendations stay shared, and the design folder's folders, card templates, and render scripts, so the icons and preview cards can be rebuilt on any machine.
+# What: Re-Include Block. Why: A shared file inside an ignored folder still belongs in the project, and a re-include only works after the pattern it overrides. How: This re-includes .vscode/extensions.json, so the editor's extension recommendations stay shared, and the design folder's folders, card templates, and render scripts, so the icons and preview cards can be rebuilt on another machine.
 !.vscode/extensions.json
 !design/**/
 !design/**/*.html

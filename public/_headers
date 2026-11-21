@@ -1,4 +1,4 @@
-# What: Manifest Content Type Rule. Why: Netlify serves .webmanifest files as application/octet-stream, which Chrome tolerates but Firefox and some install paths reject. How: This forces the manifest's correct type.
+# What: Manifest Content Type Rule. Why: The manifest should be served with its own content type rather than a generic one. How: This forces the manifest's correct type.
 /manifest.webmanifest
 	Content-Type: application/manifest+json
 
@@ -7,8 +7,8 @@
 # _headers = Security Headers Policy
 #
 # @summary
-# Hardening headers applied to every response. Every script, style, font, and
-# icon is self-hosted, the support form's Netlify Forms POST
+# Hardening headers applied to every response. The app's own scripts, styles,
+# fonts, and icons are self-hosted, the support form's Netlify Forms POST
 # (tabs/settings/contact-support.tsx) goes to this same origin, and the only
 # third parties are Firebase and the reCAPTCHA Enterprise check its App Check
 # runs, for the optional paid sync. That lets the Content-Security-Policy stay
@@ -21,12 +21,11 @@
 # are the ones Google's reCAPTCHA FAQ lists for a CSP. None of it loads unless
 # someone uses an account.
 #
-# default-src 'self' is the fallback every unlisted directive inherits, so
+# default-src 'self' is the fallback for the fetch directives left unlisted, so
 # font-src, img-src, manifest-src, and worker-src need no lines of their
 # own. The directives listed either need a different value than 'self'
-# (connect-src, object-src, frame-src, script-src, style-src), are never
-# covered by default-src at all (frame-ancestors, form-action), or just
-# state the default for clarity (base-uri).
+# (connect-src, object-src, frame-src, script-src, style-src), or are never
+# covered by default-src at all (base-uri, frame-ancestors, form-action).
 #
 # style-src needs 'unsafe-inline' for two reasons: the boot splash's
 # critical CSS in index.html is inline on purpose, since an external
@@ -44,13 +43,13 @@
 # the browsers' built-in HTTPS list and is slow to undo. Referrer-Policy sends
 # a referrer only to this same origin, so the outbound links (the legal
 # generators, the support site, GitHub) never learn which page a visitor came
-# from. Permissions-Policy turns off every powerful browser feature the app
+# from. Permissions-Policy turns off the powerful browser features the app
 # never uses, leaving the ones it does (the clipboard, storage, the service
 # worker, and notifications, which no policy covers) untouched.
 #
 # @author z4nta0 <https://github.com/z4nta0>
 
-# What: Security Headers Rule. Why: Every response should refuse framing, sniffing, plain HTTP, unused browser features, and anything loaded from another origin. How: This applies the Content-Security-Policy, the permissions and referrer policies, HSTS, a nosniff content type, and a deny on framing to every path.
+# What: Security Headers Rule. Why: Every response should refuse framing, sniffing, plain HTTP, unused browser features, and anything loaded from an origin the policy doesn't name. How: This applies the Content-Security-Policy, the permissions and referrer policies, HSTS, a nosniff content type, and a deny on framing to every path.
 /*
 	Content-Security-Policy: default-src 'self'; base-uri 'self'; connect-src 'self' https://content-firebaseappcheck.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.google.com/recaptcha/; form-action 'self'; frame-ancestors 'none'; frame-src https://ease-my-life-4ce18.firebaseapp.com https://recaptcha.google.com/recaptcha/ https://www.google.com/recaptcha/; object-src 'none'; script-src 'self' https://apis.google.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' 'unsafe-inline'
 	Permissions-Policy: accelerometer=(), autoplay=(), browsing-topics=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), hid=(), idle-detection=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), usb=(), xr-spatial-tracking=()

@@ -1,4 +1,4 @@
-# What: Every Crawler Group. Why: The app is one public page, so nothing needs hiding from crawlers. How: This lets every crawler crawl everything from the root.
+# What: Every Crawler Group. Why: The app's pages are all public, so nothing needs hiding from crawlers. How: This lets every crawler crawl everything from the root.
 User-agent: *
 Allow: /
 

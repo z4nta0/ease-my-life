@@ -9,13 +9,13 @@ import reaPluFun from '@vitejs/plugin-react'; // What: React Plugin Function. Wh
 import { createElement          } from 'react';            // What: Create Element. Why: A legal document component has to become an element before it can be rendered to HTML. How: This is called in legPagFun's page step.
 import { defineConfig           } from 'vite';             // What: Define Config. Why: Vite's config helper passes the config through with its types. How: This wraps vitConObj.
 import { fileURLToPath          } from 'node:url';         // What: File URL To Path. Why: The legal documents' module has to be named by a file path. How: This turns its URL beside this config into one.
-import { minify                 } from 'vite';             // What: Minify. Why: The shipped boot-splash.js needs minifying with the same minifier Vite uses for the bundle. How: This is called in minShiFun's closeBundle step.
-import { readFileSync           } from 'node:fs';          // What: Read File Sync. Why: The config reads package.json, and the build step reads the copied boot-splash.js. How: This reads each file as UTF-8 text.
+import { minify                 } from 'vite';             // What: Minify. Why: The shipped public/ scripts need minifying with the same minifier Vite uses for the bundle. How: This is called in minShiFun's closeBundle step.
+import { readFileSync           } from 'node:fs';          // What: Read File Sync. Why: The config reads package.json, and the build step reads each copied public/ script. How: This reads each file as UTF-8 text.
 import { renderToStaticMarkup   } from 'react-dom/server'; // What: Render To Static Markup. Why: The legal pages have to carry their document as plain HTML, readable without JavaScript. How: This is called in legPagFun's page step.
 import { runnerImport           } from 'vite';             // What: Runner Import. Why: The legal documents are TSX, which Node can't load on its own. How: This loads them through Vite's module runner in legPagFun's page step.
 import { transform as traCssFun } from 'lightningcss';     // What: Transform CSS Function. Why: index.html's inline styles need minifying, and Vite already depends on lightningcss. How: This is called through minCssFun in minShiFun's index.html step.
 import { VitePWA                } from 'vite-plugin-pwa';  // What: Vite PWA. Why: The app installs and works offline through a generated service worker. How: This is called in the plugins array with its options.
-import { writeFileSync          } from 'node:fs';          // What: Write File Sync. Why: The minified boot-splash.js replaces the copy Vite wrote. How: This writes it back to the output folder.
+import { writeFileSync          } from 'node:fs';          // What: Write File Sync. Why: Each minified public/ script replaces the copy Vite wrote. How: This writes it back to the output folder.
 
 
 import type { FunctionComponent } from 'react'; // What: Function Component. Why: The legal documents' module is loaded at run time, so its shape is declared here. How: This types each document in LegTexTyp.
@@ -257,13 +257,13 @@ const vitConObj = defineConfig({ // What: Vite Config Object. Why: Vite reads it
 
 	css    : { modules : { localsConvention : 'camelCaseOnly' } },                         // What: CSS. Why: CSS modules expose their kebab-case class names as camelCase keys only, so .prog--warm is read as cssModObj.progWarm, per CLAUDE.md's "CSS modules and JS hooks" rules. How: This sets the locals convention.
 	define : { __APP_VERSION__ : JSON.stringify( PAC_JSO_OBJ.version ) },                    // What: Define. Why: The app reports its own version without a hardcoded string. How: This replaces __APP_VERSION__ with the package version at build time.
-	server : { watch : { ignored : [ '**/*.log', '**/dist/**', '**/tests/output/**' ] } }, // What: Server. Why: A test run writes thousands of trace frames into the test output, which kept every dev server watching the project busy for hours (measured 2026-11-13 in tech-geek-cards), and none of those files is source. How: This keeps the dev server's file watcher off logs, the build output, and the test output.
+	server : { watch : { ignored : [ '**/*.log', '**/dist/**', '**/tests/output/**' ] } }, // What: Server. Why: A test run writes thousands of trace frames into the test output, which kept every dev server watching the project busy (measured 2026-11-13 in tech-geek-cards), and none of those files is source. How: This keeps the dev server's file watcher off logs, the build output, and the test output.
 
 	build : { // What: Build. Why: The production build needs its asset inlining, its pages, and its warning threshold set. How: This lists all three.
 
 
 		assetsInlineLimit     : 0,                                                         // What: Assets Inline Limit. Why: Vite inlines any asset under 4 KB as a data: URI, which the Content-Security-Policy refuses as an image source. How: This turns inlining off, so every imported asset ships as its own file.
-		chunkSizeWarningLimit : 1000,                                                      // What: Chunk Size Warning Limit. Why: The main bundle (about 917 kB before gzip) is past Vite's default 500 kB chunk warning, which would otherwise fire on every build. How: This raises the warning threshold to 1000 kB.
+		chunkSizeWarningLimit : 1000,                                                      // What: Chunk Size Warning Limit. Why: The main bundle is past Vite's default 500 kB chunk warning, which would otherwise fire on every build. How: This raises the warning threshold to 1000 kB.
 		rolldownOptions       : { input : [ 'index.html', 'privacy.html', 'terms.html' ] } // What: Rolldown Options. Why: The legal pages are built as pages of their own, beside the app. How: This lists every HTML page the build starts from.
 
 
@@ -273,8 +273,8 @@ const vitConObj = defineConfig({ // What: Vite Config Object. Why: Vite reads it
 
 
 		reaPluFun(), // What: React Plugin Call. Why: JSX has to compile. How: This adds the React plugin.
-		legPagFun(), // What: Legal Pages Plugin Call. Why: The legal pages need their documents rendered in before the minify step compacts them. How: This adds the legal pages plugin ahead of it.
-		minShiFun(), // What: Minify Shipped Plugin Call. Why: The shipped pages and splash script should be minified. How: This adds the build-only minify plugin.
+		legPagFun(), // What: Legal Pages Plugin Call. Why: The legal pages need their documents rendered in before the minify step compacts them. How: This adds the legal pages plugin ahead of the minify plugin.
+		minShiFun(), // What: Minify Shipped Plugin Call. Why: The shipped pages and public/ scripts should be minified. How: This adds the build-only minify plugin.
 
 		VitePWA({ // What: Vite PWA Plugin Call. Why: The app needs a service worker to install and work offline. How: This adds the PWA plugin with its options.
 
@@ -286,7 +286,7 @@ const vitConObj = defineConfig({ // What: Vite Config Object. Why: Vite reads it
 			workbox : { // What: Workbox. Why: Workbox generates the service worker's precache. How: This sets what it precaches and what it imports.
 
 
-				globPatterns  : [ '**/*.{js,css,html,svg,png,ico,woff2}' ], // What: Glob Patterns. Why: The whole built app should work offline. How: This precaches every built asset type, fonts included, since they're self-hosted under src/ and fingerprinted.
+				globPatterns  : [ '**/*.{js,css,html,svg,png,ico,woff2}' ], // What: Glob Patterns. Why: The built app should work offline. How: This precaches the built scripts, styles, pages, SVG and PNG images, icons, and fonts, since the fonts are self-hosted under src/ and fingerprinted.
 				importScripts : [ '/sw-notify.js' ]                         // What: Import Scripts. Why: Notifications need a click handler in the service worker, and generateSW keeps Workbox writing the precache instead of a hand-maintained worker. How: This adds public/sw-notify.js to the generated worker.
 
 
