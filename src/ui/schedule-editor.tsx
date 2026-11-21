@@ -4,13 +4,13 @@
 // #region Imports
 
 import cssModObj from './schedule-editor.module.css'; // What: CSS Module Object. Why: The schedule editor's fields, both of its layouts, and its visibility note are styled from their own module. How: This maps each class name in schedule-editor.module.css to its hashed module class.
-import React     from 'react';                        // What: React. Why: Every component in this file is built directly on React's own APIs. How: This is used directly (React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                        // What: React. Why: SchEdiCom's refs, state, and fragments come from React's own APIs. How: This is used directly (React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
 import { ColDisCom   } from './collapse.tsx';          // What: Collapse Disclosure Component. Why: The editor's own schedule subsections need to animate open and closed instead of snapping. How: This wraps the anchor hint and each repeat kind's own fields in SchEdiCom and FreFieCom.
 import { DatModCom   } from './date-mode.tsx';         // What: Date Mode Component. Why: The monthly and annual subsections offer the same Date-vs-Weekday toggle the cadence editor does. How: This is rendered once inside each of those subsections.
 import { DAY_ABB_ARR } from '../utils/date.ts';        // What: Day Abbreviation Array. Why: The weekly summary names a multi-day list in short form. How: This is indexed by each daysOfWeek entry.
-import { DAY_FUL_ARR } from '../utils/date.ts';        // What: Day Full Array. Why: The weekday selects and the single-day and nth-weekday summaries name a weekday in full. How: This is mapped to one option per weekday and indexed by a weekday number.
+import { DAY_FUL_ARR } from '../utils/date.ts';        // What: Day Full Array. Why: The weekday select and the nth-weekday summaries name a weekday in full. How: This is mapped to one option per weekday and indexed by a weekday number.
 import { MON_ABB_ARR } from '../utils/date.ts';        // What: Month Abbreviation Array. Why: The annual schedule's month selects need a short label per month. How: This is mapped to one option per month.
 import { MON_FUL_ARR } from '../utils/date.ts';        // What: Month Full Array. Why: The annual schedule's live summary names its month in full. How: This is indexed by tasRcdObj.month minus 1.
 import { nexDatFun   } from '../utils/date.ts';        // What: Next Date Function. Why: A reminder's next occurrence reads as a full prose date. How: This is called with the date and whether the year must always show.
@@ -33,13 +33,12 @@ import type { TodVisTyp } from '../core/tasks.ts';      // What: Today Visibilit
  * schedule-editor.tsx = Schedule Editor
  *
  * @summary
- * A reminder's own schedule editor, shared by Today's reminders section and
- * the Data tab's reminder manager: SchEdiCom edits the caller's draft of a
- * reminder's repeat kind (REP_OPT_ARR, one of the shared SegConCom's options)
- * and that kind's own schedule fields, and VisNotCom beneath it explains when
- * a reminder won't show today, with reaPhrFun naming the settings behind it.
- * All scheduling logic lives in tasks.ts; this file is presentation plus small
- * local form state only.
+ * A reminder's own schedule editor, shared by more than one tab: SchEdiCom
+ * edits the caller's draft of a reminder's repeat kind (REP_OPT_ARR, one of
+ * the shared SegConCom's options) and that kind's own schedule fields, and
+ * VisNotCom beneath it explains when a reminder won't show today, with
+ * reaPhrFun naming the settings behind it. Scheduling logic comes from
+ * tasks.ts; this file is presentation plus small local form state.
  *
  * Sections:
  *  - Constants
@@ -192,7 +191,7 @@ function reaPhrFun ( visResObj : TodVisTyp ) : string {
 
 
 		const holPhrStr = visResObj.holStr // What: Holiday Phrase String. Why: A named holiday reads better than the plain word. How: This picks the named phrase below when visResObj carries a holiday name.
-			? ( visResObj.cusBoo ? `your ${ visResObj.holStr } custom holiday` : `the ${ visResObj.holStr } holiday` ) // What: Named Holiday Phrase. Why: Naming the specific holiday tells the user exactly where to go to change it. How: This picks the custom-holiday or built-in-holiday phrasing based on visResObj's own cusBoo flag.
+			? ( visResObj.cusBoo ? `your ${ visResObj.holStr } custom holiday` : `the ${ visResObj.holStr } holiday` ) // What: Named Holiday Phrase. Why: Naming the specific holiday tells the user which setting to change. How: This picks the custom-holiday or built-in-holiday phrasing based on visResObj's own cusBoo flag.
 			: 'holidays'; // What: Generic Holidays Fallback. Why: A holiday-based cause with no specific name still needs a defined phrase. How: This falls back to the plain word when visResObj's own holStr is unset.
 
 
@@ -383,7 +382,7 @@ function IntRowCom ( { ariLabStr, desIdeStr, maxValStr, onChange, uniLabStr, val
 				aria-label={ ariLabStr }
 
 				onChange={ ( chaEveObj ) => onChange( Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) ) } // What: Interval Clamp Commit. Why: An empty or invalid number must never commit an interval below 1. How: This parses the typed value, falling back to 1 and clamping at 1.
-			/>{ /* What: Interval Number Input Element. Why: This is the actual every-N control. How: This clamps its own committed value to a minimum of 1. */ }
+			/>{ /* What: Every Number Input Element. Why: This is the actual every-N control. How: This clamps its own committed value to a minimum of 1. */ }
 
 			<span>{ uniLabStr }</span>{ /* What: Unit Label Span Element. Why: This is the inline control's own trailing word. How: This renders uniLabStr. */ }
 
@@ -446,16 +445,16 @@ function FreFieCom ( { ancHinEle, ariLabStr, desIdeStr, intValNum, maxValStr, on
 		<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the every-N control and its own anchor hint as one schedule subsection. How: This renders the number input plus the shared anchor hint, collapsed until the interval is above 1. */ }
 
 
-			<div className={ cssModObj.fieLabDiv }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
+			<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
 
 
-				<span className={ cssModObj.fieLabSpa }>Frequency</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Frequency". */ }
+				<span className={ cssModObj.fieLabSpa }>Frequency</span>{ /* What: Field Label Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Frequency". */ }
 
 				<span
 					key={ intValNum || 1 }
 
 					className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
-				>shows on the Today page <strong>every { ( intValNum || 1 ) > 1 ? `${ intValNum } ${ uniWorStr }s` : uniWorStr }</strong></span>{ /* What: Flabel Sub Span Element. Why: This is the live cadence summary, re-fading whenever the interval changes. How: This picks between the plain unit word and an "every N" phrase with the plural unit word, based on intValNum. */ }
+				>shows on the Today page <strong>every { ( intValNum || 1 ) > 1 ? `${ intValNum } ${ uniWorStr }s` : uniWorStr }</strong></span>{ /* What: Field Subtitle Span Element. Why: This is the live cadence summary, re-fading whenever the interval changes. How: This picks between the plain unit word and an "every N" phrase with the plural unit word, based on intValNum. */ }
 
 
 			</div>
@@ -478,7 +477,7 @@ function FreFieCom ( { ancHinEle, ariLabStr, desIdeStr, intValNum, maxValStr, on
 			<ColDisCom open={ ( intValNum || 1 ) > 1 }>{ /* What: Collapse Disclosure Component. Why: The counted-from hint is only meaningful once the interval is above 1. How: This animates ancHinEle open only while that condition holds. */ }
 
 
-				<div className={ cssModObj.ancFadDiv }>{ ancHinEle }</div>{ /* What: Anchor Fade Div Element. Why: The counted-from hint needs its own fade wrapper distinct from ColDisCom's own height animation. How: This renders ancHinEle inside a plain div that CSS cross-fades on interval change. */ }
+				<div className={ cssModObj.ancFadDiv }>{ ancHinEle }</div>{ /* What: Anchor Fade Div Element. Why: The counted-from hint needs its own fade wrapper distinct from ColDisCom's own height animation. How: This renders ancHinEle inside a plain div that CSS fades in each time it mounts. */ }
 
 
 			</ColDisCom>
@@ -540,7 +539,7 @@ function MonSelCom ( { desIdeStr, onChange, value } : MecProTyp ) : React.JSX.El
 			aria-label='Month'
 
 			onChange={ ( chaEveObj ) => onChange( parseInt( chaEveObj.target.value ) ) }
-		>{ /* What: Anchor Picker Select Element. Why: This is the target-month picker. How: This hands the chosen option's own 1-indexed value to onChange. */ }
+		>{ /* What: Anchor Pick Select Element. Why: This is the target-month picker. How: This hands the chosen option's own 1-indexed value to onChange. */ }
 
 
 			{ MON_ABB_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per month. How: This maps MON_ABB_ARR to one option per entry, keyed by its own monNamStr, valued by its own 1-indexed monIndNum.
@@ -619,7 +618,7 @@ function NthSelCom ( { desIdeStr, dowValNum, onPatTasFun, ordValNum } : NlcProTy
 				aria-label='Week of the month'
 
 				onChange={ ( chaEveObj ) => onPatTasFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
-			>{ /* What: Anchor Picker Select Element. Why: This is the "1st through 5th" occurrence picker. How: This commits the chosen option's own numeric value as the reminder's new nthOrdinal. */ }
+			>{ /* What: Anchor Pick Select Element. Why: This is the "1st through 5th" occurrence picker. How: This commits the chosen option's own numeric value as the reminder's new nthOrdinal. */ }
 
 
 				{ [ 1, 2, 3, 4, 5 ].map( ( nthOptNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per occurrence, 1st through 5th. How: This maps a literal 1-5 array to one option per entry, keyed by its own nthOptNum, labeled with its ordinal suffix.
@@ -646,7 +645,7 @@ function NthSelCom ( { desIdeStr, dowValNum, onPatTasFun, ordValNum } : NlcProTy
 				aria-label='Weekday'
 
 				onChange={ ( chaEveObj ) => onPatTasFun( { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
-			>{ /* What: Anchor Picker Select Element. Why: This is the target-weekday picker for the Nth-weekday mode. How: This commits the chosen option's own numeric value as the reminder's new nthWeekday. */ }
+			>{ /* What: Anchor Pick Select Element. Why: This is the target-weekday picker for the Nth-weekday mode. How: This commits the chosen option's own numeric value as the reminder's new nthWeekday. */ }
 
 
 				{ DAY_FUL_ARR.map( ( dowNamStr, dowIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dowNamStr, valued by its own dowIndNum.
@@ -695,11 +694,11 @@ type VncProTyp = { kinValStr : string, notIdeStr : string, staAppObj : StaAppTyp
  * schedule-based cause belongs next to the specific schedule
  * subsection whose own values caused it. Each mounted instance only
  * ever shows its note when its own kinValStr matches which placement
- * currently applies, so exactly one of the several instances rendered
- * per task ever has content. It always names the next day the
- * reminder WILL appear: for a schedule mismatch that is reassurance
- * (the reminder is still working), and for an exclusion it is the
- * answer the user actually wants.
+ * currently applies, so at most one of the several instances rendered
+ * per task ever has content. It names the next day the reminder WILL
+ * appear whenever one is known: for a schedule mismatch that is
+ * reassurance (the reminder is still working), and for an exclusion it
+ * is the answer the user actually wants.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -782,7 +781,7 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp 
 			return (
 
 
-				<p className={` ${ cssModObj.visNotPar }   ${ cssModObj.visNotParNever } `}>{ /* What: Never Note Paragraph Element. Why: This is the red dead-configuration warning shown only in kinValStr 'schedule'. How: This is glued to the schedule control that's the actual thing the user can change to fix it. */ }
+				<p className={` ${ cssModObj.visNotPar }   ${ cssModObj.visNotParNever } `}>{ /* What: Visibility Note Paragraph Element. Why: This is the red dead-configuration warning shown only in kinValStr 'schedule'. How: This holds the warning label, the reason sentence, and the bolded word "never". */ }
 					<strong>WARNING:</strong>{ /* What: Warning Label Element. Why: This flags the paragraph's own severity ahead of the explanation. How: This renders the literal bolded word "WARNING:". */ } Because of the values that you are using and because { whyTexEle }, this
 					item will <strong>never</strong>{ /* What: Never Emphasis Element. Why: This is the paragraph's own key word, bolded for emphasis. How: This renders the literal bolded word "never". */ } show up in your todo list.
 				</p>
@@ -805,7 +804,7 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp 
 		const reaPhrStr = reaPhrFun( visResObj ); // What: Reason Phrase String. Why: This decides which of the 3 body branches below applies. How: This calls reaPhrFun against visResObj once, reused by the if/else chain immediately below.
 
 
-		if ( reaPhrStr ) { // What: Settings Cause Branch. Why: A weekend/holiday exclusion is the most common cause and covers both possibilities in one sentence. How: This names both the item kind and the joined reason phrase.
+		if ( reaPhrStr ) { // What: Settings Cause Branch. Why: A weekend or holiday exclusion is named with its joined reason phrase in one sentence. How: This names both the item kind and the joined reason phrase.
 
 
 			bodTexEle = <>Because Reminders are set to <strong>not show { kinWorStr } items on { reaPhrStr }</strong>, this item will not show up in your todo list today.</>; // What: Settings Cause Text Assignment. Why: This is the actual sentence rendered when a weekend/holiday exclusion is the resolved cause. How: This names both kinWorStr and reaPhrStr in one sentence.
@@ -836,7 +835,7 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp 
 		return (
 
 
-			<p className={ cssModObj.visNotPar }>{ /* What: Deferred Note Paragraph Element. Why: This is the calm advisory shown for every non-dead mismatch, in whichever placement (settings or schedule) actually caused it. How: This renders bodTexEle followed by the next-appearance date when one is known. */ }
+			<p className={ cssModObj.visNotPar }>{ /* What: Visibility Note Paragraph Element. Why: This is the calm advisory shown for every non-dead mismatch, in whichever placement (settings or schedule) actually caused it. How: This renders bodTexEle followed by the next-appearance date when one is known. */ }
 
 
 				{ bodTexEle }{ nexLabStr ? <> It will next appear on <strong>{ nexLabStr }</strong>.</> : null }{ /* What: Note Body Render. Why: The advisory sentence itself, plus an optional next-appearance clause when nexLabStr resolved to something. How: This renders bodTexEle directly, followed by the extra sentence only while nexLabStr holds a value. */ }
@@ -862,7 +861,7 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp 
 
 			aria-live={ nevShoBoo ? 'assertive' : 'polite' } // What: Live Urgency Pick. Why: A reminder that will never show is urgent enough to interrupt, while a deferred one is not. How: This is assertive only for the never-show case.
 			role='status'
-		>{ notConEle }</div> // What: Note Live Region Element. Why: This must stay mounted even with nothing to say, so an aria-describedby reference from the control above always resolves to a real element, and so the live region announces reliably once notConEle changes. How: This renders notConEle inside a role="status" region, assertive only for the dead-configuration case.
+		>{ notConEle }</div> // What: Visibility Live Div Element. Why: This must stay mounted even with nothing to say, so an aria-describedby reference from the control above always resolves to a real element, and so the live region announces reliably once notConEle changes. How: This renders notConEle inside a role="status" region, assertive only for the dead-configuration case.
 
 
 	);
@@ -882,11 +881,10 @@ type SecProTyp = { aniExtBoo? : boolean, layVarStr : string, onPatTasFun : ( pat
  * SchEdiCom = Schedule Editor Component
  *
  * @summary
- * Edits a reminder's own schedule, always the caller's local draft
- * of it. Repeat kind is a segmented control; the detail control below
- * it swaps to match the kind. Every field change goes straight through
- * props.onPatTasFun, so this component holds no schedule state of its
- * own beyond the two inline-date-edit toggles.
+ * Edits a draft of a reminder's own schedule. Repeat kind is a segmented
+ * control; the detail control below it swaps to match the kind. Every field
+ * change goes straight through props.onPatTasFun, so this component holds no
+ * schedule state of its own beyond the two inline-date-edit toggles.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -993,7 +991,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 	const ancHinEle = ( // What: Anchor Hint Element. Why: Interval/weekly/monthly/annual all share this same "counted from" hint once N > 1. How: This renders either a live date link or an inline date input, based on ancEdiBoo.
 
 
-		<p className={ cssModObj.fieHinPar }>{ /* What: Anchor Hint Paragraph Element. Why: This is the shared hint every interval-based schedule below reuses unmodified. How: This renders the counted-from sentence, swapping in a live link or an inline input based on ancEdiBoo. */ }
+		<p className={ cssModObj.fieHinPar }>{ /* What: Field Hint Paragraph Element. Why: This is the shared hint every interval-based schedule below reuses unmodified. How: This renders the counted-from sentence, swapping in a live link or an inline input based on ancEdiBoo. */ }
 			Counted from{ ' ' }
 			<DatLinCom
 				ediValBoo={ ancEdiBoo }
@@ -1010,7 +1008,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 	);
 
-	const schNotEle = staAppObj && ( // What: Schedule Note Element. Why: Every schedule subsection shows the same schedule-placement advisory, so it's built once here. How: This renders VisNotCom, gated on kinValStr 'schedule', only while staAppObj was actually passed.
+	const schNotEle = staAppObj && ( // What: Schedule Note Element. Why: Each repeat kind shows the same schedule-placement advisory once, so it's built once here. How: This renders VisNotCom, gated on kinValStr 'schedule', only while staAppObj was actually passed.
 
 
 		<VisNotCom
@@ -1026,19 +1024,19 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 	const oncFieEle = ( // What: Once Fields Element. Why: A one-time reminder is due immediately by default, and this subsection lets picking a later start date defer that. How: This renders the start-date label plus the same live link/inline-input pattern as ancHinEle.
 
 
-		<div className={ cssModObj.forFieDiv }>{ /* What: Once Field Div Element. Why: This groups the start-date label, live link/input, and its own visibility note as one schedule subsection. How: This is the multi-line container every other schedule subsection below also uses. */ }
+		<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the start-date label, live link/input, and its own visibility note as one schedule subsection. How: This is the same field container the other schedule subsections use. */ }
 
 
-			<div className={ cssModObj.fieLabDiv }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together as one visual unit. How: This wraps the plain label span and the fading summary span below. */ }
+			<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together as one visual unit. How: This wraps the plain label span and the fading summary span below. */ }
 
 
-				<span className={ cssModObj.fieLabSpa }>Start date</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Start date". */ }
+				<span className={ cssModObj.fieLabSpa }>Start date</span>{ /* What: Field Label Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Start date". */ }
 
 				<span
 					key={ oncFutBoo ? 'future' : 'now' } // What: Start State Key. Why: The summary should re-fade only when the start flips between future and immediate. How: This keys on oncFutBoo.
 
 					className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
-				>{ /* What: Flabel Sub Span Element. Why: This is the live summary of when the reminder will actually start showing. How: This re-keys (and so re-fades) whenever oncFutBoo flips, rendering one of the 2 branches below. */ }
+				>{ /* What: Field Subtitle Span Element. Why: This is the live summary of when the reminder will actually start showing. How: This re-keys (and so re-fades) whenever oncFutBoo flips, rendering one of the 2 branches below. */ }
 
 
 					{ oncFutBoo // What: Start Phrase Pick. Why: A future start date defers the reminder, while a today-or-past one shows at once. How: This picks the phrase below based on oncFutBoo.
@@ -1052,7 +1050,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 			</div>
 
-			<p className={ cssModObj.fieHinPar }>{ /* What: Once Hint Paragraph Element. Why: This is the same "starting on" link/input pattern ancHinEle uses, for the once-specific start date field. How: This renders the live link or inline input based on oncEdiBoo. */ }
+			<p className={ cssModObj.fieHinPar }>{ /* What: Field Hint Paragraph Element. Why: This is the same "starting on" link/input pattern ancHinEle uses, for the once-specific start date field. How: This renders the live link or inline input based on oncEdiBoo. */ }
 				Starting on{ ' ' }
 				<DatLinCom
 					ediValBoo={ oncEdiBoo }
@@ -1062,14 +1060,14 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 					desIdeStr={ schNotStr }
 
-					onChange={ ( datIsoStr ) => onPatTasFun( { onceDate : datIsoStr < TAS_NAM_OBJ.curIsoFun() ? TAS_NAM_OBJ.curIsoFun() : datIsoStr } ) } // What: Clamped Once Date Commit. Why: The input's min only disables the picker UI's own earlier dates, and typing a date by hand bypasses it in every browser, so a past pick still has to be clamped here. How: This commits the date, clamped up to today when it's earlier.
+					onChange={ ( datIsoStr ) => onPatTasFun( { onceDate : datIsoStr < TAS_NAM_OBJ.curIsoFun() ? TAS_NAM_OBJ.curIsoFun() : datIsoStr } ) } // What: Clamped Once Date Commit. Why: The input's min limits the picker's choices but doesn't stop a typed earlier date, so a past pick still has to be clamped here. How: This commits the date, clamped up to today when it's earlier.
 					onEdiSetFun={ setOncEdiBoo }
 				/>{ /* What: Date Link Component. Why: A one-time reminder's start date can be amended in place, never earlier than today. How: This shows oncLabStr as a link, or an inline date input while oncEdiBoo is true. */ }
 			</p>
 
 
 
-			{ schNotEle }{ /* What: Schedule Note Render. Why: Each schedule subsection carries the same schedule-placement advisory beneath its controls. How: This renders schNotEle, already built once above, directly as a JSX child. */ }
+			{ schNotEle }{ /* What: Schedule Note Render. Why: This subsection carries the same schedule-placement advisory beneath its controls. How: This renders schNotEle, already built once above, directly as a JSX child. */ }
 
 
 		</div>
@@ -1088,25 +1086,25 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 		return (
 
 
-			<React.Fragment>{ /* What: Extra Fields Fragment Element. Why: Up to 2 of the 6 conditional blocks below can render at once (monthly and annual each split into 2), so a single wrapping element is needed with no dom footprint of its own. How: This groups every conditional block below as one returned value. */ }
+			<React.Fragment>{ /* What: Extra Fields Fragment. Why: Up to 2 of the 6 conditional blocks below can render at once (monthly and annual each split into 2), so a single wrapping element is needed with no dom footprint of its own. How: This groups every conditional block below as one returned value. */ }
 
 
 				{ curRepStr === 'weekly' && ( // What: Weekly Visibility Check. Why: Only the schedule subsection matching the current repeat kind should render. How: This renders the weekly subsection only while curRepStr is 'weekly'.
 
 
-					<div className={ cssModObj.forFieDiv }>{ /* What: Weekly Field Div Element. Why: This groups every weekly-specific control as one schedule subsection. How: This renders the day-picker, the every-N-weeks control, and the shared anchor hint/visibility note. */ }
+					<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups every weekly-specific control as one schedule subsection. How: This renders the day-picker, the every-N-weeks control, and the shared anchor hint/visibility note. */ }
 
 
-						<div className={ cssModObj.fieLabDiv }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
+						<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
 
 
-							<span className={ cssModObj.fieLabSpa }>On these days</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "On these days". */ }
+							<span className={ cssModObj.fieLabSpa }>On these days</span>{ /* What: Field Label Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "On these days". */ }
 
 							<span
 								key={ tasRcdObj.interval || 1 }
 
 								className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
-							>{ /* What: Flabel Sub Span Element. Why: This is the live summary of which days and how often the reminder shows. How: This re-keys (and so re-fades) whenever interval changes, rendering one of the 2 branches below. */ }
+							>{ /* What: Field Subtitle Span Element. Why: This is the live summary of which days and how often the reminder shows. How: This re-keys (and so re-fades) whenever interval changes, rendering one of the 2 branches below. */ }
 
 
 								{ ( tasRcdObj.daysOfWeek && tasRcdObj.daysOfWeek.length ) // What: Days Chosen Check. Why: The summary can only name days once at least one is chosen. How: This picks the chosen-days phrase while daysOfWeek has entries, the prompt otherwise.
@@ -1148,14 +1146,14 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 						<ColDisCom open={ ( tasRcdObj.interval || 1 ) > 1 }>{ /* What: Collapse Disclosure Component. Why: The counted-from hint is only meaningful once interval is above 1 week. How: This animates ancHinEle open only while that condition holds. */ }
 
 
-							<div className={ cssModObj.ancFadDiv }>{ ancHinEle }</div>{ /* What: Anchor Fade Div Element. Why: The counted-from hint needs its own fade wrapper distinct from ColDisCom's own height animation. How: This renders ancHinEle inside a plain div that CSS cross-fades on interval change. */ }
+							<div className={ cssModObj.ancFadDiv }>{ ancHinEle }</div>{ /* What: Anchor Fade Div Element. Why: The counted-from hint needs its own fade wrapper distinct from ColDisCom's own height animation. How: This renders ancHinEle inside a plain div that CSS fades in each time it mounts. */ }
 
 
 						</ColDisCom>
 
 
 
-						{ schNotEle }{ /* What: Schedule Note Render. Why: Each schedule subsection carries the same schedule-placement advisory beneath its controls. How: This renders schNotEle, already built once above, directly as a JSX child. */ }
+						{ schNotEle }{ /* What: Schedule Note Render. Why: This subsection carries the same schedule-placement advisory beneath its controls. How: This renders schNotEle, already built once above, directly as a JSX child. */ }
 
 
 					</div>
@@ -1167,15 +1165,15 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 				{ curRepStr === 'interval' && ( // What: Interval Visibility Check. Why: Only the schedule subsection matching the current repeat kind should render. How: This renders the interval subsection only while curRepStr is 'interval'.
 
 
-					<div className={ cssModObj.forFieDiv }>{ /* What: Interval Field Div Element. Why: This groups the every-N-days control and its own anchor hint/visibility note as one schedule subsection. How: This renders the number input plus the shared anchor hint, always visible (unlike weekly/monthly/annual, which collapse it below N of 1). */ }
+					<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the every-N-days control and its own anchor hint/visibility note as one schedule subsection. How: This renders the number input plus the shared anchor hint, always visible (unlike weekly/monthly/annual, which collapse it below N of 1). */ }
 
 
-						<div className={ cssModObj.fieLabDiv }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the (non-fading, since interval always shows the hint) summary span below. */ }
+						<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the (non-fading, since interval always shows the hint) summary span below. */ }
 
 
-							<span className={ cssModObj.fieLabSpa }>Frequency</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Frequency". */ }
+							<span className={ cssModObj.fieLabSpa }>Frequency</span>{ /* What: Field Label Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Frequency". */ }
 
-							<span className={ cssModObj.fieSubSpa }>shows on the Today page <strong>every { tasRcdObj.interval || 1 } days</strong></span>{ /* What: Flabel Sub Span Element. Why: This is the plain cadence summary; interval has no alternate phrasing to fade between. How: This names tasRcdObj's own interval directly. */ }
+							<span className={ cssModObj.fieSubSpa }>shows on the Today page <strong>every { tasRcdObj.interval || 1 } days</strong></span>{ /* What: Field Subtitle Span Element. Why: This is the plain cadence summary; interval has no alternate phrasing to fade between. How: This names tasRcdObj's own interval directly. */ }
 
 
 						</div>
@@ -1199,7 +1197,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 
 
-						{ schNotEle }{ /* What: Schedule Note Render. Why: Each schedule subsection carries the same schedule-placement advisory beneath its controls. How: This renders schNotEle, already built once above, directly as a JSX child. */ }
+						{ schNotEle }{ /* What: Schedule Note Render. Why: This subsection carries the same schedule-placement advisory beneath its controls. How: This renders schNotEle, already built once above, directly as a JSX child. */ }
 
 
 					</div>
@@ -1232,19 +1230,19 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 				{ curRepStr === 'monthly' && ( // What: Monthly Day Visibility Check. Why: This is the monthly kind's own second, independent subsection, targeting which day of the month. How: This renders it only while curRepStr is 'monthly', right after the frequency subsection above.
 
 
-					<div className={ cssModObj.forFieDiv }>{ /* What: Monthly Day Field Div Element. Why: This groups the Date/Weekday mode toggle and its own detail controls as one schedule subsection. How: This renders SegConCom plus whichever detail row matches the current dateMode. */ }
+					<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the Date/Weekday mode toggle and its own detail controls as one schedule subsection. How: This renders DatModCom plus whichever detail row matches the current dateMode. */ }
 
 
-						<div className={ cssModObj.fieLabDiv }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
+						<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
 
 
-							<span className={ cssModObj.fieLabSpa }>Day of the month</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Day of the month". */ }
+							<span className={ cssModObj.fieLabSpa }>Day of the month</span>{ /* What: Field Label Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Day of the month". */ }
 
 							<span
-								key={ tasRcdObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' }
+								key={ tasRcdObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' } // What: Date Mode Key. Why: The summary should re-fade only when the date mode flips. How: This keys on 'nthWeekday' or 'date' by tasRcdObj's own dateMode.
 
 								className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
-							>{ /* What: Flabel Sub Span Element. Why: This is the live summary of which day targeting mode is active, re-fading on mode switch. How: This renders one of the 2 branches below depending on tasRcdObj's own dateMode. */ }
+							>{ /* What: Field Subtitle Span Element. Why: This is the live summary of which day targeting mode is active, re-fading on mode switch. How: This renders one of the 2 branches below depending on tasRcdObj's own dateMode. */ }
 								shows on the Today page <strong>{ tasRcdObj.dateMode === 'nthWeekday' // What: Date Mode Check. Why: The monthly target reads differently for each date mode. How: This picks the nth-weekday or plain-date phrase below based on dateMode.
 									? <>on the { ordSufFun( tasRcdObj.nthOrdinal || 1 ) } { DAY_FUL_ARR[ tasRcdObj.nthWeekday ?? 0 ] }</> // What: Nth-Weekday Summary Phrase. Why: In this mode the target reads as an ordinal weekday, e.g. "the 2nd Tuesday". How: This names tasRcdObj's own nthOrdinal and nthWeekday.
 									: <>every { ordSufFun( tasRcdObj.dayOfMonth || 1 ) }</>                                               // What: Plain Date Summary Phrase. Why: In the default mode the target reads as a plain ordinal day, e.g. "every 15th". How: This names tasRcdObj's own dayOfMonth.
@@ -1269,7 +1267,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 						{ tasRcdObj.dateMode === 'nthWeekday' ? ( // What: Nth-Weekday Mode Check. Why: The monthly detail row's own shape depends on which date-targeting mode is selected. How: This renders the ordinal-plus-weekday selects while tasRcdObj.dateMode is 'nthWeekday', the plain day-of-month select otherwise.
 
 
-							<div className={ cssModObj.fieRowDiv }>{ /* What: Nth-Weekday Inline Div Element. Why: This mode needs 2 selects (ordinal, weekday) read together as one sentence. How: This wraps the "On the" label and both selects below. */ }
+							<div className={ cssModObj.fieRowDiv }>{ /* What: Field Row Div Element. Why: This mode needs 2 selects (ordinal, weekday) read together as one sentence. How: This wraps the "On the" label and both selects below. */ }
 
 
 								<span>On the</span>{ /* What: On-The Span Element. Why: This is the inline row's own leading words. How: This renders the literal text "On the". */ }
@@ -1292,7 +1290,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 						) : ( // What: Plain Date Mode Branch. Why: The default mode just needs the plain day-of-month select instead. How: This renders the else branch, taken while tasRcdObj.dateMode isn't 'nthWeekday'.
 
 
-							<div className={ cssModObj.fieRowDiv }>{ /* What: Plain Date Inline Div Element. Why: The default mode only needs the single day-of-month select read alongside its own label. How: This wraps the "On the" label and the day select below. */ }
+							<div className={ cssModObj.fieRowDiv }>{ /* What: Field Row Div Element. Why: The default mode only needs the single day-of-month select read alongside its own label. How: This wraps the "On the" label and the day select below. */ }
 
 
 								<span>On the</span>{ /* What: On-The Span Element. Why: This is the inline row's own leading words. How: This renders the literal text "On the". */ }
@@ -1306,7 +1304,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 									aria-label='Day of the month'
 
 									onChange={ ( chaEveObj ) => onPatTasFun( { dayOfMonth : parseInt( chaEveObj.target.value ) } ) }
-								>{ /* What: Day-Of-Month Select Element. Why: This is the plain 1-31 day picker for the default mode. How: This commits the chosen option's own numeric value as tasRcdObj's new dayOfMonth. */ }
+								>{ /* What: Anchor Pick Select Element. Why: This is the plain 1-31 day picker for the default mode. How: This commits the chosen option's own numeric value as tasRcdObj's new dayOfMonth. */ }
 
 
 									{ Array.from( Array( 31 ).keys(), ( arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Day Of Month Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own domValNum.
@@ -1337,7 +1335,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 
 
-						{ schNotEle }{ /* What: Schedule Note Render. Why: Each schedule subsection carries the same schedule-placement advisory beneath its controls. How: This renders schNotEle, already built once above, directly as a JSX child. */ }
+						{ schNotEle }{ /* What: Schedule Note Render. Why: This subsection carries the same schedule-placement advisory beneath its controls. How: This renders schNotEle, already built once above, directly as a JSX child. */ }
 
 
 					</div>
@@ -1370,19 +1368,19 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 				{ curRepStr === 'annual' && ( // What: Annual Date Visibility Check. Why: This is the annual kind's own second, independent subsection, targeting which date each year. How: This renders it only while curRepStr is 'annual', right after the frequency subsection above.
 
 
-					<div className={ cssModObj.forFieDiv }>{ /* What: Annual Date Field Div Element. Why: This groups the Date/Weekday mode toggle and its own detail controls as one schedule subsection. How: This renders SegConCom plus whichever detail row matches the current dateMode. */ }
+					<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the Date/Weekday mode toggle and its own detail controls as one schedule subsection. How: This renders DatModCom plus whichever detail row matches the current dateMode. */ }
 
 
-						<div className={ cssModObj.fieLabDiv }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
+						<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
 
 
-							<span className={ cssModObj.fieLabSpa }>Date each year</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Date each year". */ }
+							<span className={ cssModObj.fieLabSpa }>Date each year</span>{ /* What: Field Label Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Date each year". */ }
 
 							<span
-								key={ tasRcdObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' }
+								key={ tasRcdObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' } // What: Date Mode Key. Why: The summary should re-fade only when the date mode flips. How: This keys on 'nthWeekday' or 'date' by tasRcdObj's own dateMode.
 
 								className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
-							>{ /* What: Flabel Sub Span Element. Why: This is the live summary of which day targeting mode is active, re-fading on mode switch. How: This renders one of the 2 branches below depending on tasRcdObj's own dateMode. */ }
+							>{ /* What: Field Subtitle Span Element. Why: This is the live summary of which day targeting mode is active, re-fading on mode switch. How: This renders one of the 2 branches below depending on tasRcdObj's own dateMode. */ }
 								shows on the Today page <strong>{ tasRcdObj.dateMode === 'nthWeekday' // What: Date Mode Check. Why: The yearly target reads differently for each date mode. How: This picks the nth-weekday or plain-date phrase below based on dateMode.
 									? <>the { ordSufFun( tasRcdObj.nthOrdinal || 1 ) } { DAY_FUL_ARR[ tasRcdObj.nthWeekday ?? 0 ] } of { MON_FUL_ARR[ ( tasRcdObj.month || 1 ) - 1 ] }</> // What: Nth-Weekday Summary Phrase. Why: In this mode the target reads as an ordinal weekday within a named month, e.g. "the 2nd Tuesday of June". How: This names tasRcdObj's own nthOrdinal, nthWeekday, and month.
 									: <>{ MON_FUL_ARR[ ( tasRcdObj.month || 1 ) - 1 ] } { tasRcdObj.day || 1 }</>                                                                         // What: Plain Date Summary Phrase. Why: In the default mode the target reads as a plain month/day, e.g. "June 15". How: This names tasRcdObj's own month and day.
@@ -1407,7 +1405,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 						{ tasRcdObj.dateMode === 'nthWeekday' ? ( // What: Nth-Weekday Mode Check. Why: The annual detail row's own shape depends on which date-targeting mode is selected. How: This renders the ordinal-plus-weekday-plus-month selects while tasRcdObj.dateMode is 'nthWeekday', the plain month-plus-day selects otherwise.
 
 
-							<div className={ cssModObj.fieRowDiv }>{ /* What: Nth-Weekday Inline Div Element. Why: This mode needs 3 selects (ordinal, weekday, month) read together as one sentence. How: This wraps both selects, the "of" word, and the month select below. */ }
+							<div className={ cssModObj.fieRowDiv }>{ /* What: Field Row Div Element. Why: This mode needs 3 selects (ordinal, weekday, month) read together as one sentence. How: This wraps the ordinal and weekday selects, the "of" word, and the month select below. */ }
 
 
 								<NthSelCom
@@ -1440,7 +1438,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 						) : ( // What: Plain Date Mode Branch. Why: The default mode just needs the plain month-and-day selects instead. How: This renders the else branch, taken while tasRcdObj.dateMode isn't 'nthWeekday'.
 
 
-							<div className={ cssModObj.fieRowDiv }>{ /* What: Plain Date Inline Div Element. Why: The default mode needs a month select and a day select read together. How: This wraps both selects below. */ }
+							<div className={ cssModObj.fieRowDiv }>{ /* What: Field Row Div Element. Why: The default mode needs a month select and a day select read together. How: This wraps both selects below. */ }
 
 
 								<MonSelCom
@@ -1462,7 +1460,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 									aria-label='Day'
 
 									onChange={ ( chaEveObj ) => onPatTasFun( { day : parseInt( chaEveObj.target.value ) } ) }
-								>{ /* What: Day Select Element. Why: This is the plain 1-31 day picker for the default mode. How: This commits the chosen option's own numeric value as tasRcdObj's new day. */ }
+								>{ /* What: Anchor Pick Select Element. Why: This is the plain 1-31 day picker for the default mode. How: This commits the chosen option's own numeric value as tasRcdObj's new day. */ }
 
 
 									{ Array.from( Array( 31 ).keys(), ( arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Day Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own domValNum.
@@ -1496,7 +1494,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 
 
-						{ schNotEle }{ /* What: Schedule Note Render. Why: Each schedule subsection carries the same schedule-placement advisory beneath its controls. How: This renders schNotEle, already built once above, directly as a JSX child. */ }
+						{ schNotEle }{ /* What: Schedule Note Render. Why: This subsection carries the same schedule-placement advisory beneath its controls. How: This renders schNotEle, already built once above, directly as a JSX child. */ }
 
 
 					</div>
@@ -1524,22 +1522,22 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 			className={` ${ cssModObj.schEdiDiv }   ${ layVarStr === 'stacked' ? cssModObj.schEdiDivStacked : '' }   ${ layVarStr === 'rows' ? cssModObj.schEdiDivRows : '' } `}
 
 			data-element-name-hook='schEdiDiv'
-		>{ /* What: Reminder Editor Div Element. Why: This is SchEdiCom's own root element, holding the Repeat row and whichever detail subsection currently applies. How: This renders the Repeat row, then either oncFieEle or extFieEle based on tasRcdObj's own repeat. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
+		>{ /* What: Schedule Editor Div Element. Why: This is SchEdiCom's own root element, holding the Repeat row and whichever detail subsection currently applies. How: This renders the Repeat row, then either oncFieEle or extFieEle based on tasRcdObj's own repeat. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
 
 
-			<div className={ cssModObj.forFieDiv }>{ /* What: Repeat Field Div Element. Why: The Repeat control is its own schedule subsection, always shown regardless of which kind is selected. How: This renders the segmented control plus its own live summary and visibility note. */ }
+			<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: The Repeat control is its own schedule subsection, always shown regardless of which kind is selected. How: This renders the segmented control plus its own live summary and visibility note. */ }
 
 
-				<div className={ cssModObj.fieLabDiv }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
+				<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
 
 
-					<span className={ cssModObj.fieLabSpa }>Repeat</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Repeat". */ }
+					<span className={ cssModObj.fieLabSpa }>Repeat</span>{ /* What: Field Label Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Repeat". */ }
 
 					<span
 						key={ tasRcdObj.repeat }
 
 						className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
-					>{ ( REP_OPT_ARR.find( ( optConObj ) => optConObj.keyStr === tasRcdObj.repeat ) || {} ).subEle }</span>{ /* What: Flabel Sub Span Element. Why: This is the live sub-explanation matching the currently-selected repeat kind. How: This looks up REP_OPT_ARR by tasRcdObj's own repeat and renders that entry's own subEle. */ }
+					>{ ( REP_OPT_ARR.find( ( optConObj ) => optConObj.keyStr === tasRcdObj.repeat ) || {} ).subEle }</span>{ /* What: Field Subtitle Span Element. Why: This is the live sub-explanation matching the currently-selected repeat kind. How: This looks up REP_OPT_ARR by tasRcdObj's own repeat and renders that entry's own subEle. */ }
 
 
 				</div>
@@ -1594,7 +1592,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 						className={ cssModObj.remExtDiv }
 
 						data-element-name-hook='remExtDiv'
-					>{ oncFieEle }</div>{ /* What: Extra Fade Div Element. Why: The once fields share the extra-fields subsection's own fade wrapper. How: This wraps oncFieEle inside the collapse. Its data-element-name-hook is read by the reminder mini-tours. */ }
+					>{ oncFieEle }</div>{ /* What: Reminder Extra Div Element. Why: The once fields share the extra-fields subsection's own fade wrapper. How: This wraps oncFieEle inside the collapse. Its data-element-name-hook is read by the reminder mini-tours. */ }
 
 
 				</ColDisCom>
@@ -1622,7 +1620,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 						className={ cssModObj.remExtDiv }
 
 						data-element-name-hook='remExtDiv'
-					>{ extFieEle }</div>{ /* What: Extra Fade Div Element. Why: The extra-fields subsection needs to re-key on a genuine kind switch, so its own internal ColDisCom states reset cleanly instead of carrying over stale open/closed state. How: This keys on lasExtRef's own remembered kind while collapsing back to 'once', otherwise the task's own real repeat. Its data-element-name-hook is read by the reminder mini-tours. */ }
+					>{ extFieEle }</div>{ /* What: Reminder Extra Div Element. Why: The extra-fields subsection needs to re-key on a genuine kind switch, so its own internal ColDisCom states reset cleanly instead of carrying over stale open/closed state. How: This keys on lasExtRef's own remembered kind while collapsing back to 'once', otherwise the task's own real repeat. Its data-element-name-hook is read by the reminder mini-tours. */ }
 
 
 				</ColDisCom>
@@ -1653,7 +1651,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 // #region Exports
 
-export { SchEdiCom }; // What: Named Export. Why: Today's reminders section and the Data tab's reminder manager both edit reminders with it. How: This exports SchEdiCom by name; VisNotCom, reaPhrFun, and REP_OPT_ARR stay private to this file.
+export { SchEdiCom }; // What: Named Export. Why: More than one tab edits reminders with it. How: This exports SchEdiCom by name; VisNotCom, reaPhrFun, and REP_OPT_ARR stay private to this file.
 
 // #endregion Exports
 

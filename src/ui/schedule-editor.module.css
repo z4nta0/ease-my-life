@@ -82,7 +82,7 @@
 
 
 }
-.schEdiDiv--stacked .forFieDiv + .forFieDiv { /* What: Following Form Field Div In Schedule Editor Div Stacked. Why: Consecutive fields read as separate rows. How: This draws a divider above every field after the first. */
+.schEdiDiv--stacked .forFieDiv + .forFieDiv { /* What: Following Form Field Div In Schedule Editor Div Stacked. Why: Consecutive fields read as separate rows. How: This draws a divider above each field that directly follows another field. */
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -100,7 +100,7 @@
 .schEdiDiv--rows .forFieDiv { /* What: Form Field Div In Schedule Editor Div Rows. Why: In the Data tab each field is one full-bleed row, label left and control right, wrapping on a narrow screen. How: This lays the field out as a wrapping row pulled out to the edges with a bottom divider, and sets the segmented control's row sizing. */
 
 
-	--seg-gri-fle : 100%; /* What: Segment Grid Flex. Why: The Repeat control always takes its own full-width line under the label, so every browser lays it out the same way. How: The Repeat segmented control reads this as its flex basis. */
+	--seg-gri-fle : 100%; /* What: Segment Grid Flex. Why: The Repeat control takes its own full-width line under the label. How: Segmented controls inside the row read this as their flex basis. */
 	--seg-max-wid : 100%; /* What: Segment Maximum Width. Why: A segmented control in a row must never grow past the row. How: The segmented control reads this as its max width. */
 
 	align-items     : center;
