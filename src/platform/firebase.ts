@@ -20,6 +20,9 @@ import { signInWithPopup             } from 'firebase/auth';          // What: S
 import { signOut                     } from 'firebase/auth';          // What: Sign Out. Why: A device can leave its account. How: This ends the session.
 
 
+import type { UserCredential } from 'firebase/auth'; // What: User Credential. Why: The sign-in functions resolve with the signed-in account's credential. How: This types their return values.
+
+
 // #endregion Imports
 
 
@@ -30,8 +33,8 @@ import { signOut                     } from 'firebase/auth';          // What: S
  * @summary
  * Connects to the Firebase project behind paid sync: its sign-in, with Google
  * or an emailed link, and the Firestore database holding each account's cloud
- * copy. The app imports this file only when someone signs in or already has,
- * so the Firebase SDK never loads for anyone else. The config values below are
+ * copy. The app loads this file only for someone using an account, so the
+ * Firebase SDK stays out of everyone else's load. The config values below are
  * public by design (every visitor's browser receives them), and Firestore's
  * security rules are what keep each account's copy to its owner. App Check,
  * started before any request, proves to Firebase through reCAPTCHA Enterprise
@@ -91,7 +94,7 @@ const firAppObj = initializeApp( EMU_HOS_STR ? { ...FIR_CON_OBJ, projectId : EMU
 if ( !EMU_HOS_STR ) { // What: App Check Start Check. Why: Firebase should serve only the real app, while the emulator never checks App Check tokens. How: This starts App Check for any build that talks to the real project, before Auth or Firestore make a request.
 
 
-	if ( import.meta.env.DEV ) self.FIREBASE_APPCHECK_DEBUG_TOKEN = import.meta.env.VITE_APP_CHECK_DEBUG || true; // What: Debug Token Set. Why: reCAPTCHA can't vouch for localhost, so a dev server needs App Check's debug mode to reach the real project. How: This hands the SDK a debug token registered in the Firebase console, or true, which makes it print a new one to register.
+	if ( import.meta.env.DEV ) self.FIREBASE_APPCHECK_DEBUG_TOKEN = import.meta.env.VITE_APP_CHECK_DEBUG || true; // What: Debug Token Set. Why: The reCAPTCHA site key is registered for easemylife.app only, so a dev server needs App Check's debug mode to reach the real project. How: This hands the SDK a debug token registered in the Firebase console, or true, which makes it print a new one to register.
 
 
 
@@ -110,7 +113,7 @@ if ( !EMU_HOS_STR ) { // What: App Check Start Check. Why: Firebase should serve
 
 
 const firAutObj = getAuth( firAppObj );                                                                         // What: Firebase Authentication Object. Why: Every sign-in call goes through it. How: This creates it.
-const firStoObj = initializeFirestore( firAppObj, EMU_HOS_STR ? { experimentalForceLongPolling : true } : {} ); // What: Firebase Store Object. Why: The cloud backend reads and writes through it. How: This creates it with the default memory cache, since this device's own storage already holds the state. // What: Emulator Long Polling Note. Why: Playwright's WebKit stalls on Firestore's streaming connection to the plain-HTTP emulator, while Chromium and Firefox don't. How: Tests force long polling, and production keeps Firestore's default, which switches to long polling by itself where a browser needs it.
+const firStoObj = initializeFirestore( firAppObj, EMU_HOS_STR ? { experimentalForceLongPolling : true } : {} ); // What: Firebase Store Object. Why: The cloud backend reads and writes through it. How: This creates it with the default memory cache, since this device's own storage already holds the state. // What: Emulator Long Polling Note. Why: Playwright's WebKit stalls on Firestore's streaming connection to the plain-HTTP emulator, while Chromium and Firefox don't. How: Tests force long polling, and production keeps Firestore's default.
 
 
 
@@ -130,8 +133,60 @@ if ( EMU_HOS_STR ) { // What: Emulator Check. Why: Tests run against the local e
 
 // #region Helpers
 
-const finLinFun = ( emaAdrStr : string, linUrlStr : string ) => signInWithEmailLink( firAutObj, emaAdrStr, linUrlStr ); // What: Finish Link Function. Why: Opening the emailed link finishes signing in, given the address it was sent to. How: This signs in with the link's code.
-const isaLinFun = ( linUrlStr : string ) => isSignInWithEmailLink( firAutObj, linUrlStr );                              // What: Is-A Link Function. Why: The app has to notice it was opened from a sign-in email. How: This checks the address for the link's code.
+// #region finLinFun
+
+/**
+ * finLinFun = Finish Link Function
+ *
+ * @summary
+ * Finishes signing in from an emailed link, given the address the link was
+ * sent to and the link's own address.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param emaAdrStr - Email Address String: The address the link was sent to.
+ * @param linUrlStr - Link URL String: The sign-in link's address.
+ *
+ * @returns A promise that resolves with the signed-in account's credential.
+ *
+ * @example
+ * ```ts
+ * await finLinFun('you@example.com', linUrlStr) // => UserCredential
+ * ```
+ *
+*/
+
+const finLinFun = ( emaAdrStr : string, linUrlStr : string ) : Promise< UserCredential > => signInWithEmailLink( firAutObj, emaAdrStr, linUrlStr ); // What: Finish Link Function. Why: Opening the emailed link finishes signing in, given the address it was sent to. How: This signs in with the link's code.
+
+// #endregion finLinFun
+
+
+
+// #region isaLinFun
+
+/**
+ * isaLinFun = Is-A Link Function
+ *
+ * @summary
+ * Whether an address is a Firebase sign-in link, by checking it for the
+ * link's code.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param linUrlStr - Link URL String: The address to check.
+ *
+ * @returns Whether the address is a sign-in link.
+ *
+ * @example
+ * ```ts
+ * isaLinFun(location.href) // => true
+ * ```
+ *
+*/
+
+const isaLinFun = ( linUrlStr : string ) : boolean => isSignInWithEmailLink( firAutObj, linUrlStr ); // What: Is-A Link Function. Why: The app has to notice it was opened from a sign-in email. How: This checks the address for the link's code.
+
+// #endregion isaLinFun
 
 
 
@@ -211,9 +266,86 @@ function senLinFun ( emaAdrStr : string, retUrlStr : string ) : Promise< void > 
 
 
 
-const sigGooFun = () => signInWithPopup( firAutObj, new GoogleAuthProvider() );                               // What: Sign Google Function. Why: Google is one way to sign in. How: This opens Google's sign-in window and waits.
-const sigOutFun = () => signOut( firAutObj );                                                                 // What: Sign Out Function. Why: A device can leave its account. How: This ends the session.
-const tokGetFun = () => firAutObj.currentUser ? firAutObj.currentUser.getIdToken() : Promise.resolve( null ); // What: Token Get Function. Why: The checkout function verifies who is buying. How: This resolves with the signed-in account's ID token, or null.
+// #region sigGooFun
+
+/**
+ * sigGooFun = Sign Google Function
+ *
+ * @summary
+ * Signs in with Google in a pop-up window and waits for it to finish.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns A promise that resolves with the signed-in account's credential.
+ *
+ * @example
+ * ```ts
+ * await sigGooFun() // => UserCredential
+ * ```
+ *
+*/
+
+const sigGooFun = () : Promise< UserCredential > => signInWithPopup( firAutObj, new GoogleAuthProvider() ); // What: Sign Google Function. Why: Google is one way to sign in. How: This opens Google's sign-in window and waits.
+
+// #endregion sigGooFun
+
+
+
+// #region sigOutFun
+
+/**
+ * sigOutFun = Sign Out Function
+ *
+ * @summary
+ * Ends this device's session with its account.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns A promise that settles once the session has ended, with no value.
+ *
+ * @example
+ * ```ts
+ * await sigOutFun() // => Promise<void>
+ * ```
+ *
+*/
+
+const sigOutFun = () : Promise< void > => signOut( firAutObj ); // What: Sign Out Function. Why: A device can leave its account. How: This ends the session.
+
+// #endregion sigOutFun
+
+
+
+// #region tokGetFun
+
+/**
+ * tokGetFun = Token Get Function
+ *
+ * @summary
+ * Gets the signed-in account's ID token, for the checkout function to verify
+ * who is buying.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns A promise that resolves with the ID token, or null when nobody is
+ *          signed in.
+ *
+ * @example
+ * ```ts
+ * await tokGetFun() // => 'eyJhbGciOi...'
+ * ```
+ *
+*/
+
+const tokGetFun = () : Promise< string | null > => firAutObj.currentUser ? firAutObj.currentUser.getIdToken() : Promise.resolve( null ); // What: Token Get Function. Why: The checkout function verifies who is buying. How: This resolves with the signed-in account's ID token, or null.
+
+// #endregion tokGetFun
 
 
 
@@ -279,7 +411,7 @@ function watUsrFun ( usrCalFun : ( accUsrObj : AccUsrTyp | null ) => void ) : ()
 
 // #region Exports
 
-export { type AccUsrTyp, finLinFun, firStoObj, isaLinFun, refTokFun, senLinFun, sigGooFun, sigOutFun, tokGetFun, watUsrFun }; // What: Named Exports. Why: The account screen signs in and out through these, and the cloud backend uses firStoObj. How: This exports them by name, tokGetFun for the purchase.
+export { type AccUsrTyp, finLinFun, firStoObj, isaLinFun, refTokFun, senLinFun, sigGooFun, sigOutFun, tokGetFun, watUsrFun }; // What: Named Exports. Why: Other files sign in, sign out, follow the account, and read the database through these. How: This exports them by name.
 
 // #endregion Exports
 

@@ -5,7 +5,7 @@
 
 import { collection       } from 'firebase/firestore'; // What: Collection. Why: Deleting the copy lists every stored version. How: This names the account's versions collection.
 import { deleteDoc        } from 'firebase/firestore'; // What: Delete Doc. Why: Deleting the copy removes its manifest. How: This deletes one document.
-import { doc              } from 'firebase/firestore'; // What: Doc. Why: Every read and write names a document. How: This builds a reference to one.
+import { doc              } from 'firebase/firestore'; // What: Doc. Why: A version read or write names its document. How: This builds a reference to one.
 import { firStoObj        } from './firebase.ts';      // What: Firebase Store Object. Why: The cloud copy lives in this database. How: This is its instance.
 import { getDoc           } from 'firebase/firestore'; // What: Get Doc. Why: A document version never changes once written, so it can be read from anywhere. How: This reads one.
 import { getDocFromServer } from 'firebase/firestore'; // What: Get Doc From Server. Why: A sync must compare against the cloud's current manifest, never a cached one. How: This reads it from the server.
@@ -33,7 +33,7 @@ import type { SynManTyp } from '../state/sync-engine.ts'; // What: Sync Manifest
  * one instead of over it. An upload writes its new versions first, then
  * commits the manifest in a transaction only if the revision hasn't moved,
  * so the manifest never lists a version that isn't there, and a lost race
- * leaves the cloud copy exactly as it was.
+ * leaves the manifest as it was.
  *
  * Old versions are deleted one revision late: a commit removes the versions
  * the previous manifest's prior listed, unless they're still in use. Another
@@ -55,7 +55,7 @@ import type { SynManTyp } from '../state/sync-engine.ts'; // What: Sync Manifest
 
 // #region Constants
 
-const BAT_BYT_NUM = 4194304; // What: Batch Byte Number. Why: Firestore caps one request at 10 MiB, and a log month can be large. How: This keeps each batch to about 4 MiB of text.
+const BAT_BYT_NUM = 4194304; // What: Batch Bytes Number. Why: Firestore caps one request at 10 MiB, and a log month can be large. How: This keeps each batch to about 4 MiB of text.
 const BAT_WRI_NUM = 400;     // What: Batch Writes Number. Why: Firestore caps one batch at 500 writes. How: This keeps each batch below it.
 
 // #endregion Constants
@@ -306,8 +306,7 @@ function cldBacFun ( uidValStr : string ) : SynBacTyp {
  * Deletes an account's whole cloud copy: its manifest first, so no device
  * ever reads a manifest listing versions that are gone, then every version
  * stored under it, including any leftover from an interrupted upload. Only
- * the copy goes. The account itself, and its purchase, stay. A device still
- * signed in to the account uploads its own data again on its next sync.
+ * the copy goes. The account itself, and its purchase, stay.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -345,7 +344,7 @@ async function delCldFun ( uidValStr : string ) : Promise< void > {
 
 // #region Exports
 
-export { cldBacFun, delCldFun }; // What: Named Exports. Why: The sync hook gets an account's backend through cldBacFun, and deletes its copy through delCldFun. How: This exports both by name.
+export { cldBacFun, delCldFun }; // What: Named Exports. Why: Other files open an account's backend and delete its copy. How: This exports both by name.
 
 // #endregion Exports
 

@@ -5,17 +5,12 @@
  * globals.d.ts = Globals
  *
  * @summary
- * Type declarations for the values the app creates outside the module graph,
- * which TypeScript can't otherwise see: the version number Vite injects at
- * build time, the build settings read from import.meta.env, the deliberate
- * window.__ globals that let a module or index.html's boot script reach a
- * component (see CLAUDE.md's "Runtime globals on window"), the debug token the
- * App Check SDK reads from window, and the browser features pwa.ts uses that
- * TypeScript's DOM types don't include yet: iOS Safari's standalone flag,
- * getInstalledRelatedApps, and Chromium's beforeinstallprompt event. This file
- * has no imports or exports, so TypeScript reads it as a global script: each
- * interface below merges into the built-in one of the same name, and nothing
- * here ends up in the build.
+ * Type declarations for values the app uses that TypeScript can't otherwise
+ * see: build-time values, the app's own window.__ globals (see CLAUDE.md's
+ * "Runtime globals on window"), and browser features TypeScript's DOM types
+ * don't include yet. This file has no imports or exports, so TypeScript
+ * reads it as a global script: each interface below merges into the built-in
+ * one of the same name, and nothing here ends up in the build.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -45,7 +40,7 @@ interface Navigator { // What: Navigator Interface. Why: pwa.ts reads two naviga
 
 
 	getInstalledRelatedApps? : () => Promise< RelAppTyp[] >; // What: Get Installed Related Apps. Why: Chromium can tell whether this app is already installed elsewhere on the device. How: This is the method that lists those installs.
-	standalone?              : boolean;                      // What: Standalone. Why: iOS Safari reports a home-screen launch only through this flag. How: This is true when the app runs from the home screen.
+	standalone?              : boolean;                      // What: Standalone. Why: iOS Safari reports a home-screen launch through this flag. How: This is true when the app runs from the home screen.
 
 
 }
@@ -60,7 +55,7 @@ interface Window { // What: Window Interface. Why: TypeScript's built-in Window 
 	__escBound?          : boolean;     // What: Escape Bound. Why: The document-level Escape listener must be attached only once, however many times its module loads. How: This is set true once ui/escape-cancel.ts attaches it.
 	__escStack?          : EscEntTyp[]; // What: Escape Stack. Why: Several editors can be open at once, and Escape should cancel only the most recent. How: This is the array ui/escape-cancel.ts pushes each open editor's entry onto.
 
-	FIREBASE_APPCHECK_DEBUG_TOKEN? : boolean | string; // What: Firebase App Check Debug Token. Why: The App Check SDK reads this global to switch to its debug provider, and its own declaration isn't part of its public types. How: platform/firebase.ts sets it on a dev server, before App Check starts.
+	FIREBASE_APPCHECK_DEBUG_TOKEN? : boolean | string; // What: Firebase App Check Debug Token. Why: The App Check SDK reads this global to switch to its debug provider. How: platform/firebase.ts sets it on a dev server, before App Check starts.
 
 
 }

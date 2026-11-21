@@ -6,13 +6,13 @@
  *
  * @summary
  * Lets a React style object set a CSS custom property, such as the coach
- * card's '--coa-arr-off' or a Today card's '--con-dir-ang', which hands a
- * runtime value to the element's own module CSS. React's CSSProperties type
- * only knows real CSS property names, so without this every such style object
- * is an error. Unlike globals.d.ts, this file has to be a module (its empty
- * export below), since only a module can augment another module's types; a
- * global script declaring module 'react' would replace React's types instead
- * of adding to them. Nothing here ends up in the build.
+ * card's '--coa-arr-off', which hands a runtime value to the element's own
+ * module CSS. React's CSSProperties type only knows real CSS property names,
+ * so without this every such style object is an error. Unlike globals.d.ts,
+ * this file has to be a module (its empty export below), since only a module
+ * can augment another module's types; a global script declaring module
+ * 'react' would replace React's types instead of adding to them. Nothing here
+ * ends up in the build.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

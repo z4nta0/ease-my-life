@@ -16,8 +16,7 @@ import { subMakFun } from '../utils/subscribers.ts'; // What: Subscriber Make Fu
  * Local notifications: these fire only while the app is running, whether
  * the tab is in the foreground or backgrounded. The page itself is what
  * decides to show one; delivering to a fully closed app would need Web
- * Push plus a real backend (see PWA-PLAN.md), which this app
- * deliberately doesn't have.
+ * Push plus a real backend, which this app deliberately doesn't have.
  *
  * Deliberate constraints this module enforces: a notification fires
  * only after the Daily generator has already run, never as a prompt to
@@ -25,10 +24,8 @@ import { subMakFun } from '../utils/subscribers.ts'; // What: Subscriber Make Fu
  * stays silent whenever the app is already visible and focused, since a
  * notification for a page the user is already looking at is pure noise.
  * It fires at most once per local day, tracked in localStorage so a
- * reload can't re-notify. Permission is requested exactly once, and
- * only from a real user gesture (the Settings run-time change); a
- * denial is effectively permanent, so this module never asks for it on
- * load.
+ * reload can't re-notify. Permission is requested only from a real user
+ * gesture, and this module never asks for it on load.
  *
  * Sections:
  *  - Types
@@ -62,7 +59,7 @@ const DAY_KEY_STR = 'easemylife.notifiedday'; // What: Day Key String. Why: This
 
 // #region Module State
 
-const { notSubFun, subAddFun } = subMakFun(); // What: Notify Subscribers Function. Why: Every subscriber needs to hear about a permission change the moment askOncFun/reqPerFun resolve one. How: This calls every subscriber, one throwing subscriber never stopping the rest. // What: Subscribe Add Function. Why: A caller (the Settings page's permission-state display) needs a way to register for permission-change broadcasts and later unregister again. How: This adds a subscriber and returns its own removal function.
+const { notSubFun, subAddFun } = subMakFun(); // What: Notify Subscribers Function. Why: Every subscriber needs to hear about a permission change the moment askOncFun/reqPerFun resolve one. How: This calls every subscriber, none of them able to stop the rest by throwing. // What: Subscribe Add Function. Why: A caller (the Settings page's permission-state display) needs a way to register for permission-change broadcasts and later unregister again. How: This adds a subscriber and returns its own removal function.
 
 // #endregion Module State
 
@@ -109,7 +106,7 @@ const locDayFun = ( dayDatObj : Date ) => `${ dayDatObj.getFullYear() }-${ padZe
 
 // #region Permission Requests
 
-const askCheFun = () => !!stoGetFun( ASK_KEY_STR );                // What: Ask Check Function. Why: askOncFun below must only ever prompt once, ever, regardless of how the previous prompt was answered. How: This reports whether the one-time "asked" flag has already been written.
+const askCheFun = () => !!stoGetFun( ASK_KEY_STR );                // What: Ask Check Function. Why: askOncFun below must not prompt again once a prompt has been answered. How: This reports whether the one-time "asked" flag has already been written.
 const notSupFun = () => typeof window.Notification === 'function'; // What: Notification Support Function. Why: Every other function below needs to know whether the browser has the Notification API at all before doing anything else with it. How: This checks that window.Notification exists and is itself a function.
 
 
@@ -149,31 +146,29 @@ const perCheFun = () : PerStaTyp => ( notSupFun() ? Notification.permission : 'u
  * askOncFun = Ask Once Function
  *
  * @summary
- * Requests notification permission exactly once, called from the
- * Settings run-time input's onChange handler: a real user gesture, and
- * the moment the user has shown they care when the generator runs.
- * Skips straight to reporting the current permission, without
- * prompting again, once the browser doesn't support notifications at
- * all, the permission has already moved away from 'default', or this
- * module has already asked once before. Only burns the one-time
- * "asked" flag once the user has actually answered the prompt:
+ * Requests notification permission, then stops asking once a prompt has
+ * been answered. It is meant to run from a user gesture, such as the
+ * Settings run-time change. Skips straight to reporting the current
+ * permission, without prompting again, once the browser doesn't support
+ * notifications at all, the permission has already moved away from
+ * 'default', or this module has already asked once before. Only burns the
+ * one-time "asked" flag once the user has actually answered the prompt:
  * dismissing it (or a context that blocks it outright) leaves the
- * permission at 'default', so the module should still be allowed to
- * ask again later in that case.
+ * permission at 'default', so the module should still be allowed to ask
+ * again later in that case.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param void - This function takes no parameters.
  *
- * @returns A Promise resolving to the current permission string:
- * either {@link perCheFun}'s own result, when the guard above
- * short-circuits, or the freshly-resolved result of the permission
- * prompt otherwise.
+ * @returns A promise that resolves with the current permission:
+ * {@link perCheFun}'s result when the guard above short-circuits, or the
+ * prompt's result otherwise.
  * @see {@link perResStr}
  *
  * @example
  * ```ts
- * askOncFun() // => Promise<string>
+ * await askOncFun() // => 'granted'
  * ```
  *
 */
@@ -189,9 +184,9 @@ async function askOncFun () : Promise< PerStaTyp > {
 
 
 
-	try { perResStr = await Notification.requestPermission(); } // What: Request Permission Try. Why: A very old browser's callback-style requestPermission could throw when called with no callback argument at all. How: This awaits the modern Promise-returning form and falls back to leaving perResStr at its default value on any error.
+	try { perResStr = await Notification.requestPermission(); } // What: Request Permission Try. Why: The prompt can fail, and the permission should then stay as it was. How: This awaits the modern Promise-returning form and falls back to leaving perResStr at its default value on any error.
 
-	catch { /* older API */ } // What: Request Permission Guard. Why: A very old browser's callback-style requestPermission could throw when called with no callback argument at all. How: This leaves perResStr at its default value instead of letting the error propagate.
+	catch {} // What: Request Permission Guard. Why: The prompt can fail, and the permission should then stay as it was. How: This leaves perResStr at its default value instead of letting the error propagate.
 
 
 
@@ -218,24 +213,21 @@ async function askOncFun () : Promise< PerStaTyp > {
  * reqPerFun = Request Permission Function
  *
  * @summary
- * Re-asks for notification permission, for the Settings page's own
- * "Enable notifications" button. Browsers ignore a fresh request once
- * the user has explicitly denied it, but the user may have cleared
- * that block themselves outside the app, so this always re-checks
- * rather than trusting a stale cached value.
+ * Re-asks for notification permission. The person may have changed it
+ * outside the app, so this reads the permission on every call rather than
+ * trusting a cached value.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param void - This function takes no parameters.
  *
- * @returns A Promise resolving to the current permission string, or
- * the literal string 'unsupported' when the browser has no
- * Notification API at all.
+ * @returns A promise that resolves with the current permission, or the
+ * literal string 'unsupported' when the browser has no Notification API.
  * @see {@link perResStr}
  *
  * @example
  * ```ts
- * reqPerFun() // => Promise<string>
+ * await reqPerFun() // => 'granted'
  * ```
  *
 */
@@ -255,9 +247,9 @@ async function reqPerFun () : Promise< PerStaTyp > {
 
 
 
-	try { if ( perResStr === 'default' ) perResStr = await Notification.requestPermission(); } // What: Request Permission Try. Why: A prompt should only actually be shown when the permission is still 'default'; a browser that has already denied it will just ignore this call anyway. How: This awaits the modern Promise-returning form only when needed, leaving perResStr unchanged on any error.
+	try { if ( perResStr === 'default' ) perResStr = await Notification.requestPermission(); } // What: Request Permission Try. Why: A prompt can only be shown while the permission is still 'default'. How: This awaits the modern Promise-returning form only when needed, leaving perResStr unchanged on any error.
 
-	catch {} // What: Request Permission Guard. Why: The modern Promise-returning form could still throw in some edge case. How: This leaves perResStr unchanged instead of letting the error propagate.
+	catch {} // What: Request Permission Guard. Why: The request can fail. How: This leaves perResStr unchanged instead of letting the error propagate.
 
 
 
@@ -283,30 +275,27 @@ async function reqPerFun () : Promise< PerStaTyp > {
  *
  * @summary
  * Shows a local notification after an automatic daily-list generation,
- * called by the Today tab's own scheduler immediately after that
- * generation completes. Fires only when permission is already
- * granted, the app isn't currently visible and focused (a notification
- * for a page the user is already looking at is pure noise), and this
- * local day hasn't already notified once. Prefers the service
- * worker's own showNotification() over the page-level Notification
- * constructor: on Android Chrome the constructor throws (Failed to
- * construct 'Notification') and always has, since it requires a
- * service worker registration, which was the reason notifications
- * appeared to do nothing at all on mobile. The click behavior for the
- * service-worker path lives in public/sw-notify.js instead, since
- * SW-owned notifications never reach page-level handlers.
+ * meant to run right after that generation completes. Fires only when
+ * permission is already granted, the app isn't currently visible and
+ * focused (a notification for a page the user is already looking at is
+ * pure noise), and this local day hasn't already notified once. Prefers the
+ * service worker's own showNotification() over the page-level Notification
+ * constructor: on Android Chrome the constructor throws (Failed to construct
+ * 'Notification'), since it requires a service worker registration there.
+ * The click behavior for the service-worker path lives in
+ * public/sw-notify.js instead, since SW-owned notifications never reach
+ * page-level handlers.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param void - This function takes no parameters.
  *
- * @returns A Promise resolving to true once a notification was
- * actually shown through either path, or false when every guard or
- * every attempt failed.
+ * @returns A promise that resolves with true once a notification was shown
+ * through either path, or false when a guard stops it or both attempts fail.
  *
  * @example
  * ```ts
- * genNotFun() // => Promise<boolean>
+ * await genNotFun() // => true
  * ```
  *
 */
@@ -375,7 +364,7 @@ async function genNotFun () : Promise< boolean > {
 			const worRegObj = await navigator.serviceWorker.ready; // What: Worker Registration Object. Why: The registration itself is what actually exposes showNotification(). How: This awaits the ready promise to get the live registration.
 
 
-			if ( worRegObj && worRegObj.showNotification ) { // What: Show Notification Method Guard. Why: Some old or partial service worker implementations may lack showNotification() even once ready. How: This checks the method actually exists before calling it below.
+			if ( worRegObj && worRegObj.showNotification ) { // What: Show Notification Method Guard. Why: A registration without showNotification() has nothing to call. How: This checks the method actually exists before calling it below.
 
 
 				await worRegObj.showNotification( notTitStr, notOptObj ); // What: Service Worker Notification Call. Why: This is the actual notification display call for this path. How: This hands the fixed title/options to the registration's own showNotification().
@@ -406,15 +395,15 @@ async function genNotFun () : Promise< boolean > {
 		pagNotObj.onclick = () => { // What: Page Notification Click Handler. Why: Clicking the notification should focus the existing window, never regenerate, since the list it's about has already been built. How: This is assigned once, right after construction, and runs the 2 cleanup calls below on click.
 
 
-			try { window.focus(); } // What: Window Focus Attempt. Why: Focusing the existing tab is the actual point of clicking the notification. How: This calls window.focus() and swallows any error some browsers may throw here.
+			try { window.focus(); } // What: Window Focus Attempt. Why: Focusing the existing tab is the actual point of clicking the notification. How: This calls window.focus(), swallowing any error it throws.
 
-			catch {} // What: Window Focus Guard. Why: Some browsers may throw when focusing a window in certain contexts. How: This silently swallows any error window.focus() itself threw.
+			catch {} // What: Window Focus Guard. Why: Focusing can fail, and that must not stop the close below. How: This silently swallows any error window.focus() itself threw.
 
 
 
 			try { pagNotObj.close(); } // What: Notification Close Attempt. Why: The notification should dismiss itself once clicked. How: This calls pagNotObj's own close() and swallows any error the same way.
 
-			catch {} // What: Notification Close Guard. Why: Some browsers may throw when closing an already-dismissed notification. How: This silently swallows any error pagNotObj.close() itself threw.
+			catch {} // What: Notification Close Guard. Why: Closing can fail, and that must not surface as an error. How: This silently swallows any error pagNotObj.close() itself threw.
 
 
 		};
@@ -454,21 +443,21 @@ async function genNotFun () : Promise< boolean > {
 
 // #region Exports
 
-const NOT_NAM_OBJ = { // What: Notification Namespace Object. Why: This bundles every one of this module's public operations behind one object, giving callers a single import surface, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
+const NOT_NAM_OBJ = { // What: Notification Namespace Object. Why: This bundles this module's public operations behind one object, giving callers a single import. How: This maps five of this file's functions onto external properties of the same names.
 
 
-	askOncFun : askOncFun, // What: Ask Once Function. Why: tab-settings.tsx calls this from the run-time input's own onChange handler, the one moment this app ever asks for notification permission unprompted. How: This re-exports askOncFun under its own matching name.
-	genNotFun : genNotFun, // What: Generated Notification Function. Why: tab-today.tsx calls this right after an automatic daily-list generation completes. How: This re-exports genNotFun under its own matching name.
-	perCheFun : perCheFun, // What: Permission Check Function. Why: tab-settings.tsx's own notify-me row reads this to decide which of its 3 states to show. How: This re-exports perCheFun under its own matching name.
-	reqPerFun : reqPerFun, // What: Request Permission Function. Why: tab-settings.tsx's own explicit Enable button calls this to (re-)request permission. How: This re-exports reqPerFun under its own matching name.
-	subAddFun : subAddFun  // What: Subscribe Add Function. Why: tab-settings.tsx's own permission-state display needs to hear about live permission changes. How: This re-exports subAddFun under its own matching name.
+	askOncFun : askOncFun, // What: Ask Once Function. Why: A caller needs the one-time permission request. How: This re-exports askOncFun under its own matching name.
+	genNotFun : genNotFun, // What: Generated Notification Function. Why: A caller needs to show a notification after a daily-list generation. How: This re-exports genNotFun under its own matching name.
+	perCheFun : perCheFun, // What: Permission Check Function. Why: A caller needs the current permission to show its state. How: This re-exports perCheFun under its own matching name.
+	reqPerFun : reqPerFun, // What: Request Permission Function. Why: A caller needs to re-request permission on demand. How: This re-exports reqPerFun under its own matching name.
+	subAddFun : subAddFun  // What: Subscribe Add Function. Why: A caller needs to hear about live permission changes. How: This re-exports subAddFun under its own matching name.
 
 
 };
 
 
 
-export { NOT_NAM_OBJ }; // What: Notification Namespace Object Export. Why: tab-settings.tsx and tab-today.tsx reach every notification operation through the one namespace object. How: This exports NOT_NAM_OBJ by name at the very end of the file.
+export { NOT_NAM_OBJ }; // What: Named Export. Why: Callers reach every notification operation through the one namespace object. How: This exports NOT_NAM_OBJ by name at the very end of the file.
 
 // #endregion Exports
 

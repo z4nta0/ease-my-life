@@ -22,7 +22,7 @@
 
 // #region Constants
 
-const EMU_PRO_STR = 'demo-ease-my-life'; // What: Emulator Project String. Why: The emulator serves a demo project, which can never reach a real one. How: This is its ID, whose demo- prefix the emulator requires for that.
+const EMU_PRO_STR = 'demo-ease-my-life'; // What: Emulator Project String. Why: The emulator serves a demo project, which can never reach a real one. How: This is its ID, whose demo- prefix names it a demo project to the Firebase tools.
 
 // #endregion Constants
 
