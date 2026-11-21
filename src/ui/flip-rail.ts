@@ -18,16 +18,15 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduced Motion Function
  * flip-rail.ts = Flip Rail
  *
  * @summary
- * The reorder animation shared by every pill rail whose pills re-sort when a
- * selection changes: the conditional rails on the Data tab's picker controls
- * and in the Pickers tab's picker form, where the chosen conditional pins to
- * the front. Each pill that takes part carries its own stable id in
+ * The reorder animation for a pill rail whose pills re-sort when a selection
+ * changes, such as a conditional rail where the chosen conditional pins to the
+ * front. Each pill that takes part carries its own stable id in
  * data-flip-item-key. After a re-sort, useFliRaiFun slides every pill that
  * moved from its old spot to its new one (the FLIP technique: record each
- * pill's First position, let React render its Last, Invert the difference
- * with a transform, then Play it back to none), and fades in any pill it has
- * not seen before. A pill without the attribute, such as a fixed "New" pill,
- * is left alone.
+ * pill's First position, let React render its Last, Invert the difference with
+ * a transform, then Play it back to none), and fades in any pill it has not
+ * seen before. A pill without the attribute, such as a fixed "New" pill, is
+ * left alone.
  *
  * Sections:
  *  - Hooks
@@ -176,7 +175,7 @@ function useFliRaiFun ( raiNodRef : React.RefObject< HTMLElement | null >, trgKe
 
 // #region Exports
 
-export { useFliRaiFun }; // What: Named Export. Why: Every pill rail that re-sorts on selection shares this reorder animation. How: This exports useFliRaiFun by name.
+export { useFliRaiFun }; // What: Named Export. Why: A pill rail that re-sorts on selection can share this reorder animation. How: This exports useFliRaiFun by name.
 
 // #endregion Exports
 

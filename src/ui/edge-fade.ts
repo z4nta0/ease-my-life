@@ -5,12 +5,11 @@
  * edge-fade.ts = Edge Fade
  *
  * @summary
- * The edge fades on every horizontally scrolling rail in the app: CSS fades a
+ * The edge fades on the app's horizontally scrolling rails: CSS fades a
  * rail's left and right edges unless its own data-scroll-start-active and
  * data-scroll-end-active attributes say that edge is already reached.
- * togFadFun computes both attributes from the rail's current scroll position;
- * each rail wires it to its own scroll and resize events, since what can
- * change a rail's layout differs from rail to rail.
+ * togFadFun computes both attributes from the rail's current scroll
+ * position.
  *
  * Sections:
  *  - Helpers
@@ -52,7 +51,7 @@
  *
 */
 
-const togFadFun = ( scrCurEle : HTMLElement, attCurEle : HTMLElement = scrCurEle ) : void => { // What: Toggle Fade Function. Why: Every scrolling rail hides each edge fade once that edge is reached. How: This measures scrCurEle and toggles both attributes on attCurEle.
+const togFadFun = ( scrCurEle : HTMLElement, attCurEle : HTMLElement = scrCurEle ) : void => { // What: Toggle Fade Function. Why: A scrolling rail hides each edge fade once that edge is reached. How: This measures scrCurEle and toggles both attributes on attCurEle.
 
 
 	const canScrBoo = scrCurEle.scrollWidth - scrCurEle.clientWidth > 1;                                       // What: Can Scroll Boolean. Why: A rail that doesn't overflow has no edge to fade at all. How: This checks for more than 1px of overflow.
@@ -74,7 +73,7 @@ const togFadFun = ( scrCurEle : HTMLElement, attCurEle : HTMLElement = scrCurEle
 
 // #region Exports
 
-export { togFadFun }; // What: Named Export. Why: Every scrolling rail in the app shares this fade logic. How: This exports togFadFun by name.
+export { togFadFun }; // What: Named Export. Why: Scrolling rails share this fade logic. How: This exports togFadFun by name.
 
 // #endregion Exports
 

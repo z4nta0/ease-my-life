@@ -120,9 +120,8 @@ const wheScrFun = ( wheEveObj : WheelEvent ) : void => { // What: Wheel Scroll F
  *
  * @summary
  * Attaches wheScrFun to the document for as long as the calling component is
- * mounted, then removes it. The app root calls it once, so every rail marked
- * with data-rail-wheel-scroll scrolls with the mouse wheel on every tab, and
- * a hot reload swaps the listener cleanly instead of stacking a second one.
+ * mounted, then removes it, so a wheel turn over a rail marked with
+ * data-rail-wheel-scroll scrolls it sideways.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -163,7 +162,7 @@ function useRaiWheFun () : void {
 
 // #region Exports
 
-export { useRaiWheFun }; // What: Named Export. Why: The app root turns rail wheel scrolling on through this hook. How: This exports useRaiWheFun by name.
+export { useRaiWheFun }; // What: Named Export. Why: Rail wheel scrolling is turned on through this hook. How: This exports useRaiWheFun by name.
 
 // #endregion Exports
 

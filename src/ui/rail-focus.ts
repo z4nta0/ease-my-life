@@ -16,14 +16,13 @@ import { scrBehFun } from '../utils/motion.ts'; // What: Scroll Behavior Functio
  * rail-focus.ts = Rail Focus
  *
  * @summary
- * Keeps a keyboard-focused control inside one of the app's sideways pill
- * rails fully in view. Browsers scroll a focused element into view only when
- * it's entirely hidden, so a pill focused at a rail's edge stayed half
- * clipped, and behind the rail's edge fade. Each rail opts in with the same
- * presence-only data-rail-wheel-scroll attribute the mouse wheel support
- * uses, and one document-level listener scrolls the focused control fully
- * into its rail. The global stylesheet gives every marked rail an inline
- * scroll padding equal to its own fade, so the control lands clear of it.
+ * Keeps a keyboard-focused control inside one of the app's sideways pill rails
+ * fully in view. Browsers scroll a focused element into view only when it's
+ * entirely hidden, so a pill focused at a rail's edge stayed half clipped, and
+ * behind the rail's edge fade. A rail opts in with the same presence-only
+ * data-rail-wheel-scroll attribute the mouse wheel support uses, and one
+ * document-level listener scrolls the focused control fully into its rail,
+ * clear of the fade by the rail's scroll padding.
  *
  * Sections:
  *  - Helpers
@@ -102,8 +101,8 @@ const focScrFun = ( focEveObj : FocusEvent ) : void => { // What: Focus Scroll F
  *
  * @summary
  * Attaches focScrFun to the document for as long as the calling component is
- * mounted, then removes it. The app root calls it once, so every rail marked
- * with data-rail-wheel-scroll keeps its focused control in view on every tab.
+ * mounted, then removes it, so a focused control inside any rail marked with
+ * data-rail-wheel-scroll is kept in view.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -144,7 +143,7 @@ function useRaiFocFun () : void {
 
 // #region Exports
 
-export { useRaiFocFun }; // What: Named Export. Why: The app root turns rail focus scrolling on through this hook. How: This exports useRaiFocFun by name.
+export { useRaiFocFun }; // What: Named Export. Why: Rail focus scrolling is turned on through this hook. How: This exports useRaiFocFun by name.
 
 // #endregion Exports
 

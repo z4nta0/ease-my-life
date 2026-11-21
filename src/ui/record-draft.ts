@@ -18,7 +18,7 @@ import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Typ
  * record-draft.ts = Record Draft
  *
  * @summary
- * The local working copy behind every item and reminder editor. An editor
+ * The local working copy behind an item or reminder editor. An editor
  * edits this copy instead of the real record, so nothing reaches the store,
  * or storage, until the editor commits: an unsaved edit simply disappears on
  * Cancel, a tab switch, or a reload. Committing pushes only the fields that
@@ -169,7 +169,7 @@ function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' |
 	 *
 	*/
 
-	const cmtDraFun = () => { // What: Commit Draft Function. Why: Save (or closing a Data tab row) must apply the draft's edits to the real item. How: This sends each changed field through the action that owns it.
+	const cmtDraFun = () => { // What: Commit Draft Function. Why: A commit must apply the draft's edits to the real item. How: This sends each changed field through the action that owns it.
 
 
 		if ( !draRcdObj || !oriRcdObj ) return; // What: No Draft Guard. Why: With no item open there's nothing to commit. How: This bails out when either copy is missing.
@@ -183,7 +183,7 @@ function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' |
 		const patValObj : Partial< IteRcdTyp > = {}; // What: Patch Value Object. Why: The ease band and value all commit through one updIteFun call. How: This starts empty and gains each changed field below.
 
 
-		( [ 'easeMax', 'easeMin', 'value' ] as const ).forEach( ( fieKeyStr ) => { if ( draRcdObj[ fieKeyStr ] !== oriRcdObj[ fieKeyStr ] ) patValObj[ fieKeyStr ] = draRcdObj[ fieKeyStr ]; } ); // What: Changed Value Fields Loop. Why: Only fields the user actually changed may be written, leaving any the app changed meanwhile alone. How: This copies each differing field into patValObj, the names read as a constant tuple so each one indexes an item.
+		( [ 'easeMax', 'easeMin', 'value' ] as const ).forEach( ( fieKeyStr ) => { if ( draRcdObj[ fieKeyStr ] !== oriRcdObj[ fieKeyStr ] ) patValObj[ fieKeyStr ] = draRcdObj[ fieKeyStr ]; } ); // What: Changed Value Fields Loop. Why: Only fields the user actually changed may be written, leaving any the app changed meanwhile alone. How: This copies each differing field into patValObj. // What: Type Assertion Note. Why: A plain string array would not index an item by its key. How: The as const reads the names as literal item keys.
 
 		// #endregion Changed Field Collection
 
@@ -283,7 +283,7 @@ function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >
 	 *
 	*/
 
-	const cmtDraFun = () => { // What: Commit Draft Function. Why: Save (or closing a Data tab row) must apply the draft's edits to the real reminder. How: This sends a changed name through renTasFun and every other changed field through updTasFun.
+	const cmtDraFun = () => { // What: Commit Draft Function. Why: A commit must apply the draft's edits to the real reminder. How: This sends a changed name through renTasFun and every other changed field through updTasFun.
 
 
 		if ( !draRcdObj || !oriRcdObj ) return; // What: No Draft Guard. Why: With no reminder open there's nothing to commit. How: This bails out when either copy is missing.
@@ -333,7 +333,7 @@ function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >
 
 // #region Exports
 
-export { useIteDraFun, useTasDraFun }; // What: Named Exports. Why: Every item editor and every reminder editor edits through a draft like this. How: This exports both hooks by name.
+export { useIteDraFun, useTasDraFun }; // What: Named Exports. Why: An item editor and a reminder editor can each edit through a draft like this. How: This exports both hooks by name.
 
 // #endregion Exports
 

@@ -13,10 +13,10 @@ import React from 'react'; // What: React. Why: useEscCanFun registers and clean
  * escape-cancel.ts = Escape Cancel
  *
  * @summary
- * Escape-to-cancel for the app's inline editors and add forms. Every open
- * editor registers itself on one shared stack through useEscCanFun, and a
- * single document-level listener runs only the innermost entry, skipping while
- * a tooltip or modal scrim owns Escape. The stack and the listener are window
+ * Escape-to-cancel for the app's inline editors and add forms. An open editor
+ * registers itself on one shared stack through useEscCanFun, and a single
+ * document-level listener runs only the innermost entry, skipping while a
+ * tooltip or modal scrim owns Escape. The stack and the listener are window
  * globals so repeated module evaluation never double-binds them.
  *
  * Sections:
@@ -166,7 +166,7 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 
 // #region Exports
 
-export { useEscCanFun }; // What: Named Export. Why: Every inline editor and add form registers its own Escape handler through this hook. How: This exports useEscCanFun by name.
+export { useEscCanFun }; // What: Named Export. Why: An inline editor or add form registers its Escape handler through this hook. How: This exports useEscCanFun by name.
 
 // #endregion Exports
 
