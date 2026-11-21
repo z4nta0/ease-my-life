@@ -36,7 +36,7 @@
 
 }
 
-@font-face { /* What: Geist Mono Font Face. Why: Geist Mono is the secondary font for numbers, captions, and chips. How: This loads its variable file across its full 100 to 900 weight range, showing fallback text until it arrives. */
+@font-face { /* What: Geist Mono Font Face. Why: Geist Mono is the secondary font. How: This loads its variable file across its full 100 to 900 weight range, showing fallback text until it arrives. */
 
 
 	font-display : swap;

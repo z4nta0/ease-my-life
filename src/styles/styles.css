@@ -6,13 +6,12 @@
  *
  * @summary
  * The app's one global stylesheet, holding only what can't belong to a single
- * component: the design tokens every module reads, the base element styles
- * and resets, the states set on <html> or <body> (the theme cross-fade, a
- * drag in progress, a running tour) plus the screen reader live region built
- * outside React, and the keyframes several modules share, which a module
- * plays through global(). Themes other than the default overwrite the color
- * tokens with inline properties on <html>, so :root holds the light theme's
- * values.
+ * component: the design tokens the modules read, the base element styles and
+ * resets, the states set on <html> or <body> (the theme cross-fade, a drag in
+ * progress, a running tour) plus the screen reader live region built outside
+ * React, and the keyframes several modules share, which a module plays through
+ * global(). Themes other than the default overwrite their color roles with
+ * inline properties on <html>, so :root holds the light theme's values.
  *
  * Sections:
  *  - Tokens
@@ -28,7 +27,7 @@
 
 /* #region Tokens */
 
-:root { /* What: Design Tokens. Why: Every module reads its colors, type, spacing, sizes, motion, and shadows from one place. How: This defines each token's default value, grouped into sections. */
+:root { /* What: Design Tokens. Why: The modules read their colors, type, spacing, sizes, motion, and shadows from one place. How: This defines each token's default value, grouped into sections. */
 
 
 	/* #region Core Design Numbers */
@@ -165,26 +164,26 @@
 	/* CTRL+ALT+C to toggle color swatches on and off *Requires Extension Toggle by Peng Lv */
 
 	--acc-mai-col : oklch( 0.5 0.14 250 );                                                  /* What: Accent Main Color. Why: Actions, selection, and progress share one main accent. How: Modules read it for accent text, fills, and outlines, and each theme overwrites it. */
-	--acc-sec-col : oklch( 0.62 0.13 50 );                                                  /* What: Accent Secondary Color. Why: Streaks, warnings, and a few highlights need a second accent alongside the main one. How: Modules use it where the main accent would blur together, and each theme overwrites it. */
+	--acc-sec-col : oklch( 0.62 0.13 50 );                                                  /* What: Accent Secondary Color. Why: A second accent is needed alongside the main one, such as for streaks. How: Modules use it where the main accent would blur together, and each theme overwrites it. */
 	--acc-tin-col : oklch( 0.95 0.025 250 );                                                /* What: Accent Tint Color. Why: Selected and highlighted surfaces need a pale tint of the main accent. How: Modules use it as a background behind accent text, and each theme overwrites it. */
 	--att-rin-col : oklch( 1 0 0 );                                                         /* What: Attention Ring Color. Why: A pulsing ring that calls the eye to something must read against a dimmed page, where the accent barely shows. How: Pulse keyframes read it with their own alpha through relative color syntax. */
 	--bac-hov-col : oklch( 0 0 0 / 0.05 );                                                  /* What: Background Hover Color. Why: A hovered row or link needs a faint shade over whatever surface it sits on. How: Modules lay it over the surface as a background on hover. */
 	--bac-pag-col : oklch( 0.985 0.003 240 );                                               /* What: Background Page Color. Why: The page behind every card and panel needs one base color. How: The body and full-page areas use it, and each theme overwrites it. */
 	--bac-pre-col : oklch( from var( --bac-sur-col ) calc( l - 0.01 ) c h );                /* What: Background Pressed Color. Why: Hovered rows and pressed cards darken the surface a step. How: Modules use it as the background on hover or press, and it follows each theme's surface. */
 	--bac-rai-col : oklch( from var( --bac-sur-col ) calc( l + 0.006 ) c h );               /* What: Background Raised Color. Why: A panel that sits above the surface reads a touch lighter. How: Modules use it as the background of raised panels, and it follows each theme's surface. */
-	--bac-sun-col : oklch( from var( --bac-sur-col ) calc( l - 0.006 ) c h );               /* What: Background Sunken Color. Why: Done cards, category bodies, and inline editors sit slightly below the surface. How: Modules use it as their background, and it follows each theme's surface. */
+	--bac-sun-col : oklch( from var( --bac-sur-col ) calc( l - 0.006 ) c h );               /* What: Background Sunken Color. Why: A surface set into the page, such as a done card, sits slightly below the surface. How: Modules use it as their background, and it follows each theme's surface. */
 	--bac-sur-col : oklch( 0.975 0.004 240 );                                               /* What: Background Surface Color. Why: Cards and panels sit on the page as one surface color. How: Modules use it for card and panel backgrounds, the surface shade tokens derive from it, and each theme overwrites it. */
-	--bac-wel-col : oklch( from var( --bac-sur-col ) calc( l - 0.015 ) c h );               /* What: Background Well Color. Why: Editor bodies, toggles, and preview stages read as wells set into the surface. How: Modules use it as their background, and it follows each theme's surface. */
-	--bor-fil-col : oklch( from var( --bor-mai-col ) calc( l + 0.02 ) c h );                /* What: Border Fill Color. Why: Pill counts, heat cells, and progress tracks need a soft fill one notch off the border color. How: Modules use it as their background, and it follows each theme's border. */
+	--bac-wel-col : oklch( from var( --bac-sur-col ) calc( l - 0.015 ) c h );               /* What: Background Well Color. Why: A well set into the surface, such as an editor body, reads darker than it. How: Modules use it as their background, and it follows each theme's surface. */
+	--bor-fil-col : oklch( from var( --bor-mai-col ) calc( l + 0.02 ) c h );                /* What: Border Fill Color. Why: A soft fill one notch off the border color is needed, such as for a progress track. How: Modules use it as their background, and it follows each theme's border. */
 	--bor-hov-col : oklch( from var( --bor-mai-col ) calc( l - 0.08 ) c h );                /* What: Border Hover Color. Why: A hovered card's border darkens to answer the pointer. How: Card modules use it as their hover border color, and it follows each theme's border. */
 	--bor-mai-col : oklch( 0.91 0.005 240 );                                                /* What: Border Main Color. Why: Borders and dividers share one quiet color. How: Modules use it for borders and hairlines, the border shade tokens derive from it, and each theme overwrites it. */
 	--err-dar-col : oklch( 0.5 0.18 25 );                                                   /* What: Error Dark Color. Why: Error and delete text needs a red dark enough to read on a light surface. How: Modules use it for error messages and destructive button text. */
-	--err-mai-col : oklch( 0.55 0.17 25 );                                                  /* What: Error Main Color. Why: Error badges, invalid fields, and delete outlines share one red. How: Modules use it for borders and badge text, and read it with an alpha for faint fills. */
+	--err-mai-col : oklch( 0.55 0.17 25 );                                                  /* What: Error Main Color. Why: Error marks, such as an invalid field's border, share one red. How: Modules use it for borders and badge text, and read it with an alpha for faint fills. */
 	--err-tin-col : oklch( 0.955 0.02 25 );                                                 /* What: Error Tint Color. Why: An error badge or hovered delete button needs a pale red behind it. How: Modules use it as a background. */
 	--hea-lev-sma : oklch( from var( --acc-mai-col ) calc( l + 0.30 ) calc( c - 0.10 ) h ); /* What: Heat Level Small. Why: A day with a little done reads as a pale accent. How: The Stats heat map's first level uses it, and it follows each theme's accent. */
 	--hea-lev-med : oklch( from var( --acc-mai-col ) calc( l + 0.18 ) calc( c - 0.06 ) h ); /* What: Heat Level Medium. Why: A day with some done reads a step stronger. How: The Stats heat map's second level uses it, and it follows each theme's accent. */
 	--hea-lev-lar : oklch( from var( --acc-mai-col ) calc( l + 0.08 ) calc( c - 0.03 ) h ); /* What: Heat Level Large. Why: A day with most done reads nearly full strength. How: The Stats heat map's third level uses it, and it follows each theme's accent. */
-	--scr-mai-col : oklch( 0.15 0.02 250 );                                                 /* What: Scrim Main Color. Why: Modals, the tour spotlight, and the help overlay dim the page behind them with one shade. How: Modules read it with their own alpha through relative color syntax. */
+	--scr-mai-col : oklch( 0.15 0.02 250 );                                                 /* What: Scrim Main Color. Why: Layers that dim the page, such as a modal, share one shade. How: Modules read it with their own alpha through relative color syntax. */
 	--sha-mai-col : oklch( 0 0 0 );                                                         /* What: Shadow Main Color. Why: Every elevation shadow casts one color, so a theme could tint them all from one place. How: The --ele-* shadows read it with each layer's own alpha through relative color syntax. */
 	--suc-dar-col : oklch( 0.42 0.1 155 );                                                  /* What: Success Dark Color. Why: Success text needs a green dark enough to read on a light surface. How: Modules use it for confirmation messages. */
 	--suc-mai-col : oklch( 0.5 0.11 155 );                                                  /* What: Success Main Color. Why: Success badges and outlines share one green. How: Modules use it for badge text and borders, and read it with an alpha for faint fills. */
@@ -251,10 +250,10 @@
 	/* #region Elevation Tokens */
 
 	--ele-sma-sha : 0 calc( var( --ver-rhy-m09 ) * 1rem ) calc( var( --ver-rhy-m07 ) * 1rem ) oklch( from var( --sha-mai-col ) l c h / var( --cdn-pow-007-rec ) ); /* What: Elevation Small Shadow, about 0 1.2px 2px. Why: Knobs and small raised controls sit just above their surface. How: This is one tight contact shadow. */
-	--ele-med-sha : 0 calc( var( --ver-rhy-m02 ) * 1rem ) calc( var( --ver-rhy-p02 ) * 1rem ) oklch( from var( --sha-mai-col ) l c h / var( --cdn-pow-006-rec ) ), 0 calc( var( --ver-rhy-m05 ) * 1rem ) calc( var( --ver-rhy-m02 ) * 1rem ) calc( var( --ver-rhy-m07 ) * -1rem ) oklch( from var( --sha-mai-col ) l c h / var( --cdn-pow-008-rec ) );                  /* What: Elevation Medium Shadow, about 0 8px 26px plus 0 3.6px 8px -2px. Why: Small floating surfaces such as info tips and the bottom tab bar hover just off the page. How: This pairs a soft key shadow with a crisp contact layer. */
+	--ele-med-sha : 0 calc( var( --ver-rhy-m02 ) * 1rem ) calc( var( --ver-rhy-p02 ) * 1rem ) oklch( from var( --sha-mai-col ) l c h / var( --cdn-pow-006-rec ) ), 0 calc( var( --ver-rhy-m05 ) * 1rem ) calc( var( --ver-rhy-m02 ) * 1rem ) calc( var( --ver-rhy-m07 ) * -1rem ) oklch( from var( --sha-mai-col ) l c h / var( --cdn-pow-008-rec ) );                  /* What: Elevation Medium Shadow, about 0 8px 26px plus 0 3.6px 8px -2px. Why: Small floating surfaces such as info tips hover just off the page. How: This pairs a soft key shadow with a crisp contact layer. */
 	--ele-lar-sha : 0 calc( var( --ver-rhy-p01 ) * 1rem ) calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-bas ) * -1rem ) oklch( from var( --sha-mai-col ) l c h / var( --cdn-pow-004-rec ) ), 0 calc( var( --ver-rhy-m03 ) * 1rem ) calc( var( --ver-rhy-bas ) * 1rem ) calc( var( --ver-rhy-m05 ) * -1rem ) oklch( from var( --sha-mai-col ) l c h / 0.16 ); /* What: Elevation Large Shadow, about 0 19px 45px -15px plus 0 6px 15px -4px. Why: Popovers and anything being dragged lift well clear of the page. How: This pairs a deep key shadow with a crisp contact layer. */
 	--ele-xla-sha : 0 calc( var( --ver-rhy-p02 ) * 1rem ) calc( var( --ver-rhy-p05 ) * 1rem ) calc( var( --ver-rhy-p01 ) * -1rem ) oklch( from var( --sha-mai-col ) l c h / var( --cdn-pow-003-rec ) ), 0 calc( var( --ver-rhy-m02 ) * 1rem ) calc( var( --ver-rhy-p01 ) * 1rem ) calc( var( --ver-rhy-m04 ) * -1rem ) oklch( from var( --sha-mai-col ) l c h / 0.16 ); /* What: Elevation Extra Large Shadow, about 0 26px 59px -19px plus 0 8px 19px -5px. Why: Modals float highest, above a scrim. How: This pairs the deepest key shadow with a crisp contact layer. */
-	--ele-sid-sha : calc( var( --ver-rhy-p01 ) * 1rem ) 0 calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-bas ) * -1rem ) oklch( from var( --sha-mai-col ) l c h / var( --cdn-pow-004-rec ) ), calc( var( --ver-rhy-m03 ) * 1rem ) 0 calc( var( --ver-rhy-bas ) * 1rem ) calc( var( --ver-rhy-m05 ) * -1rem ) oklch( from var( --sha-mai-col ) l c h / 0.16 ); /* What: Elevation Side Shadow, about 19px 0 45px -15px plus 6px 0 15px -4px. Why: The side rail's drawer and pull handle slide in from the left edge, so their shadow falls sideways. How: This is the large shadow with its x and y offsets swapped, so it falls to the right. */
+	--ele-sid-sha : calc( var( --ver-rhy-p01 ) * 1rem ) 0 calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-bas ) * -1rem ) oklch( from var( --sha-mai-col ) l c h / var( --cdn-pow-004-rec ) ), calc( var( --ver-rhy-m03 ) * 1rem ) 0 calc( var( --ver-rhy-bas ) * 1rem ) calc( var( --ver-rhy-m05 ) * -1rem ) oklch( from var( --sha-mai-col ) l c h / 0.16 ); /* What: Elevation Side Shadow, about 19px 0 45px -15px plus 6px 0 15px -4px. Why: A drawer that slides in from the left edge needs a shadow that falls sideways. How: This is the large shadow with its x and y offsets swapped, so it falls to the right. */
 
 	/* #endregion Elevation Tokens */
 
@@ -265,7 +264,7 @@
 	--fon-fam-br1 : 'Shantell Sans', var( --fon-fam-mai );                        /* What: Font Family Brand 1. Why: The main brand face sets the wordmark's lead word. How: This names Shantell Sans, falling back to the main font. */
 	--fon-fam-br2 : 'Quicksand', var( --fon-fam-mai );                            /* What: Font Family Brand 2. Why: The second brand face completes the wordmark. How: This names Quicksand, falling back to the main font. */
 	--fon-fam-mai : 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif; /* What: Font Family Main. Why: Body text and most of the interface share one main face. How: This names Geist, falling back to the system sans-serif stack. */
-	--fon-fam-sec : 'Geist Mono', ui-monospace, SFMono-Regular, monospace;        /* What: Font Family Secondary. Why: Numbers, captions, and chips read as quieter supporting text in a second face. How: This names Geist Mono, falling back to the system monospace stack. */
+	--fon-fam-sec : 'Geist Mono', ui-monospace, SFMono-Regular, monospace;        /* What: Font Family Secondary. Why: Supporting text, such as numbers, reads quieter in a second face. How: This names Geist Mono, falling back to the system monospace stack. */
 
 	/* #endregion Font Family Tokens */
 
@@ -321,10 +320,10 @@
 
 	/* #region Radius Tokens */
 
-	--rad-bor-xsm : calc( var( --ver-rhy-m05 ) * 1rem ); /* What: Radius Border Extra Small ~= 3.571px. Why: Tiny pieces, swatches, and focus rings get the subtlest rounding. How: This multiplies the m05 rhythm step by 1rem. */
-	--rad-bor-sma : calc( var( --ver-rhy-m02 ) * 1rem ); /* What: Radius Border Small ~= 8.304px. Why: Inputs, small buttons, and grips share one small corner. How: This multiplies the m02 rhythm step by 1rem. */
-	--rad-bor-med : calc( var( --ver-rhy-m01 ) * 1rem ); /* What: Radius Border Medium = 11px. Why: Rows, tabs, list cards, and inner blocks share one corner. How: This multiplies the m01 rhythm step by 1rem. */
-	--rad-bor-lar : calc( var( --ver-rhy-bas ) * 1rem ); /* What: Radius Border Large ~= 14.572px. Why: Cards, panels, and modals share one larger corner. How: This multiplies the bas rhythm step by 1rem. */
+	--rad-bor-xsm : calc( var( --ver-rhy-m05 ) * 1rem ); /* What: Radius Border Extra Small ~= 3.571px. Why: The smallest pieces, such as a swatch, get the subtlest rounding. How: This multiplies the m05 rhythm step by 1rem. */
+	--rad-bor-sma : calc( var( --ver-rhy-m02 ) * 1rem ); /* What: Radius Border Small ~= 8.304px. Why: Small controls, such as an input, share one small corner. How: This multiplies the m02 rhythm step by 1rem. */
+	--rad-bor-med : calc( var( --ver-rhy-m01 ) * 1rem ); /* What: Radius Border Medium = 11px. Why: Medium blocks, such as a row, share one corner. How: This multiplies the m01 rhythm step by 1rem. */
+	--rad-bor-lar : calc( var( --ver-rhy-bas ) * 1rem ); /* What: Radius Border Large ~= 14.572px. Why: Large surfaces, such as a card, share one larger corner. How: This multiplies the bas rhythm step by 1rem. */
 	--rad-bor-xla : calc( var( --ver-rhy-p01 ) * 1rem ); /* What: Radius Border Extra Large ~= 19.304px. Why: The largest surfaces and tracks get the softest corners. How: This multiplies the p01 rhythm step by 1rem. */
 
 	/* #endregion Radius Tokens */
@@ -397,7 +396,7 @@
 	--ver-rhy-m03 : var( --cdn-pow-002-rec ); /* What: Vertical Rhythm Base Minus 3 ~= 0.570. Why: This is 3 steps below the base step, for the finest vertical spacing. How: This is the reciprocal of the second power of the core design number, multiplied by 1rem where a length is needed. */
 	--ver-rhy-m02 : var( --cdn-pow-001-rec ); /* What: Vertical Rhythm Base Minus 2 ~= 0.755. Why: This is 2 steps below the base step, for tight vertical spacing. How: This is the reciprocal of the first power of the core design number, multiplied by 1rem where a length is needed. */
 	--ver-rhy-m01 : var( --cdn-pow-000 );     /* What: Vertical Rhythm Base Minus 1 = 1. Why: Headings and single-line elements need no breathing room between lines. How: This is read unitless as line-height, so each line is exactly its own font size tall. */
-	--ver-rhy-bas : var( --cdn-pow-001 );     /* What: Vertical Rhythm Base ~= 1.325. Why: Line height and every other height-related value share one base rhythm drawn from the core design number. How: This is read unitless as line-height, so each element multiplies it by its own font size, and other vertical values can build on it. */
+	--ver-rhy-bas : var( --cdn-pow-001 );     /* What: Vertical Rhythm Base ~= 1.325. Why: Line height and other height-related values share one base rhythm drawn from the core design number. How: This is read unitless as line-height, so each element multiplies it by its own font size, and other vertical values can build on it. */
 	--ver-rhy-p01 : var( --cdn-pow-002 );     /* What: Vertical Rhythm Base Plus 1 ~= 1.755. Why: Small labels that share a row with a taller control, like the page kickers, need a roomier line. How: This is read unitless as line-height (about 19.3px on base-size text), or multiplied by 1rem where a fixed height is needed. */
 	--ver-rhy-p02 : var( --cdn-pow-003 );     /* What: Vertical Rhythm Base Plus 2 ~= 2.325. Why: This is 2 steps above the base step, for roomy vertical spacing. How: This is the third power of the core design number, multiplied by 1rem where a length is needed. */
 	--ver-rhy-p03 : var( --cdn-pow-004 );     /* What: Vertical Rhythm Base Plus 3 ~= 3.080. Why: This is 3 steps above the base step, for the roomiest vertical spacing. How: This is the fourth power of the core design number, multiplied by 1rem where a length is needed. */
@@ -493,7 +492,7 @@ button,
 input,
 select,
 textarea,
-:where( [tabindex='0'] ) { /* What: Focus Ring Controls. Why: Keyboard focus should ease in rather than snap, and the browser's own ring can't. How: This gives every link, button, field, and focusable element a zero-width outline in the accent color, held a step away from it, and eases the ring's width and offset when focus arrives, the focusable element's selector weighing nothing so its module's own transition wins; every element with its own transition lists the two outline properties so the ease survives. */
+:where( [tabindex='0'] ) { /* What: Focus Ring Controls. Why: Keyboard focus should ease in rather than snap, and the browser's own ring can't. How: This gives every link, button, field, and focusable element a zero-width outline in the accent color, held a step away from it, and eases the ring's width and offset when focus arrives, the focusable element's selector weighing nothing so its module's own transition wins; an element with its own transition has to list the two outline properties so the ease survives. */
 
 
 	outline        : 0 solid var( --acc-mai-col );                                                                                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */ /* What: Zero Width Outline. Why: A zero width stays invisible, even in forced colors mode, until something is focused. How: The focused rule below grows it. */
@@ -583,7 +582,7 @@ button { /* What: Button Reset. Why: Every button starts unstyled so its module 
 
 }
 
-main:focus { /* What: Focused Main. Why: The main area takes focus only as the skip link's landing spot, not as a control, so a ring around the whole page would only confuse. How: This removes its outline. */
+main:focus { /* What: Focused Main. Why: The main area takes focus as the skip link's landing spot rather than as a control, so a ring around the whole page would only confuse. How: This removes its outline. */
 
 
 	outline : none;
@@ -621,11 +620,11 @@ ol { /* What: List Reset. Why: Lists are used for layout, not bullets. How: This
  * [data-theme-fade-active] = Theme Fade Active
  *
  * @summary
- * A one-shot theme cross-fade: while data-theme-fade-active is on <html>
- * (added by appearance.ts's appPalFun on a user theme swap, for one p04
- * duration step, about 486ms), the themable properties ease so the palette
- * change glides instead of snapping. It's scoped to the swap window so it
- * never interferes with normal interaction transitions.
+ * A one-shot theme cross-fade: while data-theme-fade-active is set (added to
+ * <html> for one p04 duration step, about 486ms, on a user theme swap), the
+ * themable properties ease so the palette change glides instead of snapping.
+ * It's scoped to the swap window, so interaction transitions go back to their
+ * own once it ends.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -634,7 +633,7 @@ ol { /* What: List Reset. Why: Lists are used for layout, not bullets. How: This
 [data-theme-fade-active],
 [data-theme-fade-active] *,
 [data-theme-fade-active] *::before,
-[data-theme-fade-active] *::after { /* What: Theme Cross-Fade. Why: A theme swap should glide rather than snap. How: This eases every themable color on the page for the length of the swap. */
+[data-theme-fade-active] *::after { /* What: Theme Cross-Fade. Why: A theme swap should glide rather than snap. How: This eases the background, text, border, fill, and stroke colors for the length of the swap. */
 
 
 	transition : background-color var( --dur-tra-p04 ) var( --mot-sta-eas ), color var( --dur-tra-p04 ) var( --mot-sta-eas ), border-color var( --dur-tra-p04 ) var( --mot-sta-eas ), fill var( --dur-tra-p04 ) var( --mot-sta-eas ), stroke var( --dur-tra-p04 ) var( --mot-sta-eas ) !important; /* Duration Transition Base Plus 4 ~= 486.1ms, Motion Standard Easing = ease */
@@ -692,7 +691,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-[data-rail-wheel-scroll] { /* What: Pill Rail. Why: A keyboard-focused pill is scrolled into view by ui/rail-focus.ts, and it should land clear of the rail's edge fade. How: This sets the rail's inline scroll padding to its own fade width, which each faded rail's module sets as --fad-edg-off, falling back to none. */
+[data-rail-wheel-scroll] { /* What: Pill Rail. Why: A keyboard-focused pill that scrolls into view should land clear of the rail's edge fade. How: This sets the rail's inline scroll padding to its own fade width, read from --fad-edg-off and falling back to none. */
 
 
 	scroll-padding-inline : var( --fad-edg-off, 0 ); /* Fade Edge Offset, set by each faded rail's module, falling back to 0 */
@@ -932,7 +931,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes editorOpenFadeIn { /* What: Editor Open Fade In Keyframes. Why: A new row in the picker form should settle into place. How: This fades it in while dropping 3px. */
+@keyframes editorOpenFadeIn { /* What: Editor Open Fade In Keyframes. Why: A newly opened editor row should settle into place. How: This fades it in while dropping 3px. */
 
 
 	from {
@@ -956,7 +955,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes footerSwapFadeIn { /* What: Footer Swap Fade In Keyframes. Why: When an editor footer swaps with its delete confirm, the incoming row should ease in; each row is keyed so the swap replays this. How: This fades it in while rising 3px. */
+@keyframes footerSwapFadeIn { /* What: Footer Swap Fade In Keyframes. Why: When a footer row swaps with another, the incoming row should ease in. How: This fades it in while rising 3px. */
 
 
 	from {
@@ -1037,7 +1036,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes overlayOpenFadeIn { /* What: Overlay Open Fade In Keyframes. Why: Onboarding overlays should fade in rather than appear. How: This fades opacity from 0 to 1. */
+@keyframes overlayOpenFadeIn { /* What: Overlay Open Fade In Keyframes. Why: Overlays should fade in rather than appear. How: This fades opacity from 0 to 1. */
 
 
 	from {
@@ -1130,7 +1129,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes tabGroupSlideIn { /* What: Tab Group Slide In Keyframes. Why: When the group changes, the Show tabs should slide in, staggered, rather than pop; the row is keyed on the group so this replays. How: This fades each tab in while sliding it in from one m01 spacing step to the left. */
+@keyframes tabGroupSlideIn { /* What: Tab Group Slide In Keyframes. Why: When the group changes, the Show tabs should slide in rather than pop. How: This fades each tab in while sliding it in from one m01 spacing step to the left. */
 
 
 	from {
@@ -1154,7 +1153,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes tabOpenFadeIn { /* What: Tab Open Fade In Keyframes. Why: A tab's content should rise in when it opens, the same for every tab. How: This fades it in while rising one m02 spacing step. */
+@keyframes tabOpenFadeIn { /* What: Tab Open Fade In Keyframes. Why: A tab's content should rise in when it opens. How: This fades it in while rising one m02 spacing step. */
 
 
 	from {
@@ -1178,7 +1177,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes targetTourPulse { /* What: Target Tour Pulse Keyframes. Why: A tour target's outline should pulse gently to draw the eye. How: This fades the accent outline down to 20% and back. */
+@keyframes targetTourPulse { /* What: Target Tour Pulse Keyframes. Why: A tour target's outline should pulse gently to draw the eye. How: This fades the accent outline down to about 18.5% opacity and back. */
 
 
 	0%,
