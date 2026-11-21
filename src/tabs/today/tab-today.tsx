@@ -4781,7 +4781,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						{ shoIdlBoo && ( // What: No-Run Empty State Visibility Check. Why: This CTA only belongs to a user with real pickers but nothing runnable today. How: This renders the card only while shoIdlBoo is true.
 
 
-							<div className={` ${ cssModObj.onbCarDiv }   ${ cssModObj.onbCarDivNorun } `}>{ /* What: No-Run Empty State Div Element. Why: A user with real pickers but nothing runnable today needs its own explanatory empty state, distinct from the "no pickers at all" one above. How: This renders its own icon/heading/explanation with links out to the Data and Pickers tabs. */ }
+							<div className={` ${ cssModObj.onbCarDiv }   ${ cssModObj.onbCarDivIdle } `}>{ /* What: No-Run Empty State Div Element. Why: A user with real pickers but nothing runnable today needs its own explanatory empty state, distinct from the "no pickers at all" one above. How: This renders its own icon/heading/explanation with links out to the Data and Pickers tabs. */ }
 
 
 								<div className={ cssModObj.onbIcoDiv }>{ /* What: Card Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed calendar icon. */ }

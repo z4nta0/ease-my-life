@@ -202,7 +202,7 @@ function InsRowCom ( { labTexStr, steTexEle, warTexEle } : IocProTyp ) : React.J
 
 
 		<div
-			className={` ${ cssModObj.insRowDiv }   ${ cssModObj.insRowDivIos } `}
+			className={` ${ cssModObj.insRowDiv }   ${ cssModObj.insRowDivNote } `}
 
 			data-element-name-hook='insRowDiv'
 		>{ /* What: Install Row Div Element. Why: A platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block. Its data-element-name-hook is read by help mode's Settings catalog. */ }
@@ -2399,7 +2399,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 								<div
-									className={` ${ cssModObj.insRowDiv }   ${ cssModObj.insRowDivIos } `}
+									className={` ${ cssModObj.insRowDiv }   ${ cssModObj.insRowDivNote } `}
 
 									data-element-name-hook='insRowDiv'
 								>{ /* What: Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
@@ -2426,7 +2426,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 								<div
-									className={` ${ cssModObj.insRowDiv }   ${ cssModObj.insRowDivIos } `}
+									className={` ${ cssModObj.insRowDiv }   ${ cssModObj.insRowDivNote } `}
 
 									data-element-name-hook='insRowDiv'
 								>{ /* What: Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }

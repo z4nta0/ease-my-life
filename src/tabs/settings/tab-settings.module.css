@@ -875,14 +875,14 @@
 
 
 }
-.insRowDiv--ios .setSubSpa { /* What: Settings Sub Span In Install Row Div iOS. Why: An install note reads as prose, not a one-line description. How: This caps its line length at 60ch. */
+.insRowDiv--note .setSubSpa { /* What: Settings Sub Span In Install Row Div Note. Why: An install note reads as prose, not a one-line description. How: This caps its line length at 60ch. */
 
 
 	max-width : var( --tex-wid-sma ); /* Text Width Small Maximum ~= 22.047em */
 
 
 }
-.insRowDiv--ios .setSubSpa + .setSubSpa { /* What: Following Settings Sub Span In Install Row Div iOS. Why: The steps and the warning are two notes, not a name and description, so they need room between them. How: This spaces the second one extra small 1 vertical spacing down. */
+.insRowDiv--note .setSubSpa + .setSubSpa { /* What: Following Settings Sub Span In Install Row Div Note. Why: The steps and the warning are two notes, not a name and description, so they need room between them. How: This spaces the second one extra small 1 vertical spacing down. */
 
 
 	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */

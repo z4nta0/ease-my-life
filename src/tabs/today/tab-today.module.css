@@ -2019,7 +2019,7 @@
 
 
 }
-.onbCarDiv--norun .onbTexPar { /* What: Onboarding Text Paragraph In Onboarding Card Div Norun. Why: With no button, the card's gap spaces its two paragraphs, so a paragraph margin would double it. How: This drops the margin. */
+.onbCarDiv--idle .onbTexPar { /* What: Onboarding Text Paragraph In Onboarding Card Div Idle. Why: With no button, the card's gap spaces its two paragraphs, so a paragraph margin would double it. How: This drops the margin. */
 
 
 	margin : 0;

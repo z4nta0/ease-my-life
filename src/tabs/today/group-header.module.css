@@ -422,7 +422,7 @@
 
 
 	align-items     : center;
-	animation       : merConDivOpenFadeIn var( --dur-ani-p01 ) var( --mot-dec-eas ) both;                             /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	animation       : bannerOpenFadeIn var( --dur-ani-p01 ) var( --mot-dec-eas ) both;                             /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	background      : var( --acc-tin-col );                                                                           /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
 	border          : var( --bor-wid-bas ) solid oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-004-rec ) ); /* Border Width Base ~= 1.160px, Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
 	border-radius   : var( --rad-bor-med );                                                                           /* Radius Border Medium = 11px */
@@ -457,7 +457,7 @@
 
 
 }
-@keyframes merConDivOpenFadeIn { /* What: Merge Confirm Div Open Fade In Keyframes. Why: A short drop reads as the bar arriving under its header. How: This fades the bar in from slightly above. */
+@keyframes bannerOpenFadeIn { /* What: Banner Open Fade In Keyframes. Why: A short drop reads as the bar arriving under its header. How: This fades the bar in from slightly above. */
 
 
 	from {
