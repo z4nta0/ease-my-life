@@ -31,7 +31,7 @@ import { renCarFun     } from '../render-kit.mts'; // What: Render Card Function
 
 // #region Constants
 
-const OUT_PAT_STR = fileURLToPath( new URL( './tip-image.png', import.meta.url ) ); // What: Output Path String. Why: The PNG is uploaded to Polar by hand. How: This writes it beside the card.
+const OUT_PAT_STR = fileURLToPath( new URL( './tip-image.png', import.meta.url ) ); // What: Output Path String. Why: The PNG is uploaded to Polar by hand. How: This resolves tip-image.png beside this script.
 
 // #endregion Constants
 

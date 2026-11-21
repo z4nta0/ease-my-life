@@ -37,7 +37,7 @@ import { writeFileSync } from 'node:fs';           // What: Write File Sync. Why
 
 const ICO_SIZ_ARR = [ 16, 32, 48 ];                                                                     // What: ICO Size Array. Why: favicon.ico should hold the sizes its head link names. How: Each is rendered and packed in this order.
 const OUT_PAT_STR = fileURLToPath( new URL( '../../public/favicon.ico', import.meta.url ) );           // What: Output Path String. Why: Browsers request the icon from the site's root. How: This resolves public/favicon.ico from the script's own location.
-const SOU_SVG_STR = fileURLToPath( new URL( '../../public/assets/icon.svg', import.meta.url ) );       // What: Source SVG String. Why: The app's mark is the one artwork every icon is drawn from. How: This resolves the icon's path.
+const SOU_SVG_STR = fileURLToPath( new URL( '../../public/assets/icon.svg', import.meta.url ) );       // What: Source SVG String. Why: The favicon is drawn from the app's own mark. How: This resolves the icon's path.
 
 // #endregion Constants
 
@@ -109,7 +109,7 @@ async function renPngFun ( icoSizNum : number ) : Promise< Buffer > {
 		finCanEle.width  = tarSizNum; // What: Final Width Assignment. Why: The icon is square at its target size. How: This sets the width.
 
 
-		finCanEle.getContext( '2d' )!.drawImage( souImaEle, 0, 0, tarSizNum, tarSizNum ); // What: Mark Draw Call. Why: This draws the icon itself. How: This rasterizes the mark to fill the square. // What: Non-Null Note. Why: getContext can return null for an unknown context type, and '2d' is always supported. How: The assertion lets drawImage run on it.
+		finCanEle.getContext( '2d' )!.drawImage( souImaEle, 0, 0, tarSizNum, tarSizNum ); // What: Mark Draw Call. Why: This draws the icon itself. How: This rasterizes the mark to fill the square. // What: Non-Null Note. Why: getContext can return null, and a new canvas asked for '2d' returns its context. How: The assertion lets drawImage run on it.
 
 		// #endregion Final Canvas Drawing
 

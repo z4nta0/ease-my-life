@@ -9,9 +9,9 @@ import { fileURLToPath } from 'node:url';         // What: File URL To Path. Why
 import { statSync      } from 'node:fs';          // What: Stat Sync. Why: A square card's render reports the file's size. How: This reads it once written.
 
 
-import type { Browser       } from '@playwright/test'; // What: Browser. Why: A caller closes the browser it was handed once its image is saved. How: This types the launched browser.
-import type { Page          } from '@playwright/test'; // What: Page. Why: A caller draws or captures in the page it was handed. How: This types the opened page.
-import type { ViteDevServer } from 'vite';             // What: Vite Dev Server. Why: A caller closes the server it was handed once its image is saved. How: This types the started server.
+import type { Browser       } from '@playwright/test'; // What: Browser. Why: The launched browser is part of opeCapFun's result. How: This types the launched browser.
+import type { Page          } from '@playwright/test'; // What: Page. Why: The opened page is part of opeCapFun's result. How: This types the opened page.
+import type { ViteDevServer } from 'vite';             // What: Vite Dev Server. Why: The started server is staVitFun's result. How: This types the started server.
 
 // #endregion Imports
 
@@ -24,8 +24,7 @@ import type { ViteDevServer } from 'vite';             // What: Vite Dev Server.
  * The setup the design render scripts share: opening a Chromium page to draw
  * or capture in, starting the Vite server a card needs when it reads the
  * app's own stylesheets from the repo root, and the whole capture of a square
- * product card. Each script beside it imports what it needs and still runs on
- * its own with node, then closes what it was handed once its image is saved.
+ * product card.
  *
  * Sections:
  *  - Constants
@@ -41,7 +40,7 @@ import type { ViteDevServer } from 'vite';             // What: Vite Dev Server.
 // #region Constants
 
 const ROO_DIR_STR = fileURLToPath( new URL( '..', import.meta.url ) ); // What: Root Directory String. Why: Vite serves the app's stylesheets from the repo root. How: This resolves one folder up from the design folder.
-const VIT_POR_NUM = 5199;                                              // What: Vite Port Number. Why: The render server gets a port of its own, apart from the dev and test servers. How: The server holds it strictly, failing rather than moving.
+const VIT_POR_NUM = 5199;                                              // What: Vite Port Number. Why: The render server gets a port of its own, apart from the dev and test servers. How: This is the port the render server listens on.
 const VIT_URL_STR = `http://localhost:${ VIT_POR_NUM }`;               // What: Vite URL String. Why: A card is opened from the render server. How: This is the server's address, with a card's repo path added after it.
 
 // #endregion Constants
@@ -59,9 +58,8 @@ type OcfResTyp = { broInsObj : Browser, capPagObj : Page }; // What: Open-Captur
  *
  * @summary
  * Launches Chromium and opens one page in it, at the given viewport size
- * when one is named, or at Playwright's default size otherwise, for a page
- * that only draws on a canvas. The caller closes the browser once its image
- * is saved.
+ * when one is named, or at Playwright's default size otherwise. The browser
+ * stays open until the caller closes it.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -85,7 +83,7 @@ async function opeCapFun ( vieSizObj? : { height : number, width : number } ) : 
 
 
 
-	return { broInsObj, capPagObj }; // What: Browser And Page Return. Why: The caller works in the page and closes the browser. How: This returns both under their own names, so a caller destructures them as they are.
+	return { broInsObj, capPagObj }; // What: Browser And Page Return. Why: The browser and page are what opeCapFun produces. How: This returns both under their own names, so a caller destructures them as they are.
 
 
 }
@@ -102,7 +100,7 @@ async function opeCapFun ( vieSizObj? : { height : number, width : number } ) : 
  * @summary
  * Starts a Vite dev server from the repo root on its own port, listening, so
  * a card can load the app's font and token stylesheets by their repo paths
- * under VIT_URL_STR. The caller closes the server once its image is saved.
+ * under VIT_URL_STR. The server stays up until the caller closes it.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -175,7 +173,7 @@ async function renCarFun ( carDirStr : string, outPatStr : string ) : Promise< v
 
 	await capPagObj.goto( `${ VIT_URL_STR }/${ carDirStr }/card.html` ); // What: Card Load Call. Why: The card has to render first. How: This opens the card in carDirStr.
 
-	await capPagObj.evaluate( () => document.fonts.ready.then( () => undefined ) ); // What: Font Wait Call. Why: The brand fonts must be drawn, not their fallbacks. How: This waits for every font to load.
+	await capPagObj.evaluate( () => document.fonts.ready.then( () => undefined ) ); // What: Font Wait Call. Why: The brand fonts must be drawn, not their fallbacks. How: This waits until the fonts the page uses have finished loading.
 
 	await capPagObj.locator( '#carSquDiv' ).screenshot( { path : outPatStr } ); // What: Card Screenshot Call. Why: This is the image itself. How: This captures the card element as a PNG.
 
