@@ -18,8 +18,7 @@ import type { DatModTyp } from '../core/data-model.ts'; // What: Date Mode Type.
  * @summary
  * The shared Date-vs-Weekday toggle a monthly or yearly schedule offers,
  * choosing whether its day is a plain date or an Nth weekday (e.g. "the 2nd
- * Tuesday"), plus the two options it draws. The cadence editor and the
- * reminders schedule editor both render it.
+ * Tuesday"), plus the two options it draws.
  *
  * Sections:
  *  - Constants
@@ -37,8 +36,8 @@ import type { DatModTyp } from '../core/data-model.ts'; // What: Date Mode Type.
 const DAT_MOD_ARR : { keyStr : DatModTyp, labStr : string }[] = [ // What: Date Mode Array. Why: Every Date-vs-Weekday toggle offers the same two choices. How: This is passed as DatModCom's SegConCom optIteArr.
 
 
-	{ keyStr : 'date',       labStr : 'Date'    }, // What: Key String. Why: This is the default day-of-month/day targeting mode's own value. How: SegConCom compares this against the current dateMode and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
-	{ keyStr : 'nthWeekday', labStr : 'Weekday' }  // What: Key String. Why: This lets the user target e.g. "the 2nd Tuesday" instead of a fixed day number. How: SegConCom compares this against the current dateMode and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+	{ keyStr : 'date',       labStr : 'Date'    }, // What: Key String. Why: This is the default day-of-month/day targeting mode's own value. How: This is the mode value the option stands for. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: This is the option's visible button text.
+	{ keyStr : 'nthWeekday', labStr : 'Weekday' }  // What: Key String. Why: This lets the user target e.g. "the 2nd Tuesday" instead of a fixed day number. How: This is the mode value the option stands for. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: This is the option's visible button text.
 
 
 ];
@@ -107,6 +106,10 @@ function DatModCom ( { desIdeStr, onChange, value } : DmcProTyp ) : React.JSX.El
 
 
 
-export { DatModCom }; // What: Named Export. Why: The cadence editor and the reminders schedule editor both draw this toggle. How: This exports DatModCom by name; DAT_MOD_ARR stays private to this file.
+// #region Exports
+
+export { DatModCom }; // What: Named Export. Why: Other files draw this toggle. How: This exports DatModCom by name; DAT_MOD_ARR stays private to this file.
+
+// #endregion Exports
 
 

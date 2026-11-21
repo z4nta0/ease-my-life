@@ -5,13 +5,12 @@
  * editor-footer.module.css = Editor Footer Module
  *
  * @summary
- * Styles for EdiFooCom, the Delete/Cancel/Save row that ends every reminder
+ * Styles for EdiFooCom, the Delete/Cancel/Save row that ends a reminder
  * editor, and the delete confirm that morphs in place of it: Delete anchored
  * left, Cancel and Save grouped right, and a short slide-in whenever one row
- * swaps for the other. Today's inline editor and the Data tab's reminder rows
- * both draw a full-bleed divider above the footer, so each sets the
- * --edi-foo-* custom properties on itself instead of styling the
- * footer from outside.
+ * swaps for the other. A parent may set the --edi-foo-* custom properties on
+ * itself to give the footer a divider, margin, and padding, instead of
+ * styling the footer from outside.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -24,7 +23,7 @@
 .ediFooDiv { /* What: Editor Footer Div. Why: Delete sits apart on the left while Cancel and Save pair up on the right, with room above them so a destructive tap is hard to hit by accident. How: This spreads the footer's children across a flex row, reading its spacing and divider from --edi-foo-* properties a parent may set, and slides the row in each time it mounts. */
 
 
-	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are defined in the global sheet, not in this module. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	border-top      : var( --edi-foo-bor, none );                                                /* Editor Footer Border, set by its parent, falling back to none */ /* What: Footer Divider. Why: An editor laid out in full-bleed rows needs a hairline between its last row and the footer. How: A parent sets --edi-foo-bor, falling back to no divider. */
 	display         : flex;
 	gap             : var( --spa-hor-m02 );                                                      /* Spacing Horizontal Base Minus 2 ~= 8.304px */
@@ -55,7 +54,7 @@
 
 }
 
-.delMesSpa { /* What: Delete Message Span. Why: The confirm question should read as plain body text that wraps cleanly on narrow screens. How: This sets it in the text color with balanced wrapping. */
+.delMesSpa { /* What: Delete Message Span. Why: The confirm question should read as plain body text that wraps cleanly on narrow screens. How: This sets it in the main text color at body size, wrapping with text-wrap pretty. */
 
 
 	color     : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */

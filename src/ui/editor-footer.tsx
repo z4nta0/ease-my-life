@@ -8,7 +8,7 @@ import React     from 'react';                      // What: React. Why: EdiFooC
 
 
 import { ButBasCom    } from './button.tsx';       // What: Button Base Component. Why: The footer's own Delete, Cancel, and Save actions need consistently-styled buttons. How: This is rendered throughout EdiFooCom.
-import { useEscCanFun } from './escape-cancel.ts'; // What: Use Escape Cancel Function. Why: Escape must back out of the footer's own delete confirm the same way every other confirm in the app does. How: This is called once inside EdiFooCom.
+import { useEscCanFun } from './escape-cancel.ts'; // What: Use Escape Cancel Function. Why: Escape must back out of the footer's own delete confirm. How: This is called once inside EdiFooCom.
 
 // #endregion Imports
 
@@ -18,7 +18,7 @@ import { useEscCanFun } from './escape-cancel.ts'; // What: Use Escape Cancel Fu
  * editor-footer.tsx = Editor Footer
  *
  * @summary
- * The Delete/Cancel/Save row that ends every reminder editor, shared by
+ * The Delete/Cancel/Save row that ends a reminder editor, shared by
  * Today's inline reminder editor and the Data tab's reminder manager so both
  * read and behave the same.
  *
@@ -43,10 +43,9 @@ type EfcProTyp = { isaNewBoo? : boolean, onCanTasFun : () => void, onDelTasFun :
  *
  * @summary
  * The shared Cancel/Save/Delete footer for a reminder's editor, used by both
- * Today and Data so the two stay exact copies. Delete is confirm-gated inline,
- * morphing just this footer row while the schedule editor above stays intact.
- * Both editors edit a draft, so Cancel and Save simply hand off to the
- * caller, which drops or commits that draft.
+ * Today and Data so the two match. Delete is confirm-gated inline, morphing
+ * just this footer row while the schedule editor above stays intact. Cancel
+ * and Save simply hand off to the caller, which drops or commits its draft.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -98,7 +97,7 @@ function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } : EfcP
 				className={` ${ cssModObj.ediFooDiv }   ${ cssModObj.ediFooDivConfirm } `}
 
 				data-element-name-hook='ediFooDiv'
-			>{ /* What: Confirm Foot Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+			>{ /* What: Editor Footer Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 				<span className={ cssModObj.delMesSpa }>Delete this reminder?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
@@ -147,7 +146,7 @@ function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } : EfcP
 			className={ cssModObj.ediFooDiv }
 
 			data-element-name-hook='ediFooDiv'
-		>{ /* What: Plain Foot Div Element. Why: This is the normal, non-confirming footer shown whenever conOpeBoo is false. How: This renders an optional Delete button (suppressed for a brand-new reminder) plus the Cancel/Save actions. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+		>{ /* What: Editor Footer Div Element. Why: This is the normal, non-confirming footer shown whenever conOpeBoo is false. How: This renders an optional Delete button (suppressed for a brand-new reminder) plus the Cancel/Save actions. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 			{ !isaNewBoo && ( // What: Delete Visibility Check. Why: A brand-new, not-yet-kept reminder has nothing to delete yet, only to discard via Cancel. How: This renders the Delete button only for an already-existing reminder.
@@ -168,7 +167,7 @@ function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } : EfcP
 
 
 
-			<div className={ cssModObj.fooRigDiv }>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both ButBasCom elements below. */ }
+			<div className={ cssModObj.fooRigDiv }>{ /* What: Footer Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both ButBasCom elements below. */ }
 
 
 				<ButBasCom
@@ -176,7 +175,7 @@ function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } : EfcP
 					sizValStr='sm'
 
 					onClick={ onCanTasFun }
-				>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the edit. How: This calls onCanTasFun, which drops the caller's draft. */ }
+				>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the edit. How: This calls onCanTasFun. */ }
 
 
 
@@ -185,7 +184,7 @@ function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } : EfcP
 					sizValStr='sm'
 
 					onClick={ onDonTasFun }
-				>Save</ButBasCom>{ /* What: Button Base Component. Why: This keeps the edit. How: This calls onDonTasFun, which commits the caller's draft. */ }
+				>Save</ButBasCom>{ /* What: Button Base Component. Why: This keeps the edit. How: This calls onDonTasFun. */ }
 
 
 			</div>
@@ -207,7 +206,7 @@ function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } : EfcP
 
 // #region Exports
 
-export { EdiFooCom }; // What: Named Export. Why: Today's inline reminder editor and the Data tab's reminder manager both end with it. How: This exports EdiFooCom by name.
+export { EdiFooCom }; // What: Named Export. Why: Other files render this footer. How: This exports EdiFooCom by name.
 
 // #endregion Exports
 

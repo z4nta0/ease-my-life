@@ -10,10 +10,10 @@
  * radio with each mode's hint, and the setting rows under the selected mode
  * (odds, boost, charge, fill, and the Active switch). The picker form shows it
  * as spaced fields with the radio in a bordered card; the Data tab passes
- * isaInlBoo, which adds the conConDiv--inline modifier and lays every field
- * out as a full-bleed row with hairline dividers, matching the other Data
- * editors. The selected mode keys off data-option-select-active, the Active
- * switch off its own aria-checked, and an invalid name off its own
+ * layVarStr='inline', which adds the conConDiv--inline modifier and lays
+ * every field out as a full-bleed row with hairline dividers, matching the
+ * other Data editors. The selected mode keys off data-option-select-active,
+ * the Active switch off its own aria-checked, and an invalid name off its own
  * aria-invalid.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -125,7 +125,7 @@
 /* #endregion carTexDiv */
 
 
-.forTexInp { /* What: Form Text Input. Why: Names and card text are typed into a bordered field. How: This draws a rounded field that borders in the accent on focus. */
+.forTexInp { /* What: Form Text Input. Why: Names and card text are typed into a bordered field. How: This draws a rounded field that borders in the accent on focus, and eases its border color. */
 
 
 	background    : var( --bac-pag-col );                                   /* Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -314,7 +314,7 @@
 
 /* #region modOptLab */
 
-.modOptLab { /* What: Mode Option Label. Why: Each conditional type is a full-width option whose details open under it. How: This lays the dot and text out in a padded row divided from the next, and sets the pace ColDisCom's option details open at, and eases its focus ring in. */
+.modOptLab { /* What: Mode Option Label. Why: Each conditional type is a full-width option whose details open under it. How: This lays the dot and text out in a padded row divided from the next, and sets the pace ColDisCom's option details open at, and eases its hover shade and focus ring in. */
 
 
 	--col-inn-del : var( --dur-tra-m03 );              /* Duration Transition Base Minus 3 ~= 67.9ms */
@@ -435,7 +435,7 @@
 
 }
 
-.modDotSpa { /* What: Mode Dot Span. Why: A drawn dot shows which option is chosen. How: This draws an outlined circle that fills when selected. */
+.modDotSpa { /* What: Mode Dot Span. Why: A drawn dot shows which option is chosen. How: This draws an outlined circle that fills when selected, and eases its ring color. */
 
 
 	border        : var( --bor-wid-bas ) solid var( --bor-mai-col );        /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -662,7 +662,7 @@
 .ediSubSpa--fade { /* What: Editor Name Span Fade And Editor Sub Span Fade. Why: A label or explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
 
 
-	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are defined in the global sheet, not in this module. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -685,7 +685,7 @@
 
 
 
-.weiNonSpa { /* What: Weight None Span. Why: A random conditional has no odds to set, and says so where the control would be. How: This sets the note small and muted at its natural size. */
+.weiNonSpa { /* What: Weight None Span. Why: A random conditional has no odds to set, and says so where the control would be. How: This sets the note muted at its natural size. */
 
 
 	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
