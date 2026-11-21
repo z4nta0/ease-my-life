@@ -175,7 +175,7 @@ for ( const legPatStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pag
 			await opePagFun( curPagObj, legPatStr, vieWidNum ); // What: Page Open Call. Why: The walk should start from the page settled. How: This opens and settles it.
 
 
-			expect( await keyProFun( curPagObj, engNamStr, null ) ).toEqual( [] ); // What: No Keyboard Problems Assertion. Why: The page passes only when every stop is reached, in order, on screen, uncovered, and visibly focused. How: This compares the walk's problems with an empty list, so a failure prints each one, the null saying the page has no pop-up open.
+			expect( await keyProFun( curPagObj, engNamStr, null ) ).toEqual( [] ); // What: No Keyboard Problems Assertion. Why: The page passes only when its keyboard walk finds no problems. How: This compares the walk's problems with an empty list, so a failure prints each one, the null saying the page has no pop-up open.
 
 
 		} );
@@ -196,7 +196,7 @@ for ( const legPatStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pag
 
 		await curPagObj.keyboard.press( 'Tab' ); // What: First Tab Press. Why: The skip link has to be the first stop. How: This moves focus onto the first focusable element.
 
-		await curPagObj.evaluate( () => Promise.all( document.getAnimations().map( ( aniCurObj ) => aniCurObj.finished ) ) ); // What: Slide Finished Wait. Why: The link slides into view on focus, so it's judged where it lands. How: This waits for its transition to finish.
+		await curPagObj.evaluate( () => Promise.all( document.getAnimations().map( ( aniCurObj ) => aniCurObj.finished ) ) ); // What: Slide Finished Wait. Why: The link slides into view on focus, so it's judged where it lands. How: This waits for every running animation to finish.
 
 
 		const skiLinLoc = curPagObj.locator( '[data-element-name-hook~="skiLinAnc"]' ); // What: Skip Link Locator. Why: The checks read the skip link. How: This finds it by its hook.
@@ -223,7 +223,7 @@ for ( const legPatStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pag
 
 
 
-	test( `${ legPatStr } reflows at ${ REF_WID_NUM }px without scrolling sideways`, async ( { page : curPagObj } ) => { // What: Reflow Test. Why: Zoomed-in visitors read in one column without scrolling sideways. How: This opens the page at the reflow width and compares each scrolling box's content width with its visible width.
+	test( `${ legPatStr } reflows at ${ REF_WID_NUM }px without scrolling sideways`, async ( { page : curPagObj } ) => { // What: Reflow Test. Why: Zoomed-in visitors read in one column without scrolling sideways. How: This opens the page at the reflow width and compares the root's and the body's content widths with their visible widths.
 
 
 		await opePagFun( curPagObj, legPatStr, REF_WID_NUM ); // What: Page Open Call. Why: The check reads the page at the reflow width. How: This opens and settles it at 320px.
@@ -246,7 +246,7 @@ for ( const legPatStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pag
 
 		await opePagFun( curPagObj, legPatStr, 375 ); // What: Page Open Call. Why: The check reads the page once it has loaded. How: This opens and settles it.
 
-		await curPagObj.keyboard.press( 'Tab' ); // What: First Tab Press. Why: Focusing the skip link is the page's one motion. How: This moves focus onto it.
+		await curPagObj.keyboard.press( 'Tab' ); // What: First Tab Press. Why: Focusing the skip link is the motion this check reads. How: This moves focus onto it.
 
 
 		expect( await curPagObj.evaluate( () => document.getAnimations().length ) ).toBe( 0 ); // What: No Motion Assertion. Why: Under reduced motion the link should simply appear. How: This checks nothing is animating right after it takes focus.

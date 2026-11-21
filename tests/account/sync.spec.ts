@@ -8,7 +8,7 @@ import { claSetFun   } from '../support/account.ts';         // What: Claim Set 
 import { creAccFun   } from '../support/account.ts';         // What: Create Account Function. Why: Each flow needs its own emulator account. How: This creates one.
 import { DAY_ONE_STR } from '../support/account.ts';         // What: Day One String. Why: Both devices share a list on the first day of the new-day flow. How: This is that Chicago date.
 import { EMU_PRO_STR } from '../../src/emulator-project.ts'; // What: Emulator Project String. Why: The emulator's addresses name the project. How: This is the demo project.
-import { expect      } from '@playwright/test';              // What: Expect. Why: Every step asserts what synced. How: This makes the assertions.
+import { expect      } from '@playwright/test';              // What: Expect. Why: The flows assert what synced. How: This makes the assertions.
 import { FIR_EMU_STR } from '../support/emulator.ts';        // What: Firestore Emulator String. Why: The test reads the cloud copy straight from the Firestore emulator. How: This is its address.
 import { freSigFun   } from '../support/account.ts';         // What: Fresh Sign-In Function. Why: Fresh installs sign in the way a person does. How: This opens the app, skips the welcome tour, and signs in.
 import { insClcFun   } from '../support/clock.ts';           // What: Install Clock Function. Why: The new-day flow runs both devices on chosen days. How: This fakes a page's clock before it loads.
@@ -409,7 +409,7 @@ test( "a returning user skips onboarding and lands on Settings' Account section"
 
 
 
-test( 'signing out ends the session and leaves nothing of it in storage', async ( { page : curPagObj } ) => { // What: Sign Out Test. Why: Signing out has to end the session for real, and a signed-in device should keep nothing secret in local storage, the sign-in library's own session aside. How: This signs in and syncs, checks local storage holds only the app's flags, signs out, and checks the sign-in button is back, the app's account flags are gone, and a reload stays signed out.
+test( 'signing out ends the session and leaves nothing of it in storage', async ( { page : curPagObj } ) => { // What: Sign Out Test. Why: Signing out has to end the session for real, and a signed-in device should keep nothing secret in local storage, the sign-in library's own session aside. How: This signs in and syncs, checks local storage holds only the app's keys and the sign-in library's, signs out, and checks the sign-in button is back, the app's account flags are gone, and a reload stays signed out.
 
 
 	// #region Signed In Setup
@@ -420,7 +420,7 @@ test( 'signing out ends the session and leaves nothing of it in storage', async 
 
 	await creAccFun( emaAdrStr ); // What: Account Create Call. Why: Only a paid account syncs. How: This creates one.
 
-	await bacUplFun( curPagObj, emaAdrStr, reaFixFun() ); // What: Signed-In Upload Call. Why: Only a signed-in device has a session to end, and a synced one has written every flag it keeps. How: This writes the backup, opens the app, signs in, and waits for the sync.
+	await bacUplFun( curPagObj, emaAdrStr, reaFixFun() ); // What: Signed-In Upload Call. Why: Only a signed-in device has a session to end, and a synced one has written the flags it keeps. How: This writes the backup, opens the app, signs in, and waits for the sync.
 
 	// #endregion Signed In Setup
 
