@@ -108,21 +108,27 @@ function ColDisCom ( { children, className = '', isaInsBoo = false, open } : Cdc
 
 
 
-		const rafOneNum = requestAnimationFrame( () => { // What: Request-Animation-Frame One Number. Why: One frame lets the collapsed 0fr state actually paint before the second frame flips it. How: This schedules the second frame request below, itself cleaned up if this effect re-runs first.
+		let rafTwoNum = 0; // What: Request-Animation-Frame Two Number. Why: The cleanup below must be able to cancel the second frame as well as the first. How: This holds the second frame's request id, set once the first frame runs, and stays 0 until then.
 
 
-			const rafTwoNum = requestAnimationFrame( () => setExpStaBoo( true ) ); // What: Request-Animation-Frame Two Number. Why: This is the actual frame that flips the grid row to 1fr, animating the expand. How: This schedules setExpStaBoo(true) one more frame later.
+		const rafOneNum = requestAnimationFrame( () => { // What: Request-Animation-Frame One Number. Why: One frame lets the collapsed 0fr state actually paint before the second frame flips it. How: This schedules the second frame request below and stores its id in rafTwoNum.
 
 
-
-			return () => cancelAnimationFrame( rafTwoNum ); // What: Second Frame Cleanup. Why: A re-run before the second frame fires must not let a stale expand still happen. How: This cancels the second animation frame request.
+			rafTwoNum = requestAnimationFrame( () => setExpStaBoo( true ) ); // What: Second Frame Request Assignment. Why: This is the actual frame that flips the grid row to 1fr, animating the expand. How: This schedules setExpStaBoo(true) one more frame later and keeps its id for the cleanup.
 
 
 		} );
 
 
 
-		return () => cancelAnimationFrame( rafOneNum ); // What: First Frame Cleanup. Why: A re-run before the first frame fires must not let a stale chain still start. How: This cancels the first animation frame request.
+		return () => { // What: Frame Cleanup. Why: A re-run before either frame fires must not let a stale expand still happen. How: This cancels whichever of the two frame requests is still pending.
+
+
+			cancelAnimationFrame( rafOneNum ); // What: First Frame Cancel Call. Why: The first frame may not have run yet. How: This cancels the first frame request.
+			cancelAnimationFrame( rafTwoNum ); // What: Second Frame Cancel Call. Why: The second frame may be scheduled but not yet run. How: This cancels the second frame request once one has been scheduled.
+
+
+		};
 
 
 	}, [ chiMouBoo, expStaBoo, open ] ); // What: Effect Dependency Array. Why: open decides whether an expand should happen at all, chiMouBoo re-runs this on the mount commit rather than only on the open change, and expStaBoo keeps the guard reading the current expand state. How: All three are read in the guard above, and a re-run caused by expStaBoo itself just returns there.
