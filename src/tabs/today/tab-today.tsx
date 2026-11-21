@@ -2962,7 +2962,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const curEntArr = staAppObj.today.entries || [];                                                                                               // What: Current Entry Array. Why: The "already on screen" checks below need today's own current entries. How: This reads staAppObj.today.entries, falling back to an empty array.
 		const havPicSet = new Set( curEntArr.map( ( curEntObj ) => curEntObj.pickerId ).filter( isaTruFun ) );                                         // What: Have Picker Set. Why: A picker already represented by a real entry doesn't need a placeholder slot. How: This collects every current entry's own pickerId.
 		const havDaoSet = new Set( curEntArr.filter( ( curEntObj ) => curEntObj.kind === 'dayoff' ).map( ( curEntObj ) => curEntObj.conditionalId ) ); // What: Have Day-Off Set. Why: A day-off card carries a conditionalId instead of a pickerId, so its own "already on screen" check needs its own set. How: This collects every current day-off entry's own conditionalId.
-		const outMapObj : Record< string, PicRcdTyp[] > = {};                                                                                          // What: Out Map Object. Why: This is the actual { [groNamStr]: [picker, ...] } result being built. How: This is populated by the loop below and returned at the end.
+		const outMapObj : Record< string, PicRcdTyp[] > = {};                                                                                          // What: Output Map Object. Why: This is the actual { [groNamStr]: [picker, ...] } result being built. How: This is populated by the loop below and returned at the end.
 
 
 		for ( const picIdeStr of Object.keys( genMapObj ) ) { // What: Generating Picker Loop. Why: Every picker with an active generation slot is a candidate for a placeholder, unless it is already represented on screen. How: This walks every key in genMapObj, filtering out already-present pickers/day-offs.
@@ -2989,7 +2989,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			const groNamStr = picRcdObj.group || 'Other'; // What: Group Name String. Why: The placeholder needs a real group to slot into, matching every other row's own grouping. How: This reads picRcdObj.group, falling back to 'Other'.
 
 
-			( outMapObj[ groNamStr ] = outMapObj[ groNamStr ] || [] ).push( picRcdObj ); // What: Out Map Push. Why: This is the actual placeholder collection for this group. How: This pushes picRcdObj into outMapObj's own array for groNamStr, creating it first if needed.
+			( outMapObj[ groNamStr ] = outMapObj[ groNamStr ] || [] ).push( picRcdObj ); // What: Output Map Push. Why: This is the actual placeholder collection for this group. How: This pushes picRcdObj into outMapObj's own array for groNamStr, creating it first if needed.
 
 
 		}

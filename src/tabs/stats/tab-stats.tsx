@@ -289,7 +289,7 @@ function couLevFun ( donCouNum : number ) : number {
 function outCouFun ( outValStr : PclOutTyp, picLogArr : PclRowTyp[], hidPicSet : Set< string >, scoValStr : string, cutIsoStr : string | null, isaRemBoo : boolean ) : Map< string, number > {
 
 
-	const outCouMap = new Map< string, number >(); // What: Out Count Map. Why: The counts need a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by the loop.
+	const outCouMap = new Map< string, number >(); // What: Outcome Count Map. Why: The counts need a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by the loop.
 
 
 
@@ -1150,7 +1150,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 		// #region Output Ordering
 
-		const outConArr = []; // What: Out Conditional Array. Why: The finished stats need a stable, deterministic order rather than the Map's own insertion order. How: This starts empty and is filled below, live conditionals first in their own definition order, then deleted ones.
+		const outConArr = []; // What: Output Conditional Array. Why: The finished stats need a stable, deterministic order rather than the Map's own insertion order. How: This starts empty and is filled below, live conditionals first in their own definition order, then deleted ones.
 
 
 		for ( const conCurObj of conDefArr ) outConArr.push( conAccMap.get( conCurObj.id ) ); // What: Live Order Push Loop. Why: Live conditionals should list in the same order their own definitions are stored in. How: This looks each one back up by id and appends it.
@@ -1525,7 +1525,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const dayAggMap = React.useMemo( () => { // What: Day Aggregate Map Memo. Why: The heatmap, streak, and full-days count all need one shared per-day rollup, built once instead of separately per card. How: This walks either remRowArr or picRowArr (whichever scope is active) into a Map keyed by calendar day. // Per-day aggregation, one { donNum, iteArr, totNum } entry per calendar day, each iteArr entry a { donBoo, namStr } pair. A pick day counts every logged row toward totNum and only completed ones toward donNum; a reminder day counts every completion toward both.
 
 
-		const outDayMap = new Map< string, { donNum : number, iteArr : { donBoo : boolean, namStr : string }[], totNum : number } >(); // What: Out Day Map. Why: The per-day rollup needs a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by whichever branch below runs.
+		const outDayMap = new Map< string, { donNum : number, iteArr : { donBoo : boolean, namStr : string }[], totNum : number } >(); // What: Output Day Map. Why: The per-day rollup needs a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by whichever branch below runs.
 
 		if ( isaRemBoo ) { // What: Reminders Aggregation Branch. Why: A reminder completion has no "possible total" the way a pick day does, so its own day entry counts done and total identically. How: This walks remRowArr, incrementing both done and total for every completion on its own day.
 
@@ -1672,7 +1672,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 		const minYeaNum = +dayKeyArr.reduce( ( earKeyStr, dayKeyStr ) => ( dayKeyStr < earKeyStr ? dayKeyStr : earKeyStr ), dayKeyArr[ 0 ] ).slice( 0, 4 ); // What: Minimum Year Number. Why: The year list must start from the earliest logged day, not an arbitrary default. How: This reduces to the lexicographically earliest day key, then reads its own leading 4-digit year.
 		const maxYeaNum = todDatObj.getFullYear(); // What: Maximum Year Number. Why: The year list must always reach through the current year, even with no activity logged yet this year. How: This reads today's own year.
-		const outYeaArr = [];                      // What: Out Year Array. Why: The final list needs building up one year at a time between the bounds computed above. How: This starts empty and is filled by the loop below.
+		const outYeaArr = [];                      // What: Output Year Array. Why: The final list needs building up one year at a time between the bounds computed above. How: This starts empty and is filled by the loop below.
 
 
 		for ( let yeaCurNum = minYeaNum; yeaCurNum <= maxYeaNum; yeaCurNum++ ) outYeaArr.push( yeaCurNum ); // What: Year Range Loop. Why: Every year between the earliest logged year and the current one belongs in the pager, even a year with no activity of its own. How: This pushes every year in that inclusive range.
@@ -1744,7 +1744,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		// #region Day Fill
 
 		const staDatObj = new Date( staIsoStr + 'T00:00:00' ); // What: Start Date Object. Why: The fill loop below needs a real Date to step forward one day at a time from. How: This parses staIsoStr at local midnight.
-		const outDayArr = [];                                  // What: Out Day Array. Why: The finished grid needs building up one day at a time between the bounds computed above. How: This starts empty and is filled by the loop below.
+		const outDayArr = [];                                  // What: Output Day Array. Why: The finished grid needs building up one day at a time between the bounds computed above. How: This starts empty and is filled by the loop below.
 
 
 		for ( let curDatObj = new Date( staDatObj ); isoDayFun( curDatObj ) <= endIsoStr; curDatObj.setDate( curDatObj.getDate() + 1 ) ) { // What: Day Fill Loop. Why: Every day in the window needs its own cell, whether or not anything was logged that day. How: This steps a cloned cursor forward one day at a time, stopping once it passes endIsoStr.
@@ -1776,7 +1776,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const picCouMap = React.useMemo( () => { // What: Pick Count Map Memo. Why: The Most Picked/Coldest rankings and the single-picker breakdown all need one shared per-item pick count, joined with its own source split. How: This walks picRowArr once, accumulating a count plus a per-source tally per itemId.
 
 
-		const outCouMap = new Map(); // What: Out Count Map. Why: The per-item counts need a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by the loop.
+		const outCouMap = new Map(); // What: Output Count Map. Why: The per-item counts need a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled by the loop.
 
 
 		for ( const rowCurObj of picRowArr ) { // What: Pick Count Loop. Why: Every logged pick contributes one to its own item's total, and one to whichever source produced it. How: This looks up (or lazily creates) the item's own accumulator, then increments it.
@@ -1972,7 +1972,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const freGapMap = React.useMemo( () => { // What: Frequency Gap Map Memo. Why: The Frequency metric needs a per-item average gap, in both calendar and eligible-day units, between its own consecutive picks. How: This groups picRowArr's own dates per item, then averages consecutive gaps in each unit. // Eligible-day gap per item (used by the Frequency metric). The eligible index is per-item: picker run days MINUS that item's own inactive days, so an inactive stretch can't inflate the gap. Calendar gap stays literal wall-clock time.
 
 
-		const outGapMap = new Map(); // What: Out Gap Map. Why: The per-item gap results need a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled below.
+		const outGapMap = new Map(); // What: Output Gap Map. Why: The per-item gap results need a fresh accumulator to build up as the loop below runs. How: This starts empty and is filled below.
 
 
 
@@ -2050,7 +2050,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const speGapMap = React.useMemo( () => { // What: Spent Gap Map Memo. Why: The ease-down Spent metric needs a per-item average completed-cycle length, in both run-count and calendar-day units. How: This walks picRowArr's own dates in order, grouping consecutive same-item runs and keeping only ones that ended depleted. // Ease Down "Spent": measured from ACTUAL history, the average length of a completed depletion streak (consecutive runs of the same active item that ended when its charge hit 0, flagged depletedEnd). Abandoned streaks (re-roll / inactive / manual) never reach 0, so they're excluded, which is why recharging an abandoned item can't skew this. elig = runs; cal = calendar days spanned. null when the item has no completed cycle in range.
 
 
-		const outSpeMap = new Map(); // What: Out Spent Map. Why: The per-item spent results need a fresh accumulator to build up below. How: This starts empty and is filled below.
+		const outSpeMap = new Map(); // What: Output Spent Map. Why: The per-item spent results need a fresh accumulator to build up below. How: This starts empty and is filled below.
 
 
 
@@ -2153,7 +2153,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const lasPicMap = React.useMemo( () => { // What: Last Pick Map Memo. Why: The Last Picked metric needs each item's own most recent active-pick date. How: This walks picRowArr once, keeping only the latest date seen per item. // Most-recent active pick date per item (used by the "Last picked" metric). Range + scope aware via picRowArr; rejected rows are already excluded there.
 
 
-		const outDatMap = new Map(); // What: Out Date Map. Why: The per-item latest-date results need a fresh accumulator to build up below. How: This starts empty and is filled by the loop below.
+		const outDatMap = new Map(); // What: Output Date Map. Why: The per-item latest-date results need a fresh accumulator to build up below. How: This starts empty and is filled by the loop below.
 
 
 		for ( const rowCurObj of picRowArr ) { // What: Latest Date Loop. Why: Every logged pick might be a new latest date for its own item. How: This overwrites the item's own entry whenever a later date is seen.
@@ -2210,10 +2210,10 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-		const ghoIteArr = [ ...ghoNamMap ].map( ( [ iteIdeStr, iteNamStr ] ) => ( // What: Ghost Item Array. Why: Every ghost needs a minimal item-shaped object so it can flow through the same mapping logic as a live item below. How: This turns each recorded ghost name into a small stand-in object flagged __delBoo.
+		const ghoIteArr = [ ...ghoNamMap ].map( ( [ iteIdeStr, iteNamStr ] ) => ( // What: Ghost Item Array. Why: Every ghost needs a minimal item-shaped object so it can flow through the same mapping logic as a live item below. How: This turns each recorded ghost name into a small stand-in object flagged delBoo.
 
 
-			{ delBoo : true, id : iteIdeStr, name : iteNamStr, pickerId : scoValStr, vacation : false } // What: Ghost Item Object. Why: A ghost has to look like a real item so it flows through the same mapping below. How: This mirrors a live item's own id/name/pickerId/vacation fields, flagged __delBoo.
+			{ delBoo : true, id : iteIdeStr, name : iteNamStr, pickerId : scoValStr, vacation : false } // What: Ghost Item Object. Why: A ghost has to look like a real item so it flows through the same mapping below. How: This mirrors a live item's own id/name/pickerId/vacation fields, flagged delBoo.
 
 
 		) );
@@ -2490,7 +2490,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const iteObjMap = React.useMemo( () => { // What: Item Object Map Memo. Why: The breakdown list's own rows don't carry every raw item field, so a suffix needs to look the real item back up by id. How: This maps every live item's own id to itself. // Per-item lookup so the card can fetch the raw item for its suffix.
 
 
-		const outIteMap = new Map(); // What: Out Item Map. Why: The lookup needs a fresh map to fill. How: This starts empty and is filled by the loop below.
+		const outIteMap = new Map(); // What: Output Item Map. Why: The lookup needs a fresh map to fill. How: This starts empty and is filled by the loop below.
 
 
 		for ( const iteCurObj of ( staAppObj.items || [] ) ) outIteMap.set( iteCurObj.id, iteCurObj ); // What: Item Map Loop. Why: Every live item needs its own id entry. How: This maps each item's own id to the item itself.
