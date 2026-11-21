@@ -91,7 +91,7 @@ type ProRolTyp = { firNum : number, namStr : string, proSumNum : number, rolNum 
 // #region Constants
 
 const CHE_BUT_STR = '[data-element-name-hook~="carCheBut"]';             // What: Check Button String. Why: Every card checks off through this button. How: This selects it.
-const OUT_DIR_STR = new URL( '../output/simulation/', import.meta.url ); // What: Output Directory String. Why: The trace lands where git ignores it. How: This is tests/output/simulation.
+const OUT_DIR_OBJ = new URL( '../output/simulation/', import.meta.url ); // What: Output Directory Object. Why: The trace lands where git ignores it. How: This is tests/output/simulation.
 
 // #endregion Constants
 
@@ -796,11 +796,11 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 	// #region Trace Output
 
-	mkdirSync( OUT_DIR_STR, { recursive : true } ); // What: Output Folder Call. Why: The trace needs its folder. How: This creates it.
+	mkdirSync( OUT_DIR_OBJ, { recursive : true } ); // What: Output Folder Call. Why: The trace needs its folder. How: This creates it.
 
 
 
-	writeFileSync( new URL( 'trace.json', OUT_DIR_STR ), JSON.stringify( traDayArr, null, '\t' ) + '\n' ); // What: Trace Write Call. Why: Later runs compare against this one. How: This writes the trace.
+	writeFileSync( new URL( 'trace.json', OUT_DIR_OBJ ), JSON.stringify( traDayArr, null, '\t' ) + '\n' ); // What: Trace Write Call. Why: Later runs compare against this one. How: This writes the trace.
 
 
 

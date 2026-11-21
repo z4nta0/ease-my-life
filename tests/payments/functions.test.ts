@@ -123,7 +123,7 @@ const claReaFun = async ( uidValStr : string ) => JSON.parse( ( await admPosFun(
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param webEveObj - Webhook Event Object: The event to send.
- * @param sigSecStr - Signing Secret String: The secret to sign with, or the
+ * @param sigSecAny - Signing Secret Any: The secret to sign with, or the
  *                    raw key bytes, defaulting to the real one.
  * @param ageSecNum - Age Seconds Number: How old the timestamp is,
  *                    defaulting to 0.
@@ -137,14 +137,14 @@ const claReaFun = async ( uidValStr : string ) => JSON.parse( ( await admPosFun(
  *
 */
 
-function webReqFun ( webEveObj : object, sigSecStr : string | Buffer = WEB_SEC_STR, ageSecNum : number = 0 ) : Request {
+function webReqFun ( webEveObj : object, sigSecAny : string | Buffer = WEB_SEC_STR, ageSecNum : number = 0 ) : Request {
 
 
 	const bodTexStr = JSON.stringify( webEveObj );                           // What: Body Text String. Why: The signature covers the exact text. How: This serializes the event.
 	const mesIdeStr = `msg_${ Date.now() }`;                                 // What: Message Identifier String. Why: Each webhook has an id. How: This builds one.
 	const mesTimStr = String( Math.floor( Date.now() / 1000 ) - ageSecNum ); // What: Message Timestamp String. Why: The timestamp is signed and checked. How: This is now, minus the chosen age.
 
-	const sigValStr = createHmac( 'sha256', typeof sigSecStr === 'string' ? Buffer.from( sigSecStr, 'utf8' ) : sigSecStr ).update( `${ mesIdeStr }.${ mesTimStr }.${ bodTexStr }` ).digest( 'base64' ); // What: Signature Value String. Why: The webhook is signed as Polar signs it. How: This signs the id, timestamp, and body.
+	const sigValStr = createHmac( 'sha256', typeof sigSecAny === 'string' ? Buffer.from( sigSecAny, 'utf8' ) : sigSecAny ).update( `${ mesIdeStr }.${ mesTimStr }.${ bodTexStr }` ).digest( 'base64' ); // What: Signature Value String. Why: The webhook is signed as Polar signs it. How: This signs the id, timestamp, and body.
 
 
 

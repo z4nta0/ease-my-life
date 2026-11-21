@@ -1996,10 +1996,10 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-		for ( const [ iteIdeStr, datSetObj ] of iteDatMap ) { // What: Per-Item Gap Loop. Why: Every item with at least one pick date needs its own average-gap computation in both units. How: This sorts the item's own dates, builds an eligible-day index, then averages consecutive gaps.
+		for ( const [ iteIdeStr, iteDatSet ] of iteDatMap ) { // What: Per-Item Gap Loop. Why: Every item with at least one pick date needs its own average-gap computation in both units. How: This sorts the item's own dates, builds an eligible-day index, then averages consecutive gaps.
 
 
-			const sorDatArr = [ ...datSetObj ].sort();                                                           // What: Sorted Date Array. Why: Consecutive-gap math requires the item's own pick dates in chronological order. How: This spreads and sorts the item's own date Set.
+			const sorDatArr = [ ...iteDatSet ].sort();                                                           // What: Sorted Date Array. Why: Consecutive-gap math requires the item's own pick dates in chronological order. How: This spreads and sorts the item's own date Set.
 			const eliDatArr = actDatArr.filter( ( dayIsoStr ) => !vacCheObj.inaDayFun( iteIdeStr, dayIsoStr ) ); // What: Eligible Date Array. Why: The eligible-day index must exclude any day this specific item was inactive, even if the picker itself ran that day. How: This filters actDatArr down to days vacCheObj.inaDayFun reports as active for this item.
 			const eliIndMap = new Map( eliDatArr.map( ( dayIsoStr, indCurNum ) => [ dayIsoStr, indCurNum ] ) );  // What: Eligible Index Map. Why: Converting a calendar date into its own eligible-day position requires a fast lookup. How: This maps each eligible date to its own position in eliDatArr.
 

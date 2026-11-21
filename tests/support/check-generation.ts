@@ -345,7 +345,7 @@ const chePicFun = ( picRcdObj : PicRcdTyp, preIteArr : IteRcdTyp[], curEntObj : 
 	const namSizNum = picNamSet.size;                                                                                  // What: Name Size Number. Why: There's nothing to avoid until a name was picked. How: This reads how many names were picked.
 	const dedLenNum = dedPooArr.length;                                                                                // What: Deduplicated Length Number. Why: Duplicates are avoided only when something else remains. How: This reads the deduplicated pool's size.
 
-	const takDedBoo = avoDupBoo && namSizNum && dedLenNum; // What: Take Deduplicated Boolean. Why: The deduplicated pool is used only when all three hold. How: This combines them.
+	const takDedBoo = Boolean( avoDupBoo && namSizNum && dedLenNum ); // What: Take Deduplicated Boolean. Why: The deduplicated pool is used only when all three hold. How: This combines them as a real boolean.
 
 
 	const pooIteArr = takDedBoo ? dedPooArr : updPooArr; // What: Pool Item Array. Why: Duplicates are avoided only when something else remains. How: This uses the deduplicated pool when it isn't empty.
@@ -789,7 +789,7 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 			const entRevObj = curEntObj.revert;                  // What: Entry Revert Object. Why: A fresh entry has no undo snapshot. How: This reads it.
 			const perMisBoo = curEntObj.periodKey !== perKeyStr; // What: Period Mismatch Boolean. Why: A fresh entry carries today's period. How: This compares its period key.
 
-			const notCleBoo = isaDonBoo || entRevObj || perMisBoo; // What: Not Clean Boolean. Why: Any of these means the entry isn't fresh. How: This combines them.
+			const notCleBoo = Boolean( isaDonBoo || entRevObj || perMisBoo ); // What: Not Clean Boolean. Why: Any of these means the entry isn't fresh. How: This combines them as a real boolean.
 
 
 			if ( notCleBoo ) issAddFun( `${ picRcdObj.name } fresh entry isn't clean: done ${ curEntObj.done }, periodKey ${ curEntObj.periodKey }, expected ${ perKeyStr }` ); // What: Fresh Shape Check. Why: A fresh entry starts undone with today's period. How: This reports anything else.
@@ -832,7 +832,7 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 			const entPenObj = daoEntObj.pending;                                               // What: Entry Pending Object. Why: A card stages nothing. How: This reads its pending.
 			const isaDonBoo = daoEntObj.done;                                                  // What: Is-A Done Boolean. Why: A card starts undone. How: This reads its done flag.
 
-			const notCleBoo = texMisBoo || entPenObj || isaDonBoo; // What: Not Clean Boolean. Why: Any of these means the card isn't clean. How: This combines them.
+			const notCleBoo = Boolean( texMisBoo || entPenObj || isaDonBoo ); // What: Not Clean Boolean. Why: Any of these means the card isn't clean. How: This combines them as a real boolean.
 
 
 			if ( notCleBoo ) issAddFun( `day-off card for ${ conRcdObj.name } isn't clean` ); // What: Card Shape Report. Why: A card shows its text, starts undone, and stages nothing. How: This reports anything else.

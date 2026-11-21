@@ -44,7 +44,7 @@ import type { Page } from '@playwright/test'; // What: Page. Why: Every helper d
 
 // #region Constants
 
-const OUT_DIR_STR = new URL( '../output/responsive/', import.meta.url ); // What: Output Directory String. Why: Screenshots land where git ignores them. How: This is tests/output/responsive.
+const OUT_DIR_OBJ = new URL( '../output/responsive/', import.meta.url ); // What: Output Directory Object. Why: Screenshots land where git ignores them. How: This is tests/output/responsive.
 const VIE_WID_ARR = [ 375, 414, 768, 1024, 1280 ];                       // What: Viewport Width Array. Why: Phones from 375 up, a tablet, and desktops. How: This lists the widths measured.
 
 // #endregion Constants
@@ -424,11 +424,11 @@ for ( const vieWidNum of VIE_WID_ARR ) for ( const pagStaObj of PAG_STA_ARR ) te
 
 	// #region Screenshot Capture
 
-	mkdirSync( OUT_DIR_STR, { recursive : true } ); // What: Output Folder Call. Why: Screenshots need their folder. How: This creates it.
+	mkdirSync( OUT_DIR_OBJ, { recursive : true } ); // What: Output Folder Call. Why: Screenshots need their folder. How: This creates it.
 
 
 
-	const imaBufObj = await curPagObj.screenshot( { fullPage : true, path : new URL( `${ pagStaObj.namStr }-${ vieWidNum }.png`, OUT_DIR_STR ).pathname } ); // What: Image Buffer Object. Why: Some problems only show to the eye. How: This saves and keeps a full-page screenshot.
+	const imaBufObj = await curPagObj.screenshot( { fullPage : true, path : new URL( `${ pagStaObj.namStr }-${ vieWidNum }.png`, OUT_DIR_OBJ ).pathname } ); // What: Image Buffer Object. Why: Some problems only show to the eye. How: This saves and keeps a full-page screenshot.
 
 
 

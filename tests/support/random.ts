@@ -104,7 +104,7 @@ const insSedFun = async ( curPagObj : Page, sedValNum : number ) : Promise< void
 		let genStaNum = ( iniSedNum ^ Math.imul( loaCouNum + 1, 2654435761 ) ) >>> 0; // What: Generator State Number. Why: mulberry32 advances one 32-bit state per draw, and no load may replay another's draws. How: This starts at the seed mixed with the load count, read as an unsigned 32-bit integer.
 
 		const natRanFun = Math.random.bind( Math ); // What: Native Random Function. Why: Draws from anywhere else must keep the browser's own randomness. How: This keeps the original Math.random.
-		const schPatObj = /\/src\/(core|state)\//;  // What: Scheduling Pattern Object. Why: Every scheduling decision lives in these two folders. How: This regex matches a stack frame from either one.
+		const schPatReg = /\/src\/(core|state)\//;  // What: Scheduling Pattern Regular Expression. Why: Every scheduling decision lives in these two folders. How: This regex matches a stack frame from either one.
 
 
 
@@ -127,7 +127,7 @@ const insSedFun = async ( curPagObj : Page, sedValNum : number ) : Promise< void
 
 
 
-		Math.random = () => ( schPatObj.test( new Error().stack || '' ) ? mulRanFun() : natRanFun() ); // What: Math Random Replacement. Why: Only scheduling draws should be seeded. How: This reads the calling stack and routes a draw from src/core/ or src/state/ to the seeded generator, any other to the native one.
+		Math.random = () => ( schPatReg.test( new Error().stack || '' ) ? mulRanFun() : natRanFun() ); // What: Math Random Replacement. Why: Only scheduling draws should be seeded. How: This reads the calling stack and routes a draw from src/core/ or src/state/ to the seeded generator, any other to the native one.
 
 
 	}, sedValNum ); // What: Seed Argument. Why: The init script runs inside the page and can't see this file's variables. How: This passes the seed in as the script's argument.
